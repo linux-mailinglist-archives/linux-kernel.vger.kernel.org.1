@@ -2,205 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507401AE055
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC931AE05F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgDQPBt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Apr 2020 11:01:49 -0400
-Received: from mailoutvs25.siol.net ([185.57.226.216]:45090 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726707AbgDQPBs (ORCPT
+        id S1728451AbgDQPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:02:13 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58205 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728381AbgDQPCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:01:48 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 3B421522A05;
-        Fri, 17 Apr 2020 17:01:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 35vgEkZzt6rN; Fri, 17 Apr 2020 17:01:44 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id AAA5C5248A7;
-        Fri, 17 Apr 2020 17:01:44 +0200 (CEST)
-Received: from jernej-laptop.localnet (cpe-194-152-20-232.static.triera.net [194.152.20.232])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 5BE3F522A05;
-        Fri, 17 Apr 2020 17:01:43 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     robh+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, lee.jones@linaro.org,
-        linux@armlinux.org.uk, davem@davemloft.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 2/4] net: phy: Add support for AC200 EPHY
-Date:   Fri, 17 Apr 2020 17:01:42 +0200
-Message-ID: <2274555.jE0xQCEvom@jernej-laptop>
-In-Reply-To: <5062b508-2c68-dc94-add2-038178667c9f@gmail.com>
-References: <20200416185758.1388148-1-jernej.skrabec@siol.net> <20200416185758.1388148-3-jernej.skrabec@siol.net> <5062b508-2c68-dc94-add2-038178667c9f@gmail.com>
+        Fri, 17 Apr 2020 11:02:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587135727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zAUQ1fejVgK8xdiFLC8Kzo6yupRq84Rn11njknDDfkc=;
+        b=OotAlMJETxPt9KIPFVhd4AOsVRSMq29/PVkTkjyC9xHqo43R9l6+W63RCa5kStqCTG4PM1
+        0kGBYbS0537F4w11OHPWa/ZCppSpL5R9l8tW8kftGdYZC8ScBHT3JYAkzvvdPoQMOxapGZ
+        xOSitaEARzZQ7drDjNrDbruxLhL3hfo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-qKoBkKQ3NGO4Eh09TUhtLQ-1; Fri, 17 Apr 2020 11:01:59 -0400
+X-MC-Unique: qKoBkKQ3NGO4Eh09TUhtLQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A34BE800D5C;
+        Fri, 17 Apr 2020 15:01:57 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-107.ams2.redhat.com [10.36.114.107])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC3C8A09B9;
+        Fri, 17 Apr 2020 15:01:52 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Kirill Smelkov <kirr@nexedi.com>,
+        Michael Holzheu <holzheu@linux.vnet.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH RFC 0/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
+Date:   Fri, 17 Apr 2020 17:01:49 +0200
+Message-Id: <20200417150151.17239-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne četrtek, 16. april 2020 ob 21:18:29 CEST je Florian Fainelli napisal(a):
-> On 4/16/2020 11:57 AM, Jernej Skrabec wrote:
-> > AC200 MFD IC supports Fast Ethernet PHY. Add a driver for it.
-> > 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > ---
-> > 
-> >   drivers/net/phy/Kconfig  |   7 ++
-> >   drivers/net/phy/Makefile |   1 +
-> >   drivers/net/phy/ac200.c  | 206 +++++++++++++++++++++++++++++++++++++++
-> >   3 files changed, 214 insertions(+)
-> >   create mode 100644 drivers/net/phy/ac200.c
-> > 
-> > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> > index 3fa33d27eeba..16af69f69eaf 100644
-> > --- a/drivers/net/phy/Kconfig
-> > +++ b/drivers/net/phy/Kconfig
-> > @@ -288,6 +288,13 @@ config ADIN_PHY
-> > 
-> >   	  - ADIN1300 - Robust,Industrial, Low Latency 10/100/1000 Gigabit
-> >   	  
-> >   	    Ethernet PHY
-> > 
-> > +config AC200_PHY
-> > +	tristate "AC200 EPHY"
-> > +	depends on NVMEM
-> > +	depends on OF
-> > +	help
-> > +	  Fast ethernet PHY as found in X-Powers AC200 multi-function 
-device.
-> > +
-> > 
-> >   config AMD_PHY
-> >   
-> >   	tristate "AMD PHYs"
-> >   	---help---
-> > 
-> > diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-> > index 2f5c7093a65b..b0c5b91900fa 100644
-> > --- a/drivers/net/phy/Makefile
-> > +++ b/drivers/net/phy/Makefile
-> > @@ -53,6 +53,7 @@ obj-$(CONFIG_SFP)		+= sfp.o
-> > 
-> >   sfp-obj-$(CONFIG_SFP)		+= sfp-bus.o
-> >   obj-y				+= $(sfp-obj-y) $(sfp-obj-m)
-> > 
-> > +obj-$(CONFIG_AC200_PHY)		+= ac200.o
-> > 
-> >   obj-$(CONFIG_ADIN_PHY)		+= adin.o
-> >   obj-$(CONFIG_AMD_PHY)		+= amd.o
-> >   aquantia-objs			+= aquantia_main.o
-> > 
-> > diff --git a/drivers/net/phy/ac200.c b/drivers/net/phy/ac200.c
-> > new file mode 100644
-> > index 000000000000..3d7856ff8f91
-> > --- /dev/null
-> > +++ b/drivers/net/phy/ac200.c
-> > @@ -0,0 +1,206 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/**
-> > + * Driver for AC200 Ethernet PHY
-> > + *
-> > + * Copyright (c) 2020 Jernej Skrabec <jernej.skrabec@siol.net>
-> > + */
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mfd/ac200.h>
-> > +#include <linux/nvmem-consumer.h>
-> > +#include <linux/of.h>
-> > +#include <linux/phy.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#define AC200_EPHY_ID			0x00441400
-> > +#define AC200_EPHY_ID_MASK		0x0ffffff0
-> > +
-> > +/* macros for system ephy control 0 register */
-> > +#define AC200_EPHY_RESET_INVALID	BIT(0)
-> > +#define AC200_EPHY_SYSCLK_GATING	BIT(1)
-> > +
-> > +/* macros for system ephy control 1 register */
-> > +#define AC200_EPHY_E_EPHY_MII_IO_EN	BIT(0)
-> > +#define AC200_EPHY_E_LNK_LED_IO_EN	BIT(1)
-> > +#define AC200_EPHY_E_SPD_LED_IO_EN	BIT(2)
-> > +#define AC200_EPHY_E_DPX_LED_IO_EN	BIT(3)
-> > +
-> > +/* macros for ephy control register */
-> > +#define AC200_EPHY_SHUTDOWN		BIT(0)
-> > +#define AC200_EPHY_LED_POL		BIT(1)
-> > +#define AC200_EPHY_CLK_SEL		BIT(2)
-> > +#define AC200_EPHY_ADDR(x)		(((x) & 0x1F) << 4)
-> > +#define AC200_EPHY_XMII_SEL		BIT(11)
-> > +#define AC200_EPHY_CALIB(x)		(((x) & 0xF) << 12)
-> > +
-> > +struct ac200_ephy_dev {
-> > +	struct phy_driver	*ephy;
-> > +	struct regmap		*regmap;
-> > +};
-> > +
-> > +static char *ac200_phy_name = "AC200 EPHY";
-> > +
-> > +static int ac200_ephy_config_init(struct phy_device *phydev)
-> > +{
-> > +	const struct ac200_ephy_dev *priv = phydev->drv->driver_data;
-> > +	unsigned int value;
-> > +	int ret;
-> > +
-> > +	phy_write(phydev, 0x1f, 0x0100);	/* Switch to Page 1 */
-> 
-> You could define a macro for accessing the page and you may consider
-> implementing .read_page and .write_page and use the
-> phy_read_paged()/phy_write_paged() helper functions.
+Looking into why we still create memblocks for hotplugged memory (via
+add_memory()), I discovered that we might not need ARCH_KEEP_MEMBLOCK on
+s390x after all.
 
-Yeah, I saw that, but they bring some overhead - there is no need to switch 
-page back after write, because next write changes it anyway. But it will 
-probably be more readable and it's done only once so overhead is acceptable.
+After [1] we will no longer create memblocks for hotplugged memory in
+case of !CONFIG_ARCH_KEEP_MEMBLOCK. With this series, the same will apply
+to standby memory on s390x, added via add_memory().
 
-> 
-> > +	phy_write(phydev, 0x12, 0x4824);	/* Disable APS */
-> > +
-> > +	phy_write(phydev, 0x1f, 0x0200);	/* Switch to Page 2 */
-> > +	phy_write(phydev, 0x18, 0x0000);	/* PHYAFE TRX optimization */
-> > +
-> > +	phy_write(phydev, 0x1f, 0x0600);	/* Switch to Page 6 */
-> > +	phy_write(phydev, 0x14, 0x708f);	/* PHYAFE TX optimization */
-> > +	phy_write(phydev, 0x13, 0xF000);	/* PHYAFE RX optimization */
-> > +	phy_write(phydev, 0x15, 0x1530);
-> > +
-> > +	phy_write(phydev, 0x1f, 0x0800);	/* Switch to Page 6 */
-> 
-> Seems like the comment does not match the code, that should be Page 8, no?
+[1] https://lkml.kernel.org/r/20200416104707.20219-1-david@redhat.com
 
-Right, I copy that from BSP driver. If they made this copy and paste error, I 
-wonder if all other comments are ok. I have no documentation about there 
-registers.
+David Hildenbrand (2):
+  s390/zcore: traverse resources instead of memblocks
+  s390/mm: don't set ARCH_KEEP_MEMBLOCK
 
-> 
-> > +	phy_write(phydev, 0x18, 0x00bc);	/* PHYAFE TRX optimization */
-> > +
-> > +	phy_write(phydev, 0x1f, 0x0100);	/* switch to page 1 */
-> > +	phy_clear_bits(phydev, 0x17, BIT(3));	/* disable intelligent 
-IEEE */
-> 
-> Intelligent EEE maybe?
+ arch/s390/Kconfig         |  1 -
+ drivers/s390/char/zcore.c | 61 ++++++++++++++++++++++++++++++---------
+ 2 files changed, 48 insertions(+), 14 deletions(-)
 
-Not sure. As I said before, I just copied comments from BSP driver:
-https://github.com/Allwinner-Homlet/H6-BSP4.9-linux/blob/master/drivers/net/
-phy/sunxi-ephy.c
-
-This is my first take at ethernet phy drivers, so I don't really know if all 
-comments above make sense.
-
-Best regards,
-Jernej
-
-
-
+--=20
+2.25.1
 
