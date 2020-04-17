@@ -2,64 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB2B1AE791
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5121AE798
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgDQV2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:28:35 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45252 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgDQV2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:28:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=hyLBXQXtWodGwneleHMM9khAKkIEX8kgCmevzd2/PYg=; b=HvGk58NlppiJK/TZb6csWf6vOK
-        ayDc414HTT15qa8Znf3XhT6UVbCVCtThrCvS8bwSL9H1p31pvcV55Q6GasHnWfNfSrj1yaByDZ87h
-        SaA7Landul0gLpPkJ3e1B+8p4Tj+4rubHqV7Bd1/rwlmHQd+DYOrX0sQFgcBPpKisMbo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jPYXF-003M43-VB; Fri, 17 Apr 2020 23:28:29 +0200
-Date:   Fri, 17 Apr 2020 23:28:29 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next 3/3] net: phy: bcm54140: add hwmon support
-Message-ID: <20200417212829.GJ785713@lunn.ch>
-References: <20200417192858.6997-1-michael@walle.cc>
- <20200417192858.6997-3-michael@walle.cc>
- <20200417195003.GG785713@lunn.ch>
- <35d00dfe1ad24b580dc247d882aa2e39@walle.cc>
- <20200417201338.GI785713@lunn.ch>
- <84679226df03bdd8060cb95761724d3a@walle.cc>
+        id S1728084AbgDQVbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727889AbgDQVbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 17:31:17 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A183C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:31:16 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i16so1780950ybq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VlK4+w1QC00q805dbGzDfZYQ3w7WLZTC7nlE4Jl0fcw=;
+        b=X7ie4/cLiKiBHIRiKqysqBt6Y8oXdxEA6RDt+c8ynb1e67Xu8xKs+thBLBFZAo+f79
+         fzZB+s+AukisujpubGehpG2nMKzMIEL2glau4ScakRGjO3yR3Ixn5APSzfrdexLOMpBv
+         zBn/lfWpo5ucEdY1Q9lFgz4TW8NMp2rppz6z0cxDxarWVn90Sk6s/sVNbcy4zTKecDkK
+         jz26PKlLgP3cw75scAckydb3RpW64jmmC61LK6/QLBKFRMj3molcynG3s9DplLWJJaX4
+         zNFauyQj8jxYN5VUK3iG0MX5obd90h8VHPk8jkjjf5qAPzrMWt5eGKr2xU+UCgb9j7B+
+         o0QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VlK4+w1QC00q805dbGzDfZYQ3w7WLZTC7nlE4Jl0fcw=;
+        b=kmrHHbV/w7zP/dGEEfaULCp/0w6iwIkihsRsNOiqAuMZHQxoaPM8CQWovzEFnyvIvx
+         hGoB+YdxC2XKo0lX+MTFslc5iFFuteGO9LmcXf2zAsKn31T9FGlvWHGuhiPFjPiUeR42
+         QuiVV9MocmlTzR9MQ2ZcUNPnFlM/Fi9PLZottRU3QtFr5pLUbTBNYGxVaTc56htdjZVm
+         u+/jISI0Hnr5MKsaEt+gSJLQNSWkgWPV6C9n7v6vjC/HGPfPXzCdIYtT5LxaBJtERfXw
+         wvuoEfn9teH0o2QcFdo1U6OgDRT8r/SodplBqCd0osYUjwexbKXlxUCRiC0WxyY1NfF/
+         NEWg==
+X-Gm-Message-State: AGi0PuYi+EPmZ3nmWYAS+MS0CKi4kyTNP1KF7qV0mi0K1Ka5yv7E+b20
+        oqSE1UsngTg1j7Pe08kCxmMoQGLDziTpxvEg+6mIlw==
+X-Google-Smtp-Source: APiQypImoXwKVREQerXGn/Kx6PmgTQ/vEYsDXv8PGwramrEP9mVfP8fi8esMQq8EGb9BiQ5tbFomrYgHLBh24hhhB2o=
+X-Received: by 2002:a25:4443:: with SMTP id r64mr1384458yba.41.1587159075073;
+ Fri, 17 Apr 2020 14:31:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84679226df03bdd8060cb95761724d3a@walle.cc>
+References: <20200417182842.12522-1-irogers@google.com> <20200417184536.GK20730@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200417184536.GK20730@hirez.programming.kicks-ass.net>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 17 Apr 2020 14:31:04 -0700
+Message-ID: <CAP-5=fU=mBqrZYqMYSXd6_12YV43ZPNSqQ=8GCRj5ZAQRJperg@mail.gmail.com>
+Subject: Re: [PATCH] perf/core: fix parent pid/tid in task exit events
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        KP Singh <kpsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:08:56PM +0200, Michael Walle wrote:
-> Am 2020-04-17 22:13, schrieb Andrew Lunn:
-> > > Correct, and this function was actually stolen from there ;) This was
-> > > actually stolen from the mscc PHY ;)
-> > 
-> > Which in itself indicates it is time to make it a helper :-)
-> 
-> Sure, do you have any suggestions?
+On Fri, Apr 17, 2020 at 11:45 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Apr 17, 2020 at 11:28:42AM -0700, Ian Rogers wrote:
+> > Current logic yields the child task as the parent.
+> >
+> > Before:
+> > $ perf record bash -c "perf list > /dev/null"
+> > $ perf script -D |grep 'FORK\|EXIT'
+> > 4387036190981094 0x5a70 [0x30]: PERF_RECORD_FORK(10472:10472):(10470:10470)
+> > 4387036606207580 0xf050 [0x30]: PERF_RECORD_EXIT(10472:10472):(10472:10472)
+> > 4387036607103839 0x17150 [0x30]: PERF_RECORD_EXIT(10470:10470):(10470:10470)
+> >                                                    ^
+> >   Note the repeated values here -------------------/
+> >
+> > After:
+> > 383281514043 0x9d8 [0x30]: PERF_RECORD_FORK(2268:2268):(2266:2266)
+> > 383442003996 0x2180 [0x30]: PERF_RECORD_EXIT(2268:2268):(2266:2266)
+> > 383451297778 0xb70 [0x30]: PERF_RECORD_EXIT(2266:2266):(2265:2265)
+> >
+>
+> Fixes: .... ?
 
-mdiobus_get_phy() does the bit i was complaining about, the mdiobus
-internal knowledge.
+Fixes:  94d5d1b2d891 ("perf_counter: Report the cloning task as parent
+on perf_counter_fork()")
 
-	Andrew
+Sorry, re-sending as plain-text was disabled on the message and so it
+bounced on lkml. Took some digging to find the original commit :-)
+
+Thanks,
+Ian
+
+>
+> > Reported-by: KP Singh <kpsingh@google.com>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
