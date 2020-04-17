@@ -2,196 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE0D1ADAA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932F21ADA7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgDQKBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:01:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:4009 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726207AbgDQKBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:01:49 -0400
-IronPort-SDR: btkvFp/W9MklE5QSu5bXAZcTLRxyiE3+sZYC+EqxtaIY2ALeXWr6AADNCK437WvLyYrgChzee6
- eC5silteccQw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 03:01:48 -0700
-IronPort-SDR: RRMDjiqrvQ2P/0gurYOYvUWAJrG/sp/kx652ixtBwkFyqw2s4kkhPO4KjOMYq+gVZJLivZFFld
- 11a36OM2x6Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,394,1580803200"; 
-   d="scan'208";a="454679512"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Apr 2020 03:01:41 -0700
-Date:   Fri, 17 Apr 2020 05:52:02 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
-        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "eauger@redhat.com" <eauger@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
-        "Yang, Ziye" <ziye.yang@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
-        "felipe@nutanix.com" <felipe@nutanix.com>,
-        "Liu, Changpeng" <changpeng.liu@intel.com>,
-        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
-        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
-        "He, Shaopeng" <shaopeng.he@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eskultet@redhat.com" <eskultet@redhat.com>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        "dinechin@redhat.com" <dinechin@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>
-Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
- VFIO live migration
-Message-ID: <20200417095202.GD16688@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200413055201.27053-1-yan.y.zhao@intel.com>
- <20200417104450.2d2f2fa9.cohuck@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417104450.2d2f2fa9.cohuck@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726770AbgDQJx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgDQJx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:53:27 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A41C061A0C;
+        Fri, 17 Apr 2020 02:53:27 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id d27so2370298wra.1;
+        Fri, 17 Apr 2020 02:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0r2saJqXCfbhTP4YNp7fFMKDxQ438fDLZI9Z34Ilq2U=;
+        b=Yv4uMmyFS1AYBuxY/wPWl66psY1uTtQ7PBpwTlyzjel3ZPwyDVjyc1NoeeBP8oQ/jv
+         CncMDCwILuVwicSD5AYrodqwmkfHZWpqWPZYokMGslXNhoH2Xr0Ze0sa3LAYy57ySflt
+         gNE2Z8kkJljaxfdrNcQyBC7ei5lFNwWTY7F1LZy8F94s2imxbsrHBHbLVMzkb1gtjBQn
+         pYH5ZXp9buYabMAPZ6ATlxlbGf+EyfWc5i2JcuE+gbb/LUzydte2J9Br4GdUELbMtJG0
+         /u2qnX+DsKf71yzgoGSXfJIUoM86trgM4nSlly6e6pWH5TDUbZx229x0g4JeWx1gPebK
+         DWrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0r2saJqXCfbhTP4YNp7fFMKDxQ438fDLZI9Z34Ilq2U=;
+        b=ADtRTstjEgnQ/NAw8Ue90VL7VqgOGrBgRZHDzR07+O4xzEY20Q2vrbUiy1RbwTTo1u
+         iXInL+fVZYI3mLLvXlKkremplpSXKochAyrrtRPMZnVtPNEtQX/lXZrG7kVGCuhhTLr3
+         vhqM+p1bTYPgnz8Ime1DkNRUxNHiFy27xgH65WpjCJR4G/kS/+U37afwVSwKkC2KvZL1
+         VebM19F3SC5uTThOcyQGlOhJ4mc5ees06nOVcH05H74epIazPbsK39r1EOyPAyGjdM+l
+         T10lKiTRbdd+FxvGAzwM0c7eR2MfWzNf1va5JOR7ugOeapwQtXTkmj0ljU6cCXoahrX6
+         SjcA==
+X-Gm-Message-State: AGi0PuYnLzsEamnq15G/siUJB8PeuWzSRU4EoYn8GkCEuO0jZRbrIn66
+        Rr+Xbe1Yq+x0vSeCOJ9jXJ0=
+X-Google-Smtp-Source: APiQypLHJppZWXPZsbK6/NbMCBEVGzrs11Z8FU9Sx8T3ots1IO8WI4JCddoNVpuvhl8EGAJK82CHuQ==
+X-Received: by 2002:a5d:4283:: with SMTP id k3mr2852343wrq.238.1587117205930;
+        Fri, 17 Apr 2020 02:53:25 -0700 (PDT)
+Received: from localhost.localdomain (185.239.71.98.16clouds.com. [185.239.71.98])
+        by smtp.gmail.com with ESMTPSA id g69sm1491441wmg.17.2020.04.17.02.53.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 02:53:25 -0700 (PDT)
+From:   Xiaolong Huang <butterflyhuangxx@gmail.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, tglx@linutronix.de,
+        mpe@ellerman.id.au, allison@lohutok.net
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaolong Huang <butterflyhuangxx@gmail.com>
+Subject: [PATCH] media: media/pci: prevent memory leak in bttv_probe
+Date:   Fri, 17 Apr 2020 17:52:30 +0800
+Message-Id: <20200417095230.11708-1-butterflyhuangxx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
-> On Mon, 13 Apr 2020 01:52:01 -0400
-> Yan Zhao <yan.y.zhao@intel.com> wrote:
-> 
-> > This patchset introduces a migration_version attribute under sysfs of VFIO
-> > Mediated devices.
-> > 
-> > This migration_version attribute is used to check migration compatibility
-> > between two mdev devices.
-> > 
-> > Currently, it has two locations:
-> > (1) under mdev_type node,
-> >     which can be used even before device creation, but only for mdev
-> >     devices of the same mdev type.
-> > (2) under mdev device node,
-> >     which can only be used after the mdev devices are created, but the src
-> >     and target mdev devices are not necessarily be of the same mdev type
-> > (The second location is newly added in v5, in order to keep consistent
-> > with the migration_version node for migratable pass-though devices)
-> 
-> What is the relationship between those two attributes?
-> 
-(1) is for mdev devices specifically, and (2) is provided to keep the same
-sysfs interface as with non-mdev cases. so (2) is for both mdev devices and
-non-mdev devices.
+In bttv_probe if some functions such as pci_enable_device,
+pci_set_dma_mask and request_mem_region fails the allocated
+ memory for btv should be released.
 
-in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
-is binding to vfio-pci, but is able to register migration region and do
-migration transactions from a vendor provided affiliate driver),
-the vendor driver would export (2) directly, under device node.
-It is not able to provide (1) as there're no mdev devices involved.
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+---
+ drivers/media/pci/bt8xx/bttv-driver.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-> Is existence (and compatibility) of (1) a pre-req for possible
-> existence (and compatibility) of (2)?
->
-no. (2) does not reply on (1).
+diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
+index 9144f795fb93..b721720f9845 100644
+--- a/drivers/media/pci/bt8xx/bttv-driver.c
++++ b/drivers/media/pci/bt8xx/bttv-driver.c
+@@ -4013,11 +4013,13 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	btv->id  = dev->device;
+ 	if (pci_enable_device(dev)) {
+ 		pr_warn("%d: Can't enable device\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
+ 	}
+ 	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+ 		pr_warn("%d: No suitable DMA available\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
+ 	}
+ 	if (!request_mem_region(pci_resource_start(dev,0),
+ 				pci_resource_len(dev,0),
+@@ -4025,7 +4027,8 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 		pr_warn("%d: can't request iomem (0x%llx)\n",
+ 			btv->c.nr,
+ 			(unsigned long long)pci_resource_start(dev, 0));
+-		return -EBUSY;
++		result = -EBUSY;
++		goto free_mem;
+ 	}
+ 	pci_set_master(dev);
+ 	pci_set_command(dev);
+@@ -4211,6 +4214,10 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	release_mem_region(pci_resource_start(btv->c.pci,0),
+ 			   pci_resource_len(btv->c.pci,0));
+ 	pci_disable_device(btv->c.pci);
++
++free_mem:
++	bttvs[btv->c.nr] = NULL;
++	kfree(btv);
+ 	return result;
+ }
+ 
+-- 
+2.17.1
 
-> Does userspace need to check (1) or can it completely rely on (2), if
-> it so chooses?
->
-I think it can completely reply on (2) if compatibility check before
-mdev creation is not required.
-
-> If devices with a different mdev type are indeed compatible, it seems
-> userspace can only find out after the devices have actually been
-> created, as (1) does not apply?
-yes, I think so. 
-
-> One of my worries is that the existence of an attribute with the same
-> name in two similar locations might lead to confusion. But maybe it
-> isn't a problem.
->
-Yes, I have the same feeling. but as (2) is for sysfs interface
-consistency, to make it transparent to userspace tools like libvirt,
-I guess the same name is necessary?
-
-Thanks
-Yan
-> > 
-> > Patch 1 defines migration_version attribute for the first location in
-> > Documentation/vfio-mediated-device.txt
-> > 
-> > Patch 2 uses GVT as an example for patch 1 to show how to expose
-> > migration_version attribute and check migration compatibility in vendor
-> > driver.
-> > 
-> > Patch 3 defines migration_version attribute for the second location in
-> > Documentation/vfio-mediated-device.txt
-> > 
-> > Patch 4 uses GVT as an example for patch 3 to show how to expose
-> > migration_version attribute and check migration compatibility in vendor
-> > driver.
-> > 
-> > (The previous "Reviewed-by" and "Acked-by" for patch 1 and patch 2 are
-> > kept in v5, as there are only small changes to commit messages of the two
-> > patches.)
-> > 
-> > v5:
-> > added patch 2 and 4 for mdev device part of migration_version attribute.
-> > 
-> > v4:
-> > 1. fixed indentation/spell errors, reworded several error messages
-> > 2. added a missing memory free for error handling in patch 2
-> > 
-> > v3:
-> > 1. renamed version to migration_version
-> > 2. let errno to be freely defined by vendor driver
-> > 3. let checking mdev_type be prerequisite of migration compatibility check
-> > 4. reworded most part of patch 1
-> > 5. print detailed error log in patch 2 and generate migration_version
-> > string at init time
-> > 
-> > v2:
-> > 1. renamed patched 1
-> > 2. made definition of device version string completely private to vendor
-> > driver
-> > 3. reverted changes to sample mdev drivers
-> > 4. described intent and usage of version attribute more clearly.
-> > 
-> > 
-> > Yan Zhao (4):
-> >   vfio/mdev: add migration_version attribute for mdev (under mdev_type
-> >     node)
-> >   drm/i915/gvt: export migration_version to mdev sysfs (under mdev_type
-> >     node)
-> >   vfio/mdev: add migration_version attribute for mdev (under mdev device
-> >     node)
-> >   drm/i915/gvt: export migration_version to mdev sysfs (under mdev
-> >     device node)
-> > 
-> >  .../driver-api/vfio-mediated-device.rst       | 183 ++++++++++++++++++
-> >  drivers/gpu/drm/i915/gvt/Makefile             |   2 +-
-> >  drivers/gpu/drm/i915/gvt/gvt.c                |  39 ++++
-> >  drivers/gpu/drm/i915/gvt/gvt.h                |   7 +
-> >  drivers/gpu/drm/i915/gvt/kvmgt.c              |  55 ++++++
-> >  drivers/gpu/drm/i915/gvt/migration_version.c  | 170 ++++++++++++++++
-> >  drivers/gpu/drm/i915/gvt/vgpu.c               |  13 +-
-> >  7 files changed, 466 insertions(+), 3 deletions(-)
-> >  create mode 100644 drivers/gpu/drm/i915/gvt/migration_version.c
-> > 
-> 
