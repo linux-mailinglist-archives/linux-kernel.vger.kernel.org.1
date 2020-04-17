@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAD31ADA36
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525541ADA45
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730437AbgDQJja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:39:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:48898 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730318AbgDQJj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:39:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60F2F30E;
-        Fri, 17 Apr 2020 02:39:28 -0700 (PDT)
-Received: from [10.37.12.128] (unknown [10.37.12.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D2C23F73D;
-        Fri, 17 Apr 2020 02:39:26 -0700 (PDT)
-Subject: Re: [PATCH 3/8] arm64: cpufeature: Add CPU capability for AArch32 EL1
- support
-To:     maz@kernel.org
-Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
-        dianders@chromium.org, kernel-team@android.com
-References: <20200414213114.2378-1-will@kernel.org>
- <20200414213114.2378-4-will@kernel.org>
- <a83a19eb-9051-0a43-0bac-353f67d93d79@arm.com>
- <20200415101444.GC12621@willie-the-truck>
- <7978a5a9-463e-5e96-7ea9-d8472b7b051c@arm.com> <20200415142237.651114f7@why>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <1ffdf91a-e418-61ec-1056-756e1a81f4a6@arm.com>
-Date:   Fri, 17 Apr 2020 10:44:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726542AbgDQJoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:44:24 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16324 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726093AbgDQJoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:44:24 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e997a6a0000>; Fri, 17 Apr 2020 02:44:10 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 17 Apr 2020 02:44:23 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 17 Apr 2020 02:44:23 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
+ 2020 09:44:23 +0000
+Received: from [10.26.73.163] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
+ 2020 09:44:20 +0000
+Subject: Re: [PATCH 4.19 000/146] 4.19.116-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200416131242.353444678@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <dd2d01c9-307c-bde3-db0d-2996ee967839@nvidia.com>
+Date:   Fri, 17 Apr 2020 10:44:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200415142237.651114f7@why>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200416131242.353444678@linuxfoundation.org>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587116650; bh=sdF1Jr97ghKX8Fa7nRt6yurUaz4tfBGTT3ukp2rJUE8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=i4VVOzyhMlzGAWyim8N9ToWegiIf9PGydswD3oOYdLZhmqywgnp6M1GUx+4jr3a8s
+         AYJtbqV0CyplgGudPssJt4S4ivByNd5mq0EkAsP0oQOr71R6x6/VtHmW7kZDIkLfGr
+         1gbsP5VkasbzmEqrFQs+jeZwXdJlyUYnhLN4aU9kSGXQbVk+oSwTZtF2LRF5Oa3qe1
+         /Ygx1fsFVea+Q9d0F4iQMtcwPuaQw+W6xaN2zttk5ZdI3AcryP3MuJ7Gr1bvgOxf7B
+         7d8JJgq95hsxT5eGOk+xe5Pu0+3YdmiGys9THpTTo1DuiMI/0nTnV6W86UTDZ1aOgb
+         /GuLDxN3yqabg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/15/2020 02:22 PM, Marc Zyngier wrote:
-> On Wed, 15 Apr 2020 14:15:51 +0100
-> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> 
->> On 04/15/2020 11:14 AM, Will Deacon wrote:
->>> On Wed, Apr 15, 2020 at 11:13:54AM +0100, Suzuki K Poulose wrote:
->>>> On 04/14/2020 10:31 PM, Will Deacon wrote:
->>>>> Although we emit a "SANITY CHECK" warning and taint the kernel if we
->>>>> detect a CPU mismatch for AArch32 support at EL1, we still online the
->>>>> CPU with disastrous consequences for any running 32-bit VMs.
->>>>>
->>>>> Introduce a capability for AArch32 support at EL1 so that late onlining
->>>>> of incompatible CPUs is forbidden.
->>>>>
->>>>> Signed-off-by: Will Deacon <will@kernel.org>
->>>>
->>>> One of the other important missing sanity check for KVM is the VMID width
->>>> check. I will code something up.
->>>
->>> Cheers! Do we handle things like the IPA size already?
->>
->> Good point. No, we don't. I will include this too.
-> 
-> There is also the question of the ARMv8.5-GTG extension. I have a patch
-> that treats it as non-strict, but that approach would fail with KVM if
-> we online a late CPU without support for the right page size at S2.
 
-Good point. Again this can be added to the list of checks performed on
-the hot-plugged CPUs along with IPA, VMID width.
+On 16/04/2020 14:22, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.116 release.
+> There are 146 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 18 Apr 2020 13:11:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.116-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+
+All tests are passing for Tegra ...
+
+Test results for stable-v4.19:
+    11 builds:	11 pass, 0 fail
+    22 boots:	22 pass, 0 fail
+    32 tests:	32 pass, 0 fail
+
+Linux version:	4.19.116-rc1-g287f80e07bbc
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra30-cardhu-a04
 
 Cheers
-Suzuki
+Jon
 
+-- 
+nvpublic
