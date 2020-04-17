@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72621AE873
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 01:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B551AE877
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 01:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgDQXA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 19:00:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42562 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726868AbgDQXAz (ORCPT
+        id S1727901AbgDQXCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 19:02:17 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:41828 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgDQXCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 19:00:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587164454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7KGdTF+NLD8Xhkwl5nwHw+l3VQ9HqFkDHm1TE3ZyggA=;
-        b=eNBLzQuU8Ikz3QWGUauuojkNSu+inZ1bXJLGAN7PMyVV/7M722jq5Jt3yw1T2rVWjgA0du
-        y3LG51hmWvrQCuDjNyXLGsOeJI3owsZtG6A6ymqm98MzaLTWHzJDMUhE3v6vAFXUmSkgDk
-        4gAP2LWzmSwEQOn73RIHnvFjsQ9P7xk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-Z6jo86v3Ng6PycfQ4J7_1g-1; Fri, 17 Apr 2020 19:00:50 -0400
-X-MC-Unique: Z6jo86v3Ng6PycfQ4J7_1g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8094BDB60;
-        Fri, 17 Apr 2020 23:00:48 +0000 (UTC)
-Received: from elisabeth (unknown [10.36.110.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03C479E0D4;
-        Fri, 17 Apr 2020 23:00:43 +0000 (UTC)
-Date:   Sat, 18 Apr 2020 01:00:38 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        syzbot <syzbot+33e06702fd6cffc24c40@syzkaller.appspotmail.com>,
-        coreteam@netfilter.org, davem@davemloft.net, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in nf_nat_unregister_fn
-Message-ID: <20200418010038.57d5e5cf@elisabeth>
-In-Reply-To: <20200417213348.GC32392@breakpoint.cc>
-References: <000000000000490f1005a375ed34@google.com>
- <20200417094250.21872-1-hdanton@sina.com>
- <20200417213348.GC32392@breakpoint.cc>
+        Fri, 17 Apr 2020 19:02:17 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jPZzx-0007Uz-49; Fri, 17 Apr 2020 18:02:14 -0500
+Message-ID: <1f05e37b5aa52aad44d4310edfdc6b36894cb964.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     christophe.leroy@c-s.fr, kernel@vivo.com, robh@kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Fri, 17 Apr 2020 18:02:12 -0500
+In-Reply-To: <20200417172130.14287-1-wenhu.wang@vivo.com>
+References: <20200417172130.14287-1-wenhu.wang@vivo.com>
 Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, christophe.leroy@c-s.fr, kernel@vivo.com, robh@kernel.org, mpe@ellerman.id.au
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH] drivers: uio: new driver uio_fsl_85xx_cache_sram
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hillf,
+On Fri, 2020-04-17 at 10:21 -0700, Wang Wenhu wrote:
+> Implements a new uio driver for freescale 85xx platforms to access
+> the Cache-Sram form user level. It is extremely helpful for the user
+> space applications that require high performance memory accesses.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: Scott Wood <oss@buserror.net>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> ---
+>  drivers/uio/Kconfig                   |   8 +
+>  drivers/uio/Makefile                  |   1 +
+>  drivers/uio/uio_fsl_85xx_cache_sram.c | 407 ++++++++++++++++++++++++++
+>  3 files changed, 416 insertions(+)
+>  create mode 100644 drivers/uio/uio_fsl_85xx_cache_sram.c
 
-On Fri, 17 Apr 2020 23:33:48 +0200
-Florian Westphal <fw@strlen.de> wrote:
+NACK, we don't need two copies of this code in the kernel.  Please just wait a
+bit and I'll send a patch to have the existing driver expose a dynamic
+allocation interface to userspace.
 
-> Hillf Danton <hdanton@sina.com> wrote:
-> > In case of failure to register NFPROTO_IPV4, unregister NFPROTO_IPV6
-> > instead of ops->pf (== NFPROTO_INET).
+-Scott
 
-Note that the patch you sent didn't reach any list you probably sent it
-to (netfilter-devel, netdev, lkml). I'm seeing it just because Florian
-answered.
-
-This is probably the same issue we had with your openvswitch patch last
-year. By the way, the IP address you used last time is now reported as
-being "blocked" by:
-
-	zen.spamhaus.org
-	pbl.spamhaus.org
-
-I guess vger might filter using Spamhaus lists (including their "PBL"),
-which won't let your email through if you're running a mail server with
-an dynamic IP address.
-
-I don't support this practice, but this might be the issue. You can
-quickly get an overview of blacklists your address might be on at e.g.:
-	http://www.anti-abuse.org/
-
--- 
-Stefano
 
