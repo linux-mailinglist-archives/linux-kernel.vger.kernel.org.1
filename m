@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3C31AE031
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2411AE038
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgDQOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S1728311AbgDQOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgDQOv4 (ORCPT
+        with ESMTP id S1728278AbgDQOwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:51:56 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C204EC061A0C;
-        Fri, 17 Apr 2020 07:51:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v8so5123620wma.0;
-        Fri, 17 Apr 2020 07:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=YW/m6LvUDm14fECG63jq0+bjFbSb+5TTFXaHDDYWM/I=;
-        b=oO/L3FvsHa0vf+P7DWAUzHQ73QNVuxOPnvkTd4rT9phupOkapPvk070rBoZgW+xy0D
-         bBraLamFCmnbcrAlrsiYyoRk5rmJWIOv+h2e2oMorq7g6AIw0S54ZrFGYkzkW/8ysGCR
-         467XRqy/nIN30SDMW5CFaebYQ3CZW3aFWT4U3yXgvtvF9ZAiMHwDHSfBNAKbHdwPfqKn
-         mYQxjNxlIlIg8bZGI9+qDFgv4TImLGRZ01pkiG82Jzd6zxQwXlAiiGvMNmmoyHe1kIQx
-         yY7bBcV1S6viIAdabkna4ltna5nQvqL/lIm9z6oh4V9h4TR1oxJV2GRNcwIWeT1yYWXo
-         Jl8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YW/m6LvUDm14fECG63jq0+bjFbSb+5TTFXaHDDYWM/I=;
-        b=U6zANE1LVAItm4jndZPzbd9JlqfTiPmzJCDS2jNNjfRtEfe3EoSgUz5EFYtIoYRy7m
-         PPJMPjxvBZdVg2TEbkZdQgM9/phVbZG+OL7N7nAQhFfkaAUIVBr4eA/u9gLAMugQSdMw
-         jIxgOL+MRyH6XsmeT9h7OCEjb2NRP57PA9TSvWY79JezZY9qBbyMgtzrV4MpcAVC8HIE
-         RwO0DQqLbd51dEvrB/I0+r1eOUmUjUbSzVETvJ/a+a1pzsDLkSlGwqKDBC4++lmplzpb
-         hjP0kOaO9bZqzPN4Dua7E7AK0IlJNWJmNd3u3RkES2pyhrmxW3+A/hdr8RgrnirYhrcY
-         nEHQ==
-X-Gm-Message-State: AGi0PuYXEIk1XCNSwvqenP9yOPrCTItRb9TYpX3y+M9iSyDRnjqOVuMk
-        kfQQIlCCZ4gGZy9kcAYPzxoJ8yhx
-X-Google-Smtp-Source: APiQypKAbsG2v1WQaLKRNFkDILulw/SdGDc5V6hyWNsZ+JF7kgVocqLc55OPtZ0/P5FUUcIX5qPzzg==
-X-Received: by 2002:a7b:cb59:: with SMTP id v25mr3769643wmj.139.1587135114085;
-        Fri, 17 Apr 2020 07:51:54 -0700 (PDT)
-Received: from [192.168.0.104] (p5B3F7443.dip0.t-ipconnect.de. [91.63.116.67])
-        by smtp.gmail.com with ESMTPSA id i25sm8298407wml.43.2020.04.17.07.51.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 07:51:53 -0700 (PDT)
-Subject: Re: [PATCH v10 3/6] iio: adc: mp2629: Add support for mp2629 ADC
- driver
-To:     Randy Dunlap <rdunlap@infradead.org>, lee.jones@linaro.org,
-        andy.shevchenko@gmail.com, robh+dt@kernel.org, jic23@kernel.org,
-        knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net, sre@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20200417085003.6124-1-sravanhome@gmail.com>
- <20200417085003.6124-4-sravanhome@gmail.com>
- <a8da9a3d-93a5-b926-b8c0-84138b59ad4f@infradead.org>
-From:   saravanan sekar <sravanhome@gmail.com>
-Message-ID: <2b4c7de2-aa85-65aa-be5e-3daed689c44d@gmail.com>
-Date:   Fri, 17 Apr 2020 16:51:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 10:52:06 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17067C061A0C;
+        Fri, 17 Apr 2020 07:52:06 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jPSLa-0001RS-72; Fri, 17 Apr 2020 16:52:02 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id ACDB31C0072;
+        Fri, 17 Apr 2020 16:52:01 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 14:52:01 -0000
+From:   "tip-bot2 for Reinette Chatre" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Fix invalid attempt at removing the
+ default resource group
+Cc:     Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3C884cbe1773496b5dbec1b6bd11bb50cffa83603d=2E15844?=
+ =?utf-8?q?61853=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+References: =?utf-8?q?=3C884cbe1773496b5dbec1b6bd11bb50cffa83603d=2E158446?=
+ =?utf-8?q?1853=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
 MIME-Version: 1.0
-In-Reply-To: <a8da9a3d-93a5-b926-b8c0-84138b59ad4f@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Message-ID: <158713512124.28353.17303343964081994383.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+The following commit has been merged into the x86/urgent branch of tip:
 
-On 17/04/20 4:35 pm, Randy Dunlap wrote:
-> Hi--
->
-> On 4/17/20 1:50 AM, Saravanan Sekar wrote:
->> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
->> index 82e33082958c..ef0c0cd31855 100644
->> --- a/drivers/iio/adc/Kconfig
->> +++ b/drivers/iio/adc/Kconfig
->> @@ -680,6 +680,16 @@ config MESON_SARADC
->>   	  To compile this driver as a module, choose M here: the
->>   	  module will be called meson_saradc.
->>   
->> +config MP2629_ADC
->> +	tristate "Monolithic MP2629 ADC driver"
->> +	depends on MFD_MP2629
-> 	depends on I2C
-> ?
+Commit-ID:     b0151da52a6d4f3951ea24c083e7a95977621436
+Gitweb:        https://git.kernel.org/tip/b0151da52a6d4f3951ea24c083e7a95977621436
+Author:        Reinette Chatre <reinette.chatre@intel.com>
+AuthorDate:    Tue, 17 Mar 2020 09:26:45 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 17 Apr 2020 16:26:23 +02:00
 
-Made "depends on I2C" in MFD_MP2629, hope not needed becomes redundant here
+x86/resctrl: Fix invalid attempt at removing the default resource group
 
-Thanks,
-Saravanan
+The default resource group ("rdtgroup_default") is associated with the
+root of the resctrl filesystem and should never be removed. New resource
+groups can be created as subdirectories of the resctrl filesystem and
+they can be removed from user space.
 
->> +	help
->> +	  Say yes to have support for battery charger IC MP2629 ADC device
->> +	  accessed over I2C.
->> +
->> +	  This driver provides ADC conversion of system, input power supply
->> +	  and battery voltage & current information.
->> +
->>   config NAU7802
->>   	tristate "Nuvoton NAU7802 ADC driver"
->>   	depends on I2C
-> thanks.
+There exists a safeguard in the directory removal code
+(rdtgroup_rmdir()) that ensures that only subdirectories can be removed
+by testing that the directory to be removed has to be a child of the
+root directory.
+
+A possible deadlock was recently fixed with
+
+  334b0f4e9b1b ("x86/resctrl: Fix a deadlock due to inaccurate reference").
+
+This fix involved associating the private data of the "mon_groups"
+and "mon_data" directories to the resource group to which they belong
+instead of NULL as before. A consequence of this change was that
+the original safeguard code preventing removal of "mon_groups" and
+"mon_data" found in the root directory failed resulting in attempts to
+remove the default resource group that ends in a BUG:
+
+  kernel BUG at mm/slub.c:3969!
+  invalid opcode: 0000 [#1] SMP PTI
+
+  Call Trace:
+  rdtgroup_rmdir+0x16b/0x2c0
+  kernfs_iop_rmdir+0x5c/0x90
+  vfs_rmdir+0x7a/0x160
+  do_rmdir+0x17d/0x1e0
+  do_syscall_64+0x55/0x1d0
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by improving the directory removal safeguard to ensure that
+subdirectories of the resctrl root directory can only be removed if they
+are a child of the resctrl filesystem's root _and_ not associated with
+the default resource group.
+
+Fixes: 334b0f4e9b1b ("x86/resctrl: Fix a deadlock due to inaccurate reference")
+Reported-by: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/884cbe1773496b5dbec1b6bd11bb50cffa83603d.1584461853.git.reinette.chatre@intel.com
+---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 064e9ef..9d4e73a 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3072,7 +3072,8 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
+ 	 * If the rdtgroup is a mon group and parent directory
+ 	 * is a valid "mon_groups" directory, remove the mon group.
+ 	 */
+-	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn) {
++	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn &&
++	    rdtgrp != &rdtgroup_default) {
+ 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP ||
+ 		    rdtgrp->mode == RDT_MODE_PSEUDO_LOCKED) {
+ 			ret = rdtgroup_ctrl_remove(kn, rdtgrp);
