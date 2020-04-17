@@ -2,170 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD61AE4B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D336F1AE4C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730824AbgDQS13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:27:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38406 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730407AbgDQS12 (ORCPT
+        id S1728507AbgDQSaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:30:03 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18512 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727840AbgDQSaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:27:28 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HI3e5H132186;
-        Fri, 17 Apr 2020 14:27:28 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ffwsba02-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 14:27:28 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03HI4BFj134177;
-        Fri, 17 Apr 2020 14:27:27 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ffwsb9yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 14:27:27 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03HIQdOs032697;
-        Fri, 17 Apr 2020 18:27:26 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01dal.us.ibm.com with ESMTP id 30b5h7sad2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 18:27:26 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03HIRQ3E52167122
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 18:27:26 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F7E7AE05F;
-        Fri, 17 Apr 2020 18:27:26 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB9DCAE064;
-        Fri, 17 Apr 2020 18:27:25 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.151.210])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Apr 2020 18:27:25 +0000 (GMT)
-From:   Jared Rossi <jrossi@linux.ibm.com>
-To:     Eric Farman <farman@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] vfio-ccw: Enable transparent CCW IPL from DASD
-Date:   Fri, 17 Apr 2020 14:29:39 -0400
-Message-Id: <20200417182939.11460-2-jrossi@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200417182939.11460-1-jrossi@linux.ibm.com>
-References: <20200417182939.11460-1-jrossi@linux.ibm.com>
+        Fri, 17 Apr 2020 14:30:02 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e99f56e0001>; Fri, 17 Apr 2020 11:29:02 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 17 Apr 2020 11:30:02 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 17 Apr 2020 11:30:02 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
+ 2020 18:30:02 +0000
+Received: from [10.2.171.241] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
+ 2020 18:30:00 +0000
+Subject: Re: [PATCH v2 1/2] sdhci: tegra: Implement Tegra specific set_timeout
+ callback
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "(Exiting) Baolin Wang" <baolin.wang@linaro.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        "Aniruddha Tvs Rao" <anrao@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        <lkft-triage@lists.linaro.org>,
+        linux- stable <stable@vger.kernel.org>
+References: <1583886030-11339-1-git-send-email-skomatineni@nvidia.com>
+ <CA+G9fYvreAv5HmZg0O4VvLvf_PYSvzD1rp08XONNQGExctgQ0Q@mail.gmail.com>
+ <CAPDyKFpZEiqTdD6O-y6Sw7ifXF__MHAv0zKT=RFKs+Fmvr-K_Q@mail.gmail.com>
+ <753ec108-858c-660e-af0a-f57922134609@nvidia.com>
+ <512441d1-a9ba-912f-ed2e-46edad22278b@nvidia.com>
+ <CAPDyKFohGL-401DVb1NYf3YUwbokcDR5++8t5o+y+3yy5XbGyQ@mail.gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <13223820-12aa-6ed6-45e1-e7a901155d38@nvidia.com>
+Date:   Fri, 17 Apr 2020 11:29:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-17_08:2020-04-17,2020-04-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=2
- impostorscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 bulkscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170136
+In-Reply-To: <CAPDyKFohGL-401DVb1NYf3YUwbokcDR5++8t5o+y+3yy5XbGyQ@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587148142; bh=OHgh/M4k8j/xMO4UFbtY4yF+8SoYkg3ofzTWmXSe2xk=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=Vp63hBEtXY9UN245O7tUVQK+RS016qvlizEhnyCdcGlX4qe4hkkguBTbKwvA2ndW2
+         kVjEKUzb/ZWjyJYj/oR9t8sFPI3g0Jwho9pnKRmCBRWh6Qo0XgE6403jcJCLVBbwGH
+         1V3IP3DuHw7FYDSrz0h6zk0zT9Rv6DyT1ijZ6VKkxbLssWC+8GeGNZsFt29R/Tefi8
+         K4sxLHnOl1y8ecQpfMNcuTMFdIkWSvSIdi38xXHu2uNDpfi77rC5q10HuSw0hStjAU
+         QijjYMtsYe7tR9OBd8L8WYdAfsQL3ZKbgoXy6Ht8WWrLf9f51TM1U5QaRJhwrEuH5l
+         geSW2OD5Rscng==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the explicit prefetch check when using vfio-ccw devices.
-This check is not needed as all Linux channel programs are intended
-to use prefetch and will be executed in the same way regardless.
 
-Signed-off-by: Jared Rossi <jrossi@linux.ibm.com>
----
- drivers/s390/cio/vfio_ccw_cp.c  | 16 ++++------------
- drivers/s390/cio/vfio_ccw_cp.h  |  2 +-
- drivers/s390/cio/vfio_ccw_fsm.c |  6 +++---
- 3 files changed, 8 insertions(+), 16 deletions(-)
+On 4/17/20 1:04 AM, Ulf Hansson wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Thu, 16 Apr 2020 at 21:39, Sowjanya Komatineni
+> <skomatineni@nvidia.com> wrote:
+>>
+>> On 4/16/20 9:29 AM, Sowjanya Komatineni wrote:
+>>> On 4/16/20 3:59 AM, Ulf Hansson wrote:
+>>>> External email: Use caution opening links or attachments
+>>>>
+>>>>
+>>>> On Wed, 15 Apr 2020 at 19:55, Naresh Kamboju
+>>>> <naresh.kamboju@linaro.org> wrote:
+>>>>> On Fri, 13 Mar 2020 at 06:41, Sowjanya Komatineni
+>>>>> <skomatineni@nvidia.com> wrote:
+>>>>>> Tegra host supports HW busy detection and timeouts based on the
+>>>>>> count programmed in SDHCI_TIMEOUT_CONTROL register and max busy
+>>>>>> timeout it supports is 11s in finite busy wait mode.
+>>>>>>
+>>>>>> Some operations like SLEEP_AWAKE, ERASE and flush cache through
+>>>>>> SWITCH commands take longer than 11s and Tegra host supports
+>>>>>> infinite HW busy wait mode where HW waits forever till the card
+>>>>>> is busy without HW timeout.
+>>>>>>
+>>>>>> This patch implements Tegra specific set_timeout sdhci_ops to allow
+>>>>>> switching between finite and infinite HW busy detection wait modes
+>>>>>> based on the device command expected operation time.
+>>>>>>
+>>>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>>>>> ---
+>>>>>>    drivers/mmc/host/sdhci-tegra.c | 31 +++++++++++++++++++++++++++++=
+++
+>>>>>>    1 file changed, 31 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/mmc/host/sdhci-tegra.c
+>>>>>> b/drivers/mmc/host/sdhci-tegra.c
+>>>>>> index a25c3a4..fa8f6a4 100644
+>>>>>> --- a/drivers/mmc/host/sdhci-tegra.c
+>>>>>> +++ b/drivers/mmc/host/sdhci-tegra.c
+>>>>>> @@ -45,6 +45,7 @@
+>>>>>>    #define SDHCI_TEGRA_CAP_OVERRIDES_DQS_TRIM_SHIFT       8
+>>>>>>
+>>>>>>    #define SDHCI_TEGRA_VENDOR_MISC_CTRL 0x120
+>>>>>> +#define SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT BIT(0)
+>>>>>>    #define SDHCI_MISC_CTRL_ENABLE_SDR104                  0x8
+>>>>>>    #define SDHCI_MISC_CTRL_ENABLE_SDR50 0x10
+>>>>>>    #define SDHCI_MISC_CTRL_ENABLE_SDHCI_SPEC_300 0x20
+>>>>>> @@ -1227,6 +1228,34 @@ static u32 sdhci_tegra_cqhci_irq(struct
+>>>>>> sdhci_host *host, u32 intmask)
+>>>>>>           return 0;
+>>>>>>    }
+>>>>>>
+>>>>>> +static void tegra_sdhci_set_timeout(struct sdhci_host *host,
+>>>>>> +                                   struct mmc_command *cmd)
+>>>>>> +{
+>>>>>> +       u32 val;
+>>>>>> +
+>>>>>> +       /*
+>>>>>> +        * HW busy detection timeout is based on programmed data
+>>>>>> timeout
+>>>>>> +        * counter and maximum supported timeout is 11s which may
+>>>>>> not be
+>>>>>> +        * enough for long operations like cache flush, sleep
+>>>>>> awake, erase.
+>>>>>> +        *
+>>>>>> +        * ERASE_TIMEOUT_LIMIT bit of VENDOR_MISC_CTRL register allo=
+ws
+>>>>>> +        * host controller to wait for busy state until the card is
+>>>>>> busy
+>>>>>> +        * without HW timeout.
+>>>>>> +        *
+>>>>>> +        * So, use infinite busy wait mode for operations that may
+>>>>>> take
+>>>>>> +        * more than maximum HW busy timeout of 11s otherwise use
+>>>>>> finite
+>>>>>> +        * busy wait mode.
+>>>>>> +        */
+>>>>>> +       val =3D sdhci_readl(host, SDHCI_TEGRA_VENDOR_MISC_CTRL);
+>>>>>> +       if (cmd && cmd->busy_timeout >=3D 11 * HZ)
+>>>>>> +               val |=3D SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
+>>>>>> +       else
+>>>>>> +               val &=3D ~SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
+>>>>>> +       sdhci_writel(host, val, SDHCI_TEGRA_VENDOR_MISC_CTRL);
+>>>>>> +
+>>>>>> +       __sdhci_set_timeout(host, cmd);
+>>>>> kernel build on arm and arm64 architecture failed on stable-rc 4.19
+>>>>> (arm), 5.4 (arm64) and 5.5 (arm64)
+>>>>>
+>>>>> drivers/mmc/host/sdhci-tegra.c: In function 'tegra_sdhci_set_timeout'=
+:
+>>>>> drivers/mmc/host/sdhci-tegra.c:1256:2: error: implicit declaration of
+>>>>> function '__sdhci_set_timeout'; did you mean
+>>>>> 'tegra_sdhci_set_timeout'? [-Werror=3Dimplicit-function-declaration]
+>>>>>     __sdhci_set_timeout(host, cmd);
+>>>>>     ^~~~~~~~~~~~~~~~~~~
+>>>>>     tegra_sdhci_set_timeout
+>>>>>
+>>>>> Full build log,
+>>>>> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc=
+-5.5/DISTRO=3Dlkft,MACHINE=3Dam57xx-evm,label=3Ddocker-lkft/83/consoleText
+>>>>>
+>>>>> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc=
+-5.4/DISTRO=3Dlkft,MACHINE=3Djuno,label=3Ddocker-lkft/158/consoleText
+>>>>>
+>>>>> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc=
+-4.19/DISTRO=3Dlkft,MACHINE=3Dam57xx-evm,label=3Ddocker-lkft/511/consoleTex=
+t
+>>>>>
+>>>>>
+>>>>> - Naresh
+>>>> Thanks for reporting! What a mess.
+>>>>
+>>>> It turns out that the commit that was queued for stable that is
+>>>> causing the above errors, also requires another commit.
+>>>>
+>>>> The commit that was queued:
+>>>> 5e958e4aacf4 ("sdhci: tegra: Implement Tegra specific set_timeout
+>>>> callback")
+>>>>
+>>>> The additional commit needed (which was added in v5.6-rc1):
+>>>> 7d76ed77cfbd ("mmc: sdhci: Refactor sdhci_set_timeout()")
+>>>>
+>>>> However, the above commit needs a manual backport (quite trivial, but
+>>>> still) for the relevant stable kernels, to allow it to solve the build
+>>>> problems.
+>>>>
+>>>> Greg, Sasha - I suggest you to drop the offending commit from the
+>>>> stable kernels, for now. I think it's better to let Sowjanya deal with
+>>>> the backports, then send them in small series instead.
+>>>>
+>>>> Kind regards
+>>>> Uffe
+>>> Hi Ufee,
+>>>
+>>> Will back-porting below commit cause any issues to other vendors?
+>>>
+>>> 7d76ed77cfbd ("mmc: sdhci: Refactor sdhci_set_timeout()")
+>>>
+>> sdhci-tegra driver in 4.19 is using same sdhci_ops for Tegra114 and
+>> Tegra210 and separate sdhci_ops for T210 started from 4.20.
+>>
+>> 5e958e4aacf4 ("sdhci: tegra: Implement Tegra specific set_timeout callba=
+ck")
+>>
+>> So above commit can't be applied to 4.19. So probably a separate patch
+>> need to be created to apply for 4.19 and back port above commit along
+>> with its dependency commit (7d76ed77cfbd ("mmc: sdhci: Refactor
+>> sdhci_set_timeout()") for 5.4 and 5.4.
+> Alright, seems reasonable. Just keep me/Adrian on cc when/if you post
+> the patches so we can ack them.
+>
+> Kind regards
+> Uffe
 
-diff --git a/drivers/s390/cio/vfio_ccw_cp.c b/drivers/s390/cio/vfio_ccw_cp.c
-index 3645d1720c4b..5b47ecbb4baa 100644
---- a/drivers/s390/cio/vfio_ccw_cp.c
-+++ b/drivers/s390/cio/vfio_ccw_cp.c
-@@ -625,9 +625,8 @@ static int ccwchain_fetch_one(struct ccwchain *chain,
-  * the target channel program from @orb->cmd.iova to the new ccwchain(s).
-  *
-  * Limitations:
-- * 1. Supports only prefetch enabled mode.
-- * 2. Supports idal(c64) ccw chaining.
-- * 3. Supports 4k idaw.
-+ * 1. Supports idal(c64) ccw chaining.
-+ * 2. Supports 4k idaw.
-  *
-  * Returns:
-  *   %0 on success and a negative error value on failure.
-@@ -636,13 +635,6 @@ int cp_init(struct channel_program *cp, struct device *mdev, union orb *orb)
- {
- 	int ret;
- 
--	/*
--	 * XXX:
--	 * Only support prefetch enable mode now.
--	 */
--	if (!orb->cmd.pfch)
--		return -EOPNOTSUPP;
--
- 	INIT_LIST_HEAD(&cp->ccwchain_list);
- 	memcpy(&cp->orb, orb, sizeof(*orb));
- 	cp->mdev = mdev;
-@@ -690,7 +682,7 @@ void cp_free(struct channel_program *cp)
- }
- 
- /**
-- * cp_prefetch() - translate a guest physical address channel program to
-+ * cp_fetch() - translate a guest physical address channel program to
-  *                 a real-device runnable channel program.
-  * @cp: channel_program on which to perform the operation
-  *
-@@ -726,7 +718,7 @@ void cp_free(struct channel_program *cp)
-  * Returns:
-  *   %0 on success and a negative error value on failure.
-  */
--int cp_prefetch(struct channel_program *cp)
-+int cp_fetch(struct channel_program *cp)
- {
- 	struct ccwchain *chain;
- 	int len, idx, ret;
-diff --git a/drivers/s390/cio/vfio_ccw_cp.h b/drivers/s390/cio/vfio_ccw_cp.h
-index ba31240ce965..a226f6e99d04 100644
---- a/drivers/s390/cio/vfio_ccw_cp.h
-+++ b/drivers/s390/cio/vfio_ccw_cp.h
-@@ -45,7 +45,7 @@ struct channel_program {
- extern int cp_init(struct channel_program *cp, struct device *mdev,
- 		   union orb *orb);
- extern void cp_free(struct channel_program *cp);
--extern int cp_prefetch(struct channel_program *cp);
-+extern int cp_fetch(struct channel_program *cp);
- extern union orb *cp_get_orb(struct channel_program *cp, u32 intparm, u8 lpm);
- extern void cp_update_scsw(struct channel_program *cp, union scsw *scsw);
- extern bool cp_iova_pinned(struct channel_program *cp, u64 iova);
-diff --git a/drivers/s390/cio/vfio_ccw_fsm.c b/drivers/s390/cio/vfio_ccw_fsm.c
-index 23e61aa638e4..446f9186d070 100644
---- a/drivers/s390/cio/vfio_ccw_fsm.c
-+++ b/drivers/s390/cio/vfio_ccw_fsm.c
-@@ -274,14 +274,14 @@ static void fsm_io_request(struct vfio_ccw_private *private,
- 			goto err_out;
- 		}
- 
--		io_region->ret_code = cp_prefetch(&private->cp);
-+		io_region->ret_code = cp_fetch(&private->cp);
- 		if (io_region->ret_code) {
- 			VFIO_CCW_MSG_EVENT(2,
--					   "%pUl (%x.%x.%04x): cp_prefetch=%d\n",
-+					   "%pUl (%x.%x.%04x): cp_fetch=%d\n",
- 					   mdev_uuid(mdev), schid.cssid,
- 					   schid.ssid, schid.sch_no,
- 					   io_region->ret_code);
--			errstr = "cp prefetch";
-+			errstr = "cp fetch";
- 			cp_free(&private->cp);
- 			goto err_out;
- 		}
--- 
-2.17.0
+Sure, will send patches to backport both below changes to 4.19
+
+5e958e4aacf4 ("sdhci: tegra: Implement Tegra specific set_timeout
+callback")
+
+7d76ed77cfbd ("mmc: sdhci: Refactor sdhci_set_timeout()")
+
+But on 5.5 and on 5.4.33,=C2=A0 patch "mmc: sdhci: Refactor=20
+sdhci_set_timeout() already committed but not on 5.4.32 and prior.
+
+So, not sure why kbuild reported error on 5.4 and 5.5 with=20
+__sdhci_set_timeout when this patch is already committed on 5.4.33=20
+(26711cc7e064) and 5.5.18 (71bab39fa67d)
+
+Can you please help clarify this?
+
+
+drivers/mmc/host/sdhci-tegra.c: In function 'tegra_sdhci_set_timeout':
+drivers/mmc/host/sdhci-tegra.c:1256:2: error: implicit declaration of
+function '__sdhci_set_timeout'; did you mean
+'tegra_sdhci_set_timeout'? [-Werror=3Dimplicit-function-declaration]
+    __sdhci_set_timeout(host, cmd);
+
+
+Thanks
+
+Sowjanya
+
 
