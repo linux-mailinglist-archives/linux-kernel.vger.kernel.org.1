@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71E21AD6BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE631AD6BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgDQHB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgDQHB0 (ORCPT
+        id S1728561AbgDQHBg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Apr 2020 03:01:36 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47570 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728098AbgDQHBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:01:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473FBC061A0C;
-        Fri, 17 Apr 2020 00:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-        From:Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=HVLDZVgokzWLzBs8K61qPV5biQljs7Uy59BS0iqfE0Q=; b=YO7SX7phIzs9cV/Zpf/QAQy6HD
-        fB/L442Hz6q/J8L44pykzCYyA7ekbxWv6YGEzwv1vvxmAkWOpRUV5cnR74lIH//lNIR3dfwppS5T8
-        K69yNUkJC0S+pBqWd9pCx7p6+0IhyOVd0XMlnsHBOEoGc+4TKcstgQdqNGYN5pfawgc6VHWvq8umF
-        W1q7GrbvLSCBbX+SKWQ83NXeIJi1Ay1KmB6dA2+rnXTZjAEAxwbqAbwiBMXPd6qgpf9YyI/gIMlvG
-        wUEdnR9xsMm5TK6+mI20dAXjIdSz/GJmP+UstscLOfjgTO1hnC4AdcjFht8wwDfTa+NQKQ6RWS2m4
-        zM0ApeQQ==;
-Received: from ip5f5ad4d8.dynamic.kabel-deutschland.de ([95.90.212.216] helo=coco.lan)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPL05-000664-4K; Fri, 17 Apr 2020 07:01:21 +0000
-Date:   Fri, 17 Apr 2020 09:01:15 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
-Message-ID: <20200417090115.3cccc9bd@coco.lan>
-In-Reply-To: <7faaec92dc9b5870b33c6dbb440de0698b5a70e7.camel@collabora.com>
-References: <20200417102226.11d54815@canb.auug.org.au>
-        <7faaec92dc9b5870b33c6dbb440de0698b5a70e7.camel@collabora.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 17 Apr 2020 03:01:34 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03H6XwhH086697
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:01:33 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30f4uhc1dm-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:01:33 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <naveen.n.rao@linux.ibm.com>;
+        Fri, 17 Apr 2020 08:01:11 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 17 Apr 2020 08:01:07 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03H71QiW53149902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 07:01:26 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F69611C058;
+        Fri, 17 Apr 2020 07:01:26 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 866AF11C050;
+        Fri, 17 Apr 2020 07:01:25 +0000 (GMT)
+Received: from localhost (unknown [9.85.75.158])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 17 Apr 2020 07:01:25 +0000 (GMT)
+Date:   Fri, 17 Apr 2020 12:31:20 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: POWER9 crash due to STRICT_KERNEL_RWX (WAS: Re: Linux-next POWER9
+ NULL pointer NIP...)
+To:     Qian Cai <cai@lca.pw>, Michael Ellerman <mpe@ellerman.id.au>,
+        Russell Currey <ruscur@russell.cc>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <15AC5B0E-A221-4B8C-9039-FA96B8EF7C88@lca.pw>
+        <87eeszlb6u.fsf@mpe.ellerman.id.au>
+        <0675B22E-8F32-432C-9378-FDE159DD1729@lca.pw>
+        <20200407093054.3eb23e45@gandalf.local.home>
+        <EA9F9A54-87BC-477A-BE8A-7D53F80C5223@lca.pw>
+        <20200409101413.35d9c72d@gandalf.local.home>
+        <06A2EA93-B730-4DB1-819F-D27E7032F0B3@lca.pw>
+        <161662E3-5D9C-4C15-919C-CFEFE4CC35CB@lca.pw>
+        <69F0448F-CA5B-497D-B8AF-2848175B9477@lca.pw>
+In-Reply-To: <69F0448F-CA5B-497D-B8AF-2848175B9477@lca.pw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+x-cbid: 20041707-0012-0000-0000-000003A603D0
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041707-0013-0000-0000-000021E34692
+Message-Id: <1587106774.1oa2whm69m.naveen@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-17_01:2020-04-14,2020-04-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=936 adultscore=0 priorityscore=1501 clxscore=1011
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=2 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 17 Apr 2020 02:13:47 -0300
-Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+Hi Qian,
 
-> Hi Stephen,
+Qian Cai wrote:
+> OK, reverted the commit,
 > 
-> On Fri, 2020-04-17 at 10:22 +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the v4l-dvb tree, today's linux-next build (arm
-> > multi_v7_defconfig) produced this warning:
-> > 
-> > WARNING: unmet direct dependencies detected for MEDIA_CONTROLLER_REQUEST_API
-> >   Depends on [n]: MEDIA_SUPPORT [=m] && MEDIA_CONTROLLER [=y] && STAGING_MEDIA [=n]
-> >   Selected by [m]:
-> >   - VIDEO_VIVID [=m] && MEDIA_SUPPORT [=m] && MEDIA_TEST_SUPPORT [=y] && V4L_TEST_DRIVERS [=y] && VIDEO_DEV [=m] && VIDEO_V4L2 [=m] && !SPARC32 &&
-> > !SPARC64 && FB [=y] && HAS_DMA [=y]
-> >   
+> c55d7b5e6426 (“powerpc: Remove STRICT_KERNEL_RWX incompatibility with RELOCATABLE”)
 > 
-> Ugh, my bad. MEDIA_CONTROLLER_REQUEST_API can't
-> depend on staging, after this recently merged commit:
+> or set STRICT_KERNEL_RWX=n fixed the crash below and also mentioned in this thread,
 > 
-> "media: Kconfig: Don't expose the Request API option"
-> 
-> So, we should fix that with:
-> 
-> diff --git a/drivers/media/mc/Kconfig b/drivers/media/mc/Kconfig
-> index 7c9628f37196..4815b9dde9af 100644
-> --- a/drivers/media/mc/Kconfig
-> +++ b/drivers/media/mc/Kconfig
-> @@ -14,7 +14,7 @@ config MEDIA_CONTROLLER_DVB
->  
->  config MEDIA_CONTROLLER_REQUEST_API
->         bool
-> -       depends on MEDIA_CONTROLLER && STAGING_MEDIA
-> +       depends on MEDIA_CONTROLLER
->         help
->           DO NOT ENABLE THIS OPTION UNLESS YOU KNOW WHAT YOU'RE DOING.
->  
-> Mauro what do you think?
+> https://lore.kernel.org/lkml/15AC5B0E-A221-4B8C-9039-FA96B8EF7C88@lca.pw/
 
-Dropped the dependency and applied on media.
+Do you see any errors logged in dmesg when you see the crash?  
+STRICT_KERNEL_RWX changes how patch_instruction() works, so it would be 
+interesting to see if there are any ftrace-related errors thrown before 
+the crash.
 
-I also addressed the "select PCI" issue, with causes troubles on
-s390 random configs (due to HAS_PCI=n on s390).
 
-Thanks,
-Mauro
+- Naveen
+
