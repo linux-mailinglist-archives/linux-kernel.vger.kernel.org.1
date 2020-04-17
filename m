@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AA61AE05E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D931AE05A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgDQPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:02:09 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60752 "EHLO
+        id S1728387AbgDQPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:02:08 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58526 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728296AbgDQPCH (ORCPT
+        by vger.kernel.org with ESMTP id S1728271AbgDQPCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Apr 2020 11:02:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587135725;
+        s=mimecast20190719; t=1587135726;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TW9GKMvgpVoGQAKpbRkZDaLCYXUQd5fcsEo9OJKKyeU=;
-        b=fnZCObWNyvyiGtHg3PIgZC9u63sIVl66ZL979/XLeWhXcKgwgDxNOYwJ8fDiWZdu77Ml21
-        Lwig2H2cD0Rd77MjDUhiuYPV4aJL6M1HfAl67EedWjnzDFG6loNjsDQ1uyQDA0gbSDueFQ
-        2JpU9doDH18xlPEDxPi6X72H0zMjoZw=
+        bh=xefEX7Y1nMqJoMT6fqIG0MZlY8K0HkA37+fDXJufNeQ=;
+        b=UKoJNQCK8y6B2wvEuygRGp8cv3WloIoWCGmrhKU4BO6MSfumpwDqQ05zdU3d/kd00J3W0a
+        BgsCC8/lu/VGTrqxJK6etw+t3moM3WbdnHZ/v5QpeTLVFwjkT1CrsU342l7eg/OcghBgol
+        Wk3NOxwme9gh/iR1mUylfkGYV8aE82g=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-AaD_PUg0OJqBlHU0pUVQ0A-1; Fri, 17 Apr 2020 11:02:01 -0400
-X-MC-Unique: AaD_PUg0OJqBlHU0pUVQ0A-1
+ us-mta-469-rVvU9jVkNO2o7A1Qd4PeoQ-1; Fri, 17 Apr 2020 11:02:03 -0400
+X-MC-Unique: rVvU9jVkNO2o7A1Qd4PeoQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 100748018A1;
-        Fri, 17 Apr 2020 15:02:00 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 531888018A7;
+        Fri, 17 Apr 2020 15:02:02 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-107.ams2.redhat.com [10.36.114.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F16AE9F9B5;
-        Fri, 17 Apr 2020 15:01:57 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D3E59F9B5;
+        Fri, 17 Apr 2020 15:02:00 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linux-s390@vger.kernel.org,
@@ -42,11 +42,10 @@ Cc:     linux-mm@kvack.org, linux-s390@vger.kernel.org,
         Vasily Gorbik <gor@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Philipp Rudo <prudo@linux.ibm.com>,
-        Kirill Smelkov <kirr@nexedi.com>,
         Michael Holzheu <holzheu@linux.vnet.ibm.com>
-Subject: [PATCH RFC 1/2] s390/zcore: traverse resources instead of memblocks
-Date:   Fri, 17 Apr 2020 17:01:50 +0200
-Message-Id: <20200417150151.17239-2-david@redhat.com>
+Subject: [PATCH RFC 2/2] s390/mm: don't set ARCH_KEEP_MEMBLOCK
+Date:   Fri, 17 Apr 2020 17:01:51 +0200
+Message-Id: <20200417150151.17239-3-david@redhat.com>
 In-Reply-To: <20200417150151.17239-1-david@redhat.com>
 References: <20200417150151.17239-1-david@redhat.com>
 MIME-Version: 1.0
@@ -57,146 +56,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The zcore memmap basically contains the first level of all system RAM fro=
-m
-/proc/iomem. We want to disable CONFIG_ARCH_KEEP_MEMBLOCK (e.g., to not
-create memblocks for hotplugged/standby memory and save space), switch to
-traversing system ram resources instead. During early boot, we create
-resources for all early memblocks (including the crash kernel area). When
-adding standby memory, we currently create both, memblocks and resources.
+Commit 50be63450728 ("s390/mm: Convert bootmem to memblock") mentions
+	"The original bootmem allocator is getting replaced by memblock. To
+	cover the needs of the s390 kdump implementation the physical
+	memory list is used."
 
-Note: As we don't have memory hotplug after boot (standby memory is added
-via sclp during boot), we don't have to worry about races.
+zcore was converted to use resources instead of memblocks.
+memblock_discard() will *not* mess with "physmem", only with "memory" and
+"reserved" memblocks. So, that data will stay after early boot, to be
+used in arch/s390/kernel/crash_dump.c to create the ELF header from
+inside the 2nd (a.k.a. dumping) kernel.
 
-I am only able to test under KVM (where I hacked up zcore to still
-create the memmap file)
-
-root@vm0:~# cat /proc/iomem
-00000000-2fffffff : System RAM
-  10424000-10ec6fff : Kernel code
-  10ec7000-1139a0e3 : Kernel data
-  1177a000-11850fff : Kernel bss
-30000000-3fffffff : Crash kernel
-
-Result without this patch:
-root@vm0:~# cat /sys/kernel/debug/zcore/memmap
-0000000000000000 0000000040000000
-
-Result with this patch:
-root@vm0:~# cat /sys/kernel/debug/zcore/memmap
-0000000000000000 0000000030000000 0000000030000000 0000000010000000
-
-The difference is due to memblocks getting merged, resources (currently)
-not. So we might have some more entries, but they describe the same
-memory map.
+We no longer need ARCH_KEEP_MEMBLOCK.
 
 Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
 Cc: Vasily Gorbik <gor@linux.ibm.com>
 Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 Cc: Philipp Rudo <prudo@linux.ibm.com>
-Cc: Kirill Smelkov <kirr@nexedi.com>
 Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/s390/char/zcore.c | 61 ++++++++++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 13 deletions(-)
+ arch/s390/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/s390/char/zcore.c b/drivers/s390/char/zcore.c
-index 08f812475f5e..c40ac7d548d8 100644
---- a/drivers/s390/char/zcore.c
-+++ b/drivers/s390/char/zcore.c
-@@ -16,7 +16,7 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/debugfs.h>
--#include <linux/memblock.h>
-+#include <linux/ioport.h>
-=20
- #include <asm/asm-offsets.h>
- #include <asm/ipl.h>
-@@ -139,35 +139,70 @@ static void release_hsa(void)
- 	hsa_available =3D 0;
- }
-=20
-+struct zcore_memmap_info {
-+	char *buf;
-+	size_t length;
-+};
-+
- static ssize_t zcore_memmap_read(struct file *filp, char __user *buf,
- 				 size_t count, loff_t *ppos)
- {
--	return simple_read_from_buffer(buf, count, ppos, filp->private_data,
--				       memblock.memory.cnt * CHUNK_INFO_SIZE);
-+	struct zcore_memmap_info *info =3D filp->private_data;
-+
-+	return simple_read_from_buffer(buf, count, ppos, info->buf,
-+				       info->length);
-+}
-+
-+static int zcore_count_ram_resource(struct resource *res, void *arg)
-+{
-+	size_t *count =3D arg;
-+
-+	*count +=3D 1;
-+	return 0;
-+}
-+
-+static int zcore_process_ram_resource(struct resource *res, void *arg)
-+{
-+	char **buf =3D arg;
-+
-+	sprintf(*buf, "%016lx %016lx ", (unsigned long) res->start,
-+		(unsigned long) resource_size(res));
-+
-+	*buf +=3D CHUNK_INFO_SIZE;
-+	return 0;
- }
-=20
- static int zcore_memmap_open(struct inode *inode, struct file *filp)
- {
--	struct memblock_region *reg;
-+	struct zcore_memmap_info *info;
-+	size_t count =3D 0;
- 	char *buf;
--	int i =3D 0;
-=20
--	buf =3D kcalloc(memblock.memory.cnt, CHUNK_INFO_SIZE, GFP_KERNEL);
-+	walk_system_ram_res(0, ULONG_MAX, &count, zcore_count_ram_resource);
-+
-+	info =3D kmalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+	buf =3D kcalloc(count, CHUNK_INFO_SIZE, GFP_KERNEL);
- 	if (!buf) {
-+		kfree(info);
- 		return -ENOMEM;
- 	}
--	for_each_memblock(memory, reg) {
--		sprintf(buf + (i++ * CHUNK_INFO_SIZE), "%016llx %016llx ",
--			(unsigned long long) reg->base,
--			(unsigned long long) reg->size);
--	}
--	filp->private_data =3D buf;
-+	info->length =3D count * CHUNK_INFO_SIZE;
-+	info->buf =3D buf;
-+
-+	walk_system_ram_res(0, ULONG_MAX, &buf, zcore_process_ram_resource);
-+
-+	filp->private_data =3D info;
- 	return nonseekable_open(inode, filp);
- }
-=20
- static int zcore_memmap_release(struct inode *inode, struct file *filp)
- {
--	kfree(filp->private_data);
-+	struct zcore_memmap_info *info =3D filp->private_data;
-+
-+	kfree(info->buf);
-+	kfree(info);
- 	return 0;
- }
-=20
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 8206b2c19aa8..122bf4cad8a5 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -102,7 +102,6 @@ config S390
+ 	select ARCH_INLINE_WRITE_UNLOCK_BH
+ 	select ARCH_INLINE_WRITE_UNLOCK_IRQ
+ 	select ARCH_INLINE_WRITE_UNLOCK_IRQRESTORE
+-	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_STACKWALK
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
 --=20
 2.25.1
 
