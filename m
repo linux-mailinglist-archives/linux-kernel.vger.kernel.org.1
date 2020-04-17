@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49D21ADA1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEFE1ADA04
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgDQJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:37:31 -0400
-Received: from v6.sk ([167.172.42.174]:43458 "EHLO v6.sk"
+        id S1730326AbgDQJdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:33:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:48818 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730131AbgDQJha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:37:30 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 9D3CC610A6;
-        Fri, 17 Apr 2020 09:37:28 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH] media: marvell-ccic: Add support for runtime PM
-Date:   Fri, 17 Apr 2020 11:37:13 +0200
-Message-Id: <20200417093713.447777-1-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.0
+        id S1730131AbgDQJdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:33:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A017F30E;
+        Fri, 17 Apr 2020 02:33:02 -0700 (PDT)
+Received: from [10.37.12.128] (unknown [10.37.12.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38E6E3F73D;
+        Fri, 17 Apr 2020 02:33:00 -0700 (PDT)
+Subject: Re: [PATCH 7/8] arm64: cpufeature: Relax checks for AArch32 support
+ at EL[0-2]
+To:     will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+References: <20200414213114.2378-1-will@kernel.org>
+ <20200414213114.2378-8-will@kernel.org>
+ <714f124c-7eb7-b750-e98c-63da64ddae75@arm.com>
+ <20200415105843.GE12621@willie-the-truck>
+ <d1f538ec-e956-c136-d0f8-54e7351a28a9@arm.com>
+ <20200415122926.GA17095@willie-the-truck>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <399dee05-9f47-2f91-a4e8-b4c9d3932b40@arm.com>
+Date:   Fri, 17 Apr 2020 10:37:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200415122926.GA17095@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On MMP3, the camera block lives on na separate power island. We want to
-turn it off if the CCIC is not in use to conserve power.
+On 04/15/2020 01:29 PM, Will Deacon wrote:
+> On Wed, Apr 15, 2020 at 12:37:31PM +0100, Suzuki K Poulose wrote:
+>> On 04/15/2020 11:58 AM, Will Deacon wrote:
+>>> On Wed, Apr 15, 2020 at 11:50:58AM +0100, Suzuki K Poulose wrote:
+>>>> On 04/14/2020 10:31 PM, Will Deacon wrote:
+>>>>> We don't need to be quite as strict about mismatched AArch32 support,
+>>>>> which is good because the friendly hardware folks have been busy
+>>>>> mismatching this to their hearts' content.
+>>>>>
+>>>>>      * We don't care about EL2 or EL3 (there are silly comments concerning
+>>>>>        the latter, so remove those)
+>>>>>
+>>>>>      * EL1 support is gated by the ARM64_HAS_32BIT_EL1 capability and handled
+>>>>>        gracefully when a mismatch occurs
+>>>>>
+>>>>>      * EL1 support is gated by the ARM64_HAS_32BIT_EL0 capability and handled
+>>>>
+>>>> s/EL1/EL0
+>>>>
+>>>>>        gracefully when a mismatch occurs
+>>>>>
+>>>>> Relax the AArch32 checks to FTR_NONSTRICT.
+>>>>
+>>>> Agreed. We should do something similar for the features exposed by the
+>>>> ELF_HWCAP, of course in a separate series.
+>>>
+>>> Hmm, I didn't think we needed to touch the HWCAPs, as they're derived from
+>>> the sanitised feature register values. What am I missing?
+>>
+>> sorry, that was cryptic. I was suggesting to relax the ftr fields to
+>> NONSTRICT for the fields covered by ELF HWCAPs (and other CPU hwcaps).
+> 
+> Ah, gotcha. Given that the HWCAPs usually describe EL0 features, I say we
+> can punt this down the road until people give us hardware with mismatched
+> AArch32 at EL0.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- drivers/media/platform/marvell-ccic/mcam-core.c  |  3 +++
- drivers/media/platform/marvell-ccic/mmp-driver.c | 12 ++++++++----
- 2 files changed, 11 insertions(+), 4 deletions(-)
+Btw, this is not just mismatched AArch32, but mismatched AArch64 HWCAPs
+too, which I believe exists. Anyways as you said, we can delay this
+until we get the reports :-)
 
-diff --git a/drivers/media/platform/marvell-ccic/mcam-core.c b/drivers/media/platform/marvell-ccic/mcam-core.c
-index 09775b6624c6b..c2cd1d461bd06 100644
---- a/drivers/media/platform/marvell-ccic/mcam-core.c
-+++ b/drivers/media/platform/marvell-ccic/mcam-core.c
-@@ -24,6 +24,7 @@
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/videodev2.h>
-+#include <linux/pm_runtime.h>
- #include <media/v4l2-device.h>
- #include <media/v4l2-ioctl.h>
- #include <media/v4l2-ctrls.h>
-@@ -901,6 +902,7 @@ static void mcam_clk_enable(struct mcam_camera *mcam)
- {
- 	unsigned int i;
- 
-+	pm_runtime_get_sync(mcam->dev);
- 	for (i = 0; i < NR_MCAM_CLK; i++) {
- 		if (!IS_ERR(mcam->clk[i]))
- 			clk_prepare_enable(mcam->clk[i]);
-@@ -915,6 +917,7 @@ static void mcam_clk_disable(struct mcam_camera *mcam)
- 		if (!IS_ERR(mcam->clk[i]))
- 			clk_disable_unprepare(mcam->clk[i]);
- 	}
-+	pm_runtime_put(mcam->dev);
- }
- 
- /* ---------------------------------------------------------------------- */
-diff --git a/drivers/media/platform/marvell-ccic/mmp-driver.c b/drivers/media/platform/marvell-ccic/mmp-driver.c
-index 92b92255dac66..eec482d16805b 100644
---- a/drivers/media/platform/marvell-ccic/mmp-driver.c
-+++ b/drivers/media/platform/marvell-ccic/mmp-driver.c
-@@ -24,6 +24,7 @@
- #include <linux/list.h>
- #include <linux/pm.h>
- #include <linux/clk.h>
-+#include <linux/pm_runtime.h>
- 
- #include "mcam-core.h"
- 
-@@ -313,10 +314,12 @@ static int mmpcam_probe(struct platform_device *pdev)
- 	cam->irq = res->start;
- 	ret = devm_request_irq(&pdev->dev, cam->irq, mmpcam_irq, IRQF_SHARED,
- 					"mmp-camera", mcam);
--	if (ret == 0) {
--		mmpcam_add_device(cam);
--		return 0;
--	}
-+	if (ret)
-+		goto out;
-+
-+	mmpcam_add_device(cam);
-+	pm_runtime_enable(&pdev->dev);
-+	return 0;
- 
- out:
- 	fwnode_handle_put(mcam->asd.match.fwnode);
-@@ -332,6 +335,7 @@ static int mmpcam_remove(struct mmp_camera *cam)
- 
- 	mmpcam_remove_device(cam);
- 	mccic_shutdown(mcam);
-+	pm_runtime_force_suspend(mcam->dev);
- 	return 0;
- }
- 
--- 
-2.26.0
-
+Suzuki
