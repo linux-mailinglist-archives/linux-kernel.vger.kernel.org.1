@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E391AD839
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB2E1AD84C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729643AbgDQIGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729495AbgDQIGt (ORCPT
+        id S1729684AbgDQIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:08:47 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:48637 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgDQIIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:06:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F15C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 01:06:48 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x4so1971867wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 01:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zdfOAuP7fyaW1ZeVyULlmT33DOYYP23f5Q8B9QajRJM=;
-        b=hp61XEm/FGok8REvT3T074Wd8aZs0iWy57mOLbwQwMZJ4fXWTGHB/uBLrS8uABZB3z
-         Ge7AjEe0ea/LPcRsyDaoj/3SfsO+9XJcvLBt2V2lO7eTmMbrwX4gbP8tTy4OGWFKZkI2
-         el7svo/333VhxnyuleH4Bapz6a8oBvZ/lg3gRvR2n6JYFcwRzqo3/emiEUzSEVoO+QiB
-         qrM9tDaFGqLxLgCp8DOxZU14nAeEJEXQTsWlxOfhVbYbvjpZu5h6KD9pVAviyer7rwGK
-         K/uKTz/NJFf5MyvXRJ0d40YR+HD+RuwPDysK0i9kmNDFGi0SVvEW3NF/wRwSEm099Cxj
-         YIig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zdfOAuP7fyaW1ZeVyULlmT33DOYYP23f5Q8B9QajRJM=;
-        b=sHGbaiuvVJxSap08CicaxF/0YPGq6502KjK0CtIqr2AUouyk+5PUruW/fIVHwSVyNm
-         1ZIJAOsqp3i4Knyy40b0h+Vta/HZpMadQpAW5F1b60toYevVN+JrSO+4Aq0d7+P8U0U0
-         Cq8sBOrtEHyiuoG9at1ktZdrya4yNsgO1Hw7c1yo7H4YLef730b3ywtZ1SXG0tRhPs92
-         QN9UmCnaX9AqtmoCOaLiJC7O3jBYl6l8LR5DDZpGO9YVbqCzrcUiI4F7HvCqvT8itl5e
-         KqEMloCCY4B0+Z9T7RTjG6mETBj7sBtslTsPAM1Zvjv3SQzhP2RaeCR8HzzEq3axk6wH
-         0IRg==
-X-Gm-Message-State: AGi0PubBszEyLvcSi9Vae1Z1dXKRDA4jgna2HJdUMsR83cEnkPVWTyrN
-        YVQMHYI3OWOl3wk9FY6sElj1uQ==
-X-Google-Smtp-Source: APiQypIr5rhPvU7gLyvcYwjnpws074PfDg+NI0F7JmZjX82UBiLQKJtlQDYychc2ykdFgdc5xHfxmQ==
-X-Received: by 2002:a7b:ca54:: with SMTP id m20mr701534wml.45.1587110807651;
-        Fri, 17 Apr 2020 01:06:47 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id u7sm7245869wmg.41.2020.04.17.01.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 01:06:46 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 09:07:47 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Anson Huang <anson.huang@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 01/13] mfd: Add i.MX generic mix support
-Message-ID: <20200417080747.GE2167633@dell>
-References: <1586937773-5836-1-git-send-email-abel.vesa@nxp.com>
- <1586937773-5836-2-git-send-email-abel.vesa@nxp.com>
+        Fri, 17 Apr 2020 04:08:46 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MZCrZ-1jkzgQ3QCv-00V5Py; Fri, 17 Apr 2020 10:08:44 +0200
+Received: by mail-qt1-f175.google.com with SMTP id q17so1305269qtp.4;
+        Fri, 17 Apr 2020 01:08:43 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZPHLJ0ETGwYzc0w53ajd7TmC5191V2wY8CPG5IpuuvuYpJ8AaC
+        UG55exHovexaevi31J/2Lb14TO2ls08BHLu52xs=
+X-Google-Smtp-Source: APiQypLUoNDOKFwGPWYoRRmEiZI8rctsda5AneTsk6fjIsb3FT/qvUaisaRkSlwxmoYxvPE3/5JVy2siN1PfRxaCOmc=
+X-Received: by 2002:aed:20e3:: with SMTP id 90mr1721476qtb.142.1587110922393;
+ Fri, 17 Apr 2020 01:08:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1586937773-5836-2-git-send-email-abel.vesa@nxp.com>
+References: <20200417011146.83973-1-saeedm@mellanox.com> <20200417011146.83973-2-saeedm@mellanox.com>
+In-Reply-To: <20200417011146.83973-2-saeedm@mellanox.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 17 Apr 2020 10:08:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a22OtR5x01iNaSpJ3kM0MBd+dJshKOe6Cp42zukme2A+A@mail.gmail.com>
+Message-ID: <CAK8P3a22OtR5x01iNaSpJ3kM0MBd+dJshKOe6Cp42zukme2A+A@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] net/mlx5: Kconfig: Use "uses" instead of "imply"
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:YpC9Ij1eNtvdD1DAdicFQKLiz2VsLhebBV++mgPKvmfb4tS0VGY
+ rqOGEt1xfgecycpBfzED2WvluWYBfoPZe2OWbPNbAIdsGZ6ZdgpeJgxu6kgTD9yAhrUuuqs
+ SpPmz+1uUSrabZF774kp5vTc8o628ykSybBXIDEzHcfoCzzHmjJUJO0g7VLNktUi5QEXIeR
+ Er9sr9zQHBpzLSoyVumKw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kx+/Em1awjU=:1KQ2OTbdqmagGY2K4XVLQt
+ /QadPC/sm2CLOphF+BLE06ltL8tLnP2BzAX3SSHthqj4/5KC6r4fVcItmrTR1Yt01DPzVHZc7
+ x+zBUwk/8HmgpFTIdo5I4ZQAyWp0HYDPqC61uhBowKtvV3tdDNKwFXGr1GDKUwXK4tGAQ30qG
+ YNgWZR5+tVb6KfWehhns+hNluZlNLoHZsWwSNkYCpuQFF8+MznVOl62EpvrIDUqUTUTFG6szr
+ 6fJJYTIoV5syYHK7ayokV2lXYsuEMTavczqcEDxxpnNyepkITHQVqId7XlUX901tamxfxEMfr
+ boCuQ70/628d62Db+QwqcnTGJ8gsb/uuVJxC8cFaTDy2LVlmUiZfVN4sb9oUFFbeSUSuct6W3
+ I6O27NuTXwCgXUDCNgcVw6WLMhnA8OVHwlVe91a55vALJIBiK0cQWjOL6/nh7uJ7S38FgYHZF
+ u+rijcvxbolb0xLWoX5CewJ+xCpYTroUn+hsc2Ip+tRCsNjvZDXDzlih+8fOWtknZ2kC2GZrX
+ ltj/d9L6TKtfODjk22VnYpVoGSdUaTnmend5LicVHKlFl1NvQu+Tx4E8P+6XqV1k06m4Xi4pl
+ evkLjl+JcEZHbAxfEU7YGqsr9piLrHcEGzqE9XfAaWz3cUzoQA0lCbEgdVoI12TNiFha+qknj
+ mGYRi3M1f7x2E1xIZVwEF+ylscG6jzXTGMQTlytZ5OsIDgYAtGjHJPTiZKatIPxrdGUEQ3zQt
+ UBP6NUHPJtbsOvJftTnrwEDAgLSJ9ROyjAYyarreQbl8VO0KOvgT4pVrYviPQVhuHhg7rI6n0
+ oXV4wVnIGCj9+aeFy6n0bAyt+CYvywwhobGkswSTvgqhyyxUZU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020, Abel Vesa wrote:
+On Fri, Apr 17, 2020 at 3:12 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
 
-> Some of the i.MX SoCs have a IP for interfacing the dedicated IPs with
-> clocks, resets and interrupts, plus some other specific control registers.
-> To allow the functionality to be split between drivers, this MFD driver is
-> added that has only two purposes: register the devices and map the entire
-> register addresses. Everything else is left to the dedicated drivers that
-> will bind to the registered devices.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  drivers/mfd/Kconfig   | 11 +++++++++++
->  drivers/mfd/Makefile  |  1 +
->  drivers/mfd/imx-mix.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 60 insertions(+)
->  create mode 100644 drivers/mfd/imx-mix.c
+> @@ -7,10 +7,10 @@ config MLX5_CORE
+>         tristate "Mellanox 5th generation network adapters (ConnectX series) core driver"
+>         depends on PCI
+>         select NET_DEVLINK
+> -       imply PTP_1588_CLOCK
+> -       imply VXLAN
+> -       imply MLXFW
+> -       imply PCI_HYPERV_INTERFACE
+> +       uses PTP_1588_CLOCK
+> +       uses VXLAN
+> +       uses MLXFW
+> +       uses PCI_HYPERV_INTERFACE
 
-For completeness - Arnd's reply to this patch:
+I have confirmed in the meantime that changing the PCI_HYPERV_INTERFACE
+dependency is indeed required, in addition to PTP_1588_CLOCK and VXLAN
+that the randconfig tests found earlier:
 
-  https://www.spinics.net/lists/linux-clk/msg47703.html
+x86_64-linux-ld: drivers/net/ethernet/mellanox/mlx5/core/main.o: in
+function `mlx5_unload':
+main.c:(.text+0x325): undefined reference to `mlx5_hv_vhca_cleanup'
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I also checked that there is no link failure with MLX5_CORE=y and MLXFW=m,
+but only because of an IS_REACHABLE() check in mlxfw/mlxfw.h.
+I suppose that should be changed back to IS_ENABLED() now along with
+the Kconfig check.
+
+      Arnd
