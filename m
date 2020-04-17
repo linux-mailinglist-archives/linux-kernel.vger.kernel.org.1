@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935351AD9A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B19F1AD929
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgDQJSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729987AbgDQJSk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:18:40 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF154C061A0C;
-        Fri, 17 Apr 2020 02:18:40 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id b18so1503034ilf.2;
-        Fri, 17 Apr 2020 02:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iRWCVuq8TR2XzOv4hPXtI5URv7oqkeobScmDBMw46jU=;
-        b=I3NV9c53UUyM+RaFHpaI3ddEqtHTMNLrpnXEObfjp0e0mHLbguamjM20GafXHlc3ed
-         ZGR/ZJCgwJokyUJglSd8c8jXSWA9HKTJ5lwa7PCJGUsB+lbLZmvaasQt2pPpdEdT/WVm
-         frwUxDFnqxiS7bXG3yIqc7hmziyca70GVFOoKiSxseXhjKCcjYhqorn/jTqZKBdNQisF
-         AeOgu2i9w8/V6FSnr1gn2bOVuP+2Wb4uUtQbOD0DoqJnrGEWqRAPh/4CZ5DsYZFZNPc1
-         ns/6haYvqe0+gX3iZFgzvO7T8he9vfmOpoEeCOXB4RCCed9cEq0+7mVvTssFlwcKrxWV
-         E+Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iRWCVuq8TR2XzOv4hPXtI5URv7oqkeobScmDBMw46jU=;
-        b=S+tbhKWbJSjXesJXz5yxGpoUh6INbLcps+urWhFEglaLTS3ZJ09EjiNB04At5Trak6
-         Tl3OKhzlKwxxmPmxpxtT4ZGFt/3o7rucoVKNn3xDbizWb1nISvD+SQtuz9Gz+Vuo8hxn
-         dF8/6pxhoA9jKi6Qwsy2K8unb9tqZDVENFcq+FreDN/QiF1+zUy/ujF9kYkaxremdRM6
-         CwNJEeUb+H4166V/NQpi02Mzlf/V1nCVTBf6sHfq81yBPHZVjJVmDIEFfZImPdEr8jO8
-         v3BRC0IshiYGjldsVwfYj7r1nMLPE2tMEpsWMkzfgKGkj1evKB9KrlSoF0s5bHa5inIz
-         FUSA==
-X-Gm-Message-State: AGi0Pua6bIdlZ2Fe/iIKjJcBTSXJDl1tS0qx4HBbqzsRVC6jitgSLFQV
-        yuJcz7jLtEU4fYLWj662x3GfSXEgJy+UIGVnrN8=
-X-Google-Smtp-Source: APiQypKLyZ1z8R9Bx3IFvmWATyK0p8QJ4t3dDqh+zoZfH4RuQzi8Op4IhAENVB998tQ83oZfu05nhEp28YrHD9cq+bY=
-X-Received: by 2002:a92:dc8d:: with SMTP id c13mr1915098iln.278.1587115120296;
- Fri, 17 Apr 2020 02:18:40 -0700 (PDT)
+        id S1729931AbgDQIy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:54:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49938 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729819AbgDQIy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:54:29 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A45ED4FB16B8E53C3F52;
+        Fri, 17 Apr 2020 16:54:26 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 16:54:16 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <renesas@glider.be>, <linus.walleij@linaro.org>,
+        <nishkadg.linux@gmail.com>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] pinctrl: rza1: remove unused 'rza1l_swio_pins'
+Date:   Fri, 17 Apr 2020 17:20:42 +0800
+Message-ID: <20200417092042.11994-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <20200417083448.9122-1-gmayyyha@gmail.com>
-In-Reply-To: <20200417083448.9122-1-gmayyyha@gmail.com>
-From:   Yanhu Cao <gmayyyha@gmail.com>
-Date:   Fri, 17 Apr 2020 17:18:29 +0800
-Message-ID: <CAB9OAC2VvwM5+L=N09Y-usxyXFRnzWFs8iN-zLHyEz7-twPOmQ@mail.gmail.com>
-Subject: Re: [PATCH] ceph: if we are blacklisted, __do_request returns directly
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DNM. will add test mount option recover_session.
+Fix the following gcc warning:
 
-On Fri, Apr 17, 2020 at 4:35 PM Yanhu Cao <gmayyyha@gmail.com> wrote:
->
-> Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
-> ---
->  fs/ceph/mds_client.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> index 486f91f9685b..d2ea755b7c02 100644
-> --- a/fs/ceph/mds_client.c
-> +++ b/fs/ceph/mds_client.c
-> @@ -2708,6 +2708,11 @@ static void __do_request(struct ceph_mds_client *mdsc,
->
->         put_request_session(req);
->
-> +       if (mdsc->fsc->blacklisted) {
-> +               err = -EACCES;
-> +               goto finish;
-> +       }
-> +
->         mds = __choose_mds(mdsc, req, &random);
->         if (mds < 0 ||
->             ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
-> --
-> 2.24.2 (Apple Git-127)
->
+drivers/pinctrl/pinctrl-rza1.c:401:35: warning: ‘rza1l_swio_pins’
+defined but not used [-Wunused-const-variable=]
+ static const struct rza1_swio_pin rza1l_swio_pins[] = {
+                                   ^~~~~~~~~~~~~~~
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/pinctrl/pinctrl-rza1.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/drivers/pinctrl/pinctrl-rza1.c b/drivers/pinctrl/pinctrl-rza1.c
+index da2d8365c690..e96bf89b3764 100644
+--- a/drivers/pinctrl/pinctrl-rza1.c
++++ b/drivers/pinctrl/pinctrl-rza1.c
+@@ -398,15 +398,6 @@ static const struct rza1_bidir_pin rza1l_bidir_pins_p9[] = {
+ 	{ .pin = 5, .func = 3 },
+ };
+ 
+-static const struct rza1_swio_pin rza1l_swio_pins[] = {
+-	{ .port = 2, .pin = 8, .func = 2, .input = 0 },
+-	{ .port = 5, .pin = 6, .func = 3, .input = 0 },
+-	{ .port = 6, .pin = 6, .func = 3, .input = 0 },
+-	{ .port = 6, .pin = 10, .func = 3, .input = 0 },
+-	{ .port = 7, .pin = 10, .func = 2, .input = 0 },
+-	{ .port = 8, .pin = 2, .func = 3, .input = 0 },
+-};
+-
+ static const struct rza1_bidir_entry rza1l_bidir_entries[RZA1_NPORTS] = {
+ 	[1] = { ARRAY_SIZE(rza1l_bidir_pins_p1), rza1l_bidir_pins_p1 },
+ 	[3] = { ARRAY_SIZE(rza1l_bidir_pins_p3), rza1l_bidir_pins_p3 },
+-- 
+2.21.1
+
