@@ -2,122 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE93D1AD97F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43261AD979
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgDQJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:09:19 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28502 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730169AbgDQJJR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:09:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587114556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cCOf6XJLp8oVY3ARJuZvdamGJsDNMFwpwD+jmxrCyc=;
-        b=i+qpCyA1wuhio4PheKZiow/KpwSdGwSzeRdUSknjf+g6shwm4c1MChNNAFwvPJwnhaeFpU
-        Vb4VdvftfH8vypCjN0ycfzD/+VyD6gCtFjiKhKMsEZXxgPnqoUSwpYbJ9CpW0TOfdvwmQ+
-        YtfqdRjTcB2WoUitqMi0ARDhs8eBVa0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-H6wdLbRDNBil-5rkjGT0_Q-1; Fri, 17 Apr 2020 05:09:11 -0400
-X-MC-Unique: H6wdLbRDNBil-5rkjGT0_Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6B5A107ACC4;
-        Fri, 17 Apr 2020 09:09:07 +0000 (UTC)
-Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7C8E100EBA4;
-        Fri, 17 Apr 2020 09:08:12 +0000 (UTC)
-Date:   Fri, 17 Apr 2020 11:08:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v11 0/4] perf tools: add support for libpfm4
-Message-ID: <20200417090810.GA468827@krava>
-References: <20200416221457.46710-1-irogers@google.com>
+        id S1730151AbgDQJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:08:38 -0400
+Received: from mga02.intel.com ([134.134.136.20]:40938 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729920AbgDQJIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 05:08:37 -0400
+IronPort-SDR: To4oH2p7SgNoRwACYvLFmehZ8+D9rWjOumVcHOUzgcXXcX4c6mvlM+b/WV8uAx8XUrrtbSEIll
+ citXcOxi09EQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 02:08:37 -0700
+IronPort-SDR: tV/NdWMXWbHzH70bd5vww+Lg4Os+UqivkaqitE/FyhyC0x1T/S0mm26LM9LQ1DPSeX7pYDciYj
+ y8L0W+HV5wQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,394,1580803200"; 
+   d="scan'208";a="364275963"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001.fm.intel.com with SMTP; 17 Apr 2020 02:08:34 -0700
+Received: by lahna (sSMTP sendmail emulation); Fri, 17 Apr 2020 12:08:33 +0300
+Date:   Fri, 17 Apr 2020 12:08:33 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Grace Kao <grace.kao@intel.com>
+Cc:     linux-gpio@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, briannorris@chromium.org
+Subject: Re: [PATCH v2 1/1] pinctrl: cherryview: Add missing spinlock usage
+ in chv_gpio_irq_handler
+Message-ID: <20200417090833.GO2586@lahna.fi.intel.com>
+References: <20200417030449.10601-1-grace.kao@intel.com>
+ <20200417041154.13063-1-grace.kao@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416221457.46710-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200417041154.13063-1-grace.kao@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 03:14:53PM -0700, Ian Rogers wrote:
-> This patch links perf with the libpfm4 library if it is available
-> and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
-> contains hardware event tables for all processors supported by
-> perf_events. It is a helper library that helps convert from a
-> symbolic event name to the event encoding required by the
-> underlying kernel interface. This library is open-source and
-> available from: http://perfmon2.sf.net.
->     
-> With this patch, it is possible to specify full hardware events
-> by name. Hardware filters are also supported. Events must be
-> specified via the --pfm-events and not -e option. Both options
-> are active at the same time and it is possible to mix and match:
->     
-> $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+On Fri, Apr 17, 2020 at 12:11:54PM +0800, Grace Kao wrote:
+> According to Braswell NDA Specification Update (#557593),
+> concurrent read accesses may result in returning 0xffffffff and write
+> instructions may be dropped. We have an established format for the
+> commit references, i.e.
+> cdca06e4e859 ("pinctrl: baytrail: Add missing spinlock usage in
+> byt_gpio_irq_handler")
 > 
-> v11 reformats the perf list output to be:
-> List of pre-defined events (to be used in -e):
-> 
->   branch-instructions OR branches                    [Hardware event]
->   branch-misses                                      [Hardware event]
-> ...
-> 
-> List of pre-defined events (to be used in --pfm-events):
-> 
-> ix86arch:
->   UNHALTED_CORE_CYCLES
->     [count core clock cycles whenever the clock signal on the specific core is running (not halted)]
->   INSTRUCTION_RETIRED
->     [count the number of instructions at retirement. For instructions that consists of multiple mic>
-> ...
-> skx:
->   UNHALTED_CORE_CYCLES
->     [Count core clock cycles whenever the clock signal on the specific core is running (not halted)]
-> ...
->   BACLEARS
->     [Branch re-steered]
->       BACLEARS:ANY
->         [Number of front-end re-steers due to BPU misprediction]
-> ...
+> Signed-off-by: Grace Kao <grace.kao@intel.com>
+> Reported-by: Brian Norris <briannorris@chromium.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
