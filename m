@@ -2,161 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBD01AD8DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3931AD906
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgDQIqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:46:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34249 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729809AbgDQIqR (ORCPT
+        id S1729970AbgDQIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:50:33 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:50554 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729930AbgDQIu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587113176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wE/WARZLg+d1WCxCwrHkOlSrWaAPnJuSBoxihd1UamI=;
-        b=OBjTYKGSJAINHUfpR4calOLk+SvqbiTWr+tY+zs3pzY5Flwpjk4cqBuG2x3aiRD4IVNhzg
-        dgqkfbn78l8hQEDDtCqLGyUN8+JPgq40klBBZ+xA0bHUJ1Ay+H7bhk+j1ZQtjvwM5naDj/
-        2Ids74giy7NIe+3J7I39Cr7UrcIDp5I=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-NRan9ghfPxqLuUVOsMsmeg-1; Fri, 17 Apr 2020 04:46:15 -0400
-X-MC-Unique: NRan9ghfPxqLuUVOsMsmeg-1
-Received: by mail-wr1-f69.google.com with SMTP id 11so664434wrc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 01:46:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wE/WARZLg+d1WCxCwrHkOlSrWaAPnJuSBoxihd1UamI=;
-        b=NRjLOn1KegWeU4ttQesDbKAlpF5gpK0gmcmk00CpSsirIggpMaGomDaNqTDvvDoXhV
-         ollZ+UJ4A4cwPhIZPAg+VooRxcAwcDyblmgFKRtXY9RufD8Bjs9ikPvSy4oArE3iEVuj
-         HqlANenaLW7X2u/tK34IZo4tM8buCnqzeeYUA8d8/DuXoFsxvk9F6mvtAArvvMdU/qYN
-         VeweI+StXOKOo3xG+vrT5cwT7IHBcTrdQV3NqhnPIG1J8HXEhorqDacLwb5o+ke+W4W8
-         109nolXKCxAF/xSPcQTJvjiMtHdpm5IiUnQEqdtXWmjgPaknavqHfJ+TwHRnV1zv/x3E
-         +0Ng==
-X-Gm-Message-State: AGi0PuZf4Dlqg5U5l7z9Rxcw1Qkb73IFKtfuFoz3xPx7hh6yMxzDGrZz
-        DIn6CV6yVgS1tQPrDopqozMBwhmPsw4EHGYLbMeKSCMopbw73sIZLZAac6VuVEVcBJjzH67H4xc
-        XkLZ5iTRjmhyCZYet3r8+bupv
-X-Received: by 2002:a1c:3b0a:: with SMTP id i10mr2207020wma.26.1587113173864;
-        Fri, 17 Apr 2020 01:46:13 -0700 (PDT)
-X-Google-Smtp-Source: APiQypL7wwVAY2VUk1Sf/olefVQONEzwVRmuwANF/2eIBwUJQiUqpjYTnQ3meLl2WX6+2mTArW0sHw==
-X-Received: by 2002:a1c:3b0a:: with SMTP id i10mr2206989wma.26.1587113173640;
-        Fri, 17 Apr 2020 01:46:13 -0700 (PDT)
-Received: from redhat.com (bzq-79-183-51-3.red.bezeqint.net. [79.183.51.3])
-        by smtp.gmail.com with ESMTPSA id l5sm31065502wrm.66.2020.04.17.01.46.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 01:46:13 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 04:46:08 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, geert@linux-m68k.org,
-        tsbogend@alpha.franken.de, benh@kernel.crashing.org,
-        paulus@samba.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH V2] vhost: do not enable VHOST_MENU by default
-Message-ID: <20200417044230-mutt-send-email-mst@kernel.org>
-References: <20200415024356.23751-1-jasowang@redhat.com>
- <20200416185426-mutt-send-email-mst@kernel.org>
- <b7e2deb7-cb64-b625-aeb4-760c7b28c0c8@redhat.com>
- <20200417022929-mutt-send-email-mst@kernel.org>
- <4274625d-6feb-81b6-5b0a-695229e7c33d@redhat.com>
- <20200417042912-mutt-send-email-mst@kernel.org>
- <fdb555a6-4b8d-15b6-0849-3fe0e0786038@redhat.com>
+        Fri, 17 Apr 2020 04:50:27 -0400
+X-UUID: 19c67206a4314b779958374de9d17d4c-20200417
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CvLwXNbZt4YLZj84U8Z1qWNABI7ku9CPPMrN1RBYWo4=;
+        b=dWjdb0Qq2FqWB9CgJutYv88Jk3cuRB6e7sGPsY1SmMa/L7HZ0B096+OwuUx1o+YirKE6alxIjAWXolVuUSYA3ZQ9EbzTXX5cjHVKXRwehlTq4cIHZTnxIyKBvdN2KghdETXHmmleq3bjuMUY6iPMfYLnbYUrZxvW2pQGWhyNoOU=;
+X-UUID: 19c67206a4314b779958374de9d17d4c-20200417
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <ran.bi@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1460347295; Fri, 17 Apr 2020 16:50:21 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 17 Apr
+ 2020 16:50:19 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 17 Apr 2020 16:50:16 +0800
+Message-ID: <1587113392.13323.3.camel@mhfsdcap03>
+Subject: Re: [PATCH v12 5/6] rtc: mt6397: Add support for the MediaTek
+ MT6358 RTC
+From:   Ran Bi <ran.bi@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        "Kate Stewart" <kstewart@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        "Josef Friedl" <josef.friedl@speed.at>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Date:   Fri, 17 Apr 2020 16:49:52 +0800
+In-Reply-To: <1587112169.12875.2.camel@mhfsdcap03>
+References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1586333531-21641-6-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20200416091438.GA2167633@dell> <1587112169.12875.2.camel@mhfsdcap03>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fdb555a6-4b8d-15b6-0849-3fe0e0786038@redhat.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 04:39:49PM +0800, Jason Wang wrote:
-> 
-> On 2020/4/17 下午4:29, Michael S. Tsirkin wrote:
-> > On Fri, Apr 17, 2020 at 03:36:52PM +0800, Jason Wang wrote:
-> > > On 2020/4/17 下午2:33, Michael S. Tsirkin wrote:
-> > > > On Fri, Apr 17, 2020 at 11:12:14AM +0800, Jason Wang wrote:
-> > > > > On 2020/4/17 上午6:55, Michael S. Tsirkin wrote:
-> > > > > > On Wed, Apr 15, 2020 at 10:43:56AM +0800, Jason Wang wrote:
-> > > > > > > We try to keep the defconfig untouched after decoupling CONFIG_VHOST
-> > > > > > > out of CONFIG_VIRTUALIZATION in commit 20c384f1ea1a
-> > > > > > > ("vhost: refine vhost and vringh kconfig") by enabling VHOST_MENU by
-> > > > > > > default. Then the defconfigs can keep enabling CONFIG_VHOST_NET
-> > > > > > > without the caring of CONFIG_VHOST.
-> > > > > > > 
-> > > > > > > But this will leave a "CONFIG_VHOST_MENU=y" in all defconfigs and even
-> > > > > > > for the ones that doesn't want vhost. So it actually shifts the
-> > > > > > > burdens to the maintainers of all other to add "CONFIG_VHOST_MENU is
-> > > > > > > not set". So this patch tries to enable CONFIG_VHOST explicitly in
-> > > > > > > defconfigs that enables CONFIG_VHOST_NET and CONFIG_VHOST_VSOCK.
-> > > > > > > 
-> > > > > > > Acked-by: Christian Borntraeger<borntraeger@de.ibm.com>  (s390)
-> > > > > > > Acked-by: Michael Ellerman<mpe@ellerman.id.au>  (powerpc)
-> > > > > > > Cc: Thomas Bogendoerfer<tsbogend@alpha.franken.de>
-> > > > > > > Cc: Benjamin Herrenschmidt<benh@kernel.crashing.org>
-> > > > > > > Cc: Paul Mackerras<paulus@samba.org>
-> > > > > > > Cc: Michael Ellerman<mpe@ellerman.id.au>
-> > > > > > > Cc: Heiko Carstens<heiko.carstens@de.ibm.com>
-> > > > > > > Cc: Vasily Gorbik<gor@linux.ibm.com>
-> > > > > > > Cc: Christian Borntraeger<borntraeger@de.ibm.com>
-> > > > > > > Reported-by: Geert Uytterhoeven<geert@linux-m68k.org>
-> > > > > > > Signed-off-by: Jason Wang<jasowang@redhat.com>
-> > > > > > I rebased this on top of OABI fix since that
-> > > > > > seems more orgent to fix.
-> > > > > > Pushed to my vhost branch pls take a look and
-> > > > > > if possible test.
-> > > > > > Thanks!
-> > > > > I test this patch by generating the defconfigs that wants vhost_net or
-> > > > > vhost_vsock. All looks fine.
-> > > > > 
-> > > > > But having CONFIG_VHOST_DPN=y may end up with the similar situation that
-> > > > > this patch want to address.
-> > > > > Maybe we can let CONFIG_VHOST depends on !ARM || AEABI then add another
-> > > > > menuconfig for VHOST_RING and do something similar?
-> > > > > 
-> > > > > Thanks
-> > > > Sorry I don't understand. After this patch CONFIG_VHOST_DPN is just
-> > > > an internal variable for the OABI fix. I kept it separate
-> > > > so it's easy to revert for 5.8. Yes we could squash it into
-> > > > VHOST directly but I don't see how that changes logic at all.
-> > > 
-> > > Sorry for being unclear.
-> > > 
-> > > I meant since it was enabled by default, "CONFIG_VHOST_DPN=y" will be left
-> > > in the defconfigs.
-> > But who cares?
-> 
-> 
-> FYI, please see https://www.spinics.net/lists/kvm/msg212685.html
-
-The complaint was not about the symbol IIUC.  It was that we caused
-everyone to build vhost unless they manually disabled it.
-
-> 
-> > That does not add any code, does it?
-> 
-> 
-> It doesn't.
-> 
-> Thanks
-> 
-> 
-> > 
-> > > This requires the arch maintainers to add
-> > > "CONFIG_VHOST_VDPN is not set". (Geert complains about this)
-> > > 
-> > > Thanks
-> > > 
-> > > 
+T24gRnJpLCAyMDIwLTA0LTE3IGF0IDE2OjI5ICswODAwLCBSYW4gQmkgd3JvdGU6DQo+IE9uIFRo
+dSwgMjAyMC0wNC0xNiBhdCAxMDoxNCArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOg0KPiA+IE9uIFdl
+ZCwgMDggQXByIDIwMjAsIEhzaW4tSHNpdW5nIFdhbmcgd3JvdGU6DQo+ID4gDQo+ID4gPiBGcm9t
+OiBSYW4gQmkgPHJhbi5iaUBtZWRpYXRlay5jb20+DQo+ID4gPiANCj4gPiA+IFRoaXMgYWRkIHN1
+cHBvcnQgZm9yIHRoZSBNZWRpYVRlayBNVDYzNTggUlRDLiBEcml2ZXIgdXNpbmcNCj4gPiA+IGNv
+bXBhdGlibGUgZGF0YSB0byBzdG9yZSBkaWZmZXJlbnQgUlRDX1dSVEdSIGFkZHJlc3Mgb2Zmc2V0
+Lg0KPiA+ID4gVGhpcyByZXBsYWNlIFJUQ19XUlRHUiB0byBSVENfV1JUR1JfTVQ2MzIzIGluIG10
+NjMyMy1wb3dlcm9mZg0KPiA+ID4gZHJpdmVyIHdoaWNoIG9ubHkgbmVlZGVkIGJ5IGFybXY3IENQ
+VSB3aXRob3V0IEFURi4NCj4gPiA+IA0KPiA+ID4gUmV2aWV3ZWQtYnk6IE5pY29sYXMgQm9pY2hh
+dCA8ZHJpbmtjYXRAY2hyb21pdW0ub3JnPg0KPiA+ID4gUmV2aWV3ZWQtYnk6IFlpbmdqb2UgQ2hl
+biA8eWluZ2pvZS5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiA+IEFja2VkLWJ5OiBBbGV4YW5kcmUg
+QmVsbG9uaSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQo+ID4gPiBBY2tlZC1ieTog
+U2ViYXN0aWFuIFJlaWNoZWwgPHNyZUBrZXJuZWwub3JnPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTog
+UmFuIEJpIDxyYW4uYmlAbWVkaWF0ZWsuY29tPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogSHNpbi1I
+c2l1bmcgV2FuZyA8aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gUGxl
+YXNlIHBsYWNlIHRoZXNlIGluIGNocm9ub2xvZ2ljYWwgb3JkZXIuICBUaGV5IHNob3VsZCBwcm92
+aWRlIHNvbWUNCj4gPiBoaXN0b3J5LCByYXRoZXIgdGhhbiBhIHVub3JkZXJlZCBzbGFiIGxpc3Qg
+b2YgcmFuZG9tIHNpZ24tb2Zmcy4NCj4gPiANCj4gDQo+IEkgc3VwcG9zZSB0aGF0IHlvdSBtZWFu
+IHRoZSBvcmRlciBzaG91bGQgYmUgbGlrZSBiZWxvdywgcmlnaHQ/DQo+IFJldmlld2VkLWJ5OiBZ
+aW5nam9lIENoZW4gPHlpbmdqb2UuY2hlbkBtZWRpYXRlay5jb20+DQo+IEFja2VkLWJ5OiBTZWJh
+c3RpYW4gUmVpY2hlbCA8c3JlQGtlcm5lbC5vcmc+DQo+IEFja2VkLWJ5OiBBbGV4YW5kcmUgQmVs
+bG9uaSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQo+IFJldmlld2VkLWJ5OiBOaWNv
+bGFzIEJvaWNoYXQgPGRyaW5rY2F0QGNocm9taXVtLm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogSHNp
+bi1Ic2l1bmcgV2FuZyA8aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+IFNpZ25lZC1v
+ZmYtYnk6IFJhbiBCaSA8cmFuLmJpQG1lZGlhdGVrLmNvbT4NCj4gDQoNCkNvcnJlY3Rpb24sIEkg
+dGhpbmsgZm9sbG93aW5nIGlzIHRoZSBjb3JyZWN0IGNocm9ub2xvZ2ljYWwgb3JkZXI6DQpTaWdu
+ZWQtb2ZmLWJ5OiBSYW4gQmkgPHJhbi5iaUBtZWRpYXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5OiBI
+c2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NClJldmlld2Vk
+LWJ5OiBOaWNvbGFzIEJvaWNoYXQgPGRyaW5rY2F0QGNocm9taXVtLm9yZz4NCkFja2VkLWJ5OiBB
+bGV4YW5kcmUgQmVsbG9uaSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQpBY2tlZC1i
+eTogU2ViYXN0aWFuIFJlaWNoZWwgPHNyZUBrZXJuZWwub3JnPg0KUmV2aWV3ZWQtYnk6IFlpbmdq
+b2UgQ2hlbiA8eWluZ2pvZS5jaGVuQG1lZGlhdGVrLmNvbT4NCg0KPiA+ID4gLS0tDQo+ID4gPiAg
+ZHJpdmVycy9wb3dlci9yZXNldC9tdDYzMjMtcG93ZXJvZmYuYyB8ICAyICstDQo+ID4gPiAgZHJp
+dmVycy9ydGMvcnRjLW10NjM5Ny5jICAgICAgICAgICAgICB8IDE4ICsrKysrKysrKysrKysrKy0t
+LQ0KPiA+ID4gIGluY2x1ZGUvbGludXgvbWZkL210NjM5Ny9ydGMuaCAgICAgICAgfCAgOSArKysr
+KysrKy0NCj4gPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDI0IGluc2VydGlvbnMoKyksIDUgZGVsZXRp
+b25zKC0pDQo+ID4gDQo+ID4gWy4uLl0NCj4gPiANCj4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRl
+L2xpbnV4L21mZC9tdDYzOTcvcnRjLmggYi9pbmNsdWRlL2xpbnV4L21mZC9tdDYzOTcvcnRjLmgN
+Cj4gPiA+IGluZGV4IDdkZmI2M2IuLjYyMDBmM2IgMTAwNjQ0DQo+ID4gPiAtLS0gYS9pbmNsdWRl
+L2xpbnV4L21mZC9tdDYzOTcvcnRjLmgNCj4gPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvbWZkL210
+NjM5Ny9ydGMuaA0KPiA+ID4gQEAgLTE4LDcgKzE4LDkgQEANCj4gPiA+ICAjZGVmaW5lIFJUQ19C
+QlBVX0NCVVNZICAgICAgICAgQklUKDYpDQo+ID4gPiAgI2RlZmluZSBSVENfQkJQVV9LRVkgICAg
+ICAgICAgICAoMHg0MyA8PCA4KQ0KPiA+ID4gIA0KPiA+ID4gLSNkZWZpbmUgUlRDX1dSVEdSICAg
+ICAgICAgICAgICAweDAwM2MNCj4gPiA+ICsjZGVmaW5lIFJUQ19XUlRHUl9NVDYzNTggICAgICAg
+MHgzYQ0KPiA+ID4gKyNkZWZpbmUgUlRDX1dSVEdSX01UNjM5NyAgICAgICAweDNjDQo+ID4gDQo+
+ID4gV2h5IHJlbW92ZSB0aGUgbGVhZGluZyAwMCdzPw0KPiA+IA0KPiA+IFRoZXNlIGFyZSBub3cg
+ZGlmZmVyZW50IHRvIHRoZSBvdGhlciByZWdzIGRlZmluZWQgaW4gdGhpcyBoZWFkZXIuDQo+ID4g
+DQo+IA0KPiBJIHdpbGwgZml4IHRoaXMgYXQgbmV4dCBwYXRjaC4NCj4gDQo+ID4gPiArI2RlZmlu
+ZSBSVENfV1JUR1JfTVQ2MzIzICAgICAgIFJUQ19XUlRHUl9NVDYzOTcNCj4gPiA+ICANCj4gPiA+
+ICAjZGVmaW5lIFJUQ19JUlFfU1RBICAgICAgICAgICAgMHgwMDAyDQo+ID4gDQo+ID4gTGlrZSBo
+ZXJlIGZvciBpbnN0YW5jZSAgLS1eDQo+ID4gDQo+ID4gPiAgI2RlZmluZSBSVENfSVJRX1NUQV9B
+TCAgICAgICAgIEJJVCgwKQ0KPiA+ID4gQEAgLTY1LDYgKzY3LDEwIEBADQo+ID4gPiAgI2RlZmlu
+ZSBNVEtfUlRDX1BPTExfREVMQVlfVVMgIDEwDQo+ID4gPiAgI2RlZmluZSBNVEtfUlRDX1BPTExf
+VElNRU9VVCAgIChqaWZmaWVzX3RvX3VzZWNzKEhaKSkNCj4gPiA+ICANCj4gPiA+ICtzdHJ1Y3Qg
+bXRrX3J0Y19kYXRhIHsNCj4gPiA+ICsJdTMyICAgICAgICAgICAgICAgICAgICAgd3J0Z3I7DQo+
+ID4gPiArfTsNCj4gPiA+ICsNCj4gPiA+ICBzdHJ1Y3QgbXQ2Mzk3X3J0YyB7DQo+ID4gPiAgCXN0
+cnVjdCBkZXZpY2UgICAgICAgICAgICpkZXY7DQo+ID4gPiAgCXN0cnVjdCBydGNfZGV2aWNlICAg
+ICAgICpydGNfZGV2Ow0KPiA+ID4gQEAgLTc0LDYgKzgwLDcgQEAgc3RydWN0IG10NjM5N19ydGMg
+ew0KPiA+ID4gIAlzdHJ1Y3QgcmVnbWFwICAgICAgICAgICAqcmVnbWFwOw0KPiA+ID4gIAlpbnQg
+ICAgICAgICAgICAgICAgICAgICBpcnE7DQo+ID4gPiAgCXUzMiAgICAgICAgICAgICAgICAgICAg
+IGFkZHJfYmFzZTsNCj4gPiA+ICsJY29uc3Qgc3RydWN0IG10a19ydGNfZGF0YSAqZGF0YTsNCj4g
+PiA+ICB9Ow0KPiA+ID4gIA0KPiA+ID4gICNlbmRpZiAvKiBfTElOVVhfTUZEX01UNjM5N19SVENf
+SF8gKi8NCj4gPiANCj4gDQoNCg==
 
