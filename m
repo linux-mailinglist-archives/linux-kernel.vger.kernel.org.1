@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F781AD81E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20E21AD860
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729597AbgDQIAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:00:09 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36664 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729254AbgDQIAI (ORCPT
+        id S1729640AbgDQIPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:15:21 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:56204 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727871AbgDQIPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:00:08 -0400
-Received: by mail-wr1-f65.google.com with SMTP id u13so1963694wrp.3;
-        Fri, 17 Apr 2020 01:00:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D9Cm8tiUrg/W1Q7McZQji69rvG+FU5ciQYbgQ4VtKtk=;
-        b=SGtUVIxXIHi69ASccsLEdEE/+qnOOfvpEvweULjjGP5mAYpVs1YHHJ54wg6S0YQHrM
-         jAisqQXMIjcYaQ1mWOhIMHkrD/CYaYmYlwYSDX16qHz9InCt32YzXDXLM4uoG5N1vDDi
-         VCp+9oSPfqs/Qm1ewiVxPjnruVAF3O5h/W6ahUa9AWyT2qMAh0zob/tbAAmqJwPWXg3e
-         L5fMLluS8bPYreRQ49d57lT6J7Bi98GTuvNKtH/RC60Va3wvNUAUV0bVjwgvRWfl7/6S
-         YPAtgnmxf9YgfVmQK27QqyYnUdUgxn/xOLh74H+Q7ipdjLg11s8gZ9frJsO3DsMqijiR
-         5CjQ==
-X-Gm-Message-State: AGi0Puagm0BpAITm1xSzKsQHaXgYfeSH+k+uutDoquuoW+16fpLmT8cY
-        JVnYxP+udB/5mdY2h5Q/899+AuYX
-X-Google-Smtp-Source: APiQypK6QkzwwzEqDKqri8AOStqnCVoQcUWo9VpjG6PFJPc06p38N+Xz35zVVtoaK0x1nCOpRAEbSg==
-X-Received: by 2002:adf:c109:: with SMTP id r9mr2483924wre.265.1587110405815;
-        Fri, 17 Apr 2020 01:00:05 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id n6sm6585346wmc.28.2020.04.17.01.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 01:00:05 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 10:00:03 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: implicit AOP_FLAG_NOFS for grab_cache_page_write_begin
-Message-ID: <20200417080003.GH26707@dhcp22.suse.cz>
-References: <20200415070228.GW4629@dhcp22.suse.cz>
- <20200417072931.GA20822@infradead.org>
+        Fri, 17 Apr 2020 04:15:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587111320; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=u3586iFRwcYPsbJjaSDkiDP7IdnytFfQnBeWLZSw2rs=; b=CpqdRmRMl/tQcatguwEZBKjNF1x7B7o/jjX18N4qXMLpQi/xLx23iO2CQRZHUS7A0G3vFEIx
+ sP/7jZYW/6x+ltf9OpKRVJ3hm+zMiAT7T9On8bWlhIz5748OJF5LYKkS+hRD8CKesfMgXMyl
+ IgUjU8ozWKOlnQcPkFY5e3HjMsg=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9962bc.7fe90db55848-smtp-out-n01;
+ Fri, 17 Apr 2020 08:03:08 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 449FDC4478F; Fri, 17 Apr 2020 08:03:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71443C433BA;
+        Fri, 17 Apr 2020 08:03:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 71443C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Rorvick <chris@rorvick.com>
+Subject: Re: [PATCH wireless-drivers v3] iwlwifi: actually check allocated conf_tlv pointer
+References: <20200417074558.12316-1-sedat.dilek@gmail.com>
+Date:   Fri, 17 Apr 2020 11:03:03 +0300
+In-Reply-To: <20200417074558.12316-1-sedat.dilek@gmail.com> (Sedat Dilek's
+        message of "Fri, 17 Apr 2020 09:45:58 +0200")
+Message-ID: <87pnc6pmiw.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417072931.GA20822@infradead.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17-04-20 00:29:31, Christoph Hellwig wrote:
-> On Wed, Apr 15, 2020 at 09:02:28AM +0200, Michal Hocko wrote:
-> > Hi,
-> > I have just received a bug report about memcg OOM [1]. The underlying
-> > issue is memcg specific but the stack trace made me look at the write(2)
-> > patch and I have noticed that iomap_write_begin enforces AOP_FLAG_NOFS
-> > which means that all the page cache that has to be allocated is
-> > GFP_NOFS. What is the reason for this? Do all filesystems really need
-> > the reclaim protection? I was hoping that those filesystems which really
-> > need NOFS context would be using the scope API
-> > (memalloc_nofs_{save,restore}.
-> 
-> This comes from the historic XFS code, and this commit from Dave
-> in particular:
-> 
-> commit aea1b9532143218f8599ecedbbd6bfbf812385e1
-> Author: Dave Chinner <dchinner@redhat.com>
-> Date:   Tue Jul 20 17:54:12 2010 +1000
-> 
->     xfs: use GFP_NOFS for page cache allocation
-> 
->     Avoid a lockdep warning by preventing page cache allocation from
->     recursing back into the filesystem during memory reclaim.
+Sedat Dilek <sedat.dilek@gmail.com> writes:
 
-Thanks for digging this up! The changelog is not really clear whether
-NOFS is to avoid false possitive lockup warnings or real ones. If the
-former then we have grown __GFP_NOLOCKDEP flag to workaround the problem
-if the later then can we use memalloc_nofs_{save,restore} in the xfs
-specific code please?
+> From: Chris Rorvick <chris@rorvick.com>
+>
+> Commit 71bc0334a637 ("iwlwifi: check allocated pointer when allocating
+> conf_tlvs") attempted to fix a typoe introduced by commit 17b809c9b22e
+> ("iwlwifi: dbg: move debug data to a struct") but does not implement the
+> check correctly.
+>
+> Fixes: 71bc0334a637 ("iwlwifi: check allocated pointer when allocating conf_tlvs")
+> Tweeted-by: @grsecurity
+> Message-Id: <20200402050219.4842-1-chris@rorvick.com>
+> Signed-off-by: Chris Rorvick <chris@rorvick.com>
+> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+Thanks, looks good to me. I'll just remove the Message-Id tag, it's not
+really needed in this case.
+
 -- 
-Michal Hocko
-SUSE Labs
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
