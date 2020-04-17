@@ -2,161 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EFD1AE325
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1341AE33D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgDQRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 13:06:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40508 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727913AbgDQRGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:06:09 -0400
-IronPort-SDR: AjGI3eJ9pNfrxViAu4x1MyLckr+vEONQDemp9LAnMlkk0JXEsU4zRpHPWLM2SOnuNt/tdVE2GS
- 5/HFdOwaGX6A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 10:06:08 -0700
-IronPort-SDR: oWEEqNM+7i3WPWHh2w6V/2UblrE/Y/aK9kseWVHcyzKnhHPe1gpnMAp8zjfaAHZTDBcDdg4UlE
- ZWmfbiYUX4Yg==
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
-   d="scan'208";a="299663835"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 10:06:08 -0700
-Date:   Fri, 17 Apr 2020 10:06:07 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>,
-        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 2/3] x86/split_lock: Bits in IA32_CORE_CAPABILITIES are
- not architectural
-Message-ID: <20200417170607.GA18267@agluck-desk2.amr.corp.intel.com>
-References: <20200416205754.21177-1-tony.luck@intel.com>
- <20200416205754.21177-3-tony.luck@intel.com>
- <878siumnrf.fsf@nanos.tec.linutronix.de>
+        id S1728978AbgDQRIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 13:08:47 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51050 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728020AbgDQRIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 13:08:45 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HH8Emn164795;
+        Fri, 17 Apr 2020 17:08:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=9AuAKei1InWbZiUi954FqxZ6IMH4o42cp4Zcjvsq5TU=;
+ b=GJJsNhUfXpcSqBvF7jDngmW0MRJw+h461HG+bRbezlfBsv0QFGTBw2XqkGRtCcwLu/xX
+ WDiT2eLR1yBIaT+Bl3wQShCLJ2z7X9078sV7ywYB83649n8lZXzdtggtusjLA+jLS8yN
+ shn8ZekAdpIOwaxXZAvyZvX0wquk7Q8Hx3fJ95gEAJqZlSlDiQ3CDddDmRUznPzV3Msd
+ 0jlV06+JJe17tuNh/XGqLxgTXktZTmEC9ISSjhbqA/R+xdGdi6BkdWg/yuAhZB9p27Jj
+ 85fWXr10S7q357QQ2oPsN9aFhZHOO11QLvLw+95z3Jmyq0oRQLS+RReSpYJf7iXmpyug 5g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30dn9608ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 17:08:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HH3PK2029576;
+        Fri, 17 Apr 2020 17:06:26 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 30emerd6j6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 17:06:25 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HH6Obc009578;
+        Fri, 17 Apr 2020 17:06:24 GMT
+Received: from dhcp-10-175-205-33.vpn.oracle.com (/10.175.205.33)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Apr 2020 10:06:24 -0700
+Date:   Fri, 17 Apr 2020 18:06:16 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type
+ printing
+In-Reply-To: <20200417164747.GD17973@kernel.org>
+Message-ID: <alpine.LRH.2.21.2004171803550.29397@localhost>
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com> <20200417164747.GD17973@kernel.org>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878siumnrf.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=3
+ mlxlogscore=999 phishscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004170131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=3
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 12:04:36PM +0200, Thomas Gleixner wrote:
-> Tony Luck <tony.luck@intel.com> writes:
-> > +	m = x86_match_cpu(split_lock_cpu_ids);
-> > +	if (!m)
-> > +		return;
-> > +
-> > +	if (m->driver_data && cpu_has(c, X86_FEATURE_CORE_CAPABILITIES))
-> > {
+On Fri, 17 Apr 2020, Arnaldo Carvalho de Melo wrote:
+
+> Em Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire escreveu:
+> > To give a flavour for what the printed-out data looks like,
+> > here we use pr_info() to display a struct sk_buff *.  Note
+> > we specify the 'N' modifier to show type field names:
+> > 
+> >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> > 
+> >   pr_info("%pTN<struct sk_buff>", skb);
+> > 
+> > ...gives us:
+> > 
+> > {{{.next=00000000c7916e9c,.prev=00000000c7916e9c,{.dev=00000000c7916e9c|.dev_scratch=0}}|.rbnode={.__rb_parent_color=0,.rb_right=00000000c7916e9c,.rb_left=00000000c7916e9c}|.list={.next=00000000c7916e9c,.prev=00000000c7916e9c}},{.sk=00000000c7916e9c|.ip_defrag_offset=0},{.tstamp=0|.skb_mstamp_ns=0},.cb=['\0'],{{._skb_refdst=0,.destructor=00000000c7916e9c}|.tcp_tsorted_anchor={.next=00000000c7916e9c,.prev=00000000c7916e9c}},._nfct=0,.len=0,.data_len=0,.mac_len=0,.hdr_len=0,.queue_mapping=0,.__cloned_offset=[],.cloned=0x0,.nohdr=0x0,.fclone=0x0,.peeked=0x0,.head_frag=0x0,.pfmemalloc=0x0,.active_extensions=0,.headers_start=[],.__pkt_type_offset=[],.pkt_type=0x0,.ignore_df=0x0,.nf_trace=0x0,.ip_summed=0x0,.ooo_okay=0x0,.l4_hash=0x0,.sw_hash=0x0,.wifi_acked_valid=0x0,.wifi_acked=0x0,.no_fcs=0x0,.encapsulation=0x0,.encap_hdr_csum=0x0,.csum_valid=0x0,.__pkt_vlan_present_offset=[],.vlan_present=0x0,.csum_complete_sw=0x0,.csum_level=0x0,.csum_not_inet=0x0,.dst_pending_co
 > 
-> This condition results in the following:
+> One suggestion, to make this more compact, one could have %pTNz<struct
+> sk_buff>" that wouldn't print any integral type member that is zeroed
+> :-)
+>
+
+That's a great idea, thanks Arnaldo! I'll add that.
+
+Alan
+ 
+> - Arnaldo
 > 
->     driver_data     MSR_CORE_CAPS	 MSR_CORE_CAPS_SLD	SLD available
-> 
-> 1       0             Don't care          Don't care               Y
-> 2       1                N                Don't care               Y
-> 3       1                Y                    Y                    Y
-> 4       1                Y                    N                    N
-> 
-> #2 does not make any sense to me.
-
-Nor to me :-(
-
-I got too clever trying to combine tests.
-
-New version taking cases one at a time so my "stuck inside the
-house for six weeks now" brain can follow the steps.
-
--Tony
-
-From 8c9d779e358eaa239b9647b7a3fe8ebee9becd63 Mon Sep 17 00:00:00 2001
-From: Tony Luck <tony.luck@intel.com>
-Date: Thu, 16 Apr 2020 10:37:42 -0700
-Subject: [PATCH v2] x86/split_lock: Bits in IA32_CORE_CAPABILITIES are not
- architectural
-
-The Intel Software Developers' Manual erroneously listed bit 5 of the
-IA32_CORE_CAPABILITIES register as an architectural feature. It is not.
-
-Features enumerated by IA32_CORE_CAPABILITIES are model specific and
-implementation details may vary in different cpu models. Thus it is only
-safe to trust features after checking the CPU model.
-
-Icelake client and server models are known to implement the split lock
-detect feature even though they don't enumerate IA32_CORE_CAPABILITIES
-
-Fixes: 6650cdd9a8cc ("x86/split_lock: Enable split lock detection by kernel")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/intel.c | 38 +++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 6119deb32660..0bf0d7e3832a 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -1120,10 +1120,12 @@ void switch_to_sld(unsigned long tifn)
- }
- 
- /*
-- * The following processors have the split lock detection feature. But
-- * since they don't have the IA32_CORE_CAPABILITIES MSR, the feature cannot
-- * be enumerated. Enable it by family and model matching on these
-- * processors.
-+ * Bits in the IA32_CORE_CAPABILITIES are not architectural, so they
-+ * should only be trusted if you know you are on a model that implements
-+ * them.
-+ * The driver_data field is set to zero to indicate CPU models like
-+ * Icelake that are known to have the split-lock feature even though
-+ * they do not enumerate IA32_CORE_CAPABILITIES.
-  */
- static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,           0),
-@@ -1133,19 +1135,23 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
- 
- void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
- {
--	u64 ia32_core_caps = 0;
-+	const struct x86_cpu_id *m;
-+	u64 ia32_core_caps;
- 
--	if (c->x86_vendor != X86_VENDOR_INTEL)
-+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		return;
-+
-+	m = x86_match_cpu(split_lock_cpu_ids);
-+	if (!m)
- 		return;
--	if (cpu_has(c, X86_FEATURE_CORE_CAPABILITIES)) {
--		/* Enumerate features reported in IA32_CORE_CAPABILITIES MSR. */
--		rdmsrl(MSR_IA32_CORE_CAPS, ia32_core_caps);
--	} else if (!boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
--		/* Enumerate split lock detection by family and model. */
--		if (x86_match_cpu(split_lock_cpu_ids))
--			ia32_core_caps |= MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT;
--	}
- 
--	if (ia32_core_caps & MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT)
--		split_lock_setup();
-+	if (!m->driver_data)
-+		goto setup;
-+	if (!cpu_has(c, X86_FEATURE_CORE_CAPABILITIES))
-+		return;
-+	rdmsrl(MSR_IA32_CORE_CAPS, ia32_core_caps);
-+	if (!(ia32_core_caps & MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT))
-+		return;
-+setup:
-+	split_lock_setup();
- }
--- 
-2.21.1
-
