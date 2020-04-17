@@ -2,195 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347E41AE49F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDEC1AE4AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730710AbgDQSRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
+        id S1730805AbgDQSUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730672AbgDQSR1 (ORCPT
+        by vger.kernel.org with ESMTP id S1730256AbgDQSUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:17:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE624C061A10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:17:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id p25so1420429pfn.11
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XsZBU4bhjV6O9KVbO6JPEje7KJLsMy5gzQ4J0zuUoG0=;
-        b=a7UCge8KsNi+LrELJHDknwsXaFe2Vfj8hoi97RUEfDhQKmg2JbLscHmOe+FVZS+emQ
-         3KX6TUXU4du4NXQKSWyuf6DVtoloiXA/aJUzax11Ye4Xuj9TUwpK/I1U55VfbVwAIjJd
-         Ybsh+3YSspq2pYRQchoW6mLkb2AU7yekjxUTA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XsZBU4bhjV6O9KVbO6JPEje7KJLsMy5gzQ4J0zuUoG0=;
-        b=JAn43cLC/4ageQhX8UfPrPuMkczpv+1UaV4m0Lj6PTtAi5J7V/4qYOkg2Gss5NpI6s
-         q9fPcmmc2rXuKcCN+cG+cfRrTS4buYSLhAq1QdOejLIekQx3+c8I9zp5Bq6b8/nKbAo2
-         EDe6kAzeFmrsKQlDCx91fV4fQy4HerYF/K7ITZR+ow5xKSP/oNgoqpKJUuByhLE+HZv7
-         sQ46v7Zsd8YXb0KHgUcwQZ59W3eJUei6dY9zVSvG4IeAjGCUL2xZ5+xrEoFZaCnF6Uac
-         aJB/0U7qvT/P2kZO7I153iwntQG06/AHoSBTA25aMQKwrfMJe+O2wuqOJ3HLBKjnHCfN
-         sZwQ==
-X-Gm-Message-State: AGi0PuYJE+mhXbrbTV4VXZHdgf1qAtLjDTtJjWkLPHDqQfD3uFEGEnqU
-        uuoSWyvrXeCNlh25Akz2u3lS2g==
-X-Google-Smtp-Source: APiQypIkeXBu6ylolmkKJSsiQ23LPbMq+pU1hKJH7sJLHh1ACpzIu3GZNXg9hm13C8XctxztyUIMFA==
-X-Received: by 2002:a65:4908:: with SMTP id p8mr4231124pgs.413.1587147446841;
-        Fri, 17 Apr 2020 11:17:26 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id g11sm19806944pfm.4.2020.04.17.11.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 11:17:25 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 11:17:24 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 05/17] drm/msm/dpu: Use OPP API to set clk/perf state
-Message-ID: <20200417181724.GE199755@google.com>
-References: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
- <1587132279-27659-6-git-send-email-rnayak@codeaurora.org>
+        Fri, 17 Apr 2020 14:20:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89116C061A0C;
+        Fri, 17 Apr 2020 11:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=JQ5dwC8H6/aiyaSgobgQiiIuDhCA2QJElFHLNREcZsU=; b=G3XC6I1aPH4y/3BSP7CGlyxMNl
+        XnddDYFKR2DIsV862VDMk7ZN2xjYSaJq8YYxVfDwuRBoEQvNRZ7Hx53Xz7bXex4Q4mahdcgZhFSS8
+        mP4UTEf0wT+96OmFBsuaucuVyY/+TiHLf5UKXUdaI8OWsVwBsq2HrW4Ve+elYiGSCEt106E2omVsJ
+        eSvcb1UsDrnMdZIqtu8dPg3Cnqg2uDeqKCEPF7dp7TWoJFvlsRYDel3HOFMmUKg6m6Z8uMgQ5SfzY
+        cLMfydzvRiTWymmAnOQwEJP4IHJ5TtjWagulgj4ahR5Rn7H+hF+HivVAIaAD4rJ6t3nCsz5ZgPu/Y
+        ZFSDwr5w==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPVbT-0001kx-2U; Fri, 17 Apr 2020 18:20:39 +0000
+Subject: Re: [PATCH v6 09/10] scsi: ufs-exynos: add UFS host support for
+ Exynos SoCs
+To:     Alim Akhtar <alim.akhtar@samsung.com>, robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
+        krzk@kernel.org, avri.altman@wdc.com, martin.petersen@oracle.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200417175944.47189-1-alim.akhtar@samsung.com>
+ <CGME20200417181024epcas5p4231ae3dd2598155854e9b7ee52438bcb@epcas5p4.samsung.com>
+ <20200417175944.47189-10-alim.akhtar@samsung.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c0760af4-6867-87f6-4abb-cb4079a7c982@infradead.org>
+Date:   Fri, 17 Apr 2020 11:20:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200417175944.47189-10-alim.akhtar@samsung.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1587132279-27659-6-git-send-email-rnayak@codeaurora.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajendra,
+On 4/17/20 10:59 AM, Alim Akhtar wrote:
+> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+> index e2005aeddc2d..cc7e29c8c24f 100644
+> --- a/drivers/scsi/ufs/Kconfig
+> +++ b/drivers/scsi/ufs/Kconfig
+> @@ -160,3 +160,15 @@ config SCSI_UFS_BSG
+>  
+>  	  Select this if you need a bsg device node for your UFS controller.
+>  	  If unsure, say N.
+> +
+> +config SCSI_UFS_EXYNOS
+> +	bool "EXYNOS specific hooks to UFS controller platform driver"
+> +	depends on SCSI_UFSHCD_PLATFORM && ARCH_EXYNOS || COMPILE_TEST
 
-I have essentially the same comments as for "tty: serial: qcom_geni_serial:
-Use OPP API to set clk/perf state" (https://patchwork.kernel.org/patch/11495209/).
-about error handling of 'dev_pm_opp_of_add_table' and misleading struct
-member names 'opp'/'opp_table'. Please apply the requested changes to the
-entire series unless you disagree (we can keep the discussion in the patch
-referenced above).
+"&&" has higher precedence than "||", so I'm thinking that line should be
 
-On Fri, Apr 17, 2020 at 07:34:27PM +0530, Rajendra Nayak wrote:
-> On some qualcomm platforms DPU needs to express a perforamnce state
-> requirement on a power domain depennding on the clock rates.
-> Use OPP table from DT to register with OPP framework and use
-> dev_pm_opp_set_rate() to set the clk/perf state.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c |  3 ++-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       | 20 +++++++++++++++++++-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |  4 ++++
->  3 files changed, 25 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
-> index 11f2beb..fe5717df 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
-> @@ -7,6 +7,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/errno.h>
->  #include <linux/mutex.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/sort.h>
->  #include <linux/clk.h>
->  #include <linux/bitmap.h>
-> @@ -239,7 +240,7 @@ static int _dpu_core_perf_set_core_clk_rate(struct dpu_kms *kms, u64 rate)
->  		rate = core_clk->max_rate;
->  
->  	core_clk->rate = rate;
-> -	return msm_dss_clk_set_rate(core_clk, 1);
-> +	return dev_pm_opp_set_rate(&kms->pdev->dev, core_clk->rate);
->  }
->  
->  static u64 _dpu_core_perf_get_core_clk_rate(struct dpu_kms *kms)
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index ce19f1d..cfce642 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -10,6 +10,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/dma-buf.h>
->  #include <linux/of_irq.h>
-> +#include <linux/pm_opp.h>
->  
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_file.h>
-> @@ -1033,11 +1034,18 @@ static int dpu_bind(struct device *dev, struct device *master, void *data)
->  	if (!dpu_kms)
->  		return -ENOMEM;
->  
-> +	dpu_kms->opp = dev_pm_opp_set_clkname(dev, "core");
-> +	if (IS_ERR(dpu_kms->opp))
-> +		return PTR_ERR(dpu_kms->opp);
-> +	/* OPP table is optional */
-> +	if (!dev_pm_opp_of_add_table(dev))
-> +		dpu_kms->opp_table = true;
++	depends on SCSI_UFSHCD_PLATFORM && (ARCH_EXYNOS || COMPILE_TEST)
+
+> +	select PHY_SAMSUNG_UFS
+> +	help
+> +	  This selects the EXYNOS specific additions to UFSHCD platform driver.
+> +	  UFS host on EXYNOS includes HCI and UNIPRO layer, and associates with
+> +	  UFS-PHY driver.
 > +
->  	mp = &dpu_kms->mp;
->  	ret = msm_dss_parse_clock(pdev, mp);
->  	if (ret) {
->  		DPU_ERROR("failed to parse clocks, ret=%d\n", ret);
-> -		return ret;
-> +		goto err;
->  	}
->  
->  	platform_set_drvdata(pdev, dpu_kms);
-> @@ -1051,6 +1059,11 @@ static int dpu_bind(struct device *dev, struct device *master, void *data)
->  
->  	priv->kms = &dpu_kms->base;
->  	return ret;
-> +err:
-> +	if (dpu_kms->opp_table)
-> +		dev_pm_opp_of_remove_table(dev);
-> +	dev_pm_opp_put_clkname(dpu_kms->opp);
-> +	return ret;
->  }
->  
->  static void dpu_unbind(struct device *dev, struct device *master, void *data)
-> @@ -1059,6 +1072,9 @@ static void dpu_unbind(struct device *dev, struct device *master, void *data)
->  	struct dpu_kms *dpu_kms = platform_get_drvdata(pdev);
->  	struct dss_module_power *mp = &dpu_kms->mp;
->  
-> +	if (dpu_kms->opp_table)
-> +		dev_pm_opp_of_remove_table(dev);
-> +	dev_pm_opp_put_clkname(dpu_kms->opp);
->  	msm_dss_put_clk(mp->clk_config, mp->num_clk);
->  	devm_kfree(&pdev->dev, mp->clk_config);
->  	mp->num_clk = 0;
-> @@ -1090,6 +1106,8 @@ static int __maybe_unused dpu_runtime_suspend(struct device *dev)
->  	struct dpu_kms *dpu_kms = platform_get_drvdata(pdev);
->  	struct dss_module_power *mp = &dpu_kms->mp;
->  
-> +	/* Drop the performance state vote */
-> +	dev_pm_opp_set_rate(dev, 0);
->  	rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, false);
->  	if (rc)
->  		DPU_ERROR("clock disable failed rc:%d\n", rc);
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index 211f5de9..0060709 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -128,6 +128,10 @@ struct dpu_kms {
->  
->  	struct platform_device *pdev;
->  	bool rpm_enabled;
-> +
-> +	struct opp_table *opp;
-> +	bool opp_table;
-> +
->  	struct dss_module_power mp;
->  
->  	/* reference count bandwidth requests, so we know when we can
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+> +	  Select this if you have UFS host controller on EXYNOS chipset.
+> +	  If unsure, say N.
+
+
+-- 
+~Randy
+
