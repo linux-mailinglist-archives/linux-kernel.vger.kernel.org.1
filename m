@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C3B1ADB97
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705731ADBA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgDQKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729238AbgDQKul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:50:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA2AC061A0C;
-        Fri, 17 Apr 2020 03:50:41 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id z6so828850plk.10;
-        Fri, 17 Apr 2020 03:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Je/eLmrKhS3hdneu92S4cmYbnB84FusrgAZoZiZ1TmY=;
-        b=BBjGapnQsGPSilyRxQstsGW/Tdd3ArqijwGKdeFMjiK+edNoW1X135JfO/AxTH3g+V
-         lWvkkrbv5jqrlhXzNZs+DVHpQw4ZdOEDqEHVtlud2p2K7NoxC1xB7NwGj3yLaoDZeHJV
-         59J/ovTk1OQsRqvHaSaiVgAu4HpQmWHGdL1K7RS0DP8qmeHYtpMYTXm0QGnL8SvL+iHH
-         K3wUvqyl8/nLq2ueQzzFbdpvT5IC9L+4DNaLqRtGb9ucRj0C+hHTVic4+1vqgX/ISK9v
-         PvZjVoNZafw+UlP8rZz4ION2Y1iVVxoDtk8fu2lMuc66duOMdbALlmPjWHIi+evdZEq2
-         3Gig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Je/eLmrKhS3hdneu92S4cmYbnB84FusrgAZoZiZ1TmY=;
-        b=dOcCZ7ME01YITBRl2jjxM73AQMIyw75+h1gZgDh7zZ5cfE6blW/JgvAdjDstHlDvdy
-         P1rrjIsbZUrInJFv+n1OARf+ImFc/WfNfz0ybxvmNviaPDRljnaLpGOGOk12vGlLiDqV
-         lVzpbK/iBKuIO9NqgLu0fFzX9Fecf7mrTTJr2SgiLxpa4T974tI5kRGXOAGaxYY99w1e
-         dtfCpNYcBNmzs6aLxVt5DuHMfagGqbcCEgbK7J6EsOFlb0M02U+5h0MtGsU2S8fIpPya
-         ZFxHTEnZhcXnc7KncOxCrqt1utGUhVq7rloQYx4qjC7k9qbzfMx0FqKhLVj8UkH0f+GW
-         XdtQ==
-X-Gm-Message-State: AGi0PuZIWZUY+DE6kABwVTsof9bfj4yFpOru6Co/iC3cdsjbTS8m2LEt
-        o0P2Jh68LbsEr1tFVyX/6Nu3Rq93lepN+SMbTfY=
-X-Google-Smtp-Source: APiQypLBwl6Gl7xdzmrIHTDp0wku+POYI6v/91l0vZXpBhC76ZlTjBtazQvlJtnJti5DsGxyTnbzzsF2RUN7oK9sNMQ=
-X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr3597676pjb.143.1587120640825;
- Fri, 17 Apr 2020 03:50:40 -0700 (PDT)
+        id S1729633AbgDQKy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:54:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44328 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729364AbgDQKy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:54:59 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 8087CD7DBF35CF8B1E2F;
+        Fri, 17 Apr 2020 18:54:50 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Apr 2020 18:54:41 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <qiangqing.zhang@nxp.com>,
+        <jolsa@redhat.com>, <robin.murphy@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [RFC PATCH] perf/smmuv3: Support sysfs identifier file
+Date:   Fri, 17 Apr 2020 18:50:34 +0800
+Message-ID: <1587120634-19666-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20200417080549.23751-1-brgl@bgdev.pl> <20200417080549.23751-2-brgl@bgdev.pl>
-In-Reply-To: <20200417080549.23751-2-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 17 Apr 2020 13:50:29 +0300
-Message-ID: <CAHp75Vf_kBfb_oLB2Dp48iYiDgs2k_RgzpudTvQMoxNYGMz3TA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] irq: make irq_domain_reset_irq_data() available
- even for non-V2 users
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:13 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> irq_domain_reset_irq_data() doesn't modify the parent data, so it can be
-> made available even if irq domain hierarchy is not being built. We'll
-> subsequently use it in irq_sim code.
+For the perf tool to know the specific HW implementation, expose a HW
+identifier file for the PMU device.
 
+For now, we just support HiSilicon "hip08" through pre-existing ACPI
+options quirk framework. A minimalistic approach is used, based on the
+hope that a proper identification method will be available in a future
+SMMUv3 spec.
 
-> @@ -475,7 +476,6 @@ extern int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
->  extern void irq_domain_free_irqs(unsigned int virq, unsigned int nr_irqs);
->  extern int irq_domain_activate_irq(struct irq_data *irq_data, bool early);
->  extern void irq_domain_deactivate_irq(struct irq_data *irq_data);
-> -
->  static inline int irq_domain_alloc_irqs(struct irq_domain *domain,
->                         unsigned int nr_irqs, int node, void *arg)
->  {
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-Seems extra hunk slipped to the patch.
-
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index f01a57e5a5f3..0ed358cff4a7 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -113,6 +113,7 @@ struct smmu_pmu {
+ 	u64 counter_mask;
+ 	u32 options;
+ 	bool global_filter;
++	const char *identifier;
+ };
+ 
+ #define to_smmu_pmu(p) (container_of(p, struct smmu_pmu, pmu))
+@@ -552,6 +553,27 @@ static struct attribute_group smmu_pmu_events_group = {
+ 	.is_visible = smmu_pmu_event_is_visible,
+ };
+ 
++static ssize_t smmu_pmu_identifier_attr_show(struct device *dev,
++					struct device_attribute *attr,
++					char *page)
++{
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(dev_get_drvdata(dev));
++
++	return sprintf(page, "%s\n", smmu_pmu->identifier);
++}
++
++static struct device_attribute smmu_pmu_identifier_attr =
++	__ATTR(identifier, 0444, smmu_pmu_identifier_attr_show, NULL);
++
++static struct attribute *smmu_pmu_identifier_attrs[] = {
++	&smmu_pmu_identifier_attr.attr,
++	NULL
++};
++
++static struct attribute_group smmu_pmu_identifier_group = {
++	.attrs = smmu_pmu_identifier_attrs,
++};
++
+ /* Formats */
+ PMU_FORMAT_ATTR(event,		   "config:0-15");
+ PMU_FORMAT_ATTR(filter_stream_id,  "config1:0-31");
+@@ -575,6 +597,7 @@ static const struct attribute_group *smmu_pmu_attr_grps[] = {
+ 	&smmu_pmu_cpumask_group,
+ 	&smmu_pmu_events_group,
+ 	&smmu_pmu_format_group,
++	&smmu_pmu_identifier_group,
+ 	NULL
+ };
+ 
+@@ -718,7 +741,10 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+ 	case IORT_SMMU_V3_PMCG_HISI_HIP08:
+ 		/* HiSilicon Erratum 162001800 */
+ 		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY;
++		smmu_pmu->identifier = "hip08";
+ 		break;
++	default:
++		smmu_pmu->identifier = "none";
+ 	}
+ 
+ 	dev_notice(smmu_pmu->dev, "option mask 0x%x\n", smmu_pmu->options);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.16.4
+
