@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46DF1AE11A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC51AE0FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgDQP11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728542AbgDQP11 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:27:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C298C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Yqtf2Cr9VCQpUS0GldnV7JK60DFB1BUHRTQDFzdrac0=; b=PsghyDdOxbKQz5ubAHKB+S1KQ1
-        4WGvoF0mQLZg7hUM7fMf8NP5ldMyeI3yCYJx6RLRak2X5e+/Q9xDAZRUP0QQU9W1n2QQPTfGOggc1
-        7CqiU9OJaaxVW+QPFi4Dyfve2Njq9xOAD+9mHA8/u+KFHkSdq1bH9aDEzeFKrnuisXCs6Ycf4toKF
-        88xJh20yh3d3gSYbH10L6SP20nwScbLCX/6eZFXn2BOF4GtsdEOGKzF6nUJuak+7+vX9OIjbkXrE0
-        DUV9lrpFh2d5OVlZ+pHRjXK3TL/SFRewlLfAK1go3ND7b0enqZh42kTCvyg04auwwc3DAZLklUu69
-        Lr0cyH0w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPStE-0008Sz-Ht; Fri, 17 Apr 2020 15:26:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DF502304E03;
-        Fri, 17 Apr 2020 17:26:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BFFE02B12192B; Fri, 17 Apr 2020 17:26:45 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 17:26:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 04/12] scs: disable when function graph tracing is
- enabled
-Message-ID: <20200417152645.GH20730@hirez.programming.kicks-ass.net>
-References: <20191018161033.261971-1-samitolvanen@google.com>
- <20200416161245.148813-1-samitolvanen@google.com>
- <20200416161245.148813-5-samitolvanen@google.com>
- <20200417100039.GS20730@hirez.programming.kicks-ass.net>
- <20200417144620.GA9529@lakrids.cambridge.arm.com>
+        id S1728831AbgDQPWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:22:46 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22044 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728684AbgDQPWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 11:22:46 -0400
+IronPort-SDR: EoUvbtWgmFHw8Ok62J0hgdWn7X4fgceDUO8P9xTKKHtmh6Vv2Qt78For47O0QVB+zCYbtrt7ZG
+ Uljl9clRui8w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 08:22:44 -0700
+IronPort-SDR: jttx9y4XliPhN5EmpkCynjQPClqI9PL59tfFSuf/z31+Enejj5o2AgxCyiDRK4DT9ud2Ko8scm
+ 2AlOmCiNfDuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
+   d="scan'208";a="279887326"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008.jf.intel.com with ESMTP; 17 Apr 2020 08:22:44 -0700
+Date:   Fri, 17 Apr 2020 08:28:39 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Yi L <yi.l.liu@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
+Message-ID: <20200417082839.45d6321e@jacob-builder>
+In-Reply-To: <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
+References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
+        <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
+        <20200410124557.4012b99b@jacob-builder>
+        <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
+        <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417144620.GA9529@lakrids.cambridge.arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 03:46:21PM +0100, Mark Rutland wrote:
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 691a552c2cc3..c53cb9025ad2 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -542,6 +542,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
-> > >  
-> > >  config SHADOW_CALL_STACK
-> > >  	bool "Clang Shadow Call Stack"
-> > > +	depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
-> > >  	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
-> > >  	help
-> > >  	  This option enables Clang's Shadow Call Stack, which uses a
->  
-> > AFAICT you also need to kill KRETPROBES, which plays similar games.
+On Fri, 17 Apr 2020 09:46:55 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
+
+> Hi Kevin,
+> On 4/17/20 4:45 AM, Tian, Kevin wrote:
+> >> From: Auger Eric
+> >> Sent: Thursday, April 16, 2020 6:43 PM
+> >>  
+> > [...]  
+> >>>>> +	if (svm) {
+> >>>>> +		/*
+> >>>>> +		 * If we found svm for the PASID, there must
+> >>>>> be at
+> >>>>> +		 * least one device bond, otherwise svm should
+> >>>>> be freed.
+> >>>>> +		 */
+> >>>>> +		if (WARN_ON(list_empty(&svm->devs))) {
+> >>>>> +			ret = -EINVAL;
+> >>>>> +			goto out;
+> >>>>> +		}
+> >>>>> +
+> >>>>> +		for_each_svm_dev(sdev, svm, dev) {
+> >>>>> +			/* In case of multiple sub-devices of
+> >>>>> the same pdev
+> >>>>> +			 * assigned, we should allow multiple
+> >>>>> bind calls with
+> >>>>> +			 * the same PASID and pdev.
+> >>>>> +			 */
+> >>>>> +			sdev->users++;  
+> >>>> What if this is not an mdev device. Is it also allowed?  
+> >>> Yes. IOMMU and VT-d driver is not mdev aware. Here mdev is just an
+> >>> example of normal use case. You can bind the same PCI device (PF
+> >>> or SRIOV VF) more than once to the same PASID. Just need to
+> >>> unbind also.  
+> >>
+> >> I don't get the point of binding a non mdev device several times
+> >> with the same PASID. Do you intend to allow that at userspace
+> >> level or prevent this from happening in VFIO?  
+> > 
+> > I feel it's better to prevent this from happening, otherwise VFIO
+> > also needs to track the bind count and do multiple unbinds at
+> > mm_exit. But it's not necessary to prevent it in VFIO. We can check
+> > here upon whether aux_domain is valid, and if not return -EBUSY.  
+> Ah OK. So if we can detect the case here it is even better
 > 
-> Hmm... how does KREPROBES work? If you can only mess with the return
-> address when probing the first instruction in the function, it'll just
-> work for SCS or pointer authentication, as the LR is used at that
-> instant. If KRETPROBES tries to mess with the return address elsewhere
-> it'd be broken today...
+I don't understand why VFIO cannot track, since it is mdev aware. if we
+don;t refcount the users, one mdev unbind will result unbind for all
+mdev under the same pdev. That may not be the right thing to do.
 
-To be fair, I've not looked at the arm64 implementation. x86 does gross
-things like ftrace does. On x86 ftrace_graph and kretprobe also can't
-be on at the same time for the same function, there's some yuck around
-there.
-
-Rostedt was recently talking about cleaning some of that up.
-
-But if kretprobe can work on arm64, then ftrace_graph can too, but I
-think that links back to what you said earlier, you didn't want more
-ftrace variants or something.
-
-> > And doesn't BPF also do stuff like this?
+> Thanks
 > 
-> Can BPF mess with return addresses now!?
+> Eric
+> >   
+> >>
+> >> Besides, the comment is a bit misleading as it gives the
+> >> impression it is only true for mdev and there is no associated
+> >> check.  
+> > 
+> > Thanks
+> > Kevin
+> >   
+> 
 
-At least on x86 I think it does. But what do I know, I can't operate
-that stuff. Rostedt might know.
+[Jacob Pan]
