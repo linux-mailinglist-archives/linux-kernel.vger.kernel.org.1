@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB2E1AD84C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC4A1AD85B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgDQIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:08:47 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:48637 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729176AbgDQIIq (ORCPT
+        id S1729689AbgDQINy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:13:54 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:38809 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729635AbgDQINy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:08:46 -0400
-Received: from mail-qt1-f175.google.com ([209.85.160.175]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MZCrZ-1jkzgQ3QCv-00V5Py; Fri, 17 Apr 2020 10:08:44 +0200
-Received: by mail-qt1-f175.google.com with SMTP id q17so1305269qtp.4;
-        Fri, 17 Apr 2020 01:08:43 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZPHLJ0ETGwYzc0w53ajd7TmC5191V2wY8CPG5IpuuvuYpJ8AaC
-        UG55exHovexaevi31J/2Lb14TO2ls08BHLu52xs=
-X-Google-Smtp-Source: APiQypLUoNDOKFwGPWYoRRmEiZI8rctsda5AneTsk6fjIsb3FT/qvUaisaRkSlwxmoYxvPE3/5JVy2siN1PfRxaCOmc=
-X-Received: by 2002:aed:20e3:: with SMTP id 90mr1721476qtb.142.1587110922393;
- Fri, 17 Apr 2020 01:08:42 -0700 (PDT)
+        Fri, 17 Apr 2020 04:13:54 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id PM8CjhxNn7xncPM8Fj9mMH; Fri, 17 Apr 2020 10:13:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1587111231; bh=q8NYR4tyAXxdz07W8s6qeKGxIV5x1hCdmkoYOk/clHw=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=ixurVZBK9PzfGphIcS6qkRb/MlTeQBGYYXC0ZUTH7wEYk0Ueb7Owttt4dYHqdQ6kr
+         9wug2o0gtFkfqwmqLqZv0bC0Asjyh6ENLQyfLgrSmIFORkXwEC6JgJY2HDQ5GvvA5a
+         H/B8XrcZ+QOxJaPZD8hqldRnEaqHdmHv3tgci/uUU6KvF9YztpahvXiD7ws8YljHU0
+         4iCf6VU+zOUw+b0b9NV6mZj3psdln5LjxYmo1UPhbuD0T2wqb6XNVYq9JbbkgG1o8l
+         abKgZx32yxBugiCaGGlxQA9ND7cwB0GdSCVGvoD6HZ2ivtpBLlMiVTrmoMqGEe0+N2
+         2ybkchPgG/i+A==
+Subject: Re: [RFC][PATCH] media: v4l2-ctrls: add more NULL pointer checks
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200410103501.1083-1-sergey.senozhatsky@gmail.com>
+ <c83c137b-b801-a06b-e324-09dd3bbc9daf@xs4all.nl>
+ <20200416113249.GG30641@jagdpanzerIV.localdomain>
+ <f724e17d-51ae-ad20-6c78-4be21d39180b@xs4all.nl>
+Message-ID: <3bf8712c-45fe-5539-f659-fafa861b8702@xs4all.nl>
+Date:   Fri, 17 Apr 2020 10:13:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200417011146.83973-1-saeedm@mellanox.com> <20200417011146.83973-2-saeedm@mellanox.com>
-In-Reply-To: <20200417011146.83973-2-saeedm@mellanox.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Apr 2020 10:08:26 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a22OtR5x01iNaSpJ3kM0MBd+dJshKOe6Cp42zukme2A+A@mail.gmail.com>
-Message-ID: <CAK8P3a22OtR5x01iNaSpJ3kM0MBd+dJshKOe6Cp42zukme2A+A@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] net/mlx5: Kconfig: Use "uses" instead of "imply"
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:YpC9Ij1eNtvdD1DAdicFQKLiz2VsLhebBV++mgPKvmfb4tS0VGY
- rqOGEt1xfgecycpBfzED2WvluWYBfoPZe2OWbPNbAIdsGZ6ZdgpeJgxu6kgTD9yAhrUuuqs
- SpPmz+1uUSrabZF774kp5vTc8o628ykSybBXIDEzHcfoCzzHmjJUJO0g7VLNktUi5QEXIeR
- Er9sr9zQHBpzLSoyVumKw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kx+/Em1awjU=:1KQ2OTbdqmagGY2K4XVLQt
- /QadPC/sm2CLOphF+BLE06ltL8tLnP2BzAX3SSHthqj4/5KC6r4fVcItmrTR1Yt01DPzVHZc7
- x+zBUwk/8HmgpFTIdo5I4ZQAyWp0HYDPqC61uhBowKtvV3tdDNKwFXGr1GDKUwXK4tGAQ30qG
- YNgWZR5+tVb6KfWehhns+hNluZlNLoHZsWwSNkYCpuQFF8+MznVOl62EpvrIDUqUTUTFG6szr
- 6fJJYTIoV5syYHK7ayokV2lXYsuEMTavczqcEDxxpnNyepkITHQVqId7XlUX901tamxfxEMfr
- boCuQ70/628d62Db+QwqcnTGJ8gsb/uuVJxC8cFaTDy2LVlmUiZfVN4sb9oUFFbeSUSuct6W3
- I6O27NuTXwCgXUDCNgcVw6WLMhnA8OVHwlVe91a55vALJIBiK0cQWjOL6/nh7uJ7S38FgYHZF
- u+rijcvxbolb0xLWoX5CewJ+xCpYTroUn+hsc2Ip+tRCsNjvZDXDzlih+8fOWtknZ2kC2GZrX
- ltj/d9L6TKtfODjk22VnYpVoGSdUaTnmend5LicVHKlFl1NvQu+Tx4E8P+6XqV1k06m4Xi4pl
- evkLjl+JcEZHbAxfEU7YGqsr9piLrHcEGzqE9XfAaWz3cUzoQA0lCbEgdVoI12TNiFha+qknj
- mGYRi3M1f7x2E1xIZVwEF+ylscG6jzXTGMQTlytZ5OsIDgYAtGjHJPTiZKatIPxrdGUEQ3zQt
- UBP6NUHPJtbsOvJftTnrwEDAgLSJ9ROyjAYyarreQbl8VO0KOvgT4pVrYviPQVhuHhg7rI6n0
- oXV4wVnIGCj9+aeFy6n0bAyt+CYvywwhobGkswSTvgqhyyxUZU=
+In-Reply-To: <f724e17d-51ae-ad20-6c78-4be21d39180b@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFYLNyJhvDwpyf29uR5h8j3sMZwt1QOuUImdludPImcJp5YjO4FCUr3Xrrk1gF6iYXfNd5v+rJy06wfpKjgbCqqH5lOuKkU1YJlX/T7BfnB3fk5YLLAp
+ vefcx+OoJTohL4bFzaVrT+wybek/+DSYgqjtqXMIrEHA+EIgP4Hm+FoH5FrumHCMCObJLpq2cYbjsyHgfK0fiESjGOKy2OfQ07Fx+XkDWFTkwfL3z6aqbsHR
+ /5nmagjBROZvigqws9+CsvmX9DOd09909QdG/TwVO/UdKmVw/z32q2Srs/bmFc56+e48IWmb8vcP9vPOHXK5je4nrNLftLMQdrm/EDNikbk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 3:12 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
+Hi Sergey,
 
-> @@ -7,10 +7,10 @@ config MLX5_CORE
->         tristate "Mellanox 5th generation network adapters (ConnectX series) core driver"
->         depends on PCI
->         select NET_DEVLINK
-> -       imply PTP_1588_CLOCK
-> -       imply VXLAN
-> -       imply MLXFW
-> -       imply PCI_HYPERV_INTERFACE
-> +       uses PTP_1588_CLOCK
-> +       uses VXLAN
-> +       uses MLXFW
-> +       uses PCI_HYPERV_INTERFACE
+I recommend that you wait a bit until these two patches are merged:
 
-I have confirmed in the meantime that changing the PCI_HYPERV_INTERFACE
-dependency is indeed required, in addition to PTP_1588_CLOCK and VXLAN
-that the randconfig tests found earlier:
+https://patchwork.linuxtv.org/patch/61897/
+https://patchwork.linuxtv.org/patch/61898/
 
-x86_64-linux-ld: drivers/net/ethernet/mellanox/mlx5/core/main.o: in
-function `mlx5_unload':
-main.c:(.text+0x325): undefined reference to `mlx5_hv_vhca_cleanup'
+I'm about to post a PR for these (and others), so hopefully these will
+get merged soon.
 
-I also checked that there is no link failure with MLX5_CORE=y and MLXFW=m,
-but only because of an IS_REACHABLE() check in mlxfw/mlxfw.h.
-I suppose that should be changed back to IS_ENABLED() now along with
-the Kconfig check.
+Regards,
 
-      Arnd
+	Hans
+
+On 16/04/2020 14:13, Hans Verkuil wrote:
+> On 16/04/2020 13:32, Sergey Senozhatsky wrote:
+>> On (20/04/16 10:53), Hans Verkuil wrote:
+>> [..]
+>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> @@ -2869,6 +2869,9 @@ EXPORT_SYMBOL(v4l2_ctrl_add_handler);
+>>>>  
+>>>>  bool v4l2_ctrl_radio_filter(const struct v4l2_ctrl *ctrl)
+>>>>  {
+>>>> +	if (WARN_ON(!ctrl))
+>>>> +		return false;
+>>>> +
+>>>>  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_TX)
+>>>>  		return true;
+>>>>  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_RX)
+>>>> @@ -3794,7 +3797,9 @@ s32 v4l2_ctrl_g_ctrl(struct v4l2_ctrl *ctrl)
+>>>>  	struct v4l2_ext_control c;
+>>>>  
+>>>>  	/* It's a driver bug if this happens. */
+>>>> -	WARN_ON(!ctrl->is_int);
+>>>> +	if (WARN_ON(!ctrl || !ctrl->is_int))
+>>>> +		return -EINVAL;
+>>>
+>>> Just return 0 here. The return value is the control's value, not an error code.
+>>> So all you can do here is return 0 in the absence of anything better.
+>>
+>> OK.
+>>
+>>>> +
+>>>>  	c.value = 0;
+>>>>  	get_ctrl(ctrl, &c);
+>>>>  	return c.value;
+>>>> @@ -4212,6 +4217,9 @@ EXPORT_SYMBOL(v4l2_s_ctrl);
+>>>>  
+>>>>  int __v4l2_ctrl_s_ctrl(struct v4l2_ctrl *ctrl, s32 val)
+>>>>  {
+>>>> +	if (!ctrl)
+>>>
+>>> Change this to 'if (WARN_ON(!ctrl))'
+>>>
+>>> I don't think NULL pointers should be silently ignored: it really
+>>> indicates a driver bug. It it certainly a good idea to WARN instead.
+>>
+>> Should WARN_ON() be only in unlocked versions of ctrl API? It probably
+>> would make sense to add WARNs to both - e.g. to v4l2_ctrl_s_ctrl() and
+> 
+> Yes, it should be done for both.
+> 
+>> to __v4l2_ctrl_s_ctrl(). By the way, why don't locked and unlocked
+>> versions live together in v4l2-ctrls.c file? Any reason for, e.g.,
+>> v4l2_ctrl_s_ctrl() to be in header and __v4l2_ctrl_s_ctrl() to be C-file?
+> 
+> The v4l2_ctrl_s_ctrl() work fine as a static inline (only compiled if
+> they are actually used). But with an additional 'if (WARN_ON(!ctrl))'
+> it becomes a bit questionable. I would not be opposed if these static
+> inlines are now moved into the source code.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>>> The same is true for the functions below.
+>>
+>> OK.
+>>
+>> 	-ss
+>>
+> 
+
