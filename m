@@ -2,88 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869B31AD9AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2B71AD93B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730202AbgDQJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730106AbgDQJVy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:21:54 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21357C061A0C;
-        Fri, 17 Apr 2020 02:21:54 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jPNBv-000577-NU; Fri, 17 Apr 2020 11:21:43 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 329E91C0072;
-        Fri, 17 Apr 2020 11:21:43 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:21:42 -0000
-From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Drop bogus comment about mce.kflags
-Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200415195826.GA13681@agluck-desk2.amr.corp.intel.com>
-References: <20200415195826.GA13681@agluck-desk2.amr.corp.intel.com>
+        id S1729983AbgDQI4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:56:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2396 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729784AbgDQI4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:56:20 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D73A273877486DB52B06;
+        Fri, 17 Apr 2020 16:56:17 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 16:56:07 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <perex@perex.cz>, <tiwai@suse.com>, <hariprasad.kelam@gmail.com>,
+        <yanaijie@huawei.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] ALSA: au88x0: remove some dead code
+Date:   Fri, 17 Apr 2020 17:22:32 +0800
+Message-ID: <20200417092232.13371-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Message-ID: <158711530270.28353.8482037623626742412.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+Fix the following gcc warning:
 
-Commit-ID:     f82cdff1aa7f6dcf6625c7219342a6e5c977098d
-Gitweb:        https://git.kernel.org/tip/f82cdff1aa7f6dcf6625c7219342a6e5c977098d
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 15 Apr 2020 12:58:26 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 17 Apr 2020 11:12:21 +02:00
+sound/pci/au88x0/au88x0_a3ddata.c:62:25: warning: ‘A3dHrirDImpulse’
+defined but not used [-Wunused-const-variable=]
+ static const a3d_Hrtf_t A3dHrirDImpulse = {
+                         ^~~~~~~~~~~~~~~
+sound/pci/au88x0/au88x0_a3ddata.c:50:25: warning: ‘A3dHrirSatTest’
+defined but not used [-Wunused-const-variable=]
+ static const a3d_Hrtf_t A3dHrirSatTest = {
+                         ^~~~~~~~~~~~~~
+sound/pci/au88x0/au88x0_a3ddata.c:33:25: warning: ‘A3dHrirOnes’ defined
+but not used [-Wunused-const-variable=]
+ static const a3d_Hrtf_t A3dHrirOnes = {
+                         ^~~~~~~~~~~
 
-x86/mce: Drop bogus comment about mce.kflags
-
-The bit definitions for kflags are for internal use only. A
-late edit moved them from uapi/asm/mce.h to the internal
-x86 <asm/mce.h>, but the comment saying "See below" was
-accidentally left here.
-
-Delete "See below". Just labelling this field as internal
-kernel use is sufficient.
-
-Fixes: 1de08dccd383 ("x86/mce: Add a struct mce.kflags field")
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200415195826.GA13681@agluck-desk2.amr.corp.intel.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- arch/x86/include/uapi/asm/mce.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/au88x0/au88x0_a3d.c     | 23 -------------------
+ sound/pci/au88x0/au88x0_a3ddata.c | 38 -------------------------------
+ 2 files changed, 61 deletions(-)
 
-diff --git a/arch/x86/include/uapi/asm/mce.h b/arch/x86/include/uapi/asm/mce.h
-index 5b59d80..db9adc0 100644
---- a/arch/x86/include/uapi/asm/mce.h
-+++ b/arch/x86/include/uapi/asm/mce.h
-@@ -35,7 +35,7 @@ struct mce {
- 	__u64 ipid;		/* MCA_IPID MSR: only valid on SMCA systems */
- 	__u64 ppin;		/* Protected Processor Inventory Number */
- 	__u32 microcode;	/* Microcode revision */
--	__u64 kflags;		/* Internal kernel use. See below */
-+	__u64 kflags;		/* Internal kernel use */
+diff --git a/sound/pci/au88x0/au88x0_a3d.c b/sound/pci/au88x0/au88x0_a3d.c
+index 2db183f8826a..4d3b79a34c69 100644
+--- a/sound/pci/au88x0/au88x0_a3d.c
++++ b/sound/pci/au88x0/au88x0_a3d.c
+@@ -512,31 +512,8 @@ static void a3dsrc_ProgramPipe(a3dsrc_t * a)
+ 	/* Single spike leads to identity transfer function. */
+ 	a3dsrc_SetHrtfCurrent(a, A3dHrirImpulse, A3dHrirImpulse);
+ 	a3dsrc_SetHrtfTarget(a, A3dHrirImpulse, A3dHrirImpulse);
+-
+-	/* Test: Sounds saturated. */
+-	//a3dsrc_SetHrtfCurrent(a, A3dHrirSatTest, A3dHrirSatTest);
+-	//a3dsrc_SetHrtfTarget(a, A3dHrirSatTest, A3dHrirSatTest);      
+ }
+ 
+-/* VDB = Vortex audio Dataflow Bus */
+-#if 0
+-static void a3dsrc_ClearVDBData(a3dsrc_t * a, unsigned long aa)
+-{
+-	vortex_t *vortex = (vortex_t *) (a->vortex);
+-
+-	// ((aa >> 2) << 8) - (aa >> 2)
+-	hwwrite(vortex->mmio,
+-		a3d_addrS(a->slice, A3D_SLICE_VDBDest) + (a->source << 2), 0);
+-	hwwrite(vortex->mmio,
+-		a3d_addrS(a->slice,
+-			  A3D_SLICE_VDBDest + 4) + (a->source << 2), 0);
+-	/*
+-	   hwwrite(vortex->mmio, 0x19c00 + (((aa>>2)*255*4)+aa)*8, 0);
+-	   hwwrite(vortex->mmio, 0x19c04 + (((aa>>2)*255*4)+aa)*8, 0);
+-	 */
+-}
+-#endif
+-
+ /* A3D HwSource stuff. */
+ 
+ static void vortex_A3dSourceHw_Initialize(vortex_t * v, int source, int slice)
+diff --git a/sound/pci/au88x0/au88x0_a3ddata.c b/sound/pci/au88x0/au88x0_a3ddata.c
+index 18623cb6bc52..cc41ea67a6d3 100644
+--- a/sound/pci/au88x0/au88x0_a3ddata.c
++++ b/sound/pci/au88x0/au88x0_a3ddata.c
+@@ -30,44 +30,6 @@ static const a3d_Hrtf_t A3dHrirImpulse = {
+ 	0, 0, 0
  };
  
- #define MCE_GET_RECORD_LEN   _IOR('M', 1, int)
+-static const a3d_Hrtf_t A3dHrirOnes = {
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff,
+-	0x7fff,
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff,
+-	0x7fff,
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff,
+-	0x7fff,
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff,
+-	0x7fff,
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff
+-};
+-
+-static const a3d_Hrtf_t A3dHrirSatTest = {
+-	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+-	0x7fff,
+-	0x7fff,
+-	0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001,
+-	0x8001,
+-	0x8001,
+-	0x7fff, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+-	0, 0, 0,
+-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+-};
+-
+-static const a3d_Hrtf_t A3dHrirDImpulse = {
+-	0, 0x7fff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+-	0, 0, 0,
+-	0, 0, 0, 0,
+-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+-	0, 0, 0,
+-	0, 0, 0
+-};
+-
+ static const a3d_ItdDline_t A3dItdDlineZeros = {
+ 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+-- 
+2.21.1
+
