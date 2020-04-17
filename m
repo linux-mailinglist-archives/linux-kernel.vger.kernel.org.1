@@ -2,146 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CCC1ADFE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009791ADFC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgDQO04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:26:56 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:38374 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728010AbgDQO0z (ORCPT
+        id S1727811AbgDQO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:26:25 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:36481 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgDQO0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:26:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587133614; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=fSWZYAx+xUo9BW8l9Vg7d7Qrc7pAbwtD1+dmCZo15aU=; b=BaIKCdF/1DE7jbJCb/IulSSmjWi+mzORwHKD6Vh18yBLpvuCHqVf1v77bVavCzDffcY6tyUz
- JhoRXWR3KdbTPpKXk5i9yCmCVH8b1+0Abz8zAgGOCqxWlMP72UEFTXkWkQPCN9LnyI+7WgBn
- m39ztzeSzureY3aKbpYXM0dw6FE=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e99bca5.7fe88aa9f960-smtp-out-n03;
- Fri, 17 Apr 2020 14:26:45 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CAFB7C433BA; Fri, 17 Apr 2020 14:26:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 002ABC4478F;
-        Fri, 17 Apr 2020 14:26:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 002ABC4478F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, evgreen@chromium.org,
-        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
-        devicetree@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH 5/5] arm64: dts: qcom: sc7180: Update Q6V5 MSS node
-Date:   Fri, 17 Apr 2020 19:56:05 +0530
-Message-Id: <20200417142605.28885-6-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200417142605.28885-1-sibis@codeaurora.org>
-References: <20200417142605.28885-1-sibis@codeaurora.org>
+        Fri, 17 Apr 2020 10:26:23 -0400
+Received: by mail-pl1-f194.google.com with SMTP id g2so1027930plo.3;
+        Fri, 17 Apr 2020 07:26:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=j1VzqJjAD8ib6piUd8Mj5xPhAMzaoVEfMnezftKictg=;
+        b=uEEUWIs+pwniPf9e0q2b4wSVigR2g2vZpPqulaOIiibn7dp2zEVIkaNdzxhqj71M4M
+         a49kH8TC3W2IDzOgPyrVsGNQyEiQVwlrSjTtAA5uYIM0t+hsJCqdlXJr09BjMOS0lCxQ
+         aSNtjPmUdDvKdg2dPEPPPPgWH+Cfs2nVcAGG+eFtQAAo09adTU/Zxom76QPx2Pc8wxOT
+         /ZEB5F/dlxUSLBQQRIhmWxTH7Sre6QvB1FyRUZthzUdM3YeSp7dPVJaZcUDuube6BmXL
+         fNl0kN5zvAq9zAZXXLAJBzFeAxnEGwn1LOaI1L+ULDpJqFpTMIWDc1M2BqqgwpzpmnGY
+         buKw==
+X-Gm-Message-State: AGi0PuZSXsTUTP+q71y+ybmL+Zn+sjH9X43zOiQlsxsOB3lX1zyRCnFQ
+        JCj9rtZYFs8txxrGxT7/SHvxc2ja68I=
+X-Google-Smtp-Source: APiQypJujqyE7XAHRsm/wgNCaK7jUA8TZP08MjLKRGOCBHKzUefM/s2/UZOZ71l9wI+3wTnjEPrMOw==
+X-Received: by 2002:a17:902:b909:: with SMTP id bf9mr3827927plb.322.1587133581871;
+        Fri, 17 Apr 2020 07:26:21 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:54eb:5dc7:79c2:2fa2? ([2601:647:4000:d7:54eb:5dc7:79c2:2fa2])
+        by smtp.gmail.com with ESMTPSA id 1sm5837009pjc.32.2020.04.17.07.26.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2020 07:26:21 -0700 (PDT)
+Subject: Re: [RFC] block: fix access of uninitialized pointer address in
+ bt_for_each()
+To:     yu kuai <yukuai3@huawei.com>, axboe@kernel.dk, ming.lei@redhat.com
+Cc:     yi.zhang@huawei.com, yuyufen@huawei.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200417125134.45117-1-yukuai3@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <340bed9b-e14d-5a22-1601-8fb7aad4ce7f@acm.org>
+Date:   Fri, 17 Apr 2020 07:26:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200417125134.45117-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add TCSR node and update MSS node to support MSA based Modem boot on
-SC7180 SoCs.
+On 2020-04-17 05:51, yu kuai wrote:
+> I recently got a KASAN warning like this in our 4.19 kernel:
+> 
+>  ==================================================================
+>  BUG: KASAN: slab-out-of-bounds in bt_for_each+0x1dc/0x2c0
+>  Read of size 8 at addr ffff8000c0865000 by task sh/2023305
+> 
+>  Call trace:
+>  dump_backtrace+0x0/0x310
+>  show_stack+0x28/0x38
+>  dump_stack+0xd8/0x108
+>  print_address_description+0x68/0x2d0
+>  kasan_report+0x124/0x2e0
+>  __asan_load8+0x88/0xb0
+>  bt_for_each+0x1dc/0x2c0
+>  blk_mq_queue_tag_busy_iter+0x1f0/0x3e8
+>  blk_mq_in_flight+0xb4/0xe0
+>  part_in_flight+0x124/0x178
+>  part_round_stats+0x128/0x3b0
+>  blk_account_io_start+0x2b4/0x3f0
+>  blk_mq_bio_to_request+0x170/0x258
+>  blk_mq_make_request+0x734/0xdd8
+>  generic_make_request+0x388/0x740
+>  submit_bio+0xd8/0x3d0
+>  ext4_io_submit+0xb4/0xe0 [ext4]
+>  ext4_writepages+0xb44/0x1c00 [ext4]
+>  do_writepages+0xc8/0x1f8
+>  __filemap_fdatawrite_range+0x200/0x2a0
+>  filemap_flush+0x30/0x40
+>  ext4_alloc_da_blocks+0x54/0x200 [ext4]
+>  ext4_release_file+0xfc/0x150 [ext4]
+>  __fput+0x15c/0x3a8
+>  ____fput+0x24/0x30
+>  task_work_run+0x1a4/0x208
+>  do_notify_resume+0x1a8/0x1c0
+>  work_pending+0x8/0x10
+> 
+>  Allocated by task 3515778:
+>  kasan_kmalloc+0xe0/0x190
+>  kmem_cache_alloc_trace+0x18c/0x418
+>  alloc_pipe_info+0x74/0x240
+>  create_pipe_files+0x74/0x2f8
+>  __do_pipe_flags+0x48/0x168
+>  do_pipe2+0xa0/0x1d0
+>  __arm64_sys_pipe2+0x3c/0x50
+>  el0_svc_common+0xb4/0x1d8
+>  el0_svc_handler+0x50/0xa8
+>  el0_svc+0x8/0xc
+> 
+>  Freed by task 3515778:
+>  __kasan_slab_free+0x120/0x228
+>  kasan_slab_free+0x10/0x18
+>  kfree+0x88/0x3d8
+>  free_pipe_info+0x150/0x178
+>  put_pipe_info+0x138/0x1c0
+>  pipe_release+0xe8/0x120
+>  __fput+0x15c/0x3a8
+>  ____fput+0x24/0x30
+>  task_work_run+0x1a4/0x208
+>  do_notify_resume+0x1a8/0x1c0
+>  work_pending+0x8/0x10
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
+The alloc/free info refers to a data structure owned by the pipe
+implementation. The use-after-free report refers to a data structure
+owned by the block layer. How can that report make sense?
 
-Depends on the following bindings:
-iommus: https://patchwork.kernel.org/patch/11443101/
-spare-regs: https://patchwork.kernel.org/patch/11491425/
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 7ed16ed13976..48b74d0085c7 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -485,6 +485,7 @@ static void __blk_mq_free_request(struct request *rq)
+>  	struct blk_mq_hw_ctx *hctx = blk_mq_map_queue(q, ctx->cpu);
+>  	const int sched_tag = rq->internal_tag;
+>  
+> +	hctx->tags->rqs[rq->tag] = NULL;
+>  	if (rq->tag != -1)
+>  		blk_mq_put_tag(hctx, hctx->tags, ctx, rq->tag);
+>  	if (sched_tag != -1)
 
- arch/arm64/boot/dts/qcom/sc7180-idp.dts | 42 +++++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sc7180.dtsi    |  5 +++
- 2 files changed, 47 insertions(+)
+Can the above change trigger the following assignment?
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index e613d70cc0198..6f472872be1a3 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -319,6 +319,48 @@ &qupv3_id_1 {
- 	status = "okay";
- };
- 
-+&remoteproc_mpss {
-+	compatible = "qcom,sc7180-mss-pil";
-+	reg = <0 0x04080000 0 0x410>, <0 0x04180000 0 0x48>;
-+	reg-names = "qdsp6", "rmb";
-+
-+	clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
-+		 <&gcc GCC_MSS_Q6_MEMNOC_AXI_CLK>,
-+		 <&gcc GCC_MSS_NAV_AXI_CLK>,
-+		 <&gcc GCC_MSS_SNOC_AXI_CLK>,
-+		 <&gcc GCC_MSS_MFAB_AXIS_CLK>,
-+		 <&rpmhcc RPMH_CXO_CLK>;
-+	clock-names = "iface", "bus", "nav", "snoc_axi",
-+		      "mnoc_axi", "xo";
-+
-+	iommus = <&apps_smmu 0x460 0x1>, <&apps_smmu 0x444 0x2>;
-+
-+	resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
-+		 <&pdc_reset PDC_MODEM_SYNC_RESET>;
-+	reset-names = "mss_restart", "pdc_reset";
-+
-+	qcom,halt-regs = <&tcsr_mutex_regs 0x23000 0x25000 0x24000>;
-+	qcom,spare-regs = <&tcsr_regs 0xb3e4>;
-+
-+	power-domains = <&aoss_qmp AOSS_QMP_LS_MODEM>,
-+			<&rpmhpd SC7180_CX>,
-+			<&rpmhpd SC7180_MX>,
-+			<&rpmhpd SC7180_MSS>;
-+	power-domain-names = "load_state", "cx", "mx", "mss";
-+
-+	/delete-property/memory-region;
-+
-+	status = "okay";
-+
-+	mba {
-+		memory-region = <&mba_mem>;
-+	};
-+
-+	mpss {
-+		memory-region = <&mpss_mem>;
-+	};
-+};
-+
- &uart3 {
- 	status = "okay";
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index e319762a0bffc..c49801ddb9d70 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -981,6 +981,11 @@ tcsr_mutex_regs: syscon@1f40000 {
- 			reg = <0 0x01f40000 0 0x40000>;
- 		};
- 
-+		tcsr_regs: syscon@1fc0000 {
-+			compatible = "syscon";
-+			reg = <0 0x01fc0000 0 0x40000>;
-+		};
-+
- 		tlmm: pinctrl@3500000 {
- 			compatible = "qcom,sc7180-pinctrl";
- 			reg = <0 0x03500000 0 0x300000>,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+hctx->tags->rqs[-1] = NULL?
+
+> @@ -1999,7 +2000,7 @@ struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+>  	if (!tags)
+>  		return NULL;
+>  
+> -	tags->rqs = kcalloc_node(nr_tags, sizeof(struct request *),
+> +	tags->rqs = kzalloc_node(nr_tags, sizeof(struct request *),
+>  				 GFP_NOIO | __GFP_NOWARN | __GFP_NORETRY,
+>  				 node);
+
+From include/linux/slab.h:
+
+static inline void *kcalloc_node(size_t n, size_t size, gfp_t flags,
+                                 int node)
+{
+	return kmalloc_array_node(n, size, flags | __GFP_ZERO, node);
+}
+
+I think this means that kcalloc_node() already zeroes the allocated
+memory and hence that changing kcalloc() into kzalloc() is not necessary.
+
+>  	if (!tags->rqs) {
+> diff --git a/block/blk-mq.h b/block/blk-mq.h
+> index a6094c27b827..2a55292d3d51 100644
+> --- a/block/blk-mq.h
+> +++ b/block/blk-mq.h
+> @@ -196,6 +196,7 @@ static inline void blk_mq_put_driver_tag_hctx(struct blk_mq_hw_ctx *hctx,
+>  	if (rq->tag == -1 || rq->internal_tag == -1)
+>  		return;
+>  
+> +	hctx->tags->rqs[rq->tag] = NULL;
+>  	__blk_mq_put_driver_tag(hctx, rq);
+>  }
+>  
+> @@ -207,6 +208,7 @@ static inline void blk_mq_put_driver_tag(struct request *rq)
+>  		return;
+>  
+>  	hctx = blk_mq_map_queue(rq->q, rq->mq_ctx->cpu);
+> +	hctx->tags->rqs[rq->tag] = NULL;
+>  	__blk_mq_put_driver_tag(hctx, rq);
+>  }
+
+I don't think the above changes are sufficient to fix the
+use-after-free. Has it been considered to free the memory that backs
+tags->bitmap_tags only after an RCU grace period has expired? See also
+blk_mq_free_tags().
+
+Thanks,
+
+Bart.
