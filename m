@@ -2,147 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8992E1ADC1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A7B1ADC21
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgDQLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730176AbgDQLZM (ORCPT
+        id S1730331AbgDQL10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:27:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26894 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730312AbgDQL1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:25:12 -0400
-Received: from mo6-p00-ob.smtp.rzone.de (mo6-p00-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5300::7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BCDC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 04:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587122706;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=PL8NP1zjYSBNJ+7M2gB6mpIwxdDNW486VMAFOgdOofM=;
-        b=XCmye49ia90RQ2AhWuN2E6R2OuT5xYw5bDqQG3FH6IUhly9O8WBBEIKjlZYYjDWH+j
-        m/uHCBUZ/C46zoTYfYGmUCVRyEk8IruJCr7XAXX+LmiY/WsP762Ik46xDr/of3dXIfWK
-        IZmhyyAoY/g86SYNBrN2edp7sU1OMHl1U8LRtQ10eA5Frzx/QP09wFpnxIpKT77Qdk5t
-        kAfcV1HoKjD2a57foYBlV7XoC2cfke8cDpSCy9H25sE3432RSI6VtzGePKbPcPs/IO1v
-        izR49/fC76S3eC70GDh3TxYutEoexzg79xIV4mWNsgQgDIafofIcQWjbSJblLz7e2B4U
-        76jg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j8Ic/Fboo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.5.0 DYNA|AUTH)
-        with ESMTPSA id I0a766w3HBP11Vr
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 17 Apr 2020 13:25:01 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 13:24:55 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com
-Subject: Re: [PATCH 0/2] ASoC: qdsp6: fix default FE dais and routings.
-Message-ID: <20200417112455.GA7558@gerhold.net>
-References: <20200311180422.28363-1-srinivas.kandagatla@linaro.org>
+        Fri, 17 Apr 2020 07:27:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587122843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vr7BOIbO9qakvttMKiL/rWtwPVentFYT4peua3moyXg=;
+        b=FGtXg/BfIeVUcUgJm7b4x1m+EyvkxAEy0Ybg6O7O7cujyo5jDZg7ZgHJEGU5B5YeWmAwhe
+        h5wX/4CVtEtoOjHorOJgrMWADX5nKe3hseRhazYPaUDLOfsZbRPX38lsrwV4sqN7mGFnL1
+        MBDy0UeGPxgQ4j29J931fc6z1LITVSM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-fiee8RQFNc2mMhyoQXOhVA-1; Fri, 17 Apr 2020 07:27:19 -0400
+X-MC-Unique: fiee8RQFNc2mMhyoQXOhVA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3B72107ACCA;
+        Fri, 17 Apr 2020 11:27:16 +0000 (UTC)
+Received: from gondolin (ovpn-112-200.ams2.redhat.com [10.36.112.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 330F75C1C5;
+        Fri, 17 Apr 2020 11:27:02 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 13:24:57 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eskultet@redhat.com" <eskultet@redhat.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>
+Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
+ VFIO live migration
+Message-ID: <20200417132457.45d91fe3.cohuck@redhat.com>
+In-Reply-To: <20200417095202.GD16688@joy-OptiPlex-7040>
+References: <20200413055201.27053-1-yan.y.zhao@intel.com>
+        <20200417104450.2d2f2fa9.cohuck@redhat.com>
+        <20200417095202.GD16688@joy-OptiPlex-7040>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200311180422.28363-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srini,
+On Fri, 17 Apr 2020 05:52:02 -0400
+Yan Zhao <yan.y.zhao@intel.com> wrote:
 
-On Wed, Mar 11, 2020 at 06:04:20PM +0000, Srinivas Kandagatla wrote:
-> QDSP6 Frontend dais can be configured to work in rx or tx or both rx/tx mode,
-> however the default routing do not honour this DT configuration making sound
-> card fail to probe. FE dais are also not fully honouring device tree configuration.
-> Fix both of them.
+> On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
+> > On Mon, 13 Apr 2020 01:52:01 -0400
+> > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> >   
+> > > This patchset introduces a migration_version attribute under sysfs of VFIO
+> > > Mediated devices.
+> > > 
+> > > This migration_version attribute is used to check migration compatibility
+> > > between two mdev devices.
+> > > 
+> > > Currently, it has two locations:
+> > > (1) under mdev_type node,
+> > >     which can be used even before device creation, but only for mdev
+> > >     devices of the same mdev type.
+> > > (2) under mdev device node,
+> > >     which can only be used after the mdev devices are created, but the src
+> > >     and target mdev devices are not necessarily be of the same mdev type
+> > > (The second location is newly added in v5, in order to keep consistent
+> > > with the migration_version node for migratable pass-though devices)  
+> > 
+> > What is the relationship between those two attributes?
+> >   
+> (1) is for mdev devices specifically, and (2) is provided to keep the same
+> sysfs interface as with non-mdev cases. so (2) is for both mdev devices and
+> non-mdev devices.
 > 
+> in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
+> is binding to vfio-pci, but is able to register migration region and do
+> migration transactions from a vendor provided affiliate driver),
+> the vendor driver would export (2) directly, under device node.
+> It is not able to provide (1) as there're no mdev devices involved.
 
-I discovered this patch set when QDSP6 audio stopped working after
-upgrading to Linux 5.7-rc1. As far as I understand, device tree bindings
-should attempt to be backwards compatible wherever possible.
-This isn't the case here, although this is not the reason for my mail.
-(I don't mind updating my device tree, especially since it is not
-upstream yet...)
+Ok, creating an alternate attribute for non-mdev devices makes sense.
+However, wouldn't that rather be a case (3)? The change here only
+refers to mdev devices.
 
-I have a general question about the design here.
-
-I understand the original motivation for this patch set: Attempting to
-configure a TX/RX-only DAI was not possible due to the default routing.
-In my opinion this is only relevant for the compressed DAI case.
-
-If we ignore the compressed DAIs for a moment (which can be
-unidirectional only), I think we shouldn't care how userspace uses the
-available FE/MultiMedia DAIs. We have this huge routing matrix in q6routing,
-with 800+ mixers that can be configured in any way possible from userspace.
-
-In "ASoC: qdsp6: q6asm-dai: only enable dais from device tree" you mention:
-
-> This can lead to un-necessary dais in the system which will never be
-> used. So honour whats specfied in device tree.
-
-but IMO the FE DAIs are a negligible overhead compared to the routing 
-matrix and the many BE DAIs that are really never going to be used
-(because nothing is physically connected to the ports).
-
-Even if you restrict FE DAIs to RX/TX only, or disable them entirely,
-all the routing mixers still exist for them. They will just result in
-configurations that are not usable in any way. IMO the only thing we
-gain by restricting the FE DAIs is that the available mixers no longer
-match possible configurations.
-
-Before this patch set I used a slightly different approach in my device
-tree for MSM8916: I kept all FE DAIs bi-directional, and added DAI links
-for all of them. This means that I actually had 8 bi-directional PCM
-devices in userspace.
-
-I didn't use all of them - my ALSA UCM configuration only uses
-MultiMedia1 for playback and MultiMedia2 for capture.
-However, some other userspace (let's say Android) could have chosen
-different FE DAIs for whatever reason. We have the overhead for the
-routing matrix anyway, so we might as well expose it in my opinion.
-
-My question is: In what way are the FE DAIs really board-specific?
-
-If we expose only some FE DAIs with intended usage per board,
-e.g. MultiMedia1 for HDMI, MultiMedia2 for slimbus playback,
-     MultiMedia3 for slimbus capture,
-I could almost argue that we don't need DPCM at all.
-The FE DAIs are always going to be used for the same backend anyway.
-
-This is a bit exaggerated - for example if you have a single compress
-DAI per board you probably intend to use it for both HDMI/slimbus.
-But this is the feeling I get if we configure the FE DAIs separately
-for each board.
-
-I wonder if we should leave configuration of the FE DAIs up to userspace
-(e.g. ALSA UCM), and expose the same full set of FE DAIs for each board.
-
-I think this is mostly a matter of convention for configuring FE DAIs
-in the device tree - I have some ideas how to make that work
-with the existing device tree bindings and for compressed DAIs.
-But this mail is already long enough as-is. ;)
-
-I also don't mind if we keep everything as-is
-- I just wanted to share what I have been thinking about.
-
-What do you think?
-
-Thanks for reading! ;)
-Stephan
-
-> Originally  issue was reported by Vinod Koul
 > 
-> Srinivas Kandagatla (2):
->   ASoC: qdsp6: q6asm-dai: only enable dais from device tree
->   ASoC: qdsp6: q6routing: remove default routing
+> > Is existence (and compatibility) of (1) a pre-req for possible
+> > existence (and compatibility) of (2)?
+> >  
+> no. (2) does not reply on (1).
+
+Hm. Non-existence of (1) seems to imply "this type does not support
+migration". If an mdev created for such a type suddenly does support
+migration, it feels a bit odd.
+
+(It obviously cannot be a prereq for what I called (3) above.)
+
 > 
->  sound/soc/qcom/qdsp6/q6asm-dai.c | 30 +++++++++++++++++++++++-------
->  sound/soc/qcom/qdsp6/q6routing.c | 19 -------------------
->  2 files changed, 23 insertions(+), 26 deletions(-)
+> > Does userspace need to check (1) or can it completely rely on (2), if
+> > it so chooses?
+> >  
+> I think it can completely reply on (2) if compatibility check before
+> mdev creation is not required.
 > 
-> -- 
-> 2.21.0
+> > If devices with a different mdev type are indeed compatible, it seems
+> > userspace can only find out after the devices have actually been
+> > created, as (1) does not apply?  
+> yes, I think so. 
+
+How useful would it be for userspace to even look at (1) in that case?
+It only knows if things have a chance of working if it actually goes
+ahead and creates devices.
+
 > 
+> > One of my worries is that the existence of an attribute with the same
+> > name in two similar locations might lead to confusion. But maybe it
+> > isn't a problem.
+> >  
+> Yes, I have the same feeling. but as (2) is for sysfs interface
+> consistency, to make it transparent to userspace tools like libvirt,
+> I guess the same name is necessary?
+
+What do we actually need here, I wonder? (1) and (2) seem to serve
+slightly different purposes, while (2) and what I called (3) have the
+same purpose. Is it important to userspace that (1) and (2) have the
+same name?
+
