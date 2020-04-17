@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF121AD4E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C221AD4E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgDQDlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 23:41:35 -0400
-Received: from 50-247-197-57-static.hfc.comcastbusiness.net ([50.247.197.57]:35060
-        "EHLO microway.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726105AbgDQDle (ORCPT
+        id S1728145AbgDQDkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 23:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725947AbgDQDkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:41:34 -0400
-X-Greylist: delayed 422 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Apr 2020 23:41:33 EDT
-Received: from [10.200.120.6] (openvpn.microway.com [192.168.200.4])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 16 Apr 2020 23:40:15 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5F9C061A0C;
+        Thu, 16 Apr 2020 20:40:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by microway.com (Postfix) with ESMTPSA id 628E73004433
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 23:34:30 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=microway.com;
-        s=verified; t=1587094470;
-        bh=ywoe/KWhEbobTRp8t8l9tb7jHYngbY9Kh0XrHhm6E/I=;
-        h=Subject:From:To:References:Date:In-Reply-To;
-        b=ozMkwas8l67k5TV4xTD8QaodsCT9I4D8sv/fylFr4sIfb1R4uAsmc/7I5kMMTd2CX
-         oy7R8Q7f5qBgp7RSa0H+E1VVU+T+MBXHsvPBFGr8oTxL3TOUTPbeiFL7ejIsQclqNB
-         tl1MUPqiBP8FSHVQsMMpgMSXxjsAvBpzvuzW5DT4=
-Subject: Re: slow write performance with software RAID on nvme storage
-From:   Rick Warner <rick@microway.com>
-To:     linux-kernel@vger.kernel.org
-References: <0a6373c6-817f-6ead-2a71-7c83c03406be@microway.com>
-Message-ID: <adc13d3c-b311-8781-0395-146848821cef@microway.com>
-Date:   Thu, 16 Apr 2020 23:34:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 493ML309Twz9sSg;
+        Fri, 17 Apr 2020 13:40:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1587094812;
+        bh=ETWxRas2IKo2b2SIgMeDj8bjXLKaVzrJYOAZblBPLak=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jiMwwmfgPP7Hq/Fs4TH1EJGKRgT2hcg2nJ+J/wtxVbubU+Lz6FT0zGzMBbDtVvP7l
+         DEOY+0w7goH+QznufMX2ZhTmOfP2ckGL2QbGNL6+Y9LAfZ/iH5kzmreD74HNn8MzLX
+         GE5u/HWGwzgVLqA7yY0G6hxovO5pU/NpLLOhyJeG5TeN2EfoQCBRlGX8dQvKMpv42Y
+         0I/yQDb8iwFlPh+yIgZBh+dFstSAdVMYligiuArn+kkqNuXxXk7zy5f7RKTQdZjtYg
+         5RdV2is10glz5v6PLqi3qro5D3sxNxM9rgLRiChyvNr+OZTtkUkWNRCURGXrlO39hJ
+         evKkqK+P21HXA==
+Date:   Fri, 17 Apr 2020 13:40:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shukun Tan <tanshukun1@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Yang Shen <shenyang39@huawei.com>,
+        Hui Tang <tanghui20@huawei.com>
+Subject: linux-next: build failure after merge of the crypto tree
+Message-ID: <20200417134003.318184a6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <0a6373c6-817f-6ead-2a71-7c83c03406be@microway.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/JsX0geyJhL/HJwMe4G78W2=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Additional testing with fio has shown near theoretical write speeds if I 
-test direct to the /dev/md device instead of using either xfs or ext4.
+--Sig_/JsX0geyJhL/HJwMe4G78W2=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I've tested different queue settings without significant changes.
+Hi all,
 
-Is it possible to get a single XFS or ext4 filesystem performing with 
- >10GB/s write speeds?
+After merging the crypto tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
 
-On 2019-03-29 16:55, Rick Warner wrote:
-> Hi All,
->
-> We've been testing a 24 drive NVME software RAID and getting far lower
-> write speeds than expected.  The drives are connected with PLX chips
-> such that 12 drives are on 1 x16 connection and the other 12 drives use
-> another x16 link  The system is a Supermicro 2029U-TN24R4T.  The drives
-> are Intel DC P4500 1TB.
->
-> We're testing with fio using 8 jobs.
->
-> Using all defaults with RAID0 I can only get 4 or 5 GB/s write speeds
-> but can hit ~24GB/s read speeds.  The drives have over 1GB/s write speed
-> each, so we should be able to hit at least 20GB/s write speed.
->
-> Testing with RAID6 and defaults got significantly lower (down around
-> 1.5GB/s).  Using a 64k chunk and increasing the group_thread_cnt
-> increased the results to ~4GB/s.
->
-> dmesg shows the RAID parity calc speed being ~40GB/s:
-> [    4.215386] raid6: using algorithm avx512x2 gen() 41397 MB/s
->
->
-> I've played around with filesystem queue choices and tuning but haven't
-> seen any significant improvements.
->
-> What is the bottleneck here? If it's not known, what should I do to
-> determine it?
->
-> I've done a variety of other tests with this system and am happy to
-> elaborate further if any other information is needed.
->
-> Thanks,
-> Rick Warner
+drivers/crypto/hisilicon/qm.c: In function 'qm_soft_reset':
+drivers/crypto/hisilicon/qm.c:2915:7: error: implicit declaration of functi=
+on 'acpi_evaluate_integer'; did you mean 'acpi_evaluate_object'? [-Werror=
+=3Dimplicit-function-declaration]
+ 2915 |   s =3D acpi_evaluate_integer(ACPI_HANDLE(&pdev->dev),
+      |       ^~~~~~~~~~~~~~~~~~~~~
+      |       acpi_evaluate_object
 
+Caused by commit
+
+  6c6dd5802c2d ("crypto: hisilicon/qm - add controller reset interface")
+
+I have reverted the following commits for today
+
+f037fc5f93f4 crypto: hisilicon/qm - stop qp by judging sq and cq tail
+141876c252a4 crypto: hisilicon/sec2 - add controller reset support for SEC2
+1f5c9f34f0cc crypto: hisilicon/hpre - add controller reset support for HPRE
+84c9b7802b02 crypto: hisilicon/zip - add controller reset support for zip
+6c6dd5802c2d crypto: hisilicon/qm - add controller reset interface
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/JsX0geyJhL/HJwMe4G78W2=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6ZJRQACgkQAVBC80lX
+0GzzrAf8C+EHicjVjIubq12sGPwrrDRgrrmpklG2kN+yKyCfKw+JBezLuea8Z5Oz
+fIr4YtG9/emqsgyg/BWOyPJLdvZi4bI0mlzXQ0P3auucQrFAXTzmpp2o4C0/b5n/
+0NDUEXsqR8XNXHOf7/OefEsLT7QJiVIq0gqZaWBsEPEYB+RH4yGUUWkzx8hyAJYs
+Pccjl0I9PUaI9lZzdWRAlI+mLJsT83QSJqNmw8h9jxp2trK5pel5G+RWyNIlsvG1
+7uZJxWap0eC8/aNoyv4ROiDKCU98+rrTQ8RnlzKI/AZ+Vi9YMapk1tZrSpr01+qw
+lMGru1VA8xo25gQ0Fh1sCJvKikQePw==
+=OB2W
+-----END PGP SIGNATURE-----
+
+--Sig_/JsX0geyJhL/HJwMe4G78W2=--
