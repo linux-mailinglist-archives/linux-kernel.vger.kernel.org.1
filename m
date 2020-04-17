@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21511AD50F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 06:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DADA1AD517
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 06:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgDQEJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 00:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
+        id S1726432AbgDQEOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 00:14:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21656 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgDQEJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 00:09:35 -0400
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF70922250;
-        Fri, 17 Apr 2020 04:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587096575;
-        bh=/aAOMVOP3MZQGTBFo0xdiu+n9iKYVv70X4AkPfYDRUY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Gyt0aCIAKdLM3LASetND1QH5Wfx32kCgTTnBxG2zuGNZrZ5A+Uuyt+EWvqojWwS5D
-         zo4tgkaCD0hTcasyZJ7j/nTI6TtMjrTbvxEv3IIfeepWgrn5l7XiWcWDXVNXOJm1L+
-         +zIEAsvTYvKFPhvJ4etnosn3KdqzsUfe3B4cENx8=
-Received: by mail-ej1-f45.google.com with SMTP id s9so562727eju.1;
-        Thu, 16 Apr 2020 21:09:34 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZNPhNoQAkTKyBDr33jnGgVBB9DN5jxGH+ZDHjahcuPmUK5fbz/
-        JuKsLUQp6g23YwDG/75hsDcrkp5qhVRaUNb6Zp4=
-X-Google-Smtp-Source: APiQypIdKCMgMXNdIoKxA+hJgxlg7THMOt/IQ9RE95/qKc1hrmrQknmbKq/g59E4lMJ6Zg4qLEjnmgHh/BtY8F2Saqg=
-X-Received: by 2002:a17:906:7c2:: with SMTP id m2mr1049847ejc.339.1587096573102;
- Thu, 16 Apr 2020 21:09:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200414041902.16769-1-mcgrof@kernel.org> <20200414041902.16769-3-mcgrof@kernel.org>
- <20200416021036.GA2717677@T590> <20200416052524.GH11244@42.do-not-panic.com>
- <20200416054750.GA2723777@T590> <20200416062054.GL11244@42.do-not-panic.com> <20200416062856.GD2723777@T590>
-In-Reply-To: <20200416062856.GD2723777@T590>
-From:   Luis Chamberlain <mcgrof@kernel.org>
-Date:   Thu, 16 Apr 2020 22:09:24 -0600
-X-Gmail-Original-Message-ID: <CAB=NE6VFj4w_o+NA57iBzGaXCGF0afeHy1N_2C9awGcFz5pnQw@mail.gmail.com>
-Message-ID: <CAB=NE6VFj4w_o+NA57iBzGaXCGF0afeHy1N_2C9awGcFz5pnQw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] blktrace: fix debugfs use after free
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jan Kara <jack@suse.cz>,
-        Nicolai Stange <nstange@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, yu kuai <yukuai3@huawei.com>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1725900AbgDQEOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 00:14:23 -0400
+IronPort-SDR: s4wWzdpompxrKbrQbxJF0cTD0NIjQkQGXzr0199LHZaTFh+ZAWO2s+MzWYSdMAp33MGCrDOLGh
+ sxl677ojiHTQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 21:14:23 -0700
+IronPort-SDR: IDoNqVk6E6JTgW9w8qABw1UfOocx9w9nxydBfZUKoOb1XROwI3gJge4Xq0SDPmjsJxJ0gBC1iI
+ 3b4TmP3aeLcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="278241747"
+Received: from gracekao-precision-3630-tower.itwn.intel.com ([10.5.232.24])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Apr 2020 21:14:22 -0700
+From:   Grace Kao <grace.kao@intel.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, briannorris@chromium.org,
+        grace.kao@intel.com
+Subject: [PATCH v2 1/1] pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_handler
+Date:   Fri, 17 Apr 2020 12:11:54 +0800
+Message-Id: <20200417041154.13063-1-grace.kao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200417030449.10601-1-grace.kao@intel.com>
+References: <20200417030449.10601-1-grace.kao@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 12:29 AM Ming Lei <ming.lei@redhat.com> wrote:
->
-> On Thu, Apr 16, 2020 at 06:20:54AM +0000, Luis Chamberlain wrote:
-> > On Thu, Apr 16, 2020 at 01:47:50PM +0800, Ming Lei wrote:
-> > > On Thu, Apr 16, 2020 at 05:25:24AM +0000, Luis Chamberlain wrote:
-> > > > On Thu, Apr 16, 2020 at 10:10:36AM +0800, Ming Lei wrote:
-> > > > > In theory, multiple partitions can be traced concurrently, but looks
-> > > > > it never works, so it won't cause trouble for multiple partition trace.
-> > > > >
-> > > > > One userspace visible change is that blktrace debugfs dir name is switched
-> > > > > to disk name from partition name in case of partition trace, will it
-> > > > > break some utilities?
-> > > >
-> > > > How is this possible, its not clear to me, we go from:
-> > > >
-> > > > - q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > > > -                                     blk_debugfs_root);
-> > > >
-> > > > To this:
-> > > >
-> > > > + q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > > > +                                     blk_debugfs_root);
-> > > >
-> > > >
-> > > > Maybe I am overlooking something.
-> > >
-> > > Your patch removes the blktrace debugfs dir:
-> > >
-> > > do_blk_trace_setup()
-> > >
-> > > -       dir = debugfs_lookup(buts->name, blk_debugfs_root);
-> > > -       if (!dir)
-> > > -               bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
-> > > -
-> > >
-> > > Then create blktrace attributes under the dir of q->debugfs_dir.
-> > >
-> > > However, buts->name could be one partition device name, but
-> >
-> > I can see how buts->name is set to bdevname() which expands to
-> > disk_name(bdev->bd_disk, bdev->bd_part->partno, buf).
-> >
-> > > q->debugfs_dir has to be disk name.
-> >
-> > I can't see this, can you point me to where it is clear the
-> > request_queue kobject's parent is sure to be the disk name?
->
-> blk_register_queue():
->         ...
->         ret = kobject_add(&q->kobj, kobject_get(&dev->kobj), "%s", "queue");
->         ...
+According to Braswell NDA Specification Update (#557593),
+concurrent read accesses may result in returning 0xffffffff and write
+instructions may be dropped. We have an established format for the
+commit references, i.e.
+cdca06e4e859 ("pinctrl: baytrail: Add missing spinlock usage in
+byt_gpio_irq_handler")
 
-Alright, I have a fix for this now, and I do have also a further
-explanation as to *why* the debugfs_lookup() doesn't help us here.
-I'll follow up with more patches.
+Signed-off-by: Grace Kao <grace.kao@intel.com>
+Reported-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+---
+ drivers/pinctrl/intel/pinctrl-cherryview.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-  Luis
+diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c b/drivers/pinctrl/intel/pinctrl-cherryview.c
+index 4c74fdde576d..1093a6105d40 100644
+--- a/drivers/pinctrl/intel/pinctrl-cherryview.c
++++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
+@@ -1479,11 +1479,15 @@ static void chv_gpio_irq_handler(struct irq_desc *desc)
+ 	struct chv_pinctrl *pctrl = gpiochip_get_data(gc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned long pending;
++	unsigned long flags;
+ 	u32 intr_line;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
++	raw_spin_lock_irqsave(&chv_lock, flags);
+ 	pending = readl(pctrl->regs + CHV_INTSTAT);
++	raw_spin_unlock_irqrestore(&chv_lock, flags);
++
+ 	for_each_set_bit(intr_line, &pending, pctrl->community->nirqs) {
+ 		unsigned int irq, offset;
+ 
+-- 
+2.17.1
+
