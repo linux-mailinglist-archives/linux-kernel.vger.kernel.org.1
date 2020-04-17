@@ -2,149 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE17D1AE229
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949171AE226
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 18:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgDQQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 12:22:34 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:38762 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgDQQWc (ORCPT
+        id S1730461AbgDQQWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 12:22:14 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38553 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730420AbgDQQWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 12:22:32 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HG8SGo005877;
-        Fri, 17 Apr 2020 09:22:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=bGTgtVwevNe4bxwB8uzvLNMFOuiy0wbR2frhEdzmslw=;
- b=a7EFYI3R4YxSdX7Bhdhy73mcd69ZabKD35QcXKGklrzWqPU5D3xIrE+e+oVSEbyI98DH
- bmMWdPwiPzckoWH9/va3B7zCPajxciUl0H9zij786vgs6QJIv70YWX9oLEd9MOg0Gbyk
- scH0uteI6Zm4XPWcPIFjJGcP5Hj6NqY3Fc9+6W+8LTQry2DQ6axLpvEDBiDfcqtppY3g
- HFooTa6wSVtXwI440gTSOq5qCPwqIn3xnZESygjp2CMFKT2KwIcfYPeiFGu6kxeqkNLC
- LKcHCNIfGeMayL8rS0Jij+cL0SuqnO2I307QyMXYLLnSnxvFcGXLCSUXtsiSj/R4yoNr lA== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 30dn9650jt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Apr 2020 09:22:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q4pDVnyZpbb2vulWK5Q6OA5LgWn6v8KGLNSBDm3geLm7ByhsyB8C5LPYU3JuEJL0wsL8smR0rK9h34W2YLAgJiBvLHGy6XxyxqXV7mW7VuqBm3XwaFofgyQ5q952VR2NZos/ircj2g7JmXdGX5y8B3ITk0sus2640eXT64K7lfEwo2QQvoSPNHbDoB4+1aWmb7K3qEHcGcATTCP5Kc8G/1Ibda9N/qWzVFqsFvZ7+tPX/9JkhA+B4vn6TT1TWhij3lMLoHhJBbij9npXKztpH6wt6VDQUEu3n1caYmm581hw7fd08NbFscSmmG4GNZqbJzIdDd1QKqi6lmNTJGOotQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bGTgtVwevNe4bxwB8uzvLNMFOuiy0wbR2frhEdzmslw=;
- b=LWP5uBvzbWKWFizQmivURl4H4mZW5NwR47sMLinFoHGUOuzolABrzgpALN0+8vp7wYYi4ynW62cI09YJ8Fy/DHjc9KZwEW/vEmJr94/NQ6DYodmS1azzKpJefXO1eAqmufYcClv2/KltO97XKdaBxIELH8FLDg+v1L4Ucf+XcuHWQKvyhVC4YeR3BlY5EcBk4WhV15foaxJVhC8fE22x8gGj+ZbUNOOTGtgVggJXwSzRIhQ84SfDwUuaaqX9QgYesIv7wCOweaE0bs17bi87l/VroVFJyXVsYmPj10PW2M0nhMqnj/2vvhBUarAOme7eV1NztDpEmQYnG6lWtORh0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bGTgtVwevNe4bxwB8uzvLNMFOuiy0wbR2frhEdzmslw=;
- b=RR8aeFVS0k4nxhr1pwP1MNbAyrcIswxS4Oidqyl6RDeJ6U0HYzOnu1UemcZdlvWslmIMRe61oLRfMU/Lj/W77FlOYky+T1xLN6+JlhJixadOh8P5aDoHKbldVv5BNDcB1Eq4OoV9FsMeA48HJTX53WDyiEEgRllVnTwJ9ScQCnM=
-Received: from DM5PR15CA0068.namprd15.prod.outlook.com (2603:10b6:3:ae::30) by
- SN6PR07MB5695.namprd07.prod.outlook.com (2603:10b6:805:e2::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.24; Fri, 17 Apr 2020 16:22:24 +0000
-Received: from DM6NAM12FT016.eop-nam12.prod.protection.outlook.com
- (2603:10b6:3:ae:cafe::1c) by DM5PR15CA0068.outlook.office365.com
- (2603:10b6:3:ae::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend
- Transport; Fri, 17 Apr 2020 16:22:24 +0000
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT016.mail.protection.outlook.com (10.13.178.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2921.12 via Frontend Transport; Fri, 17 Apr 2020 16:22:23 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 03HGMKqT025929
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Fri, 17 Apr 2020 12:22:22 -0400
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Fri, 17 Apr 2020 18:22:20 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Fri, 17 Apr 2020 18:22:20 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 03HGMKPh031058;
-        Fri, 17 Apr 2020 18:22:20 +0200
-Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 03HGMKqS031057;
-        Fri, 17 Apr 2020 18:22:20 +0200
-From:   Parshuram Thombare <pthombar@cadence.com>
-To:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>
-CC:     <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
-        <praneeth@ti.com>, Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v6 5/8] i3c: master: check for non null pointer
-Date:   Fri, 17 Apr 2020 18:22:07 +0200
-Message-ID: <1587140527-30907-1-git-send-email-pthombar@cadence.com>
-X-Mailer: git-send-email 2.2.2
-In-Reply-To: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
-References: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
+        Fri, 17 Apr 2020 12:22:13 -0400
+Received: by mail-oi1-f196.google.com with SMTP id r66so2545559oie.5;
+        Fri, 17 Apr 2020 09:22:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HeAHiyvWEUaF+aCLu1NaqGKApOTT6/8+xu5a7bTpKz8=;
+        b=PA+0y0WiIDsjD3+EGV0qEkvRcX/46oY4XhQK4p3wdaRszKNM0rSjZmwqu/39x06GCN
+         VWce6+0qf+rC4iGTLasV3bvtwtDM/Lm5jhkhf+ltMrmtJqf0Ho5a1O2u6nv23SwjJw9i
+         /hOuD2iNDlBIixn9n1jgwcWTv+6IB5vgreX2s4r6jA8gLIJ3HXHsxz0qtqd5a+0x5jll
+         PFcPx6/p/MIxYiAM6NxdczTm/1KMZF6eTmEFzazipAO7nCEHU2g0dpuh1VRKGPz71SQx
+         4N2H6/PE/yvi4RgVum3toweEXDiV8/mC5H9gvEyTkG8r7zXBQ5blR6kV4um2BS64GA2U
+         v+dg==
+X-Gm-Message-State: AGi0PualtxPc+IOQj99uYIrvPvF6p3SUGhN7nioTYDQP/T3EPX2QdQWv
+        59DZBV5+wGfBhEl3qfBisS8m2xY=
+X-Google-Smtp-Source: APiQypIr+IqasDXVzw4cm+LyZdJBeCjzNk9h5xojT4id6JrVlp3WKVmJeu6fpY1NvWdWw1q23nYkxA==
+X-Received: by 2002:a54:4085:: with SMTP id i5mr2810167oii.107.1587140532363;
+        Fri, 17 Apr 2020 09:22:12 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v9sm4651042oto.72.2020.04.17.09.22.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 09:22:11 -0700 (PDT)
+Received: (nullmailer pid 7462 invoked by uid 1000);
+        Fri, 17 Apr 2020 16:22:11 -0000
+Date:   Fri, 17 Apr 2020 11:22:11 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au
+Subject: Re: [PATCH v9 1/5] dt-bindings: soc: Add Aspeed XDMA Engine
+Message-ID: <20200417162210.GA402@bogus>
+References: <1587067419-5107-1-git-send-email-eajames@linux.ibm.com>
+ <1587067419-5107-2-git-send-email-eajames@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(36092001)(46966005)(81156014)(426003)(498600001)(47076004)(2616005)(86362001)(8936002)(36756003)(8676002)(6666004)(5660300002)(107886003)(336012)(4326008)(186003)(26005)(81166007)(42186006)(4744005)(2906002)(356005)(70206006)(110136005)(36906005)(54906003)(70586007);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d4ed565-01a0-4750-96b3-08d7e2eb82c6
-X-MS-TrafficTypeDiagnostic: SN6PR07MB5695:
-X-Microsoft-Antispam-PRVS: <SN6PR07MB5695252483B6585C76A7240EC1D90@SN6PR07MB5695.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-Forefront-PRVS: 0376ECF4DD
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F18tmzeITF+iGE/ctjWNURuWn6A2ih6clgK4r7yS3puS0jeVSA8lZzH9Zf2QGZyt+pqd3rL4soh3rgVVLDoWn+fszrKRuck/I40MMS95GGThxjhS4r2PnIy5x9CH1+eC4Yl+jajt4Axowj1C69gZ6BaYoGKyVqzOZtXVacCaYGEv0+6Y4n5fwnz/3ssvc0dBwEPfNBBIdTGMhkWGzYpCRaxdHxg3to63pvJ6INz7bQ2u17kLNocgSzIQ3UZEKVi/vRzStS/+xtfs/LAg6KU8oCptmnxGcVy4XxdHdaEHQJY9DGQnkGM6TQ8GXmjSTsvOeV3i8BnDx30fNPd2wxn0tNeUBP4RU3b+nZgwYz2c20tA5xf1rtkFFHJSx/1S9Zaq5kssotp3IJ1S8tMJtyRUWiJyBgz+nxDdjwhnmzbRRyZkwJlPXtEXFIwrLB2bboODtDrJiwk90DLKkGw1iHInyjDjg/oKnykqvk0GE4lFhZ72H3EAClwtRiZDnIW/i2+vwXQ6svgT8jmDs0p9QWdTjlqM0W75xPR0Y1ECBwWAmGg=
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 16:22:23.4679
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d4ed565-01a0-4750-96b3-08d7e2eb82c6
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB5695
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-17_07:2020-04-17,2020-04-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
- impostorscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=937 suspectscore=2 adultscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004170129
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587067419-5107-2-git-send-email-eajames@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add NULL check for struct i3c_generic_ibi_pool *pool
-argument of function i3c_generic_ibi_free_pool.
+On Thu, Apr 16, 2020 at 03:03:35PM -0500, Eddie James wrote:
+> Document the bindings for the Aspeed AST25XX and AST26XX XDMA engine.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+> Changes since v8:
+>  - dropped Rob's tag since this has changed significantly since he last looked
+>    it over.
 
-Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
----
- drivers/i3c/master.c | 3 +++
- 1 file changed, 3 insertions(+)
+If this is not merged soon, you're going to need to convert to schema.
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 2690910d724c..19d4800ed573 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -2667,6 +2667,9 @@ void i3c_generic_ibi_free_pool(struct i3c_generic_ibi_pool *pool)
- 	struct i3c_generic_ibi_slot *slot;
- 	unsigned int nslots = 0;
- 
-+	if (!pool)
-+		return;
-+
- 	while (!list_empty(&pool->free_slots)) {
- 		slot = list_first_entry(&pool->free_slots,
- 					struct i3c_generic_ibi_slot, node);
--- 
-2.17.1
+>  .../devicetree/bindings/soc/aspeed/xdma.txt        | 45 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  6 +++
+>  2 files changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/aspeed/xdma.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/aspeed/xdma.txt b/Documentation/devicetree/bindings/soc/aspeed/xdma.txt
+> new file mode 100644
+> index 0000000..35d0507
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/aspeed/xdma.txt
+> @@ -0,0 +1,45 @@
+> +Aspeed AST25XX and AST26XX XDMA Engine
+> +
+> +The XDMA Engine embedded in the AST2500 and AST2600 SOCs can perform automatic
+> +DMA operations over PCI between the SOC (acting as a BMC) and a host processor.
+> +
+> +Required properties:
+> + - compatible		: must be "aspeed,ast2500-xdma" or
+> +			  "aspeed,ast2600-xdma"
+> + - reg			: contains the address and size of the memory region
+> +			  associated with the XDMA engine registers
+> + - clocks		: clock specifier for the clock associated with the
+> +			  XDMA engine
+> + - resets		: reset specifier for the syscon reset associated with
+> +			  the XDMA engine, and, for the AST2600, a second reset
+> +			  associated with the PCI-E root complex
+> + - reset-names		: required only for the AST2600; must be
+> +			  "device", "root-complex"
+> + - interrupts-extended	: two interrupt cells; the first specifies the global
+> +			  interrupt for the XDMA engine and the second
+> +			  specifies the PCI-E reset or PERST interrupt.
+> + - aspeed,scu		: a phandle to the syscon node for the system control
+> +			  unit of the SOC
+> + - memory-region	: a phandle to the reserved memory region to be used by
+> +			  the XDMA engine for DMA operations
+> +
+> +Optional properties:
+> + - pcie-device		: should be either "bmc" or "vga", corresponding to
+> +			  which device should be used by the XDMA engine for
+> +			  DMA operations. If this property is not set, the XDMA
+> +			  engine will use the BMC PCI-E device.
 
+aspeed,pcie-device
+
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +
+> +Example:
+> +
+> +    xdma@1e6e7000 {
+> +        compatible = "aspeed,ast2600-xdma";
+> +        reg = <0x1e6e7000 0x100>;
+> +        clocks = <&syscon ASPEED_CLK_GATE_BCLK>;
+> +        resets = <&syscon ASPEED_RESET_DEV_XDMA>, <&syscon ASPEED_RESET_RC_XDMA>;
+> +        reset-names = "device", "root-complex";
+> +        interrupts-extended = <&gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+> +                              <&scu_ic0 ASPEED_AST2600_SCU_IC0_PCIE_PERST_LO_TO_HI>;
+> +        aspeed,scu = <&syscon>;
+> +        pcie-device = "bmc";
+> +        memory-region = <&vga_memory>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5e10560..66f82a2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2771,6 +2771,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/media/aspeed-video.txt
+>  F:	drivers/media/platform/aspeed-video.c
+>  
+> +ASPEED XDMA ENGINE DRIVER
+> +M:	Eddie James <eajames@linux.ibm.com>
+> +L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/soc/aspeed/xdma.txt
+> +
+>  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
+>  M:	Corentin Chary <corentin.chary@gmail.com>
+>  L:	acpi4asus-user@lists.sourceforge.net
+> -- 
+> 1.8.3.1
+> 
