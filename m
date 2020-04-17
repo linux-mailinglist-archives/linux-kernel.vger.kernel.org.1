@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA6D1AD42F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861001AD434
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 03:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgDQBhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 21:37:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34532 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728461AbgDQBhX (ORCPT
+        id S1728843AbgDQBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 21:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725800AbgDQBjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 21:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587087442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RH8c9mlh1Nn23MD937ZQ+ys6TCD7ufyPWJobVezo3i4=;
-        b=JBKZyw0GbFuNXE2vfTa0rJoACp0Ec62P1yYmnvpb1P0Tp2E4OWMgIJ6Ypd7ibhLTyO6N8a
-        bpT92SRH3L0xqdtk4mq/en4b9m1vbRgp7Rfk7m4EqowH+4i84TG0UOUJF6sO0ADcHF2/SR
-        9ZUecEQyzTPnxBU0FkSe6i3i7gUtmh8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-pCZE9mC2NWCH7FJKXvCtGg-1; Thu, 16 Apr 2020 21:37:20 -0400
-X-MC-Unique: pCZE9mC2NWCH7FJKXvCtGg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 561ED13F9;
-        Fri, 17 Apr 2020 01:37:19 +0000 (UTC)
-Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 403D07E7EF;
-        Fri, 17 Apr 2020 01:37:17 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 20:37:15 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com
-Subject: Re: [PATCH 4/7] s390/module: Use s390_kernel_write() for relocations
-Message-ID: <20200417013715.kj6g4byvdy5uzgev@treble>
-References: <cover.1586881704.git.jpoimboe@redhat.com>
- <e7f2ad87cf83dcdaa7b69b4e37c11fa355bdfe78.1586881704.git.jpoimboe@redhat.com>
- <alpine.LSU.2.21.2004161047410.10475@pobox.suse.cz>
- <20200416120651.wqmoaa35jft4prox@treble>
- <20200416131635.scbpuued6l4xb6qq@treble>
+        Thu, 16 Apr 2020 21:39:05 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DD2C061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 18:39:05 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 20so887248qkl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 18:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sPtQ7coh4iLhBPuUOtg9WgiEyYbfPFLKSwoFKmaeBKM=;
+        b=Jag8221i4RN4j5c2xJkI3PEkuiLswUaiHKz9yyangYdEaZcFXJGlpgKtwUe3bzQJC8
+         iY99EMGRhZn54OwbXAAnLwEVeL4moF3vx2VEJXV/6tk3ez0pOxjHyq+BXNBVTqbzAt7u
+         2SNiEPnOnxRyaTrIRb6snTxtBkY8IcxPNotOgzZtg2fZdqdZV0YqHxg1EUTH837L9C6j
+         bk6vi1y5dMD4Svm9n2x9SksOp7cBEeAcPmjLAUxKQ/1wETgryURdQOKwRa6beHoaJ32l
+         llOYL62xRpCdiVOpt9HTt2liankaVybvGaGs8QyUlL44jHAMDkOS17fHeIyxPCuC3uIZ
+         Cdlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sPtQ7coh4iLhBPuUOtg9WgiEyYbfPFLKSwoFKmaeBKM=;
+        b=cCjwirpIpU+COQjMrcZ2CnCjUilCPeqvAKOGGwXWAvNAvD4rw5guufLtAGy6w3hDy9
+         Eq+ehwxYH/Q7oc/4qweCzJk/gpMnujjHOAEmUmek8IXUZZEMLxR3zkL3Ipyc8c7vIEjP
+         UtmQgeCXPO0WCCiIwe72ZPfj8YXuwC+Tb7fv9LfqM2KZLOcAxhUg6RNXO4idUBwH34kA
+         y5WYZUZ6aRNjhzTKopXnRGKAvP7LFx868pyMvFH3CylBJ9vK48D0G68YV7gqSGmVYCz/
+         5YD5Ftbly+mVtAyha2XE/pj7zq850pdortXLrsKlsNOw2p/FE1kbZp0/ZF97T/d0EKqF
+         RXJg==
+X-Gm-Message-State: AGi0PuaN05FHXz/GL5zJ5CjvSIZtLwfiafzMEvZpcKklqvJUyNB7WQhT
+        7nwSoPwKjE2d13jrVQM5ZnU/JP6w3AXNUElsoGs=
+X-Google-Smtp-Source: APiQypLZO8+eg7K9Hv3Q1LLCitcVuMfTZ4zq72JOEpcVFJs23USk+riDSAzWdZAWVb9hk5PFztW/UqVywzmKirZMZJk=
+X-Received: by 2002:a37:8cc1:: with SMTP id o184mr919597qkd.187.1587087544738;
+ Thu, 16 Apr 2020 18:39:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200416131635.scbpuued6l4xb6qq@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <1585892447-32059-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1585892447-32059-6-git-send-email-iamjoonsoo.kim@lge.com> <20200416161133.GA178028@cmpxchg.org>
+In-Reply-To: <20200416161133.GA178028@cmpxchg.org>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Fri, 17 Apr 2020 10:38:53 +0900
+Message-ID: <CAAmzW4M5EBXDarx-Xkryrf+BKgdOJqBr7aBaB=4P3gBRN-v30Q@mail.gmail.com>
+Subject: Re: [PATCH v5 05/10] mm/swap: charge the page when adding to the swap cache
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 08:16:35AM -0500, Josh Poimboeuf wrote:
-> On Thu, Apr 16, 2020 at 07:06:51AM -0500, Josh Poimboeuf wrote:
-> > On Thu, Apr 16, 2020 at 10:56:02AM +0200, Miroslav Benes wrote:
-> > > > +	bool early = me->state == MODULE_STATE_UNFORMED;
-> > > > +
-> > > > +	return __apply_relocate_add(sechdrs, strtab, symindex, relsec, me,
-> > > > +				    early ? memcpy : s390_kernel_write);
-> > > 
-> > > The compiler warns about
-> > > 
-> > > arch/s390/kernel/module.c: In function 'apply_relocate_add':
-> > > arch/s390/kernel/module.c:453:24: warning: pointer type mismatch in conditional expression
-> > >          early ? memcpy : s390_kernel_write);
-> > 
-> > Thanks, I'll get all that cleaned up.
-> > 
-> > I could have sworn I got a SUCCESS message from the kbuild bot.  Does it
-> > ignore warnings nowadays?
-> 
-> Here's a fix on top of the original patch.
-> 
-> I changed s390_kernel_write() to return "void *" to match memcpy()
-> (probably a separate patch).
-> 
-> I also grabbed the text_mutex for the !early case in
-> apply_relocate_add() -- will do something similar for x86.
-> 
-> Will try to test this on a 390 box.
+2020=EB=85=84 4=EC=9B=94 17=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 1:11, J=
+ohannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> Hello Joonsoo,
+>
+> On Fri, Apr 03, 2020 at 02:40:43PM +0900, js1304@gmail.com wrote:
+> > @@ -112,7 +112,7 @@ void show_swap_cache_info(void)
+> >   * but sets SwapCache flag and private instead of mapping and index.
+> >   */
+> >  int add_to_swap_cache(struct page *page, swp_entry_t entry,
+> > -                     gfp_t gfp, void **shadowp)
+> > +                     struct vm_area_struct *vma, gfp_t gfp, void **sha=
+dowp)
+> >  {
+> >       struct address_space *address_space =3D swap_address_space(entry)=
+;
+> >       pgoff_t idx =3D swp_offset(entry);
+> > @@ -120,14 +120,26 @@ int add_to_swap_cache(struct page *page, swp_entr=
+y_t entry,
+> >       unsigned long i, nr =3D compound_nr(page);
+> >       unsigned long nrexceptional =3D 0;
+> >       void *old;
+> > +     bool compound =3D !!compound_order(page);
+> > +     int error;
+> > +     struct mm_struct *mm =3D vma ? vma->vm_mm : current->mm;
+> > +     struct mem_cgroup *memcg;
+> >
+> >       VM_BUG_ON_PAGE(!PageLocked(page), page);
+> >       VM_BUG_ON_PAGE(PageSwapCache(page), page);
+> >       VM_BUG_ON_PAGE(!PageSwapBacked(page), page);
+> >
+> >       page_ref_add(page, nr);
+> > +     /* PageSwapCache() prevent the page from being re-charged */
+> >       SetPageSwapCache(page);
+> >
+> > +     error =3D mem_cgroup_try_charge(page, mm, gfp, &memcg, compound);
+> > +     if (error) {
+> > +             ClearPageSwapCache(page);
+> > +             page_ref_sub(page, nr);
+> > +             return error;
+> > +     }
+> > +
+> >       do {
+> >               xas_lock_irq(&xas);
+> >               xas_create_range(&xas);
+> > @@ -153,11 +165,16 @@ int add_to_swap_cache(struct page *page, swp_entr=
+y_t entry,
+> >               xas_unlock_irq(&xas);
+> >       } while (xas_nomem(&xas, gfp));
+> >
+> > -     if (!xas_error(&xas))
+> > +     if (!xas_error(&xas)) {
+> > +             mem_cgroup_commit_charge(page, memcg, false, compound);
+>
+> Unfortunately you cannot commit here yet because the rmap isn't set up
+> and that will cause memcg_charge_statistics() to account the page
+> incorrectly as file. And rmap is only set up during a page fault.
 
-...and that borked the box pretty nicely.  Oops, big endian!  Need
-something like this on top.
+I also found this problem a few days ago. In my investigation, what we need=
+ for
+anonymous page to make accounting correct is a way to find the type of the =
+page,
+file or anon, since there is no special code to use the rmap. And, I
+think that it
+could be done by checking NULL mapping or something else. Is there anything
+I missed? And, I cannot find the function, memcg_charge_statistics(). Pleas=
+e
+let me know the file name of this function.
 
-Sorry about not testing the patch in the first place, it looked trivial
-and somehow I was thinking Peter writes exclusively bug-free code.
+This is just my curiosity and I agree what you commented below.
 
-diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
-index ee0904a23e24..513e640430ae 100644
---- a/arch/s390/kernel/module.c
-+++ b/arch/s390/kernel/module.c
-@@ -198,21 +198,25 @@ static int apply_rela_bits(Elf_Addr loc, Elf_Addr val,
- 	}
- 
- 	if (bits == 8) {
--		write(dest, &val, 1);
-+		unsigned char tmp = val;
-+		write(dest, &tmp, 1);
- 	} else if (bits == 12) {
- 		unsigned short tmp = (val & 0xfff) |
- 			(*(unsigned short *) loc & 0xf000);
- 		write(dest, &tmp, 2);
- 	} else if (bits == 16) {
--		write(dest, &val, 2);
-+		unsigned short tmp = val;
-+		write(dest, &tmp, 2);
- 	} else if (bits == 20) {
- 		unsigned int tmp = (val & 0xfff) << 16 |
- 			(val & 0xff000) >> 4 | (*(unsigned int *) loc & 0xf00000ff);
- 		write(dest, &tmp, 4);
- 	} else if (bits == 32) {
--		write(dest, &val, 4);
-+		unsigned int tmp = val;
-+		write(dest, &tmp, 4);
- 	} else if (bits == 64) {
--		write(dest, &val, 8);
-+		unsigned long tmp = val;
-+		write(dest, &tmp, 8);
- 	}
- 	return 0;
- }
+> This needs a bit of a rework of the memcg charging code that appears
+> out of scope for your patches. I'm preparing a series right now to do
+> just that. It'll also fix the swap ownership tracking problem when the
+> swap controller is disabled, so we don't have to choose between
+> charging the wrong cgroup or hampering swap readahead efficiency.
 
--- 
-Josh
+Sound good! I also think that these patches are out of scope of my series.
+I will wait your patches. Could you let me know when your series is submitt=
+ed?
+I'd like to plan my work schedule based on your patch schedule.
 
+> The patches also unblock Alex Shi's "per lruvec lru_lock for memcg"
+> series, which is all the more indication that memcg needs fixing in
+> that area.
+
+Okay.
+
+Thanks.
