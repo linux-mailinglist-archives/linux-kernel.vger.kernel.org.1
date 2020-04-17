@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D181ADFC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6941ADFCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgDQOZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbgDQOZo (ORCPT
+        id S1727859AbgDQO0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:26:40 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:45701 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727813AbgDQO0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:25:44 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A241AC061A10
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 07:25:43 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g30so1141395pfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 07:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L6cWP5WK6ujku9y43wjaNC6S0VeElTh4yenPv8t29Ak=;
-        b=gKw5eoYUIpd77RsZ9EA4/OBI5it3b4QtTk5w0WNiaVsQlhU0AvTC99Kwb6pyQrnZwb
-         8mkxqNjg6VEOZTZqnkLOebZlO/n/v5mMNjfkBB1cGO3Fx7O3pVDrmTfYyuyYufQ9ccR3
-         RtPWKLjDzCOGMUWt9saeSwmpszseuFa+iiXqlLA7QMz5NdgXvU//k288EsKe0YfAzi6u
-         dvmxk+qgp7K7fE2PnVT7fvqSgeWduMN7B1pblLGgZqKs3H1NpzAxQ5FN/ffFSwvnE0Dr
-         z0qCKxdTOrenMDSXdIXvCN19QGBDvsZe/1e/6pTgbuMcknn8YL4CeODkrzae32Dl8ywr
-         FA6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L6cWP5WK6ujku9y43wjaNC6S0VeElTh4yenPv8t29Ak=;
-        b=D/gHdUalubj2c86bHPhFXZEiID/6wGx7O+mdeHU+6AldcLSjLBIE8vTaXAxq2npmc/
-         KrMQ7Z3QUhfg7t1qOzSqz5fjXxFxF2d/IukLNOAhoBaKOol5PugwiTWd5UOeaCnAtLu1
-         q2pZ20vA5YIwvGeWTfGjHQS74gHd+ErctuNDGMHpx1xCCfZvmQvvBMFKX7O4yUmbsOgw
-         rSisvcZ74hCdudtYaW+nIyMyFPsXjdERaXhRJ5Mlae2HdjNGfLbBskMmTIigBbgViNds
-         oagh1M3ZkzS2i/hDgbcjzJ6ZtkqIZ9k+pvpPVlhd6UUKAW5LTfKAK4ilqKM39eaaN337
-         p/lg==
-X-Gm-Message-State: AGi0Pub5yAO65kS8taV0L7JjJ0KL1ICFrnUPc6Zdyk1agOK14ecjwRI7
-        A+rmdgCbv7eetD4Z+SyY+sQZfw==
-X-Google-Smtp-Source: APiQypLk3UKQ7IlVU68RBsk4YcfumTB0+HNr5I6KmasWP50lwGXPB60OmHhJAmy9VXUBKXWGkLn5iw==
-X-Received: by 2002:a63:1662:: with SMTP id 34mr3312317pgw.117.1587133542614;
-        Fri, 17 Apr 2020 07:25:42 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id r18sm579944pfg.120.2020.04.17.07.25.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 07:25:41 -0700 (PDT)
-Subject: Re: improve use_mm / unuse_mm v2
-To:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200416053158.586887-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8d314bc3-ea59-684d-2d34-20b152a36f4f@kernel.dk>
-Date:   Fri, 17 Apr 2020 08:25:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 10:26:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587133598; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=CMTAciZ1CDkXatEHtEmVAWxJhkhwS/4RbxCzudGRMx8=; b=TyGAs5sU85Hv5qqD+lcUHeg/8PF1xd80mlCPPA6DFoPpxR+KZxz8Je2DlSam35yyEash+WlH
+ KeuebM3MkcEvV0GMlIfiVmoxuDFPBpH5ElfyyYYOQC5R3/kXQgK5eivUTJpPC5mk7YiXEjpM
+ NPxxQjMpeV062kB7pJ55P4Dcc5s=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e99bc90.7fe8837f05e0-smtp-out-n01;
+ Fri, 17 Apr 2020 14:26:24 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F78AC43636; Fri, 17 Apr 2020 14:26:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8981FC433F2;
+        Fri, 17 Apr 2020 14:26:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8981FC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, evgreen@chromium.org,
+        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
+        devicetree@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 0/5] Add PAS and MSA based Modem support
+Date:   Fri, 17 Apr 2020 19:56:00 +0530
+Message-Id: <20200417142605.28885-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200416053158.586887-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 11:31 PM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series improves the use_mm / unuse_mm interface by better
-> documenting the assumptions, and my taking the set_fs manipulations
-> spread over the callers into the core API.
-> 
-> Changes since v1:
->  - drop a few patches
->  - fix a comment typo
->  - cover the newly merged use_mm/unuse_mm caller in vfio
+Add PAS based modem support on SC7180 SoCs and update the device node to
+support MSA based modem boot.
 
-You can add my reviewed-by/tested-by to the patches, passes the
-io_uring regression tests.
+Patch [1,2] - Add PAS based modem support
+Patch [3] - Update reserved memory map
+Patch [4,5] - Add PAS/MSA modem nodes
+
+Sibi Sankar (5):
+  dt-bindings: remoteproc: qcom: Add SC7180 MPSS support
+  remoteproc: qcom: pas: Add SC7180 Modem support
+  arm64: dts: qcom: sc7180: Update reserved memory map
+  arm64: dts: qcom: sc7180: Add Q6V5 MSS node
+  arm64: dts: qcom: sc7180: Update Q6V5 MSS node
+
+ .../bindings/remoteproc/qcom,adsp.txt         |   3 +
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts       | 105 +++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          | 124 +++++++++++++++++-
+ drivers/remoteproc/qcom_q6v5_pas.c            |   1 +
+ 4 files changed, 231 insertions(+), 2 deletions(-)
 
 -- 
-Jens Axboe
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
