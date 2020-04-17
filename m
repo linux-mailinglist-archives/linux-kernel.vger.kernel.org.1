@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DC51AE0FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292BA1AE11F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgDQPWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:22:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:22044 "EHLO mga02.intel.com"
+        id S1729067AbgDQP3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:29:07 -0400
+Received: from muru.com ([72.249.23.125]:49942 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728684AbgDQPWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:22:46 -0400
-IronPort-SDR: EoUvbtWgmFHw8Ok62J0hgdWn7X4fgceDUO8P9xTKKHtmh6Vv2Qt78For47O0QVB+zCYbtrt7ZG
- Uljl9clRui8w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 08:22:44 -0700
-IronPort-SDR: jttx9y4XliPhN5EmpkCynjQPClqI9PL59tfFSuf/z31+Enejj5o2AgxCyiDRK4DT9ud2Ko8scm
- 2AlOmCiNfDuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,395,1580803200"; 
-   d="scan'208";a="279887326"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008.jf.intel.com with ESMTP; 17 Apr 2020 08:22:44 -0700
-Date:   Fri, 17 Apr 2020 08:28:39 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Yi L <yi.l.liu@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
-Message-ID: <20200417082839.45d6321e@jacob-builder>
-In-Reply-To: <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
-References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
-        <20200410124557.4012b99b@jacob-builder>
-        <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
-        <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1728542AbgDQP3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 11:29:07 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id CAEEC8047;
+        Fri, 17 Apr 2020 15:29:53 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 08:29:03 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benoit Cousson <bcousson@baylibre.com>,
+        Carlos Hernandez <ceh@ti.com>,
+        Thomas Gleixner <tglx@linutronix.de>, t-kristo@ti.com,
+        Olof Johansson <olof@lixom.net>, tomi.valkeinen@ti.com,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: OF: ERROR: Bad of_node_put() on
+ /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
+Message-ID: <20200417152903.GO37466@atomide.com>
+References: <CA+G9fYv5NxK+F5DX_q1c_wvnhjT_WTZBFJQXLWFeqMXsEcASZg@mail.gmail.com>
+ <CA+G9fYu-qYP2wJw4p1p_C6_ttwK0fvw+qUnsN9mDuKOv3zGEBw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu-qYP2wJw4p1p_C6_ttwK0fvw+qUnsN9mDuKOv3zGEBw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 09:46:55 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
+* Naresh Kamboju <naresh.kamboju@linaro.org> [200327 16:44]:
+> The reported problem still happening on arm beagle board x15 device
+> running Linux next kernel 20200327.
+...
 
-> Hi Kevin,
-> On 4/17/20 4:45 AM, Tian, Kevin wrote:
-> >> From: Auger Eric
-> >> Sent: Thursday, April 16, 2020 6:43 PM
-> >>  
-> > [...]  
-> >>>>> +	if (svm) {
-> >>>>> +		/*
-> >>>>> +		 * If we found svm for the PASID, there must
-> >>>>> be at
-> >>>>> +		 * least one device bond, otherwise svm should
-> >>>>> be freed.
-> >>>>> +		 */
-> >>>>> +		if (WARN_ON(list_empty(&svm->devs))) {
-> >>>>> +			ret = -EINVAL;
-> >>>>> +			goto out;
-> >>>>> +		}
-> >>>>> +
-> >>>>> +		for_each_svm_dev(sdev, svm, dev) {
-> >>>>> +			/* In case of multiple sub-devices of
-> >>>>> the same pdev
-> >>>>> +			 * assigned, we should allow multiple
-> >>>>> bind calls with
-> >>>>> +			 * the same PASID and pdev.
-> >>>>> +			 */
-> >>>>> +			sdev->users++;  
-> >>>> What if this is not an mdev device. Is it also allowed?  
-> >>> Yes. IOMMU and VT-d driver is not mdev aware. Here mdev is just an
-> >>> example of normal use case. You can bind the same PCI device (PF
-> >>> or SRIOV VF) more than once to the same PASID. Just need to
-> >>> unbind also.  
-> >>
-> >> I don't get the point of binding a non mdev device several times
-> >> with the same PASID. Do you intend to allow that at userspace
-> >> level or prevent this from happening in VFIO?  
-> > 
-> > I feel it's better to prevent this from happening, otherwise VFIO
-> > also needs to track the bind count and do multiple unbinds at
-> > mm_exit. But it's not necessary to prevent it in VFIO. We can check
-> > here upon whether aux_domain is valid, and if not return -EBUSY.  
-> Ah OK. So if we can detect the case here it is even better
-> 
-I don't understand why VFIO cannot track, since it is mdev aware. if we
-don;t refcount the users, one mdev unbind will result unbind for all
-mdev under the same pdev. That may not be the right thing to do.
+> [    0.000000] OF: ERROR: Bad of_node_put() on
+> /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W
+>   5.6.0-rc7-next-20200327 #1
+> [    0.000000] Hardware name: Generic DRA74X (Flattened Device Tree)
+> [    0.000000] [<c0311810>] (unwind_backtrace) from [<c030ba14>]
+> (show_stack+0x10/0x14)
+> [    0.000000] [<c030ba14>] (show_stack) from [<c0fb6604>]
+> (dump_stack+0xbc/0xd0)
+> [    0.000000] [<c0fb6604>] (dump_stack) from [<c0fbb07c>]
+> (kobject_put+0xc0/0x104)
+> [    0.000000] [<c0fbb07c>] (kobject_put) from [<c1639e4c>]
+> (of_clk_init+0x18c/0x228)
+> [    0.000000] [<c1639e4c>] (of_clk_init) from [<c1611544>]
+> (omap_clk_init+0x3c/0x58)
+> [    0.000000] [<c1611544>] (omap_clk_init) from [<c1611ea8>]
+> (omap4_sync32k_timer_init+0x8/0x2c)
+> [    0.000000] [<c1611ea8>] (omap4_sync32k_timer_init) from
+> [<c161213c>] (omap5_realtime_timer_init+0x8/0x234)
+> [    0.000000] [<c161213c>] (omap5_realtime_timer_init) from
+> [<c1600c88>] (start_kernel+0x330/0x4b8)
 
-> Thanks
-> 
-> Eric
-> >   
-> >>
-> >> Besides, the comment is a bit misleading as it gives the
-> >> impression it is only true for mdev and there is no associated
-> >> check.  
-> > 
-> > Thanks
-> > Kevin
-> >   
-> 
+Just FYI, Tero is looking at the clock issues that seem to be
+causing these warnings.
 
-[Jacob Pan]
+Regards,
+
+Tony
