@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A941AE0DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43701AE0E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgDQPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S1729014AbgDQPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728114AbgDQPQl (ORCPT
+        by vger.kernel.org with ESMTP id S1728931AbgDQPRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:16:41 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F89C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:16:41 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a22so1192393pjk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=YXR192pJ0exfYgl5biCYmiq8w0qm6d+pqJxZoijZXpM=;
-        b=WETNw5cjPKEZXdPr4UHoLTfslN5t+iZ3Lz4PInGXGGIn0Rq4Acr8uQ5HigeEMhJ2fO
-         mgbRUONJMqlCM0fEKUu5DQgokOZVPlfxZFvZ1cA4SsAYFxyQ5B8ovjpz+zcCFn4ygZeS
-         3NBv/N+NIgt3jpUwFE7REfsOvZIDLS2yt3S6VmFGFrB+5ScAU7py0F64usy65mYrB6qY
-         RT1cgbB/EdVBaiKxxCln6Ax052S1xRURHWkDUy0PF59h/LILN9IT46sb/psv9N4rh+GZ
-         ulRnqsyz8b+jwyeqSPdRocao6Uy0al72x9f98632KSYV8NJifn3+qqu3NeqcqKFwGPKM
-         E7IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=YXR192pJ0exfYgl5biCYmiq8w0qm6d+pqJxZoijZXpM=;
-        b=j42Ll+Aju+oTWfYj2NeBIvVFYH2IkL2WhAhRXdAzCXH5HtH1U2z4doUuDEo1KRsmKM
-         ZrWUU2jfzkAZAwx7Y1vFR6NX7Bk+0kNxCiF2fQhyTQdRWxc3rmyJfz0Fnpapl5Scf0xz
-         DQntT8kX8JJJDvw9wSc8m0hI9c55RsPr1Wi/XGCsb9gXtvGSqnWPglXvSAPFtTNeofFn
-         9U6sJqo65T5QxHhGdCZNdH95HdC1B6Y+nhb99iZJpSo4yMmHtZUJnkXcPu1D4Wf51A62
-         iibWMGpbp79DgAVmI1h8wliJFgXEgSnM5dNOFGd8BUHd7T9B90+Nhx+w8TQvWxLzQffd
-         sG+g==
-X-Gm-Message-State: AGi0Pub0YJFP19pqxES0eM2qxvtcRiV2XsDna0N1W/gKDrn4Qq7NlUrB
-        iFlg5R4T25HfyBbi3MSY+dK6SA==
-X-Google-Smtp-Source: APiQypIYts3zNYQ2qzCLlhtBdzBnl1UQdUdvk2IzdQmqGvmKKz/8pfPFk+wflUPTHjShsmnV/NqJwQ==
-X-Received: by 2002:a17:90a:af8c:: with SMTP id w12mr4948192pjq.37.1587136600941;
-        Fri, 17 Apr 2020 08:16:40 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id y26sm14710926pfq.107.2020.04.17.08.16.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 08:16:39 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring fixes for 5.7-rc
-Message-ID: <2750fd4f-8edc-18c2-1991-c1dc794a431f@kernel.dk>
-Date:   Fri, 17 Apr 2020 09:16:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 11:17:38 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793CBC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lDhK24/3VfMY+kaIKaOjzCIhlyuFHST/ho68SD7snQ4=; b=I4nMi2cz9vD+aV9R4LkIJuiyyW
+        HZQkqN3UKAw9RWzDtH5u3Ksl86EGd9EqP2L/mU8oEOEHOTC4m4SwRH9mkrKybaux+WMCT7n0khmL9
+        bR7HFGigMgvpVEHNtxa8E5zRAoGCZ7+zRgwewuGPRK5N8IBv9RD7Gnd6j05DqknyHbUkeSLixK9sH
+        Psqd2rE5OAdGC2TnVXiJMIBAkvik0DkkGSav1/PNV+3GWdDWUtW6xW5e67XNlqotENImc52uvlC9e
+        oP6Y8F186H/iDJEjJJwiLL4fWommmEvBpy4asKsvP/jHxvBurrZk8hmsA66g4pT55lRrLvl+JTS+5
+        dQsDuV6g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPSju-0002rs-Bp; Fri, 17 Apr 2020 15:17:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B025C3015D0;
+        Fri, 17 Apr 2020 17:17:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9AC622B121814; Fri, 17 Apr 2020 17:17:07 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 17:17:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH, RFC] x86/mm/pat: Restore large pages after fragmentation
+Message-ID: <20200417151707.GG20730@hirez.programming.kicks-ass.net>
+References: <20200416213229.19174-1-kirill.shutemov@linux.intel.com>
+ <20200417121828.GB20730@hirez.programming.kicks-ass.net>
+ <20200417144244.gdoblao656l6ktkr@box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417144244.gdoblao656l6ktkr@box>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Apr 17, 2020 at 05:42:44PM +0300, Kirill A. Shutemov wrote:
+> On Fri, Apr 17, 2020 at 02:18:28PM +0200, Peter Zijlstra wrote:
+> Do you mean that it is not aligned to '(' on the previous line?
+> 
+> Okay, I'll fix it up (and change my vim setup). But I find indenting with
+> spaces disgusting.
 
-- Series from Pavel, wrapping up the init/setup cleanup.
-
-- Series from Pavel fixing some issues around deferral sequences
-
-- Fix for splice punt check using the wrong struct file member
-
-- Apply poll re-arm logic for pollable retry too
-
-- Pollable retry should honor cancelation
-
-- Fix for setup time error handling syzbot reported crash
-
-- Work restore poll cancelation fix
+set cino=:0(0
 
 
-  git://git.kernel.dk/linux-block.git tags/io_uring-5.7-2020-04-17
+> > >  static void cpa_flush(struct cpa_data *data, int cache)
+> > >  {
+> > > +	LIST_HEAD(pgtables);
+> > > +	struct page *page, *tmp;
+> > 
+> > xmas fail
+> 
+> Emm. What are rules here?
+> 
+> > >  	struct cpa_data *cpa = data;
+> > >  	unsigned int i;
+
+Basically we (tip) strive for the inverse xmas tree thing, so here that
+would be:
+
+	struct cpa_data *cpa = data;
++	struct page *page, *tmp;
++	LIST_HEAD(pgtables);
+	unsigned int i;
 
 
-----------------------------------------------------------------
-Jens Axboe (4):
-      io_uring: correct O_NONBLOCK check for splice punt
-      io_uring: check for need to re-wait in polled async handling
-      io_uring: io_async_task_func() should check and honor cancelation
-      io_uring: only post events in io_poll_remove_all() if we completed some
+> > > +	pr_debug("2M restored at %#lx\n", addr);
+> > 
+> > While I appreciate it's usefulness while writing this, I do think we can
+> > do without that print once we know it works.
+> 
+> Even with pr_debug()? I shouldn't be noisy for most users.
 
-Pavel Begunkov (8):
-      io_uring: remove obsolete @mm_fault
-      io_uring: track mm through current->mm
-      io_uring: early submission req fail code
-      io_uring: keep all sqe->flags in req->flags
-      io_uring: move all request init code in one place
-      io_uring: fix cached_sq_head in io_timeout()
-      io_uring: kill already cached timeout.seq_offset
-      io_uring: don't count rqs failed after current one
+I always have debug on; also there is no counterpart on split either.
 
-Xiaoguang Wang (1):
-      io_uring: restore req->work when canceling poll request
+> > > +/*
+> > > + * Restore PMD and PUD pages in the kernel mapping around the address where
+> > > + * possible.
+> > > + *
+> > > + * Caller must flush TLB and free page tables queued on the list before
+> > > + * touching the new entries. CPU must not see TLB entries of different size
+> > > + * with different attributes.
+> > > + */
+> > > +static void restore_large_pages(unsigned long addr, struct list_head *pgtables)
+> > > +{
+> > > +	pgd_t *pgd;
+> > > +	p4d_t *p4d;
+> > > +	pud_t *pud;
+> > > +
+> > > +	addr &= PUD_MASK;
+> > > +
+> > > +	spin_lock(&pgd_lock);
+> > > +	pgd = pgd_offset_k(addr);
+> > > +	if (pgd_none(*pgd))
+> > > +		goto out;
+> > > +	p4d = p4d_offset(pgd, addr);
+> > > +	if (p4d_none(*p4d))
+> > > +		goto out;
+> > > +	pud = pud_offset(p4d, addr);
+> > > +	if (!pud_present(*pud) || pud_large(*pud))
+> > > +		goto out;
+> > > +
+> > > +	restore_pud_page(pud, addr, pgtables);
+> > > +out:
+> > > +	spin_unlock(&pgd_lock);
+> > > +}
+> > 
+> > I find this odd, at best. AFAICT this does not attempt to reconstruct a
+> > PMD around @addr when possible. When the first PMD of the PUD can't be
+> > reconstructed, we give up entirely.
+> 
+> No, you misread. If the first PMD is not suitable, we give up
+> reconstructing PUD page, but we still look at all PMD of the PUD range.
 
- fs/io_uring.c | 301 +++++++++++++++++++++++++++++++---------------------------
- 1 file changed, 162 insertions(+), 139 deletions(-)
+Aah, indeed. I got my brain in a twist reading that pud function.
 
--- 
-Jens Axboe
+> But this might be excessive. What you are proposing below should be fine
+> and more efficient. If we do everything right the rest of PMDs in the PUD
+> have to already large or not suitable for reconstructing.
 
+Just so.
+
+> We might still look at the rest of PMDs for CONFIG_CPA_DEBUG, just to make
+> sure we don't miss some corner case where we didn't restore a PMD.
+> 
+> (Also I think about s/restore/reconstruct/g)
+
+Right, and WARN if they do succeed collapsing ;-)
