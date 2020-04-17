@@ -2,113 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6676C1AE04C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A451AE052
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgDQO7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        id S1728336AbgDQPAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgDQO7M (ORCPT
+        with ESMTP id S1726707AbgDQPAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:59:12 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EA8C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 07:59:11 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q19so2324487ljp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 07:59:11 -0700 (PDT)
+        Fri, 17 Apr 2020 11:00:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505CFC061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:00:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id i10so3379161wrv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 08:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KrVdbgNLnOAtz/b4GEh6fjWuVR6UiAa01u62/hDkw0Y=;
-        b=RB07JlK2pmb0+M6v4xQGBUIWbw21AfEXpRSFiwNcWlOdmO0l5W1HXEmc/ezpr5MT8j
-         uG3oSBY9B4HQ/MUcBWsabTKQo+VufRJQA1NNT7pQstrOlNI98is9x+bnMG6D7L9bKMN5
-         RLcWV12Kn1B0Zms7J+8cCm/Mj21gE/UFVUQ3Vq78degSMaW/rBxxvOAc0eVurkOUcUn9
-         THmz8gRn7f3R5tZTkZFpEmYkZXtHb+J9mX++57Ab7pWTEvohleZgGGT7Wx3DK3bFBUvZ
-         8orviJX8amuK9oTr50PkVazeUlYAXksZEIwZmZCkTYvBconnFwOsn7ngzQ1ZngyJpfAS
-         hxxQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+pLzXV2uoWONcvIXLG60QmJnpF6qpxalQJEJVAlU5ZU=;
+        b=SJlFo73fheabH5hiH/RJ37KRFeF6vcj+J3TT+NQ5Qiwt4UY2A/7hQayUJEKsxeJqiz
+         W6eqjB1ojrsvckINI7UM64sPHV2ixzU9iDWbpnLaZ5Xi/8osCdcnlRDz4ZKgGfjR6ct/
+         24JhjZMz3V23pEJ7WWIDMpIpFcUhNftInHJYM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KrVdbgNLnOAtz/b4GEh6fjWuVR6UiAa01u62/hDkw0Y=;
-        b=a4yGREN0F0gyqkLtdY2xqMp2gGQu05vrcaq1+DdXq23mpKrzRxd65e+M9nuL6dQ11e
-         OMMpMM5R6FsoYhVY+0hJaGpH3bWPcmhBh2DE/rl+1A6knt98BbKUnUAK+Iha+Z7q7sh3
-         FkiglDYr1UkJSLB1sZy10+N0Y5l5hmM0+Gszb/2TNR6xrgIy2Z0EMftXwFKG10mdiWAC
-         Fi4+SpcKzbN20VC/Cz6728AYklzWyZrWTvpXLziCKa23XJnUnnIbLlpXpj3PFR9cm9Py
-         e+WtNnyjYDB5p1BubRN0Be7BoUIl8qBU2xVY5lhZkJF4plj2seDG/OSywRyXpIFB4x4/
-         XPoQ==
-X-Gm-Message-State: AGi0PuYbqqHodhz5DJcCtuTHetjY6orq+RowzbLSI0GI1W5OHlLbo8NW
-        fSP1HelkPz8ZJ1y2tKPtTfotMg==
-X-Google-Smtp-Source: APiQypLchSnPlwcAmQhQnIQZDPdJndRghDikYI9DT9sG7mYhgtH7y9jwm5mgo0e/ZXbQ54IfOSRUIg==
-X-Received: by 2002:a2e:3c08:: with SMTP id j8mr2448089lja.243.1587135550261;
-        Fri, 17 Apr 2020 07:59:10 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id v64sm7599013lfa.54.2020.04.17.07.59.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=+pLzXV2uoWONcvIXLG60QmJnpF6qpxalQJEJVAlU5ZU=;
+        b=SB1c/gV7bBrm4MaSLmVUjKdknHrDuK3QOKnSMg82DvgMAX78Roh2e37SvVgsA/5HG8
+         We6g9GISPcC1aRmU3xXZBHr05d5RS3HEPB5oEJ5NyMOt2xmkoYfsTTHS3vwuDwzR+JFH
+         TKQ9hD6wjn1Wvk6UX2iIJoEP30soiVHgwxsr7/4NWzCC+SN61cjM3Q7IkSwyJlhaOeno
+         vbTCnJUW3y9S6EU6Y4R06XO4Ttlb7SvnD4FGmJjtJ97LG9hl9YARPP6eg1q7K/wWPi9G
+         c7PBkc56C63VBBNx/nFLZNkPzLllcmp/2GF6c0qO7pQQdSr/8yFLghzL/W68tipRn+py
+         2RDg==
+X-Gm-Message-State: AGi0Pua6O+G2fh0WRK8CSpQmkPbsRINflwLx/IRBw0mL9sTY+5zr1Gw4
+        MmilHNoHy/zYug9oWwWDOvcfjg==
+X-Google-Smtp-Source: APiQypI+XqYbgKYVQ6aVc9PEFMJyQDjicsm1whYiSRv3ZukR4N/x6YDtB22FRHpXAK0g1o+ga1mJiw==
+X-Received: by 2002:adf:f8cd:: with SMTP id f13mr4216226wrq.119.1587135616818;
+        Fri, 17 Apr 2020 08:00:16 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g186sm8077661wme.7.2020.04.17.08.00.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 07:59:09 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 74B7A100AEA; Fri, 17 Apr 2020 17:59:09 +0300 (+03)
-Date:   Fri, 17 Apr 2020 17:59:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 4/8] khugepaged: Drain LRU add pagevec after swapin
-Message-ID: <20200417145909.476o5ppho5p3cgyk@box>
-References: <20200416160026.16538-1-kirill.shutemov@linux.intel.com>
- <20200416160026.16538-5-kirill.shutemov@linux.intel.com>
- <20200416214145.bfbb1afcc7a632e8cafdf203@linux-foundation.org>
+        Fri, 17 Apr 2020 08:00:16 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 17:00:13 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        driverdevel <devel@driverdev.osuosl.org>, nd <nd@arm.com>,
+        Todd Kjos <tkjos@android.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Anders Pedersen <anders.pedersen@arm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Darren Hart (VMware)" <dvhart@infradead.org>,
+        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Martijn Coenen <maco@android.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
+Message-ID: <20200417150013.GN3456981@phenom.ffwll.local>
+Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        driverdevel <devel@driverdev.osuosl.org>, nd <nd@arm.com>,
+        Todd Kjos <tkjos@android.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>, lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Anders Pedersen <anders.pedersen@arm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Darren Hart (VMware)" <dvhart@infradead.org>,
+        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Martijn Coenen <maco@android.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-media@vger.kernel.org
+References: <20200414134629.54567-1-orjan.eide@arm.com>
+ <20200414141849.55654-1-orjan.eide@arm.com>
+ <20200414142810.GA958163@kroah.com>
+ <CALAqxLX-SUhHPH6ewt-s9cEMc8DtMTgXem=JruAkLofuJf1syg@mail.gmail.com>
+ <20200416102508.GA820251@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200416214145.bfbb1afcc7a632e8cafdf203@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200416102508.GA820251@kroah.com>
+X-Operating-System: Linux phenom 5.3.0-3-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 09:41:45PM -0700, Andrew Morton wrote:
-> On Thu, 16 Apr 2020 19:00:22 +0300 "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> wrote:
-> 
-> > __collapse_huge_page_isolate() may fail due to extra pin in the LRU add
-> > pagevec. It's pretty common for swapin case: we swap in pages just to
-> > fail due to the extra pin.
+On Thu, Apr 16, 2020 at 12:25:08PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Apr 14, 2020 at 09:41:31PM -0700, John Stultz wrote:
+> > On Tue, Apr 14, 2020 at 7:28 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Apr 14, 2020 at 04:18:47PM +0200, Ørjan Eide wrote:
+> > > > Only sync the sg-list of an Ion dma-buf attachment when the attachment
+> > > > is actually mapped on the device.
+> > > >
+> > > > dma-bufs may be synced at any time. It can be reached from user space
+> > > > via DMA_BUF_IOCTL_SYNC, so there are no guarantees from callers on when
+> > > > syncs may be attempted, and dma_buf_end_cpu_access() and
+> > > > dma_buf_begin_cpu_access() may not be paired.
+> > > >
+> > > > Since the sg_list's dma_address isn't set up until the buffer is used
+> > > > on the device, and dma_map_sg() is called on it, the dma_address will be
+> > > > NULL if sync is attempted on the dma-buf before it's mapped on a device.
+> > > >
+> > > > Before v5.0 (commit 55897af63091 ("dma-direct: merge swiotlb_dma_ops
+> > > > into the dma_direct code")) this was a problem as the dma-api (at least
+> > > > the swiotlb_dma_ops on arm64) would use the potentially invalid
+> > > > dma_address. How that failed depended on how the device handled physical
+> > > > address 0. If 0 was a valid address to physical ram, that page would get
+> > > > flushed a lot, while the actual pages in the buffer would not get synced
+> > > > correctly. While if 0 is an invalid physical address it may cause a
+> > > > fault and trigger a crash.
+> > > >
+> > > > In v5.0 this was incidentally fixed by commit 55897af63091 ("dma-direct:
+> > > > merge swiotlb_dma_ops into the dma_direct code"), as this moved the
+> > > > dma-api to use the page pointer in the sg_list, and (for Ion buffers at
+> > > > least) this will always be valid if the sg_list exists at all.
+> > > >
+> > > > But, this issue is re-introduced in v5.3 with
+> > > > commit 449fa54d6815 ("dma-direct: correct the physical addr in
+> > > > dma_direct_sync_sg_for_cpu/device") moves the dma-api back to the old
+> > > > behaviour and picks the dma_address that may be invalid.
+> > > >
+> > > > dma-buf core doesn't ensure that the buffer is mapped on the device, and
+> > > > thus have a valid sg_list, before calling the exporter's
+> > > > begin_cpu_access.
+> > > >
+> > > > Signed-off-by: Ørjan Eide <orjan.eide@arm.com>
+> > > > ---
+> > > >  drivers/staging/android/ion/ion.c | 12 ++++++++++++
+> > > >  1 file changed, 12 insertions(+)
+> > > >
+> > > > Resubmit without disclaimer, sorry about that.
+> > > >
+> > > > This seems to be part of a bigger issue where dma-buf exporters assume
+> > > > that their dma-buf begin_cpu_access and end_cpu_access callbacks have a
+> > > > certain guaranteed behavior, which isn't ensured by dma-buf core.
+> > > >
+> > > > This patch fixes this in ion only, but it also needs to be fixed for
+> > > > other exporters, either handled like this in each exporter, or in
+> > > > dma-buf core before calling into the exporters.
+> > > >
+> > > > diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
+> > > > index 38b51eace4f9..7b752ba0cb6d 100644
+> > > > --- a/drivers/staging/android/ion/ion.c
+> > > > +++ b/drivers/staging/android/ion/ion.c
+> > >
+> > > Now that we have the dma-buff stuff in the tree, do we even need the
+> > > ion code in the kernel anymore?  Can't we delete it now?
+> > >
 > > 
-> > Drain LRU add pagevec on successful swapin.
+> > I agree that we shouldn't be taking further (non-security/cleanup)
+> > patches to the ION code.
+> > 
+> > I'd like to give developers a little bit of a transition period (I was
+> > thinking a year, but really just one LTS release that has both would
+> > do) where they can move their ION heaps over to dmabuf heaps and test
+> > both against the same tree.
+> > 
+> > But I do think we can mark it as deprecated and let folks know that
+> > around the end of the year it will be deleted.
 > 
-> I don't see how this patch can do anything to prevent
-> __collapse_huge_page_isolate() from failing, which is what the
-> changelog implies.
+> No one ever notices "depreciated" things, they only notice if the code
+> is no longer there :)
 > 
-> Can we have a more detailed changelog, please?
+> So I'm all for just deleting it and seeing who even notices...
 
-What about something like this:
- 
-    khugepaged: Drain LRU add pagevec after swapin
++1 on just deleting ion and watching if anyone notices. In case you're
+typing that patch, here's my:
 
-    collapse_huge_page() tries to swap in pages that are part of the PMD
-    range. Just swapped in page goes though LRU add cache. The cache gets
-    extra reference on the page.
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-    The extra reference can lead to the collapse fail: the following
-    __collapse_huge_page_isolate() would check refcount and abort collapse
-    seeing unexpected refcount.
-
-    The fix is to drain local LRU add cache in __collapse_huge_page_swapin()
-    if we successfully swapped in any pages.
-
-    Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-    Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-    Reviewed-and-Tested-by: Zi Yan <ziy@nvidia.com>
-    Acked-by: Yang Shi <yang.shi@linux.alibaba.com>
-
-
+-Daniel
 -- 
- Kirill A. Shutemov
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
