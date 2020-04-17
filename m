@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF311AD5BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 07:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895851AD5DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgDQFrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 01:47:25 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47552 "EHLO inva020.nxp.com"
+        id S1726758AbgDQGBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 02:01:52 -0400
+Received: from mga01.intel.com ([192.55.52.88]:54126 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726065AbgDQFrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 01:47:23 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F311C1A10D9;
-        Fri, 17 Apr 2020 07:47:21 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6AD321A10D7;
-        Fri, 17 Apr 2020 07:47:17 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 89DE6402A8;
-        Fri, 17 Apr 2020 13:47:11 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, leonard.crestez@nxp.com,
-        daniel.baluta@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 2/2] arm64: dts: imx8qxp-mek: Add PMIC thermal zone support
-Date:   Fri, 17 Apr 2020 13:39:06 +0800
-Message-Id: <1587101946-19495-2-git-send-email-Anson.Huang@nxp.com>
+        id S1726065AbgDQGBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 02:01:51 -0400
+IronPort-SDR: YXBbX3P8Exyf17PXjrDl0/WT6gneLcwTB7i51FP1Zw9F5p74CCqqwZYOj6Caw4O0W1K3GIYRzK
+ 1LWBY35TWbrQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 23:01:51 -0700
+IronPort-SDR: qs/5JrKYhI5fjKMKNid/BnUiMqTRYtpN7CI4cWdzotGHs1aG5KkPVKMMBIatdivZOOVpGG0uHk
+ S8pw/ojxwjKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
+   d="scan'208";a="272318270"
+Received: from hao-dev.bj.intel.com ([10.238.157.65])
+  by orsmga002.jf.intel.com with ESMTP; 16 Apr 2020 23:01:48 -0700
+From:   Wu Hao <hao.wu@intel.com>
+To:     will@kernel.org, mdf@kernel.org, mark.rutland@arm.com,
+        gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-api@vger.kernel.org, atull@kernel.org, yilun.xu@intel.com,
+        trix@redhat.com, bhu@redhat.com, Wu Hao <hao.wu@intel.com>
+Subject: [PATCH v9 0/2] add performance reporting support to FPGA DFL drivers
+Date:   Fri, 17 Apr 2020 13:39:58 +0800
+Message-Id: <1587102000-18262-1-git-send-email-hao.wu@intel.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587101946-19495-1-git-send-email-Anson.Huang@nxp.com>
-References: <1587101946-19495-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX8QXP MEK board has PMIC thermal sensor, add support for it.
+Hi all,
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8qxp-mek.dts | 33 +++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+This patchset adds performance reporting support for FPGA DFL drivers. It
+introduces one pmu to expose userspace interfaces via standard perf API.
+User could use standard perf tool to access perf events exposed via pmu.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-index 2ed7aba..9b105ae 100644
---- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-@@ -139,6 +139,39 @@
- 	status = "okay";
- };
- 
-+&thermal_zones {
-+	pmic-thermal0 {
-+		polling-delay-passive = <250>;
-+		polling-delay = <2000>;
-+		thermal-sensors = <&tsens IMX_SC_R_PMIC_0>;
-+
-+		trips {
-+			pmic_alert0: trip0 {
-+				temperature = <110000>;
-+				hysteresis = <2000>;
-+				type = "passive";
-+			};
-+
-+			pmic_crit0: trip1 {
-+				temperature = <125000>;
-+				hysteresis = <2000>;
-+				type = "critical";
-+			};
-+		};
-+
-+		cooling-maps {
-+			map0 {
-+				trip = <&pmic_alert0>;
-+				cooling-device =
-+					<&A35_0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+					<&A35_1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+					<&A35_2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+					<&A35_3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+		};
-+	};
-+};
-+
- &usdhc1 {
- 	assigned-clocks = <&clk IMX_CONN_SDHC0_CLK>;
- 	assigned-clock-rates = <200000000>;
+This patchset is generated based on 5.7-rc1.
+
+Main changes from v8:
+ - rebase against 5.7-rc1.
+
+Main changes from v7:
+ - rename pmu name from "fme%d" to "dfl_fme%d".
+ - monitor cpu hotplug for cpumask sysfs and update cpumask sysfs doc.
+ - add extra read for 64bit counter registers to avoid 2-32bit readl issue.
+
+Main changes from v6:
+ - add a new ABI/testing/ sysfs documentation in patch #2.
+ - fix a warning reported by kbuild in patch #2.
+
+Main changes from v5:
+ - use dev_ext_attribute instead of fme_perf_event_attr.
+ - use is_visible function to decide which events to expose per
+   hardware capability, and add event_init checking for all events.
+
+Main changes from v4:
+ - rebase and clean up.
+ - update Kconfig for PERF_EVENTS dependency.
+
+Main changes from v3:
+ - add more descriptions in doc, including how to use perf tool for these
+   hardware counters. (patch #1)
+ - use standard perf API instead of sysfs entries. (patch #2)
+
+Wu Hao (1):
+  fpga: dfl: fme: add performance reporting support
+
+Xu Yilun (1):
+  Documentation: fpga: dfl: add description for performance reporting
+    support
+
+ .../testing/sysfs-bus-event_source-devices-dfl_fme |  104 ++
+ Documentation/fpga/dfl.rst                         |   84 ++
+ drivers/fpga/Kconfig                               |    2 +-
+ drivers/fpga/Makefile                              |    1 +
+ drivers/fpga/dfl-fme-main.c                        |    4 +
+ drivers/fpga/dfl-fme-perf.c                        | 1020 ++++++++++++++++++++
+ drivers/fpga/dfl-fme.h                             |    2 +
+ drivers/fpga/dfl.h                                 |    2 +
+ 8 files changed, 1218 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-devices-dfl_fme
+ create mode 100644 drivers/fpga/dfl-fme-perf.c
+
 -- 
-2.7.4
+1.8.3.1
 
