@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC19E1AD7A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA1E1AD7C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgDQHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:45:20 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:55716 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgDQHpU (ORCPT
+        id S1729295AbgDQHrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:47:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39592 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729201AbgDQHrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:45:20 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D1E94803087C;
-        Fri, 17 Apr 2020 07:45:11 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id c1k99CUap3ve; Fri, 17 Apr 2020 10:45:11 +0300 (MSK)
-Date:   Fri, 17 Apr 2020 10:45:59 +0300
-From:   Sergey Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Sebastian Reichel <sre@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] dt-bindings: power: reset: Add regmap support to the
- SYSCON reboot-mode bindings
-Message-ID: <20200417074559.wxh3hv6xwh5ndaz4@ubsrv2.baikal.int>
-References: <20200306130341.9585-1-Sergey.Semin@baikalelectronics.ru>
- <20200306130402.1F4F0803079F@mail.baikalelectronics.ru>
- <20200312211438.GA21883@bogus>
- <20200313130231.wrvvcttm7ofaxbfo@ubsrv2.baikal.int>
- <CAL_Jsq+W84r687zNV=2S-hj9=xbTQxkx9MpVNDTn6TOrBgiGUw@mail.gmail.com>
- <20200331195053.dcexmhbsbnbfuabe@ubsrv2.baikal.int>
- <20200416195620.4q6scqk5rqbonz4s@ubsrv2.baikal.int>
- <20200416212842.GA18756@bogus>
+        Fri, 17 Apr 2020 03:47:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587109627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OnCFlVZKT1kcPJl0tm16QfqztTjiCxEfefQVkmAO2Q4=;
+        b=GC9feK7PtzBwUH+6Nhep+txosiOfxZQdmcXF/fJdjPOOcsUj51Vlg2lBQQ+bAznzF8dW23
+        0B2SbK1TZonHR1XYS/kfuB0feZnINUvHN6OpOKTHd+D0YqABlJZMo7lufYiv9fI8RJmBpn
+        u/eftDwvEOnA5W6qX1hUqs+ob/bVCaA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301--znvfP_QP-a_NK8x7vIE7A-1; Fri, 17 Apr 2020 03:47:03 -0400
+X-MC-Unique: -znvfP_QP-a_NK8x7vIE7A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 116C118B9FC8;
+        Fri, 17 Apr 2020 07:47:02 +0000 (UTC)
+Received: from [10.36.115.53] (ovpn-115-53.ams2.redhat.com [10.36.115.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E56D9129F81;
+        Fri, 17 Apr 2020 07:46:56 +0000 (UTC)
+Subject: Re: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Yi L <yi.l.liu@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
+ <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
+ <20200410124557.4012b99b@jacob-builder>
+ <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
+Date:   Fri, 17 Apr 2020 09:46:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200416212842.GA18756@bogus>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 04:28:42PM -0500, Rob Herring wrote:
-> On Thu, Apr 16, 2020 at 10:56:20PM +0300, Sergey Semin wrote:
-> > Rob,
-> > Any comment on my suggestion below?
-> > 
-> > Regards,
-> > -Sergey
-> > 
-> > On Tue, Mar 31, 2020 at 10:50:53PM +0300, Sergey Semin wrote:
-> > > On Wed, Mar 18, 2020 at 05:14:25PM -0600, Rob Herring wrote:
-> > > > On Fri, Mar 13, 2020 at 7:03 AM Sergey Semin
-> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > > >
-> > > > > On Thu, Mar 12, 2020 at 04:14:38PM -0500, Rob Herring wrote:
-> > > > > > On Fri, Mar 06, 2020 at 04:03:40PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> > > > > > > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > > > >
-> > > > > > > Optional regmap property will be used to refer to a syscon-controller
-> > > > > > > having a reboot tolerant register mapped.
-> > > > > >
-> > > > > > NAK. It should simply be a child node of the 'syscon-controller'.
-> > > > >
-> > > > > Hm, It's dilemma. The driver maintainer said ack, while you disagree.)
-> > > > > So the code change will be merged while the doc-part won't? Lets discuss then
-> > > > > to settle the issue.
-> > > > >
-> > > > > Why 'syscon-reboot' can be out of syscon-controller node, while
-> > > > > 'syscon-reboot-mode' can't?
-> > > > 
-> > > > Look at the history and you will see one was reviewed by DT
-> > > > maintainers and one wasn't.
-> > > > 
-> > > > > They both belong to the same usecase: save
-> > > > > cause id and reboot. So having similar properties-set and declaring their
-> > > > > nodes someplace nearby is natural.
-> > > > 
-> > > > Which is what I'm asking for. Where else in the tree does it make
-> > > > sense to locate the 'syscon-reboot-mode' node? Locate nodes where they
-> > > > logically belong.
-> > > > 
-> > > > > According to the driver 'syscon-reboot'
-> > > > > can't lack the regmap property because it's mandatory, while here you refuse
-> > > > > to have even optional support. Additionally in most of the cases the
-> > > > > 'syscon-reboot' nodes aren't declared as a child of a system controller
-> > > > > node. Why 'syscon-reboot-mode' can't work in a similar way?
-> > > > 
-> > > > There's plenty of bad or "don't follow current best practice" examples
-> > > > in the tree for all sorts of things. That is not a reason for doing
-> > > > something in a new binding or adding to an existing one.
-> > > > 
-> > > > Rob
-> > > 
-> > > Alright. I see your point. What about I'd provide a sort of opposite
-> > > implementation? I could make the "regmap"-phandle reference being optional
-> > > in the !"syscon-reboot"! driver instead of adding the regmap-property
-> > > support to the "syscon-reboot-mode" driver. So if regmap property isn't
-> > > defined in the "syscon-reboot"-compatible node, the driver will try to
-> > > get a syscon regmap from the parental node as it's done in the
-> > > "syscon-reboot-mode" driver.
+Hi Kevin,
+On 4/17/20 4:45 AM, Tian, Kevin wrote:
+>> From: Auger Eric
+>> Sent: Thursday, April 16, 2020 6:43 PM
+>>
+> [...]
+>>>>> +	if (svm) {
+>>>>> +		/*
+>>>>> +		 * If we found svm for the PASID, there must be at
+>>>>> +		 * least one device bond, otherwise svm should be
+>>>>> freed.
+>>>>> +		 */
+>>>>> +		if (WARN_ON(list_empty(&svm->devs))) {
+>>>>> +			ret = -EINVAL;
+>>>>> +			goto out;
+>>>>> +		}
+>>>>> +
+>>>>> +		for_each_svm_dev(sdev, svm, dev) {
+>>>>> +			/* In case of multiple sub-devices of the
+>>>>> same pdev
+>>>>> +			 * assigned, we should allow multiple bind
+>>>>> calls with
+>>>>> +			 * the same PASID and pdev.
+>>>>> +			 */
+>>>>> +			sdev->users++;
+>>>> What if this is not an mdev device. Is it also allowed?
+>>> Yes. IOMMU and VT-d driver is not mdev aware. Here mdev is just an
+>>> example of normal use case. You can bind the same PCI device (PF or
+>>> SRIOV VF) more than once to the same PASID. Just need to unbind also.
+>>
+>> I don't get the point of binding a non mdev device several times with
+>> the same PASID. Do you intend to allow that at userspace level or
+>> prevent this from happening in VFIO?
 > 
-> That seems fine.
-> 
-> > > Seeing you think that regmap-property-based design is a bad practice in
-> > > this case, I also could mark the property as deprecated in the "syscon-reboot"
-> > > dt schema and print a warning from the "syscon-reboot" driver if one is defined.
-> 
-> Depends on how many platforms will start getting warnings. I think just 
-> marking deprecated is enough.
+> I feel it's better to prevent this from happening, otherwise VFIO also
+> needs to track the bind count and do multiple unbinds at mm_exit.
+> But it's not necessary to prevent it in VFIO. We can check here
+> upon whether aux_domain is valid, and if not return -EBUSY.
+Ah OK. So if we can detect the case here it is even better
 
-Ok. Thanks. I'll do this in v2.
+Thanks
 
-Regards,
--Sergey
-
+Eric
 > 
-> Rob
+>>
+>> Besides, the comment is a bit misleading as it gives the impression it
+>> is only true for mdev and there is no associated check.
+> 
+> Thanks
+> Kevin
+> 
+
