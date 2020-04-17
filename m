@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493EF1ADD5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9940C1ADD62
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729252AbgDQMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:33:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32854 "EHLO mx2.suse.de"
+        id S1729258AbgDQMfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:35:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33670 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729053AbgDQMda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:33:30 -0400
+        id S1727877AbgDQMfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 08:35:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B293AABEF;
-        Fri, 17 Apr 2020 12:33:25 +0000 (UTC)
-Date:   Fri, 17 Apr 2020 14:33:24 +0200 (CEST)
+        by mx2.suse.de (Postfix) with ESMTP id 15185AC64;
+        Fri, 17 Apr 2020 12:35:17 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 14:35:16 +0200 (CEST)
 From:   Miroslav Benes <mbenes@suse.cz>
 To:     Peter Zijlstra <peterz@infradead.org>
 cc:     tglx@linutronix.de, jpoimboe@redhat.com,
         linux-kernel@vger.kernel.org, x86@kernel.org, mhiramat@kernel.org,
         jthierry@redhat.com, alexandre.chartre@oracle.com
-Subject: Re: [PATCH v5 00/17] objtool: vmlinux.o and noinstr validation
-In-Reply-To: <20200416114706.625340212@infradead.org>
-Message-ID: <alpine.LSU.2.21.2004171432360.7737@pobox.suse.cz>
-References: <20200416114706.625340212@infradead.org>
+Subject: Re: [PATCH v5 02/17] objtool: Better handle IRET
+In-Reply-To: <20200417122553.GD20730@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.LSU.2.21.2004171434280.7737@pobox.suse.cz>
+References: <20200416114706.625340212@infradead.org> <20200416115118.631224674@infradead.org> <alpine.LSU.2.21.2004171326230.7737@pobox.suse.cz> <20200417122553.GD20730@hirez.programming.kicks-ass.net>
 User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -33,22 +33,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020, Peter Zijlstra wrote:
+On Fri, 17 Apr 2020, Peter Zijlstra wrote:
 
-> As should be familiar by now; these patches implement the noinstr
-> (no-instrument) validation in objtool as requested by Thomas, to ensure
-> critical code (entry for now, idle later) run no unexpected code.
+> On Fri, Apr 17, 2020 at 01:29:32PM +0200, Miroslav Benes wrote:
+> > On Thu, 16 Apr 2020, Peter Zijlstra wrote:
 > 
-> Functions are marked with: noinstr, which implies notrace, noinline and sticks
-> things in the .noinstr.text section. Such functions can then use instr_begin()
-> and instr_end() to allow calls to code outside of this section in sanctioned
-> areas.
+> > > +		case INSN_EXCEPTION_RETURN:
+> > > +			if (handle_insn_ops(insn, &state))
+> > > +				return 1;
+> > > +
+> > > +			/*
+> > > +			 * This handles x86's sync_core() case, where we use an
+> > > +			 * IRET to self. All 'normal' IRET instructions are in
+> > > +			 * STT_NOTYPE entry symbols.
+> > > +			 */
+> > > +			if (func)
+> > > +				break;
+> > > +
+> > > +			return 0;
+> > > +
+> > >  		case INSN_CONTEXT_SWITCH:
+> > >  			if (func && (!next_insn || !next_insn->hint)) {
+> > >  				WARN_FUNC("unsupported instruction in callable function",
+> > 
+> > It looks really simple.
+> > 
+> > Have you tried Julien's proposal about removing INSN_STACK altogether, 
+> > move the x86 to arch/x86/ and call handle_insn_ops() unconditionally, or 
+> > have you just postponed it? As I said, I think it could be better in the 
+> > long term, but the above looks good for now as well.
 > 
-> On the way of getting there, it also fixes the x86/ftrace trampiline ORC
-> unwind.
+> If you look at this other set I send yesterday:
+> 
+>   https://lkml.kernel.org/r/20200416150752.569029800@infradead.org
+> 
+> (also, sorry for not adding you to the Cc; also best look at the gitweb
+> version, the patches I send out are missing a hunk and lacking some
+> back-merges.. clearly I wasn't having a good day yesterday).
+> 
+> it has this intra_function_calls crud that needs explicit conditional
+> handle_insn_ops().
 
-I think I've already done that, but there are some changes, so
+Ah, ok. Thanks for letting me know. There are so many patches for objtool 
+flying around now that it is easy to miss something.
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-
-M
+Miroslav
