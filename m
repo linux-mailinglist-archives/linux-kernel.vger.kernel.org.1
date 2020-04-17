@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D831AE4F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE891AE4F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729512AbgDQSlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S1729301AbgDQSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728801AbgDQSlm (ORCPT
+        by vger.kernel.org with ESMTP id S1729029AbgDQSln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:41:42 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECDAC061A0C;
-        Fri, 17 Apr 2020 11:41:42 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x25so3929893wmc.0;
-        Fri, 17 Apr 2020 11:41:42 -0700 (PDT)
+        Fri, 17 Apr 2020 14:41:43 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FE1C061A0F;
+        Fri, 17 Apr 2020 11:41:43 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z6so4058408wml.2;
+        Fri, 17 Apr 2020 11:41:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HhRrcSbzdrYOhGIkbng34xs3uvw4GEDIaENc9GUahfI=;
-        b=mRTd94CVe3OP71yIcqIkEo4fR/JzFwnwJ3xI98No421tTKrDWiDH0OxlBm6fIC3mHL
-         tAp/JQFabJ0VMJe63sveMQciuu/CsEggJklaxNqt1nTCUVGI8G1VyvgSr6QBvsw+vp1j
-         yDf+t8L1PCX0bfUj8RO3cv5cBDcyts76f1AoR/DC7QYD4QOHpf/DuW47NpP4YW2YzVla
-         fLyb22Fm8XK/S0xfMrx2axzSWg84dDPk8HSiCWFDkYAHsQtqEoI5Ao8W2ntnssxoEi7o
-         f4YMyUh+60Us+P15RDrtgs2fyA3jBvMmlKqKRsK9C3/MQbGRupQuKGRe22fYZ1f3wC0i
-         CQSQ==
+        bh=oIYf6yLD6cGcNKPjnKZPwHWTMLSS0PgTGD6+kLZWz24=;
+        b=qn2RXZm7CQEK2b7CVa5xl9uSvLy65ZGWZ0dZZyISbrsJb0LQXt9eCD5+2BKd5jWT68
+         VCDk+2Q/hdoCN14v015Es9d2FxTKYVxbwNVCpE/Qq+Gi/PdgvV+E2s4jGLDOLZFZvmD6
+         Y86H7Ly/R5lc8w1vv95JqOXTMV0Z68GhtE14x2IL9owKM9Fbki6GTH3M/aS69WUB9in7
+         Yl/Elgwq0qrwv+nOpwN9fZIB3ZQJ6+egCW1+yuD+qCod6igLfPrTHd8OR2aRCiFZGzgU
+         lXuZDJCZ5/VBQMHUj2vxUKZLeXkEdTPvjLR3L3gTzks39bsVsBlhOVZzvhH6vPVoWT+s
+         uh+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HhRrcSbzdrYOhGIkbng34xs3uvw4GEDIaENc9GUahfI=;
-        b=V5WsJ+DQHvHjRGNX+4aALnGVMPiUS1JgEKOm6b5uAJR27wxR9v5M7TO4rki+4arjl9
-         htJ3l5742k3SCRqxQoMpAnjIuI1J2PAgUPUI+mhCfpYGCrIdxBXSiY7178Ox7w0rQ39l
-         HjwPTBYJ1KCg8GdQ5Sq3Av/oocg94GL826HoE/ig5WZEZE6PuI1UoHZB1g1/wfvaTAg6
-         27uVoS6eTIUk8a3MQVrIp3WinSlYv1IsLCNlEaIqKPsos9MweyOtrrMqsu3DGz+7uzoQ
-         ADB62FIn8BUqym3dPcQZXEVjk+tA5olYW0/LyO+fu8XsAqqpMuAk2QPrMEFIV57Vwmte
-         0Bxg==
-X-Gm-Message-State: AGi0Puayc8cVpVsLjWqYXOWgs6j2RF6O09xjaFFlvrYPZBtjodAPxOhU
-        e75tc/1AVH+CdypymDLMAiY=
-X-Google-Smtp-Source: APiQypLZVwsv1sUcu/VFJzhsLAmrPBJK+b+iI07XhRYdWUMc5S2KJK4PgA7rOE687BGjZMq4vKXOUw==
-X-Received: by 2002:a1c:b684:: with SMTP id g126mr4491736wmf.163.1587148901133;
-        Fri, 17 Apr 2020 11:41:41 -0700 (PDT)
+        bh=oIYf6yLD6cGcNKPjnKZPwHWTMLSS0PgTGD6+kLZWz24=;
+        b=nDNPE/IVcWXF4pBm/G0tCYb0dMP8uwWtTneNAlJ7Yf7cS3nPLSCLlZddPYCR+ZbCnv
+         NJ+3x+V0rBE04yqqIj8d3f84KqdyuyW2TWAYFLJMWOHKIi2+HDOYX8eZucFgnFjjqM+/
+         luOI0O4uPrPksVtHEnfXxVE9LEQorVbC6UtOCv60pl/KoyiHy1W0FkN44MBqvQckD/4+
+         P73V6va6s8ySu559evJnrKJA0da1Ya/UVbUZIntWRUozI60qs/viaFl8Bi6mHX8ELoUu
+         AjMLPo7jmxFeN+388g7eL/KtBG2vwx0uxKN74WA1ku+7LQWtF7fYZVgTFaEcEMZxuA9A
+         tfqA==
+X-Gm-Message-State: AGi0PuaqsKq7Ue9Aspp2Kt1axYvrNilvI87/9mrtwduF047Ch3uUpuN9
+        zo5R0GN67qlKvvFHyDP41mw=
+X-Google-Smtp-Source: APiQypJiOSadIsSFqxeGifhueVFxB5KQwrbt+IM4+8elJn17pL0qORQex4+o6XKw8z/L7S4uNIk+Cw==
+X-Received: by 2002:a1c:98c2:: with SMTP id a185mr4892260wme.85.1587148902117;
+        Fri, 17 Apr 2020 11:41:42 -0700 (PDT)
 Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id c17sm33237391wrp.28.2020.04.17.11.41.40
+        by smtp.googlemail.com with ESMTPSA id c17sm33237391wrp.28.2020.04.17.11.41.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 11:41:40 -0700 (PDT)
+        Fri, 17 Apr 2020 11:41:41 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
         linux-clk@vger.kernel.org
 Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 2/4] clk: meson: meson8b: Fix the polarity of the RESET_N lines
-Date:   Fri, 17 Apr 2020 20:41:25 +0200
-Message-Id: <20200417184127.1319871-3-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 3/4] clk: meson: meson8b: Fix the vclk_div{1,2,4,6,12}_en gate bits
+Date:   Fri, 17 Apr 2020 20:41:26 +0200
+Message-Id: <20200417184127.1319871-4-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200417184127.1319871-1-martin.blumenstingl@googlemail.com>
 References: <20200417184127.1319871-1-martin.blumenstingl@googlemail.com>
@@ -67,158 +67,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_POST and
-CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_PRE are active low. This means:
-- asserting them requires setting the register value to 0
-- de-asserting them requires setting the register value to 1
+The DIV{1,2,4,6,12}_EN bits are actually located in HHI_VID_CLK_CNTL
+register:
+- HHI_VID_CLK_CNTL[0] = DIV1_EN
+- HHI_VID_CLK_CNTL[1] = DIV2_EN
+- HHI_VID_CLK_CNTL[2] = DIV4_EN
+- HHI_VID_CLK_CNTL[3] = DIV6_EN
+- HHI_VID_CLK_CNTL[4] = DIV12_EN
 
-Set the register value accordingly for these two reset lines by setting
-the inverted the register value compared to all other reset lines.
+Update the bits accordingly so we will enable the bits in the correct
+register once we switch these clocks to be mutable.
 
-Fixes: 189621726bc2f6 ("clk: meson: meson8b: register the built-in reset controller")
+Fixes: 6cb57c678bb70e ("clk: meson: meson8b: add the read-only video clock trees")
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/clk/meson/meson8b.c | 79 ++++++++++++++++++++++++++-----------
- 1 file changed, 56 insertions(+), 23 deletions(-)
+ drivers/clk/meson/meson8b.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index 90d284ffc780..1dec8d5404a1 100644
+index 1dec8d5404a1..6d1727e62b55 100644
 --- a/drivers/clk/meson/meson8b.c
 +++ b/drivers/clk/meson/meson8b.c
-@@ -3506,54 +3506,87 @@ static struct clk_regmap *const meson8b_clk_regmaps[] = {
- static const struct meson8b_clk_reset_line {
- 	u32 reg;
- 	u8 bit_idx;
-+	bool active_low;
- } meson8b_clk_reset_bits[] = {
- 	[CLKC_RESET_L2_CACHE_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 30
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 30,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_AXI_64_TO_128_BRIDGE_A5_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 29
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 29,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_SCU_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 28
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 28,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU3_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 27
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 27,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU2_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 26
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 26,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU1_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 25
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 25,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU0_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 24
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 24,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_GLOBAL_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 18
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 18,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_AXI_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 17
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 17,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_ABP_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 16
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 16,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_AXI_64_TO_128_BRIDGE_MMC_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL1, .bit_idx = 30
-+		.reg = HHI_SYS_CPU_CLK_CNTL1,
-+		.bit_idx = 30,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_CLK_CNTL_SOFT_RESET] = {
--		.reg = HHI_VID_CLK_CNTL, .bit_idx = 15
-+		.reg = HHI_VID_CLK_CNTL,
-+		.bit_idx = 15,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_SOFT_RESET_POST] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 7
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 7,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_SOFT_RESET_PRE] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 3
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 3,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_POST] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 1
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 1,
-+		.active_low = true,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_PRE] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 0
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 0,
-+		.active_low = true,
- 	},
- };
+@@ -1213,7 +1213,7 @@ static struct clk_regmap meson8b_vclk_in_en = {
  
-@@ -3562,22 +3595,22 @@ static int meson8b_clk_reset_update(struct reset_controller_dev *rcdev,
- {
- 	struct meson8b_clk_reset *meson8b_clk_reset =
- 		container_of(rcdev, struct meson8b_clk_reset, reset);
--	unsigned long flags;
- 	const struct meson8b_clk_reset_line *reset;
-+	unsigned int value = 0;
-+	unsigned long flags;
+ static struct clk_regmap meson8b_vclk_div1_gate = {
+ 	.data = &(struct clk_regmap_gate_data){
+-		.offset = HHI_VID_CLK_DIV,
++		.offset = HHI_VID_CLK_CNTL,
+ 		.bit_idx = 0,
+ 	},
+ 	.hw.init = &(struct clk_init_data){
+@@ -1243,7 +1243,7 @@ static struct clk_fixed_factor meson8b_vclk_div2_div = {
  
- 	if (id >= ARRAY_SIZE(meson8b_clk_reset_bits))
- 		return -EINVAL;
+ static struct clk_regmap meson8b_vclk_div2_div_gate = {
+ 	.data = &(struct clk_regmap_gate_data){
+-		.offset = HHI_VID_CLK_DIV,
++		.offset = HHI_VID_CLK_CNTL,
+ 		.bit_idx = 1,
+ 	},
+ 	.hw.init = &(struct clk_init_data){
+@@ -1273,7 +1273,7 @@ static struct clk_fixed_factor meson8b_vclk_div4_div = {
  
- 	reset = &meson8b_clk_reset_bits[id];
+ static struct clk_regmap meson8b_vclk_div4_div_gate = {
+ 	.data = &(struct clk_regmap_gate_data){
+-		.offset = HHI_VID_CLK_DIV,
++		.offset = HHI_VID_CLK_CNTL,
+ 		.bit_idx = 2,
+ 	},
+ 	.hw.init = &(struct clk_init_data){
+@@ -1303,7 +1303,7 @@ static struct clk_fixed_factor meson8b_vclk_div6_div = {
  
-+	if (assert != reset->active_low)
-+		value = BIT(reset->bit_idx);
-+
- 	spin_lock_irqsave(&meson_clk_lock, flags);
+ static struct clk_regmap meson8b_vclk_div6_div_gate = {
+ 	.data = &(struct clk_regmap_gate_data){
+-		.offset = HHI_VID_CLK_DIV,
++		.offset = HHI_VID_CLK_CNTL,
+ 		.bit_idx = 3,
+ 	},
+ 	.hw.init = &(struct clk_init_data){
+@@ -1333,7 +1333,7 @@ static struct clk_fixed_factor meson8b_vclk_div12_div = {
  
--	if (assert)
--		regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
--				   BIT(reset->bit_idx), BIT(reset->bit_idx));
--	else
--		regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
--				   BIT(reset->bit_idx), 0);
-+	regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
-+			   BIT(reset->bit_idx), value);
- 
- 	spin_unlock_irqrestore(&meson_clk_lock, flags);
- 
+ static struct clk_regmap meson8b_vclk_div12_div_gate = {
+ 	.data = &(struct clk_regmap_gate_data){
+-		.offset = HHI_VID_CLK_DIV,
++		.offset = HHI_VID_CLK_CNTL,
+ 		.bit_idx = 4,
+ 	},
+ 	.hw.init = &(struct clk_init_data){
 -- 
 2.26.1
 
