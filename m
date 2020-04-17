@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863231AD709
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DA51AD77D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbgDQHIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:08:40 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:41056 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728375AbgDQHIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:08:40 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id CF8AB8FD19F0FA263885;
-        Fri, 17 Apr 2020 15:08:38 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 15:08:29 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] pinctrl: nomadik: ab8505: remove unused 'gpio50_a_1_pins'
-Date:   Fri, 17 Apr 2020 15:34:55 +0800
-Message-ID: <20200417073455.42146-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1729094AbgDQHfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729017AbgDQHfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:35:14 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCDDC061A0C;
+        Fri, 17 Apr 2020 00:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DdP3H169eV2IavVQf/9gs/bbd8L/xKwiCNv9vSMdxK4=; b=bGSZQAFJDJ/MCm5VUi8/qe5aEZ
+        2BliRBR3H2ALwBicpgBWjJiUZ931UFHzyU/0xJum2/jmFrLsPDipN3kUY5QByQo6I8UMQsNiOcQeq
+        0hxr2eG6l4elNqjKA15ulu+DT8T0R+0nUHqRFsWZO9Hx+bOaW51u3ZDWbk5xxBJNVAra6CyfLMOef
+        BSZtIwZqYyA2rWbX436N7g6IpYviu22S2h8n/6ylptcKbbPEbeSbW7ZWXS/vX+TOTLj7cfAoTup+V
+        6fOHLPx5hY49kdUfPBnKdX/iaZzjR3JnrvG5lNpKAFdlvoQjdFVzcpwADZJNDKOyIJwTs9/bptNGu
+        tQuSZm6g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPLWp-0005ew-G8; Fri, 17 Apr 2020 07:35:11 +0000
+Date:   Fri, 17 Apr 2020 00:35:11 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Max Kellermann <mk@cm4all.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        trond.myklebust@hammerspace.com, bfields@redhat.com, tytso@mit.edu,
+        viro@zeniv.linux.org.uk, agruenba@redhat.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] fs/posix_acl: apply umask if superblock disables
+ ACL support
+Message-ID: <20200417073511.GA598@infradead.org>
+References: <20200407142243.2032-1-mk@cm4all.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407142243.2032-1-mk@cm4all.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+On Tue, Apr 07, 2020 at 04:22:40PM +0200, Max Kellermann wrote:
+>  
+> -	if (S_ISLNK(*mode) || !IS_POSIXACL(dir))
+> +	if (S_ISLNK(*mode))
+>  		return 0;
+>  
+> +	if (!IS_POSIXACL(dir)) {
+> +		*mode &= ~current_umask();
+> +		return 0;
+> +	}
+> +
 
-drivers/pinctrl/nomadik/pinctrl-ab8505.c:137:23: warning:
-‘gpio50_a_1_pins’ defined but not used [-Wunused-const-variable=]
- static const unsigned gpio50_a_1_pins[] = { AB8505_PIN_L4 };
-                       ^~~~~~~~~~~~~~~
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/pinctrl/nomadik/pinctrl-ab8505.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/pinctrl/nomadik/pinctrl-ab8505.c b/drivers/pinctrl/nomadik/pinctrl-ab8505.c
-index 5e6e7d28390a..ed23f1274709 100644
---- a/drivers/pinctrl/nomadik/pinctrl-ab8505.c
-+++ b/drivers/pinctrl/nomadik/pinctrl-ab8505.c
-@@ -134,7 +134,6 @@ static const unsigned gpio34_a_1_pins[] = { AB8505_PIN_H14 };
- static const unsigned gpio40_a_1_pins[] = { AB8505_PIN_J15 };
- static const unsigned gpio41_a_1_pins[] = { AB8505_PIN_J14 };
- static const unsigned uartrxdata_a_1_pins[] = { AB8505_PIN_J14 };
--static const unsigned gpio50_a_1_pins[] = { AB8505_PIN_L4 };
- static const unsigned gpio52_a_1_pins[] = { AB8505_PIN_D16 };
- static const unsigned gpio53_a_1_pins[] = { AB8505_PIN_D15 };
- 
--- 
-2.21.1
-
+I think the first hunk is obviously correct, but I don't think we need
+the second one, as the handling of the get_acl() eturn value should do
+the right thing.  If you want to optimize it a bit, it might be worth to
+move the !IS_POSIXACL check in get_acl to the top of the function,
+before checking the cached ACL.
