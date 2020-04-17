@@ -2,134 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02941AD63D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1BA1AD644
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgDQGkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 02:40:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2386 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728000AbgDQGkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 02:40:46 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CB58F782E7D097BE4BA6;
-        Fri, 17 Apr 2020 14:40:42 +0800 (CST)
-Received: from [127.0.0.1] (10.173.222.27) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 14:40:32 +0800
-Subject: Re: [PATCH 2/2] KVM: arm64: vgic-its: Fix memory leak on the error
- path of vgic_add_lpi()
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <kvmarm@lists.cs.columbia.edu>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200414030349.625-1-yuzenghui@huawei.com>
- <20200414030349.625-3-yuzenghui@huawei.com>
- <610f2195-f85d-4beb-b711-47d63bb393d0@huawei.com>
- <2173e13527cc9578838f0364ad29f6cc@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <de03883a-179f-fbe5-e5f4-6138e5684660@huawei.com>
-Date:   Fri, 17 Apr 2020 14:40:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1728174AbgDQGl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 02:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728078AbgDQGl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 02:41:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7D8C061A0C;
+        Thu, 16 Apr 2020 23:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=LUNyqPWJqquUKD2oqL+iraXTObA9TCNzymZP74tcC+Y=; b=T5mEIVUteHeakVWU7MEeYp5dB8
+        S4bgAaEsDIdp427v1Kdf66UwpOSrdxE10r1rc3hpXeePr/wzRYvTQIPMtrKnA1zkp6tj74PheHfKC
+        ID680hG/ATLsq4Bb+xCqqwPQOa+uc6MMr4dJ4qfyVizbtL5pCwDHnnsI7Dq4iQ9equ80LnWRLcJf7
+        1i4Eag26ZCL9m556PgAlJ2MP87NGlTAiu3DH/Jnw2tH8t2jDKCNQswgDiD8dUhGQTBLGCiPeLQdCA
+        ARIcJK3Qlfg5esx3VbpTk8wazj2SqXy14kQ1l5AZddvtZKIGMGx+h9Uwv5sBrJqZNVJV4YNxj0xN5
+        0in7FM2Q==;
+Received: from [2001:4bb8:184:4aa1:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPKhA-0002hC-Vx; Fri, 17 Apr 2020 06:41:49 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: pass kernel pointers to the sysctl ->proc_handler method
+Date:   Fri, 17 Apr 2020 08:41:40 +0200
+Message-Id: <20200417064146.1086644-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2173e13527cc9578838f0364ad29f6cc@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.222.27]
-X-CFilter-Loop: Reflected
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/17 1:23, Marc Zyngier wrote:
-> On 2020-04-16 02:17, Zenghui Yu wrote:
->> On 2020/4/14 11:03, Zenghui Yu wrote:
->>> If we're going to fail out the vgic_add_lpi(), let's make sure the
->>> allocated vgic_irq memory is also freed. Though it seems that both
->>> cases are unlikely to fail.
->>>
->>> Cc: Zengruan Ye <yezengruan@huawei.com>
->>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>> ---
->>>   virt/kvm/arm/vgic/vgic-its.c | 8 ++++++--
->>>   1 file changed, 6 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/virt/kvm/arm/vgic/vgic-its.c b/virt/kvm/arm/vgic/vgic-its.c
->>> index d53d34a33e35..3c3b6a0f2dce 100644
->>> --- a/virt/kvm/arm/vgic/vgic-its.c
->>> +++ b/virt/kvm/arm/vgic/vgic-its.c
->>> @@ -98,12 +98,16 @@ static struct vgic_irq *vgic_add_lpi(struct kvm 
->>> *kvm, u32 intid,
->>>        * the respective config data from memory here upon mapping the 
->>> LPI.
->>>        */
->>>       ret = update_lpi_config(kvm, irq, NULL, false);
->>> -    if (ret)
->>> +    if (ret) {
->>> +        kfree(irq);
->>>           return ERR_PTR(ret);
->>> +    }
->>>         ret = vgic_v3_lpi_sync_pending_status(kvm, irq);
->>> -    if (ret)
->>> +    if (ret) {
->>> +        kfree(irq);
->>>           return ERR_PTR(ret);
->>> +    }
->>
->> Looking at it again, I realized that this error handling is still not
->> complete. Maybe we should use a vgic_put_irq() instead so that we can
->> also properly delete the vgic_irq from lpi_list.
-> 
-> Yes, this is a more correct fix indeed. There is still a bit of a bizarre
-> behaviour if you have two vgic_add_lpi() racing to create the same 
-> interrupt,
-> which is pretty dodgy anyway (it means we have two MAPI at the same 
-> time...).
-> You end-up with re-reading the state from memory... Oh well.
-> 
->> Marc, what do you think? Could you please help to fix it, or I can
->> resend it.
-> 
-> I've fixed it as such (with a comment for a good measure):
-> 
-> diff --git a/virt/kvm/arm/vgic/vgic-its.c b/virt/kvm/arm/vgic/vgic-its.c
-> index 3c3b6a0f2dce..c012a52b19f5 100644
-> --- a/virt/kvm/arm/vgic/vgic-its.c
-> +++ b/virt/kvm/arm/vgic/vgic-its.c
-> @@ -96,16 +96,19 @@ static struct vgic_irq *vgic_add_lpi(struct kvm 
-> *kvm, u32 intid,
->        * We "cache" the configuration table entries in our struct 
-> vgic_irq's.
->        * However we only have those structs for mapped IRQs, so we read in
->        * the respective config data from memory here upon mapping the LPI.
-> +     *
-> +     * Should any of these fail, behave as if we couldn't create the LPI
-> +     * by dropping the refcount and returning the error.
->        */
->       ret = update_lpi_config(kvm, irq, NULL, false);
->       if (ret) {
-> -        kfree(irq);
-> +        vgic_put_irq(kvm, irq);
->           return ERR_PTR(ret);
->       }
-> 
->       ret = vgic_v3_lpi_sync_pending_status(kvm, irq);
->       if (ret) {
-> -        kfree(irq);
-> +        vgic_put_irq(kvm, irq);
->           return ERR_PTR(ret);
->       }
-> 
-> 
-> Let me know if you agree with that.
+Hi all,
 
-Agreed. Thanks for the fix!
-
-
-Zenghui
-
+this series changes the sysctl ->proc_handler methods to take kernel
+pointers.  This simplifies some of the pointer handling in the methods
+(which could probably be further simplified now), and gets rid of the
+set_fs address space overrides used by bpf.
