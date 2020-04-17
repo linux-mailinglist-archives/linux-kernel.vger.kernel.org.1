@@ -2,98 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D921ADCFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBC41ADD03
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgDQMKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:10:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2352 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727824AbgDQMKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:10:46 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 95E8E8E4E9CB12F4DE12;
-        Fri, 17 Apr 2020 20:10:44 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 17 Apr 2020 20:10:37 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <atish.patra@wdc.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 3/3] riscv: sbi: Fix undefined reference to sbi_shutdown
-Date:   Fri, 17 Apr 2020 20:12:22 +0800
-Message-ID: <20200417121222.156422-3-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200417121222.156422-1-wangkefeng.wang@huawei.com>
-References: <20200417121222.156422-1-wangkefeng.wang@huawei.com>
+        id S1727951AbgDQMNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:13:11 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:46460 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726050AbgDQMNG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 08:13:06 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03HCBtKT019906;
+        Fri, 17 Apr 2020 14:12:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=Zi4SisZc6FbWXefWeIc3r0RkxSLPr1E5Mixl1wY/6PA=;
+ b=xiQKSdOlH+AjgjhNE8ySveLSrC8OELwZvMSkj1mW7S2RXGnb1m7Yh5fFWcNDvZcKmAow
+ zf55Y7nPpJGSQVhz7zbcJW3In8I0gZm+qrc1f7DZoR7CJCYbfPDt/GBj2yCdZbEcX1AT
+ muse+PaOtVzAl9eJyMbzfz4kOg8Vu5VwIcxY6qvoaZrislI8j/TqDYJXvWHzeY6uHIbi
+ SRDqgKYm5/ra17f4L3K8TqkvmTCthlDEy+fu6G3ofz4t7nQcnyRng45skGrVs9HOlbia
+ Ijfl5DD13Rj8atERPO6TXmDmXDOOIQ2RK5MV9XMYKILVS3uvOyXk+bAFNzuaGv5B1xfo Fg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30dn761cja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Apr 2020 14:12:54 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B27BB10002A;
+        Fri, 17 Apr 2020 14:12:53 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node3.st.com [10.75.127.18])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A45532B0FC9;
+        Fri, 17 Apr 2020 14:12:53 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG6NODE3.st.com (10.75.127.18)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr 2020 14:12:52
+ +0200
+From:   <patrice.chotard@st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Christophe Kerello <christophe.kerello@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: spi: stm32-qspi: Add pm_runtime support
+Date:   Fri, 17 Apr 2020 14:12:41 +0200
+Message-ID: <20200417121241.6473-1-patrice.chotard@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG6NODE3.st.com
+ (10.75.127.18)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-17_03:2020-04-17,2020-04-17 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no shutdown call in SBI v0.2, only set pm_power_off
-when RISCV_SBI_V01 enabled to fix following build error,
+From: Patrice Chotard <patrice.chotard@st.com>
 
-riscv64-linux-ld: arch/riscv/kernel/sbi.o: in function `sbi_power_off':
-sbi.c:(.text+0xe): undefined reference to `sbi_shutdown
+By default, STM32_AUTOSUSPEND_DELAY is set to -1 which has for
+effect to prevent runtime suspends.
+Runtime suspends can be activated by setting autosuspend_delay_ms using
+sysfs entry :
+echo {delay_in_ms} > /sys/devices/platform/soc/58003000.spi/power/autosusp
+end_delay_ms)
 
-Fixes: efca13989250 ("RISC-V: Introduce a new config for SBI v0.1")
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@st.com>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
 ---
- arch/riscv/kernel/sbi.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/spi/spi-stm32-qspi.c | 57 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 62b10a16c8d7..f383ef5672b2 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -167,6 +167,11 @@ static int __sbi_rfence_v01(int fid, const unsigned long *hart_mask,
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index d066f5144c3e..2f2ea2c42d6e 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -16,6 +16,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
++#include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset.h>
+ #include <linux/sizes.h>
+@@ -87,6 +88,7 @@
+ #define STM32_BUSY_TIMEOUT_US 100000
+ #define STM32_ABT_TIMEOUT_US 100000
+ #define STM32_COMP_TIMEOUT_MS 1000
++#define STM32_AUTOSUSPEND_DELAY -1
  
- 	return result;
- }
-+
-+static void sbi_set_power_off(void)
-+{
-+	pm_power_off = sbi_shutdown;
-+}
- #else
- static void __sbi_set_timer_v01(uint64_t stime_value)
- {
-@@ -191,6 +196,8 @@ static int __sbi_rfence_v01(int fid, const unsigned long *hart_mask,
- 
- 	return 0;
- }
-+
-+static void sbi_set_power_off(void) {}
- #endif /* CONFIG_RISCV_SBI_V01 */
- 
- static void __sbi_set_timer_v02(uint64_t stime_value)
-@@ -540,16 +547,12 @@ static inline long sbi_get_firmware_version(void)
- 	return __sbi_base_ecall(SBI_EXT_BASE_GET_IMP_VERSION);
- }
- 
--static void sbi_power_off(void)
--{
--	sbi_shutdown();
--}
- 
- int __init sbi_init(void)
- {
+ struct stm32_qspi_flash {
+ 	struct stm32_qspi *qspi;
+@@ -431,10 +433,17 @@ static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
  	int ret;
  
--	pm_power_off = sbi_power_off;
-+	sbi_set_power_off();
- 	ret = sbi_get_spec_version();
- 	if (ret > 0)
- 		sbi_spec_version = ret;
++	ret = pm_runtime_get_sync(qspi->dev);
++	if (ret < 0)
++		return ret;
++
+ 	mutex_lock(&qspi->lock);
+ 	ret = stm32_qspi_send(mem, op);
+ 	mutex_unlock(&qspi->lock);
+ 
++	pm_runtime_mark_last_busy(qspi->dev);
++	pm_runtime_put_autosuspend(qspi->dev);
++
+ 	return ret;
+ }
+ 
+@@ -444,6 +453,7 @@ static int stm32_qspi_setup(struct spi_device *spi)
+ 	struct stm32_qspi *qspi = spi_controller_get_devdata(ctrl);
+ 	struct stm32_qspi_flash *flash;
+ 	u32 presc;
++	int ret;
+ 
+ 	if (ctrl->busy)
+ 		return -EBUSY;
+@@ -451,6 +461,10 @@ static int stm32_qspi_setup(struct spi_device *spi)
+ 	if (!spi->max_speed_hz)
+ 		return -EINVAL;
+ 
++	ret = pm_runtime_get_sync(qspi->dev);
++	if (ret < 0)
++		return ret;
++
+ 	presc = DIV_ROUND_UP(qspi->clk_rate, spi->max_speed_hz) - 1;
+ 
+ 	flash = &qspi->flash[spi->chip_select];
+@@ -467,6 +481,9 @@ static int stm32_qspi_setup(struct spi_device *spi)
+ 	writel_relaxed(qspi->dcr_reg, qspi->io_base + QSPI_DCR);
+ 	mutex_unlock(&qspi->lock);
+ 
++	pm_runtime_mark_last_busy(qspi->dev);
++	pm_runtime_put_autosuspend(qspi->dev);
++
+ 	return 0;
+ }
+ 
+@@ -643,9 +660,20 @@ static int stm32_qspi_probe(struct platform_device *pdev)
+ 	ctrl->num_chipselect = STM32_QSPI_MAX_NORCHIP;
+ 	ctrl->dev.of_node = dev->of_node;
+ 
++	pm_runtime_set_autosuspend_delay(dev, STM32_AUTOSUSPEND_DELAY);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++	pm_runtime_get_noresume(dev);
++
+ 	ret = devm_spi_register_master(dev, ctrl);
+-	if (!ret)
+-		return 0;
++	if (ret)
++		goto err_qspi_release;
++
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
++	return 0;
+ 
+ err_qspi_release:
+ 	stm32_qspi_release(qspi);
+@@ -660,14 +688,28 @@ static int stm32_qspi_remove(struct platform_device *pdev)
+ 	struct stm32_qspi *qspi = platform_get_drvdata(pdev);
+ 
+ 	stm32_qspi_release(qspi);
++
+ 	return 0;
+ }
+ 
+-static int __maybe_unused stm32_qspi_suspend(struct device *dev)
++static int __maybe_unused stm32_qspi_runtime_suspend(struct device *dev)
+ {
+ 	struct stm32_qspi *qspi = dev_get_drvdata(dev);
+ 
+ 	clk_disable_unprepare(qspi->clk);
++
++	return 0;
++}
++
++static int __maybe_unused stm32_qspi_runtime_resume(struct device *dev)
++{
++	struct stm32_qspi *qspi = dev_get_drvdata(dev);
++
++	return clk_prepare_enable(qspi->clk);
++}
++
++static int __maybe_unused stm32_qspi_suspend(struct device *dev)
++{
+ 	pinctrl_pm_select_sleep_state(dev);
+ 
+ 	return 0;
+@@ -683,10 +725,17 @@ static int __maybe_unused stm32_qspi_resume(struct device *dev)
+ 	writel_relaxed(qspi->cr_reg, qspi->io_base + QSPI_CR);
+ 	writel_relaxed(qspi->dcr_reg, qspi->io_base + QSPI_DCR);
+ 
++	pm_runtime_mark_last_busy(qspi->dev);
++	pm_runtime_put_autosuspend(qspi->dev);
++
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(stm32_qspi_pm_ops, stm32_qspi_suspend, stm32_qspi_resume);
++static const struct dev_pm_ops stm32_qspi_pm_ops = {
++	SET_RUNTIME_PM_OPS(stm32_qspi_runtime_suspend,
++			   stm32_qspi_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_qspi_suspend, stm32_qspi_resume)
++};
+ 
+ static const struct of_device_id stm32_qspi_match[] = {
+ 	{.compatible = "st,stm32f469-qspi"},
 -- 
-2.20.1
+2.17.1
 
