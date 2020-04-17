@@ -2,74 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EBD1AE603
+	by mail.lfdr.de (Postfix) with ESMTP id 94DD61AE604
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgDQTmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 15:42:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41610 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730178AbgDQTma (ORCPT
+        id S1730708AbgDQTmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 15:42:35 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58137 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730418AbgDQTmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 15:42:30 -0400
+        Fri, 17 Apr 2020 15:42:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587152549;
+        s=mimecast20190719; t=1587152550;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0POUKn5el8rFXJ9SU/bGUJ9HAHH8PpwpgN/Gi+roguo=;
-        b=a9rPaHTYlZDqtqH2OfHbtI9x0jIl+UzOdtz90avX/JTUPSpDLcJpHXosW7N+6vq4u6xQlZ
-        XqUM5OdEqmsTkNy0nR43rbn6JzRGFv0Junv38F8nkDMpavN6u42erhnEeRE0HH55keORtG
-        7L+5tEwHspYXvOsnjVk/8DzZk6yPOCo=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sx8d7lrVpEcUzH6AwRgjUrQjeecIZrofUzOu/gD0BLs=;
+        b=biMvwV/ew+AS3Cwvcx2wl+MU/wNJd1cO+tQ+KYjRjYwFAi0Id5veaNNNzU43vhmwNvznuX
+        EY98g37if9EnxiVx2nTSZeCbXrDnYYS+KRAnv+2YBC3ql28iES5uTbt0Ap3bijSbI8N5Au
+        WRw+eKRFnuOGXs1IPNMUJAnMA4xGcak=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-xtB5XGjZOqyG9S9NH0HXNg-1; Fri, 17 Apr 2020 15:42:27 -0400
-X-MC-Unique: xtB5XGjZOqyG9S9NH0HXNg-1
+ us-mta-12-r966xwrGNKmN8EPj32UWHA-1; Fri, 17 Apr 2020 15:42:26 -0400
+X-MC-Unique: r966xwrGNKmN8EPj32UWHA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9509F8010CA;
-        Fri, 17 Apr 2020 19:42:23 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFCD8149C3;
+        Fri, 17 Apr 2020 19:42:24 +0000 (UTC)
 Received: from Ruby.redhat.com (ovpn-114-140.rdu2.redhat.com [10.10.114.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B8645D9CA;
-        Fri, 17 Apr 2020 19:42:12 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 025E85DA7C;
+        Fri, 17 Apr 2020 19:42:23 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     dri-devel@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, "David Airlie" <airlied@linux.ie>,
-        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Maxime Ripard" <mripard@kernel.org>,
-        "Liang Chen" <cl@rock-chips.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Petr Mladek" <pmladek@suse.com>, "Tejun Heo" <tj@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Lyude Paul" <lyude@redhat.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        nouveau@lists.freedesktop.org, "Ben Skeggs" <bskeggs@redhat.com>,
-        "Ilia Mirkin" <imirkin@alum.mit.edu>,
-        "Peteris Rudzusiks" <peteris.rudzusiks@gmail.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Gerd Hoffmann" <kraxel@redhat.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>,
-        "Alex Deucher" <alexander.deucher@amd.com>,
-        "Pankaj Bharadiya" <pankaj.laxminarayan.bharadiya@intel.com>,
-        "Takashi Iwai" <tiwai@suse.de>,
-        "Sean Paul" <seanpaul@chromium.org>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        "Jani Nikula" <jani.nikula@intel.com>,
-        "Nicholas Kazlauskas" <nicholas.kazlauskas@amd.com>,
-        "Kate Stewart" <kstewart@linuxfoundation.org>
-Subject: [RFC v3 00/11] drm/nouveau: Introduce CRC support for gf119+
-Date:   Fri, 17 Apr 2020 15:40:47 -0400
-Message-Id: <20200417194145.36350-1-lyude@redhat.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+Subject: [RFC v3 01/11] drm/vblank: Register drmm cleanup action once per drm_vblank_crtc
+Date:   Fri, 17 Apr 2020 15:40:48 -0400
+Message-Id: <20200417194145.36350-2-lyude@redhat.com>
+In-Reply-To: <20200417194145.36350-1-lyude@redhat.com>
+References: <20200417194145.36350-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -77,77 +54,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nvidia released some documentation on how CRC support works on their
-GPUs, hooray!
+Since we'll be allocating resources for kthread_create_worker() in the
+next commit (which could fail and require us to clean up the mess),
+let's simplify the cleanup process a bit by registering a
+drm_vblank_init_release() action for each drm_vblank_crtc so they're
+still cleaned up if we fail to initialize one of them.
 
-So: this patch series implements said CRC support in nouveau, along with
-adding some special debugfs interfaces for some relevant igt-gpu-tools
-tests that we'll be sending in just a short bit.
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/drm_vblank.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-This additionally adds a feature that Ville Syrj=C3=A4l=C3=A4 came up wit=
-h: vblank
-works. Basically, this is just a generic DRM interface that allows for
-scheduling high-priority workers that start on a given vblank interrupt.
-Note that while we're currently only using this in nouveau, Intel has
-plans to use this for i915 as well (hence why they came up with it!).
-
-And finally: in order to implement the last feature, we expose some new
-functions in the kernel's kthread_worker infrastructure so that we can
-de-complicate our implementation of this.
-
-Anyway-welcome to the future! :)
-
-Major changes since v2:
-* Use kthread_worker instead of kthreadd for vblank workers
-* Don't check debugfs return values
-
-Lyude Paul (11):
-  drm/vblank: Register drmm cleanup action once per drm_vblank_crtc
-  kthread: Introduce __kthread_queue_work()
-  drm/vblank: Add vblank works
-  drm/nouveau/kms/nv50-: Unroll error cleanup in nv50_head_create()
-  drm/nouveau/kms/nv140-: Don't modify depth in state during atomic
-    commit
-  drm/nouveau/kms/nv50-: Fix disabling dithering
-  drm/nouveau/kms/nv50-: s/harm/armh/g
-  drm/nouveau/kms/nv140-: Track wndw mappings in nv50_head_atom
-  drm/nouveau/kms/nv50-: Expose nv50_outp_atom in disp.h
-  drm/nouveau/kms/nv50-: Move hard-coded object handles into header
-  drm/nouveau/kms/nvd9-: Add CRC support
-
- drivers/gpu/drm/drm_vblank.c                | 314 ++++++++-
- drivers/gpu/drm/nouveau/dispnv04/crtc.c     |  25 +-
- drivers/gpu/drm/nouveau/dispnv50/Kbuild     |   4 +
- drivers/gpu/drm/nouveau/dispnv50/atom.h     |  21 +
- drivers/gpu/drm/nouveau/dispnv50/core.h     |   4 +
- drivers/gpu/drm/nouveau/dispnv50/core907d.c |   3 +
- drivers/gpu/drm/nouveau/dispnv50/core917d.c |   3 +
- drivers/gpu/drm/nouveau/dispnv50/corec37d.c |   3 +
- drivers/gpu/drm/nouveau/dispnv50/corec57d.c |   3 +
- drivers/gpu/drm/nouveau/dispnv50/crc.c      | 715 ++++++++++++++++++++
- drivers/gpu/drm/nouveau/dispnv50/crc.h      | 125 ++++
- drivers/gpu/drm/nouveau/dispnv50/crc907d.c  | 139 ++++
- drivers/gpu/drm/nouveau/dispnv50/crcc37d.c  | 153 +++++
- drivers/gpu/drm/nouveau/dispnv50/disp.c     |  65 +-
- drivers/gpu/drm/nouveau/dispnv50/disp.h     |  24 +
- drivers/gpu/drm/nouveau/dispnv50/handles.h  |  16 +
- drivers/gpu/drm/nouveau/dispnv50/head.c     | 142 +++-
- drivers/gpu/drm/nouveau/dispnv50/head.h     |  13 +-
- drivers/gpu/drm/nouveau/dispnv50/head907d.c |  14 +-
- drivers/gpu/drm/nouveau/dispnv50/headc37d.c |  27 +-
- drivers/gpu/drm/nouveau/dispnv50/headc57d.c |  20 +-
- drivers/gpu/drm/nouveau/dispnv50/wndw.c     |  15 +-
- drivers/gpu/drm/nouveau/nouveau_display.c   |  60 +-
- include/drm/drm_vblank.h                    |  31 +
- include/linux/kthread.h                     |   3 +
- kernel/kthread.c                            |  34 +-
- 26 files changed, 1831 insertions(+), 145 deletions(-)
- create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.c
- create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.h
- create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc907d.c
- create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crcc37d.c
- create mode 100644 drivers/gpu/drm/nouveau/dispnv50/handles.h
-
+diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
+index 758bf74e1cab..bf8de10c131f 100644
+--- a/drivers/gpu/drm/drm_vblank.c
++++ b/drivers/gpu/drm/drm_vblank.c
+@@ -491,16 +491,12 @@ static void vblank_disable_fn(struct timer_list *t)
+=20
+ static void drm_vblank_init_release(struct drm_device *dev, void *ptr)
+ {
+-	unsigned int pipe;
+-
+-	for (pipe =3D 0; pipe < dev->num_crtcs; pipe++) {
+-		struct drm_vblank_crtc *vblank =3D &dev->vblank[pipe];
++	struct drm_vblank_crtc *vblank =3D ptr;
+=20
+-		WARN_ON(READ_ONCE(vblank->enabled) &&
+-			drm_core_check_feature(dev, DRIVER_MODESET));
++	WARN_ON(READ_ONCE(vblank->enabled) &&
++		drm_core_check_feature(dev, DRIVER_MODESET));
+=20
+-		del_timer_sync(&vblank->disable_timer);
+-	}
++	del_timer_sync(&vblank->disable_timer);
+ }
+=20
+ /**
+@@ -529,10 +525,6 @@ int drm_vblank_init(struct drm_device *dev, unsigned=
+ int num_crtcs)
+=20
+ 	dev->num_crtcs =3D num_crtcs;
+=20
+-	ret =3D drmm_add_action(dev, drm_vblank_init_release, NULL);
+-	if (ret)
+-		return ret;
+-
+ 	for (i =3D 0; i < num_crtcs; i++) {
+ 		struct drm_vblank_crtc *vblank =3D &dev->vblank[i];
+=20
+@@ -541,6 +533,12 @@ int drm_vblank_init(struct drm_device *dev, unsigned=
+ int num_crtcs)
+ 		init_waitqueue_head(&vblank->queue);
+ 		timer_setup(&vblank->disable_timer, vblank_disable_fn, 0);
+ 		seqlock_init(&vblank->seqlock);
++
++		ret =3D drmm_add_action(dev, drm_vblank_init_release, vblank);
++		if (ret) {
++			del_timer_sync(&vblank->disable_timer);
++			return ret;
++		}
+ 	}
+=20
+ 	DRM_INFO("Supports vblank timestamp caching Rev 2 (21.10.2013).\n");
 --=20
 2.25.1
 
