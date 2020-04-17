@@ -2,118 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87101ADC2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735071ADC27
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 13:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgDQL3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 07:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730324AbgDQL3v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:29:51 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF61C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 04:29:50 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id c17so509234uae.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 04:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nu9WgdeKxKQdkeH1gR18VhD9u3Adn8tTkCVWam9LK94=;
-        b=GtOmtytk18kW8KTUJNTrqweEWV6cr1cr3C/OhLizV4J+D5OdrUqwJejcrqB2FP9K8z
-         PYBUxtD/ra0CuRjTRXYgtVHfo19zN25JtaWCwInr9o/VTm9a5UGDMuza4i1fm62ScXS9
-         rN1UfE+7fOrtV1M57/CovyL0iOHcIkByEFdhx60rxFxssfOvvpNEKzg+qeZ77hKtk4Ox
-         xVt/5BJUoLV64O9x2cO7jFh37MK9xhaDQ72/xf0AE4gyMTDGUKjJ1Y4uzvUspMGAIM2M
-         NyxlwU3fs+7X0QoBLrFQ2Cfq7u4S9qvjghwsf+EDLrQziUAaZuBQiycPE80POwx0JOgZ
-         b4DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nu9WgdeKxKQdkeH1gR18VhD9u3Adn8tTkCVWam9LK94=;
-        b=PIP7Z9QSmuUAaEGUPa6wJaVdjBaMnrstnj5o6XKB6z1EThqkf80all7VJwk3mQNZMJ
-         aZ9y3KFI8GcqSnx8G13RgoOFiVpfjzqb65EBTGqp/gUQTPs0I2gE2xYAT95JiYu0/rrQ
-         gs8KzqodaCd0VV6eCoM2n7xQhF3ac1V9mQDp1QdGKZ7BeJD+xdhyL1k6Lfup8rRM4fjx
-         39sQ0bNUvC3YRF8eO5/4jwt+mGO/YqTfelxzpZCFC+pssqqXXIEDRCQtVrnt0LjkHTd+
-         HYfkzQFCu2aPmaZ0hgeqL8wez29Mzlw9uLlfxOGaF0szDrUmqN7lemcDIBmTMHwhxu7L
-         QHFg==
-X-Gm-Message-State: AGi0PuYygnTspwA19ikVL0mLDoXW68D6twzFurvh5zZWaCkGxArb2X/7
-        I6wgoP9Ixh4e2/kZpGisdI/F4rpSfiYve74kx/nMEQ==
-X-Google-Smtp-Source: APiQypI99jsnL4mvQY9oQzsMieBqtAo29Y/8grH2oglO8FAd30vRx2tQcJkBygaMr5+Hv/S1jdj3f1P6K2qyFqAhHug=
-X-Received: by 2002:a9f:25af:: with SMTP id 44mr1989461uaf.104.1587122990039;
- Fri, 17 Apr 2020 04:29:50 -0700 (PDT)
+        id S1730313AbgDQL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 07:29:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54828 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730237AbgDQL3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:29:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A3C81ABEF;
+        Fri, 17 Apr 2020 11:29:33 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 13:29:32 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     tglx@linutronix.de, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, mhiramat@kernel.org,
+        jthierry@redhat.com, alexandre.chartre@oracle.com
+Subject: Re: [PATCH v5 02/17] objtool: Better handle IRET
+In-Reply-To: <20200416115118.631224674@infradead.org>
+Message-ID: <alpine.LSU.2.21.2004171326230.7737@pobox.suse.cz>
+References: <20200416114706.625340212@infradead.org> <20200416115118.631224674@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <cover.1586744073.git.baolin.wang7@gmail.com>
-In-Reply-To: <cover.1586744073.git.baolin.wang7@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 17 Apr 2020 13:29:14 +0200
-Message-ID: <CAPDyKFqfq_UMNfgdu8HioAa6+qy+JYrNkVDg8ARu1BpNKx9hgw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Introduce the request_atomic() for the host
-To:     Baolin Wang <baolin.wang7@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Apr 2020 at 04:46, Baolin Wang <baolin.wang7@gmail.com> wrote:
->
-> This patch set introduces a new request_atomic() interface for the
-> MMC host controller, which is used to submit a request to host in
-> the atomic context, such as in the irq hard handler, to reduce the
-> request latency.
->
-> Note, this patch set is based on Adrian's patch set:
-> https://www.spinics.net/lists/linux-mmc/msg58529.html
->
-> Any comments are welcome. Thanks.
->
-> Changes from v4:
->  - Remove redundant checking when warning the return value of request_atomic().
->  - Add acked tag from Adrian for patch 1.
->  - Re-implement the request_atomic() based on the Adrian's patch set.
->
-> Changes from v3:
->  - Move patch 3 of V3 patch set into patch 1.
->  - Add a warning for unexpected return value of request_atomic().
->  - Remove redundant checking of ops->request().
->
-> Changes from v2:
->  - Return busy flag if encountering unusual card busy state
->  instead of polling in interrupt context.
->  - Add a work for HSQ to try again in non-atomic context if the host
->  returns busy flag.
->
-> Changes from v1:
->  - Re-split the changes to make them more clear suggested by Ulf.
->  - Factor out the auto CMD23 checking into a separate function.
->
-> Baolin Wang (3):
->   mmc: host: Introduce the request_atomic() for the host
->   mmc: host: sdhci: Implement the request_atomic() API
->   mmc: host: sdhci-sprd: Implement the request_atomic() API
->
->  drivers/mmc/host/mmc_hsq.c    | 29 ++++++++++++++++++++++++++++-
->  drivers/mmc/host/mmc_hsq.h    |  1 +
->  drivers/mmc/host/sdhci-sprd.c | 23 ++++++++++++++++++++---
->  drivers/mmc/host/sdhci.c      | 34 ++++++++++++++++++++++++++++++++++
->  drivers/mmc/host/sdhci.h      |  1 +
->  include/linux/mmc/host.h      |  3 +++
->  6 files changed, 87 insertions(+), 4 deletions(-)
->
-> --
-> 2.17.1
->
+On Thu, 16 Apr 2020, Peter Zijlstra wrote:
 
-Applied for next, thanks!
+> Teach objtool a little more about IRET so that we can avoid using the
+> SAVE/RESTORE annotation. In particular, make the weird corner case in
+> insn->restore go away.
+> 
+> The purpose of that corner case is to deal with the fact that
+> UNWIND_HINT_RESTORE lands on the instruction after IRET, but that
+> instruction can end up being outside the basic block, consider:
+> 
+> 	if (cond)
+> 		sync_core()
+> 	foo();
+> 
+> Then the hint will land on foo(), and we'll encounter the restore
+> hint without ever having seen the save hint.
+> 
+> By teaching objtool about the arch specific exception frame size, and
+> assuming that any IRET in an STT_FUNC symbol is an exception frame
+> sized POP, we can remove the use of save/restore hints for this code.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/include/asm/processor.h |    2 --
+>  tools/objtool/arch.h             |    1 +
+>  tools/objtool/arch/x86/decode.c  |   14 ++++++++++++--
+>  tools/objtool/check.c            |   29 ++++++++++++++++-------------
+>  4 files changed, 29 insertions(+), 17 deletions(-)
+> 
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -727,7 +727,6 @@ static inline void sync_core(void)
+>  	unsigned int tmp;
+>  
+>  	asm volatile (
+> -		UNWIND_HINT_SAVE
+>  		"mov %%ss, %0\n\t"
+>  		"pushq %q0\n\t"
+>  		"pushq %%rsp\n\t"
+> @@ -737,7 +736,6 @@ static inline void sync_core(void)
+>  		"pushq %q0\n\t"
+>  		"pushq $1f\n\t"
+>  		"iretq\n\t"
+> -		UNWIND_HINT_RESTORE
+>  		"1:"
+>  		: "=&r" (tmp), ASM_CALL_CONSTRAINT : : "cc", "memory");
+>  #endif
+> --- a/tools/objtool/arch.h
+> +++ b/tools/objtool/arch.h
+> @@ -19,6 +19,7 @@ enum insn_type {
+>  	INSN_CALL,
+>  	INSN_CALL_DYNAMIC,
+>  	INSN_RETURN,
+> +	INSN_EXCEPTION_RETURN,
+>  	INSN_CONTEXT_SWITCH,
+>  	INSN_STACK,
+>  	INSN_BUG,
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -435,9 +435,19 @@ int arch_decode_instruction(struct elf *
+>  		*type = INSN_RETURN;
+>  		break;
+>  
+> +	case 0xcf: /* iret */
+> +		*type = INSN_EXCEPTION_RETURN;
+> +
+> +		/* add $40, %rsp */
+> +		op->src.type = OP_SRC_ADD;
+> +		op->src.reg = CFI_SP;
+> +		op->src.offset = 5*8;
+> +		op->dest.type = OP_DEST_REG;
+> +		op->dest.reg = CFI_SP;
+> +		break;
+> +
+>  	case 0xca: /* retf */
+>  	case 0xcb: /* retf */
+> -	case 0xcf: /* iret */
+>  		*type = INSN_CONTEXT_SWITCH;
+>  		break;
+>  
+> @@ -483,7 +493,7 @@ int arch_decode_instruction(struct elf *
+>  
+>  	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
+>  
+> -	if (*type == INSN_STACK)
+> +	if (*type == INSN_STACK || *type == INSN_EXCEPTION_RETURN)
+>  		list_add_tail(&op->list, ops_list);
+>  	else
+>  		free(op);
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -2080,15 +2080,14 @@ static int validate_return(struct symbol
+>   * tools/objtool/Documentation/stack-validation.txt.
+>   */
+>  static int validate_branch(struct objtool_file *file, struct symbol *func,
+> -			   struct instruction *first, struct insn_state state)
+> +			   struct instruction *insn, struct insn_state state)
+>  {
+>  	struct alternative *alt;
+> -	struct instruction *insn, *next_insn;
+> +	struct instruction *next_insn;
+>  	struct section *sec;
+>  	u8 visited;
+>  	int ret;
+>  
+> -	insn = first;
+>  	sec = insn->sec;
+>  
+>  	if (insn->alt_group && list_empty(&insn->alts)) {
+> @@ -2141,16 +2140,6 @@ static int validate_branch(struct objtoo
+>  				}
+>  
+>  				if (!save_insn->visited) {
+> -					/*
+> -					 * Oops, no state to copy yet.
+> -					 * Hopefully we can reach this
+> -					 * instruction from another branch
+> -					 * after the save insn has been
+> -					 * visited.
+> -					 */
+> -					if (insn == first)
+> -						return 0;
+> -
+>  					WARN_FUNC("objtool isn't smart enough to handle this CFI save/restore combo",
+>  						  sec, insn->offset);
+>  					return 1;
+> @@ -2243,6 +2232,20 @@ static int validate_branch(struct objtoo
+>  
+>  			break;
+>  
+> +		case INSN_EXCEPTION_RETURN:
+> +			if (handle_insn_ops(insn, &state))
+> +				return 1;
+> +
+> +			/*
+> +			 * This handles x86's sync_core() case, where we use an
+> +			 * IRET to self. All 'normal' IRET instructions are in
+> +			 * STT_NOTYPE entry symbols.
+> +			 */
+> +			if (func)
+> +				break;
+> +
+> +			return 0;
+> +
+>  		case INSN_CONTEXT_SWITCH:
+>  			if (func && (!next_insn || !next_insn->hint)) {
+>  				WARN_FUNC("unsupported instruction in callable function",
 
-Kind regards
-Uffe
+It looks really simple.
+
+Have you tried Julien's proposal about removing INSN_STACK altogether, 
+move the x86 to arch/x86/ and call handle_insn_ops() unconditionally, or 
+have you just postponed it? As I said, I think it could be better in the 
+long term, but the above looks good for now as well.
+
+Miroslav
