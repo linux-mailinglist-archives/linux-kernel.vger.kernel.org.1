@@ -2,99 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550201AE485
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2E91AE48C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 20:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730495AbgDQSMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 14:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730323AbgDQSMG (ORCPT
+        id S1730581AbgDQSNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 14:13:55 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:49844 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730323AbgDQSNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:12:06 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95708C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:12:06 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id c17so3032447ilk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 11:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=foA4DPbQhpo9xw/eOdopgrsDK8K+vfBDZATjTXoQh4I=;
-        b=Z0MQ60xFZB3rug8cIA+FngZ0z5QTTaKj8L2zfDYreK5DCo9VyIQsbVvoQsEixaqASV
-         Xe1eIj5eMACzhqFhfR1Ea39QY5PL+Hb/cv6dWzsZTHQF7sPy5VGNQ7qCbG/e1H2vfXzx
-         f1QUhwZOxp3lfix1qIk/TZ32m/y8uoJ4+Rxk4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=foA4DPbQhpo9xw/eOdopgrsDK8K+vfBDZATjTXoQh4I=;
-        b=NPx37Uqk5N8bCkfwd30+SyIlpyg/d9sjNVCKS54C84OcFHIethrU4bgd5iCVecYiwb
-         NSG3GIWVL1YaESIwsftYOyE5OdIoj5LHcl/ADdUa8oOpV9jSgOpg+ogoSrZpGkyfZgmV
-         ajwUHVc2NfKIg4+QwnuX3T4kdG+E+lveCO4q/cY8jRAn03bhiFGf0cGSyi82xJstufpb
-         Bq+yzr52vH8HfUkZAv+ccV/7/25R9s/0lQIZ/3efyEno7YG/ar82pqgCxi4bqqSETKk5
-         QZwHQa5G5oVHQJDEaf8JXj+Ua/WZ1SI3zWs4lsgnfNHu9TcFtKwoFCMttLaf3EJzBDoX
-         nngg==
-X-Gm-Message-State: AGi0PuY8T9lP8dLZdUXjand4fsaBK6hVpAaZM5jaKy/S3uXL08ZfouP5
-        57C53mTY3b3FPilEOT9LXZYNAg==
-X-Google-Smtp-Source: APiQypK0O3NmNw3iIF83xy1VuEtCksGeLHf4dXqAZp+DSBugDnssGyEy4+rb78xy7abwBzrMsiAKyw==
-X-Received: by 2002:a05:6e02:cd2:: with SMTP id c18mr4590069ilj.223.1587147125661;
-        Fri, 17 Apr 2020 11:12:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v17sm8424124ill.5.2020.04.17.11.12.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Apr 2020 11:12:05 -0700 (PDT)
-Subject: Re: Linux 5.7-rc1 reboot/poweroff hangs
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prike.Liang@amd.com, Alexander Deucher <Alexander.Deucher@amd.com>,
-        stable <stable@vger.kernel.org>
-References: <b8eaee2b-21dd-c0de-f522-d58bb9ae31da@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f6d5973a-286e-2273-cbeb-5c88707008d3@linuxfoundation.org>
-Date:   Fri, 17 Apr 2020 12:12:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 17 Apr 2020 14:13:54 -0400
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 03HIDIi6013834;
+        Sat, 18 Apr 2020 03:13:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 03HIDIi6013834
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587147200;
+        bh=xO9EX2FjdnmulH032XwMxEkWt0+XozsHmF+IUr7+mzc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iTEENjHNsaXV5k8y6Hsan5NYkMb5BI0tt0uPGXby6Cq+LA/B5iSRxU5ibZleFxd6b
+         Sbj9e8pJ5ggzBhJcx4A6dGz8RKU6ExSLCT5o74nIRaPEGKpQR9RaoHxIgogTTDhdD0
+         aFGcg3HKftbbb+WwTUORphdcrSA1it7V/+FTWNqEgl8fnUZ0i9yaEOxA2R6GL/oL3D
+         0b048c4r4xtHzxyGo/emxB+wM8hzJORGAhV4JnbFijTIXTT0v6QOmcvnjSV0CoKs22
+         u+gjOjeica0StuIbzA7PfJnOmmuPmwwO8GC7iXunK9AEqqDVsxgABz6GjI3rHKzI83
+         Lfs2AxPtuJ65Q==
+X-Nifty-SrcIP: [209.85.222.51]
+Received: by mail-ua1-f51.google.com with SMTP id t8so985304uap.3;
+        Fri, 17 Apr 2020 11:13:19 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZS/vQW7kCrq38FjwVpf2taqj5X8pyXXYHyMVRMEfeVsI7WpXWh
+        Lq1ADPloLmtuWGGq9i7ImlO+I2JENVub+2Ktb8U=
+X-Google-Smtp-Source: APiQypIWevgCl0lUbNIf5kaJg9YU9ekzFm6t/g7Cl7vCfmDvL95HxVgrNe52VtqbDduHIGsTaGzsIgZXHqUlm9sJCVw=
+X-Received: by 2002:ab0:2790:: with SMTP id t16mr109917uap.40.1587147198192;
+ Fri, 17 Apr 2020 11:13:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b8eaee2b-21dd-c0de-f522-d58bb9ae31da@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200414012132.32721-1-vitor@massaru.org>
+In-Reply-To: <20200414012132.32721-1-vitor@massaru.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 18 Apr 2020 03:12:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQYxtcNinV7JR+c8Pn9Rp1g0TxJ7m_mOFNOJQsB=OiAoA@mail.gmail.com>
+Message-ID: <CAK7LNAQYxtcNinV7JR+c8Pn9Rp1g0TxJ7m_mOFNOJQsB=OiAoA@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: ensure mrproper removes arch/$(SUBARCH)/include/generated/
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/20 12:05 PM, Shuah Khan wrote:
-> Hi Linus,
-> 
-> Linux 5.7-rc1 reboot/powereoff hangs on AMD Ryzen 5 PRO 2400GE
-> system.
-> 
-> I isolated the commit to:
-> 
-> Revering the following commit fixes the problem.
-> 
-> commit 487eca11a321ef33bcf4ca5adb3c0c4954db1b58
-> Author: Prike Liang <Prike.Liang@amd.com>
-> Date:   Tue Apr 7 20:21:26 2020 +0800
-> 
->      drm/amdgpu: fix gfx hang during suspend with video playback (v2)
-> 
->      The system will be hang up during S3 suspend because of SMU is
->      pending for GC not respose the register CP_HQD_ACTIVE access
->      request.This issue root cause of accessing the GC register under
->      enter GFX CGGPG and can be fixed by disable GFX CGPG before perform
->      suspend.
-> 
+Hi.
 
-I can send a revert, however it appears this is a fix for a suspend
-hang.
-
-thanks,
--- Shuah
+On Tue, Apr 14, 2020 at 10:21 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
+>
+> In the following use case, when compiling the kernel for the UML
+> architecture, for example:
+>
+>  * `make ARCH=um defconfig && make ARCH=um -j8`,
+>
+> SUBARCH files are generated, however when we run the command:
+>
+>  * `mrproper ARCH=um`
 
 
+      make ARCH=um mrproper
+
+
+> the files `arch/$(SUBARCH)/include/generated/ aren't cleaned up.
+>
+> This generates compilation errors by running the following command:
+>
+>  * `make ARCH=um defconfig O=./build_um && make ARCH=um -j8 O=./build_um`
+>
+> This PATCH fix that problem.
+
+  This patch fixes ...
+
+>
+> This makes it possible to compile on different architectures that use the
+> SUBARCH variable, in different build directories and root directory of the
+> linux directory. This is important because we can compile without the object
+> files being overwritten. This reduces the re-compilation time in this use case.
+
+Sorry, I do not understand this paragraph.
+
+
+Brendan Higgins just reported the build error
+in the out-of-tree build after in-tree build.
+
+
+[1] make ARCH=um defconfig all
+[2] make ARCH=um mrproper
+[3] make ARCH=um O=foo defconfig all
+
+  -> build error
+
+Ins't it?
+
+
+
+>
+> Besides that, in the workflow of developing unit tests, using kunit, and
+> compiling in different architectures to develop or test a PATCH, this use case
+> applies.
+>
+>  * This bug was introduced in this commit a788b2ed81abe
+
+
+Instead, adding Fixes tag is the convention.
+
+Fixes: a788b2ed81ab ("kbuild: check arch/$(SRCARCH)/include/generated
+before out-of-tree build")
+
+
+>
+>  * Related bug: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+
+
+Maybe, this can be also a tag.
+
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+
+
+
+
+>
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+
+
+Reported-by: Brendan Higgins <brendanhiggins@google.com>
+
+
+
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+> v2:
+>  * Explains what this PATCH does and the importance as suggested
+>    by Brendan Higgins.
+> ---
+>  Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 70def4907036..e1a79796032e 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -532,7 +532,8 @@ outputmakefile:
+>  ifdef building_out_of_srctree
+>         $(Q)if [ -f $(srctree)/.config -o \
+>                  -d $(srctree)/include/config -o \
+> -                -d $(srctree)/arch/$(SRCARCH)/include/generated ]; then \
+> +                -d $(srctree)/arch/$(SRCARCH)/include/generated -o \
+> +                -d $(srctree)/arch/$(SUBARCH)/include/generated ]; then \
+
+
+This hunk is unneeded.
+
+
+
+>                 echo >&2 "***"; \
+>                 echo >&2 "*** The source tree is not clean, please run 'make$(if $(findstring command line, $(origin ARCH)), ARCH=$(ARCH)) mrproper'"; \
+>                 echo >&2 "*** in $(abs_srctree)";\
+> @@ -1388,6 +1389,7 @@ CLEAN_FILES += modules.builtin modules.builtin.modinfo modules.nsdeps
+>  # Directories & files removed with 'make mrproper'
+>  MRPROPER_DIRS  += include/config include/generated          \
+>                   arch/$(SRCARCH)/include/generated .tmp_objdiff \
+> +                 arch/$(SUBARCH)/include/generated \
+>                   debian/ snap/ tar-install/
+>  MRPROPER_FILES += .config .config.old .version \
+>                   Module.symvers \
+> --
+> 2.25.1
+>
+
+
+This problem is only related to ARCH=um builds.
+So, it should be fixed in arch/um/Makefile.
+
+
+
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index d2daa206872d..275f5ffdf6f0 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -140,6 +140,7 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS)
+$(LD_FLAGS_CMDLINE)
+ # When cleaning we don't include .config, so we don't include
+ # TT or skas makefiles and don't clean skas_ptregs.h.
+ CLEAN_FILES += linux x.i gmon.out
++MRPROPER_DIRS += arch/$(SUBARCH)/include/generated
+
+ archclean:
+        @find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
