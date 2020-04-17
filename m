@@ -2,146 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CCA1ADA12
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AAD1ADA16
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbgDQJex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S1730368AbgDQJga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 05:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730317AbgDQJew (ORCPT
+        with ESMTP id S1730131AbgDQJga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:34:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893D3C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:34:52 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e26so2226351wmk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:34:52 -0700 (PDT)
+        Fri, 17 Apr 2020 05:36:30 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D024DC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:36:28 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so2252083wrs.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 02:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OvjXVU28jbMJ/SyvS8SgkBEpU6urA9NsgGmyTGzgYIg=;
-        b=XZlBkOcmPfU++GHBPKBCzjgE8At1p5iEXdXZO8uQxHzg5cP0lgLNuxmYeeLAqd9g+Y
-         N112wp2gO2TAFGp8E9tzdwPdNoxAnwpd6e+ncVqFfZtitZ4CK3O8qOrTyq1MlM6y5a5d
-         iT7iHu/SXKpwbb0+b2rtDc2MyoMJC50DoCRl93lSiPGIXFOTAv0SiHdQKxWgebwhpmiX
-         nXXc+O5oGUtBpVDoRjcovUQrqJb9k5IhhszbHAp9we+FeogvdmgZH6be6JVD5Lznj7wF
-         6xFpPaRQ0mFllWrMDhfe9CUyEqodwLbj+GeAZFuYqoS8M+qzmSD/HXTH04/xrBlKmfiR
-         Z+2A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nr4vKvs2qrJShxFn1O+ztxZUZEQFA+yVojQ7rh1kCD0=;
+        b=kSz5h/7bGrJkc/P34ntw8nXpZOrDvE3F342U/XFDDNM66DRjfnDbDvE1g3Xowe2Hyo
+         0O3XJZHuZ0WPvz7I2nWs9vEste+IZSGrcbecg+Ngk5H2nY63ld/TuVvhujmGJ0CJIiXc
+         CI0D/rzFPSEBMEuaX0ih2c4fpyuEQchuqwFN/58oaQHIRX1VNuwKNt5khMWCXhKjuEVS
+         xPscU1/UGdx+r5816XnjgBxCMDaqEr2q4isXF9pkx0OqUOovm1aMlkMBFwxA8pqX561X
+         3tI4ecUg/+lDdjbVBHo2urtXRQpJJzn2yRlqzVMJ1cWhD/AwoJF7/MMWBPOAO/7w/g2l
+         4fHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OvjXVU28jbMJ/SyvS8SgkBEpU6urA9NsgGmyTGzgYIg=;
-        b=twlu/XUgy12WHZmoAzgVhV6oItIyuCDZoqEk6cG6y4qeOF/vgoUX0nyQqMJD9NgbD8
-         yxbTKLTINXytxxTxLvjzgbMM1/pSyKAHgjmrQmL0aq/5IrRhRDPZCbwBv5at446wFUFy
-         4hXpLLCRJ0MsJAtTtV+QiN1UI9KWVZ8Pm34w/KTNrPFaiYGPn9K8UhvaKhA407+5PFiy
-         pZ3zzqep5YUMOXqYZa5eLnkaNGrAr1Inly30fCtIi5HDYJsKxAJ3i9jGux9IjfL78NG9
-         hy5mCW5rJGN0KX2mi+tR+uJaDdRbsDHaWtUQWduGI4OR8s4+gEcKOx2zZqUy3f8qKIIn
-         gexA==
-X-Gm-Message-State: AGi0PuYo5mzoxAIj3P2xQMq9IjC4f1H7CqROEEC6oa4Hus1q/3plra7k
-        4fdhJLmgCD7mlLPNTlVqaj60zw==
-X-Google-Smtp-Source: APiQypL3gn0kmqRxE640EjZxZt4w3qfgjHKCmqJqWewlFwuKoauiPY0DOfBYfLnnkXXMbHOssnHqLw==
-X-Received: by 2002:a05:600c:210c:: with SMTP id u12mr2543730wml.135.1587116091155;
-        Fri, 17 Apr 2020 02:34:51 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id j10sm7338895wmi.18.2020.04.17.02.34.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nr4vKvs2qrJShxFn1O+ztxZUZEQFA+yVojQ7rh1kCD0=;
+        b=pet1tjcOvQMQs8iZKVSh9UBgZiy/kwjL9kNwFc0VYCPDCbvnV87+3QeIcWg1iljqQk
+         OqlEJP5U/RQzjT2s+Xul0oh+UK183jQA8E7SwADQmw8VNBL9UadGVdur07Bp9xzBsxsu
+         bQzU2EoIZT9PUh3PtEVGjosrSOCPvDMP5nApu+ZeDy6MN9qFYXgrFC6+iXWTz5YL+EvD
+         rd5sQThFXp7lvkYm56J4NhowrS4xKsBglsEp9SRCW2jAlvmOi1Vl+OcJPYslx9++yHMH
+         B93h2wDMINiF/vrE+Ur7+Q+byoT41m6T0ZHv2rZNvVrMy0Kztiqv8SiHbVRGD0loClPi
+         VRRQ==
+X-Gm-Message-State: AGi0PuZ5BvEzCXrT8YgXkZxLx+yaUHphBkJkHIfhK7f35Vb0qRpZxcGi
+        T65jOln/uxYhYAlbuFFTw1icT136g/M=
+X-Google-Smtp-Source: APiQypLxHOfwG1ryjC/TcH1jk7Fqcg15PZuF3rUQqrV6goNBMMG+OjJ2jRHeFEWG+XHD0e7kNPGDGA==
+X-Received: by 2002:a5d:6a04:: with SMTP id m4mr3148130wru.326.1587116187648;
+        Fri, 17 Apr 2020 02:36:27 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.gmail.com with ESMTPSA id h137sm7819792wme.0.2020.04.17.02.36.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 02:34:50 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 10:35:51 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dilip Kota <eswara.kota@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, kishon@ti.com,
-        devicetree@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com,
-        yixin.zhu@intel.com
-Subject: Re: [RESEND PATCH v6 1/4] mfd: syscon: Add fwnode_to_regmap
-Message-ID: <20200417093551.GH2167633@dell>
-References: <cover.1585889042.git.eswara.kota@linux.intel.com>
- <9c58aeb1561f28f302921d54aee75942545c4971.1585889042.git.eswara.kota@linux.intel.com>
+        Fri, 17 Apr 2020 02:36:26 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     srini@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] slimbus: ngd: get drvdata from correct device
+Date:   Fri, 17 Apr 2020 10:36:18 +0100
+Message-Id: <20200417093618.7929-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9c58aeb1561f28f302921d54aee75942545c4971.1585889042.git.eswara.kota@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Apr 2020, Dilip Kota wrote:
+Get drvdata directly from parent instead of ngd dev, as ngd
+dev can probe defer and previously set drvdata will become null.
 
-> Traverse regmap handle entry from firmware node handle.
-> 
-> Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
-> ---
-> Changes on v5:
->   No changes
->   
-> Changes on v5:
->   No changes
-> 
-> Changes on v4:
->   No changes
-> 
->  drivers/mfd/syscon.c       | 8 ++++++++
->  include/linux/mfd/syscon.h | 6 ++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> index 3a97816d0cba..e085c50816b9 100644
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -178,6 +178,14 @@ struct regmap *device_node_to_regmap(struct device_node *np)
->  }
->  EXPORT_SYMBOL_GPL(device_node_to_regmap);
->  
-> +struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode)
-> +{
-> +	struct device_node *np = to_of_node(fwnode);
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You are assuming that the fwnode was Device Tree pointer.
-
-The point of a fwnode is that it could be one of multiple types.
-
-What if it was a pointer to an ACPI property?
-
-> +	return device_node_get_regmap(np, false);
-> +}
-> +EXPORT_SYMBOL_GPL(fwnode_to_regmap);
-> +
->  struct regmap *syscon_node_to_regmap(struct device_node *np)
->  {
->  	if (!of_device_is_compatible(np, "syscon"))
-> diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
-> index 7f20e9b502a5..dacab0b4a091 100644
-> --- a/include/linux/mfd/syscon.h
-> +++ b/include/linux/mfd/syscon.h
-> @@ -18,6 +18,7 @@ struct device_node;
->  
->  #ifdef CONFIG_MFD_SYSCON
->  extern struct regmap *device_node_to_regmap(struct device_node *np);
-> +extern struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode);
->  extern struct regmap *syscon_node_to_regmap(struct device_node *np);
->  extern struct regmap *syscon_regmap_lookup_by_compatible(const char *s);
->  extern struct regmap *syscon_regmap_lookup_by_phandle(
-> @@ -34,6 +35,11 @@ static inline struct regmap *device_node_to_regmap(struct device_node *np)
->  	return ERR_PTR(-ENOTSUPP);
->  }
->  
-> +static inline struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
->  static inline struct regmap *syscon_node_to_regmap(struct device_node *np)
->  {
->  	return ERR_PTR(-ENOTSUPP);
-
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index fc2575fef51b..7426b5884218 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1361,7 +1361,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 		ngd->pdev->driver_override = QCOM_SLIM_NGD_DRV_NAME;
+ 		ngd->pdev->dev.of_node = node;
+ 		ctrl->ngd = ngd;
+-		platform_set_drvdata(ngd->pdev, ctrl);
+ 
+ 		platform_device_add(ngd->pdev);
+ 		ngd->base = ctrl->base + ngd->id * data->offset +
+@@ -1376,12 +1375,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 
+ static int qcom_slim_ngd_probe(struct platform_device *pdev)
+ {
+-	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
+ 	struct device *dev = &pdev->dev;
++	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev->parent);
+ 	int ret;
+ 
+ 	ctrl->ctrl.dev = dev;
+ 
++	platform_set_drvdata(pdev, ctrl);
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_set_autosuspend_delay(dev, QCOM_SLIM_NGD_AUTOSUSPEND);
+ 	pm_runtime_set_suspended(dev);
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.21.0
+
