@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC4A1AD85B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A259B1AD86C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729689AbgDQINy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:13:54 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:38809 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729635AbgDQINy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:13:54 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id PM8CjhxNn7xncPM8Fj9mMH; Fri, 17 Apr 2020 10:13:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1587111231; bh=q8NYR4tyAXxdz07W8s6qeKGxIV5x1hCdmkoYOk/clHw=;
-        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=ixurVZBK9PzfGphIcS6qkRb/MlTeQBGYYXC0ZUTH7wEYk0Ueb7Owttt4dYHqdQ6kr
-         9wug2o0gtFkfqwmqLqZv0bC0Asjyh6ENLQyfLgrSmIFORkXwEC6JgJY2HDQ5GvvA5a
-         H/B8XrcZ+QOxJaPZD8hqldRnEaqHdmHv3tgci/uUU6KvF9YztpahvXiD7ws8YljHU0
-         4iCf6VU+zOUw+b0b9NV6mZj3psdln5LjxYmo1UPhbuD0T2wqb6XNVYq9JbbkgG1o8l
-         abKgZx32yxBugiCaGGlxQA9ND7cwB0GdSCVGvoD6HZ2ivtpBLlMiVTrmoMqGEe0+N2
-         2ybkchPgG/i+A==
-Subject: Re: [RFC][PATCH] media: v4l2-ctrls: add more NULL pointer checks
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200410103501.1083-1-sergey.senozhatsky@gmail.com>
- <c83c137b-b801-a06b-e324-09dd3bbc9daf@xs4all.nl>
- <20200416113249.GG30641@jagdpanzerIV.localdomain>
- <f724e17d-51ae-ad20-6c78-4be21d39180b@xs4all.nl>
-Message-ID: <3bf8712c-45fe-5539-f659-fafa861b8702@xs4all.nl>
-Date:   Fri, 17 Apr 2020 10:13:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <f724e17d-51ae-ad20-6c78-4be21d39180b@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfFYLNyJhvDwpyf29uR5h8j3sMZwt1QOuUImdludPImcJp5YjO4FCUr3Xrrk1gF6iYXfNd5v+rJy06wfpKjgbCqqH5lOuKkU1YJlX/T7BfnB3fk5YLLAp
- vefcx+OoJTohL4bFzaVrT+wybek/+DSYgqjtqXMIrEHA+EIgP4Hm+FoH5FrumHCMCObJLpq2cYbjsyHgfK0fiESjGOKy2OfQ07Fx+XkDWFTkwfL3z6aqbsHR
- /5nmagjBROZvigqws9+CsvmX9DOd09909QdG/TwVO/UdKmVw/z32q2Srs/bmFc56+e48IWmb8vcP9vPOHXK5je4nrNLftLMQdrm/EDNikbk=
+        id S1729681AbgDQIXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:23:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62216 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729176AbgDQIXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:23:06 -0400
+IronPort-SDR: 01Sya9bg7UYTJdBvm3kTd579S1Osp92pfljBNcu5u0adGqAvZckUrweCkLa5xRamTcxNTRFyXn
+ eFKExCsNU3XQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 01:23:06 -0700
+IronPort-SDR: oAqIaDm9qhb5Su1LLPerg1oTUd1hRwUw4hTwKgqEiHDu5jiY8UXJQaQgXa/Na8ikJlBlv0rtsc
+ RCIl/egDXZwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,394,1580803200"; 
+   d="scan'208";a="428156049"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga005.jf.intel.com with ESMTP; 17 Apr 2020 01:23:01 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        arnd@arndb.de, brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, piotrs@cadence.com, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v2 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
+Date:   Fri, 17 Apr 2020 16:21:45 +0800
+Message-Id: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-I recommend that you wait a bit until these two patches are merged:
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-https://patchwork.linuxtv.org/patch/61897/
-https://patchwork.linuxtv.org/patch/61898/
+NAND controller also supports in-built HW ECC engine. 
 
-I'm about to post a PR for these (and others), so hopefully these will
-get merged soon.
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
 
-Regards,
+Thank you very much Boris, Martin and Andy for the suggestions and inputs.
+---
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - YAML compatible string update to intel, lgm-nand-controller
+  - add MIPS maintainers and xway_nand driver author in CC
 
-	Hans
+v1:
+ - initial version
 
-On 16/04/2020 14:13, Hans Verkuil wrote:
-> On 16/04/2020 13:32, Sergey Senozhatsky wrote:
->> On (20/04/16 10:53), Hans Verkuil wrote:
->> [..]
->>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->>>> @@ -2869,6 +2869,9 @@ EXPORT_SYMBOL(v4l2_ctrl_add_handler);
->>>>  
->>>>  bool v4l2_ctrl_radio_filter(const struct v4l2_ctrl *ctrl)
->>>>  {
->>>> +	if (WARN_ON(!ctrl))
->>>> +		return false;
->>>> +
->>>>  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_TX)
->>>>  		return true;
->>>>  	if (V4L2_CTRL_ID2WHICH(ctrl->id) == V4L2_CTRL_CLASS_FM_RX)
->>>> @@ -3794,7 +3797,9 @@ s32 v4l2_ctrl_g_ctrl(struct v4l2_ctrl *ctrl)
->>>>  	struct v4l2_ext_control c;
->>>>  
->>>>  	/* It's a driver bug if this happens. */
->>>> -	WARN_ON(!ctrl->is_int);
->>>> +	if (WARN_ON(!ctrl || !ctrl->is_int))
->>>> +		return -EINVAL;
->>>
->>> Just return 0 here. The return value is the control's value, not an error code.
->>> So all you can do here is return 0 in the absence of anything better.
->>
->> OK.
->>
->>>> +
->>>>  	c.value = 0;
->>>>  	get_ctrl(ctrl, &c);
->>>>  	return c.value;
->>>> @@ -4212,6 +4217,9 @@ EXPORT_SYMBOL(v4l2_s_ctrl);
->>>>  
->>>>  int __v4l2_ctrl_s_ctrl(struct v4l2_ctrl *ctrl, s32 val)
->>>>  {
->>>> +	if (!ctrl)
->>>
->>> Change this to 'if (WARN_ON(!ctrl))'
->>>
->>> I don't think NULL pointers should be silently ignored: it really
->>> indicates a driver bug. It it certainly a good idea to WARN instead.
->>
->> Should WARN_ON() be only in unlocked versions of ctrl API? It probably
->> would make sense to add WARNs to both - e.g. to v4l2_ctrl_s_ctrl() and
-> 
-> Yes, it should be done for both.
-> 
->> to __v4l2_ctrl_s_ctrl(). By the way, why don't locked and unlocked
->> versions live together in v4l2-ctrls.c file? Any reason for, e.g.,
->> v4l2_ctrl_s_ctrl() to be in header and __v4l2_ctrl_s_ctrl() to be C-file?
-> 
-> The v4l2_ctrl_s_ctrl() work fine as a static inline (only compiled if
-> they are actually used). But with an additional 'if (WARN_ON(!ctrl))'
-> it becomes a bit questionable. I would not be opposed if these static
-> inlines are now moved into the source code.
-> 
-> Regards,
-> 
-> 	Hans
-> 
->>
->>> The same is true for the functions below.
->>
->> OK.
->>
->> 	-ss
->>
-> 
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add YAML for Nand Flash Controller support
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  61 ++
+ drivers/mtd/nand/raw/Kconfig                       |   7 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel_lgm_nand.c              | 740 +++++++++++++++++++++
+ 4 files changed, 809 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel_lgm_nand.c
+
+-- 
+2.11.0
 
