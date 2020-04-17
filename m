@@ -2,189 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0189A1ADCFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BC11ADCFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgDQMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:12:20 -0400
-Received: from forward105j.mail.yandex.net ([5.45.198.248]:60906 "EHLO
-        forward105j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726050AbgDQMMT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:12:19 -0400
-Received: from mxback4j.mail.yandex.net (mxback4j.mail.yandex.net [IPv6:2a02:6b8:0:1619::10d])
-        by forward105j.mail.yandex.net (Yandex) with ESMTP id 4F607B21D8B;
-        Fri, 17 Apr 2020 15:12:16 +0300 (MSK)
-Received: from myt5-aad1beefab42.qloud-c.yandex.net (myt5-aad1beefab42.qloud-c.yandex.net [2a02:6b8:c12:128:0:640:aad1:beef])
-        by mxback4j.mail.yandex.net (mxback/Yandex) with ESMTP id cuuj3jBftG-CFe4FrvU;
-        Fri, 17 Apr 2020 15:12:16 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1587125536;
-        bh=jtSizO4+twdpIsx/d154x54u4OCPsuneVrmQDquqRBs=;
-        h=In-Reply-To:Subject:Cc:To:From:References:Date:Message-ID;
-        b=TlkUwKhYJ2Xf/4jQdKqYKhoBEYGsW4rImrnQsnUjniFW/echA8plv2aLNjbO4NFnI
-         XjnuCPyCa43Jb5uCjE31X7VNt2x6fYYPKzc/vpetCFfPNL+DZXGV58lj/nl0Lt9cyb
-         f3VzkF7wyrXrYC/8BB3prQamjmTSdvb+K9knQmkM=
-Authentication-Results: mxback4j.mail.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by myt5-aad1beefab42.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id G9b4xQPTa7-CE2qoMQL;
-        Fri, 17 Apr 2020 15:12:14 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Date:   Fri, 17 Apr 2020 15:11:32 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Nikita Shubin <NShubin@topcon.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] remoteproc: imx_rproc: set pc on start
-Message-ID: <20200417151132.00005f8c@maquefel.me>
-In-Reply-To: <20200414164519.GA24061@xps15>
-References: <20200304142628.8471-1-NShubin@topcon.com>
-        <20200406113310.3041-1-nikita.shubin@maquefel.me>
-        <20200406113310.3041-2-nikita.shubin@maquefel.me>
-        <20200414164519.GA24061@xps15>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728318AbgDQMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:10:46 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2351 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727831AbgDQMKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 08:10:46 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9B89DD7271A07F10F0C2;
+        Fri, 17 Apr 2020 20:10:44 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 17 Apr 2020 20:10:36 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <atish.patra@wdc.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 1/3] riscv: sbi: Correct sbi_shutdown() and sbi_clear_ipi() export
+Date:   Fri, 17 Apr 2020 20:12:20 +0800
+Message-ID: <20200417121222.156422-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 10:45:19 -0600
-Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+Fix incorrect EXPORT_SYMBOL().
 
-> Hi Nikita,
-> 
-> On Mon, Apr 06, 2020 at 02:33:08PM +0300, nikita.shubin@maquefel.me
-> wrote:
-> > In case elf file interrupt vector is not supposed to be at OCRAM_S,
-> > it is needed to write elf entry point to OCRAM_S + 0x4, to boot M4
-> > firmware.
-> > 
-> > Otherwise firmware located anywhere besides OCRAM_S won't boot.
-> > 
-> > The firmware must set stack poiner as first instruction:
-> > 
-> > Reset_Handler:
-> >     ldr   sp, = __stack      /* set stack pointer */
-> > 
-> > Signed-off-by: Nikita Shubin <NShubin@topcon.com>
-> 
-> The address in the SoB has to match what is found in the "From:"
-> field of the email header.  Checkpatch is complaining about that,
-> something I would have expected to be fixed before sending this set
-> out.
-> 
-> > ---
-> >  drivers/remoteproc/imx_rproc.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/remoteproc/imx_rproc.c
-> > b/drivers/remoteproc/imx_rproc.c index 3e72b6f38d4b..bebc58d0f711
-> > 100644 --- a/drivers/remoteproc/imx_rproc.c
-> > +++ b/drivers/remoteproc/imx_rproc.c
-> > @@ -45,6 +45,8 @@
-> >  
-> >  #define IMX7D_RPROC_MEM_MAX		8
-> >  
-> > +#define IMX_BOOT_PC			0x4
-> > +
-> >  /**
-> >   * struct imx_rproc_mem - slim internal memory structure
-> >   * @cpu_addr: MPU virtual address of the memory region
-> > @@ -85,6 +87,7 @@ struct imx_rproc {
-> >  	const struct imx_rproc_dcfg	*dcfg;
-> >  	struct imx_rproc_mem
-> > mem[IMX7D_RPROC_MEM_MAX]; struct clk			*clk;
-> > +	void __iomem			*bootreg;
-> >  };
-> >  
-> >  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
-> > @@ -162,11 +165,16 @@ static int imx_rproc_start(struct rproc
-> > *rproc) struct device *dev = priv->dev;
-> >  	int ret;
-> >  
-> > +	/* write entry point to program counter */
-> > +	writel(rproc->bootaddr, priv->bootreg);
-> 
-> What happens on all the other IMX systems where this fix is not
-> needed?  Will they continue to work properly?   
+Fixes: efca13989250 ("RISC-V: Introduce a new config for SBI v0.1")
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ arch/riscv/kernel/sbi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Mathieu you are totally correct imx6/imx7 use different addresses they
-boot.
-
-For imx7:
-| On i.MX 7Dual/7Solo, the boot vector for the Cortex-M4 core is located
-| at the start of the OCRAM_S (On Chip RAM - Secure) whose address is
-| 0x0018_0000 from Cortex-A7.
-
-For imx6:
-| The Boot vector for the Cortex-M4 core is located at the start of the
-| TCM_L whose address is 0x007F_8000 from the Cortex-A9. This is a
-| different location than on the i.MX 7Dual/7Solo
-
-But on imx7 0x0 is translated to 0x0018_0000 by imx_rproc_da_to_va, and
-on imx7 0x0 is translated to 0x007F_8000, using imx_rproc_att_imx7d and 
-imx_rproc_att_imx6sx respectively.
-
-I have no information about IMX8 (i have found none available
-publicity), but should be the same as Cortex-M boots from 0x0.
-
-> 
-> > +
-> >  	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
-> >  				 dcfg->src_mask, dcfg->src_start);
-> >  	if (ret)
-> >  		dev_err(dev, "Failed to enable M4!\n");
-> >  
-> > +	dev_info(&rproc->dev, "Started from 0x%x\n",
-> > rproc->bootaddr); +
-> >  	return ret;
-> >  }
-> >  
-> > @@ -182,6 +190,9 @@ static int imx_rproc_stop(struct rproc *rproc)
-> >  	if (ret)
-> >  		dev_err(dev, "Failed to stop M4!\n");
-> >  
-> > +	/* clear entry points */
-> > +	writel(0, priv->bootreg);
-> > +
-> >  	return ret;
-> >  }
-> >  
-> > @@ -243,7 +254,8 @@ static void *imx_rproc_da_to_va(struct rproc
-> > *rproc, u64 da, int len) static const struct rproc_ops
-> > imx_rproc_ops = { .start		= imx_rproc_start,
-> >  	.stop		= imx_rproc_stop,
-> > -	.da_to_va       = imx_rproc_da_to_va,
-> > +	.da_to_va	= imx_rproc_da_to_va,
-> > +	.get_boot_addr	= rproc_elf_get_boot_addr,
-> 
-> How is this useful?  Sure it will set rproc->bootaddr in
-> rproc_fw_boot() but what good does that do when it is invariably set
-> again in imx_rproc_start() ? 
-> 
-> >  };
-> >  
-> >  static int imx_rproc_addr_init(struct imx_rproc *priv,
-> > @@ -360,6 +372,8 @@ static int imx_rproc_probe(struct
-> > platform_device *pdev) goto err_put_rproc;
-> >  	}
-> >  
-> > +	priv->bootreg = imx_rproc_da_to_va(rproc, IMX_BOOT_PC,
-> > sizeof(u32)); +
-> >  	/*
-> >  	 * clk for M4 block including memory. Should be
-> >  	 * enabled before .start for FW transfer.
-> > -- 
-> > 2.25.1
-> > 
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index 7c24da59bccf..62b10a16c8d7 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -102,7 +102,7 @@ void sbi_shutdown(void)
+ {
+ 	sbi_ecall(SBI_EXT_0_1_SHUTDOWN, 0, 0, 0, 0, 0, 0, 0);
+ }
+-EXPORT_SYMBOL(sbi_set_timer);
++EXPORT_SYMBOL(sbi_shutdown);
+ 
+ /**
+  * sbi_clear_ipi() - Clear any pending IPIs for the calling hart.
+@@ -113,7 +113,7 @@ void sbi_clear_ipi(void)
+ {
+ 	sbi_ecall(SBI_EXT_0_1_CLEAR_IPI, 0, 0, 0, 0, 0, 0, 0);
+ }
+-EXPORT_SYMBOL(sbi_shutdown);
++EXPORT_SYMBOL(sbi_clear_ipi);
+ 
+ /**
+  * sbi_set_timer_v01() - Program the timer for next timer event.
+-- 
+2.20.1
 
