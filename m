@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EAC1AD4D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 05:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9356D1AD633
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 08:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbgDQDZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 23:25:22 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46448 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgDQDZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:25:22 -0400
-IronPort-SDR: iErVSfnI38KwtWQcH4rNDLRGacjRCeNcMdBt/L03K6KGp4kSKPATK795CQhFE6Uq6uZ4mN5Iqc
- CrzmqAlQrtig==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 20:25:21 -0700
-IronPort-SDR: Y6NxNoqwaocfo1ldFFdrC25qBWTuSkIdagvjBrnhQfQIWAVfWzvOgqnb12F5Lnv/SZ95ck/O34
- JjcEmikH2k1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,393,1580803200"; 
-   d="scan'208";a="428084176"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.63]) ([10.254.212.63])
-  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 20:25:19 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        id S1728039AbgDQGe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 02:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728028AbgDQGeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 02:34:25 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D37AC061A0C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 23:34:25 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id ay1so624498plb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 23:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AGtrib0SEzkR/i2V3s4NGjpmeVSFBI11mJRr1zQWoZ0=;
+        b=olbb2NiOwt83kdgpCRfGruCS9PsmIXJiG7v/4yuq2xN+fK5WmfIqyEsNMhGLmgFS6H
+         T6v8kzROEUmkQxcbYbsDIRgPKDEpeI7yIeZdsOObmTq94npTByiAYZVSH7bJ564in3xJ
+         lLysV9TQFWgvbCXhBDBufX6NdXmdbgDf8vlhAYtKDcz4jRkaw7ya2/cd3KUgVq6ftnLx
+         +PoC4yWKRe7YaqhlcFWKBbtbmB6ONuuajtXm4hCL+FNo1SNDtatWveDr5BoK/XEST1bl
+         sl7HPDpg3b9xOHqKWoK549yrBv00rzIjPzHoKUdW3buvLU96QMxx+MfUtdeOd+7Zv3kD
+         IDBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=AGtrib0SEzkR/i2V3s4NGjpmeVSFBI11mJRr1zQWoZ0=;
+        b=sVo79GbjprDhMcRXlM99Pww+akKOXKtf+tq3hd04ocuOe3bJiyX3ncJj9mh3kSbiJh
+         YZppjNUJQyvX12YJcl1prccDlqI8zvlMXtL9ShOEzog87wCgMG/bWFuUnLsOCGRcnJ+a
+         dS9G9KImYlX6kkFLi4QdQvW1LNiOcsYDsCbyadHlY2bvaGbLtdq8Bfi2bV8iVmDDWsK3
+         uFVFWbHm+py+K/49pVLmI93VqSOMPd7OIloizUl5/HuHO+dQDPixKovoQVjB5K+zhpxD
+         Izjvyx1asUwNy8DGOe3h4pQb4UHfgy/RxjCkYqyUd0sQZu5gYX6siSagOI11HCUwX8tv
+         4cpw==
+X-Gm-Message-State: AGi0PuYxVqvD+Dt0J+RZAyMiOHdwtTfXPC/Sx9OvzIQ4eVGY2YfVSaIZ
+        8dW6c2NJlEMMyz4l6Sl/lQDqVYkPORc=
+X-Google-Smtp-Source: APiQypIcuKO7DdOeAFhZLcOccIk4KE+dqVYWfOtGK7UqgbvAcMxBVzSjJZDCDStvQmzF+njQAdYZhg==
+X-Received: by 2002:a17:90a:a402:: with SMTP id y2mr2653604pjp.55.1587105264879;
+        Thu, 16 Apr 2020 23:34:24 -0700 (PDT)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id o125sm17063631pgo.74.2020.04.16.23.34.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 23:34:24 -0700 (PDT)
+Subject: Re: SPCR and default serial port
+To:     "Herrenschmidt, Benjamin" <benh@amazon.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/7] iommu/vt-d: Save prq descriptors in an internal
- list
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200415052542.30421-1-baolu.lu@linux.intel.com>
- <20200415052542.30421-6-baolu.lu@linux.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8207B2@SHSMSX104.ccr.corp.intel.com>
- <399dd037-b32e-30a7-013c-b68e9a3bbc7a@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <7e95de33-95e9-0647-9611-aa4ec72171c9@linux.intel.com>
-Date:   Fri, 17 Apr 2020 11:25:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Cc:     "x86@kernel.org" <x86@kernel.org>
+References: <364e0ff5da091ed7faa0232302b6181ac30000de.camel@amazon.com>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <2e2fe044-251d-eca9-3692-8f3182db3905@jonmasters.org>
+Date:   Thu, 16 Apr 2020 23:29:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <399dd037-b32e-30a7-013c-b68e9a3bbc7a@linux.intel.com>
+In-Reply-To: <364e0ff5da091ed7faa0232302b6181ac30000de.camel@amazon.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
-
-On 2020/4/16 9:46, Lu Baolu wrote:
-> On 2020/4/15 17:30, Tian, Kevin wrote:
->>> From: Lu Baolu<baolu.lu@linux.intel.com>
->>> Sent: Wednesday, April 15, 2020 1:26 PM
->>>
->>> Currently, the page request interrupt thread handles the page
->>> requests in the queue in this way:
->>>
->>> - Clear PPR bit to ensure new interrupt could come in;
->>> - Read and record the head and tail registers;
->>> - Handle all descriptors between head and tail;
->>> - Write tail to head register.
->>>
->>> This might cause some descriptors to be handles multiple times.
->>> An example sequence:
->>>
->>> - Thread A got scheduled with PRQ_1 and PRQ_2 in the queue;
->>> - Thread A clear the PPR bit and record the head and tail;
->>> - A new PRQ_3 comes and Thread B gets scheduled;
->>> - Thread B record the head and tail which includes PRQ_1
->>>    and PRQ_2.
->> I may overlook something but isn't the prq interrupt thread
->> per iommu then why would two prq threads contend here?
+On 4/15/20 2:04 AM, Herrenschmidt, Benjamin wrote:
+> Hi !
 > 
-> The prq interrupt could be masked by the PPR (Pending Page Request) bit
-> in Page Request Status Register. In the interrupt handling thread once
-> this bit is clear, new prq interrupts are allowed to be generated.
+> Today, arm64 allows the serial port specified in ACPI SPCR table to be
+> selected as a default console, but x86 doesn't (second argument to
+> acpi_parse_spcr).
 > 
-> So, if a page request is in process and the PPR bit is cleared, another
-> page request from any devices under the same iommu could trigger another
-> interrupt thread.
+> I understand while we might have been worried of breaking existing
+> setups back then but should we re-think this, maybe via a CONFIG option
+> ?
+> 
+> It makes a lot of sense to have firmware tell us which of the
+> potentially many serial port in a system is our active console, along
+> with its configuration...
+> 
+> This also shouldn't cause problem on systems that already specify a
+> console explicitly on the command line.
+> 
+> Any opinion ?
 
-Rechecked the code. You are right. As long as the interrupt thread is
-per iommu, there will only single prq thread scheduled. I will change
-this accordingly in the new version. Thank you for pointing this out.
+I think it would be /great/ if x86 followed Arm. A config option would 
+allow it to be easily ignored by those who don't want it, but you'll 
+want to get data from e.g. distros on how many systems have weird BIOSes 
+that provide a non-useful table today.
 
-Best regards,
-baolu
+Jon.
+
+-- 
+Computer Architect
