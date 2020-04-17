@@ -2,183 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E821AD9BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76F21AD943
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgDQJXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:23:21 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36530 "EHLO huawei.com"
+        id S1730015AbgDQI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:57:06 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58086 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730226AbgDQJXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:23:20 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0F167F3F89FD44370F11;
-        Fri, 17 Apr 2020 17:23:18 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.7) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 17:23:07 +0800
-Subject: Re: [PATCH] ALSA: au88x0: remove some dead code
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <perex@perex.cz>, <tiwai@suse.com>, <hariprasad.kelam@gmail.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-References: <20200417092232.13371-1-yanaijie@huawei.com>
- <s5ho8rqbhz1.wl-tiwai@suse.de>
+        id S1729889AbgDQI5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:57:06 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 94EE9152C75F57358E36;
+        Fri, 17 Apr 2020 16:57:02 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 16:56:52 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <3caeb0e2-0f4a-3f98-07e9-dd8f78a33dc3@huawei.com>
-Date:   Fri, 17 Apr 2020 17:23:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+To:     <paulus@samba.org>, <b.zolnierkie@samsung.com>,
+        <daniel.vetter@ffwll.ch>, <linux-fbdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] video: fbdev: aty128fb: remove unused 'sdr_64'
+Date:   Fri, 17 Apr 2020 17:23:18 +0800
+Message-ID: <20200417092318.13978-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <s5ho8rqbhz1.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.213.7]
+X-Originating-IP: [10.175.124.28]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following gcc warning:
 
+drivers/video/fbdev/aty/aty128fb.c:337:36: warning: ‘sdr_64’ defined but
+not used [-Wunused-const-variable=]
+ static const struct aty128_meminfo sdr_64 = {
+                                    ^~~~~~
 
-在 2020/4/17 17:05, Takashi Iwai 写道:
-> On Fri, 17 Apr 2020 11:22:32 +0200,
-> Jason Yan wrote:
->>
->> Fix the following gcc warning:
->>
->> sound/pci/au88x0/au88x0_a3ddata.c:62:25: warning: ‘A3dHrirDImpulse’
->> defined but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirDImpulse = {
->>                           ^~~~~~~~~~~~~~~
->> sound/pci/au88x0/au88x0_a3ddata.c:50:25: warning: ‘A3dHrirSatTest’
->> defined but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirSatTest = {
->>                           ^~~~~~~~~~~~~~
->> sound/pci/au88x0/au88x0_a3ddata.c:33:25: warning: ‘A3dHrirOnes’ defined
->> but not used [-Wunused-const-variable=]
->>   static const a3d_Hrtf_t A3dHrirOnes = {
->>                           ^~~~~~~~~~~
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> 
-> I'd rather keep them but disable with #if 0, if it's only about the
-> minor compiler warnings.
-> 
-> The whole code is a result of reverse engineering and those dead code
-> are simply there just because of lack of testing.  Removing makes it
-> impossible for retesting (if any).
-> 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/video/fbdev/aty/aty128fb.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-Actually you can easily recover the code from git history.
-
-Anyway, it's all your choice.
-
-Thanks,
-
-Jason
-
-> 
-> thanks,
-> 
-> Takashi
-> 
->> ---
->>   sound/pci/au88x0/au88x0_a3d.c     | 23 -------------------
->>   sound/pci/au88x0/au88x0_a3ddata.c | 38 -------------------------------
->>   2 files changed, 61 deletions(-)
->>
->> diff --git a/sound/pci/au88x0/au88x0_a3d.c b/sound/pci/au88x0/au88x0_a3d.c
->> index 2db183f8826a..4d3b79a34c69 100644
->> --- a/sound/pci/au88x0/au88x0_a3d.c
->> +++ b/sound/pci/au88x0/au88x0_a3d.c
->> @@ -512,31 +512,8 @@ static void a3dsrc_ProgramPipe(a3dsrc_t * a)
->>   	/* Single spike leads to identity transfer function. */
->>   	a3dsrc_SetHrtfCurrent(a, A3dHrirImpulse, A3dHrirImpulse);
->>   	a3dsrc_SetHrtfTarget(a, A3dHrirImpulse, A3dHrirImpulse);
->> -
->> -	/* Test: Sounds saturated. */
->> -	//a3dsrc_SetHrtfCurrent(a, A3dHrirSatTest, A3dHrirSatTest);
->> -	//a3dsrc_SetHrtfTarget(a, A3dHrirSatTest, A3dHrirSatTest);
->>   }
->>   
->> -/* VDB = Vortex audio Dataflow Bus */
->> -#if 0
->> -static void a3dsrc_ClearVDBData(a3dsrc_t * a, unsigned long aa)
->> -{
->> -	vortex_t *vortex = (vortex_t *) (a->vortex);
->> -
->> -	// ((aa >> 2) << 8) - (aa >> 2)
->> -	hwwrite(vortex->mmio,
->> -		a3d_addrS(a->slice, A3D_SLICE_VDBDest) + (a->source << 2), 0);
->> -	hwwrite(vortex->mmio,
->> -		a3d_addrS(a->slice,
->> -			  A3D_SLICE_VDBDest + 4) + (a->source << 2), 0);
->> -	/*
->> -	   hwwrite(vortex->mmio, 0x19c00 + (((aa>>2)*255*4)+aa)*8, 0);
->> -	   hwwrite(vortex->mmio, 0x19c04 + (((aa>>2)*255*4)+aa)*8, 0);
->> -	 */
->> -}
->> -#endif
->> -
->>   /* A3D HwSource stuff. */
->>   
->>   static void vortex_A3dSourceHw_Initialize(vortex_t * v, int source, int slice)
->> diff --git a/sound/pci/au88x0/au88x0_a3ddata.c b/sound/pci/au88x0/au88x0_a3ddata.c
->> index 18623cb6bc52..cc41ea67a6d3 100644
->> --- a/sound/pci/au88x0/au88x0_a3ddata.c
->> +++ b/sound/pci/au88x0/au88x0_a3ddata.c
->> @@ -30,44 +30,6 @@ static const a3d_Hrtf_t A3dHrirImpulse = {
->>   	0, 0, 0
->>   };
->>   
->> -static const a3d_Hrtf_t A3dHrirOnes = {
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff
->> -};
->> -
->> -static const a3d_Hrtf_t A3dHrirSatTest = {
->> -	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
->> -	0x7fff,
->> -	0x7fff,
->> -	0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001, 0x8001,
->> -	0x8001,
->> -	0x8001,
->> -	0x7fff, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
->> -};
->> -
->> -static const a3d_Hrtf_t A3dHrirDImpulse = {
->> -	0, 0x7fff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0, 0,
->> -	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->> -	0, 0, 0,
->> -	0, 0, 0
->> -};
->> -
->>   static const a3d_ItdDline_t A3dItdDlineZeros = {
->>   	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->>   	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
->> -- 
->> 2.21.1
->>
-> 
-> .
-> 
+diff --git a/drivers/video/fbdev/aty/aty128fb.c b/drivers/video/fbdev/aty/aty128fb.c
+index d7e41c8dd533..d05d4195acad 100644
+--- a/drivers/video/fbdev/aty/aty128fb.c
++++ b/drivers/video/fbdev/aty/aty128fb.c
+@@ -334,20 +334,6 @@ static const struct aty128_meminfo sdr_128 = {
+ 	.name = "128-bit SDR SGRAM (1:1)",
+ };
+ 
+-static const struct aty128_meminfo sdr_64 = {
+-	.ML = 4,
+-	.MB = 8,
+-	.Trcd = 3,
+-	.Trp = 3,
+-	.Twr = 1,
+-	.CL = 3,
+-	.Tr2w = 1,
+-	.LoopLatency = 17,
+-	.DspOn = 46,
+-	.Rloop = 17,
+-	.name = "64-bit SDR SGRAM (1:1)",
+-};
+-
+ static const struct aty128_meminfo sdr_sgram = {
+ 	.ML = 4,
+ 	.MB = 4,
+-- 
+2.21.1
 
