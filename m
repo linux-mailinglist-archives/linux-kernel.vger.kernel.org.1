@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D471ADBA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE991ADBA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbgDQKxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729362AbgDQKxy (ORCPT
+        id S1729830AbgDQKzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:55:51 -0400
+Received: from mail1.bemta26.messagelabs.com ([85.158.142.3]:58823 "EHLO
+        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729364AbgDQKzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:53:54 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A520C061A0C;
-        Fri, 17 Apr 2020 03:53:54 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d24so837058pll.8;
-        Fri, 17 Apr 2020 03:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TwKXCfRB7o/vWoJfqpmR/E8zhEf8tOObq3WWbVw22sU=;
-        b=Cm5zqdnBFbTeC9M5Y8O0MXbTT+eFoIY3PgXsI8wW324Ut2G+IDpk/apV0kZdS3hqiS
-         pNZCf0ZhQ0ckpo8iLum2/ppe79vq/SA9smKSGFjWmaEPFbSShozEFFRNgS96uEgtsQWW
-         UqEqZE9kMTaqZSySj5dPLmXDiFj1XmT4oUGWjiSCKLYBMzELX6mdEQCUn4+Umcvivu+Z
-         UtEbQFWXGwOzwCC6guT6FLL1xmmtJVXSd8OwYTCFehqVvGeW2I6VpD3X6h6NaHYOiJ2D
-         xz7Yk5C0WYEkzRdVMC0+0rEytPUjHCefgceaWZaLGVrb6MUuzWitGy6vkAEfgPwedH9J
-         ywvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TwKXCfRB7o/vWoJfqpmR/E8zhEf8tOObq3WWbVw22sU=;
-        b=QlkTpe6IF6R+G0py/y1uj8UG7aYT/808PHC1MsnJ2Oy+iGU38vnSepaHTdsuassvlb
-         k3c2l2cLVgASLY+9RvotUT1MgmoFDv5Pcc1II8mDTg6oC/+eG8bJpaQGLex1dgz0xUNI
-         aTHRpKYLOelvNjvigB3h8SVTEnEp2hZIFzYr52uVSyq2V5q9Nq4b01B0GebCKqNZx7dH
-         54PFj1p1AoVVjYC85TEE4CaDkuZKS9MJ+Ir4o3gHxTCbNKrzLIUha5hwSD1sXExEJBJ4
-         1RMPBu2XaXUyHNV0h0ckUC4jv/Z3uC/IMhoIcWfXHPVTBlrIXA7uhJhEMN1/EN8EDQSu
-         Cthw==
-X-Gm-Message-State: AGi0PuaDwPTA+cMpUaopbqSjaM+pS1GegPcfio4wixh8issaiKH/b/l2
-        BFZVvmlPg9FCMNCY7ahQBUWIbxJKZBQHEve3TJs=
-X-Google-Smtp-Source: APiQypK+2sBRVRLPujtMMuVoeXXw5cj0wrSmjDYVT57zBlOi1idDmGMyWf/HnVXhCk0hfkD1TR7XjNxOeGJHsz3uWKg=
-X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr3611175pjb.143.1587120833719;
- Fri, 17 Apr 2020 03:53:53 -0700 (PDT)
+        Fri, 17 Apr 2020 06:55:48 -0400
+Received: from [100.113.1.220] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-3.bemta.az-a.eu-central-1.aws.symcld.net id 88/C0-36550-13B899E5; Fri, 17 Apr 2020 10:55:45 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRWlGSWpSXmKPExsVy8MN7XV3D7pl
+  xBit/8Fnc/3qU0eLyrjlsDkwed67tYfP4vEkugCmKNTMvKb8igTVj39rP7AX72SrePGVtYJzB
+  2sXIxSEksI5R4nrvCcYuRk4gp0Li76G5YDavgJvEgfkPmEFsNgELicknHrCB2CwCqhKL39wEi
+  nNwCAsESDy7GQZiigioSJx7Yw5iMgtESPw5xQwxRFDi5MwnLCA2s4CExMEXL5ghFhlInF7QyD
+  KBkXsWkrJZSMoWMDKtYrRIKspMzyjJTczM0TU0MNA1NDTWNdQ1tdBLrNJN1Est1U1OzSspSgR
+  K6iWWF+sVV+Ym56To5aWWbGIEBk5KIaPVDsata9/rHWKU5GBSEuVVapsZJ8SXlJ9SmZFYnBFf
+  VJqTWnyIUYaDQ0mCt6QLKCdYlJqeWpGWmQMMYpi0BAePkghvYidQmre4IDG3ODMdInWKUZdj5
+  9F5i5iFWPLy81KlxHllQGYIgBRllObBjYBF1CVGWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwr
+  zMIFN4MvNK4Da9AjqCCeiIaIfpIEeUJCKkpBqYNIubCq7Me5gXabqp/+SE9WxRT3SF+jlXxcr
+  eXMPce47pfixHbgrTzCePPgouY8vj+raBr5Ptxrbk6zPavmb6HZ0TO7ln7oyXm4Jt75hMmXyh
+  6e6ywjP35T3E7+UZ6P/eaLRjUkXcWSnD93ZSwUt6zVjD5lrtuvL5994ZV5MMBBLj2D/2H8xmu
+  LtDI1Th/tvisEVdkto9gtxsL/bP3ny/o689783EG0o7Jh1rPbjzq/zpe+k9Ojv2szxOOFIcc8
+  5tG//N0+u+Bh6osGwO8bqpe33Fvej0s69v19mxnntiue1RpKT8qcI+uYquH+sVP2w6pnvirP3
+  p9al+p+83vOaX31fhJ6tqftXq04TKc2ql55RYijMSDbWYi4oTAWLbJKkjAwAA
+X-Env-Sender: Adam.Thomson.Opensource@diasemi.com
+X-Msg-Ref: server-6.tower-229.messagelabs.com!1587120944!3257471!1
+X-Originating-IP: [193.240.239.45]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.50.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 9961 invoked from network); 17 Apr 2020 10:55:45 -0000
+Received: from unknown (HELO NB-EX-CASHUB01.diasemi.com) (193.240.239.45)
+  by server-6.tower-229.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 17 Apr 2020 10:55:45 -0000
+Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Fri, 17 Apr 2020 12:55:44 +0200
+Received: by swsrvapps-01.diasemi.com (Postfix, from userid 22379)      id
+ 1B4CD3FB8D; Fri, 17 Apr 2020 11:55:44 +0100 (BST)
+Message-ID: <cover.1587120185.git.Adam.Thomson.Opensource@diasemi.com>
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date:   Fri, 17 Apr 2020 11:55:44 +0100
+Subject: [PATCH v3 0/2] Resolve revision handling and add support for DA silicon
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-References: <20200417092125.12513-1-yanaijie@huawei.com> <CACRpkdYm7_DYSxvj+cwciUrfDZETbJSdGj=5L8O=QK5xcGYcCQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYm7_DYSxvj+cwciUrfDZETbJSdGj=5L8O=QK5xcGYcCQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 17 Apr 2020 13:53:41 +0300
-Message-ID: <CAHp75VdbxuWpJecCgRBO7pGKjv1xrseSj2Ftx=kqML=oSAF9MA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: mcp23s08: add module license
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jason Yan <yanaijie@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 1:25 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Apr 17, 2020 at 10:55 AM Jason Yan <yanaijie@huawei.com> wrote:
->
-> > Fix the following build warning:
-> >
-> > WARNING: modpost: missing MODULE_LICENSE() in
-> > drivers/pinctrl/pinctrl-mcp23s08.o
-> > see include/linux/module.h for more information
-> >
-> > Signed-off-by: Jason Yan <yanaijie@huawei.com>
->
-> Thanks, patch applied.
+This patch set fixes the currently broken revision handling in the driver's
+i2c_probe() function and then adds DA support to existing permitted revisions.
 
-Thanks all! And sorry I somehow missed it.
+v3:
+ - Replaced magic numbers around I2C paged access code with enums and defines
+ - Small style tidy ups as requested by Lee Jones
 
->
-> Yours,
-> Linus Walleij
+v2:
+ - Use raw I2C read access instead of a temporary regmap to interrogate chip and
+   variant id registers
 
+Adam Thomson (2):
+  mfd: da9063: Fix revision handling to correctly select reg tables
+  mfd: da9063: Add support for latest DA silicon revision
 
+ drivers/mfd/da9063-core.c            |  31 ----
+ drivers/mfd/da9063-i2c.c             | 271 +++++++++++++++++++++++++++++++----
+ include/linux/mfd/da9063/core.h      |   1 +
+ include/linux/mfd/da9063/registers.h |  15 +-
+ 4 files changed, 257 insertions(+), 61 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+1.9.1
+
