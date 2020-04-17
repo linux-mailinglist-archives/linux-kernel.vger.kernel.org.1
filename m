@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50591AE701
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 22:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499CD1AE706
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 22:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgDQU4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 16:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        id S1726502AbgDQU4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 16:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDQU4M (ORCPT
+        with ESMTP id S1726277AbgDQU4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 16:56:12 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B06C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 13:56:11 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id g14so760134ooa.4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 13:56:11 -0700 (PDT)
+        Fri, 17 Apr 2020 16:56:50 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC941C061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 13:56:48 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id 1so2041551vsl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 13:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZRrSWymYNp23VNv1jflVCfYbLbj0nrTpCLnbz+QVbbM=;
-        b=HfFfOMD84P7y8seYdnCWZalBnPjmWIj6Ovtq9JzgmNoE0mia+0qY2a/thtVuXd60+G
-         I78iRU215jQlj8Xjws8El1HX01+nKzUDT0XV1aafrejSSGdRXN+jFqEXAPL2HLOFbcC3
-         zOwChFVm/NqDuTXQJe9z5X+tc6K9QyQ7eRBG/2Dre8LEf75AYeUVgG5qpu+0P0eHaN9O
-         ALndpP14o4dLOsFPBajpEqllZ1212GOOB1QOmfW/hT7d/jzk/ZZr2C3njra9SJ2SoY7W
-         EcdFWbd6n5a9o+3KWhsIp7DUFhvgvZyoYCbZrQISdAJaIzTmrHP0hFGxwBhH+Fxe9yYI
-         4Ekg==
+        bh=nTPDJ1FZx21ZUdm/rZe6vuNjgKbQ4V6e3Md/8z5QSYQ=;
+        b=NTiOrafaduGKDmVfB6vAvc2mWdTspMay2fHcWX+kFb/9rqtwB1ixoAxjzkdoDWotNU
+         cJPXhjrUZPXQpMjnVmPFTyNGXTFPAxaFIEJ+J06zvtyOEqhWnIlMm7m494gCUii9ggCA
+         1t8AcHugDOTujupYSZCzSQt7zsOSByyoz29Tw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZRrSWymYNp23VNv1jflVCfYbLbj0nrTpCLnbz+QVbbM=;
-        b=ftNDjoVJxvu50yYIf2wi/8xcH2NE+i4bRXUGdD0GcN5KOsmbGrsTQjvCTMrSJwgpu2
-         XZj2si8/SzJb3/FkoJ0O3NV1pF4wj09yCNvvqbfZNJ+zYgWP1anKAK2E+WXdshwCk4cI
-         1t/T45EXOWUkgTvTOXaeHTMznSwny2kiLTMuloVygU+Z02wD96YkJg2b/ZhYwctZK3aX
-         FXyt2nDU2ndqty9Qf8uuKFLDeA1eWYrSWyOGvmjS8OAQL0KCCQ3ObFQXLmIii5vl0jXP
-         0MfRxElvdq2C8ikEKl27drTkLnxt0jefkzP68/K2UFJs0hFPClDqpfDBL62n0cmMUGzs
-         QVHw==
-X-Gm-Message-State: AGi0PuYyjlYumrirGVJx5DX/PmIIfSLZRNS/hb9qmM1jO/eW4AbJXzyV
-        fCQtd32olN12gG+sQO8JMefwTUh7Lt2g92d0fn4rsw==
-X-Google-Smtp-Source: APiQypJfj91riCkqx3e93yJnMbbwvx5Qrez6FxxxjKPXXXTo5vbH99INz65O6k0wyRYe+qf5yrs9lpE5Sd16Uwe4tic=
-X-Received: by 2002:a4a:9cd8:: with SMTP id d24mr4109456ook.84.1587156970831;
- Fri, 17 Apr 2020 13:56:10 -0700 (PDT)
+        bh=nTPDJ1FZx21ZUdm/rZe6vuNjgKbQ4V6e3Md/8z5QSYQ=;
+        b=jx6ILgyUmxDWv4ETxiqRhBemFq+u4tXkpCcmizlj5zt3t4DiJW34Uf0HxXvmiIh63i
+         UA3X+qB4hFTeZsoSJ8h1Mb2xyFJksIge2d/K28mfpiEJ/SVxpLUf+Gl1pZq3xgHXdsxX
+         ob3lNnyGz2Bi+GKUe2tTTwlt7AcXRXgUSa4x7MdOgSP5iJ4cN7V2vweCA85UbUoE2OQa
+         qpL6t8JOOLFA2P2T9cfiEwCCUmMouMZLwTZrulL/JGVD/zXKCi57qA9yYO3k7HertHGB
+         2afiRH9wR82/nsD+AKk0KpmkjwAgTRQ8HmqQP84fyw1lPkWJImSbC0kLscisyy6VebcZ
+         NOyQ==
+X-Gm-Message-State: AGi0PuaIDvSPyBpwC+zJN4JIr0IEgssogqURRQvePRA6YcNfV0cIurYZ
+        Dz7tzUkPUJxdKV7HMLj/2govlSoDhUc=
+X-Google-Smtp-Source: APiQypJLnwAo4pzoegSIZf5nsdi2/e3cDSlVjcJleESFiT0t3gXILDZjvveXU6OrfRxesXW27hf5xw==
+X-Received: by 2002:a67:28c7:: with SMTP id o190mr4421242vso.48.1587157007572;
+        Fri, 17 Apr 2020 13:56:47 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id m82sm7089274vke.53.2020.04.17.13.56.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2020 13:56:46 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id b5so2074549vsb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 13:56:46 -0700 (PDT)
+X-Received: by 2002:a67:1e46:: with SMTP id e67mr4201742vse.106.1587157005954;
+ Fri, 17 Apr 2020 13:56:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200417165442.1856-1-nsaenzjulienne@suse.de> <500e8c46a9b411aed03965b6f9130ccde457193d.camel@suse.de>
-In-Reply-To: <500e8c46a9b411aed03965b6f9130ccde457193d.camel@suse.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 17 Apr 2020 13:55:34 -0700
-Message-ID: <CAGETcx8EJiLSV8jzrusim6EvyVvX4H8ANvZaJwO72G1=iS-N2Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] of: property: fw_devlink misc fixes
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <1587107546-7379-1-git-send-email-kalyan_t@codeaurora.org>
+In-Reply-To: <1587107546-7379-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 17 Apr 2020 13:56:34 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WmiXRJF77Nd0JEr-6WDGpJvxt4as6YJJUZdKo6c0NuvQ@mail.gmail.com>
+Message-ID: <CAD=FV=WmiXRJF77Nd0JEr-6WDGpJvxt4as6YJJUZdKo6c0NuvQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: ensure device suspend happens during PM sleep
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        mkrishn@codeaurora.org, travitej@codeaurora.org,
+        nganji@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:06 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+Hi,
+
+On Fri, Apr 17, 2020 at 12:13 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
 >
-> Hi Saravana,
+> "The PM core always increments the runtime usage counter
+> before calling the ->suspend() callback and decrements it
+> after calling the ->resume() callback"
 >
-> On Fri, 2020-04-17 at 18:54 +0200, Nicolas Saenz Julienne wrote:
-> > As I'm interested in using this feature to fine-tune Raspberry Pi 4's
-> > device probe dependencies, I tried to get the board to boot with
-> > fw_devlink=on. As of today's linux-next the board won't boot with that
-> > option. I tried to address the underlying issues.
-> >
+> DPU and DSI are managed as runtime devices. When
+> suspend is triggered, PM core adds a refcount on all the
+> devices and calls device suspend, since usage count is
+> already incremented, runtime suspend was not getting called
+> and it kept the clocks on which resulted in target not
+> entering into XO shutdown.
 >
-> On a semi-related topic, have you looked at vendor specific properties? most of
-> them create a consumer/supplier relationship, it'd be nice to be able to take
-> those ones into account as well.
+> Add changes to force suspend on runtime devices during pm sleep.
+>
+> Changes in v1:
+>  - Remove unnecessary checks in the function
+>     _dpu_kms_disable_dpu (Rob Clark).
+>
+> Changes in v2:
+>  - Avoid using suspend_late to reset the usagecount
+>    as suspend_late might not be called during suspend
+>    call failures (Doug).
+>
+> Changes in v3:
+>  - Use force suspend instead of managing device usage_count
+>    via runtime put and get API's to trigger callbacks (Doug).
+>
+> Changes in v4:
+>  - Check the return values of pm_runtime_force_suspend and
+>    pm_runtime_force_resume API's and pass appropriately (Doug).
+>
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  2 ++
+>  drivers/gpu/drm/msm/dsi/dsi.c           |  2 ++
+>  drivers/gpu/drm/msm/msm_drv.c           | 14 +++++++++++++-
+>  3 files changed, 17 insertions(+), 1 deletion(-)
 
-I'm on the wall about that. If we take every vendor specific property,
-this file will explode. Not sure I want to do that.
+I am most certainly not an expert in this code, but as far as I can
+tell it looks sane.  Thus:
 
-Also, we haven't even finished all the generic bindings. I'm just
-adding bindings as I get familiar with each of them and I test them on
-hardware I have lying around before sending it out. So, there's where
-my focus is right now wrt fw_devlink and DT.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-I wonder how many of the vendor specific properties do very similar
-things and got in over time. Maybe they can be made generic? What one
-did you have in mind?
-
--Saravana
+-Doug
