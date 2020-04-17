@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8351AE581
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D611AE583
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbgDQTIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 15:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
+        id S1730207AbgDQTI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 15:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729795AbgDQTIr (ORCPT
+        by vger.kernel.org with ESMTP id S1729765AbgDQTIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Apr 2020 15:08:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7554C061A10;
-        Fri, 17 Apr 2020 12:08:45 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d27so4321861wra.1;
-        Fri, 17 Apr 2020 12:08:45 -0700 (PDT)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E009BC061A0C;
+        Fri, 17 Apr 2020 12:08:46 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t14so4234925wrw.12;
+        Fri, 17 Apr 2020 12:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RSI3Jk2pdt1qXkGfoD18aihrdmY02gauY+JtpjGwyDs=;
-        b=la2mLgGLpJ8qxjy95X3+75SpjBR1yMi9XxMPk75IXxglNUc4NBEOhJinZPVeaRQOiD
-         fUPhvso8yxqEwqZ6vObzYdnwlPe63ckCRIU7N4F5H1zsB3Ns135yfGNCSgTlE11G/kct
-         xdlcMzSZtIO4VifRYIblmz5/LkhlK4cROSqNTMrn2qsm8ZtcjdJ1y42bgT2L/dqD20ii
-         oVcCauugUAkH5vkC1FawTbsoi+ta8JsH7SzXA3u9SnCgUHYuVesScQlP73c1Xm/T8Ss2
-         AUJwQKtEa2GB0TYWwd5v+rdMV2BkV1OvdDCY/A7a1eVrQfUdtAXUKmvrCIYrm66ZKK4z
-         7kXA==
+        bh=6W8grtyB7pbKtLO6nZYSpUXrUqbnBG7Y9G7Qj2TNYYc=;
+        b=eohS/PgmixifbU4OP9qQXJdkkkFkvnj2zGyIiM+8j+RuemBqtPhzU9GuDwm66czYQ+
+         i1YhLAVCQFHqn4XlfLKAob3MWZv7PxMT40D80jRRe8gEO3T3Jg9DvohBJRz32LLhvNUl
+         vBntwB/NJF9web2wrX4R6LzzIqoeWQbKcIxQ1c22a6vmEvCGDl6M5WCdFGs88agO3IMN
+         r+7vfSTVUn4JFtHIBK0PmRanq9XpckRa3UFVckfod8hEPasvoe1WjWbK4pwfj2FC8Zhl
+         V5J6/p2/og5MOLQEZ21CisSqHRYcfkVKeUWWS3qnyizvgcUjbhelr4mtf+AyhR2mWHVK
+         DleQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RSI3Jk2pdt1qXkGfoD18aihrdmY02gauY+JtpjGwyDs=;
-        b=MDM8qh4Wc+9AnjFer0hbhUbxjDZr+Fhns8dtiZi+mzlFYsI92YAt1wF7SY1joRYBOX
-         +tkpqVdPfWxnV0KeFHmTBdef0mTUDl8h6Q0oOBNpXL9jt401Ql2vQUGSxeVyNKMJBavd
-         Ui8v6SB0HuMSKI9V7PWo6mDRtr6hhk1tUHcCxAYwHvxgUMYpD5sdupJn2pCKAb56X0iV
-         4jrW0Gk96TncRmx9eCjf/mZ9nqJwVQNTBEe4SHaM8Z++Iof/4ZRaTFWNpNZxiBQn1eOm
-         9PxlePWvpSqbM4YbOG490ma155ccQxQ0PQxWcN4G7lneNKR1eRazfSdulhICmSYDxMh7
-         VzKQ==
-X-Gm-Message-State: AGi0PuanB0CudwNGTACu5DQrKkxPM8NWc1EruSaY8IxsMnb0rgJNnCf9
-        slh4oCDQjC+50pwvB0/jl/8=
-X-Google-Smtp-Source: APiQypJ6Btsq4MlRda9I/g/tQ5dwT9eFZVWGmVrnlC8lxijrprfFMX8yvGngCxTLQBPfZfl8Pd/m1g==
-X-Received: by 2002:adf:ef01:: with SMTP id e1mr5829196wro.182.1587150524474;
-        Fri, 17 Apr 2020 12:08:44 -0700 (PDT)
+        bh=6W8grtyB7pbKtLO6nZYSpUXrUqbnBG7Y9G7Qj2TNYYc=;
+        b=Kfa7rj27RdSRbTfFdHZVmG2BgM88Xmm/tTHnrjz349jiVPLaoEU4T1WwXrXl5U2Wrg
+         /J/13DZ34FT37hNg/Rc+FfMbSviA3Gnv+1Gs/QUHnOfGmqgfmxBpWHrnuhSDG/CRKpNf
+         8s1V1d5+BnjmTh/yEFjIn9fjY2sgHYFRvI6R6Qfj5ASSzf6AK1d5ZgjhDMVwhoRyNfOB
+         jb2Q0z0wSrCL5gtWqsTb0OFtUjMbhdz72p1RAZY/gATcjGQyABu4BCNGXOu6JA3iCEUn
+         7ESQGeNAwZ4JHUb9GO8F5JRlQXQ/u9YUgCky3EO7feXUAaPMFOzJ53LskS71zhZAxWVL
+         f3Rw==
+X-Gm-Message-State: AGi0PuYFkFOwMtRSm1gloeaZxpc8cJ8aqft/E0Yxr5HubDSZQuVjvLgn
+        3N3FLkKJgn/u6aPHwRkj5JU=
+X-Google-Smtp-Source: APiQypJUOfw5uaHckCfVeIv6eCok6EoXcFAHNfbYAHfNICppRDK0dqv5ZqH3wlSqzLkRMKtX2D5vQQ==
+X-Received: by 2002:adf:c109:: with SMTP id r9mr5403450wre.265.1587150525549;
+        Fri, 17 Apr 2020 12:08:45 -0700 (PDT)
 Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id q17sm8722220wmj.45.2020.04.17.12.08.43
+        by smtp.googlemail.com with ESMTPSA id q17sm8722220wmj.45.2020.04.17.12.08.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 17 Apr 2020 12:08:44 -0700 (PDT)
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
@@ -53,9 +53,9 @@ To:     robh+dt@kernel.org, khilman@baylibre.com, narmstrong@baylibre.com,
         linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 3/4] soc: amlogic: meson-ee-pwrc: add support for Meson8/Meson8b/Meson8m2
-Date:   Fri, 17 Apr 2020 21:08:24 +0200
-Message-Id: <20200417190825.1363345-4-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 4/4] soc: amlogic: meson-ee-pwrc: add support for the Meson GX SoCs
+Date:   Fri, 17 Apr 2020 21:08:25 +0200
+Message-Id: <20200417190825.1363345-5-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200417190825.1363345-1-martin.blumenstingl@googlemail.com>
 References: <20200417190825.1363345-1-martin.blumenstingl@googlemail.com>
@@ -66,158 +66,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the power domains on Meson8/Meson8b/Meson8m2.
-Meson8 doesn't use any reset lines while Meson8b and Meson8m2 use the
-same set of reset lines (which is different from the newer SoCs).
-Add dedicated compatible strings for Meson8, Meson8b and Meson8m2 to
-support these differences.
+Add support for the Meson GX SoCs to the meson-ee-pwrc driver.
 
-Notable differences between Meson8 and G12A are:
-- there is no HHI_VPU_MEM_PD_REG2 on the 32-bit SoCs
-- the Meson8b datasheet describes an "audio DSP memory" power domain
-  which is used for the hardware audio decoder
-- the "amlogic,ao-sysctrl" only includes the power management related
-  registers on the 32-bit SoCs, meaning the for example the
-  AO_RTI_GEN_PWR_SLEEP0 register is at offset (0x2 << 2) rather than
-  (0x3a << 2). As result of this (0x38 << 2) is subtracted from the
-  register offsets, which is the start of the power management related
-  registers.
+The power domains on the GX SoCs are very similar to G12A. The only
+known differences so far are:
+- The GX SoCs do not have the HHI_VPU_MEM_PD_REG2 register (for the
+  VPU power-domain)
+- The GX SoCs have an additional reset line called "dvin"
 
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/soc/amlogic/meson-ee-pwrc.c | 72 +++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 3 deletions(-)
+ drivers/soc/amlogic/meson-ee-pwrc.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-index 3f0261d53ad9..b30868da456a 100644
+index b30868da456a..a90572cb9c82 100644
 --- a/drivers/soc/amlogic/meson-ee-pwrc.c
 +++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-@@ -14,6 +14,7 @@
- #include <linux/reset-controller.h>
- #include <linux/reset.h>
+@@ -16,6 +16,7 @@
  #include <linux/clk.h>
-+#include <dt-bindings/power/meson8-power.h>
+ #include <dt-bindings/power/meson8-power.h>
  #include <dt-bindings/power/meson-g12a-power.h>
++#include <dt-bindings/power/meson-gxbb-power.h>
  #include <dt-bindings/power/meson-sm1-power.h>
  
-@@ -22,6 +23,12 @@
- #define AO_RTI_GEN_PWR_SLEEP0		(0x3a << 2)
- #define AO_RTI_GEN_PWR_ISO0		(0x3b << 2)
+ /* AO Offsets */
+@@ -73,7 +74,7 @@ struct meson_ee_pwrc_domain_data {
  
-+/*
-+ * Meson8/Meson8b/Meson8m2 only expose the power management registers of
-+ * the AO-bus as syscon. Above register offsets need to subtract this offset.
-+ */
-+#define AO_RTI_GEN_MESON8_PMU_OFFSET	(0x38 << 2)
-+
- /* HHI Offsets */
+ /* TOP Power Domains */
  
- #define HHI_MEM_PD_REG0			(0x40 << 2)
-@@ -73,6 +80,13 @@ static struct meson_ee_pwrc_top_domain g12a_pwrc_vpu = {
- 	.iso_mask = BIT(9),
- };
- 
-+static struct meson_ee_pwrc_top_domain meson8_pwrc_vpu = {
-+	.sleep_reg = AO_RTI_GEN_PWR_SLEEP0 - AO_RTI_GEN_MESON8_PMU_OFFSET,
-+	.sleep_mask = BIT(8),
-+	.iso_reg = AO_RTI_GEN_PWR_SLEEP0 - AO_RTI_GEN_MESON8_PMU_OFFSET,
-+	.iso_mask = BIT(9),
-+};
-+
- #define SM1_EE_PD(__bit)					\
- 	{							\
- 		.sleep_reg = AO_RTI_GEN_PWR_SLEEP0, 		\
-@@ -124,10 +138,20 @@ static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_vpu[] = {
+-static struct meson_ee_pwrc_top_domain g12a_pwrc_vpu = {
++static struct meson_ee_pwrc_top_domain gxbb_pwrc_vpu = {
+ 	.sleep_reg = AO_RTI_GEN_PWR_SLEEP0,
+ 	.sleep_mask = BIT(8),
+ 	.iso_reg = AO_RTI_GEN_PWR_SLEEP0,
+@@ -138,6 +139,12 @@ static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_vpu[] = {
  	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
  };
  
--static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_eth[] = {
-+static struct meson_ee_pwrc_mem_domain meson8_pwrc_mem_eth[] = {
- 	{ HHI_MEM_PD_REG0, GENMASK(3, 2) },
- };
- 
-+static struct meson_ee_pwrc_mem_domain meson8_pwrc_audio_dsp_mem[] = {
-+	{ HHI_MEM_PD_REG0, GENMASK(1, 0) },
-+};
-+
-+static struct meson_ee_pwrc_mem_domain meson8_pwrc_mem_vpu[] = {
++static struct meson_ee_pwrc_mem_domain gxbb_pwrc_mem_vpu[] = {
 +	VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
 +	VPU_MEMPD(HHI_VPU_MEM_PD_REG1),
 +	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
 +};
 +
- static struct meson_ee_pwrc_mem_domain sm1_pwrc_mem_vpu[] = {
- 	VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
- 	VPU_MEMPD(HHI_VPU_MEM_PD_REG1),
-@@ -201,7 +225,27 @@ static bool pwrc_ee_get_power(struct meson_ee_pwrc_domain *pwrc_domain);
+ static struct meson_ee_pwrc_mem_domain meson8_pwrc_mem_eth[] = {
+ 	{ HHI_MEM_PD_REG0, GENMASK(3, 2) },
+ };
+@@ -223,11 +230,17 @@ static struct meson_ee_pwrc_mem_domain sm1_pwrc_mem_audio[] = {
+ static bool pwrc_ee_get_power(struct meson_ee_pwrc_domain *pwrc_domain);
+ 
  static struct meson_ee_pwrc_domain_desc g12a_pwrc_domains[] = {
- 	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &g12a_pwrc_vpu, g12a_pwrc_mem_vpu,
+-	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &g12a_pwrc_vpu, g12a_pwrc_mem_vpu,
++	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &gxbb_pwrc_vpu, g12a_pwrc_mem_vpu,
  				     pwrc_ee_get_power, 11, 2),
--	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", g12a_pwrc_mem_eth),
-+	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
-+};
-+
-+static struct meson_ee_pwrc_domain_desc meson8_pwrc_domains[] = {
-+	[PWRC_MESON8_VPU_ID]  = VPU_PD("VPU", &meson8_pwrc_vpu,
-+				       meson8_pwrc_mem_vpu, pwrc_ee_get_power,
-+				       0, 1),
-+	[PWRC_MESON8_ETHERNET_MEM_ID] = MEM_PD("ETHERNET_MEM",
-+						  meson8_pwrc_mem_eth),
-+	[PWRC_MESON8_AUDIO_DSP_MEM_ID] = MEM_PD("AUDIO_DSP_MEM",
-+						meson8_pwrc_audio_dsp_mem),
-+};
-+
-+static struct meson_ee_pwrc_domain_desc meson8b_pwrc_domains[] = {
-+	[PWRC_MESON8_VPU_ID]  = VPU_PD("VPU", &meson8_pwrc_vpu,
-+				       meson8_pwrc_mem_vpu, pwrc_ee_get_power,
-+				       11, 1),
-+	[PWRC_MESON8_ETHERNET_MEM_ID] = MEM_PD("ETHERNET_MEM",
-+						  meson8_pwrc_mem_eth),
-+	[PWRC_MESON8_AUDIO_DSP_MEM_ID] = MEM_PD("AUDIO_DSP_MEM",
-+						meson8_pwrc_audio_dsp_mem),
+ 	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
  };
  
- static struct meson_ee_pwrc_domain_desc sm1_pwrc_domains[] = {
-@@ -216,7 +260,7 @@ static struct meson_ee_pwrc_domain_desc sm1_pwrc_domains[] = {
- 	[PWRC_SM1_GE2D_ID] = TOP_PD("GE2D", &sm1_pwrc_ge2d, sm1_pwrc_mem_ge2d,
- 				    pwrc_ee_get_power),
- 	[PWRC_SM1_AUDIO_ID] = MEM_PD("AUDIO", sm1_pwrc_mem_audio),
--	[PWRC_SM1_ETH_ID] = MEM_PD("ETH", g12a_pwrc_mem_eth),
-+	[PWRC_SM1_ETH_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
- };
- 
- struct meson_ee_pwrc_domain {
-@@ -470,12 +514,34 @@ static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
++static struct meson_ee_pwrc_domain_desc gxbb_pwrc_domains[] = {
++	[PWRC_GXBB_VPU_ID]  = VPU_PD("VPU", &gxbb_pwrc_vpu, gxbb_pwrc_mem_vpu,
++				     pwrc_ee_get_power, 12, 2),
++	[PWRC_GXBB_ETHERNET_MEM_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
++};
++
+ static struct meson_ee_pwrc_domain_desc meson8_pwrc_domains[] = {
+ 	[PWRC_MESON8_VPU_ID]  = VPU_PD("VPU", &meson8_pwrc_vpu,
+ 				       meson8_pwrc_mem_vpu, pwrc_ee_get_power,
+@@ -514,6 +527,11 @@ static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
  	.domains = g12a_pwrc_domains,
  };
  
-+static struct meson_ee_pwrc_domain_data meson_ee_m8_pwrc_data = {
-+	.count = ARRAY_SIZE(meson8_pwrc_domains),
-+	.domains = meson8_pwrc_domains,
++static struct meson_ee_pwrc_domain_data meson_ee_gxbb_pwrc_data = {
++	.count = ARRAY_SIZE(gxbb_pwrc_domains),
++	.domains = gxbb_pwrc_domains,
 +};
 +
-+static struct meson_ee_pwrc_domain_data meson_ee_m8b_pwrc_data = {
-+	.count = ARRAY_SIZE(meson8b_pwrc_domains),
-+	.domains = meson8b_pwrc_domains,
-+};
-+
- static struct meson_ee_pwrc_domain_data meson_ee_sm1_pwrc_data = {
- 	.count = ARRAY_SIZE(sm1_pwrc_domains),
- 	.domains = sm1_pwrc_domains,
- };
- 
- static const struct of_device_id meson_ee_pwrc_match_table[] = {
+ static struct meson_ee_pwrc_domain_data meson_ee_m8_pwrc_data = {
+ 	.count = ARRAY_SIZE(meson8_pwrc_domains),
+ 	.domains = meson8_pwrc_domains,
+@@ -542,6 +560,10 @@ static const struct of_device_id meson_ee_pwrc_match_table[] = {
+ 		.compatible = "amlogic,meson8m2-pwrc",
+ 		.data = &meson_ee_m8b_pwrc_data,
+ 	},
 +	{
-+		.compatible = "amlogic,meson8-pwrc",
-+		.data = &meson_ee_m8_pwrc_data,
-+	},
-+	{
-+		.compatible = "amlogic,meson8b-pwrc",
-+		.data = &meson_ee_m8b_pwrc_data,
-+	},
-+	{
-+		.compatible = "amlogic,meson8m2-pwrc",
-+		.data = &meson_ee_m8b_pwrc_data,
++		.compatible = "amlogic,meson-gxbb-pwrc",
++		.data = &meson_ee_gxbb_pwrc_data,
 +	},
  	{
  		.compatible = "amlogic,meson-g12a-pwrc",
