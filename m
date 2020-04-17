@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F11ADD45
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570081ADD4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgDQMZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:25:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35954 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727877AbgDQMZL (ORCPT
+        id S1729095AbgDQMZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728958AbgDQMZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:25:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587126309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6SYQc5vlhk7XbIz6vBeT6lWe63ZtgKx7c9HrEfLpD3c=;
-        b=Y0FX8+rxNBDfOTW28czAyRkFFSZXdemRWyDZzdATfQdk7aooakAe9zQdRSxp/89H9DyU9f
-        vbaIPHwpr0OJSbeoUSqicnYdGwJbXCPYv1k9UvdVtiPW4dbN9M35l1Gl+sH8EvribjbLhv
-        xI1hucvAORareMfuuF5TLS+wdNMPcos=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-Gt_P8W8uPQ6ZMchoKq0_bQ-1; Fri, 17 Apr 2020 08:25:08 -0400
-X-MC-Unique: Gt_P8W8uPQ6ZMchoKq0_bQ-1
-Received: by mail-qv1-f69.google.com with SMTP id u5so2024969qvt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:25:08 -0700 (PDT)
+        Fri, 17 Apr 2020 08:25:45 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61439C061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:25:45 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id q73so757228qvq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b3iFtRhJs5VqWIfspmC5p02IfQnZ1OBoJDiilSZitow=;
+        b=Z9Ljm0d8QguBsl++bS9kVtdhIXM4iGBa3wZPoDF+/p5QDbbf+Ecx1WOeV/KWVqEAXj
+         ABy5J6+w2bDlgPY3w06H5Xmi/cS0kRvv5T8Ra6TZWtYIBGQu5I4Rx4AHl3+T2gROjJUI
+         0J0m16+FNgCJ90BwzGrj3pRV6Zus7SXB4Rjqp3UWJLn4YHfKIy4u4rXgTAeGs3KE6EUt
+         wQD9z1iG0OEn/tMOLZCt4+Kkayd7XfuvCsNuXdb4ntlg7V35JxLrywkpo+GJvWBjweCZ
+         Ep0gCRUjFRU+1N/O3lHk6ytDkXA+SH1mGrPuTDCuKZHiafjG1shCNAuJ0aW6sHAig3B0
+         xd2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6SYQc5vlhk7XbIz6vBeT6lWe63ZtgKx7c9HrEfLpD3c=;
-        b=T33a59It2KTOTInN6gV6XZ5yqvv3VJWdeZvBw4QGxsFpuU6qzzXFL887D3J8LGAi7X
-         2tVqMgYe7lxThX2MHwPYcQtfLqhDHXsA+a9HVXGOlQb1uTcYmL/uvLjAe1Lcagshbqjw
-         dLD1wwoSlpioOTXu1oXzB+GsUyd/3yt95lPSTiHOvLMFUfff8kjB405LNfh83cCutn8q
-         sdQZqt754KutrMePiGr0XW1jGxipmWWJXv/3Z6gqV0dMvnEP791x0hOniBodFey5P+RS
-         H8u3Fs01Pmj1TYSE8biHLhLJJthx9tLZLYX7zubNK2hhNy7e5K9p2okgi7J8CYt4t52V
-         rVSA==
-X-Gm-Message-State: AGi0PuauZbNkrgVYXXCko6xRkr347udTZlwJfRjux81r+veBXSzHV+6c
-        LLuOOoUy0XFaOmvmLCAwTagHoIv/+CpMFh8WS8lFC+IWvBO/ughYWpLEG7KqGlxfH5cnyUF0hf6
-        gDnf7UquuJJo9V4eVyJX8FWov6YDNbKAK3VHV6i7h
-X-Received: by 2002:a37:7786:: with SMTP id s128mr2986057qkc.497.1587126307608;
-        Fri, 17 Apr 2020 05:25:07 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKBfWZGJeymkb2lYpO2MfszDQFTMR0yiJ30RKxU2YF4NbhBMAq5PZqSKtDRB05J3D3z30Fv7G/YFuiyJNOVrTM=
-X-Received: by 2002:a37:7786:: with SMTP id s128mr2986028qkc.497.1587126307322;
- Fri, 17 Apr 2020 05:25:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b3iFtRhJs5VqWIfspmC5p02IfQnZ1OBoJDiilSZitow=;
+        b=jfFpmLi4AK32yKP6DfIbaQA4sONVG2MShj+TnumPiNp3PC0w0DOkv/oWdy24JQ1Q1W
+         vdw91v7XJBWT2hrB7W9dvXLmB9sfOVx/BhCyDlYTmw55qf52qaSUrOxdLefrLpmqdvOH
+         GccZ8lPfidLucErKu80b1zrTntmNvatDrUjN/AR2sLmzxKq8IMpQ8lcUFJ5B3k/vnffT
+         2vkVxdbnNpGAxnbEYN7X7QSKj4z0w1xqU/ZbeEENvvKZ+Dl14o3NAUtXnoxrpSXkezol
+         swx6i1PrNl5nnTRSyRH4+Qn9MaGb2AXKpAbGRUuXS/nWCbOz40YW7Icu1jZx+r5HwthV
+         IQJw==
+X-Gm-Message-State: AGi0Pua3gT/OH+/hgixIC4XcWA2AIE+6mxv0wXICE5unmtbrHeskBPLz
+        pnsFo/Kb23HtbYDWl2opFzt10Q==
+X-Google-Smtp-Source: APiQypKRejHQkO6SPjqQHCzSrXkoqY5ngsJkDP3GjBxzcNqfAerdMXzQrgdeW6YJO40tzYBCUCmAeQ==
+X-Received: by 2002:ad4:4c4d:: with SMTP id cs13mr2347165qvb.207.1587126344506;
+        Fri, 17 Apr 2020 05:25:44 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id k2sm17252465qte.16.2020.04.17.05.25.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Apr 2020 05:25:43 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jPQ3y-0006eb-6h; Fri, 17 Apr 2020 09:25:42 -0300
+Date:   Fri, 17 Apr 2020 09:25:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>, g@ziepe.ca
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
+Message-ID: <20200417122542.GC5100@ziepe.ca>
+References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
+ <20200414183441.GA28870@ziepe.ca>
+ <20200416130847.GP1163@kadam>
+ <20200416184754.GZ5100@ziepe.ca>
+ <20200417112624.GS1163@kadam>
 MIME-Version: 1.0
-References: <20200416075643.27330-1-eperezma@redhat.com> <20200416075643.27330-6-eperezma@redhat.com>
- <20200416183244-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20200416183244-mutt-send-email-mst@kernel.org>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Fri, 17 Apr 2020 14:24:31 +0200
-Message-ID: <CAJaqyWcuxG03+J+BW=fPb=JFKLPi0h5sRGv9cjWv63eyspS4Qg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] tools/virtio: Use __vring_new_virtqueue in virtio_test.c
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417112624.GS1163@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 12:33 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Thu, Apr 16, 2020 at 09:56:40AM +0200, Eugenio P=C3=A9rez wrote:
-> > As updated in ("2a2d1382fe9d virtio: Add improved queue allocation API"=
-)
-> >
-> > Signed-off-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
->
-> Pls add motivation for these changes.
->
+On Fri, Apr 17, 2020 at 02:26:24PM +0300, Dan Carpenter wrote:
+> On Thu, Apr 16, 2020 at 03:47:54PM -0300, Jason Gunthorpe wrote:
+> > On Thu, Apr 16, 2020 at 04:08:47PM +0300, Dan Carpenter wrote:
+> > > On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
+> > > > The memcpy is still kind of silly right? What about this:
+> > > > 
+> > > > static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
+> > > > {
+> > > > 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
+> > > > 	int cpy_len;
+> > > > 
+> > > > 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
+> > > > 	if (cpy_len >= len || cpy_len < 0) {
+> > > 
+> > > The kernel version of snprintf() doesn't and will never return
+> > > negatives.  It would cause a huge security headache if it started
+> > > returning negatives.
+> > 
+> > Begs the question why it returns an int then :)
+> 
+> People should use "int" as their default type.  "int i;".  It means
+> "This is a normal number.  Nothing special about it.  It's not too high.
+> It's not defined by hardware requirements."  Other types call attention
+> to themselves, but int is the humble datatype.
 
-The original motivation was to make code as close as possible to
-virtio_net. Also, it skips a (probably not expensive) initialization
-in vring_new_virtqueue.
+No, I strongly disagree with this, it is one of my pet peeves to see
+'int' being used for data which is known to be only ever be positive
+just to save typing 'unsigned'.
 
-With the recent events, I think that this could be useful to test when
-userspace and kernel use different struct layout, maybe with some
-sanitizer. I can drop it if you don't see it the same way (or if I
-didn't understand the problem and this does not help).
+Not only is it confusing, but allowing signed values has caused tricky
+security bugs, unfortuntely.
 
-Thanks!
-
-> > ---
-> >  tools/virtio/virtio_test.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
-> > index 1d5144590df6..d9827b640c21 100644
-> > --- a/tools/virtio/virtio_test.c
-> > +++ b/tools/virtio/virtio_test.c
-> > @@ -106,10 +106,9 @@ static void vq_info_add(struct vdev_info *dev, int=
- num)
-> >       assert(r >=3D 0);
-> >       memset(info->ring, 0, vring_legacy_size(num, 4096));
-> >       vring_legacy_init(&info->vring, num, info->ring, 4096);
-> > -     info->vq =3D vring_new_virtqueue(info->idx,
-> > -                                    info->vring.num, 4096, &dev->vdev,
-> > -                                    true, false, info->ring,
-> > -                                    vq_notify, vq_callback, "test");
-> > +     info->vq =3D
-> > +             __vring_new_virtqueue(info->idx, info->vring, &dev->vdev,=
- true,
-> > +                                   false, vq_notify, vq_callback, "tes=
-t");
-> >       assert(info->vq);
-> >       info->vq->priv =3D info;
-> >       vhost_vq_setup(dev, info);
-> > --
-> > 2.18.1
->
-
+Jason
