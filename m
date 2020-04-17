@@ -2,66 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DA51AD77D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6801AD70B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 09:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgDQHfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 03:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729017AbgDQHfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:35:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCDDC061A0C;
-        Fri, 17 Apr 2020 00:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DdP3H169eV2IavVQf/9gs/bbd8L/xKwiCNv9vSMdxK4=; b=bGSZQAFJDJ/MCm5VUi8/qe5aEZ
-        2BliRBR3H2ALwBicpgBWjJiUZ931UFHzyU/0xJum2/jmFrLsPDipN3kUY5QByQo6I8UMQsNiOcQeq
-        0hxr2eG6l4elNqjKA15ulu+DT8T0R+0nUHqRFsWZO9Hx+bOaW51u3ZDWbk5xxBJNVAra6CyfLMOef
-        BSZtIwZqYyA2rWbX436N7g6IpYviu22S2h8n/6ylptcKbbPEbeSbW7ZWXS/vX+TOTLj7cfAoTup+V
-        6fOHLPx5hY49kdUfPBnKdX/iaZzjR3JnrvG5lNpKAFdlvoQjdFVzcpwADZJNDKOyIJwTs9/bptNGu
-        tQuSZm6g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPLWp-0005ew-G8; Fri, 17 Apr 2020 07:35:11 +0000
-Date:   Fri, 17 Apr 2020 00:35:11 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Max Kellermann <mk@cm4all.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        trond.myklebust@hammerspace.com, bfields@redhat.com, tytso@mit.edu,
-        viro@zeniv.linux.org.uk, agruenba@redhat.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] fs/posix_acl: apply umask if superblock disables
- ACL support
-Message-ID: <20200417073511.GA598@infradead.org>
-References: <20200407142243.2032-1-mk@cm4all.com>
+        id S1728805AbgDQHI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 03:08:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2390 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728375AbgDQHI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:08:58 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 2B8BD1AB94DE7EDF6FDF;
+        Fri, 17 Apr 2020 15:08:52 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 15:08:46 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <linus.walleij@linaro.org>, <stephan@gerhold.net>,
+        <yanaijie@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] pinctrl: nomadik: db8500: remove some unused symbols
+Date:   Fri, 17 Apr 2020 15:35:12 +0800
+Message-ID: <20200417073512.42350-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407142243.2032-1-mk@cm4all.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 04:22:40PM +0200, Max Kellermann wrote:
->  
-> -	if (S_ISLNK(*mode) || !IS_POSIXACL(dir))
-> +	if (S_ISLNK(*mode))
->  		return 0;
->  
-> +	if (!IS_POSIXACL(dir)) {
-> +		*mode &= ~current_umask();
-> +		return 0;
-> +	}
-> +
+Fix the following gcc warning:
 
-I think the first hunk is obviously correct, but I don't think we need
-the second one, as the handling of the get_acl() eturn value should do
-the right thing.  If you want to optimize it a bit, it might be worth to
-move the !IS_POSIXACL check in get_acl to the top of the function,
-before checking the cached ACL.
+drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c:899:20: warning:
+‘sbag_groups’ defined but not used [-Wunused-const-variable=]
+ DB8500_FUNC_GROUPS(sbag, "sbag_oc2_1", "sbag_oc4_1");
+                    ^
+drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c:570:23: warning:
+‘ipgpio6_c_2_pins’ defined but not used [-Wunused-const-variable=]
+ static const unsigned ipgpio6_c_2_pins[] = { DB8500_PIN_G3 };
+                       ^~~~~~~~~~~~~~~~
+drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c:472:23: warning:
+‘mc1dir_a_1_pins’ defined but not used [-Wunused-const-variable=]
+ static const unsigned mc1dir_a_1_pins[] = { DB8500_PIN_AH13,
+DB8500_PIN_AG12,
+                       ^~~~~~~~~~~~~~~
+drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c:453:23: warning:
+‘modem_a_1_pins’ defined but not used [-Wunused-const-variable=]
+ static const unsigned modem_a_1_pins[] = { DB8500_PIN_D22,
+DB8500_PIN_C23,
+                       ^~~~~~~~~~~~~~
+drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c:430:23: warning:
+‘kpskaskb_a_1_pins’ defined but not used [-Wunused-const-variable=]
+ static const unsigned kpskaskb_a_1_pins[] = { DB8500_PIN_D17,
+DB8500_PIN_D16 };
+                       ^~~~~~~~~~~~~~~~~
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c b/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c
+index b9246e0b4fe2..0bba16dadb45 100644
+--- a/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c
++++ b/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c
+@@ -427,7 +427,6 @@ static const unsigned lcd_d12_d23_a_1_pins[] = {
+ 	DB8500_PIN_A3, DB8500_PIN_B6, DB8500_PIN_D6, DB8500_PIN_B7 };
+ static const unsigned kp_a_1_pins[] = { DB8500_PIN_D7, DB8500_PIN_E8,
+ 	DB8500_PIN_D8, DB8500_PIN_D9 };
+-static const unsigned kpskaskb_a_1_pins[] = { DB8500_PIN_D17, DB8500_PIN_D16 };
+ static const unsigned kp_a_2_pins[] = {
+ 	DB8500_PIN_B17, DB8500_PIN_C16, DB8500_PIN_C19, DB8500_PIN_C17,
+ 	DB8500_PIN_A18, DB8500_PIN_C18, DB8500_PIN_B19, DB8500_PIN_B20,
+@@ -449,9 +448,6 @@ static const unsigned i2c0_a_1_pins[] = { DB8500_PIN_C15, DB8500_PIN_B16 };
+  */
+ static const unsigned ipgpio0_a_1_pins[] = { DB8500_PIN_B14 };
+ static const unsigned ipgpio1_a_1_pins[] = { DB8500_PIN_C14 };
+-/* Three modem pins named RF_PURn, MODEM_STATE and MODEM_PWREN */
+-static const unsigned modem_a_1_pins[] = { DB8500_PIN_D22, DB8500_PIN_C23,
+-					   DB8500_PIN_D23 };
+ /*
+  * This MSP cannot switch RX and TX, SCK in a separate group since this
+  * seems to be optional.
+@@ -469,8 +465,6 @@ static const unsigned mc1_a_1_pins[] = { DB8500_PIN_AH16, DB8500_PIN_AG15,
+ 	DB8500_PIN_AH15 };
+ static const unsigned mc1_a_2_pins[] = { DB8500_PIN_AH16, DB8500_PIN_AJ15,
+ 	DB8500_PIN_AG14, DB8500_PIN_AF13, DB8500_PIN_AG13, DB8500_PIN_AH15 };
+-static const unsigned mc1dir_a_1_pins[] = { DB8500_PIN_AH13, DB8500_PIN_AG12,
+-	DB8500_PIN_AH12, DB8500_PIN_AH11 };
+ static const unsigned hsir_a_1_pins[] = { DB8500_PIN_AG10, DB8500_PIN_AH10,
+ 	DB8500_PIN_AJ11 };
+ static const unsigned hsit_a_1_pins[] = { DB8500_PIN_AJ9, DB8500_PIN_AH9,
+@@ -567,7 +561,6 @@ static const unsigned u0_c_1_pins[] = { DB8500_PIN_AF2, DB8500_PIN_AE1,
+ 					DB8500_PIN_AE2, DB8500_PIN_AG2 };
+ static const unsigned ipgpio4_c_1_pins[] = { DB8500_PIN_F3 };
+ static const unsigned ipgpio5_c_1_pins[] = { DB8500_PIN_F1 };
+-static const unsigned ipgpio6_c_2_pins[] = { DB8500_PIN_G3 };
+ static const unsigned ipgpio7_c_1_pins[] = { DB8500_PIN_G2 };
+ static const unsigned smcleale_c_1_pins[] = { DB8500_PIN_E1, DB8500_PIN_E2 };
+ static const unsigned stmape_c_1_pins[] = { DB8500_PIN_G5, DB8500_PIN_G4,
+@@ -896,7 +889,6 @@ DB8500_FUNC_GROUPS(i2c3, "i2c3_c_1", "i2c3_c_2");
+ DB8500_FUNC_GROUPS(spi0, "spi0_c_1");
+ DB8500_FUNC_GROUPS(spi2, "spi2_oc1_1", "spi2_oc1_2");
+ DB8500_FUNC_GROUPS(remap, "remap0_oc1_1", "remap1_oc1_1");
+-DB8500_FUNC_GROUPS(sbag, "sbag_oc2_1", "sbag_oc4_1");
+ DB8500_FUNC_GROUPS(ptm, "ptma9_oc1_1", "ptma9_oc2_1");
+ DB8500_FUNC_GROUPS(rf, "rf_oc1_1", "rf_oc1_2");
+ DB8500_FUNC_GROUPS(hx, "hxclk_oc1_1", "hxgpio_oc1_1");
+-- 
+2.21.1
+
