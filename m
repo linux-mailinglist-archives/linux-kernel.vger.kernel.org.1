@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B48A1ADCE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710031ADCD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 14:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgDQMHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 08:07:03 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41036 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgDQMHC (ORCPT
+        id S1730571AbgDQMDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 08:03:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38692 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728196AbgDQMDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:07:02 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03HC6hnv000596;
-        Fri, 17 Apr 2020 07:06:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587125203;
-        bh=EzH3YxuoL3K+W9EnJg8cY1fwb5eXAbwJZcryLRdN1Y8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vJucq13R7ulppcwNJZG0rFJc2a35ib1Y353Veb0NlAjhcxlHtKfBKUGLfG7S+2wtR
-         WB3/wcWP/LPVxVOC7rjdn3ZQwqrITu20Ckp0Q2Ia34VFAWTYhvCNKbYR6BGTXX4yN6
-         6vAeMgiaa0U6Ob5YKwGxRDcXF0VBD0NA1SjMM5Cc=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03HC6hPk111509
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Apr 2020 07:06:43 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 17
- Apr 2020 07:06:43 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 17 Apr 2020 07:06:43 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03HC6g4x072420;
-        Fri, 17 Apr 2020 07:06:42 -0500
-Subject: Re: [PATCH] can: tcan4x5x: Replace depends on REGMAP_SPI with depends
- on SPI
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Collabora Kernel ML <kernel@collabora.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <20200413141013.506613-1-enric.balletbo@collabora.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <fd411219-f528-683c-ab39-1786a99c392b@ti.com>
-Date:   Fri, 17 Apr 2020 07:00:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 08:03:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587125024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2HiKgLpGjG4i07nP9rVsSUNxw62w4Q5rV6+Enm1/11o=;
+        b=MU8ylut7j/bl/1zbu0NDOsICy4poyZMQBcbXrtJyMnlo+OwB+36kyfdYhD0xxdW+U5MulN
+        f3BNEh1HDoq4OAwd0HT1y4G/D+VvHLgAxxoG+73ri3tDYy78itsm+acwmsHFLM9GRxiJPN
+        +fY3r7XJr0ICq6ZGxPwD+oLyf4YnhYI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-hxsygC2APFiTZQlqw2RsaQ-1; Fri, 17 Apr 2020 08:03:42 -0400
+X-MC-Unique: hxsygC2APFiTZQlqw2RsaQ-1
+Received: by mail-wm1-f70.google.com with SMTP id y1so857142wmj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 05:03:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=2HiKgLpGjG4i07nP9rVsSUNxw62w4Q5rV6+Enm1/11o=;
+        b=WyMNb085mBJMiW5KXCdeWrzuyfK3uk95i0t+uaDOaeiGPWucv/sI+0RxpGYxHZsCgE
+         zePNvnX1oxtp8aB0RuBypgVGkE/d6Nm/dIAYgjRmLR/wesifAmot3RCZtYaNhQtRph7c
+         qN00pVlIA18djnwgtA35F2RTKvaGw1ioUCt5SWOlVjOmxh8x/SP5yGo6FLpjJhdyQTr2
+         rwV0DTcf/0wpUtK6/8Kb0pi9kuDV6FRDRY7aVh6yobVx8a3wocEUaSSIRECJjc6Ierhl
+         BfD26V1IwAkUXh7aXSCcU9SZ5D0xNchjF+b4Ki/l03F3qZoFwQHI0UoBWX6nfNxYthwI
+         nfWw==
+X-Gm-Message-State: AGi0Puavv8BJgYYUO2Zm6L8n1DyRza9LM/Bj92JP9J0Ud6/6UFCaDzeY
+        fAiKA6jVby/nkqxExw7kZMNo4DLjy5NtiEy38bUZrpqEARKhwdJWPmJXN0bb+WSJc8H1Jb/sd5S
+        z3NVsbL/KAo+dHyoWGpancNFT
+X-Received: by 2002:a5d:6785:: with SMTP id v5mr3410276wru.376.1587125021300;
+        Fri, 17 Apr 2020 05:03:41 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJZMS5NEiNrai0mI6AMbtXgPZDaZhTg25gyTNcbiTpAwqbWLD1UsuLFebcZ5vd8dvU/UoiDZg==
+X-Received: by 2002:a5d:6785:: with SMTP id v5mr3410255wru.376.1587125021043;
+        Fri, 17 Apr 2020 05:03:41 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c190sm7668458wme.10.2020.04.17.05.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 05:03:40 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Dexuan Cui <decui@microsoft.com>, bp@alien8.de,
+        haiyangz@microsoft.com, hpa@zytor.com, kys@microsoft.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, sthemmin@microsoft.com, tglx@linutronix.de,
+        x86@kernel.org, mikelley@microsoft.com, wei.liu@kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] x86/hyperv: Suspend/resume the VP assist page for hibernation
+In-Reply-To: <20200417105558.2jkqq2lih6vvoip2@debian>
+References: <1587104999-28927-1-git-send-email-decui@microsoft.com> <87blnqv389.fsf@vitty.brq.redhat.com> <20200417105558.2jkqq2lih6vvoip2@debian>
+Date:   Fri, 17 Apr 2020 14:03:38 +0200
+Message-ID: <87wo6etj39.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200413141013.506613-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enric
+Wei Liu <wei.liu@kernel.org> writes:
 
-On 4/13/20 9:10 AM, Enric Balletbo i Serra wrote:
-> regmap is a library function that gets selected by drivers that need
-> it. No driver modules should depend on it. Instead depends on SPI and
-> select REGMAP_SPI. Depending on REGMAP_SPI makes this driver only build
-> if another driver already selected REGMAP_SPI, as the symbol can't be
-> selected through the menu kernel configuration.
+> On Fri, Apr 17, 2020 at 12:03:18PM +0200, Vitaly Kuznetsov wrote:
+>> Dexuan Cui <decui@microsoft.com> writes:
+>> 
+>> > Unlike the other CPUs, CPU0 is never offlined during hibernation. So in the
+>> > resume path, the "new" kernel's VP assist page is not suspended (i.e.
+>> > disabled), and later when we jump to the "old" kernel, the page is not
+>> > properly re-enabled for CPU0 with the allocated page from the old kernel.
+>> >
+>> > So far, the VP assist page is only used by hv_apic_eoi_write().
+>> 
+>> No, not only for that ('git grep hv_get_vp_assist_page')
+>> 
+>> KVM on Hyper-V also needs VP assist page to use Enlightened VMCS. In
+>> particular, Enlightened VMPTR is written there.
+>> 
+>> This makes me wonder: how does hibernation work with KVM in case we use
+>> Enlightened VMCS and we have VMs running? We need to make sure VP Assist
+>> page content is preserved.
 >
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
+> The page itself is preserved, isn't it?
 >
->   drivers/net/can/m_can/Kconfig | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
-> index 1ff0b7fe81d6..c10932a7f1fe 100644
-> --- a/drivers/net/can/m_can/Kconfig
-> +++ b/drivers/net/can/m_can/Kconfig
-> @@ -16,7 +16,8 @@ config CAN_M_CAN_PLATFORM
->   
->   config CAN_M_CAN_TCAN4X5X
->   	depends on CAN_M_CAN
-> -	depends on REGMAP_SPI
-> +	depends on SPI
-> +	select REGMAP_SPI
->   	tristate "TCAN4X5X M_CAN device"
->   	---help---
->   	  Say Y here if you want support for Texas Instruments TCAN4x5x
 
+Right, unlike hyperv_pcpu_input_arg is is not freed.
 
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
+> hv_cpu_die never frees the vp_assit page. It merely disables it.
+> hv_cpu_init only allocates a new page if necessary.
+
+I'm not really sure that Hyper-V will like us when we disable VP Assist
+page and have an active L2 guest using Enlightened VMCS, who knows what
+it caches and when. I'll try to at least test if/how it works.
+
+This all is not really related to Dexuan's patch)
+
+-- 
+Vitaly
 
