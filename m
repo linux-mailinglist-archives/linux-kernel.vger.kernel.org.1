@@ -2,212 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275BC1ADF1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB23D1ADF5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730892AbgDQOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:05:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45561 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730822AbgDQOE6 (ORCPT
+        id S1731128AbgDQOGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:06:25 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:43151 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731096AbgDQOGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:04:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587132296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MNISYHpWx/0HODC3Vtx7BKAowFOWtET5Nxr9OS9I4fM=;
-        b=S1zWMAYdkDyFcXn9xEwMfGs9yRMOuhkZG/q42QAIYjPtwD1MldvxCGNw7QEinbofDOPfDC
-        Jp0ULHSIQNs7niXvOTdUDYBXa23XAePUT8mgq+DVjgn4AEohMVdsVtCqMOpqYjeyiqt96+
-        bgxZ2AZZqlDXbVSMmSkrIIe9yo7albU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-jJKImwcyMlSmZilNIaLILw-1; Fri, 17 Apr 2020 10:04:53 -0400
-X-MC-Unique: jJKImwcyMlSmZilNIaLILw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 17 Apr 2020 10:06:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587132378; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=1DdyajtFurpxbyCR4wGHoNLC1QfsSNvY7qxM3ZQmJH0=; b=Su1vmz6PECbTsnF4yxdVRTZRThONOSQVWrHAImqDeOZTVb3NV2s0ZcCgYV5TUBPIxMxUs9nM
+ W1iaja/oO1bf18kr6XG8VeD5IzvNL12Pu3tuPWIRimFQn4EO0fAhD8GwtX5Wgxv39NlaelwO
+ bNtsu9+fZeDWR7buMrEoqg7QXlM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e99b7cd.7f7bb57c2228-smtp-out-n05;
+ Fri, 17 Apr 2020 14:06:05 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24874C38569; Fri, 17 Apr 2020 14:06:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08AE6107B285;
-        Fri, 17 Apr 2020 14:04:52 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4516F5C1C5;
-        Fri, 17 Apr 2020 14:04:51 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>, x86@kernel.org
-Subject: [PATCH v2 7/9] x86/module: Use text_poke() for late relocations
-Date:   Fri, 17 Apr 2020 09:04:32 -0500
-Message-Id: <572b12b6adcdab29c54cfd41ca8b4672abad628c.1587131959.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1587131959.git.jpoimboe@redhat.com>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7005C49493;
+        Fri, 17 Apr 2020 14:05:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E7005C49493
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 11/17] arm64: dts: sc7180: Add sdhc opps and power-domains
+Date:   Fri, 17 Apr 2020 19:34:33 +0530
+Message-Id: <1587132279-27659-12-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
+References: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Add the power domain supporting performance state and the corresponding
+OPP tables for the sdhc device on sdm845.
 
-Because of late module patching, a livepatch module needs to be able to
-apply some of its relocations well after it has been loaded.  Instead of
-playing games with module_{dis,en}able_ro(), use existing text poking
-mechanisms to apply relocations after module loading.
-
-So far only x86, s390 and Power have HAVE_LIVEPATCH but only the first
-two also have STRICT_MODULE_RWX.
-
-This will allow removal of the last module_disable_ro() usage in
-livepatch.  The ultimate goal is to completely disallow making
-executable mappings writable.
-
-Also, for the late patching case, use text_mutex, which is supposed to
-be held for all runtime text patching operations.
-
-[ jpoimboe: Split up patches.  Use mod state to determine whether
-	    memcpy() can be used.  Implement text_poke() for UML.  Add
-	    text_mutex. ]
-
-Cc: x86@kernel.org
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 ---
- arch/um/kernel/um_arch.c | 16 +++++++++++++++
- arch/x86/kernel/module.c | 43 +++++++++++++++++++++++++++++++++-------
- 2 files changed, 52 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 0f40eccbd759..375ab720e4aa 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -362,3 +362,19 @@ void __init check_bugs(void)
- void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
- {
- }
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index db5b3b3..bcd0e6f 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -390,6 +390,20 @@
+ 			};
+ 		};
+ 
++		sdhc1_opp_table: sdhc1-opp-table {
++			compatible = "operating-points-v2";
 +
-+void *text_poke(void *addr, const void *opcode, size_t len)
-+{
-+	/*
-+	 * In UML, the only reference to this function is in
-+	 * apply_relocate_add(), which shouldn't ever actually call this
-+	 * because UML doesn't have live patching.
-+	 */
-+	WARN_ON(1);
++			opp-100000000 {
++				opp-hz = /bits/ 64 <100000000>;
++				required-opps = <&rpmhpd_opp_low_svs>;
++			};
 +
-+	return memcpy(addr, opcode, len);
-+}
++			opp-384000000 {
++				opp-hz = /bits/ 64 <384000000>;
++				required-opps = <&rpmhpd_opp_svs_l1>;
++			};
++		};
 +
-+void text_poke_sync(void)
-+{
-+}
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index d5c72cb877b3..2a997afa04c6 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -18,6 +18,7 @@
- #include <linux/gfp.h>
- #include <linux/jump_label.h>
- #include <linux/random.h>
-+#include <linux/memory.h>
-=20
- #include <asm/text-patching.h>
- #include <asm/page.h>
-@@ -126,11 +127,12 @@ int apply_relocate(Elf32_Shdr *sechdrs,
- 	return 0;
- }
- #else /*X86_64*/
--int apply_relocate_add(Elf64_Shdr *sechdrs,
-+static int __apply_relocate_add(Elf64_Shdr *sechdrs,
- 		   const char *strtab,
- 		   unsigned int symindex,
- 		   unsigned int relsec,
--		   struct module *me)
-+		   struct module *me,
-+		   void *(*write)(void *dest, const void *src, size_t len))
- {
- 	unsigned int i;
- 	Elf64_Rela *rel =3D (void *)sechdrs[relsec].sh_addr;
-@@ -162,19 +164,19 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
- 		case R_X86_64_64:
- 			if (*(u64 *)loc !=3D 0)
- 				goto invalid_relocation;
--			*(u64 *)loc =3D val;
-+			write(loc, &val, 8);
- 			break;
- 		case R_X86_64_32:
- 			if (*(u32 *)loc !=3D 0)
- 				goto invalid_relocation;
--			*(u32 *)loc =3D val;
-+			write(loc, &val, 4);
- 			if (val !=3D *(u32 *)loc)
- 				goto overflow;
- 			break;
- 		case R_X86_64_32S:
- 			if (*(s32 *)loc !=3D 0)
- 				goto invalid_relocation;
--			*(s32 *)loc =3D val;
-+			write(loc, &val, 4);
- 			if ((s64)val !=3D *(s32 *)loc)
- 				goto overflow;
- 			break;
-@@ -183,7 +185,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
- 			if (*(u32 *)loc !=3D 0)
- 				goto invalid_relocation;
- 			val -=3D (u64)loc;
--			*(u32 *)loc =3D val;
-+			write(loc, &val, 4);
- #if 0
- 			if ((s64)val !=3D *(s32 *)loc)
- 				goto overflow;
-@@ -193,7 +195,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
- 			if (*(u64 *)loc !=3D 0)
- 				goto invalid_relocation;
- 			val -=3D (u64)loc;
--			*(u64 *)loc =3D val;
-+			write(loc, &val, 8);
- 			break;
- 		default:
- 			pr_err("%s: Unknown rela relocation: %llu\n",
-@@ -215,6 +217,33 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
- 	       me->name);
- 	return -ENOEXEC;
- }
-+
-+int apply_relocate_add(Elf64_Shdr *sechdrs,
-+		   const char *strtab,
-+		   unsigned int symindex,
-+		   unsigned int relsec,
-+		   struct module *me)
-+{
-+	int ret;
-+	bool early =3D me->state =3D=3D MODULE_STATE_UNFORMED;
-+	void *(*write)(void *, const void *, size_t) =3D memcpy;
-+
-+	if (!early) {
-+		write =3D text_poke;
-+		mutex_lock(&text_mutex);
-+	}
-+
-+	ret =3D __apply_relocate_add(sechdrs, strtab, symindex, relsec, me,
-+				   write);
-+
-+	if (!early) {
-+		mutex_unlock(&text_mutex);
-+		text_poke_sync();
-+	}
-+
-+	return ret;
-+}
-+
- #endif
-=20
- int module_finalize(const Elf_Ehdr *hdr,
---=20
-2.21.1
-
+ 		sdhc_1: sdhci@7c4000 {
+ 			compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
+ 			reg = <0 0x7c4000 0 0x1000>,
+@@ -404,6 +418,8 @@
+ 			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+ 					<&gcc GCC_SDCC1_AHB_CLK>;
+ 			clock-names = "core", "iface";
++			power-domains = <&rpmhpd SC7180_CX>;
++			operating-points-v2 = <&sdhc1_opp_table>;
+ 
+ 			bus-width = <8>;
+ 			non-removable;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
