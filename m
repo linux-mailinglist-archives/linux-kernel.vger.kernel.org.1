@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816391ADABF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCA11ADAC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgDQKMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725830AbgDQKMS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:12:18 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14EEC061A0C;
-        Fri, 17 Apr 2020 03:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=9eD/KNTKzmFdSU+cGBntMJsUHhw1OUvboBhI7LiIfIs=; b=0C+PvN75fAzrOEtsQ6MiuBzLB
-        ohWDvlGZYh259QQ+36dH9o2fzzYNLQGj/t1g89c9dbzP+S4JTYJkgiCujy6kCMLYEXsrrvXS0fB3w
-        X0n5sd8X214JIWdit8+t3K8nNGKgcVm/7jdQhpAgl0bL8RhvwShRYiDQX4B6cvvbgjFGCpzYrFzZG
-        tJiNQr8x1VdT50+5Ls/UISRFVtHJV/qhbN6tInck3WGRB5QGoVZmCmqeE6okkWrHu8ZYeXontZX2w
-        tpa+OSHIXsOOHQPfQgkx0Nxwp8hxyE73f0q1OTGrjHbXlCG64UjwpZ6JzYMbUSblCxSzijAjHfY+H
-        r9uM3lYFw==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:39596)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jPNyR-0001PV-1S; Fri, 17 Apr 2020 11:11:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jPNyM-0002nx-0L; Fri, 17 Apr 2020 11:11:46 +0100
-Date:   Fri, 17 Apr 2020 11:11:45 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        mkl@pengutronix.de
-Subject: Re: [PATCH v1] ethtool: provide UAPI for PHY master/slave
- configuration.
-Message-ID: <20200417101145.GP25745@shell.armlinux.org.uk>
-References: <20200415121209.12197-1-o.rempel@pengutronix.de>
- <20200415215739.GI657811@lunn.ch>
+        id S1728911AbgDQKNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:13:43 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2350 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728200AbgDQKNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:13:42 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6C24975D03EC80580986;
+        Fri, 17 Apr 2020 18:13:41 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 18:13:31 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] drm/amd/dc: remove unused variable 'video_optimized_pixel_rates'
+Date:   Fri, 17 Apr 2020 18:12:47 +0800
+Message-ID: <20200417101247.45616-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415215739.GI657811@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:57:39PM +0200, Andrew Lunn wrote:
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index c8b0c34030d32..d5edf2bc40e43 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -604,6 +604,7 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
-> >  	dev->asym_pause = 0;
-> >  	dev->link = 0;
-> >  	dev->interface = PHY_INTERFACE_MODE_GMII;
-> > +	dev->master_slave = PORT_MODE_UNKNOWN;
-> 
-> phydev->master_slave is how we want the PHY to be configured. I don't
-> think PORT_MODE_UNKNOWN makes any sense in that contest. 802.3 gives
-> some defaults. 9.12 should be 0, meaning manual master/slave
-> configuration is disabled. The majority of linux devices are end
-> systems. So we should default to a single point device. So i would
-> initialise PORT_MODE_SLAVE, or whatever we end up calling that.
+drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_clock_source.c:1017:50:
+ warning: ‘video_optimized_pixel_rates’ defined but not used [-Wunused-const-variable=]
+ static const struct pixel_rate_range_table_entry video_optimized_pixel_rates[] = {
+                                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I'm not sure that is a good idea given that we use phylib to drive
-the built-in PHYs in DSA switches, which ought to prefer master mode
-via the "is a multiport device" bit.
+commit d8cd587d2bfd ("drm/amd/display: removing MODULO change for dcn2")
+left behind this unused vairable, remove it.
 
-Just to be clear, there are three bits that configure 1G PHYs, which
-I've framed in briefer terminology:
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ .../drm/amd/display/dc/dce/dce_clock_source.c | 33 -------------------
+ 1 file changed, 33 deletions(-)
 
-- 9.12: auto/manual configuration (1= manual 0= slave)
-- 9.11: manual master/slave configuration (1= master, 0 = slave)
-- 9.10: auto master/slave preference (1= multiport / master)
-
-It is recommended that multiport devices (such as DSA switches) set
-9.10 so they prefer to be master.
-
-It's likely that the reason is to reduce cross-talk interference
-between neighbouring ports both inside the PHY, magnetics and the
-board itself. I would suspect that this becomes critical when
-operating at towards the maximum cable length.
-
-I've checked some of my DSA switches, and 9.10 appears to default to
-one, as expected given what's in the specs.
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
+index 2e992fbc0d71..d2ad0504b0de 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
+@@ -1014,39 +1014,6 @@ struct pixel_rate_range_table_entry {
+ 	unsigned short div_factor;
+ };
+ 
+-static const struct pixel_rate_range_table_entry video_optimized_pixel_rates[] = {
+-	// /1.001 rates
+-	{25170, 25180, 25200, 1000, 1001},	//25.2MHz   ->   25.17
+-	{59340, 59350, 59400, 1000, 1001},	//59.4Mhz   ->   59.340
+-	{74170, 74180, 74250, 1000, 1001},	//74.25Mhz  ->   74.1758
+-	{125870, 125880, 126000, 1000, 1001},	//126Mhz    ->  125.87
+-	{148350, 148360, 148500, 1000, 1001},	//148.5Mhz  ->  148.3516
+-	{167830, 167840, 168000, 1000, 1001},	//168Mhz    ->  167.83
+-	{222520, 222530, 222750, 1000, 1001},	//222.75Mhz ->  222.527
+-	{257140, 257150, 257400, 1000, 1001},	//257.4Mhz  ->  257.1429
+-	{296700, 296710, 297000, 1000, 1001},	//297Mhz    ->  296.7033
+-	{342850, 342860, 343200, 1000, 1001},	//343.2Mhz  ->  342.857
+-	{395600, 395610, 396000, 1000, 1001},	//396Mhz    ->  395.6
+-	{409090, 409100, 409500, 1000, 1001},	//409.5Mhz  ->  409.091
+-	{445050, 445060, 445500, 1000, 1001},	//445.5Mhz  ->  445.055
+-	{467530, 467540, 468000, 1000, 1001},	//468Mhz    ->  467.5325
+-	{519230, 519240, 519750, 1000, 1001},	//519.75Mhz ->  519.231
+-	{525970, 525980, 526500, 1000, 1001},	//526.5Mhz  ->  525.974
+-	{545450, 545460, 546000, 1000, 1001},	//546Mhz    ->  545.455
+-	{593400, 593410, 594000, 1000, 1001},	//594Mhz    ->  593.4066
+-	{623370, 623380, 624000, 1000, 1001},	//624Mhz    ->  623.377
+-	{692300, 692310, 693000, 1000, 1001},	//693Mhz    ->  692.308
+-	{701290, 701300, 702000, 1000, 1001},	//702Mhz    ->  701.2987
+-	{791200, 791210, 792000, 1000, 1001},	//792Mhz    ->  791.209
+-	{890100, 890110, 891000, 1000, 1001},	//891Mhz    ->  890.1099
+-	{1186810, 1186820, 1188000, 1000, 1001},//1188Mhz   -> 1186.8131
+-
+-	// *1.001 rates
+-	{27020, 27030, 27000, 1001, 1000}, //27Mhz
+-	{54050, 54060, 54000, 1001, 1000}, //54Mhz
+-	{108100, 108110, 108000, 1001, 1000},//108Mhz
+-};
+-
+ static bool dcn20_program_pix_clk(
+ 		struct clock_source *clock_source,
+ 		struct pixel_clk_params *pix_clk_params,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+2.17.1
+
+
