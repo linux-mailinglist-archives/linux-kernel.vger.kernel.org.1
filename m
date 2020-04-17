@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4F51ADAAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFEC1ADAB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgDQKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:04:02 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46812 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgDQKEB (ORCPT
+        id S1728713AbgDQKFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgDQKFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:04:01 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03H9veQY030546;
-        Fri, 17 Apr 2020 10:03:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=dKO7ialKD2AiGPTJR46eRoXOPRYf6fFf+AEC/fzDvXM=;
- b=oRilH+G7Gvipo30QtdCGbuFyuso2wMFt4B9F0v4aRwYeTrgAT8Ar8ToIYI9aCB1WNl1O
- BbjFJ+V8MiXSwtWXOzxLzCfKxiEw/Di3Svh9i32gOJL6+53Jq6E0zv2xUsDDUuX2bFqY
- lOAVIL4qU94DIe8AiKEkJhAlKLt229OF74o3jZfQlFskePn5lQD5E8IzlAEIPAfMgV2M
- d4Q5DxGcutqfTiqKNFrQFehP6bwj99000rgie8wA0ukzV0WFQ9OpyFVMskRTdIKm1sY/
- mamLBDmpayhoVuUlOMVyrTJIOKBv+qADn4Jt2/s9D8iFZ0cSNQ7VRQtEzMzkJPgP4SC0 Bw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30e0aabtd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 10:03:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03H9vvxF046488;
-        Fri, 17 Apr 2020 10:03:53 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 30dyp2655j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 10:03:53 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HA3qWK032622;
-        Fri, 17 Apr 2020 10:03:52 GMT
-Received: from dhcp-10-175-205-33.vpn.oracle.com (/10.175.205.33)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Apr 2020 03:03:51 -0700
-Date:   Fri, 17 Apr 2020 11:03:43 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Marco Elver <elver@google.com>
-cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        alan.maguire@oracle.com, frank.rowand@sony.com,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH] kunit: Add missing newline in summary message
-In-Reply-To: <20200416114256.226329-1-elver@google.com>
-Message-ID: <alpine.LRH.2.21.2004171103160.32364@localhost>
-References: <20200416114256.226329-1-elver@google.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        Fri, 17 Apr 2020 06:05:02 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545CFC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GVL6tgAFwgffDbhheeH49uz+J5xS7rxe9LbYjvob9SI=; b=DyT5X2ywxTKZXaAlPBbRhvJa5b
+        qJswAbTkoXJhlMCc3mwsLtxcmc0wulm9BuvH4g4svEPKyQIpdW6mcq2CfQLmeYJ8ocVptbJQjU909
+        kGFdPLM9QOEsH46r4juwUcVB/vrs/MkYRDbAbqbc+8y47W2d2QEN9ENLYyMfYBvPgqiBVe8sJ1Tso
+        AzsNCXjHCw0TAOKbCCLY90M8N8c4TrCMKSCmZ11Baj3Ozdrv60M6oZeJmfN5AjhavyPpoRpeOzNx3
+        dau6rrsisCeRholRRndwScMlHyb/+1qb7z2ZuIOP6/lQ20EHXtFUn5BZOUBm2h2fXZi+mdtFYR1qt
+        Xjvd4EMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPNrB-0004aT-Kn; Fri, 17 Apr 2020 10:04:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C10D930477A;
+        Fri, 17 Apr 2020 12:04:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9829F2B1213AA; Fri, 17 Apr 2020 12:04:17 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 12:04:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>
+Subject: Re: Re: [RFC] autonuma: Support to scan page table asynchronously
+Message-ID: <20200417100417.GT20730@hirez.programming.kicks-ass.net>
+References: <87eespyxld.fsf@yhuang-dev.intel.com>
+ <20200417070508.32243-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=3
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- suspectscore=3 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170078
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417070508.32243-1-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020, Marco Elver wrote:
-
-> Add missing newline, as otherwise flushing of the final summary message
-> to the console log can be delayed.
+On Fri, Apr 17, 2020 at 09:05:08AM +0200, SeongJae Park wrote:
+> I think the main idea of DAMON[1] might be able to applied here.  Have you
+> considered it?
 > 
-> Fixes: e2219db280e3 ("kunit: add debugfs /sys/kernel/debug/kunit/<suite>/results display")
-> Signed-off-by: Marco Elver <elver@google.com>
+> [1] https://lore.kernel.org/linux-mm/20200406130938.14066-1-sjpark@amazon.com/
 
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+I've ignored that entire thing after you said the information it
+provides was already available through the PMU.
 
-Thanks for finding/fixing this!
 
-Alan
-
-> ---
->  lib/kunit/test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 7a6430a7fca0..ccb2ffad8dcf 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -93,7 +93,7 @@ static void kunit_print_ok_not_ok(void *test_or_suite,
->  	 * representation.
->  	 */
->  	if (suite)
-> -		pr_info("%s %zd - %s",
-> +		pr_info("%s %zd - %s\n",
->  			kunit_status_to_string(is_ok),
->  			test_number, description);
->  	else
-> -- 
-> 2.26.1.301.g55bc3eb7cb9-goog
-> 
-> 
