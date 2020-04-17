@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC631ADE06
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAE11ADE0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgDQNKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 09:10:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729931AbgDQNKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:10:00 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1730092AbgDQNOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 09:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729799AbgDQNOg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 09:14:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA8CC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 06:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LHJhPbLaaNiTTXhuFNZjeRvwvUAbGtJVs/CsxLmZi2Y=; b=AsaRh5/JwJB0BAveJU7qOl7BgV
+        Kxanvr9ibiy07Do+GkhkdWMrI3SE7g5Mc/ovkUqWESOqzCT6o37hjv62GaHxl0z86fx4jOijm1pSt
+        ap+WOq6n7ApPSRZrlwfnWVn9ztMAZCzS+uqcZFSbPOBNmWUA7j0bTgnjcoUh3ssa9IPQOyQ0m6YsN
+        jjHvkMVxJvWY7cmuZ76/BQE6uoXKMD4C39VjQ3LRspJ2VaNuLMU+ZhmPldf4Sq0527zJ4Ckg94pH2
+        XlFzxzTdTitfu1K24WKOiIcewFoPNUDPC9TJ5ywjnzJ2O3gdni3UlDXGDV4yL1dB6qqIiq/+XoLDQ
+        gbKMRU3A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPQp9-0007LB-2S; Fri, 17 Apr 2020 13:14:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40A3020776;
-        Fri, 17 Apr 2020 13:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587128999;
-        bh=RRba6wPPTqjpsH0OjxHPYeFUfwOwgaWHcsijRhGcngs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0SipEdYFywJX8vX1lGhp4UcOy7NWWetGIN1vCVYDam++YLGA0abuUUon8lmda9tE8
-         pmwT0/tPOS8nmSRIoSSJL9Qa0Xvo5ShRJXNQY7eC6Ac/DFbHczHRMxPhYg/T0WnHoj
-         m6TRHRM6MHCymSV9M+iLN2kLWmmwOyzDJs6/BUgU=
-Date:   Fri, 17 Apr 2020 14:09:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com
-Subject: Re: [PATCH 0/2] ASoC: qdsp6: fix default FE dais and routings.
-Message-ID: <20200417130957.GE5315@sirena.org.uk>
-References: <20200311180422.28363-1-srinivas.kandagatla@linaro.org>
- <20200417112455.GA7558@gerhold.net>
- <03d0d14c-d52c-460b-0232-184156f62eb7@linaro.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 247E53006E0;
+        Fri, 17 Apr 2020 15:14:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 062342B120754; Fri, 17 Apr 2020 15:14:24 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 15:14:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jroedel@suse.de,
+        vbabka@suse.cz, urezki@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Olof Johansson <olof@lixom.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH] mm/vmalloc: Sanitize __get_vm_area() arguments
+Message-ID: <20200417131424.GR20713@hirez.programming.kicks-ass.net>
+References: <20200403163253.GU20730@hirez.programming.kicks-ass.net>
+ <20200406130155.GB29306@infradead.org>
+ <20200417125735.GN27762@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="N1GIdlSm9i+YlY4t"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <03d0d14c-d52c-460b-0232-184156f62eb7@linaro.org>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200417125735.GN27762@paasikivi.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 17, 2020 at 03:57:35PM +0300, Sakari Ailus wrote:
+> Hi Christoph,
+> 
+> On Mon, Apr 06, 2020 at 06:01:55AM -0700, Christoph Hellwig wrote:
+> > On Fri, Apr 03, 2020 at 06:32:53PM +0200, Peter Zijlstra wrote:
+> > > 
+> > > __get_vm_area() is an exported symbol, make sure the callers stay in
+> > > the expected memory range. When calling this function with memory
+> > > ranges outside of the VMALLOC range *bad* things can happen.
+> > > 
+> > > (I noticed this when I managed to corrupt the kernel text by accident)
+> > 
+> > Maybe it is time to unexport it?  There are only two users:
+> > 
+> >  - staging/media/ipu3 really should be using vmap.  And given that it
+> >    is a staging driver it really doesn't matter anyway if we break it.
+> 
+> It's not very polite to suggest breaking other people's drivers for such a
+> small matter, staging or not. That'd be bound to break kernel compilation
+> for a lot of people, if for nothing else.
+> 
+> Anyway, thanks for cc'ing me. I agree with suggestion and I'll submit a
+> patch to address it.
 
---N1GIdlSm9i+YlY4t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Already done, see:
 
-On Fri, Apr 17, 2020 at 02:02:08PM +0100, Srinivas Kandagatla wrote:
-> On 17/04/2020 12:24, Stephan Gerhold wrote:
-
-> > but IMO the FE DAIs are a negligible overhead compared to the routing
-> > matrix and the many BE DAIs that are really never going to be used
-> > (because nothing is physically connected to the ports).
-
-> Two things, one unnecessary mixers, second thing is we need to know how many
-> FE dais are in the system, which should be derived from the number of dai
-> child nodes. These can potentially be SoC specific or firmware specific.
-
-You shouldn't be worrying about unused mixers, ideally we'd be walking
-the DAPM graph and masking things - this isn't something that should be
-open coded at individual driver levels.
-
---N1GIdlSm9i+YlY4t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6ZqqQACgkQJNaLcl1U
-h9Dx2wf+JNU4DCIuulhKdv9CWhaYh0GdbA2kVhxyPC/Nh8Dr+PCJgEhQJbG9Pb3l
-7z5u2/jJJndtNN0b0eL/mDe3NHHDlVk+yMxHpMQtQo0jKOx6T1H5sqbf1VKzUxsx
-eVZbUx83uWue5jFIw/NaXReWU7Kj7nxTflD3ZsPtjNaziBKdLngMEw9LR3codEdv
-pGi7O37Hq/x8M9RxaAyHMl24A004IQEJIHrovNYXh+0jkfM+F1Qa8dw+8396taVl
-W9TusTxBN67tzIz0SEm/ygj2HXNDUIp4zW6MMPA9Udu0y7VntNWTs1qZ2Qs5M94/
-QQUxJjIdhB5BllEj4JfxRxn3aZudAw==
-=vbwg
------END PGP SIGNATURE-----
-
---N1GIdlSm9i+YlY4t--
+  https://lkml.kernel.org/r/20200414131348.444715-5-hch@lst.de
