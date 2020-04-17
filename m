@@ -2,57 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473541ADE51
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE321ADE4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 15:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730667AbgDQNak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 09:30:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36900 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730610AbgDQNaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:30:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A7911AC94;
-        Fri, 17 Apr 2020 13:30:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 789BDDA727; Fri, 17 Apr 2020 15:29:57 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.7-rc2
-Date:   Fri, 17 Apr 2020 15:29:54 +0200
-Message-Id: <cover.1587129870.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1730600AbgDQNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 09:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729760AbgDQNaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 09:30:09 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0753FC061A0C;
+        Fri, 17 Apr 2020 06:30:09 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id np9so1111758pjb.4;
+        Fri, 17 Apr 2020 06:30:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nFgweoCUYArCXLmSHj7utk/sJee8v5C3lAv/i/FUx1w=;
+        b=aQ/O+ntBegnk4W/OtDVTQdM4s+mxMi7A8JViJmfe29zvDuQt0zk42IrTp7ToBwGbVF
+         DauR3aFC+v6gd/oKXGFiiRcQ1gVAWfUhtnu7Q+FkyJMcSw/HJWQSSQTwpvT6OJrEuy0T
+         JaC8XuDhCGdeBk2KSmCbgzSiPTy99v9Je1TKz2vm2KpoKb5fzea81zTJ77MneecLE50l
+         6qKEsk8qvhTWDT6D9MchWi6sTRcMo/5C3UkLUQuzSAiRqSWZFDC/2N8DIp/qnD9w3awD
+         eumK9M4xPbbyGkLk1DdAMRbqx4PtdcjJL2heo8l4yAvDoYhopXWeaFn19wmcY2JAuxfv
+         LVJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nFgweoCUYArCXLmSHj7utk/sJee8v5C3lAv/i/FUx1w=;
+        b=DrF3bcECOyGVyTsFCz9aHgpdj6AqogtHVGGHpCVH1p/XP0yn6Dx9GrecnNhZ9dM4ob
+         sSw8XHPuXZh9b7yU0Jmip9w7kMzmH4pkjM+VuJMvPEwVPvAldLRxhCWKoOex4L+rpJqt
+         d6uage5HmKCiaIvT4AN2rI/DCZ45msQkVhQQnYrBv+lfrhTQMINAIQJMqsUb8G+gcG5S
+         of+kOeyZRE64PHs6MJLP+sbAXBPTHg3Y8XUCQ3IauV77gO2XN1vPYgJbLOfrwod6RWN5
+         bJg77k5ZcieGpgVZrfj1J+6IFIGR/QGqcywK1ZLSFw5djxfwb9i5CNIoPPBcGkyiVgBC
+         /Jqg==
+X-Gm-Message-State: AGi0PuZI5s4oZvcTSZSjv1JVM4ubK+dEQZz8iOOMlNpZN9/a83eVtyfm
+        K6jaP+iSF0Cdd7018t4l36Y1BQi7r+2yTsJE9KVbIFbEcAQ8fg==
+X-Google-Smtp-Source: APiQypIZ41rif2TPiH8bwogCPUbaADou1ObpE2/vh5ht0/qzSKIPn21jVVJoMoAC9WuAoeZkf5wP9nXkACbqxJueQko=
+X-Received: by 2002:a17:902:9306:: with SMTP id bc6mr3415223plb.255.1587130208465;
+ Fri, 17 Apr 2020 06:30:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200401080348.5128-1-hdegoede@redhat.com>
+In-Reply-To: <20200401080348.5128-1-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 17 Apr 2020 16:30:00 +0300
+Message-ID: <CAHp75VcO=cePNRmJGmvGPcD=CBD9kkXJyKqK7yMKNYrpKWSwuw@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: touchscreen_dmi: Add info for the MP-man
+ MPWIN895CL tablet
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 1, 2020 at 11:03 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Add touchscreen info for the MP-man MPWIN895CL tablet.
+>
 
-please pull a regression fix for a warning caused by running balance and
-snapshot creation in parallel. Thanks.
+Pushed to my review and testing queue, thanks!
 
-----------------------------------------------------------------
-The following changes since commit 34c51814b2b87cb2e5a98c92fe957db2ee8e27f4:
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/platform/x86/touchscreen_dmi.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+> index 6ec8923dec1a..931814e62454 100644
+> --- a/drivers/platform/x86/touchscreen_dmi.c
+> +++ b/drivers/platform/x86/touchscreen_dmi.c
+> @@ -373,6 +373,23 @@ static const struct ts_dmi_data jumper_ezpad_mini3_data = {
+>         .properties     = jumper_ezpad_mini3_props,
+>  };
+>
+> +static const struct property_entry mpman_mpwin895cl_props[] = {
+> +       PROPERTY_ENTRY_U32("touchscreen-min-x", 3),
+> +       PROPERTY_ENTRY_U32("touchscreen-min-y", 9),
+> +       PROPERTY_ENTRY_U32("touchscreen-size-x", 1728),
+> +       PROPERTY_ENTRY_U32("touchscreen-size-y", 1150),
+> +       PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
+> +       PROPERTY_ENTRY_STRING("firmware-name", "gsl3680-mpman-mpwin895cl.fw"),
+> +       PROPERTY_ENTRY_U32("silead,max-fingers", 10),
+> +       PROPERTY_ENTRY_BOOL("silead,home-button"),
+> +       { }
+> +};
+> +
+> +static const struct ts_dmi_data mpman_mpwin895cl_data = {
+> +       .acpi_name      = "MSSL1680:00",
+> +       .properties     = mpman_mpwin895cl_props,
+> +};
+> +
+>  static const struct property_entry myria_my8307_props[] = {
+>         PROPERTY_ENTRY_U32("touchscreen-size-x", 1720),
+>         PROPERTY_ENTRY_U32("touchscreen-size-y", 1140),
+> @@ -908,6 +925,14 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+>                         DMI_MATCH(DMI_PRODUCT_NAME, "FlexBook edge11 - M-FBE11"),
+>                 },
+>         },
+> +       {
+> +               /* MP Man MPWIN895CL */
+> +               .driver_data = (void *)&mpman_mpwin895cl_data,
+> +               .matches = {
+> +                       DMI_MATCH(DMI_SYS_VENDOR, "MPMAN"),
+> +                       DMI_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
+> +               },
+> +       },
+>         {
+>                 /* Myria MY8307 */
+>                 .driver_data = (void *)&myria_my8307_data,
+> --
+> 2.26.0
+>
 
-  btrfs: re-instantiate the removed BTRFS_SUBVOL_CREATE_ASYNC definition (2020-04-10 18:48:27 +0200)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
-
-for you to fetch changes up to aec7db3b13a07d515c15ada752a7287a44a79ea0:
-
-  btrfs: fix setting last_trans for reloc roots (2020-04-17 15:20:08 +0200)
-
-----------------------------------------------------------------
-Josef Bacik (1):
-      btrfs: fix setting last_trans for reloc roots
-
- fs/btrfs/relocation.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+-- 
+With Best Regards,
+Andy Shevchenko
