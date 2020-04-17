@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711AF1ADACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242B81ADAD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgDQKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S1728858AbgDQKTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728915AbgDQKNq (ORCPT
+        by vger.kernel.org with ESMTP id S1728144AbgDQKT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:13:46 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A98C061A0F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:13:46 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x18so2435487wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:13:46 -0700 (PDT)
+        Fri, 17 Apr 2020 06:19:27 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE93C061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:19:25 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id w11so884454pga.12
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:19:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Si8xNa2PRt0kIhccFd8IRCrcCliJZGdfrQl0M6nEdTs=;
-        b=utdWXHRDGLukUPDocwW6Cm48BY6bvFz80fFjJC3jpN5iRv2FnVhpn5i7lNKcBhS8sJ
-         xHiQQO2Jbegs0tzYojnLQ5M1vDah1L2xgfi1BzmqHjJKC0wTjgKJPL4ZiXUtHDEeWApp
-         G5pEAeVkba955wVhuY3VoZCj8teWpA60tuCqiu7FfOrsGWO49JAro14aLJNAoX+NQSD1
-         ncHthxk6aHwtjwlI2DB0JBVkqCBjdu3aXRQMKmFTfMcYQNw3MmhfDE8LHt2N8SOyCPsw
-         CAPXYAV9p4XxXipAbMvRb+N7NHpA6NGbsoM95P6IjYP1DspabfxVh/PdyVMd4UDDKbs7
-         uOig==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Ty9TQTjWvzY6Grz85/BgM3W5FIy2Fq6407pZyTtwzbI=;
+        b=q6vYtPsi279r4gZwjmK0lADCWk83Aw27TpjFuR486x9Fg/jSQQlsq/M2M5DT8I1i6A
+         GP2CaI4PxrPfnJh9JKKc/O/0F74VEavRqOkopFpywlIc4bYY2CeWisrFDsZaugLcONKb
+         cTM0F5iqpKJA+DvX58EfjOfUimrYmh6HTTOxVMc9ETn9ERuDhiAU3XvVrxnKJnQjxOj+
+         khU8tqSMb6T+kXPhUVClXoCdJmWKtkq4sjlivMoymuKYDBi3B0AKFGYDYGaqRLqCyATS
+         /4juFM6A1gSeluMNtix0QqAjV8xLmJh8aQT4ujp6BOcwFHNJRor/q0MIGWZx+C1FqY6D
+         IyQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Si8xNa2PRt0kIhccFd8IRCrcCliJZGdfrQl0M6nEdTs=;
-        b=SAQ9qGabuJl3ZPQl4rODj0+y1V9C6HkHJC7IExhJhIRWmMWBoOrYQV1tiUY0ut37BR
-         PnWqNakWJXFhI7BdXf8uUBKrmpoFNVJMXAcp6LCVRFVzP49FnTPdM8k26rpnKKRjYsFD
-         tYLgGdOMjKYVW8zCqLVLLOG1Y4EJhpPYtRxBRszrTrKxF6OElAy0AF2i2Dmp380BTKRY
-         OWTewkmUDtfkFoLxagLxguV4VRr1+XZdTvxLiBbZ82+kT2hl7oAFWrsUGIVsiPA10Iue
-         UwLykF+PCfLjRiKdBpMFJIX7LS+Z7L35tqGYLPH+ZFe4bYY3Yvlo/6nid1yJVUU1NLw9
-         xqww==
-X-Gm-Message-State: AGi0PuZalLlSkRKVwDiPMLRMnS8E6n2KGx4fRqAbNyT68ln2SrbXSyij
-        dKq78kUdzxDn+gdjJb4OPqE7pQ==
-X-Google-Smtp-Source: APiQypJJoXQEbutIxLdmsu/x/STiUGWe4/3crlmEFrGGKFCFPbSIFAprP4Y9woxirt4trOT8/ToViw==
-X-Received: by 2002:a05:6000:8f:: with SMTP id m15mr3108271wrx.19.1587118424935;
-        Fri, 17 Apr 2020 03:13:44 -0700 (PDT)
-Received: from dell ([95.149.164.124])
-        by smtp.gmail.com with ESMTPSA id o18sm4886743wrp.23.2020.04.17.03.13.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2020 03:13:44 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 11:14:46 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] video: backlight: tosa_lcd: convert to use
- i2c_new_client_device()
-Message-ID: <20200417101446.GB3737@dell>
-References: <20200326210959.13111-1-wsa+renesas@sang-engineering.com>
- <20200326210959.13111-2-wsa+renesas@sang-engineering.com>
+         :in-reply-to:user-agent;
+        bh=Ty9TQTjWvzY6Grz85/BgM3W5FIy2Fq6407pZyTtwzbI=;
+        b=NpxWhrOMFQy5XtAcwXJtEcpARsbJ1QBqLVwK2XvpD7cKaN+GsPZy5EfhnI7TrUQDmd
+         Xtps2vTMsQQ+43yQKQYc+y4pyMThTkPTs1a/16o3vM0hsJOXvWu0I6wie8Md/j8MzAUV
+         bRulYdG2hvC0U8zxFG4neubjtwYf/Q1lJLW35y56il5oP8aSvyJSh5TpjKpZ4TyZ1QWJ
+         2uyyTNx7gJYHrQQwC8mNcn7GaNTNaTZYspAb2S2Uq2raMzhadn+nGzTFl6LkIwbCr6Cd
+         w1yXVRieoDYZS3cSgKDzIMOr2mvd9LvwZBGI4YVzbFJmFx3hafeESbX3u8sNICs4abYQ
+         WNNw==
+X-Gm-Message-State: AGi0PuZ0hOKtUTjofjdIryHwlhST7IB8yhZHXD5Zc/iMGJwAP4ZSEIfq
+        yuGBTOmoWOGOe9aTQR4MUTm9
+X-Google-Smtp-Source: APiQypLivRS+jr84KCVU43CbZvx9g2aVlPNj8F7+dQWJd7s2CaFzd1iu/pT3ZiHkUrXBKLVSSTbH4Q==
+X-Received: by 2002:a63:d742:: with SMTP id w2mr2129826pgi.401.1587118765122;
+        Fri, 17 Apr 2020 03:19:25 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:630d:b86f:218c:c3f8:1490:7b19])
+        by smtp.gmail.com with ESMTPSA id x25sm17011580pfm.203.2020.04.17.03.19.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Apr 2020 03:19:24 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 15:49:18 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Hemant Kumar <hemantk@codeaurora.org>
+Cc:     jhugo@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, smohanad@codeaurora.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH 1/2] bus: mhi: core: Fix parsing of mhi_flags
+Message-ID: <20200417101918.GB10295@Mani-XPS-13-9360>
+References: <20200413120741.2832-1-manivannan.sadhasivam@linaro.org>
+ <73d4815e-af00-e4cd-95c5-5043d334224c@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200326210959.13111-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <73d4815e-af00-e4cd-95c5-5043d334224c@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Mar 2020, Wolfram Sang wrote:
-
-> Move away from the deprecated API and return the shiny new ERRPTR where
-> useful.
+On Thu, Apr 16, 2020 at 12:01:30PM -0700, Hemant Kumar wrote:
+> Hi Mani,
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  drivers/video/backlight/tosa_lcd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On 4/13/20 5:07 AM, Manivannan Sadhasivam wrote:
+> > With the current parsing of mhi_flags, the following statement always
+> > return false:
+> > 
+> > eob = !!(flags & MHI_EOB);
+> > 
+> > This is due to the fact that 'enum mhi_flags' starts with index 0 and we
+> > are using direct AND operation to extract each bit. Fix this by using
+> > BIT() macro to extract each bit and make the mhi_flags index start from 1.
+> > 
+> > Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >   drivers/bus/mhi/core/main.c | 6 +++---
+> >   include/linux/mhi.h         | 2 +-
+> >   2 files changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > index eb4256b81406..4165a853c189 100644
+> > --- a/drivers/bus/mhi/core/main.c
+> > +++ b/drivers/bus/mhi/core/main.c
+> > @@ -1090,9 +1090,9 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+> >   	if (ret)
+> >   		return ret;
+> > -	eob = !!(flags & MHI_EOB);
+> > -	eot = !!(flags & MHI_EOT);
+> > -	chain = !!(flags & MHI_CHAIN);
+> > +	eob = !!(flags & BIT(0));
+> > +	eot = !!(flags & BIT(1));
+> > +	chain = !!(flags & BIT(2));
+> 
+> How about setting enums  with BIT macro and still use same enums above. If
+> flags is having MHI _CHAIN (enum value 3) but comparing with BIT(2) (value
+> 4) will not work.
+> 
 
-Applied, thanks.
+Doh, you are right. Will fix it!
 
--- 
-Lee Jones [æŽç¼æ–¯]
-Linaro Services Technical Lead
-Linaro.org â”‚ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Mani
+
+> >   	bei = !!(mhi_chan->intmod);
+> >   	mhi_tre = tre_ring->wp;
+> > diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> > index ad1996001965..22185fecbbf2 100644
+> > --- a/include/linux/mhi.h
+> > +++ b/include/linux/mhi.h
+> > @@ -53,7 +53,7 @@ enum mhi_callback {
+> >    * @MHI_CHAIN: Linked transfer
+> >    */
+> >   enum mhi_flags {
+> > -	MHI_EOB,
+> > +	MHI_EOB = 1,
+> >   	MHI_EOT,
+> >   	MHI_CHAIN,
+> >   };
+> 
+> enum mhi_flags {
+> 
+>     MHI_EOB = BIT(0),
+> 
+>     MHI_EOT = BIT(1),
+> 
+>     MHI_CHAIN = BIT(2),
+> 
+> }
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
