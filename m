@@ -2,68 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740101AE78B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA691AE796
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgDQV1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:27:20 -0400
-Received: from smtprelay0153.hostedemail.com ([216.40.44.153]:40672 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726129AbgDQV1S (ORCPT
+        id S1728167AbgDQV3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:29:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60018 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgDQV3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:27:18 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7C2DF100E7B43;
-        Fri, 17 Apr 2020 21:27:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3871:3872:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13160:13229:13311:13357:13439:14181:14659:21080:21433:21627:21660:21990:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cloth96_79c5a18faf91b
-X-Filterd-Recvd-Size: 1404
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 17 Apr 2020 21:27:16 +0000 (UTC)
-Message-ID: <b2c2f344419156c75c6f58258cab6e7a60c2d4a9.camel@perches.com>
-Subject: Re: checkpatch.pl warning for "return" with value
-From:   Joe Perches <joe@perches.com>
-To:     Luben Tuikov <luben.tuikov@amd.com>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 17 Apr 2020 14:25:04 -0700
-In-Reply-To: <8859753b-c7c9-78ec-20cc-ce424b436b13@amd.com>
-References: <a1eea414-2422-3a9f-b9bb-1ab7d6113dd6@amd.com>
-         <1a47c5c428968a0e1d0ac5b92ce7ebdd4014fd38.camel@perches.com>
-         <8859753b-c7c9-78ec-20cc-ce424b436b13@amd.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Fri, 17 Apr 2020 17:29:07 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HLIKgx016831;
+        Fri, 17 Apr 2020 21:28:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=ioRkr8UA3rZ8RZNxmbnIqzvkarX1kRih80H9E5siYQU=;
+ b=iTI07E8SKS/cBHsKrg5tZlQLT9iHVI+NR5dxIsbDtQCck1/9gnMODqglqUNpzBEsDVm9
+ I1FVDOieQodR6VHpWQEEGEK2250hSV75EOMAzz0dikSQ+WCXYBkfEPGFsf7ADHCKHpS4
+ cXn11G0+Q9kH/IpCohMpxatnZD6zsJS9o2e68FDp6m3l/fbzzFgj7Zqt1/Qg6ocqLD4z
+ Ged0iMLBzfMP0OwbQuHE1bSZF2nxV/mb7qmHKk7uYaQ9VhM9vP7tKRXte6O7Yi6IUxxs
+ KyEqaOJSJzZQ3J9U5vWxhRvGg3qxSFv6M1cH8Rmhx9/qBiZ2/5RTZ5UQisUzJubp8Qlj oQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30dn961bvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 21:28:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HLDKOp100481;
+        Fri, 17 Apr 2020 21:26:44 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 30dn92860j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 21:26:44 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03HLQftr025383;
+        Fri, 17 Apr 2020 21:26:41 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Apr 2020 14:26:41 -0700
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: Re: [PATCH v2 1/1] scsi: ufs: full reinit upon resume if link was off
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <1586844892-22720-1-git-send-email-cang@codeaurora.org>
+Date:   Fri, 17 Apr 2020 17:26:37 -0400
+In-Reply-To: <1586844892-22720-1-git-send-email-cang@codeaurora.org> (Can
+        Guo's message of "Mon, 13 Apr 2020 23:14:48 -0700")
+Message-ID: <yq1d085olbm.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 malwarescore=0 spamscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170155
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-17 at 14:52 -0400, Luben Tuikov wrote:
-> Also checking and returning from a function, doesn't
-> always have to be binary. It could be,
-> 
-> 	if (A) {
-> 		...;
-> 		return X;
-> 	} else if (B) {
-> 		...;
-> 		return Y;
-> 	} else {
-> 		...;
-> 		return Z;
-> 	}
-> }
-> 
-> And interestingly, checkpatch.pl doesn't complain for
-> the triplet above. But if I remove condition B, above,
-> it does complain.
 
-My recollection is false positives existed so the
-else if case was not wanted.
+Can,
 
+> During suspend, if the link is put to off, it would require a full
+> initialization during resume. This patch resets and restores both the
+> host and the card during initialization, otherwise, host only reset
+> and restore may fail occasionally.
 
+Applied to 5.8/scsi-queue, thanks!
+
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
+> Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+> Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+>
+> Change since v1:
+> - Incorporated Alim's comments.
+>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+
+Don't forget to put the changelog after the "---" separator.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
