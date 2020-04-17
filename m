@@ -2,165 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AC41AD45B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAEC1AD44F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 04:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgDQCMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Apr 2020 22:12:17 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:32633 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgDQCMR (ORCPT
+        id S1729015AbgDQCGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Apr 2020 22:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728954AbgDQCGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Apr 2020 22:12:17 -0400
-X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Apr 2020 22:12:15 EDT
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 3F349482635;
-        Fri, 17 Apr 2020 10:03:38 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] kmalloc_index optimization(code size & runtime stable)
-Date:   Thu, 16 Apr 2020 19:03:30 -0700
-Message-Id: <1587089010-110083-1-git-send-email-bernard@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VNQ0JLS0tKSUJNQkJMSllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjI6Ajo4ETg9PA8VTjoXGhMX
-        IyoaFE9VSlVKTkNMS0NCS0pDTklLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBTk1MQzcG
-X-HM-Tid: 0a7185e08e2993bakuws3f349482635
+        Thu, 16 Apr 2020 22:06:47 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ABDC061A41
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:06:46 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id c138so329813pfc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Apr 2020 19:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Hfdx7uDJvgrGkRYQDhx6DARmHevGcYuM4GwFr74akkA=;
+        b=FQVf+DFnRHPeQ/SGO5Hw0smu9KCNhym996v6AIV/dsuwaWRyhQrYQwMlpB1zt0+nX/
+         BSOYTHaqkFX/m3b9KlZPcrLzLGvOlmcJROEVN5Y5MvozAx1dvDjYDESncXlfAe105qfx
+         onkTOTzapOUqP3I+4socEd8Os145UAQyxt7/I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Hfdx7uDJvgrGkRYQDhx6DARmHevGcYuM4GwFr74akkA=;
+        b=ahZY0GNWIj9nS23cwfZtOLFgHnvQKIwP9lE09O9PQzPjmnjB8Wtx7+x0syg/DpaMj/
+         Q1mc+kI4I+dYgNwTkC3WmpKP9Ho7KVD2BA3/VFevcLOWWW2b+5O7QExEnVRvu+VVwIYO
+         /hzYZCaKdNd68wH78g16IT+G27CSYgQTunalCyYEH/8er4jXPk0pSS+iqPEHDxnk7YCa
+         6uN5eGV2S2EwL0gXVdWSpysROaYloPW0+63amalFSsQh47KSjeBl+/b7FZeGVW6kycVm
+         l7EgB5dTQb09paSBVASM8cACh51ao5wLEqq69TLb0qN6IoTuAOnzAPGOHIJhCBPeBUWG
+         9CLg==
+X-Gm-Message-State: AGi0Pua2OfadgzOSRoqP/AOdf2TGVGYTC/xABJnZMW32x5xIXx10Gk/k
+        uulW1bRC7bCC1bRCScxCSUxq6w==
+X-Google-Smtp-Source: APiQypIAm+eOkLnh9jfVGsJPFCRSE3u2oQZAeMT8zXL+p+ToKv0aaogvmqJScYekjpJ7CEwbwJZhCw==
+X-Received: by 2002:a63:2cce:: with SMTP id s197mr761627pgs.184.1587089205194;
+        Thu, 16 Apr 2020 19:06:45 -0700 (PDT)
+Received: from google.com ([2620:15c:202:1:534:b7c0:a63c:460c])
+        by smtp.gmail.com with ESMTPSA id t5sm365532pjo.19.2020.04.16.19.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 19:06:44 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 19:06:41 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     =?utf-8?Q?Micha=C5=82?= Stanek <mst@semihalf.com>,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stanekm@google.com,
+        stable@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
+        levinale@chromium.org, andriy.shevchenko@linux.intel.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, rafael.j.wysocki@intel.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH] pinctrl: cherryview: Add quirk with custom translation
+ of ACPI GPIO numbers
+Message-ID: <20200417020641.GA145784@google.com>
+References: <20200205194804.1647-1-mst@semihalf.com>
+ <20200206083149.GK2667@lahna.fi.intel.com>
+ <CAMiGqYi2rVAc=hepkY-4S1U_3dJdbR4pOoB0f8tbBL4pzWLdxA@mail.gmail.com>
+ <20200207075654.GB2667@lahna.fi.intel.com>
+ <CAMiGqYjmd2edUezEXsX4JBSyOozzks1Pu8miPEviGsx=x59nZQ@mail.gmail.com>
+ <20200210101414.GN2667@lahna.fi.intel.com>
+ <CAMiGqYiYp=aSgW-4ro5ceUEaB7g0XhepFg+HZgfPvtvQL9Z1jA@mail.gmail.com>
+ <20200310144913.GY2540@lahna.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200310144913.GY2540@lahna.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmalloc_index inline function code size optimization and runtime
-performance stability optimization. After optimization, the function
-kmalloc_index is more stable, the size will never affecte the function`s
-execution efficiency.
-And follow test data shows that the performance of new optimization
-exceeds the original algorithm when applying for more than 512 Bytes
-(include 512B).And new optimization runtime is more stable than before.
-Test platform:install vmware ubuntu 16.04, ram 2G, cpu 1, i5-8500 3.00GHz
-Compiler: gcc -O2 optimization, gcc version 5.4.0.
-Just test diff code part.
-Follow is detailed test data:
-            size        time/Per 100 million times
-                        old fun		new fun with optimise
-		8	203777		241934
-		16	245611		409278
-		32	236384		408419
-		64	275499		447732
-		128	354909		416439
-		256	360472		406598
-		512	431072		409168
-		1024	463822		407401
-        2 * 1024	548519		407710
-        4 * 1024	623378		422326
-        8 * 1024	655932		407457
-       16 * 1024	744673		417574
-       32 * 1024	824889		415316
-       64 * 1024	854374		408577
-      128 * 1024	968079		433582
-      256 * 1024	985527		412080
-      512 * 1024	1196877		448199
-     1024 * 1024	1310315		448969
-2  * 1024 * 1024	1367441		513117
-4  * 1024 * 1024	1264623		415019
-8  * 1024 * 1024	1255727		417197
-16 * 1024 * 1024	1401431		411087
-32 * 1024 * 1024	1440415		416616
-64 * 1024 * 1024	1428122		417459
+Hi Mika,
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- include/linux/slab.h | 61 +++++++++++++++++++++++++++++++---------------------
- 1 file changed, 37 insertions(+), 24 deletions(-)
+I'm following along with attempts to "fix" our user space to paper over
+this issue, and I think some of this conversation missed the mark.
+(Sorry for jumping in late.)
 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 6d45488..6ccee7a 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -301,6 +301,22 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
- #define SLAB_OBJ_MIN_SIZE      (KMALLOC_MIN_SIZE < 16 ? \
-                                (KMALLOC_MIN_SIZE) : 16)
- 
-+#ifndef CONFIG_SLOB
-+/*
-+ * This used to show the relation between size`s last (most-significant)
-+ * bit set & index of kmalloc_info[]
-+ * If size%2 ==0, then fls - 1, else fls(round up)
-+ * size  8(b 1000)-(b 1xxx)-16(b 10000)-(b 1xxxx)-32(b 100000)-(b 1xxxxx)
-+ *       |            |          |           |            |           |
-+ * index 3            4          4           5            5           6
-+ *       64(b 1000000)-(b 1xxxxxx)-128(b 10000000)-(b 1xxxxxxx)-256....
-+ *          |           |              |            |            |
-+ *          6           7              7            8            8...
-+ */
-+#define KMALLOC_SIZE_POW_2_SHIFT_BIT (2)
-+#define KMALLOC_SIZE_POW_2_INDEX_BIT (1)
-+#endif
-+
- /*
-  * Whenever changing this, take care of that kmalloc_type() and
-  * create_kmalloc_caches() still work as intended.
-@@ -358,30 +374,27 @@ static __always_inline unsigned int kmalloc_index(size_t size)
- 		return 1;
- 	if (KMALLOC_MIN_SIZE <= 64 && size > 128 && size <= 192)
- 		return 2;
--	if (size <=          8) return 3;
--	if (size <=         16) return 4;
--	if (size <=         32) return 5;
--	if (size <=         64) return 6;
--	if (size <=        128) return 7;
--	if (size <=        256) return 8;
--	if (size <=        512) return 9;
--	if (size <=       1024) return 10;
--	if (size <=   2 * 1024) return 11;
--	if (size <=   4 * 1024) return 12;
--	if (size <=   8 * 1024) return 13;
--	if (size <=  16 * 1024) return 14;
--	if (size <=  32 * 1024) return 15;
--	if (size <=  64 * 1024) return 16;
--	if (size <= 128 * 1024) return 17;
--	if (size <= 256 * 1024) return 18;
--	if (size <= 512 * 1024) return 19;
--	if (size <= 1024 * 1024) return 20;
--	if (size <=  2 * 1024 * 1024) return 21;
--	if (size <=  4 * 1024 * 1024) return 22;
--	if (size <=  8 * 1024 * 1024) return 23;
--	if (size <=  16 * 1024 * 1024) return 24;
--	if (size <=  32 * 1024 * 1024) return 25;
--	if (size <=  64 * 1024 * 1024) return 26;
-+
-+	if (size <= 8)
-+		return 3;
-+
-+	/* size over KMALLOC_MAX_SIZE should trigger BUG */
-+	if (size <= KMALLOC_MAX_SIZE) {
-+		/*
-+		 * kmalloc_info[index]
-+		 * size  8----16----32----64----128---256---512---1024---2048.
-+		 *       |  |  |  |  |  |  |  |  |  |  |  |  |  |   |  |   |
-+		 * index 3  4  4  5  5  6  6  7  7  8  8  9  9  10  10 11  11
-+		 */
-+
-+		high_bit = fls((int)size);
-+
-+		if (size == (2 << (high_bit - KMALLOC_SIZE_POW_2_SHIFT_BIT)))
-+			return (high_bit - KMALLOC_SIZE_POW_2_INDEX_BIT);
-+
-+		return high_bit;
-+	}
-+
- 	BUG();
- 
- 	/* Will never be reached. Needed because the compiler may complain */
--- 
-2.7.4
+On Tue, Mar 10, 2020 at 04:49:13PM +0200, Mika Westerberg wrote:
+> On Tue, Mar 10, 2020 at 03:12:00PM +0100, Michał Stanek wrote:
+> > On Mon, Feb 10, 2020 at 11:14 AM Mika Westerberg
+> > <mika.westerberg@linux.intel.com> wrote:
+> > > On Sat, Feb 08, 2020 at 07:43:24PM +0100, Michał Stanek wrote:
+> > > > > >
+> > > > > > Hi Mika,
+> > > > > >
+> > > > > > The previous patches from Dmitry handled IRQ numbering, here we have a
+> > > > > > similar issue with GPIO to pin translation - hardcoded values in FW
+> > > > > > which do not agree with the (non-consecutive) numbering in newer
+> > > > > > kernels.
+> > > > >
+> > > > > Hmm, so instead of passing GpioIo/GpioInt resources to devices the
+> > > > > firmware uses some hard-coded Linux GPIO numbering scheme? Would you
+> > > > > able to share the exact firmware description where this happens?
+> > > >
+> > > > Actually it is a GPIO offset in ACPI tables for Braswell that was
+> > > > hardcoded in the old firmware to match the previous (consecutive)
+> > > > Linux GPIO numbering.
+> > >
+> > > Can you share the ACPI tables and point me to the GPIO that is using
+> > > Linux number?
+> > 
+> > I think this is the one:
+> > https://chromium-review.googlesource.com/c/chromiumos/third_party/coreboot/%2B/286534/2/src/mainboard/google/cyan/acpi/chromeos.asl
+> > 
+> > On Kefka the sysfs GPIO number for wpsw_cur was gpio392 before the
+> > translation change occurred in Linux.
+> 
+> But that table does not seem to have any GPIO numbers in it.
 
+Actually, it's encoding pin numbers, not GPIO numbers. The 0x10016 (or
+now, 0x10013) is encoding a bank offset (0x10000) and pin number (0x16
+or 0x13). The actual pin numbers is 0x16, I believe, but someone decided
+to subtract 3, because the Linux numbering used to be contiguous,
+skipping over the hole between 11 and 15.
+
+So no, nobody was hard-coding gpiochip numbers -- we were hard-coding
+the contiguous pin number (relative to the bank). Now that commit
+03c4749dd6c7ff94 ("gpio / ACPI: Drop unnecessary ACPI GPIO to Linux GPIO
+translation") made those non-contiguous, we're kinda screwed -- we have
+to guess (based on the kernel version number) whether pin numbers
+(within a single bank!) are contiguous or not.
+
+> > > This is something that should be fixed in userspace. Using global Linux
+> > > GPIO or IRQ numbers is fragile and source of issues like this.
+
+To be clear, we're not hard-coding global <anything> numbers in user
+space.
+
+> > > in case of sysfs, you can
+> > > find the base of the chip
+
+We're doing that.
+
+> > > and then user relative numbering against it or
+> > > switch
+
+^^ This is the problem. The *bank-relative* numbers changed.
+
+> > > Both cases the GPIO number are relative against the GPIO chip so
+> > > they work even if global Linux GPIO numbering changes.
+> > 
+> > I analyzed crossystem source code and it looks like it is doing
+> > exactly what you're saying without any hardcoded assumptions.
+
+^^ Exactly.
+
+> > With the newer kernel the gpiochip%d number is different so crossystem
+> > ends up reading the wrong pin.
+> 
+> Hmm, so gpiochipX is also not considered a stable number. It is based on
+> ARCH_NR_GPIOS which may change. So if the userspace is relaying certain GPIO
+> chip is always gpichip200 for example then it is wrong.
+
+If you just read the last sentence from Michal, you get the wrong
+picture. There's no hard-coding of gpiochipX numbers going on. We only
+had the pin offsets "hardcoded" (in ACPI), and the kernel driver
+unilaterally changed from a contiguous mapping to a non-contiguous
+mapping.
+
+How do you recommend determining (both pre- and
+post-commit-03c4749dd6c7ff94) whether pin 22 is at offset 22, vs. offset
+19?
+
+Brian
