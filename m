@@ -2,240 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268D81AE5B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B161AE5C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 21:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729928AbgDQTTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 15:19:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50216 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728260AbgDQTTs (ORCPT
+        id S1730210AbgDQTZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 15:25:19 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:3968 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728826AbgDQTZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 15:19:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HJI2q5171302;
-        Fri, 17 Apr 2020 19:19:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DddDipoAKPmmlgvP1sg97Rpg4mv9LGW+C80d1h3W6ec=;
- b=I7htG83bvhKtkA89NMN7DzU2BDXkf96/CG1UCgWrkgvdBT6EvZe239Utpt4nkfn0yDXH
- b+w0qkPPmxaTQJ0s0LcUPyj9K+9j+i44Hgay/mASxQK9lmdUHYDePVcy4tiNojm0ha8P
- mQ4CSwMjP+UzqvVTWKpLsIySCvKMmWjIEMHs27nhfg1w+pXgjjToyLO2WkOoCrWfspbN
- 3/vgz8lrtvT95kS8qPO4ozBuULlRpgL5TJiBsxO26KrfaD+EuSBi09ipQPnSwdH+Pimp
- bPVk7wMdkDFx0GImCPVrZFV2FUw7WYV8WOZV0rmw135K9S/ERyxpGyZjEEyTanHLEDfy 0Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 30e0aaecty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 19:19:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HJHadA158293;
-        Fri, 17 Apr 2020 19:19:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30dn922stm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 19:19:27 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HJJRvC014806;
-        Fri, 17 Apr 2020 19:19:27 GMT
-Received: from linux-1.home (/10.175.17.90)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Apr 2020 12:19:26 -0700
-Subject: Re: [PATCH v5 04/17] x86,ftrace: Fix ftrace_regs_caller() unwind
-To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        jpoimboe@redhat.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, mhiramat@kernel.org,
-        mbenes@suse.cz, jthierry@redhat.com
-References: <20200416114706.625340212@infradead.org>
- <20200416115118.749606694@infradead.org>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <243918fd-fa54-a8e5-bc70-67bf2d9f16a9@oracle.com>
-Date:   Fri, 17 Apr 2020 21:24:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200416115118.749606694@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 17 Apr 2020 15:25:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1587151552; x=1618687552;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=ufpqaUu80owrFV9l8wknfkLbk4Ty++tv/FRQbr1850M=;
+  b=V9KS9pd3a7l6UsRgoNe8zvK36Ya7MJzQBj/vMlKv9F7Mwc/wkyGWZ9Z6
+   Mnhyu660D3JhcgTvHlKRVEhDzNKMrSHfFTQEV7IQUYzBqzhHqGX/qnryP
+   6710miu7ia+GVD+bRZG+ClKsIkoQevdQBbrxSZYYtL+6huwza+Kj8UIYq
+   OE3IRnNPjymGAIOYAbkh9Wly/QPxaQPKrHvbb6O/MbA+7gQygCS6cBZ7H
+   R1zvL3htdmr/AbtFaaEN2O/iTo/FzoCwSzGqdM5D5MJc41zGYEAdN/JIj
+   TbmXcz7C7nBfOWmIxj2QZDCIBwvBpRbEKOVYRWzY9a1kjYGQbtexG11cw
+   w==;
+IronPort-SDR: 0+4LEr+6HIa6KC8OnRsamjboZ6LkYMaXEXHcAeeBL/OXx9S0rk6+bKZCAkTjvZ4qRvdivXGAzL
+ QWLBC/yihuW5aBFq7pr/GtJo7TGzxyQTZh2/V2REQUy7kSzwFOPD9VMYVQuojBtZyZC8D6FuTg
+ U9EKVm/Q5qbzfTilHOLTpx657TYyUslshvLzM3EL4HbucptumPhMIdmBzH9we77Yt/OsI1cCdW
+ xRvAoP/d57Vts2Ze9C476v7Q8118BM41pmJCldar1SqX2DCL1mUdN8QsBOkQ4WLEztcLbHEmvh
+ jrs=
+X-IronPort-AV: E=Sophos;i="5.72,395,1580745600"; 
+   d="scan'208";a="238017268"
+Received: from mail-bn7nam10lp2109.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.109])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Apr 2020 03:25:38 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DFgFRzQg4QVRVoQqjbe2x18bLQlISEdK+l8z5pz4Snagpuszcfdbwh21OL01S0t0L9uKuXUwdBl+qZDSNIHVbobq+MF44gww/imo6pjt3M+vII1MIJGfztXSzmfIIworHny4RzbcD/66A7v/iuRl8a8Oyz8mIw0ajI9yd9JAebotCTMP8fGFLhCUc6Nj6bTJeyjcfXSTltBPVH9de65fVyhqrHDXD+pXC+jIIEwB2gTgyG/mjJ6IMSUT8ziCkikxDzNDWyAoIP2HPi24ZIMR91uyDSLQQaCDWDeZZIPuv653WBwyBWTMGC35GaFdfjRTj72EYgmMg37EioiEZIhepA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EX9YePprWTQYlv/6GZ3B/cWoCYUFYBkLVbWfsIW7G7E=;
+ b=ApeKY0mtWfDjyt43tFxIOk0T2ed1Gez19O0i4LXM+Ujk6kH1Fe+wTB+RuZ6S+8V0ZiL+pSb/RP5UKuI4ztrQWIUF+w6uQQ4l6rFJROYNIdpreuVYLc5U6yqVhtZmYagq/3+NN88NQ77QiTVqXJyTCOymeP2qe4Un1mP+Z/AyTjFFMIp8PXz8UbgBtZDksZtacggIDQLTHZZY3H8TgEer/5etRQFjuK/WsbSt6MW2C68sLvxKxA/wt/FUvjwleXlkr2zgX5tDw+7N4PLHg8q4GKa3TC9taqTL4Q0bYqtcachmVR01/npAnADe8iMe9BSqE8nFtuhJwK0E8rTmVcUdFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EX9YePprWTQYlv/6GZ3B/cWoCYUFYBkLVbWfsIW7G7E=;
+ b=xl9ezzRKRz3X+uqzI7Ix67lnQ2IfPNQA8YUewUTBRUmk+i85f/g5kKFCgKKhhRe1VXbj/ewYBGheX9nbkp2w1euTMNMtTm/alifECjgoto0W/aEwWpirEoh29jp+12PXqMipDMGGfIwwPUPyFQSFwnV0UzqSqnCzrncA5rkYXTk=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB5509.namprd04.prod.outlook.com (2603:10b6:a03:e4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Fri, 17 Apr
+ 2020 19:25:07 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::28be:e964:37e5:44b6]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::28be:e964:37e5:44b6%6]) with mapi id 15.20.2921.027; Fri, 17 Apr 2020
+ 19:25:06 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>
+CC:     "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nvme/pci: Use Discard instead of Write Zeroes on SK hynix
+ SC300
+Thread-Topic: [PATCH] nvme/pci: Use Discard instead of Write Zeroes on SK
+ hynix SC300
+Thread-Index: AQHWFJNgC1T1D2C2k0C8UtF2YjQiRQ==
+Date:   Fri, 17 Apr 2020 19:25:06 +0000
+Message-ID: <BYAPR04MB49658C7772879D7BA5A6E62D86D90@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200417083641.28205-1-kai.heng.feng@canonical.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=790
- suspectscore=2 malwarescore=0 spamscore=0 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=848 mlxscore=0 lowpriorityscore=0
- suspectscore=2 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004170145
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Chaitanya.Kulkarni@wdc.com; 
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8f25680c-08ac-4750-2968-08d7e305097f
+x-ms-traffictypediagnostic: BYAPR04MB5509:
+x-microsoft-antispam-prvs: <BYAPR04MB5509222E11B2B4E6EECAF49B86D90@BYAPR04MB5509.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:191;
+x-forefront-prvs: 0376ECF4DD
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(396003)(376002)(366004)(346002)(136003)(39860400002)(4744005)(71200400001)(316002)(478600001)(110136005)(186003)(66556008)(55016002)(64756008)(9686003)(66446008)(54906003)(66476007)(5660300002)(6506007)(76116006)(7696005)(2906002)(33656002)(8936002)(4326008)(53546011)(66946007)(26005)(86362001)(8676002)(52536014)(81156014);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RN4K6LsRJ6uUE31Wg2sMfCJz2u2FjqiHfbW8PK+vxhGxjprOI1QpSQDrAe0GZAT6OWLM8bo7piC/TlDmpPEOkv32uHIQI0aZGcknIAqQrPJNGDUtA2eM+yterus/M/a+xFOC00T/4NcvZ4/6Stn2EL+CmI8bRUGjFk/qwWr4Ms0FRv+NuRkXw253Y5kkOr41suqpKSHqa6xQpEZW0u82BmlkBwuCL2piTEB+3fftaI/eINRTbhHeTvncFe2W9QYcj/vzxkZAk9HokzX5jr1JzqujeGeSGSxK+8eVT1tgHmh2PZLhbe7yIlUIyuLuvhId1YchE9phQUq2GuedlZUPlJpe8t4mzKtcNdZjIvsc9dEwLMugtL9lK7RRZ72neHtWozGDx3+SqeUc4gzeBCn2GLYkRO5V66FIniXyf7oxQgcrItQN0HbTkn5SYe5rbp68
+x-ms-exchange-antispam-messagedata: 2zlhnafUsPIRsFz7e8G9OsEN6VYLJCWfLBZzxQdzhjIqEh+L/2oY9U+1H72Rpt7kqW0IPHlk2amrGZg50e3juuoXRGDBmNkB9+d3nUlDyMSo4foA2lkFu5jiG5jyXUEHJ79RfAslLMilu6r8AZJJYA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f25680c-08ac-4750-2968-08d7e305097f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 19:25:06.8465
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j9Z1Kwr7dNOv+6ar0iiH+mDpdGwu2iP1JSWDm89FmfX2pXDdDed7f8NN4dIX3FRX41u8FlQGNFYh0HVHk/hi8aNnfzZ2bZq952r5lwzRqTk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5509
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/16/20 1:47 PM, Peter Zijlstra wrote:
-> The ftrace_regs_caller() trampoline does something 'funny' when there
-> is a direct-caller present. In that case it stuffs the 'direct-caller'
-> address on the return stack and then exits the function. This then
-> results in 'returning' to the direct-caller with the exact registers
-> we came in with -- an indirect tail-call without using a register.
-> 
-> This however (rightfully) confuses objtool because the function shares
-> a few instruction in order to have a single exit path, but the stack
-> layout is different for them, depending through which path we came
-> there.
-> 
-> This is currently cludged by forcing the stack state to the non-direct
-> case, but this generates actively wrong (ORC) unwind information for
-> the direct case, leading to potential broken unwinds.
-> 
-> Fix this issue by fully separating the exit paths. This results in
-> having to poke a second RET into the trampoline copy, see
-> ftrace_regs_caller_ret.
-> 
-> This brings us to a second objtool problem, in order for it to
-> perceive the 'jmp ftrace_epilogue' as a function exit, it needs to be
-> recognised as a tail call. In order to make that happen,
-> ftrace_epilogue needs to be the start of an STT_FUNC, so re-arrange
-> code to make this so.
-> 
-> Finally, a third issue is that objtool requires functions to exit with
-> the same stack layout they started with, which is obviously violated
-> in the direct case, employ the new HINT_RET_OFFSET to tell objtool
-> this is an expected exception.
-> 
-> Together, this results in generating correct ORC unwind information
-> for the ftrace_regs_caller() function and it's trampoline copies.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   arch/x86/kernel/ftrace.c    |   12 ++++++++++--
->   arch/x86/kernel/ftrace_64.S |   32 +++++++++++++++-----------------
->   2 files changed, 25 insertions(+), 19 deletions(-)
-> 
-> --- a/arch/x86/kernel/ftrace.c
-> +++ b/arch/x86/kernel/ftrace.c
-> @@ -282,7 +282,8 @@ static inline void tramp_free(void *tram
->   
->   /* Defined as markers to the end of the ftrace default trampolines */
->   extern void ftrace_regs_caller_end(void);
-> -extern void ftrace_epilogue(void);
-> +extern void ftrace_regs_caller_ret(void);
-> +extern void ftrace_caller_end(void);
->   extern void ftrace_caller_op_ptr(void);
->   extern void ftrace_regs_caller_op_ptr(void);
->   
-> @@ -334,7 +335,7 @@ create_trampoline(struct ftrace_ops *ops
->   		call_offset = (unsigned long)ftrace_regs_call;
->   	} else {
->   		start_offset = (unsigned long)ftrace_caller;
-> -		end_offset = (unsigned long)ftrace_epilogue;
-> +		end_offset = (unsigned long)ftrace_caller_end;
->   		op_offset = (unsigned long)ftrace_caller_op_ptr;
->   		call_offset = (unsigned long)ftrace_call;
->   	}
-> @@ -366,6 +367,13 @@ create_trampoline(struct ftrace_ops *ops
->   	if (WARN_ON(ret < 0))
->   		goto fail;
->   
-> +	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
-> +		ip = trampoline + (ftrace_regs_caller_ret - ftrace_regs_caller);
-
-It might be safer to use start_offset instead of ftrace_regs_caller (in
-case start_offset is ever changed to something different from ftrace_regs_caller
-in the future):
-
-          ip = trampoline + (ftrace_regs_caller_ret - start_offset);
-
-alex.
-
-> +		ret = probe_kernel_read(ip, (void *)retq, RET_SIZE);
-> +		if (WARN_ON(ret < 0))
-> +			goto fail;
-> +	}
-> +
->   	/*
->   	 * The address of the ftrace_ops that is used for this trampoline
->   	 * is stored at the end of the trampoline. This will be used to
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -157,8 +157,12 @@ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBA
->   	 * think twice before adding any new code or changing the
->   	 * layout here.
->   	 */
-> -SYM_INNER_LABEL(ftrace_epilogue, SYM_L_GLOBAL)
-> +SYM_INNER_LABEL(ftrace_caller_end, SYM_L_GLOBAL)
->   
-> +	jmp ftrace_epilogue
-> +SYM_FUNC_END(ftrace_caller);
-> +
-> +SYM_FUNC_START(ftrace_epilogue)
->   #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->   SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL)
->   	jmp ftrace_stub
-> @@ -170,14 +174,12 @@ SYM_INNER_LABEL(ftrace_graph_call, SYM_L
->    */
->   SYM_INNER_LABEL_ALIGN(ftrace_stub, SYM_L_WEAK)
->   	retq
-> -SYM_FUNC_END(ftrace_caller)
-> +SYM_FUNC_END(ftrace_epilogue)
->   
->   SYM_FUNC_START(ftrace_regs_caller)
->   	/* Save the current flags before any operations that can change them */
->   	pushfq
->   
-> -	UNWIND_HINT_SAVE
-> -
->   	/* added 8 bytes to save flags */
->   	save_mcount_regs 8
->   	/* save_mcount_regs fills in first two parameters */
-> @@ -233,7 +235,10 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
->   	movq ORIG_RAX(%rsp), %rax
->   	movq %rax, MCOUNT_REG_SIZE-8(%rsp)
->   
-> -	/* If ORIG_RAX is anything but zero, make this a call to that */
-> +	/*
-> +	 * If ORIG_RAX is anything but zero, make this a call to that.
-> +	 * See arch_ftrace_set_direct_caller().
-> +	 */
->   	movq ORIG_RAX(%rsp), %rax
->   	cmpq	$0, %rax
->   	je	1f
-> @@ -244,20 +249,14 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
->   	movq %rax, MCOUNT_REG_SIZE(%rsp)
->   
->   	restore_mcount_regs 8
-> +	/* Restore flags */
-> +	popfq
->   
-> -	jmp	2f
-> +SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL);
-> +	UNWIND_HINT_RET_OFFSET
-> +	jmp	ftrace_epilogue
->   
->   1:	restore_mcount_regs
-> -
-> -
-> -2:
-> -	/*
-> -	 * The stack layout is nondetermistic here, depending on which path was
-> -	 * taken.  This confuses objtool and ORC, rightfully so.  For now,
-> -	 * pretend the stack always looks like the non-direct case.
-> -	 */
-> -	UNWIND_HINT_RESTORE
-> -
->   	/* Restore flags */
->   	popfq
->   
-> @@ -268,7 +267,6 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_
->   	 * to the return.
->   	 */
->   SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
-> -
->   	jmp ftrace_epilogue
->   
->   SYM_FUNC_END(ftrace_regs_caller)
-> 
-> 
+On 04/17/2020 01:37 AM, Kai-Heng Feng wrote:=0A=
+> After commit 6e02318eaea5 ("nvme: add support for the Write Zeroes=0A=
+> command"), SK hynix SC300 becomes very slow with the following error=0A=
+> message:=0A=
+> [  224.567695] blk_update_request: operation not supported error, dev nvm=
+e1n1, sector 499384320 op 0x9:(WRITE_ZEROES) flags 0x1000000 phys_seg 0 pri=
+o class 0]=0A=
+>=0A=
+> Use quirk NVME_QUIRK_DEALLOCATE_ZEROES to workaround this issue.=0A=
+Can you share=0A=
+nvme id-ctrl -H /dev/nvme0 | grep oncs -A 8=0A=
+output?=0A=
+=0A=
