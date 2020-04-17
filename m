@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E73A1AD899
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0961B1AD8BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 10:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729776AbgDQIcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 04:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729650AbgDQIcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 04:32:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF58E2137B;
-        Fri, 17 Apr 2020 08:32:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587112338;
-        bh=8Oo4SxaoPhfNmNYW57QZmQMRfnVpjxTqOc+iHAbbQ/8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1KXyNCnXvyew882v7GPf6JQBSdKhUiP+l08UaWXOoSE3vm2T4abn9z3zlkm1eJaaU
-         fnmB7+c/VNZvCNQjM/9D+B9P24ePfbRpp4aCnY9rAyxz1o6a1j2Cq9wfqYDAZ7rW97
-         Mw59enahMv55dCj7Y52+NUW6nk3lHpoRJVq3kYJU=
-Date:   Fri, 17 Apr 2020 10:32:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Luis R. Rodriguez" <mcgrof@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, slyfox@gentoo.org, ast@kernel.org,
-        keescook@chromium.org, josh@joshtriplett.org, ravenexp@gmail.com,
-        chainsaw@gentoo.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] coredump: fix crash when umh is disabled
-Message-ID: <20200417083216.GE140064@kroah.com>
-References: <20200416162859.26518-1-mcgrof@kernel.org>
+        id S1729828AbgDQIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 04:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729749AbgDQIgA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 04:36:00 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0F8C061A0C;
+        Fri, 17 Apr 2020 01:36:00 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id ay1so729613plb.0;
+        Fri, 17 Apr 2020 01:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QLRhq6ncbx33txx+lUViw8XofjfiGIYfFDkLE6el/g=;
+        b=YVgpdYoiePmKpjkxliGptstAUcntBCNcszJR4qwGZQTaLz/TeDVK+uCgOqvkKgBshz
+         4aXtaWtvivVpQdrRYXNVxAIRDU+C1oa+F5f0pihUBgxsINbo5zi4vsPOP7Syx0e0NA7u
+         aM2GVtro1ThlIhW1LZxc0DvrgYh2gjurdWQwFS/8/n1ATtkHivQQyeIcXtf2ZNDpw+FT
+         ACtDGHsHAvV5fq9aVRzmSMncXOTsKtAq9l3tFp02efakUxXXTZ0pvc0y7Bp5gaqnp9+N
+         mbrFnBlrEBnerUATsfirA5y5XBa4ySPfPCYLsR5OAXynyVVzUMjjSREOEaWrJa9HZ+Dp
+         gxkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QLRhq6ncbx33txx+lUViw8XofjfiGIYfFDkLE6el/g=;
+        b=H+o71ORluC6oWIhq6lH9nu4vAbs27lGQN+FvQGumr9JV9SCr+uc9kjivY/kvNOQeLI
+         GnnSqYlAgE+wQve5eoyhD12R9WcTgySiRgOx5HpwWm7CNRahvSGZ5DVXRnbe9CrG9vGP
+         nvJxYuUEq2btASYWPdDOLXlQJUbiS2dQ+Qou7EDpOXUHCFjBHrSgGz+wwgU3Pv+e4roe
+         S85NY9CBPSrrZTIUaSpCmIS0u5UByJ4l/1hslSpOskEUUgIm+Kuf/5VB66+qzIEz2R+J
+         a4NzDqzLHvNVPTSANyOceLZ3vFjAW+1xancUPSt4GJV1MsSocLn/l3u8aIuqakx3KmYN
+         vqtA==
+X-Gm-Message-State: AGi0PuYqwXluFRPebJcNlVzAGW3EefkBCH5tbpw3HwSlKhpII1e71wjZ
+        S9tNS3zGJL4FCjZPf2TUVDFSbu9b
+X-Google-Smtp-Source: APiQypJioufUW7TEzYboWDBC3g+W2H1t4WIJr8JpXuTGtM3FNYBy6u4DU/LQafZmo5+wXrkf0vEQ7A==
+X-Received: by 2002:a17:902:9a82:: with SMTP id w2mr2445787plp.117.1587112559701;
+        Fri, 17 Apr 2020 01:35:59 -0700 (PDT)
+Received: from MacBook-Pro.mshome.net ([122.224.153.228])
+        by smtp.googlemail.com with ESMTPSA id ev5sm2690522pjb.1.2020.04.17.01.35.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Apr 2020 01:35:59 -0700 (PDT)
+From:   Yanhu Cao <gmayyyha@gmail.com>
+To:     jlayton@kernel.org
+Cc:     sage@redhat.com, idryomov@gmail.com, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yanhu Cao <gmayyyha@gmail.com>
+Subject: [PATCH] ceph: if we are blacklisted, __do_request returns directly
+Date:   Fri, 17 Apr 2020 16:34:48 +0800
+Message-Id: <20200417083448.9122-1-gmayyyha@gmail.com>
+X-Mailer: git-send-email 2.24.2 (Apple Git-127)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416162859.26518-1-mcgrof@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 04:28:59PM +0000, Luis R. Rodriguez wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Commit 64e90a8acb859 ("Introduce STATIC_USERMODEHELPER to mediate
-> call_usermodehelper()") added the optiont to disable all
-> call_usermodehelper() calls by setting STATIC_USERMODEHELPER_PATH to
-> an empty string. When this is done, and crashdump is triggered, it
-> will crash on null pointer dereference, since we make assumptions
-> over what call_usermodehelper_exec() did.
-> 
-> This has been reported by Sergey when one triggers a a coredump
-> with the following configuration:
-> 
-> ```
-> CONFIG_STATIC_USERMODEHELPER=y
-> CONFIG_STATIC_USERMODEHELPER_PATH=""
-> kernel.core_pattern = |/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h %e
-> ```
-> 
-> The way disabling the umh was designed was that call_usermodehelper_exec()
-> would just return early, without an error. But coredump assumes
-> certain variables are set up for us when this happens, and calls
-> ile_start_write(cprm.file) with a NULL file.
-> 
-> [    2.819676] BUG: kernel NULL pointer dereference, address: 0000000000000020
-> [    2.819859] #PF: supervisor read access in kernel mode
-> [    2.820035] #PF: error_code(0x0000) - not-present page
-> [    2.820188] PGD 0 P4D 0
-> [    2.820305] Oops: 0000 [#1] SMP PTI
-> [    2.820436] CPU: 2 PID: 89 Comm: a Not tainted 5.7.0-rc1+ #7
-> [    2.820680] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190711_202441-buildvm-armv7-10.arm.fedoraproject.org-2.fc31 04/01/2014
-> [    2.821150] RIP: 0010:do_coredump+0xd80/0x1060
-> [    2.821385] Code: e8 95 11 ed ff 48 c7 c6 cc a7 b4 81 48 8d bd 28 ff
-> ff ff 89 c2 e8 70 f1 ff ff 41 89 c2 85 c0 0f 84 72 f7 ff ff e9 b4 fe ff
-> ff <48> 8b 57 20 0f b7 02 66 25 00 f0 66 3d 00 8
-> 0 0f 84 9c 01 00 00 44
-> [    2.822014] RSP: 0000:ffffc9000029bcb8 EFLAGS: 00010246
-> [    2.822339] RAX: 0000000000000000 RBX: ffff88803f860000 RCX: 000000000000000a
-> [    2.822746] RDX: 0000000000000009 RSI: 0000000000000282 RDI: 0000000000000000
-> [    2.823141] RBP: ffffc9000029bde8 R08: 0000000000000000 R09: ffffc9000029bc00
-> [    2.823508] R10: 0000000000000001 R11: ffff88803dec90be R12: ffffffff81c39da0
-> [    2.823902] R13: ffff88803de84400 R14: 0000000000000000 R15: 0000000000000000
-> [    2.824285] FS:  00007fee08183540(0000) GS:ffff88803e480000(0000) knlGS:0000000000000000
-> [    2.824767] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    2.825111] CR2: 0000000000000020 CR3: 000000003f856005 CR4: 0000000000060ea0
-> [    2.825479] Call Trace:
-> [    2.825790]  get_signal+0x11e/0x720
-> [    2.826087]  do_signal+0x1d/0x670
-> [    2.826361]  ? force_sig_info_to_task+0xc1/0xf0
-> [    2.826691]  ? force_sig_fault+0x3c/0x40
-> [    2.826996]  ? do_trap+0xc9/0x100
-> [    2.827179]  exit_to_usermode_loop+0x49/0x90
-> [    2.827359]  prepare_exit_to_usermode+0x77/0xb0
-> [    2.827559]  ? invalid_op+0xa/0x30
-> [    2.827747]  ret_from_intr+0x20/0x20
-> [    2.827921] RIP: 0033:0x55e2c76d2129
-> [    2.828107] Code: 2d ff ff ff e8 68 ff ff ff 5d c6 05 18 2f 00 00 01
-> c3 0f 1f 80 00 00 00 00 c3 0f 1f 80 00 00 00 00 e9 7b ff ff ff 55 48 89
-> e5 <0f> 0b b8 00 00 00 00 5d c3 66 2e 0f 1f 84 0
-> 0 00 00 00 00 0f 1f 40
-> [    2.828603] RSP: 002b:00007fffeba5e080 EFLAGS: 00010246
-> [    2.828801] RAX: 000055e2c76d2125 RBX: 0000000000000000 RCX: 00007fee0817c718
-> [    2.829034] RDX: 00007fffeba5e188 RSI: 00007fffeba5e178 RDI: 0000000000000001
-> [    2.829257] RBP: 00007fffeba5e080 R08: 0000000000000000 R09: 00007fee08193c00
-> [    2.829482] R10: 0000000000000009 R11: 0000000000000000 R12: 000055e2c76d2040
-> [    2.829727] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> [    2.829964] CR2: 0000000000000020
-> [    2.830149] ---[ end trace ceed83d8c68a1bf1 ]---
-> ```
-> 
-> Cc: <stable@vger.kernel.org> # v4.11+
-> Fixes: 64e90a8acb859 ("Introduce STATIC_USERMODEHELPER to mediate call_usermodehelper()")
+Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
+---
+ fs/ceph/mds_client.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Nit, you don't need so many digits, it should be:
-Fixes: 64e90a8acb85 ("Introduce STATIC_USERMODEHELPER to mediate call_usermodehelper()")
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index 486f91f9685b..d2ea755b7c02 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -2708,6 +2708,11 @@ static void __do_request(struct ceph_mds_client *mdsc,
+ 
+ 	put_request_session(req);
+ 
++	if (mdsc->fsc->blacklisted) {
++		err = -EACCES;
++		goto finish;
++	}
++
+ 	mds = __choose_mds(mdsc, req, &random);
+ 	if (mds < 0 ||
+ 	    ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
+-- 
+2.24.2 (Apple Git-127)
 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=199795
-> Reported-by: Tony Vroon <chainsaw@gentoo.org>
-> Reported-by: Sergey Kvachonok <ravenexp@gmail.com>
-> Tested-by: Sergei Trofimovich <slyfox@gentoo.org>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  fs/coredump.c | 8 ++++++++
->  kernel/umh.c  | 5 +++++
->  2 files changed, 13 insertions(+)
-
-Anyway, I can take this in my driver core tree if no one else objects.
-
-thanks,
-
-greg k-h
