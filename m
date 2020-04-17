@@ -2,161 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D601ADA6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 11:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE0D1ADAA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgDQJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 05:51:32 -0400
-Received: from mail1.bemta26.messagelabs.com ([85.158.142.2]:34724 "EHLO
-        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725830AbgDQJva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 05:51:30 -0400
-Received: from [100.113.1.220] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-2.bemta.az-a.eu-central-1.aws.symcld.net id AC/96-36549-E1C799E5; Fri, 17 Apr 2020 09:51:26 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMJsWRWlGSWpSXmKPExsWSoc9koitXMzP
-  O4FIrh8X9r0cZLS7vmsPmwORx59oeNo/Pm+QCmKJYM/OS8isSWDPanzWzFUwUq/i67DBLA+Mb
-  0S5GLg5GgaXMEpu7PjJCOMdYJA639bJBOJsZJX73/gRyODlYBE4wS8xvBbOFBOYzSfy/aQlSJ
-  CRwl1HixsZzrCAJNgELicknHoAViQhESuz4epIRxGYWKJfY/+MbO4gtLJAq8b7lBVRNmsTCWz
-  9YIWw3iRenupkglqlKnHj2HqyeVyBWYtaaucwQy3YySbz4+BusgVNAR2JKywmwBkYBWYkvjau
-  ZIZaJS9x6Mh8sLiEgILFkz3lmCFtU4uXjf6wQ9akSJ5tuMELEdSTOXn8CZStK7Dm3EKpXVuLS
-  /G6gOAeQ7Svx6I01RFhL4tDy1VDlFhJLultZIEpUJP4dqoQI50gc23GaBcJWl2j5OI8VwpaRm
-  Da9gQnkFQmBKSwSC/YdYp7AaDALydWzgEYxC2hKrN+lDxFWlJjS/ZB9FjgkBCVOznzCsoCRZR
-  WjZVJRZnpGSW5iZo6uoYGBrqGhsa6xrqGRkV5ilW6iXmqpbnJqXklRIlBWL7G8WK+4Mjc5J0U
-  vL7VkEyMw3aQUMlftYLy4/L3eIUZJDiYlUV7DqplxQnxJ+SmVGYnFGfFFpTmpxYcYNTg4BK4c
-  PDKbUYolLz8vVUmC9wlInWBRanpqRVpmDjAlwpRKcPAoifC+AknzFhck5hZnpkOkTjFackx4O
-  XcRM8fOo/OA5JG5SxcxC4HNkxLnNa8GahAAacgozYMbB0vblxhlpYR5GRkYGIR4ClKLcjNLUO
-  VfMYpzMCoJ8yqDrOXJzCuB2/oK6CAmoIOiHaaDHFSSiJCSamCymCRsePjyX4Z9H3YVr//67sU
-  99p4dsxaGha9M+vr0xc+3zmUWrh8kjA3nmuso/J+T9JqHd3m338c7s+WbNmhvF2yP65+wSGTy
-  HL+AyeLMyU83Ppx0uZPZbsLuOTFHX5+b19z4++0/xdD2G4xp590DDFh5N3T/vGAUbfmwy73iv
-  /YW7mVivMuXnk1aZrxwXRnH6lD1wKScbYIue590XbuRoCrebn2Tf1lApP/K/SXuZd88BM+w3t
-  Db/U5oVdSdbT/vFfeaHnoqxpj/YmvHuYNPRapUDedImE9sc2I2eu/9MWvK7wUKVguYmWTfLNx
-  p8Dmk11Jdw/HT27DdkR8XiQu87M6WMZ47cUVhbYriUqFzSizFGYmGWsxFxYkAJxO0V1YEAAA=
-X-Env-Sender: Adam.Thomson.Opensource@diasemi.com
-X-Msg-Ref: server-24.tower-229.messagelabs.com!1587117085!3253102!1
-X-Originating-IP: [104.47.2.52]
-X-SYMC-ESS-Client-Auth: mailfrom-relay-check=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.50.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 26854 invoked from network); 17 Apr 2020 09:51:26 -0000
-Received: from mail-db5eur01lp2052.outbound.protection.outlook.com (HELO EUR01-DB5-obe.outbound.protection.outlook.com) (104.47.2.52)
-  by server-24.tower-229.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 17 Apr 2020 09:51:26 -0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b9MH7yQKYRk90a98NRTw6dmD5mI/DV38T0J4iH9WU1mNLlMLCea27hLMLZykpBz0k/mtJCeVgWJOroYMqEjVX5/ayV95Nc8zh39zmpteRhsJ6SHsCWeQlZAXp2cZO6o/sCnj2pxSfJO5nIw12wbjnd9UpxPwcMe0yM0PYk5X1HBimOLH5R9QPLsuOc34MG9/sddGrbK8Wax83+8zzBcaeDAkVNykUV+dQD1YoMLvbv0+S4ou0adsTcSMDsYzXfclIJhdFjT+Le9ttAd4JaJ7wP1x0/XiWvDIzmpIu6XYwl+Wvihk80+QDyOAiXJUlOEFP99fB1vynvAZUASq/45bHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hl79i8Crwu80MjJwwwJw/+QU7olPIg0FgIVhSorO3dw=;
- b=XBsDF1oaPbOZG/f2WGiSU9qdBeIKI6aJNFPomqbtMTLOOQ/oUPwx5tGxnGeYcKBAN1s7wJrjFvMIx6RA/JJX2VlvT0KbspKtgbFBl8LDHVU/olltQ9XelpZ2Bt3jdoxnPng1jsiDPD6S+Q9e5BVYuKeQOAXi4XfYEf3iP1QzvsnwZRwozjDWlt8GCk/Dmi1iDsrBhebArJLdWT/FUzYTR/PbW3u6PbusSYAwJpA0BW4LJa8p8oTdP82vBfgVBAo5YnEjkLAvT9vYCEuLqZSwQQlX7IvlgMJrT8A4khPhe51bQTKkquw7KLyZCx8AV5Dvu5ETBHX1h7ur94MdzY9GrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hl79i8Crwu80MjJwwwJw/+QU7olPIg0FgIVhSorO3dw=;
- b=mrFNnS6Yj04gDCFVaW3MA7vpGQ1tGRInnO513h8r9wNM+NKGRq9bCZqcy1w2D39/IQiRDoBkS7OOgEUlBixD/LHTxqyRL5NBmZQTXRNrOhDtRq4C/0l7EQIAbdnGkXBKq5PLYCq6OSZtnFOCnrWNgxliE++c3DWJWTIGsHiXop0=
-Received: from AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:52::13)
- by AM6PR10MB2758.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:a4::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Fri, 17 Apr
- 2020 09:51:24 +0000
-Received: from AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::993f:cdb5:bb05:b01]) by AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::993f:cdb5:bb05:b01%7]) with mapi id 15.20.2900.028; Fri, 17 Apr 2020
- 09:51:24 +0000
-From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Support Opensource <Support.Opensource@diasemi.com>
-Subject: RE: [RESEND PATCH v2 1/2] mfd: da9063: Fix revision handling to
- correctly select reg tables
-Thread-Topic: [RESEND PATCH v2 1/2] mfd: da9063: Fix revision handling to
- correctly select reg tables
-Thread-Index: AQHWC/ENSER4gvf5u0yNBk4BhQAwn6h7chgAgAARuaCAAZgzAIAABiBA
-Date:   Fri, 17 Apr 2020 09:51:24 +0000
-Message-ID: <AM6PR10MB2263F5CE9B3627A256BD695880D90@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
-References: <cover.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
- <f830d0c2c2210253855d26c05b0e941e9e6f77a9.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
- <20200416075944.GU2167633@dell>
- <AM6PR10MB22634D3B677E57EED0514DF680D80@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
- <20200417092410.GF2167633@dell>
-In-Reply-To: <20200417092410.GF2167633@dell>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [165.225.80.85]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b7fed6d0-fe53-4988-fb99-08d7e2b4e451
-x-ms-traffictypediagnostic: AM6PR10MB2758:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR10MB2758F10BE862D7E7691DE213A7D90@AM6PR10MB2758.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0376ECF4DD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(136003)(346002)(396003)(376002)(366004)(39850400004)(4326008)(107886003)(478600001)(5660300002)(81156014)(71200400001)(55016002)(52536014)(9686003)(8676002)(66946007)(26005)(66446008)(33656002)(76116006)(66476007)(66556008)(2906002)(86362001)(7696005)(186003)(64756008)(53546011)(6506007)(316002)(54906003)(55236004)(8936002)(110136005);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: diasemi.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Sg/SWukXSYeAxFzYR7MpvfctvdL4IsyCoKN2GCLB0eB/Za1tTY9CK6WzL+3NiJwhnplb2Hd/ZcG/6kQ02qk/q/HI1oLxV0aQWjKsHDNQZ5pw6azv7JxJTunBhOl9rVW6Kv7wh6yCLisebJjDjkMfCnoRyDxBiHsIMxGiOFeikqltu3Sr5HuoR6fwG5Ukt33MxFGOR7RP3W3WAHzqs/GrkKceFXysHX1GaPrljWx4AUA3nwR9KXauxRCua5bGBNZCgVrzPVMN1TqMNuEP/Nj943aOm7aiFxY/1lg3U9bvWfimRuclH9popfv3hGBcCOSzoFqKwhvx4VJGTPF57oVgFb+gwyvFEqCyLQKNgOiOMhocgWM72xci6Aj4bk+/8BC379QZX4Y4tsqvLJSl2OInk8GNS7dHmhdbsNf5IazI7yCfG3AeKV0iVWdCBScVkBrK
-x-ms-exchange-antispam-messagedata: sG0dM+a7w0IxB9EFttip+ieEsviPVHca6t9zn3VBDMvpICOLB1kFhBKvH/io7kLT6z1qjtpr9T5XU1D84EnQhW2bVqPqieb+ikxgwubOBnFp6GLIxnXOiacWNkTgSrJ5LLmYWnqqPmAVuh1cCmvS0g==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728249AbgDQKBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:01:50 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4009 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726207AbgDQKBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 06:01:49 -0400
+IronPort-SDR: btkvFp/W9MklE5QSu5bXAZcTLRxyiE3+sZYC+EqxtaIY2ALeXWr6AADNCK437WvLyYrgChzee6
+ eC5silteccQw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2020 03:01:48 -0700
+IronPort-SDR: RRMDjiqrvQ2P/0gurYOYvUWAJrG/sp/kx652ixtBwkFyqw2s4kkhPO4KjOMYq+gVZJLivZFFld
+ 11a36OM2x6Jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,394,1580803200"; 
+   d="scan'208";a="454679512"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Apr 2020 03:01:41 -0700
+Date:   Fri, 17 Apr 2020 05:52:02 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Zeng, Xin" <xin.zeng@intel.com>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eskultet@redhat.com" <eskultet@redhat.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>
+Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
+ VFIO live migration
+Message-ID: <20200417095202.GD16688@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200413055201.27053-1-yan.y.zhao@intel.com>
+ <20200417104450.2d2f2fa9.cohuck@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7fed6d0-fe53-4988-fb99-08d7e2b4e451
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 09:51:24.7114
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xZXRTGCjaX3jwag6yHBAkx5/gpdyBLqClFmVytxcPSzlHJl7/zpbx2gNa3JZ9VUhsuCjKXozTaEAdh8QRfJXh8kpVdJo8qXjpZxzv8cedp0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB2758
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417104450.2d2f2fa9.cohuck@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTcgQXByaWwgMjAyMCAxMDoyNCwgTGVlIEpvbmVzIHdyb3RlOg0KDQo+ID4gPiA+ICsJCXJl
-dHVybiAtRUlOVkFMOw0KPiA+ID4NCj4gPiA+IERvIHlvdSB3YW50IHRvIGZhaWwgc2lsZW50bHkg
-aGVyZT8NCj4gPg0KPiA+IFdlbGwgYW4gZXJyb3IgbWVzc2FnZSBpcyBwcmludGVkIGluIHRoZSBj
-YWxsaW5nIGNvZGUsIHNvIGRpZG4ndCBmZWVsIGxpa2UgaXQNCj4gPiB3YXMgbmVjZXNzYXJ5IHRv
-IGhhdmUgYWRkaXRpb25hbCBkZWJ1ZyBoZXJlLiBGZWx0IGxpa2UgYmxvYXQuDQo+IA0KPiBBcyBh
-IHVzZXIsIEkgd291bGQgcHJlZmVyIGEgbW9yZSBzcGVjaWZpYyByZWFzb24uDQo+IA0KPiBUaHVz
-LCBJIHdvdWxkIHByb3ZpZGUgYW4gZXJyb3IgbWVzc2FnZSBoZXJlIGFuZCBvbWl0IHRoZSBnZW5l
-cmljIG9uZS4NCg0KSSBjYW4gdXBkYXRlIGFsdGhvdWdoIEknbGwgb2YgY291cnNlIHRoZW4gbmVl
-ZCB0byBkbyBzaW1pbGFyIG1lc3NhZ2VzIGZvciB0aGUNCm90aGVyIGVycm9yIGxlZ3Mgb2YgdGhp
-cyBmdW5jdGlvbi4gRldJVywgYXMgdGhpcyBpcyBvbmx5IGJlaW5nIGNhbGxlZCBvbmNlIGluDQp0
-aGUgc2FtZSBmaWxlIHRoaXMgZXJyb3IgbGVnIG9mIGNvZGUgY3VycmVudGx5IGNhbiBuZXZlciBv
-Y2N1ci4NCg0KPiA+ID4gPiArfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICtlbnVtIHsNCj4gPiA+ID4g
-KwlEQTkwNjNfREVWX0lEX1JFRyA9IDAsDQo+ID4gPiA+ICsJREE5MDYzX1ZBUl9JRF9SRUcsDQo+
-ID4gPiA+ICsJREE5MDYzX0NISVBfSURfUkVHUywNCj4gPiA+ID4gK307DQo+ID4gPiA+ICsNCj4g
-PiA+ID4gK3N0YXRpYyBpbnQgZGE5MDYzX2dldF9kZXZpY2VfdHlwZShzdHJ1Y3QgaTJjX2NsaWVu
-dCAqaTJjLCBzdHJ1Y3QgZGE5MDYzDQo+ID4gPiAqZGE5MDYzKQ0KPiA+ID4gPiArew0KPiA+ID4g
-PiArCWludCByZXQ7DQo+ID4gPiA+ICsJdTggYnVmW0RBOTA2M19DSElQX0lEX1JFR1NdOw0KPiA+
-ID4NCj4gPiA+IFJlYWxseSBzbWFsbCBuaXQ6IENvdWxkIHlvdSByZXZlcnNlIHRoZXNlIHBsZWFz
-ZS4NCj4gPg0KPiA+IFllcCwgYWdyZWVkLg0KPiA+DQo+ID4gPg0KPiA+ID4gPiArCXJldCA9IGRh
-OTA2M19pMmNfYmxvY2tyZWdfcmVhZChpMmMsIERBOTA2M19SRUdfREVWSUNFX0lELCBidWYsDQo+
-ID4gPiA+ICsJCQkJICAgICAgIERBOTA2M19DSElQX0lEX1JFR1MpOw0KPiA+ID4gPiArCWlmIChy
-ZXQgPCAwKSB7DQo+ID4gPg0KPiA+ID4gaWYgKHJldCkNCj4gPiA+DQo+ID4gPiBPciBiZXR0ZXIg
-eWV0LCBhcyB0aGlzIGlzIGEgcmVhZCBmdW5jdGlvbiwgeW91IGNvdWxkIGp1c3QgcmV0dXJuDQo+
-ID4gPiBpMmNfdHJhbnNmZXIoKSBhbmQgZG8gdGhlIGFwcHJvcHJpYXRlIGVycm9yIGNoZWNraW5n
-IGhlcmUgKmluc3RlYWQqLg0KPiA+DQo+ID4gSSB0aGluayBnaXZlbiB0aGF0IHRoZSBmdW5jdGlv
-biBoYW5kbGVzIGFsbCBvZiB0aGUgSTJDIHNwZWNpZmljIHN0dWZmIEknZCBwcmVmZXINCj4gPiBp
-dCBiZSBrZXB0IHRoZXJlLiBMb2dpY2FsbHkgdGhhdCB0byBtZSBtYWtlcyBtb3JlIHNlbnNlLiBD
-YW4gY2hhbmdlIHRoaXMgdG8NCj4gPiAnaWYgKHJldCknDQo+IA0KPiBZZXMsIG5vdCB0aGF0IEkg
-dW5kZXJzdGFuZCB0aGUgbWVzc2FnZSBsZW5ndGggKDMpIGhhcyBtb3JlIGRvIHRvIHdpdGgNCj4g
-dGhlIEkyQyBpbnRlcmFjdGlvbnMgKHJhdGhlciB0aGFuIGEgZGVyaXNpdmUgb2YgJ2NvdW50Jyks
-IGl0IG1ha2VzDQo+IHNlbnNlIHRvIGhhbmRsZSB0aGF0IGluc2lkZSB0aGUgZnVuY3Rpb24uDQo+
-IA0KPiBIb3dldmVyLCBpdCBkb2VzIHNlZW0gb2RkIHRvIGhhbmRsZSB0aGUgcmV0dXJuIHZhbHVl
-IG9mIGEgKl9yZWFkKCkNCj4gZnVuY3Rpb24gaW4gdGhpcyB3YXkuICBUaGV5IHVzdWFsbHkgcmV0
-dXJuIHRoZSBudW1iZXIgb2YgYnl0ZXMgcmVhZCwNCj4gd2hpY2ggaW4gdGhpcyBjYXNlIHdvdWxk
-IGJlIERBOTA2M19DSElQX0lEX1JFR1MgKGNvdW50KSwgcmlnaHQ/DQoNCldlbGwgcmVnbWFwX2J1
-bGtfcmVhZCBhbmQgcmVnbWFwX3JlYWQgcmV0dXJuIDAgZm9yIHN1Y2Nlc3MgYW5kIG5lZ2F0aXZl
-IGZvcg0KZmFpbHVyZSBzbyBJJ2QgZGlzYWdyZWUgb24gdGhpcyBwYXJ0Lg0K
+On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
+> On Mon, 13 Apr 2020 01:52:01 -0400
+> Yan Zhao <yan.y.zhao@intel.com> wrote:
+> 
+> > This patchset introduces a migration_version attribute under sysfs of VFIO
+> > Mediated devices.
+> > 
+> > This migration_version attribute is used to check migration compatibility
+> > between two mdev devices.
+> > 
+> > Currently, it has two locations:
+> > (1) under mdev_type node,
+> >     which can be used even before device creation, but only for mdev
+> >     devices of the same mdev type.
+> > (2) under mdev device node,
+> >     which can only be used after the mdev devices are created, but the src
+> >     and target mdev devices are not necessarily be of the same mdev type
+> > (The second location is newly added in v5, in order to keep consistent
+> > with the migration_version node for migratable pass-though devices)
+> 
+> What is the relationship between those two attributes?
+> 
+(1) is for mdev devices specifically, and (2) is provided to keep the same
+sysfs interface as with non-mdev cases. so (2) is for both mdev devices and
+non-mdev devices.
+
+in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
+is binding to vfio-pci, but is able to register migration region and do
+migration transactions from a vendor provided affiliate driver),
+the vendor driver would export (2) directly, under device node.
+It is not able to provide (1) as there're no mdev devices involved.
+
+> Is existence (and compatibility) of (1) a pre-req for possible
+> existence (and compatibility) of (2)?
+>
+no. (2) does not reply on (1).
+
+> Does userspace need to check (1) or can it completely rely on (2), if
+> it so chooses?
+>
+I think it can completely reply on (2) if compatibility check before
+mdev creation is not required.
+
+> If devices with a different mdev type are indeed compatible, it seems
+> userspace can only find out after the devices have actually been
+> created, as (1) does not apply?
+yes, I think so. 
+
+> One of my worries is that the existence of an attribute with the same
+> name in two similar locations might lead to confusion. But maybe it
+> isn't a problem.
+>
+Yes, I have the same feeling. but as (2) is for sysfs interface
+consistency, to make it transparent to userspace tools like libvirt,
+I guess the same name is necessary?
+
+Thanks
+Yan
+> > 
+> > Patch 1 defines migration_version attribute for the first location in
+> > Documentation/vfio-mediated-device.txt
+> > 
+> > Patch 2 uses GVT as an example for patch 1 to show how to expose
+> > migration_version attribute and check migration compatibility in vendor
+> > driver.
+> > 
+> > Patch 3 defines migration_version attribute for the second location in
+> > Documentation/vfio-mediated-device.txt
+> > 
+> > Patch 4 uses GVT as an example for patch 3 to show how to expose
+> > migration_version attribute and check migration compatibility in vendor
+> > driver.
+> > 
+> > (The previous "Reviewed-by" and "Acked-by" for patch 1 and patch 2 are
+> > kept in v5, as there are only small changes to commit messages of the two
+> > patches.)
+> > 
+> > v5:
+> > added patch 2 and 4 for mdev device part of migration_version attribute.
+> > 
+> > v4:
+> > 1. fixed indentation/spell errors, reworded several error messages
+> > 2. added a missing memory free for error handling in patch 2
+> > 
+> > v3:
+> > 1. renamed version to migration_version
+> > 2. let errno to be freely defined by vendor driver
+> > 3. let checking mdev_type be prerequisite of migration compatibility check
+> > 4. reworded most part of patch 1
+> > 5. print detailed error log in patch 2 and generate migration_version
+> > string at init time
+> > 
+> > v2:
+> > 1. renamed patched 1
+> > 2. made definition of device version string completely private to vendor
+> > driver
+> > 3. reverted changes to sample mdev drivers
+> > 4. described intent and usage of version attribute more clearly.
+> > 
+> > 
+> > Yan Zhao (4):
+> >   vfio/mdev: add migration_version attribute for mdev (under mdev_type
+> >     node)
+> >   drm/i915/gvt: export migration_version to mdev sysfs (under mdev_type
+> >     node)
+> >   vfio/mdev: add migration_version attribute for mdev (under mdev device
+> >     node)
+> >   drm/i915/gvt: export migration_version to mdev sysfs (under mdev
+> >     device node)
+> > 
+> >  .../driver-api/vfio-mediated-device.rst       | 183 ++++++++++++++++++
+> >  drivers/gpu/drm/i915/gvt/Makefile             |   2 +-
+> >  drivers/gpu/drm/i915/gvt/gvt.c                |  39 ++++
+> >  drivers/gpu/drm/i915/gvt/gvt.h                |   7 +
+> >  drivers/gpu/drm/i915/gvt/kvmgt.c              |  55 ++++++
+> >  drivers/gpu/drm/i915/gvt/migration_version.c  | 170 ++++++++++++++++
+> >  drivers/gpu/drm/i915/gvt/vgpu.c               |  13 +-
+> >  7 files changed, 466 insertions(+), 3 deletions(-)
+> >  create mode 100644 drivers/gpu/drm/i915/gvt/migration_version.c
+> > 
+> 
