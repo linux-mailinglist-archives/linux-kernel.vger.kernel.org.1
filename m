@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD6A1ADF2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BF61ADF5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730957AbgDQOFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:05:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60075 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730859AbgDQOE6 (ORCPT
+        id S1731141AbgDQOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:06:36 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:58241 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731096AbgDQOGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:04:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587132297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tQvUbry9IMyI28UebIhxTY+721rvzbcFmWQGCJ8qdIY=;
-        b=T9tVEiLDfcJfDBRxirU1yuZcOB/t88BE4B5TJ6vxnHTGpUPsMf8tHixsiFEuW/c2mRxe6k
-        9uKEeMhJyenXHh6soMySJqWIYMHVc2POAA2IkaJYsDmd9uoMHz1OU3nrmkHujx/pA69ClY
-        YZZg6BbwwF1pbZ+xyUDR7nlgtQcVEaQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-TF4O6vvGNhWdNd59BSlMtg-1; Fri, 17 Apr 2020 10:04:54 -0400
-X-MC-Unique: TF4O6vvGNhWdNd59BSlMtg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 17 Apr 2020 10:06:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587132393; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=llUPXRExLvxCFVVAYxO7alUC0qq9GxbKaujBs9DQ9Zc=; b=LhlVqdAEmWw8Gh8WTqrFAbvzbe0jW0Qnu1C20ikcAUSCVNosSL3S0o2ygbj+GE9WeBe2N7GU
+ cR54TuYRnpLAdQoqZ0yJodrP5pOg+OlSn+fbZKQkWsLpYJrRojZbQL1lZCeVgpjsd9595DLu
+ n23KL/kKYlh1LGgZkO1Xyl5nhmU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e99b7d8.7ff5d0422ea0-smtp-out-n02;
+ Fri, 17 Apr 2020 14:06:16 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF69EC690A5; Fri, 17 Apr 2020 14:06:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA04B107B271;
-        Fri, 17 Apr 2020 14:04:53 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C4405C1C5;
-        Fri, 17 Apr 2020 14:04:52 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     live-patching@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH v2 9/9] module: Remove module_disable_ro()
-Date:   Fri, 17 Apr 2020 09:04:34 -0500
-Message-Id: <fe4dbdc12324b4fe3ade97591e0b11e638aad63f.1587131959.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1587131959.git.jpoimboe@redhat.com>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA109C43636;
+        Fri, 17 Apr 2020 14:06:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DA109C43636
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 13/17] arm64: dts: sdm845: Add OPP tables and power-domains for venus
+Date:   Fri, 17 Apr 2020 19:34:35 +0530
+Message-Id: <1587132279-27659-14-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
+References: <1587132279-27659-1-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-module_disable_ro() has no more users.  Remove it.
+Add the OPP tables in order to be able to vote on the performance state of
+a power-domain.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 ---
- include/linux/module.h |  2 --
- kernel/module.c        | 13 -------------
- 2 files changed, 15 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 40 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 1ad393e62bef..e4ef7b36feda 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -860,10 +860,8 @@ extern int module_sysfs_initialized;
-=20
- #ifdef CONFIG_STRICT_MODULE_RWX
- extern void module_enable_ro(const struct module *mod, bool after_init);
--extern void module_disable_ro(const struct module *mod);
- #else
- static inline void module_enable_ro(const struct module *mod, bool after=
-_init) { }
--static inline void module_disable_ro(const struct module *mod) { }
- #endif
-=20
- #ifdef CONFIG_GENERIC_BUG
-diff --git a/kernel/module.c b/kernel/module.c
-index d36ea8a8c3ec..b1d30ad67e82 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1997,19 +1997,6 @@ static void frob_writable_data(const struct module=
-_layout *layout,
- 		   (layout->size - layout->ro_after_init_size) >> PAGE_SHIFT);
- }
-=20
--/* livepatching wants to disable read-only so it can frob module. */
--void module_disable_ro(const struct module *mod)
--{
--	if (!rodata_enabled)
--		return;
--
--	frob_text(&mod->core_layout, set_memory_rw);
--	frob_rodata(&mod->core_layout, set_memory_rw);
--	frob_ro_after_init(&mod->core_layout, set_memory_rw);
--	frob_text(&mod->init_layout, set_memory_rw);
--	frob_rodata(&mod->init_layout, set_memory_rw);
--}
--
- void module_enable_ro(const struct module *mod, bool after_init)
- {
- 	if (!rodata_enabled)
---=20
-2.21.1
-
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index e6f1af1..67e3b90 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3294,14 +3294,50 @@
+ 			};
+ 		};
+ 
++		venus_opp_table: venus-opp-table {
++			compatible = "operating-points-v2";
++
++			opp-100000000 {
++				opp-hz = /bits/ 64 <100000000>;
++				required-opps = <&rpmhpd_opp_min_svs>;
++			};
++
++			opp-200000000 {
++				opp-hz = /bits/ 64 <200000000>;
++				required-opps = <&rpmhpd_opp_low_svs>;
++			};
++
++			opp-320000000 {
++				opp-hz = /bits/ 64 <320000000>;
++				required-opps = <&rpmhpd_opp_svs>;
++			};
++
++			opp-380000000 {
++				opp-hz = /bits/ 64 <380000000>;
++				required-opps = <&rpmhpd_opp_svs_l1>;
++			};
++
++			opp-444000000 {
++				opp-hz = /bits/ 64 <444000000>;
++				required-opps = <&rpmhpd_opp_nom>;
++			};
++
++			opp-533000000 {
++				opp-hz = /bits/ 64 <533000000>;
++				required-opps = <&rpmhpd_opp_turbo>;
++			};
++		};
++
+ 		venus: video-codec@aa00000 {
+ 			compatible = "qcom,sdm845-venus-v2";
+ 			reg = <0 0x0aa00000 0 0xff000>;
+ 			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+ 			power-domains = <&videocc VENUS_GDSC>,
+ 					<&videocc VCODEC0_GDSC>,
+-					<&videocc VCODEC1_GDSC>;
+-			power-domain-names = "venus", "vcodec0", "vcodec1";
++					<&videocc VCODEC1_GDSC>,
++					<&rpmhpd SDM845_CX>;
++			power-domain-names = "venus", "vcodec0", "vcodec1", "opp-pd";
++			operating-points-v2 = <&venus_opp_table>;
+ 			clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
+ 				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+ 				 <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
