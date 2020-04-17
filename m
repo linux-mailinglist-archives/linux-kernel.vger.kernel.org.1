@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532181ADBB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66241ADBAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 12:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730074AbgDQK47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 06:56:59 -0400
-Received: from www381.your-server.de ([78.46.137.84]:55522 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729558AbgDQK46 (ORCPT
+        id S1729951AbgDQK4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 06:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729648AbgDQK4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:56:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=j+cEgbwCSj5I0F+f9tOfnSu7VZ50eB1wG2coGkbb6Zc=; b=VCPgZQK+tCpseUS8lA5ORgNM8B
-        vEz9p4GsBsvFB9QW51fnBm43zIJsX4ImBZBvKPUZapov2sd9mIJjiVTFl3uOTSGjzeeTAwec3ckEw
-        bdAeUeLgRffNatGv1NGelKMylqPQqMpvEREuXXZM8wHub0c1kDQc+GfIAIJHTwj6EzPAKMNA/TsNW
-        BNn3EWJh7Np/5RaY7sYJ+1AfSTcMGrXOcmJbNfBPyoZ677lVJHehEfhplJuU1RZrivJny31csYEm4
-        cBgyNdPrfFDq6hQVIVSZdxcHnfGIz/EqgbKpFOBZNh5K96ArKEbabWBnlpS5KpqNP1827iUK5P55k
-        GE6QgsGQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <lars@metafoo.de>)
-        id 1jPOfx-0007Qi-Ke; Fri, 17 Apr 2020 12:56:49 +0200
-Received: from [82.135.79.46] (helo=[192.168.178.20])
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1jPOfx-000Eah-4j; Fri, 17 Apr 2020 12:56:49 +0200
-Subject: Re: [PATCH v4 2/3] iio: DAC extension for ltc2634-12/10/8
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Fri, 17 Apr 2020 06:56:05 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1C5C061A0F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:56:05 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x25so2493300wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 03:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Zy7B31yVbo24Z3sSwOmI0rE3FMjeyfjDv352hxUkToU=;
+        b=sdM56yL6/sZg7Jddl9k0izO39qBUzuzsdNoFJjuGk7smxTdU4SBNE5mevCf8LoiCfi
+         8avOtHMfgdjO4CdrlsZLVLNWbiW9gjYyH5QxZGAnLBR38EzcK77BU61Q5R8Ip4UiueEC
+         QOa6+6TIJp7q8TsGM0iZKF2JgoHbAq1y+eMiCB4DyfZnoY52PmrRVlPF4Xf7SQqVUjMa
+         jTZtluk1GKkPwLT69x5df69+flCiPzQ1g0lL4I/lKyu/pcPFDJJzt6YGni3NlUHxvrEC
+         JJCbAsg+2Vz8I8GvwIBxRQhaaI0KETDACgk1gspI90r688Vx9NwSI3Hqp0fzw4MCqkra
+         nVYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Zy7B31yVbo24Z3sSwOmI0rE3FMjeyfjDv352hxUkToU=;
+        b=SN451cgfFYEtqbKUKFlAe9aIGLcQt9TJXxPrFM/xS/Qf0w01j/eCwbmPkoZ48Tk+Az
+         wqO5GVHgfWhwhwPhyFnsXWuXvWBbQVh1wYmF8Oe5Qmg8psBmbTWjvqKZ75mLbR5RzAg8
+         oqw5TP1vWWyLWc/v8LdGcqOdIwU47gy/mHohWyby67K25aMCoTzxwH1kCOzuRjE7m5ek
+         8UIMsVsPIvr9kf2kaHBckt3wGtkHqHhmHTVErzRzQlPkmpOi3p/wiLxjKbK+IH7RcK3X
+         fUnvBU+nj82C8aufNRstRr4wQmib73BdidN/fal0xKga9GR5FFam3DEy8nXPIRM/ye/P
+         XyHA==
+X-Gm-Message-State: AGi0PubGALqx6rx2iUxGPIBVKwX7ukBwpDrumacvIF3+PcmsKml7ePjJ
+        9qKpMHC0wqV5RLhga9VlR3or0A==
+X-Google-Smtp-Source: APiQypKpvJGamn20c9w6PhxX78HILd35jS6h/JDY9Q5LuEqNOc6YBop+EvV1mgFml8+qiNKp0yb9og==
+X-Received: by 2002:a1c:4b16:: with SMTP id y22mr2792717wma.170.1587120963825;
+        Fri, 17 Apr 2020 03:56:03 -0700 (PDT)
+Received: from dell ([95.149.164.124])
+        by smtp.gmail.com with ESMTPSA id b66sm7293958wmh.12.2020.04.17.03.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 03:56:03 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 11:57:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Darren Hart <dvhart@infradead.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200416012016.21422-1-chris.ruehl@gtsys.com.hk>
- <20200416012016.21422-3-chris.ruehl@gtsys.com.hk>
- <20200416065655.cxy67hlj267dpjrw@pengutronix.de>
- <e4a6af21-a8ec-e9b5-2c5e-1e109888f0c7@gtsys.com.hk>
- <CAHp75VfN4Fj0J4n2xKmK8fDKACT0epo_xXQnMzKDW-Y1XH46Pw@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <cdea4538-ef75-f000-8b9c-db10a9bdd173@metafoo.de>
-Date:   Fri, 17 Apr 2020 12:56:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 19/20] platform/x86: intel_pmc_ipc: Convert to MFD
+Message-ID: <20200417105704.GE3737@dell>
+References: <20200416081552.68083-1-mika.westerberg@linux.intel.com>
+ <20200416081552.68083-20-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfN4Fj0J4n2xKmK8fDKACT0epo_xXQnMzKDW-Y1XH46Pw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25784/Thu Apr 16 13:58:59 2020)
+In-Reply-To: <20200416081552.68083-20-mika.westerberg@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/20 12:27 PM, Andy Shevchenko wrote:
-> On Thu, Apr 16, 2020 at 10:15 AM Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
->> On 16/4/2020 2:56 pm, Uwe Kleine-König wrote:
->>> dropped stefan.popa@analog.com from recipents as the address bounces for
->>> me.
->> the maintainer script added this email automatically , I will remove it
->> in the future mails.
-> Somebody from Analog Devs should sent a patch as an urgent fix.
-> I also suffered from very same bounces.
-https://lkml.org/lkml/2020/3/21/63
+On Thu, 16 Apr 2020, Mika Westerberg wrote:
 
+> This driver only creates a bunch of platform devices sharing resources
+> belonging to the PMC device. This is pretty much what MFD subsystem is
+> for so move the driver there, renaming it to intel_pmc_bxt.c which
+> should be more clear what it is.
+> 
+> MFD subsystem provides nice helper APIs for subdevice creation so
+> convert the driver to use those. Unfortunately the ACPI device includes
+> separate resources for most of the subdevices so we cannot simply call
+> mfd_add_devices() to create all of them but instead we need to call it
+> separately for each device.
+> 
+> The new MFD driver continues to expose two sysfs attributes that allow
+> userspace to send IPC commands to the PMC/SCU to avoid breaking any
+> existing applications that may use these. Generally this is bad idea so
+> document this in the ABI documentation.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  .../ABI/obsolete/sysfs-driver-intel_pmc_bxt   |  22 +
+>  arch/x86/include/asm/intel_pmc_ipc.h          |  47 --
+>  arch/x86/include/asm/intel_telemetry.h        |   1 +
+>  drivers/mfd/Kconfig                           |  16 +-
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/intel_pmc_bxt.c                   | 468 +++++++++++++
+>  drivers/platform/x86/Kconfig                  |  16 +-
+>  drivers/platform/x86/Makefile                 |   1 -
+>  drivers/platform/x86/intel_pmc_ipc.c          | 645 ------------------
+>  .../platform/x86/intel_telemetry_debugfs.c    |  12 +-
+>  drivers/platform/x86/intel_telemetry_pltdrv.c |   2 +
+>  drivers/usb/typec/tcpm/Kconfig                |   2 +-
+>  drivers/watchdog/iTCO_wdt.c                   |  25 +-
+>  include/linux/mfd/intel_pmc_bxt.h             |  53 ++
+>  include/linux/platform_data/itco_wdt.h        |  11 +-
+>  15 files changed, 602 insertions(+), 720 deletions(-)
+>  create mode 100644 Documentation/ABI/obsolete/sysfs-driver-intel_pmc_bxt
+>  delete mode 100644 arch/x86/include/asm/intel_pmc_ipc.h
+>  create mode 100644 drivers/mfd/intel_pmc_bxt.c
+>  delete mode 100644 drivers/platform/x86/intel_pmc_ipc.c
+>  create mode 100644 include/linux/mfd/intel_pmc_bxt.h
 
+Looks good to me know.
+
+Thanks for taking the time to realise my review comments.
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
