@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC9F1AE02C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB4E1AE02E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 16:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgDQOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 10:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgDQOvN (ORCPT
+        id S1728251AbgDQOvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 10:51:49 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58928 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727850AbgDQOvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 10:51:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B91C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 07:51:13 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 047E72A22E0
-Subject: Re: [PATCH v2 1/7] drm/bridge: ps8640: Get the EDID from eDP control
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        dri-devel@lists.freedesktop.org
-References: <20200416155720.2360443-1-enric.balletbo@collabora.com>
- <20200416155720.2360443-2-enric.balletbo@collabora.com>
- <20200416172215.GK4796@pendragon.ideasonboard.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <95bf8d3b-3daf-c505-eeb0-e5ef167085ac@collabora.com>
-Date:   Fri, 17 Apr 2020 16:51:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 17 Apr 2020 10:51:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587135107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yQIzhOfMzw73993cxueMJNgEnkW4RYZ7tWZBL73PzbE=;
+        b=jIcIMrDaY7TQIsZDLaWXOhvnly+z+svou3Li00YOUTsZ8NCu3J++sfXXDE238OgP0AkqDg
+        Tb8V3O29CH1IPeCOtdk24XGofvpHIJ/uW0M78BCq9LPiPalX58NJ3IqHG9D7cdM3UXx2jb
+        BMMd2DG/L1AkcyiiZ06n598v5XptLvc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-Ke1Kwz6rMoeXfhkRC1yUsQ-1; Fri, 17 Apr 2020 10:51:41 -0400
+X-MC-Unique: Ke1Kwz6rMoeXfhkRC1yUsQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 152EBDB60;
+        Fri, 17 Apr 2020 14:51:40 +0000 (UTC)
+Received: from treble (ovpn-116-146.rdu2.redhat.com [10.10.116.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF19618A85;
+        Fri, 17 Apr 2020 14:51:38 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 09:51:36 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v2 7/9] x86/module: Use text_poke() for late relocations
+Message-ID: <20200417145136.ls3tafthtql6prhn@treble>
+References: <cover.1587131959.git.jpoimboe@redhat.com>
+ <572b12b6adcdab29c54cfd41ca8b4672abad628c.1587131959.git.jpoimboe@redhat.com>
+ <20200417142944.GF20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200416172215.GK4796@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200417142944.GF20730@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Fri, Apr 17, 2020 at 04:29:44PM +0200, Peter Zijlstra wrote:
+> On Fri, Apr 17, 2020 at 09:04:32AM -0500, Josh Poimboeuf wrote:
+> > +int apply_relocate_add(Elf64_Shdr *sechdrs,
+> > +		   const char *strtab,
+> > +		   unsigned int symindex,
+> > +		   unsigned int relsec,
+> > +		   struct module *me)
+> > +{
+> > +	int ret;
+> > +	bool early = me->state == MODULE_STATE_UNFORMED;
+> > +	void *(*write)(void *, const void *, size_t) = memcpy;
+> > +
+> > +	if (!early) {
+> > +		write = text_poke;
+> > +		mutex_lock(&text_mutex);
+> > +	}
+> > +
+> > +	ret = __apply_relocate_add(sechdrs, strtab, symindex, relsec, me,
+> > +				   write);
+> > +
+> > +	if (!early) {
+> > +		mutex_unlock(&text_mutex);
+> > +		text_poke_sync();
+> 
+> I'm thinking text_poke_sync() wants to be inside text_mutex. Although
+> given that nothing should be running that text, it really doesn't
+> matter.
 
-On 16/4/20 19:22, Laurent Pinchart wrote:
-> Hi Enric,
-> 
-> Thank you for the patch.
-> 
-> On Thu, Apr 16, 2020 at 05:57:13PM +0200, Enric Balletbo i Serra wrote:
->> The PS8640 DSI-to-eDP bridge can retrieve the EDID, so implement the
->> .get_edid callback and set the flag to indicate the core to use it.
->>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->> Changes in v2: None
->>
->>  drivers/gpu/drm/bridge/parade-ps8640.c | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
->> index d3a53442d449..956b76e0a44d 100644
->> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
->> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
->> @@ -242,8 +242,18 @@ static int ps8640_bridge_attach(struct drm_bridge *bridge,
->>  	return ret;
->>  }
->>  
->> +static struct edid *ps8640_bridge_get_edid(struct drm_bridge *bridge,
->> +					   struct drm_connector *connector)
->> +{
->> +	struct ps8640 *ps_bridge = bridge_to_ps8640(bridge);
->> +
->> +	return drm_get_edid(connector,
->> +			    ps_bridge->page[PAGE0_DP_CNTL]->adapter);
-> 
-> This will only work if the DDC signals are connected to the PS8640
-> (quite obviously). Is that guaranteed, or could some systems connect
-> them directory to an SoC I2C controller ?
+Yeah, makes sense.
 
-It is possible but IMHO opinion this is hardware tricky, I mean, ps8640 outputs
-eDP interface and the panel is an eDP interface, so I'd expect hardware
-engineers do a pin to pin design, not routing the DDC signals to the SoC
-directly ignoring the eDP interface.
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 2a997afa04c6..23c95a53d20e 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -237,8 +237,8 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+ 				   write);
+ 
+ 	if (!early) {
+-		mutex_unlock(&text_mutex);
+ 		text_poke_sync();
++		mutex_unlock(&text_mutex);
+ 	}
+ 
+ 	return ret;
 
-> In the latter case we would
-> have to report this in the DT bindings of the PS8640. That's not
-> blocking for this patch, I am just wondering, as I would have expected
-> the driver to already expose EDID one way or another if this was
-> available and used.
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
->> +}
->> +
->>  static const struct drm_bridge_funcs ps8640_bridge_funcs = {
->>  	.attach = ps8640_bridge_attach,
->> +	.get_edid = ps8640_bridge_get_edid,
->>  	.post_disable = ps8640_post_disable,
->>  	.pre_enable = ps8640_pre_enable,
->>  };
->> @@ -296,6 +306,8 @@ static int ps8640_probe(struct i2c_client *client)
->>  
->>  	ps_bridge->bridge.funcs = &ps8640_bridge_funcs;
->>  	ps_bridge->bridge.of_node = dev->of_node;
->> +	ps_bridge->bridge.ops = DRM_BRIDGE_OP_EDID;
->> +	ps_bridge->bridge.type = DRM_MODE_CONNECTOR_eDP;
->>  
->>  	ps_bridge->page[PAGE0_DP_CNTL] = client;
->>  
-> 
