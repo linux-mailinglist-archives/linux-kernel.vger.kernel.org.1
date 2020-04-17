@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1CA1AE7D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C911AE7D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 23:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgDQVxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 17:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S1728484AbgDQVyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 17:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728202AbgDQVxF (ORCPT
+        by vger.kernel.org with ESMTP id S1728202AbgDQVyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 17:53:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81261C061A0C;
-        Fri, 17 Apr 2020 14:53:05 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id o127so4057526iof.0;
-        Fri, 17 Apr 2020 14:53:05 -0700 (PDT)
+        Fri, 17 Apr 2020 17:54:00 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8D6C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:54:00 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id x1so2656744ejd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 14:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4ZIurRzvKzhZuoAvzk1jdWnYdjdZhwYCtTWY/kwzyzc=;
-        b=MHHFmFflGHZyA2d+a2MGEW/nmBW/qkwy1pEjJjNIVx0DLkbEfA5uQGiN+YeqIu9IGQ
-         gjkX85oS7YUx6MoTbSTQJGGLMZop4tAJIwi/LP73NSiTkHtyafiRbf8kpxh7QclX9ph8
-         Yc+OO6r0wSDWZEqSqSVen+xjO6bjAg7VM4zzEsfgYTys0OdPp2+h4gzAWXBWKsvsy65B
-         31Xr8p7AcOxf3dOxW5j8xhyFOvO66LHO1tqkHGQXwQ+tFFaxVzEGUOH8umsayWtukALW
-         fmGFlCCPtaA4HvlpIp16CsOt6l4Ou2DBzVxl4yhWzcb0YEi363RJnr/JSY022CFbRY/w
-         wQmg==
+         :cc;
+        bh=Bl0pa+hbUKTXV3E8yhfZmk+igw1QNCwVFqR4CtMCNtE=;
+        b=p5mlizDnCc6Smzeerr+47ThU1VtYAcCdc4Har7cwXXeRHLpqG3rirDQ6+LlBZuOJyP
+         GwrQFNk1vQ45HD348VApKz5GTRL/X1psqK6RBdD+GENF4rQwP1sfQhilmuZnkp5we2SI
+         uo7TM92Ktmx51GV7huHA5vroZ1thy738vLX7EuDAAzrscTktsDwkpbPxyOsKezlytqCo
+         HbpGfkw61ya15BWPT/BqPfhwOsgl8uxV37GX3xqEc1WC6us4jCtorA9ncOIaVtJhWFp3
+         RFvDCE65Rc86FZoBebdAF7RMOlbuZETqOEgpSOZXfrHqUU57olayACExlZQVFjwaRYLl
+         gM7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4ZIurRzvKzhZuoAvzk1jdWnYdjdZhwYCtTWY/kwzyzc=;
-        b=cJME+b4oiQ5QqZyMaN6abiVr3p7+WhQ3EyR3nFtKiF0YUC7cTLbIjJe9X0tpYbfBMn
-         ekJgtaq4BwC0FyfWY3wCkD5jsT9g11MxiW4bfkqHuqLqAQ47NSWpc57d3Zf8Dfm/CUB4
-         TAxez9X2CIhmCadr8b09MpQlPqCe4r3+9gSanoviTojtz0wVxeZfpkw9UdlcmNbPi3Le
-         doYx3VwtuciDg6vMpJ0jH/osGiOSsD68W78+Cdh8WrIALRfGMxysLXO8txnb9gNXUNpU
-         sD+g4zCrhnzihlnfWse3n3LszbZx/lmWISdnEyP8ojl0UH7PU1Rvg3yIqiDufz5dd1ol
-         Pz+Q==
-X-Gm-Message-State: AGi0PuafbnFN6ZmleFpytDzvQ2sqCjLOBzTOBRFKOPE6sKN+t2pcU8+e
-        g2fnqcnKSjRrU1duXHfqIQMrpALLy/DBYHScFqA=
-X-Google-Smtp-Source: APiQypLAFZkouE78x0T4U8EwYbe0dJ4blPl6DgsReNwyOBiVFNhNnnJGPaQ/xk8e6/vk7O8AdOVmT6SUhBMxZZfeKv4=
-X-Received: by 2002:a02:c998:: with SMTP id b24mr5357266jap.23.1587160384789;
- Fri, 17 Apr 2020 14:53:04 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Bl0pa+hbUKTXV3E8yhfZmk+igw1QNCwVFqR4CtMCNtE=;
+        b=XY0V+XNEqpbdk4DuA0lGIhUaA9ch1n5YHgQf/QTM/7keXrL/rCinHj7808RxF9nNmQ
+         FRuw0SnJHRjFbicelxvMXrHDA6EJ7/5lLSEfUXG5HQnmqw848Vl8K3gUIbPJ3iTKOc37
+         mY0X2CQwMdWof+5wm5g4qxtlrrjEeuIcryTrT8G7e3pGE/QjJGaT5/JmJ1xTKv0a9CDA
+         VBsXfRnI5w8FPWHQ1MlkQEqcIwtn9+2/iuhaafKDHPJVFXXn/GSwQU8olURMeg6zxa1L
+         cPkXuPJGh+Bm1zFmuAbz+TKrmoaFbUocNbgbzUOvGTfIIs/woeJEac/HXK/vFTwyEKpG
+         9Ydw==
+X-Gm-Message-State: AGi0PuZ6MaBfq3wtAe054br3KXdG4Ibts0UK8YJUbZZIIxX7VT7JX7vO
+        cMDBj5n2daGCwlvGEpXXpMQvwHnW1kHQwTFSliDS
+X-Google-Smtp-Source: APiQypJpQfpzdeKOHwySCCbd4znVvnFmq7fAjX0Z1U3JXdJ9nI+FXYWtWqv07L9QpEU8Uqv70QvY3IRGTcQJQ/A0KtY=
+X-Received: by 2002:a17:906:4cd2:: with SMTP id q18mr5203442ejt.70.1587160438885;
+ Fri, 17 Apr 2020 14:53:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200417202859.35427-1-contact@artur-rojek.eu>
- <20200417202859.35427-3-contact@artur-rojek.eu> <CAHp75Vcwnu8tw92nMYc_5-x_iX+FY8_OhtaJkSYNehmNUDkHGQ@mail.gmail.com>
- <3KAY8Q.NNI6X4F9QRIX1@crapouillou.net> <CAHp75VfxQFFnVMhGvv0GCb3gv5jTPLDqLyhihRVc2earY=aYcg@mail.gmail.com>
- <86BY8Q.C5XO8D57M7BI1@crapouillou.net> <CAHp75VfULLBpFx-W04z+jRFv-hGZkTt1k7T9+eMurW55Mdc=+g@mail.gmail.com>
- <EFCY8Q.V3Q81CTO8TBP2@crapouillou.net>
-In-Reply-To: <EFCY8Q.V3Q81CTO8TBP2@crapouillou.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 18 Apr 2020 00:52:53 +0300
-Message-ID: <CAHp75VdBr-o61QESQcbF97F5+JAU=XjVsvZ01M=nN-pe50-H9w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 3/5] IIO: Ingenic JZ47xx: Add touchscreen mode.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Artur Rojek <contact@artur-rojek.eu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1584480281.git.rgb@redhat.com> <13ef49b2f111723106d71c1bdeedae09d9b300d8.1584480281.git.rgb@redhat.com>
+ <20200318131128.axyddgotzck7cit2@madcap2.tricolour.ca> <CAHC9VhTdLZop0eT11H4uSXRj5M=kBet=GkA8taDwGN_BVMyhrQ@mail.gmail.com>
+ <20200318213327.ow22q6nnjn3ijq6v@madcap2.tricolour.ca>
+In-Reply-To: <20200318213327.ow22q6nnjn3ijq6v@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 17 Apr 2020 17:53:47 -0400
+Message-ID: <CAHC9VhSbbjFbF0A_-saquZ8B85XaF7SWD2e1QcWsXhFSQrUAbQ@mail.gmail.com>
+Subject: Re: [PATCH ghak25 v3 3/3] audit: add subj creds to NETFILTER_CFG
+ record to cover async unregister
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, fw@strlen.de,
+        ebiederm@xmission.com, tgraf@infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 12:45 AM Paul Cercueil <paul@crapouillou.net> wrote=
-:
-> Le sam. 18 avril 2020 =C3=A0 0:42, Andy Shevchenko
-> <andy.shevchenko@gmail.com> a =C3=A9crit :
-> > On Sat, Apr 18, 2020 at 12:18 AM Paul Cercueil <paul@crapouillou.net>
-> > wrote:
-> >>  Le sam. 18 avril 2020 =C3=A0 0:13, Andy Shevchenko
-> >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
-> >>  > On Sat, Apr 18, 2020 at 12:05 AM Paul Cercueil
-> >> <paul@crapouillou.net>
-> >>  > wrote:
-> >>  >>  Le ven. 17 avril 2020 =C3=A0 23:59, Andy Shevchenko
-> >>  >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
-> >>  >>  > On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek
-> >>  >> <contact@artur-rojek.eu>
-> >>  >>  > wrote:
-> >>  >
-> >>  > ...
-> >>  >
-> >>  >>  >>  +       irq =3D platform_get_irq(pdev, 0);
-> >>  >>  >
-> >>  >>  > Before it worked w/o IRQ, here is a regression you introduced.
-> >>  >>
-> >>  >>  Before it simply did not need the IRQ, which is provided by the
-> >>  >>  devicetree anyway. No regression here.
-> >>  >
-> >>  > Does it work without IRQ? Or it was a dead code till now?
-> >>  > For me it's clear regression. Otherwise something is really wrong
-> >> in a
-> >>  > process of development of this driver.
-> >>
-> >>  Nothing wrong here. The IRQ was not used by the driver for the
-> >>  functionality it provided before. It is required now to support the
-> >>  touchscreen channels.
+On Wed, Mar 18, 2020 at 5:33 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-03-18 17:22, Paul Moore wrote:
+> > On Wed, Mar 18, 2020 at 9:12 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > On 2020-03-17 17:30, Richard Guy Briggs wrote:
+> > > > Some table unregister actions seem to be initiated by the kernel to
+> > > > garbage collect unused tables that are not initiated by any userspace
+> > > > actions.  It was found to be necessary to add the subject credentials to
+> > > > cover this case to reveal the source of these actions.  A sample record:
+> > > >
+> > > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat family=bridge entries=0 op=unregister pid=153 uid=root auid=unset tty=(none) ses=unset subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2 exe=(null)
+> > >
+> > > Given the precedent set by bpf unload, I'd really rather drop this patch
+> > > that adds subject credentials.
+> > >
+> > > Similarly with ghak25's subject credentials, but they were already
+> > > present and that would change an existing record format, so it isn't
+> > > quite as justifiable in that case.
 > >
-> > This is exactly what's wrong.
-> > Previous DTS for my (hypothetical) case has no IRQ defined. Everything
-> > works, right?
-> > Now, due to this change it breaks my setup. Don't you see the problem?
+> > Your comments have me confused - do you want this patch (v3 3/3)
+> > considered for merging or no?
 >
-> The IRQ has been provided by every concerned DTS file since the
-> introduction of this driver and the related bindings, even though it
-> was not used by the driver.
+> I would like it considered for merging if you think it will be required
+> to provide enough information about the event that happenned.  In the
+> bpf unload case, there is a program number to provide a link to a
+> previous load action.  In this case, we won't know for sure what caused
+> the table to be unloaded if the number of entries was empty.  I'm still
+> trying to decide if it matters.  For the sake of caution I think it
+> should be included.  I don't like it, but I think it needs to be
+> included.
 
-Can you speak for all possible DTSs/DTBs in the wild?
-Okay, in any case it will be problem of maintainers and yours if
-somebody complains.
-I'm not going to push this anyway -- your choice.
+I'm in the middle of building patches 1/3 and 2/3, assuming all goes
+well I'll merge them into audit/next (expect mail soon), however I'm
+going back and forth on this patch.  Like you I kinda don't like it,
+and with both of us not in love with this patch I have to ask if there
+is certification requirement for this?  I know about the generic
+subj/obj requirements, but in the case where there is no associated
+task/syscall/etc. information it isn't like the extra fields supplied
+in this patch are going to have much information in that regard; it's
+really the *absence* of that information which is telling.  Which
+brings me to wonder if simply the lack of any associated records in
+this event is enough?  Before when we weren't associating records into
+a single event it would have been a problem, but the way things
+currently are, if there are no other records (and you have configured
+that) then I think you have everything you need to know.
 
-But I see a (potential) regression.
+Thoughts?
 
-> >>  >>  >>  +       if (irq < 0) {
-> >>  >>  >
-> >>  >>  >>  +               dev_err(dev, "Failed to get irq: %d\n",
-> >> irq);
-> >>  >>  >
-> >>  >>  > Redundant message.
-> >>  >>  >
-> >>  >>  >>  +               return irq;
-> >>  >>  >>  +       }
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+paul moore
+www.paul-moore.com
