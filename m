@@ -2,53 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F8D1AE3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300151AE400
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 19:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgDQRpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 13:45:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730017AbgDQRp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:45:26 -0400
-Subject: Re: [GIT PULL] arm64 fixes for 5.7-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587145525;
-        bh=qQZ4VmgPb13B1MumQjGBjJ+Nq7/wGRSP2jRWCGe7/W8=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gVVbOLKPUkNvT1wBw3uHK1AeJUe3BEXF9mgmfRuiNvHnI8ZTs+cM8nRRTnzvEV47f
-         Vr3L591BPOSTypIvxYLW3AR6nJlE3gBO9JT1wMh5uzpyRX2jCXH3u4P3/Y81MY3YgB
-         N2yNkM6eJgXLEk29Xt5TXEBKpyhrpmIOvDMbk6Vg=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200417170403.GA15479@gaia>
-References: <20200417170403.GA15479@gaia>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200417170403.GA15479@gaia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-X-PR-Tracked-Commit-Id: c9a4ef66450145a356a626c833d3d7b1668b3ded
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 95988fbc7c314ef6b1e174dbb9b87a34283208da
-Message-Id: <158714552563.1625.16210298337980327660.pr-tracker-bot@kernel.org>
-Date:   Fri, 17 Apr 2020 17:45:25 +0000
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S1730248AbgDQRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 13:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729980AbgDQRp7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 13:45:59 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E39C061A0C;
+        Fri, 17 Apr 2020 10:45:59 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jPV3o-0004Kc-0o; Fri, 17 Apr 2020 19:45:52 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 976341C0072;
+        Fri, 17 Apr 2020 19:45:51 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 17:45:51 -0000
+From:   "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Preserve CDP enable over CPU hotplug
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200221162105.154163-1-james.morse@arm.com>
+References: <20200221162105.154163-1-james.morse@arm.com>
+MIME-Version: 1.0
+Message-ID: <158714555114.28353.8305275418595687988.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 17 Apr 2020 18:04:05 +0100:
+The following commit has been merged into the x86/urgent branch of tip:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+Commit-ID:     9fe0450785abbc04b0ed5d3cf61fcdb8ab656b4b
+Gitweb:        https://git.kernel.org/tip/9fe0450785abbc04b0ed5d3cf61fcdb8ab656b4b
+Author:        James Morse <james.morse@arm.com>
+AuthorDate:    Fri, 21 Feb 2020 16:21:05 
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 17 Apr 2020 19:35:01 +02:00
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/95988fbc7c314ef6b1e174dbb9b87a34283208da
+x86/resctrl: Preserve CDP enable over CPU hotplug
 
-Thank you!
+Resctrl assumes that all CPUs are online when the filesystem is mounted,
+and that CPUs remember their CDP-enabled state over CPU hotplug.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+This goes wrong when resctrl's CDP-enabled state changes while all the
+CPUs in a domain are offline.
+
+When a domain comes online, enable (or disable!) CDP to match resctrl's
+current setting.
+
+Fixes: 5ff193fbde20 ("x86/intel_rdt: Add basic resctrl filesystem support")
+Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200221162105.154163-1-james.morse@arm.com
+---
+ arch/x86/kernel/cpu/resctrl/core.c     |  2 ++
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 13 +++++++++++++
+ 3 files changed, 16 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 89049b3..d8cc522 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -578,6 +578,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ 	d->id = id;
+ 	cpumask_set_cpu(cpu, &d->cpu_mask);
+ 
++	rdt_domain_reconfigure_cdp(r);
++
+ 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
+ 		kfree(d);
+ 		return;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 181c992..3dd13f3 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -601,5 +601,6 @@ bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d);
+ void __check_limbo(struct rdt_domain *d, bool force_free);
+ bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r);
+ bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r);
++void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+ 
+ #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 9d4e73a..5a359d9 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1859,6 +1859,19 @@ static int set_cache_qos_cfg(int level, bool enable)
+ 	return 0;
+ }
+ 
++/* Restore the qos cfg state when a domain comes online */
++void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
++{
++	if (!r->alloc_capable)
++		return;
++
++	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA])
++		l2_qos_cfg_update(&r->alloc_enabled);
++
++	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA])
++		l3_qos_cfg_update(&r->alloc_enabled);
++}
++
+ /*
+  * Enable or disable the MBA software controller
+  * which helps user specify bandwidth in MBps.
