@@ -2,82 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0601AE135
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C490A1AE13B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Apr 2020 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgDQPdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 11:33:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:52920 "EHLO foss.arm.com"
+        id S1729203AbgDQPdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 11:33:46 -0400
+Received: from muru.com ([72.249.23.125]:49962 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728542AbgDQPdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 11:33:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 024B71FB;
-        Fri, 17 Apr 2020 08:33:13 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98A903F73D;
-        Fri, 17 Apr 2020 08:33:11 -0700 (PDT)
-Subject: Re: [PATCH v3] x86/resctrl: Preserve CDP enable over cpuhp
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>
-References: <20200221162105.154163-1-james.morse@arm.com>
- <8d84868f-4045-8d69-ed45-d0f0629ba25c@intel.com>
- <a411323a-2439-5d30-2106-2e3598e9a8c7@intel.com>
- <20200417141841.GD7322@zn.tnic>
- <e762a1c9-b13a-cc8c-e945-292218af418b@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <2030b4e2-bf52-592c-ac67-ddc2aa5f918c@arm.com>
-Date:   Fri, 17 Apr 2020 16:33:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728542AbgDQPdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 11:33:45 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6AB2D8047;
+        Fri, 17 Apr 2020 15:34:33 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 08:33:42 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Tero Kristo <t-kristo@ti.com>
+Cc:     Jason Yan <yanaijie@huawei.com>, mturquette@baylibre.com,
+        sboyd@kernel.org, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] clk: ti: dra7: remove two unused symbols
+Message-ID: <20200417153342.GP37466@atomide.com>
+References: <20200417073523.42520-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <e762a1c9-b13a-cc8c-e945-292218af418b@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200417073523.42520-1-yanaijie@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+Tero,
 
-On 17/04/2020 15:57, Reinette Chatre wrote:
-> On 4/17/2020 7:18 AM, Borislav Petkov wrote:
->> On Wed, Apr 15, 2020 at 08:57:34AM -0700, Reinette Chatre wrote:
->>> Hi Thomas and Borislav,
->>>
->>> Could you please consider this patch for inclusion as a fix for v5.7?
->>
->> Do you mean by that that I should add
->>
->> Cc: <stable@vger.kernel.org>
->>
->> so that it goes to stable?
-
-Is the CC-stable still required? I've seen a 'Fixes' tag on its own cause patches to get
-picked up...
-
-
->> The commit in Fixes: is from 4.10-ish times...
->>
+* Jason Yan <yanaijie@huawei.com> [200417 07:09]:
+> Fix the following gcc warning:
 > 
-> Borislav: Sorry about that and thank you very much for catching this
-> omission. Yes, this patch needs to go to stable.
+> drivers/clk/ti/clk-7xx.c:320:43: warning: ‘dra7_gpu_sys_clk_data’
+> defined but not used [-Wunused-const-variable=]
+>  static const struct omap_clkctrl_div_data dra7_gpu_sys_clk_data
+> __initconst = {
+>                                            ^~~~~~~~~~~~~~~~~~~~~
+> drivers/clk/ti/clk-7xx.c:315:27: warning: ‘dra7_gpu_sys_clk_parents’
+> defined but not used [-Wunused-const-variable=]
+>  static const char * const dra7_gpu_sys_clk_parents[] __initconst = {
+>                            ^~~~~~~~~~~~~~~~~~~~~~~~
 
-> James: would you be able to do the backports to stable? Please note that
-> support for L2 and L3 CDP was added across Linux versions and the
-> resctrl files moved around since then so the backport would need some
-> changes to address this issue in all versions.
+Looks like this started happening with commit 957ad44ff5f2
+("clk: ti: add clkctrl data dra7 sgx") as I did it based on
+omap5. But the clocks seem slightly different, care to check
+sgx clocking against the TRM in case I also messed up something
+else?
 
-Yes, certainly!
+Regards,
 
-
-Thanks,
-
-James
+Tony
