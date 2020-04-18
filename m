@@ -2,151 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D11AED57
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167B41AEDBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgDRNvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 09:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S1726025AbgDRN7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 09:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgDRNtO (ORCPT
+        with ESMTP id S1725887AbgDRN7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 09:49:14 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D1CC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 06:49:13 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m13so3920839otf.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 06:49:13 -0700 (PDT)
+        Sat, 18 Apr 2020 09:59:53 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750BCC061A0C;
+        Sat, 18 Apr 2020 06:59:51 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id r17so4122372lff.2;
+        Sat, 18 Apr 2020 06:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QcE1hGsY8v1IWMkz0gHh3/1b09zcFk27FkCpIkWG0MA=;
-        b=RXa5FtMJHDfUeFK312R9qWGKjTQOeeQvy1263PO2Mrhp7G1hyzV2JyZGfSr7ZeEXe2
-         RzgnwVXAzwvp7VWCvlDg1DpCO/d6zGoLa+6oNp030sBVw9cEYKlcvlmWO2Wg7gxlNz3W
-         qyHd5dx7oCiul+7eccxdg4KXCBa4aIwRvno6LMOA+dnLD+DqOX225n6uHXOfRsQ+fkQe
-         YZzB/o4D3nHuIXYovJJTi+BpiDFYcwbe+S8yK3CYQe0p41O0EY3X22IEayHRixzwyBlQ
-         SmMa0EMtrz6FE8wTn9XL3giRj29Ly2bySQrC9llegLxESILJKYE9u6c53gKLnKdZrpiy
-         u0Aw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JwkmxVU9G3R9bLQG5P17Fl62C7R0noZkjryh1/vwdL4=;
+        b=H2vZ4H7F/2SDq1uSiVUMpbk84rKvJBQWfuAD3TaJYN+qqBAbcaTpynx+2xK8oq+ZMY
+         1Tjt777floOIngeH0FCfftXYS04UdgCNVd6rZWo6kXhW8ol/SrxIFCPOD5Yow1VuwdIk
+         NWsCmE7OrnKCGtjY83O+j4Q9Lm+kUXJOnsVOVZAhhIdA8E19u3pqc/kycnmwETKpjZqU
+         eH8ZlOQYfp6x+DoaDcuJzYVw8oQEL1yWTo4X1y3QDhwdrB52wvod3F3nX0GJb5geqhJO
+         CWvFD89Mu3RvXRGR1hK55iWZG/vTHfRJvX5O5K5jS+7mUhwZ/jM7h+p4d7rt4JVC0fFC
+         /QSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=QcE1hGsY8v1IWMkz0gHh3/1b09zcFk27FkCpIkWG0MA=;
-        b=lCaRrFdsx7fAGlrKknyjTiP+k26W4Mo4hHNJArXmcmRvBfyyHc5ykTc/vWnjjybBIg
-         2zzUlMid39vnUEh+uKltEjvv+jPm0Eed0+DmMAN6e8KKSYeZChXKqknyy1jSXyH8cK9W
-         SSdKmhi4bo6qF/FI4JvqxK3n8VKrZRLDTkEow7bs6Y1gdvNmID7lgmuIoX87aiPYCll5
-         TQ0IvGXj6/oZlRl5JH4f7kvcqe4VZbMfzkjssQ4lwsak5fnba1RRcVPHkqtRc5s8Psmg
-         vK3HOiTwtothzjrRISm4gTvupBunG2NrgBcKZmj5vhNTASvMTNnL9ek09gQVwgZmnWjP
-         aMVA==
-X-Gm-Message-State: AGi0PubutMCNzBaLDvlLjJXZLeT3W4VrzfltkOQfmT3SXhdp8Kp/rjQL
-        /kuXGWkYapg1LyhkRkRe5A==
-X-Google-Smtp-Source: APiQypIRs+lg2ocbUhW9deNQjYD5mCVoF35HtSrcWBwbEa0d/JCLCh365KXETC7D2OJYqs/Mwkxqcg==
-X-Received: by 2002:a9d:6a53:: with SMTP id h19mr574443otn.8.1587217752080;
-        Sat, 18 Apr 2020 06:49:12 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.149.130])
-        by smtp.gmail.com with ESMTPSA id s25sm4174458ooh.22.2020.04.18.06.49.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 06:49:11 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
-        by serve.minyard.net (Postfix) with ESMTPSA id A427F181888;
-        Sat, 18 Apr 2020 13:49:10 +0000 (UTC)
-Date:   Sat, 18 Apr 2020 08:49:09 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH v2] ipmi:bt-bmc: Fix error handling and status check
-Message-ID: <20200418134909.GF6246@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200418080228.19028-1-tangbin@cmss.chinamobile.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JwkmxVU9G3R9bLQG5P17Fl62C7R0noZkjryh1/vwdL4=;
+        b=MajkOGakveUkjbcVUvS/Nx2Y7Oha6MXnpKm8A6mGbvmttFZytg9r2lzPmwJRWtvh9a
+         GLlLeURSkRr8z8C9vcCjcm+b3KJ7CQJI+54MLAhtGQJzaXvpadMvJ54OAsk0ua5nWA8I
+         yWcZcDNa4nMLiDM2oidM2t6VMrU45Xgu/ZsFNBfsa8YanoJO2HvcESVnPfXnNwF4KZ4Y
+         sU+GQ7VjIX5XaxcvEreJQQLX7w7S20FIY6d3NxDIZHkxRrp9eQ9oDXtHLr0deyy1srf4
+         0I6hyk4vFjs4V8HxXQFIstbnyGyFMYqX/kQcyUHjmJWeqSULNV7W65kUZtH15hySayqM
+         WYHA==
+X-Gm-Message-State: AGi0PuYQTqTBs2P+OV/C7AEHkksFprJIRodZS6IjK6hi6Bk0b0rXxIAM
+        dKaLtd1p3Xw7dJRQRyan1pA=
+X-Google-Smtp-Source: APiQypLNyHnQhiiDKDwvlH27vs0wbJdm6L5kOFttERej08ep+e5PcMo57aDtfF0AtnDOyXObx3wlcQ==
+X-Received: by 2002:ac2:5dd7:: with SMTP id x23mr5169760lfq.48.1587218389858;
+        Sat, 18 Apr 2020 06:59:49 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id k2sm6050947ljg.7.2020.04.18.06.59.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Apr 2020 06:59:47 -0700 (PDT)
+Subject: Re: [PATCH v10 31/55] Input: atmel_mxt_ts - delay enabling IRQ when
+ not using regulators
+To:     "Wang, Jiada" <jiada_wang@mentor.com>, nick@shmanahar.org,
+        dmitry.torokhov@gmail.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, bsz@semihalf.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
+References: <20200331105051.58896-1-jiada_wang@mentor.com>
+ <20200331105051.58896-32-jiada_wang@mentor.com>
+ <46e0b0cf-63f1-4b46-dc3e-0e6610e72d75@gmail.com>
+ <75f81c9a-e5ca-1382-43c9-8fd4acc36510@mentor.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <68267a10-9e3a-37a6-b3fe-9a1bf9f5916c@gmail.com>
+Date:   Sat, 18 Apr 2020 16:59:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200418080228.19028-1-tangbin@cmss.chinamobile.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <75f81c9a-e5ca-1382-43c9-8fd4acc36510@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 04:02:29PM +0800, Tang Bin wrote:
-> If the function platform_get_irq() failed, the negative
-> value returned will not be detected here. So fix error
-> handling in bt_bmc_config_irq(). And if devm_request_irq()
-> failed, 'bt_bmc->irq' is assigned to zero maybe redundant,
-> it may be more suitable for using the correct negative values
-> to make the status check in the function bt_bmc_remove().
+15.04.2020 17:44, Wang, Jiada пишет:
+..
+> thanks, I think your solution makes more sense,
+> I will replace with your suggested solution in next version
 
-You need to mention changing platform_get_irq to
-platform_get_irq_optional in the header.
-
-Another comment inline below.
-
-Otherwise, this looks good.
-
-> 
-> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
-> Changes from v1
->  - fix the code of status check
-> ---
->  drivers/char/ipmi/bt-bmc.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
-> index cd0349bff..33d3a5d50 100644
-> --- a/drivers/char/ipmi/bt-bmc.c
-> +++ b/drivers/char/ipmi/bt-bmc.c
-> @@ -399,15 +399,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
->  	struct device *dev = &pdev->dev;
->  	int rc;
->  
-> -	bt_bmc->irq = platform_get_irq(pdev, 0);
-> -	if (!bt_bmc->irq)
-> -		return -ENODEV;
-> +	bt_bmc->irq = platform_get_irq_optional(pdev, 0);
-> +	if (bt_bmc->irq < 0)
-> +		return bt_bmc->irq;
->  
->  	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
->  			      DEVICE_NAME, bt_bmc);
->  	if (rc < 0) {
->  		dev_warn(dev, "Unable to request IRQ %d\n", bt_bmc->irq);
-> -		bt_bmc->irq = 0;
-
-You need to set this to rc.  Otherwise it will remain the interrupt
-number assigned by platform_get_irq_optional().
-
--corey
-
->  		return rc;
->  	}
->  
-> @@ -474,7 +473,7 @@ static int bt_bmc_probe(struct platform_device *pdev)
->  
->  	bt_bmc_config_irq(bt_bmc, pdev);
->  
-> -	if (bt_bmc->irq) {
-> +	if (bt_bmc->irq >= 0) {
->  		dev_info(dev, "Using IRQ %d\n", bt_bmc->irq);
->  	} else {
->  		dev_info(dev, "No IRQ; using timer\n");
-> @@ -500,7 +499,7 @@ static int bt_bmc_remove(struct platform_device *pdev)
->  	struct bt_bmc *bt_bmc = dev_get_drvdata(&pdev->dev);
->  
->  	misc_deregister(&bt_bmc->miscdev);
-> -	if (!bt_bmc->irq)
-> +	if (bt_bmc->irq < 0)
->  		del_timer_sync(&bt_bmc->poll_timer);
->  	return 0;
->  }
-> -- 
-> 2.20.1.windows.1
-> 
-> 
-> 
+Please feel free to CC me on the next version.
