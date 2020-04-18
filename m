@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD9F1AF412
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5521AF418
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgDRTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 15:08:15 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:36673 "EHLO
+        id S1728121AbgDRTL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 15:11:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:60367 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgDRTIO (ORCPT
+        with ESMTP id S1726751AbgDRTLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 15:08:14 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MCJvA-1jYAYw3LrG-009RqB for <linux-kernel@vger.kernel.org>; Sat, 18 Apr
- 2020 21:08:13 +0200
-Received: by mail-qt1-f178.google.com with SMTP id x2so5129571qtr.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 12:08:12 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZvEE+2HLyNpwWd1mvv1vE6/zeSDNvbGPhR49J717usGoo5jlbj
-        ypIXk4QkzuGryRR2dyAZe3YV7ywkwcZ/n38QAFo=
-X-Google-Smtp-Source: APiQypIQyXCRKSNvdaLZyvEmQlPP55qqr3ssdQ7+2edvP8fsUKvIDTOrd3u0yqw+zJY4D62C/KJ2CxmsV4AmsRa3J14=
-X-Received: by 2002:ac8:296f:: with SMTP id z44mr8929296qtz.18.1587236891632;
- Sat, 18 Apr 2020 12:08:11 -0700 (PDT)
+        Sat, 18 Apr 2020 15:11:25 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MplLZ-1itsZi2HEb-00qEKQ for <linux-kernel@vger.kernel.org>; Sat, 18 Apr
+ 2020 21:11:23 +0200
+Received: by mail-qt1-f176.google.com with SMTP id o10so5088085qtr.6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 12:11:23 -0700 (PDT)
+X-Gm-Message-State: AGi0Puatjr8ln1TD9BRyVfAaGoQzkASAwdA5xUhgHDazJl9E2N0VWnQm
+        PxWS/FX5AIeYSuoo1PWtlnlYCLwoIMD/VvWoHTs=
+X-Google-Smtp-Source: APiQypI5XWv+0v5CUPd6xcl5C/iLVZmU2I5uN+IAnHyrQzOErNeb/Vq46nsA5qUEtPCx2jH3AALWiUq8REeGQkl/9Vg=
+X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr2801144qtv.142.1587237082474;
+ Sat, 18 Apr 2020 12:11:22 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200418162157.50428-1-wenhu.wang@vivo.com> <20200418162157.50428-5-wenhu.wang@vivo.com>
 In-Reply-To: <20200418162157.50428-5-wenhu.wang@vivo.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 18 Apr 2020 21:07:54 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a05Rr7q_OtqqtG5hCPO3cettAJQNpmD0ULec+3PS-QPHA@mail.gmail.com>
-Message-ID: <CAK8P3a05Rr7q_OtqqtG5hCPO3cettAJQNpmD0ULec+3PS-QPHA@mail.gmail.com>
+Date:   Sat, 18 Apr 2020 21:11:06 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0-7mLhGb=LCAQSTL4kNoGVcBcQOca=-tJkZAj1w2Bxsg@mail.gmail.com>
+Message-ID: <CAK8P3a0-7mLhGb=LCAQSTL4kNoGVcBcQOca=-tJkZAj1w2Bxsg@mail.gmail.com>
 Subject: Re: [PATCH v6,4/4] drivers: misc: new driver sram_uapi for user level
  SRAM access
 To:     Wang Wenhu <wenhu.wang@vivo.com>
@@ -41,129 +41,45 @@ Cc:     gregkh <gregkh@linuxfoundation.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:8ZxrgN2A1Lko1y08b0S35T9iptQBWw0tyEvHJw94iggeKE551jJ
- EWyILGChISCD6nomyqQISA3vB9x9UBatj1S37cL4yAGSjuGO/7DSmIP9Leo1HSjSHzeLeQI
- l0RGD5XCvD9zAs44AZsT0gOIFJsBb35KpnjRB9XKCNBKS7KL3exU3qz9i0lSNMO0plTbYIW
- ca73fIeUMSyAK/X9Pzchg==
+X-Provags-ID: V03:K1:uiior6wTE+Nc8Xy6ROxk5d7Gl0fCXFymWBmYxRzqnaUV9iQsD3Y
+ 1SNbytK61CCgDvybTOJ+RZdkYAjRw60QdHDRRZvOpS+NDEVQDSz4MQDb+BfMqSHq4VZdM/4
+ hQmrNOHlxN8vpCby0U8eJl6d8kW1cObz7iEyucSpWEAW2rBULnnELShjwsXUHPCqlS4W81E
+ 6bKnPc4zuTILv8NOwa8Hw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2BfJ2MlxJAY=:YWf+z0SU0dotGHqTPuf97B
- R/hIO/5L9qXHLFqNjfvG6eCgWlARtldyDgwkg/wYSZj21T/RAyLK3AR1+ugyOHrpUHS09cxod
- oS6J73J2kpUjiHnOKjGAyqsErm+p9cfrkjg61WXbfWuYww6ZSn1DD5OT/3P6sdYHQsFnhRCiz
- axkA53nDB+7CMYvSyuPZkYM4KIvgtfI7f0pnB1R0ZhVw/77OigI7IBKIoW+UqqpIGJqfaXhU1
- J+WxX57LSJZd0+jL2aP4GY2L2/botm4iAX2yjbAV34Z4ij38NMYhQiKoc/1oWIGVJ7gL6rLPZ
- iTY7D1cyLbCh2oP1l2OS4VWZRaHn5SJf/i77/jgixshJdnDGc045NlTv8zhWkhTHLZVfhFo02
- cxCwl/T4qhzrJAnjos7vwMwHFiY5HMsR2NXf80x7x+JBUg1XZrCj9zm4m62TXgZ5mRWpb9PGN
- TgiU+sMn/ApAH+p2J5D9aBi253CSFLSZwtrTippLmL5ZDsPdJhuEhz/385gCw/3MuwyfrF+b5
- VGkKnlLta8RA6xkWSZ70KhQigUJveYLibea3knxG+dbh1XdNlIVaiqgDqQPXHtqyqkDnBlUOg
- FYHHSRZjkDnls+rR8XB1QcTo7xVTMv+JPJc9thwkhjHktp2QrAcSv9NgJBjy6eeI19tCFHp5N
- G2OuTHN771ccpm9skuYTPq+ZrYnn+1qI9+2bE9HOwv3ImayWEXuE84uM5COHyFJzxo342HSXG
- 8y8I4DKawVcNU/I+9uqGCnWvKK8kkVZUkz8kYcPSnMdGD9KQCyxFjnD15bBmSJARH+Uc1gZvH
- +rchzaltaIzYai/eWDhQl4RVqCfXb/tWWzQ42skxmjtoJk9dfs=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8pk3xkfJstQ=:AcY0KjOCY5BaKbtAFiyUnB
+ GM40StUKPeB2olAHL+qSPDTHAKFRb+lJxHbZ8vNicgZmNeeqHLNEn34Edll9w6bAtGgbBcerF
+ B682lDgKZWfwqvmyY0Jr0UdLVeiinJN5t+aSkuUm1UGQ91Q1nebJ7SrfWDGhVjDE8hCbv+qrK
+ 27vPg0k2S4kHfIb0lEcum7JunZEh8Fi4Ze7POQHAHwwsfrIUsZ6Yynv45Lyrm05dwbS2eYs2x
+ JOYok9uBeazSVeEd0Ucpk2+OQF8RQRHFtkv/Zh0DWMNQW3xml8CeBpOniWWJOnuBsXU9wj/hG
+ kotOO7kYUE5Xh7OqBr4IgXX5fk8IiSK3tUDbmgExyVQ1KxHs0teQ12zAC/B+6l8bFjiLGQZqh
+ gOar9Txv6tlVD25lHdwyuVgI4clnCr0BQMYCsglqi6KE3T0WHk/l0YhZGkSVQDcS6CcKtqBm6
+ kAK9dq7TP+gb6UIooZM5QhUvMgM9hwoYAOT4qr6V4fygijAge2lVigsDitF4+hW5voVF+yybR
+ GlDW4qvJo7jclj20QR3M9HMK1FT0vhlqMWbjU5NruT70ssYW+jcBNiCZ+zq9SEvOZqPG4H1nk
+ ATxgYwqLCp21Gjq/4YYkxmb4rK8glNv8qbfjiR2w6TY9Der4WuBdUZePGLExrdktHGggtdylh
+ WOa2kHZsobCPWv3RmC2hIEF5pSWTa191uM14fq+6bwSPxvhAUoWNjTwkDuTajFYvmc/OcZHCH
+ bdf3cQgqWMfJLOIiL0B84nrvl98bn5DwuVhMqbL6KM5qKl7jbtAfDcc0E2VUGf4YT4nXGO1mS
+ OcBfBm72A7A1N4koY7TGcDmWvN6pW00XXsdqwatxveYJQUUlgk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Apr 18, 2020 at 6:22 PM Wang Wenhu <wenhu.wang@vivo.com> wrote:
->
-> A generic User-Kernel interface that allows a misc device created
-> by it to support file-operations of ioctl and mmap to access SRAM
-> memory from user level. Different kinds of SRAM alloction and free
-> APIs could be added to the available array and could be configured
-> from user level.
-
-Having a generic user level interface seem reasonable, but it would
-be helpful to list one or more particular use cases.
-
-> +if SRAM_UAPI
+> +#define DRIVER_NAME    "sram_uapi"
 > +
-> +config FSL_85XX_SRAM_UAPI
-> +       bool "Freescale MPC85xx Cache-SRAM UAPI support"
-> +       depends on FSL_SOC_BOOKE && PPC32
-> +       select FSL_85XX_CACHE_SRAM
-> +       help
-> +         This adds the Freescale MPC85xx Cache-SRAM memory allocation and
-> +         free interfaces to the available SRAM API array, which finally could
-> +         be used from user level to access the Freescale MPC85xx Cache-SRAM
-> +         memory.
-
-Why do you need  a hardware specific Kconfig option here, shouldn't
-this just use the generic kernel abstraction for the sram?
-
-> +struct sram_api {
-> +       u32 type;
-> +       long (*sram_alloc)(u32 size, phys_addr_t *phys, u32 align);
-> +       void (*sram_free)(void *ptr);
-> +};
+> +#define SRAM_UAPI_IOCTL_SET_SRAM_TYPE  0
+> +#define SRAM_UAPI_IOCTL_ALLOC          1
+> +#define SRAM_UAPI_IOCTL_FREE           2
 > +
-> +struct sram_uapi {
-> +       struct list_head        res_list;
-> +       struct sram_api         *sa;
-> +};
-> +
-> +enum SRAM_TYPE {
-> +#ifdef FSL_85XX_CACHE_SRAM
-> +       SRAM_TYPE_FSL_85XX_CACHE_SRAM,
-> +#endif
-> +       SRAM_TYPE_MAX,
-> +};
-> +
-> +/* keep the SRAM_TYPE value the same with array index */
-> +static struct sram_api srams[] = {
-> +#ifdef FSL_85XX_CACHE_SRAM
-> +       {
-> +               .type           = SRAM_TYPE_FSL_85XX_CACHE_SRAM,
-> +               .sram_alloc     = mpc85xx_cache_sram_alloc,
-> +               .sram_free      = mpc85xx_cache_sram_free,
-> +       },
-> +#endif
+> +struct res_info {
+> +       u32 offset;
+> +       u32 size;
 > +};
 
-If there is a indeed a requirement for hardware specific functions,
-I'd say these should be registered from the hardware specific driver
-rather than the generic driver having to know about every single
-instance.
+This is of course not a proper ioctl interface at all, please see
+Documentation/driver-api/ioctl.rst for how to define the numbers
+in a uapi header file.
 
-> +static long sram_uapi_ioctl(struct file *filp, unsigned int cmd,
-> +                           unsigned long arg)
-> +{
-> +       struct sram_uapi *uapi = filp->private_data;
-> +       struct sram_resource *res;
-> +       struct res_info info;
-> +       long ret = -EINVAL;
-> +       int size;
-> +       u32 type;
-> +
-> +       if (!uapi)
-> +               return ret;
-> +
-> +       switch (cmd) {
-> +       case SRAM_UAPI_IOCTL_SET_SRAM_TYPE:
-> +               size = copy_from_user((void *)&type, (const void __user *)arg,
-> +                                     sizeof(type));
+The offset/size arguments should probably be 64 bit wide.
 
-This could be a simpler get_user().
-
-> +static const struct file_operations sram_uapi_ops = {
-> +       .owner = THIS_MODULE,
-> +       .open = sram_uapi_open,
-> +       .unlocked_ioctl = sram_uapi_ioctl,
-> +       .mmap = sram_uapi_mmap,
-> +       .release = sram_uapi_release,
-> +};
-
-If you have a .unlocked_ioctl callback, there should also be a
-.compat_ioctl one. This can normally point to compat_ptr_ioctl().
-
-> +
-> +static struct miscdevice sram_uapi_miscdev = {
-> +       MISC_DYNAMIC_MINOR,
-> +       "sram-uapi",
-> +       &sram_uapi_ops,
-> +};
-
-The name of the character device should not contain "uapi", that
-is kind of implied here.
-
-
-        Arnd
+       Arnd
