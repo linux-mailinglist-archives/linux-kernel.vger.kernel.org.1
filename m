@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C38D1AEFDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63A01AEFF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgDROp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        id S1728991AbgDROqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:46:16 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46548 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727914AbgDROpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:45:01 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FF5A22260;
-        Sat, 18 Apr 2020 14:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587221100;
-        bh=G9LiqHyPZiTF8B+ODzNtJIvbuwTfYcDs9golXx+qZ3A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fA57RqPTYRHVNq1S8AFhFroK7UndC+pxDGfxVSXsRY5Fq0KqMgW4KqIREre2N/sfZ
-         Sh3swO1S0qnwnwSUTN7INLdzzzzgCUubmV6Ogr/KFK6QvBLXpCOS29/sqOnOvfqzcx
-         Vgp7S8s+iqkpHswgFgResceIXrV2Layw0VkEqdNw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.4 19/19] ALSA: hda: Fix potential access overflow in beep helper
-Date:   Sat, 18 Apr 2020 10:44:36 -0400
-Message-Id: <20200418144436.10818-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200418144436.10818-1-sashal@kernel.org>
-References: <20200418144436.10818-1-sashal@kernel.org>
+        id S1728849AbgDROqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:46:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=dpss5G2N7uvUMvkaD6b2KJzZija+Nemnz6JbBa7IjiY=; b=ouT/UqhyzwL6J/ctwSdntyWusU
+        SIeWEnq+ldQajILAFZXJyifjGMy0xoYWnxvPS2GRjnKOkvT7PrOi0FCbIwKRfZ78Ai2RsbDK49QWg
+        tcq4LFaMTlY/k2J83cu6d91FJxbkkyGocMEUGL6rUSdmBO2TKIK/6KRMMt9ejumCABf0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jPojO-003TLN-2J; Sat, 18 Apr 2020 16:46:06 +0200
+Date:   Sat, 18 Apr 2020 16:46:06 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        netdev@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-kernel@vger.kernel.org, Varun Sethi <V.Sethi@nxp.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC net-next PATCH v2 1/2] net/fsl: add ACPI support for mdio
+ bus
+Message-ID: <20200418144606.GG804711@lunn.ch>
+References: <20200418105432.11233-1-calvin.johnson@oss.nxp.com>
+ <20200418105432.11233-2-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418105432.11233-2-calvin.johnson@oss.nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+> -	ret = of_mdiobus_register(bus, np);
 
-[ Upstream commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a ]
+So this is the interesting part. What you really want to be doing is
+adding a device_mdiobus_register(bus, dev) to the core. And it needs
+to share as much as possible with the of_mdiobus_register()
+implementation.
 
-The beep control helper function blindly stores the values in two
-stereo channels no matter whether the actual control is mono or
-stereo.  This is practically harmless, but it annoys the recently
-introduced sanity check, resulting in an error when the checker is
-enabled.
-
-This patch corrects the behavior to store only on the defined array
-member.
-
-Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/pci/hda/hda_beep.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-index c397e7da0eacf..7ccfb09535e14 100644
---- a/sound/pci/hda/hda_beep.c
-+++ b/sound/pci/hda/hda_beep.c
-@@ -310,8 +310,12 @@ int snd_hda_mixer_amp_switch_get_beep(struct snd_kcontrol *kcontrol,
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_beep *beep = codec->beep;
-+	int chs = get_amp_channels(kcontrol);
-+
- 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
--		ucontrol->value.integer.value[0] =
-+		if (chs & 1)
-+			ucontrol->value.integer.value[0] = beep->enabled;
-+		if (chs & 2)
- 			ucontrol->value.integer.value[1] = beep->enabled;
- 		return 0;
- 	}
--- 
-2.20.1
-
+       Andrew
