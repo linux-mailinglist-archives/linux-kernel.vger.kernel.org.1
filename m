@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2763E1AEE29
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9302B1AEE9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgDROLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39110 "EHLO mail.kernel.org"
+        id S1728213AbgDRON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:13:57 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46400 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727963AbgDROKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:10:43 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3341921D6C;
-        Sat, 18 Apr 2020 14:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587219043;
-        bh=zD789dP6I9c4Z+1f02WB1iPpEHekSNenlssybZAeuw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uwf//iDQQHmX0KoOaTnJoi7txlixRZEZiId/k4o6QZFx3FjDAjtBHJdtgVLo2ErX9
-         b2k5n6B6ikgnf11YQW+TTxFad1X2kpMcKRBlnzj37gV10cSS3x2Gm8dAtUk7ab6K7x
-         uxTqFi/cpDNLCiLStVlNjmf+IWScD1DPjXTjj0a4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Qian Cai <cai@lca.pw>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 75/75] block: fix busy device checking in blk_drop_partitions again
-Date:   Sat, 18 Apr 2020 10:09:10 -0400
-Message-Id: <20200418140910.8280-75-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200418140910.8280-1-sashal@kernel.org>
-References: <20200418140910.8280-1-sashal@kernel.org>
+        id S1727905AbgDRONy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:13:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Sjo4RN4J6c+4xL5CYuv4o5kkfZ+wnVlnpvdEyHvvIxk=; b=APlZsfS4+qrhB7JQZoQRJaG0Sn
+        jUFbsPyOcgn/yHNmaXwU6p93mSRh8VmAjuwG49cXkEKqmESMdaXlvj9+/aI5BMw8Rn8oFBWK1+ywQ
+        /yAspNWIQYZtY5DN6tdYy595xnmUC1Ix3zlM84E7TQhNpSNd2fOyqN5jN8Zcmmkpo/Mc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jPoE8-003Sz2-Ku; Sat, 18 Apr 2020 16:13:48 +0200
+Date:   Sat, 18 Apr 2020 16:13:48 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next 1/3] net: phy: broadcom: add helper to
+ write/read RDB registers
+Message-ID: <20200418141348.GA804711@lunn.ch>
+References: <20200417192858.6997-1-michael@walle.cc>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417192858.6997-1-michael@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+On Fri, Apr 17, 2020 at 09:28:56PM +0200, Michael Walle wrote:
+> RDB regsiters are used on newer Broadcom PHYs. Add helper to read, write
+> and modify these registers.
 
-[ Upstream commit cb6b771b05c3026a85ed4817c1b87c5e6f41d136 ]
+It would be nice to give a hint what RDB means?
 
-The previous fix had an off by one in the bd_openers checking, counting
-the callers blkdev_get.
-
-Fixes: d3ef5536274f ("block: fix busy device checking in blk_drop_partitions")
-Reported-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/partition-generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/partition-generic.c b/block/partition-generic.c
-index 5f3b2a959aa51..ebe4c2e9834bd 100644
---- a/block/partition-generic.c
-+++ b/block/partition-generic.c
-@@ -468,7 +468,7 @@ int blk_drop_partitions(struct gendisk *disk, struct block_device *bdev)
- 
- 	if (!disk_part_scan_enabled(disk))
- 		return 0;
--	if (bdev->bd_part_count || bdev->bd_openers)
-+	if (bdev->bd_part_count || bdev->bd_openers > 1)
- 		return -EBUSY;
- 	res = invalidate_partition(disk, 0);
- 	if (res)
--- 
-2.20.1
-
+Thanks
+	Andrew
