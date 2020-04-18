@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AC01AE95B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 04:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1161E1AE94F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 04:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgDRCYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 22:24:10 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2354 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725320AbgDRCYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 22:24:09 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 70F2F5FF84E0A60E4E66;
-        Sat, 18 Apr 2020 10:24:06 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Apr 2020
- 10:23:59 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <richardcochran@gmail.com>, <min.li.xe@renesas.com>,
-        <yuehaibing@huawei.com>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] ptp: idt82p33: Make two variables static
-Date:   Sat, 18 Apr 2020 10:01:49 +0800
-Message-ID: <20200418020149.29796-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1725858AbgDRCL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 22:11:59 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59573 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725535AbgDRCL7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 17 Apr 2020 22:11:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587175917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=URlwbrXEDXEHxt2PEI/Shocf9FEZHJYwmhM7aRxcHa0=;
+        b=ipxSykFrrakar59LkNkaRA+IRTYuv5J37PPIfQOd5eA9NgvWgbpL+dz+XIAUunw0zEj6Jn
+        a3He4H4aRO9X2Pp/0QzLcvT0IQ18DAo9NDg+qV23NnyEmWk8uI7D78aLp+rKenpQsHNPHd
+        pDzxn3LyEO4WZPap0H4DeL1c79D3E0E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-h8MKemqiPkafrnvuMr2l5g-1; Fri, 17 Apr 2020 22:11:50 -0400
+X-MC-Unique: h8MKemqiPkafrnvuMr2l5g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B49B38017F3;
+        Sat, 18 Apr 2020 02:11:48 +0000 (UTC)
+Received: from T590 (ovpn-8-23.pek2.redhat.com [10.72.8.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B59F711A028;
+        Sat, 18 Apr 2020 02:11:40 +0000 (UTC)
+Date:   Sat, 18 Apr 2020 10:11:36 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     yu kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, yi.zhang@huawei.com,
+        yuyufen@huawei.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] block: fix access of uninitialized pointer address in
+ bt_for_each()
+Message-ID: <20200418021136.GA17090@T590>
+References: <20200417125134.45117-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417125134.45117-1-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warnings:
+On Fri, Apr 17, 2020 at 08:51:34PM +0800, yu kuai wrote:
+> I recently got a KASAN warning like this in our 4.19 kernel:
+> 
+>  ==================================================================
+>  BUG: KASAN: slab-out-of-bounds in bt_for_each+0x1dc/0x2c0
+>  Read of size 8 at addr ffff8000c0865000 by task sh/2023305
+> 
+>  Call trace:
+>  dump_backtrace+0x0/0x310
+>  show_stack+0x28/0x38
+>  dump_stack+0xd8/0x108
+>  print_address_description+0x68/0x2d0
+>  kasan_report+0x124/0x2e0
+>  __asan_load8+0x88/0xb0
+>  bt_for_each+0x1dc/0x2c0
+>  blk_mq_queue_tag_busy_iter+0x1f0/0x3e8
+>  blk_mq_in_flight+0xb4/0xe0
+>  part_in_flight+0x124/0x178
+>  part_round_stats+0x128/0x3b0
 
-drivers/ptp/ptp_idt82p33.c:26:5: warning: symbol 'sync_tod_timeout' was not declared. Should it be static?
-drivers/ptp/ptp_idt82p33.c:31:5: warning: symbol 'phase_snap_threshold' was not declared. Should it be static?
+This code path is killed since 5b18b5a73760 ("block: delete part_round_stats and
+switch to less precise counting").
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/ptp/ptp_idt82p33.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+However, it still can be triggered via readding proc & sysfs iostat.
 
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index b63ac240308b..31ea811b6d5f 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -23,12 +23,12 @@ MODULE_VERSION("1.0");
- MODULE_LICENSE("GPL");
- 
- /* Module Parameters */
--u32 sync_tod_timeout = SYNC_TOD_TIMEOUT_SEC;
-+static u32 sync_tod_timeout = SYNC_TOD_TIMEOUT_SEC;
- module_param(sync_tod_timeout, uint, 0);
- MODULE_PARM_DESC(sync_tod_timeout,
- "duration in second to keep SYNC_TOD on (set to 0 to keep it always on)");
- 
--u32 phase_snap_threshold = SNAP_THRESHOLD_NS;
-+static u32 phase_snap_threshold = SNAP_THRESHOLD_NS;
- module_param(phase_snap_threshold, uint, 0);
- MODULE_PARM_DESC(phase_snap_threshold,
- "threshold (150000ns by default) below which adjtime would ignore");
--- 
-2.17.1
+Jian Chao worked patches for this issue before, please refer to:
 
+https://lore.kernel.org/linux-block/1553492318-1810-1-git-send-email-jianchao.w.wang@oracle.com/
+
+but didn't get chance to merge.
+
+Thanks, 
+Ming
 
