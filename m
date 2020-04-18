@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE221AEEC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32941AEEDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgDROj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47932 "EHLO mail.kernel.org"
+        id S1726734AbgDROku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgDROj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:39:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725903AbgDROku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:40:50 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 443BC21974;
-        Sat, 18 Apr 2020 14:39:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0554F21D7E;
+        Sat, 18 Apr 2020 14:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587220766;
-        bh=qQJgMOooEtedMzMts41BbX4i4dAdvd931W+ZKmtKv8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z9EK2swz5XvWX1LxrZv9QY67nbt5P9yi88uEnD+0ZO5wIsmb5VG+8LzM7USbPD7nw
-         s5ULpgvr1RK7XAE5Roj9nmfyV4VGqltF75ke/xmlt7XBnCJsLzAJdfVAreHqetUycL
-         STIenaXbXMaOBU2ZLnUPSDHJk5/KxlJCWBDYGVr4=
-Date:   Sat, 18 Apr 2020 16:39:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v3] Add kernel config option for tweaking kernel behavior.
-Message-ID: <20200418143924.GA3485638@kroah.com>
-References: <20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200413081426.GA2791586@kroah.com>
- <85d9c411-f205-56bf-df6b-6d4fa39a134b@i-love.sakura.ne.jp>
+        s=default; t=1587220849;
+        bh=l7ekFKtaYoWG4FL2fqCcuTI64us+m53O/B1Hpmin2sw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F66kE3W8U4Sfk9/TYCfvB2Yvv7H7pC8U35U+dTBFOil1ljUSf6qBQtPLwkrgzbdY+
+         BmV3Sb1MP0/AMSNfz1LtoUKArIRLICyZaFvc4glZxoqr9o3rysBKU8ZwDz574m1Bdr
+         mGfhH/Oj1wge+2mRC2EZAcRDmfpKJK7QLaRop4pI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Adrian Huang <ahuang12@lenovo.com>, Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.4 01/78] iommu/amd: Fix the configuration of GCR3 table root pointer
+Date:   Sat, 18 Apr 2020 10:39:30 -0400
+Message-Id: <20200418144047.9013-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85d9c411-f205-56bf-df6b-6d4fa39a134b@i-love.sakura.ne.jp>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 11:28:22PM +0900, Tetsuo Handa wrote:
-> On 2020/04/13 17:14, Greg Kroah-Hartman wrote:
-> >> @@ -2223,4 +2223,15 @@ config HYPERV_TESTING
-> >>  
-> >>  endmenu # "Kernel Testing and Coverage"
-> >>  
-> >> +menuconfig TWEAK_KERNEL_BEHAVIOR
-> >> +	bool "Tweak kernel behavior"
-> >> +	help
-> >> +	  Saying Y here allows modifying kernel behavior via kernel
-> >> +	  config options which will become visible by selecting this
-> >> +	  config option.
-> > 
-> > This "help" text really only says "say Y here to allow for some config
-> > options".  It doesn't explain what these are for, or why anyone would
-> > select them, or what type of options are here at all.
-> > 
-> > I don't see how this option, by just looking at it, relates to your goal
-> > of doing things to make fuzzers' lives easier.
-> 
-> Well, we could add some more text (like shown below), but this option itself
-> is neutral. This option is not limiting the target to fuzzers.
-> Below 3 patches are an example of "a set of fine-grained configs" with
-> "some umbrella uber-config" approach. Linus, are you OK with this approach?
+From: Adrian Huang <ahuang12@lenovo.com>
 
-Note, the word "tweak" is usually used where people want to get the most
-performance out of a system, while here you are using it to remove
-functionality out of the system.  You might want to pick a different
-word, naming is hard :(
+[ Upstream commit c20f36534666e37858a14e591114d93cc1be0d34 ]
 
-Anyway, a comment on your patch:
+The SPA of the GCR3 table root pointer[51:31] masks 20 bits. However,
+this requires 21 bits (Please see the AMD IOMMU specification).
+This leads to the potential failure when the bit 51 of SPA of
+the GCR3 table root pointer is 1'.
 
-> >From f7f668896e188217b50c50a31c4ad1acb7556b36 Mon Sep 17 00:00:00 2001
-> From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Date: Sat, 18 Apr 2020 22:39:38 +0900
-> Subject: [PATCH 2/3] tweak: Allow disabling k_spec() function in drivers/tty/vt/keyboard.c
-> 
-> syzbot is reporting unexpected kernel reboots [1]. This seems to be
-> caused by triggering Ctrl-Alt-Del event via k_spec() function in
-> drivers/tty/vt/keyboard.c file, for the console output includes normal
-> restart sequence. Therefore, allow disabling only k_spec() function
-> in order to allow fuzzers to examine the remaining part in that file.
-> 
-> [1] https://syzkaller.appspot.com/bug?id=321861b1588b44d064b779b92293c5d55cfe8430
-> 
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->  drivers/tty/vt/keyboard.c | 2 ++
->  lib/Kconfig.tewak         | 7 +++++++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index 15d33fa0c925..f08855c4c5ba 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -633,6 +633,8 @@ static void k_spec(struct vc_data *vc, unsigned char value, char up_flag)
->  	     kbd->kbdmode == VC_OFF) &&
->  	     value != KVAL(K_SAK))
->  		return;		/* SAK is allowed even in raw mode */
-> +	if (IS_ENABLED(CONFIG_TWEAK_DISABLE_KBD_K_SPEC_HANDLER))
-> +		return;
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+Fixes: 52815b75682e2 ("iommu/amd: Add support for IOMMUv2 domain mode")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/iommu/amd_iommu_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Are you sure this is correct?  It seems like you just cut off a number
-of other keyboard function handlers instead of just the ctrl-alt-del
-functionality.  Did you really want to do that?
+diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
+index daeabd98c60e2..0679896b9e2e1 100644
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -348,7 +348,7 @@
+ 
+ #define DTE_GCR3_VAL_A(x)	(((x) >> 12) & 0x00007ULL)
+ #define DTE_GCR3_VAL_B(x)	(((x) >> 15) & 0x0ffffULL)
+-#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0xfffffULL)
++#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0x1fffffULL)
+ 
+ #define DTE_GCR3_INDEX_A	0
+ #define DTE_GCR3_INDEX_B	1
+-- 
+2.20.1
 
-thanks,
-
-greg k-h
