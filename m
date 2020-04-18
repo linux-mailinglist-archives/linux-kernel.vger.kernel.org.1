@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7841A1AEB8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 12:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA641AEB8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 12:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbgDRKAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 06:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725857AbgDRKAD (ORCPT
+        id S1725950AbgDRKBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 06:01:33 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:49501 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgDRKBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 06:00:03 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBCAC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 03:00:03 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jPkGL-0006nT-Ir; Sat, 18 Apr 2020 11:59:49 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id E863B101304; Sat, 18 Apr 2020 11:59:48 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     "Singh\, Balbir" <sblbir@amazon.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "keescook\@chromium.org" <keescook@chromium.org>,
-        "tony.luck\@intel.com" <tony.luck@intel.com>,
-        "benh\@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "jpoimboe\@redhat.com" <jpoimboe@redhat.com>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "dave.hansen\@intel.com" <dave.hansen@intel.com>
-Subject: Re: [PATCH v3 3/5] arch/x86/mm: Refactor cond_ibpb() to support other use cases
-In-Reply-To: <12023cc73a6344ed7499e09492a6934c1dfaf044.camel@amazon.com>
-References: <20200408090229.16467-1-sblbir@amazon.com> <20200408090229.16467-4-sblbir@amazon.com> <87sgh2l0q4.fsf@nanos.tec.linutronix.de> <12023cc73a6344ed7499e09492a6934c1dfaf044.camel@amazon.com>
-Date:   Sat, 18 Apr 2020 11:59:48 +0200
-Message-ID: <87pnc5xgff.fsf@nanos.tec.linutronix.de>
+        Sat, 18 Apr 2020 06:01:32 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65e9acfe6ae8-acb89; Sat, 18 Apr 2020 18:01:13 +0800 (CST)
+X-RM-TRANSID: 2ee65e9acfe6ae8-acb89
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.1.172.61])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e9acfe69d5-6ed96;
+        Sat, 18 Apr 2020 18:01:12 +0800 (CST)
+X-RM-TRANSID: 2ee15e9acfe69d5-6ed96
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     l.stach@pengutronix.de, linux+etnaviv@armlinux.org.uk,
+        christian.gmeiner@gmail.com, airlied@linux.ie, daniel@ffwll.ch
+Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] drm/etnaviv: Omit superfluous error message in etnaviv_gpu_platform_probe()
+Date:   Sat, 18 Apr 2020 18:02:48 +0800
+Message-Id: <20200418100248.4552-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Singh, Balbir" <sblbir@amazon.com> writes:
-> On Fri, 2020-04-17 at 15:07 +0200, Thomas Gleixner wrote:
->> 
->> Balbir Singh <sblbir@amazon.com> writes:
->> > 
->> >  /*
->> > - * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
->> > - * stored in cpu_tlb_state.last_user_mm_ibpb.
->> > + * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
->> > + * stored in cpu_tlb_state.last_user_mm_spec.
->> >   */
->> >  #define LAST_USER_MM_IBPB    0x1UL
->> > +#define LAST_USER_MM_SPEC_MASK       (LAST_USER_MM_IBPB)
->> > 
->> >       /* Reinitialize tlbstate. */
->> > -     this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
->> > +     this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_IBPB);
->> 
->> Shouldn't that be LAST_USER_MM_MASK?
->> 
-> No, that crashes the system for SW flushes, because it tries to flush the L1D
-> via the software loop and early enough we don't have the l1d_flush_pages
-> allocated. LAST_USER_MM_MASK has LAST_USER_MM_FLUSH_L1D bit set.
+In the function etnaviv_gpu_platform_probe(), when get irq failed,
+the function platform_get_irq() logs an error message, so remove
+redundant message here.
 
-You can trivially prevent this by checking l1d_flush_pages != NULL.
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index a31eeff2b..6dbe0c45b 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -1770,10 +1770,8 @@ static int etnaviv_gpu_platform_probe(struct platform_device *pdev)
+ 
+ 	/* Get Interrupt: */
+ 	gpu->irq = platform_get_irq(pdev, 0);
+-	if (gpu->irq < 0) {
+-		dev_err(dev, "failed to get irq: %d\n", gpu->irq);
++	if (gpu->irq < 0)
+ 		return gpu->irq;
+-	}
+ 
+ 	err = devm_request_irq(&pdev->dev, gpu->irq, irq_handler, 0,
+ 			       dev_name(gpu->dev), gpu);
+-- 
+2.20.1.windows.1
 
-        tglx
+
 
