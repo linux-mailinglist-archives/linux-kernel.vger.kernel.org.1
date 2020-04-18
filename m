@@ -2,145 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F091AEED5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE221AEEC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgDROjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726563AbgDROjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:39:36 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C51C061A0C;
-        Sat, 18 Apr 2020 07:39:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k11so6372721wrp.5;
-        Sat, 18 Apr 2020 07:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dcU18dKgyioxh46jA7FvWsYL58s8h58864kxaD9p5qo=;
-        b=FNGWlj7vcsHWXXSK6xC+raY2VaK8WujFpWxUCLPM7g3A5Kjc1LEx4eHBGUHXW1BQMJ
-         n/asEVPQE/32PXIAOhunBM7j/BsT7tgd9woCdhleKcUtVNC3J/sc17p0S+qAv67qVBCq
-         LEA6a0LyRTcUWGJ8cXP5LhW/TzMjL3aaijmCXu+VUCfV3pG9WgG9iy+ergc6LNHBXJ8Y
-         6UGmJFrd3kzfjqCtdbarrb3I5Pw7XCivgb9n3ONfGh49tH9ulciCiQ7lBGj2mBE0UxH6
-         jfSxWkhpUmzxFy2FlXR2LEiLHvXn+t8kZN8+g0BIBG3FF4n4im2qHNhhipUy8PCTJHG5
-         nLhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dcU18dKgyioxh46jA7FvWsYL58s8h58864kxaD9p5qo=;
-        b=fAfNpNkHF+Vr2rf2LJRaiXUw5KTSMOQhCMFGhuO1Tc5xMS7e2opRr01PVKFxC7tHSK
-         8uwhNRF1VmRIyt30fMY0aKgRkLWRhnO/zCwLbdYZjwA9VO3d/D7tYfTxvrNmHjeg0uXD
-         tkSAQL0Wk1y3tyYLObpU2INmjfrYaPjlNUt0N0ySJKyBksK+rM789lOcoGbZkPU/Ogl3
-         weYa4ge2EGF0IZSnn0JQ0XVSXwoLe7xSBt1pU9Uc5SIO69KWNvV5YZrE+Rus3nfsyK7n
-         XodKegq7rnFUwMWIf+nl4WwaX6ILyThtK0J/OwASbG7jyooywkl/La6hdSt08J55qDCe
-         p86g==
-X-Gm-Message-State: AGi0PuZANF9LUhzSHYvZeM1qR5wtMmGeBwj6tjky9gPVIIZIaJAYZG2W
-        sYsBPEbjcywkDj43jL0WYsU=
-X-Google-Smtp-Source: APiQypKJlHwpQpKN7XlW70JN2DZ17rcbc6rk8jOc1krkjdakqmOSks4L/YFTXs9xyLmITSrlVkM7hg==
-X-Received: by 2002:a5d:6584:: with SMTP id q4mr10073857wru.403.1587220774636;
-        Sat, 18 Apr 2020 07:39:34 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:4e7:1fdd:b7c2:b3ab])
-        by smtp.gmail.com with ESMTPSA id s9sm25375322wrg.27.2020.04.18.07.39.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 07:39:34 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Marcus Cooper <codekipper@gmail.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 7/7] arm64: dts: sun50i-h6: Add HDMI audio to H6 DTSI
-Date:   Sat, 18 Apr 2020 16:39:23 +0200
-Message-Id: <20200418143923.19608-8-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200418143923.19608-1-peron.clem@gmail.com>
-References: <20200418143923.19608-1-peron.clem@gmail.com>
+        id S1726385AbgDROj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbgDROj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:39:27 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 443BC21974;
+        Sat, 18 Apr 2020 14:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587220766;
+        bh=qQJgMOooEtedMzMts41BbX4i4dAdvd931W+ZKmtKv8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z9EK2swz5XvWX1LxrZv9QY67nbt5P9yi88uEnD+0ZO5wIsmb5VG+8LzM7USbPD7nw
+         s5ULpgvr1RK7XAE5Roj9nmfyV4VGqltF75ke/xmlt7XBnCJsLzAJdfVAreHqetUycL
+         STIenaXbXMaOBU2ZLnUPSDHJk5/KxlJCWBDYGVr4=
+Date:   Sat, 18 Apr 2020 16:39:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Garrett <mjg59@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v3] Add kernel config option for tweaking kernel behavior.
+Message-ID: <20200418143924.GA3485638@kroah.com>
+References: <20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200413081426.GA2791586@kroah.com>
+ <85d9c411-f205-56bf-df6b-6d4fa39a134b@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85d9c411-f205-56bf-df6b-6d4fa39a134b@i-love.sakura.ne.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+On Sat, Apr 18, 2020 at 11:28:22PM +0900, Tetsuo Handa wrote:
+> On 2020/04/13 17:14, Greg Kroah-Hartman wrote:
+> >> @@ -2223,4 +2223,15 @@ config HYPERV_TESTING
+> >>  
+> >>  endmenu # "Kernel Testing and Coverage"
+> >>  
+> >> +menuconfig TWEAK_KERNEL_BEHAVIOR
+> >> +	bool "Tweak kernel behavior"
+> >> +	help
+> >> +	  Saying Y here allows modifying kernel behavior via kernel
+> >> +	  config options which will become visible by selecting this
+> >> +	  config option.
+> > 
+> > This "help" text really only says "say Y here to allow for some config
+> > options".  It doesn't explain what these are for, or why anyone would
+> > select them, or what type of options are here at all.
+> > 
+> > I don't see how this option, by just looking at it, relates to your goal
+> > of doing things to make fuzzers' lives easier.
+> 
+> Well, we could add some more text (like shown below), but this option itself
+> is neutral. This option is not limiting the target to fuzzers.
+> Below 3 patches are an example of "a set of fine-grained configs" with
+> "some umbrella uber-config" approach. Linus, are you OK with this approach?
 
-Add a simple-soundcard to link audio between HDMI and I2S.
+Note, the word "tweak" is usually used where people want to get the most
+performance out of a system, while here you are using it to remove
+functionality out of the system.  You might want to pick a different
+word, naming is hard :(
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 31 ++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Anyway, a comment on your patch:
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-index b9ab7d8fa8af..47c657d6237b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -88,6 +88,24 @@
- 			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 	};
- 
-+	sound_hdmi: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "allwinner-hdmi";
-+		simple-audio-card,mclk-fs = <128>;
-+		simple-audio-card,frame-inversion;
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1>;
-+			dai-tdm-slot-num = <2>;
-+			dai-tdm-slot-width = <32>;
-+		};
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -571,6 +589,18 @@
- 			};
- 		};
- 
-+		i2s1: i2s@5091000 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-h6-i2s";
-+			reg = <0x05091000 0x1000>;
-+			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S1>, <&ccu CLK_I2S1>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 4>, <&dma 4>;
-+			resets = <&ccu RST_BUS_I2S1>;
-+			dma-names = "rx", "tx";
-+		};
-+
- 		spdif: spdif@5093000 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-h6-spdif";
-@@ -701,6 +731,7 @@
- 		};
- 
- 		hdmi: hdmi@6000000 {
-+			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-h6-dw-hdmi";
- 			reg = <0x06000000 0x10000>;
- 			reg-io-width = <1>;
--- 
-2.20.1
+> >From f7f668896e188217b50c50a31c4ad1acb7556b36 Mon Sep 17 00:00:00 2001
+> From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Date: Sat, 18 Apr 2020 22:39:38 +0900
+> Subject: [PATCH 2/3] tweak: Allow disabling k_spec() function in drivers/tty/vt/keyboard.c
+> 
+> syzbot is reporting unexpected kernel reboots [1]. This seems to be
+> caused by triggering Ctrl-Alt-Del event via k_spec() function in
+> drivers/tty/vt/keyboard.c file, for the console output includes normal
+> restart sequence. Therefore, allow disabling only k_spec() function
+> in order to allow fuzzers to examine the remaining part in that file.
+> 
+> [1] https://syzkaller.appspot.com/bug?id=321861b1588b44d064b779b92293c5d55cfe8430
+> 
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> ---
+>  drivers/tty/vt/keyboard.c | 2 ++
+>  lib/Kconfig.tewak         | 7 +++++++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index 15d33fa0c925..f08855c4c5ba 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -633,6 +633,8 @@ static void k_spec(struct vc_data *vc, unsigned char value, char up_flag)
+>  	     kbd->kbdmode == VC_OFF) &&
+>  	     value != KVAL(K_SAK))
+>  		return;		/* SAK is allowed even in raw mode */
+> +	if (IS_ENABLED(CONFIG_TWEAK_DISABLE_KBD_K_SPEC_HANDLER))
+> +		return;
 
+Are you sure this is correct?  It seems like you just cut off a number
+of other keyboard function handlers instead of just the ctrl-alt-del
+functionality.  Did you really want to do that?
+
+thanks,
+
+greg k-h
