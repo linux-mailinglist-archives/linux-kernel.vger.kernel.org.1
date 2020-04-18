@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2217C1AF4BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C26E1AF4C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgDRUVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S1728813AbgDRUVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 16:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728681AbgDRUUv (ORCPT
+        by vger.kernel.org with ESMTP id S1728685AbgDRUUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Apr 2020 16:20:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55314C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:50 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b11so7164687wrs.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:50 -0700 (PDT)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E14EC061A0F
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:51 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f13so7134137wrm.13
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cxaQsGwcajCaAbE0AN0/6fxs/dmraz1psCcScZx1Yww=;
-        b=W0osrk2vhOkOKECIEVaoRIQRGIStYR/Gq9ZLhzJydrJUEmPLo7IOWBTGy/+TuBFBiz
-         YrsZdFGM8DITKx1eC9mH58q7boAOynAJziYAR6XvIQ/veHKkGgxcI7URmEqaJtZ6dRvT
-         Lur/KV422Ua1BkkaLndb5h2f6GMgVtQzDrVnRPSaxt4aOrIhvYQXMJUyKr49/rkZbm1/
-         jokFUHTnWk5tXBimUror8oGePOY5MzonaxiSZS9P33uFCcb5u6NJwFJpJKIRd7bKGTLI
-         Ljgdd+eSqsd2ygNUK8vKlTb5OwV+FK79JB1BZzMZWj1ocjcTAqS2CumLdY9QfjrJOYdU
-         2rcQ==
+        bh=rBtphzshsTJT+agYSVfMzy6VHv96OSjVYiPTsDxjpkc=;
+        b=o6EpWV3VVSXvpl/hrQGc10y7cAUTC0DcFWtmI0xzDg16KHP4Zxe5M9rGYf6JvRnunz
+         wztn5ICbEybWn/EUa1IbDKG6EyHgHDOeJbFDQjmIhFPWvuVzSm1bZwBIq9ZiMuOk8ZGb
+         wxvnAXWL5hMGD8tvQwAsrwrgOtBtmWtGx1eCdGY49RVhsRXV6zXcHBlv1gUC0XyHhRu1
+         PBriJZDJyVoM3mYBQ0HCMDstIWzLr+h1Jz8S9j9tOMHkoqFLZHr34sLZB8Q9JWLdHNga
+         rv/nTLA7ww7IgsJjziYK9WPyXd9TN69IQ7jvExyAAD0/5nTPTEHev+xomjwN9cwHIDiB
+         JErQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cxaQsGwcajCaAbE0AN0/6fxs/dmraz1psCcScZx1Yww=;
-        b=eyoKCBGDd5tferV2EgUFL3ChkuiCeWUJXk4PYzunwkZWAO50ufmrcC57c3MSPqqWmW
-         0Z4L913Kn/hi8glIISRArPnBXSdRwk/1vQkEX2EWAmrx3QH0w9SECdePFvVIUY2imMuE
-         k3L1Zk7t9+U1TEJNy1LA472PyjOz4lYdZSEm8KgQGlQyKdVkKlzr3oNbGheC1yCLL752
-         K/xO1TCSLQwGb8pcUKPehbzAVfl0cSMhEs4XPBa0JANVqxFBub1qPfSclEHx467CCGXr
-         WSevjIMmr13jaH4puGcjsU628VkSwfmUOjUrPArUQjKYYP7uANo4wgN0W2I8Ic82LMug
-         KaDQ==
-X-Gm-Message-State: AGi0PuakR5AxuJMVjOJ7Bs4VRb0dEXJTcCYwr+0/Z3BmR7sOLjBbDGo7
-        Fqrbnsa36kMkFRmwu8GDKtwplwzcmCE=
-X-Google-Smtp-Source: APiQypKS6wD5obobIyQqRezqByToFHevr3HrrYTxsW8VXI4SjRXjS2TRCkQPTKoKavKRewg5cnR+fg==
-X-Received: by 2002:adf:df01:: with SMTP id y1mr10317595wrl.401.1587241248861;
-        Sat, 18 Apr 2020 13:20:48 -0700 (PDT)
+        bh=rBtphzshsTJT+agYSVfMzy6VHv96OSjVYiPTsDxjpkc=;
+        b=EhOiixsX8WHtnZQHM5jFK51rV33f0uwLe3p3PDwCKdBwLzJQi0ifmaF80ImIY5GUf8
+         2nqvXbm7EogkGRAk+lDhcCgmOLYpJ4cqAbaqhVmI2bVqWm8GI4/6XOscC+v+kGeM/CYO
+         rUQVX+WuGdhoPYb7JJVpRc5i68JR2FWTbDLCvyTsHg1Rrxon6PAV5Fag0jibZTCREtST
+         M65oqFWs7ll0KzmAXj3T8CdwK6AtWndZZvOHX6hwlhcUZH9aaFTHIlz/vsYwxqKH8LE0
+         jvZLBILLLVrv1JaNLDsxa8tXXM8/Uzkb7m5ya+ogJbWgQ/nELlI43mFu6zvbPWhGvXxG
+         AeGg==
+X-Gm-Message-State: AGi0PuZRYQzHdZNgduMAMVrVw64JIPXJaToS0Of+zUA3ZPbXSd8I1Hsq
+        M5G3I3Ukim9rpS2IdoRpIJUlDjPpQKo=
+X-Google-Smtp-Source: APiQypLVzU9qJCfqyhfMat7fp+t5PJcUPMe8hdQuHtXodAIdOVArOCTZ86ab+1BziVRpuCYO4/6hWA==
+X-Received: by 2002:adf:b344:: with SMTP id k4mr10081517wrd.76.1587241250001;
+        Sat, 18 Apr 2020 13:20:50 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.47
+        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 13:20:48 -0700 (PDT)
+        Sat, 18 Apr 2020 13:20:49 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -58,13 +58,10 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org
-Subject: [PATCHv3 43/50] xtensa: Add show_stack_loglvl()
-Date:   Sat, 18 Apr 2020 21:19:37 +0100
-Message-Id: <20200418201944.482088-44-dima@arista.com>
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCHv3 44/50] sysrq: Use show_stack_loglvl()
+Date:   Sat, 18 Apr 2020 21:19:38 +0100
+Message-Id: <20200418201944.482088-45-dima@arista.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200418201944.482088-1-dima@arista.com>
 References: <20200418201944.482088-1-dima@arista.com>
@@ -75,68 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the log-level of show_stack() depends on a platform
-realization. It creates situations where the headers are printed with
-lower log level or higher than the stacktrace (depending on
-a platform or user).
+Show the stack trace on a CPU with the same log level as "CPU%d" header.
 
-Furthermore, it forces the logic decision from user to an architecture
-side. In result, some users as sysrq/kdb/etc are doing tricks with
-temporary rising console_loglevel while printing their messages.
-And in result it not only may print unwanted messages from other CPUs,
-but also omit printing at all in the unlucky case where the printk()
-was deferred.
-
-Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
-an easier approach than introducing more printk buffers.
-Also, it will consolidate printings with headers.
-
-Introduce show_stack_loglvl(), that eventually will substitute
-show_stack().
-
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jslaby@suse.com>
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/xtensa/kernel/traps.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/tty/sysrq.c         | 2 +-
+ include/linux/sched/debug.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/kernel/traps.c b/arch/xtensa/kernel/traps.c
-index c397a02457bc..3a50813eeb70 100644
---- a/arch/xtensa/kernel/traps.c
-+++ b/arch/xtensa/kernel/traps.c
-@@ -501,7 +501,8 @@ static void show_trace(struct task_struct *task, unsigned long *sp,
- #define STACK_DUMP_LINE_SIZE 32
- static size_t kstack_depth_to_print = CONFIG_PRINT_STACK_DEPTH;
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 5e0d0813da55..b11300b16f62 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -232,7 +232,7 @@ static void showacpu(void *dummy)
  
--void show_stack(struct task_struct *task, unsigned long *sp)
-+void show_stack_loglvl(struct task_struct *task, unsigned long *sp,
-+		       const char *loglvl)
- {
- 	size_t len;
- 
-@@ -511,11 +512,16 @@ void show_stack(struct task_struct *task, unsigned long *sp)
- 	len = min((-(size_t)sp) & (THREAD_SIZE - STACK_DUMP_ENTRY_SIZE),
- 		  kstack_depth_to_print * STACK_DUMP_ENTRY_SIZE);
- 
--	pr_info("Stack:\n");
--	print_hex_dump(KERN_INFO, " ", DUMP_PREFIX_NONE,
-+	printk("%sStack:\n", loglvl);
-+	print_hex_dump(loglvl, " ", DUMP_PREFIX_NONE,
- 		       STACK_DUMP_LINE_SIZE, STACK_DUMP_ENTRY_SIZE,
- 		       sp, len, false);
--	show_trace(task, stack, KERN_INFO);
-+	show_trace(task, stack, loglvl);
-+}
-+
-+void show_stack(struct task_struct *task, unsigned long *sp)
-+{
-+	show_stack_loglvl(task, sp, KERN_INFO);
+ 	raw_spin_lock_irqsave(&show_lock, flags);
+ 	pr_info("CPU%d:\n", smp_processor_id());
+-	show_stack(NULL, NULL);
++	show_stack_loglvl(NULL, NULL, KERN_INFO);
+ 	raw_spin_unlock_irqrestore(&show_lock, flags);
  }
  
- DEFINE_SPINLOCK(die_lock);
+diff --git a/include/linux/sched/debug.h b/include/linux/sched/debug.h
+index 95fb9e025247..373e4e3faf2a 100644
+--- a/include/linux/sched/debug.h
++++ b/include/linux/sched/debug.h
+@@ -31,6 +31,8 @@ extern void show_regs(struct pt_regs *);
+  * trace (or NULL if the entire call-chain of the task should be shown).
+  */
+ extern void show_stack(struct task_struct *task, unsigned long *sp);
++extern void show_stack_loglvl(struct task_struct *task, unsigned long *sp,
++			      const char *loglvl);
+ 
+ extern void sched_show_task(struct task_struct *p);
+ 
 -- 
 2.26.0
 
