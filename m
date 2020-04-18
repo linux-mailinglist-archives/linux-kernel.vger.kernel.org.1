@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D417B1AF58F
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 00:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709831AF58C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 00:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgDRWpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 18:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S1728372AbgDRWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 18:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728315AbgDRWor (ORCPT
+        with ESMTP id S1728342AbgDRWot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 18:44:47 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3989BC061A0C;
-        Sat, 18 Apr 2020 15:44:47 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id d17so7376103wrg.11;
-        Sat, 18 Apr 2020 15:44:47 -0700 (PDT)
+        Sat, 18 Apr 2020 18:44:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CB2C061A0F;
+        Sat, 18 Apr 2020 15:44:48 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j1so1986236wrt.1;
+        Sat, 18 Apr 2020 15:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
-        b=mBpMCKqHG2SfOXcnCap8iR0f/B7HGFhKZdMy5ig7HK/OlFABYDm0hIll3vV+Fs3/E2
-         MemLzcDWcEG1eZMGEt11QJROvMFeBiyeNFxbsdzZFsz30iRkOKq0KNsC499z52Y3PnIb
-         rgUcOHM5l+Klk14ppPMaXuELw7kaIsqP5bFwyhXI8JiWWSzYx7mBW7XeuKjtZv3mcw8+
-         BMy3XFU/sneRsFANUoXTvZdJ3YS99DW3zLWFR4nLpdboc51AHWkDqIchI+7NfrUzPUvQ
-         GQZIK46c81MLKZ1cEHupP2QrODrt6n98Ko2z2YpzgmRUaiTYbsPSD79+KEkgy7cxRn44
-         mOCg==
+        bh=DdH07t1k9/y181hGinDV6UTR/Vqce1FXEwc4JDSNUgo=;
+        b=NIOfImqp3qpMP3D9X6b+JfPw8bgsFJJLKGc6iM/svj0msjDwQB4NHHi3x6j4+/9LfH
+         w1b1LK8t9l4uX6A46YGmQt9P7ru+6QI+xL5hGLIjDyhD96hkoA66gyw/Pv/5p18m5+Y4
+         xRY0pBCRDt+5PJPsr7ebb/yiZLIhYulHfqXCtzMBkh3q/WYyNJa04dmF8j/pJW6NXyJN
+         vevvk/QIj/SNZsEVXrY4FSFbnO9mofuC1CQR7oEzIEaF0jiBTZyZoTXhwAvlz3/ErcIh
+         asUcS5rQUe+zij5OFyhR3VRoF3JCU71k/uGoT6ZnsFLFFlpK3aedMIrs0DB8za7JPK7y
+         bQBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WxlFylBEMHP1jAoGZfSxBsIHY2H4BZ1sTMv7tdFsx0k=;
-        b=Kv9JAYb8y/coOCTQZdx9CxBN0c/uMPU1qPLlnvbGRyo4yTQR7p26US/q95tWxHLxUJ
-         euFPSsTjgmsKNtGljJuChNGZFMxlcjYkYlQ9LZ8wrEjRBypFf86OXTcebAnJ+yQXPjhW
-         o/kx14jV7zu2ITS8weHe7tm47PE1qfmW583fitnZyCT4StJBbdmPVHDrUj06AsjJSt+L
-         C+wTwySjwCugcBrUhlq6k70KaqztyWxMHhB6VsuyRYgJ9KIYbvoe5Xleq8z80mn3p61Z
-         ZYWbHwHryJGgW9k3IquTD2zpuc9zk6rHkfnTQBQrELqMCS7Ex7GrqQuv7oKQVIbIq3fx
-         zJiw==
-X-Gm-Message-State: AGi0Pua463XcFlCdnftcspdjO8LlSUmGQq/kMWAgBWOlNBYGY0ap9cMS
-        2WtrcFT/YMW2CZOhfkIQxdc=
-X-Google-Smtp-Source: APiQypKTnGAMc2x527csx6OG/t51sbyg6UU1kp5+g0xKPogZNyMX2T0dDmdRAiavu+QJY/l+rzDfcQ==
-X-Received: by 2002:adf:ef51:: with SMTP id c17mr10700285wrp.130.1587249885925;
-        Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
+        bh=DdH07t1k9/y181hGinDV6UTR/Vqce1FXEwc4JDSNUgo=;
+        b=WPDHdrZAzS6uIB7jMHpY5b2nWcaJfvPelnLHiVC2/lh5+TJsehJdh3mxLHrvj+g5iQ
+         LOTnT8RZYpxrumZWmXHFhnHBCbIWDh2Wgdvsee8kAYCZity4w3P1YUa9hvUPw/dJeLPZ
+         fkKc9pD3bfu5e6kNNojLw4gHqKUs6oPjdsVAlbIqFMq4FW5uEDDjK1Q5VTbgHPe5yQSt
+         NPRJmpCVCLv1H3XxRKFzsCfMSPbDm8wZEuHmoCFfIERQKflSmtIEqRrubt1VZtC1l5/b
+         YAKBBTXr1Zu23MDsSShk4QMtk/sF5gq6gu4mjpdBu/3TUcM8F84Q6zaoRbcDpQ/fjdaR
+         +u5g==
+X-Gm-Message-State: AGi0PuZzdu0lqMQ8hqzeWMHnomRvAgZKCDPqY285RsMUvJM7QPLT42FB
+        Qy6JBSBYUhz7/T4meerMQc8=
+X-Google-Smtp-Source: APiQypKLBSnMaQwSZzz/e93DLQSKm39F96CERmHmKiJfEdeWuhNhNE+Fk3LRWI+U1wVer5IdoPcLQg==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr11151919wro.252.1587249887329;
+        Sat, 18 Apr 2020 15:44:47 -0700 (PDT)
 Received: from localhost.localdomain (91-167-199-67.subs.proxad.net. [91.167.199.67])
-        by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.44
+        by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 15:44:45 -0700 (PDT)
+        Sat, 18 Apr 2020 15:44:46 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -59,9 +59,9 @@ Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Marcus Cooper <codekipper@gmail.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 5/7] ASoc: sun4i-i2s: Add 20 and 24 bit support
-Date:   Sun, 19 Apr 2020 00:44:33 +0200
-Message-Id: <20200418224435.23672-6-peron.clem@gmail.com>
+Subject: [PATCH v2 6/7] ASoC: sun4i-i2s: Adjust regmap settings
+Date:   Sun, 19 Apr 2020 00:44:34 +0200
+Message-Id: <20200418224435.23672-7-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418224435.23672-1-peron.clem@gmail.com>
 References: <20200418224435.23672-1-peron.clem@gmail.com>
@@ -75,57 +75,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Extend the functionality of the driver to include support of 20 and
-24 bits per sample.
+Bypass the regmap cache when flushing the i2s FIFOs and modify the tables
+to reflect this.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 618bbc5156f1..9778af37fbca 100644
+index 9778af37fbca..9053d290dd87 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -577,6 +577,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
-+	case 32:
-+		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
- 			params_physical_width(params));
-@@ -1063,6 +1066,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
- 	return 0;
+@@ -921,7 +921,7 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+ {
+ 	/* Flush RX FIFO */
+-	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
++	regmap_write_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX);
+ 
+@@ -942,7 +942,7 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+ static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
+ {
+ 	/* Flush TX FIFO */
+-	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
++	regmap_write_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
+ 
+@@ -1096,13 +1096,7 @@ static const struct snd_soc_component_driver sun4i_i2s_component = {
+ 
+ static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
+ {
+-	switch (reg) {
+-	case SUN4I_I2S_FIFO_TX_REG:
+-		return false;
+-
+-	default:
+-		return true;
+-	}
++	return true;
  }
  
-+#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+			 SNDRV_PCM_FMTBIT_S20_LE | \
-+			 SNDRV_PCM_FMTBIT_S24_LE)
-+
- static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 	.probe = sun4i_i2s_dai_probe,
- 	.capture = {
-@@ -1070,14 +1077,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.ops = &sun4i_i2s_dai_ops,
- 	.symmetric_rates = 1,
+ static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
+@@ -1121,6 +1115,8 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case SUN4I_I2S_FIFO_RX_REG:
++	case SUN4I_I2S_FIFO_TX_REG:
++	case SUN4I_I2S_FIFO_STA_REG:
+ 	case SUN4I_I2S_INT_STA_REG:
+ 	case SUN4I_I2S_RX_CNT_REG:
+ 	case SUN4I_I2S_TX_CNT_REG:
+@@ -1131,23 +1127,12 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+-{
+-	switch (reg) {
+-	case SUN8I_I2S_FIFO_TX_REG:
+-		return false;
+-
+-	default:
+-		return true;
+-	}
+-}
+-
+ static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	if (reg == SUN8I_I2S_INT_STA_REG)
+ 		return true;
+ 	if (reg == SUN8I_I2S_FIFO_TX_REG)
+-		return false;
++		return true;
+ 
+ 	return sun4i_i2s_volatile_reg(dev, reg);
+ }
+@@ -1218,7 +1203,7 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+ 	.reg_defaults	= sun8i_i2s_reg_defaults,
+ 	.num_reg_defaults	= ARRAY_SIZE(sun8i_i2s_reg_defaults),
+ 	.writeable_reg	= sun4i_i2s_wr_reg,
+-	.readable_reg	= sun8i_i2s_rd_reg,
++	.readable_reg	= sun4i_i2s_rd_reg,
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
+@@ -1231,7 +1216,7 @@ static const struct regmap_config sun50i_i2s_regmap_config = {
+ 	.reg_defaults	= sun50i_i2s_reg_defaults,
+ 	.num_reg_defaults	= ARRAY_SIZE(sun50i_i2s_reg_defaults),
+ 	.writeable_reg	= sun4i_i2s_wr_reg,
+-	.readable_reg	= sun8i_i2s_rd_reg,
++	.readable_reg	= sun4i_i2s_rd_reg,
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
 -- 
 2.20.1
 
