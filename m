@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECFA1AF4AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20DE1AF4B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgDRUUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        id S1728638AbgDRUUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 16:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728590AbgDRUUg (ORCPT
+        by vger.kernel.org with ESMTP id S1728594AbgDRUUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 16:20:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B50C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v4so1391433wme.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:35 -0700 (PDT)
+        Sat, 18 Apr 2020 16:20:37 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0D6C061A0F
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x18so7198920wrq.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LcoZoY+566ZuItEznOv7gQpyH1CF6rKNXLWS0JKZOFQ=;
-        b=VTYuaj8Dx2y14E4sA5nnckUhZZpcb9YJne0E/JZ1sPuFowZrkrjfi05zZs9NFOKkuk
-         Qc9nrxbA7nAqpihx+/BPGSJ+i6GeojCveh1kyoWMQJbfxusOkcg1LudmQiM+eWGobCXT
-         Kj6q42dTJAsDYMO3Sg8OR7yLhfouUohnoT1n8qymriWe460HoGUm45GDPEdEn5YPTmuH
-         T90a1C/bNK8gNP/1cDEQyOW3//jTMyzVwl7v6/Cxzi2OJIHjYNhDZhtk2NZi0NrYafy8
-         s4K2gCfy6MXw5CCOeYKiIdP+sLbSEa/lSBMLjYpHD9iks8Z9DBXnkdJtjDb1VwAZxv4F
-         cCcg==
+        bh=pWP1TiVa3Z/49zUv5iBWad3qqtGR6PIT7upIk6b62Jo=;
+        b=Xf9zp2g4LCddomJz7JWy+3gYRrTMItbNxGNfRcpX1cXgWLb6ETr7vFhWMAZpdbp28k
+         ou1eQSjRG9G7c69lo2USYUtWUy1Nkw7+DV11Dh2NqJxBV3gtDCCt6YwCs6Brbyot0oCu
+         OhJgYe76XpZQVfwQ3lK30zqY1lHV3mXgsCxPQfV/dBKD3vwAUcB1D0RjqmkpBcCAk2c+
+         xGYYGG6eFn8oNOVzzcDFme4mpn17EsoOlhyezLjcCme/vnTAHifsAvB+CN47kj30eUqr
+         FLYhYBt2P0fXiaGQA3h4yLcMQilt2z8We+gdIQKBny7lvOvccNCmG1zANSEBk613JL7b
+         9PAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LcoZoY+566ZuItEznOv7gQpyH1CF6rKNXLWS0JKZOFQ=;
-        b=SRa1wxxoaeDqzPSAA5p0Jo8q1NyO7Wc7Yqlm80mKdXMy8mftwLZuVciaEPaTtkALIo
-         L/gOOPU15XMM6yAhRLOu28QHeAyxDAoi++g91jvGyah0mraGZGp5MRT+RLd0ZHlVuN7O
-         0Ffs4IP8ug5OK3vJwplFfjhH72jghddzaO4oTk1LLDIaQscPsryK4iasdbsbk2X2rjaW
-         bFjiunkY6rOAbiPf5JEWTRcNJv2VcEzAOAMFVPslLMpKPzBeyJmaII9BO4CStEZsbVVl
-         0bpTSRpyCHPeIYQLWZmLvmdiFRiib7axSB5i+cIYI1MykdW9uPXkYUAEly1fwc7p6WnX
-         HGBA==
-X-Gm-Message-State: AGi0PuZYXSszZoCExYvL4j3CQl3FQS9cfVhziZ+XwWrmszEQWH+iGMp7
-        E/DaDPEjDdL/tUeQVRwNF63R3sEmSQQ=
-X-Google-Smtp-Source: APiQypLOrtiHeskPBcAJn2a1NOGH95CKgYTAcjHADXwnkneh+OMdFWq8yIS82xgT/1caanc+29GOTQ==
-X-Received: by 2002:a05:600c:210b:: with SMTP id u11mr3514110wml.133.1587241233846;
-        Sat, 18 Apr 2020 13:20:33 -0700 (PDT)
+        bh=pWP1TiVa3Z/49zUv5iBWad3qqtGR6PIT7upIk6b62Jo=;
+        b=mSAU86HJbreK9MXRW4RcORQk871Wzhtbe6lJ98PNeg9fetw/SnYa7+Gr1YcoSBmE6W
+         wmNgCDlfu0dEtk294msHel+ktxNoqwsEZ7j3OYx1C7vYq3AuDiz+bJPrSVNCTYz70wTv
+         Iz8zYY8y2BEr2+AbrETtJx0o6BIgkAKtzgfb3t9xIbkrEuqxxM+/NR2vbxlojpptTqm5
+         C95p8pEuIdTY7FotYOkopXloRzLuPu7HZfN136ZxZ4vA35PBohd0FBlfzKm2CjSo3WxM
+         wINrchVRBkv2R7YqAyPnL0Smh/0Nux+mMIG3gPPW/KQsUr6MH4rYO7jUSd7SDLj7QxDC
+         IVyw==
+X-Gm-Message-State: AGi0PuYz8EA6o30b8ct3WAyd7GN1OkopPleqPMF4HIFhxWjm/GBq5hd5
+        BXtxx4/u1kaWeE4dHdPiiqLtvcQONlM=
+X-Google-Smtp-Source: APiQypLHLGID2ARNYIaz/2slcwB5mzsYUtgu99lpIjUi2FHkb0Okl1ZImZjnpQgBFImF+H37yJigxQ==
+X-Received: by 2002:a5d:4111:: with SMTP id l17mr11403027wrp.271.1587241235272;
+        Sat, 18 Apr 2020 13:20:35 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.32
+        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 13:20:33 -0700 (PDT)
+        Sat, 18 Apr 2020 13:20:34 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -59,10 +59,12 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
-Subject: [PATCHv3 32/50] sh: Add loglvl to show_trace()
-Date:   Sat, 18 Apr 2020 21:19:26 +0100
-Message-Id: <20200418201944.482088-33-dima@arista.com>
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org
+Subject: [PATCHv3 33/50] sh: Add show_stack_loglvl()
+Date:   Sat, 18 Apr 2020 21:19:27 +0100
+Message-Id: <20200418201944.482088-34-dima@arista.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200418201944.482088-1-dima@arista.com>
 References: <20200418201944.482088-1-dima@arista.com>
@@ -89,77 +91,47 @@ Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
 an easier approach than introducing more printk buffers.
 Also, it will consolidate printings with headers.
 
-Add log level parameter to show_trace() as a preparation to introduce
-show_stack_loglvl().
+Introduce show_stack_loglvl(), that eventually will substitute
+show_stack().
 
 Cc: Rich Felker <dalias@libc.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
 Cc: linux-sh@vger.kernel.org
 [1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/sh/include/asm/processor_32.h |  2 +-
- arch/sh/kernel/dumpstack.c         | 10 +++++-----
- arch/sh/kernel/process_32.c        |  2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ arch/sh/kernel/dumpstack.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/sh/include/asm/processor_32.h b/arch/sh/include/asm/processor_32.h
-index 0e0ecc0132e3..d44409413418 100644
---- a/arch/sh/include/asm/processor_32.h
-+++ b/arch/sh/include/asm/processor_32.h
-@@ -171,7 +171,7 @@ static __inline__ void enable_fpu(void)
- #define thread_saved_pc(tsk)	(tsk->thread.pc)
- 
- void show_trace(struct task_struct *tsk, unsigned long *sp,
--		struct pt_regs *regs);
-+		struct pt_regs *regs, const char *loglvl);
- 
- #ifdef CONFIG_DUMP_CODE
- void show_code(struct pt_regs *regs);
 diff --git a/arch/sh/kernel/dumpstack.c b/arch/sh/kernel/dumpstack.c
-index 959064b90055..d488a47a1f0f 100644
+index d488a47a1f0f..cc51e9d74667 100644
 --- a/arch/sh/kernel/dumpstack.c
 +++ b/arch/sh/kernel/dumpstack.c
-@@ -127,16 +127,16 @@ static const struct stacktrace_ops print_trace_ops = {
- };
+@@ -144,7 +144,8 @@ void show_trace(struct task_struct *tsk, unsigned long *sp,
+ 	debug_show_held_locks(tsk);
+ }
  
- void show_trace(struct task_struct *tsk, unsigned long *sp,
--		struct pt_regs *regs)
-+		struct pt_regs *regs, const char *loglvl)
+-void show_stack(struct task_struct *tsk, unsigned long *sp)
++void show_stack_loglvl(struct task_struct *tsk, unsigned long *sp,
++		       const char *loglvl)
  {
- 	if (regs && user_mode(regs))
- 		return;
+ 	unsigned long stack;
  
--	printk("\nCall trace:\n");
-+	printk("%s\nCall trace:\n", loglvl);
+@@ -156,7 +157,12 @@ void show_stack(struct task_struct *tsk, unsigned long *sp)
+ 		sp = (unsigned long *)tsk->thread.sp;
  
--	unwind_stack(tsk, regs, sp, &print_trace_ops, "");
-+	unwind_stack(tsk, regs, sp, &print_trace_ops, (void *)loglvl);
- 
--	printk("\n");
-+	printk("%s\n", loglvl);
- 
- 	if (!tsk)
- 		tsk = current;
-@@ -158,5 +158,5 @@ void show_stack(struct task_struct *tsk, unsigned long *sp)
  	stack = (unsigned long)sp;
- 	dump_mem("Stack: ", KERN_DEFAULT, stack, THREAD_SIZE +
+-	dump_mem("Stack: ", KERN_DEFAULT, stack, THREAD_SIZE +
++	dump_mem("Stack: ", loglvl, stack, THREAD_SIZE +
  		 (unsigned long)task_stack_page(tsk));
--	show_trace(tsk, sp, NULL);
-+	show_trace(tsk, sp, NULL, KERN_DEFAULT);
+-	show_trace(tsk, sp, NULL, KERN_DEFAULT);
++	show_trace(tsk, sp, NULL, loglvl);
++}
++
++void show_stack(struct task_struct *task, unsigned long *sp)
++{
++	show_stack_loglvl(task, sp, KERN_DEFAULT);
  }
-diff --git a/arch/sh/kernel/process_32.c b/arch/sh/kernel/process_32.c
-index a094633874c3..456cc8d171f7 100644
---- a/arch/sh/kernel/process_32.c
-+++ b/arch/sh/kernel/process_32.c
-@@ -59,7 +59,7 @@ void show_regs(struct pt_regs * regs)
- 	printk("MACH: %08lx MACL: %08lx GBR : %08lx PR  : %08lx\n",
- 	       regs->mach, regs->macl, regs->gbr, regs->pr);
- 
--	show_trace(NULL, (unsigned long *)regs->regs[15], regs);
-+	show_trace(NULL, (unsigned long *)regs->regs[15], regs, KERN_DEFAULT);
- 	show_code(regs);
- }
- 
 -- 
 2.26.0
 
