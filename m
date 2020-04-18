@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F7E1AEEC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946B31AEECD
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgDROjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:39:11 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46482 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgDROjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:39:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=1LsCjVacgDNgCyib7rEtoSFJWVTL9FJKR4yzQpOfwYg=; b=UrQgm4vL1ovuJYFTO+d+97W3Qs
-        TCvDjd0CNLvezkYbzOVdaG5akr/ykupJjk7WO1yvDFwqYS16vyIEWFeY87wFH3ZtWJHL6Cr1zdiuO
-        Y0WiLKT375DuF8uGMnfREUff7WFSnp9EB7x6V+XcdicIyOPEwXy2PcZ+sWZo/hA2l26k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jPocZ-003TEL-8P; Sat, 18 Apr 2020 16:39:03 +0200
-Date:   Sat, 18 Apr 2020 16:39:03 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>, linux.cj@gmail.com,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        netdev@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-kernel@vger.kernel.org, Varun Sethi <V.Sethi@nxp.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC net-next PATCH v2 1/2] net/fsl: add ACPI support for mdio
- bus
-Message-ID: <20200418143903.GF804711@lunn.ch>
-References: <20200418105432.11233-1-calvin.johnson@oss.nxp.com>
- <20200418105432.11233-2-calvin.johnson@oss.nxp.com>
- <20200418114116.GU25745@shell.armlinux.org.uk>
+        id S1726456AbgDROjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726396AbgDROjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:39:31 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDD1C061A0C;
+        Sat, 18 Apr 2020 07:39:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v8so7074484wma.0;
+        Sat, 18 Apr 2020 07:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=stLQlVuh4P5IJ5M0lj4/6uAQgTyw/bQBI8ltWxyZDXo=;
+        b=E9cA2LGcfpwjWkWL0LUCKY8rmu73mUw4/VIbbjYfLKPQwuWP9GEU6t7ShXY0UXKUmt
+         Z8fXWZurPul5Q9s9FOLmzG8iSW+h9wQGvfq/Vay0WY8Wa7Tz8vb4B2JnsAmuQHQQIOzr
+         jW2PHrACksVjQkQZd1h+cahQd+HTFKynZObqNlHA6BRUDaM/67kufXqd5vmEIFB3F5D+
+         T9p3+9Gkb010F2QJ0jY8Z9vjeEEAtCmOftABQtUOWhaWfAQdnBRi/2pOiSBw4FqLeuFj
+         Pr9VnRQ1cMPsoNr7KfX6BwqUkMOg1kFog4UDIjA0Qum20JgQHo2GbTunOfUK9YQa+HjZ
+         yB+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=stLQlVuh4P5IJ5M0lj4/6uAQgTyw/bQBI8ltWxyZDXo=;
+        b=iAtxmjmEZQ8W3oHtAST3O9aVMvY23WeKhGixAorKbSU9hLsa/BFjqMFTvQj04SDV8Y
+         BIIMT8nvAmNcP0v3V3JcUbf/yinHTDxinsnFqGjVslA8ux/PuynrmxrcvfJ/GD5dzrRR
+         u3t61QHBEjwiq3AC0/OvWjZgU4LoyZmgGry0hAVMvyca5y2yKdyb9fOcIG5q0sLpcek1
+         oeo5YhgGlkfvi8IDXc62+Hhe3oFz83ibfP3bOsH6i09+yb/egC1bYWna/ZKLU3TWn3gg
+         s3tpEsLUincJO1hJST0OZ3wE43JAdegQ682w+CuO3ZHNxVeEFfrwHh0IJOEk3EVebSZc
+         V/Kg==
+X-Gm-Message-State: AGi0PuZvo/SPF58/lZ5uEhqVhSCDPvYMPE8zpkizuLplLJM/PWg09w/d
+        qkeXc8Ly7wvns3ppIZgosrA=
+X-Google-Smtp-Source: APiQypJgp3beoqLe7KxcrcgO1iEb5Zi5/JPSvihpkv2bGufse5QTbKlcUIFXicuNuiKrgQXX+QJ18g==
+X-Received: by 2002:a05:600c:2255:: with SMTP id a21mr8551841wmm.150.1587220767261;
+        Sat, 18 Apr 2020 07:39:27 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:4e7:1fdd:b7c2:b3ab])
+        by smtp.gmail.com with ESMTPSA id s9sm25375322wrg.27.2020.04.18.07.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Apr 2020 07:39:26 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH 0/7] Add H6 I2S support
+Date:   Sat, 18 Apr 2020 16:39:16 +0200
+Message-Id: <20200418143923.19608-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200418114116.GU25745@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int xgmac_mdiobus_register_phy(struct mii_bus *bus,
-> > +				      struct fwnode_handle *child, u32 addr)
-> > +{
-> > +	struct phy_device *phy;
-> > +	bool is_c45 = false;
-> > +	int rc;
-> > +	const char *cp;
-> > +	u32 phy_id;
-> > +
-> > +	fwnode_property_read_string(child, "compatible", &cp);
-> > +	if (!strcmp(cp, "ethernet-phy-ieee802.3-c45"))
-> > +		is_c45 = true;
-> > +
-> > +	if (!is_c45 && !xgmac_get_phy_id(child, &phy_id))
-> > +		phy = phy_device_create(bus, addr, phy_id, 0, NULL);
-> > +	else
-> > +		phy = get_phy_device(bus, addr, is_c45);
-> > +	if (IS_ERR(phy))
-> > +		return PTR_ERR(phy);
-> > +
-> > +	phy->irq = bus->irq[addr];
-> > +
-> > +	/* Associate the fwnode with the device structure so it
-> > +	 * can be looked up later.
-> > +	 */
-> > +	phy->mdio.dev.fwnode = child;
-> > +
-> > +	/* All data is now stored in the phy struct, so register it */
-> > +	rc = phy_device_register(phy);
-> > +	if (rc) {
-> > +		phy_device_free(phy);
-> > +		fwnode_handle_put(child);
-> > +		return rc;
-> > +	}
-> > +
-> > +	dev_dbg(&bus->dev, "registered phy at address %i\n", addr);
-> > +
-> > +	return 0;
-> 
-> You seem to be duplicating the OF implementation in a private driver,
-> converting it to fwnode.  This is not how we develop the Linux kernel.
-> We fix subsystem problems by fixing the subsystems, not by throwing
-> what should be subsystem code into private drivers.
+Hi,
 
-And i think a similar comment was given for v1, but i could be
-remembering wrongly.
+This is a sequel of Marcus Cooper serie[0], where remarks made by Maxime
+have been fixed.
 
-	    Andrew
+I have tested it on my Beelink GS1 board.
+
+Thanks,
+Clement
+
+0: https://lore.kernel.org/patchwork/cover/1139949/
+
+Jernej Skrabec (3):
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  arm64: dts: sun50i-h6: Add HDMI audio to H6 DTSI
+
+Marcus Cooper (4):
+  ASoC: sun4i-i2s: Adjust LRCLK width
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  ASoC: sun4i-i2s: Adjust regmap settings
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  31 ++
+ sound/soc/sunxi/sun4i-i2s.c                   | 286 ++++++++++++++++--
+ 3 files changed, 295 insertions(+), 24 deletions(-)
+
+-- 
+2.20.1
+
