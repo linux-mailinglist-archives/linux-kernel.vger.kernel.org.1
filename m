@@ -2,85 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ADB1AF502
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5F01AF51A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 23:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgDRUzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:55:10 -0400
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:49996 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgDRUzK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 16:55:10 -0400
-Received: from [192.168.1.41] ([90.126.162.40])
-        by mwinf5d33 with ME
-        id ULv22200V0scBcy03Lv3qd; Sat, 18 Apr 2020 22:55:06 +0200
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 18 Apr 2020 22:55:06 +0200
-X-ME-IP: 90.126.162.40
-Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Newsgroups: gmane.linux.ports.m68k,gmane.linux.kernel.janitors,gmane.linux.kernel
-References: <2e00c1f1-8faa-5045-ddf5-2bf943f714f2@web.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <ea3d9b35-4409-fb86-8855-0ddb73989829@wanadoo.fr>
-Date:   Sat, 18 Apr 2020 22:55:00 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <2e00c1f1-8faa-5045-ddf5-2bf943f714f2@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1728097AbgDRVPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 17:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726014AbgDRVPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 17:15:21 -0400
+Subject: Re: [GIT PULL] hwmon fixes for v5.7-rc2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587244521;
+        bh=nqDi78DaRqqGf751NQR4MUHd/ujN2gn1CERnHWfp/zA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=rSrn3e6B3M6wlZiza3cy+BdK+IV+xx2OxyXsDy7uMFCd8gsDyasBiCxHmgGOToWE2
+         Rb+OLhjNN7+gAyinEywtV8R4l+/L873E3hnsi5Z+c91POyPJ7T7gmMM3SXOWDLyYl7
+         BM0TA0W1RNcBku2C2zeRvPruobrSdHRcGxv4RxcU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200418194937.5589-1-linux@roeck-us.net>
+References: <20200418194937.5589-1-linux@roeck-us.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200418194937.5589-1-linux@roeck-us.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
+ hwmon-for-v5.7-rc2
+X-PR-Tracked-Commit-Id: c843b382e61b5f28a3d917712c69a344f632387c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eeaa762549f80ad1d69afbad50bf6d8629ad6649
+Message-Id: <158724452108.32136.6002516637231338805.pr-tracker-bot@kernel.org>
+Date:   Sat, 18 Apr 2020 21:15:21 +0000
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 18/04/2020 à 22:00, Markus Elfring a écrit :
->> If 'ioremap' fails, we must free 'bridge', as done in other error handling
->> path bellow.
-> I suggest to improve this change description.
+The pull request you sent on Sat, 18 Apr 2020 12:49:37 -0700:
 
-I suggest you stop proposing over and over useless comments.
-Please just ignore my proposals as I do for your boring, never 
-constructing, replies.
+> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.7-rc2
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eeaa762549f80ad1d69afbad50bf6d8629ad6649
 
-> * Please avoid a typo.
->
-> * Is an imperative wording preferred?
->
-* is Melissa still around?
+Thank you!
 
-> …
->> +++ b/arch/m68k/coldfire/pci.c
->> @@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
-> …
->
-> I propose to move the pci_free_host_bridge() call for the desired
-
-I propose to let patch submitter and maintainer decide about it.
-I don't need your point of view. I guess that maintainers don't either.
-
-No need to waste time trying to engage any discussion with me.
-This is the first and very last exchange we will ever have.
-
-Best regards,
-CJ
-
-
-> exception handling to the end of this function implementation.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=c0d73a868d9b411bd2d0c8e5ff9d98bfa8563cb1#n450
->
-> Regards,
-> Markus
->
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
