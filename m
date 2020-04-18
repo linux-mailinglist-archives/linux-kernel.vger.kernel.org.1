@@ -2,421 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819DC1AF245
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3E71AF23E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 18:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgDRQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 12:22:49 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:5644 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727825AbgDRQWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 12:22:49 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 2D1144E14F9;
-        Sun, 19 Apr 2020 00:22:35 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     gregkh@linuxfoundation.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, oss@buserror.net,
-        christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, rdunlap@infradead.org,
-        Wang Wenhu <wenhu.wang@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v6,4/4] drivers: misc: new driver sram_uapi for user level SRAM  access
-Date:   Sat, 18 Apr 2020 09:21:57 -0700
-Message-Id: <20200418162157.50428-5-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200418162157.50428-1-wenhu.wang@vivo.com>
-References: <20200418162157.50428-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVLS05LS0tKSk9PT0tCSVlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ojo6OQw5DjgxFg05OCkBLDUd
-        QwsKFCFVSlVKTkNMSUlNQk5DTEpLVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUpLQk9CNwY+
-X-HM-Tid: 0a718e194eef9376kuws2d1144e14f9
+        id S1726823AbgDRQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 12:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726359AbgDRQWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 12:22:08 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A88982054F;
+        Sat, 18 Apr 2020 16:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587226926;
+        bh=l/kWwCKIfSjgEyh0o2KmQjq1pjV0Mu5o4RtwVw1VOdw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Voz8VJrwhlFqK3oGUjuhcM8l9GBLmyvNUXMNihG4ZqmTVVI+obv4PCLI7FIlfhuCj
+         vPqDCObL+7cRQuCqLUSfVYa4x4ALmMUNtjbOepdFyCQjmeYra2QJxWhE2cFbNe7k6B
+         fGqMLdK4IqFJUxsSBxfDY+Ad3kaZ2zfqD6m+2cKA=
+Date:   Sat, 18 Apr 2020 17:22:00 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jishnu Prakash <jprakash@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, linus.walleij@linaro.org,
+        Jonathan.Cameron@huawei.com, smohanad@codeaurora.org,
+        kgunda@codeaurora.org, aghayal@codeaurora.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, linux-iio@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH V2 1/3] iio: adc: Convert the QCOM SPMI ADC bindings to
+ .yaml format
+Message-ID: <20200418172200.58a10116@archlinux>
+In-Reply-To: <1586942266-21480-2-git-send-email-jprakash@codeaurora.org>
+References: <1586942266-21480-1-git-send-email-jprakash@codeaurora.org>
+        <1586942266-21480-2-git-send-email-jprakash@codeaurora.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A generic User-Kernel interface that allows a misc device created
-by it to support file-operations of ioctl and mmap to access SRAM
-memory from user level. Different kinds of SRAM alloction and free
-APIs could be added to the available array and could be configured
-from user level.
+On Wed, 15 Apr 2020 14:47:44 +0530
+Jishnu Prakash <jprakash@codeaurora.org> wrote:
 
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Scott Wood <oss@buserror.net>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: linuxppc-dev@lists.ozlabs.org
----
-Notes:
-	Implement the interface driver for SRAM access from user
-	level upon the comments from Scott.
-	The former versions(1-5) were implemented with UIO, but for this
-	version, UIO is not used as suggested by Scott.
-Links:
-	https://lore.kernel.org/patchwork/patch/1226475/
-	https://lore.kernel.org/patchwork/patch/1225798/
----
- drivers/misc/Kconfig     |  25 ++++
- drivers/misc/Makefile    |   1 +
- drivers/misc/sram_uapi.c | 294 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 320 insertions(+)
- create mode 100644 drivers/misc/sram_uapi.c
+> Convert the adc bindings from .txt to .yaml format.
+> 
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 99e151475d8f..e6897ba22684 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -465,6 +465,31 @@ config PVPANIC
- 	  a paravirtualized device provided by QEMU; it lets a virtual machine
- 	  (guest) communicate panic events to the host.
- 
-+config SRAM_UAPI
-+	bool "Generic SRAM User Level API driver"
-+	help
-+	  This driver allows you to create a misc device which could be used
-+	  as an interface to allocate SRAM memory from user level.
-+
-+	  It is extremely helpful for some user space applications that require
-+	  high performance memory accesses.
-+
-+	  If unsure, say N.
-+
-+if SRAM_UAPI
-+
-+config FSL_85XX_SRAM_UAPI
-+	bool "Freescale MPC85xx Cache-SRAM UAPI support"
-+	depends on FSL_SOC_BOOKE && PPC32
-+	select FSL_85XX_CACHE_SRAM
-+	help
-+	  This adds the Freescale MPC85xx Cache-SRAM memory allocation and
-+	  free interfaces to the available SRAM API array, which finally could
-+	  be used from user level to access the Freescale MPC85xx Cache-SRAM
-+	  memory.
-+
-+endif
-+
- source "drivers/misc/c2port/Kconfig"
- source "drivers/misc/eeprom/Kconfig"
- source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 9abf2923d831..794447ca07ca 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
- obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
- obj-$(CONFIG_SRAM)		+= sram.o
- obj-$(CONFIG_SRAM_EXEC)		+= sram-exec.o
-+obj-$(CONFIG_SRAM_UAPI)		+= sram_uapi.o
- obj-y				+= mic/
- obj-$(CONFIG_GENWQE)		+= genwqe/
- obj-$(CONFIG_ECHO)		+= echo/
-diff --git a/drivers/misc/sram_uapi.c b/drivers/misc/sram_uapi.c
-new file mode 100644
-index 000000000000..53f818e1898d
---- /dev/null
-+++ b/drivers/misc/sram_uapi.c
-@@ -0,0 +1,294 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+ * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-+ * All rights reserved.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/mm.h>
-+#include <linux/miscdevice.h>
-+#include <linux/fs.h>
-+#include <linux/uaccess.h>
-+
-+#define DRIVER_NAME	"sram_uapi"
-+
-+#define SRAM_UAPI_IOCTL_SET_SRAM_TYPE	0
-+#define SRAM_UAPI_IOCTL_ALLOC		1
-+#define SRAM_UAPI_IOCTL_FREE		2
-+
-+struct res_info {
-+	u32 offset;
-+	u32 size;
-+};
-+
-+struct sram_resource {
-+	struct list_head	list;
-+	struct res_info		info;
-+	phys_addr_t		phys;
-+	void			*virt;
-+	struct vm_area_struct	*vma;
-+	struct sram_uapi	*parent;
-+};
-+
-+struct sram_api {
-+	u32 type;
-+	long (*sram_alloc)(u32 size, phys_addr_t *phys, u32 align);
-+	void (*sram_free)(void *ptr);
-+};
-+
-+struct sram_uapi {
-+	struct list_head	res_list;
-+	struct sram_api		*sa;
-+};
-+
-+enum SRAM_TYPE {
-+#ifdef FSL_85XX_CACHE_SRAM
-+	SRAM_TYPE_FSL_85XX_CACHE_SRAM,
-+#endif
-+	SRAM_TYPE_MAX,
-+};
-+
-+/* keep the SRAM_TYPE value the same with array index */
-+static struct sram_api srams[] = {
-+#ifdef FSL_85XX_CACHE_SRAM
-+	{
-+		.type		= SRAM_TYPE_FSL_85XX_CACHE_SRAM,
-+		.sram_alloc	= mpc85xx_cache_sram_alloc,
-+		.sram_free	= mpc85xx_cache_sram_free,
-+	},
-+#endif
-+};
-+
-+static void sram_uapi_res_insert(struct sram_uapi *uapi,
-+				 struct sram_resource *res)
-+{
-+	struct sram_resource *cur, *tmp;
-+	struct list_head *head = &uapi->res_list;
-+
-+	list_for_each_entry_safe(cur, tmp, head, list) {
-+		if (&tmp->list != head &&
-+		    (cur->info.offset + cur->info.size + res->info.size <=
-+		    tmp->info.offset)) {
-+			res->info.offset = cur->info.offset + cur->info.size;
-+			res->parent = uapi;
-+			list_add(&res->list, &cur->list);
-+			return;
-+		}
-+	}
-+
-+	if (list_empty(head))
-+		res->info.offset = 0;
-+	else {
-+		tmp = list_last_entry(head, struct sram_resource, list);
-+		res->info.offset = tmp->info.offset + tmp->info.size;
-+	}
-+	list_add_tail(&res->list, head);
-+}
-+
-+static struct sram_resource *sram_uapi_res_delete(struct sram_uapi *uapi,
-+						  struct res_info *info)
-+{
-+	struct sram_resource *res, *tmp;
-+
-+	list_for_each_entry_safe(res, tmp, &uapi->res_list, list) {
-+		if (res->info.offset == info->offset) {
-+			list_del(&res->list);
-+			res->parent = NULL;
-+			return res;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct sram_resource *sram_uapi_find_res(struct sram_uapi *uapi,
-+						u32 offset)
-+{
-+	struct sram_resource *res;
-+
-+	list_for_each_entry(res, &uapi->res_list, list) {
-+		if (res->info.offset == offset)
-+			return res;
-+	}
-+
-+	return NULL;
-+}
-+
-+static int sram_uapi_open(struct inode *inode, struct file *filp)
-+{
-+	struct sram_uapi *uapi;
-+
-+	uapi = kzalloc(sizeof(*uapi), GFP_KERNEL);
-+	if (!uapi)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&uapi->res_list);
-+	filp->private_data = uapi;
-+
-+	return 0;
-+}
-+
-+static long sram_uapi_ioctl(struct file *filp, unsigned int cmd,
-+			    unsigned long arg)
-+{
-+	struct sram_uapi *uapi = filp->private_data;
-+	struct sram_resource *res;
-+	struct res_info info;
-+	long ret = -EINVAL;
-+	int size;
-+	u32 type;
-+
-+	if (!uapi)
-+		return ret;
-+
-+	switch (cmd) {
-+	case SRAM_UAPI_IOCTL_SET_SRAM_TYPE:
-+		size = copy_from_user((void *)&type, (const void __user *)arg,
-+				      sizeof(type));
-+		if (type >= SRAM_TYPE_MAX)
-+			return -EINVAL;
-+
-+		uapi->sa = &srams[type];
-+
-+		ret = 0;
-+		break;
-+
-+	case SRAM_UAPI_IOCTL_ALLOC:
-+		if (!uapi->sa)
-+			return -EINVAL;
-+
-+		res = kzalloc(sizeof(*res), GFP_KERNEL);
-+		if (!res)
-+			return -ENOMEM;
-+
-+		size = copy_from_user((void *)&res->info,
-+				      (const void __user *)arg,
-+				      sizeof(res->info));
-+		if (!PAGE_ALIGNED(res->info.size) || !res->info.size)
-+			return -EINVAL;
-+
-+		res->virt = (void *)uapi->sa->sram_alloc(res->info.size,
-+					&res->phys,
-+					roundup_pow_of_two(res->info.size));
-+		if (!res->virt) {
-+			kfree(res);
-+			return -ENOMEM;
-+		}
-+
-+		sram_uapi_res_insert(uapi, res);
-+		size = copy_to_user((void __user *)arg,
-+				    (const void *)&res->info,
-+				    sizeof(res->info));
-+
-+		ret = 0;
-+		break;
-+
-+	case SRAM_UAPI_IOCTL_FREE:
-+		if (!uapi->sa)
-+			return -EINVAL;
-+
-+		size = copy_from_user((void *)&info, (const void __user *)arg,
-+				      sizeof(info));
-+
-+		res = sram_uapi_res_delete(uapi, &info);
-+		if (!res) {
-+			pr_err("error no sram resource found\n");
-+			return -EINVAL;
-+		}
-+
-+		uapi->sa->sram_free(res->virt);
-+		kfree(res);
-+
-+		ret = 0;
-+		break;
-+
-+	default:
-+		pr_err("error no cmd not supported\n");
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int sram_uapi_mmap(struct file *filp, struct vm_area_struct *vma)
-+{
-+	struct sram_uapi *uapi = filp->private_data;
-+	struct sram_resource *res;
-+
-+	res = sram_uapi_find_res(uapi, vma->vm_pgoff);
-+	if (!res)
-+		return -EINVAL;
-+
-+	if (vma->vm_end - vma->vm_start > res->info.size)
-+		return -EINVAL;
-+
-+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-+
-+	return remap_pfn_range(vma, vma->vm_start,
-+				res->phys >> PAGE_SHIFT,
-+				vma->vm_end - vma->vm_start,
-+				vma->vm_page_prot);
-+}
-+
-+static void sram_uapi_res_release(struct sram_uapi *uapi)
-+{
-+	struct sram_resource *res, *tmp;
-+
-+	list_for_each_entry_safe(res, tmp, &uapi->res_list, list) {
-+		list_del(&res->list);
-+		uapi->sa->sram_free(res->virt);
-+		kfree(res);
-+	}
-+}
-+
-+static int sram_uapi_release(struct inode *inodp, struct file *filp)
-+{
-+	struct sram_uapi *uapi = filp->private_data;
-+
-+	sram_uapi_res_release(uapi);
-+
-+	kfree(uapi);
-+
-+	return 0;
-+}
-+
-+static const struct file_operations sram_uapi_ops = {
-+	.owner = THIS_MODULE,
-+	.open = sram_uapi_open,
-+	.unlocked_ioctl = sram_uapi_ioctl,
-+	.mmap = sram_uapi_mmap,
-+	.release = sram_uapi_release,
-+};
-+
-+static struct miscdevice sram_uapi_miscdev = {
-+	MISC_DYNAMIC_MINOR,
-+	"sram-uapi",
-+	&sram_uapi_ops,
-+};
-+
-+static int __init sram_uapi_init(void)
-+{
-+	int ret;
-+
-+	ret = misc_register(&sram_uapi_miscdev);
-+	if (ret)
-+		pr_err("failed to register sram_uapi misc device\n");
-+
-+	return ret;
-+}
-+
-+static void __exit sram_uapi_exit(void)
-+{
-+	misc_deregister(&sram_uapi_miscdev);
-+}
-+
-+module_init(sram_uapi_init);
-+module_exit(sram_uapi_exit);
-+
-+MODULE_AUTHOR("Wang Wenhu <wenhu.wang@vivo.com>");
-+MODULE_DESCRIPTION("SRAM User API Driver");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+I read patch 2 before this one for some reason but same question applies here
+Given we are now enforcing a lot of the values explicitly are we better
+off dropping the text description of that.  It looks to me like a potential
+place to get out of sync given the information is a bit further down.
+
+> Signed-off-by: Jishnu Prakash <jprakash@codeaurora.org>
+> ---
+>  .../devicetree/bindings/iio/adc/qcom,spmi-vadc.txt | 173 -------------
+>  .../bindings/iio/adc/qcom,spmi-vadc.yaml           | 288 +++++++++++++++++++++
+>  2 files changed, 288 insertions(+), 173 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
+> deleted file mode 100644
+> index c878768..0000000
+> --- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
+> +++ /dev/null
+> @@ -1,173 +0,0 @@
+> -Qualcomm's SPMI PMIC ADC
+> -
+> -- SPMI PMIC voltage ADC (VADC) provides interface to clients to read
+> -  voltage. The VADC is a 15-bit sigma-delta ADC.
+> -- SPMI PMIC5 voltage ADC (ADC) provides interface to clients to read
+> -  voltage. The VADC is a 16-bit sigma-delta ADC.
+> -
+> -VADC node:
+> -
+> -- compatible:
+> -    Usage: required
+> -    Value type: <string>
+> -    Definition: Should contain "qcom,spmi-vadc".
+> -                Should contain "qcom,spmi-adc5" for PMIC5 ADC driver.
+> -                Should contain "qcom,spmi-adc-rev2" for PMIC rev2 ADC driver.
+> -                Should contain "qcom,pms405-adc" for PMS405 PMIC
+> -
+> -- reg:
+> -    Usage: required
+> -    Value type: <prop-encoded-array>
+> -    Definition: VADC base address in the SPMI PMIC register map.
+> -
+> -- #address-cells:
+> -    Usage: required
+> -    Value type: <u32>
+> -    Definition: Must be one. Child node 'reg' property should define ADC
+> -            channel number.
+> -
+> -- #size-cells:
+> -    Usage: required
+> -    Value type: <u32>
+> -    Definition: Must be zero.
+> -
+> -- #io-channel-cells:
+> -    Usage: required
+> -    Value type: <u32>
+> -    Definition: Must be one. For details about IIO bindings see:
+> -            Documentation/devicetree/bindings/iio/iio-bindings.txt
+> -
+> -- interrupts:
+> -    Usage: optional
+> -    Value type: <prop-encoded-array>
+> -    Definition: End of conversion interrupt.
+> -
+> -Channel node properties:
+> -
+> -- reg:
+> -    Usage: required
+> -    Value type: <u32>
+> -    Definition: ADC channel number.
+> -            See include/dt-bindings/iio/qcom,spmi-vadc.h
+> -
+> -- label:
+> -    Usage: required for "qcom,spmi-adc5" and "qcom,spmi-adc-rev2"
+> -    Value type: <empty>
+> -    Definition: ADC input of the platform as seen in the schematics.
+> -            For thermistor inputs connected to generic AMUX or GPIO inputs
+> -            these can vary across platform for the same pins. Hence select
+> -            the platform schematics name for this channel.
+> -
+> -- qcom,decimation:
+> -    Usage: optional
+> -    Value type: <u32>
+> -    Definition: This parameter is used to decrease ADC sampling rate.
+> -            Quicker measurements can be made by reducing decimation ratio.
+> -            - For compatible property "qcom,spmi-vadc", valid values are
+> -              512, 1024, 2048, 4096. If property is not found, default value
+> -              of 512 will be used.
+> -            - For compatible property "qcom,spmi-adc5", valid values are 250, 420
+> -              and 840. If property is not found, default value of 840 is used.
+> -            - For compatible property "qcom,spmi-adc-rev2", valid values are 256,
+> -              512 and 1024. If property is not present, default value is 1024.
+> -
+> -- qcom,pre-scaling:
+> -    Usage: optional
+> -    Value type: <u32 array>
+> -    Definition: Used for scaling the channel input signal before the signal is
+> -            fed to VADC. The configuration for this node is to know the
+> -            pre-determined ratio and use it for post scaling. Select one from
+> -            the following options.
+> -            <1 1>, <1 3>, <1 4>, <1 6>, <1 20>, <1 8>, <10 81>, <1 10>
+> -            If property is not found default value depending on chip will be used.
+> -
+> -- qcom,ratiometric:
+> -    Usage: optional
+> -    Value type: <empty>
+> -    Definition: Channel calibration type.
+> -            - For compatible property "qcom,spmi-vadc", if this property is
+> -              specified VADC will use the VDD reference (1.8V) and GND for
+> -              channel calibration. If property is not found, channel will be
+> -              calibrated with 0.625V and 1.25V reference channels, also
+> -              known as absolute calibration.
+> -            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
+> -              if this property is specified VADC will use the VDD reference
+> -              (1.875V) and GND for channel calibration. If property is not found,
+> -              channel will be calibrated with 0V and 1.25V reference channels,
+> -              also known as absolute calibration.
+> -
+> -- qcom,hw-settle-time:
+> -    Usage: optional
+> -    Value type: <u32>
+> -    Definition: Time between AMUX getting configured and the ADC starting
+> -            conversion. The 'hw_settle_time' is an index used from valid values
+> -            and programmed in hardware to achieve the hardware settling delay.
+> -            - For compatible property "qcom,spmi-vadc" and "qcom,spmi-adc-rev2",
+> -              Delay = 100us * (hw_settle_time) for hw_settle_time < 11,
+> -              and 2ms * (hw_settle_time - 10) otherwise.
+> -              Valid values are: 0, 100, 200, 300, 400, 500, 600, 700, 800,
+> -              900 us and 1, 2, 4, 6, 8, 10 ms.
+> -              If property is not found, channel will use 0us.
+> -            - For compatible property "qcom,spmi-adc5", delay = 15us for
+> -              value 0, 100us * (value) for values < 11,
+> -              and 2ms * (value - 10) otherwise.
+> -              Valid values are: 15, 100, 200, 300, 400, 500, 600, 700, 800,
+> -              900 us and 1, 2, 4, 6, 8, 10 ms
+> -              Certain controller digital versions have valid values of
+> -              15, 100, 200, 300, 400, 500, 600, 700, 1, 2, 4, 8, 16, 32, 64, 128 ms
+> -              If property is not found, channel will use 15us.
+> -
+> -- qcom,avg-samples:
+> -    Usage: optional
+> -    Value type: <u32>
+> -    Definition: Number of samples to be used for measurement.
+> -            Averaging provides the option to obtain a single measurement
+> -            from the ADC that is an average of multiple samples. The value
+> -            selected is 2^(value).
+> -            - For compatible property "qcom,spmi-vadc", valid values
+> -              are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512
+> -              If property is not found, 1 sample will be used.
+> -            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
+> -              valid values are: 1, 2, 4, 8, 16
+> -              If property is not found, 1 sample will be used.
+> -
+> -NOTE:
+> -
+> -For compatible property "qcom,spmi-vadc" following channels, also known as
+> -reference point channels, are used for result calibration and their channel
+> -configuration nodes should be defined:
+> -VADC_REF_625MV and/or VADC_SPARE1(based on PMIC version) VADC_REF_1250MV,
+> -VADC_GND_REF and VADC_VDD_VADC.
+> -
+> -Example:
+> -
+> -#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> -#include <linux/irq.h>
+> -/* ... */
+> -
+> -	/* VADC node */
+> -	pmic_vadc: vadc@3100 {
+> -		compatible = "qcom,spmi-vadc";
+> -		reg = <0x3100>;
+> -		interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		#io-channel-cells = <1>;
+> -		io-channel-ranges;
+> -
+> -		/* Channel node */
+> -		adc-chan@VADC_LR_MUX10_USB_ID {
+> -			reg = <VADC_LR_MUX10_USB_ID>;
+> -			qcom,decimation = <512>;
+> -			qcom,ratiometric;
+> -			qcom,hw-settle-time = <200>;
+> -			qcom,avg-samples = <1>;
+> -			qcom,pre-scaling = <1 3>;
+> -		};
+> -	};
+> -
+> -	/* IIO client node */
+> -	usb {
+> -		io-channels = <&pmic_vadc VADC_LR_MUX10_USB_ID>;
+> -		io-channel-names = "vadc";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
+> new file mode 100644
+> index 0000000..8273981
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
+> @@ -0,0 +1,288 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/qcom,spmi-vadc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm's SPMI PMIC ADC
+> +
+> +maintainers:
+> +  - Andy Gross <agross@kernel.org>
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: |
+> +  SPMI PMIC voltage ADC (VADC) provides interface to clients to read
+> +  voltage. The VADC is a 15-bit sigma-delta ADC.
+> +  SPMI PMIC5 voltage ADC (ADC) provides interface to clients to read
+> +  voltage. The VADC is a 16-bit sigma-delta ADC.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: qcom,pms405-adc
+> +          - const: qcom,spmi-adc-rev2
+> +
+> +      - items:
+> +        - enum:
+> +          - qcom,spmi-vadc
+> +          - qcom,spmi-adc5
+> +          - qcom,spmi-adc-rev2
+> +
+> +  reg:
+> +    description: VADC base address in the SPMI PMIC register map
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      End of conversion interrupt.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +  - '#io-channel-cells'
+> +
+> +patternProperties:
+> +  "^.*@[0-9a-fx]+$":
+> +    type: object
+> +    description: |
+> +      Represents the external channels which are connected to the ADC.
+> +      For compatible property "qcom,spmi-vadc" following channels, also known as
+> +      reference point channels, are used for result calibration and their channel
+> +      configuration nodes should be defined:
+> +      VADC_REF_625MV and/or VADC_SPARE1(based on PMIC version) VADC_REF_1250MV,
+> +      VADC_GND_REF and VADC_VDD_VADC.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          ADC channel number.
+> +          See include/dt-bindings/iio/qcom,spmi-vadc.h
+> +
+> +      label:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        description: |
+> +            ADC input of the platform as seen in the schematics.
+> +            For thermistor inputs connected to generic AMUX or GPIO inputs
+> +            these can vary across platform for the same pins. Hence select
+> +            the platform schematics name for this channel.
+> +
+> +      qcom,decimation:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +            This parameter is used to decrease ADC sampling rate.
+> +            Quicker measurements can be made by reducing decimation ratio.
+> +            - For compatible property "qcom,spmi-vadc", valid values are
+> +              512, 1024, 2048, 4096. If property is not found, default value
+> +              of 512 will be used.
+> +            - For compatible property "qcom,spmi-adc5", valid values are 250, 420
+> +              and 840. If property is not found, default value of 840 is used.
+> +            - For compatible property "qcom,spmi-adc-rev2", valid values are 256,
+> +              512 and 1024. If property is not present, default value is 1024.
+> +
+> +      qcom,pre-scaling:
+> +        description: |
+> +            Used for scaling the channel input signal before the signal is
+> +            fed to VADC. The configuration for this node is to know the
+> +            pre-determined ratio and use it for post scaling. It is a pair of
+> +            integers, denoting the numerator and denominator of the fraction by which
+> +            input signal is multiplied. For example, <1 3> indicates the signal is scaled
+> +            down to 1/3 of its value before ADC measurement. Select one from
+> +            the following options.
+> +            <1 1>, <1 3>, <1 4>, <1 6>, <1 20>, <1 8>, <10 81>, <1 10>
+> +            If property is not found default value depending on chip will be used.
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        oneOf:
+> +          - items:
+> +            - const: 1
+> +            - enum: [ 1, 3, 4, 6, 20, 8, 10 ]
+> +
+> +          - items:
+> +            - const: 10
+> +            - const: 81
+> +
+> +      qcom,ratiometric:
+> +        description: |
+> +            Channel calibration type.
+> +            - For compatible property "qcom,spmi-vadc", if this property is
+> +              specified VADC will use the VDD reference (1.8V) and GND for
+> +              channel calibration. If property is not found, channel will be
+> +              calibrated with 0.625V and 1.25V reference channels, also
+> +              known as absolute calibration.
+> +            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
+> +              if this property is specified VADC will use the VDD reference (1.875V)
+> +              and GND for channel calibration. If property is not found, channel
+> +              will be calibrated with 0V and 1.25V reference channels, also known
+> +              as absolute calibration.
+> +        type: boolean
+> +
+> +      qcom,hw-settle-time:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +            Time between AMUX getting configured and the ADC starting
+> +            conversion. The 'hw_settle_time' is an index used from valid values
+> +            and programmed in hardware to achieve the hardware settling delay.
+> +            - For compatible property "qcom,spmi-vadc" and "qcom,spmi-adc-rev2",
+> +              Delay = 100us * (hw_settle_time) for hw_settle_time < 11,
+> +              and 2ms * (hw_settle_time - 10) otherwise.
+> +              Valid values are: 0, 100, 200, 300, 400, 500, 600, 700, 800,
+> +              900 us and 1, 2, 4, 6, 8, 10 ms.
+> +              If property is not found, channel will use 0us.
+> +            - For compatible property "qcom,spmi-adc5", delay = 15us for
+> +              value 0, 100us * (value) for values < 11,
+> +              and 2ms * (value - 10) otherwise.
+> +              Valid values are: 15, 100, 200, 300, 400, 500, 600, 700, 800,
+> +              900 us and 1, 2, 4, 6, 8, 10 ms
+> +              Certain controller digital versions have valid values of
+> +              15, 100, 200, 300, 400, 500, 600, 700, 1, 2, 4, 8, 16, 32, 64, 128 ms
+> +              If property is not found, channel will use 15us.
+> +
+> +      qcom,avg-samples:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +            Number of samples to be used for measurement.
+> +            Averaging provides the option to obtain a single measurement
+> +            from the ADC that is an average of multiple samples. The value
+> +            selected is 2^(value).
+> +            - For compatible property "qcom,spmi-vadc", valid values
+> +              are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512
+> +              If property is not found, 1 sample will be used.
+> +
+> +    required:
+> +      - reg
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,spmi-vadc
+> +
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-9a-fx]+$":
+> +          minItems: 4
+> +          properties:
+> +            qcom,decimation:
+> +              items:
+> +                enum: [ 512, 1024, 2048, 4096 ]
+> +                default: 512
+> +
+> +            qcom,hw-settle-time:
+> +              items:
+> +                enum: [ 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1, 2,
+> +                        4, 6, 8, 10 ]
+> +                default: 0
+> +
+> +            qcom,avg-samples:
+> +              items:
+> +                enum: [ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 ]
+> +                default: 1
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,spmi-adc-rev2
+> +
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-9a-fx]+$":
+> +          properties:
+> +            qcom,decimation:
+> +              items:
+> +                enum: [ 256, 512, 1024 ]
+> +                default: 1024
+> +
+> +            qcom,hw-settle-time:
+> +              items:
+> +                enum: [ 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1, 2,
+> +                        4, 6, 8, 10 ]
+> +                default: 0
+> +
+> +            qcom,avg-samples:
+> +              items:
+> +                enum: [ 1, 2, 4, 8, 16 ]
+> +                default: 1
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,spmi-adc5
+> +
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-9a-fx]+$":
+> +          properties:
+> +            qcom,decimation:
+> +              items:
+> +                enum: [ 250, 420, 840 ]
+> +                default: 840
+> +
+> +            qcom,hw-settle-time:
+> +              items:
+> +                enum: [ 15, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1, 2,
+> +                        4, 6, 8, 10, 16, 32, 64, 128 ]
+> +                default: 15
+> +
+> +            qcom,avg-samples:
+> +              items:
+> +                enum: [ 1, 2, 4, 8, 16 ]
+> +                default: 1
+> +
+> +examples:
+> +  - |
+> +    spmi_bus {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      /* VADC node */
+> +      pmic_vadc: adc@3100 {
+> +        compatible = "qcom,spmi-vadc";
+> +        reg = <0x3100>;
+> +        interrupts = <0x0 0x31 0x0 0x1>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        #io-channel-cells = <1>;
+> +        io-channel-ranges;
+> +
+> +        /* Channel node */
+> +        adc-chan@0x39 {
+> +          reg = <0x39>;
+> +          qcom,decimation = <512>;
+> +          qcom,ratiometric;
+> +          qcom,hw-settle-time = <200>;
+> +          qcom,avg-samples = <1>;
+> +          qcom,pre-scaling = <1 3>;
+> +        };
+> +
+> +        adc-chan@0x9 {
+> +          reg = <0x9>;
+> +        };
+> +
+> +        adc-chan@0xa {
+> +          reg = <0xa>;
+> +        };
+> +
+> +        adc-chan@0xe {
+> +          reg = <0xe>;
+> +        };
+> +
+> +        adc-chan@0xf {
+> +          reg = <0xf>;
+> +        };
+> +      };
+> +    };
 
