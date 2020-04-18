@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED11AF4CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275071AF4A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgDRUV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
+        id S1728569AbgDRUUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 16:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728539AbgDRUU2 (ORCPT
+        by vger.kernel.org with ESMTP id S1728460AbgDRUUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 16:20:28 -0400
+        Sat, 18 Apr 2020 16:20:30 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B5AC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:28 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j1so1743989wrt.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E848C061A0F
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:30 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f13so7133447wrm.13
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ybffadE8dqAJo382dZkDBzwR2ts70k1w2gIXA5Uhhzw=;
-        b=iZHz5P399RHWKayzJ9qhD1e4JsSZ67BJPWz35fMSi+5VfWXH3u7MezAMmPUnrNInK6
-         V9gYot/f+iEEBeTzY9MiRQifCbNvawCYDgFzi26hgPhMjiBZBVEDIKiu9aVk8DxJJ4y9
-         KxHw6gAG3Dz9EbMNGQ3nl+xzWbuKYXLOJP6iV4RC+JDPcSVIcqKv6OY4J53IYVqeXCBy
-         oryOCx51hk7QYCd3Dyjnl2pTaotPog1JhIQW5lsCot1Z5vSuQAv7N/Rs6WQ/BNAz9qrc
-         0yyk1FdT+UCgcn4cAEENMdOcrXCRrK/83CGuTNUvEDIqJEEWouhjGPwJgVaR8jsuepKC
-         GalA==
+        bh=kRb3VTo9fqqcoDwRC+xUbun5O8A7r81BCz7puwICl3U=;
+        b=XRxInYXsCLMYHbKTV/E3Cf556LBnqifRTu7fOoVg+fnC+wo8bx+cCx/MD25ZMVoyaP
+         75h7/7nJC4+2cehTfUN8ct6vyQySP9aRuzXPaDBDbd7HhC5dSoTUyhBtzVnT9P8MHVmu
+         feMagN6JAAguvLTuITE3t6tOebcj0eZX4VttVo9qC4IWKmaIQOUceit+UyUkbd1B5cTH
+         EpLxpP1P0xvSMp7khLb1Td954oetNnG0TlHQdqRKDMFL2CsPb0Wat+lpLOv26znzHgMY
+         HZi13AKU74dFtg4sVEjBldWKY1lA3/GGUrVy83854a32VC1jFVd+vxFK8uLU9jMV2hM1
+         UrAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ybffadE8dqAJo382dZkDBzwR2ts70k1w2gIXA5Uhhzw=;
-        b=jQ7UrxRsOqzckL8931IsuN6JBO5MhaRdN1xPI/VZpeXW4XGMNGIgYiDr8SkWu6fP+0
-         pRXf67t4c3Fyyj/vVSoj7z1Tz2hEu6pLy0/V73malBJQnKif71Nzb1jjmTdZqBT/6g9Y
-         sFVHtJOLlTo5trIzVE71fT5XjIlpy+/rB8FzQt9I1PR00yuw9Hm+ZE5YWq2BnMbUZVzG
-         2tdqVRN5lDyGiWIcAITOLT30X3blIJdnjT4YBAATpWJu3Y5lXXqif+TfDGPmj0ZCLZZK
-         RWyPp8shQWP812g3hBUBUjnqqv/DcjWNN1gLwEY1PFXvJKWYEclLL8y2aG1V/3kvLGsF
-         9biw==
-X-Gm-Message-State: AGi0PuYt55JC50kSgXVu69KtSwEmhdUmwpFO2/RTkGIG5sfMjc4zDR0C
-        NefbTZBz2/fhhbSQKAartK+HoMp8/2E=
-X-Google-Smtp-Source: APiQypIe0nED3rMPLTQENe6HaS/vs2AUCMRZNrcnsR+mudM1rommFYQcpSXtLZ73oHRLDO4iH1Z8YA==
-X-Received: by 2002:adf:ce0a:: with SMTP id p10mr10089157wrn.89.1587241227000;
-        Sat, 18 Apr 2020 13:20:27 -0700 (PDT)
+        bh=kRb3VTo9fqqcoDwRC+xUbun5O8A7r81BCz7puwICl3U=;
+        b=jKl7T/podohfN0T/kzVv19XA2X1HW6yo18MDbmswFpk3cyc/ip0C6BCBFG7VjEWfGK
+         OuzamcB5PLpdyi2IQeTM/gXj3d1cINbrrSPHcjqNAYY5OEBxP3BvokdvLhLedysZChz4
+         Ami1FFxUbPg96gdr/sAayTV5SsszMDlmJbmLhdYRYT5awZsy3Ue7vKDwuj8MQv9SfklV
+         yv6cgZwFj/d9Nm4RMh8Y5XpQY65cNO0Ok7cjTuOwgpifkeGcB6QJydGOL4rqoSeGtbjK
+         EtY+Edmrjf6+Ov66eK+3ghDT2GctBBQYBVMkxJ6tTlvabhK7XeXPcQ51II4sKhoUOqQG
+         lxmA==
+X-Gm-Message-State: AGi0PuZOAO/5YIOOuvrZjU3dMYp9x8WaaJhVfNaeavshZ4erkGv+ndbh
+        GowPzQ9BGSxphE0dfqfbMqHtuv6nls4=
+X-Google-Smtp-Source: APiQypIBHNdaEr/YVaqDAJWyXWNiZxi8CYpb8zsUkWtfwA+UFh16npqb12pWxbpFTmfmiSj23d14bw==
+X-Received: by 2002:adf:dd8a:: with SMTP id x10mr9457721wrl.308.1587241228309;
+        Sat, 18 Apr 2020 13:20:28 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.25
+        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 13:20:26 -0700 (PDT)
+        Sat, 18 Apr 2020 13:20:27 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -59,13 +59,12 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCHv3 27/50] riscv: Add show_stack_loglvl()
-Date:   Sat, 18 Apr 2020 21:19:21 +0100
-Message-Id: <20200418201944.482088-28-dima@arista.com>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: [PATCHv3 28/50] s390: Add show_stack_loglvl()
+Date:   Sat, 18 Apr 2020 21:19:22 +0100
+Message-Id: <20200418201944.482088-29-dima@arista.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200418201944.482088-1-dima@arista.com>
 References: <20200418201944.482088-1-dima@arista.com>
@@ -95,47 +94,50 @@ Also, it will consolidate printings with headers.
 Introduce show_stack_loglvl(), that eventually will substitute
 show_stack().
 
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: linux-riscv@lists.infradead.org
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 [1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/riscv/kernel/stacktrace.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/s390/kernel/dumpstack.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index eeee844fb93d..05bf537310a8 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -99,16 +99,23 @@ static void notrace walk_stackframe(struct task_struct *task,
- 
- static bool print_trace_address(unsigned long pc, void *arg)
- {
--	print_ip_sym(KERN_DEFAULT, pc);
-+	const char *loglvl = arg;
-+
-+	print_ip_sym(loglvl, pc);
- 	return false;
+diff --git a/arch/s390/kernel/dumpstack.c b/arch/s390/kernel/dumpstack.c
+index 2c122d8bab93..887a054919fc 100644
+--- a/arch/s390/kernel/dumpstack.c
++++ b/arch/s390/kernel/dumpstack.c
+@@ -126,18 +126,24 @@ int get_stack_info(unsigned long sp, struct task_struct *task,
+ 	return -EINVAL;
  }
  
--void show_stack(struct task_struct *task, unsigned long *sp)
-+void show_stack_loglvl(struct task_struct *task, unsigned long *sp,
+-void show_stack(struct task_struct *task, unsigned long *stack)
++void show_stack_loglvl(struct task_struct *task, unsigned long *stack,
 +		       const char *loglvl)
  {
- 	pr_cont("Call Trace:\n");
--	walk_stackframe(task, NULL, print_trace_address, NULL);
-+	walk_stackframe(task, NULL, print_trace_address, (void *)loglvl);
+ 	struct unwind_state state;
+ 
+-	printk("Call Trace:\n");
++	printk("%sCall Trace:\n", loglvl);
+ 	unwind_for_each_frame(&state, task, NULL, (unsigned long) stack)
+-		printk(state.reliable ? " [<%016lx>] %pSR \n" :
+-					"([<%016lx>] %pSR)\n",
+-		       state.ip, (void *) state.ip);
++		printk(state.reliable ? "%s [<%016lx>] %pSR \n" :
++					"%s([<%016lx>] %pSR)\n",
++		       loglvl, state.ip, (void *) state.ip);
+ 	debug_show_held_locks(task ? : current);
  }
  
-+void show_stack(struct task_struct *task, unsigned long *sp)
++void show_stack(struct task_struct *task, unsigned long *stack)
 +{
-+	show_stack_loglvl(task, sp, KERN_DEFAULT);
++	show_stack_loglvl(task, stack, KERN_DEFAULT);
 +}
- 
- static bool save_wchan(unsigned long pc, void *arg)
++
+ static void show_last_breaking_event(struct pt_regs *regs)
  {
+ 	printk("Last Breaking-Event-Address:\n");
 -- 
 2.26.0
 
