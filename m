@@ -2,79 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C097D1AEC91
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6171AEC99
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725982AbgDRMo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 08:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
+        id S1726026AbgDRMqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 08:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725804AbgDRMo4 (ORCPT
+        by vger.kernel.org with ESMTP id S1725804AbgDRMqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 08:44:56 -0400
+        Sat, 18 Apr 2020 08:46:47 -0400
 Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E43C061A0C;
-        Sat, 18 Apr 2020 05:44:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62277C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 05:46:47 -0700 (PDT)
 Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 7275A48C; Sat, 18 Apr 2020 14:44:54 +0200 (CEST)
-Date:   Sat, 18 Apr 2020 14:44:53 +0200
-From:   "joro@8bytes.org" <joro@8bytes.org>
-To:     "Derrick, Jonathan" <jonathan.derrick@intel.com>
-Cc:     "drake@endlessm.com" <drake@endlessm.com>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        "kgene@kernel.org" <kgene@kernel.org>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "robdclark@gmail.com" <robdclark@gmail.com>,
-        "gerald.schaefer@de.ibm.com" <gerald.schaefer@de.ibm.com>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v2 00/33] iommu: Move iommu_group setup to IOMMU core code
-Message-ID: <20200418124452.GE6113@8bytes.org>
-References: <20200414131542.25608-1-joro@8bytes.org>
- <20200417010335.31739-1-drake@endlessm.com>
- <aafed865c0254934986528b3ce9c4d34ff2fccad.camel@intel.com>
+        id 11EBF48C; Sat, 18 Apr 2020 14:46:45 +0200 (CEST)
+Date:   Sat, 18 Apr 2020 14:46:44 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH] iommu: spapr_tce: Disable compile testing to fix build
+ on book3s_32 config
+Message-ID: <20200418124644.GF6113@8bytes.org>
+References: <20200414142630.21153-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aafed865c0254934986528b3ce9c4d34ff2fccad.camel@intel.com>
+In-Reply-To: <20200414142630.21153-1-krzk@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan, Hi Daniel,
+On Tue, Apr 14, 2020 at 04:26:30PM +0200, Krzysztof Kozlowski wrote:
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: e93a1695d7fb ("iommu: Enable compile testing for some of drivers")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/iommu/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, Apr 17, 2020 at 01:14:30AM +0000, Derrick, Jonathan wrote:
-> Hi Daniel> I should have CCed you on this, but it should temporarily resolve that
-> issue:
-> https://lists.linuxfoundation.org/pipermail/iommu/2020-April/043253.html
-
-Yes, this is an issue in the hotplug handling path which I already fixed
-in my branch. With next post of this series it should work.
-
-Regards,
-
-	Joerg
+Applied, thanks.
