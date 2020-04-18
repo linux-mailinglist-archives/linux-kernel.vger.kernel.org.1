@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CEA1AE99C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 05:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12C31AE99E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 05:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgDRDUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 23:20:48 -0400
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:20404 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgDRDUs (ORCPT
+        id S1725950AbgDRDYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 23:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725320AbgDRDYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 23:20:48 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 53852662D4B;
-        Sat, 18 Apr 2020 11:20:45 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] reserve_bo_and_cond_vms: Remove unnecessary condition check
-Date:   Fri, 17 Apr 2020 20:20:36 -0700
-Message-Id: <1587180037-113840-1-git-send-email-bernard@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVCSE9LS0tLSk5JTkNMQllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OTY6ORw*NDg3Sw4MHzgUIlYI
-        N0oKCgFVSlVKTkNMSkNLS09OTkJDVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSUpJTzcG
-X-HM-Tid: 0a718b4d84d09373kuws53852662d4b
+        Fri, 17 Apr 2020 23:24:49 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048C3C061A0C;
+        Fri, 17 Apr 2020 20:24:48 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b8so2007399pfp.8;
+        Fri, 17 Apr 2020 20:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BzICRuRvjPRdTPirDnTzrOCvzqk/XEDtlZnEDCIYLoY=;
+        b=rjvdAzlZKp6w6jFqmhVeYNTx5/gXO78Z5vRQAOBCHGIedmsm2elEBEitm+SCF82de0
+         wNCShDOZN4fbKSjPlK8hPQ95i9d7+RypUGG0rZ3jKMXkiHJjnioQ27BZI5lf7JSfXTyv
+         VA2PzizITqrlX+WSNiNXR9Z3foy514oe5RUIPANGcTPgJHzr0QNlbS9vQdKFppWRsqyC
+         acQ6Ut4HPVZ8SpgGgAXRCzccwlFIx7TYPgW6sAGcN3l9hTB3bHru4pjMYGdCRmxiKeOy
+         ma4PxJ+z1g9cXvjiOFrTHvXsfaYDZn1Jt6DIo8STBp7c+A2ipguCe60FPMmc8eR08BGa
+         dGgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BzICRuRvjPRdTPirDnTzrOCvzqk/XEDtlZnEDCIYLoY=;
+        b=rGVnYSPEA/1zBk9zXSawUWmZkQ+WNO/XCg8hlc4EWgsYQX2PdJuB3T1B81ccRapfBr
+         GRyDTKyXQlmGGjCuRbT44+gyxZaTA/szCiOCYkicNr9sDH2nY87JetxmZD/OxaPGRiJn
+         buNhLAASlNy3seTQSrI9l/AcXyGHIqj2W/gyvmOSQG7Ru6Xe8BaQNL2JtXNDqVXTdarI
+         NMnwEu74lDyCzk8AuuX5hNvkaHUGf9u6gWfAApTriyV7pif5PqXSwleUz4ELtsGSCSIH
+         Y5U+x2LqMJXqasT8v40TtZAOGSlGwAwlOW3TG+NKeHL9RCNp52IqV8PDiYfQmendfwW4
+         hLHg==
+X-Gm-Message-State: AGi0PuYJbPcNyc4TJiaHa0BDuuwNzfVg6UGgTiO+fZq9har243beAxQ+
+        NT8qRWq4Dh/j4fHcyeR+JYI=
+X-Google-Smtp-Source: APiQypIaI9zcregVywXTVg0wstUgRLl2Y1nF+aRzqE+UNWB4X8Pmj7nS8U8vgyfS/AbX5ck02DsoyQ==
+X-Received: by 2002:a62:5c1:: with SMTP id 184mr6768393pff.68.1587180288477;
+        Fri, 17 Apr 2020 20:24:48 -0700 (PDT)
+Received: from localhost (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id f9sm19573203pgj.2.2020.04.17.20.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 20:24:48 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 20:24:46 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     min.li.xe@renesas.com, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] ptp: idt82p33: Make two variables static
+Message-ID: <20200418032446.GB9457@localhost>
+References: <20200418020149.29796-1-yuehaibing@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418020149.29796-1-yuehaibing@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to if check again, maybe we could merge
-into the above else branch.
+On Sat, Apr 18, 2020 at 10:01:49AM +0800, YueHaibing wrote:
+> Fix sparse warnings:
+> 
+> drivers/ptp/ptp_idt82p33.c:26:5: warning: symbol 'sync_tod_timeout' was not declared. Should it be static?
+> drivers/ptp/ptp_idt82p33.c:31:5: warning: symbol 'phase_snap_threshold' was not declared. Should it be static?
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index 9dff792..327317c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -735,10 +735,8 @@ static int reserve_bo_and_cond_vms(struct kgd_mem *mem,
- 				     false, &ctx->duplicates);
- 	if (!ret)
- 		ctx->reserved = true;
--	else
-+	else {
- 		pr_err("Failed to reserve buffers in ttm.\n");
--
--	if (ret) {
- 		kfree(ctx->vm_pd);
- 		ctx->vm_pd = NULL;
- 	}
--- 
-2.7.4
-
+Acked-by: Richard Cochran <richardcochran@gmail.com>
