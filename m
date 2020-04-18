@@ -2,288 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D551AEADA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 10:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82921AEAEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 10:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbgDRIYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 04:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgDRIYv (ORCPT
+        id S1726050AbgDRIbi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 18 Apr 2020 04:31:38 -0400
+Received: from vs25.mail.saunalahti.fi ([62.142.117.202]:47350 "EHLO
+        vs25.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgDRIbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 04:24:51 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08635C061A0F
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 01:24:51 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g12so5330800wmh.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 01:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=I0Ki/vBt3O6VAfSQlBFLYo1JpMezse5hkj4ROLsiFAk=;
-        b=N5SYjDTQpO02KB0wlteMCsUVNd69DZXSL06UQ2L/9aWaWeJXHCJRbZyA5OhAfhAV8v
-         Hl111fC8FvfRdbe58ZSolhTKQNB1gm0WhKwjd3JslvQ0garRbPbh33JwqMhD2qSGz2YF
-         1vY33uzdwK5x79E0E8zQ5j3M4v0ieV4VV7P1em/oDomEecwBrB97gF++sVGqMzPNhS4Y
-         +w8xmay6Qfl8u8sMMtPYMbiI8lOqxrwHjLaE29aBaOBDZtTlBFZDlx1QgotxqEXUnFCr
-         OSgy8h9u/7p7DmUzdREkNCTv7GcSHG3hp6SdRjfOgtY+nERWyT6wX4eFZP1zD4L1FFjb
-         rv7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=I0Ki/vBt3O6VAfSQlBFLYo1JpMezse5hkj4ROLsiFAk=;
-        b=kpBgPgk+FnVaCO4VCQ5pondDJPptGpNdYKpXWKUEhkWAX36o15oOCcjLeY8FHeGQAd
-         I14MSIPAzDHOKBr9QdbqRqQULKtRCb1CLsH8Yuwd8fLDfXALSciCrvZTKctv6gqWlJs1
-         B6b7DDSgnxwkh4MNg7ekM7M0nSv26pn7AajOAWb0POZqRFVIbB1untbQf5aAMgvDyBzz
-         3nNUky4UklVuO9X18+piTdGvXiBLOBImFlBH50UxMV2kXLDLUPMYCD/dcVNeKqePnzYZ
-         e0yraxDJfmlIsqm87FWWh6YOCwHdN47RbRgY+RCPg6Fnd/2QSln7+oTflffMdQA/4oJ6
-         uRbQ==
-X-Gm-Message-State: AGi0PuZGC999fN7K+WC/iAB47Z1jdQEMlw957QbSA6TJJRFbWcpPPWE2
-        1KJFYWazl5jitwKRiJSZMYNt5lYj
-X-Google-Smtp-Source: APiQypIflF7FNvCpnbxqLfMcfAq6V6z+IY+CP/xv9ACiIuXYIkMM0aBe5Ldi5sAlschyguD/nxrNZg==
-X-Received: by 2002:a1c:41d7:: with SMTP id o206mr7245536wma.89.1587198289215;
-        Sat, 18 Apr 2020 01:24:49 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
-        by smtp.gmail.com with ESMTPSA id c190sm10898087wme.4.2020.04.18.01.24.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 01:24:48 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
-        ttayar@habana.ai
-Cc:     gregkh@linuxfoundation.org
-Subject: [PATCH 3/5] habanalabs: Align protection bits configuration of all TPCs
+        Sat, 18 Apr 2020 04:31:37 -0400
+X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Apr 2020 04:31:35 EDT
+Received: from vs25.mail.saunalahti.fi (localhost [127.0.0.1])
+        by vs25.mail.saunalahti.fi (Postfix) with ESMTP id F120220DC3;
+        Sat, 18 Apr 2020 11:24:45 +0300 (EEST)
+Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi [195.197.172.115])
+        by vs25.mail.saunalahti.fi (Postfix) with ESMTP id E5B2820D7E;
+        Sat, 18 Apr 2020 11:24:45 +0300 (EEST)
+Received: from [192.168.1.20] (87-100-216-152.bb.dnainternet.fi [87.100.216.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kh8831)
+        by gw01.mail.saunalahti.fi (Postfix) with ESMTPSA id 9DDAF40006;
+        Sat, 18 Apr 2020 11:24:38 +0300 (EEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.60.0.2.5\))
+Subject: Re: [PATCH] scsi: st: remove unneeded variable 'result' in
+ st_release()
+From:   =?utf-8?B?IkthaSBNw6RraXNhcmEgKEtvbHVtYnVzKSI=?= 
+        <kai.makisara@kolumbus.fi>
+In-Reply-To: <20200418070605.11450-1-yanaijie@huawei.com>
 Date:   Sat, 18 Apr 2020 11:24:38 +0300
-Message-Id: <20200418082440.21277-3-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200418082440.21277-1-oded.gabbay@gmail.com>
-References: <20200418082440.21277-1-oded.gabbay@gmail.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        martin.petersen@oracle.com, arnd@arndb.de,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <ACE0F4F0-0F37-4BF3-B817-E107629975D1@kolumbus.fi>
+References: <20200418070605.11450-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+X-Mailer: Apple Mail (2.3608.60.0.2.5)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
 
-Align the protection bits configuration of all TPC cores to be as of TPC
-core 0.
 
-Fixes: a513f9a7eca5 ("habanalabs: make tpc registers secured")
+> On 18. Apr 2020, at 10.06, Jason Yan <yanaijie@huawei.com> wrote:
+> 
+> Also remove a strange '^L' after this function.
+> 
+It is the FormFeed character, put there to make viewing the source easier
+(the following functions are helpers). (The FormFeed may not be as
+familiar to the younger generations than it is to us who have used line
+printers with hammers and drums or chains :-)
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/goya/goya_security.c | 99 +++++++++++++++++++-
- 1 file changed, 98 insertions(+), 1 deletion(-)
+> Fix the following coccicheck warning:
+> 
+> drivers/scsi/st.c:1460:5-11: Unneeded variable: "result". Return "0" on
+> line 1473
+> 
+The variable is related to the style of programming: default the return value
+to zero and modify it in the code if necessary. In the current version, there
+is no need (may have been at some time).
 
-diff --git a/drivers/misc/habanalabs/goya/goya_security.c b/drivers/misc/habanalabs/goya/goya_security.c
-index 2dfdfbb07905..de8297001fea 100644
---- a/drivers/misc/habanalabs/goya/goya_security.c
-+++ b/drivers/misc/habanalabs/goya/goya_security.c
-@@ -694,7 +694,6 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC0_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC0_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC0_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
--	mask |= 1 << ((mmTPC0_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC0_CFG_TPC_STALL & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC0_CFG_MSS_CONFIG & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC0_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-@@ -874,6 +873,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC1_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC1_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC1_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC1_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC1_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC1_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC1_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -881,6 +890,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC1_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC1_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC1_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC1_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1056,6 +1069,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC2_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC2_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC2_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC2_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC2_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC2_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC2_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -1063,6 +1086,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC2_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC2_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC2_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC2_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1238,6 +1265,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC3_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC3_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC3_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC3_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC3_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC3_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC3_CFG_CFG_BASE_ADDRESS_HIGH
- 			& PROT_BITS_OFFS) >> 7) << 2;
-@@ -1245,6 +1282,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC3_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC3_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC3_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC3_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1420,6 +1461,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC4_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC4_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC4_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC4_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC4_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC4_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC4_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -1427,6 +1478,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC4_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC4_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC4_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC4_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1602,6 +1657,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC5_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC5_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC5_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC5_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC5_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC5_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC5_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -1609,6 +1674,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC5_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC5_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC5_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC5_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1784,6 +1853,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC6_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC6_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC6_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC6_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC6_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC6_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) + PROT_BITS_OFFS;
- 	word_offset = ((mmTPC6_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -1791,6 +1870,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC6_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC6_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC6_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC6_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
-@@ -1966,6 +2049,16 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	goya_pb_set_block(hdev, mmTPC7_RD_REGULATOR_BASE);
- 	goya_pb_set_block(hdev, mmTPC7_WR_REGULATOR_BASE);
- 
-+	pb_addr = (mmTPC7_CFG_SEMAPHORE & ~0xFFF) + PROT_BITS_OFFS;
-+	word_offset = ((mmTPC7_CFG_SEMAPHORE & PROT_BITS_OFFS) >> 7) << 2;
-+
-+	mask = 1 << ((mmTPC7_CFG_SEMAPHORE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_VFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_SFLAGS & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_STATUS & 0x7F) >> 2);
-+
-+	WREG32(pb_addr + word_offset, ~mask);
-+
- 	pb_addr = (mmTPC7_CFG_CFG_BASE_ADDRESS_HIGH & ~0xFFF) +	PROT_BITS_OFFS;
- 	word_offset = ((mmTPC7_CFG_CFG_BASE_ADDRESS_HIGH &
- 			PROT_BITS_OFFS) >> 7) << 2;
-@@ -1973,6 +2066,10 @@ static void goya_init_tpc_protection_bits(struct hl_device *hdev)
- 	mask |= 1 << ((mmTPC7_CFG_CFG_SUBTRACT_VALUE & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC7_CFG_SM_BASE_ADDRESS_LOW & 0x7F) >> 2);
- 	mask |= 1 << ((mmTPC7_CFG_SM_BASE_ADDRESS_HIGH & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_TPC_STALL & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_MSS_CONFIG & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_TPC_INTR_CAUSE & 0x7F) >> 2);
-+	mask |= 1 << ((mmTPC7_CFG_TPC_INTR_MASK & 0x7F) >> 2);
- 
- 	WREG32(pb_addr + word_offset, ~mask);
- 
--- 
-2.17.1
+IMHO, the code checking tools should have some understanding of the
+style issues. However, if the common opinion is to remove the variable,
+I have to accept that.
+
+Kai
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+
+Acked-by: Kai Mäkisara <kai.makisara@kolumbus.fi>
+
+> ---
+> drivers/scsi/st.c | 5 ++---
+> 1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
+> index c5f9b348b438..4bf4ab3b70f4 100644
+> --- a/drivers/scsi/st.c
+> +++ b/drivers/scsi/st.c
+> @@ -1457,7 +1457,6 @@ static int st_flush(struct file *filp, fl_owner_t id)
+>    accessing this tape. */
+> static int st_release(struct inode *inode, struct file *filp)
+> {
+> -	int result = 0;
+> 	struct scsi_tape *STp = filp->private_data;
+> 
+> 	if (STp->door_locked == ST_LOCKED_AUTO)
+> @@ -1470,9 +1469,9 @@ static int st_release(struct inode *inode, struct file *filp)
+> 	scsi_autopm_put_device(STp->device);
+> 	scsi_tape_put(STp);
+> 
+> -	return result;
+> +	return 0;
+> }
+> -
+> +
+> /* The checks common to both reading and writing */
+> static ssize_t rw_checks(struct scsi_tape *STp, struct file *filp, size_t count)
+> {
+> -- 
+> 2.21.1
+> 
 
