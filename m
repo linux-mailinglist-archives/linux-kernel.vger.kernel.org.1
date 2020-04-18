@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F81C1AF243
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 18:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B491AF241
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 18:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgDRQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 12:22:34 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:5208 "EHLO
+        id S1726887AbgDRQWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 12:22:31 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:5382 "EHLO
         m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgDRQWd (ORCPT
+        with ESMTP id S1726416AbgDRQWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 12:22:33 -0400
+        Sat, 18 Apr 2020 12:22:31 -0400
 Received: from ubuntu.localdomain (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 4C9004E14C2;
-        Sun, 19 Apr 2020 00:22:23 +0800 (CST)
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 9B2064E1504;
+        Sun, 19 Apr 2020 00:22:29 +0800 (CST)
 From:   Wang Wenhu <wenhu.wang@vivo.com>
 To:     gregkh@linuxfoundation.org, arnd@arndb.de,
         linux-kernel@vger.kernel.org, oss@buserror.net,
         christophe.leroy@c-s.fr, linuxppc-dev@lists.ozlabs.org
 Cc:     kernel@vivo.com, rdunlap@infradead.org,
-        Wang Wenhu <wenhu.wang@vivo.com>
-Subject: [PATCH v6,0/4] misc: new driver sram_uapi for user level SRAM access
-Date:   Sat, 18 Apr 2020 09:21:53 -0700
-Message-Id: <20200418162157.50428-1-wenhu.wang@vivo.com>
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH v6,1/4] powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
+Date:   Sat, 18 Apr 2020 09:21:54 -0700
+Message-Id: <20200418162157.50428-2-wenhu.wang@vivo.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200418162157.50428-1-wenhu.wang@vivo.com>
+References: <20200418162157.50428-1-wenhu.wang@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVLSkhCQkJCSENCTU9DT1lXWShZQU
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSlVDSE5LS0tLSENKT01CTFlXWShZQU
         hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ogw6Fww5Ijg4PA0YOCgvLD8S
-        SAwaCypVSlVKTkNMSUlNQk9OTEtNVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlNWVdZCAFZQUlJTk43Bg++
-X-HM-Tid: 0a718e1920799376kuws4c9004e14c2
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KxA6HTo*Sjg5Tw0zEipOLD4v
+        IQkwCk1VSlVKTkNMSUlNQk5LS01JVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTkpVTE9VSUlNWVdZCAFZQUhJSU03Bg++
+X-HM-Tid: 0a718e1939429376kuws9b2064e1504
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series add a new misc device driver which act as an interface to
-access the Cache-SRAM from user level. This is extremely helpful for
-some user space applications that require high performance memory
-accesses.
+Include "linux/of_address.h" to fix the compile error for
+mpc85xx_l2ctlr_of_probe() when compiling fsl_85xx_cache_sram.c.
 
-It also fixes the compile errors and warning of the Freescale MPC85xx
-Cache-SRAM hardware driver.
+  CC      arch/powerpc/sysdev/fsl_85xx_l2ctlr.o
+arch/powerpc/sysdev/fsl_85xx_l2ctlr.c: In function ‘mpc85xx_l2ctlr_of_probe’:
+arch/powerpc/sysdev/fsl_85xx_l2ctlr.c:90:11: error: implicit declaration of function ‘of_iomap’; did you mean ‘pci_iomap’? [-Werror=implicit-function-declaration]
+  l2ctlr = of_iomap(dev->dev.of_node, 0);
+           ^~~~~~~~
+           pci_iomap
+arch/powerpc/sysdev/fsl_85xx_l2ctlr.c:90:9: error: assignment makes pointer from integer without a cast [-Werror=int-conversion]
+  l2ctlr = of_iomap(dev->dev.of_node, 0);
+         ^
+cc1: all warnings being treated as errors
+scripts/Makefile.build:267: recipe for target 'arch/powerpc/sysdev/fsl_85xx_l2ctlr.o' failed
+make[2]: *** [arch/powerpc/sysdev/fsl_85xx_l2ctlr.o] Error 1
 
-The former five version implemented the driver with UIO but they were
-commented of not fitful. This version uses a misc divice and implements
-the memory allocation and free operations via file operation as suggested
-by Scott.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Scott Wood <oss@buserror.net>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Fixes: 6db92cc9d07d ("powerpc/85xx: add cache-sram support")
+Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+---
+No change v1-v5
+---
+ arch/powerpc/sysdev/fsl_85xx_l2ctlr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Wang Wenhu (4):
-  powerpc: sysdev: fix compile error for fsl_85xx_l2ctlr
-  powerpc: sysdev: fix compile error for fsl_85xx_cache_sram
-  powerpc: sysdev: fix compile warning for fsl_85xx_cache_sram
-  drivers: misc: new driver sram_uapi for user level SRAM  access
-
- arch/powerpc/sysdev/fsl_85xx_cache_sram.c |   3 +-
- arch/powerpc/sysdev/fsl_85xx_l2ctlr.c     |   1 +
- drivers/misc/Kconfig                      |  25 ++
- drivers/misc/Makefile                     |   1 +
- drivers/misc/sram_uapi.c                  | 294 ++++++++++++++++++++++
- 5 files changed, 323 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/sram_uapi.c
-
+diff --git a/arch/powerpc/sysdev/fsl_85xx_l2ctlr.c b/arch/powerpc/sysdev/fsl_85xx_l2ctlr.c
+index 2d0af0c517bb..7533572492f0 100644
+--- a/arch/powerpc/sysdev/fsl_85xx_l2ctlr.c
++++ b/arch/powerpc/sysdev/fsl_85xx_l2ctlr.c
+@@ -10,6 +10,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#include <linux/of_address.h>
+ #include <asm/io.h>
+ 
+ #include "fsl_85xx_cache_ctlr.h"
 -- 
 2.17.1
 
