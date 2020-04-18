@@ -2,77 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25861AED1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D11AED57
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgDRNty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 09:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgDRNtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 09:49:46 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 583F222250;
-        Sat, 18 Apr 2020 13:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587217786;
-        bh=zD789dP6I9c4Z+1f02WB1iPpEHekSNenlssybZAeuw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TkHCXCZEecFjHJcoeGrDZM+PZmu7axscy5lPU9Yz3QqbvyRN/aRsfof8+SovtDv6I
-         vJoEZVRiKPtDYe+w7atVHISZFTGvrwmXH1ay2nSbKbiMbufMRcRaImtPSZn2LHfunw
-         POtY/1tdFsM3XUlOhc6WUJGGMDq2KFDxwa7DMc9s=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Qian Cai <cai@lca.pw>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 73/73] block: fix busy device checking in blk_drop_partitions again
-Date:   Sat, 18 Apr 2020 09:48:15 -0400
-Message-Id: <20200418134815.6519-73-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200418134815.6519-1-sashal@kernel.org>
-References: <20200418134815.6519-1-sashal@kernel.org>
+        id S1727887AbgDRNvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 09:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgDRNtO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 09:49:14 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D1CC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 06:49:13 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m13so3920839otf.6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 06:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QcE1hGsY8v1IWMkz0gHh3/1b09zcFk27FkCpIkWG0MA=;
+        b=RXa5FtMJHDfUeFK312R9qWGKjTQOeeQvy1263PO2Mrhp7G1hyzV2JyZGfSr7ZeEXe2
+         RzgnwVXAzwvp7VWCvlDg1DpCO/d6zGoLa+6oNp030sBVw9cEYKlcvlmWO2Wg7gxlNz3W
+         qyHd5dx7oCiul+7eccxdg4KXCBa4aIwRvno6LMOA+dnLD+DqOX225n6uHXOfRsQ+fkQe
+         YZzB/o4D3nHuIXYovJJTi+BpiDFYcwbe+S8yK3CYQe0p41O0EY3X22IEayHRixzwyBlQ
+         SmMa0EMtrz6FE8wTn9XL3giRj29Ly2bySQrC9llegLxESILJKYE9u6c53gKLnKdZrpiy
+         u0Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=QcE1hGsY8v1IWMkz0gHh3/1b09zcFk27FkCpIkWG0MA=;
+        b=lCaRrFdsx7fAGlrKknyjTiP+k26W4Mo4hHNJArXmcmRvBfyyHc5ykTc/vWnjjybBIg
+         2zzUlMid39vnUEh+uKltEjvv+jPm0Eed0+DmMAN6e8KKSYeZChXKqknyy1jSXyH8cK9W
+         SSdKmhi4bo6qF/FI4JvqxK3n8VKrZRLDTkEow7bs6Y1gdvNmID7lgmuIoX87aiPYCll5
+         TQ0IvGXj6/oZlRl5JH4f7kvcqe4VZbMfzkjssQ4lwsak5fnba1RRcVPHkqtRc5s8Psmg
+         vK3HOiTwtothzjrRISm4gTvupBunG2NrgBcKZmj5vhNTASvMTNnL9ek09gQVwgZmnWjP
+         aMVA==
+X-Gm-Message-State: AGi0PubutMCNzBaLDvlLjJXZLeT3W4VrzfltkOQfmT3SXhdp8Kp/rjQL
+        /kuXGWkYapg1LyhkRkRe5A==
+X-Google-Smtp-Source: APiQypIRs+lg2ocbUhW9deNQjYD5mCVoF35HtSrcWBwbEa0d/JCLCh365KXETC7D2OJYqs/Mwkxqcg==
+X-Received: by 2002:a9d:6a53:: with SMTP id h19mr574443otn.8.1587217752080;
+        Sat, 18 Apr 2020 06:49:12 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.149.130])
+        by smtp.gmail.com with ESMTPSA id s25sm4174458ooh.22.2020.04.18.06.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Apr 2020 06:49:11 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id A427F181888;
+        Sat, 18 Apr 2020 13:49:10 +0000 (UTC)
+Date:   Sat, 18 Apr 2020 08:49:09 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH v2] ipmi:bt-bmc: Fix error handling and status check
+Message-ID: <20200418134909.GF6246@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200418080228.19028-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418080228.19028-1-tangbin@cmss.chinamobile.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+On Sat, Apr 18, 2020 at 04:02:29PM +0800, Tang Bin wrote:
+> If the function platform_get_irq() failed, the negative
+> value returned will not be detected here. So fix error
+> handling in bt_bmc_config_irq(). And if devm_request_irq()
+> failed, 'bt_bmc->irq' is assigned to zero maybe redundant,
+> it may be more suitable for using the correct negative values
+> to make the status check in the function bt_bmc_remove().
 
-[ Upstream commit cb6b771b05c3026a85ed4817c1b87c5e6f41d136 ]
+You need to mention changing platform_get_irq to
+platform_get_irq_optional in the header.
 
-The previous fix had an off by one in the bd_openers checking, counting
-the callers blkdev_get.
+Another comment inline below.
 
-Fixes: d3ef5536274f ("block: fix busy device checking in blk_drop_partitions")
-Reported-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/partition-generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Otherwise, this looks good.
 
-diff --git a/block/partition-generic.c b/block/partition-generic.c
-index 5f3b2a959aa51..ebe4c2e9834bd 100644
---- a/block/partition-generic.c
-+++ b/block/partition-generic.c
-@@ -468,7 +468,7 @@ int blk_drop_partitions(struct gendisk *disk, struct block_device *bdev)
- 
- 	if (!disk_part_scan_enabled(disk))
- 		return 0;
--	if (bdev->bd_part_count || bdev->bd_openers)
-+	if (bdev->bd_part_count || bdev->bd_openers > 1)
- 		return -EBUSY;
- 	res = invalidate_partition(disk, 0);
- 	if (res)
--- 
-2.20.1
+> 
+> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+> Changes from v1
+>  - fix the code of status check
+> ---
+>  drivers/char/ipmi/bt-bmc.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+> index cd0349bff..33d3a5d50 100644
+> --- a/drivers/char/ipmi/bt-bmc.c
+> +++ b/drivers/char/ipmi/bt-bmc.c
+> @@ -399,15 +399,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bmc,
+>  	struct device *dev = &pdev->dev;
+>  	int rc;
+>  
+> -	bt_bmc->irq = platform_get_irq(pdev, 0);
+> -	if (!bt_bmc->irq)
+> -		return -ENODEV;
+> +	bt_bmc->irq = platform_get_irq_optional(pdev, 0);
+> +	if (bt_bmc->irq < 0)
+> +		return bt_bmc->irq;
+>  
+>  	rc = devm_request_irq(dev, bt_bmc->irq, bt_bmc_irq, IRQF_SHARED,
+>  			      DEVICE_NAME, bt_bmc);
+>  	if (rc < 0) {
+>  		dev_warn(dev, "Unable to request IRQ %d\n", bt_bmc->irq);
+> -		bt_bmc->irq = 0;
 
+You need to set this to rc.  Otherwise it will remain the interrupt
+number assigned by platform_get_irq_optional().
+
+-corey
+
+>  		return rc;
+>  	}
+>  
+> @@ -474,7 +473,7 @@ static int bt_bmc_probe(struct platform_device *pdev)
+>  
+>  	bt_bmc_config_irq(bt_bmc, pdev);
+>  
+> -	if (bt_bmc->irq) {
+> +	if (bt_bmc->irq >= 0) {
+>  		dev_info(dev, "Using IRQ %d\n", bt_bmc->irq);
+>  	} else {
+>  		dev_info(dev, "No IRQ; using timer\n");
+> @@ -500,7 +499,7 @@ static int bt_bmc_remove(struct platform_device *pdev)
+>  	struct bt_bmc *bt_bmc = dev_get_drvdata(&pdev->dev);
+>  
+>  	misc_deregister(&bt_bmc->miscdev);
+> -	if (!bt_bmc->irq)
+> +	if (bt_bmc->irq < 0)
+>  		del_timer_sync(&bt_bmc->poll_timer);
+>  	return 0;
+>  }
+> -- 
+> 2.20.1.windows.1
+> 
+> 
+> 
