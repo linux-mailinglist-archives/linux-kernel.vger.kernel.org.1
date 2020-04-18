@@ -2,221 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B491AF091
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88691AF0C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 16:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbgDROuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 10:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728900AbgDROuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 10:50:16 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CC8720753;
-        Sat, 18 Apr 2020 14:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587221415;
-        bh=303gUJbQF+M2sNMQfQWkWiYpyN7ocLgZ90zjaTPj990=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZmDFCu/zIOt9fjM0A3rQjxYdSDMTYf13tFwjkP5Z6ju9nJpHJKQolJTMDHskcG9p2
-         Ij7hxUk2w0jcEBlOFmaNXjiI/x9dO8xrvOsZ8wHkWoPuoWzUXTTrSW7BtzjAyoI1Up
-         b2ojEx34NbaWlomL/f6PgV7B63vfd55n9baSYPP8=
-Date:   Sat, 18 Apr 2020 15:50:09 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Saravanan Sekar <sravanhome@gmail.com>
-Cc:     lee.jones@linaro.org, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v10 2/6] mfd: mp2629: Add support for mps battery
- charger
-Message-ID: <20200418155009.0187b7fc@archlinux>
-In-Reply-To: <20200417085003.6124-3-sravanhome@gmail.com>
-References: <20200417085003.6124-1-sravanhome@gmail.com>
-        <20200417085003.6124-3-sravanhome@gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729076AbgDROwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 10:52:07 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:63416 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728179AbgDROwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 10:52:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1587221521; x=1618757521;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C3YP8yE4p3sUrpu20KaBy3TdZyCFMvkjb9hsbrcNjhI=;
+  b=2DoVcbq6URRWX1uv52bCzZQlggV+t+VDixnSaP2DLdDpVPVWnnTj+l//
+   88RTgKPWlaIPwht+Lskk5+5+vucEeN88aHEel4f9iKZrawbAdaJw+5dos
+   if06/VjQGMrTDJu13z7FZQUxds7VWZx/IEX9jej0DK/b9l0Wo6JoLksZ6
+   Ukp4CTN/pPfP+hWX/0F167FgTkdidW7Tix6VzKxBo/yJ6ZPHT46nRxPKS
+   uakfwHqCDWsYa8zZ8VNLG+rRlQtCdcbsiWMgyrfuSxmMmNs1T1dFwYsy5
+   vtQ+xe6XJOYceG2w32tj78hagVqu0HIj4Xa9uGytOkcuJEpBrKnkFYuS1
+   A==;
+IronPort-SDR: 05UYHcW6O85MPOiK9FjJllqWxK4fcLAoutWwPwraEyWZGXL2QjuQ9uzj3uzxXEezXyUJd3lXIc
+ Zk4MX3hGHGtH5y48LpYXZkefWG6yBT7nQ70l4dPbCw+GvIhkft3JIvHlj3eN5/HBjYWUb8+Fk8
+ ByIVl0pIMzbLvOUx9Zls5AO829/hOy21Wb7fAxaXcYfgjxPqp3nwliA/RCW6LFAw7QDpjsc+dl
+ Qx/9MBMYC4d6OkuzzJ3Qyphk4BURPuvojmnwgLyXd/rPfRaZNyQMPraBwSLZUhZKuvfyxzoNxY
+ OKQ=
+X-IronPort-AV: E=Sophos;i="5.72,399,1580799600"; 
+   d="scan'208";a="72972580"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Apr 2020 07:52:00 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sat, 18 Apr 2020 07:52:00 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Sat, 18 Apr 2020 07:52:00 -0700
+Date:   Sat, 18 Apr 2020 16:51:59 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+CC:     <davem@davemloft.net>, <jiri@resnulli.us>, <ivecera@redhat.com>,
+        <kuba@kernel.org>, <roopa@cumulusnetworks.com>,
+        <olteanv@gmail.com>, <andrew@lunn.ch>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [RFC net-next v5 8/9] bridge: mrp: Implement netlink interface
+ to configure MRP
+Message-ID: <20200418145159.ovt6ey7m6nlq4k2q@soft-dev3.microsemi.net>
+References: <20200414112618.3644-1-horatiu.vultur@microchip.com>
+ <20200414112618.3644-9-horatiu.vultur@microchip.com>
+ <c6666b49-a00f-2edf-8cb6-8d649a2eaedb@cumulusnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <c6666b49-a00f-2edf-8cb6-8d649a2eaedb@cumulusnetworks.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 10:49:59 +0200
-Saravanan Sekar <sravanhome@gmail.com> wrote:
-
-> mp2629 is a highly-integrated switching-mode battery charge management
-> device for single-cell Li-ion or Li-polymer battery.
+The 04/18/2020 11:34, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Add MFD core enables chip access for ADC driver for battery readings,
-> and a power supply battery-charger driver
+> On 14/04/2020 14:26, Horatiu Vultur wrote:
+> > Implement netlink interface to configure MRP. The implementation
+> > will do sanity checks over the attributes and then eventually call the MRP
+> > interface.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  net/bridge/br_mrp_netlink.c | 164 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 164 insertions(+)
+> >  create mode 100644 net/bridge/br_mrp_netlink.c
+> >
+> > diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
+> > new file mode 100644
+> > index 000000000000..0d8253311595
+> > --- /dev/null
+> > +++ b/net/bridge/br_mrp_netlink.c
+> > @@ -0,0 +1,164 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +
+> > +#include <net/genetlink.h>
+> > +
+> > +#include <uapi/linux/mrp_bridge.h>
+> > +#include "br_private.h"
+> > +#include "br_private_mrp.h"
+> > +
+> > +static const struct nla_policy br_mrp_policy[IFLA_BRIDGE_MRP_MAX + 1] = {
+> > +     [IFLA_BRIDGE_MRP_UNSPEC]        = { .type = NLA_REJECT },
+> > +     [IFLA_BRIDGE_MRP_INSTANCE]      = { .type = NLA_EXACT_LEN,
+> > +                                         .len = sizeof(struct br_mrp_instance)},
+> > +     [IFLA_BRIDGE_MRP_PORT_STATE]    = { .type = NLA_U32 },
+> > +     [IFLA_BRIDGE_MRP_PORT_ROLE]     = { .type = NLA_EXACT_LEN,
+> > +                                         .len = sizeof(struct br_mrp_port_role)},
+> > +     [IFLA_BRIDGE_MRP_RING_STATE]    = { .type = NLA_EXACT_LEN,
+> > +                                         .len = sizeof(struct br_mrp_ring_state)},
+> > +     [IFLA_BRIDGE_MRP_RING_ROLE]     = { .type = NLA_EXACT_LEN,
+> > +                                         .len = sizeof(struct br_mrp_ring_role)},
+> > +     [IFLA_BRIDGE_MRP_START_TEST]    = { .type = NLA_EXACT_LEN,
+> > +                                         .len = sizeof(struct br_mrp_start_test)},
+> > +};
+> > +
+> > +int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
+> > +              struct nlattr *attr, int cmd, struct netlink_ext_ack *extack)
+> > +{
+> > +     struct nlattr *tb[IFLA_BRIDGE_MRP_MAX + 1];
+> > +     int err;
+> > +
+> > +     if (br->stp_enabled != BR_NO_STP) {
+> > +             br_warn(br, "MRP can't be enabled if STP is already enabled\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     err = nla_parse_nested(tb, IFLA_BRIDGE_MRP_MAX, attr,
+> > +                            NULL, extack);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_INSTANCE]) {
+> > +             struct br_mrp_instance *instance =
+> > +                     nla_data(tb[IFLA_BRIDGE_MRP_INSTANCE]);
+> > +
+> > +             if (cmd == RTM_SETLINK)
+> > +                     err = br_mrp_add(br, instance);
+> > +             else
+> > +                     err = br_mrp_del(br, instance);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_PORT_STATE]) {
+> > +             enum br_mrp_port_state_type state =
+> > +                     nla_get_u32(tb[IFLA_BRIDGE_MRP_PORT_STATE]);
+> > +
+> > +             err = br_mrp_set_port_state(p, state);
 > 
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> This can be executed for any port, just noting it.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Yes, maybe I should add an extra check in the function
+br_mrp_set_port_state, similar to the function br_mrp_set_port_role, to
+allow to be executed only on MRP_AWARE ports.
 
-> ---
->  drivers/mfd/Kconfig        |  9 ++++
->  drivers/mfd/Makefile       |  2 +
->  drivers/mfd/mp2629.c       | 86 ++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/mp2629.h | 19 +++++++++
->  4 files changed, 116 insertions(+)
->  create mode 100644 drivers/mfd/mp2629.c
->  create mode 100644 include/linux/mfd/mp2629.h
 > 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 3c547ed575e6..85be799795aa 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -434,6 +434,15 @@ config MFD_MC13XXX_I2C
->  	help
->  	  Select this if your MC13xxx is connected via an I2C bus.
->  
-> +config MFD_MP2629
-> +	tristate "Monolithic power system MP2629 ADC and Battery charger"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  Select this option to enable support for monolithic power system
-> +	  battery charger. This provides ADC, thermal, battery charger power
-> +	  management functions on the systems.
-> +
->  config MFD_MXS_LRADC
->  	tristate "Freescale i.MX23/i.MX28 LRADC"
->  	depends on ARCH_MXS || COMPILE_TEST
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index f935d10cbf0f..d6c210f96d02 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -170,6 +170,8 @@ obj-$(CONFIG_MFD_MAX8925)	+= max8925.o
->  obj-$(CONFIG_MFD_MAX8997)	+= max8997.o max8997-irq.o
->  obj-$(CONFIG_MFD_MAX8998)	+= max8998.o max8998-irq.o
->  
-> +obj-$(CONFIG_MFD_MP2629)	+= mp2629.o
-> +
->  pcf50633-objs			:= pcf50633-core.o pcf50633-irq.o
->  obj-$(CONFIG_MFD_PCF50633)	+= pcf50633.o
->  obj-$(CONFIG_PCF50633_ADC)	+= pcf50633-adc.o
-> diff --git a/drivers/mfd/mp2629.c b/drivers/mfd/mp2629.c
-> new file mode 100644
-> index 000000000000..46242b1cdf24
-> --- /dev/null
-> +++ b/drivers/mfd/mp2629.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * MP2629 parent driver for ADC and battery charger
-> + *
-> + * Copyright 2020 Monolithic Power Systems, Inc
-> + *
-> + * Author: Saravanan Sekar <sravanhome@gmail.com>
-> + */
-> +
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/mfd/mp2629.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +enum {
-> +	MP2629_MFD_ADC,
-> +	MP2629_MFD_CHARGER,
-> +	MP2629_MFD_MAX
-> +};
-> +
-> +static const struct mfd_cell mp2629mfd[] = {
-> +	[MP2629_MFD_ADC] = {
-> +		.name = "mp2629_adc",
-> +		.of_compatible = "mps,mp2629_adc",
-> +	},
-> +	[MP2629_MFD_CHARGER] = {
-> +		.name = "mp2629_charger",
-> +		.of_compatible = "mps,mp2629_charger",
-> +	}
-> +};
-> +
-> +static const struct regmap_config mp2629_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = 0x17,
-> +};
-> +
-> +static int mp2629_probe(struct i2c_client *client)
-> +{
-> +	struct mp2629_info *ddata;
-> +	int ret;
-> +
-> +	ddata = devm_kzalloc(&client->dev, sizeof(*ddata), GFP_KERNEL);
-> +	if (!ddata)
-> +		return -ENOMEM;
-> +
-> +	ddata->dev = &client->dev;
-> +	i2c_set_clientdata(client, ddata);
-> +
-> +	ddata->regmap = devm_regmap_init_i2c(client, &mp2629_regmap_config);
-> +	if (IS_ERR(ddata->regmap)) {
-> +		dev_err(ddata->dev, "Failed to allocate regmap!\n");
-> +		return PTR_ERR(ddata->regmap);
-> +	}
-> +
-> +	ret = devm_mfd_add_devices(ddata->dev, PLATFORM_DEVID_NONE, mp2629mfd,
-> +				ARRAY_SIZE(mp2629mfd), NULL,
-> +				0, NULL);
-> +	if (ret)
-> +		dev_err(ddata->dev, "Failed to register sub-devices %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id mp2629_of_match[] = {
-> +	{ .compatible = "mps,mp2629"},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, mp2629_of_match);
-> +
-> +static struct i2c_driver mp2629_driver = {
-> +	.driver = {
-> +		.name = "mp2629",
-> +		.of_match_table = mp2629_of_match,
-> +	},
-> +	.probe_new	= mp2629_probe,
-> +};
-> +module_i2c_driver(mp2629_driver);
-> +
-> +MODULE_AUTHOR("Saravanan Sekar <sravanhome@gmail.com>");
-> +MODULE_DESCRIPTION("MP2629 Battery charger parent driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/mfd/mp2629.h b/include/linux/mfd/mp2629.h
-> new file mode 100644
-> index 000000000000..06985e41fc6f
-> --- /dev/null
-> +++ b/include/linux/mfd/mp2629.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * register definitions for MP2629 charger
-> + *
-> + * Copyright 2020 Monolithic Power Systems, Inc
-> + */
-> +
-> +#ifndef __MP2629_H__
-> +#define __MP2629_H__
-> +
-> +#include <linux/device.h>
-> +#include <linux/regmap.h>
-> +
-> +struct mp2629_info {
-> +	struct device *dev;
-> +	struct regmap *regmap;
-> +};
-> +
-> +#endif
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_PORT_ROLE]) {
+> > +             struct br_mrp_port_role *role =
+> > +                     nla_data(tb[IFLA_BRIDGE_MRP_PORT_ROLE]);
+> > +
+> > +             err = br_mrp_set_port_role(p, role);
+> 
+> This can be executed for any port also, shouldn't it be available only for MRP_AWARE ports?
 
+Yes, it can be executed for any port, but it would return an error if
+the port is not MRP_AWARE. Because the function br_mrp_set_port_role
+will check if the port is part of a ring and if it not then return
+-EINVAL.
+
+> 
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_RING_STATE]) {
+> > +             struct br_mrp_ring_state *state =
+> > +                     nla_data(tb[IFLA_BRIDGE_MRP_RING_STATE]);
+> > +
+> > +             err = br_mrp_set_ring_state(br, state);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_RING_ROLE]) {
+> > +             struct br_mrp_ring_role *role =
+> > +                     nla_data(tb[IFLA_BRIDGE_MRP_RING_ROLE]);
+> > +
+> > +             err = br_mrp_set_ring_role(br, role);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     if (tb[IFLA_BRIDGE_MRP_START_TEST]) {
+> > +             struct br_mrp_start_test *test =
+> > +                     nla_data(tb[IFLA_BRIDGE_MRP_START_TEST]);
+> > +
+> > +             err = br_mrp_start_test(br, test);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static inline size_t br_mrp_nlmsg_size(void)
+> > +{
+> > +     return NLMSG_ALIGN(sizeof(struct ifinfomsg))
+> > +             + nla_total_size(4); /* IFLA_BRIDGE_MRP_RING_OPEN */
+> > +}
+> > +
+> > +int br_mrp_port_open(struct net_device *dev, u8 loc)
+> > +{
+> > +     struct nlattr *af, *mrp;
+> > +     struct ifinfomsg *hdr;
+> > +     struct nlmsghdr *nlh;
+> > +     struct sk_buff *skb;
+> > +     int err = -ENOBUFS;
+> > +     struct net *net;
+> > +
+> > +     net = dev_net(dev);
+> > +
+> > +     skb = nlmsg_new(br_mrp_nlmsg_size(), GFP_ATOMIC);
+> > +     if (!skb)
+> > +             goto errout;
+> > +
+> > +     nlh = nlmsg_put(skb, 0, 0, RTM_NEWLINK, sizeof(*hdr), 0);
+> > +     if (!nlh)
+> > +             goto errout;
+> > +
+> > +     hdr = nlmsg_data(nlh);
+> > +     hdr->ifi_family = AF_BRIDGE;
+> > +     hdr->__ifi_pad = 0;
+> > +     hdr->ifi_type = dev->type;
+> > +     hdr->ifi_index = dev->ifindex;
+> > +     hdr->ifi_flags = dev_get_flags(dev);
+> > +     hdr->ifi_change = 0;
+> > +
+> > +     af = nla_nest_start_noflag(skb, IFLA_AF_SPEC);
+> > +     if (!af) {
+> > +             err = -EMSGSIZE;
+> > +             goto nla_put_failure;
+> > +     }
+> > +
+> > +     mrp = nla_nest_start_noflag(skb, IFLA_BRIDGE_MRP);
+> > +     if (!mrp) {
+> > +             err = -EMSGSIZE;
+> > +             goto nla_put_failure;
+> > +     }
+> > +
+> > +     err = nla_put_u32(skb, IFLA_BRIDGE_MRP_RING_OPEN, loc);
+> > +     if (err)
+> > +             goto nla_put_failure;
+> > +
+> > +     nla_nest_end(skb, mrp);
+> > +     nla_nest_end(skb, af);
+> > +     nlmsg_end(skb, nlh);
+> > +
+> > +     rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
+> > +     return 0;
+> > +
+> > +nla_put_failure:
+> > +     nlmsg_cancel(skb, nlh);
+> > +     kfree_skb(skb);
+> > +
+> > +errout:
+> > +     rtnl_set_sk_err(net, RTNLGRP_LINK, err);
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL(br_mrp_port_open);
+> >
+> 
+
+-- 
+/Horatiu
