@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1CB1AEC98
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2062D1AEC73
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgDRMpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 08:45:35 -0400
-Received: from smtpoutz29.laposte.net ([194.117.213.104]:60123 "EHLO
-        smtp.laposte.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725804AbgDRMpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 08:45:34 -0400
-X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Apr 2020 08:45:32 EDT
-Received: from smtp.laposte.net (localhost [127.0.0.1])
-        by lpn-prd-vrout017 (Postfix) with ESMTP id BC339BC2BAE
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 14:35:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=mail0;
-        t=1587213343; bh=TR2OBvqi8UQ119Z63pajz6Z10HLZExtiXo+C91VQBis=;
-        h=From:To:Cc:Subject:Date;
-        b=ZLDcPZvxJ6XSGzcDWb1ist7gtLWFOv0k1x4npHSGcET6AE76GV7AMNvmTq4VZtWmv
-         0I/qbpBV184OyZR/cOH805//HlHZeV3Wjuld/Ckl9Y05HMlGYo6zNkNhhCuCLabxiR
-         UGF/6mrmVFPwh+Sht2oiDLyhCP6McPbT06nXHTbsTmReIVSEmEf/i6852mV/N02lqW
-         +uU4tUsGkfXaL+X3VXw5YaI7cWO8CvWK7xwb7CArhieCzQ/UHOq3DM3zzOq487WRji
-         iZ9NPIfG4g65bJ0FqF4qmZClrKQGwIxKvqQuN6U/IW5AzpaFjT4NxYiEU4Cof/3+0F
-         LoBG13UmYjPkg==
-Received: from outgoing-mail.laposte.net (unknown [10.94.128.80])
-        by lpn-prd-vrout017 (Postfix) with ESMTP id B955FBC293A
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 14:35:43 +0200 (CEST)
-Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
-        by mlpnf0101.laposte.net (SMTP Server) with ESMTP id 494C9W52BzzFpTy;
-        Sat, 18 Apr 2020 14:35:43 +0200 (CEST)
-X-ppbforward: {"queueID":"494C9W52BzzFpTy","server":"mlpnf0101"}
-X-mail-filterd: 0.4.0.2
-X-mail-filterd: 0.4.0.2
-X-ppbforward: {"queueID":"494C9W2c7bzFpTw","server":"mlpnf0101"}
-X-lpn-spamrating: 36
-X-lpn-spamlevel: not-spam
-X-lpn-spamcause: OK, (-100)(0000)gggruggvucftvghtrhhoucdtuddrgeduhedrfeelgdehgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfntefrqffuvffgpdfqfgfvpdggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpeggihhntggvnhhtucfuthgvhhhlrocuoehvihhntggvnhhtrdhsthgvhhhlvgeslhgrphhoshhtvgdrnhgvtheqnecuffhomhgrihhnpehrrghsphgsvghrrhihphhirdhorhhgnecukfhppeekkedruddvuddrudegledrgeelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheprhhomhhurghlugdrsggvrhhgvghrihgvpdhinhgvthepkeekrdduvddurddugeelrdegledpmhgrihhlfhhrohhmpehvihhntggvnhhtrdhsthgvhhhlvgeslhgrphhoshhtvgdrnhgvthdprhgtphhtthhopegstghmqdhkvghrnhgvlhdqfhgvvggusggrtghkqdhlihhsthessghrohgruggtohhmrdgtohhmpdhrtghpthhtoheprhhjuhhisegsrhhorggutghomhdrtghomhdprhgtphhtthhopehssghrrghnuggvnhessghrohgruggtohhmrdgtohhmpdhrtghpthhtohepfhdrfhgrihhnvghllhhisehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhtvghfrghnrdifrghhrhgvnhesihdvshgvrdgtohhmpdhrtghpthhto
- heprhhosghhodgutheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvhhinhgtvghnthdrshhtvghhlhgvsehlrghpohhsthgvrdhnvghtpdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqrhhpihdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepnhhsrggvnhiijhhulhhivghnnhgvsehsuhhsvgdruggvpdhrtghpthhtohepuggvvhhitggvthhrvggvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-lpn-mailing: LEGIT
-Received: from romuald.bergerie (unknown [88.121.149.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mlpnf0101.laposte.net (SMTP Server) with ESMTPSA id 494C9W2c7bzFpTw;
-        Sat, 18 Apr 2020 14:35:43 +0200 (CEST)
-Received: from radicelle.bergerie (radicelle.bergerie [192.168.124.12])
-        by romuald.bergerie (Postfix) with ESMTPS id 1329E381F5A4;
-        Sat, 18 Apr 2020 14:35:43 +0200 (CEST)
-Received: from vincent by radicelle.bergerie with local (Exim 4.93)
-        (envelope-from <vincent@radicelle.bergerie>)
-        id 1jPmhC-0001fl-Oi; Sat, 18 Apr 2020 14:35:42 +0200
-From:   =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
-To:     devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] ARM: dts: bcm2835-rpi-zero-w: Fix led polarity
-Date:   Sat, 18 Apr 2020 14:35:22 +0200
-Message-Id: <20200418123522.6390-1-vincent.stehle@laposte.net>
-X-Mailer: git-send-email 2.25.1
+        id S1725987AbgDRMhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 08:37:43 -0400
+Received: from mout.gmx.net ([212.227.15.19]:36075 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgDRMhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 08:37:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1587213447;
+        bh=0i/Wz1llh1JOZqgylVTquYfWudmh4cFW62cFUXvwLDE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=FVVsQjWiDxrPBsm0UJtstJ6Jm/1Or6n8OFy+Ot6NJXK5L39oHoIXxLBcqu8RXkmt2
+         ciiAACTBhPpzKv41DByK8gP4opXDBm52JXZFJuYgzB4knLlpyVNfmDcU1oMupMZK1T
+         koWQaIqMHKowJOCwoNCM5OSFJSR269Zm9aVahTfg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MGyxN-1jTrTI09jf-00E6CB; Sat, 18 Apr 2020 14:37:27 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
+        Malcolm Priestley <tvboxspy@gmail.com>,
+        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] staging: vt6656: Check the return value of vnt_control_out_* calls
+Date:   Sat, 18 Apr 2020 14:36:57 +0200
+Message-Id: <20200418123659.4475-1-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oHlXilqcAogjPYcNvsKaQo1op9W4zPB+NOtoYbdz9XTTX7lvo0Z
+ aBEh9Dtgohr+QMLgRhMGkUfUPRwa++UUtvVdt+BDi6IvD6gZ+kf4jPJNMWT0Zlfe6plQ8ty
+ NCtV35xEEmj9Hx4QVpQl6CwsjB897/GgXbAs4akASpRCVQviZF5M/i3T1OlftMOQv1KxeH3
+ LzUV+rGtkSougqSnCZOhA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aJaPwoWp/lk=:hM8LfiBBdcnb0n6aCBj9Ur
+ 15vcMOUG7JRgSp8JroL4CO/dThgU+80pU183sFVz6maYQei5r1Ail4y3Qf46cSAO3PHxp2Mzn
+ P2DSFqZPqAxAgZEAN7dt+aWpEuulh78eGuW56VbKtC+7WH1SAftvERxmRDqQYENlYLc4l10MZ
+ r6qW8aUnLKdPJnvYHP/LEfrL6inROjslHlxkb/UvV5/vKb5Sii1/X5f4otj18mEXmC+Wp5Dl9
+ q7wJDgkG+5t4cabZ+pLcQRsy4CpK1M4DrkPFNyO6YdFhVBeYV0LuG7ZKwYs9OFQEzl8TIQGyv
+ ksIJfRJpSVpw/1fQmjLVvhjzAYBbr5Wx7EA4AdqhCDqn0rWhFZcPyS3THPBWj566UZqmiIUeO
+ ktB4/vNUf8u5/eYjyi8N0Tgn0nKXqpdr/xQZiG7CiLjW7Oxz/kuemeLyW9ID9wdO8eWx5ijRy
+ Cvr0DV7ykJ4DUUDdiylxNx1gTuM3vbNHVGHO61/7Az5MEb9VDpaRgU0naZg/aSMd/C1pmRlCX
+ WzpjG3t5JQFDyTeuxlZaAD7nC2HvE+3hRYWYsx/BMYzZ3QG4gbdH8ey97VhKKKJcVrpy3gq5Z
+ wBGgzoHwcU+qCfPg/6sjTBWb2zUqtbTv8HqPaPwRU/dHWlNgPW/SCa3aEay40xszP0RI31eRE
+ RqHC4bh2nMlQXDHms83yeZJLZqcoggfsjiT24onQlsAkSirqSlKo3UGr+D2ANCs/B38wldCo0
+ 5jsuDs6sdxzB+Dvw0fI5sy7ItKnbwiFebsh0khRO9f9WinviF8GZWmKBwBZi/ynHRzlYUZ2CZ
+ PE3UOdCIQwsZCSuwN/PtTt+SU4mwjbXoXcKmgTj2QScOTT/5dxEWUBDXcqhyKQwp9vEpYYJci
+ w1ULHfAPB28Ri+lYjGjlbHsm7BUv0XDDAKxnq0vPLGoYnbJp6Pw5NGzhAAM7v2ysqyO1ZHek0
+ cuy7Qvoze8J72qxXh6owh92PVvIMULTwGsrsqXCneH/FFyFWZg7rFNkQTcfKtqJry892mXqsI
+ 1lN4B3uZy35oyhq7B7E4skpmLSZttZhKjuzpUUIQvL/hYL5WVhM/2rFg4/BYzhWdt+FepPHgX
+ v9YUMCykLZDEcqGnxTnG8gbDcJ5eO7s4V+5IN427o3jB2I+6IBUbYzF2M2vJM9wHHy4PSdfz6
+ esuYDAERlSGBKVksy8l6YoOAjL30bg4sAhBrsnhu5a5iwRRx9HYwL0gO1AKI5tRmLgnnYcYsc
+ 2A+SBiyafrSt0QkAF
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The status "ACT" led on the Raspberry Pi Zero W is on when GPIO 47 is low.
+This patch series checks the return value of vnt_control_out_* function
+calls.
 
-This has been verified on a board and somewhat confirmed by both the GPIO
-name ("STATUS_LED_N") and the reduced schematics [1].
+The first patch checks the return value and when necessary modify the
+function prototype to be able to return the new checked error code.
 
-[1]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_ZeroW_1p1_reduced.pdf
+The second patch replaces the documentation of functions that their
+prototype has changed by the kernel-doc style, fixing the parameters and
+return value.
 
-Fixes: 2c7c040c73e9 ("ARM: dts: bcm2835: Add Raspberry Pi Zero W")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/boot/dts/bcm2835-rpi-zero-w.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oscar Carter (2):
+  staging: vt6656: Check the return value of vnt_control_out_* calls
+  staging: vt6656: Fix functions' documentation
 
-diff --git a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-index 4c3f606e5b8d8..f65448c01e317 100644
---- a/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-+++ b/arch/arm/boot/dts/bcm2835-rpi-zero-w.dts
-@@ -24,7 +24,7 @@ chosen {
- 
- 	leds {
- 		act {
--			gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
-+			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
- 		};
- 	};
- 
--- 
-2.25.1
+ drivers/staging/vt6656/baseband.c |  35 +++---
+ drivers/staging/vt6656/baseband.h |   4 +-
+ drivers/staging/vt6656/card.c     | 198 +++++++++++++++---------------
+ drivers/staging/vt6656/card.h     |  18 +--
+ drivers/staging/vt6656/mac.c      | 143 ++++++++++-----------
+ drivers/staging/vt6656/mac.h      |  26 ++--
+ drivers/staging/vt6656/power.c    |  24 ++--
+ drivers/staging/vt6656/power.h    |   2 +-
+ 8 files changed, 217 insertions(+), 233 deletions(-)
+
+=2D-
+2.20.1
 
