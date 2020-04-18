@@ -2,146 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DD11AEC1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7962E1AEC2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgDRLle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 07:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725826AbgDRLle (ORCPT
+        id S1726012AbgDRLsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 07:48:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50470 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgDRLsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 07:41:34 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ED1C061A0C;
-        Sat, 18 Apr 2020 04:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=f0yHxPnJ4f0dB3+aObaskVJwqP9Vh3YSIkWQwfwhGfY=; b=nAUQPpYPImHaOkKUw8FoF83Mh
-        UeQPgLagCtSswt3JODiv30UXzLVtA1mLDzsumB09CfWIGMItowEg8dGwHxoBsEdnbK0RkWTR6hqpu
-        rkonsHEFM/EZIr++vc7Veu5fWAQgRt1jweHDBE87ZsEnH3GL3tafalW3AhXshpgjh8ETeuJWl9XfL
-        Y4MOnqOB9FNkf7N2PtpYNnzYAdJb0kNNq8SJCbNhoV8iIeGIGz7V952OXpf1Q2cnZWhAVmROfh7dF
-        A3pED/rVM7Tj6TD81pcG6maoNNvpa3DtlPnFjL9TPeWt2b8wjPYh6gZO58Zi1/AO6N7mONHdW4XeJ
-        VHPxZTgeQ==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:47572)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jPlqX-0007qT-PX; Sat, 18 Apr 2020 12:41:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jPlqW-0003qM-3f; Sat, 18 Apr 2020 12:41:16 +0100
-Date:   Sat, 18 Apr 2020 12:41:16 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        netdev@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-kernel@vger.kernel.org, Varun Sethi <V.Sethi@nxp.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC net-next PATCH v2 1/2] net/fsl: add ACPI support for mdio
- bus
-Message-ID: <20200418114116.GU25745@shell.armlinux.org.uk>
-References: <20200418105432.11233-1-calvin.johnson@oss.nxp.com>
- <20200418105432.11233-2-calvin.johnson@oss.nxp.com>
+        Sat, 18 Apr 2020 07:48:00 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03IBhXbT004545;
+        Sat, 18 Apr 2020 11:47:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=geNGJb1RrJxWb0w/CU4ApZuniBkI/7P5uf5lu013oAE=;
+ b=t2iSbsfziUEBwdbtU8HZdZhnoP9Vand4ApDhgnJUZ4o9BGyClCEImEMJ0brOkJVANNwR
+ UbL0fP90ajYf1W6YOmJ0g650cMH3gTTj7Tc9i+fDQefuytufhmyt2Jw7U56YpdIXtPeY
+ SfXxeoG+Fn73nxbrM3zqthIaVqikAPGo2PhfMidYcto13GemuC59LgFwgjTiULN7po7h
+ I8re3ZWnFfQFQ2FRnb0TBmzgQ5LVvyFIOhuyy8Bpwo91jKlWTte91/UR2we87MpxE4ix
+ QywSCbPc+IxQH6S0u3W6UFolnimIMtgg6wzgwAIuXUy/M0PbSEEyayf5EUePsCoUrhMu ZQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30fsgkgyx5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 18 Apr 2020 11:47:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03IBhDWx187986;
+        Sat, 18 Apr 2020 11:45:42 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30frvkqcut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 18 Apr 2020 11:45:42 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03IBjWXk014081;
+        Sat, 18 Apr 2020 11:45:32 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 18 Apr 2020 04:45:31 -0700
+Date:   Sat, 18 Apr 2020 14:45:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Desmond Yan <desmond.yan@broadcom.com>,
+        James Hu <james.hu@broadcom.com>
+Subject: Re: [PATCH v2 6/7] misc: bcm-vk: add Broadcom VK driver
+Message-ID: <20200418114516.GE12862@kadam>
+References: <20200220004825.23372-1-scott.branden@broadcom.com>
+ <20200220004825.23372-7-scott.branden@broadcom.com>
+ <20200220104321.GX7838@kadam>
+ <63c9dcda-7a31-78a7-1d11-9d9af38add46@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200418105432.11233-2-calvin.johnson@oss.nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <63c9dcda-7a31-78a7-1d11-9d9af38add46@broadcom.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004180096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004180096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 04:24:31PM +0530, Calvin Johnson wrote:
-> @@ -241,18 +244,81 @@ static int xgmac_mdio_read(struct mii_bus *bus, int phy_id, int regnum)
->  	return value;
->  }
->  
-> +/* Extract the clause 22 phy ID from the compatible string of the form
-> + * ethernet-phy-idAAAA.BBBB
+On Fri, Apr 17, 2020 at 02:49:11PM -0700, Scott Branden wrote:
+> > > +static int bcm_vk_dma_alloc(struct device *dev,
+> > > +			    struct bcm_vk_dma *dma,
+> > > +			    int direction,
+> > > +			    struct _vk_data *vkdata)
+> > > +{
+> > > +	dma_addr_t addr, sg_addr;
+> > > +	int err;
+> > > +	int i;
+> > > +	int offset;
+> > > +	uint32_t size;
+> > > +	uint32_t remaining_size;
+> > > +	uint32_t transfer_size;
+> > > +	uint64_t data;
+> > > +	unsigned long first, last;
+> > > +	struct _vk_data *sgdata;
+> > > +
+> > > +	/* Get 64-bit user address */
+> > > +	data = get_unaligned(&(vkdata->address));
+> > Extra parens.
+> removed
+> > 
+> > > +
+> > > +	/* offset into first page */
+> > > +	offset = offset_in_page(data);
+> > > +
+> > > +	/* Calculate number of pages */
+> > > +	first = (data & PAGE_MASK) >> PAGE_SHIFT;
+> > > +	last  = ((data + vkdata->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+> > > +	dma->nr_pages = last - first + 1;
+> > > +
+> > > +	/* Allocate DMA pages */
+> > > +	dma->pages = kmalloc_array(dma->nr_pages,
+> > > +				   sizeof(struct page *),
+> > > +				   GFP_KERNEL);
+> > > +	if (dma->pages == NULL)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	dev_dbg(dev, "Alloc DMA Pages [0x%llx+0x%x => %d pages]\n",
+> > > +		data, vkdata->size, dma->nr_pages);
+> > > +
+> > > +	dma->direction = direction;
+> > > +
+> > > +	/* Get user pages into memory */
+> > > +	err = get_user_pages_fast(data & PAGE_MASK,
+> > > +				  dma->nr_pages,
+> > > +				  direction == DMA_FROM_DEVICE,
+> > > +				  dma->pages);
+> > > +	if (err != dma->nr_pages) {
+> > > +		dma->nr_pages = (err >= 0) ? err : 0;
+> > > +		dev_err(dev, "get_user_pages_fast, err=%d [%d]\n",
+> > > +			err, dma->nr_pages);
+> > > +		return err < 0 ? err : -EINVAL;
+> > > +	}
+> > > +
+> > > +	/* Max size of sg list is 1 per mapped page + fields at start */
+> > > +	dma->sglen = (dma->nr_pages * sizeof(*sgdata)) +
+> > > +		     (sizeof(uint32_t) * SGLIST_VKDATA_START);
+> > > +
+> > > +	/* Allocate sglist */
+> > > +	dma->sglist = dma_alloc_coherent(dev,
+> > > +					 dma->sglen,
+> > > +					 &dma->handle,
+> > > +					 GFP_KERNEL);
+> > 
+> > 	dma->sglist = dma_alloc_coherent(dev, dma->sglen, &dma->handle,
+> > 					 GFP_KERNEL);
+> done
+> > 
+> > 
+> > 
+> > > +	if (!dma->sglist)
+> > > +		return -ENOMEM;
+> > No cleanup?
+> what needs to be cleaned up?
 
-This comment is incorrect.  What about clause 45 PHYs?
+dma->pages should be freed probably?  And a put_user_pages_fast()?
 
-> + */
-> +static int xgmac_get_phy_id(struct fwnode_handle *fwnode, u32 *phy_id)
-> +{
-> +	const char *cp;
-> +	unsigned int upper, lower;
-> +	int ret;
-> +
-> +	ret = fwnode_property_read_string(fwnode, "compatible", &cp);
-> +	if (!ret) {
-> +		if (sscanf(cp, "ethernet-phy-id%4x.%4x",
-> +			   &upper, &lower) == 2) {
-> +			*phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
-> +			return 0;
-> +		}
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int xgmac_mdiobus_register_phy(struct mii_bus *bus,
-> +				      struct fwnode_handle *child, u32 addr)
-> +{
-> +	struct phy_device *phy;
-> +	bool is_c45 = false;
-> +	int rc;
-> +	const char *cp;
-> +	u32 phy_id;
-> +
-> +	fwnode_property_read_string(child, "compatible", &cp);
-> +	if (!strcmp(cp, "ethernet-phy-ieee802.3-c45"))
-> +		is_c45 = true;
-> +
-> +	if (!is_c45 && !xgmac_get_phy_id(child, &phy_id))
-> +		phy = phy_device_create(bus, addr, phy_id, 0, NULL);
-> +	else
-> +		phy = get_phy_device(bus, addr, is_c45);
-> +	if (IS_ERR(phy))
-> +		return PTR_ERR(phy);
-> +
-> +	phy->irq = bus->irq[addr];
-> +
-> +	/* Associate the fwnode with the device structure so it
-> +	 * can be looked up later.
-> +	 */
-> +	phy->mdio.dev.fwnode = child;
-> +
-> +	/* All data is now stored in the phy struct, so register it */
-> +	rc = phy_device_register(phy);
-> +	if (rc) {
-> +		phy_device_free(phy);
-> +		fwnode_handle_put(child);
-> +		return rc;
-> +	}
-> +
-> +	dev_dbg(&bus->dev, "registered phy at address %i\n", addr);
-> +
-> +	return 0;
+regards,
+dan carpenter
 
-You seem to be duplicating the OF implementation in a private driver,
-converting it to fwnode.  This is not how we develop the Linux kernel.
-We fix subsystem problems by fixing the subsystems, not by throwing
-what should be subsystem code into private drivers.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
