@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82CD1AE92C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 03:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2584B1AE93D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 03:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgDRBaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 21:30:14 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:36477 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725939AbgDRBaN (ORCPT
+        id S1725906AbgDRBia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 21:38:30 -0400
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:52580 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgDRBi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 21:30:13 -0400
-Received: (qmail 23212 invoked by uid 500); 17 Apr 2020 21:30:12 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 17 Apr 2020 21:30:12 -0400
-Date:   Fri, 17 Apr 2020 21:30:12 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     syzbot <syzbot+7bf5a7b0f0a1f9446f4c@syzkaller.appspotmail.com>
-cc:     andreyknvl@google.com, <gregkh@linuxfoundation.org>,
-        <ingrassia@epigenesys.com>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: use-after-free Read in usbhid_close (3)
-In-Reply-To: <0000000000005f3ae305a3823448@google.com>
-Message-ID: <Pine.LNX.4.44L0.2004172128290.23070-100000@netrider.rowland.org>
+        Fri, 17 Apr 2020 21:38:29 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 Apr 2020 21:38:29 EDT
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 49E441A1744;
+        Sat, 18 Apr 2020 09:32:54 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALcAggApCIauiL91uBghEaoS.3.1587173574288.Hmail.bernard@vivo.com>
+To:     Christopher Lameter <cl@linux.com>
+Cc:     Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@vivo.com
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0ga21hbGxvY19pbmRleCBvcHRpbWl6YXRpb24oYWRkIGttYWxsb2MgbWF4IHNpemUgY2hlY2sp?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.122
+In-Reply-To: <alpine.DEB.2.21.2004171556170.29874@www.lameter.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 18 Apr 2020 09:32:54 +0800 (GMT+08:00)
+From:   =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
+Date:   Sat, 18 Apr 2020 09:32:54 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVOS0JLS0tIS0pITUpLQ1lXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSUNDTkxCT0hIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Nxg6HBw6CzgyGg4SN0JKDjkcEz4aFChVSFVKTkNMSkxITkxNSENOVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBT09NSjcG
+X-HM-Tid: 0a718aeac6a493b4kuws49e441a1744
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020, syzbot wrote:
-
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer still triggered crash:
-> WARNING in usbhid_stop
-> 
-> usb 2-1: USB disconnect, device number 5
-> ------------[ cut here ]------------
-> usbhid 2-1:0.0: Stop while open (alloc = 1)
-
-Okay, good.  usbhid_close() should have been called before this 
-happened.  Let's try tracing the pathway; maybe this will show where it 
-goes off the rails.
-
-Alan Stern
-
-
-#syz test: https://github.com/google/kasan.git 0fa84af8
-
-Index: usb-devel/drivers/hid/usbhid/hid-core.c
-===================================================================
---- usb-devel.orig/drivers/hid/usbhid/hid-core.c
-+++ usb-devel/drivers/hid/usbhid/hid-core.c
-@@ -747,6 +747,7 @@ static void usbhid_close(struct hid_devi
- 		return;
- 
- 	hid_cancel_delayed_stuff(usbhid);
-+	--hid->alan_open;
- 	usb_kill_urb(usbhid->urbin);
- 	usbhid->intf->needs_remote_wakeup = 0;
- }
-@@ -1177,6 +1178,7 @@ static int usbhid_start(struct hid_devic
- 		usbhid_set_leds(hid);
- 		device_set_wakeup_enable(&dev->dev, 1);
- 	}
-+	++hid->alan_open;
- 	return 0;
- 
- fail:
-@@ -1197,6 +1199,10 @@ static void usbhid_stop(struct hid_devic
- 	if (WARN_ON(!usbhid))
- 		return;
- 
-+	if (hid->alan_open > 0)
-+		dev_WARN(&usbhid->intf->dev, "Stop while open = %d: %d %d %d\n",
-+				hid->alan_open,
-+				hid->alan1, hid->alan2, hid->alan3);
- 	if (hid->quirks & HID_QUIRK_ALWAYS_POLL) {
- 		clear_bit(HID_IN_POLLING, &usbhid->iofl);
- 		usbhid->intf->needs_remote_wakeup = 0;
-Index: usb-devel/drivers/hid/hid-input.c
-===================================================================
---- usb-devel.orig/drivers/hid/hid-input.c
-+++ usb-devel/drivers/hid/hid-input.c
-@@ -1960,6 +1960,7 @@ void hidinput_disconnect(struct hid_devi
- {
- 	struct hid_input *hidinput, *next;
- 
-+	++hid->alan1;
- 	hidinput_cleanup_battery(hid);
- 
- 	list_for_each_entry_safe(hidinput, next, &hid->inputs, list) {
-Index: usb-devel/drivers/input/evdev.c
-===================================================================
---- usb-devel.orig/drivers/input/evdev.c
-+++ usb-devel/drivers/input/evdev.c
-@@ -23,6 +23,7 @@
- #include <linux/major.h>
- #include <linux/device.h>
- #include <linux/cdev.h>
-+#include <linux/hid.h>
- #include "input-compat.h"
- 
- struct evdev {
-@@ -1329,6 +1330,11 @@ static void evdev_mark_dead(struct evdev
- static void evdev_cleanup(struct evdev *evdev)
- {
- 	struct input_handle *handle = &evdev->handle;
-+	struct hid_device *hid;
-+
-+	hid = (struct hid_device *) input_get_drvdata(evdev->handle.dev);
-+	if (hid)
-+		++hid->alan3;
- 
- 	evdev_mark_dead(evdev);
- 	evdev_hangup(evdev);
-Index: usb-devel/drivers/input/input.c
-===================================================================
---- usb-devel.orig/drivers/input/input.c
-+++ usb-devel/drivers/input/input.c
-@@ -23,6 +23,7 @@
- #include <linux/device.h>
- #include <linux/mutex.h>
- #include <linux/rcupdate.h>
-+#include <linux/hid.h>
- #include "input-compat.h"
- #include "input-poller.h"
- 
-@@ -2081,7 +2082,11 @@ static void input_cleanse_bitmasks(struc
- static void __input_unregister_device(struct input_dev *dev)
- {
- 	struct input_handle *handle, *next;
-+	struct hid_device *hid;
- 
-+	hid = (struct hid_device *) input_get_drvdata(dev);
-+	if (hid)
-+		++hid->alan2;
- 	input_disconnect_device(dev);
- 
- 	mutex_lock(&input_mutex);
-Index: usb-devel/include/linux/hid.h
-===================================================================
---- usb-devel.orig/include/linux/hid.h
-+++ usb-devel/include/linux/hid.h
-@@ -618,6 +618,9 @@ struct hid_device {							/* device repo
- 	struct list_head debug_list;
- 	spinlock_t  debug_list_lock;
- 	wait_queue_head_t debug_wait;
-+
-+	int alan_open;
-+	int alan1, alan2, alan3;
- };
- 
- #define to_hid_device(pdev) \
-
+CgpGcm9tOiBDaHJpc3RvcGhlciBMYW1ldGVyIDxjbEBsaW51eC5jb20+CkRhdGU6IDIwMjAtMDQt
+MTcgMjM6NTk6MDAKVG86ICBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+CkNjOiAgUGVr
+a2EgRW5iZXJnIDxwZW5iZXJnQGtlcm5lbC5vcmc+LERhdmlkIFJpZW50amVzIDxyaWVudGplc0Bn
+b29nbGUuY29tPixKb29uc29vIEtpbSA8aWFtam9vbnNvby5raW1AbGdlLmNvbT4sQW5kcmV3IE1v
+cnRvbiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4sbGludXgtbW1Aa3ZhY2sub3JnLGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcsa2VybmVsQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUEFU
+Q0hdIGttYWxsb2NfaW5kZXggb3B0aW1pemF0aW9uKGFkZCBrbWFsbG9jIG1heCBzaXplIGNoZWNr
+KT5PbiBGcmksIDE3IEFwciAyMDIwLCBCZXJuYXJkIFpoYW8gd3JvdGU6Cj4KPj4ga21hbGxvYyBz
+aXplIHNob3VsZCBuZXZlciBleGNlZWQgS01BTExPQ19NQVhfU0laRS4KPj4ga21hbGxvY19pbmRl
+eCByZWFsaXNlIGlmIHNpemUgaXMgZXhjZWVkIEtNQUxMT0NfTUFYX1NJWkUsIGUuZyA2NE0sCj4+
+IGttYWxsb2NfaW5kZXgganVzdCByZXR1cm4gaW5kZXggMjYsIGJ1dCBuZXZlciBjaGVjayB3aXRo
+IE9TYHMgbWF4Cj4+IGttYWxsb2MgY29uZmlnIEtNQUxMT0NfTUFYX1NJWkUuIFRoaXMgaW5kZXhg
+cyBrbWFsbG9jIGNhY2hlcyBtYXliZQo+PiBub3QgY3JlYXRlIGluIGZ1bmN0aW9uIGNyZWF0ZV9r
+bWFsbG9jX2NhY2hlcy4KPj4gV2UgY2FuIHRocm93IGFuIHdhcm5pbmdpbmZvIGluIGttYWxsb2Mg
+YXQgdGhlIGJlZ2lubmluZywgaW5zdGVhZCBvZgo+PiBiZWluZyBndWFyYW50ZWVkIGJ5IHRoZSBi
+dWRkeSBhbGxvYyBiZWhpbmQuCj4KPmttYWxsb2NfaW5kZXgoMCBhbHJlYWR5IGJ1Z3MgaWYgdGhl
+IGFsbG9jYXRpb24gaXMgbW9yZSB0aGFuIDY0TQo+Cj4KPi4uLgo+Cj4gICBpZiAoc2l6ZSA8PSAg
+NjQgKiAxMDI0ICogMTAyNCkgcmV0dXJuIDI2Owo+ICAgICAgICBCVUcoKTsKPgo+Cj5Zb3UgY291
+bGQgbW9kaWZ5IHRoYXQgdG8gY2hlY2sgZm9yIEtNQUxMT0NfTUFYX1NJWkUgd2l0aCBzb21lIG1v
+cmUKPmNvbmRpdGlvbmFscyBidXQgdGhlbiBrbWFsbG9jX2luZGV4KSBpcyB3cml0dGVuIHNvIHRo
+YXQgdGhlIGNvbXBpbGVyIGdldHMKPmNvbnN0YW50IGZvbGRpbmcgcmlnaHQuCj4KPklmIHlvdSBo
+YXZlIGEgcGF0Y2ggbGlrZSB0aGF0IHRoZW4gcGxlYXNlIHZlcmlmeSB0aGF0IGFsbCBjIGNvbXBp
+bGVycyBpbgo+dXNlIHBlcmZvcm0gY29ycmVjdCBjb25zdGFudCBmb2xkaW5nIGFuZCBkbyBub3Qg
+YWRkIHVubmVjZXNzYXJ5IGNvZGUuCj4KPgoKU29ycnkgZm9yIHRoZSBtaXN1bmRlcnN0YW5kaW5n
+LgpXaGF0IEkgbWVhbnQgd2FzIHRoYXQgdGhlIOKAnGlm4oCdaW4ga21hbGxvY19pbmRleCBzaG91
+bGQgYmUgY29uc2lzdGVudCAKd2l0aCBLTUFMTE9DX01BWF9TSVpFLiBGb3IgZXhhbXBsZSwgaWYg
+dGhlIE1BWF9aT05FT1JERVIgY29uZmlndXJlZCAKYnkgdGhlIGtlcm5lbCBpcyAxMSwgd2hpY2gg
+aXMgNE0sIHRoZW4gc2l6ZSA+NE0gc2hvdWxkIHRyaWdnZXIgQlVHKCkuIElmIHRoZSAKY29uZmln
+dXJhdGlvbiBpcyBzbWFsbGVyLCBlLmcgTUFYX1pPTkVPUkRFUiBpcyA5LCAxTSwgdGhlbiB0aGUg
+c2l6ZSA+IDFNIApzaG91bGQgYmUgQlVHLiAKQnV0IHRoZSBjdXJyZW50IGNvZGUgaXMgbm90LCBr
+bWFsbG9jX2luZGV4IHdpbGwgb25seSBiZSBCVUcoKSB3aGVuIGl0IGV4Y2VlZHMgNjRNLgoKCg0K
+DQo=
