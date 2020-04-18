@@ -2,219 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73DB1AE948
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 03:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A241AE94C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 04:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgDRB6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Apr 2020 21:58:49 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46034 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgDRB6t (ORCPT
+        id S1726049AbgDRCAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Apr 2020 22:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725796AbgDRCAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Apr 2020 21:58:49 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03I1vrri007345;
-        Sat, 18 Apr 2020 01:58:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qqN27y5qrDOT+b4UYd2GMrSkWmfCsj5tFTcQmSPIJds=;
- b=EBLe+NbXXv637IyFUUvJ5PchK2O15bgdcT+PiuiTw/IbyJNOZfqPKQfHo4dIheRi8NJP
- 8YyUtoc9coO9xzlPkqjQIjbQMGvR0kxjzJ5oTKKwDByafRp4167KegYR7QgckCtX9VOm
- shn/On+o+fs3oRRvCYcn6w7Fu4emKDp/FcQtkKEgUH1rljkJxcrqhX5SUa17Ql3XeIJ5
- H2xaoeAdkgIKjAaq4UKszFxYalJcMtueyMwRzxcK48sY/r63Y2K7CQWmH6+twBZip3gp
- k07UBbIqKqpR2PRthCjPq6Gclz4KOJUad9mkIuPViTTv9JdXzNZXPrNdVr1lDVysJbKX aA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 30e0aafe7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 18 Apr 2020 01:58:38 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03I1qEpA022883;
-        Sat, 18 Apr 2020 01:58:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 30dn9mr6hm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 18 Apr 2020 01:58:37 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03I1wZaa006623;
-        Sat, 18 Apr 2020 01:58:36 GMT
-Received: from [10.0.0.251] (/24.5.189.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Apr 2020 18:58:35 -0700
-Subject: Re: [PATCH 1/1] mm: slub: fix corrupted freechain in
- deactivate_slab()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        linux-kernel@vger.kernel.org, joe.jin@oracle.com
-References: <20200331031450.12182-1-dongli.zhang@oracle.com>
- <20200417181219.bef9b2f9ade92bf3798e3622@linux-foundation.org>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <d9ebb540-b3ec-a29a-1d7a-2f5762010b53@oracle.com>
-Date:   Fri, 17 Apr 2020 18:56:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Apr 2020 22:00:11 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DE0C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 19:00:11 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id x10so3829809oie.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Apr 2020 19:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UDhmKyRwtrrcwWzyNDyqVl+mjHgBzC9RP/xHPQTSQ2w=;
+        b=ibvnyBGLmtPAKNZBoF40Vs+m7TVz/L9OzrncZp05mIyVI9HfcORmsAILK4w1Pey6r2
+         JdrZIY6bgOt38tFTWlhUw0sHeAyt7p/kCtdgmuAylFmwxgQgvg+G4lpZECNsIGJS1Hxy
+         4T9rH5rSA/xCpgttaj68N2YpANPfhjETclI3W6dWTJQQ8YRm+Irq6xq6z0o4F7FhhUYb
+         IkpA+ZAXz1rk5YvfpfLtBx9uAin6HDGDam3eAQZPADvZkgs/IaiVOoc2kiTah/vWfHzY
+         YE7grFPG4C1gsFH0saqS6SNFKolM1KrRZTugKk/e0BVGi4V+0SH6ti7GvJ6bGaCOsiZO
+         o/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=UDhmKyRwtrrcwWzyNDyqVl+mjHgBzC9RP/xHPQTSQ2w=;
+        b=ffqtZfeUmMyjrhEfoVvcitGncl0Z0UVUMyz6aP/4lqE6ZDO7CI2yt8sMJxNq2d5Qje
+         2Pk1RCJ6movdiybhT7WdjWgUkvKV+fiaX2a1CYK5nYpsw2shQ5i89NJ4VxtX5HcwUmuV
+         vcPg76HyLAOIymsYtVLiUUQ7IZi2vAZil851VTA5oWNP/r7rIXki3ktqKuFWnV+Ce71w
+         SCuZkT0cZM06JTVsXVkdPFVRmct60o1DhiMVCgI8smncy0Qn4yp6pbg1jgRirpzJI58E
+         q9dafhzqfnLJQkd1jbu8rgxaxr6kBt8ghNkvNv/jx4Lc4MrLVb3rVB7qliOVVZUjhB1a
+         C3dA==
+X-Gm-Message-State: AGi0PuZv8FH88NrorQXA319ctmmBDq/UDzeKkp/Acj1/5zitYVKxjJ0M
+        gE2CDBdbj0qXxRTllfwSGw==
+X-Google-Smtp-Source: APiQypKUwY3nQ4qkxtA3EZQ4REOJnC1bu+V4YjYtLKwDCnV33bSQ8ZKAHcgVd2lY/cEHQWHKYGsZ0A==
+X-Received: by 2002:aca:b984:: with SMTP id j126mr3992277oif.87.1587175209802;
+        Fri, 17 Apr 2020 19:00:09 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id 33sm8451506otn.50.2020.04.17.19.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 19:00:08 -0700 (PDT)
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
+        by serve.minyard.net (Postfix) with ESMTPSA id E9680180053;
+        Sat, 18 Apr 2020 02:00:07 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 21:00:06 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] ipmi: use vzalloc instead of kmalloc for user
+ creation
+Message-ID: <20200418020006.GB6246@minyard.net>
+Reply-To: minyard@acm.org
+References: <1587099689-13678-1-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200417181219.bef9b2f9ade92bf3798e3622@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004180010
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9594 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004180010
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587099689-13678-1-git-send-email-feng.tang@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 17, 2020 at 01:01:29PM +0800, Feng Tang wrote:
+> We met mulitple times of failure of staring bmc-watchdog,
+> due to the runtime memory allocation failure of order 4.
 
+I'm beginning to think that using srcu was a bad idea.  It made things
+cleaner and easier, but it eats tons of memory.  Sigh.
 
-On 4/17/20 6:12 PM, Andrew Morton wrote:
-> On Mon, 30 Mar 2020 20:14:50 -0700 Dongli Zhang <dongli.zhang@oracle.com> wrote:
+Applied, at least for a fix for now.
+
+Thanks,
+
+-corey
+
 > 
->> The slub_debug is able to fix the corrupted slab freelist/page. However,
->> alloc_debug_processing() only checks the validity of current and next
->> freepointer during allocation path. As a result, once some objects have
->> their freepointers corrupted, deactivate_slab() may lead to page fault.
->>
->> Below is from a test kernel module when
->> 'slub_debug=PUF,kmalloc-128 slub_nomerge'. The test kernel corrupts the
->> freepointer of one free object on purpose. Unfortunately, deactivate_slab()
->> does not detect it when iterating the freechain.
->>
->> ...
->>
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -2082,6 +2082,20 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
->>  		void *prior;
->>  		unsigned long counters;
->>  
->> +		if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
->> +		    !check_valid_pointer(s, page, nextfree)) {
->> +			/*
->> +			 * If 'nextfree' is invalid, it is possible that
->> +			 * the object at 'freelist' is already corrupted.
->> +			 * Therefore, all objects starting at 'freelist'
->> +			 * are isolated.
->> +			 */
->> +			object_err(s, page, freelist, "Freechain corrupt");
->> +			freelist = NULL;
->> +			slab_fix(s, "Isolate corrupted freechain");
->> +			break;
->> +		}
->> +
->>  		do {
->>  			prior = page->freelist;
->>  			counters = page->counters;
+>      bmc-watchdog: page allocation failure: order:4, mode:0x40cc0(GFP_KERNEL|__GFP_COMP), nodemask=(null),cpuset=/,mems_allowed=0-1
+>      CPU: 1 PID: 2571 Comm: bmc-watchdog Not tainted 5.5.0-00045-g7d6bb61d6188c #1
+>      Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.00.01.0015.110720180833 11/07/2018
+>      Call Trace:
+>       dump_stack+0x66/0x8b
+>       warn_alloc+0xfe/0x160
+>       __alloc_pages_slowpath+0xd3e/0xd80
+>       __alloc_pages_nodemask+0x2f0/0x340
+>       kmalloc_order+0x18/0x70
+>       kmalloc_order_trace+0x1d/0xb0
+>       ipmi_create_user+0x55/0x2c0 [ipmi_msghandler]
+>       ipmi_open+0x72/0x110 [ipmi_devintf]
+>       chrdev_open+0xcb/0x1e0
+>       do_dentry_open+0x1ce/0x380
+>       path_openat+0x305/0x14f0
+>       do_filp_open+0x9b/0x110
+>       do_sys_open+0x1bd/0x250
+>       do_syscall_64+0x5b/0x1f0
+>       entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> We could do it this way:
+> Using vzalloc/vfree for creating ipmi_user heals the
+> problem.
 > 
-> --- a/mm/slub.c~mm-slub-fix-corrupted-freechain-in-deactivate_slab-fix
-> +++ a/mm/slub.c
-> @@ -2083,6 +2083,7 @@ static void deactivate_slab(struct kmem_
->  		void *prior;
->  		unsigned long counters;
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> ---
+>  drivers/char/ipmi/ipmi_msghandler.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+> index c48d8f0..96f1573 100644
+> --- a/drivers/char/ipmi/ipmi_msghandler.c
+> +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> @@ -1153,7 +1153,7 @@ static void free_user_work(struct work_struct *work)
+>  					      remove_work);
 >  
-> +#ifdef CONFIG_SLAB_DEBUG
->  		if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
->  		    !check_valid_pointer(s, page, nextfree)) {
->  			/*
-> @@ -2096,6 +2097,7 @@ static void deactivate_slab(struct kmem_
->  			slab_fix(s, "Isolate corrupted freechain");
->  			break;
->  		}
-> +#endif
->  
->  		do {
->  			prior = page->freelist;
-> 
-> But it's a bit ugly.  How about this?
-
-Sorry that I did not realize check_valid_pointer() requires CONFIG_SLAB_DEBUG.
-
-Yes, it is much better to encapsulate it into freelist_corrupted() and just
-return false when CONFIG_SLAB_DEBUG is not involved. The check_object() has
-similar implementation.
-
-Should I resend with your "Signed-off-by" or you would just fix it when applying?
-
-It is the first time I submit a patch to mm so that I am not familiar with the
-mm policy/process.
-
-Thank you very much for the feedback!
-
-Dongli Zhang
-
-> 
-> --- a/mm/slub.c~mm-slub-fix-corrupted-freechain-in-deactivate_slab-fix
-> +++ a/mm/slub.c
-> @@ -650,6 +650,20 @@ static void slab_bug(struct kmem_cache *
->  	va_end(args);
+>  	cleanup_srcu_struct(&user->release_barrier);
+> -	kfree(user);
+> +	vfree(user);
 >  }
 >  
-> +static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
-> +			       void *freelist, void *nextfree)
-> +{
-> +	if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
-> +	    !check_valid_pointer(s, page, nextfree)) {
-> +		object_err(s, page, freelist, "Freechain corrupt");
-> +		freelist = NULL;
-> +		slab_fix(s, "Isolate corrupted freechain");
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  static void slab_fix(struct kmem_cache *s, char *fmt, ...)
->  {
->  	struct va_format vaf;
-> @@ -1400,6 +1414,11 @@ static inline void inc_slabs_node(struct
->  static inline void dec_slabs_node(struct kmem_cache *s, int node,
->  							int objects) {}
+>  int ipmi_create_user(unsigned int          if_num,
+> @@ -1185,7 +1185,7 @@ int ipmi_create_user(unsigned int          if_num,
+>  	if (rv)
+>  		return rv;
 >  
-> +static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
-> +			       void *freelist, void *nextfree)
-> +{
-> +	return false;
-> +}
->  #endif /* CONFIG_SLUB_DEBUG */
+> -	new_user = kmalloc(sizeof(*new_user), GFP_KERNEL);
+> +	new_user = vzalloc(sizeof(*new_user));
+>  	if (!new_user)
+>  		return -ENOMEM;
 >  
->  /*
-> @@ -2083,19 +2102,13 @@ static void deactivate_slab(struct kmem_
->  		void *prior;
->  		unsigned long counters;
+> @@ -1232,7 +1232,7 @@ int ipmi_create_user(unsigned int          if_num,
 >  
-> -		if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
-> -		    !check_valid_pointer(s, page, nextfree)) {
-> -			/*
-> -			 * If 'nextfree' is invalid, it is possible that
-> -			 * the object at 'freelist' is already corrupted.
-> -			 * Therefore, all objects starting at 'freelist'
-> -			 * are isolated.
-> -			 */
-> -			object_err(s, page, freelist, "Freechain corrupt");
-> -			freelist = NULL;
-> -			slab_fix(s, "Isolate corrupted freechain");
-> +		/*
-> +		 * If 'nextfree' is invalid, it is possible that the object at
-> +		 * 'freelist' is already corrupted.  So isolate all objects
-> +		 * starting at 'freelist'.
-> +		 */
-> +		if (freelist_corrupted(s, page, freelist, nextfree))
->  			break;
-> -		}
->  
->  		do {
->  			prior = page->freelist;
-> _
+>  out_kfree:
+>  	srcu_read_unlock(&ipmi_interfaces_srcu, index);
+> -	kfree(new_user);
+> +	vfree(new_user);
+>  	return rv;
+>  }
+>  EXPORT_SYMBOL(ipmi_create_user);
+> -- 
+> 2.7.4
 > 
