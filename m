@@ -2,204 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66281AEC4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DB61AEC51
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 14:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgDRMEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 08:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgDRMEH (ORCPT
+        id S1725988AbgDRMK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 08:10:28 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:60176 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgDRMK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 08:04:07 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B56C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 05:04:07 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l25so5416118qkk.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 05:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BZwlaHWeOeafAExOcOIbelNG2HeXx9/G4hvqk9vloyo=;
-        b=mMgStgWrMw67hjiTamIm6buAZPVe1wCbfjPELaYiDEL29wH0Ij/4O3xwJAjIuBUZ4A
-         ADQjW9Aon9Yl8GUDjGwmwrNg6Hj6yFSUAvvGCznXS/oC3JT6Pzxww2lvKHboYAYJ1/tq
-         waRtmiPmalo8eCeL3DHstUd1QkllCTARF5O3pB5TqdLKYNbIFbJ+IS8rpLTb5kbgv9Ft
-         qOr9XU0eF+jopJBgB8YLpGD4QmBWq8Fejhm37B+CX02VK8Z8ZI1bGoUMGaxMfGnieWAh
-         QUihX8h6Kr6S68UMNcjGCvepWKrSJCMrOZnqYcuqEMM3lPwvAdOGyND6RN0qfeLoKYMF
-         DCOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BZwlaHWeOeafAExOcOIbelNG2HeXx9/G4hvqk9vloyo=;
-        b=CRYxLt4Zr1U+TZHH6l1x7IwWfrRxukQLBDGwzxZefnJ8yakrDXHUavyOsWSJ72J0LR
-         KpXk4VvfxEoEBxAOYwkcSryp61qFQY8AImrg/b4ZfvuekK3W1DerIlLsMcoP+3E14nxt
-         oRQcwXBnDvx30L1dgSA1VaIDiWNxr60Ma7OSeX3rBjYJeLtDQAhR5cYQKBu6YejXpHjf
-         avZvXAVYgr0JnToT/6LkF7zr4i6XLq4xNr2R2NeaN2wQOlK/HKe3W3HmT6t7HJhE4Aay
-         m3k4xro8RanVGVwzmjnozMYisiEx/noaZNblHJuTu1GA7ID0B54enZ7r33YYCf2+X/CP
-         1/tA==
-X-Gm-Message-State: AGi0PuZgTbjdivbsWHTixHmhYSwdlJT3pCm+3MS08zgB0ZPLj4NSG91n
-        UTiLScXDbjM2YERstYDIxmd4DpC2HfI=
-X-Google-Smtp-Source: APiQypInWbjTJAt4tWKMWkO1EqKvHXa7Mg2NEEfLHwyt/lknjmZLJj85pTXnjef+kXGc8QvIg4TcLQ==
-X-Received: by 2002:a37:4a85:: with SMTP id x127mr7666693qka.152.1587211446588;
-        Sat, 18 Apr 2020 05:04:06 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id 11sm17558479qkg.122.2020.04.18.05.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 05:04:06 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0CDBD409A3; Sat, 18 Apr 2020 09:04:04 -0300 (-03)
-Date:   Sat, 18 Apr 2020 09:04:03 -0300
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/16] perf tools: Move and globalize
- perf_evsel__find_pmu() and perf_evsel__is_aux_event()
-Message-ID: <20200418120403.GB6031@kernel.org>
-References: <20200401101613.6201-1-adrian.hunter@intel.com>
- <20200401101613.6201-13-adrian.hunter@intel.com>
- <20200418115017.GA6031@kernel.org>
+        Sat, 18 Apr 2020 08:10:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1587211824; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W8uyfORoWpoopNQAQRiFt0F12jT9ut5sphQKhCFCQnI=;
+        b=GnQ9Xu4NTvPUquR8iR0VIKLtACsC6IM+aIypTrEzV5CVG1YA9XS7UYVNec1wHO8ZKdcTBK
+        9jiuRA7KEcZet3Im5oH5sODW8CWKMPTHaQfOuCf/FqwNTQNly/9hTNGk47WsflgImO0Ob/
+        xS7TkvnoGiiaz2OKA8kw9JfZek7dLyk=
+Date:   Sat, 18 Apr 2020 14:10:12 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [RESEND PATCH v5 5/5] input: joystick: Add ADC attached joystick
+ driver.
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-input <linux-input@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-Id: <0HGZ8Q.TO6FK92GVGIN3@crapouillou.net>
+In-Reply-To: <CAHp75VeVvE8LAO8f=-cwfgL6erFZACGwMnriNRaQnfnHw31wkg@mail.gmail.com>
+References: <20200417202859.35427-1-contact@artur-rojek.eu>
+        <20200417202859.35427-5-contact@artur-rojek.eu>
+        <CAHp75VfRbnnuUhfyXpu+5dp4TutHSrHus=sX_vG_5F0dX4k0fQ@mail.gmail.com>
+        <UFBY8Q.ES4D59V22INC1@crapouillou.net>
+        <CAHp75VfEAtqucMPdkygfBhojTJoHO5vFk_o0suiyf7i2JCMw9Q@mail.gmail.com>
+        <7CFY8Q.68YMS0V08F992@crapouillou.net>
+        <CAHp75VeVvE8LAO8f=-cwfgL6erFZACGwMnriNRaQnfnHw31wkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200418115017.GA6031@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Apr 18, 2020 at 08:50:17AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Apr 01, 2020 at 01:16:09PM +0300, Adrian Hunter escreveu:
-> > Move and globalize 2 functions so that they can be reused.
-> 
-> So this breaks this:
-> 
-> [acme@five perf]$ perf test -v python
-> Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-> 19: 'import perf' in python                               :
-> --- start ---
-> test child forked, pid 168414
-> Traceback (most recent call last):
->   File "<stdin>", line 1, in <module>
-> ImportError: /tmp/build/perf/python/perf.so: undefined symbol: perf_pmu__scan
-> test child finished with -1
-> ---- end ----
-> 'import perf' in python: FAILED!
-> [acme@five perf]$
-> 
-> I'm trying to fix...
 
-I solved this by moving those functions to tools/perf/util/pmu.c
-instead.
 
-Please consider running 'perf test' before sending your patches to me
-next time,
+Le sam. 18 avril 2020 =E0 14:57, Andy Shevchenko=20
+<andy.shevchenko@gmail.com> a =E9crit :
+> On Sat, Apr 18, 2020 at 1:48 AM Paul Cercueil <paul@crapouillou.net>=20
+> wrote:
+>>=20
+>>=20
+>>=20
+>>  Le sam. 18 avril 2020 =E0 0:49, Andy Shevchenko
+>>  <andy.shevchenko@gmail.com> a =E9crit :
+>>  > On Sat, Apr 18, 2020 at 12:24 AM Paul Cercueil=20
+>> <paul@crapouillou.net>
+>>  > wrote:
+>>  >>  Le sam. 18 avril 2020 =E0 0:10, Andy Shevchenko
+>>  >>  <andy.shevchenko@gmail.com> a =E9crit :
+>>  >>  > On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek
+>>  >> <contact@artur-rojek.eu>
+>>  >>  > wrote:
+>>  >
+>>  > ...
+>>  >
+>>  >>  >>  +#include <linux/of.h>
+>>  >>  >
+>>  >>  > Do you really need this? (See below as well)
+>>  >
+>>  >>  >>  +static const struct of_device_id adc_joystick_of_match[] =3D=20
+>> {
+>>  >>  >>  +       { .compatible =3D "adc-joystick", },
+>>  >>  >>  +       { },
+>>  >>  >>  +};
+>>  >>  >>  +MODULE_DEVICE_TABLE(of, adc_joystick_of_match);
+>>  >>  >>  +
+>>  >>  >>  +static struct platform_driver adc_joystick_driver =3D {
+>>  >>  >>  +       .driver =3D {
+>>  >>  >>  +               .name =3D "adc-joystick",
+>>  >>  >
+>>  >>  >>  +               .of_match_table =3D
+>>  >>  >> of_match_ptr(adc_joystick_of_match),
+>>  >>  >
+>>  >>  > Drop this a bit harmful of_match_ptr() macro. It should go=20
+>> with
+>>  >> ugly
+>>  >>  > #ifdeffery. Here you simple introduced a compiler warning.
+>>  >>
+>>  >>  I assume you mean #ifdef around the of_device_id + module table
+>>  >> macro?
+>>  >
+>>  > Yes.
+>>  >
+>>  >>  > On top of that, you are using device property API, OF use in=20
+>> this
+>>  >> case
+>>  >>  > is contradictory (at lest to some extend).
+>>  >>
+>>  >>  I don't see why. The fact that the driver can work when probed=20
+>> from
+>>  >>  platform code
+>>  >
+>>  > Ha-ha, tell me how. I would like to be very surprised.
+>>=20
+>>  iio_map_array_register(),
+>>  pinctrl_register_mappings(),
+>>  platform_add_devices(),
+>>=20
+>>  you're welcome.
+>=20
+> I think above has no relation to what I'm talking about.
 
-Thanks,
+Yes it does. It allows you to map the IIO channels, set the pinctrl=20
+configurations and register a device from platform code instead of=20
+devicetree.
 
-- Arnaldo
-  
-> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> > ---
-> >  tools/perf/util/auxtrace.c | 19 -------------------
-> >  tools/perf/util/evsel.c    | 20 ++++++++++++++++++++
-> >  tools/perf/util/evsel.h    |  3 +++
-> >  3 files changed, 23 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> > index 809a09e75c55..33ad33378a90 100644
-> > --- a/tools/perf/util/auxtrace.c
-> > +++ b/tools/perf/util/auxtrace.c
-> > @@ -58,25 +58,6 @@
-> >  #include "symbol/kallsyms.h"
-> >  #include <internal/lib.h>
-> >  
-> > -static struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
-> > -{
-> > -	struct perf_pmu *pmu = NULL;
-> > -
-> > -	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-> > -		if (pmu->type == evsel->core.attr.type)
-> > -			break;
-> > -	}
-> > -
-> > -	return pmu;
-> > -}
-> > -
-> > -static bool perf_evsel__is_aux_event(struct evsel *evsel)
-> > -{
-> > -	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
-> > -
-> > -	return pmu && pmu->auxtrace;
-> > -}
-> > -
-> >  /*
-> >   * Make a group from 'leader' to 'last', requiring that the events were not
-> >   * already grouped to a different leader.
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index 60e6cd49dee3..d4ab073c9fe7 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -44,6 +44,7 @@
-> >  #include "stat.h"
-> >  #include "string2.h"
-> >  #include "memswap.h"
-> > +#include "pmu.h"
-> >  #include "util.h"
-> >  #include "../perf-sys.h"
-> >  #include "util/parse-branch-options.h"
-> > @@ -100,6 +101,25 @@ int perf_evsel__object_config(size_t object_size,
-> >  	return 0;
-> >  }
-> >  
-> > +struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
-> > +{
-> > +	struct perf_pmu *pmu = NULL;
-> > +
-> > +	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-> > +		if (pmu->type == evsel->core.attr.type)
-> > +			break;
-> > +	}
-> > +
-> > +	return pmu;
-> > +}
-> > +
-> > +bool perf_evsel__is_aux_event(struct evsel *evsel)
-> > +{
-> > +	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
-> > +
-> > +	return pmu && pmu->auxtrace;
-> > +}
-> > +
-> >  #define FD(e, x, y) (*(int *)xyarray__entry(e->core.fd, x, y))
-> >  
-> >  int __perf_evsel__sample_size(u64 sample_type)
-> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > index e64ed4202cab..a463bc65b001 100644
-> > --- a/tools/perf/util/evsel.h
-> > +++ b/tools/perf/util/evsel.h
-> > @@ -158,6 +158,9 @@ int perf_evsel__object_config(size_t object_size,
-> >  			      int (*init)(struct evsel *evsel),
-> >  			      void (*fini)(struct evsel *evsel));
-> >  
-> > +struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel);
-> > +bool perf_evsel__is_aux_event(struct evsel *evsel);
-> > +
-> >  struct evsel *perf_evsel__new_idx(struct perf_event_attr *attr, int idx);
-> >  
-> >  static inline struct evsel *evsel__new(struct perf_event_attr *attr)
-> > -- 
-> > 2.17.1
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+> How *this* driver can work as a platform instantiated one?
+> We seems have a conceptual misunderstanding here.
+>=20
+> For example, how can probe of this driver not fail, if it is not
+> backed by a DT/ACPI properties?
 
--- 
+platform_device_add_properties().
 
-- Arnaldo
+>=20
+>>  >>  doesn't mean that it shouldn't have a table to probe
+>>  >>  from devicetree.
+>>  >
+>>  > I didn't get what you are talking about here. The idea of=20
+>> _unified_
+>>  > device property API is to get rid of OF-centric code in favour of=20
+>> more
+>>  > generic approach. Mixing those two can be done only in specific=20
+>> cases
+>>  > (here is not the one).
+>>=20
+>>  And how are we mixing those two here? The only OF-centric thing=20
+>> here is
+>>  the device table, which is required if we want the driver to probe=20
+>> from
+>>  devicetree.
+>=20
+> Table is fine(JFYI the types and sections are defined outside of OF
+> stuff, though being [heavily] used by it) , API (of_match_ptr() macro
+> use) is not.
+
+Sorry, but that's just stupid. Please have a look at how of_match_ptr()=20
+macro is defined in <linux/of.h>.
+
+-Paul
+
+
