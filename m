@@ -2,61 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26771AEC13
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CA31AEC1D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgDRL1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 07:27:11 -0400
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:7731 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgDRL1K (ORCPT
+        id S1726009AbgDRLm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 07:42:56 -0400
+Received: from euve265701.serverprofi24.net ([62.75.139.98]:52762 "EHLO
+        euve265701.serverprofi24.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725826AbgDRLm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 07:27:10 -0400
-Received: from wangqing-virtual-machine.localdomain (unknown [157.0.31.122])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 2E18E6640D6;
-        Sat, 18 Apr 2020 19:27:07 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     gxt@pku.edu.cn, linux-kernel@vger.kernel.org, wangqing@vivo.com
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] unicore32: fixed backtrace when task running on another cpu
-Date:   Sat, 18 Apr 2020 19:27:02 +0800
-Message-Id: <1587209222-5951-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VDTkNCQkJMSUJKTk1PQllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PBw6Hgw*CTg1Eg0wKlEhURcx
-        ExowCzpVSlVKTkNMSUtCSUlMSEpDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSk5M
-        VUtVSEpVSklJWVdZCAFZQUpOT0g3Bg++
-X-HM-Tid: 0a718d0acbee9373kuws2e18e6640d6
+        Sat, 18 Apr 2020 07:42:56 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Apr 2020 07:42:56 EDT
+Received: by euve265701.serverprofi24.net (Postfix, from userid 1001)
+        id 8A511A64B5; Sat, 18 Apr 2020 01:32:45 -1000 (HST)
+To:     linux-kernel@vger.kernel.org
+Subject: PAYMENT NOW AVIALBLE
+X-PHP-Originating-Script: 1001:qwe.php
+Date:   Sat, 18 Apr 2020 01:32:45 -1000
+From:   Jurgen Bergmann <support@agency.fotoaly.com>
+Reply-To: jurgenbergmann32@gmail.com
+Message-ID: <fb77aacb450e37a21e0bf57a08a1a8e0@agency.fotoaly.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot get FP when the task is currently running on another CPU,
-in this case, current stack is printed instead of the task.
-Also, thread_saved_fp() is the last time the task was switched out,
-we should not use too.
+Dear Beneficiary
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- arch/unicore32/kernel/traps.c | 3 +++
- 1 file changed, 3 insertions(+)
+The bank has approved the sum of $3,000,000,00 to be paid to you through Visa Atm card or Bank Transfer fund ,You can use this Visa atm card to withdraw $1000 USD as your daily limit and also bank transfer option available. Reply for more  information
 
-diff --git a/arch/unicore32/kernel/traps.c b/arch/unicore32/kernel/traps.c
-index e24f672..3b9472a 100644
---- a/arch/unicore32/kernel/traps.c
-+++ b/arch/unicore32/kernel/traps.c
-@@ -151,6 +151,9 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
- 	} else if (tsk != current) {
- 		fp = thread_saved_fp(tsk);
- 		mode = 0x10;
-+	} else if (task_curr(tsk))
-+		printk("tsk is running on another CPU, not trace!\n");
-+		fp = 0;
- 	} else {
- 		asm("mov %0, fp" : "=r" (fp) : : "cc");
- 		mode = 0x10;
--- 
-2.7.4
+Regards
+Jurgen Bergmann
 
