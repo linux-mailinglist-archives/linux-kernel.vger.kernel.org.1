@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF01AEB60
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 11:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7841A1AEB8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 12:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgDRJdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 05:33:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58614 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725857AbgDRJdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 05:33:22 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C93FDDA43FC81A956E8D;
-        Sat, 18 Apr 2020 17:33:20 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Apr 2020
- 17:33:13 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <hare@suse.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <yanaijie@huawei.com>,
-        <alex.dewar@gmx.co.uk>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] scsi: aic7xxx: aic97xx: remove NULL check before some freeing functions
-Date:   Sat, 18 Apr 2020 17:59:39 +0800
-Message-ID: <20200418095939.35626-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1725923AbgDRKAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 06:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725857AbgDRKAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 06:00:03 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBCAC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 03:00:03 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jPkGL-0006nT-Ir; Sat, 18 Apr 2020 11:59:49 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id E863B101304; Sat, 18 Apr 2020 11:59:48 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     "Singh\, Balbir" <sblbir@amazon.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "keescook\@chromium.org" <keescook@chromium.org>,
+        "tony.luck\@intel.com" <tony.luck@intel.com>,
+        "benh\@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "jpoimboe\@redhat.com" <jpoimboe@redhat.com>,
+        "x86\@kernel.org" <x86@kernel.org>,
+        "dave.hansen\@intel.com" <dave.hansen@intel.com>
+Subject: Re: [PATCH v3 3/5] arch/x86/mm: Refactor cond_ibpb() to support other use cases
+In-Reply-To: <12023cc73a6344ed7499e09492a6934c1dfaf044.camel@amazon.com>
+References: <20200408090229.16467-1-sblbir@amazon.com> <20200408090229.16467-4-sblbir@amazon.com> <87sgh2l0q4.fsf@nanos.tec.linutronix.de> <12023cc73a6344ed7499e09492a6934c1dfaf044.camel@amazon.com>
+Date:   Sat, 18 Apr 2020 11:59:48 +0200
+Message-ID: <87pnc5xgff.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+"Singh, Balbir" <sblbir@amazon.com> writes:
+> On Fri, 2020-04-17 at 15:07 +0200, Thomas Gleixner wrote:
+>> 
+>> Balbir Singh <sblbir@amazon.com> writes:
+>> > 
+>> >  /*
+>> > - * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
+>> > - * stored in cpu_tlb_state.last_user_mm_ibpb.
+>> > + * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
+>> > + * stored in cpu_tlb_state.last_user_mm_spec.
+>> >   */
+>> >  #define LAST_USER_MM_IBPB    0x1UL
+>> > +#define LAST_USER_MM_SPEC_MASK       (LAST_USER_MM_IBPB)
+>> > 
+>> >       /* Reinitialize tlbstate. */
+>> > -     this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
+>> > +     this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_IBPB);
+>> 
+>> Shouldn't that be LAST_USER_MM_MASK?
+>> 
+> No, that crashes the system for SW flushes, because it tries to flush the L1D
+> via the software loop and early enough we don't have the l1d_flush_pages
+> allocated. LAST_USER_MM_MASK has LAST_USER_MM_FLUSH_L1D bit set.
 
-drivers/scsi/aic7xxx/aic79xx_core.c:6186:2-7: WARNING: NULL check before
-some freeing functions is not needed.
-drivers/scsi/aic7xxx/aic79xx_core.c:6188:2-7: WARNING: NULL check before
-some freeing functions is not needed.
-drivers/scsi/aic7xxx/aic79xx_core.c:6190:2-7: WARNING: NULL check before
-some freeing functions is not needed.
-drivers/scsi/aic7xxx/aic79xx_core.c:3666:2-7: WARNING: NULL check before
-some freeing functions is not needed.
-drivers/scsi/aic7xxx/aic79xx_core.c:6124:2-7: WARNING: NULL check before
-some freeing functions is not needed.
+You can trivially prevent this by checking l1d_flush_pages != NULL.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/scsi/aic7xxx/aic79xx_core.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+Thanks,
 
-diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
-index a336a458c978..72eaad4aef9c 100644
---- a/drivers/scsi/aic7xxx/aic79xx_core.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_core.c
-@@ -3662,8 +3662,7 @@ ahd_free_tstate(struct ahd_softc *ahd, u_int scsi_id, char channel, int force)
- 		return;
- 
- 	tstate = ahd->enabled_targets[scsi_id];
--	if (tstate != NULL)
--		kfree(tstate);
-+	kfree(tstate);
- 	ahd->enabled_targets[scsi_id] = NULL;
- }
- #endif
-@@ -6120,8 +6119,7 @@ ahd_set_unit(struct ahd_softc *ahd, int unit)
- void
- ahd_set_name(struct ahd_softc *ahd, char *name)
- {
--	if (ahd->name != NULL)
--		kfree(ahd->name);
-+	kfree(ahd->name);
- 	ahd->name = name;
- }
- 
-@@ -6182,12 +6180,9 @@ ahd_free(struct ahd_softc *ahd)
- 		kfree(ahd->black_hole);
- 	}
- #endif
--	if (ahd->name != NULL)
--		kfree(ahd->name);
--	if (ahd->seep_config != NULL)
--		kfree(ahd->seep_config);
--	if (ahd->saved_stack != NULL)
--		kfree(ahd->saved_stack);
-+	kfree(ahd->name);
-+	kfree(ahd->seep_config);
-+	kfree(ahd->saved_stack);
- 	kfree(ahd);
- 	return;
- }
--- 
-2.21.1
+        tglx
 
