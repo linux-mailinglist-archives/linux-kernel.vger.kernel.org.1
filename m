@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5F01AF51A
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 23:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230B71AF51C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 23:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgDRVPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 17:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41312 "EHLO mail.kernel.org"
+        id S1728243AbgDRVPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 17:15:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726014AbgDRVPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726459AbgDRVPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Apr 2020 17:15:21 -0400
-Subject: Re: [GIT PULL] hwmon fixes for v5.7-rc2
+Subject: Re: [GIT PULL] SCSI fixes for 5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587244521;
-        bh=nqDi78DaRqqGf751NQR4MUHd/ujN2gn1CERnHWfp/zA=;
+        bh=xIaK/BViQ7a2I1TjAuY+cso2dtWt3+gb9K0xVBcET68=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rSrn3e6B3M6wlZiza3cy+BdK+IV+xx2OxyXsDy7uMFCd8gsDyasBiCxHmgGOToWE2
-         Rb+OLhjNN7+gAyinEywtV8R4l+/L873E3hnsi5Z+c91POyPJ7T7gmMM3SXOWDLyYl7
-         BM0TA0W1RNcBku2C2zeRvPruobrSdHRcGxv4RxcU=
+        b=UvGvC1GsPNdBc+rt4zYxKwqhkNunGKAkQNlSh0hIsprIoOGZfGCzZhGfw6zMThGFL
+         HZcFMLdxFjuVjswIwAkqdPw78tUPTM3HY2+FN+tkvm7YLaEI3ekiqiwQou0hqe3GTm
+         Dxss3LQvcmbL2B2OyMDDhYtt4m+zXXsVFrp9UmHI=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200418194937.5589-1-linux@roeck-us.net>
-References: <20200418194937.5589-1-linux@roeck-us.net>
+In-Reply-To: <1587240636.7897.11.camel@HansenPartnership.com>
+References: <1587240636.7897.11.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200418194937.5589-1-linux@roeck-us.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
- hwmon-for-v5.7-rc2
-X-PR-Tracked-Commit-Id: c843b382e61b5f28a3d917712c69a344f632387c
+X-PR-Tracked-Message-Id: <1587240636.7897.11.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 849f8583e955dbe3a1806e03ecacd5e71cce0a08
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eeaa762549f80ad1d69afbad50bf6d8629ad6649
-Message-Id: <158724452108.32136.6002516637231338805.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 50cc09c18985eacbbd666acfd7be2391394733f5
+Message-Id: <158724452141.32136.9772790566639255244.pr-tracker-bot@kernel.org>
 Date:   Sat, 18 Apr 2020 21:15:21 +0000
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 18 Apr 2020 12:49:37 -0700:
+The pull request you sent on Sat, 18 Apr 2020 13:10:36 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.7-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eeaa762549f80ad1d69afbad50bf6d8629ad6649
+https://git.kernel.org/torvalds/c/50cc09c18985eacbbd666acfd7be2391394733f5
 
 Thank you!
 
