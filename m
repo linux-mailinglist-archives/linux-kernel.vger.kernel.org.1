@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996FD1AF4BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A051AF4BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgDRUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
+        id S1728769AbgDRUVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 16:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728700AbgDRUUy (ORCPT
+        by vger.kernel.org with ESMTP id S1728707AbgDRUUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 16:20:54 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9D2C061A10
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x4so6505293wmj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:53 -0700 (PDT)
+        Sat, 18 Apr 2020 16:20:55 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AAFC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:55 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u127so5679033wmg.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DA6yBoXY+uQ7OvzNupz4RHEdNy+qYgWPz1xYRJqEZ6I=;
-        b=UQK4QjGxrmWelU+MLuQeUjFn2OzPv+DvGUIA4CctUWYY20J07vC8woV+n898Ip8bGj
-         ff/clSs0hSPyyTF1iuPQe2PnnH4gwPM/X/C2NvE1InHik1JTrvG6cu01XFdTEYZkTUoK
-         poRETuZHCqGim+qfpizzCanmmitY6GFKjz1cHbAfGGhCQ34XhHF3s6mvwkpDZgfEC+C0
-         YrttGN6fkMs0r7rtB9YtvAIULfFfHVj0QUV1MT4xCxzyiDwbMZYS1nb7oVlPoBfgD9Gq
-         L8l0DAlk3uwxUuUSPum0eb8RbDlh+HciaRm2xBPuWKYRV6qnLjLS4AS8pn/nbuylhObR
-         rBmg==
+        bh=UewK9hpbawAl/WYk+ND4T8F/xnhDTg+TNkaDS8X7FAg=;
+        b=HIlEqOgj2cmtL9KqmWgeEy0gQuJtaVHQ2cHd9TL6LYzeq+/b7CNH9O2AnMvfqwUwvf
+         S0mJeEnt1BlrQs0E0jAyHh3xwJPUVthydthFhyyLPd2/4tMYJ1vbJHerC/BEGfJO2JY5
+         4XeD++gDBfQv6KfCOl7yU/+ba1E4AkcJxGseQXm0FxDpKK4eqrQswBW2yHMFYEVgv+nO
+         sq/nkqxzhK5qUg+90RWPI5o04/AX1DzPH0WeMv6kvdQBBiy6f4p07p/638a9lOfAGSpI
+         hq3vSlwGfXw67qjsKksztz3PNazbwK+d5zaZdxUWpYfXqzcNDenfCUfNvGd95r0VenNR
+         +Gsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DA6yBoXY+uQ7OvzNupz4RHEdNy+qYgWPz1xYRJqEZ6I=;
-        b=mvzgwxyCi4lpLaBQHyp6O0k7IRdDKQ1w/U+kuunFt5JzloN1TywYE6mjPavgwBvjS2
-         /nlvaU298vIELTbRXHbslur9687bZ2uJ3JM7z35vaUQmcRcRHY2H/DVV5X/r8rayEwoD
-         TtqZiRpttN4W4/wYmJcKdFt6qg0Ae3tqhN3dobIMX9Jmok/ZbacKNZdy8pVGXisGJd8M
-         pu413dZmxipevO3IKKs91uYtwrDpNF2TIDwT2KrvaQcnAYvSSt42NFBrSnTXITvl3bzp
-         JRbyJ/KaKqUW0AO8aJkbBgfa4rH0WXzmPepcVa0drFq+5Q7NQTL11Ih9vjAUWp0fXvmS
-         zpZA==
-X-Gm-Message-State: AGi0PuYTeCNYYRhsCffUwx4BmeUj9Ms3ecY/9E1L6PH64uWQgyfZ/WYL
-        vA+Kp7pq5LGxnplPr615GUN93JTNmA8=
-X-Google-Smtp-Source: APiQypIoygjdgN0YddFiw7+SWOuvRq1yqRkPYjSUJq8RFWl2gXtMDF6/o5J5QB0yLRwBfrmtkNAzQw==
-X-Received: by 2002:a1c:7715:: with SMTP id t21mr9049757wmi.182.1587241252563;
-        Sat, 18 Apr 2020 13:20:52 -0700 (PDT)
+        bh=UewK9hpbawAl/WYk+ND4T8F/xnhDTg+TNkaDS8X7FAg=;
+        b=EIumcojva6uAmG1TeaPIsnuhqT1PwJiTEoikVF3RlT2NTzgz8BYWiLVSnvDGzWSKby
+         AC2dVADHgaDEAg8jiqFYy2Y8m8D0bbHWC5kZ40olUCR1h0SyEGdINWBAARelU5xVsvlJ
+         mQGPLDE+XzCHlAZIfEZEJEW7bfjTSOgHd3EKlVvk43vSUqdLsikL1UvP2Ulv3U/ZDYSM
+         XFob/R049XwpSInGaZmtzZbwXbRekBwuSTM7HwuKu11S04evyl1xL4qMNzPnrs4tGyRw
+         nUQIHy3aq8mF7lHgccT13QNEs2z26xza1/GWg9685UW2rBxE4KSoZM8R2R3MxRXU0xjx
+         H1Ig==
+X-Gm-Message-State: AGi0PuZneS3Qtl2E0/lwFjoxAcmlAxBg9lZYnlhT3IgYb9v/lofViilR
+        yHye1p9+2rZms3gUuygK4KQFLdniI5g=
+X-Google-Smtp-Source: APiQypKR5Y1qOUmKwsHhnH8t7/xEWQdJ92qlq/z6zpVNikpJ4d3OGf+F5GDVmWR8X/evMGIV0sK2CA==
+X-Received: by 2002:a1c:7d90:: with SMTP id y138mr10245638wmc.121.1587241254076;
+        Sat, 18 Apr 2020 13:20:54 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.51
+        by smtp.gmail.com with ESMTPSA id m1sm31735255wro.64.2020.04.18.13.20.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 13:20:52 -0700 (PDT)
+        Sat, 18 Apr 2020 13:20:53 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -59,12 +59,13 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-Subject: [PATCHv3 46/50] power: Use show_stack_loglvl()
-Date:   Sat, 18 Apr 2020 21:19:40 +0100
-Message-Id: <20200418201944.482088-47-dima@arista.com>
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net
+Subject: [PATCHv3 47/50] kdb: Don't play with console_loglevel
+Date:   Sat, 18 Apr 2020 21:19:41 +0100
+Message-Id: <20200418201944.482088-48-dima@arista.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200418201944.482088-1-dima@arista.com>
 References: <20200418201944.482088-1-dima@arista.com>
@@ -75,33 +76,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aligning with other watchdog messages just before panic - use
-KERN_EMERG.
+Print the stack trace with KERN_EMERG - it should be always visible.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Len Brown <len.brown@intel.com>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: linux-pm@vger.kernel.org
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Playing with console_loglevel is a bad idea as there may be more
+messages printed than wanted. Also the stack trace might be not printed
+at all if printk() was deferred and console_loglevel was raised back
+before the trace got flushed.
+
+Unfortunately, after rebasing on commit 2277b492582d ("kdb: Fix stack
+crawling on 'running' CPUs that aren't the master"), kdb_show_stack()
+uses now kdb_dump_stack_on_cpu(), which for now won't be converted as it
+uses dump_stack() instead of show_stack().
+
+Convert for now the branch that uses show_stack() and remove
+console_loglevel exercise from that case.
+
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Cc: kgdb-bugreport@lists.sourceforge.net
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- drivers/base/power/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/debug/kdb/kdb_bt.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index fdd508a78ffd..fc0108e65592 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -519,7 +519,7 @@ static void dpm_watchdog_handler(struct timer_list *t)
- 	struct dpm_watchdog *wd = from_timer(wd, t, timer);
+diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
+index 3de0cc780c16..43f5dcd2b9ac 100644
+--- a/kernel/debug/kdb/kdb_bt.c
++++ b/kernel/debug/kdb/kdb_bt.c
+@@ -21,17 +21,18 @@
  
- 	dev_emerg(wd->dev, "**** DPM device timeout ****\n");
--	show_stack(wd->tsk, NULL);
-+	show_stack_loglvl(wd->tsk, NULL, KERN_EMERG);
- 	panic("%s %s: unrecoverable failure\n",
- 		dev_driver_string(wd->dev), dev_name(wd->dev));
+ static void kdb_show_stack(struct task_struct *p, void *addr)
+ {
+-	int old_lvl = console_loglevel;
+-
+-	console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
+ 	kdb_trap_printk++;
+ 
+-	if (!addr && kdb_task_has_cpu(p))
++	if (!addr && kdb_task_has_cpu(p)) {
++		int old_lvl = console_loglevel;
++
++		console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
+ 		kdb_dump_stack_on_cpu(kdb_process_cpu(p));
+-	else
+-		show_stack(p, addr);
++		console_loglevel = old_lvl;
++	} else {
++		show_stack_loglvl(p, addr, KERN_EMERG);
++	}
+ 
+-	console_loglevel = old_lvl;
+ 	kdb_trap_printk--;
  }
+ 
 -- 
 2.26.0
 
