@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513891AEAF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 10:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AD71AEACB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 10:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgDRIgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 04:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgDRIgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 04:36:38 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0CBC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 01:36:37 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id q19so4436022ljp.9
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 01:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7/6//M0ZzMZYaNauz99M15j4KPCmpQuIwWItAHuzh60=;
-        b=NxfPyiq4iJXOVjnaTadZFBInGPBNrnbwZ79ocfZASYenBByQJX7OwzgXw/uWkRFsuF
-         YVlkYkSzm0Aq1f/HP+qpg0pWKrV7fpCWwjrruh0jDKc1wom8NtWA139shgTnJIdPrr02
-         Z4c77VP9R6gGMx/rVVzVTw1Y7XJTHk69h39PG2HsiuDiQj6Mvt5UYdDsRUwCB1y8ruQC
-         F4ltdwb0/b9dIzlIoR/RpK5mjt60xe8Ss/KIOOb9nZjmyZifgVpzVNmVLU6tSj+7LPF0
-         hNlooU8F7cYFvLCpmSBlOyFbriJABQsUB6dGdSGw+UFc+y7DKIbcYckY+gXwEXbQc/em
-         2KrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7/6//M0ZzMZYaNauz99M15j4KPCmpQuIwWItAHuzh60=;
-        b=SrNB2ESpIbrbcwhtUXzqocErNqSR4Kq+lTWsH/u4hlvABrM5xhcNNvnnDrMSrnaOZr
-         Jq9aMicP76rS8Q5vX51HHalwn5gsGxzoiwxwM+YicXTmwPXbgtpORtW9UfRL459s2CTo
-         2N0G0KQuWNKeq+JeELhuE/lnxni6RbN4ZCEaMuYjf/ewq9GvLFJSgTfWliDXg8rxj8RS
-         gL8r6+Rj3zfsGqluBwkc5EZ+0IEhbVPIZdg/NKh9+1fWWMOVzGKlGFXPxdV51YiGY4xh
-         EAG1hNG8jIotbgqIK58ooGygKATmaWt+pb3naUJg7GeXHpp6/mF8Iox4YS6GvCHDt7RC
-         cPUg==
-X-Gm-Message-State: AGi0PuboSVVVAxV64QtJocCsDZvGBDehOtzCOIaTDdCVj6sK86naOaif
-        23PwDluQjM6DuOXgWOnGtQcA+FNy
-X-Google-Smtp-Source: APiQypIthhBFvflX4gjyM6Gsi3RoSgfX3rp14yMBdfeREtXfa2h5ZEY36SPuub64uRymEDGdJ8qx5Q==
-X-Received: by 2002:a2e:330e:: with SMTP id d14mr4338860ljc.153.1587198996062;
-        Sat, 18 Apr 2020 01:36:36 -0700 (PDT)
-Received: from alpha (84.188.smarthome.spb.ru. [80.249.188.84])
-        by smtp.gmail.com with ESMTPSA id j14sm19484204lfm.73.2020.04.18.01.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 01:36:35 -0700 (PDT)
-Received: (nullmailer pid 3769 invoked by uid 1000);
-        Sat, 18 Apr 2020 08:41:14 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] staging:r8188eu: avoid skb_clone for amsdu to msdu conversion
-Date:   Sat, 18 Apr 2020 11:41:12 +0300
-Message-Id: <20200418084112.3723-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726100AbgDRIP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 04:15:57 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58852 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725801AbgDRIP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 04:15:56 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DB7FBF9A1AF9E0E6A130;
+        Sat, 18 Apr 2020 16:15:52 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Apr 2020
+ 16:15:46 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <davem@davemloft.net>, <tglx@linutronix.de>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] net: hns: use true,false for bool variables
+Date:   Sat, 18 Apr 2020 16:42:12 +0800
+Message-ID: <20200418084212.26012-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-skb clones use same data buffer, so tail of one skb is corrupted by beginning of next skb.
+Fix the following coccicheck warning:
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:700:2-8: WARNING:
+Assignment of 0/1 to bool variable
+drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:702:2-8: WARNING:
+Assignment of 0/1 to bool variable
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/staging/rtl8188eu/core/rtw_recv.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
-index d4278361e002..a036ef104198 100644
---- a/drivers/staging/rtl8188eu/core/rtw_recv.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
-@@ -1525,21 +1525,14 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
+index 8aace2de0cc9..9a907947ba19 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
+@@ -697,9 +697,9 @@ hns_mac_register_phydev(struct mii_bus *mdio, struct hns_mac_cb *mac_cb,
+ 		return rc;
  
- 		/* Allocate new skb for releasing to upper layer */
- 		sub_skb = dev_alloc_skb(nSubframe_Length + 12);
--		if (sub_skb) {
--			skb_reserve(sub_skb, 12);
--			skb_put_data(sub_skb, pdata, nSubframe_Length);
--		} else {
--			sub_skb = skb_clone(prframe->pkt, GFP_ATOMIC);
--			if (sub_skb) {
--				sub_skb->data = pdata;
--				sub_skb->len = nSubframe_Length;
--				skb_set_tail_pointer(sub_skb, nSubframe_Length);
--			} else {
--				DBG_88E("skb_clone() Fail!!! , nr_subframes=%d\n", nr_subframes);
--				break;
--			}
-+		if (!sub_skb) {
-+			DBG_88E("dev_alloc_skb() Fail!!! , nr_subframes=%d\n", nr_subframes);
-+			break;
- 		}
+ 	if (!strcmp(phy_type, phy_modes(PHY_INTERFACE_MODE_XGMII)))
+-		is_c45 = 1;
++		is_c45 = true;
+ 	else if (!strcmp(phy_type, phy_modes(PHY_INTERFACE_MODE_SGMII)))
+-		is_c45 = 0;
++		is_c45 = false;
+ 	else
+ 		return -ENODATA;
  
-+		skb_reserve(sub_skb, 12);
-+		skb_put_data(sub_skb, pdata, nSubframe_Length);
-+
- 		subframes[nr_subframes++] = sub_skb;
- 
- 		if (nr_subframes >= MAX_SUBFRAME_COUNT) {
 -- 
-2.24.1
+2.21.1
 
