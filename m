@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04751AF594
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 00:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4324C1AF586
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 00:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgDRWon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 18:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
+        id S1728313AbgDRWoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 18:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgDRWol (ORCPT
+        with ESMTP id S1728291AbgDRWom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 18:44:41 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411BAC061A0C;
-        Sat, 18 Apr 2020 15:44:41 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b11so7407958wrs.6;
-        Sat, 18 Apr 2020 15:44:41 -0700 (PDT)
+        Sat, 18 Apr 2020 18:44:42 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846BDC061A0C;
+        Sat, 18 Apr 2020 15:44:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id d17so7376004wrg.11;
+        Sat, 18 Apr 2020 15:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8DEFjpIBB2sTg55bEJY9HmamuD/w0H5V9QfSFLKTLl8=;
-        b=c8cF3XH6qZJcJPkN9nADZfE8ZdxqJJNLek9MBPzd976KNgLjfAOvhXssjXgfR0qUXZ
-         z5SbODX1HI8kSbTahGSNYROR6DUal2jkuISdlMolZvPcEr70LFjcykcK1MP0UOcKBhIU
-         Ff5QtHea/ZcWq77sRWFG1qP7w6fn1pfjPGu5tFfutPE2Hj96sJkLdvi4XAKDYYyMKNqx
-         R00g3cSrpQeA/7DOSY1CCSiEIqPbTrTVBzDoq3hp++7L21hPafhxjXx5u7ZowEpl0AKz
-         t2dofmvt7RGD5O8ClZ3VCGllQKrDMZ7oHQNsKAdP0RKpixpqN3OalmxOd//da9ZJC8dw
-         C0sQ==
+        bh=0RLyOmcQjC6vn1XEI3ccjJ++FkYMXRfGQ9jNbYoBA2Y=;
+        b=RxHYA8TscBFB44NiehmUfeeQ06VUO3DFs/wsLjmwVEtal9fdToV7SPpG8MiCJfBS3j
+         SPZFa960dZe2EhROSESp9ye1krXTOZiDFANBH6AMkfka/8TvX7RyL6lngNgc7vKv1zqG
+         I198UmThs8xPlBLubazE9FsVpVx2WTYFzsdMooOCmI18+G/iYGooaaF4U87+MaMTyrvZ
+         KIkmBGLtfkorteZae8wDxddFnlezaLiCynZ0atvPQy4AZdjabbmKOxC4AY7MoFmQ7FHJ
+         hXqWCY3ZY3ChScUcC79Eh5bqQ8aMKrLvcvokHvhOwHZN8CvaIAtZsQX7aKcBBvNQ0+U+
+         4uCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8DEFjpIBB2sTg55bEJY9HmamuD/w0H5V9QfSFLKTLl8=;
-        b=Nppv0I2w6G0BF97L//1icXp38FyQd8VhI/EtAsC77m3C9Jf7Y4B3dspERDtW5AMkr6
-         iqpkuRGXCBvX0K1ll4ZaAPQUvGx2RUCI9Za/oYOBe35wl8J6AIbdM7FTjhAlbJz5/ZG6
-         AVReIF7x+IFFe2aKgCn2Rytl3SVzS+hhd6mqQotHK1CBFO6NIaP5/iB+CbEQoz9UvM8J
-         VKtcroXrpd+l66Ww6O3cbgpV6WdI/cKFDs6gZuce457hd5eOBvpriB+rOosJ+0tG8I2/
-         vox0z7G7iVYOOBBTsRTL8hwjFVxnH6855amaJia2+P3xe4prj03FY/eE3wsGeYEaAM5N
-         1Aiw==
-X-Gm-Message-State: AGi0PubheRUnA9Iybmid8g02xWZZjTaJO0Krma33kW253ZVvHSw4xeOK
-        8dnbgJK3AKJ7xOnHqCVO/oM=
-X-Google-Smtp-Source: APiQypLzc6502sCH/dr5KEi1k3BQRUxUNmwEVNQJvwCGsDJys1dWkVAT0BXLftMcmhDCZMKxtYFX6Q==
-X-Received: by 2002:a5d:5304:: with SMTP id e4mr10337697wrv.87.1587249879909;
-        Sat, 18 Apr 2020 15:44:39 -0700 (PDT)
+        bh=0RLyOmcQjC6vn1XEI3ccjJ++FkYMXRfGQ9jNbYoBA2Y=;
+        b=gBDl/Znrkn+kdkyHyzrsvNFETlVIDj4CjJjPBw09bRkCpo+p7flDdcl/8XWx3XTSRS
+         HTly1aIee98oyubwhtXCsORcmp6UCkQC7tHhzcf5MeOD6D6A1WwH/R7IpBdxJjHQxuy1
+         TPMuDxzOhUPRqK661usGKKmwMnClfZ4XhkFLGczxUIs1gjJ+YZhv5/fDm16P+/VW5BbO
+         ct5VPU4zAXFaMnxL/p+tnYUyXO8OfkXMzqTmRBMlr6Z4uomvRDfBRpoOrZUciJmkOLGC
+         I2VpO8yXepG4qXvBOWucaWpYRePgNvPQLMuQtSwIDMJbCY75McLseICfa0zjo6Cqa+0M
+         tY9w==
+X-Gm-Message-State: AGi0PuY58s6wHq79i5V5quJZRR5VFodznOYz4F7OelN+E5b7Vke8bv3j
+        qG6Hp0b7k+Zz06vSUmOv+40=
+X-Google-Smtp-Source: APiQypKVFCS52LWaQqMpRrBfL5zoWfUa0PpkSMSmggBTe57uDxcMbauy9YOkMjLXPaTEMf2xJWwU2w==
+X-Received: by 2002:a5d:6584:: with SMTP id q4mr11851428wru.403.1587249881115;
+        Sat, 18 Apr 2020 15:44:41 -0700 (PDT)
 Received: from localhost.localdomain (91-167-199-67.subs.proxad.net. [91.167.199.67])
-        by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.38
+        by smtp.gmail.com with ESMTPSA id t16sm13371559wmi.27.2020.04.18.15.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 15:44:39 -0700 (PDT)
+        Sat, 18 Apr 2020 15:44:40 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -57,11 +57,12 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Takashi Iwai <tiwai@suse.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
         Marcus Cooper <codekipper@gmail.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 1/7] ASoC: sun4i-i2s: Adjust LRCLK width
-Date:   Sun, 19 Apr 2020 00:44:29 +0200
-Message-Id: <20200418224435.23672-2-peron.clem@gmail.com>
+Subject: [PATCH v2 2/7] dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+Date:   Sun, 19 Apr 2020 00:44:30 +0200
+Message-Id: <20200418224435.23672-3-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200418224435.23672-1-peron.clem@gmail.com>
 References: <20200418224435.23672-1-peron.clem@gmail.com>
@@ -73,33 +74,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Some codecs such as i2s based HDMI audio and the Pine64 DAC require
-a different amount of bit clocks per frame than what is calculated
-by the sample width. Use the values obtained by the tdm slot bindings
-to adjust the LRCLK width accordingly.
+H6 I2S is very similar to H3, except that it supports up to 16 channels
+and thus few registers have fields on different position.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml      | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d0a8d5810c0a..4198a5410bf9 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -455,6 +455,9 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 		return -EINVAL;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+index 112ae00d63c1..606ad2d884a8 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+@@ -24,6 +24,7 @@ properties:
+       - items:
+           - const: allwinner,sun50i-a64-i2s
+           - const: allwinner,sun8i-h3-i2s
++      - const: allwinner,sun50i-h6-i2s
  
-+	if (i2s->slot_width)
-+		lrck_period = i2s->slot_width;
-+
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
+   reg:
+     maxItems: 1
+@@ -59,6 +60,7 @@ allOf:
+               - allwinner,sun8i-a83t-i2s
+               - allwinner,sun8i-h3-i2s
+               - allwinner,sun50i-a64-codec-i2s
++              - allwinner,sun50i-h6-i2s
+ 
+     then:
+       required:
 -- 
 2.20.1
 
