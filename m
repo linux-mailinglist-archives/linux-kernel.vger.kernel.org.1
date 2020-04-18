@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D29D1AF444
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8BD1AF448
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgDRTaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 15:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
+        id S1728229AbgDRTaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 15:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727907AbgDRTaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 15:30:03 -0400
-Subject: Re: [GIT PULL] xfs: bug fixes for 5.7-rc1
+        id S1728097AbgDRTaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 15:30:21 -0400
+Subject: Re: [GIT PULL] thread fixes for v5.7-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587238203;
-        bh=FIbYbKgtPbI6kk7P+/BHFQ2nwoJxEtLzkBjX14kgq3g=;
+        s=default; t=1587238221;
+        bh=L1TVXpY7szCnL8/P4515l7eyNk2gMHrDpdnitkDBV44=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=VFGeoFr7hNGmXXBmGnsz0FS0Pt6y4CRMI3+sNlTTQzGxzUPe639QXWrenAwtPh2nk
-         W6SZSgR4QOm4zdbX6tPoanhPc/JjnPccTaw3xpwoABVrLrcJhbLE1UI1hbJCbAd7r9
-         B39E3P/KNmxWVfFlFsyE2P5fE2qJfBD9RYhfrFd8=
+        b=o1VfYcodOtdnUnKnllYDwpDjbWEIq73uq7qNuAcuaFm5atg0+uvqC5AFvOW0ytHEV
+         z1Nn0p/X8uzWwP4rczGB48NKULOe5U27wz0AiA1sIrKFwVL+WlTsqj5HSk8tqqwnHP
+         TfKWnvPZzjsAtUZW3067DV3nQlPE/EAmfrDDvxJs=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200418155702.GV6742@magnolia>
-References: <20200418155702.GV6742@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200418155702.GV6742@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- tags/xfs-5.7-fixes-3
-X-PR-Tracked-Commit-Id: f0f7a674d4df1510d8ca050a669e1420cf7d7fab
+In-Reply-To: <20200418110945.1518581-1-christian.brauner@ubuntu.com>
+References: <20200418110945.1518581-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200418110945.1518581-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux
+ tags/for-linus-2020-04-18
+X-PR-Tracked-Commit-Id: a966dcfe153ab0a3d8d79cd971a079411a489be7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c0d73a868d9b411bd2d0c8e5ff9d98bfa8563cb1
-Message-Id: <158723820312.11589.16029241664602724505.pr-tracker-bot@kernel.org>
-Date:   Sat, 18 Apr 2020 19:30:03 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+X-PR-Merge-Commit-Id: 774acb2a094c218cb0129979afc67eda7e1ec4b9
+Message-Id: <158723822097.11589.9660972430404455424.pr-tracker-bot@kernel.org>
+Date:   Sat, 18 Apr 2020 19:30:20 +0000
+To:     Christian Brauner <christian.brauner@ubuntu.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 18 Apr 2020 08:57:02 -0700:
+The pull request you sent on Sat, 18 Apr 2020 13:09:49 +0200:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.7-fixes-3
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2020-04-18
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c0d73a868d9b411bd2d0c8e5ff9d98bfa8563cb1
+https://git.kernel.org/torvalds/c/774acb2a094c218cb0129979afc67eda7e1ec4b9
 
 Thank you!
 
