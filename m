@@ -2,78 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C6F1AF536
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 23:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF161AF541
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgDRVoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 17:44:34 -0400
-Received: from sauhun.de ([88.99.104.3]:50748 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726459AbgDRVoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 17:44:34 -0400
-Received: from localhost (p5486CFBC.dip0.t-ipconnect.de [84.134.207.188])
-        by pokefinder.org (Postfix) with ESMTPSA id 69E872C1FB0;
-        Sat, 18 Apr 2020 23:44:32 +0200 (CEST)
-Date:   Sat, 18 Apr 2020 23:44:32 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     thor.thayer@linux.intel.com, krzysztof.adamski@nokia.com,
-        hdegoede@redhat.com, aisheng.dong@nxp.com, vigneshr@ti.com,
-        ardb@kernel.org, gcherian@marvell.com,
-        wsa+renesas@sang-engineering.com, krzk@kernel.org,
-        alpawi@amazon.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [PATCH v2] i2c: busses: remove duplicate dev_err()
-Message-ID: <20200418214431.GD1293@ninjato>
-References: <20200416152345.23077-1-zhengdejin5@gmail.com>
+        id S1728243AbgDRWCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 18:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgDRWCK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 18:02:10 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317A0C061A0C;
+        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q10so4528062ile.0;
+        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
+        b=F/DcX3qn0mWP3wxePs/f6Ber+8vcImQLEQ1CnbNQTcIfCmABYQGfIKgMiyysqaCEL/
+         t90eT6S1ZjddO24lMhbAMC2HLortBaB77fS2qG+7q98k3eyT2Z2DWO/6uMtB1ap4ln0a
+         jAYld2+pC/YdCQf8AunPt9C7hDJRYHbT+nbebEVsFwuaW54I01nc8i2TmQB9ioCJb9Zq
+         OrQXNVF/JswexSm6WLEkxiidIfrvi78E95/ZjahRUOUamjJJ404iE775MJsQbOFTWdJH
+         KoTGv6MK30ZK1Pa/TJon0K7fVbjB49hVTNztmqJsFug7Izfg2MhnwZ+Dll0OnNhTUVj8
+         qk9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
+        b=XNWeOnN6cb9LlcHTOIs7pq6wiQaF8VXG74BVvJ41VKXRhKg8everwam/iNzVRzwq9A
+         tCJBpeWR9g11/sevzDMqgMaB0x49cF3q9bst+cJ+tF2rmIt3z/R0E2f+Y4l0SONprY6Q
+         3MOVT6prPU0NkRN8GE5SEQB8ve5gKjw7qSienTAfkkGIZdwE9CmN5k8yWS/9cwM/ZEc0
+         RmGPbLsBugk+C+nAW1Yf2CwawiWqAwsbBg0LpDidjISHZELmbMl7UGrG3WgiYdjwzq3c
+         0N/AOUNY+sLcNZ2p0EMHoFSwZRDsRiZv7QzJSggR7V7HH552cKuQQHX7Zr0l3YMCXd+J
+         1TPg==
+X-Gm-Message-State: AGi0PuZQ+fqF0BjTeFaqj/gr+5xHnMG8A4JhyMQAXgGDeWnE37qNXA7y
+        J7bwGsKCSRkf6wXN3p3+UDBI7diyAWdUvgmF1hA=
+X-Google-Smtp-Source: APiQypLGAnldNe44/T7TrOcehDST8OjwjHDaKCPvui7D2rvzpgvBzbQYc1MKCX0pK+dGDGtCanJ0ygeCeyDEHHYaggU=
+X-Received: by 2002:a05:6e02:790:: with SMTP id q16mr8812413ils.60.1587247328320;
+ Sat, 18 Apr 2020 15:02:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Hf61M2y+wYpnELGG"
-Content-Disposition: inline
-In-Reply-To: <20200416152345.23077-1-zhengdejin5@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200417213951.29837-1-richard.weiyang@gmail.com> <20200418031922.GR17661@paulmck-ThinkPad-P72>
+In-Reply-To: <20200418031922.GR17661@paulmck-ThinkPad-P72>
+From:   Wei Yang <richard.weiyang@gmail.com>
+Date:   Sun, 19 Apr 2020 06:02:12 +0800
+Message-ID: <CADZGycYVL9j7jbE1ZY_ZOv2XXv9XwWGPykoE63nJ79VrXwwUCg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: simplify the calculation of rcu_state.ncpus
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     josh@joshtriplett.org, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 18, 2020 at 11:19 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Apr 17, 2020 at 09:39:51PM +0000, Wei Yang wrote:
+> > There is only 1 bit set in mask, which means the difference between
+> > oldmask and the new one would be at the position where the bit is set in
+> > mask.
+> >
+> > Based on this knowledge, rcu_state.ncpus could be calculated by checking
+> > whether mask is already set in oldmask.
+>
+> Nice!!!  Good eyes!
+>
+> > BTW, the comment at the last of this line is mysterious. Not sure it
+> > could be removed or not.
+>
+> The "^^^" in that comment says to look at the comment on the preceding
+> line.  Memory-ordering functions like smp_store_release() are supposed
+> to have comments indicating what they are ordering.  ;-)
+>
+> Could you please do the following things and resubmit?
+>
+> 1.      Forward-port to -rcu branch dev?  This tree lives here:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+>
+> 2.      Given that oldmask is used only to test to see if a new bit
+>         was set, why not just replace oldmask with a bool variable
+>         that is set to "!(rnp->expmaskinitnext & mask)" before the
+>         bit is ORed into rnp->expmaskinitnext?
+>
+> 3.      Put the comment inside the "if" statement with the
+>         smp_store_release().
+>
+> 4.      In -rcu, you will find a ASSERT_EXCLUSIVE_WRITER() statement
+>         that should also be placed inside the "if" statement with
+>         the smp_store_release().
+>
 
---Hf61M2y+wYpnELGG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oops, my email client EAT this mail. Hope this mail will not be banned.
 
-On Thu, Apr 16, 2020 at 11:23:45PM +0800, Dejin Zheng wrote:
-> it will print an error message by itself when platform_get_irq()
-> goes wrong. so don't need dev_err() in here again.
->=20
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+I adjust the code a little according to your suggestion like below. Is this
+what you expected?
 
-Applied to for-next, thanks!
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f288477ee1c2..f01367a80b70 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3732,10 +3732,9 @@ void rcu_cpu_starting(unsigned int cpu)
+ {
+        unsigned long flags;
+        unsigned long mask;
+-       int nbits;
+-       unsigned long oldmask;
+        struct rcu_data *rdp;
+        struct rcu_node *rnp;
++       bool has_seen;
 
+        if (per_cpu(rcu_cpu_started, cpu))
+                return;
+@@ -3747,13 +3746,13 @@ void rcu_cpu_starting(unsigned int cpu)
+        mask = rdp->grpmask;
+        raw_spin_lock_irqsave_rcu_node(rnp, flags);
+        WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+-       oldmask = rnp->expmaskinitnext;
++       has_seen = rnp->expmaskinitnext & mask;
+        rnp->expmaskinitnext |= mask;
+-       oldmask ^= rnp->expmaskinitnext;
+-       nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+-       /* Allow lockless access for expedited grace periods. */
+-       smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
+-       ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
++       if (!has_seen) {
++               /* Allow lockless access for expedited grace periods. */
++               smp_store_release(&rcu_state.ncpus, rcu_state.ncpus +
+1); /* ^^^ */
++               ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
++       }
+        rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+        rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+        rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
 
---Hf61M2y+wYpnELGG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6bdL8ACgkQFA3kzBSg
-KbbNHw//Vio1UHXaE3CLWBTRRDnO/kJpp4FVEejJ6IdeW+TCF2wpmCMP58PYhgam
-mvh9Fg3//m0ibDrXcq7amauqck+t+QblumvJNnD4CDd1UNHfyFI7FQmz13dicivs
-HbRB/pvw0YXCtGa3z3O48UOjODNwLg7JebcX2zNM95Xu0o57Bjo5y7F9BUL7eYTK
-b5Ymt7tPd3D6qD0oNgosUY7qHOxVLum59IWI3L7PELM0xbVlqWHi/v99t4WWhLV/
-PEQOvE8ZzuQgCew+XasMstSOOi+N4HTJ2Vc7f+zXcrSAcySDjksdaOmz6VGNRrXq
-kL+T9CF7XL1qjY9ASgaTzm0fwhTOXyhVh84mFpNZVfWEmygnRYXjtKV1uW0WdKHi
-aJMk2IkxIzkCIet6LRvMstyTiETvHZYOhw0nZfyu7x9G4iY0GR6yc+4edvZTtUHf
-mfUm15jWuxGdMuNPz90N2rs41G13NlVF6IRjfKhaeh9xWXyrpmzhfQ7jLcy7Qonb
-z3+5QbhuxboR56leCPxOtkbVStkSQvDB6KAIc2FR2o5QYcocFk1/Qe/9QWjUrwiY
-N7uwVOy5Ty+Jd9tTbCei3sYi3muf1C5GbreUHe04oOBSbsqVX+LlCMLUGLyuyBNp
-DJLbcAJHMwCXaCLxbi6kpWf680mK4XDNgSqwS7jQGAhsCvB/hN4=
-=pn2L
------END PGP SIGNATURE-----
-
---Hf61M2y+wYpnELGG--
+>                                                         Thanx, Paul
+>
+> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> > ---
+> >  kernel/rcu/tree.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d91c9156fab2..f0d9251fa663 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3364,7 +3364,6 @@ void rcu_cpu_starting(unsigned int cpu)
+> >  {
+> >       unsigned long flags;
+> >       unsigned long mask;
+> > -     int nbits;
+> >       unsigned long oldmask;
+> >       struct rcu_data *rdp;
+> >       struct rcu_node *rnp;
+> > @@ -3381,10 +3380,9 @@ void rcu_cpu_starting(unsigned int cpu)
+> >       rnp->qsmaskinitnext |= mask;
+> >       oldmask = rnp->expmaskinitnext;
+> >       rnp->expmaskinitnext |= mask;
+> > -     oldmask ^= rnp->expmaskinitnext;
+> > -     nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+> >       /* Allow lockless access for expedited grace periods. */
+> > -     smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
+> > +     if (!(oldmask & mask))
+> > +             smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + 1); /* ^^^ */
+> >       rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+> >       rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+> >       rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+> > --
+> > 2.23.0
+> >
