@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332431AECBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831971AECC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgDRN17 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 18 Apr 2020 09:27:59 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:58124 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725804AbgDRN17 (ORCPT
+        id S1726061AbgDRNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 09:45:49 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:54131 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725879AbgDRNps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 09:27:59 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-163-iEq3HNYPO8Gv4ZuIWssZ0w-1; Sat, 18 Apr 2020 14:27:54 +0100
-X-MC-Unique: iEq3HNYPO8Gv4ZuIWssZ0w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 18 Apr 2020 14:27:54 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 18 Apr 2020 14:27:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mikulas Patocka' <mpatocka@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra" <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>
-Subject: RE: [PATCH] x86: introduce memcpy_flushcache_clflushopt
-Thread-Topic: [PATCH] x86: introduce memcpy_flushcache_clflushopt
-Thread-Index: AQHWFLZf1uwJ38llN06XsGw6srhIuah+3wRg
-Date:   Sat, 18 Apr 2020 13:27:53 +0000
-Message-ID: <69c2e011c5814255926f309dd50e6d67@AcuMS.aculab.com>
-References: <alpine.LRH.2.02.2004071029270.8662@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4goJ2jbXNVZbMUKtRUominhuMhuTKrMh=fnhrfvC4jyjw@mail.gmail.com>
- <alpine.LRH.2.02.2004081439080.13932@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4grNHvyYEc4W6PkymhEJvLb17tXbC3JZdqvtFxmMZ8DCQ@mail.gmail.com>
- <alpine.LRH.2.02.2004090612320.27517@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2004160411460.7833@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gpe8u=zNrRhvd9ioVNGbOJfRUXzFZuV--be6Hbj0xXtQ@mail.gmail.com>
- <alpine.LRH.2.02.2004170831530.16047@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2004170831530.16047@file01.intranet.prod.int.rdu2.redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Sat, 18 Apr 2020 09:45:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TvvMGTO_1587217544;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvvMGTO_1587217544)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Apr 2020 21:45:45 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: [PATCH v2 0/2] always record memcg id for swapped memcg pages 
+Date:   Sat, 18 Apr 2020 21:33:07 +0800
+Message-Id: <1587216789-42342-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka
-> Sent: 17 April 2020 13:47
-...
-> Index: linux-2.6/drivers/md/dm-writecache.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/md/dm-writecache.c	2020-04-17 14:06:35.139999000 +0200
-> +++ linux-2.6/drivers/md/dm-writecache.c	2020-04-17 14:06:35.129999000 +0200
-> @@ -1166,7 +1166,10 @@ static void bio_copy_block(struct dm_wri
->  			}
->  		} else {
->  			flush_dcache_page(bio_page(bio));
-> -			memcpy_flushcache(data, buf, size);
-> +			if (likely(size > 512))
-> +				memcpy_flushcache_clflushopt(data, buf, size);
-> +			else
-> +				memcpy_flushcache(data, buf, size);
+Hi Johannes,
 
-Hmmm... have you looked at how long clflush actually takes?
-It isn't too bad if you just do a small number, but using it
-to flush large buffers can be very slow.
+2 patches fold MEMCG_SWAP feature into kernel as default. I don't know if
+they could fit your new solution.
 
-I've an Ivy bridge system where the X-server process requests the
-frame buffer be flushed out every 10 seconds (no idea why).
-With my 2560x1440 monitor this takes over 3ms.
+But just in case if they can save you some typing. :)
 
-This really needs a cond_resched() every few clflush instructions.
+Thanks
+Alex
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: cgroups@vger.kernel.org
+---
+Alex Shi (2):
+  memcg: folding CONFIG_MEMCG_SWAP as default
+  mm/memcg: remove swapaccount kernel parameter
 
-	David
+ Documentation/admin-guide/kernel-parameters.txt |  5 --
+ arch/arm/configs/omap2plus_defconfig            |  1 -
+ arch/arm64/configs/defconfig                    |  1 -
+ arch/mips/configs/db1xxx_defconfig              |  1 -
+ arch/mips/configs/generic_defconfig             |  1 -
+ arch/mips/configs/loongson3_defconfig           |  1 -
+ arch/parisc/configs/generic-64bit_defconfig     |  1 -
+ arch/powerpc/configs/powernv_defconfig          |  1 -
+ arch/powerpc/configs/pseries_defconfig          |  1 -
+ arch/s390/configs/debug_defconfig               |  1 -
+ arch/s390/configs/defconfig                     |  1 -
+ arch/sh/configs/sdk7786_defconfig               |  1 -
+ arch/sh/configs/urquell_defconfig               |  1 -
+ include/linux/memcontrol.h                      |  4 --
+ include/linux/swap.h                            | 27 ----------
+ include/linux/swap_cgroup.h                     | 30 -----------
+ init/Kconfig                                    | 20 --------
+ mm/Makefile                                     |  4 +-
+ mm/memcontrol.c                                 | 68 ++++++-------------------
+ mm/swap_cgroup.c                                |  7 ---
+ 20 files changed, 17 insertions(+), 160 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+1.8.3.1
 
