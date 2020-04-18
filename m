@@ -2,138 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB6C1AF500
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B68F1AF504
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 22:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgDRUwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 16:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgDRUwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 16:52:36 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9872C061A0F
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:52:34 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id m2so4726413lfo.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s/MCXYluiV/Di6rRKjHU/d4NnQSkJUzqjX8QxIsHmUc=;
-        b=IeynsinqAESZ7D5iH0Mw7AG00cif0HeQeEDlNnZHliL9sMslW01AUBwTualDAKcx6x
-         vICf3ReOAIMcS25qObUhbwk3qGc/BhprOp/3VHZEytcvQY4Pv2D4bBv88lxtaCvewGqg
-         DnGnok45WuhxHNH5EwyksqWHkDHRbvN//rwvQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s/MCXYluiV/Di6rRKjHU/d4NnQSkJUzqjX8QxIsHmUc=;
-        b=X1dcQJhZr20g18p781T0toQHxmtdlOJfFdjsn/k6C1FcmzeDRJ+wQCgpuF/XBoYuwB
-         /ruG8sJDsIlEAxQtYf+DmUKY6DwMKoRCBdDuQ8ZR6G5MgYqD2n3KkFIajfue/Q/WAO/v
-         SN9OKUvA2kte+pNgW+rMjc5Na3KByuWdzJpwLFZk0tL+pGZKTCe9TGWgE0MhbV3FewY9
-         wyWOfsoQxO4fqpo01Z2T7ul3lI4LGVWMavpMQOWlGtJsSGOUTcS+sWg5QVa/ML+Ao7VV
-         jPr4qdFp16Brw/wWom8kErOp6oz2kj3AmSV2BTBowi1hIcdcn9BcamW64m1sl2BfcS7l
-         iybQ==
-X-Gm-Message-State: AGi0PuYIa+eUFSRONeGQolnIZrMnL8QSNYgF4qyZlx+Hjo0xRZu9CfMV
-        x/hyzs24KMHddloRfGXCQzGBbPvDVIQ=
-X-Google-Smtp-Source: APiQypIl5tZF2mg24VmOyesBcu+yrQzijwWFKa1E3OkEaddv0Wk1NkP298WxjiwkswWycvnfnrD8Gg==
-X-Received: by 2002:ac2:4551:: with SMTP id j17mr5770370lfm.147.1587243152674;
-        Sat, 18 Apr 2020 13:52:32 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id 64sm19322217ljj.41.2020.04.18.13.52.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Apr 2020 13:52:31 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id m2so4726356lfo.6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 13:52:31 -0700 (PDT)
-X-Received: by 2002:ac2:4466:: with SMTP id y6mr5848677lfl.125.1587243150793;
- Sat, 18 Apr 2020 13:52:30 -0700 (PDT)
+        id S1728263AbgDRUz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 16:55:27 -0400
+Received: from mout.gmx.net ([212.227.15.18]:51509 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726014AbgDRUz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 16:55:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1587243275;
+        bh=VKy0dQDCaD8oqgDy725ir2gKt+Kxucb5P54PGywTa38=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=kQCGXWhVlpl6QVtIxnd0SMXMLVVzhHrIirSGtbnTLIDazLoohm8RpK/5TlhcxSksh
+         m7p17hMubGAgexag9MlrcUVhhMQNHW9yLNYYTFK75QoDithmq4DehK5dNBYxvG7Xxt
+         LZXP0naIIi4tS7T51GLTcykOt7R2rz/nNZGfzTLY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.147.134]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MJmGZ-1jexKE1zDt-00K9bL; Sat, 18
+ Apr 2020 22:54:35 +0200
+Subject: Re: [PATCHv3 25/50] parisc: Add show_stack_loglvl()
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        linux-parisc@vger.kernel.org
+References: <20200418201944.482088-1-dima@arista.com>
+ <20200418201944.482088-26-dima@arista.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <55e2b275-b232-f009-ab8e-0469506e6e96@gmx.de>
+Date:   Sat, 18 Apr 2020 22:54:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <67FF611B-D10E-4BAF-92EE-684C83C9107E@amacapital.net>
-In-Reply-To: <67FF611B-D10E-4BAF-92EE-684C83C9107E@amacapital.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 18 Apr 2020 13:52:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjePyyiNZo0oufYSn0s46qMYHoFyyNKhLOm5MXnKtfLcg@mail.gmail.com>
-Message-ID: <CAHk-=wjePyyiNZo0oufYSn0s46qMYHoFyyNKhLOm5MXnKtfLcg@mail.gmail.com>
-Subject: Re: [PATCH] x86/memcpy: Introduce memcpy_mcsafe_fast
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        stable <stable@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200418201944.482088-26-dima@arista.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:g9CB259vry3HDjlljUe/oUrpw0PWkQ4fR6VngeJnzUiqDc8zCYQ
+ mEWAeVJhlz4FVDmqkaGkiRBKITR+wI/ln2COKmNt4ZpEGoz1ZceD7B986Ii7xVnAwKSaHZu
+ KshAg8W3rTul9xVbf9DTsHqkagFfd4vtM6PfQ1LAsuNjpidY0yjL6d452nYsIdOQmrub3tw
+ LN1Vbe5UwYyz/cDKSXBww==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IkVwbkTWS/0=:VWKEmA6jhZFGLnMaN+jZMa
+ Nx4YX4OGNFPQzbZ0khwtZe2hkLfnFa7n+GNZUUF/imydPnINV4uEwKpU6boB0fhILvqpQY05U
+ 2ip9iu8B+r3yTUyS4h9zMxjpP7XXsFh7lTtwa3ljHbpW4KaefH/l0NV9GiXwMuPUNJDMKWolX
+ b6VYK9lEb2nqQtYRC0REZ4W43Y+Qp7jKp5M/Z4QwXQwsnNmwK+Ett6MUhaM7C+ll7lPJ4OFSd
+ OLwCSxeHwYsRYYg5Pe93bRV2U/HTM4ZH+29R2tBJvxOOSUGh41hnYpcXDcMLCXsqoj6Aw2FCm
+ DrEcIeDTBG0XcPKKmhWAyEbRDn34VdeoQgkH0QOROhYPXuIU0ZQtQEQcPlZeT6Z22Z+IBdcQC
+ slDmVIXqrO2OmAbI9yHJRH/I3Yyske8/lkcg2tjePqcbwSbZD4fIaw+wr89jalvK0rlQ1Ajth
+ s22P2/XUw9pTb2H1hUoB1gwVtvTboqT1k9cDPL3N1M3jQv464SqGv4qClAex/4k9kKC0uiXoK
+ KKnPHgQa/Rz2GQkh+KMrFhBRnuOy5pxDmiXBTXqNOH7kRyvB6dm0eSYYc36TytY6INrOtBG5P
+ 5ItwwD+6t91yuXjG6VVZJuZM/JGVtT5G0G+t0hN3Xqmx4b9uk0bjYxKRk0qyHu08Kk7G2pY2H
+ fyZIDpbFXQMERia3SSdp5ar2IZUo83EJ1Ak9kZXCnGauVHCIvMGwljOaLvYBlGYPQzHBjGVob
+ nPo0RN9Kz6yHP+CG2zpw1FzSi3I3LEFv6XGJ11ChQA8ApbUmzQlMsxrL8jvmCbL0oe/cnuTEH
+ nym6H7ACpHdfXOkZo24lJyA+5+7xhzzaOG7XH1dJ0DMEuBcb0Ox7BIbLiQx0N2DZZf01JK6S1
+ KyIfkfhWPUtkOTtX+pLysPfMZmDx6rihoECOctOaLv4y9RKXuoJyOIzIig0GO5jqofVFTNTrM
+ q7Ha3MGyrIfIqvnINrL93mpdo8Z02UMskq2fyG92pcSIRhKsCA4LgZ1LkBiqoCoG+dPZn+hrM
+ 0T/o5X3Dgr9uNxuxSSdJKlmIn6u7qNa7lOh74Woj9R0cjxfnNonhDFKhAOKzRKl0KboUe5mYp
+ f/DVuSgWscbsGPn5Y5w2aIhJZNuodRbYJaR1XTndB2i+a+PPj61lbJLLHWmCjlcD8G2wD8Q4u
+ NhT9ZxWfzbhnNo/fcTVVzlFyAteMQqd36WHvPtROoOwIInOV/FlvVKzjvLDoo5Q7tsl6k7jfA
+ FD2jkA6wbn0M7/92O
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 1:30 PM Andy Lutomirski <luto@amacapital.net> wrote=
-:
+On 18.04.20 22:19, Dmitry Safonov wrote:
+> Currently, the log-level of show_stack() depends on a platform
+> realization. It creates situations where the headers are printed with
+> lower log level or higher than the stacktrace (depending on
+> a platform or user).
 >
-> Maybe I=E2=80=99m missing something obvious, but what=E2=80=99s the alter=
-native?  The _mcsafe variants don=E2=80=99t just avoid the REP mess =E2=80=
-=94 they also tell the kernel that this particular access is recoverable vi=
-a extable.
+> Furthermore, it forces the logic decision from user to an architecture
+> side. In result, some users as sysrq/kdb/etc are doing tricks with
+> temporary rising console_loglevel while printing their messages.
+> And in result it not only may print unwanted messages from other CPUs,
+> but also omit printing at all in the unlucky case where the printk()
+> was deferred.
+>
+> Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
+> an easier approach than introducing more printk buffers.
+> Also, it will consolidate printings with headers.
+>
+> Introduce show_stack_loglvl(), that eventually will substitute
+> show_stack().
+>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: linux-parisc@vger.kernel.org
+> [1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/=
+T/#u
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  arch/parisc/kernel/traps.c | 28 +++++++++++++++++-----------
+>  1 file changed, 17 insertions(+), 11 deletions(-)
 
-.. which they could easily do exactly the same way the user space
-accessors do, just with a much simplified model that doesn't even care
-about multiple sizes, since unaligned accesses weren't valid anyway.
+Acked-by: Helge Deller <deller@gmx.de>
 
-The thing is, all of the MCS code has been nasty. There's no reason
-for it what-so-ever that I can tell. The hardware has been so
-incredibly broken that it's basically unusable, and most of the
-software around it seems to have been about testing.
+Thanks!
+Helge
 
-So I absolutely abhor that thing. Everything about that code has
-screamed "yeah, we completely mis-designed the hardware, we're pushing
-the problems into software, and nobody even uses it or can test it so
-there's like 5 people who care".
 
-And I'm pushing back on it, because I think that the least the code
-can do is to at least be simple.
+>
+> diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+> index 82fc01189488..c2411de3730f 100644
+> --- a/arch/parisc/kernel/traps.c
+> +++ b/arch/parisc/kernel/traps.c
+> @@ -49,7 +49,7 @@
+>  #include "../math-emu/math-emu.h"	/* for handle_fpe() */
+>
+>  static void parisc_show_stack(struct task_struct *task,
+> -	struct pt_regs *regs);
+> +	struct pt_regs *regs, const char *loglvl);
+>
+>  static int printbinary(char *buf, unsigned long x, int nbits)
+>  {
+> @@ -155,7 +155,7 @@ void show_regs(struct pt_regs *regs)
+>  		printk("%s IAOQ[1]: %pS\n", level, (void *) regs->iaoq[1]);
+>  		printk("%s RP(r2): %pS\n", level, (void *) regs->gr[2]);
+>
+> -		parisc_show_stack(current, regs);
+> +		parisc_show_stack(current, regs, KERN_DEFAULT);
+>  	}
+>  }
+>
+> @@ -170,37 +170,43 @@ static DEFINE_RATELIMIT_STATE(_hppa_rs,
+>  }
+>
+>
+> -static void do_show_stack(struct unwind_frame_info *info)
+> +static void do_show_stack(struct unwind_frame_info *info, const char *l=
+oglvl)
+>  {
+>  	int i =3D 1;
+>
+> -	printk(KERN_CRIT "Backtrace:\n");
+> +	printk("%sBacktrace:\n", loglvl);
+>  	while (i <=3D MAX_UNWIND_ENTRIES) {
+>  		if (unwind_once(info) < 0 || info->ip =3D=3D 0)
+>  			break;
+>
+>  		if (__kernel_text_address(info->ip)) {
+> -			printk(KERN_CRIT " [<" RFMT ">] %pS\n",
+> -				info->ip, (void *) info->ip);
+> +			printk("%s [<" RFMT ">] %pS\n",
+> +				loglvl, info->ip, (void *) info->ip);
+>  			i++;
+>  		}
+>  	}
+> -	printk(KERN_CRIT "\n");
+> +	printk("%s\n", loglvl);
+>  }
+>
+>  static void parisc_show_stack(struct task_struct *task,
+> -	struct pt_regs *regs)
+> +	struct pt_regs *regs, const char *loglvl)
+>  {
+>  	struct unwind_frame_info info;
+>
+>  	unwind_frame_init_task(&info, task, regs);
+>
+> -	do_show_stack(&info);
+> +	do_show_stack(&info, loglvl);
+> +}
+> +
+> +void show_stack_loglvl(struct task_struct *t, unsigned long *sp,
+> +		       const char *loglvl)
+> +{
+> +	parisc_show_stack(t, NULL, loglvl);
+>  }
+>
+>  void show_stack(struct task_struct *t, unsigned long *sp)
+>  {
+> -	parisc_show_stack(t, NULL);
+> +	show_stack_loglvl(t, sp, KERN_CRIT)
+>  }
+>
+>  int is_valid_bugaddr(unsigned long iaoq)
+> @@ -446,7 +452,7 @@ void parisc_terminate(char *msg, struct pt_regs *reg=
+s, int code, unsigned long o
+>  		/* show_stack(NULL, (unsigned long *)regs->gr[30]); */
+>  		struct unwind_frame_info info;
+>  		unwind_frame_init(&info, current, regs);
+> -		do_show_stack(&info);
+> +		do_show_stack(&info, KERN_CRIT);
+>  	}
+>
+>  	printk("\n");
+>
 
-For example, none of those optimizations should exist. That function
-shouldn't have been inline to begin with. And if it really really
-matters from a performance angle that it was inline (which I doubt),
-it shouldn't have looked like a memory copy, it should have looked
-like "get_user()" (except without all the complications of actually
-having to test addresses or worry about different sizes).
-
-And it almost certainly shouldn't have been done in low-level asm
-either. It could have been a single "read aligned word" interface
-using an inline asm, and then everything else could have been done as
-C code around it.
-
-But no. The software side is almost as messy as the hardware side is.
-I hate it. And since nobody sane can test it, and the broken hardware
-is _so_ broken than nobody should ever use it, I have continually
-pushed back against this kind of ugly nasty special code.
-
-We know the writes can't fault, since they are buffered. So they
-aren't special at all.
-
-We know the acceptable reads for the broken hardware basically boil
-down to a single simple word-size aligned read, so you need _one_
-special inline asm for that. The rest of the cases can be handled by
-masking and shifting if you really really need to - and done better
-that way than with byte accesses anyway.
-
-Then you have _one_ C file that implements everything using that
-single operation (ok, if people absolutely want to do sizes, I guess
-they can if they can just hide it in that one file), and you have one
-header file that exposes the interfaces to it, and you're done.
-
-And you strive hard as hell to not impact anything else, because you
-know that the hardware is unacceptable until all those special rules
-go away. Which they apparently finally have.
-
-                Linus
