@@ -2,154 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A281AEB26
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 11:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C891AEB56
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 11:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725893AbgDRJUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 05:20:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44550 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725856AbgDRJUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 05:20:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BC2F5AB7F;
-        Sat, 18 Apr 2020 09:20:34 +0000 (UTC)
-Message-ID: <9c20715fdb2955a3974b3d11f6c4eaff588be536.camel@suse.de>
-Subject: Re: [PATCH v2 2/2] of: property: Do not link to disabled devices
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Date:   Sat, 18 Apr 2020 11:20:34 +0200
-In-Reply-To: <CAGETcx81uPQLCurX6N6pMH+2jOZBcs-9u5yhBp83jQWJks0EFw@mail.gmail.com>
-References: <20200417165442.1856-1-nsaenzjulienne@suse.de>
-         <20200417165442.1856-3-nsaenzjulienne@suse.de>
-         <CAGETcx81uPQLCurX6N6pMH+2jOZBcs-9u5yhBp83jQWJks0EFw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-BqN1HHTsGcrPA2KLRaf6"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
+        id S1725969AbgDRJ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 05:27:50 -0400
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:31985 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725856AbgDRJ1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 05:27:50 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.122])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 959CB6643B5;
+        Sat, 18 Apr 2020 17:27:43 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, Lyude Paul <lyude@redhat.com>,
+        Dhinakaran Pandiyan <dhinakaran.pandiyan@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Bernard Zhao <bernard@vivo.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] amdgpu_connector_set_property, fix error branch not return errno
+Date:   Sat, 18 Apr 2020 02:27:20 -0700
+Message-Id: <1587202042-115745-1-git-send-email-bernard@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVCTUxLS0tLS0xNSUJIQllXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kww6Pio*CDg2Tw0IDD1IKj4v
+        HDIKFFZVSlVKTkNMSUtJS01IQk9KVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSUlZV1kIAVlBT05JSjcG
+X-HM-Tid: 0a718c9d7de59373kuws959cb6643b5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The "if(!encoder)" branch return the same value 0 of the success
+branch, maybe return -EINVAL is more better.
 
---=-BqN1HHTsGcrPA2KLRaf6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+w
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-On Fri, 2020-04-17 at 14:08 -0700, Saravana Kannan wrote:
-> On Fri, Apr 17, 2020 at 9:54 AM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > When creating a consumer/supplier relationship between two devices,
-> > make sure the supplier node is actually active. Otherwise this will
-> > create a link relationship that will never be fulfilled. This, in the
-> > worst case scenario, will hang the system during boot.
-> >=20
-> > Note that, in practice, the fact that a device-tree represented
-> > consumer/supplier relationship isn't fulfilled will not prevent devices
-> > from successfully probing.
-> >=20
-> > Fixes: a3e1d1a7f5fc ("of: property: Add functional dependency link from=
- DT
-> > bindings")
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> >=20
-> > ---
-> >=20
-> > Changes since v1:
-> >  - Move availability check into the compatible search routine and bail
-> >    if device node disabled
-> >=20
-> >  drivers/of/property.c | 19 ++++++++++++++++++-
-> >  1 file changed, 18 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index dc034eb45defd..14b6266dd054b 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1045,8 +1045,25 @@ static int of_link_to_phandle(struct device *dev=
-,
-> > struct device_node *sup_np,
-> >          * Find the device node that contains the supplier phandle.  It=
- may
-> > be
-> >          * @sup_np or it may be an ancestor of @sup_np.
-> >          */
-> > -       while (sup_np && !of_find_property(sup_np, "compatible", NULL))
-> > +       while (sup_np) {
-> > +
-> > +               /*
-> > +                * Don't allow linking a device node as consumer of a
-> > disabled
-> > +                * node.
-> > +                */
->=20
-> Minor nit: I'd just say "Don't allow linking to a disabled supplier".
->=20
-> > +               if (!of_device_is_available(sup_np)) {
-> > +                       dev_dbg(dev, "Not linking to %pOFP - Not
-> > available\n",
-> > +                               sup_np);
-> > +                       of_node_put(sup_np);
-> > +                       return -ENODEV;
-> > +               }
->=20
-> This if block looks very similar to the one right after the loop.
-> Maybe there's a nice way to combine it?
->=20
-> If you replace this if block with this, it'll end up with the same result=
-.
-> if (!of_device_is_available(sup_np)) {
->         of_node_put(sup_np);
->         sup_np =3D NULL;
-> }
->=20
-> of_get_next_parent() handles a NULL input properly. So that won't be a
-> problem. And "No device" is a valid statement for both cases I think.
->=20
-> > +
-> > +               if (of_find_property(sup_np, "compatible", NULL))
-> > +                       break;
-> > +
-> >                 sup_np =3D of_get_next_parent(sup_np);
-> > +       }
-> > +
-> >         if (!sup_np) {
-> >                 dev_dbg(dev, "Not linking to %pOFP - No device\n", tmp_=
-np);
-> >                 return -ENODEV;
->=20
-> However, not against this patch as is if Rob/Frank like it as is.
-
-Agree with your suggestions, I'll send an v3.
-
-Regards,
-Nicolas
-
-
---=-BqN1HHTsGcrPA2KLRaf6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6axmIACgkQlfZmHno8
-x/4tQwf/aCxO5DM4IyxA61VgCuBo+QzxtE6q4WBs20J4EKcM0tcoSwVQzCEJHC8f
-HEDszhegck501HhapWxgnZvHbR1pv5aLehwgl0j/3MTo8HTM/fe3/odQpOUfKY+y
-yjMWNULoy4iRQMsHDZHbdFKG4THQ/yz5vebhKVwxIlzlF37yDmMZgLBDlikbiJoa
-6CA4WlKlgc0QU5+6OhVNDcP5fB0JVCSnePVCEqM51Usyngg0JXlBCJ9WQnLVMXDb
-DtJy9sMC1GCYvuTp6BMWqsJ8ZUz0RAuQ0/bQtFKPvwsbpGDfR0EBl4KqTGH8BLjx
-ZuC3RL9z8aSEmrfBkIJ//DMR5K3YXA==
-=NwP/
------END PGP SIGNATURE-----
-
---=-BqN1HHTsGcrPA2KLRaf6--
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+index f355d9a..1f8c6b4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+@@ -474,12 +474,12 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+ 		if (!amdgpu_encoder->enc_priv)
+-			return 0;
++			return -EINVAL;
+ 
+ 		dig = amdgpu_encoder->enc_priv;
+ 		new_coherent_mode = val ? true : false;
+@@ -494,7 +494,7 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+@@ -509,7 +509,7 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+@@ -523,7 +523,7 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+@@ -537,7 +537,7 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+@@ -551,7 +551,7 @@ static int amdgpu_connector_set_property(struct drm_connector *connector,
+ 		/* need to find digital encoder on connector */
+ 		encoder = amdgpu_connector_find_encoder(connector, DRM_MODE_ENCODER_TMDS);
+ 		if (!encoder)
+-			return 0;
++			return -EINVAL;
+ 
+ 		amdgpu_encoder = to_amdgpu_encoder(encoder);
+ 
+-- 
+2.7.4
 
