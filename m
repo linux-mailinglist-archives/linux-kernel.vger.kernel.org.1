@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C011AF40B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61B61AF40D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 21:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgDRTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 15:00:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42032 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727826AbgDRTAX (ORCPT
+        id S1728153AbgDRTBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 15:01:36 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:40962 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgDRTBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 15:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587236421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w0Gisw9hWUsG7t2w9OL7DQLlQmWjB8dYgMJG70gQDSw=;
-        b=a4Ta2E5+yaJoGONQxs8KxGyA7mkdoORM3CBb2+i7P+5DiyiQe28KhgfCDP6IS3PUtOEmUG
-        2eMu0lN61ee7KcSmnBi9OAeMTtaEI7SQGUv0jQRs3r4CBF4HC2lSU9UFG0ei2vb38E9g/k
-        RrtdrW5qACr9b29KAJVQyuTXFVEt68A=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-WQXmeWD_PAiHtTNAXaZ2Yw-1; Sat, 18 Apr 2020 15:00:18 -0400
-X-MC-Unique: WQXmeWD_PAiHtTNAXaZ2Yw-1
-Received: by mail-qk1-f198.google.com with SMTP id x5so5507092qkn.20
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 12:00:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w0Gisw9hWUsG7t2w9OL7DQLlQmWjB8dYgMJG70gQDSw=;
-        b=mUyV0exCSxyTn2iVjfr3RdFLSD61sGblwwIpWySncOoqp8NP4heAVWi3nxllAdhKfZ
-         wvTVN3Hub2lvvVQh2EtYI2RUA9qP79OjVQTGVx6x2HifvLLHwKuNgZ48WsEEYKM6Nqqo
-         icdVRsGKjCHmrP/WwL5K+77zNZK/qXr8OHpQWp+n1Bw+J4beUu5kHeNsSwVVwwEwPFRd
-         JP2dJsRvOEkKYoY57bc0OXOC7xW0jx8cB/Ecr/1V/jiCbz1OxpLgBk1Tg9a97YzNcFfW
-         KFrZBuVrLJPXixdKQi0ohZFfKxnry3KpUa9maIivxsgjqdvAk5tuvLZecvPsU6lOiDFv
-         6djA==
-X-Gm-Message-State: AGi0PuYKZvTGsiKRwnxYX7apUBafLJSFm8/01ztvj+hrblVOXgv2yJKR
-        tONGQ2rAsawAqoIWM5Pg4CZ8FDgfDrcwJ8Ez3C1KMc1F6ShHCtTmGtAfXvxTo/5w7My/n4JYXqK
-        fCpMLRMLbYnItCk3MQGkZCJmXsyQq9FaCZ+cMR5qH
-X-Received: by 2002:a37:d0a:: with SMTP id 10mr8976654qkn.288.1587236417119;
-        Sat, 18 Apr 2020 12:00:17 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI2nHN5tNsMq4pPm5ciYHRA5VRWl7aSSu5+P9HKsSo/yFjTBtNzBH3IvuFjBQ139wkhhgPpEk79Jxs2c07SmRA=
-X-Received: by 2002:a37:d0a:: with SMTP id 10mr8976624qkn.288.1587236416872;
- Sat, 18 Apr 2020 12:00:16 -0700 (PDT)
+        Sat, 18 Apr 2020 15:01:35 -0400
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 03IJ1JqZ013789;
+        Sun, 19 Apr 2020 04:01:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 03IJ1JqZ013789
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587236480;
+        bh=GMWTNYzKx2p6AtuFISRqos/DJ7YLVq9yd6sy0E83Y1g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LY2hnNJss/p/DNWumoPJe9gAxXBpbVoMn0t2qRNhlQQxjVYS0JB3OrNSi/keiWn63
+         qUnt2aRQuhmxHHrQw7xWa+eKAOJ8RcEuWZGU+e2MarByOILha83js6TWc3pU9wamhW
+         rSZ9JkyLNEFZHYAkYRtygosYGywyvChLBrx8JFXpqn7qvm5aVPOnLhyXQ8JBHHw9P9
+         T4cY2qtdZTxlR9mWd8DnW8ypzIW4K/HXQQAzMMWl8G+roCNcq8HlYapAIbOdxKGuDu
+         0udehiLgV2PCn0xVlijudxgzLIQgkSS0jvaDsWqA4t8reBddTl5XFEJAiC6ffP0mxA
+         mRezBbUXIw0Aw==
+X-Nifty-SrcIP: [209.85.217.47]
+Received: by mail-vs1-f47.google.com with SMTP id l25so644580vso.6;
+        Sat, 18 Apr 2020 12:01:20 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYfws6fd8mY31j+wOcPlh7D+JMusWqwWzEdg2ZKFoOkK5BNj5/i
+        ue1FUkgU7vX8pkv2jAuHGzMNzCS7NZzXG6Cbk1Y=
+X-Google-Smtp-Source: APiQypL+1S2WFAmpkq0fehgFFzc8Ik838EWpRiGLQJSMMlxW7U+WjbXpVebmVboQpFuBxiXm25G25lJOBStn4Xyga6E=
+X-Received: by 2002:a67:3293:: with SMTP id y141mr6907237vsy.54.1587236479217;
+ Sat, 18 Apr 2020 12:01:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200416143532.11743-1-mszeredi@redhat.com> <c47459a5-3323-121e-ec66-4a8eb2a8afca@samba.org>
-In-Reply-To: <c47459a5-3323-121e-ec66-4a8eb2a8afca@samba.org>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Sat, 18 Apr 2020 21:00:05 +0200
-Message-ID: <CAOssrKe7RNyReAFLoQGBDm79qMdXEubhP5QhG_+UmGZXgeXBkA@mail.gmail.com>
-Subject: Re: [PATCH] vfs: add faccessat2 syscall
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>
+References: <20200417011146.83973-1-saeedm@mellanox.com>
+In-Reply-To: <20200417011146.83973-1-saeedm@mellanox.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 19 Apr 2020 04:00:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
+Message-ID: <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        jonas@kwiboo.se, David Airlie <airlied@linux.ie>,
+        jernej.skrabec@siol.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 8:36 PM Stefan Metzmacher <metze@samba.org> wrote:
+On Fri, Apr 17, 2020 at 10:12 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
 >
-> Hi Miklos,
+> Due to the changes to the semantics of imply keyword [1], which now
+> doesn't force any config options to the implied configs any more.
 >
-> > POSIX defines faccessat() as having a fourth "flags" argument, while the
-> > linux syscall doesn't have it.  Glibc tries to emulate AT_EACCESS and
-> > AT_SYMLINK_NOFOLLOW, but AT_EACCESS emulation is broken.
-> >
-> > Add a new faccessat(2) syscall with the added flags argument and implement
-> > both flags.
-> >
-> > The value of AT_EACCESS is defined in glibc headers to be the same as
-> > AT_REMOVEDIR.  Use this value for the kernel interface as well, together
-> > with the explanatory comment.
+> A module (FOO) that has a weak dependency on some other modules (BAR)
+> is now broken if it was using imply to force dependency restrictions.
+> e.g.: FOO needs BAR to be reachable, especially when FOO=y and BAR=m.
+> Which might now introduce build/link errors.
 >
-> It would be nice if resolv_flags would also be passed in addition to the
-> at flags.
-> See:https://lore.kernel.org/linux-api/CAHk-=wiaL6zznNtCHKg6+MJuCqDxO=yVfms3qR9A0czjKuSSiA@mail.gmail.com/
+> There are two options to solve this:
+> 1. use IS_REACHABLE(BAR), everywhere BAR is referenced inside FOO.
+> 2. in FOO's Kconfig add: depends on (BAR || !BAR)
 >
-> We should avoid expecting yet another syscall in near future.
+> The first option is not desirable, and will leave the user confused when
+> setting FOO=y and BAR=m, FOO will never reach BAR even though both are
+> compiled.
+>
+> The 2nd one is the preferred approach, and will guarantee BAR is always
+> reachable by FOO if both are compiled. But, (BAR || !BAR) is really
+> confusing for those who don't really get how kconfig tristate arithmetics
+> work.
+>
+> To solve this and hide this weird expression and to avoid repetition
+> across the tree, we introduce new keyword "uses" to the Kconfig options
+> family.
+>
+> uses BAR:
+> Equivalent to: depends on symbol || !symbol
+> Semantically it means, if FOO is enabled (y/m) and has the option:
+> uses BAR, make sure it can reach/use BAR when possible.
+>
+> For example: if FOO=y and BAR=m, FOO will be forced to m.
+>
+> [1] https://lore.kernel.org/linux-doc/20200302062340.21453-1-masahiroy@kernel.org/
+>
+> Link: https://lkml.org/lkml/2020/4/8/839
+> Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
 
-What is the objection against
 
-openat(... O_PATH)
-foobarat(fd, AT_EMPTY_PATH, ...)
+I am not convinced with this patch.
 
-?
+This patch adds another way to do the same thing.
+It is true that it _hides_ the problems, and
+makes the _surface_  cleaner at best,
+but the internal will be more complicated.
 
-Thanks,
-Miklos
+(FOO || !FOO) is difficult to understand, but
+the behavior of "uses FOO" is as difficult to grasp.
 
+People would wonder, "what 'uses FOO' means?",
+then they would find the explanation in kconfig-language.rst:
+
+  "Equivalent to: depends on symbol || !symbol
+  Semantically it means, if FOO is enabled (y/m) and has the option:
+  uses BAR, make sure it can reach/use BAR when possible."
+
+To understand this correctly, people must study
+the arithmetic of (symbol || !symbol) anyway.
+
+I do not want to extend Kconfig for the iffy syntax sugar.
+
+
+(symbol || !symbol) is horrible.
+But, I am also scared to see people would think 'uses symbol'
+is the right thing to do, and start using it liberally
+all over the place.
+
+
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
