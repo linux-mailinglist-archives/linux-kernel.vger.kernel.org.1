@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E126F1AECC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F2A1AECD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 15:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgDRNph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 09:45:37 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:11717 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgDRNpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 09:45:36 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75e9b0470c0a-aeed6; Sat, 18 Apr 2020 21:45:20 +0800 (CST)
-X-RM-TRANSID: 2ee75e9b0470c0a-aeed6
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.172.61])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75e9b046d98d-93ff7;
-        Sat, 18 Apr 2020 21:45:19 +0800 (CST)
-X-RM-TRANSID: 2ee75e9b046d98d-93ff7
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     joro@8bytes.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        robdclark@gmail.com
-Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH v2]iommu/qcom:fix local_base status check
-Date:   Sat, 18 Apr 2020 21:47:03 +0800
-Message-Id: <20200418134703.1760-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1725991AbgDRNsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 09:48:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbgDRNsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 09:48:17 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCDFC2054F;
+        Sat, 18 Apr 2020 13:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587217697;
+        bh=yySHHLraBwaEa7eTZ12dTCbxl9BA6uw6sL6wccS0dZU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bxAMIlrcKUW/kM+m1JkVx7383b/VqAVrO+oDIvPOcJF+MyekwP06bxz/Tik+qowuO
+         r9/STC5u4+jHseu0Y1/F62OBDBrkSTDRfLyRFSg+4FYa1S8b0yhEJ5/vJznYH3NV94
+         wTa5G7qI/2Hy3QIWAc871XUNow9cLQYTb++aH7eQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Adrian Huang <ahuang12@lenovo.com>, Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.6 01/73] iommu/amd: Fix the configuration of GCR3 table root pointer
+Date:   Sat, 18 Apr 2020 09:47:03 -0400
+Message-Id: <20200418134815.6519-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function qcom_iommu_device_probe() does not perform sufficient
-error checking after executing devm_ioremap_resource(), which can
-result in crashes if a critical error path is encountered.
+From: Adrian Huang <ahuang12@lenovo.com>
 
-Fixes: 0ae349a0f33f ("iommu/qcom: Add qcom_iommu")
+[ Upstream commit c20f36534666e37858a14e591114d93cc1be0d34 ]
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+The SPA of the GCR3 table root pointer[51:31] masks 20 bits. However,
+this requires 21 bits (Please see the AMD IOMMU specification).
+This leads to the potential failure when the bit 51 of SPA of
+the GCR3 table root pointer is 1'.
+
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+Fixes: 52815b75682e2 ("iommu/amd: Add support for IOMMUv2 domain mode")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-v2:
- - fix commit message and add fixed tag
----
- drivers/iommu/qcom_iommu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/iommu/amd_iommu_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/qcom_iommu.c b/drivers/iommu/qcom_iommu.c
-index 4328da0b0..b160cf140 100644
---- a/drivers/iommu/qcom_iommu.c
-+++ b/drivers/iommu/qcom_iommu.c
-@@ -813,8 +813,11 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
- 	qcom_iommu->dev = dev;
+diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
+index f8d01d6b00da7..ca8c4522045b3 100644
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -348,7 +348,7 @@
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res)
-+	if (res) {
- 		qcom_iommu->local_base = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(qcom_iommu->local_base))
-+			return PTR_ERR(qcom_iommu->local_base);
-+	}
+ #define DTE_GCR3_VAL_A(x)	(((x) >> 12) & 0x00007ULL)
+ #define DTE_GCR3_VAL_B(x)	(((x) >> 15) & 0x0ffffULL)
+-#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0xfffffULL)
++#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0x1fffffULL)
  
- 	qcom_iommu->iface_clk = devm_clk_get(dev, "iface");
- 	if (IS_ERR(qcom_iommu->iface_clk)) {
+ #define DTE_GCR3_INDEX_A	0
+ #define DTE_GCR3_INDEX_B	1
 -- 
-2.20.1.windows.1
-
-
+2.20.1
 
