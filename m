@@ -2,137 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE331AEC45
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6711AEC43
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Apr 2020 13:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgDRL7B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 18 Apr 2020 07:59:01 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:60032 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbgDRL7B (ORCPT
+        id S1725960AbgDRL5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 07:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725869AbgDRL5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 07:59:01 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPm7f-0007nX-II; Sat, 18 Apr 2020 05:58:59 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jPm7e-0001Xl-Io; Sat, 18 Apr 2020 05:58:59 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Jeremy Kerr <jk@ozlabs.org>
-References: <20200414070142.288696-1-hch@lst.de>
-        <20200414070142.288696-3-hch@lst.de>
-        <87pnc5akhk.fsf@x220.int.ebiederm.org>
-        <87k12dakfx.fsf_-_@x220.int.ebiederm.org>
-        <c51c6192-2ea4-62d8-dd22-305f7a1e0dd3@c-s.fr>
-Date:   Sat, 18 Apr 2020 06:55:56 -0500
-In-Reply-To: <c51c6192-2ea4-62d8-dd22-305f7a1e0dd3@c-s.fr> (Christophe Leroy's
-        message of "Sat, 18 Apr 2020 10:05:19 +0200")
-Message-ID: <87v9lx3t4j.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sat, 18 Apr 2020 07:57:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E2BC061A0C;
+        Sat, 18 Apr 2020 04:57:44 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t16so2011671plo.7;
+        Sat, 18 Apr 2020 04:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JmiC2uXHtR2fV4jcRb3MLojHtDU/Lt+48l8G1gdW4pk=;
+        b=TQt1XJ/LmDCzVPpYbHIgAtwOcv0IN+PJyZ7rRRdduFFG3Xd4a/d9TxeRnt7+Rr5q1x
+         XP4B+7fX3pjxV1n034fkSnVYfU5Dpnf6dz/OCAkfJ481soIXIdWvd4vrKxBHcKlojlrz
+         keQGStkoVc8svZAU889HjBeS0bsEMBsRK53PzxSL0RjVcaKXOABRHtTr0UDN6+kxZNDP
+         ctziZkG8W9U9uJtM857JK1YwRKBn/SIrK58kl07tpXlJIktMhUfRTpHAyXN17D/19bL5
+         7+lsS6C6AdTVGzml6Wla4yaxDOqD+FRDTUjevnICk4GnNNifHsfJPKoJRtAs3TgqR34W
+         keXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JmiC2uXHtR2fV4jcRb3MLojHtDU/Lt+48l8G1gdW4pk=;
+        b=dVixjpAit8GoS0uw7Z77mDuqr6aWr7iGjNY4pOgRjdzzqrGnm4g12km/ropgFrp14z
+         DRTib9f0o6+WJ8PG2O3z4Jtgv9Ry2knASWZrVn9mYQ9EVeZHWQv5d07J73PGkzPhzLEL
+         QDMKRJ8YFazSk+uKQckIuFOb2GX7TlgbqEU1PMTdQKoHjGZmuVsJuTE5tnOSvbVhmDlp
+         2h06Il/6yxtcyvxDDoP3Mr+8mU3UeG6R64Xpt+AM54Voeh+9YF8dt6c/661lgzYhCDF7
+         1ePcMSLBpfF2TAZnPhq1visT2dFtt6MFvlxG3uwb66YpM256XtHGvqZlmZLY573MqaOv
+         vu8w==
+X-Gm-Message-State: AGi0PuZeGcu8DXgFdLjDtfj5euobYhYgnCZ4moy6QCfQS0CQptkCXcP1
+        3BQ3h38+siMSCc8KMvmRD4AhdYNtqyWFhNMvMCw=
+X-Google-Smtp-Source: APiQypIkRVqzXq895RV9hhPGbuM0W9MxE/rC5o4RLalyLhdj3OLmCHMZ8c7Ked3P4y/YyFrIg7si9CRwm17dYUECkRg=
+X-Received: by 2002:a17:90a:224b:: with SMTP id c69mr10131123pje.8.1587211063897;
+ Sat, 18 Apr 2020 04:57:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1jPm7e-0001Xl-Io;;;mid=<87v9lx3t4j.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18UJp5X1nu8GvTzwVNg4DhYMBf3vdPs/94=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.7 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMNoVowels,XMSubLong,XM_B_Unicode,XM_B_Unicode3
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1268]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 XM_B_Unicode3 BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Christophe Leroy <christophe.leroy@c-s.fr>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 521 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.2%), b_tie_ro: 10 (1.9%), parse: 1.11
-        (0.2%), extract_message_metadata: 15 (2.8%), get_uri_detail_list: 1.79
-        (0.3%), tests_pri_-1000: 13 (2.5%), tests_pri_-950: 1.21 (0.2%),
-        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 79 (15.1%), check_bayes:
-        77 (14.8%), b_tokenize: 8 (1.6%), b_tok_get_all: 18 (3.5%),
-        b_comp_prob: 2.9 (0.6%), b_tok_touch_all: 44 (8.5%), b_finish: 0.89
-        (0.2%), tests_pri_0: 380 (73.0%), check_dkim_signature: 0.54 (0.1%),
-        check_dkim_adsp: 3.4 (0.6%), poll_dns_idle: 1.15 (0.2%), tests_pri_10:
-        2.6 (0.5%), tests_pri_500: 13 (2.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 1/2] signal: Factor copy_siginfo_to_external32 from copy_siginfo_to_user32
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200417202859.35427-1-contact@artur-rojek.eu>
+ <20200417202859.35427-5-contact@artur-rojek.eu> <CAHp75VfRbnnuUhfyXpu+5dp4TutHSrHus=sX_vG_5F0dX4k0fQ@mail.gmail.com>
+ <UFBY8Q.ES4D59V22INC1@crapouillou.net> <CAHp75VfEAtqucMPdkygfBhojTJoHO5vFk_o0suiyf7i2JCMw9Q@mail.gmail.com>
+ <7CFY8Q.68YMS0V08F992@crapouillou.net>
+In-Reply-To: <7CFY8Q.68YMS0V08F992@crapouillou.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 18 Apr 2020 14:57:32 +0300
+Message-ID: <CAHp75VeVvE8LAO8f=-cwfgL6erFZACGwMnriNRaQnfnHw31wkg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 5/5] input: joystick: Add ADC attached joystick driver.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-input <linux-input@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@c-s.fr> writes:
-
-> Le 17/04/2020 à 23:09, Eric W. Biederman a écrit :
->>
->> To remove the use of set_fs in the coredump code there needs to be a
->> way to convert a kernel siginfo to a userspace compat siginfo.
->>
->> Call that function copy_siginfo_to_compat and factor it out of
->> copy_siginfo_to_user32.
+On Sat, Apr 18, 2020 at 1:48 AM Paul Cercueil <paul@crapouillou.net> wrote:
 >
-> I find it a pitty to do that.
 >
-> The existing function could have been easily converted to using
-> user_access_begin() + user_access_end() and use unsafe_put_user() to copy to
-> userspace to avoid copying through a temporary structure on the stack.
 >
-> With your change, it becomes impossible to do that.
+> Le sam. 18 avril 2020 =C3=A0 0:49, Andy Shevchenko
+> <andy.shevchenko@gmail.com> a =C3=A9crit :
+> > On Sat, Apr 18, 2020 at 12:24 AM Paul Cercueil <paul@crapouillou.net>
+> > wrote:
+> >>  Le sam. 18 avril 2020 =C3=A0 0:10, Andy Shevchenko
+> >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
+> >>  > On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek
+> >> <contact@artur-rojek.eu>
+> >>  > wrote:
+> >
+> > ...
+> >
+> >>  >>  +#include <linux/of.h>
+> >>  >
+> >>  > Do you really need this? (See below as well)
+> >
+> >>  >>  +static const struct of_device_id adc_joystick_of_match[] =3D {
+> >>  >>  +       { .compatible =3D "adc-joystick", },
+> >>  >>  +       { },
+> >>  >>  +};
+> >>  >>  +MODULE_DEVICE_TABLE(of, adc_joystick_of_match);
+> >>  >>  +
+> >>  >>  +static struct platform_driver adc_joystick_driver =3D {
+> >>  >>  +       .driver =3D {
+> >>  >>  +               .name =3D "adc-joystick",
+> >>  >
+> >>  >>  +               .of_match_table =3D
+> >>  >> of_match_ptr(adc_joystick_of_match),
+> >>  >
+> >>  > Drop this a bit harmful of_match_ptr() macro. It should go with
+> >> ugly
+> >>  > #ifdeffery. Here you simple introduced a compiler warning.
+> >>
+> >>  I assume you mean #ifdef around the of_device_id + module table
+> >> macro?
+> >
+> > Yes.
+> >
+> >>  > On top of that, you are using device property API, OF use in this
+> >> case
+> >>  > is contradictory (at lest to some extend).
+> >>
+> >>  I don't see why. The fact that the driver can work when probed from
+> >>  platform code
+> >
+> > Ha-ha, tell me how. I would like to be very surprised.
+>
+> iio_map_array_register(),
+> pinctrl_register_mappings(),
+> platform_add_devices(),
+>
+> you're welcome.
 
-I don't follow.  You don't like temporary structures in the coredump
-code or temporary structures in copy_siginfo_to_user32?
+I think above has no relation to what I'm talking about.
 
-A temporary structure in copy_siginfo_to_user is pretty much required
-so that it can be zeroed to guarantee we don't pass a structure with
-holes to userspace.
+How *this* driver can work as a platform instantiated one?
+We seems have a conceptual misunderstanding here.
 
-The implementation of copy_siginfo_to_user32 used to use the equivalent
-of user_access_begin() and user_access_end() and the code was a mess
-that was very difficult to reason about.  I recall their being holes
-in the structure that were being copied to userspace.
+For example, how can probe of this driver not fail, if it is not
+backed by a DT/ACPI properties?
 
-Meanwhile if you are going to set all of the bytes a cache hot temporary
-structure is quite cheap.
+> >>  doesn't mean that it shouldn't have a table to probe
+> >>  from devicetree.
+> >
+> > I didn't get what you are talking about here. The idea of _unified_
+> > device property API is to get rid of OF-centric code in favour of more
+> > generic approach. Mixing those two can be done only in specific cases
+> > (here is not the one).
+>
+> And how are we mixing those two here? The only OF-centric thing here is
+> the device table, which is required if we want the driver to probe from
+> devicetree.
 
-> Is that really an issue to use that set_fs() in the coredump code ?
+Table is fine(JFYI the types and sections are defined outside of OF
+stuff, though being [heavily] used by it) , API (of_match_ptr() macro
+use) is not.
 
-Using set_fs() is pretty bad and something that we would like to remove
-from the kernel entirely.  The fewer instances of set_fs() we have the
-better.
-
-I forget all of the details but set_fs() is both a type violation and an
-attack point when people are attacking the kernel.  The existence of
-set_fs() requires somethings that should be constants to be variables.
-Something about that means that our current code is difficult to protect
-from spectre style vulnerabilities.
-
-There was a very good thread about it all in I think 2018 but
-unfortunately I can't find it now.
-
-Eric
+--=20
+With Best Regards,
+Andy Shevchenko
