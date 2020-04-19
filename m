@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14091AFB02
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8601AFB04
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgDSNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 09:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        id S1726061AbgDSN5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 09:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgDSNw3 (ORCPT
+        with ESMTP id S1725910AbgDSN5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 09:52:29 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE444C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 06:52:28 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ng8so3359606pjb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 06:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6KvwUGLTJsZkE+PS31HMvCAdmIiAd4FHl89Kgjxz2Vs=;
-        b=WRhthNtV8KSgK3zWkw8KaxMpRJgypCyqPK4kd+aXeNMMY/hISM2ls2AF3BYGaViR1m
-         UiZnnSSMTuGEJ1F033u+U4tqx4Z9c/X5/4uGefnHkxr9Scmq1nZXljOVV9f+au5wM1Fa
-         yuvtb2ugwyZwFWquqqnTWlB9fogB5Qwj/tbAZSiO7O1fu+/u+WQNZlrxv3lAbhvsTbOt
-         4USU+qAhwOu65Qaotuj6fyDQGkoM2ERNeIzrLw+3xoBokBKcYfKgpIMw5ju+S8+00Ae5
-         uTSXRMeTIjqKwZYvAnXEMk5ptISWxKU4cQgzjL9s42AX1Q2gXRWfm4XsOc3PM3XWUmaG
-         TmoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6KvwUGLTJsZkE+PS31HMvCAdmIiAd4FHl89Kgjxz2Vs=;
-        b=Xj459OuKT+r0xYtP6B364AESwPxPEabA0bb3mOxWIXxnNh4c5lM5QnEVpRqagDYlmD
-         b1nghA6zcFFg3XBEke+lca7EoQ2yHEyBUYFb8+byQ7HY82JYXH3xcVUqsFTy4swk7FUt
-         UV7ONh7M+cwZ5cMvDXqgcvF3xzdea8MrZpVz5nZUcoz4VTYq6lSR8+3noUxGqUO26EoW
-         7KjHRnCvoqtJefeHtvhGAamKPSAbDSUrdgWHaF3ByIYsjF+0EQs2wTSWTILr8OLfdNRS
-         tFCEOgcvFD8ZRAzdImZnYV5P1pMVRyZjaOXGrYRWlT/5cXfYwSKhTjDUeTIkX50c8ApL
-         0TGA==
-X-Gm-Message-State: AGi0PuaNU4+INJ7nObTHdxriLvZ2BFu7NqnAV1oLM7tZim9kzuPnyWmJ
-        AH6n5JK+JOt8r9dkNFQYrGM=
-X-Google-Smtp-Source: APiQypK36DgxC21J2zuJAJN85JDNDyqQqSXoPekv2SgtOqL+EsKSRIXbzcL9Duf0PoUYC3o/DVttjQ==
-X-Received: by 2002:a17:90a:f995:: with SMTP id cq21mr8731630pjb.56.1587304348552;
-        Sun, 19 Apr 2020 06:52:28 -0700 (PDT)
-Received: from localhost (89.208.244.140.16clouds.com. [89.208.244.140])
-        by smtp.gmail.com with ESMTPSA id r63sm25456526pfr.42.2020.04.19.06.52.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 19 Apr 2020 06:52:28 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     broonie@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1 2/2] regmap: redefined regmap_field_read_poll_timeout to simplify code
-Date:   Sun, 19 Apr 2020 21:51:50 +0800
-Message-Id: <20200419135150.14741-3-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200419135150.14741-1-zhengdejin5@gmail.com>
-References: <20200419135150.14741-1-zhengdejin5@gmail.com>
-MIME-Version: 1.0
+        Sun, 19 Apr 2020 09:57:47 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2BBC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 06:57:47 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jQAS7-0002lu-M5; Sun, 19 Apr 2020 15:57:43 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 2834DFFBA2;
+        Sun, 19 Apr 2020 15:57:42 +0200 (CEST)
+Date:   Sun, 19 Apr 2020 13:56:38 -0000
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] core/urgent for 5.7-rc2
+Message-ID: <158730459860.31269.9496277256253823777.tglx@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use read_poll_timeout macro to redefined regmap_field_read_poll_timeout
-and also remove the duplicate code.
+Linus,
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- include/linux/regmap.h | 23 ++++-------------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+please pull the latest core/urgent branch from:
 
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 299c1f6a03b4..78ddf224f988 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -194,25 +194,10 @@ struct reg_sequence {
-  */
- #define regmap_field_read_poll_timeout(field, val, cond, sleep_us, timeout_us) \
- ({ \
--	u64 __timeout_us = (timeout_us); \
--	unsigned long __sleep_us = (sleep_us); \
--	ktime_t timeout = ktime_add_us(ktime_get(), __timeout_us); \
--	int pollret; \
--	might_sleep_if(__sleep_us); \
--	for (;;) { \
--		pollret = regmap_field_read((field), &(val)); \
--		if (pollret) \
--			break; \
--		if (cond) \
--			break; \
--		if (__timeout_us && ktime_compare(ktime_get(), timeout) > 0) { \
--			pollret = regmap_field_read((field), &(val)); \
--			break; \
--		} \
--		if (__sleep_us) \
--			usleep_range((__sleep_us >> 2) + 1, __sleep_us); \
--	} \
--	pollret ?: ((cond) ? 0 : -ETIMEDOUT); \
-+	int __ret, __tmp; \
-+	__tmp = read_poll_timeout(regmap_field_read, __ret, __ret || (cond), \
-+			sleep_us, timeout_us, false, (field), &(val)); \
-+	__ret ?: __tmp; \
- })
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2020-04-19
+
+up to:  40e7d7bdc19e: Merge branch 'urgent-for-mingo' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into core/urgent
+
+
+A single bugfix for RCU to prevent taking a lock in NMI context.
+
+Thanks,
+
+	tglx
+
+------------------>
+Paul E. McKenney (1):
+      rcu: Don't acquire lock in NMI handler in rcu_nmi_enter_common()
+
+
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 06548e2ebb72..d9a49cd6065a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -825,7 +825,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+ 			rcu_cleanup_after_idle();
  
- #ifdef CONFIG_REGMAP
--- 
-2.25.0
+ 		incby = 1;
+-	} else if (tick_nohz_full_cpu(rdp->cpu) &&
++	} else if (irq && tick_nohz_full_cpu(rdp->cpu) &&
+ 		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+ 		   READ_ONCE(rdp->rcu_urgent_qs) &&
+ 		   !READ_ONCE(rdp->rcu_forced_tick)) {
 
