@@ -2,62 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232CF1AFB74
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08DC1AFB7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgDSOlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 10:41:04 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34139 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725793AbgDSOlC (ORCPT
+        id S1726439AbgDSOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 10:43:36 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:56023 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726326AbgDSOnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 10:41:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Tw-JNwa_1587307259;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tw-JNwa_1587307259)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 19 Apr 2020 22:40:59 +0800
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 3/3] x86/entry: remove an unused label
-Date:   Sun, 19 Apr 2020 14:40:49 +0000
-Message-Id: <20200419144049.1906-4-laijs@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200419144049.1906-1-laijs@linux.alibaba.com>
-References: <20200419144049.1906-1-laijs@linux.alibaba.com>
+        Sun, 19 Apr 2020 10:43:35 -0400
+Received: (qmail 31957 invoked by uid 500); 19 Apr 2020 10:43:34 -0400
+Received: from localhost (sendmail-bs@127.0.0.1)
+  by localhost with SMTP; 19 Apr 2020 10:43:34 -0400
+Date:   Sun, 19 Apr 2020 10:43:34 -0400 (EDT)
+From:   Alan Stern <stern@rowland.harvard.edu>
+X-X-Sender: stern@netrider.rowland.org
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v2 0/9] PM: sleep: core: Rearrange the handling of driver
+ power management flags
+In-Reply-To: <5673945.BT02kTCndr@kreacher>
+Message-ID: <Pine.LNX.4.44L0.2004191040400.29527-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The label .Lcommon_\sym was introduced by 39e9543344fa.
-(x86-64: Reduce amount of redundant code generated for invalidate_interruptNN)
-And all the other relevant information was removed by 52aec3308db8
-(x86/tlb: replace INVALIDATE_TLB_VECTOR by CALL_FUNCTION_VECTOR)
+On Sat, 18 Apr 2020, Rafael J. Wysocki wrote:
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/entry/entry_64.S | 1 -
- 1 file changed, 1 deletion(-)
+> Hi,
+> 
+> This is an update including some fixes and extra patches based on the
+> continuation of the discussion [1].
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index b789835afbab..7d40d1034358 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -798,7 +798,6 @@ _ASM_NOKPROBE(common_interrupt)
- SYM_CODE_START(\sym)
- 	UNWIND_HINT_IRET_REGS
- 	pushq	$~(\num)
--.Lcommon_\sym:
- 	call	interrupt_entry
- 	UNWIND_HINT_REGS indirect=1
- 	call	\do_sym	/* rdi points to pt_regs */
--- 
-2.20.1
+The new code in pm.h and main.c all looks good.  Please add my
+Acked-by: or Suggested-by: to the portions of the patches that affect
+those files.
+
+It's nice to see that, aside from the documentation, the patches ended
+up removing more lines than they added.
+
+Alan Stern
 
