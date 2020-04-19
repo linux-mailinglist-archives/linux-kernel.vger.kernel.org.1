@@ -2,70 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFECA1AFE79
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 23:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7B31AFE7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 23:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgDSVzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 17:55:54 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49042 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725848AbgDSVzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 17:55:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=j46L+tn/U2w9KaKzwAJtWpSSbKCNxNLhJe4DrV1FHzA=; b=wjzgc90gDM3LyszNv3KxFSqR9Y
-        U/nBQdqgMv5h6YLPaM9tpkFAkQgEevPjZPs21m5YYFyDi1u1gAR2WfwyEoAgYgUrYm02uQzEJfLQq
-        grfldMBY+w8IoAXrq1AWPmkIYh4Db1+EU8Isc4Mqz0MRau8ZZQ3d54jAmAGONP13tlGs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jQHun-003hht-BS; Sun, 19 Apr 2020 23:55:49 +0200
-Date:   Sun, 19 Apr 2020 23:55:49 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next 3/3] net: phy: bcm54140: add hwmon support
-Message-ID: <20200419215549.GR836632@lunn.ch>
-References: <20200417195003.GG785713@lunn.ch>
- <35d00dfe1ad24b580dc247d882aa2e39@walle.cc>
- <20200417201338.GI785713@lunn.ch>
- <84679226df03bdd8060cb95761724d3a@walle.cc>
- <20200417212829.GJ785713@lunn.ch>
- <4f3ff33f78472f547212f87f75a37b66@walle.cc>
- <20200419162928.GL836632@lunn.ch>
- <ebc026792e09d5702d031398e96d34f2@walle.cc>
- <20200419170547.GO836632@lunn.ch>
- <0f7ea4522a76f977f3aa3a80dd62201d@walle.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f7ea4522a76f977f3aa3a80dd62201d@walle.cc>
+        id S1726151AbgDSV51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 17:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725848AbgDSV50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 17:57:26 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885FEC061A0C;
+        Sun, 19 Apr 2020 14:57:26 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e26so8821773wmk.5;
+        Sun, 19 Apr 2020 14:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LUhndsPRRQPi2HaWdF48vPxwYi+a+dm3uqeYN1c8FzA=;
+        b=TKzuADidOYpJW5KBPOlVdsOUC2Uk2LXbkJrXazh0e1AJ6X/3Dq6M6YTx4qButqPhHa
+         6dQw56XqWfM3oXq0PR+FVV6yxOYlyN3LXlrnl7TzadsWc95QMbqYTPie4BoR19/XC/ZW
+         161Cgmr/kqsJjqi/L9jLWPlTp6Ezm9gkaQqYOqVKjJVAlwqb85E/BZbsCRtyeQYKUuwg
+         bSn8NgdH4QoOd8kfEh+sbt7jLJzmMWCzctyn/XJBWB6BW52DXLuIsMXvIxdG97yh/5SU
+         vPtsnXD6qkQuy6ufw+YfAyTSJkp/l0DhPcmVBlVTL2uek9AqHA9+xYvQvIb7sFSnLXby
+         rhUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LUhndsPRRQPi2HaWdF48vPxwYi+a+dm3uqeYN1c8FzA=;
+        b=BF7mPe045rGNT3hCly7ExWDTUHMdJJg5kJHG7LmI43a92WyUXGuzjWPm/1KrOl9G+3
+         4AiyYn+oYh+f1xJt2krXtiSegbBXBnigDbiUWQTBJ5ZtcmORiJVeeCcmjdESGIJ7roO4
+         hu/s06SI5ZNgvPbQ8UI5wtRnfEzzgNkNlaGm7wtGWFbKGf0XHSo4slAm0oyibGMsvSyL
+         nIZP7JegRgUGGqm2AkDcY9yFanGSP4v93JYnNt7SJQ8UpDem3NkwrqzSAFdoJEVGrkYK
+         iikIAaKLFBn8MHPnDuli8rtMPhaT+SBonb9Nz+wDLXopMwJakAtPNpTYvpoht3V6sgih
+         Fbrw==
+X-Gm-Message-State: AGi0PuY/4M+jYgVUMszJ7fL6KTfo7gZdHfE6kIoaTMHY7ouosUasltp3
+        FdffhyzhOTnTeZL8S0AtI80=
+X-Google-Smtp-Source: APiQypIZRr0sRFDC7uZDn1GVFRciegCPqv5Sr5AEzNhGZMBE9cUcr62pYihWOQReVQH/cC2vftlJXg==
+X-Received: by 2002:a1c:c302:: with SMTP id t2mr14824117wmf.85.1587333445342;
+        Sun, 19 Apr 2020 14:57:25 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id a67sm18086031wmc.30.2020.04.19.14.57.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 19 Apr 2020 14:57:24 -0700 (PDT)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [Patch v2] rcu: simplify the calculation of rcu_state.ncpus
+Date:   Sun, 19 Apr 2020 21:57:15 +0000
+Message-Id: <20200419215715.21071-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> But what does that have to do with the shared structure? I don't think
-> you have to "bundle" the shared structure with the "access the global
-> registers" method.
+There is only 1 bit set in mask, which means the difference between
+oldmask and the new one would be at the position where the bit is set in
+mask.
 
-We don't need to. But it would be a good way to clean up code which
-locks the mdio bus, does a register access on some other device, and
-then unlocks the bus.
+Based on this knowledge, rcu_state.ncpus could be calculated by checking
+whether mask is already set in rnp->expmaskinitnext.
 
-As a general rule of thumb, it is better to have the core do the
-locking, rather than the driver. Driver writers don't always think
-about locking, so it is better to give driver writers safe APIs to
-use.
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-	Andrew
+---
+v2:
+  * trivial adjust based on Paul's suggestion.
+---
+ kernel/rcu/tree.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f288477ee1c2..6d39485f7f51 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3732,10 +3732,9 @@ void rcu_cpu_starting(unsigned int cpu)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+-	int nbits;
+-	unsigned long oldmask;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
++	bool newcpu;
+ 
+ 	if (per_cpu(rcu_cpu_started, cpu))
+ 		return;
+@@ -3747,12 +3746,10 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	mask = rdp->grpmask;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+-	oldmask = rnp->expmaskinitnext;
++	newcpu = !(rnp->expmaskinitnext & mask);
+ 	rnp->expmaskinitnext |= mask;
+-	oldmask ^= rnp->expmaskinitnext;
+-	nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+ 	/* Allow lockless access for expedited grace periods. */
+-	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
++	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + newcpu); /* ^^^ */
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
+ 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+ 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+-- 
+2.23.0
 
