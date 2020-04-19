@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710A01AF855
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 09:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB961AF87C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 09:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDSHrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 03:47:43 -0400
-Received: from mout.gmx.net ([212.227.17.22]:55645 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgDSHrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 03:47:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587282450;
-        bh=vUSOECUk4A1mxf1ROMn314fFRK9fMORoG5b7Bw2RiDE=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=L88xN24AYqj90BWGl/q2KoIEmUQBg9VI9P377qLfYrtGRzd2BycuRy3r2pnP9kaj3
-         I4QgbDPnvoXLIXwzcXhOhwBVtQ0wrl04h+rnqgq/yumEoOZet5mkjgJjyjcAzWMp5Q
-         SwzA1awLY6+T65DOcmYAh8ULPyKAX4iOdza6FDtY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwwdf-1j2vsn0M6F-00yTuy; Sun, 19
- Apr 2020 09:47:30 +0200
-Date:   Sun, 19 Apr 2020 09:47:17 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Malcolm Priestley <tvboxspy@gmail.com>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: vt6656: Fix functions' documentation
-Message-ID: <20200419074717.GA3244@ubuntu>
-References: <20200418123659.4475-1-oscar.carter@gmx.com>
- <20200418123659.4475-3-oscar.carter@gmx.com>
- <adc4bc72-5c80-e8f4-8d48-052109ae18b7@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adc4bc72-5c80-e8f4-8d48-052109ae18b7@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:C+eQwfMRlP9LtW3tNHYP23t/9OFkChviWB5f1D306aNEAqLQh/f
- PZq2e+MsIGdN5uaBB//2rSMKODQt3trR63byvjSBzXjQZp6GGdFHgSKSI890l5I4WYXVu/M
- SF67fTyzYlFK8evNfdqjSWxro4t4MZrBmtBPfQaDM+pbdFN4Y9WF2xAOQ8/FDt+dh/3If2E
- lFTPH9rS0aLBMiWv8d8YA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LMwP+G4IPtI=:j736PCtEgPykBb0xF2qwnY
- 0TgUwgJv8SbU5ltOB9UImauPJ2uSmbsFHiPnBX+udnnR1Tp/jkfFYIQ2PqKJVMy5g5+CYNDeU
- DCWwUx+avuF8CCZgOYd0ROEFy0JM+sNc8j6zvXhhpRNaSgCJkEPllCBDM6DJXa8QzB/VMoV8n
- kIIzqUvKRbWn+SZLncD8iEJGx+A8KV2sbci0tNSzc8m9qKX6lA1bRy5Gnq/btlMKwKueVfMKH
- vtRwjCaWM7X0eWdpXA1JdyciVkBMlv5XSb4uh+xUlv7HM08BEd7xpr1DGBzmecV+h8RTr5GI8
- AdVvs51UeFnwhfyeBbi28iOmiBXPZEtJN/dBdK99eK9IDFVRTffBblClcfaQa9bCxd9FtIeXZ
- j5KG7opdj52/m5QOeaFGCr+c+hX+m6D25BiiXgtOZdgckFmFVPh/nAxF8CZ9W7zjYdxndy4i9
- KXr7WZU2GXim2Yc2QsLEXNpqunGPJZakysFE5KJ+nIoMSULSUf8tN9Iwd/lc6HcsmqQxxDkQu
- SruE/mlZrAmXAspwhSt1OvF8qAOayIvWrAwXBHB1viRxLSaEdoKkgxD95JlSK0SgZ+4pdRwuw
- KJnYD1MFIStcIZN5+zK+wUaTIVLcWiL/ZShbrci8Laz6jEdEns894856zHTZHhsz0lZhmmp6m
- yHcoIR45xUdVlOsGG1TgSlmUKayWyjitOaztf6dscXCyLLRK+quECuADuqdKzusYl8Sgpl7HY
- d19u1E99/cBaw2nMYsKPt08/qzVcPW6HflnQ1qThGz84S4L64omHvremoqwp9uQIgBgrnSAS7
- MNGQ2lcDxpDDCSKEkxVjtXKifQNPDKKXcyEQ7aqriz2AEHXrV6YXsAeg+0C861GIQSUG541yb
- kYoQZHBZJ/sv3ovPtHeU7mm+4fJTBuQPa5tO3Gm6KkF824F8AyxL/al28xx4pEVIxfzNq5I0+
- Gj+dv4G6TqebTgzXsRVGe85YlYwAL3ku6/r2fqYPnKUohSLh45afpetZ34Hkk9IYf17qLa+R4
- QLOE28iubMHH04Ti1YrX8fiBbQmXyopINcUh4gKDEjaeEsoqFZRNbJjPosUsr4MddB6XxbLvH
- Pacjy2rOc+IqmfWcWsw2QFJPNNo41WLxY3J0M4kBWouh1T/auhnosi/KbExPTVvY0+4a3Lv1H
- oByUJIYLNh46JzcZpeP+c9EFDL5PJRE5VBn0DIeH3bt4Imh9IPBm9c6Qqf7NfqUD7KWoyKsMM
- k3jmHouw+vYGtSUVg
-Content-Transfer-Encoding: quoted-printable
+        id S1726393AbgDSHv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 03:51:59 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:45895 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725923AbgDSHvT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 03:51:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0Tvyj7uz_1587282667;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Tvyj7uz_1587282667)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 19 Apr 2020 15:51:07 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianjia.zhang@linux.alibaba.com
+Subject: [PATCH 0/7] clean up redundant 'kvm_run' parameters
+Date:   Sun, 19 Apr 2020 15:50:59 +0800
+Message-Id: <20200419075106.16248-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 07:05:53PM +0100, Malcolm Priestley wrote:
-> Actually I don't really think the function descriptions are needed at al=
-l the
-> names of the functions are enough.
->
-Then, it would be better leave the documentation as it was before or remov=
-e it?
+In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+structure. Earlier than historical reasons, many kvm-related function
+parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
+This patch does a unified cleanup of these remaining redundant parameters.
 
-> card.c needs to be removed the bss callers to baseband.c, the tbtt's to =
-power.c
-> and the rest to mac.c
->
-> Regards
->
-> Malcolm
+This series of patches has completely cleaned the architecture of
+arm64, mips, ppc, and s390 (no such redundant code on x86). Due to
+the large number of modified codes, a separate patch is made for each
+platform. On the ppc platform, there is also a redundant structure
+pointer of 'kvm_run' in 'vcpu_arch', which has also been cleaned
+separately.
 
-Thanks,
-Oscar Carter
+Thanks and best.
+
+Tianjia Zhang (7):
+  KVM: s390: clean up redundant 'kvm_run' parameters
+  KVM: arm64: clean up redundant 'kvm_run' parameters
+  KVM: PPC: Remove redundant kvm_run from vcpu_arch
+  KVM: PPC: clean up redundant 'kvm_run' parameters
+  KVM: PPC: clean up redundant kvm_run parameters in assembly
+  KVM: MIPS: clean up redundant 'kvm_run' parameters
+  KVM: MIPS: clean up redundant kvm_run parameters in assembly
+
+ arch/arm64/include/asm/kvm_coproc.h      |  12 +--
+ arch/arm64/include/asm/kvm_host.h        |  11 +-
+ arch/arm64/include/asm/kvm_mmu.h         |   2 +-
+ arch/arm64/kvm/handle_exit.c             |  36 +++----
+ arch/arm64/kvm/sys_regs.c                |  13 ++-
+ arch/mips/include/asm/kvm_host.h         |  32 +-----
+ arch/mips/kvm/emulate.c                  |  59 ++++-------
+ arch/mips/kvm/entry.c                    |  15 +--
+ arch/mips/kvm/mips.c                     |  14 +--
+ arch/mips/kvm/trap_emul.c                | 114 +++++++++-----------
+ arch/mips/kvm/vz.c                       |  26 ++---
+ arch/powerpc/include/asm/kvm_book3s.h    |  16 ++-
+ arch/powerpc/include/asm/kvm_host.h      |   1 -
+ arch/powerpc/include/asm/kvm_ppc.h       |  27 +++--
+ arch/powerpc/kvm/book3s.c                |   4 +-
+ arch/powerpc/kvm/book3s.h                |   2 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c      |  12 +--
+ arch/powerpc/kvm/book3s_64_mmu_radix.c   |   4 +-
+ arch/powerpc/kvm/book3s_emulate.c        |  10 +-
+ arch/powerpc/kvm/book3s_hv.c             |  64 ++++++------
+ arch/powerpc/kvm/book3s_hv_nested.c      |  12 +--
+ arch/powerpc/kvm/book3s_interrupts.S     |  17 ++-
+ arch/powerpc/kvm/book3s_paired_singles.c |  72 ++++++-------
+ arch/powerpc/kvm/book3s_pr.c             |  33 +++---
+ arch/powerpc/kvm/booke.c                 |  39 +++----
+ arch/powerpc/kvm/booke.h                 |   8 +-
+ arch/powerpc/kvm/booke_emulate.c         |   2 +-
+ arch/powerpc/kvm/booke_interrupts.S      |   9 +-
+ arch/powerpc/kvm/bookehv_interrupts.S    |  10 +-
+ arch/powerpc/kvm/e500_emulate.c          |  15 ++-
+ arch/powerpc/kvm/emulate.c               |  10 +-
+ arch/powerpc/kvm/emulate_loadstore.c     |  32 +++---
+ arch/powerpc/kvm/powerpc.c               |  72 ++++++-------
+ arch/powerpc/kvm/trace_hv.h              |   6 +-
+ arch/s390/kvm/kvm-s390.c                 | 127 ++++++++++++-----------
+ virt/kvm/arm/arm.c                       |   6 +-
+ virt/kvm/arm/mmio.c                      |  11 +-
+ virt/kvm/arm/mmu.c                       |   5 +-
+ 38 files changed, 441 insertions(+), 519 deletions(-)
+
+-- 
+2.17.1
+
