@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938BC1AFB7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ECC1AFB82
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgDSOqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 10:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgDSOqm (ORCPT
+        id S1726475AbgDSOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 10:55:18 -0400
+Received: from smtp.bonedaddy.net ([45.33.94.42]:48512 "EHLO
+        smtp.bonedaddy.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726398AbgDSOzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 10:46:42 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE336C061A0C;
-        Sun, 19 Apr 2020 07:46:42 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ms17so3292412pjb.0;
-        Sun, 19 Apr 2020 07:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4ANh3iy/mPqMIDICrcxwt25Ikadv1fNohryvS64Y5Ic=;
-        b=fIqX2YOW3Z5Gg4Yo0893aOn1v6xaGRX6cKcQw5ykCjWv3rIZdewhJZVNkIhkw810bT
-         50myZO6zUTtVcKYvzBdZxmrvMlMq+sHcrdTnv85cc+L6fr7JpQp/F/wD9o1m4CMlLI6a
-         SiVxRGNVPrsfz9vGhyknCuLWb8Djr/DlP3CqZs3x6q9oIJFNQI7fpdltx1Ul9K60xc1T
-         0YxTi9xZK0kRvRnbPt/1+QDCgKSDtLzNq2sZzXEDMpw/0h82lBgpYnl/S+8JbmNzuVOq
-         fhNLI8irMqPZfr8mxt9WhH3xNg08DOOSAlvQAv+1QXaso/V4FzjMLuGn0LrT6hJH7LYF
-         U5nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4ANh3iy/mPqMIDICrcxwt25Ikadv1fNohryvS64Y5Ic=;
-        b=f/8YZANAbI24W8uPn9J2GfRpx1tXOPO1VTQeHvAFm0eevkgkSfveJmTwjH27pVyhWm
-         mJM1O781ggI6s6bhU1dApO2cVr81TYaQSexZi7BxGwuR0QH9Bp/c5gS9AaR29uvXhGOV
-         1w9By2LFkSCv2s2PcIstKFkHjVf7xISzIf2hh/cYYcbApoKTgrllIuJyjzw0aDrYMqYV
-         CCbQkuxhnSZyije0HOI6eUWOtVn65fxp9JkEhCjWFNEigvJtZ9xBc1NhX86meJ7ogl/Q
-         SpnBeHh/O6mLgVjDHO+qiXy4c1HClVHobD4yAuvQ/YrryKf4OVU9xlcw3drAzdp2Ix2d
-         0khg==
-X-Gm-Message-State: AGi0PuZ23iprtBfr2fg8l+G/8RnxX9n9WXl9MUEWwNAgJLDZCuS7bJW1
-        0RNI6mZzvIJ6Qsi4mPmuvKs=
-X-Google-Smtp-Source: APiQypI6PFLvrwCcVGIStbSxL8W1ovNeN6eQTo8pk3ibch/2uXo1kxA5JD5UNB9cEJQ5nDRlskMQeQ==
-X-Received: by 2002:a17:90a:c786:: with SMTP id gn6mr15790109pjb.147.1587307602531;
-        Sun, 19 Apr 2020 07:46:42 -0700 (PDT)
-Received: from localhost ([49.205.221.114])
-        by smtp.gmail.com with ESMTPSA id i128sm15713738pfc.149.2020.04.19.07.46.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 19 Apr 2020 07:46:41 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 20:16:38 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH 0/3] Remove setup_percpu_irq() & remove_percpu_irq
-Message-ID: <20200419144638.ysghqzklebkeer4z@afzalpc>
-References: <cover.1586434781.git.afzal.mohd.ma@gmail.com>
+        Sun, 19 Apr 2020 10:55:17 -0400
+X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Apr 2020 10:55:17 EDT
+Received: from chianamo (n58-108-4-64.per1.wa.optusnet.com.au [58.108.4.64])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pabs3@bonedaddy.net)
+        by smtp.bonedaddy.net (Postfix) with ESMTPSA id 53E19180043;
+        Sun, 19 Apr 2020 10:48:20 -0400 (EDT)
+Authentication-Results: smtp.bonedaddy.net; dmarc=fail (p=none dis=none) header.from=bonedaddy.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bonedaddy.net;
+        s=mail; t=1587307702;
+        bh=orbOLhLh68VHjj9KoqAE/l3nV665NUdq1aidfrkBWoc=;
+        h=Subject:From:To:Cc:In-Reply-To:References:Date;
+        b=iPFIDk3EJOmtIhN/wwEuJ3N6eojbUPY3vQsC1Ifs6qYznwpDvqeXYxrtmphy2pFne
+         ALFR6r0IIAOxwEFgW8OiAmcd65jSDecQ1LVFgwoG7/sU23RqQAhtR9S4txVRxGmlRN
+         aRzeeUMvgBWkIoxb2qcx3Hhc4Skoz8m+YxVtbI2QRxPlfqVI8x16RUm4HLBASs/UNn
+         Cq6ZmzsT0Y5sHM3guS27QOOAfvgyzUsozGfYYTLrXJEg1PUOzxCdk0U9SgmyXDHKsd
+         7Zq1JnSQjGxv5Ihn9Qkv4IeuoayStdAGYAuSf5FL2HCGVxexserZzgPeeV3Gdfy3M1
+         w7yfjY+L8cdhg==
+Message-ID: <9cb6a39a43178be29af2f47a92c2e84754b62b69.camel@bonedaddy.net>
+Subject: Re: [PATCH 0/3] dm raid/raid1: enable discard support when any
+ devices support discard
+From:   Paul Wise <pabs3@bonedaddy.net>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200419131908.GA22398@redhat.com>
+References: <20200419073026.197967-1-pabs3@bonedaddy.net>
+         <20200419131908.GA22398@redhat.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-Dc6DoNjKBj0aUd9iYgmL"
+Date:   Sun, 19 Apr 2020 22:48:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1586434781.git.afzal.mohd.ma@gmail.com>
+User-Agent: Evolution 3.36.1-1 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas Gleixner,
 
-On Sat, Apr 11, 2020 at 09:34:07PM +0530, afzal mohammed wrote:
+--=-Dc6DoNjKBj0aUd9iYgmL
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> While doing the removal of setup_irq(), it was observed that
-> setup_percpu_irq() also can be removed similarly by replacing it w/
-> request_percpu_irq(), which does allocate memory. In the initial
-> setup_irq() removal cover letters [1], it was mentioned that
-> setup_percpu_irq() is untouched.
-> 
-> After removing setup_irq(), it does not look good to let live
-> setup_percpu_irq(), especially since it being a low hanging fruit. Hence
-> replace setup_percpu_irq() by it's allocator equivalent.
-> request_percpu_irq() cannot be used since all the users need to pass
-> IRQF_TIMER flag, which it would not allow. Thus it's variant,
-> __request_percpu_irq() is used.
-> 
-> In addition to removing setup_percpu_irq() definition,
-> remove_percpu_irq(), unused, is also removed.
+On Sun, 2020-04-19 at 09:19 -0400, Mike Snitzer wrote:
 
-Do you feel that this series adds value ?, if not, i will abandon this
-series.
+> You went overboard with implementation before checking to see if your
+> work would be well received.  Your 2/3 patch header shows you're
+> capable of analyzing past commits to explain the evolution of code,
+> etc.  But yet you make no mention of this commit header which explicitly
+> speaks to why what you're proposing is _not_ acceptable:
+>=20
+> commit 8a74d29d541cd86569139c6f3f44b2d210458071
+> Author: Mike Snitzer <snitzer@redhat.com>
+> Date:   Tue Nov 14 15:40:52 2017 -0500
+>=20
+>     dm: discard support requires all targets in a table support discards
 
-Thanks for your guidance w.r.t setup_irq() removal.
+I do remember seeing this commit while working on this, I guess I
+ignored it in my attempts to get fstrim working on my rootfs, woops.
 
-Regards
-afzal
+> I haven't looked closely at MD raid in this area but if you trully think
+> underlying MD raid can cope with issuing discards to devices that don't
+> support them (or that it avoids issuing them?) then please update
+> dm-raid.c to conditionally set ti->discard_supported (if not all devices
+> support discard).  That is how to inform DM core that the target knows
+> better and it will manage discards issued to it.  It keeps the change
+> local to dm-raid.c without the flag-day you're proposing.
+
+On my system I have a HDD and an SSD, with /boot on MD RAID and / on
+ext4 on DM RAID on 2 DM crypt volumes. In this setup fstrim works on
+/boot but does not work on / and with my patches it works on / again.
+In addition I don't see any messages in dmesg or other issues when
+doing fstrim / with my patches.
+
+I think I might have been worried that discards_supported has other
+side effects but grepping the code now I see that was unfounded.
+I'll switch the next version to just setting discards_supported.
+I still think that my proposed overboard design is clearer though :)
+
+You'll see from the following command that MD raid 0/1/10 arrays enable
+discards when any device supports discards:
+
+   git grep -wW discard_supported
+
+It appears that the block layer ignores discard requests when the queue
+for the block device indicates that discard is not supported on it:
+
+   git grep -wW __blkdev_issue_discard
+
+It seems to me that where possible DM/MD letting the block layer decide
+to pass on or ignore discard requests is the right design. I'm possibly
+incorrectly assuming that all block device drivers will correctly
+advertise support for discard without false positive/negatives.
+
+BTW, any idea where I should fix the `fstrim --fstab` issue? It is
+expecting the queue/discard_granularity sysfs entry to be non-zero.
+=46rom my initial debugging attempts it seems raid_io_hints is at fault.
+
+Thanks for your initial response and any further insight you can give.
+
+--=20
+bye,
+pabs
+
+https://bonedaddy.net/pabs3/
+
+--=-Dc6DoNjKBj0aUd9iYgmL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYQsotVz8/kXqG1Y7MRa6Xp/6aaMFAl6cZLAACgkQMRa6Xp/6
+aaPZ+w/+NU6azXlrvR0spHz7eK7FaXlJcaVAVePc+ZeKnZzByER1yKehAzkvM+XP
+dJ5NsJO/S5IugiM2F7QVPAx2/eOcYOcchAnE0SBKOv/y4IK5RLa0z6d/+WzzSbFc
+JCcrvuTZBmTaVfkFpkCXbAjtpqAW1kasRFF8iz4R84TrszNfjVG3zhs50GQld3pU
+VIvTctdmLdY7hVbUBLSgOEoRqz5ikPq+h3YRo99uCXF3RrZ6mb9tS/Ngxn9+HNu6
+1hzsIyHIesXR9C2s3r7ZVEQ3Vbm4RIjpIBS1DC4R8koaFofRumo8VLZw+K6VEnfD
+ni7nktV62Hd9S+bepuYrk6Ca5N8SdbwBC8lJBIqoESRuM3uIxgxgoKxfsPhAYTOc
+7D9ksk4Uc7qZ+VdvFfAnbXaHl45PfLTNsg52ANfz4CCnJLGYhRKmjg9nXkqZKCcM
+uuvrCey4trHMpdE77KEuLRVWm+4RXEWpEmAQ4RIOgK+3Q4pzRWJM5tHAkcCJjTCc
+5LOIuT1oBKyx7y3XeLmPTfhliZFr3USjmDZtCorw5Z+tT4d4GEElfL4+x+3T9y6w
+MAaxMZ9qHQDnzvhhIZfqRne4OrmDJqaanqxI5PYwjtYBbDKNW3EnTZJUUB1h8Vph
+k8oMt5TBpBexc7TXuty8W9wiVgQzsgEcthDcNBBX8sPz5y/Gf/o=
+=enD1
+-----END PGP SIGNATURE-----
+
+--=-Dc6DoNjKBj0aUd9iYgmL--
 
