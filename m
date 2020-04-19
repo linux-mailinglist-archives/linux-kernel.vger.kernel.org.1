@@ -2,170 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897911AFA38
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 14:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96B31AFA4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 14:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgDSMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 08:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
+        id S1726091AbgDSM5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 08:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgDSMzD (ORCPT
+        with ESMTP id S1725793AbgDSM5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 08:55:03 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC22CC061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 05:55:02 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id s10so5144198edy.9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 05:55:02 -0700 (PDT)
+        Sun, 19 Apr 2020 08:57:17 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D19CC061A0C;
+        Sun, 19 Apr 2020 05:57:17 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p8so3653530pgi.5;
+        Sun, 19 Apr 2020 05:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Pe8Qy0Gf3UYgcgfyDsFH4TWiKOw4rDRv4sJ8XYFqXvU=;
-        b=u5lsvyNiSZb72r61DjpSksiUWO68i7LgEwVmotr4VBUqiRFRHbu2EruGUR/XBlNEO0
-         w71OJJQA2nfs4t0byKoJVt3UH1HkQWxyvbQSfFBKBADfB3hAbDPA970lzbHMpYbIvwqL
-         RZ8lKNLdNGbBmxLFk9m5TQ/NmAZJJIDm1RHwU3fInbPJOk725NoYiS4UDtO199ntC7ep
-         dIbdnH6ZEg7srkRWiZQo2AFfsNsYI2pMQhYoRkdzl5fHj57TMSgxYcz07QJp/iUeySl9
-         h874sFgcXFQ4EfR7A7gVAKFCBENF8X40dhP9BkbjLSaY1E0q1cMS4g87YmZoAEnm25Jq
-         a0TA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=n1yXK12lhvDFnNxFvI8lgwTXKTQAmt128ajjq2nM9X0=;
+        b=FMejgg2J7fOCuMnzlg+iYcYEr4/wB1xwUnD6Gb924kZlfB+BYb2UZ7eTcA0UEjVzS7
+         gdFmx84xogK27xCy2+O1SyAg0kRwrtP7zVUz5gdSnz8pt96/+JKDTOoUwD5PI7yhKhOF
+         57KEEJJLuD5aobm/5zhxdHXoJC4pBQsHrv5rVvrMmHBhcVgWp7iniyQljZFkU38/x3T1
+         D26xc7Bqb/mDosXfYL7YQiJRR+qbTxXpD+OBQB1/DYP6SpJ6uEpX9oDO8Ygq/d7FjzCK
+         vnE9K2tvMnEdr0S7TEyKKLDGQg4mtWwOllLdZC/3J1YP2nw58/ZMqtKtEh4NNX1d3Q1U
+         j8Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Pe8Qy0Gf3UYgcgfyDsFH4TWiKOw4rDRv4sJ8XYFqXvU=;
-        b=RXxPXILa2qII3uUl7w9SAGxQQ6Gp303TQW/rb7ShwKZomV6gnKdrCgNQi3XX3a+y/T
-         sBIkkBEbjO9CFX0WeVh6znu4lk/flXlkCUyHCyxZiJxlbWxv2YC/xJz0YFxm+fa/H1P6
-         1qjRpj06q0txunw9xFi6Cz5rR1pTEqArN9xN5W6dZQI4kthQ0BNgvH0xP2QZJBSHml0l
-         bD8COvy1iANryvAb5Y08GIbQ7Tc8LyzZskcvLKGp1RJ8vVitKlurUnRbgd/KkDLaajv0
-         emdCqO0zE5yt4Zg6ZJEg6VnNPL495hJip7XZFW1V2KnEDrLGqoa+ZXIQihf8MBBtyMC/
-         JLNw==
-X-Gm-Message-State: AGi0PuZEigXOIey0+TmMcKjoBVKYA2rCHLBgl3XKGccPcgBvmusVHBP1
-        nufrReMNHe78RgZE/FRPS47JwBd8s0RjVdLEPIpkcw==
-X-Google-Smtp-Source: APiQypJGVGjxtdPPkJ5/MNfOnUxhN+8psU1U9lQOyFemqbXIrJY0T9nZmKqlxy3Xpjm3uBwBmE88iVK+GHu7W9vYYM8=
-X-Received: by 2002:a05:6402:391:: with SMTP id o17mr4297099edv.71.1587300901412;
- Sun, 19 Apr 2020 05:55:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=n1yXK12lhvDFnNxFvI8lgwTXKTQAmt128ajjq2nM9X0=;
+        b=AJRC7iuWPB19vVRvDGowlyCm5pLSVnK+PslqiZrtSZv02+j+m0Q3pZkZrNNbkQJAm5
+         WmgXB3aCwDJCsrepgHL0bjV0WNA749JOB1uluJbCaqhceDNitQ+vHXqZRigxQU4ieoAj
+         cBvKscbPcyVMAlT9wOYg9f7he8NK+A/EViawtXqN22ya6uiFf6+Y9wIQMCFkiMMeBVQu
+         g9MSzzF6db1decN6LMilT/b6Bnr3e5Wtn86ju2t57qVs4JiN+IlKI/04DdBcUeF04ETZ
+         iefG0EryU8tELdxAbXLePwQK1a4Hrj8WaAAQkQ4SjNIagspIzJo1i8VpKrm3FOKO4Ny0
+         +mTw==
+X-Gm-Message-State: AGi0PuZ0iOiwODpDZqEMTd/dcoQE05w9wIDNn7kGpHjIud4LKCjNKUSG
+        wdVL2/2MZLF9Z6h7nREKq+9TgYBG
+X-Google-Smtp-Source: APiQypI5KS8DKUjvrnEp4QOgFWjili31VtOupE7837PpNhQQFYqZIEUCczGmdhln2jqZcmBUeg7ZNA==
+X-Received: by 2002:a63:d850:: with SMTP id k16mr6473150pgj.190.1587301036712;
+        Sun, 19 Apr 2020 05:57:16 -0700 (PDT)
+Received: from nishad ([106.51.232.103])
+        by smtp.gmail.com with ESMTPSA id x123sm1409714pfb.1.2020.04.19.05.57.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 19 Apr 2020 05:57:16 -0700 (PDT)
+Date:   Sun, 19 Apr 2020 18:27:10 +0530
+From:   Nishad Kamdar <nishadkamdar@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Joe Perches <joe@perches.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: renesas_usbhs: Use the correct style for SPDX License
+ Identifier
+Message-ID: <20200419125705.GA5172@nishad>
 MIME-Version: 1.0
-References: <20200417202859.35427-1-contact@artur-rojek.eu>
- <20200417202859.35427-3-contact@artur-rojek.eu> <CAHp75Vcwnu8tw92nMYc_5-x_iX+FY8_OhtaJkSYNehmNUDkHGQ@mail.gmail.com>
- <3KAY8Q.NNI6X4F9QRIX1@crapouillou.net> <CAHp75VfxQFFnVMhGvv0GCb3gv5jTPLDqLyhihRVc2earY=aYcg@mail.gmail.com>
- <86BY8Q.C5XO8D57M7BI1@crapouillou.net> <CAHp75VfULLBpFx-W04z+jRFv-hGZkTt1k7T9+eMurW55Mdc=+g@mail.gmail.com>
- <EFCY8Q.V3Q81CTO8TBP2@crapouillou.net> <CAHp75VdBr-o61QESQcbF97F5+JAU=XjVsvZ01M=nN-pe50-H9w@mail.gmail.com>
-In-Reply-To: <CAHp75VdBr-o61QESQcbF97F5+JAU=XjVsvZ01M=nN-pe50-H9w@mail.gmail.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sun, 19 Apr 2020 09:54:49 -0300
-Message-ID: <CAAEAJfDLQnpsMPs8n4S1O6dA9155=mUPE7FqNQo_yNmp--UFgg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 3/5] IIO: Ingenic JZ47xx: Add touchscreen mode.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-input <linux-input@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 at 18:54, Andy Shevchenko <andy.shevchenko@gmail.com> w=
-rote:
->
-> On Sat, Apr 18, 2020 at 12:45 AM Paul Cercueil <paul@crapouillou.net> wro=
-te:
-> > Le sam. 18 avril 2020 =C3=A0 0:42, Andy Shevchenko
-> > <andy.shevchenko@gmail.com> a =C3=A9crit :
-> > > On Sat, Apr 18, 2020 at 12:18 AM Paul Cercueil <paul@crapouillou.net>
-> > > wrote:
-> > >>  Le sam. 18 avril 2020 =C3=A0 0:13, Andy Shevchenko
-> > >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
-> > >>  > On Sat, Apr 18, 2020 at 12:05 AM Paul Cercueil
-> > >> <paul@crapouillou.net>
-> > >>  > wrote:
-> > >>  >>  Le ven. 17 avril 2020 =C3=A0 23:59, Andy Shevchenko
-> > >>  >>  <andy.shevchenko@gmail.com> a =C3=A9crit :
-> > >>  >>  > On Fri, Apr 17, 2020 at 11:21 PM Artur Rojek
-> > >>  >> <contact@artur-rojek.eu>
-> > >>  >>  > wrote:
-> > >>  >
-> > >>  > ...
-> > >>  >
-> > >>  >>  >>  +       irq =3D platform_get_irq(pdev, 0);
-> > >>  >>  >
-> > >>  >>  > Before it worked w/o IRQ, here is a regression you introduced=
-.
-> > >>  >>
-> > >>  >>  Before it simply did not need the IRQ, which is provided by the
-> > >>  >>  devicetree anyway. No regression here.
-> > >>  >
-> > >>  > Does it work without IRQ? Or it was a dead code till now?
-> > >>  > For me it's clear regression. Otherwise something is really wrong
-> > >> in a
-> > >>  > process of development of this driver.
-> > >>
-> > >>  Nothing wrong here. The IRQ was not used by the driver for the
-> > >>  functionality it provided before. It is required now to support the
-> > >>  touchscreen channels.
-> > >
-> > > This is exactly what's wrong.
-> > > Previous DTS for my (hypothetical) case has no IRQ defined. Everythin=
-g
-> > > works, right?
-> > > Now, due to this change it breaks my setup. Don't you see the problem=
-?
-> >
-> > The IRQ has been provided by every concerned DTS file since the
-> > introduction of this driver and the related bindings, even though it
-> > was not used by the driver.
->
-> Can you speak for all possible DTSs/DTBs in the wild?
-> Okay, in any case it will be problem of maintainers and yours if
-> somebody complains.
-> I'm not going to push this anyway -- your choice.
->
-> But I see a (potential) regression.
->
+This patch corrects the SPDX License Identifier style in
+header files related to Renesas USBHS Controller Drivers.
+For C header files Documentation/process/license-rules.rst
+mandates C-like comments (opposed to C source files where
+C++ style should be used).
 
-So, there are a few things to keep in mind here.
+Changes made by using a script provided by Joe Perches here:
+https://lkml.org/lkml/2019/2/7/46.
 
-Let's abstract ourselves from this specific driver
-for a minute.
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+---
+ drivers/usb/renesas_usbhs/common.h | 2 +-
+ drivers/usb/renesas_usbhs/fifo.h   | 2 +-
+ drivers/usb/renesas_usbhs/mod.h    | 2 +-
+ drivers/usb/renesas_usbhs/pipe.h   | 2 +-
+ drivers/usb/renesas_usbhs/rcar2.h  | 2 +-
+ drivers/usb/renesas_usbhs/rcar3.h  | 2 +-
+ drivers/usb/renesas_usbhs/rza.h    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-First, and just as Andy pointed out, we can never be fully
-sure about DTBs out there. These could be out of tree,
-so out of our control. By introducing a new requirement
-we break them, which may be seen as a regression.
+diff --git a/drivers/usb/renesas_usbhs/common.h b/drivers/usb/renesas_usbhs/common.h
+index ef1735d014da..eb34d762a63d 100644
+--- a/drivers/usb/renesas_usbhs/common.h
++++ b/drivers/usb/renesas_usbhs/common.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-1.0+
++/* SPDX-License-Identifier: GPL-1.0+ */
+ /*
+  * Renesas USB driver
+  *
+diff --git a/drivers/usb/renesas_usbhs/fifo.h b/drivers/usb/renesas_usbhs/fifo.h
+index c3d3cc35cee0..7d3700bf41d9 100644
+--- a/drivers/usb/renesas_usbhs/fifo.h
++++ b/drivers/usb/renesas_usbhs/fifo.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-1.0+
++/* SPDX-License-Identifier: GPL-1.0+ */
+ /*
+  * Renesas USB driver
+  *
+diff --git a/drivers/usb/renesas_usbhs/mod.h b/drivers/usb/renesas_usbhs/mod.h
+index 65dc19ca528e..56b7106d254d 100644
+--- a/drivers/usb/renesas_usbhs/mod.h
++++ b/drivers/usb/renesas_usbhs/mod.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-1.0+
++/* SPDX-License-Identifier: GPL-1.0+ */
+ /*
+  * Renesas USB driver
+  *
+diff --git a/drivers/usb/renesas_usbhs/pipe.h b/drivers/usb/renesas_usbhs/pipe.h
+index 3b130529408b..a4ae9f97d9cd 100644
+--- a/drivers/usb/renesas_usbhs/pipe.h
++++ b/drivers/usb/renesas_usbhs/pipe.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-1.0+
++/* SPDX-License-Identifier: GPL-1.0+ */
+ /*
+  * Renesas USB driver
+  *
+diff --git a/drivers/usb/renesas_usbhs/rcar2.h b/drivers/usb/renesas_usbhs/rcar2.h
+index 7d88732c5bff..046d07edb36f 100644
+--- a/drivers/usb/renesas_usbhs/rcar2.h
++++ b/drivers/usb/renesas_usbhs/rcar2.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++/* SPDX-License-Identifier: GPL-2.0 */
+ #include "common.h"
+ 
+ extern const struct renesas_usbhs_platform_info usbhs_rcar_gen2_plat_info;
+diff --git a/drivers/usb/renesas_usbhs/rcar3.h b/drivers/usb/renesas_usbhs/rcar3.h
+index c7c5ec1e3af2..d13db30bd21b 100644
+--- a/drivers/usb/renesas_usbhs/rcar3.h
++++ b/drivers/usb/renesas_usbhs/rcar3.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++/* SPDX-License-Identifier: GPL-2.0 */
+ #include "common.h"
+ 
+ extern const struct renesas_usbhs_platform_info usbhs_rcar_gen3_plat_info;
+diff --git a/drivers/usb/renesas_usbhs/rza.h b/drivers/usb/renesas_usbhs/rza.h
+index 1ca42a6fd480..a29b75fef057 100644
+--- a/drivers/usb/renesas_usbhs/rza.h
++++ b/drivers/usb/renesas_usbhs/rza.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++/* SPDX-License-Identifier: GPL-2.0 */
+ #include "common.h"
+ 
+ extern const struct renesas_usbhs_platform_info usbhs_rza1_plat_info;
+-- 
+2.17.1
 
-Second, the interrupt is not required as per
-current mainline bindings/iio/adc/ingenic,adc.txt,
-so it is perfectly legal for users to not have an interrupt
-specified.
-
-Now, back to this case, I think we can get away with this
-change, provided this hardware is not that widespread
-among developers/users that follow upstream closely.
-
-I suspect anyone developing a serious platform
-with this SoC is most likely using some vendor kernel.
-
-If that is not the case, i.e. if you have users _actually_
-using this upstream driver, then we should consider
-making the interrupt optional instead of required.
-
-Or we can also just break it and hope nobody
-complaints.
-
-BTW, this series looks great and I'm happy
-to see JZ47xx activity :-)
-
-Arthur: perhaps you can consider converting the txt dt binding
-to yaml?
-
-Cheers,
-Ezequiel
