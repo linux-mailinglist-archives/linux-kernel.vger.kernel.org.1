@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53E31AFB06
+	by mail.lfdr.de (Postfix) with ESMTP id 47F9F1AFB05
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbgDSN5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726353AbgDSN5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 19 Apr 2020 09:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgDSN5s (ORCPT
+        with ESMTP id S1726091AbgDSN5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 09:57:48 -0400
+        Sun, 19 Apr 2020 09:57:49 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BA4C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 06:57:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78002C061A41
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 06:57:49 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jQASA-0002mU-9V; Sun, 19 Apr 2020 15:57:46 +0200
+        id 1jQASB-0002ml-GC; Sun, 19 Apr 2020 15:57:47 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id CE1ADFFBA2;
-        Sun, 19 Apr 2020 15:57:45 +0200 (CEST)
-Date:   Sun, 19 Apr 2020 13:56:42 -0000
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 11D5BFFBA2;
+        Sun, 19 Apr 2020 15:57:47 +0200 (CEST)
+Date:   Sun, 19 Apr 2020 13:56:43 -0000
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] sched/urgent for 5.7-rc2
+Subject: [GIT pull] timers/urgent for 5.7-rc2
 References: <158730459860.31269.9496277256253823777.tglx@nanos.tec.linutronix.de>
-Message-ID: <158730460222.31269.10288599242154679193.tglx@nanos.tec.linutronix.de>
+Message-ID: <158730460342.31269.11473437311616524528.tglx@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
@@ -43,94 +43,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest sched/urgent branch from:
+please pull the latest timers/urgent branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-04-19
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-04-19
 
-up to:  e0d648f9d883: sched/vtime: Work around an unitialized variable warning
+up to:  94d440d61846: proc, time/namespace: Show clock symbolic names in /proc/pid/timens_offsets
 
 
-Two fixes for the scheduler:
-
- - Work around an uninitializaed variable warning where GCC can't figure it
-   out.
-
- - Allow 'isolcpus=' to skip unknown subparameters so that older kernels
-   work with the commandline of a newer kernel. Improve the error output
-   while at it.
+An update for the proc interface of time namespaces: Use symbolic names
+instead of clockid numbers. The usability nuisance of numbers was noticed
+by Michael when polishing the man page.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Borislav Petkov (1):
-      sched/vtime: Work around an unitialized variable warning
-
-Peter Xu (1):
-      sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters
+Andrei Vagin (1):
+      proc, time/namespace: Show clock symbolic names in /proc/pid/timens_offsets
 
 
- kernel/sched/cputime.c   |  4 ++--
- kernel/sched/isolation.c | 21 +++++++++++++++++++--
- 2 files changed, 21 insertions(+), 4 deletions(-)
+ fs/proc/base.c          | 14 +++++++++++++-
+ kernel/time/namespace.c | 15 ++++++++++++++-
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index dac9104d126f..ff9435dee1df 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -1003,12 +1003,12 @@ u64 kcpustat_field(struct kernel_cpustat *kcpustat,
- 		   enum cpu_usage_stat usage, int cpu)
- {
- 	u64 *cpustat = kcpustat->cpustat;
-+	u64 val = cpustat[usage];
- 	struct rq *rq;
--	u64 val;
- 	int err;
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 6042b646ab27..572898dd16a0 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1573,6 +1573,7 @@ static ssize_t timens_offsets_write(struct file *file, const char __user *buf,
+ 	noffsets = 0;
+ 	for (pos = kbuf; pos; pos = next_line) {
+ 		struct proc_timens_offset *off = &offsets[noffsets];
++		char clock[10];
+ 		int err;
  
- 	if (!vtime_accounting_enabled_cpu(cpu))
--		return cpustat[usage];
-+		return val;
- 
- 	rq = cpu_rq(cpu);
- 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 008d6ac2342b..808244f3ddd9 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -149,6 +149,9 @@ __setup("nohz_full=", housekeeping_nohz_full_setup);
- static int __init housekeeping_isolcpus_setup(char *str)
- {
- 	unsigned int flags = 0;
-+	bool illegal = false;
-+	char *par;
-+	int len;
- 
- 	while (isalpha(*str)) {
- 		if (!strncmp(str, "nohz,", 5)) {
-@@ -169,8 +172,22 @@ static int __init housekeeping_isolcpus_setup(char *str)
- 			continue;
+ 		/* Find the end of line and ensure we don't look past it */
+@@ -1584,10 +1585,21 @@ static ssize_t timens_offsets_write(struct file *file, const char __user *buf,
+ 				next_line = NULL;
  		}
  
--		pr_warn("isolcpus: Error, unknown flag\n");
--		return 0;
-+		/*
-+		 * Skip unknown sub-parameter and validate that it is not
-+		 * containing an invalid character.
-+		 */
-+		for (par = str, len = 0; *str && *str != ','; str++, len++) {
-+			if (!isalpha(*str) && *str != '_')
-+				illegal = true;
-+		}
+-		err = sscanf(pos, "%u %lld %lu", &off->clockid,
++		err = sscanf(pos, "%9s %lld %lu", clock,
+ 				&off->val.tv_sec, &off->val.tv_nsec);
+ 		if (err != 3 || off->val.tv_nsec >= NSEC_PER_SEC)
+ 			goto out;
 +
-+		if (illegal) {
-+			pr_warn("isolcpus: Invalid flag %.*s\n", len, par);
-+			return 0;
-+		}
++		clock[sizeof(clock) - 1] = 0;
++		if (strcmp(clock, "monotonic") == 0 ||
++		    strcmp(clock, __stringify(CLOCK_MONOTONIC)) == 0)
++			off->clockid = CLOCK_MONOTONIC;
++		else if (strcmp(clock, "boottime") == 0 ||
++			 strcmp(clock, __stringify(CLOCK_BOOTTIME)) == 0)
++			off->clockid = CLOCK_BOOTTIME;
++		else
++			goto out;
 +
-+		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
-+		str++;
- 	}
+ 		noffsets++;
+ 		if (noffsets == ARRAY_SIZE(offsets)) {
+ 			if (next_line)
+diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+index 3b30288793fe..53bce347cd50 100644
+--- a/kernel/time/namespace.c
++++ b/kernel/time/namespace.c
+@@ -338,7 +338,20 @@ static struct user_namespace *timens_owner(struct ns_common *ns)
  
- 	/* Default behaviour for isolcpus without flags */
+ static void show_offset(struct seq_file *m, int clockid, struct timespec64 *ts)
+ {
+-	seq_printf(m, "%d %lld %ld\n", clockid, ts->tv_sec, ts->tv_nsec);
++	char *clock;
++
++	switch (clockid) {
++	case CLOCK_BOOTTIME:
++		clock = "boottime";
++		break;
++	case CLOCK_MONOTONIC:
++		clock = "monotonic";
++		break;
++	default:
++		clock = "unknown";
++		break;
++	}
++	seq_printf(m, "%-10s %10lld %9ld\n", clock, ts->tv_sec, ts->tv_nsec);
+ }
+ 
+ void proc_timens_show_offsets(struct task_struct *p, struct seq_file *m)
 
