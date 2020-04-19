@@ -2,101 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E3E1AF94A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 12:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A4B1AFA7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgDSKP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 06:15:58 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39385 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgDSKP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 06:15:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587291296;
-        bh=UUB43ghojZyqJzvryIRz1INl9pLMh7p0IJbFf5QP2Es=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=TNJ/SZf3+4mTpQq09XvbEyvPAHJj8RbOs1bUbeVrvmWwhamx3wKM6Wwxg489RXSoX
-         Tvb/kBsBy80uXtHp1ki78P50zlijkGMUM6XBBHX4XFd/armTBMemJRMkfOSJ9W0gja
-         zyVuriMRIJVHaBb0VfoQTQAhKNVInzofhzLWz6w4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCKFu-1jZQeD43DG-009PuW; Sun, 19
- Apr 2020 12:14:56 +0200
-Date:   Sun, 19 Apr 2020 12:14:53 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Malcolm Priestley <tvboxspy@gmail.com>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: vt6656: Fix functions' documentation
-Message-ID: <20200419101453.GB3244@ubuntu>
-References: <20200418123659.4475-1-oscar.carter@gmx.com>
- <20200418123659.4475-3-oscar.carter@gmx.com>
- <adc4bc72-5c80-e8f4-8d48-052109ae18b7@gmail.com>
- <20200419074717.GA3244@ubuntu>
- <42190e0e-4167-3cd6-0e52-d240ae67a502@gmail.com>
+        id S1726099AbgDSN0e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 19 Apr 2020 09:26:34 -0400
+Received: from mail.ac.gov.br ([179.252.114.240]:33588 "EHLO
+        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgDSN0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 09:26:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 6F35D2B4E8F8;
+        Sun, 19 Apr 2020 05:24:42 -0500 (ACT)
+Received: from srvifs070.ac.gov.br ([127.0.0.1])
+        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id JVL7PTclZNoQ; Sun, 19 Apr 2020 05:24:41 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 8983D2B4E919;
+        Sun, 19 Apr 2020 05:24:40 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id BDF032B4E8ED;
+        Sun, 19 Apr 2020 05:24:08 -0500 (ACT)
+Date:   Sun, 19 Apr 2020 06:24:08 -0400 (AMT)
+From:   Morgan Stanley <angela.magalhaes@ac.gov.br>
+Reply-To: Morgan Stanley <finance-@mail-customercaremarketing.com>
+Message-ID: <1363712629.631357.1587291848561.JavaMail.zimbra@ac.gov.br>
+Subject: =?utf-8?Q?M=C3=B6chten_Sie_mehr_Geld_verdienen=3F_?=
+ =?utf-8?Q?Investieren_Sie_noch_heute_bei_uns?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42190e0e-4167-3cd6-0e52-d240ae67a502@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:uGVWodHyCTLdQ3XSyWqGBZ4gQuQDAHqGOos9oFi6KdRRLurA2TE
- /W+2OrlkPNeLluPXom2bihOZ14hvB6pWiAHLFLenr/3WGp2S336HJ5ruDal0aQUR7rztnTw
- f3VMb037pQIrOYptMrcdZNQQwVrGJmGsJ6jG7o0vRlqWOMjqeRQERobCJ6Cun2tRb4pfJuH
- Hb6Chks/Vf+S0eEwb4RZQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i0sX5EJMf+I=:LUHt9YIF5DCp27j010j+Ig
- FhgIyn9jwz2q4dsefuegfy2wsFt0ctImsaTmMr6bqF8pWYARk57rok42ttTC8Qh1Yy9sbtrMg
- ihzXGYLDJBgEDD7OJjTsfnHkJVsjFVXS7BSDuUttu8GinuvsWs/WIzqpmY5zz2IkC0wR5rhom
- vkxRmJy0BU2uYAVk5iJjJdB9Nc+hcbDBoa/tqOJrTZ3pHNXi9fMb37spncRgzJVyOTCbbzgkN
- whIgfTO2MoSstXnfRdIsDuaIWDBL2Mi8zXATRjX8yGz4qUkVMIUYGD/PgzpalsmA7vig1nQUp
- FnE/cul4yLnny3hrxqX1KqBK7CPBYuJxFcuPTG3lMYOb7TQp2uO2pKlCLJiH80RSA79IZdedr
- CdjStDLrLaOaU8I3S/FrFPjVFcZg+cjSh7oFf0G3Pu7KXs9gPPc5NUCHGUkOa9Uuc0CmNpl2x
- cyCaf/VVvKIZ74loeN6+ariHNnExq9zctMPsSqCDI9jBrZV7D2XsQH9FNLDw3MCNmqMcBO1Oa
- 8aY60w4SVYEjz+pCWkhkBkk/6uEBmZ/my0vErgetSsxE680ffmleUAtyCZSqYeM3fSksN6VyQ
- k9mHI5JbDpr5HqOAlnJUWMfdxmaCNG4zxzsSUBTR2V2BHJO0+brR2l68dT/eoD5LCTq1qwK87
- UXc7CD0eDv2V0QKVuV8XG77i2c1WHtbr1FWXVisfQoAeZdxY8JdMi3czYjRAicYv+mCxxT3P7
- w40C3BxcuttRDrHWmvzGRTXEhaFA+YYVbQyrjStpB39t+eYR7/AGqiEsUFE9roxUtD8FrRiUt
- tOTU1rhJFAmoSurqwoydx3y2zKorUsSc1cAt1yoVmkON57jOZP3xabwxkowPZpAYumGXG7q8I
- lRwE/37G7iOlyUVCa67r9Lb2ToWsx3He3XkE+RG9+jO6wwtWe4H8ogA3GkaU7stzU58ydDuzg
- EdW44xBRs/blD8nysJAa3XNfdXAMGU3n5LKaZNq1DwbgP8VTsEbq29PEXGhvyCDwrx6HgstFj
- eY5nY31S2zyWjDlQq56SgerOaDGTtQ/sylD28TYHT3NBxqvxhGPIf8skT7u2k9zdVmn14VCTt
- y4cF0GYeyG0Y2PBQVjzsyHgP4xSupg5pvW+CuevBQ+w3O5Z3cG91J/MTyX6xeFa3rTw2tpRzZ
- 2ZPtJP9mbRYWbAvqTzqoObxbXUu9ls5GkVdVYUnTuMpB+ioWa97e0ALqAuGA3oHNWfTAriJ8M
- m7/JlmOW9JPCBd3e8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [102.167.49.247]
+X-Mailer: Zimbra 8.0.6_GA_5922 (ZimbraWebClient - GC80 (Win)/8.0.6_GA_5922)
+Thread-Topic: =?utf-8?Q?M=C3=B6chten?= Sie mehr Geld verdienen? Investieren Sie noch heute bei uns
+Thread-Index: aoqlIUYOvIs38TxpteCE7t9HEvzKrQ==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 10:22:50AM +0100, Malcolm Priestley wrote:
->
->
-> On 19/04/2020 08:47, Oscar Carter wrote:
-> > On Sat, Apr 18, 2020 at 07:05:53PM +0100, Malcolm Priestley wrote:
-> >> Actually I don't really think the function descriptions are needed at=
- all the
-> >> names of the functions are enough.
-> >>
-> > Then, it would be better leave the documentation as it was before or r=
-emove it?
-> >
->
-> I would remove them all except for comments inside functions.
->
-Ok, then I make the suggested changes and send a new version serie.
 
-> Regards
->
-> Malcolm
 
-Thanks,
-Oscar Carter
+Guten Tag Meine Damen und Herren
+Morgan Stanley hat ein tolles Angebot für Sie. Investieren Sie einen Kapitalbetrag von 500 Euro in Morgan Stanley online Global Market Trading und verdienen Sie 5.000 Euro innerhalb von fünf Arbeitstagen. Dieser Trade wird von Morgan Stanley Digital durchgeführt. Um mehr über uns zu erfahren, erreichen Sie uns bitte unter: (finance-@mail-customercaremarketing.com)
+
+
+Morgan Stanley has a great offer for you.  Invest a capital amount of 500 euros with Morgan Stanley online Global Market Trading and make 5000 euros within five working days, this trade is run by Morgan Stanley Digital expertise, to know more about us kindly reach us at: (finance-@mail-customercaremarketing.com)
+
+
