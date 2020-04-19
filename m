@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890221AFA0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 14:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C35B1AFA12
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 14:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgDSMgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 08:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S1726296AbgDSMgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 08:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726091AbgDSMgK (ORCPT
+        with ESMTP id S1726087AbgDSMg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 08:36:10 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ED8C061A0C;
-        Sun, 19 Apr 2020 05:36:10 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id ay1so2883538plb.0;
-        Sun, 19 Apr 2020 05:36:10 -0700 (PDT)
+        Sun, 19 Apr 2020 08:36:28 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7500C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 05:36:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id h2so7759053wmb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 05:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=6Z8Bx3p5Q6hFwu69ifPJp1LQnSz76OWcYhpeH5bINug=;
-        b=oUEAkQZ3c+kUp664ajW7tua9y22QWM1UQwoNemwQkNn7O4ftv+9ILTmYBfumkjL6C7
-         DzlCKEl0kdlH1fhr1lQo3NJ4ElSghMwCIfEWxCoEy1kEiOzCEbX8PFMEY8x3DTv6Px0g
-         r/oDNSkw+QdUJSpLBpZgtEpJm9QCE7Xooq9B1rsxla1/1z5UGU+Ma4JLdLpwkw28wfiw
-         k7erM+ZVCrOtkojO0fYwzEau6MxxlHo4Zxu8Pkq7nNOalN0M2VQLFtGzkUlnSM/DQMLI
-         gaRKd5hGR+m2eyZjqshJVBrIcnxwjFd4MVbMBYdwGQyifViHfCbwba2j4y48WwS9vRKJ
-         hyfQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NO2BQW6T1noQfECm0T8lcV7QErjlTf0XvFH0gH2fMyE=;
+        b=mPeLXDI7ExRIl6dkw0GFkdIrXMCTjblemuKsHbatY8cf3K9D045CQlKLX525gPVzCV
+         SWqC/HL7rP3qISK4L2ZW/AsYHYMtmmc4xeMJtmyx00gmZrSxIvdYLgc235B/wiZGhu1+
+         pPCnm95F69RePudoSq8XgAckdziyJGufh0nzQoKRTJC0K1IMLIXFSxiCypmz2SuhW5jW
+         skF033WQs85npAMgyVjJ1La/SPdKCs0zJQnPw3yhF5veJUNRFNazi00kS9Jl+n6T07R6
+         stChjpLc7TT+g4vj8Io0gyA6SPHleFses+zDF6aJmYNbrsoMy/sdHUDyOuBt0heSOcU0
+         hDHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=6Z8Bx3p5Q6hFwu69ifPJp1LQnSz76OWcYhpeH5bINug=;
-        b=C4XBeqSYzYa0KkOgsN3E4LghosfGBuwvK4UHvksep8hf5Jg98mpBj7lAbxNEUq2l5m
-         5btQ/y0+pF8qm6bQ8/PnsJNXgvKSbfdogKjiCgw0qIjBzO/fZCuunbrEJWYe3xA+FlX6
-         zOzYr9HggBkltihZDStjXnjDIEV8hzwHUW4Iux7UnYrmX+hSzAunUBVLmLHZshZNKS8Z
-         R8ZlE6zbRHaPnQqHcCgzUm6z7tqVJcfYrhrHcT0CRgRqIPC/jiI912Hi9Kjuvwtr21Ue
-         AvOCC9Wiw0Xk+4aduIkRIXU4SmaDDoVxOPQVWJRfIJuV/SGcjDma4GKG5UvUDEJKdYDO
-         pB2A==
-X-Gm-Message-State: AGi0PuaB3zMXkWBX64WwCIK+dYGncu2TDiBt5PHqABKVBeMjmZJn+Yms
-        FRzm/M8zrpknIHFlHenFfu0=
-X-Google-Smtp-Source: APiQypJ+VkSTyYRWLg2So+2TQWn/W1FltMq7L6xpsC80J/PBszDEt98ugqvJ+Ht1z6Olk5+HTjC9zA==
-X-Received: by 2002:a17:90a:2347:: with SMTP id f65mr14839339pje.165.1587299770106;
-        Sun, 19 Apr 2020 05:36:10 -0700 (PDT)
-Received: from nishad ([106.51.232.103])
-        by smtp.gmail.com with ESMTPSA id 132sm24797478pfc.183.2020.04.19.05.36.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 19 Apr 2020 05:36:09 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 18:06:03 +0530
-From:   Nishad Kamdar <nishadkamdar@gmail.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: phy: Use the correct style for SPDX License Identifier
-Message-ID: <20200419123559.GA4505@nishad>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NO2BQW6T1noQfECm0T8lcV7QErjlTf0XvFH0gH2fMyE=;
+        b=DIbbixT7oSIixGobtip4PqQKEf+dF/hHCXf9ejjUYVABPT2/8DHcVDjhCXsAjyuTHy
+         pevqNXbaKTAOXqDWpgTRKYH2Vo1BT3ESgjNjT7tXZ2X1GQd1BWWlj4TOfn/Tgto+8hE8
+         3e+rJkaU2+Rc9rQQXHoq6Si4N4Q79oWGnx9oyz4COyT0Hxih1uA+kdtW1ZWSpzjL6RR/
+         yf9w6Af0+sh5PU1O0vI4/xsUZEOEpMw2Q2TXGinMA0d9lUrMFWY+F+Sl81YzChFREOBQ
+         0l+QZYBCTfYOFYJzQXz1ANALIWaD9Jw3cgl57BYiq0mD49DSMds8rmc9mluxNf2PfyMH
+         Hk8A==
+X-Gm-Message-State: AGi0PubYd8cUlkb8/hAK2afhuXSbuNuiEoX5aLpxR+LYO3ZMmSuYGkE5
+        sBwXTk9kOUEk0lh0Gg7/A7M=
+X-Google-Smtp-Source: APiQypI41I9+IjrOHYvbz5qPYuUrXSV10LBkXmyyG9fEbFE2T4boTJRbdY4+eE3uhY6Ihr1Us0Iv1Q==
+X-Received: by 2002:a1c:7d04:: with SMTP id y4mr12492390wmc.10.1587299787388;
+        Sun, 19 Apr 2020 05:36:27 -0700 (PDT)
+Received: from localhost.localdomain (x59cc9bd1.dyn.telefonica.de. [89.204.155.209])
+        by smtp.gmail.com with ESMTPSA id 68sm42508323wrm.65.2020.04.19.05.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Apr 2020 05:36:26 -0700 (PDT)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH] kbuild: Set CLANG_VERSION only when Clang is used
+Date:   Sun, 19 Apr 2020 14:36:12 +0200
+Message-Id: <20200419123612.173187-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch corrects the SPDX License Identifier style in
-header files related to Physical Layer USB driver configuration.
-For C header files Documentation/process/license-rules.rst
-mandates C-like comments (opposed to C source files where
-C++ style should be used).
+Do like GCC_VERSION is set when GCC (see CC_IS_GCC) is used.
 
-Changes made by using a script provided by Joe Perches here:
-https://lkml.org/lkml/2019/2/7/46.
-
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
 ---
- drivers/usb/phy/phy-fsl-usb.h | 2 +-
- drivers/usb/phy/phy-mv-usb.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ init/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/phy/phy-fsl-usb.h b/drivers/usb/phy/phy-fsl-usb.h
-index 43d410f6641b..fbcc28ad9964 100644
---- a/drivers/usb/phy/phy-fsl-usb.h
-+++ b/drivers/usb/phy/phy-fsl-usb.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0+
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /* Copyright (C) 2007,2008 Freescale Semiconductor, Inc. */
+diff --git a/init/Kconfig b/init/Kconfig
+index 9e22ee8fbd75..c23f9d3d6d6c 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -25,7 +25,7 @@ config CC_IS_CLANG
  
- #include <linux/usb/otg-fsm.h>
-diff --git a/drivers/usb/phy/phy-mv-usb.h b/drivers/usb/phy/phy-mv-usb.h
-index 96701a1229ad..5d5c0abb0c3a 100644
---- a/drivers/usb/phy/phy-mv-usb.h
-+++ b/drivers/usb/phy/phy-mv-usb.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0+
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * Copyright (C) 2011 Marvell International Ltd. All rights reserved.
-  */
+ config CLANG_VERSION
+ 	int
+-	default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
++	default $(shell,$(srctree)/scripts/clang-version.sh $(CC)) if CC_IS_CLANG
+ 
+ config CC_CAN_LINK
+ 	def_bool $(success,$(srctree)/scripts/cc-can-link.sh $(CC))
 -- 
-2.17.1
+2.26.1
 
