@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A351AF664
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 05:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372B41AF668
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 05:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgDSDTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 23:19:14 -0400
-Received: from lists.nic.cz ([217.31.204.67]:35226 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgDSDTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 23:19:14 -0400
-Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id C51A8140079;
-        Sun, 19 Apr 2020 05:19:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1587266352; bh=jzs55wN+zxgwJgkgiXcqXtgwjnh4IgEdGh/n6vKt/Io=;
-        h=Date:From:To;
-        b=l1qqsOhe3XeChgdJOBat9enl4XDCKRzMFmu6CL7wgBIZWznVbq8oNMcpQNDhnyfCJ
-         69iDvJUa+lwtR0GFdAxh5dHCNIFUSwitxWCpJpsKRcjHulo0IVnYQuJ8ciAFJwsEAY
-         rOYa5TbvXpz1hNAJ4BzWZRsQJm486qDz7ZhMAXzU=
-Date:   Sun, 19 Apr 2020 05:19:11 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 2/8] dts: espressobin: Define max-link-speed for pcie0
-Message-ID: <20200419051911.1b5adef0@nic.cz>
-In-Reply-To: <20200415160054.951-3-pali@kernel.org>
-References: <20200415160054.951-1-pali@kernel.org>
-        <20200415160054.951-3-pali@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725987AbgDSDWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 23:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725879AbgDSDWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 23:22:13 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6470EC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 20:22:11 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id 184so3799534vsu.3
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 20:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Qx8nDbaFMkUzFVZR7ocRhoUCDYt1J+4uYo1UgQQZqo=;
+        b=PnEgVOnDNJXXYPdCDGx/XAl7N+Z2fAAAoJMoPad4k+esD9S79bdLo5Xz9G9naZjIFY
+         tQWZn1CTmWRy5zS8fiMQShcEyF8N5py/9QRqyuaEPlpY3u3wERWgSe3Ol3zOkwjbz8eN
+         3lWVYpDYxUV1cSEdyyhj7ODek1CMak84ag6uxP2DljyUEYKqSmDdXwqWEunXp8Jcvs30
+         Nm+jbRDu0iybyZiK5J6DYfmpzjY+A08+AyWmC9Yj4C+SQDROffKPUcowxruhANXUOX65
+         RHeykxUSUG+5OZzcGrYGliWwiNPK15xjKGCmXb/IdolAwAJfzHIbHkcyIxk/mZMhC3TT
+         DWPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Qx8nDbaFMkUzFVZR7ocRhoUCDYt1J+4uYo1UgQQZqo=;
+        b=rFsBxvhK+/w+1bB1LED2YAlNyGFgQ2iHldjVrRSmkTG1VOY7A4m7gw0d0aPtIS0Us+
+         yNuflgJvT8rI0qd4CCaNbdo5sEvlwTgC85UtB4TvCeMlgbyUl9RS0LHOtxn6IiqtKO/0
+         NChuy8rp35UzdLfjDvHUIVT6yNQCIyRnrsZmo/Y8P2GePYPoJvd0uBXJSmGcak/BJUNO
+         JPMRTrS9sybQSBNnLoCTFzNWocQLHiWJosB9D1hzn4Foda07dAGdK/TASoywE55xGYK7
+         nMNMBxs4DeMSiQcDPqXOH5+6Ybwuwe5NlWezdj5lPj9FTbZ8QWUFgPywzOVXq4U5Zh6G
+         Iaig==
+X-Gm-Message-State: AGi0PuYrXGqOydkR80NOUDJdW879/FIq5xI0ajHMN4fhlTywiFyYcbu+
+        5EbZU40Ghyu6zybNrOxxlrogmtfRcxZjPH0Zscmd3p+/
+X-Google-Smtp-Source: APiQypKJmhvAR9duc+u9Cs7ivXeidR5tg4GtlRZ7qqku3GW7dGO8cdTgtqLjirmkt5pncHezv/4RQFbAMqq4VEc6J8Y=
+X-Received: by 2002:a67:d90f:: with SMTP id t15mr7737339vsj.214.1587266530482;
+ Sat, 18 Apr 2020 20:22:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.101.4 at mail
-X-Virus-Status: Clean
+References: <20200417162451.91969-1-pilgrimtao@gmail.com> <20200417170506.ldz2eee4mm4szqij@linutronix.de>
+In-Reply-To: <20200417170506.ldz2eee4mm4szqij@linutronix.de>
+From:   Tao pilgrim <pilgrimtao@gmail.com>
+Date:   Sun, 19 Apr 2020 11:21:59 +0800
+Message-ID: <CAAWJmAZ3p9jdSUi5H0+kmCN7h-rzBA0=9tR-y5J4kJgYDUDBdQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND] kernel/smp: Use smp_call_func_t in on_each_cpu()
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     tglx@linutronix.de, peterz@infradead.org, namit@vmware.com,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When chaning dts files in arch/arm64/boot/dts/marvell, use subject
-prefix
-  arm64: dts: marvell:
-for espressobin for example
-  arm64: dts: marvell: espressobin:
+On Sat, Apr 18, 2020 at 1:05 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-04-18 00:24:51 [+0800], Kaitao Cheng wrote:
+> > There is already a typedef smp_call_func_t, so we can just use it,
+> > maybe better.
+> >
+> > Fixes: 3a5f65df5a0fc ("Typedef SMP call function pointer")
+> > Signed-off-by: Kaitao Cheng <pilgrimtao@gmail.com>
+>
+> I would not go as far as the Fixes: tag but otherwise:
+>
+>   Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-instead of
-  dts: espressobin
-or
-  dts: aardvark
+Thanks for your review. Do you mean I should delete the Fixes tag?
 
-Marek
-
-
-On Wed, 15 Apr 2020 18:00:48 +0200
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
-
-> Previously aardvark PCI controller set speed to gen2. Now it reads speed
-> from Device Tree and as default use maximal possible speed which is gen3.
->=20
-> Because Espressobin has advertised only PCI Express 2.0 capability and
-> previous value was gen2, define max-link-speed to 2, so there would not be
-> any configuration change.
->=20
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/a=
-rch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> index 42e992f9c8a5..6705618162d5 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> @@ -47,6 +47,7 @@
->  	phys =3D <&comphy1 0>;
->  	pinctrl-names =3D "default";
->  	pinctrl-0 =3D <&pcie_reset_pins &pcie_clkreq_pins>;
-> +	max-link-speed =3D <2>;
->  };
-> =20
->  /* J6 */
-
+>
+> > ---
+> >  kernel/smp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/smp.c b/kernel/smp.c
+> > index 786092aabdcd..84303197caf9 100644
+> > --- a/kernel/smp.c
+> > +++ b/kernel/smp.c
+> > @@ -620,7 +620,7 @@ void __init smp_init(void)
+> >   * early_boot_irqs_disabled is set.  Use local_irq_save/restore() instead
+> >   * of local_irq_disable/enable().
+> >   */
+> > -void on_each_cpu(void (*func) (void *info), void *info, int wait)
+> > +void on_each_cpu(smp_call_func_t func, void *info, int wait)
+> >  {
+> >       unsigned long flags;
+> >
+>
+> Sebastian
