@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBE01AFB26
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AE21AFB41
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 16:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgDSOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 10:11:57 -0400
-Received: from raptor.unsafe.ru ([5.9.43.93]:45624 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgDSOLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 10:11:48 -0400
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 8629720A01;
-        Sun, 19 Apr 2020 14:11:44 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Security Module <linux-security-module@vger.kernel.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Djalal Harouni <tixxdz@gmail.com>,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@poochiereds.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v12 7/7] proc: use named enums for better readability
-Date:   Sun, 19 Apr 2020 16:10:57 +0200
-Message-Id: <20200419141057.621356-8-gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.25.3
-In-Reply-To: <20200419141057.621356-1-gladkov.alexey@gmail.com>
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        id S1726489AbgDSOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 10:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgDSOMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 10:12:50 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B26C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 07:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=iPI9+C0OmqfHPSjDQhvBPW39Tw6U8V5gfT1X3EF41SM=; b=mQ1sT2hPGhAt68e7vQDBJLtWe
+        tXEG+VFuhHJl3fOhDrSSB6Lfqa+n7I4RsLet3ztr/tzhtShrGLXbf5HgKVjGXcc6hoZ5koq4y1Wgf
+        JNGyt4hhi/MMu2aG+/Oj+DkH/1+1BJut5H2ufCV68abNmr0xqcH0Q9d7K/gaPTrZp30cVPs9oXckN
+        pygghQzjGu/RtBXwTFQwsnJ3+gJldt8LTwjy1r++fqTVwAQAQErT11rN3RY8mV0GhHY/BaTiI/l+/
+        EorvK49Ned6aio1wv9gljpZTuQmRS00qFCes27XvwBWLfIOXflwdASdV7d7iVlm+S7ebG1ms7Gk8Z
+        zD+wsLEtw==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:40538)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jQAgZ-0005zm-NF; Sun, 19 Apr 2020 15:12:39 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jQAgP-0004uU-GD; Sun, 19 Apr 2020 15:12:29 +0100
+Date:   Sun, 19 Apr 2020 15:12:29 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     clang-built-linux@googlegroups.com, arnd@arndb.de,
+        ard.biesheuvel@linaro.org, ndesaulniers@google.com,
+        linux-kernel@vger.kernel.org, jiancai@google.com,
+        yamada.masahiro@socionext.com, manojgupta@google.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] ARM: make use of UAL VFP mnemonics when possible
+Message-ID: <20200419141229.GX25745@shell.armlinux.org.uk>
+References: <cover.1587299429.git.stefan@agner.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Sun, 19 Apr 2020 14:11:45 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1587299429.git.stefan@agner.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
-Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- fs/proc/base.c          | 2 +-
- fs/proc/inode.c         | 2 +-
- fs/proc/root.c          | 4 ++--
- include/linux/proc_fs.h | 8 ++++----
- 4 files changed, 8 insertions(+), 8 deletions(-)
+On Sun, Apr 19, 2020 at 02:35:48PM +0200, Stefan Agner wrote:
+> To build the kernel with Clang's integrated assembler the VFP code needs
+> to make use of the unified assembler language (UAL) VFP mnemonics.
+> 
+> At first I tried to get rid of the co-processor instructions to access
+> the floating point unit along with the macros completely. However, due
+> to missing FPINST/FPINST2 argument support in older binutils versions we
+> have to keep them around. Once we drop support for binutils 2.24 and
+> older, the move to UAL VFP mnemonics will be straight forward with this
+> changes applied.
+> 
+> Tested using Clang with integrated assembler as well as external
+> (binutils assembler), various gcc/binutils version down to 4.7/2.23.
+> Disassembled and compared the object files in arch/arm/vfp/ to make
+> sure this changes leads to the same code. Besides different inlining
+> behavior I was not able to spot a difference.
+> 
+> In v2 the check for FPINST argument support is now made in Kconfig.
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index a52a91e90c25..2868bff1a142 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -699,7 +699,7 @@ int proc_setattr(struct dentry *dentry, struct iattr *attr)
-  */
- static bool has_pid_permissions(struct proc_fs_info *fs_info,
- 				 struct task_struct *task,
--				 int hide_pid_min)
-+				 enum proc_hidepid hide_pid_min)
- {
- 	/*
- 	 * If 'hidpid' mount option is set force a ptrace check,
-diff --git a/fs/proc/inode.c b/fs/proc/inode.c
-index cbacac2e892b..f40c2532c057 100644
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -166,7 +166,7 @@ void proc_invalidate_siblings_dcache(struct hlist_head *inodes, spinlock_t *lock
- 		deactivate_super(old_sb);
- }
- 
--static inline const char *hidepid2str(int v)
-+static inline const char *hidepid2str(enum proc_hidepid v)
- {
- 	switch (v) {
- 		case HIDEPID_OFF: return "off";
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index 288093261b7f..ffebed1999e5 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -32,9 +32,9 @@
- struct proc_fs_context {
- 	struct pid_namespace	*pid_ns;
- 	unsigned int		mask;
--	int			hidepid;
-+	enum proc_hidepid	hidepid;
- 	int			gid;
--	int			pidonly;
-+	enum proc_pidonly	pidonly;
- };
- 
- enum proc_param {
-diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-index 8bc31ba5cd9c..2cb424e6f36a 100644
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -43,7 +43,7 @@ struct proc_ops {
- } __randomize_layout;
- 
- /* definitions for hide_pid field */
--enum {
-+enum proc_hidepid {
- 	HIDEPID_OFF	  = 0,
- 	HIDEPID_NO_ACCESS = 1,
- 	HIDEPID_INVISIBLE = 2,
-@@ -51,7 +51,7 @@ enum {
- };
- 
- /* definitions for proc mount option pidonly */
--enum {
-+enum proc_pidonly {
- 	PROC_PIDONLY_OFF = 0,
- 	PROC_PIDONLY_ON  = 1,
- };
-@@ -61,8 +61,8 @@ struct proc_fs_info {
- 	struct dentry *proc_self;        /* For /proc/self */
- 	struct dentry *proc_thread_self; /* For /proc/thread-self */
- 	kgid_t pid_gid;
--	int hide_pid;
--	int pidonly;
-+	enum proc_hidepid hide_pid;
-+	enum proc_pidonly pidonly;
- };
- 
- static inline struct proc_fs_info *proc_sb_info(struct super_block *sb)
+Given what I said in the other thread, Clang really _should_ allow
+the MCR/MRC et.al. instructions to access the VFP registers.  There
+is no reason to specifically block them.
+
+As we have seen with FPA, having that ability when iWMMXT comes along
+is very useful.  In any case:
+
+1. The ARM ARM (DDI0406) states that "These instructions are MRC and MCR
+instructions for coprocessors 10 and 11." in section A7.8.
+
+2. The ARM ARM (DDI0406) describes the MRC and MCR instructions as
+being able to access _any_ co-processor.
+
+So, Clang deciding that it's going to block access to coprocessor 10
+and 11 because some version of the architecture _also_ defines these
+as VFP instructions is really not on, and Clang needs to be fixed
+irrespective of these patches - and I want to know that *is* going to
+get fixed before I take these patches into the kernel.
+
 -- 
-2.25.3
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
