@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8A71AF639
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 03:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2D11AF642
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 04:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgDSB6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Apr 2020 21:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgDSB6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Apr 2020 21:58:14 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1725960AbgDSCJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Apr 2020 22:09:04 -0400
+Received: from mta-p5.oit.umn.edu ([134.84.196.205]:37176 "EHLO
+        mta-p5.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgDSCJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Apr 2020 22:09:03 -0400
+X-Greylist: delayed 574 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Apr 2020 22:09:02 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p5.oit.umn.edu (Postfix) with ESMTP id 494Y0v5vVrz9vHfL
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 01:59:27 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p5.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p5.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id d9d1TGLnjPtw for <linux-kernel@vger.kernel.org>;
+        Sat, 18 Apr 2020 20:59:27 -0500 (CDT)
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C314A22253;
-        Sun, 19 Apr 2020 01:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587261493;
-        bh=7Wo7rJBHP9prKBoZ2hJqLbYoAryut5A4noLd+A2t+vQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ltYAfOuu4MPeQHB160UmViI9WamDDZc0glaiAkg8IeAo38FhvplA52Wc+axWrKMNZ
-         czKjLT9uyusxOzjyv8xRajDyI+95W3i0CHZz114AVIrZztzUOFiIm8y6rt3mbIbn2H
-         /ee1TSVHdcSCyaMwl2BX/kVzNcTB6SmJ6QY40JL0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     mingo@kernel.org, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, jolsa@redhat.com,
-        alexey.budankov@linux.intel.com, songliubraving@fb.com,
-        acme@redhat.com, allison@lohutok.net,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v2 12/12] tools/lib/lockdep: switch to using lockdep_init_map_waits
-Date:   Sat, 18 Apr 2020 21:57:54 -0400
-Message-Id: <20200419015754.24456-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200419015754.24456-1-sashal@kernel.org>
-References: <20200419015754.24456-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by mta-p5.oit.umn.edu (Postfix) with ESMTPS id 494Y0v4hc3z9vHfG
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 20:59:27 -0500 (CDT)
+Received: by mail-qt1-f198.google.com with SMTP id g23so6960833qto.0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Apr 2020 18:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HCfuU4zQnI9WCXY6MChIEAisAu9Dg1DyD5OyLd8lpYc=;
+        b=jKF9s+D4Xw9nQXeOdQAsoViL4u27zSmj8Kjb7O1Y3EzSvQVIZ/H+mt0eBHZZJ9iTHH
+         LVcgO9mKBaSme1yH8UceImOwq8EGLKBN24nmPtvEDxhPeHWCulzh8r7Sf6V2p8YlYHU9
+         /EqvDNGPjxLEzRYqoF5DsBUI+moKivt+NmRVCW65rXn491MIbJNz0MNthccGLGf9hYU0
+         TirscioFQaCNzXkthh2DM0Jeiuu0vSnau5mLcHY6+kdk9TBQbc5p9akE1pbaxQnIDjXA
+         /otr2SPZ3lDy8h/JP5dsw9T65s38Ic6RT5iB3fplMBsaSUSFi9yhjRDA45/SA6ehe/zQ
+         3w4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HCfuU4zQnI9WCXY6MChIEAisAu9Dg1DyD5OyLd8lpYc=;
+        b=jUJSdTKelEMNmnXX1gYdXf77fjpNhLBpdIwWd39e3Z6Z7Sk4ydoEFhqhxYIEspGp7m
+         Wkt7s9rvcc+uAOPmReBDFY+EJsO0M6ZgsqKV8AiBsK3nY8yb1697orVNJB11NAbxDQPs
+         VFvZTXH2Ry14hlYOY+/ev2SRnblzGEb6GmIr//8/dD6buJttHc+H8Tg6qAzlYgJ708i7
+         S5Y6fuGPlSCHm1wcjC2qa/MQVHGCAnVExBM68qCWioQzggrMHVAKH0iFUqV1Fx6ksQDF
+         5eYQf3T3VzLQBO4mMdUA8wdTMjGz2O01LNo7tfWGX8iyAdCmDU7rSBEhYFSmmHPrqh4+
+         Q60Q==
+X-Gm-Message-State: AGi0PuZHm+zSBH73lUweh3CXlDJA2uuGy2auHNuZXNYgmkyk8gSKBznN
+        iqXqrEHB6kean0SfitbeHfsequw/4k8u9QYVRorE3TuWrjBPcVvhW3G/4v9kwaWKINN3/FODLsb
+        Ay2TX0/XNzFGze0KECOWsGyQP7SDZ
+X-Received: by 2002:ac8:5513:: with SMTP id j19mr10360619qtq.319.1587261566960;
+        Sat, 18 Apr 2020 18:59:26 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLgSkYtVsc/li5EASyRidgZ/WEugX1aTxdMnZBtEG2fLb6S8mwIxoHNoGFODlBr9i9KEvypGQ==
+X-Received: by 2002:ac8:5513:: with SMTP id j19mr10360605qtq.319.1587261566568;
+        Sat, 18 Apr 2020 18:59:26 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id c6sm19814298qka.58.2020.04.18.18.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Apr 2020 18:59:25 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjlu@umn.edu, wu000273@umn.edu
+Subject: [PATCH] btrfs: fix a potential racy
+Date:   Sat, 18 Apr 2020 20:59:07 -0500
+Message-Id: <20200419015907.15503-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of de8f5e4f2dc1 ("lockdep: Introduce wait-type checks") lockdep
-exports lockdep_init_map_waits() instead of lockdep_init_map() for
-initialization.
+From: Qiushi Wu <wu000273@umn.edu>
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In function reada_find_extent and reada_extent_put, kref_get(&zone->refcnt)
+are not called in a lock context. Potential racy may happen. It's possible
+that thread1 decreases the kref to 0, and thread2 increases the kref to 1,
+then thread1 releases the pointer.
+
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 ---
- tools/include/linux/kernel.h                  | 2 ++
- tools/include/linux/lockdep.h                 | 1 +
- tools/lib/lockdep/include/liblockdep/common.h | 4 ++--
- tools/lib/lockdep/include/liblockdep/mutex.h  | 2 +-
- tools/lib/lockdep/include/liblockdep/rwlock.h | 2 +-
- tools/lib/lockdep/preload.c                   | 2 +-
- 6 files changed, 8 insertions(+), 5 deletions(-)
+ fs/btrfs/reada.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
-index cc3d60623ca47..046570566e277 100644
---- a/tools/include/linux/kernel.h
-+++ b/tools/include/linux/kernel.h
-@@ -132,4 +132,6 @@ static __maybe_unused int system_state;
- #define rcu_read_lock()
- #define rcu_read_unlock()
- 
-+#define in_nmi() 0
+diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+index 243a2e44526e..4b90d04f7a0a 100644
+--- a/fs/btrfs/reada.c
++++ b/fs/btrfs/reada.c
+@@ -361,13 +361,15 @@ static struct reada_extent *reada_find_extent(struct btrfs_fs_info *fs_info,
+ 		zone = reada_find_zone(dev, logical, bbio);
+ 		if (!zone)
+ 			continue;
+-
++		spin_lock(&fs_info->reada_lock);
+ 		re->zones[re->nzones++] = zone;
+ 		spin_lock(&zone->lock);
+ 		if (!zone->elems)
+ 			kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
+ 		++zone->elems;
+ 		spin_unlock(&zone->lock);
 +
- #endif
-diff --git a/tools/include/linux/lockdep.h b/tools/include/linux/lockdep.h
-index 3a9924d6d3ae8..4e5f31f28ca3e 100644
---- a/tools/include/linux/lockdep.h
-+++ b/tools/include/linux/lockdep.h
-@@ -34,6 +34,7 @@ struct task_struct {
- 	int pid;
- 	int state;
- 	int softirqs_enabled, hardirqs_enabled, softirqs_disabled, hardirqs_disabled, irq_events;
-+	int hardirq_threaded, irq_config;
- 	unsigned long softirq_disable_ip, softirq_enable_ip;
- 	unsigned int softirq_disable_event, softirq_enable_event;
- 	unsigned long hardirq_disable_ip, hardirq_enable_ip;
-diff --git a/tools/lib/lockdep/include/liblockdep/common.h b/tools/lib/lockdep/include/liblockdep/common.h
-index a6d7ee5f18ba9..5f698671f45c2 100644
---- a/tools/lib/lockdep/include/liblockdep/common.h
-+++ b/tools/lib/lockdep/include/liblockdep/common.h
-@@ -37,8 +37,8 @@ struct lockdep_map {
- #endif
- };
+ 		spin_lock(&fs_info->reada_lock);
+ 		kref_put(&zone->refcnt, reada_zone_release);
+ 		spin_unlock(&fs_info->reada_lock);
+@@ -458,8 +460,11 @@ static struct reada_extent *reada_find_extent(struct btrfs_fs_info *fs_info,
+ 	for (nzones = 0; nzones < re->nzones; ++nzones) {
+ 		struct reada_zone *zone;
  
--void lockdep_init_map(struct lockdep_map *lock, const char *name,
--			struct lock_class_key *key, int subclass);
-+void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
-+	struct lock_class_key *key, int subclass, short inner, short outer);
- void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 			int trylock, int read, int check,
- 			struct lockdep_map *nest_lock, unsigned long ip);
-diff --git a/tools/lib/lockdep/include/liblockdep/mutex.h b/tools/lib/lockdep/include/liblockdep/mutex.h
-index bd106b82759b7..6106fc73da687 100644
---- a/tools/lib/lockdep/include/liblockdep/mutex.h
-+++ b/tools/lib/lockdep/include/liblockdep/mutex.h
-@@ -24,7 +24,7 @@ static inline int __mutex_init(liblockdep_pthread_mutex_t *lock,
- 				struct lock_class_key *key,
- 				const pthread_mutexattr_t *__mutexattr)
- {
--	lockdep_init_map(&lock->dep_map, name, key, 0);
-+	lockdep_init_map_waits(&lock->dep_map, name, key, 0, 0, 0);
- 	return pthread_mutex_init(&lock->mutex, __mutexattr);
- }
++		spin_lock(&fs_info->reada_lock);
+ 		zone = re->zones[nzones];
+ 		kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
++
+ 		spin_lock(&zone->lock);
+ 		--zone->elems;
+ 		if (zone->elems == 0) {
+@@ -502,9 +507,11 @@ static void reada_extent_put(struct btrfs_fs_info *fs_info,
+ 	spin_unlock(&fs_info->reada_lock);
  
-diff --git a/tools/lib/lockdep/include/liblockdep/rwlock.h b/tools/lib/lockdep/include/liblockdep/rwlock.h
-index 6d5d2932bf4d9..222748d04219d 100644
---- a/tools/lib/lockdep/include/liblockdep/rwlock.h
-+++ b/tools/lib/lockdep/include/liblockdep/rwlock.h
-@@ -23,7 +23,7 @@ static inline int __rwlock_init(liblockdep_pthread_rwlock_t *lock,
- 				struct lock_class_key *key,
- 				const pthread_rwlockattr_t *attr)
- {
--	lockdep_init_map(&lock->dep_map, name, key, 0);
-+	lockdep_init_map_waits(&lock->dep_map, name, key, 0, 0, 0);
- 
- 	return pthread_rwlock_init(&lock->rwlock, attr);
- }
-diff --git a/tools/lib/lockdep/preload.c b/tools/lib/lockdep/preload.c
-index 578fdeda9422c..5bd58c51066c4 100644
---- a/tools/lib/lockdep/preload.c
-+++ b/tools/lib/lockdep/preload.c
-@@ -199,7 +199,7 @@ static struct lock_lookup *__get_lock(void *lock)
- 	 * TODO: Get the real name of the lock using libdwarf
- 	 */
- 	sprintf(l->name, "%p", lock);
--	lockdep_init_map(&l->dep_map, l->name, &l->key, 0);
-+//	lockdep_init_map_waits(&l->dep_map, l->name, &l->key, 0, 0, 0);
- 
- 	ll_pthread_rwlock_wrlock(&locks_rwlock);
- 	/* This might have changed since the last time we fetched it */
+ 	for (i = 0; i < re->nzones; ++i) {
++		spin_lock(&fs_info->reada_lock);
+ 		struct reada_zone *zone = re->zones[i];
+-
+ 		kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
++
+ 		spin_lock(&zone->lock);
+ 		--zone->elems;
+ 		if (zone->elems == 0) {
 -- 
-2.20.1
+2.17.1
 
