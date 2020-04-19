@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A031AFE2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 22:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92951AFE27
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 22:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgDSUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 16:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
+        id S1726324AbgDSUgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 16:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgDSUgV (ORCPT
+        with ESMTP id S1726245AbgDSUgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 16:36:21 -0400
+        Sun, 19 Apr 2020 16:36:22 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2423C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 13:36:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375F4C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 13:36:22 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jQGfm-0007N9-OD; Sun, 19 Apr 2020 22:36:14 +0200
+        id 1jQGfo-0007O3-1o; Sun, 19 Apr 2020 22:36:16 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 4AE89100EA1;
-        Sun, 19 Apr 2020 22:36:14 +0200 (CEST)
-Message-Id: <20200419203336.731736462@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 83CA0FFBA2;
+        Sun, 19 Apr 2020 22:36:15 +0200 (CEST)
+Message-Id: <20200419203336.839727891@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Sun, 19 Apr 2020 22:31:48 +0200
+Date:   Sun, 19 Apr 2020 22:31:49 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
@@ -33,7 +33,7 @@ Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
         Thomas Lendacky <Thomas.Lendacky@amd.com>,
         Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [patch 11/15] x86/tlb: Move cr4_set_bits_and_update_boot() to the usage site
+Subject: [patch 12/15] x86/tlb: Uninline nmi_uaccess_okay()
 References: <20200419203137.214111265@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,60 +46,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No point in having this exposed.
+cpu_tlbstate is exported because various TLB related functions need access
+to it, but cpu_tlbstate is sensitive information which should only be
+accessed by well contained kernel functions and not be directly exposed to
+modules.
+
+nmi_access_ok() is the last inline function which requires access to
+cpu_tlbstate. Move it into the TLB code.
+
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/tlbflush.h |   14 --------------
- arch/x86/mm/init.c              |   13 +++++++++++++
- 2 files changed, 13 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/tlbflush.h |   33 +--------------------------------
+ arch/x86/mm/tlb.c               |   32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 32 deletions(-)
 
 --- a/arch/x86/include/asm/tlbflush.h
 +++ b/arch/x86/include/asm/tlbflush.h
-@@ -332,23 +332,9 @@ static inline void cr4_clear_bits(unsign
- 	local_irq_restore(flags);
- }
+@@ -247,38 +247,7 @@ struct tlb_state {
+ };
+ DECLARE_PER_CPU_SHARED_ALIGNED(struct tlb_state, cpu_tlbstate);
  
 -/*
-- * Save some of cr4 feature set we're using (e.g.  Pentium 4MB
-- * enable and PPro Global page enable), so that any CPU's that boot
-- * up after us can get the correct flags.  This should only be used
-- * during boot on the boot cpu.
+- * Blindly accessing user memory from NMI context can be dangerous
+- * if we're in the middle of switching the current user task or
+- * switching the loaded mm.  It can also be dangerous if we
+- * interrupted some kernel code that was temporarily using a
+- * different mm.
 - */
- extern unsigned long mmu_cr4_features;
- extern u32 *trampoline_cr4_features;
- 
--static inline void cr4_set_bits_and_update_boot(unsigned long mask)
+-static inline bool nmi_uaccess_okay(void)
 -{
--	mmu_cr4_features |= mask;
--	if (trampoline_cr4_features)
--		*trampoline_cr4_features = mmu_cr4_features;
--	cr4_set_bits(mask);
+-	struct mm_struct *loaded_mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+-	struct mm_struct *current_mm = current->mm;
+-
+-	VM_WARN_ON_ONCE(!loaded_mm);
+-
+-	/*
+-	 * The condition we want to check is
+-	 * current_mm->pgd == __va(read_cr3_pa()).  This may be slow, though,
+-	 * if we're running in a VM with shadow paging, and nmi_uaccess_okay()
+-	 * is supposed to be reasonably fast.
+-	 *
+-	 * Instead, we check the almost equivalent but somewhat conservative
+-	 * condition below, and we rely on the fact that switch_mm_irqs_off()
+-	 * sets loaded_mm to LOADED_MM_SWITCHING before writing to CR3.
+-	 */
+-	if (loaded_mm != current_mm)
+-		return false;
+-
+-	VM_WARN_ON_ONCE(current_mm->pgd != __va(read_cr3_pa()));
+-
+-	return true;
 -}
 -
- extern void initialize_tlbstate_and_flush(void);
++bool nmi_uaccess_okay(void);
+ #define nmi_uaccess_okay nmi_uaccess_okay
  
- /*
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -172,6 +172,19 @@ struct map_range {
- 
- static int page_size_mask;
+ void cr4_update_irqsoff(unsigned long set, unsigned long clear);
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -1079,6 +1079,38 @@ void arch_tlbbatch_flush(struct arch_tlb
+ 	put_cpu();
+ }
  
 +/*
-+ * Save some of cr4 feature set we're using (e.g.  Pentium 4MB
-+ * enable and PPro Global page enable), so that any CPU's that boot
-+ * up after us can get the correct flags. Invoked on the boot CPU.
++ * Blindly accessing user memory from NMI context can be dangerous
++ * if we're in the middle of switching the current user task or
++ * switching the loaded mm.  It can also be dangerous if we
++ * interrupted some kernel code that was temporarily using a
++ * different mm.
 + */
-+static inline void cr4_set_bits_and_update_boot(unsigned long mask)
++bool nmi_uaccess_okay(void)
 +{
-+	mmu_cr4_features |= mask;
-+	if (trampoline_cr4_features)
-+		*trampoline_cr4_features = mmu_cr4_features;
-+	cr4_set_bits(mask);
++	struct mm_struct *loaded_mm = this_cpu_read(cpu_tlbstate.loaded_mm);
++	struct mm_struct *current_mm = current->mm;
++
++	VM_WARN_ON_ONCE(!loaded_mm);
++
++	/*
++	 * The condition we want to check is
++	 * current_mm->pgd == __va(read_cr3_pa()).  This may be slow, though,
++	 * if we're running in a VM with shadow paging, and nmi_uaccess_okay()
++	 * is supposed to be reasonably fast.
++	 *
++	 * Instead, we check the almost equivalent but somewhat conservative
++	 * condition below, and we rely on the fact that switch_mm_irqs_off()
++	 * sets loaded_mm to LOADED_MM_SWITCHING before writing to CR3.
++	 */
++	if (loaded_mm != current_mm)
++		return false;
++
++	VM_WARN_ON_ONCE(current_mm->pgd != __va(read_cr3_pa()));
++
++	return true;
 +}
 +
- static void __init probe_page_size_mask(void)
+ static ssize_t tlbflush_read_file(struct file *file, char __user *user_buf,
+ 			     size_t count, loff_t *ppos)
  {
- 	/*
 
