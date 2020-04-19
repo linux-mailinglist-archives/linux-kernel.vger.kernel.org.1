@@ -2,128 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2D71AFEB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 00:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5BC1AFEBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 00:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgDSWoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 18:44:25 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:57963 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgDSWoZ (ORCPT
+        id S1726009AbgDSWuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 18:50:19 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36571 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgDSWuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 18:44:25 -0400
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 03JMhwJB009257;
-        Mon, 20 Apr 2020 07:43:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03JMhwJB009257
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587336239;
-        bh=gV/58YzON11th09Ti+Q8EbO1d/yan4JpxqInk2QGwes=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FgiQUpEnZCCVaIVWx/unrd1QG7sa9rq24slnHk0eFwMxg1QdlLrIjfH/SpHuWWCT5
-         ByafFrn4UMsGC5LRT59KG15IAFnUk6ok1l66FmrHu741j05+dv9Cxbrh3EHJT2wiw/
-         9UtixbBdOUORKCDFJj8ONXAtkO3k4EdtoRwZdbXzqaIdaBGlqdVj0ETACR89kuuLXn
-         1leWcw9phhOWGYISjDoJVjQD3T90V+7ftx8rSrz0gtz+645fhPhOU1y+qiJKFmPk9l
-         Z19jEmSzS7Y3mZkkyDOOVJFBqj3PMJlDStTC2hwOFu3Uy+zD3Z90inxZPeJ0F2CCNs
-         sdjP6Tv+tjlUw==
-X-Nifty-SrcIP: [209.85.217.51]
-Received: by mail-vs1-f51.google.com with SMTP id z1so4816150vsn.11;
-        Sun, 19 Apr 2020 15:43:59 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaQCcQPIs8oHn7TeOVbbxkGH40jkE4x+oMYFK/uCImTCF9AmKku
-        rd/n1UbXIpFsuxUPWjrYM/psdaFF4otMHFIBKvs=
-X-Google-Smtp-Source: APiQypL18FhGmx9Srecmi4TdYq4Vj1H09SIbwKmnMxjZzAe5yiIXkku5jzH7VBRLIM/hcElDA0yKpv6VkHkLWl34k4c=
-X-Received: by 2002:a67:fa11:: with SMTP id i17mr9772277vsq.155.1587336237833;
- Sun, 19 Apr 2020 15:43:57 -0700 (PDT)
+        Sun, 19 Apr 2020 18:50:18 -0400
+Received: by mail-pg1-f193.google.com with SMTP id o185so3572402pgo.3;
+        Sun, 19 Apr 2020 15:50:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OxxnYeHTWroY6hmuHlAIlsKHz3BuO/6//L5YqJ82mMY=;
+        b=iSTYK2egGsM2t0dHPtMw4AYOITY2ZmqiLC/NSdUTchQu3I4cUcAYW8QPnnKTJBntRG
+         Iqy+JTubE2uJO7Wxzt3pzbnFsNA/vE63Ui8EpsN4ZVt5xBKSQRafkp3LVaMqWiDJgubw
+         iemsKexwv7ufBpwh/qC8aHFHfoTqX6hSeuyw4ekuH81B678WhZyccfbGZYbjC942gi4M
+         qVqVdaNVQYDS2M/gEvGk8bSicMCKlG4CJaYdX9JaCpYfuj74JLsxEtxHApBU4TohdzrD
+         YsQfd7BPwhKu2gz2AHVoE9GyGV4LnnDhCBqQ313FFMcNv+NeNfiPohH1hgh0vj3IFzAk
+         d0hg==
+X-Gm-Message-State: AGi0PuZ/YIqH++F63SJMUuzFqXFLz6lexIa9jqlpKLaZ6VSGRcT5V1dN
+        0Tajkjym/9EgB11sBpsHHPLoVimB3tM=
+X-Google-Smtp-Source: APiQypKW5JUfcsFpRqbbC+YhkiXeOliCnTOExnj3O8GqgN3Ldx2ACG/U/AE1gygv1oLNFBasLCJLIQ==
+X-Received: by 2002:a62:8106:: with SMTP id t6mr14151348pfd.81.1587336617865;
+        Sun, 19 Apr 2020 15:50:17 -0700 (PDT)
+Received: from [100.124.11.78] ([104.129.199.4])
+        by smtp.gmail.com with ESMTPSA id fy21sm11943472pjb.25.2020.04.19.15.50.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Apr 2020 15:50:16 -0700 (PDT)
+Subject: Re: [PATCH v2 05/10] blktrace: upgrade warns to BUG_ON() on
+ unexpected circmunstances
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org
+Cc:     mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20200419194529.4872-1-mcgrof@kernel.org>
+ <20200419194529.4872-6-mcgrof@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <54b63fd9-0c73-5fdc-b43d-6ab4aec3a00d@acm.org>
+Date:   Sun, 19 Apr 2020 15:50:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200419222804.483191-1-masahiroy@kernel.org>
-In-Reply-To: <20200419222804.483191-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 20 Apr 2020 07:43:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQmdxmk7_fxo0v6T92GwXpXbmukcMBD_4Dp+L89ymM7=A@mail.gmail.com>
-Message-ID: <CAK7LNAQmdxmk7_fxo0v6T92GwXpXbmukcMBD_4Dp+L89ymM7=A@mail.gmail.com>
-Subject: Re: [PATCH] arch: split MODULE_ARCH_VERMAGIC definitions out to <asm/vermagic.h>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200419194529.4872-6-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 7:28 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> As the bug report [1] pointed out, <linux/vermagic.h> must be included
-> after <linux/module.h>.
->
-> I believe we should be able to include headers in any order. We often
-> sort include directives alphabetically, but it is just coding style
-> convention. Technically, we can get rid of the include order restriction
-> by making every header self-contained.
->
-> Currently, arch-specific MODULE_ARCH_VERMAGIC is defined in
-> <asm/module.h>, but it is not included from <linux/vermagic.h>.
->
-> Hence, the straight-forward fix-up would be as follows:
->
-> |--- a/include/linux/vermagic.h
-> |+++ b/include/linux/vermagic.h
-> |@@ -1,5 +1,6 @@
-> | /* SPDX-License-Identifier: GPL-2.0 */
-> | #include <generated/utsrelease.h>
-> |+#include <linux/module.h>
-> |
-> | /* Simply sanity version stamp for modules. */
-> | #ifdef CONFIG_SMP
->
-> This works enough, but for further cleanups, I split MODULE_ARCH_VERMAGIC
-> definitions into <asm/vermagic.h>.
->
-> With this, <linux/module.h> and <linux/vermagic.h> will be orthogonal,
-> and the location of MODULE_ARCH_VERMAGIC definitions will be consistent.
->
-> For arc and ia64, MODULE_PROC_FAMILY is only used for defining
-> MODULE_ARCH_VERMAGIC. I squashed it.
->
-> FOR hexagon, nds32, and xtensa, I removed <asm/modules.h> entirely
-> because they contained nothing but MODULE_ARCH_VERMAGIC definition.
-> Kbuild will automatically generate <asm/modules.h> at build-time,
-> wrapping <asm-generic/module.h>.
->
-> [1] https://lore.kernel.org/lkml/20200411155623.GA22175@zn.tnic
->
+On 4/19/20 12:45 PM, Luis Chamberlain wrote:
+> @@ -498,10 +498,7 @@ static struct dentry *blk_trace_debugfs_dir(struct blk_user_trace_setup *buts,
+>   	struct dentry *dir = NULL;
+>   
+>   	/* This can only happen if we have a bug on our lower layers */
+> -	if (!q->kobj.parent) {
+> -		pr_warn("%s: request_queue parent is gone\n", buts->name);
+> -		return NULL;
+> -	}
+> +	BUG_ON(!q->kobj.parent);
 
-I forgot to add this:
+Does the following quote from Linus also apply to this patch: "there is 
+NO F*CKING EXCUSE to knowingly kill the kernel." See also 
+https://lkml.org/lkml/2016/10/4/1.
 
-Reported-by: Borislav Petkov <bp@suse.de>
+Thanks,
 
-
-
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
-> I do not mean to replace the work by Leon Romanovsky:
-> https://lkml.org/lkml/2020/4/19/201
->
-> His work intends to hide <linux/vermagic.h> from driver writers.
-> It is solving a different problem.
-> It does not solve the include order restriction reported by [1].
-> It still relies on kernel/module.c and *.mod.c
-> include <linux/vermagic.h> after <linux/module.h>.
->
-> I believe we should not impose any restriction about the include order.
-> So, this patch is the direct answer to the bug report [1].
->
-> BTW, I think commit f58dd03b1157bdf3b64c36e9525f8d7f69c25df2
-> was a bad way to suppress the problem, but that is another story.
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Bart.
