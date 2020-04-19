@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EBB1AF84E
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 09:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B971AF83A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 09:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgDSHp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 03:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725903AbgDSHp0 (ORCPT
+        id S1725969AbgDSHa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 03:30:57 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:35555 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725446AbgDSHa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 03:45:26 -0400
-Received: from master.debian.org (master.debian.org [IPv6:2001:41b8:202:deb:216:36ff:fe40:4001])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DC5C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 00:45:26 -0700 (PDT)
-Received: from pabs by master.debian.org with local (Exim 4.92)
-        (envelope-from <pabs@master.debian.org>)
-        id 1jQ4QD-00040m-1R; Sun, 19 Apr 2020 07:31:21 +0000
-From:   Paul Wise <pabs3@bonedaddy.net>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Wise <pabs3@bonedaddy.net>
-Subject: [PATCH 3/3] dm raid/raid1: enable discard support when any devices support discard
-Date:   Sun, 19 Apr 2020 15:30:26 +0800
-Message-Id: <20200419073026.197967-4-pabs3@bonedaddy.net>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200419073026.197967-1-pabs3@bonedaddy.net>
-References: <20200419073026.197967-1-pabs3@bonedaddy.net>
+        Sun, 19 Apr 2020 03:30:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TvywI99_1587281447;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TvywI99_1587281447)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 19 Apr 2020 15:30:48 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianjia.zhang@linux.alibaba.com
+Subject: [PATCH] KVM: X86: Fix compile error in svm/sev.c
+Date:   Sun, 19 Apr 2020 15:30:47 +0800
+Message-Id: <20200419073047.14413-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will allow fstrim to work on filesystems on dm RAID arrays with
-both HDDs and SSDs or dm raid SSD arrays with varying discard support,
-which should increase the lifetime of the SSDs that support discard.
+The compiler reported the following compilation errors:
 
-This makes dm raid and dm raid1 (mirroring) consistent with md raid,
-which supports discard when only some of the devices support discard.
+arch/x86/kvm/svm/sev.c: In function ‘sev_pin_memory’:
+arch/x86/kvm/svm/sev.c:361:3: error: implicit declaration of function
+‘release_pages’ [-Werror=implicit-function-declaration]
+   release_pages(pages, npinned);
+   ^~~~~~~~~~~~~
 
-The existing code prevents this from being enabled with RAID 4/5/6,
-which require more certainty about the behaviour of underlying devices
-after a discard has been issued and processed.
+The reason is that the 'pagemap.h' header file is not included.
 
-Simply enable discard and return from the configure_discard_support
-function when any of the underlying devices has support for discards,
-since there are now no other checks in the device check loop.
-
-Mixed discard support for md RAID types was added in these commits:
-
-commit c83057a1f4f9 ("md: raid 0 supports TRIM")
-commit 2ff8cc2c6d4e ("md: raid 1 supports TRIM")
-commit 532a2a3fba8d ("md: raid 10 supports TRIM")
-commit f1cad2b68ed1 ("md: linear supports TRIM")
-
-Signed-off-by: Paul Wise <pabs3@bonedaddy.net>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- drivers/md/dm-raid.c  | 8 ++++++--
- drivers/md/dm-raid1.c | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ arch/x86/kvm/svm/sev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 0f95e50e62a8..63f5d05021a9 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -2962,11 +2962,15 @@ static void configure_discard_support(struct raid_set *rs)
- 			continue;
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 0e3fc311d7da..3ef99e87c1db 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -13,6 +13,7 @@
+ #include <linux/highmem.h>
+ #include <linux/psp-sev.h>
+ #include <linux/swap.h>
++#include <linux/pagemap.h>
  
- 		q = bdev_get_queue(rs->dev[i].rdev.bdev);
--		if (!q || !blk_queue_discard(q))
-+		if (q && blk_queue_discard(q)) {
-+			ti->discard_support = DM_DISCARD_ANY_DEVS;
-+			ti->num_discard_bios = 1;
- 			return;
-+		}
- 	}
- 
--	ti->num_discard_bios = 1;
-+	ti->discard_support = DM_DISCARD_ALL_DEVS;
-+	ti->num_discard_bios = 0;
- }
- 
- /*
-diff --git a/drivers/md/dm-raid1.c b/drivers/md/dm-raid1.c
-index 089aed57e083..2bfed681dd3f 100644
---- a/drivers/md/dm-raid1.c
-+++ b/drivers/md/dm-raid1.c
-@@ -1114,6 +1114,7 @@ static int mirror_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 		goto err_free_context;
- 
- 	ti->num_flush_bios = 1;
-+	ti->discard_support = DM_DISCARD_ANY_DEVS;
- 	ti->num_discard_bios = 1;
- 	ti->per_io_data_size = sizeof(struct dm_raid1_bio_record);
- 
+ #include "x86.h"
+ #include "svm.h"
 -- 
-2.26.1
+2.17.1
 
