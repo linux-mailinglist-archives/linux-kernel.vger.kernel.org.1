@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6871AFB94
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 17:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E953F1AFB97
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 17:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgDSPGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 11:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
+        id S1726639AbgDSPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 11:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgDSPGE (ORCPT
+        with ESMTP id S1726590AbgDSPGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 11:06:04 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBBDC061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:03 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j1so3427913wrt.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:03 -0700 (PDT)
+        Sun, 19 Apr 2020 11:06:08 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC80DC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:06 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id t63so7021650wmt.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ObSDf1aLj5u4GmmbiRGYRUxXBmWBTKTJj89dIRLXbuQ=;
-        b=FAsKztdL6snh1BvfjbKlo3DppwMhfJGyfvYsvsLDgMAglmASIZERqy/cdA3zJg6Puw
-         3HTyEoaVdE6Aa1WsXVffBrI3qn+8dIcyobWayRxzZlgfefMyN2a8IWQITohU4VAeYwBw
-         gfCtxfPIGieg2Lh5DvpL9MjAjK2qX0I6Mh5BosntHrUQnST2aCbFysOypsis+dwXkRRk
-         3fCEpbPZ0aBHf1S0EZx+fb0TnsSh+TaW4t3lBjmFGDDZ0FL7jVcsG/dKPKn4pKFXQBcA
-         T5xZLNbD+nsAoCij2bXT5aaNR373Kr2DrpKwYvPilMJ0UnJoVar/VTx2xatPYLebPqR+
-         773g==
+        bh=mgJBrbN8ENQqYlA1aIDPfUqg5Ku3KzLaL/T3CN2BzCg=;
+        b=dOChkGBXatBUuviw+VQ7NlxwgSe4bulYhXcZnUSRbQzSkY8v2IGYGkp1F67pAW+lHn
+         +rKzTGQtt+p0ef5si0UK/1SZ/FtgfisWJ8S8N8YGxJ24TYQfFLmRCmLzG3mO084ovSeM
+         /QDwzKFejEYNo8+nvKgNBtbLY1L2w45Tzed+My5voD0yFEofKWUG8PJ9mj6rqp87sAXA
+         62LqvCOcn8WBuw6jKOXQ3Dlq6jt6+JC5/4eHv8qlE0djHyL1qoUIK26hitN9stHGipmw
+         kJCVk25HCUAoW2+tZVyzZcDalsZwQN4EjYQjDPtS+wbQqXJwkbqs7WBRL2fvSmIebLpY
+         Em5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ObSDf1aLj5u4GmmbiRGYRUxXBmWBTKTJj89dIRLXbuQ=;
-        b=f3vzmQdhroN0YaGGJuAm0MMgMBwIAmagdYGE1G1OF+kD8VV1I67Fzpj7rx+IBXsk1i
-         iCA62d/CvL+FCFXqo1Cw0ZEH9xNq+G34ITRxVI76rdkyI+z4JJrsvv0I0CEr/nhA0wQO
-         5Xhb5ey/v6DudI2TGDCMYCjtncvLIwd5j44LvXw4GwyKptUgMfJGyacg8dnQG1dFIenc
-         vMGrMU027pJzzSWZLmdSjPUe7XotVgrgFTzgJU6PYe5bcSjJbcN+CaXx9k3Qjx71JUYG
-         a8k2E/AXmJ5rBtjMp3Wh4CCs7eYJWGVN0N/phe3p3K98LoDubNkX3m89XCaMrWnT/Mlr
-         6WDQ==
-X-Gm-Message-State: AGi0PuYYzYhksPR6J8CpELFQN1rynX19kYpNTnT8h2B2YttfJx+G5viQ
-        +/SA/7fCcRej1rZe6vzSttEghGf0tL5NF6CMWr8=
-X-Google-Smtp-Source: APiQypLkrRiQ4l9Ag27jWuqY2Firc1AQu0LIYqJNeNMNzAN9BhPzlQzcaNCc7h6b2/CA98LcZcj1WQ==
-X-Received: by 2002:a5d:6647:: with SMTP id f7mr14854178wrw.41.1587308762199;
-        Sun, 19 Apr 2020 08:06:02 -0700 (PDT)
+        bh=mgJBrbN8ENQqYlA1aIDPfUqg5Ku3KzLaL/T3CN2BzCg=;
+        b=tJU1G+JT0s+w4Yb06uguwrqoMZgTbD4be9zLiO42k8i0Ad4e/aKTodlgJYFTY3uDbx
+         ByF+UcSnckqMRwsjpXknguG6VyRL/O+5FhhXJ8FP9ljGq2SnTwM5CmG1XzMcslGReSQr
+         TsI9LY9iLX6XIs6KjV7YVg25ek1wNuqLScA37j2oqbn5v81eibNC7V8VM2PmOqoKHO+r
+         77y3hCM1ss37TlHhkjn2wg/l6KWDZzheuuL4gfsmtcLWVuN9GinVB4lDulsv/GtkrNbu
+         llOC3ibkwcyaz0urLOUtt5YIuqcf6z9ptSgnsLRMRYW9Wp/hsMLCTpf9O3TyHxi7bFuI
+         7lLg==
+X-Gm-Message-State: AGi0PuYtxRffo6IDendyM76AeFGXAx5OvLZLN+krsLOhIdx+mut+IpYo
+        ppmBvLttYXXtYnlpxNisA3WE+wmIs1wU+Ec+oDo=
+X-Google-Smtp-Source: APiQypIHYS79qS6Ym7/zsAfw92yZoAhc0D6OXdVNJBvmovHjD1VVezpW6nATF5ItbotHjroDPpo0ng==
+X-Received: by 2002:a7b:ca54:: with SMTP id m20mr12078369wml.45.1587308763884;
+        Sun, 19 Apr 2020 08:06:03 -0700 (PDT)
 Received: from lmecxl0524.home (2a01cb058702ff00947c0d9b78b8fa1e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:947c:d9b:78b8:fa1e])
-        by smtp.gmail.com with ESMTPSA id w12sm25948635wrk.56.2020.04.19.08.06.01
+        by smtp.gmail.com with ESMTPSA id w12sm25948635wrk.56.2020.04.19.08.06.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 08:06:01 -0700 (PDT)
+        Sun, 19 Apr 2020 08:06:03 -0700 (PDT)
 From:   Etienne Carriere <etienne.carriere@linaro.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
         jens.wiklander@linaro.org, tee-dev@lists.linaro.org,
         sudeep.holla@arm.com,
         Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [RFC PATCH 3/6] tee: optee: use SMCCC v1.0 helper functions
-Date:   Sun, 19 Apr 2020 17:05:27 +0200
-Message-Id: <20200419150530.20508-4-etienne.carriere@linaro.org>
+Subject: [RFC PATCH 4/6] firmware: arm_sdei: use SMCCC v1.0 helper functions
+Date:   Sun, 19 Apr 2020 17:05:28 +0200
+Message-Id: <20200419150530.20508-5-etienne.carriere@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200419150530.20508-1-etienne.carriere@linaro.org>
 References: <20200419150530.20508-1-etienne.carriere@linaro.org>
@@ -66,280 +66,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change OP-TEE driver to use SMCCC v1.0 helper function.
+Change Arm SDEI firmware driver to use SMCCC v1.0 helper functions.
 
-No functional change but initialization traces that are changed
-from pr_*() traces the device dev_*() traces and info trace
-"probing for conduit method." being replaced with trace
-"probing for conduit method from DT."
+Functional changes are Arm SDEI firmware driver can find appropriate
+set conduit if it does not define one but another device has set
+the kernel conduit for SMCCC calls.
+
+Other functional changes are the trace messages emitted at device
+probe time that now dev_*() traces instead of pr_*() traces.
 
 Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
 ---
- drivers/tee/optee/call.c          | 14 ++---
- drivers/tee/optee/core.c          | 85 ++++++++-----------------------
- drivers/tee/optee/optee_private.h |  4 +-
- 3 files changed, 30 insertions(+), 73 deletions(-)
+ drivers/firmware/arm_sdei.c | 79 +++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index cf2367ba08d6..706e7814a401 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -137,9 +137,9 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
- 	while (true) {
- 		struct arm_smccc_res res;
+diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+index 334c8be0c11f..92f8077e0bde 100644
+--- a/drivers/firmware/arm_sdei.c
++++ b/drivers/firmware/arm_sdei.c
+@@ -34,12 +34,9 @@
+ #include <linux/uaccess.h>
  
--		optee->invoke_fn(param.a0, param.a1, param.a2, param.a3,
--				 param.a4, param.a5, param.a6, param.a7,
--				 &res);
-+		arm_smccc_1_0_invoke(param.a0, param.a1, param.a2, param.a3,
-+				     param.a4, param.a5, param.a6, param.a7,
-+				     &res);
+ /*
+- * The call to use to reach the firmware.
++ * The SMCCC cnduit for the call to use to reach the firmware.
+  */
+-static asmlinkage void (*sdei_firmware_call)(unsigned long function_id,
+-		      unsigned long arg0, unsigned long arg1,
+-		      unsigned long arg2, unsigned long arg3,
+-		      unsigned long arg4, struct arm_smccc_res *res);
++static enum arm_smccc_conduit sdei_firmware_call_conduit;
  
- 		if (res.a0 == OPTEE_SMC_RETURN_ETHREAD_LIMIT) {
- 			/*
-@@ -395,8 +395,8 @@ void optee_enable_shm_cache(struct optee *optee)
- 	while (true) {
- 		struct arm_smccc_res res;
- 
--		optee->invoke_fn(OPTEE_SMC_ENABLE_SHM_CACHE, 0, 0, 0, 0, 0, 0,
--				 0, &res);
-+		arm_smccc_1_0_invoke(OPTEE_SMC_ENABLE_SHM_CACHE,
-+				     0, 0, 0, 0, 0, 0, 0, &res);
- 		if (res.a0 == OPTEE_SMC_RETURN_OK)
- 			break;
- 		optee_cq_wait_for_completion(&optee->call_queue, &w);
-@@ -421,8 +421,8 @@ void optee_disable_shm_cache(struct optee *optee)
- 			struct optee_smc_disable_shm_cache_result result;
- 		} res;
- 
--		optee->invoke_fn(OPTEE_SMC_DISABLE_SHM_CACHE, 0, 0, 0, 0, 0, 0,
--				 0, &res.smccc);
-+		arm_smccc_1_0_invoke(OPTEE_SMC_DISABLE_SHM_CACHE,
-+				     0, 0, 0, 0, 0, 0, 0, &res.smccc);
- 		if (res.result.status == OPTEE_SMC_RETURN_ENOTAVAIL)
- 			break; /* All shm's freed */
- 		if (res.result.status == OPTEE_SMC_RETURN_OK) {
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index 99698b8a3a74..f3bc657d1e97 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -335,11 +335,11 @@ static const struct tee_desc optee_supp_desc = {
- 	.flags = TEE_DESC_PRIVILEGED,
- };
- 
--static bool optee_msg_api_uid_is_optee_api(optee_invoke_fn *invoke_fn)
-+static bool optee_msg_api_uid_is_optee_api(void)
- {
+ /* entry point from firmware to arch asm code */
+ static unsigned long sdei_entry_point;
+@@ -144,14 +141,14 @@ static int invoke_sdei_fn(unsigned long function_id, unsigned long arg0,
+ 	int err = 0;
  	struct arm_smccc_res res;
  
--	invoke_fn(OPTEE_SMC_CALLS_UID, 0, 0, 0, 0, 0, 0, 0, &res);
-+	arm_smccc_1_0_invoke(OPTEE_SMC_CALLS_UID, 0, 0, 0, 0, 0, 0, 0, &res);
- 
- 	if (res.a0 == OPTEE_MSG_UID_0 && res.a1 == OPTEE_MSG_UID_1 &&
- 	    res.a2 == OPTEE_MSG_UID_2 && res.a3 == OPTEE_MSG_UID_3)
-@@ -347,7 +347,7 @@ static bool optee_msg_api_uid_is_optee_api(optee_invoke_fn *invoke_fn)
- 	return false;
- }
- 
--static void optee_msg_get_os_revision(optee_invoke_fn *invoke_fn)
-+static void optee_msg_get_os_revision(void)
+-	if (sdei_firmware_call) {
++	if (sdei_firmware_call_conduit != SMCCC_CONDUIT_NONE) {
+ 		sdei_firmware_call(function_id, arg0, arg1, arg2, arg3, arg4,
+ 				   &res);
+ 		if (sdei_is_err(&res))
+ 			err = sdei_to_linux_errno(res.a0);
+ 	} else {
+ 		/*
+-		 * !sdei_firmware_call means we failed to probe or called
++		 * No SMCCC conduit means we failed to probe or called
+ 		 * sdei_mark_interface_broken(). -EIO is not an error returned
+ 		 * by sdei_to_linux_errno() and is used to suppress messages
+ 		 * from this driver.
+@@ -364,7 +361,7 @@ static void sdei_mark_interface_broken(void)
  {
- 	union {
- 		struct arm_smccc_res smccc;
-@@ -358,8 +358,8 @@ static void optee_msg_get_os_revision(optee_invoke_fn *invoke_fn)
- 		}
- 	};
- 
--	invoke_fn(OPTEE_SMC_CALL_GET_OS_REVISION, 0, 0, 0, 0, 0, 0, 0,
--		  &res.smccc);
-+	arm_smccc_1_0_invoke(OPTEE_SMC_CALL_GET_OS_REVISION,
-+			     0, 0, 0, 0, 0, 0, 0, &res.smccc);
- 
- 	if (res.result.build_id)
- 		pr_info("revision %lu.%lu (%08lx)", res.result.major,
-@@ -368,14 +368,15 @@ static void optee_msg_get_os_revision(optee_invoke_fn *invoke_fn)
- 		pr_info("revision %lu.%lu", res.result.major, res.result.minor);
+ 	pr_err("disabling SDEI firmware interface\n");
+ 	on_each_cpu(&_ipi_mask_cpu, NULL, true);
+-	sdei_firmware_call = NULL;
++	sdei_firmware_call_conduit = SMCCC_CONDUIT_NONE;
  }
  
--static bool optee_msg_api_revision_is_compatible(optee_invoke_fn *invoke_fn)
-+static bool optee_msg_api_revision_is_compatible(void)
- {
- 	union {
- 		struct arm_smccc_res smccc;
- 		struct optee_smc_calls_revision_result result;
- 	} res;
+ static int sdei_platform_reset(void)
+@@ -874,23 +871,19 @@ static struct notifier_block sdei_reboot_nb = {
+ 	.notifier_call = sdei_reboot_notifier,
+ };
  
--	invoke_fn(OPTEE_SMC_CALLS_REVISION, 0, 0, 0, 0, 0, 0, 0, &res.smccc);
-+	arm_smccc_1_0_invoke(OPTEE_SMC_CALLS_REVISION,
-+			     0, 0, 0, 0, 0, 0, 0, &res.smccc);
- 
- 	if (res.result.major == OPTEE_MSG_REVISION_MAJOR &&
- 	    (int)res.result.minor >= OPTEE_MSG_REVISION_MINOR)
-@@ -383,8 +384,7 @@ static bool optee_msg_api_revision_is_compatible(optee_invoke_fn *invoke_fn)
- 	return false;
- }
- 
--static bool optee_msg_exchange_capabilities(optee_invoke_fn *invoke_fn,
--					    u32 *sec_caps)
-+static bool optee_msg_exchange_capabilities(u32 *sec_caps)
- {
- 	union {
- 		struct arm_smccc_res smccc;
-@@ -400,8 +400,8 @@ static bool optee_msg_exchange_capabilities(optee_invoke_fn *invoke_fn,
- 	if (!IS_ENABLED(CONFIG_SMP) || nr_cpu_ids == 1)
- 		a1 |= OPTEE_SMC_NSEC_CAP_UNIPROCESSOR;
- 
--	invoke_fn(OPTEE_SMC_EXCHANGE_CAPABILITIES, a1, 0, 0, 0, 0, 0, 0,
--		  &res.smccc);
-+	arm_smccc_1_0_invoke(OPTEE_SMC_EXCHANGE_CAPABILITIES, a1,
-+			     0, 0, 0, 0, 0, 0, &res.smccc);
- 
- 	if (res.result.status != OPTEE_SMC_RETURN_OK)
- 		return false;
-@@ -437,8 +437,7 @@ static struct tee_shm_pool *optee_config_dyn_shm(void)
- 	return rc;
- }
- 
--static struct tee_shm_pool *
--optee_config_shm_memremap(optee_invoke_fn *invoke_fn, void **memremaped_shm)
-+static struct tee_shm_pool *optee_config_shm_memremap(void **memremaped_shm)
- {
- 	union {
- 		struct arm_smccc_res smccc;
-@@ -455,7 +454,8 @@ optee_config_shm_memremap(optee_invoke_fn *invoke_fn, void **memremaped_shm)
- 	void *rc;
- 	const int sz = OPTEE_SHM_NUM_PRIV_PAGES * PAGE_SIZE;
- 
--	invoke_fn(OPTEE_SMC_GET_SHM_CONFIG, 0, 0, 0, 0, 0, 0, 0, &res.smccc);
-+	arm_smccc_1_0_invoke(OPTEE_SMC_GET_SHM_CONFIG,
-+			     0, 0, 0, 0, 0, 0, 0, &res.smccc);
- 	if (res.result.status != OPTEE_SMC_RETURN_OK) {
- 		pr_err("static shm service not available\n");
- 		return ERR_PTR(-ENOENT);
-@@ -515,45 +515,6 @@ optee_config_shm_memremap(optee_invoke_fn *invoke_fn, void **memremaped_shm)
- 	return rc;
- }
- 
--/* Simple wrapper functions to be able to use a function pointer */
--static void optee_smccc_smc(unsigned long a0, unsigned long a1,
--			    unsigned long a2, unsigned long a3,
--			    unsigned long a4, unsigned long a5,
--			    unsigned long a6, unsigned long a7,
--			    struct arm_smccc_res *res)
+-static void sdei_smccc_smc(unsigned long function_id,
+-			   unsigned long arg0, unsigned long arg1,
+-			   unsigned long arg2, unsigned long arg3,
+-			   unsigned long arg4, struct arm_smccc_res *res)
 -{
--	arm_smccc_smc(a0, a1, a2, a3, a4, a5, a6, a7, res);
+-	arm_smccc_smc(function_id, arg0, arg1, arg2, arg3, arg4, 0, 0, res);
 -}
--
--static void optee_smccc_hvc(unsigned long a0, unsigned long a1,
--			    unsigned long a2, unsigned long a3,
--			    unsigned long a4, unsigned long a5,
--			    unsigned long a6, unsigned long a7,
--			    struct arm_smccc_res *res)
--{
--	arm_smccc_hvc(a0, a1, a2, a3, a4, a5, a6, a7, res);
--}
--
--static optee_invoke_fn *get_invoke_func(struct device *dev)
--{
+-NOKPROBE_SYMBOL(sdei_smccc_smc);
+ 
+-static void sdei_smccc_hvc(unsigned long function_id,
+-			   unsigned long arg0, unsigned long arg1,
+-			   unsigned long arg2, unsigned long arg3,
+-			   unsigned long arg4, struct arm_smccc_res *res)
++static asmlinkage void sdei_firmware_call(unsigned long function_id,
++					  unsigned long arg0,
++					  unsigned long arg1,
++					  unsigned long arg2,
++					  unsigned long arg3,
++					  unsigned long arg4,
++					  struct arm_smccc_res *res)
+ {
+-	arm_smccc_hvc(function_id, arg0, arg1, arg2, arg3, arg4, 0, 0, res);
++	arm_smccc_1_0_invoke(function_id, arg0, arg1, arg2, arg3, arg4,
++			     0, 0, res);
+ }
+-NOKPROBE_SYMBOL(sdei_smccc_hvc);
++NOKPROBE_SYMBOL(sdei_firmware_call);
+ 
+ int sdei_register_ghes(struct ghes *ghes, sdei_event_callback *normal_cb,
+ 		       sdei_event_callback *critical_cb)
+@@ -959,48 +952,30 @@ int sdei_unregister_ghes(struct ghes *ghes)
+ 	return err;
+ }
+ 
+-static int sdei_get_conduit(struct platform_device *pdev)
++static enum arm_smccc_conduit sdei_get_conduit(struct platform_device *pdev)
+ {
 -	const char *method;
+-	struct device_node *np = pdev->dev.of_node;
 -
--	pr_info("probing for conduit method.\n");
+-	sdei_firmware_call = NULL;
+-	if (np) {
+-		if (of_property_read_string(np, "method", &method)) {
+-			pr_warn("missing \"method\" property\n");
+-			return SMCCC_CONDUIT_NONE;
+-		}
 -
--	if (device_property_read_string(dev, "method", &method)) {
--		pr_warn("missing \"method\" property\n");
--		return ERR_PTR(-ENXIO);
--	}
+-		if (!strcmp("hvc", method)) {
+-			sdei_firmware_call = &sdei_smccc_hvc;
+-			return SMCCC_CONDUIT_HVC;
+-		} else if (!strcmp("smc", method)) {
+-			sdei_firmware_call = &sdei_smccc_smc;
+-			return SMCCC_CONDUIT_SMC;
+-		}
 -
--	if (!strcmp("hvc", method))
--		return optee_smccc_hvc;
--	else if (!strcmp("smc", method))
--		return optee_smccc_smc;
--
--	pr_warn("invalid \"method\" property: %s\n", method);
--	return ERR_PTR(-EINVAL);
--}
--
- static int optee_remove(struct platform_device *pdev)
+-		pr_warn("invalid \"method\" property: %s\n", method);
++	if (pdev->dev.of_node) {
++		devm_arm_smccc_1_0_set_conduit(pdev->dev);
+ 	} else if (IS_ENABLED(CONFIG_ACPI) && !acpi_disabled) {
+-		if (acpi_psci_use_hvc()) {
+-			sdei_firmware_call = &sdei_smccc_hvc;
+-			return SMCCC_CONDUIT_HVC;
+-		} else {
+-			sdei_firmware_call = &sdei_smccc_smc;
+-			return SMCCC_CONDUIT_SMC;
+-		}
++		if (acpi_psci_use_hvc())
++			arm_smccc_1_0_set_conduit(SMCCC_CONDUIT_HVC);
++		else
++			arm_smccc_1_0_set_conduit(SMCCC_CONDUIT_SMC);
+ 	}
+ 
+-	return SMCCC_CONDUIT_NONE;
++	sdei_firmware_call_conduit = arm_smccc_1_0_get_conduit();
++
++	return sdei_firmware_call_conduit;
+ }
+ 
+ static int sdei_probe(struct platform_device *pdev)
  {
- 	struct optee *optee = platform_get_drvdata(pdev);
-@@ -586,7 +547,6 @@ static int optee_remove(struct platform_device *pdev)
+ 	int err;
+ 	u64 ver = 0;
+-	int conduit;
++	enum arm_smccc_conduit conduit;
  
- static int optee_probe(struct platform_device *pdev)
- {
--	optee_invoke_fn *invoke_fn;
- 	struct tee_shm_pool *pool = ERR_PTR(-EINVAL);
- 	struct optee *optee = NULL;
- 	void *memremaped_shm = NULL;
-@@ -594,23 +554,23 @@ static int optee_probe(struct platform_device *pdev)
- 	u32 sec_caps;
- 	int rc;
+ 	conduit = sdei_get_conduit(pdev);
+-	if (!sdei_firmware_call)
++	if (conduit == SMCCC_CONDUIT_NONE)
+ 		return 0;
  
--	invoke_fn = get_invoke_func(&pdev->dev);
--	if (IS_ERR(invoke_fn))
--		return PTR_ERR(invoke_fn);
-+	rc = devm_arm_smccc_1_0_set_conduit(&pdev->dev);
-+	if (rc)
-+		return rc;
- 
--	if (!optee_msg_api_uid_is_optee_api(invoke_fn)) {
-+	if (!optee_msg_api_uid_is_optee_api()) {
- 		pr_warn("api uid mismatch\n");
- 		return -EINVAL;
- 	}
- 
--	optee_msg_get_os_revision(invoke_fn);
-+	optee_msg_get_os_revision();
- 
--	if (!optee_msg_api_revision_is_compatible(invoke_fn)) {
-+	if (!optee_msg_api_revision_is_compatible()) {
- 		pr_warn("api revision mismatch\n");
- 		return -EINVAL;
- 	}
- 
--	if (!optee_msg_exchange_capabilities(invoke_fn, &sec_caps)) {
-+	if (!optee_msg_exchange_capabilities(&sec_caps)) {
- 		pr_warn("capabilities mismatch\n");
- 		return -EINVAL;
- 	}
-@@ -625,7 +585,7 @@ static int optee_probe(struct platform_device *pdev)
- 	 * If dynamic shared memory is not available or failed - try static one
- 	 */
- 	if (IS_ERR(pool) && (sec_caps & OPTEE_SMC_SEC_CAP_HAVE_RESERVED_SHM))
--		pool = optee_config_shm_memremap(invoke_fn, &memremaped_shm);
-+		pool = optee_config_shm_memremap(&memremaped_shm);
- 
- 	if (IS_ERR(pool))
- 		return PTR_ERR(pool);
-@@ -636,7 +596,6 @@ static int optee_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	optee->invoke_fn = invoke_fn;
- 	optee->sec_caps = sec_caps;
- 
- 	teedev = tee_device_alloc(&optee_desc, NULL, pool, optee);
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index d9c5037b4e03..e186e318e157 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -69,8 +69,7 @@ struct optee_supp {
-  * struct optee - main service struct
-  * @supp_teedev:	supplicant device
-  * @teedev:		client device
-- * @invoke_fn:		function to issue smc or hvc
-- * @call_queue:		queue of threads waiting to call @invoke_fn
-+ * @call_queue:		queue of threads waiting to invoke secure world
-  * @wait_queue:		queue of threads from secure world waiting for a
-  *			secure world sync object
-  * @supp:		supplicant synchronization struct for RPC to supplicant
-@@ -82,7 +81,6 @@ struct optee_supp {
- struct optee {
- 	struct tee_device *supp_teedev;
- 	struct tee_device *teedev;
--	optee_invoke_fn *invoke_fn;
- 	struct optee_call_queue call_queue;
- 	struct optee_wait_queue wait_queue;
- 	struct optee_supp supp;
+ 	err = sdei_api_get_version(&ver);
 -- 
 2.17.1
 
