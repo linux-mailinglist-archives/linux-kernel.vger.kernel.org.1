@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148F11AFB98
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 17:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD71AFB96
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 17:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgDSPGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 11:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
+        id S1726620AbgDSPGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 11:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgDSPGH (ORCPT
+        with ESMTP id S1726601AbgDSPGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 11:06:07 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D0FC061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:07 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t14so8809251wrw.12
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:07 -0700 (PDT)
+        Sun, 19 Apr 2020 11:06:09 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB93C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:08 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k11so8858847wrp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 08:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PlXCkAj7SQ4UkWuPcToquaH1G9B7ruGi30ZWGX4XAOI=;
-        b=bSUZ3FZ/E0Yll9mMB7lRuIpfWOJ2UjnTn9Y5kylSnIcCBmpx/1nfXbMiCD57DgznMV
-         kmSKROR6KdG6ukdsKOjv6ygoc05kmCMtgbG4HLY9LlKG4AYF836ilgTkc1YmVI3FHUjG
-         fZaQzKjN5hXLG5S55dPB4vSgIy713coGDKRGk7VCi4miffBi8/SOMAd4IBZvUESUWaio
-         3IzvdC6MbiwnUjFwnMfLg+eyVRYFnFgA0bGKJcuaJHWUhO1UT1IBSqOcXflq+MpR2tAU
-         m+8qYq6KqGr30MvoZsQVzyb+az+TKHWLOdz2thY9pjPPbZh4tGfeUu3xJaCtBHXwhdMA
-         UEsw==
+        bh=Y6PiqSVV9dpQAqOqd+uh/E8t5jyLRFjga9Ph1jhDag8=;
+        b=FOV0ezYfjjl9Ks/imkXxFXr8IJNLzQ7xwIGz5OftsX4B5vGc3mutSwNxF4+k3rruRx
+         mhqwouVVHCQI1zzVmlFUnANaD5qlC/XcxHZSsnK73DRZB0w9NxY2FaqPuas2f6beqtfW
+         A9CSX+/O2lSNUzKnyhoT1mv005X/uD9AUhN+DV5GvIUDbI95k44IJI/15/3fsJAjTbLz
+         ewBDortR1gTg2CD5bBHvWce5gplQNHJav2f9TaH44ROQVb6RIvVqCJFiK0KIohrswMpd
+         gDk4tQs7rm4reCvV4J4hoDnnKX8cT2y7vnTW57C3dVB2iwIa9zJZm5aM2YsKvQHJ0jJN
+         OiPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PlXCkAj7SQ4UkWuPcToquaH1G9B7ruGi30ZWGX4XAOI=;
-        b=dIUAUGBIj1Nv8TsrS/g/bPcIWau77w1NtPRHO1Fbl47SYGL4HUuOcH8K0A6vbF1e/l
-         WDiq9n/fSi2JJjClNmz6hf5h9/prBBk3/biI+EveGAZ6PbUm3+PDIg5mP3OjX2G91r0y
-         loM66x1tYE9sqU3RZfARYC/tMNV9eLSnw81HFzYmyf9ClT25FuXUiUyEQoWLk1l9qf2z
-         m/raeE5dUaLvSNmvRCrFaVH8UT/aboi1bp3K5IFjE4TLNxVHS67LSFtMrwsCYny4oLFT
-         XaS69HKhiDqaGW7v937NbrFmAD5pYHfcG14ENLGWlMywYPDrx2M9z6weDkpaYChW6j7c
-         DUhw==
-X-Gm-Message-State: AGi0PuaI0rCMb8wlJ8NKD3B3TOtp6gg8HPSuYbVW14J5aOMYTu/UquAn
-        PywXd3U4L6Ha5qc/fJ15gmyNsP+NYJ3YDrovX9E=
-X-Google-Smtp-Source: APiQypK4xdmIs7kwsa7WCAqQXbtAO2TeUQmMZY0x3pN8rCZP9NcFL0C2FPOU1tjGn0zBRSXgyKLwpQ==
-X-Received: by 2002:adf:c109:: with SMTP id r9mr13905434wre.265.1587308765612;
-        Sun, 19 Apr 2020 08:06:05 -0700 (PDT)
+        bh=Y6PiqSVV9dpQAqOqd+uh/E8t5jyLRFjga9Ph1jhDag8=;
+        b=K6CKN191kie8ID6hf5yNBJoOC+WqEOY5BLV4PFOpYgCr/w85WW2zzxr55eh/4FwR9E
+         FCJ9FjVobJgLb+RhnHZjf3povBC1L5R8V0eKG8db2T/lZesDL/jMJ84N2MrPqW/xBvcb
+         2+ndXvSfhHPq33WYpXysqgE/8tKZjLgfcHB5ijNRtINqJyODumH726l2AthBSlD/v0qU
+         ir+VlQmS0SkseFvvBZexiMGPW5tiw8UAujoJYSpm8/wfV/caVIpD3UeSu4V6BuEC7fiX
+         WEHGlqzbbAaNg2DavQc80zwT6KNSXG/4pX53OBM68fgIW4xNBFez+JFsCoqoZgmvOmsp
+         mtHg==
+X-Gm-Message-State: AGi0PubGxOMnkgvl6/6APhd4HoGvT8hhCRw52dxzMcteCZpkQ+7aIpV5
+        fdrjVboPSfAZg4Vfl7TvYN5f2THPMkgie+lZtn0=
+X-Google-Smtp-Source: APiQypI3G+DRojbxMZCQ/3C6Vsl76B2MCQNsmSARPJUTNIz3W6+yGt8+Kwu0fi2IVqFrot5M1S+9Lw==
+X-Received: by 2002:a5d:4306:: with SMTP id h6mr13372859wrq.234.1587308767273;
+        Sun, 19 Apr 2020 08:06:07 -0700 (PDT)
 Received: from lmecxl0524.home (2a01cb058702ff00947c0d9b78b8fa1e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:947c:d9b:78b8:fa1e])
-        by smtp.gmail.com with ESMTPSA id w12sm25948635wrk.56.2020.04.19.08.06.04
+        by smtp.gmail.com with ESMTPSA id w12sm25948635wrk.56.2020.04.19.08.06.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 08:06:05 -0700 (PDT)
+        Sun, 19 Apr 2020 08:06:06 -0700 (PDT)
 From:   Etienne Carriere <etienne.carriere@linaro.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
         jens.wiklander@linaro.org, tee-dev@lists.linaro.org,
         sudeep.holla@arm.com,
         Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [RFC PATCH 5/6] firmware: stratix10: use SMCCC v1.0 helper functions
-Date:   Sun, 19 Apr 2020 17:05:29 +0200
-Message-Id: <20200419150530.20508-6-etienne.carriere@linaro.org>
+Subject: [RFC PATCH 6/6] firmware: zynqmp: use SMCCC v1.0 helper functions
+Date:   Sun, 19 Apr 2020 17:05:30 +0200
+Message-Id: <20200419150530.20508-7-etienne.carriere@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200419150530.20508-1-etienne.carriere@linaro.org>
 References: <20200419150530.20508-1-etienne.carriere@linaro.org>
@@ -66,213 +66,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change Stratix 10 firmware driver to use SMCCC v1.0 helper function.
+Change Xilinx Zynmp driver to use Arm SMCCC v1.0 helper functions
+and ensure platform consistency on SMCCC conduit method.
 
-Main functional change is that SMCCC conduit for the device is ensured
-being consistent with the method used by PSCI firmware.
+Main functional change is that SMCCC conduit method for ZynqMP
+firmware must be consistent with conduit methods registered by
+PSCI device that is early probed.
 
-Another functional change is a additional info trace in the device
-probed sequence: "probing for conduit method from DT.".
+Another functional change is an addition info trace emitted by the
+device probe sequence: "probing for conduit method from DT.".
 
 Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
 ---
- drivers/firmware/stratix10-svc.c | 97 +++-----------------------------
- 1 file changed, 9 insertions(+), 88 deletions(-)
+ drivers/firmware/xilinx/zynqmp.c | 87 ++++----------------------------
+ 1 file changed, 9 insertions(+), 78 deletions(-)
 
-diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-index d5f0769f3761..132f05f2bcc8 100644
---- a/drivers/firmware/stratix10-svc.c
-+++ b/drivers/firmware/stratix10-svc.c
-@@ -41,10 +41,6 @@
- /* stratix10 service layer clients */
- #define STRATIX10_RSU				"stratix10-rsu"
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 41b65164a367..1fdc468c9204 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -63,51 +63,11 @@ static int zynqmp_pm_ret_code(u32 ret_status)
+ 	}
+ }
  
--typedef void (svc_invoke_fn)(unsigned long, unsigned long, unsigned long,
--			     unsigned long, unsigned long, unsigned long,
--			     unsigned long, unsigned long,
--			     struct arm_smccc_res *);
- struct stratix10_svc_chan;
- 
+-static noinline int do_fw_call_fail(u64 arg0, u64 arg1, u64 arg2,
+-				    u32 *ret_payload)
+-{
+-	return -ENODEV;
+-}
+-
+-/*
+- * PM function call wrapper
+- * Invoke do_fw_call_smc or do_fw_call_hvc, depending on the configuration
+- */
+-static int (*do_fw_call)(u64, u64, u64, u32 *ret_payload) = do_fw_call_fail;
+-
+-/**
+- * do_fw_call_smc() - Call system-level platform management layer (SMC)
+- * @arg0:		Argument 0 to SMC call
+- * @arg1:		Argument 1 to SMC call
+- * @arg2:		Argument 2 to SMC call
+- * @ret_payload:	Returned value array
+- *
+- * Invoke platform management function via SMC call (no hypervisor present).
+- *
+- * Return: Returns status, either success or error+reason
+- */
+-static noinline int do_fw_call_smc(u64 arg0, u64 arg1, u64 arg2,
+-				   u32 *ret_payload)
+-{
+-	struct arm_smccc_res res;
+-
+-	arm_smccc_smc(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res);
+-
+-	if (ret_payload) {
+-		ret_payload[0] = lower_32_bits(res.a0);
+-		ret_payload[1] = upper_32_bits(res.a0);
+-		ret_payload[2] = lower_32_bits(res.a1);
+-		ret_payload[3] = upper_32_bits(res.a1);
+-	}
+-
+-	return zynqmp_pm_ret_code((enum pm_ret_status)res.a0);
+-}
+-
  /**
-@@ -60,7 +56,6 @@ struct stratix10_svc {
-  * @sync_complete: state for a completion
-  * @addr: physical address of shared memory block
-  * @size: size of shared memory block
-- * @invoke_fn: function to issue secure monitor or hypervisor call
+- * do_fw_call_hvc() - Call system-level platform management layer (HVC)
+- * @arg0:		Argument 0 to HVC call
+- * @arg1:		Argument 1 to HVC call
+- * @arg2:		Argument 2 to HVC call
++ * do_fw_call() - Call system-level platform management layer
++ * @arg0:		Argument 0 to HVC/SMC call
++ * @arg1:		Argument 1 to HVC/SMC call
++ * @arg2:		Argument 2 to HVC/SMC call
+  * @ret_payload:	Returned value array
   *
-  * This struct is used to save physical address and size of shared memory
-  * block. The shared memory blocked is allocated by secure monitor software
-@@ -73,7 +68,6 @@ struct stratix10_svc_sh_memory {
- 	struct completion sync_complete;
- 	unsigned long addr;
- 	unsigned long size;
--	svc_invoke_fn *invoke_fn;
- };
- 
- /**
-@@ -126,7 +120,6 @@ struct stratix10_svc_data {
-  * @svc_fifo: a queue for storing service message data
-  * @complete_status: state for completion
-  * @svc_fifo_lock: protect access to service message data queue
-- * @invoke_fn: function to issue secure monitor call or hypervisor call
+  * Invoke platform management function via HVC
+@@ -116,12 +76,13 @@ static noinline int do_fw_call_smc(u64 arg0, u64 arg1, u64 arg2,
   *
-  * This struct is used to create communication channels for service clients, to
-  * handle secure monitor or hypervisor call.
-@@ -142,7 +135,6 @@ struct stratix10_svc_controller {
- 	struct kfifo svc_fifo;
- 	struct completion complete_status;
- 	spinlock_t svc_fifo_lock;
--	svc_invoke_fn *invoke_fn;
- };
- 
- /**
-@@ -206,8 +198,8 @@ static void svc_thread_cmd_data_claim(struct stratix10_svc_controller *ctrl,
- 
- 	pr_debug("%s: claim back the submitted buffer\n", __func__);
- 	do {
--		ctrl->invoke_fn(INTEL_SIP_SMC_FPGA_CONFIG_COMPLETED_WRITE,
--				0, 0, 0, 0, 0, 0, 0, &res);
-+		arm_smccc_1_0_invoke(INTEL_SIP_SMC_FPGA_CONFIG_COMPLETED_WRITE,
-+				     0, 0, 0, 0, 0, 0, 0, &res);
- 
- 		if (res.a0 == INTEL_SIP_SMC_STATUS_OK) {
- 			if (!res.a1) {
-@@ -256,8 +248,8 @@ static void svc_thread_cmd_config_status(struct stratix10_svc_controller *ctrl,
- 
- 	count_in_sec = FPGA_CONFIG_STATUS_TIMEOUT_SEC;
- 	while (count_in_sec) {
--		ctrl->invoke_fn(INTEL_SIP_SMC_FPGA_CONFIG_ISDONE,
--				0, 0, 0, 0, 0, 0, 0, &res);
-+		arm_smccc_1_0_invoke(INTEL_SIP_SMC_FPGA_CONFIG_ISDONE,
-+				     0, 0, 0, 0, 0, 0, 0, &res);
- 		if ((res.a0 == INTEL_SIP_SMC_STATUS_OK) ||
- 		    (res.a0 == INTEL_SIP_SMC_FPGA_CONFIG_STATUS_ERROR))
- 			break;
-@@ -420,7 +412,7 @@ static int svc_normal_to_secure_thread(void *data)
- 			 __func__, (unsigned int)a0, (unsigned int)a1);
- 		pr_debug(" a2=0x%016x\n", (unsigned int)a2);
- 
--		ctrl->invoke_fn(a0, a1, a2, 0, 0, 0, 0, 0, &res);
-+		arm_smccc_1_0_invoke(a0, a1, a2, 0, 0, 0, 0, 0, &res);
- 
- 		pr_debug("%s: after SMC call -- res.a0=0x%016x",
- 			 __func__, (unsigned int)res.a0);
-@@ -540,8 +532,8 @@ static int svc_normal_to_secure_shm_thread(void *data)
+  * Return: Returns status, either success or error+reason
+  */
+-static noinline int do_fw_call_hvc(u64 arg0, u64 arg1, u64 arg2,
+-				   u32 *ret_payload)
++static noinline int do_fw_call(u64 arg0, u64 arg1, u64 arg2, u32 *ret_payload)
+ {
  	struct arm_smccc_res res;
  
- 	/* SMC or HVC call to get shared memory info from secure world */
--	sh_mem->invoke_fn(INTEL_SIP_SMC_FPGA_CONFIG_GET_MEM,
--			  0, 0, 0, 0, 0, 0, 0, &res);
-+	arm_smccc_1_0_invoke(INTEL_SIP_SMC_FPGA_CONFIG_GET_MEM,
-+			     0, 0, 0, 0, 0, 0, 0, &res);
- 	if (res.a0 == INTEL_SIP_SMC_STATUS_OK) {
- 		sh_mem->addr = res.a1;
- 		sh_mem->size = res.a2;
-@@ -661,73 +653,6 @@ svc_create_memory_pool(struct platform_device *pdev,
- 	return genpool;
+-	arm_smccc_hvc(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res);
++	if (arm_smccc_1_0_invoke(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res) ==
++	    SMCCC_CONDUIT_NONE)
++		return -ENODEV;
+ 
+ 	if (ret_payload) {
+ 		ret_payload[0] = lower_32_bits(res.a0);
+@@ -287,36 +248,6 @@ static int zynqmp_pm_get_trustzone_version(u32 *version)
+ 	return ret;
  }
  
 -/**
-- * svc_smccc_smc() - secure monitor call between normal and secure world
-- * @a0: argument passed in registers 0
-- * @a1: argument passed in registers 1
-- * @a2: argument passed in registers 2
-- * @a3: argument passed in registers 3
-- * @a4: argument passed in registers 4
-- * @a5: argument passed in registers 5
-- * @a6: argument passed in registers 6
-- * @a7: argument passed in registers 7
-- * @res: result values from register 0 to 3
-- */
--static void svc_smccc_smc(unsigned long a0, unsigned long a1,
--			  unsigned long a2, unsigned long a3,
--			  unsigned long a4, unsigned long a5,
--			  unsigned long a6, unsigned long a7,
--			  struct arm_smccc_res *res)
--{
--	arm_smccc_smc(a0, a1, a2, a3, a4, a5, a6, a7, res);
--}
--
--/**
-- * svc_smccc_hvc() - hypervisor call between normal and secure world
-- * @a0: argument passed in registers 0
-- * @a1: argument passed in registers 1
-- * @a2: argument passed in registers 2
-- * @a3: argument passed in registers 3
-- * @a4: argument passed in registers 4
-- * @a5: argument passed in registers 5
-- * @a6: argument passed in registers 6
-- * @a7: argument passed in registers 7
-- * @res: result values from register 0 to 3
-- */
--static void svc_smccc_hvc(unsigned long a0, unsigned long a1,
--			  unsigned long a2, unsigned long a3,
--			  unsigned long a4, unsigned long a5,
--			  unsigned long a6, unsigned long a7,
--			  struct arm_smccc_res *res)
--{
--	arm_smccc_hvc(a0, a1, a2, a3, a4, a5, a6, a7, res);
--}
--
--/**
-- * get_invoke_func() - invoke SMC or HVC call
-- * @dev: pointer to device
+- * get_set_conduit_method() - Choose SMC or HVC based communication
+- * @np:		Pointer to the device_node structure
 - *
-- * Return: function pointer to svc_smccc_smc or svc_smccc_hvc.
+- * Use SMC or HVC-based functions to communicate with EL2/EL3.
+- *
+- * Return: Returns 0 on success or error code
 - */
--static svc_invoke_fn *get_invoke_func(struct device *dev)
+-static int get_set_conduit_method(struct device_node *np)
 -{
 -	const char *method;
 -
--	if (of_property_read_string(dev->of_node, "method", &method)) {
--		dev_warn(dev, "missing \"method\" property\n");
--		return ERR_PTR(-ENXIO);
+-	if (of_property_read_string(np, "method", &method)) {
+-		pr_warn("%s missing \"method\" property\n", __func__);
+-		return -ENXIO;
 -	}
 -
--	if (!strcmp(method, "smc"))
--		return svc_smccc_smc;
--	if (!strcmp(method, "hvc"))
--		return svc_smccc_hvc;
+-	if (!strcmp("hvc", method)) {
+-		do_fw_call = do_fw_call_hvc;
+-	} else if (!strcmp("smc", method)) {
+-		do_fw_call = do_fw_call_smc;
+-	} else {
+-		pr_warn("%s Invalid \"method\" property: %s\n",
+-			__func__, method);
+-		return -EINVAL;
+-	}
 -
--	dev_warn(dev, "invalid \"method\" property: %s\n", method);
--
--	return ERR_PTR(-EINVAL);
+-	return 0;
 -}
 -
  /**
-  * stratix10_svc_request_channel_byname() - request a service channel
-  * @client: pointer to service client
-@@ -979,20 +904,17 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
- 	struct stratix10_svc_sh_memory *sh_memory;
- 	struct stratix10_svc *svc;
+  * zynqmp_pm_query_data() - Get query data from firmware
+  * @qdata:	Variable to the zynqmp_pm_query_data structure
+@@ -790,7 +721,7 @@ static int zynqmp_firmware_probe(struct platform_device *pdev)
+ 	}
+ 	of_node_put(np);
  
--	svc_invoke_fn *invoke_fn;
- 	size_t fifo_size;
- 	int ret;
- 
--	/* get SMC or HVC function */
--	invoke_fn = get_invoke_func(dev);
--	if (IS_ERR(invoke_fn))
-+	/* get SMC or HVC conduit */
-+	if (arm_smccc_1_0_set_device_conduit(&pdev->dev))
- 		return -EINVAL;
- 
- 	sh_memory = devm_kzalloc(dev, sizeof(*sh_memory), GFP_KERNEL);
- 	if (!sh_memory)
- 		return -ENOMEM;
- 
--	sh_memory->invoke_fn = invoke_fn;
- 	ret = svc_get_sh_memory(pdev, sh_memory);
+-	ret = get_set_conduit_method(dev->of_node);
++	ret = devm_arm_smccc_set_conduit(dev);
  	if (ret)
  		return ret;
-@@ -1017,7 +939,6 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
- 	controller->chans = chans;
- 	controller->genpool = genpool;
- 	controller->task = NULL;
--	controller->invoke_fn = invoke_fn;
- 	init_completion(&controller->complete_status);
  
- 	fifo_size = sizeof(struct stratix10_svc_data) * SVC_NUM_DATA_IN_FIFO;
 -- 
 2.17.1
 
