@@ -2,118 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C6B1AFD49
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 21:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C488C1AFD57
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 21:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgDSTLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 15:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgDSTLx (ORCPT
+        id S1726792AbgDSTVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 15:21:11 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:37988 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgDSTVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 15:11:53 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5655C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 12:11:53 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j2so9416949wrs.9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 12:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FI/d5vUanPoY/w9CFz9ztVpckNOs2yAH7yeEI0jwxxk=;
-        b=TeAKEJzXgkKQhogSLGSn3QaBpFFxEN1BViaBJF/CftadXJ2I3zyKKZx0gMaO2FScIE
-         2NqxB2LNRovAFP/SWkRHiY44djHp4V1CKXU8CzD77GKxQA2AgVA9PuB9xxXYVAYZznI6
-         IufvgdMwOmyu7zNnNcerNjs3pyrlT0wIX1gMjOf20IDehbLEq1/QUD2BH5KSPGrbmPpx
-         pFZstrOVagYMhdr880HK8V0g8ZUcG8IIObqAFAKyYyvPWXmjYjdBMozf2wW1uZnWxAW0
-         S8Da0bZNpOOb/PBOedvafNDBingCq3Drfw8XOXRZD0l85k09dEQ8tySumOfWezGaFVJ6
-         k51g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FI/d5vUanPoY/w9CFz9ztVpckNOs2yAH7yeEI0jwxxk=;
-        b=D6TEq6IuQNef40mzEJtnqNg4eDluTzLdhIkBL5WzC/Jf4ZExIbtx+ztyRP2aCFI/xo
-         5acrqDA2NkSU+A3ud0k41TlzX1DmRR+j6hGb3niNrIgtBX0H8hsSpibkGJaDP3OWY4zg
-         fAeQ8veMTFE2zsnIN0cZjq1iFCMITIS8UGstrZAz+RsFpS4i+1IByv4H2QON7EI/DoWT
-         SUHWbbgO9U4qdVY1HmBMF5XjKOEVqEizgyPoJH9cHDhBlgyLkUA+J/PCpHp+6/dW91Fy
-         xSS6+LZw0JtkyQU/WfMT8wZzRAVrMFttN+jzdU+WDc/Yyp+m8XI047604CfSqCy3RXmr
-         rLwA==
-X-Gm-Message-State: AGi0PubY32qWHrpAzY+pYnPyrZtoWr3UGW6OSYW3581BkMKIeKz3nnyl
-        vlUiBpVQYMl0JyLgpNZtpfhDA1W0
-X-Google-Smtp-Source: APiQypJ7QXh3q+4eyBwvhIYkqxsNrT160nQ7vd8xptJcjjP5IyLErVTGIC/rUAmErJovrneYnG4Low==
-X-Received: by 2002:adf:b6a8:: with SMTP id j40mr15692991wre.255.1587323512211;
-        Sun, 19 Apr 2020 12:11:52 -0700 (PDT)
-Received: from [192.168.43.227] (188.29.165.57.threembb.co.uk. [188.29.165.57])
-        by smtp.gmail.com with ESMTPSA id x6sm10940118wrg.58.2020.04.19.12.11.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Apr 2020 12:11:51 -0700 (PDT)
-Subject: Re: [PATCH] staging: vt6656: Refactor the vnt_ofdm_min_rate function
-To:     Stefano Brivio <sbrivio@redhat.com>,
-        Oscar Carter <oscar.carter@gmx.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        "John B . Wyatt IV" <jbwyatt4@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200418134553.6415-1-oscar.carter@gmx.com>
- <20200419195534.1463ddcd@elisabeth>
-From:   Malcolm Priestley <tvboxspy@gmail.com>
-Message-ID: <1c118ba5-627e-17ee-7f21-100e2eb67cf1@gmail.com>
-Date:   Sun, 19 Apr 2020 20:11:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Sun, 19 Apr 2020 15:21:11 -0400
+Received: from oscar.flets-west.jp (softbank126025077098.bbtec.net [126.25.77.98]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 03JJK29V018339;
+        Mon, 20 Apr 2020 04:20:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 03JJK29V018339
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587324002;
+        bh=Plyr8Inpp2JqVjaF/jnIctcXDUk5d/37paopUCTw4WM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UGP2G2g03XG5/Zp0DFQeXWKUw1KZEnMRxZiWvfay+FOEM2r7YT1Dy+uHk/7JIb86o
+         phckfIdUqusdzNWPXVk+ychacUHpojtFH3gkXVFQ+74p2it66BGUkJtD/Y1VWxRilC
+         TE7hjty3rGn97g7vny65l0t2S1NeFBtqzr4NfWItRQEkFRCKmjY/Rse1l5ztMOrWc7
+         KQFkPI/yjNdiY51GxhMJgXa+67YLHXIec+lLAyexnsuOMekeUOSSt607NwQ08HRYFH
+         JyDemPtKpfF8D8O3FTd8zMBpn6vE8m+9tTIHKKhlLNi30pWW+QSwkwGBiq93Vse6gR
+         o3+6HdDWU/Pyg==
+X-Nifty-SrcIP: [126.25.77.98]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     patches@arm.linux.org.uk
+Cc:     Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v4] ARM: decompressor: simplify libfdt builds
+Date:   Mon, 20 Apr 2020 04:19:58 +0900
+Message-Id: <20200419191958.208600-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200419195534.1463ddcd@elisabeth>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all
+Copying source files during the build time may not end up with
+as clean code as expected.
 
-On 19/04/2020 18:55, Stefano Brivio wrote:
-> Hi Oscar,
-> 
-> On Sat, 18 Apr 2020 15:45:53 +0200
-> Oscar Carter <oscar.carter@gmx.com> wrote:
-> 
->> Replace the for loop by a ternary operator whose condition is an AND
->> bitmask against the priv->basic_rates variable.
->>
->> The purpose of the for loop was to check if any of bits from RATE_54M to
->> RATE_6M was set, but it's not necessary to check every individual bit.
->> The same result can be achieved using only one single mask which
->> comprises all the commented bits.
-<snip>
+lib/fdt*.c simply wrap scripts/dtc/libfdt/fdt*.c, and it works
+nicely. Let's follow this approach for the arm decompressor, too.
 
->>
->> -int vnt_ofdm_min_rate(struct vnt_private *priv)
->> +bool vnt_ofdm_min_rate(struct vnt_private *priv)
->>   {
->> -	int ii;
->> -
->> -	for (ii = RATE_54M; ii >= RATE_6M; ii--) {
->> -		if ((priv->basic_rates) & ((u16)BIT(ii)))
->> -			return true;
->> -	}
->> -
->> -	return false;
->> +	return priv->basic_rates & GENMASK(RATE_54M, RATE_6M) ? true : false;
-> 
-> priv->basic_rates & GENMASK(RATE_54M, RATE_6M) is already true if
-> non-zero and false otherwise. Note that I haven't checked if the
-> rest is correct.
-> 
-Yes only 1 or more needs to be true and it is false when none present.
+Add four wrappers, arch/arm/boot/compressed/fdt*.c and remove
+the Makefile messes. Another nice thing is we no longer need to
+maintain the own libfdt_env.h because the decompressor can include
+<linux/libfdt_env.h>.
 
-I have run-time checked the patch and it does function as before.
+There is a subtle problem when generated files are turned into
+check-in files.
 
-Regards
+When you are doing a rebuild of an existing object tree with O=
+option, there exists stale "shipped" copies that the old Makefile
+implementation created. The build system ends up with compiling the
+stale generated files because Make searches for prerequisites in the
+current directory, i.e. $(objtree) first, and then the directory
+listed in VPATH, i.e. $(srctree).
 
-Malcolm.
+To mend this issue, I added the following code:
+
+  ifdef building_out_of_srctree
+  $(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
+  endif
+
+This will need to stay for a while because "git bisect" crossing this
+commit, otherwise, would result in a build error.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+KernelVersion: v5.7-rc1
+
+Changes in v4:
+  - rebased on v5.7-rc1
+
+Changes in v3:
+  - remove stale generated
+
+Changes in v2:
+  - fix build error
+
+ arch/arm/boot/compressed/.gitignore     |  9 ------
+ arch/arm/boot/compressed/Makefile       | 39 ++++++++++---------------
+ arch/arm/boot/compressed/atags_to_fdt.c |  1 +
+ arch/arm/boot/compressed/fdt.c          |  2 ++
+ arch/arm/boot/compressed/fdt_ro.c       |  2 ++
+ arch/arm/boot/compressed/fdt_rw.c       |  2 ++
+ arch/arm/boot/compressed/fdt_wip.c      |  2 ++
+ arch/arm/boot/compressed/libfdt_env.h   | 24 ---------------
+ 8 files changed, 25 insertions(+), 56 deletions(-)
+ create mode 100644 arch/arm/boot/compressed/fdt.c
+ create mode 100644 arch/arm/boot/compressed/fdt_ro.c
+ create mode 100644 arch/arm/boot/compressed/fdt_rw.c
+ create mode 100644 arch/arm/boot/compressed/fdt_wip.c
+ delete mode 100644 arch/arm/boot/compressed/libfdt_env.h
+
+diff --git a/arch/arm/boot/compressed/.gitignore b/arch/arm/boot/compressed/.gitignore
+index db05c6ef3e31..60606b0f378d 100644
+--- a/arch/arm/boot/compressed/.gitignore
++++ b/arch/arm/boot/compressed/.gitignore
+@@ -7,12 +7,3 @@ hyp-stub.S
+ piggy_data
+ vmlinux
+ vmlinux.lds
+-
+-# borrowed libfdt files
+-fdt.c
+-fdt.h
+-fdt_ro.c
+-fdt_rw.c
+-fdt_wip.c
+-libfdt.h
+-libfdt_internal.h
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 9c11e7490292..e5d58a49327e 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -76,29 +76,31 @@ compress-$(CONFIG_KERNEL_LZMA) = lzma
+ compress-$(CONFIG_KERNEL_XZ)   = xzkern
+ compress-$(CONFIG_KERNEL_LZ4)  = lz4
+ 
+-# Borrowed libfdt files for the ATAG compatibility mode
+-
+-libfdt		:= fdt_rw.c fdt_ro.c fdt_wip.c fdt.c
+-libfdt_hdrs	:= fdt.h libfdt.h libfdt_internal.h
+-
+-libfdt_objs	:= $(addsuffix .o, $(basename $(libfdt)))
++ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
++libfdt_objs = fdt_rw.o fdt_ro.o fdt_wip.o fdt.o atags_to_fdt.o
+ 
+-$(addprefix $(obj)/,$(libfdt) $(libfdt_hdrs)): $(obj)/%: $(srctree)/scripts/dtc/libfdt/%
+-	$(call cmd,shipped)
++OBJS	+= $(libfdt_objs)
+ 
+-$(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o): \
+-	$(addprefix $(obj)/,$(libfdt_hdrs))
++# -fstack-protector-strong triggers protection checks in this code,
++# but it is being used too early to link to meaningful stack_chk logic.
++nossp-flags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) := -fno-stack-protector
++$(foreach o, $(libfdt_objs), \
++	$(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt $(nossp-flags-y)))
++
++# These were previously generated C files. When you are building the kernel
++# with O=, make sure to remove the stale files in the output tree. Otherwise,
++# the build system wrongly compiles the stale ones.
++ifdef building_out_of_srctree
++$(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
++endif
+ 
+-ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+-OBJS	+= $(libfdt_objs) atags_to_fdt.o
+ endif
+ 
+ targets       := vmlinux vmlinux.lds piggy_data piggy.o \
+ 		 lib1funcs.o ashldi3.o bswapsdi2.o \
+ 		 head.o $(OBJS)
+ 
+-clean-files += piggy_data lib1funcs.S ashldi3.S bswapsdi2.S \
+-		$(libfdt) $(libfdt_hdrs) hyp-stub.S
++clean-files += piggy_data lib1funcs.S ashldi3.S bswapsdi2.S hyp-stub.S
+ 
+ KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
+ 
+@@ -107,15 +109,6 @@ ORIG_CFLAGS := $(KBUILD_CFLAGS)
+ KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
+ endif
+ 
+-# -fstack-protector-strong triggers protection checks in this code,
+-# but it is being used too early to link to meaningful stack_chk logic.
+-nossp-flags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) := -fno-stack-protector
+-CFLAGS_atags_to_fdt.o := $(nossp-flags-y)
+-CFLAGS_fdt.o := $(nossp-flags-y)
+-CFLAGS_fdt_ro.o := $(nossp-flags-y)
+-CFLAGS_fdt_rw.o := $(nossp-flags-y)
+-CFLAGS_fdt_wip.o := $(nossp-flags-y)
+-
+ ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin \
+ 	     -I$(obj) $(DISABLE_ARM_SSP_PER_TASK_PLUGIN)
+ asflags-y := -DZIMAGE
+diff --git a/arch/arm/boot/compressed/atags_to_fdt.c b/arch/arm/boot/compressed/atags_to_fdt.c
+index 64c49747f8a3..8452753efebe 100644
+--- a/arch/arm/boot/compressed/atags_to_fdt.c
++++ b/arch/arm/boot/compressed/atags_to_fdt.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/libfdt_env.h>
+ #include <asm/setup.h>
+ #include <libfdt.h>
+ 
+diff --git a/arch/arm/boot/compressed/fdt.c b/arch/arm/boot/compressed/fdt.c
+new file mode 100644
+index 000000000000..f8ea7a201ab1
+--- /dev/null
++++ b/arch/arm/boot/compressed/fdt.c
+@@ -0,0 +1,2 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "../../../../lib/fdt.c"
+diff --git a/arch/arm/boot/compressed/fdt_ro.c b/arch/arm/boot/compressed/fdt_ro.c
+new file mode 100644
+index 000000000000..93970a4ad5ae
+--- /dev/null
++++ b/arch/arm/boot/compressed/fdt_ro.c
+@@ -0,0 +1,2 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "../../../../lib/fdt_ro.c"
+diff --git a/arch/arm/boot/compressed/fdt_rw.c b/arch/arm/boot/compressed/fdt_rw.c
+new file mode 100644
+index 000000000000..f7c6b8b7e01c
+--- /dev/null
++++ b/arch/arm/boot/compressed/fdt_rw.c
+@@ -0,0 +1,2 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "../../../../lib/fdt_rw.c"
+diff --git a/arch/arm/boot/compressed/fdt_wip.c b/arch/arm/boot/compressed/fdt_wip.c
+new file mode 100644
+index 000000000000..048d2c7a088d
+--- /dev/null
++++ b/arch/arm/boot/compressed/fdt_wip.c
+@@ -0,0 +1,2 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "../../../../lib/fdt_wip.c"
+diff --git a/arch/arm/boot/compressed/libfdt_env.h b/arch/arm/boot/compressed/libfdt_env.h
+deleted file mode 100644
+index 6a0f1f524466..000000000000
+--- a/arch/arm/boot/compressed/libfdt_env.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ARM_LIBFDT_ENV_H
+-#define _ARM_LIBFDT_ENV_H
+-
+-#include <linux/limits.h>
+-#include <linux/types.h>
+-#include <linux/string.h>
+-#include <asm/byteorder.h>
+-
+-#define INT32_MAX	S32_MAX
+-#define UINT32_MAX	U32_MAX
+-
+-typedef __be16 fdt16_t;
+-typedef __be32 fdt32_t;
+-typedef __be64 fdt64_t;
+-
+-#define fdt16_to_cpu(x)		be16_to_cpu(x)
+-#define cpu_to_fdt16(x)		cpu_to_be16(x)
+-#define fdt32_to_cpu(x)		be32_to_cpu(x)
+-#define cpu_to_fdt32(x)		cpu_to_be32(x)
+-#define fdt64_to_cpu(x)		be64_to_cpu(x)
+-#define cpu_to_fdt64(x)		cpu_to_be64(x)
+-
+-#endif
+-- 
+2.25.1
+
