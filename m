@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD7A1AFAE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB671AFAEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 15:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgDSNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 09:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47818 "EHLO
+        id S1726343AbgDSNu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 09:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgDSNuV (ORCPT
+        with ESMTP id S1726117AbgDSNuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 09:50:21 -0400
+        Sun, 19 Apr 2020 09:50:20 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E633C061A0F;
-        Sun, 19 Apr 2020 06:50:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k13so7494833wrw.7;
-        Sun, 19 Apr 2020 06:50:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D8EC061A10;
+        Sun, 19 Apr 2020 06:50:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a25so8731274wrd.0;
+        Sun, 19 Apr 2020 06:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ETKn5k65i8M5k8rygdWEKhtzpcpoZWZs8fff2gycZGA=;
-        b=rgiAOtVHPa1zatADZlRO24mQNsXNHAxivgbcNTmfXyMdlQ00fNv5bV2ehm35jthzEd
-         SHRg+OIOz8myxhPDfKFajej7usenM4P77EfYLjTHYIh2iReXohgKdygH7wlVm8CNbUgn
-         Dj7E30PjybDOCviu7E4b3UULqkNMDR9dg0OiUD6oIffo1aM+ErVh0tWaNbPvDnTFYBv1
-         h0mkU4eqJx9bXaye4UHAqNcGvtK6R1shtJXYc2pZRZidniA5x4aiLnAQSjtc8VWLqp/3
-         G3NCXt1DApoMVjycr451L2mq5Soxch09ZvQbJncV3Y1PoMGlUmLxrW3uFjaL35v8uMA+
-         QFEQ==
+        bh=06l4F0Fbj1OIjrhQursMZ1QtwSUf8beeJ0SuDwg+II8=;
+        b=iRS9/7JEnM5hRomC4mx0t/PamdUyzezofG9+VdLTduhoHbrl1wyBV5VN8557KN8vgh
+         e1aSmMFjE7tgQinyBWIl/9WlDoB+m8KMo25R1GvfRPe9wjJYftHaKnAg8ViMhMnX4K4y
+         up1pFNsK07VZ3j5p2+zGUybwA2MFzFEmr0zyrZskY/vhZlysQ34itjSuUwC7qkjX6NBL
+         A6M3gxhBlgBGsdamSVqTTkeMkhuPjrEJVnpMH4nFPHyDoGpDa31FzPcgAmaMtt+WEyYK
+         TcqncTwRFzQUyWb3D8c0hHiowKz7UCLAR3Jd1txwxxdeobQsm3y0oin4iPsdMavxD3Kg
+         n7Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ETKn5k65i8M5k8rygdWEKhtzpcpoZWZs8fff2gycZGA=;
-        b=hx7LW5GOEcYgpx4RG6K1v4AtGzaTmRseVcatq2t1tgaK4UNiMtw6YrBzfgECj0znZT
-         1UnyOusL8h3tjNphllxpIQBqpXY+Y1AAPfRxLf9N48nioH6tXb6NIMGTjzScvvVayyT2
-         pgguoIrTu6oxmOoWWkFkPXG0h8wTjk6vBjbdBwbFYnZxBVkPJYxPUhJWtHi1bE2kwqyv
-         yUgS0GCcNMUX24aGnj3SL9sIkT83qDdZycRFZClgG6OCE8IbHcYTVPBol7edi2Lq4u6L
-         ksicb1/AVS1+6DKxMWAOAQPnpdLPGJMo95LlbnNYXwisKEu4e7QsxpKgH1F8iZ2dNHR0
-         GwCQ==
-X-Gm-Message-State: AGi0PuY1/cTaFrYMXTcL+mxDTUDPgoHoU4l9A7EsQCkcroS+dOL/d8wF
-        4q0W/YeUkIl0L8Acr3U93zc=
-X-Google-Smtp-Source: APiQypLWb6JaBbHbIaPvq6jUnkWNI1T6T4GUXsqZp3+S35yKOvv/C3kGsMefXplJu6vKaunuodoaTw==
-X-Received: by 2002:a5d:4248:: with SMTP id s8mr13483030wrr.216.1587304217237;
-        Sun, 19 Apr 2020 06:50:17 -0700 (PDT)
+        bh=06l4F0Fbj1OIjrhQursMZ1QtwSUf8beeJ0SuDwg+II8=;
+        b=jfZMxLLYKC0+KSfigL2SQQZmZ/TFN5mG/4TYqQoi4uCrH1oxbp7AFVub/9xjlFaMdT
+         FnON0a+Gp6VSVSqf5VWr/KfNNXvyr0DLBB9iOuAWERSdaksAralZOi16zZcnYUNSr2Zz
+         boIw0AWMC1MnTV2oWxRa9HRIayB55/z9OHeEYVJ3m1IASv3+3/29CUzlKUguDfEXjt8e
+         y4EjlF7LGLSkZr+GGYYl7RF6QE886CLcxazq5Iy+rh4JBZiX7cL9lxzxYfWVcEDT/hH+
+         NXZdKPEC7DtXTrIEJSxnrHQkg2ppDioca6Vb4mGrj5zvH17bvHtouYsMxEoYApnInhC9
+         4T3g==
+X-Gm-Message-State: AGi0PuZv5wsbfrNYVXFz/U9dMM9jGlRA3s3CStcWXaeGp+kXMa/ScD5k
+        ftxvlXW0frSMR+6z8t0xjmA=
+X-Google-Smtp-Source: APiQypJn3umlBT9pfxyglivyKGZyVpsYTbHNDV2DNYZllpm6NNO+sP5DyyxYCuauwplZltkyTp9Zsg==
+X-Received: by 2002:adf:f091:: with SMTP id n17mr13642050wro.200.1587304218271;
+        Sun, 19 Apr 2020 06:50:18 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:4e7:1fdd:b7c2:b3ab])
-        by smtp.gmail.com with ESMTPSA id z8sm20183940wrr.40.2020.04.19.06.50.16
+        by smtp.gmail.com with ESMTPSA id z8sm20183940wrr.40.2020.04.19.06.50.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 06:50:16 -0700 (PDT)
+        Sun, 19 Apr 2020 06:50:17 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-sunxi <linux-sunxi@googlegroups.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 3/7] arm64: dts: allwinner: h6: Enable CPU opp tables for Beelink GS1
-Date:   Sun, 19 Apr 2020 15:50:07 +0200
-Message-Id: <20200419135011.18010-4-peron.clem@gmail.com>
+Subject: [PATCH v3 4/7] arm64: dts: allwinner: h6: Enable CPU opp tables for Orange Pi 3
+Date:   Sun, 19 Apr 2020 15:50:08 +0200
+Message-Id: <20200419135011.18010-5-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200419135011.18010-1-peron.clem@gmail.com>
 References: <20200419135011.18010-1-peron.clem@gmail.com>
@@ -69,7 +69,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CPU opp tables for Beelink GS1.
+Enable CPU opp tables for Orange Pi 3.
 
 This needs to change the CPU regulator max voltage to fit
 the OPP table.
@@ -84,13 +84,13 @@ to 2500uV/us.
 
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 8f09d209359b..3f7ceeb1a767 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
+index 47f579610dcc..15c9dd8c4479 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
 @@ -4,6 +4,7 @@
  /dts-v1/;
  
@@ -99,28 +99,15 @@ index 8f09d209359b..3f7ceeb1a767 100644
  
  #include <dt-bindings/gpio/gpio.h>
  
-@@ -77,6 +78,10 @@
- 	};
- };
- 
-+&cpu0 {
-+	cpu-supply = <&reg_dcdca>;
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -234,7 +239,8 @@
- 			reg_dcdca: dcdca {
+@@ -257,6 +258,7 @@
  				regulator-always-on;
- 				regulator-min-microvolt = <810000>;
--				regulator-max-microvolt = <1080000>;
-+				regulator-max-microvolt = <1160000>;
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <1160000>;
 +				regulator-ramp-delay = <2500>;
  				regulator-name = "vdd-cpu";
  			};
  
-@@ -242,6 +248,7 @@
+@@ -264,6 +266,7 @@
  				regulator-enable-ramp-delay = <32000>;
  				regulator-min-microvolt = <810000>;
  				regulator-max-microvolt = <1080000>;
