@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3771AFBFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 18:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EA21AFC01
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 18:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgDSQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 12:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgDSQ3t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 12:29:49 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F153C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 09:29:49 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 131so5836567lfh.11
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 09:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=72Y11+mpHoh419u3dSJ7tsB2T9ditl1n5X2d39CwR8Y=;
-        b=Ga7E/kx4gS8BiUHTzCPHaIc6f85SUOGPGG1czNDeVpIS16jpDhnO7JDN/MJb62f09Y
-         hMp1wCo1/w/W5Qjfb1CJUxejAGJD1PKUEgDwFqG9YTCrD2KDMzOQG57HVovyXMytr3sd
-         tZhlO7G/6072h5LT/DS8gGyxM7x1kqonlCKbMD48UFR6EmNog8+8t80e+GrhM66r0xAz
-         7wxbuXWayKNWpi8NXFzcvZthnR6xQ+i1pKHgLmgeGjOloyOnyA+VcZ8Z8EvJM9rfPwY7
-         8NOB0ySeRyBPI97kQ6d5tCwlY/LHNn9453GiIwj+fJLxyD1mg3pJWVksn2OrKMPbBff1
-         X+qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=72Y11+mpHoh419u3dSJ7tsB2T9ditl1n5X2d39CwR8Y=;
-        b=A8BQiGQrLWNU811Y66oginaVtQ1eQ2jItAAiCNYkJ/uBd5C65/48OXNEfIUUUO8nrq
-         IhP/NcZ9c4WA2900GEP1yzT2rzBIIPsNXJ77pUxPevw0eYwTUJObYTISdfzi0IyPnpZS
-         OLS1VCg736Qx23fKCiaedCJ+7TULYmCyDC8JcLM1N4EkeWwBUityUw2S1r6+601iX/Lq
-         50YzPsPgwo7xMk7AG9OmrzkRguYNtJcftXX1xzAj0C6aT0bgLJO35muMXxgFF0p2LJ/b
-         eFHBjvcK4kXDAf6hnF05S2QgWtiOqHt2QiZdMv1+DCFCpltPdujRft/VlZBH1IL92Axr
-         5TCg==
-X-Gm-Message-State: AGi0PuZkEILR+Cjj8t9W6rP+avi71MBmg7tTA9bx33dGFdnmo/yyWOn9
-        LfaE6+FkRDhAZW1D+56WninOuS6nBeI=
-X-Google-Smtp-Source: APiQypIb4k1rLEBNprVGxcv5wz7KDP1s+PLU2Gb5BuI2L3JLZ0LgQTAjpr6PQxdOmhgxPotWUh/bOA==
-X-Received: by 2002:a19:c7d8:: with SMTP id x207mr7701194lff.190.1587313787305;
-        Sun, 19 Apr 2020 09:29:47 -0700 (PDT)
-Received: from test.lan ([91.105.39.216])
-        by smtp.gmail.com with ESMTPSA id w16sm6146170ljd.101.2020.04.19.09.29.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Apr 2020 09:29:46 -0700 (PDT)
-From:   Evalds Iodzevics <evalds.iodzevics@gmail.com>
+        id S1726582AbgDSQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 12:31:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:33454 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726211AbgDSQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 12:31:06 -0400
+IronPort-SDR: URu+Zj8Zw//h0nulDAtxzqs3xOjybNQWZPjC3Y3ndpmUGhqAga0eA/TuPIFUXpGqHrLbuHd48Z
+ 0iHZHbAt1Bpw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2020 09:31:05 -0700
+IronPort-SDR: cDj466ESEicSNpCnZq11rUfjvRzpbm1kby5Rco7dNvhFBe4Jmb+r8Al/0O7/Bz++7AnnDCDTcv
+ gT/z4frZkL4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,403,1580803200"; 
+   d="scan'208";a="300079018"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Apr 2020 09:31:03 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org,
-        Evalds Iodzevics <evalds.iodzevics@gmail.com>
-Subject: [PATCH 2/2] Fixed broken microcode early loading on 32 bit platforms because it always jumps past cpuid in sync_core() as data structure boot_cpu_data are not populated so early in boot. This is for 4.4. Should be done for 4.9 too
-Date:   Sun, 19 Apr 2020 19:29:43 +0300
-Message-Id: <20200419162943.3704-2-evalds.iodzevics@gmail.com>
-X-Mailer: git-send-email 2.17.4
-In-Reply-To: <20200419162943.3704-1-evalds.iodzevics@gmail.com>
-References: <20200419162943.3704-1-evalds.iodzevics@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH 0/2] sched: Clean up newidle_balance() and pick_next_task()
+Date:   Mon, 20 Apr 2020 00:31:30 +0800
+Message-Id: <cover.1587309963.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- arch/x86/include/asm/microcode_intel.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As Peter suggested, here are two minor code clean up in the scheduler:
+1. turn newidle_balance() into a static function.
+2. code extraction in pick_next_task() for future re-use.
 
-diff --git a/arch/x86/include/asm/microcode_intel.h b/arch/x86/include/asm/microcode_intel.h
-index 90343ba50485..92ce9c8a508b 100644
---- a/arch/x86/include/asm/microcode_intel.h
-+++ b/arch/x86/include/asm/microcode_intel.h
-@@ -60,7 +60,7 @@ static inline u32 intel_get_microcode_revision(void)
- 	native_wrmsrl(MSR_IA32_UCODE_REV, 0);
- 
- 	/* As documented in the SDM: Do a CPUID 1 here */
--	sync_core();
-+	native_cpuid_eax(1);
- 
- 	/* get the current revision from MSR 0x8B */
- 	native_rdmsr(MSR_IA32_UCODE_REV, dummy, rev);
+Chen Yu (2):
+  sched: Make newidle_balance() static again
+  sched: Extract the code to put previous task in pick_next_task()
+
+ kernel/sched/core.c  | 39 +++++++++++++++++++++++----------------
+ kernel/sched/fair.c  |  4 +++-
+ kernel/sched/sched.h |  4 ----
+ 3 files changed, 26 insertions(+), 21 deletions(-)
+
 -- 
-2.17.4
+2.20.1
 
