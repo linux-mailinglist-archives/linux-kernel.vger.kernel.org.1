@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0091AF915
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 11:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07501AF91F
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 11:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgDSJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 05:47:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:20269 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbgDSJrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 05:47:07 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 494lNP3gtMz9tyDp;
-        Sun, 19 Apr 2020 11:47:01 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=VOe4N8r5; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id WZtesNUcJGZq; Sun, 19 Apr 2020 11:47:01 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 494lNP2TXsz9tyDn;
-        Sun, 19 Apr 2020 11:47:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1587289621; bh=RaXJ481mUi0DrviGOH+SkNVnZ2LQzKruVx+D2GV8ZOM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VOe4N8r5t969r8fxlMuXcUxzMYzBUsuFSfUW2XhIzUu7MpXItbVhlqB095uOkgU/l
-         lioa8xJ0ZOzk1wkoG81P1woBSK39GM50P4XzCZHwfqClIvrU37btIjyDPPuhbLnXVM
-         otq6qm9vH2HX20sBV+snNzhRspQiy4NnvEXEK5XA=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 620498B76F;
-        Sun, 19 Apr 2020 11:47:04 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id jYx07x_1XUos; Sun, 19 Apr 2020 11:47:04 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 244FD8B752;
-        Sun, 19 Apr 2020 11:47:01 +0200 (CEST)
-Subject: Re: [PATCH 1/2] signal: Factor copy_siginfo_to_external32 from
- copy_siginfo_to_user32
-To:     Christoph Hellwig <hch@lst.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Jeremy Kerr <jk@ozlabs.org>
-References: <20200414070142.288696-1-hch@lst.de>
- <20200414070142.288696-3-hch@lst.de> <87pnc5akhk.fsf@x220.int.ebiederm.org>
- <87k12dakfx.fsf_-_@x220.int.ebiederm.org>
- <c51c6192-2ea4-62d8-dd22-305f7a1e0dd3@c-s.fr>
- <87v9lx3t4j.fsf@x220.int.ebiederm.org> <20200419081353.GF12222@lst.de>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <d5f0bbdc-8b31-fc4c-a5b9-b63cba4ebffe@c-s.fr>
-Date:   Sun, 19 Apr 2020 11:46:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726054AbgDSJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 05:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725923AbgDSJwR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 05:52:17 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6475C061A0C;
+        Sun, 19 Apr 2020 02:52:17 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o15so2974452pgi.1;
+        Sun, 19 Apr 2020 02:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+11ImWVoVHo1Abgo1KUvhS2FQIppsCfo6UH+T+/qzgs=;
+        b=FWRvVsQ1TN0ioGAeP+byZm1uP2+/Un1uA4Yij5mmCFDmuFOEH5LJ0Un71NJml3z2zS
+         RwqkhA8ucP14SMtr023/NLsNMRFzQOBlGsJXK6RccSIaGF9cuUsUqNGsCwhQCMZDm5kp
+         oPlT8jKmogxlORhe/7Mkirg4kuMV7n0tsmSiMCGWcgXsVxM72lnYMevctrLQ/PlyX4sR
+         NUBOqXht8yFnrc8C6Ng82pnF18qCTS7vFHYkwqDkJT61ZL2v1aYxm/F9hWPl5qOXCZma
+         Ikxgie+/qJyHPvrqviIVO5lfrbMLvejysrt61YFI7IJRsZJMgigQb9zUphubNm3Yw99N
+         ymnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+11ImWVoVHo1Abgo1KUvhS2FQIppsCfo6UH+T+/qzgs=;
+        b=GHu+z26RdfTdvCM9VeP5bqbdK7jrlVJf+VYEMaQq1Sx+Dm7p61Zp/DGuxXnlb0cK4Z
+         DgZ0h4oMoVRjYWt83Md6HEYMYAaGLR4kvodwmirjrnb52DR4BEcLqFtIuSiHvFZrJ3oz
+         Gx5A5cNG+irKdgDYdfdbSNSMemEQ3pzncBG3J0BZOCFuMXFnya6bqA4ZX97s7fn5RAVv
+         HxCpsTv8giA0kN5VTNFe7I+KrtoO/fegq879WAVwIO+E+yUXPLN17HzSbH/1VkKpAu68
+         kNpdi9JSBrvpM+KiOxd8XvO1eQE3+0Oy59DUQVAAlhOSynXvGbMpmEsdRuU6Yaw/Deyn
+         XOeg==
+X-Gm-Message-State: AGi0PubJhaDQ9gGiZixeTXSFAya8ztzu+fjk+JkFBcnOSgrYNDStjc4d
+        eqxXi1Rn6OkSlvU55eHZn8c=
+X-Google-Smtp-Source: APiQypIV0Hhn3WvBrjTXwFhP/7vuLOvB5fDLVw64BVXPX8cdraufg3tgoyuc1aqBd6agwvtez4MFPg==
+X-Received: by 2002:aa7:8d52:: with SMTP id s18mr9868901pfe.72.1587289937219;
+        Sun, 19 Apr 2020 02:52:17 -0700 (PDT)
+Received: from CentOS76.localdomain.localdomain ([27.59.130.218])
+        by smtp.gmail.com with ESMTPSA id h193sm18745431pfe.30.2020.04.19.02.52.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 19 Apr 2020 02:52:16 -0700 (PDT)
+From:   jagdsh.linux@gmail.com
+To:     hadar.gat@arm.com, mpm@selenic.com, herbert@gondor.apana.org.au,
+        arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+Subject: [PATCH] drivers/char/hw_random/cctrng.c: Compilation fix.
+Date:   Sun, 19 Apr 2020 15:21:18 +0530
+Message-Id: <1587289878-121900-1-git-send-email-jagdsh.linux@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200419081353.GF12222@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
 
+Adding the needed header <linux/fips.h> to fix following compilation error.
 
-Le 19/04/2020 à 10:13, Christoph Hellwig a écrit :
-> On Sat, Apr 18, 2020 at 06:55:56AM -0500, Eric W. Biederman wrote:
->>> Is that really an issue to use that set_fs() in the coredump code ?
->>
->> Using set_fs() is pretty bad and something that we would like to remove
->> from the kernel entirely.  The fewer instances of set_fs() we have the
->> better.
->>
->> I forget all of the details but set_fs() is both a type violation and an
->> attack point when people are attacking the kernel.  The existence of
->> set_fs() requires somethings that should be constants to be variables.
->> Something about that means that our current code is difficult to protect
->> from spectre style vulnerabilities.
-> 
-> Yes, set_fs requires variable based address checking in the uaccess
-> routines for architectures with a shared address space, or even entirely
-> different code for architectures with separate kernel and user address
-> spaces.  My plan is to hopefully kill set_fs in its current form a few
-> merge windows down the road.  We'll probably still need some form of
-> it to e.g. mark a thread as kernel thread vs also being able to execute
-> user code, but it will be much ore limited than before, called from very
-> few places and actually be a no-op for many architectures.
-> 
+	CC      drivers/char/hw_random/cctrng.o
+	drivers/char/hw_random/cctrng.c: In function ‘cc_trng_compwork_handler’:
+	drivers/char/hw_random/cctrng.c:334:49: error: ‘fips_enabled’ undeclared (first use in this function)
+	  if (CC_REG_FLD_GET(RNG_ISR, CRNGT_ERR, isr) && fips_enabled) {
+							 ^
+	drivers/char/hw_random/cctrng.c:334:49: note: each undeclared identifier is reported only once for each function it appears in
+	drivers/char/hw_random/cctrng.c:335:3: error: implicit declaration of function ‘fips_fail_notify’ [-Werror=implicit-function-declaration]
+	   fips_fail_notify();
+	   ^
+	cc1: some warnings being treated as errors
+	make[4]: *** [drivers/char/hw_random/cctrng.o] Error 1
 
-Oh nice. Some time ago I proposed a patch to change set_fs() to a 
-flip/flop flag based logic, see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/dd2876b808ea38eb7b7f760ecd6ce06096c61fb5.1580295551.git.christophe.leroy@c-s.fr/
+Signed-off-by: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+---
+ drivers/char/hw_random/cctrng.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-But if we manage to get rid of it completely, that's even better.
+diff --git a/drivers/char/hw_random/cctrng.c b/drivers/char/hw_random/cctrng.c
+index bdcd562..3124269 100644
+--- a/drivers/char/hw_random/cctrng.c
++++ b/drivers/char/hw_random/cctrng.c
+@@ -18,6 +18,10 @@
+ 
+ #include "cctrng.h"
+ 
++#ifdef CONFIG_CRYPTO_FIPS
++#include <linux/fips.h>
++#endif
++
+ #define CC_REG_LOW(name)  (name ## _BIT_SHIFT)
+ #define CC_REG_HIGH(name) (CC_REG_LOW(name) + name ## _BIT_SIZE - 1)
+ #define CC_GENMASK(name)  GENMASK(CC_REG_HIGH(name), CC_REG_LOW(name))
+-- 
+1.8.3.1
+
