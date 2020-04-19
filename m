@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385DF1AFDF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 22:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF391AFE05
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 22:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgDSUJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 16:09:19 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:20235 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725793AbgDSUJJ (ORCPT
+        id S1726091AbgDSUUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 16:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgDSUUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 16:09:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587326947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3A2WsTlKyCqcpEYGhy9Sxngw/Q073wgh7iBTbMSaLqw=;
-        b=YmWi4d/xzv5mj1EMlV6d/mUXCiOTRAeixHJOnqk7JOsZCS0Iz0qbpsAjfPNZW5bPD5TgcQ
-        7E59117Rbss7eQq9qzpZogaUj8NGwJ8Xc+XyIgMUkDwDZZnKpG9V9BeRORFNCPqPYofwCZ
-        y/NleT9cQg+nDNQtcyQkfV+5h0QJtbc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-ceLCFr1NMMeU4sliqNqURg-1; Sun, 19 Apr 2020 16:08:02 -0400
-X-MC-Unique: ceLCFr1NMMeU4sliqNqURg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67C3E1005510;
-        Sun, 19 Apr 2020 20:08:01 +0000 (UTC)
-Received: from treble (ovpn-112-22.rdu2.redhat.com [10.10.112.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 110525DA76;
-        Sun, 19 Apr 2020 20:07:59 +0000 (UTC)
-Date:   Sun, 19 Apr 2020 15:07:58 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [GIT pull] perf/urgent for 5.7-rc2
-Message-ID: <20200419200758.3xry3vn2a5caxapx@treble>
-References: <158730459860.31269.9496277256253823777.tglx@nanos.tec.linutronix.de>
- <158730460101.31269.5005570498545135614.tglx@nanos.tec.linutronix.de>
- <CAHk-=wjUS9b-B1n=OCBdqq3mdVTNGz0zqhGnrtMijoB5qT+96g@mail.gmail.com>
+        Sun, 19 Apr 2020 16:20:03 -0400
+X-Greylist: delayed 383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 19 Apr 2020 13:20:03 PDT
+Received: from edge.cmeerw.net (edge.cmeerw.net [IPv6:2a0a:51c0::ffa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C07C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 13:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cmeerw.org;
+         s=dkim; h=Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=vosaZNW/nzOhYp8ly6wwnaMNuL098/ux4UA6Rec2m0A=; b=csymuxS/yrCjGcUllzsuowYTXb
+        xQ94xqA2yhRXypbuV/QOAHNkQB/SYoD4Rq3o/2DoRWbPBzFz1Slc+hW4Ff6CKNWW2QzieKtCML4l8
+        GTOmKKNREvuLKUt1rE2F4XxBCqavmkcoEybR55fDjrPy4W5gNEwQf0KStYaCuhrQS9oM=;
+Received: from cmeerw by edge.cmeerw.net with local (Exim 4.93)
+        (envelope-from <cmeerw@cmeerw.org>)
+        id 1jQGJs-0004SY-5G; Sun, 19 Apr 2020 22:13:36 +0200
+Date:   Sun, 19 Apr 2020 22:13:36 +0200
+From:   Christof Meerwald <cmeerw@cmeerw.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: SIGCHLD signal sometimes sent with si_pid==0 (Linux 5.6.5)
+Message-ID: <20200419201336.GI22017@edge.cmeerw.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjUS9b-B1n=OCBdqq3mdVTNGz0zqhGnrtMijoB5qT+96g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-PGP-Key: 1024D/2B10BE68, 1998-06-29
+X-PGP-Fingerprint: 0289 5466 C1F5 B03C DBA7  6304 8CAF 9782 2B10 BE68
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 11:56:51AM -0700, Linus Torvalds wrote:
-> On Sun, Apr 19, 2020 at 6:57 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > please pull the latest perf/urgent branch from:
-> >
-> >    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2020-04-19
-> 
-> So this one took me by surprise, because it only touched the 'tools'
-> subdirectory for the perf tool, and then when I did what I thought
-> would be a trivial test build, it re-built the whole kernel.
-> 
-> And that made me go "Whaa?!?"
-> 
-> After looking at it for a while (longer than I really want to admit),
-> I realized that it's because the headers are also shared with objtool,
-> and it all kind of made sense.
-> 
-> I say "kind of" because I would have wished that objtool wouldn't
-> necessarily rebuild everything.
+Hi,
 
-Objtool is run against every .o file, and it's considered part of the
-toolchain, because of ORC generation and other reasons.  If anything in
-the toolchain changes, everything gets rebuilt.  It *is* kind of crude,
-because GCC shouldn't really need to run again.  I don't know if there's
-a more refined way to handle that dependency.  ccache helps :-)
+this is probably related to commit
+7a0cf094944e2540758b7f957eb6846d5126f535 (signal: Correct namespace
+fixups of si_pid and si_uid).
 
-> So I'm wondering if there any way that objtool could be run at
-> link-time (and archive time) rather than force a re-build of all the
-> object files from source?
+With a 5.6.5 kernel I am seeing SIGCHLD signals that don't include a
+properly set si_pid field - this seems to happen for multi-threaded
+child processes.
 
-We've actually been making progress in that direction.  Peter added
-partial vmlinux.o support, for Thomas' noinstr validation.  The problem
-is, linking is single-threaded so it ends up making the kernel build
-slower overall.
+A simple test program (based on the sample from the signalfd man page):
 
-So right now, we still do most things per compilation unit, and only do
-the noinstr validation at vmlinux.o link time.  Eventually, especially
-with LTO, we'll probably end up moving everything over to link time.
+#include <sys/signalfd.h>
+#include <signal.h>
+#include <unistd.h>
+#include <spawn.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define handle_error(msg) \
+    do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+int main(int argc, char *argv[])
+{
+  sigset_t mask;
+  int sfd;
+  struct signalfd_siginfo fdsi;
+  ssize_t s;
+
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+
+  if (sigprocmask(SIG_BLOCK, &mask, NULL) == -1)
+    handle_error("sigprocmask");
+
+  pid_t chldpid;
+  char *chldargv[] = { "./sfdclient", NULL };
+  posix_spawn(&chldpid, "./sfdclient", NULL, NULL, chldargv, NULL);
+
+  sfd = signalfd(-1, &mask, 0);
+  if (sfd == -1)
+    handle_error("signalfd");
+
+  for (;;) {
+    s = read(sfd, &fdsi, sizeof(struct signalfd_siginfo));
+    if (s != sizeof(struct signalfd_siginfo))
+      handle_error("read");
+
+    if (fdsi.ssi_signo == SIGCHLD) {
+      printf("Got SIGCHLD %d %d %d %d\n",
+          fdsi.ssi_status, fdsi.ssi_code,
+          fdsi.ssi_uid, fdsi.ssi_pid);
+      return 0;
+    } else {
+      printf("Read unexpected signal\n");
+    }
+  }
+}
+
+
+and a multi-threaded client to test with:
+
+#include <unistd.h>
+#include <pthread.h>
+
+void *f(void *arg)
+{
+  sleep(100);
+}
+
+int main()
+{
+  pthread_t t[8];
+
+  for (int i = 0; i != 8; ++i)
+  {
+    pthread_create(&t[i], NULL, f, NULL);
+  }
+}
+
+
+I tried to do a bit of debugging and what seems to be happening is
+that
+
+		/* From an ancestor pid namespace? */
+		if (!task_pid_nr_ns(current, task_active_pid_ns(t))) {
+
+fails inside task_pid_nr_ns because the check for "pid_alive" fails.
+
+This code seems to be called from do_notify_parent and there we
+actually have "tsk != current" (I am assuming both are threads of the
+current process?)
+
+
+Christof
 
 -- 
-Josh
 
+http://cmeerw.org                              sip:cmeerw at cmeerw.org
+mailto:cmeerw at cmeerw.org                   xmpp:cmeerw at cmeerw.org
