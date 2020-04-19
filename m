@@ -2,308 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D161E1AFCC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 19:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318561AFCCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 19:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgDSR2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 13:28:20 -0400
-Received: from v6.sk ([167.172.42.174]:44490 "EHLO v6.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726804AbgDSR2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 13:28:16 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 8B92D610C9;
-        Sun, 19 Apr 2020 17:28:13 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Michael Turquette <mturquette@baylibre.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH 10/10] clk: mmp2: Add support for power islands
-Date:   Sun, 19 Apr 2020 19:27:42 +0200
-Message-Id: <20200419172742.674717-11-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200419172742.674717-1-lkundrak@v3.sk>
-References: <20200419172742.674717-1-lkundrak@v3.sk>
+        id S1726412AbgDSRcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 13:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725969AbgDSRcm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 13:32:42 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92187C061A0C;
+        Sun, 19 Apr 2020 10:32:42 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id x9so276973vkd.4;
+        Sun, 19 Apr 2020 10:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/TqDWfB8cUBXogmz2+ksGks4wWKUG39YBeLr7SZP+ks=;
+        b=pHtaVDFtydBeKDed2OkXR74O6lwGCWGCPOpMyFaMnoTbYzVb9LOxEELnsnyU5gNI7n
+         vxJu8pj/jiyo0ihToGPpMbeH6qhYy0NuPfwppmILjJs/7T6CiG70FNEOnxce9+aN2Zoe
+         ZZd7XDyWTYT28pPN8Y6k5IC2kPaJCnbPWweKSPzVEgw3ueiqTV22ZXdNgpX7w9Qdl7/w
+         NrtR55HklfXY8sd8wskRbN8C9nmfTVhxpxubKATjpDH9iAJMJAeONSmGD9aI+UaHV0sc
+         rXP5BOuf6YyW1DGimSjbtJPNp9RmIPuYbfbCzIoSuxtnPviC1OBfip2GpgGMeLLbTItv
+         A9Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/TqDWfB8cUBXogmz2+ksGks4wWKUG39YBeLr7SZP+ks=;
+        b=jxYj+to1ec5nnd5KYDPfWHcwc7I9w31QF5YA4WP7bbGc1B3hNv58IgezrLQXRXQ7HQ
+         O21IBNmT8EItiw8hdnse1r6pj9zAexuL9QwXtP+Z+fKGDCZOSLMmx9kMJrgCT57zDgbo
+         lB+PbZgfDU8OKllftNZ0NBikC8tut9r/MuBjiX4ZVD4/rzPOhHVAw1d55N33Seau208c
+         VbR2y1p+W40ckD53THc0eT8/zo9/EETDHfzsES+TByeVF37lhXeuvm8MqwvYU9ahjlHC
+         FzZVpPg0K3b9fqpZYOI+nGTkCrcR2uo9kEv/W5shBf1EmqCRcuuNmoXmhbvrKUlIXt8+
+         lBqA==
+X-Gm-Message-State: AGi0PuZWuou+T92MbtajAHeoXMxTR+AHokO+28Kd2OZHfk3+RlKvMK9F
+        0+8DRu1DpjNIeiei0eiW1B+rCh76JlYeinlXniceTZgS
+X-Google-Smtp-Source: APiQypKN8NI7vCpugHw0jz+xvmW0SEVc2PQIK2816SpywZShPmiXtMbVtbRRT9+GWJ9ibc5w2VQZRsG9y8mnHjArHAo=
+X-Received: by 2002:a1f:9541:: with SMTP id x62mr8357446vkd.82.1587317561712;
+ Sun, 19 Apr 2020 10:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000e642a905a0cbee6e@google.com> <1587063451-54027-1-git-send-email-xiangxia.m.yue@gmail.com>
+In-Reply-To: <1587063451-54027-1-git-send-email-xiangxia.m.yue@gmail.com>
+From:   Pravin Shelar <pravin.ovn@gmail.com>
+Date:   Sun, 19 Apr 2020 10:32:30 -0700
+Message-ID: <CAOrHB_CjZ1oyNyuj7tgZLZ1XXFahCSO76BfHX7YFo_O68FfrXQ@mail.gmail.com>
+Subject: Re: [PATCH] net: openvswitch: ovs_ct_exit to be done under ovs_lock
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc:     syzbot+7ef50afd3a211f879112@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        ovs dev <dev@openvswitch.org>, kuba@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com, Yi-Hung Wei <yihung.wei@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apart from the clocks and resets, the PMU hardware also controls power
-to peripherals that are on separate power islands. On MMP2, that's the
-GC860 GPU and the SSPA audio interface, while on MMP3 also the camera
-interface is on a separate island, along with the pair of GC2000 and GC300
-GPUs and the SSPA.
+On Sun, Apr 19, 2020 at 1:44 AM <xiangxia.m.yue@gmail.com> wrote:
+>
+> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+>
+> syzbot wrote:
+> | =============================
+> | WARNING: suspicious RCU usage
+> | 5.7.0-rc1+ #45 Not tainted
+> | -----------------------------
+> | net/openvswitch/conntrack.c:1898 RCU-list traversed in non-reader section!!
+> |
+> | other info that might help us debug this:
+> | rcu_scheduler_active = 2, debug_locks = 1
+> | ...
+> |
+> | stack backtrace:
+> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c8995f-prebuilt.qemu.org 04/01/2014
+> | Workqueue: netns cleanup_net
+> | Call Trace:
+> | ...
+> | ovs_ct_exit
+> | ovs_exit_net
+> | ops_exit_list.isra.7
+> | cleanup_net
+> | process_one_work
+> | worker_thread
+>
+> To avoid that warning, invoke the ovs_ct_exit under ovs_lock and add
+> lockdep_ovsl_is_held as optional lockdep expression.
+>
+> Link: https://lore.kernel.org/lkml/000000000000e642a905a0cbee6e@google.com
+> Fixes: 11efd5cb04a1 ("openvswitch: Support conntrack zone limit")
+> Cc: Pravin B Shelar <pshelar@ovn.org>
+> Cc: Yi-Hung Wei <yihung.wei@gmail.com>
+> Reported-by: syzbot+7ef50afd3a211f879112@syzkaller.appspotmail.com
+> Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- arch/arm/mach-mmp/Kconfig     |   2 +
- drivers/clk/mmp/Makefile      |   2 +-
- drivers/clk/mmp/clk-of-mmp2.c |  42 +++++++++++++
- drivers/clk/mmp/clk.h         |  10 +++
- drivers/clk/mmp/pwr-island.c  | 115 ++++++++++++++++++++++++++++++++++
- 5 files changed, 170 insertions(+), 1 deletion(-)
- create mode 100644 drivers/clk/mmp/pwr-island.c
+Acked-by: Pravin B Shelar <pshelar@ovn.org>
 
-diff --git a/arch/arm/mach-mmp/Kconfig b/arch/arm/mach-mmp/Kconfig
-index b58a03b18bdef..8a1519e6be6f9 100644
---- a/arch/arm/mach-mmp/Kconfig
-+++ b/arch/arm/mach-mmp/Kconfig
-@@ -125,6 +125,8 @@ config MACH_MMP2_DT
- 	select PINCTRL_SINGLE
- 	select ARCH_HAS_RESET_CONTROLLER
- 	select CPU_PJ4
-+	select PM_GENERIC_DOMAINS if PM
-+	select PM_GENERIC_DOMAINS_OF if PM && OF
- 	help
- 	  Include support for Marvell MMP2 based platforms using
- 	  the device tree.
-diff --git a/drivers/clk/mmp/Makefile b/drivers/clk/mmp/Makefile
-index 14dc8a8a9d087..f9fab883a13b2 100644
---- a/drivers/clk/mmp/Makefile
-+++ b/drivers/clk/mmp/Makefile
-@@ -8,7 +8,7 @@ obj-y += clk-apbc.o clk-apmu.o clk-frac.o clk-mix.o clk-gate.o clk.o
- obj-$(CONFIG_RESET_CONTROLLER) += reset.o
- 
- obj-$(CONFIG_MACH_MMP_DT) += clk-of-pxa168.o clk-of-pxa910.o
--obj-$(CONFIG_COMMON_CLK_MMP2) += clk-of-mmp2.o clk-pll.o
-+obj-$(CONFIG_COMMON_CLK_MMP2) += clk-of-mmp2.o clk-pll.o pwr-island.o
- 
- obj-$(CONFIG_CPU_PXA168) += clk-pxa168.o
- obj-$(CONFIG_CPU_PXA910) += clk-pxa910.o
-diff --git a/drivers/clk/mmp/clk-of-mmp2.c b/drivers/clk/mmp/clk-of-mmp2.c
-index c686c16fca82b..84498d1c3544f 100644
---- a/drivers/clk/mmp/clk-of-mmp2.c
-+++ b/drivers/clk/mmp/clk-of-mmp2.c
-@@ -17,8 +17,10 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/of_address.h>
-+#include <linux/clk.h>
- 
- #include <dt-bindings/clock/marvell,mmp2.h>
-+#include <dt-bindings/power/marvell,mmp2.h>
- 
- #include "clk.h"
- #include "reset.h"
-@@ -63,6 +65,7 @@
- #define APMU_USBHSIC1	0xfc
- #define APMU_GPU	0xcc
- #define APMU_AUDIO	0x10c
-+#define APMU_CAMERA	0x1fc
- 
- #define MPMU_FCCR		0x8
- #define MPMU_POSR		0x10
-@@ -86,6 +89,8 @@ enum mmp2_clk_model {
- struct mmp2_clk_unit {
- 	struct mmp_clk_unit unit;
- 	enum mmp2_clk_model model;
-+	struct genpd_onecell_data pd_data;
-+	struct generic_pm_domain *pm_domains[MMP2_NR_POWER_DOMAINS];
- 	void __iomem *mpmu_base;
- 	void __iomem *apmu_base;
- 	void __iomem *apbc_base;
-@@ -473,6 +478,41 @@ static void mmp2_clk_reset_init(struct device_node *np,
- 	mmp_clk_reset_register(np, cells, nr_resets);
- }
- 
-+static void mmp2_pm_domain_init(struct device_node *np,
-+				struct mmp2_clk_unit *pxa_unit)
-+{
-+	if (pxa_unit->model == CLK_MODEL_MMP3) {
-+		pxa_unit->pm_domains[MMP2_POWER_DOMAIN_GPU]
-+			= mmp_pm_domain_register("GPU",
-+				pxa_unit->apmu_base + APMU_GPU,
-+				0x0600, 0x40003, 0x18000c, 0, &gpu_lock);
-+	} else {
-+		pxa_unit->pm_domains[MMP2_POWER_DOMAIN_GPU]
-+			= mmp_pm_domain_register("GPU",
-+				pxa_unit->apmu_base + APMU_GPU,
-+				0x8600, 0x00003, 0x00000c,
-+				MMP_PM_DOMAIN_NO_DISABLE, &gpu_lock);
-+	}
-+	pxa_unit->pd_data.num_domains++;
-+
-+	pxa_unit->pm_domains[MMP2_POWER_DOMAIN_AUDIO]
-+		= mmp_pm_domain_register("Audio",
-+			pxa_unit->apmu_base + APMU_AUDIO,
-+			0x600, 0, 0, 0, &audio_lock);
-+	pxa_unit->pd_data.num_domains++;
-+
-+	if (pxa_unit->model == CLK_MODEL_MMP3) {
-+		pxa_unit->pm_domains[MMP3_POWER_DOMAIN_CAMERA]
-+			= mmp_pm_domain_register("Camera",
-+				pxa_unit->apmu_base + APMU_CAMERA,
-+				0x600, 0, 0, 0, NULL);
-+		pxa_unit->pd_data.num_domains++;
-+	}
-+
-+	pxa_unit->pd_data.domains = pxa_unit->pm_domains;
-+	of_genpd_add_provider_onecell(np, &pxa_unit->pd_data);
-+}
-+
- static void __init mmp2_clk_init(struct device_node *np)
- {
- 	struct mmp2_clk_unit *pxa_unit;
-@@ -504,6 +544,8 @@ static void __init mmp2_clk_init(struct device_node *np)
- 		goto unmap_apmu_region;
- 	}
- 
-+	mmp2_pm_domain_init(np, pxa_unit);
-+
- 	mmp_clk_init(np, &pxa_unit->unit, MMP2_NR_CLKS);
- 
- 	mmp2_main_clk_init(pxa_unit);
-diff --git a/drivers/clk/mmp/clk.h b/drivers/clk/mmp/clk.h
-index 0efd5b0b2f01b..bfa2adc24a7cc 100644
---- a/drivers/clk/mmp/clk.h
-+++ b/drivers/clk/mmp/clk.h
-@@ -3,6 +3,7 @@
- #define __MACH_MMP_CLK_H
- 
- #include <linux/clk-provider.h>
-+#include <linux/pm_domain.h>
- #include <linux/clkdev.h>
- 
- #define APBC_NO_BUS_CTRL	BIT(0)
-@@ -259,4 +260,13 @@ void mmp_clk_init(struct device_node *np, struct mmp_clk_unit *unit,
- 		int nr_clks);
- void mmp_clk_add(struct mmp_clk_unit *unit, unsigned int id,
- 		struct clk *clk);
-+
-+/* Power islands */
-+#define MMP_PM_DOMAIN_NO_DISABLE		BIT(0)
-+
-+struct generic_pm_domain *mmp_pm_domain_register(const char *name,
-+		void __iomem *reg,
-+		u32 power_on, u32 reset, u32 clock_enable,
-+		unsigned int flags, spinlock_t *lock);
-+
- #endif
-diff --git a/drivers/clk/mmp/pwr-island.c b/drivers/clk/mmp/pwr-island.c
-new file mode 100644
-index 0000000000000..ab57c0e995c1d
---- /dev/null
-+++ b/drivers/clk/mmp/pwr-island.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * MMP PMU power island support
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel <lkundrak@v3.sk>
-+ */
-+
-+#include <linux/pm_domain.h>
-+#include <linux/slab.h>
-+#include <linux/io.h>
-+
-+#include "clk.h"
-+
-+#define to_mmp_pm_domain(genpd) container_of(genpd, struct mmp_pm_domain, genpd)
-+
-+struct mmp_pm_domain {
-+	struct generic_pm_domain genpd;
-+	void __iomem *reg;
-+	spinlock_t *lock;
-+	u32 power_on;
-+	u32 reset;
-+	u32 clock_enable;
-+	unsigned int flags;
-+};
-+
-+static int mmp_pm_domain_power_on(struct generic_pm_domain *genpd)
-+{
-+	struct mmp_pm_domain *pm_domain = to_mmp_pm_domain(genpd);
-+	unsigned long flags = 0;
-+	u32 val;
-+
-+	if (pm_domain->lock)
-+		spin_lock_irqsave(pm_domain->lock, flags);
-+
-+	val = readl(pm_domain->reg);
-+
-+	/* Turn on the power island */
-+	val |= pm_domain->power_on;
-+	writel(val, pm_domain->reg);
-+
-+	/* Disable isolation */
-+	val |= 0x100;
-+	writel(val, pm_domain->reg);
-+
-+	/* Some blocks need to be reset after a power up */
-+	if (pm_domain->reset || pm_domain->clock_enable) {
-+		u32 after_power_on = val;
-+
-+		val &= ~pm_domain->reset;
-+		writel(val, pm_domain->reg);
-+
-+		val |= pm_domain->clock_enable;
-+		writel(val, pm_domain->reg);
-+
-+		val |= pm_domain->reset;
-+		writel(val, pm_domain->reg);
-+
-+		writel(after_power_on, pm_domain->reg);
-+	}
-+
-+	if (pm_domain->lock)
-+		spin_unlock_irqrestore(pm_domain->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int mmp_pm_domain_power_off(struct generic_pm_domain *genpd)
-+{
-+	struct mmp_pm_domain *pm_domain = to_mmp_pm_domain(genpd);
-+	unsigned long flags = 0;
-+	u32 val;
-+
-+	if (pm_domain->flags & MMP_PM_DOMAIN_NO_DISABLE)
-+		return 0;
-+
-+	if (pm_domain->lock)
-+		spin_lock_irqsave(pm_domain->lock, flags);
-+
-+	/* Turn off and isolate the the power island. */
-+	val = readl(pm_domain->reg);
-+	val &= ~pm_domain->power_on;
-+	val &= ~0x100;
-+	writel(val, pm_domain->reg);
-+
-+	if (pm_domain->lock)
-+		spin_unlock_irqrestore(pm_domain->lock, flags);
-+
-+	return 0;
-+}
-+
-+struct generic_pm_domain *mmp_pm_domain_register(const char *name,
-+		void __iomem *reg,
-+		u32 power_on, u32 reset, u32 clock_enable,
-+		unsigned int flags, spinlock_t *lock)
-+{
-+	struct mmp_pm_domain *pm_domain;
-+
-+	pm_domain = kzalloc(sizeof(*pm_domain), GFP_KERNEL);
-+	if (!pm_domain)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pm_domain->reg = reg;
-+	pm_domain->power_on = power_on;
-+	pm_domain->reset = reset;
-+	pm_domain->clock_enable = clock_enable;
-+	pm_domain->flags = flags;
-+	pm_domain->lock = lock;
-+
-+	pm_genpd_init(&pm_domain->genpd, NULL, true);
-+	pm_domain->genpd.name = name;
-+	pm_domain->genpd.power_on = mmp_pm_domain_power_on;
-+	pm_domain->genpd.power_off = mmp_pm_domain_power_off;
-+
-+	return &pm_domain->genpd;
-+}
--- 
-2.26.0
-
+Thanks.
