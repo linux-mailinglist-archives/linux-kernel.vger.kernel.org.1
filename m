@@ -2,323 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142711AF974
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 12:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536FE1AF97A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Apr 2020 12:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgDSKtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 06:49:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:43501 "EHLO mout.gmx.net"
+        id S1725963AbgDSK4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 06:56:30 -0400
+Received: from mout.web.de ([217.72.192.78]:51859 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgDSKtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 06:49:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587293337;
-        bh=oiCl10dnqu2MRDWuRbka7zAznUFMBfpARUEr8Zh5OrM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=eBCG9qhiZVS0SW64b4lbj8Cb6hV7Ph0D6L3NdZwROAGvf/IoQe23V6bv+TZIW6o5P
-         HgemFtLoMr/Xy4VKX2RlRMSAvOip2NVaaDnvIr0X/a97e13M2LFgOxorCcmORFniRU
-         QdoZkXluR+lcsSjNkEpZT4RDcANLQPAgbuBKt+Sw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MiJZE-1im7mo3rzK-00fVF4; Sun, 19 Apr 2020 12:48:57 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] staging: vt6656: Remove functions' documentation
-Date:   Sun, 19 Apr 2020 12:48:21 +0200
-Message-Id: <20200419104821.6127-3-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200419104821.6127-1-oscar.carter@gmx.com>
-References: <20200419104821.6127-1-oscar.carter@gmx.com>
+        id S1725783AbgDSK43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 06:56:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1587293780;
+        bh=sQhtyMTPvUOXCopFv0Hpe7ga6E4Yxe2mMVPy71UEYxs=;
+        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
+        b=E12HXv0MeU+dx2CSQ85YH/Q9cLG774yfZ0VnD/xuJp0Yi5Q7mYr/aUcvdh+sigMrM
+         8fL3A2LPXGUN8XReakQAmqHSzqSN6Ouwh79Npu6kvrLiC7ZPbqdw/hwHnuAFZ9WErA
+         3bR3yV2bmxZ4B+2m5liRLC82x+J45YlIwp296uTI=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([2.243.85.208]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MFcE5-1jTfzl1GWz-00EbHM; Sun, 19
+ Apr 2020 12:56:20 +0200
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: asic3: Delete superfluous error message in
+ asic3_probe()
+To:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <cae9860e-87d5-5a34-ce6e-f61d1429d187@web.de>
+Date:   Sun, 19 Apr 2020 12:56:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bWw9GnsA25V31ydyY7KLlxyve8/+XHkoA3VqPgpjLU7q04809g+
- Xs4HSQNz/iCzsQfNAPMSIHGNC27N+BhchGwlTnyNa7+pl1YWcQzarqi+uemdE+mIaw2KPXF
- YRMHllo2lkaMoI9yy9gqA0M1XMY3eCx7NLu6pabDbyxGhPTt7nh/1Abx+wDmXCwGWPb1Ith
- qNmejkKcZXKB8p35LrW1A==
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-Provags-ID: V03:K1:Y38Zhjlm2LDbr0vWEo/CZ7RJ9RfuWq8fkj9ONkFVmQRwqOI3oda
+ xXLQrUYqjdmjtdzPfOIRQKSTYmBV4q0yghdRZk7aRJp3pV/jnje3HuTN6yA/nQ1v/tcsx9F
+ 9WfZTeMtfZti8VAXuke4w6L3srUngI6b6ed6yF+P38tkZcOrvnxYnYwnDBWlSGSGF6X6j2Z
+ naGvOoRho7pQZI/de083Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JQBLykTbI6Y=:+csqz4VZl25BH3d8eH5GRh
- v0zDtkp5hfOCtxvnntsnGDdLQlNedh5u6j3sBEAAWJFRgSGZ7PTv0Jesxjz3l3TnsqgKhPAtO
- kjmY47nDdYLnUf/CuZlmY/KCZM1VTSQWkIYFFin2ujpe1Nplm7qUTi/z9rFGLt/J3kfy0sIXH
- n3PKxhbodH1eg7Y9lcgILQVF0nTWwGbTcZLYEZjVR7uMwvnnYO1fgnd7TUiuw+/TomuWRIsSy
- ZOawqkvtiiJse3yfG9MLHPlWDS1JZBMckV9rUzUOE7CwJTdNmSws6lq862gu2yqRcbiTRlJR1
- fHTQyZ29izSh8Xky8eYBme+h4QiZeqknvngooGxPn6sKl/tvXKMIPtfHx8EGy0Wi6J9IKwmhs
- 16FW9k94nOTPUCPV//puxInjwRzLeUYjV5xFKn4jXStg53JL/XzVJEfhC2Nn4NkeoGpsQyOwN
- mXNRtsnQE+0JpFw9gYJwMFc2kHRIcaBDSPpbBeadUfM60wOiKMWUSFtetKIIbZPH6hYHNzZE5
- W/n/mzbrlst+oG6X/+/8A7ch/ICN+bKuUYzJY+xCChhtO1aC7blrvTVfqGTmJHNE7j9dQS9A/
- EfXprGcryrp6qYiw7m3g6saR53KPRGOrMjbII9vKA0iaSTEfBLV1EIIo7x7PEqCTgihF1qaMe
- m1JcpUPrd2C0n5f1Pji0DCnXFwX0EgofDIHEsCGfxL/hS5Ns1niAQ1Z6fxk/PtMV1Kfj0Qww2
- DzoXcN6r80IxthSkNeb2cjDVDRgt4sF1GL/RDDCOxDf3yV5kN5d24Q1DDUMOhr6+c0RGT7E8S
- t9bO5Q8Pml9s9miPedgOdGwVZXDuJYX3TBZfbV2oH7Xfa5FGiia33CuxHsxMn++rQIOuhJR2r
- gTNQwAFG3AtvxugyosyORxttpFnwVb2oF66jLHAGDd90NBJ9zW4cDom2OlD8eIKAAHbWFjRYa
- OqFjDR6OC+qbALO31abQlHpC4rAN7sm2Ov/YDaK92DCt5Rr14JgyVk4VBD2+pdQCWjt53FEbt
- 2AoYGHrrcrBYAQznwRMR8TjlV6U7jivPRB9CrqJnw6Uoz7bQgNR6pSFOp9749Fr4vudxfePAU
- /IK8/QsiAmfwBGn3WCDm8EbcFTpuAAwG7pjzCaDP2nJ/2OQT4lVNs+1CN3a71XWsfnT5Any4G
- lswzWRuvXSH+XxUM/+OwjMMPKeSf+av+ee93bDMZr59Jz1fGcm2t/SJ2ntSFptt12/1f1ETxQ
- Hucu857LsWEI4tr0V
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2WCwUSbal60=:pc2niHobvQHBXtgRJs0wNr
+ XcDLyVMwsMlEVTUQHSuin59jDXEQWdS/UJAvi0hg9y+Jswggur2dZrQg3mAB9j9mMZuukKRWa
+ jYHwyxvUkkJ8h5KaDtycqHY8LU269i6slKdxGpP0n0qnUxILdF/aNmE/tXbTBjJXWqBmDCLgc
+ F/cLkyMz8pQt7mj6VzcFPs94Yca5GSG2F2sK7jO1dOOxYutoWdS2jJt1V8IJxz/onjuvuqL+6
+ fJw99k0rwERs3zLVfDsk5Mj+3x1vMB8CGRZPG/6LuLXKLTjzU+VTJiRg2dW+8aOX2njpgSM4s
+ 6wPnpWi9hMODWMm57geMvJW1M/rpKkha7kb2buJVRZzjZiu9ynEk+URUzlyuvt6L5dGunl+rY
+ sN6XLdmU0tYBGlO+0ZUUYODx9F6SnpRKYvVznvmKyE7ol1eCD4fyrWW8dy8sI20zl+vJG9Igq
+ 3OWO5Sg0wna+Z2w4hyEA2tT8VwINHCCmSLtEbm6gdnBML9DExi1PaakFcKPVFfawUDW3mh6sK
+ IumQ++Y2kjfHDatRqcJ13i9R1SaYXLdSOv7/c6rvt0K2PXbdLaXzH5mX/xGdhLjZndZ8J/0uQ
+ DYJL6USfOOZgDzcYMKDMiZwwLjbRJB9XSUI9kmhGeyljX2TsCx2wQ+7GHrirBIAdenm7iTAxI
+ BverrUCvuF23BAs30fdT4wBA5X+ZWWiOizj9LEt2fxoUKm/zMbn+6bU1BzSFzdOViRqjpFVtF
+ nWA+IjEbzfqlZxH7aMPVKwLeJR60Ebv0gJh4QFT0VTBnul85VbgvBmymlhnA8l2jrCYB/1Zhp
+ BflPYNyGR5MLU7YjjilldA7DzU9lD6aFzLg8uOMRZUuLj1V9e+U6YohBI5bTTiDkOZ91wJNBy
+ noAvIofQMjpJuzfbmju8MroBFGlcPNLH5mq4X7dCvJoLNSBH2prAptD9broSB55FsB5gPIO6g
+ EvdxY/Q1wIFnLgIxJPIZOwLk3+GpUgXF8GG2apCnE4+0PY9voe9SOAv6BIG7AoMLFUlJYCSYw
+ Y46u2kNGCKJHnR2IGGEgXJv9+Mkzt8UjpTZYDzb/ZkQJR6SoV6NX6q6HXXcBcSKABLoNZyKCn
+ vy4c2tUueJ/6zvMKBMYfk+onBw6PCJXG9vkDOywQx42AXRCJBgmKlN0H7p6ybQlj+kBx4KHmI
+ WnGn9sW70OyHYz/g0s7nM5P9rKghUolK73vF41FjEczzEbYLJZnTPgCT5H8pJ60rvyZ1ztXpt
+ ZO2Uq4mCctuHiX+tT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the functions' documentation as the names of the functions are
-clear enought. Also, the actual documentation it's not correct in all
-cases.
+> In the function asic3_probe(), when get irq failed, the function
+> asic3_irq_probe() can called platform_get_irq(), which logs an
+> error message, so remove redundant message here.
 
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- drivers/staging/vt6656/card.c  | 79 ----------------------------------
- drivers/staging/vt6656/mac.c   | 52 ----------------------
- drivers/staging/vt6656/power.c | 10 -----
- 3 files changed, 141 deletions(-)
+I suggest to improve this change description.
 
-diff --git a/drivers/staging/vt6656/card.c b/drivers/staging/vt6656/card.c
-index 99ad56b7617d..e5e44d0a07ff 100644
-=2D-- a/drivers/staging/vt6656/card.c
-+++ b/drivers/staging/vt6656/card.c
-@@ -46,16 +46,6 @@ static const u16 cw_rxbcntsf_off[MAX_RATE] =3D {
- 	192, 96, 34, 17, 34, 23, 17, 11, 8, 5, 4, 3
- };
-
--/*
-- * Description: Set NIC media channel
-- *
-- * Parameters:
-- *  In:
-- *      pDevice             - The adapter to be set
-- *      connection_channel  - Channel to be set
-- *  Out:
-- *      none
-- */
- int vnt_set_channel(struct vnt_private *priv, u32 connection_channel)
- {
- 	int ret;
-@@ -99,19 +89,6 @@ static const u8 vnt_rspinf_gb_table[] =3D {
- 	0x0e, 0x8d, 0x0a, 0x88, 0x0a, 0x8c, 0x0a, 0x8c, 0x0a
- };
-
--/*
-- * Description: Set RSPINF
-- *
-- * Parameters:
-- *  In:
-- *      pDevice             - The adapter to be set
-- *  Out:
-- *      none
-- *
-- * Return Value: None.
-- *
-- */
--
- int vnt_set_rspinf(struct vnt_private *priv, u8 bb_type)
- {
- 	const u8 *data;
-@@ -145,18 +122,6 @@ int vnt_set_rspinf(struct vnt_private *priv, u8 bb_ty=
-pe)
- 			       MESSAGE_REQUEST_MACREG, len, data);
- }
-
--/*
-- * Description: Update IFS
-- *
-- * Parameters:
-- *  In:
-- *	priv - The adapter to be set
-- * Out:
-- *	none
-- *
-- * Return Value: None.
-- *
-- */
- int vnt_update_ifs(struct vnt_private *priv)
- {
- 	u8 max_min =3D 0;
-@@ -300,21 +265,6 @@ u64 vnt_get_tsf_offset(u8 rx_rate, u64 tsf1, u64 tsf2=
-)
- 	return tsf1 - tsf2 - (u64)cw_rxbcntsf_off[rx_rate % MAX_RATE];
- }
-
--/*
-- * Description: Sync. TSF counter to BSS
-- *              Get TSF offset and write to HW
-- *
-- * Parameters:
-- *  In:
-- *      priv		- The adapter to be sync.
-- *      time_stamp	- Rx BCN's TSF
-- *      local_tsf	- Local TSF
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_adjust_tsf(struct vnt_private *priv, u8 rx_rate,
- 		   u64 time_stamp, u64 local_tsf)
- {
-@@ -408,20 +358,6 @@ u64 vnt_get_next_tbtt(u64 tsf, u16 beacon_interval)
- 	return tsf;
- }
-
--/*
-- * Description: Set NIC TSF counter for first Beacon time
-- *              Get NEXTTBTT from adjusted TSF and Beacon Interval
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - IO Base
-- *	beacon_interval - Beacon Interval
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_reset_next_tbtt(struct vnt_private *priv, u16 beacon_interval)
- {
- 	u64 next_tbtt =3D 0;
-@@ -444,21 +380,6 @@ int vnt_reset_next_tbtt(struct vnt_private *priv, u16=
- beacon_interval)
- 			       MESSAGE_REQUEST_TBTT, 0, 8, data);
- }
-
--/*
-- * Description: Sync NIC TSF counter for Beacon time
-- *              Get NEXTTBTT and write to HW
-- *
-- * Parameters:
-- *  In:
-- *	priv		- The adapter to be set
-- *      tsf		- Current TSF counter
-- *      beacon_interval - Beacon Interval
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_update_next_tbtt(struct vnt_private *priv, u64 tsf,
- 			 u16 beacon_interval)
- {
-diff --git a/drivers/staging/vt6656/mac.c b/drivers/staging/vt6656/mac.c
-index 639172fad0f3..da7067c34643 100644
-=2D-- a/drivers/staging/vt6656/mac.c
-+++ b/drivers/staging/vt6656/mac.c
-@@ -22,19 +22,6 @@
- #include "mac.h"
- #include "usbpipe.h"
-
--/*
-- * Description:
-- *      Write MAC Multicast Address Mask
-- *
-- * Parameters:
-- *  In:
-- *	mc_filter (mac filter)
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_set_filter(struct vnt_private *priv, u64 mc_filter)
- {
- 	__le64 le_mc =3D cpu_to_le64(mc_filter);
-@@ -44,17 +31,6 @@ int vnt_mac_set_filter(struct vnt_private *priv, u64 mc=
-_filter)
- 			       (u8 *)&le_mc);
- }
-
--/*
-- * Description:
-- *      Shut Down MAC
-- *
-- * Parameters:
-- *  In:
-- *  Out:
-- *      none
-- *
-- *
-- */
- int vnt_mac_shutdown(struct vnt_private *priv)
- {
- 	return vnt_control_out(priv, MESSAGE_TYPE_MACSHUTDOWN, 0, 0, 0, NULL);
-@@ -72,40 +48,12 @@ int vnt_mac_set_bb_type(struct vnt_private *priv, u8 t=
-ype)
- 			       data);
- }
-
--/*
-- * Description:
-- *      Disable the Key Entry by MISCFIFO
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - Base Address for MAC
-- *
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_disable_keyentry(struct vnt_private *priv, u8 entry_idx)
- {
- 	return vnt_control_out(priv, MESSAGE_TYPE_CLRKEYENTRY, 0, 0,
- 			       sizeof(entry_idx), &entry_idx);
- }
-
--/*
-- * Description:
-- *      Set the Key by MISCFIFO
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - Base Address for MAC
-- *
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_set_keyentry(struct vnt_private *priv, u16 key_ctl, u32 entry=
-_idx,
- 			 u32 key_idx, u8 *addr, u8 *key)
- {
-diff --git a/drivers/staging/vt6656/power.c b/drivers/staging/vt6656/power=
-.c
-index 2d8d5a332a63..d160a0773943 100644
-=2D-- a/drivers/staging/vt6656/power.c
-+++ b/drivers/staging/vt6656/power.c
-@@ -77,16 +77,6 @@ void vnt_enable_power_saving(struct vnt_private *priv, =
-u16 listen_interval)
- 	dev_dbg(&priv->usb->dev,  "PS:Power Saving Mode Enable...\n");
- }
-
--/*
-- *
-- * Routine Description:
-- * Disable hw power saving functions
-- *
-- * Return Value:
-- *    None.
-- *
-- */
--
- int vnt_disable_power_saving(struct vnt_private *priv)
- {
- 	int ret;
-=2D-
-2.20.1
-
+Regards,
+Markus
