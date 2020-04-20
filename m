@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FB11B0A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1254B1B0A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728658AbgDTMpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:45:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39088 "EHLO mail.kernel.org"
+        id S1728738AbgDTMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728638AbgDTMpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:45:02 -0400
+        id S1728717AbgDTMpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:45:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 352A42072B;
-        Mon, 20 Apr 2020 12:45:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D82EF206E9;
+        Mon, 20 Apr 2020 12:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386701;
-        bh=TIjqOHusg9Qi/arFQl33O0mlfrLq2gCJ6ZxVg3IQaMI=;
+        s=default; t=1587386721;
+        bh=adZoCvVGRD5MW19XD0we/VvM73YYANtTAqdQrum+WBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L3y/kaZuoJsXPuHs9SpskGhjWPn09P9VslHQ9crpm4aMS3K9YgvqXI1vkxMjUxqrY
-         5iskS0FsB435xp3dSzOPV60/udnIzys9Nq/m76LDN9QhS0AfCmOOwJzP7cEGfkCEWm
-         SJqSm5uCGCJKNOhd5Qz9WIZ6SS0Ylu8pUwNfKe/A=
+        b=Dt0grlfNz9Owku7iEVzbrhyG0/4cve0Q3E74+G8eFL+nlhvmSU9Nb72/JthMIjVU4
+         wBLrSlnJJacvkqnG8ERiWvSvDem/4KJAHUWr+ZVYyx3FdYWf2KB1EeVwbgEMfysy9D
+         fxWgyFRMMdJ9916/nuObSZPtKWQMTh25XA/FI3NM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tariq Toukan <tariqt@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 56/71] net/mlx5e: Rename hw_modify to preactivate
-Date:   Mon, 20 Apr 2020 14:39:10 +0200
-Message-Id: <20200420121520.314919570@linuxfoundation.org>
+Subject: [PATCH 5.6 57/71] net/mlx5e: Use preactivate hook to set the indirection table
+Date:   Mon, 20 Apr 2020 14:39:11 +0200
+Message-Id: <20200420121520.517952165@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
 References: <20200420121508.491252919@linuxfoundation.org>
@@ -47,96 +47,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit dca147b3dce5abb5284ff747211960fd2db5ec2e ]
+[ Upstream commit fe867cac9e1967c553e4ac2aece5fc8675258010 ]
 
-mlx5e_safe_switch_channels accepts a callback to be called before
-activating new channels. It is intended to configure some hardware
-parameters in cases where channels are recreated because some
-configuration has changed.
+mlx5e_ethtool_set_channels updates the indirection table before
+switching to the new channels. If the switch fails, the indirection
+table is new, but the channels are old, which is wrong. Fix it by using
+the preactivate hook of mlx5e_safe_switch_channels to update the
+indirection table at the stage when nothing can fail anymore.
 
-Recently, this callback has started being used to update the driver's
-internal MLX5E_STATE_XDP_OPEN flag, and the following patches also
-intend to use this callback for software preparations. This patch
-renames the hw_modify callback to preactivate, so that the name fits
-better.
+As the code that updates the indirection table is now encapsulated into
+a new function, use that function in the attach flow when the driver has
+to reduce the number of channels, and prepare the code for the next
+commit.
 
+Fixes: 85082dba0a ("net/mlx5e: Correctly handle RSS indirection table when changing number of channels")
 Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
 Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
 Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h      |  6 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 14 ++++++++------
- 2 files changed, 11 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h     |  1 +
+ .../net/ethernet/mellanox/mlx5/core/en_ethtool.c | 10 ++--------
+ .../net/ethernet/mellanox/mlx5/core/en_main.c    | 16 ++++++++++++++--
+ 3 files changed, 17 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index c9606b8ab6efd..704bd6d5277d2 100644
+index 704bd6d5277d2..ddd2409fc8bef 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -1036,14 +1036,14 @@ int mlx5e_open_channels(struct mlx5e_priv *priv,
- 			struct mlx5e_channels *chs);
- void mlx5e_close_channels(struct mlx5e_channels *chs);
- 
--/* Function pointer to be used to modify WH settings while
-+/* Function pointer to be used to modify HW or kernel settings while
-  * switching channels
-  */
--typedef int (*mlx5e_fp_hw_modify)(struct mlx5e_priv *priv);
-+typedef int (*mlx5e_fp_preactivate)(struct mlx5e_priv *priv);
- int mlx5e_safe_reopen_channels(struct mlx5e_priv *priv);
+@@ -1044,6 +1044,7 @@ int mlx5e_safe_reopen_channels(struct mlx5e_priv *priv);
  int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
  			       struct mlx5e_channels *new_chs,
--			       mlx5e_fp_hw_modify hw_modify);
-+			       mlx5e_fp_preactivate preactivate);
+ 			       mlx5e_fp_preactivate preactivate);
++int mlx5e_num_channels_changed(struct mlx5e_priv *priv);
  void mlx5e_activate_priv_channels(struct mlx5e_priv *priv);
  void mlx5e_deactivate_priv_channels(struct mlx5e_priv *priv);
  
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index d674cb6798950..d2cfa247abc86 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -432,9 +432,7 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ 
+ 	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
+ 		*cur_params = new_channels.params;
+-		if (!netif_is_rxfh_configured(priv->netdev))
+-			mlx5e_build_default_indir_rqt(priv->rss_params.indirection_rqt,
+-						      MLX5E_INDIR_RQT_SIZE, count);
++		mlx5e_num_channels_changed(priv);
+ 		goto out;
+ 	}
+ 
+@@ -442,12 +440,8 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ 	if (arfs_enabled)
+ 		mlx5e_arfs_disable(priv);
+ 
+-	if (!netif_is_rxfh_configured(priv->netdev))
+-		mlx5e_build_default_indir_rqt(priv->rss_params.indirection_rqt,
+-					      MLX5E_INDIR_RQT_SIZE, count);
+-
+ 	/* Switch to new channels, set new parameters and close old ones */
+-	err = mlx5e_safe_switch_channels(priv, &new_channels, NULL);
++	err = mlx5e_safe_switch_channels(priv, &new_channels, mlx5e_num_channels_changed);
+ 
+ 	if (arfs_enabled) {
+ 		int err2 = mlx5e_arfs_enable(priv);
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 8125c605780be..1c8a4235a48c5 100644
+index 1c8a4235a48c5..2650739964326 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2954,7 +2954,7 @@ void mlx5e_deactivate_priv_channels(struct mlx5e_priv *priv)
- 
- static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
- 				       struct mlx5e_channels *new_chs,
--				       mlx5e_fp_hw_modify hw_modify)
-+				       mlx5e_fp_preactivate preactivate)
- {
- 	struct net_device *netdev = priv->netdev;
- 	int new_num_txqs;
-@@ -2973,9 +2973,11 @@ static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
- 
- 	priv->channels = *new_chs;
- 
--	/* New channels are ready to roll, modify HW settings if needed */
--	if (hw_modify)
--		hw_modify(priv);
-+	/* New channels are ready to roll, call the preactivate hook if needed
-+	 * to modify HW settings or update kernel parameters.
-+	 */
-+	if (preactivate)
-+		preactivate(priv);
- 
- 	priv->profile->update_rx(priv);
- 	mlx5e_activate_priv_channels(priv);
-@@ -2987,7 +2989,7 @@ static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
- 
- int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
- 			       struct mlx5e_channels *new_chs,
--			       mlx5e_fp_hw_modify hw_modify)
-+			       mlx5e_fp_preactivate preactivate)
- {
- 	int err;
- 
-@@ -2995,7 +2997,7 @@ int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
- 	if (err)
- 		return err;
- 
--	mlx5e_switch_priv_channels(priv, new_chs, hw_modify);
-+	mlx5e_switch_priv_channels(priv, new_chs, preactivate);
- 	return 0;
+@@ -2897,6 +2897,17 @@ static void mlx5e_update_netdev_queues(struct mlx5e_priv *priv)
+ 	netif_set_real_num_rx_queues(netdev, num_rxqs);
  }
  
++int mlx5e_num_channels_changed(struct mlx5e_priv *priv)
++{
++	u16 count = priv->channels.params.num_channels;
++
++	if (!netif_is_rxfh_configured(priv->netdev))
++		mlx5e_build_default_indir_rqt(priv->rss_params.indirection_rqt,
++					      MLX5E_INDIR_RQT_SIZE, count);
++
++	return 0;
++}
++
+ static void mlx5e_build_txq_maps(struct mlx5e_priv *priv)
+ {
+ 	int i, ch;
+@@ -5305,9 +5316,10 @@ int mlx5e_attach_netdev(struct mlx5e_priv *priv)
+ 	max_nch = mlx5e_get_max_num_channels(priv->mdev);
+ 	if (priv->channels.params.num_channels > max_nch) {
+ 		mlx5_core_warn(priv->mdev, "MLX5E: Reducing number of channels to %d\n", max_nch);
++		/* Reducing the number of channels - RXFH has to be reset. */
++		priv->netdev->priv_flags &= ~IFF_RXFH_CONFIGURED;
+ 		priv->channels.params.num_channels = max_nch;
+-		mlx5e_build_default_indir_rqt(priv->rss_params.indirection_rqt,
+-					      MLX5E_INDIR_RQT_SIZE, max_nch);
++		mlx5e_num_channels_changed(priv);
+ 	}
+ 
+ 	err = profile->init_tx(priv);
 -- 
 2.20.1
 
