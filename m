@@ -2,158 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E4E1B1119
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD871B1125
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730002AbgDTQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:05:32 -0400
-Received: from gateway24.websitewelcome.com ([192.185.50.91]:33693 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726972AbgDTQDf (ORCPT
+        id S1728227AbgDTQIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726036AbgDTQIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:03:35 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 39B3411BF5E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:03:33 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id QYtRjgJPb1s2xQYtRjIrE3; Mon, 20 Apr 2020 11:03:33 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=T3yOXqcpnqrQ1Mk+Z6y1RWbsWgRIK6tQyKg6hHpXtSo=; b=s9VZ9kYjw9ptsGgFGKiXVFuQEh
-        SO/mtFtBD5PvDfUcXFW3Mm4m49fJbOs1XRs/bV53tK4HmaDmHiAV6fDBQETrizoiAIPDEUfAn9iHi
-        TuU2vz2SsEpg071HdZ9POECfagItX2yo4VwERlN9dt4geoXn217xnHCfke12OA78FCHU0DFX6yf+s
-        ynBQ90mI04EYoa1v6HIEWQvpb2oze1x6lhxV8TWhgW9CwampZYQ2jdJbURD2U9gWFMiqe3cok5euk
-        wMmX7DNeQ9OuYIqjltMl8OExMxMw6A49aYWiwbNa1mqQq7uU74jcuCn+KVRr8Hpus84tBhtrKEt/z
-        N6ct3MpA==;
-Received: from [200.39.26.197] (port=7200 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jQYtQ-002sB6-4L; Mon, 20 Apr 2020 11:03:33 -0500
-Subject: Re: [PATCH 2/2][next] m68k: amiga: config: Mark expected switch
- fall-through
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1585264062.git.gustavo@embeddedor.com>
- <14ff577604d25243c8a897f851b436ba87ae87cb.1585264062.git.gustavo@embeddedor.com>
- <CAMuHMdW4f-sPPY9sOU-xdVJ-0zsix4wcMTxUz48GopqnWDVTAg@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <50f85dd2-8250-1ca8-e2dd-4bba93a62736@embeddedor.com>
-Date:   Mon, 20 Apr 2020 11:07:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 12:08:41 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91503C061A10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:08:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id u10so8422819lfo.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NL3IEwcfzNQpHmXPpfrLIKWyab3iYaw/7gQEiU+sf+M=;
+        b=czKwoRDJdYo2K9jc/Bu4C6/Iv+Jc+T9L3xnSK1VPB8pCKP2Jqe02WP/XIrV+cLTqHe
+         45z9qsvugomaaXxlBZKo1HWUkBm1EeWYVfql4iAwQ5G8tbU0TUjtf39PF01XeqnUrIYL
+         CN5gYCVEoinRdadcSvhf4j5AmfWwb7fMT6sDZ+XH/XB4enysEQqqjfpgYwKB4UBU5DxF
+         gRZ2ewZvM5CRelCDpedWoqwvwVu1pushq5v5MKpmRRakreumGcWQQLMVRJqPn7Z3FNZq
+         DjKJwezAZ5gdB8ekpQ7q50H5nBAblHnSbmNBOCWZX9Ckh0bk8RNc4RJiDRjXERJ1pHIX
+         g+9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NL3IEwcfzNQpHmXPpfrLIKWyab3iYaw/7gQEiU+sf+M=;
+        b=oC3cj+440kX2cWVhIYvZsQ9Lrkqec176X0ZAUHNhah+PVq9HXeTaA/2OnT3rBmK+w7
+         PZ5HI77439o26lRUp19UPglCtIn6vJhgmErJMO6dhElXtdHQj9er8jb9y4G7cy4i64yW
+         bGpHbB0hOT6xw6+jYkrhNOCvaE4QKvNFssqfDwohCJD0w+TPuayZ1r3WskUxjPhu/46E
+         6aSd9Dh++bv2IiJKNgGzO8ggn+3lXgvuT5LaOChIdSaXYhZdBqSNC4PBocNQ5HgL+07c
+         FXZyVhFSO/ixx6RNr/Kwv+gH+SqVV6GGs4Ce9/MBFLwfeSVG7twsjdMs02lSsPPx7ZwV
+         qBrw==
+X-Gm-Message-State: AGi0PuZcF3Z3LxIuEYs79eyAa5ynflui/qrFP/RzyMc3YmgXE5BeSTQ9
+        SUBvJnu9wA/lbzRSoKw1p8/NJOL+v4dWzU+D8njcNg==
+X-Google-Smtp-Source: APiQypKB4wP6bv3movpA3yXEyiywpA4vIc8NpmSfY2rAPduF5WboKyncgZPcIL771EReYQDwKZ0+cny7Gib+g3VLc7k=
+X-Received: by 2002:a19:550a:: with SMTP id n10mr11048932lfe.143.1587398918866;
+ Mon, 20 Apr 2020 09:08:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdW4f-sPPY9sOU-xdVJ-0zsix4wcMTxUz48GopqnWDVTAg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.39.26.197
-X-Source-L: No
-X-Exim-ID: 1jQYtQ-002sB6-4L
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [200.39.26.197]:7200
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <1587149322-28104-1-git-send-email-alan.mikhak@sifive.com>
+ <20200418122123.10157ddd@why> <CY4PR12MB1271277CEE4F1FE06B71DDE8DAD60@CY4PR12MB1271.namprd12.prod.outlook.com>
+ <8a03b55223b118c6fc605d7204e01460@kernel.org>
+In-Reply-To: <8a03b55223b118c6fc605d7204e01460@kernel.org>
+From:   Alan Mikhak <alan.mikhak@sifive.com>
+Date:   Mon, 20 Apr 2020 09:08:27 -0700
+Message-ID: <CABEDWGxLKB68iknXtK8-4ke3wGW-6RKBnDEh6rFbBekLyawVOw@mail.gmail.com>
+Subject: Re: [PATCH] genirq/msi: Check null pointer before copying struct msi_msg
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>, tglx@linutronix.de,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 20, 2020 at 2:14 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-04-18 16:19, Gustavo Pimentel wrote:
+> > Hi Marc and Alan,
+> >
+> >> I'm not convinced by this. If you know that, by construction, these
+> >> interrupts are not associated with an underlying MSI, why calling
+> >> get_cached_msi_msg() the first place?
+> >>
+> >> There seem to be some assumptions in the DW EDMA driver that the
+> >> signaling would be MSI based, so maybe someone from Synopsys
+> >> (Gustavo?)
+> >> could clarify that. From my own perspective, running on an endpoint
+> >> device means that it is *generating* interrupts, and I'm not sure what
+> >> the MSIs represent here.
+> >
+> > Giving a little context to this topic.
+> >
+> > The eDMA IP present on the Synopsys DesignWare PCIe Endpoints can be
+> > configured and triggered *remotely* as well *locally*.
+> > For the sake of simplicity let's assume for now the eDMA was
+> > implemented
+> > on the EP and that is the IP that we want to configure and use.
+> >
+> > When I say *remotely* I mean that this IP can be configurable through
+> > the
+> > RC/CPU side, however, for that, it requires the eDMA registers to be
+> > exposed through a PCIe BAR on the EP. This will allow setting the SAR,
+> > DAR and other settings, also need(s) the interrupt(s) address(es) to be
+> > set as well (MSI or MSI-X only) so that it can signal through PCIe (to
+> > the RC and consecutively the associated EP driver) if the data transfer
+> > has been completed, aborted or if the Linked List consumer algorithm
+> > has
+> > passed in some linked element marked with a watermark.
+> >
+> > It was based on this case that the eDMA driver was exclusively
+> > developed.
+> >
+> > However, Alan, wants to expand a little more this, by being able to use
+> > this driver on the EP side (through
+> > pcitest/pci_endpoint_test/pci_epf_test) so that he can configure this
+> > IP
+> > *locally*.
+> > In fact, when doing this, he doesn't need to configure the interrupt
+> > address (MSI or MSI-X), because this IP provides a local interrupt line
+> > so that be connected to other blocks on the EP side.
+>
+> Right, so this confirms my hunch that the driver is being used in
+> a way that doesn't reflect the expected use case. Rather than
+> papering over the problem by hacking the core code, I'd rather see
+> the eDMA driver be updated to support both host and endpoint cases.
+> This probably boils down to a PCI vs non-PCI set of helpers.
+>
+> Alan, could you confirm whether we got it right?
 
+Thanks Marc and Gustavo. I appreciate all your comments and feedback.
 
-On 4/20/20 02:17, Geert Uytterhoeven wrote:
-> On Fri, Mar 27, 2020 at 12:25 AM Gustavo A. R. Silva
-> <gustavo@embeddedor.com> wrote:
->> Mark switch cases where we are expecting to fall through.
->>
->> This patch fixes the following warning (Building: allmodconfig m68k):
->>
->> arch/m68k/amiga/config.c: In function ‘amiga_identify’:
->> ./arch/m68k/include/asm/amigahw.h:42:50: warning: this statement may fall through [-Wimplicit-fallthrough=]
->>  #define AMIGAHW_SET(name) (amiga_hw_present.name = 1)
->>                            ~~~~~~~~~~~~~~~~~~~~~~~^~~~
->> arch/m68k/amiga/config.c:223:3: note: in expansion of macro ‘AMIGAHW_SET’
->>    AMIGAHW_SET(PCMCIA);
->>    ^~~~~~~~~~~
->> arch/m68k/amiga/config.c:224:2: note: here
->>   case AMI_500:
->>   ^~~~
->>
->> Replace the existing /* fall through */ comments and fix the issue above
->> by using the new pseudo-keyword fallthrough;
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> i.e. will queue in the m68k for-v5.8 branch.
-> 
+You both got it right. As Gustavo mentioned, I am trying to expand dw-edma
+for additional use cases.
 
-Geert,
+First new use case is for integration of dw-edma with pci-epf-test so the latter
+can initiate dma transfers locally from endpoint memory to host memory over the
+PCIe bus in response to a user command issued from the host-side command
+prompt using the pcitest utility. When the locally-initiated dma
+transfer completes
+in this use case on the endpoint side, dw-edma issues an interrupt to the local
+CPU on the endpoint side by way of a legacy interrupt and pci-epf-test issues
+an interrupt toward the remote host CPU across the PCIe bus by way of legacy,
+MSI, or possibly MSI-X interrupt.
 
-I wonder if you received the first patch of the series.
+Second new use case is for integration of dw-edma with pci_endpoint_test
+running on the host CPU so the latter can initiate dma transfers locally from
+host-side in response to a user command issued from the host-side command
+prompt using the pcitest utility. This use case is for host systems that have
+Synopsys DesignWare PCI eDMA hardware on the host side. When the
+locally-initiated dma transfer completes in this use case on the host-side,
+dw-edma issues a legacy interrupt to its local host CPU and pci-epf-test running
+on the endpoint side issues a legacy, MSI, or possibly MSI-X interrupt
+across the
+PCIe bus toward the host CPU.
 
-It seems lkml has been eating some messages, recently.
+When both the host and endpoint sides have the Synopsys DesignWare PCI
+eDMA hardware, more use cases become possible in which eDMA controllers
+from both systems can be engaged to move data. Embedded DMA controllers
+from other PCIe IP vendors may also be supported with additional dmaengine
+drivers under the Linux PCI Endpoint Framework with pci-epf-test, pcitest, and
+pci_endpoint_test suite as well as new PCI endpoint function drivers for such
+applications that require dma, for example nvme or virtio_net endpoint function
+drivers.
 
-Thanks
---
-Gustavo
+I submitted a recent patch [1] and [2] which Gustavo ACk'd to decouple dw-edma
+from struct pci_dev. This enabled me to exercise dw-edma on some riscv host
+and endpoint systems that I work with.
+
+I will submit another patch to decouple dw-edma from struct msi_msg such
+that it would only call get_cached_msi_msg() on the host-side in its original
+use case with remotely initiated dma transfers using the BAR access method.
+
+The crash that I reported in __get_cached_msi_msg() is probably worth fixing
+too. It seems to be low impact since get_cached_msi_msg() seems to be called
+infrequently by a few callers.
+
+Regards,
+Alan Mikhak
+
+[1] https://patchwork.kernel.org/patch/11489607/
+[2] https://patchwork.kernel.org/patch/11491757/
+
+>
+> Thanks,
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
