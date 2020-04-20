@@ -2,222 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686CA1B0DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F951B0DAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729603AbgDTOEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729547AbgDTOEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:04:12 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C4FC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 07:04:11 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id n20so2225319qtp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 07:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=19iG/yACSonzsO8vO7FObgRGDUOJ9AtxmYB1RErPuPs=;
-        b=V0CHeAcblkoxsNZlcLugfNlyjTr+UnWk431ep8VpgvVY/GPtWORg5yJbjNibxa0cnJ
-         7JCY7SKuS1qCFqEBHY3xeWbwI+9W9Db7hzB2jqXFlysuzzCAXWAROwBK6V0W/6LsgMpo
-         mnCHjhUmAQbUyPnyRSlmVC/GkqCoHr1+SXnrydAHfv7MwncD/e+TzqCPQ2nHC4jWMQv+
-         UPOwnAugt7wsmTxhHt/QVRiZOhSLrUVAlGBeJo8briBj6AMivSi78xKMvz0vAIN1CVMA
-         sPmHe5ik/IDHVPYX6GQTfJr98hyD+tTCFvaUdkWXt80zQf9OT+qeXy1BTmreuiIkZgfM
-         YdLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=19iG/yACSonzsO8vO7FObgRGDUOJ9AtxmYB1RErPuPs=;
-        b=D0LHmnOwpi4gspnI/sdcWGzYyyu2zerdZEo8zSH+EbyYVZsIY4OLJijlmIg89UwAJI
-         0Y2lNOgmx0wIb1s72yqeYCUqybnqsTNqbzGGjrW9D/J3ZD/aHDz/1w5gFfakly5DxGUV
-         OBW7NPktyjPpebVkr759Zgzk3B60q2g3RC+15OwaLn2T+x+LX6WB/tslROZpb40A5dEK
-         gbjxl2T3AEZ3t495hqj0t33OSwl4sAeayLMJE2B/6vyA6GzMJ8ZDq1RUOhEc3JOlJSTb
-         epLphAeG0mr3G15ie58957jTJWGjCdPNq4SK0gEmrQbfYZyYiBpShVkSw3YcylvwImTt
-         NMAA==
-X-Gm-Message-State: AGi0Puau6hgimCKTp3k7q1j3JHMfRin/uBEvuOEAQ1oUIQ4gKhfNQKSm
-        s31mdegrBYx6dpUd+4q85Sb2zg==
-X-Google-Smtp-Source: APiQypJzX5iggTdUCC7BVdyDcUZ8ng4HAs6wGL1czn9J5/2tSYuOX4vyD0ndCWr9ALBFV26b/CYMxQ==
-X-Received: by 2002:ac8:180f:: with SMTP id q15mr15962384qtj.42.1587391450999;
-        Mon, 20 Apr 2020 07:04:10 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id t75sm609424qke.127.2020.04.20.07.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 07:04:10 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 9/9] drm/msm/a6xx: update a6xx_hw_init for A640 and A650
-Date:   Mon, 20 Apr 2020 10:03:13 -0400
-Message-Id: <20200420140313.7263-10-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420140313.7263-1-jonathan@marek.ca>
-References: <20200420140313.7263-1-jonathan@marek.ca>
+        id S1729081AbgDTODV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:03:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38394 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgDTODV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:03:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 63091ABD7;
+        Mon, 20 Apr 2020 14:03:18 +0000 (UTC)
+Subject: Re: [patch 05/15] x86/tlb: Move __flush_tlb() out of line
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <20200419203137.214111265@linutronix.de>
+ <20200419203336.134117165@linutronix.de>
+ <5857df01-abeb-c6cd-8e92-64eb365dc835@amd.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <fab4e80a-3df2-a177-c5fe-1ab995953727@suse.com>
+Date:   Mon, 20 Apr 2020 16:03:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <5857df01-abeb-c6cd-8e92-64eb365dc835@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adreno 640 and 650 GPUs need some registers set differently.
+On 20.04.20 15:48, Tom Lendacky wrote:
+> On 4/19/20 3:31 PM, Thomas Gleixner wrote:
+>> cpu_tlbstate is exported because various TLB related functions need 
+>> access
+>> to it, but cpu_tlbstate is sensitive information which should only be
+>> accessed by well contained kernel functions and not be directly 
+>> exposed to
+>> modules.
+>>
+>> The various TLB flush functions need access to cpu_tlbstate. As a first
+>> step move __flush_tlb() out of line and hide the native function. The
+>> latter can be static when CONFIG_PARAVIRT is disabled.
+>>
+>> Consolidate the name space while at it and remove the pointless extra
+>> wrapper in the paravirt code.
+>>
+>> No functional change.
+>>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Thomas Lendacky <Thomas.Lendacky@amd.com>
+>> Cc: Juergen Gross <jgross@suse.com>
+>> ---
+>>   arch/x86/include/asm/paravirt.h    |    4 +++-
+>>   arch/x86/include/asm/tlbflush.h    |   29 +++++------------------------
+>>   arch/x86/kernel/cpu/mtrr/generic.c |    4 ++--
+>>   arch/x86/kernel/paravirt.c         |    7 +------
+>>   arch/x86/mm/mem_encrypt.c          |    2 +-
+>>   arch/x86/mm/tlb.c                  |   33 
+>> ++++++++++++++++++++++++++++++++-
+>>   arch/x86/platform/uv/tlb_uv.c      |    2 +-
+>>   7 files changed, 45 insertions(+), 36 deletions(-)
+>>
+>> --- a/arch/x86/include/asm/paravirt.h
+>> +++ b/arch/x86/include/asm/paravirt.h
+>> @@ -47,7 +47,9 @@ static inline void slow_down_io(void)
+>>   #endif
+>>   }
+>> -static inline void __flush_tlb(void)
+>> +void native_flush_tlb_local(void);
+>> +
+>> +static inline void __flush_tlb_local(void)
+>>   {
+>>       PVOP_VCALL0(mmu.flush_tlb_user);
+>>   }
+>> --- a/arch/x86/include/asm/tlbflush.h
+>> +++ b/arch/x86/include/asm/tlbflush.h
+>> @@ -140,12 +140,13 @@ static inline unsigned long build_cr3_no
+>>       return __sme_pa(pgd) | kern_pcid(asid) | CR3_NOFLUSH;
+>>   }
+>> +void flush_tlb_local(void);
+>> +
+>>   #ifdef CONFIG_PARAVIRT
+>>   #include <asm/paravirt.h>
+>>   #else
+>> -#define __flush_tlb() __native_flush_tlb()
+>> -#define __flush_tlb_global() __native_flush_tlb_global()
+>> -#define __flush_tlb_one_user(addr) __native_flush_tlb_one_user(addr)
+>> +#define __flush_tlb_global()        __native_flush_tlb_global()
+>> +#define __flush_tlb_one_user(addr)    __native_flush_tlb_one_user(addr)
+>>   #endif
+>>   struct tlb_context {
+>> @@ -371,24 +372,6 @@ static inline void invalidate_user_asid(
+>>   }
+>>   /*
+>> - * flush the entire current user mapping
+>> - */
+>> -static inline void __native_flush_tlb(void)
+>> -{
+>> -    /*
+>> -     * Preemption or interrupts must be disabled to protect the access
+>> -     * to the per CPU variable and to prevent being preempted between
+>> -     * read_cr3() and write_cr3().
+>> -     */
+>> -    WARN_ON_ONCE(preemptible());
+>> -
+>> -    invalidate_user_asid(this_cpu_read(cpu_tlbstate.loaded_mm_asid));
+>> -
+>> -    /* If current->mm == NULL then the read_cr3() "borrows" an mm */
+>> -    native_write_cr3(__native_read_cr3());
+>> -}
+>> -
+>> -/*
+>>    * flush everything
+>>    */
+>>   static inline void __native_flush_tlb_global(void)
+>> @@ -461,7 +444,7 @@ static inline void __flush_tlb_all(void)
+>>           /*
+>>            * !PGE -> !PCID (setup_pcid()), thus every flush is total.
+>>            */
+>> -        __flush_tlb();
+>> +        flush_tlb_local();
+>>       }
+>>   }
+>> @@ -537,8 +520,6 @@ struct flush_tlb_info {
+>>       bool            freed_tables;
+>>   };
+>> -#define local_flush_tlb() __flush_tlb()
+>> -
+>>   #define flush_tlb_mm(mm)                        \
+>>           flush_tlb_mm_range(mm, 0UL, TLB_FLUSH_ALL, 0UL, true)
+>> --- a/arch/x86/kernel/cpu/mtrr/generic.c
+>> +++ b/arch/x86/kernel/cpu/mtrr/generic.c
+>> @@ -761,7 +761,7 @@ static void prepare_set(void) __acquires
+>>       /* Flush all TLBs via a mov %cr3, %reg; mov %reg, %cr3 */
+>>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
+>> -    __flush_tlb();
+>> +    flush_tlb_local();
+>>       /* Save MTRR state */
+>>       rdmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
+>> @@ -778,7 +778,7 @@ static void post_set(void) __releases(se
+>>   {
+>>       /* Flush TLBs (no need to flush caches - they are disabled) */
+>>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
+>> -    __flush_tlb();
+>> +    flush_tlb_local();
+>>       /* Intel (P6) standard MTRRs */
+>>       mtrr_wrmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
+>> --- a/arch/x86/kernel/paravirt.c
+>> +++ b/arch/x86/kernel/paravirt.c
+>> @@ -160,11 +160,6 @@ unsigned paravirt_patch_insns(void *insn
+>>       return insn_len;
+>>   }
+>> -static void native_flush_tlb(void)
+>> -{
+>> -    __native_flush_tlb();
+>> -}
+>> -
+>>   /*
+>>    * Global pages have to be flushed a bit differently. Not a real
+>>    * performance problem because this does not happen often.
+>> @@ -359,7 +354,7 @@ struct paravirt_patch_template pv_ops =
+>>   #endif /* CONFIG_PARAVIRT_XXL */
+>>       /* Mmu ops. */
+>> -    .mmu.flush_tlb_user    = native_flush_tlb,
+>> +    .mmu.flush_tlb_user    = native_flush_tlb_local,
+>>       .mmu.flush_tlb_kernel    = native_flush_tlb_global,
+>>       .mmu.flush_tlb_one_user    = native_flush_tlb_one_user,
+>>       .mmu.flush_tlb_others    = native_flush_tlb_others,
+>> --- a/arch/x86/mm/mem_encrypt.c
+>> +++ b/arch/x86/mm/mem_encrypt.c
+>> @@ -134,7 +134,7 @@ static void __init __sme_early_map_unmap
+>>           size = (size <= PMD_SIZE) ? 0 : size - PMD_SIZE;
+>>       } while (size);
+>> -    __native_flush_tlb();
+>> +    flush_tlb_local();
+> 
+> This invoked __native_flush_tlb() because of how early it is called and 
+> the paravirt ops support isn't set up yet, resulting in a crash if not 
+> invoking the native version directly. So this needs a "native" version 
+> of the tlb flush to invoke.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/adreno/a6xx.xml.h | 14 +++++++
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 56 ++++++++++++++++++++++-----
- 2 files changed, 61 insertions(+), 9 deletions(-)
+I don't think this is still true. With my rework of pvops to have all
+functions in one struct which is initialized statically initially
+everything should work from the time the kernel is mapped.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx.xml.h b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-index ed78fee2a262..47840b73cdda 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-+++ b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-@@ -1047,6 +1047,8 @@ enum a6xx_tex_type {
- 
- #define REG_A6XX_CP_MISC_CNTL					0x00000840
- 
-+#define REG_A6XX_CP_APRIV_CNTL					0x00000844
-+
- #define REG_A6XX_CP_ROQ_THRESHOLDS_1				0x000008c1
- 
- #define REG_A6XX_CP_ROQ_THRESHOLDS_2				0x000008c2
-@@ -1764,6 +1766,8 @@ static inline uint32_t A6XX_CP_PROTECT_REG_MASK_LEN(uint32_t val)
- 
- #define REG_A6XX_RBBM_VBIF_CLIENT_QOS_CNTL			0x00000010
- 
-+#define REG_A6XX_RBBM_GBIF_CLIENT_QOS_CNTL			0x00000011
-+
- #define REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL			0x0000001f
- 
- #define REG_A6XX_RBBM_INT_CLEAR_CMD				0x00000037
-@@ -2418,6 +2422,16 @@ static inline uint32_t A6XX_UCHE_CLIENT_PF_PERFSEL(uint32_t val)
- 
- #define REG_A6XX_TPL1_NC_MODE_CNTL				0x0000b604
- 
-+#define REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_0			0x0000b608
-+
-+#define REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_1			0x0000b609
-+
-+#define REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_2			0x0000b60a
-+
-+#define REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_3			0x0000b60b
-+
-+#define REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_4			0x0000b60c
-+
- #define REG_A6XX_TPL1_PERFCTR_TP_SEL_0				0x0000b610
- 
- #define REG_A6XX_TPL1_PERFCTR_TP_SEL_1				0x0000b611
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index a860d4970e10..e1eb34fa3a99 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -414,7 +414,17 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
- 		a6xx_set_hwcg(gpu, true);
- 
- 	/* VBIF/GBIF start*/
--	gpu_write(gpu, REG_A6XX_RBBM_VBIF_CLIENT_QOS_CNTL, 0x3);
-+	if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
-+		gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
-+		gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
-+		gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
-+		gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE3, 0x00071620);
-+		gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE3, 0x00071620);
-+		gpu_write(gpu, REG_A6XX_RBBM_GBIF_CLIENT_QOS_CNTL, 0x3);
-+	} else {
-+		gpu_write(gpu, REG_A6XX_RBBM_VBIF_CLIENT_QOS_CNTL, 0x3);
-+	}
-+
- 	if (adreno_is_a630(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_VBIF_GATE_OFF_WRREQ_EN, 0x00000009);
- 
-@@ -429,25 +439,35 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
- 	gpu_write(gpu, REG_A6XX_UCHE_WRITE_THRU_BASE_LO, 0xfffff000);
- 	gpu_write(gpu, REG_A6XX_UCHE_WRITE_THRU_BASE_HI, 0x0001ffff);
- 
--	/* Set the GMEM VA range [0x100000:0x100000 + gpu->gmem - 1] */
--	gpu_write64(gpu, REG_A6XX_UCHE_GMEM_RANGE_MIN_LO,
--		REG_A6XX_UCHE_GMEM_RANGE_MIN_HI, 0x00100000);
-+	if (!adreno_is_a650(adreno_gpu)) {
-+		/* Set the GMEM VA range [0x100000:0x100000 + gpu->gmem - 1] */
-+		gpu_write64(gpu, REG_A6XX_UCHE_GMEM_RANGE_MIN_LO,
-+			REG_A6XX_UCHE_GMEM_RANGE_MIN_HI, 0x00100000);
- 
--	gpu_write64(gpu, REG_A6XX_UCHE_GMEM_RANGE_MAX_LO,
--		REG_A6XX_UCHE_GMEM_RANGE_MAX_HI,
--		0x00100000 + adreno_gpu->gmem - 1);
-+		gpu_write64(gpu, REG_A6XX_UCHE_GMEM_RANGE_MAX_LO,
-+			REG_A6XX_UCHE_GMEM_RANGE_MAX_HI,
-+			0x00100000 + adreno_gpu->gmem - 1);
-+	}
- 
- 	gpu_write(gpu, REG_A6XX_UCHE_FILTER_CNTL, 0x804);
- 	gpu_write(gpu, REG_A6XX_UCHE_CACHE_WAYS, 0x4);
- 
--	gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x010000c0);
-+	if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x02000140);
-+	else
-+		gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x010000c0);
- 	gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_1, 0x8040362c);
- 
- 	/* Setting the mem pool size */
- 	gpu_write(gpu, REG_A6XX_CP_MEM_POOL_SIZE, 128);
- 
- 	/* Setting the primFifo thresholds default values */
--	gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, (0x300 << 11));
-+	if (adreno_is_a650(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300000);
-+	else if (adreno_is_a640(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200000);
-+	else
-+		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, (0x300 << 11));
- 
- 	/* Set the AHB default slave response to "ERROR" */
- 	gpu_write(gpu, REG_A6XX_CP_AHB_CNTL, 0x1);
-@@ -471,6 +491,19 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
- 
- 	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 1);
- 
-+	/* Set weights for bicubic filtering */
-+	if (adreno_is_a650(adreno_gpu)) {
-+		gpu_write(gpu, REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_0, 0);
-+		gpu_write(gpu, REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_1,
-+			0x3fe05ff4);
-+		gpu_write(gpu, REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_2,
-+			0x3fa0ebee);
-+		gpu_write(gpu, REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_3,
-+			0x3f5193ed);
-+		gpu_write(gpu, REG_A6XX_TPL1_BICUBIC_WEIGHTS_TABLE_4,
-+			0x3f0243f0);
-+	}
-+
- 	/* Protect registers from the CP */
- 	gpu_write(gpu, REG_A6XX_CP_PROTECT_CNTL, 0x00000003);
- 
-@@ -508,6 +541,11 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
- 			A6XX_PROTECT_RDONLY(0x980, 0x4));
- 	gpu_write(gpu, REG_A6XX_CP_PROTECT(25), A6XX_PROTECT_RW(0xa630, 0x0));
- 
-+	if (adreno_is_a650(adreno_gpu)) {
-+		gpu_write(gpu, REG_A6XX_CP_APRIV_CNTL,
-+			(1 << 6) | (1 << 5) | (1 << 3) | (1 << 2) | (1 << 1));
-+	}
-+
- 	/* Enable interrupts */
- 	gpu_write(gpu, REG_A6XX_RBBM_INT_0_MASK, A6XX_INT_MASK);
- 
--- 
-2.26.1
+In case it doesn't there is something very wrong IMO.
 
+
+Juergen
