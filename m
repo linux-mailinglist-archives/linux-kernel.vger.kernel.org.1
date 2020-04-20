@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299771B0D0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316431B0D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgDTNpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:45:41 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44888 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgDTNpl (ORCPT
+        id S1728652AbgDTNq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:46:57 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:59124 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbgDTNq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:45:41 -0400
-Received: by mail-oi1-f196.google.com with SMTP id a2so4129569oia.11;
-        Mon, 20 Apr 2020 06:45:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2ghh1pPF1fsAsPGVZzPt9RKgESh8HbBU2W/jDg7F0c=;
-        b=sz2E4b2PztQNahZiYkyEU0J3PMJJ/mPiaZ91IlSUJXHIGmoJw/i7KpCFwFH1KFBpXK
-         Xyq8Q88USPJwFUui7aqCeoCpfFmurmhFI7fHPCwsejrddy0MtwQTDs/ucehHd+jI+D9b
-         f2wKg4UNyJJPu2ha4RHXkBVETZU2anNIE8LNoeCik0cLu0u3FN6Eri2IJGV0/hdUZK2n
-         fTV/2CeSY9c9m+e2io2e4+RA/94xHx6uHOMgYJPNIH51gKW61/zipQfZ+y0wr6r0w6W6
-         dKuZlqc6SOntgm32b6VKZfgumdq3SS9KXCzF+BNWOJ45VhqZeFcCLjsmvna7wrxNA95W
-         7spA==
-X-Gm-Message-State: AGi0PuaNUTyUvozxy6U0UvhjHhHRegDXPoKrQu4IpAqHdlSOaB7k4GPr
-        zht7TsdavUSAnY++Th8/jzixirOq7MPr1jTL0JM=
-X-Google-Smtp-Source: APiQypIYWggq31kqe72PWGup1dXMLkkExcPMIqTIaghdiu2d6AzyZ3huwXP08u748n7J/APQ6LYfplz/CfuGBxsDgd0=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr10124295oih.148.1587390339921;
- Mon, 20 Apr 2020 06:45:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
- <CAMuHMdUUJATs+G-hvty=fgyrhyx1EafpFHoWfcm=V_tVLn3q2A@mail.gmail.com> <DB6PR0802MB25330E55914346B46288C712E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-In-Reply-To: <DB6PR0802MB25330E55914346B46288C712E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Apr 2020 15:45:28 +0200
-Message-ID: <CAMuHMdV1Lp0uEOm_KtUA-nF7-6y1kfyvArcunrLipp6h5A_GMw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
-To:     Hadar Gat <Hadar.Gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Mon, 20 Apr 2020 09:46:56 -0400
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id DAEAF20CDC;
+        Mon, 20 Apr 2020 13:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587390416; bh=nCAhVn2ma9z8r8dWxnzAROBI/Q4gJteYeVtwI1Vc6vc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BJxFOh2EDvaxPBm7aU2KZJuJeqI+XsTgBv/gsCc24ctcMiVi3FDtCN8+ZiuPF3o54
+         OLGjhjRgCy5aDMABnqp1+wnfKr2g7Twn9kSeQPouMHGDxnHczqCIIjaWfDUU7ox8fZ
+         G2uuhVlRCFHjmQj6L7uKOwOu31JfKtOcnumBc90nD0lizLRx9CwzwN4/JCSY84WKIr
+         jzbqjoTzNQTKGsjU3MjoryhL5zSbPSIeXzVJm7nvXyX84mk165dAGm6bbOc63G5Wv2
+         AQWWUAh/BJrAIfwZc+t1peCbw76rtfC1HSiWYLYPE5Pyy4zjFQ9TnH239uPdOs1Z/4
+         roF8KwAjL1wlQ==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 5/5] MIPS: Loongson64: Mark RS780 HPET as broken
+Date:   Mon, 20 Apr 2020 21:45:29 +0800
+Message-Id: <20200420134536.210475-5-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200420134536.210475-1-jiaxun.yang@flygoat.com>
+References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+ <20200420134536.210475-1-jiaxun.yang@flygoat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hadar,
+This driver is using some dangerous hack to set MMIO address for HPET,
+which might break systems with other kinds of PCH.
 
-On Mon, Apr 20, 2020 at 2:27 PM Hadar Gat <Hadar.Gat@arm.com> wrote:
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Sent: Monday, 20 April 2020 12:35
-> >
-> > On Fri, Mar 27, 2020 at 7:11 AM Hadar Gat <hadar.gat@arm.com> wrote:
-> > > The Arm CryptoCell is a hardware security engine.
-> > > This patch introduces driver for its TRNG (True Random Number
-> > > Generator) engine.
-> >
-> > Thanks for your series!
-> >
-> > I am wondering what is the relation between this and
-> > Documentation/devicetree/bindings/crypto/arm-cryptocell.txt?
->
-> Arm TrustZone CryptoCell hardware contains both cryptographic engine (ccree) and true random number generator engine (cctrng).
+Also, as Loongson-3 cpufreq driver never appeared in mainline,
+this driver rarely got used.
 
-OK.
+So we temporarily mark it as broken until we find a better solution.
 
-> These are separate engines with some sharing in logic and interface.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/loongson64/Kconfig | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Do they share the same register block?
+diff --git a/arch/mips/loongson64/Kconfig b/arch/mips/loongson64/Kconfig
+index c386b8a3c753..517f1f8e81fb 100644
+--- a/arch/mips/loongson64/Kconfig
++++ b/arch/mips/loongson64/Kconfig
+@@ -4,14 +4,12 @@ if MACH_LOONGSON64
+ config RS780_HPET
+ 	bool "RS780/SBX00 HPET Timer"
+ 	depends on MACH_LOONGSON64
++	depends on BROKEN
+ 	select MIPS_EXTERNAL_TIMER
+ 	help
+ 	  This option enables the hpet timer of AMD RS780/SBX00.
+ 
+-	  If you want to enable the Loongson3 CPUFreq Driver, Please enable
+-	  this option at first, otherwise, You will get wrong system time.
+-
+-	  If unsure, say Yes.
+-
++	  Note: This driver is doing some dangerous hack. Please only enable
++	  it on RS780E systems.
+ 
+ endif # MACH_LOONGSON64
+-- 
+2.26.0.rc2
 
-> cctrng engine may not always be present.
-
-I assume that applies to e.g. the older 630p?
-
-> The devicetree documentation is in:
-> For ccree - Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> For cctrng - Documentation/devicetree/bindings/rng/arm-cctrng.yaml
-
-Thank you, I had already read both documents.
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
