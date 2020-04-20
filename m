@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395FF1B0499
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA0E1B04AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgDTIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:40:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60678 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgDTIkQ (ORCPT
+        id S1726307AbgDTInF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgDTInF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:40:16 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jQRyP-0005zP-Ms; Mon, 20 Apr 2020 08:40:13 +0000
-Subject: NAK: [PATCH][next] selftests: khugepaged: fix spelling mistake
- "compount" -> "compound"
-From:   Colin Ian King <colin.king@canonical.com>
-To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zi Yan <ziy@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200420083804.65071-1-colin.king@canonical.com>
-Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <8a04de20-a94b-433f-c63a-3b912d82e564@canonical.com>
-Date:   Mon, 20 Apr 2020 09:40:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 04:43:05 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA967C061A0C;
+        Mon, 20 Apr 2020 01:43:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k13so9836614wrw.7;
+        Mon, 20 Apr 2020 01:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FvWDhWISpGn4NECKTMbbAGhGOgcSHURkbEnrDvJMLos=;
+        b=avlZ9T8hhK+4D60c+QbITmY+PpA+oISCvv+x0+zVw0TZI2T9hRy3ezvi4EQWm5p9Yr
+         ulRTiSrqUSlB7Vh6Wzy1treFQdHNls8hEfF2gpLAS6+MkeT5iHJbFEgZ+c2W6kbY/Wnu
+         WgUFyYxWE7FHP635rcDZz02rSAdVkVLQTowgA1lra7/FwFiiGQNeNEa4rpXBJNPvlXVw
+         HUco5qQzwtWYSnBmTok31veJLWFwg1J44hBagJfK4YhoQ5mbwFyMjHsu3ru2qzpyQHZW
+         nYX2KuaZ3IHhR6qdv1GbYN73u4YUmpER8TRMhosoHsfyhmHd4zUIWOv418XrN+jExe6E
+         ksWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FvWDhWISpGn4NECKTMbbAGhGOgcSHURkbEnrDvJMLos=;
+        b=tGwb/sX/bUmNLxH4OfTzZcYxYmgd1wq5YUfIYTpfQQpj81BDxwK6GOeU4rt37DgEzV
+         VevGZcNhtHS5Pb3zZZV1amAeG+dFVp6sXMTHY3fZVva7OMV2li6pLveGb5fJq5TiUNFt
+         CgBRifVyFb+bI0VVudVtdsRvv9K6b0umvu/GeK1r7rcO/CEpGdTyDgl1tEhqbWpys+Go
+         01asEaE8zQRMSKNs23Mf01ZcLvFB5I9cEZ3WAj6EJe4ug+xtddvivcLeYvLobdC3FXsT
+         D8QusCkaNZChUr2tS+alSTnw7ZzNL09lqQgzKTeQDqmyDOtKj3dYhqTT92c+z9gxLPol
+         5YCw==
+X-Gm-Message-State: AGi0PuYrBOxCuGCLYKvrOSXFmZ1rpAqdcssWPAy6VQov0d7PBSA16Bvg
+        2S3D2gEb3OXv5uuWFbEG19k=
+X-Google-Smtp-Source: APiQypK5lrfo31xY8UUezFr4HAJ7K5iYcV+IgTMTdqw5RpA5VCYN8IlN/pUiRQPYMnHeei40rYxRqQ==
+X-Received: by 2002:a5d:6688:: with SMTP id l8mr18750767wru.179.1587372183564;
+        Mon, 20 Apr 2020 01:43:03 -0700 (PDT)
+Received: from meru.fronius.com ([2a01:cb18:832e:5f00:c546:5ea:178b:4074])
+        by smtp.gmail.com with ESMTPSA id g74sm403183wme.44.2020.04.20.01.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 01:43:02 -0700 (PDT)
+From:   Mathieu Othacehe <m.othacehe@gmail.com>
+To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mathieu Othacehe <m.othacehe@gmail.com>
+Subject: [PATCH v3 0/4] iio: vcnl: Add interrupts support for VCNL4010/20.
+Date:   Mon, 20 Apr 2020 10:42:06 +0200
+Message-Id: <20200420084210.14245-1-m.othacehe@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <20200420083804.65071-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2020 09:38, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There are three spelling mistakes in various messages. Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  tools/testing/selftests/vm/khugepaged.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/vm/khugepaged.c b/tools/testing/selftests/vm/khugepaged.c
-> index 490055290d7f..35f0bfa77ce8 100644
-> --- a/tools/testing/selftests/vm/khugepaged.c
-> +++ b/tools/testing/selftests/vm/khugepaged.c
-> @@ -654,14 +654,14 @@ static void collapse_single_pte_entry_compound(void)
->  		fail("Fail");
->  	madvise(p, hpage_pmd_size, MADV_NOHUGEPAGE);
->  
-> -	printf("Split huge page leaving single PTE mapping compount page...");
-> +	printf("Split huge page leaving single PTE mapping compound page...");
->  	madvise(p + page_size, hpage_pmd_size - page_size, MADV_DONTNEED);
->  	if (!check_huge(p))
->  		success("OK");
->  	else
->  		fail("Fail");
->  
-> -	if (wait_for_scan("Collapse PTE table with single PTE mapping compount page", p))
-> +	if (wait_for_scan("Collapse PTE table with single PTE mapping compound page", p))
->  		fail("Timeout");
->  	else if (check_huge(p))
->  		success("OK");
-> @@ -685,7 +685,7 @@ static void collapse_full_of_compound(void)
->  	else
->  		fail("Fail");
->  
-> -	printf("Split huge page leaving single PTE page table full of compount pages...");
-> +	printf("Split huge page leaving single PTE page table full of compound pages...");
->  	madvise(p, page_size, MADV_NOHUGEPAGE);
->  	madvise(p, hpage_pmd_size, MADV_NOHUGEPAGE);
->  	if (!check_huge(p))
-> 
+Hello,
 
-I found some more spelling miskages, I'll send a V2.
+Here's a v3 that is rebased on top of recent additions to the vcnl4000 driver.
 
-Colin
+Thanks,
+
+Mathieu
+
+Changes from v2:
+* Rebase on iio testing branch.
+* Remove useless test in vcnl4010_probe_trigger.
+
+Changes from v1:
+* Split into four different patches.
+* Use iio_device_claim_direct_mode to protect
+raw access from buffer capture.
+* Requesting a sampling frequency above the limit is no longer possible.
+* Inline read_isr and write_isr functions.
+* Remove IIO_LIGHT data from buffer capture.
+* Make sure postenable and predisable functions respect the common form.
+* Do not set the trigger by default.
+* Remove the devm_iio_triggered_buffer_setup top half.
+
+Mathieu Othacehe (4):
+  iio: vcnl4000: Factorize data reading and writing.
+  iio: vcnl4000: Add event support for VCNL4010/20.
+  iio: vcnl4000: Add sampling frequency support for VCNL4010/20.
+  iio: vcnl4000: Add buffer support for VCNL4010/20.
+
+ drivers/iio/light/Kconfig    |   2 +
+ drivers/iio/light/vcnl4000.c | 890 ++++++++++++++++++++++++++++++++---
+ 2 files changed, 828 insertions(+), 64 deletions(-)
+
+-- 
+2.26.0
+
