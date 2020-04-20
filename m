@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054991B0FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFEE1B0FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgDTPXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 11:23:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:50908 "EHLO foss.arm.com"
+        id S1726424AbgDTP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 11:26:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:51002 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727889AbgDTPXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:23:33 -0400
+        id S1726050AbgDTP02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 11:26:28 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3FCA11D4;
-        Mon, 20 Apr 2020 08:23:32 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC283F73D;
-        Mon, 20 Apr 2020 08:23:31 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com
-Subject: [PATCH 4/4] firmware: arm_scmi: Fix handling of unexpected delayed responses
-Date:   Mon, 20 Apr 2020 16:23:15 +0100
-Message-Id: <20200420152315.21008-5-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200420152315.21008-1-cristian.marussi@arm.com>
-References: <20200420152315.21008-1-cristian.marussi@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99BAD31B;
+        Mon, 20 Apr 2020 08:26:27 -0700 (PDT)
+Received: from [10.57.33.63] (unknown [10.57.33.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F9483F73D;
+        Mon, 20 Apr 2020 08:26:25 -0700 (PDT)
+Subject: Re: [PATCHv2 3/6] iommu/arm-smmu: Implement
+ iommu_ops->def_domain_type call-back
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evan Green <evgreen@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1587392905.git.saiprakash.ranjan@codeaurora.org>
+ <558b1aee4c699a0a5b14b325178d22a79958488f.1587392905.git.saiprakash.ranjan@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6dd26176-448a-985c-90fc-7c47088015ff@arm.com>
+Date:   Mon, 20 Apr 2020 16:26:22 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <558b1aee4c699a0a5b14b325178d22a79958488f.1587392905.git.saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon reception of an unexpected bogus delayed response, clear the channel
-and bail-out safely.
+On 2020-04-20 3:37 pm, Sai Prakash Ranjan wrote:
+> Implement the new def_domain_type call-back for the ARM
+> SMMU driver. We need this to support requesting the domain
+> type by the client devices.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/iommu/arm-smmu.c | 20 ++++++++++++++++++++
+>   1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> index e622f4e33379..b5d1d52dfbb8 100644
+> --- a/drivers/iommu/arm-smmu.c
+> +++ b/drivers/iommu/arm-smmu.c
+> @@ -1609,6 +1609,25 @@ static void arm_smmu_get_resv_regions(struct device *dev,
+>   	iommu_dma_get_resv_regions(dev, head);
+>   }
+>   
+> +static int arm_smmu_def_domain_type(struct device *dev)
+> +{
+> +	struct iommu_fwspec *fwspec;
+> +	struct arm_smmu_device *smmu;
+> +
+> +	fwspec = dev_iommu_fwspec_get(dev);
+> +	if (!fwspec || fwspec->ops != &arm_smmu_ops)
+> +		return -ENODEV;
+> +
+> +	smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+> +	if (!smmu)
+> +		return -ENODEV;
+> +
 
-Fixes: 4d09852b6f01 ("firmware: arm_scmi: Add support for notifications message processing")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/driver.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+AFAICS this should only ever be called for a device in a group, which 
+means an initial ->probe_device has succeeded and rather than 
+defensively going the long way round, we can safely assume this:
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 07de196f15aa..0146332d06a1 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -247,6 +247,21 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
- 	}
- 
- 	xfer = &minfo->xfer_block[xfer_id];
-+	/*
-+	 * Even if a response was indeed expected on this slot at this point,
-+	 * a buggy platform could wrongly reply feeding us an unexpected
-+	 * delayed response we're not prepared to handle: bail-out safely
-+	 * blaming fw guys.
-+	 */
-+	if (unlikely(msg_type == MSG_TYPE_DELAYED_RESP && !xfer->async_done)) {
-+		dev_err(dev,
-+			"Delayed Response for %d not expected! Buggy FW ?\n",
-+			xfer_id);
-+		info->desc->ops->clear_channel(cinfo);
-+		/* It was unexpected, so nobody will clear the xfer if not us */
-+		__scmi_xfer_put(minfo, xfer);
-+		return;
-+	}
- 
- 	scmi_dump_header_dbg(dev, &xfer->hdr);
- 
--- 
-2.17.1
+	struct arm_smmu_master_cfg = dev_iommu_priv_get(dev);
+	struct arm_smmu_impl *impl = cfg->smmu->impl;
 
+	if (impl && impl->req_domain)
+		return impl->req_domain(dev);
+
+Or have I misunderstood the flow?
+
+Robin.
+
+> +	if (smmu->impl && smmu->impl->req_domain)
+> +		return smmu->impl->req_domain(dev);
+> +
+> +	return 0;
+> +}
+> +
+>   static struct iommu_ops arm_smmu_ops = {
+>   	.capable		= arm_smmu_capable,
+>   	.domain_alloc		= arm_smmu_domain_alloc,
+> @@ -1627,6 +1646,7 @@ static struct iommu_ops arm_smmu_ops = {
+>   	.of_xlate		= arm_smmu_of_xlate,
+>   	.get_resv_regions	= arm_smmu_get_resv_regions,
+>   	.put_resv_regions	= generic_iommu_put_resv_regions,
+> +	.def_domain_type	= arm_smmu_def_domain_type,
+>   	.pgsize_bitmap		= -1UL, /* Restricted during device attach */
+>   };
+>   
+> 
