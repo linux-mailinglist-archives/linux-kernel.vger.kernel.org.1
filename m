@@ -2,75 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E111B1215
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404C11B11F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgDTQn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:43:28 -0400
-Received: from smtprelay0139.hostedemail.com ([216.40.44.139]:60660 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726023AbgDTQn2 (ORCPT
+        id S1726557AbgDTQl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726208AbgDTQl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:43:28 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 2D475182CED5B;
-        Mon, 20 Apr 2020 16:43:27 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:273:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2525:2561:2564:2682:2685:2828:2859:2917:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6691:6737:7903:8985:9025:10004:10400:11232:11473:11658:11914:12043:12048:12297:12740:12760:12895:13069:13161:13198:13229:13311:13357:13439:14096:14097:14181:14659:14721:14764:21080:21627:21740:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: wire71_b275595b508
-X-Filterd-Recvd-Size: 2334
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 20 Apr 2020 16:43:24 +0000 (UTC)
-Message-ID: <f54d6f0a6c31ab3911c2b35caef49df340ab1196.camel@perches.com>
-Subject: Re: [PATCH v1] pinctrl: fix several typos
-From:   Joe Perches <joe@perches.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>, aisheng.dong@nxp.com,
-        festevam@gmail.com, shawnguo@kernel.org, stefan@agner.ch,
-        kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, geert+renesas@glider.be,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, jun.nie@linaro.org,
-        stephan@gerhold.net, linux-gpio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 20 Apr 2020 09:41:09 -0700
-In-Reply-To: <20200419164956.3484-1-zhengdejin5@gmail.com>
-References: <20200419164956.3484-1-zhengdejin5@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Mon, 20 Apr 2020 12:41:28 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB79FC061A0C;
+        Mon, 20 Apr 2020 09:41:27 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j1so7595273wrt.1;
+        Mon, 20 Apr 2020 09:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pHkfqaZsrvViCrU4vsZGcZiXBeGIBVSy7YBzRqpKWdA=;
+        b=DocS62iBm+MaxthEy8q58x+ZJU00CguRHCiYuW6dSG4/U6ZyGPWmJrpqRaNjkRtbF7
+         /RdZSQWSQ5H6mteZjuHLXUdo5lFRpI3NnH8AfGByJ9+aIiSkz/qzxmyb5XOd0oKkuUsG
+         5IetuYNfruFqMLFvjQX8+VAgTEgvRhLcCFAVYfSpeNrSsewv1pjunDnWaVYCwjh2Ec5N
+         /3t24EgrtLPIjg2mkbufRaGlL+k6ZWxTG60iMpCC+tZKDq3qJ9vY+fbowAm6WE53kEhc
+         o9nC28ByOnpk4pqSScAIK+vx+0Bn7EcqO7v0rNdv5mDmP2rkenwq4oordoJJOvDWy/aI
+         NbXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pHkfqaZsrvViCrU4vsZGcZiXBeGIBVSy7YBzRqpKWdA=;
+        b=WCY63XXr/U0haQyEZ6ICnhPE/UFnOGjfJeX1C7QPgx6s6/iITJJxzsWa85qf/+Indy
+         LkucqTz4Cb+vMm7kWhhkacrxGC4+gVClp6wVB8bQ5aLo4yow0OcQRERVbdA8NlZBAhB0
+         DHfHpvnPbXCHyi3QyC4PIn31POfi6zqDXN6ICEgckuEUuFXImZ+GD+7/ZmFatWsiWYE9
+         czir/Wef4nh83ImzUAC9BxLMkLFXV86xeVPVbikHUt0ZWMvDE7z9pwkX6xatXlH86n3y
+         ptAJlSTo3aNtCN8cLrOLRUlrzpXjHTTQI2u7prq5+q+Q7APtpFGZ32b99q2ExijkSbim
+         R8XA==
+X-Gm-Message-State: AGi0PuabZfvauEq4yAhhVSsDKiaxoB3xoJksNtpW/LXNfg9AMg6NQv40
+        RNRR/qUAPctICHuwDV5Qh4w=
+X-Google-Smtp-Source: APiQypIu7Usjxv+iYA4v7BBaqwgthc4mJlRmQjaEIvh6W/U/9yhM0xy2y9UlKGHHHnWU6b0Gch+giQ==
+X-Received: by 2002:a5d:6148:: with SMTP id y8mr19160703wrt.236.1587400886434;
+        Mon, 20 Apr 2020 09:41:26 -0700 (PDT)
+Received: from jernej-laptop.localnet (cpe-194-152-20-232.static.triera.net. [194.152.20.232])
+        by smtp.gmail.com with ESMTPSA id j13sm48180wro.51.2020.04.20.09.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 09:41:25 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Samuel Holland <samuel@sholland.org>, linux-sunxi@googlegroups.com
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        paul.kocialkowski@bootlin.com
+Subject: Re: [linux-sunxi] [PATCH] media: cedrus: Implement runtime PM
+Date:   Mon, 20 Apr 2020 18:41:23 +0200
+Message-ID: <5590139.lOV4Wx5bFT@jernej-laptop>
+In-Reply-To: <20200420151010.GL125838@aptenodytes>
+References: <20200408010232.48432-1-samuel@sholland.org> <244922ec-ed3a-eca7-6640-49de7ad9c605@sholland.org> <20200420151010.GL125838@aptenodytes>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-20 at 00:49 +0800, Dejin Zheng wrote:
-> use codespell to fix lots of typos over frontends.
-[]
-> diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c b/drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c
-[]
-> @@ -418,7 +418,7 @@ static const unsigned lcdvsi1_a_1_pins[] = { DB8500_PIN_E2 };
->  static const unsigned lcd_d0_d7_a_1_pins[] = {
->  	DB8500_PIN_G5, DB8500_PIN_G4, DB8500_PIN_H4, DB8500_PIN_H3,
->  	DB8500_PIN_J3, DB8500_PIN_H2, DB8500_PIN_J2, DB8500_PIN_H1 };
-> -/* D8 thru D11 often used as TVOUT lines */
-> +/* D8 through D11 often used as TVOUT lines */
+Dne ponedeljek, 20. april 2020 ob 17:10:10 CEST je Paul Kocialkowski=20
+napisal(a):
+> Hi,
+>=20
+> On Sun 19 Apr 20, 15:28, Samuel Holland wrote:
+> > On 4/8/20 11:01 AM, Jernej =C5=A0krabec wrote:
+> > > Hi Samuel!
+> > >=20
+> > > Dne sreda, 08. april 2020 ob 03:02:32 CEST je Samuel Holland napisal(=
+a):
+> > >> This allows the VE clocks and PLL_VE to be disabled most of the time.
+> > >>=20
+> > >> Since the device is stateless, each frame gets a separate runtime PM
+> > >> reference. Enable autosuspend so the PM callbacks are not run before
+> > >> and
+> > >> after every frame.
+> > >>=20
+> > >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> > >> ---
+> > >>=20
+> > >> I tested this with v4l2-request-test. I don't have the setup to do
+> > >> anything more complicated at the moment.
+> > >>=20
+> > >> ---
+> > >>=20
+> > >>  drivers/staging/media/sunxi/cedrus/cedrus.c   |   7 ++
+> > >>  .../staging/media/sunxi/cedrus/cedrus_hw.c    | 115 ++++++++++++---=
+=2D--
+> > >>  .../staging/media/sunxi/cedrus/cedrus_hw.h    |   3 +
+> > >>  3 files changed, 88 insertions(+), 37 deletions(-)
+> >=20
+> > [snip]
+> >=20
+> > > Reset above causes problem. When format is set in cedrus_s_fmt_vid_ca=
+p()
+> > > a
+> > > function is called, which sets few registers in HW. Of course, there =
+is
+> > > no
+> > > guarantee that someone will start decoding immediately after capture
+> > > format is set. So, if the driver puts VPU to sleep in the mean time,
+> > > reset will clear those registers and decoded video will be in differe=
+nt
+> > > format than expected. It could be even argued that registers should n=
+ot
+> > > be set in that function and that this is design issue or bug in drive=
+r.
+> >=20
+> > You're right. I didn't see that cedrus_dst_format_set() was called outs=
+ide
+> > cedrus_engine_enable/disable().
+>=20
+> This might indeed be an issue with multiple decoding contexts in parallel,
+> with potentially different formats. For that reason, it looks like the
+> right thing to do would be to set the format at each decoding run based on
+> the format set in the context by s_fmt.
 
-thru is _really_ common and a generally accepted informal
-for through so I suggest this not be changed.
+So you are suggesting that cedrus_dst_format_set() should be moved to=20
+cedrus_device_run(), right? This way all registers are set at each run, whi=
+ch=20
+is then truly stateless.
 
-https://www.dictionary.com/browse/thru
-preposition, adverb, adjective
-an informal, simplified spelling of through.
+Best regards,
+Jernej
 
-https://www.merriam-webster.com/dictionary/thru
-While never extremely common, tho and thru have a long history of
-occasional use as spelling variants of though and through.
+>=20
+> > > Anyway, I made a runtime PM support long time ago, but never do anyth=
+ing
+> > > besides running few tests:
+> > > https://github.com/jernejsk/linux-1/commit/
+> > > d245b7fa2a26e519ff675a255c45230575a4a848
+> > >=20
+> > > It takes a bit different approach. Power is enabled in start streaming
+> > > and
+> > > disabled in stop streaming. This is simpler approach and doesn't need
+> > > autosuspend functionality. I also moved call to a function which sets
+> > > format in HW registers to start streaming handler, so it's guaranteed
+> > > to be set at the beginning.
+> >=20
+> > Assuming cedrus_device_run() only gets called between streamon and
+> > streamoff (which appears to be the case), this looks like a better
+> > design.
+>=20
+> Yes, this is defintiely ensured by the V4L2 framework. I agree that
+> streamon/off are the correct sync points.
+>=20
+> > > Note that some registers are only set in start streaming handler. With
+> > > your
+> > > approach, if first frame is submitted too late, asserting and
+> > > de-asserting
+> > > reset line could reset those registers.
+> >=20
+> > I only see registers being set in cedrus_start_streaming() after your
+> > patch, where you add a call to cedrus_dst_format_set(). I can't find any
+> > registers being written in any of the ->start() callbacks.
+> >=20
+> > I'll send a v2 which combines the two patches: yours which handles the
+> > runtime part better, and mine which handles the probe/remove part better
+> > with !CONFIG_PM.
+> Thanks, that should do it!
+>=20
+> Cheers,
+>=20
+> Paul
 
-Their greatest popularity occurred in the late 19th and early 20th 
-centuries, when their adoption was advocated by spelling reformers. 
-Their current use occurs chiefly in informal writing (as in personal 
-letters) and in some technical journals.
+
+
 
