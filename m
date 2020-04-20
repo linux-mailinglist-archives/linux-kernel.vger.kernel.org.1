@@ -2,242 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C641E1B03CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CEB1B03C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgDTIE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgDTIEt (ORCPT
+        id S1726402AbgDTIE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:04:27 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:48945 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725815AbgDTIE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:04:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA89C061A10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:04:49 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u127so9126109wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tc+S3HgfyfdxhrTS98UbamV+05nkl5d7bc/WuRwN1Qo=;
-        b=qe6tvDXHpsvBdMw4xakoapBOVAqHRztAR8E3Dv9b9ZDWQtZb3TSehvqOmRCoak7AA3
-         oKGHahL++03wcJN0vvAu3OdgnbN7Hh8KSlhssvZYObHwUSaiBO3wA5KYVUPlHs9fW9ur
-         5JRbj/go9YzdH05Wpf030wTbNe6pmwkqOVR2fv+Bi3Rk2Eh18AHrOrih5JtMGVOawGUh
-         tkECRyxcf3Z7PTk5ndycd0Aq6iMdmvbNp+14U0gdcO0+5htbNcpJ0Mb+Rm5ACRZxMQGf
-         pfOSN8uI4cAcqKfYG+o7vmnAcEBekRN/r3lPIfoVh//QNALzgu/CV/tGhKvLxm+jhszE
-         LYmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tc+S3HgfyfdxhrTS98UbamV+05nkl5d7bc/WuRwN1Qo=;
-        b=C7Uu4xH4bxVE6aTUXxqpayQ22AfQDnDtyteR9NdJsMBD17n2a0jvM2gdKWMeWVmUX5
-         +9QDzoL6/1XTTMk8WW0dvLqSjibUaonABuYXEvwzPz0GXaPQqTkXO+ucScAfaLGLTlHy
-         wy3sGJhyT5ur57Cvz409jpzocuZaL9OBPZZac3JdFq2snax5hgbOg46unCQXZYXfd4KF
-         YNmMEC5nz/hqqxOKUroVC623dPF2g2jygDvh3QgQb/rDUop8WQLr2QPlQit+7pIup+vP
-         mrPhzqylm62iiFHv2+/pRlnS0Lu2530pRA/HF03fphEaFEf6Mia3E1hJ066UlHPMxdTq
-         32Iw==
-X-Gm-Message-State: AGi0PuZOZaPmXGGbMP3ZE4fvfp/x9m6b5Ly3rQv805LmoFqp0mpZGnQL
-        WGRHK1m9FAReomAUqyPi0ZxrYQ==
-X-Google-Smtp-Source: APiQypKZxpuT5O3h01mQCUTLigkQ8Uq18mdWOYae4joVaZgmSxGWGFRAjQz76vnv12P3B5/8zRNZSg==
-X-Received: by 2002:a1c:e284:: with SMTP id z126mr17151119wmg.32.1587369888037;
-        Mon, 20 Apr 2020 01:04:48 -0700 (PDT)
-Received: from maco2.ams.corp.google.com (a83-162-234-235.adsl.xs4all.nl. [83.162.234.235])
-        by smtp.gmail.com with ESMTPSA id a67sm335827wmc.30.2020.04.20.01.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 01:04:47 -0700 (PDT)
-From:   Martijn Coenen <maco@android.com>
-To:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com
-Cc:     narayan@google.com, zezeozue@google.com, kernel-team@android.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@google.com, bvanassche@acm.org, Chaitanya.Kulkarni@wdc.com,
-        Martijn Coenen <maco@android.com>
-Subject: [PATCH 4/4] loop: Add LOOP_SET_FD_AND_STATUS ioctl.
-Date:   Mon, 20 Apr 2020 10:04:09 +0200
-Message-Id: <20200420080409.111693-5-maco@android.com>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-In-Reply-To: <20200420080409.111693-1-maco@android.com>
-References: <20200420080409.111693-1-maco@android.com>
+        Mon, 20 Apr 2020 04:04:26 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 108DD5801A8;
+        Mon, 20 Apr 2020 04:04:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 20 Apr 2020 04:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=0Kri24qKAtWKY81qyS0zWGtZ64i
+        rmvGC+WYSK93rMfU=; b=uALPsmZOaL0+f9UGIFeDjKt7qZmxxJR6GHwe/TvucIz
+        EBWImZ6U5oR2N0RoVF/3lDypQCEMP2rU85cvncJvwDasOPRQvFz+4eU12vj95Nw3
+        FrvOSz7Bl5VEmz6HlLrVrfLVT5woporD6IP7KTaqtYxeoZw84tckDvAK0QfJPUHu
+        aGmAdku18KmmavhMaxhLw6Z0DhpmWDe8WwcTHAdXfyDUQ2UhhaRtgGl2Kp87ep9g
+        ki3u1KeoDvY/fiinb5plU7vIY1BHy5K/cVg0VSwM84qnuTo+ogwABrHoLgg089zT
+        KRmM2n7BRq5wVSwZkDZ4b6r7oq/6wQuZZX+bY2pAb+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0Kri24
+        qKAtWKY81qyS0zWGtZ64irmvGC+WYSK93rMfU=; b=UKlU/dT4kJV1PCUHF4y69K
+        MWQMUQ3zJZjqsJ0cTi6Wmm7/E1Y4/l7ltphvIfLATz+M7mc46M+XihWWSDhnuAih
+        2R0U5JTW65FTDhWbHOjv1Qeov1SSUKiRCRINA29obUgEBNvm5/N42nKpK14qVett
+        4GMCqrHGfFa4r4FPqZGkg8xz7mn5KWeARoa2FmzlCpGdrVWSDt/vLmnp8D5IZIRt
+        oBVzvPOVN8mue/BLiDqcoziYCrWoz+YQ6CJ2tWWnb9GCTcTzR8NGKr6iaAA5Pt0b
+        IEmQZCxBkCWEh9f6zyI/+cdaoG0tPxN6PSDVL32BINxFMj6082FwODKPkpkAgI4A
+        ==
+X-ME-Sender: <xms:hVedXqMbFkvO3ic8WAiafn6japGnvzEIWJWReMNVoK3MaH6yU8uFgA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgedvgdduvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
+    drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:hVedXtMrp0rp5d0lgGi9cHC9PcZoa524HbdAb-JoxdXd9kgfnWeppA>
+    <xmx:hVedXsQnvBzNAoYSMtPG8GgZ347HXehCqQ9LK-dbP3tRW-wXls8b-w>
+    <xmx:hVedXvAPhveWFxl6rMOWBiAviDwqYPO4iQtKeT3suORemteqWt6u7Q>
+    <xmx:iFedXmEMIYxgUKcD1L7itKa2KN6E-Ix-reU6GeCwaMRn_E9s9aedNQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C1214328006A;
+        Mon, 20 Apr 2020 04:04:20 -0400 (EDT)
+Date:   Mon, 20 Apr 2020 10:04:19 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        James Hogan <jhogan@kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        linux-samsung-soc@vger.kernel.org,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, Chen-Yu Tsai <wens@csie.org>,
+        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        openpvrsgx-devgroup@letux.org, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pyra-handheld.com
+Subject: Re: [PATCH v6 01/12] dt-bindings: add img, pvrsgx.yaml for
+ Imagination GPUs
+Message-ID: <20200420080419.yrucgndz6pblgedm@gilmour.lan>
+References: <20200415101251.o3wi5t6xvf56xmhq@gilmour.lan>
+ <72919514-0657-4B71-902F-3E775E528F64@goldelico.com>
+ <f4fdca8a-d18c-a8d2-7f51-d1ebbbab3647@baylibre.com>
+ <535CAEBE-F43E-4BFC-B989-612C81F0D7EF@goldelico.com>
+ <20200415142124.yzfh6mtqq7cdq22e@gilmour.lan>
+ <DC0A2DE2-3D77-46F8-8DE1-55050FDACC9B@goldelico.com>
+ <20200415162151.rwym4ioqz27migfn@gilmour.lan>
+ <45F411C0-150B-4FBA-A0E1-B863B3F36DF6@goldelico.com>
+ <20200417102500.erayf6quenp3cvn3@gilmour.lan>
+ <C8816F10-8773-4ECD-B42D-6EEF642476EB@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n2wbqupykynsjuri"
+Content-Disposition: inline
+In-Reply-To: <C8816F10-8773-4ECD-B42D-6EEF642476EB@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows userspace to completely setup a loop device with a single
-ioctl, removing the in-between state where the device can be partially
-configured - eg the loop device has a backing file associated with it,
-but is reading from the wrong offset.
 
-Besides removing the intermediate state, another big benefit of this
-ioctl is that LOOP_SET_STATUS can be slow; the main reason for this
-slowness is that LOOP_SET_STATUS(64) calls blk_mq_freeze_queue() to
-freeze the associated queue; this requires waiting for RCU
-synchronization, which I've measured can take about 15-20ms on this
-device on average.
+--n2wbqupykynsjuri
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Here's setting up ~70 regular loop devices with an offset on an x86
-Android device, using LOOP_SET_FD and LOOP_SET_STATUS:
+On Fri, Apr 17, 2020 at 02:15:44PM +0200, H. Nikolaus Schaller wrote:
+> > Am 17.04.2020 um 12:25 schrieb Maxime Ripard <maxime@cerno.tech>:
+> > On Wed, Apr 15, 2020 at 06:42:18PM +0200, H. Nikolaus Schaller wrote:
+> >>> Am 15.04.2020 um 18:21 schrieb Maxime Ripard <maxime@cerno.tech>:
+> >>>=20
+> >>> On Wed, Apr 15, 2020 at 05:09:45PM +0200, H. Nikolaus Schaller wrote:
+> >>>> Hi Maxime,
+> >>>>=20
+> >>>> Hm. Yes. We know that there likely are clocks and maybe reset
+> >>>> but for some SoC this seems to be undocumented and the reset
+> >>>> line the VHDL of the sgx gpu provides may be permanently tied
+> >>>> to "inactive".
+> >>>>=20
+> >>>> So if clocks are optional and not provided, a driver simply can assu=
+me
+> >>>> they are enabled somewhere else and does not have to care about. If
+> >>>> they are specified, the driver can enable/disable them.
+> >>>=20
+> >>> Except that at the hardware level, the clock is always going to be
+> >>> there. You can't control it, but it's there.
+> >>=20
+> >> Sure, we can deduce that from general hardware design knowledge.
+> >> But not every detail must be described in DT. Only the important
+> >> ones.
+> >>=20
+> >>>>> If OMAP is too much of a pain, you can also make
+> >>>>> a separate binding for it, and a generic one for the rest of us.
+> >>>>=20
+> >>>> No, omap isn't any pain at all.
+> >>>>=20
+> >>>> The pain is that some other SoC are most easily defined by clocks in
+> >>>> the gpu node which the omap doesn't need to explicitly specify.
+> >>>>=20
+> >>>> I would expect a much bigger nightmare if we split this into two
+> >>>> bindings variants.
+> >>>>=20
+> >>>>> I'd say that it's pretty unlikely that the clocks, interrupts (and
+> >>>>> even regulators) are optional. It might be fixed on some SoCs, but
+> >>>>> that's up to the DT to express that using fixed clocks / regulators,
+> >>>>> not the GPU binding itself.
+> >>>>=20
+> >>>> omap already has these defined them not to be part of the GPU bindin=
+g.
+> >>>> The reason seems to be that this needs special clock gating control
+> >>>> especially for idle states which is beyond simple clock-enable.
+> >>>>=20
+> >>>> This sysc target-module@56000000 node is already merged and therefore
+> >>>> we are only adding the gpu child node. Without defining clocks.
+> >>>>=20
+> >>>> For example:
+> >>>>=20
+> >>>> 		sgx_module: target-module@56000000 {
+> >>>> 			compatible =3D "ti,sysc-omap4", "ti,sysc";
+> >>>> 			reg =3D <0x5600fe00 0x4>,
+> >>>> 			      <0x5600fe10 0x4>;
+> >>>> 			reg-names =3D "rev", "sysc";
+> >>>> 			ti,sysc-midle =3D <SYSC_IDLE_FORCE>,
+> >>>> 					<SYSC_IDLE_NO>,
+> >>>> 					<SYSC_IDLE_SMART>;
+> >>>> 			ti,sysc-sidle =3D <SYSC_IDLE_FORCE>,
+> >>>> 					<SYSC_IDLE_NO>,
+> >>>> 					<SYSC_IDLE_SMART>;
+> >>>> 			clocks =3D <&gpu_clkctrl OMAP5_GPU_CLKCTRL 0>;
+> >>>> 			clock-names =3D "fck";
+> >>>> 			#address-cells =3D <1>;
+> >>>> 			#size-cells =3D <1>;
+> >>>> 			ranges =3D <0 0x56000000 0x2000000>;
+> >>>>=20
+> >>>> 			gpu: gpu@0 {
+> >>>> 				compatible =3D "ti,omap5-sgx544-116", "img,sgx544-116", "img,sgx=
+544";
+> >>>> 				reg =3D <0x0 0x10000>;
+> >>>> 				interrupts =3D <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+> >>>> 			};
+> >>>> 		};
+> >>>>=20
+> >>>> The jz4780 example will like this:
+> >>>>=20
+> >>>> 	gpu: gpu@13040000 {
+> >>>> 		compatible =3D "ingenic,jz4780-sgx540-130", "img,sgx540-130", "img=
+,sgx540";
+> >>>> 		reg =3D <0x13040000 0x4000>;
+> >>>>=20
+> >>>> 		clocks =3D <&cgu JZ4780_CLK_GPU>;
+> >>>> 		clock-names =3D "gpu";
+> >>>>=20
+> >>>> 		interrupt-parent =3D <&intc>;
+> >>>> 		interrupts =3D <63>;
+> >>>> 	};
+> >>>>=20
+> >>>> So the question is which one is "generic for the rest of us"?
+> >>>=20
+> >>> I'd say the latter.
+> >>=20
+> >> Why?
+> >>=20
+> >> TI SoC seem to be the broadest number of available users
+> >> of sgx5xx in the past and nowadays. Others are more the exception.
+> >=20
+> > And maybe TI has some complicated stuff around the GPU that others don'=
+t have?
+>=20
+> Looks so.
+>=20
+> > If I look quickly at the Allwinner stuff, I see nothing looking alike i=
+n the
+> > SoC, so making the binding like that for everyone just because TI did s=
+omething
+> > doesn't really make much sense.
+>=20
+> That is why I propose to make the clocks optional. This solves both
+> cases in a simple and neat way.
+>=20
+> >=20
+> >>> If your clock is optional, then you define it but don't mandate
+> >>> it. Not documenting it will only result in a mess where everyone will
+> >>> put some clock into it, possibly with different semantics each and
+> >>> every time.
+> >>=20
+> >> So you mean that we should require a dummy clock for the omap gpu node
+> >> or did I misunderstand that?
+> >>=20
+> >> Well, yes there is of course a clock connection between the
+> >> omap target-module and the sgx but it is IMHO pointless to
+> >> describe it because it can't and does not need to be controlled
+> >> separately.
+> >>=20
+> >> As said the target-module is already accepted and upstream and my
+> >> proposal is to get the gpu node described there. There is simply
+> >> no need for a clocks node for the omap.
+> >=20
+> > There is no need for a clocks property *currently* *on the OMAP*.
+>=20
+> Yes. But why "currently"? Do you think the OMAPs we already have
+> defined and tested will change?
 
-vsoc_x86:/system/apex # time for i in `seq 30 100`;
-do losetup -r -o 4096 /dev/block/loop$i com.android.adbd.apex; done
-    0m03.40s real     0m00.02s user     0m00.03s system
+Like I said, DVFS is likely to be one in the future.
 
-Here's configuring ~70 devices in the same way, but using a modified
-losetup that uses the new LOOP_SET_FD_AND_STATUS ioctl:
+> >> What I also assume is that developers of DTS know what they do.
+> >> So the risk that there is different semantics is IMHO very low.
+> >=20
+> > Well, they know what they do if you document the binding. Let's say I h=
+ave two
+> > clocks now on my SoC, and you just document that you want a clocks prop=
+erty,
+> > with a generic name in clock-names like "gpu".
+>=20
+> Yes, that is what I want to propose for v7:
+>=20
+>   clocks:
+>     maxItems: 1
+>=20
+>   clock-names:
+>     maxItems: 1
+>     items:
+>       - const: gpu
 
-vsoc_x86:/system/apex # time for i in `seq 30 100`;
-do losetup -r -o 4096 /dev/block/loop$i com.android.adbd.apex; done
-    0m01.94s real     0m00.01s user     0m00.01s system
+If you document what the "gpu" clock is supposed to be.
 
-Signed-off-by: Martijn Coenen <maco@android.com>
----
- drivers/block/loop.c      | 47 ++++++++++++++++++++++++++++++---------
- include/uapi/linux/loop.h |  6 +++++
- 2 files changed, 42 insertions(+), 11 deletions(-)
+Is it the clock for the bus (clocking the register part of the GPU), the cl=
+ock
+for the GPU cores? Something else?
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 6e656390b285..e1dbd70d6d6e 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -1065,8 +1065,9 @@ loop_set_from_status(struct loop_device *lo, const struct loop_info64 *info)
- 	return 0;
- }
- 
--static int loop_set_fd(struct loop_device *lo, fmode_t mode,
--		       struct block_device *bdev, unsigned int arg)
-+static int loop_set_fd_and_status(struct loop_device *lo, fmode_t mode,
-+				  struct block_device *bdev, unsigned int fd,
-+				  const struct loop_info64 *info)
- {
- 	struct file	*file;
- 	struct inode	*inode;
-@@ -1081,7 +1082,7 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 	__module_get(THIS_MODULE);
- 
- 	error = -EBADF;
--	file = fget(arg);
-+	file = fget(fd);
- 	if (!file)
- 		goto out;
- 
-@@ -1090,7 +1091,7 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 	 * here to avoid changing device under exclusive owner.
- 	 */
- 	if (!(mode & FMODE_EXCL)) {
--		claimed_bdev = bd_start_claiming(bdev, loop_set_fd);
-+		claimed_bdev = bd_start_claiming(bdev, loop_set_fd_and_status);
- 		if (IS_ERR(claimed_bdev)) {
- 			error = PTR_ERR(claimed_bdev);
- 			goto out_putf;
-@@ -1117,9 +1118,24 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 		lo_flags |= LO_FLAGS_READ_ONLY;
- 
- 	error = -EFBIG;
--	size = get_loop_size(lo, file);
-+	if (info)
-+		size = get_size(info->lo_offset, info->lo_sizelimit,
-+				file);
-+	else
-+		size = get_loop_size(lo, file);
- 	if ((loff_t)(sector_t)size != size)
- 		goto out_unlock;
-+
-+	if (info) {
-+		error = loop_set_from_status(lo, info);
-+		if (error)
-+			goto out_unlock;
-+	} else {
-+		lo->transfer = NULL;
-+		lo->ioctl = NULL;
-+		lo->lo_sizelimit = 0;
-+		lo->lo_offset = 0;
-+	}
- 	error = loop_prepare_queue(lo);
- 	if (error)
- 		goto out_unlock;
-@@ -1132,9 +1148,6 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 	lo->lo_device = bdev;
- 	lo->lo_flags = lo_flags;
- 	lo->lo_backing_file = file;
--	lo->transfer = NULL;
--	lo->ioctl = NULL;
--	lo->lo_sizelimit = 0;
- 	lo->old_gfp_mask = mapping_gfp_mask(mapping);
- 	mapping_set_gfp_mask(mapping, lo->old_gfp_mask & ~(__GFP_IO|__GFP_FS));
- 
-@@ -1172,14 +1185,14 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 	if (partscan)
- 		loop_reread_partitions(lo, bdev);
- 	if (claimed_bdev)
--		bd_abort_claiming(bdev, claimed_bdev, loop_set_fd);
-+		bd_abort_claiming(bdev, claimed_bdev, loop_set_fd_and_status);
- 	return 0;
- 
- out_unlock:
- 	mutex_unlock(&loop_ctl_mutex);
- out_bdev:
- 	if (claimed_bdev)
--		bd_abort_claiming(bdev, claimed_bdev, loop_set_fd);
-+		bd_abort_claiming(bdev, claimed_bdev, loop_set_fd_and_status);
- out_putf:
- 	fput(file);
- out:
-@@ -1653,7 +1666,18 @@ static int lo_ioctl(struct block_device *bdev, fmode_t mode,
- 
- 	switch (cmd) {
- 	case LOOP_SET_FD:
--		return loop_set_fd(lo, mode, bdev, arg);
-+		return loop_set_fd_and_status(lo, mode, bdev, arg, NULL);
-+	case LOOP_SET_FD_AND_STATUS: {
-+		struct loop_fd_and_status fds;
-+
-+		if (copy_from_user(&fds,
-+				   (struct loop_fd_and_status __user *) arg,
-+				   sizeof(fds)))
-+			return -EFAULT;
-+
-+		return loop_set_fd_and_status(lo, mode, bdev, fds.fd,
-+					      &fds.info);
-+	}
- 	case LOOP_CHANGE_FD:
- 		return loop_change_fd(lo, bdev, arg);
- 	case LOOP_CLR_FD:
-@@ -1827,6 +1851,7 @@ static int lo_compat_ioctl(struct block_device *bdev, fmode_t mode,
- 	case LOOP_CLR_FD:
- 	case LOOP_GET_STATUS64:
- 	case LOOP_SET_STATUS64:
-+	case LOOP_SET_FD_AND_STATUS:
- 		arg = (unsigned long) compat_ptr(arg);
- 		/* fall through */
- 	case LOOP_SET_FD:
-diff --git a/include/uapi/linux/loop.h b/include/uapi/linux/loop.h
-index 080a8df134ef..fcc9a693b588 100644
---- a/include/uapi/linux/loop.h
-+++ b/include/uapi/linux/loop.h
-@@ -60,6 +60,11 @@ struct loop_info64 {
- 	__u64		   lo_init[2];
- };
- 
-+struct loop_fd_and_status {
-+	struct loop_info64	info;
-+	__u32			fd;
-+};
-+
- /*
-  * Loop filter types
-  */
-@@ -90,6 +95,7 @@ struct loop_info64 {
- #define LOOP_SET_CAPACITY	0x4C07
- #define LOOP_SET_DIRECT_IO	0x4C08
- #define LOOP_SET_BLOCK_SIZE	0x4C09
-+#define LOOP_SET_FD_AND_STATUS	0x4C0A
- 
- /* /dev/loop-control interface */
- #define LOOP_CTL_ADD		0x4C80
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+> >> If you agree I can add the clocks/clock-names property as an
+> >> optional property. This should solve omap and all others.
+> >=20
+> > With the above example, what clock should I put in there? In which orde=
+r? This
+> > isn't some random example pulled out of nowhere. The Allwinner A31 has =
+(at
+> > least) 4 clocks for the GPU, 1 reset line and 1 regulator, so I can onl=
+y assume
+> > that the GPU actually needs at least that amount to be properly integra=
+ted into
+> > an SoC.
+>=20
+> Ah, now I understand your motivation: you have access and experience with
+> the A31 and you know that our proposal doesn't fit to it.
 
+Not only the A31. If you don't document what your expectations are for a ge=
+neric
+component like that, every SoC will assume that your GPU clock is something
+different and you won't be able to make any sense of it in your driver.
+
+> From what I know from your description is that the A31 is quite special w=
+ith
+> 4 GPU clocks... Are they all really for the GPU or 3 of them for the inte=
+rface
+> logic (like on OMAP which separates between "functional clocks" and "inte=
+rface
+> clocks")? Or are there 4 groups of GPU cores with a separate clock for ea=
+ch one?
+
+1 is the equivalent of the interface clock, the others seem to be for the
+functional clocks.
+
+> So what would be your proposal for the A31 DT?
+>=20
+> Then I get a chance to compare DT snippets and try to make a mixture for
+> the bindings.
+
+You'd have to know the GPU to do that, and I don't.
+
+> >>> This has nothing to do with the binding being complete. And if you use
+> >>> a binding like this one, you'll be severely limited when you'll want
+> >>> to implement things like DVFS.
+> >>=20
+> >> Now you have unhooked me... Nobody seems to know if and how DVFS can be
+> >> applied to SGX. IMHO we should bake small bread first and get initial
+> >> support into mainline.
+> >=20
+> > On the software side, yes, of course. But the discussion here doesn't h=
+ave much
+> > to do with software support, this is about the hardware. No matter if y=
+ou enable
+> > DVFS or not, you'll have those resources connected to the GPU.
+> >=20
+> > And if you want to enable the strict minimum in DT for now and expand i=
+t later
+> > as the software gains support for more stuff, then you'll have to deal =
+with the
+> > minimal stuff in software later-on to keep the backward compatibility.
+>=20
+> That is IMHO common practise everywhere. Sometimes you even have to adapt
+> years old DT to new limitations of the drivers (this happened recently for
+> combination of SPI and GPIO).
+
+To some extent, yes. But those old bindings that turn out to be wrong at le=
+ast
+contain most infos about the hardware, even though it's incomplete or flawe=
+d.
+Your proposal doesn't.
+
+> And you can still write two different drivers for a single bindings docum=
+ent
+> or use the .data field of the compatibility table. And I think clocks and=
+ regulators
+> can also be referenced by name if they are not defined in DT. This is not=
+ a
+> "single variety" style, but a potential solution.
+>=20
+> What I want to say: there are many roads to Rome.
+
+What I want to say is: all the roads you listed above are going to be painf=
+ul.
+Take your time, have a generic driver running from your generic binding you=
+ want
+to introduce on all the SoCs you want to support, and *then* start this
+discussion again.
+
+Maxime
+
+--n2wbqupykynsjuri
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp1XgwAKCRDj7w1vZxhR
+xYvmAP9KHUdB4quNWFa7siduKh9jQCUA3ovI+3VM4p8xzh0qPgEA+ZPetkVI8hGE
+xuIp0fgwWj1NWw9tW+3i+1pkI4J16Ag=
+=zM/B
+-----END PGP SIGNATURE-----
+
+--n2wbqupykynsjuri--
