@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8B61B0B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FB11B0A1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729612AbgDTMxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
+        id S1728658AbgDTMpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbgDTMqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:46:44 -0400
+        id S1728638AbgDTMpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:45:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF97206D4;
-        Mon, 20 Apr 2020 12:46:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 352A42072B;
+        Mon, 20 Apr 2020 12:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386804;
-        bh=0EGY66fsxLPM8SesOHH0e4VqaPDSb1hdf79Q4j0V9AU=;
+        s=default; t=1587386701;
+        bh=TIjqOHusg9Qi/arFQl33O0mlfrLq2gCJ6ZxVg3IQaMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i/4cGLsVAl55q0hMSpRVe++I8Aha5gX7E3AuUh/nmd9wAgQgfp3dWNNpy0anKCRZZ
-         tQSmWJm+q7CNH7wg716sQxSGEGUxIT1xuEfWgN32nU9I3zvt7n5Zs7qtYZa9TzYY8S
-         8XmCUJRmT5cnvlXSXr2NA4ITp1ntqTzNv43qHkWY=
+        b=L3y/kaZuoJsXPuHs9SpskGhjWPn09P9VslHQ9crpm4aMS3K9YgvqXI1vkxMjUxqrY
+         5iskS0FsB435xp3dSzOPV60/udnIzys9Nq/m76LDN9QhS0AfCmOOwJzP7cEGfkCEWm
+         SJqSm5uCGCJKNOhd5Qz9WIZ6SS0Ylu8pUwNfKe/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 32/60] arm64: dts: librem5-devkit: add a vbus supply to usb0
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 56/71] net/mlx5e: Rename hw_modify to preactivate
 Date:   Mon, 20 Apr 2020 14:39:10 +0200
-Message-Id: <20200420121510.108247052@linuxfoundation.org>
+Message-Id: <20200420121520.314919570@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,31 +45,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angus Ainslie (Purism) <angus@akkea.ca>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-commit dde061b865598ad91f50140760e1d224e5045db9 upstream.
+[ Upstream commit dca147b3dce5abb5284ff747211960fd2db5ec2e ]
 
-Without a VBUS supply the dwc3 driver won't go into otg mode.
+mlx5e_safe_switch_channels accepts a callback to be called before
+activating new channels. It is intended to configure some hardware
+parameters in cases where channels are recreated because some
+configuration has changed.
 
-Fixes: eb4ea0857c83 ("arm64: dts: fsl: librem5: Add a device tree for the Librem5 devkit")
-Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Recently, this callback has started being used to update the driver's
+internal MLX5E_STATE_XDP_OPEN flag, and the following patches also
+intend to use this callback for software preparations. This patch
+renames the hw_modify callback to preactivate, so that the name fits
+better.
 
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h      |  6 +++---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 14 ++++++++------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -743,6 +743,7 @@
- };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index c9606b8ab6efd..704bd6d5277d2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -1036,14 +1036,14 @@ int mlx5e_open_channels(struct mlx5e_priv *priv,
+ 			struct mlx5e_channels *chs);
+ void mlx5e_close_channels(struct mlx5e_channels *chs);
  
- &usb3_phy0 {
-+	vbus-supply = <&reg_5v_p>;
- 	status = "okay";
- };
+-/* Function pointer to be used to modify WH settings while
++/* Function pointer to be used to modify HW or kernel settings while
+  * switching channels
+  */
+-typedef int (*mlx5e_fp_hw_modify)(struct mlx5e_priv *priv);
++typedef int (*mlx5e_fp_preactivate)(struct mlx5e_priv *priv);
+ int mlx5e_safe_reopen_channels(struct mlx5e_priv *priv);
+ int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
+ 			       struct mlx5e_channels *new_chs,
+-			       mlx5e_fp_hw_modify hw_modify);
++			       mlx5e_fp_preactivate preactivate);
+ void mlx5e_activate_priv_channels(struct mlx5e_priv *priv);
+ void mlx5e_deactivate_priv_channels(struct mlx5e_priv *priv);
  
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 8125c605780be..1c8a4235a48c5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -2954,7 +2954,7 @@ void mlx5e_deactivate_priv_channels(struct mlx5e_priv *priv)
+ 
+ static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
+ 				       struct mlx5e_channels *new_chs,
+-				       mlx5e_fp_hw_modify hw_modify)
++				       mlx5e_fp_preactivate preactivate)
+ {
+ 	struct net_device *netdev = priv->netdev;
+ 	int new_num_txqs;
+@@ -2973,9 +2973,11 @@ static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
+ 
+ 	priv->channels = *new_chs;
+ 
+-	/* New channels are ready to roll, modify HW settings if needed */
+-	if (hw_modify)
+-		hw_modify(priv);
++	/* New channels are ready to roll, call the preactivate hook if needed
++	 * to modify HW settings or update kernel parameters.
++	 */
++	if (preactivate)
++		preactivate(priv);
+ 
+ 	priv->profile->update_rx(priv);
+ 	mlx5e_activate_priv_channels(priv);
+@@ -2987,7 +2989,7 @@ static void mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
+ 
+ int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
+ 			       struct mlx5e_channels *new_chs,
+-			       mlx5e_fp_hw_modify hw_modify)
++			       mlx5e_fp_preactivate preactivate)
+ {
+ 	int err;
+ 
+@@ -2995,7 +2997,7 @@ int mlx5e_safe_switch_channels(struct mlx5e_priv *priv,
+ 	if (err)
+ 		return err;
+ 
+-	mlx5e_switch_priv_channels(priv, new_chs, hw_modify);
++	mlx5e_switch_priv_channels(priv, new_chs, preactivate);
+ 	return 0;
+ }
+ 
+-- 
+2.20.1
+
 
 
