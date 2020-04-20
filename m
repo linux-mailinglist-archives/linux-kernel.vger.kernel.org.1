@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA5D1B0BC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204B91B09E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgDTM63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:58:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
+        id S1728320AbgDTMnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727072AbgDTMm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:42:58 -0400
+        id S1727801AbgDTMnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:43:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCD5D221F4;
-        Mon, 20 Apr 2020 12:42:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ED062072B;
+        Mon, 20 Apr 2020 12:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386578;
-        bh=25m4OHjRHxYq+pBnFf00VwlRPqJ/xs5F8ZNWaOoKDxc=;
+        s=default; t=1587386580;
+        bh=w2SkFmHo/Ut+jRMaAS5GKrDYHKTgFsE/O5mcLf2r7iY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeqvT28sce90gsun/r4XZrcm4guJwOmHOFmWeNbB13U8cCOZmMl0XmFl0WzjT2k7s
-         V8COuPIuxpRjygw7wwdkdlurUTfAwML9LJ9R7h0Pbg6VwiPwOvPXe2r+nJkrSU4hUI
-         jCiasMadCUjCw9m0ASwYzCdy7xscfM7yTJBDG9RE=
+        b=u4Ekb3MJ+fOnhnS3+DG7Hiu1mqg1HzQl0nU8k2UhefI/NGD+widBeDmkQSV/sln0l
+         HhTcdkW0mBObuo7jX8M5FUjB4YDQjN4SxV9Fs2w9ci5JgykrhoQpOpzZZOM2iXV6Vz
+         Xh2zCPpt8IdHfCS2wZChit4BzImMG3d9GFQaSgqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        stable@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 04/71] net: dsa: mt7530: fix tagged frames pass-through in VLAN-unaware mode
-Date:   Mon, 20 Apr 2020 14:38:18 +0200
-Message-Id: <20200420121509.210524210@linuxfoundation.org>
+Subject: [PATCH 5.6 05/71] net: ipv4: devinet: Fix crash when add/del multicast IP with autojoin
+Date:   Mon, 20 Apr 2020 14:38:19 +0200
+Message-Id: <20200420121509.302929139@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
 References: <20200420121508.491252919@linuxfoundation.org>
@@ -45,91 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Taras Chornyi <taras.chornyi@plvision.eu>
 
-[ Upstream commit e045124e93995fe01e42ed530003ddba5d55db4f ]
+[ Upstream commit 690cc86321eb9bcee371710252742fb16fe96824 ]
 
-In VLAN-unaware mode, the Egress Tag (EG_TAG) field in Port VLAN
-Control register must be set to Consistent to let tagged frames pass
-through as is, otherwise their tags will be stripped.
+When CONFIG_IP_MULTICAST is not set and multicast ip is added to the device
+with autojoin flag or when multicast ip is deleted kernel will crash.
 
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: René van Dorst <opensource@vdorst.com>
+steps to reproduce:
+
+ip addr add 224.0.0.0/32 dev eth0
+ip addr del 224.0.0.0/32 dev eth0
+
+or
+
+ip addr add 224.0.0.0/32 dev eth0 autojoin
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000088
+ pc : _raw_write_lock_irqsave+0x1e0/0x2ac
+ lr : lock_sock_nested+0x1c/0x60
+ Call trace:
+  _raw_write_lock_irqsave+0x1e0/0x2ac
+  lock_sock_nested+0x1c/0x60
+  ip_mc_config.isra.28+0x50/0xe0
+  inet_rtm_deladdr+0x1a8/0x1f0
+  rtnetlink_rcv_msg+0x120/0x350
+  netlink_rcv_skb+0x58/0x120
+  rtnetlink_rcv+0x14/0x20
+  netlink_unicast+0x1b8/0x270
+  netlink_sendmsg+0x1a0/0x3b0
+  ____sys_sendmsg+0x248/0x290
+  ___sys_sendmsg+0x80/0xc0
+  __sys_sendmsg+0x68/0xc0
+  __arm64_sys_sendmsg+0x20/0x30
+  el0_svc_common.constprop.2+0x88/0x150
+  do_el0_svc+0x20/0x80
+ el0_sync_handler+0x118/0x190
+  el0_sync+0x140/0x180
+
+Fixes: 93a714d6b53d ("multicast: Extend ip address command to enable multicast group join/leave on")
+Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mt7530.c |   18 ++++++++++++------
- drivers/net/dsa/mt7530.h |    7 +++++++
- 2 files changed, 19 insertions(+), 6 deletions(-)
+ net/ipv4/devinet.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -857,8 +857,9 @@ mt7530_port_set_vlan_unaware(struct dsa_
- 	 */
- 	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
- 		   MT7530_PORT_MATRIX_MODE);
--	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK,
--		   VLAN_ATTR(MT7530_VLAN_TRANSPARENT));
-+	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK | PVC_EG_TAG_MASK,
-+		   VLAN_ATTR(MT7530_VLAN_TRANSPARENT) |
-+		   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
- 
- 	for (i = 0; i < MT7530_NUM_PORTS; i++) {
- 		if (dsa_is_user_port(ds, i) &&
-@@ -874,8 +875,8 @@ mt7530_port_set_vlan_unaware(struct dsa_
- 	if (all_user_ports_removed) {
- 		mt7530_write(priv, MT7530_PCR_P(MT7530_CPU_PORT),
- 			     PCR_MATRIX(dsa_user_ports(priv->ds)));
--		mt7530_write(priv, MT7530_PVC_P(MT7530_CPU_PORT),
--			     PORT_SPEC_TAG);
-+		mt7530_write(priv, MT7530_PVC_P(MT7530_CPU_PORT), PORT_SPEC_TAG
-+			     | PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
- 	}
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -614,12 +614,15 @@ struct in_ifaddr *inet_ifa_byprefix(stru
+ 	return NULL;
  }
  
-@@ -901,8 +902,9 @@ mt7530_port_set_vlan_aware(struct dsa_sw
- 	/* Set the port as a user port which is to be able to recognize VID
- 	 * from incoming packets before fetching entry within the VLAN table.
- 	 */
--	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK,
--		   VLAN_ATTR(MT7530_VLAN_USER));
-+	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK | PVC_EG_TAG_MASK,
-+		   VLAN_ATTR(MT7530_VLAN_USER) |
-+		   PVC_EG_TAG(MT7530_VLAN_EG_DISABLED));
+-static int ip_mc_config(struct sock *sk, bool join, const struct in_ifaddr *ifa)
++static int ip_mc_autojoin_config(struct net *net, bool join,
++				 const struct in_ifaddr *ifa)
+ {
++#if defined(CONFIG_IP_MULTICAST)
+ 	struct ip_mreqn mreq = {
+ 		.imr_multiaddr.s_addr = ifa->ifa_address,
+ 		.imr_ifindex = ifa->ifa_dev->dev->ifindex,
+ 	};
++	struct sock *sk = net->ipv4.mc_autojoin_sk;
+ 	int ret;
+ 
+ 	ASSERT_RTNL();
+@@ -632,6 +635,9 @@ static int ip_mc_config(struct sock *sk,
+ 	release_sock(sk);
+ 
+ 	return ret;
++#else
++	return -EOPNOTSUPP;
++#endif
  }
  
- static void
-@@ -1333,6 +1335,10 @@ mt7530_setup(struct dsa_switch *ds)
- 			mt7530_cpu_port_enable(priv, i);
- 		else
- 			mt7530_port_disable(ds, i);
-+
-+		/* Enable consistent egress tag */
-+		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
-+			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+ static int inet_rtm_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh,
+@@ -675,7 +681,7 @@ static int inet_rtm_deladdr(struct sk_bu
+ 			continue;
+ 
+ 		if (ipv4_is_multicast(ifa->ifa_address))
+-			ip_mc_config(net->ipv4.mc_autojoin_sk, false, ifa);
++			ip_mc_autojoin_config(net, false, ifa);
+ 		__inet_del_ifa(in_dev, ifap, 1, nlh, NETLINK_CB(skb).portid);
+ 		return 0;
  	}
+@@ -940,8 +946,7 @@ static int inet_rtm_newaddr(struct sk_bu
+ 		 */
+ 		set_ifa_lifetime(ifa, valid_lft, prefered_lft);
+ 		if (ifa->ifa_flags & IFA_F_MCAUTOJOIN) {
+-			int ret = ip_mc_config(net->ipv4.mc_autojoin_sk,
+-					       true, ifa);
++			int ret = ip_mc_autojoin_config(net, true, ifa);
  
- 	/* Setup port 5 */
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -167,9 +167,16 @@ enum mt7530_port_mode {
- /* Register for port vlan control */
- #define MT7530_PVC_P(x)			(0x2010 + ((x) * 0x100))
- #define  PORT_SPEC_TAG			BIT(5)
-+#define  PVC_EG_TAG(x)			(((x) & 0x7) << 8)
-+#define  PVC_EG_TAG_MASK		PVC_EG_TAG(7)
- #define  VLAN_ATTR(x)			(((x) & 0x3) << 6)
- #define  VLAN_ATTR_MASK			VLAN_ATTR(3)
- 
-+enum mt7530_vlan_port_eg_tag {
-+	MT7530_VLAN_EG_DISABLED = 0,
-+	MT7530_VLAN_EG_CONSISTENT = 1,
-+};
-+
- enum mt7530_vlan_port_attr {
- 	MT7530_VLAN_USER = 0,
- 	MT7530_VLAN_TRANSPARENT = 3,
+ 			if (ret < 0) {
+ 				inet_free_ifa(ifa);
 
 
