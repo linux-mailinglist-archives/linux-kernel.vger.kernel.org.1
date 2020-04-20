@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01C81B010D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBB11B0107
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDTFiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:38:23 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:52511 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726006AbgDTFiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:38:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=kUCGUPR2szUSoGME4rVvT/WsGE7O02byhpRwaI4bLIc=; b=w
-        Qh9JKDFyEEhmQgJvt5V8IbYGb7H3dmrUJqGNKaDZ6x/DSNc6+GpYwWY99MBsmmL2
-        u8XmJ4P4qBbeeOkgHaH6f1kAqp/Rq3ow0psY9cY849WS7PfuQ1CwREXNhKVUzESk
-        cQ+VxnESOallUcCKVMgiK64Rhv2d/7qUjOCcOcfNrs=
-Received: from localhost.localdomain (unknown [61.129.42.58])
-        by app1 (Coremail) with SMTP id XAUFCgCHH3cyNZ1e8HEWAA--.213S3;
-        Mon, 20 Apr 2020 13:37:55 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Marek Lindner <mareklindner@neomailbox.ch>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Antonio Quartulli <a@unstable.cc>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] batman-adv: Fix refcnt leak in batadv_v_ogm_process
-Date:   Mon, 20 Apr 2020 13:37:20 +0800
-Message-Id: <1587361040-83099-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgCHH3cyNZ1e8HEWAA--.213S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4UWry5uFW5Kry8tr1fWFg_yoW8Xr48pr
-        4rKryYkrs5K3WUWa9Yy3ySyF48AFs7Xr17GayYyF15ArZFq3sak3yFgryY9Fy8ZFZak3yk
-        XF1vgFW3ZFyDGFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Cr0_Gr
-        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-        Y4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUXTmhUUUUU=
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S1726141AbgDTFho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:37:44 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26686 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgDTFho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:37:44 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 495FpB1WFWz9tyFs;
+        Mon, 20 Apr 2020 07:37:38 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=XKE79qjG; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 6HpAP5DcRqMR; Mon, 20 Apr 2020 07:37:38 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 495FpB0VL5z9tyFq;
+        Mon, 20 Apr 2020 07:37:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1587361058; bh=8/duh4NEuRU6gaNn7hJT4yxLtzxr8IS/3hNU9Njuf8A=;
+        h=From:Subject:To:Cc:Date:From;
+        b=XKE79qjG68jzpytpQhRa0zkpWtrGLnHTWohb1ySycjQZ1r131eOlVKZzyIEz6qjAb
+         H3LJiSSdpZh6WBkm6de8ZDBT2IFujtEftJwLuGh5mBf0geqc4fn4bTsw8x/v+Wq3WD
+         TTrt5dHWmlTQ0CtxirR8sMh/oW3uSyleNKwILIog=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E991A8B776;
+        Mon, 20 Apr 2020 07:37:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id iQXkDGhso4sW; Mon, 20 Apr 2020 07:37:42 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AB84E8B752;
+        Mon, 20 Apr 2020 07:37:42 +0200 (CEST)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 3548A657AE; Mon, 20 Apr 2020 05:37:42 +0000 (UTC)
+Message-Id: <485caac75f195f18c11eb077b0031fdd2bb7fb9e.1587361039.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH v2] powerpc/8xx: Fix STRICT_KERNEL_RWX startup test failure
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 20 Apr 2020 05:37:42 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-batadv_v_ogm_process() invokes batadv_hardif_neigh_get(), which returns
-a reference of the neighbor object to "hardif_neigh" with increased
-refcount.
+WRITE_RO lkdtm test works.
 
-When batadv_v_ogm_process() returns, "hardif_neigh" becomes invalid, so
-the refcount should be decreased to keep refcount balanced.
+But when selecting CONFIG_DEBUG_RODATA_TEST, the kernel reports
+	rodata_test: test data was not read only
 
-The reference counting issue happens in one exception handling paths of
-batadv_v_ogm_process(). When batadv_v_ogm_orig_get() fails to get the
-orig node and returns NULL, the refcnt increased by
-batadv_hardif_neigh_get() is not decreased, causing a refcnt leak.
+This is because when rodata test runs, there are still old entries
+in TLB.
 
-Fix this issue by jumping to "out" label when batadv_v_ogm_orig_get()
-fails to get the orig node.
+Flush TLB after setting kernel pages RO or NX.
 
-Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: d5f17ee96447 ("powerpc/8xx: don't disable large TLBs with CONFIG_STRICT_KERNEL_RWX")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- net/batman-adv/bat_v_ogm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/mm/nohash/8xx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
-index 969466218999..80b87b1f4e3a 100644
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -893,7 +893,7 @@ static void batadv_v_ogm_process(const struct sk_buff *skb, int ogm_offset,
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 3189308dece4..d83a12c5bc7f 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -185,6 +185,7 @@ void mmu_mark_initmem_nx(void)
+ 			mmu_mapin_ram_chunk(etext8, einittext8, PAGE_KERNEL);
+ 		}
+ 	}
++	_tlbil_all();
+ }
  
- 	orig_node = batadv_v_ogm_orig_get(bat_priv, ogm_packet->orig);
- 	if (!orig_node)
--		return;
-+		goto out;
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+@@ -199,6 +200,8 @@ void mmu_mark_rodata_ro(void)
+ 				      ~(LARGE_PAGE_SIZE_8M - 1)));
+ 	mmu_patch_addis(&patch__dtlbmiss_romem_top, -__pa(_sinittext));
  
- 	neigh_node = batadv_neigh_node_get_or_create(orig_node, if_incoming,
- 						     ethhdr->h_source);
++	_tlbil_all();
++
+ 	/* Update page tables for PTDUMP and BDI */
+ 	mmu_mapin_ram_chunk(0, sinittext, __pgprot(0));
+ 	mmu_mapin_ram_chunk(0, etext, PAGE_KERNEL_ROX);
 -- 
-2.7.4
+2.25.0
 
