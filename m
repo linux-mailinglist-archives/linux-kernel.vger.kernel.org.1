@@ -2,47 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678C11B0856
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73F81B0859
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgDTLzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:55:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
+        id S1726905AbgDTLzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgDTLzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:55:07 -0400
+        id S1726893AbgDTLzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:55:14 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F7AA21927;
-        Mon, 20 Apr 2020 11:55:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A316821D94;
+        Mon, 20 Apr 2020 11:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587383707;
-        bh=voRofBWt3Bg02puMqNN0CEnYZL5K/hkfznKgWIjtDkg=;
+        s=default; t=1587383713;
+        bh=6KKSQV6faZ745OFDvokah3grYP2cw2qu7+02fvjxjD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V2o6zqAwxTrlao7X1XEHuokGQYcJdudb8S8d9awyMwyoRwbX/eSdMWtyH217zTx7Q
-         K+bXCAS0jUrs5GMED+O8nlJ2j1/0FWXdaNI+OM/ExOWJMB6Vukvrf+dUH53ck4mZdR
-         Aq6aGEBSQgQnalM7WQUyeTyBU5soucS+N0IwAC1o=
+        b=bHfiqdDKRXH5Q3e1QJx4+xcS9Bxq2CALxGivVp6wh1PXGCNLEZSg2ImPyZEK+AtP/
+         DwWuKEJBxyklocYIYNpA3swrHqeZk93ahQ0BiXG/wDQuk7imBZ9TLOVZQTBE8I3OlS
+         EywAoF14MVzEGBc6uontYp5yJjWAy86CLWpGqjOM=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrey Zhizhikin <andrey.z@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Joe Mario <jmario@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
         Kan Liang <kan.liang@linux.intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
         Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Stephane Eranian <eranian@google.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 20/60] perf synthetic-events: save 4kb from 2 stack frames
-Date:   Mon, 20 Apr 2020 08:52:36 -0300
-Message-Id: <20200420115316.18781-21-acme@kernel.org>
+Subject: [PATCH 21/60] perf expr: Add expr_ prefix for parse_ctx and parse_id
+Date:   Mon, 20 Apr 2020 08:52:37 -0300
+Message-Id: <20200420115316.18781-22-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200420115316.18781-1-acme@kernel.org>
 References: <20200420115316.18781-1-acme@kernel.org>
@@ -53,117 +62,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Jiri Olsa <jolsa@kernel.org>
 
-Reuse an existing char buffer to avoid two PATH_MAX sized char buffers.
+Adding expr_ prefix for parse_ctx and parse_id, to straighten out the
+expr* namespace.
 
-Reduces stack frame sizes by 4kb.
+There's no functional change.
 
-perf_event__synthesize_mmap_events before 'sub $0x45b8,%rsp' after
-'sub $0x35b8,%rsp'.
-
-perf_event__get_comm_ids before 'sub $0x2028,%rsp' after
-'sub $0x1028,%rsp'.
-
-The performance impact of this change is negligible.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andrey Zhizhikin <andrey.z@gmail.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Anju T Sudhakar <anju@linux.vnet.ibm.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Joe Mario <jmario@redhat.com>
+Cc: Kajol Jain <kjain@linux.ibm.com>
 Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Madhavan Srinivasan <maddy@linux.vnet.ibm.com>
+Cc: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michael Petlan <mpetlan@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Paul Mackerras <paulus@ozlabs.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Stephane Eranian <eranian@google.com>
+Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lore.kernel.org/lkml/20200402154357.107873-4-irogers@google.com
+Cc: linuxppc-dev@lists.ozlabs.org
+Link: http://lore.kernel.org/lkml/20200401203340.31402-2-kjain@linux.ibm.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/synthetic-events.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ tools/perf/tests/expr.c       |  4 ++--
+ tools/perf/util/expr.c        | 10 +++++-----
+ tools/perf/util/expr.h        | 12 ++++++------
+ tools/perf/util/expr.y        |  6 +++---
+ tools/perf/util/stat-shadow.c |  2 +-
+ 5 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index a661b122d9d8..9d4aa951eaa6 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -71,7 +71,6 @@ int perf_tool__process_synth_event(struct perf_tool *tool,
- static int perf_event__get_comm_ids(pid_t pid, char *comm, size_t len,
- 				    pid_t *tgid, pid_t *ppid)
+diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+index 28313e59d6f6..ea10fc4412c4 100644
+--- a/tools/perf/tests/expr.c
++++ b/tools/perf/tests/expr.c
+@@ -6,7 +6,7 @@
+ #include <string.h>
+ #include <linux/zalloc.h>
+ 
+-static int test(struct parse_ctx *ctx, const char *e, double val2)
++static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
  {
--	char filename[PATH_MAX];
- 	char bf[4096];
- 	int fd;
- 	size_t size = 0;
-@@ -81,11 +80,11 @@ static int perf_event__get_comm_ids(pid_t pid, char *comm, size_t len,
- 	*tgid = -1;
- 	*ppid = -1;
+ 	double val;
  
--	snprintf(filename, sizeof(filename), "/proc/%d/status", pid);
-+	snprintf(bf, sizeof(bf), "/proc/%d/status", pid);
+@@ -22,7 +22,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+ 	const char **other;
+ 	double val;
+ 	int i, ret;
+-	struct parse_ctx ctx;
++	struct expr_parse_ctx ctx;
+ 	int num_other;
  
--	fd = open(filename, O_RDONLY);
-+	fd = open(bf, O_RDONLY);
- 	if (fd < 0) {
--		pr_debug("couldn't open %s\n", filename);
-+		pr_debug("couldn't open %s\n", bf);
- 		return -1;
- 	}
+ 	expr__ctx_init(&ctx);
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index fd192ddf93c1..c8ccc548a585 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -11,7 +11,7 @@ extern int expr_debug;
+ #endif
  
-@@ -281,9 +280,9 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 				       struct machine *machine,
- 				       bool mmap_data)
+ /* Caller must make sure id is allocated */
+-void expr__add_id(struct parse_ctx *ctx, const char *name, double val)
++void expr__add_id(struct expr_parse_ctx *ctx, const char *name, double val)
  {
--	char filename[PATH_MAX];
- 	FILE *fp;
- 	unsigned long long t;
-+	char bf[BUFSIZ];
- 	bool truncation = false;
- 	unsigned long long timeout = proc_map_timeout * 1000000ULL;
- 	int rc = 0;
-@@ -293,15 +292,15 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 	if (machine__is_default_guest(machine))
- 		return 0;
+ 	int idx;
  
--	snprintf(filename, sizeof(filename), "%s/proc/%d/task/%d/maps",
--		 machine->root_dir, pid, pid);
-+	snprintf(bf, sizeof(bf), "%s/proc/%d/task/%d/maps",
-+		machine->root_dir, pid, pid);
+@@ -21,13 +21,13 @@ void expr__add_id(struct parse_ctx *ctx, const char *name, double val)
+ 	ctx->ids[idx].val = val;
+ }
  
--	fp = fopen(filename, "r");
-+	fp = fopen(bf, "r");
- 	if (fp == NULL) {
- 		/*
- 		 * We raced with a task exiting - just return:
- 		 */
--		pr_debug("couldn't open %s\n", filename);
-+		pr_debug("couldn't open %s\n", bf);
- 		return -1;
- 	}
+-void expr__ctx_init(struct parse_ctx *ctx)
++void expr__ctx_init(struct expr_parse_ctx *ctx)
+ {
+ 	ctx->num_ids = 0;
+ }
  
-@@ -309,7 +308,6 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 	t = rdclock();
+ static int
+-__expr__parse(double *val, struct parse_ctx *ctx, const char *expr,
++__expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+ 	      int start)
+ {
+ 	YY_BUFFER_STATE buffer;
+@@ -52,7 +52,7 @@ __expr__parse(double *val, struct parse_ctx *ctx, const char *expr,
+ 	return ret;
+ }
  
- 	while (1) {
--		char bf[BUFSIZ];
- 		char prot[5];
- 		char execname[PATH_MAX];
- 		char anonstr[] = "//anon";
-@@ -321,10 +319,10 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 			break;
+-int expr__parse(double *final_val, struct parse_ctx *ctx, const char *expr)
++int expr__parse(double *final_val, struct expr_parse_ctx *ctx, const char *expr)
+ {
+ 	return __expr__parse(final_val, ctx, expr, EXPR_PARSE) ? -1 : 0;
+ }
+@@ -75,7 +75,7 @@ int expr__find_other(const char *expr, const char *one, const char ***other,
+ 		     int *num_other)
+ {
+ 	int err, i = 0, j = 0;
+-	struct parse_ctx ctx;
++	struct expr_parse_ctx ctx;
  
- 		if ((rdclock() - t) > timeout) {
--			pr_warning("Reading %s time out. "
-+			pr_warning("Reading %s/proc/%d/task/%d/maps time out. "
- 				   "You may want to increase "
- 				   "the time limit by --proc-map-timeout\n",
--				   filename);
-+				   machine->root_dir, pid, pid);
- 			truncation = true;
- 			goto out;
- 		}
+ 	expr__ctx_init(&ctx);
+ 	err = __expr__parse(NULL, &ctx, expr, EXPR_OTHER);
+diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+index 9377538f4097..b9e53f2b5844 100644
+--- a/tools/perf/util/expr.h
++++ b/tools/perf/util/expr.h
+@@ -5,19 +5,19 @@
+ #define EXPR_MAX_OTHER 20
+ #define MAX_PARSE_ID EXPR_MAX_OTHER
+ 
+-struct parse_id {
++struct expr_parse_id {
+ 	const char *name;
+ 	double val;
+ };
+ 
+-struct parse_ctx {
++struct expr_parse_ctx {
+ 	int num_ids;
+-	struct parse_id ids[MAX_PARSE_ID];
++	struct expr_parse_id ids[MAX_PARSE_ID];
+ };
+ 
+-void expr__ctx_init(struct parse_ctx *ctx);
+-void expr__add_id(struct parse_ctx *ctx, const char *id, double val);
+-int expr__parse(double *final_val, struct parse_ctx *ctx, const char *expr);
++void expr__ctx_init(struct expr_parse_ctx *ctx);
++void expr__add_id(struct expr_parse_ctx *ctx, const char *id, double val);
++int expr__parse(double *final_val, struct expr_parse_ctx *ctx, const char *expr);
+ int expr__find_other(const char *expr, const char *one, const char ***other,
+ 		int *num_other);
+ 
+diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+index 4720cbe79357..cd17486c1c5d 100644
+--- a/tools/perf/util/expr.y
++++ b/tools/perf/util/expr.y
+@@ -15,7 +15,7 @@
+ %define api.pure full
+ 
+ %parse-param { double *final_val }
+-%parse-param { struct parse_ctx *ctx }
++%parse-param { struct expr_parse_ctx *ctx }
+ %parse-param {void *scanner}
+ %lex-param {void* scanner}
+ 
+@@ -39,14 +39,14 @@
+ 
+ %{
+ static void expr_error(double *final_val __maybe_unused,
+-		       struct parse_ctx *ctx __maybe_unused,
++		       struct expr_parse_ctx *ctx __maybe_unused,
+ 		       void *scanner,
+ 		       const char *s)
+ {
+ 	pr_debug("%s\n", s);
+ }
+ 
+-static int lookup_id(struct parse_ctx *ctx, char *id, double *val)
++static int lookup_id(struct expr_parse_ctx *ctx, char *id, double *val)
+ {
+ 	int i;
+ 
+diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+index 03ecb8cd0eec..1ad5c5be7e97 100644
+--- a/tools/perf/util/stat-shadow.c
++++ b/tools/perf/util/stat-shadow.c
+@@ -729,7 +729,7 @@ static void generic_metric(struct perf_stat_config *config,
+ 			   struct runtime_stat *st)
+ {
+ 	print_metric_t print_metric = out->print_metric;
+-	struct parse_ctx pctx;
++	struct expr_parse_ctx pctx;
+ 	double ratio, scale;
+ 	int i;
+ 	void *ctxp = out->ctx;
 -- 
 2.21.1
 
