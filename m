@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E201B09B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EE21B09F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgDTMlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:41:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34300 "EHLO mail.kernel.org"
+        id S1728423AbgDTMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbgDTMle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:41:34 -0400
+        id S1728412AbgDTMnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:43:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2BA92070B;
-        Mon, 20 Apr 2020 12:41:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FA932072B;
+        Mon, 20 Apr 2020 12:43:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386494;
-        bh=X2fDvyENdeVAPEi4xR7NUbVfmUWj1c8mEiQ43bYDMdI=;
+        s=default; t=1587386613;
+        bh=SgjDXtDgQGdZHYXIuByUqint4a036yOfcRxQTWh8XgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n/8OxMpYqS9tn/ltlwHD0DTilVvAukmERLO+LDu7S7KnkbQuyvRlXm4MZEO+sfoAh
-         lUTD9yWPesHNhhDSyNxWVewNPxetwbdrCaghsszcHyNVR2+QABQK7FAUZHmI4XXopi
-         1fEp7eEOwPj8OFFzR3uLmIxUyD7rtxBvUeWWNUFE=
+        b=uH58oHelR66e+UlH0rHzUhGAa4l1GdA75WY9Vjp/sb0p1HyfIHjbPqJf+L81MQKPD
+         7YUhi/y4xMjQRy0Q/0LqXNVbMZ9ai9vxZd/X8Z1WHWfEvN6Av6UfImHqMq3xR2Txuz
+         t8N11TsEMqwb0VDz1Fmy+o1z1j+o/ECG/DmgyNbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.5 38/65] ASoC: Intel: mrfld: fix incorrect check on p->sink
+        stable@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.6 28/71] perf report: Fix no branch type statistics report issue
 Date:   Mon, 20 Apr 2020 14:38:42 +0200
-Message-Id: <20200420121514.531533001@linuxfoundation.org>
+Message-Id: <20200420121514.192225755@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +47,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Jin Yao <yao.jin@linux.intel.com>
 
-commit f5e056e1e46fcbb5f74ce560792aeb7d57ce79e6 upstream.
+commit c3b10649a80e9da2892c1fd3038c53abd57588f6 upstream.
 
-The check on p->sink looks bogus, I believe it should be p->source
-since the following code blocks are related to p->source. Fix
-this by replacing p->sink with p->source.
+Previously we could get the report of branch type statistics.
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Copy-paste error")
-Link: https://lore.kernel.org/r/20191119113640.166940-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+For example:
+
+  # perf record -j any,save_type ...
+  # t perf report --stdio
+
+  #
+  # Branch Statistics:
+  #
+  COND_FWD:  40.6%
+  COND_BWD:   4.1%
+  CROSS_4K:  24.7%
+  CROSS_2M:  12.3%
+      COND:  44.7%
+    UNCOND:   0.0%
+       IND:   6.1%
+      CALL:  24.5%
+       RET:  24.7%
+
+But now for the recent perf, it can't report the branch type statistics.
+
+It's a regression issue caused by commit 40c39e304641 ("perf report: Fix
+a no annotate browser displayed issue"), which only counts the branch
+type statistics for browser mode.
+
+This patch moves the branch_type_count() outside of ui__has_annotation()
+checking, then branch type statistics can work for stdio mode.
+
+Fixes: 40c39e304641 ("perf report: Fix a no annotate browser displayed issue")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20200313134607.12873-1-yao.jin@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/intel/atom/sst-atom-controls.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-report.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1333,7 +1333,7 @@ int sst_send_pipe_gains(struct snd_soc_d
- 				dai->capture_widget->name);
- 		w = dai->capture_widget;
- 		snd_soc_dapm_widget_for_each_source_path(w, p) {
--			if (p->connected && !p->connected(w, p->sink))
-+			if (p->connected && !p->connected(w, p->source))
- 				continue;
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -185,24 +185,23 @@ static int hist_iter__branch_callback(st
+ {
+ 	struct hist_entry *he = iter->he;
+ 	struct report *rep = arg;
+-	struct branch_info *bi;
++	struct branch_info *bi = he->branch_info;
+ 	struct perf_sample *sample = iter->sample;
+ 	struct evsel *evsel = iter->evsel;
+ 	int err;
  
- 			if (p->connect &&  p->source->power &&
++	branch_type_count(&rep->brtype_stat, &bi->flags,
++			  bi->from.addr, bi->to.addr);
++
+ 	if (!ui__has_annotation() && !rep->symbol_ipc)
+ 		return 0;
+ 
+-	bi = he->branch_info;
+ 	err = addr_map_symbol__inc_samples(&bi->from, sample, evsel);
+ 	if (err)
+ 		goto out;
+ 
+ 	err = addr_map_symbol__inc_samples(&bi->to, sample, evsel);
+ 
+-	branch_type_count(&rep->brtype_stat, &bi->flags,
+-			  bi->from.addr, bi->to.addr);
+-
+ out:
+ 	return err;
+ }
 
 
