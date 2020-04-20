@@ -2,186 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1701B088F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F941B0854
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgDTL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgDTL57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:57:59 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2E2E218AC;
-        Mon, 20 Apr 2020 11:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587383878;
-        bh=sBo0ETqKABkMCsr76EZqZ5ujxcCuP3Z8QPgHg3B0ZOw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IHJAdtdrPscQVP0ga8dj6w45kO95LCX/2uZeO2wJ43A5pw1uRI8Zil7PI4FGA8fwj
-         OzLiAdpVDS8pXsElVfIMfIMp63ybYD8OEEa3fIVtwoJI7B6dibU+IGCg91KO6GhsC4
-         pwbwDkzAosDaj+3J+zVwOA1yCP8/PL78G9shZEHc=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pavel Gerasimov <pavel.gerasimov@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Vitaly Slobodskoy <vitaly.slobodskoy@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 60/60] perf hist: Add fast path for duplicate entries check
-Date:   Mon, 20 Apr 2020 08:53:16 -0300
-Message-Id: <20200420115316.18781-61-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200420115316.18781-1-acme@kernel.org>
-References: <20200420115316.18781-1-acme@kernel.org>
+        id S1726861AbgDTLy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726381AbgDTLyz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:54:55 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5CEC0610D6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 04:54:54 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a2so7677399ejx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 04:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xz434+emhPfWjjKXYErvQLCog0qnyrqkr9U47Pj8EAE=;
+        b=eMGJ6i/Tp+yHljfYp7aMYd/mUsv2EnqVE+fCxu3XOH5yGdB0h61gy+ScRLFSyuRmgb
+         qURUHX6I6Ir8eepIVf+Ri2YviGMLt6DWjxys1zOQJEVUfWPlsKPJUpkbtTkdGn4w0n0B
+         1MP04jnPqpFSU10941aKvkRA4UrFsDmfSRMik=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xz434+emhPfWjjKXYErvQLCog0qnyrqkr9U47Pj8EAE=;
+        b=F7Nh/wylWwnQgfEin1ryp2xjjsfBCxJI6fD8cWOTdYK8gAERn2YRwl3uPBjUP4/J9x
+         V06poJGawnBHET9sMJp6huu4ASz9QlhFTMxOBmuyoLA0aB29BM0b9DGyKH3Y15ddjpH6
+         bL69uoNj96HtB6PGfiH5PgI8nIEqHkZpDGZeYCRLd15iAML0TcP6b0Ve4bBXroBflFoX
+         Iy6/DN0R4lgMqi/RFSMeQDTvDFsBTOhLDp21aOO0XvbM87CyaHdZUhXB+iWWbPlk65j/
+         /9rOtc5HjSYxE6g857Ttn7/v8kqyIQ72twB1lODuLTIaEgAuUDIGmbbQ32vxEL1yY/9R
+         Ktbw==
+X-Gm-Message-State: AGi0Pub42p79UykA0Rinlw1V1y6Wf+Eq/z2lGRnvR0L2tUgQmOqKW3WA
+        SjLbNA97cAw+VWSaZpuDhpZOC5KjXWi13+dwblx9dw==
+X-Google-Smtp-Source: APiQypLbTn+lSf9tXQjoSINzOkViouA+EuTM208dkpb3K/JiwqGLK/tHyeL8eS/wVDrlTm/f0ngTgrLv3Gua9FB3DGg=
+X-Received: by 2002:a17:906:8549:: with SMTP id h9mr15204554ejy.145.1587383692787;
+ Mon, 20 Apr 2020 04:54:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200414150233.24495-1-willy@infradead.org> <20200414150233.24495-25-willy@infradead.org>
+ <CAJfpegsZF=TFQ67vABkE5ghiZoTZF+=_u8tM5U_P6jZeAmv23A@mail.gmail.com> <20200420114300.GB5820@bombadil.infradead.org>
+In-Reply-To: <20200420114300.GB5820@bombadil.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 20 Apr 2020 13:54:41 +0200
+Message-ID: <CAJfpeguKAbE+_=ctxp+_3gtbqADevMPrRQ1XV6t8AHXbKwDKvg@mail.gmail.com>
+Subject: Re: [PATCH v11 24/25] fuse: Convert from readpages to readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Apr 20, 2020 at 1:43 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Apr 20, 2020 at 01:14:17PM +0200, Miklos Szeredi wrote:
+> > > +       for (;;) {
+> > > +               struct fuse_io_args *ia;
+> > > +               struct fuse_args_pages *ap;
+> > > +
+> > > +               nr_pages = readahead_count(rac) - nr_pages;
+> >
+> > Hmm.  I see what's going on here, but it's confusing.   Why is
+> > __readahead_batch() decrementing the readahead count at the start,
+> > rather than at the end?
+> >
+> > At the very least it needs a comment about why nr_pages is calculated this way.
+>
+> Because usually that's what we want.  See, for example, fs/mpage.c:
+>
+>         while ((page = readahead_page(rac))) {
+>                 prefetchw(&page->flags);
+>                 args.page = page;
+>                 args.nr_pages = readahead_count(rac);
+>                 args.bio = do_mpage_readpage(&args);
+>                 put_page(page);
+>         }
+>
+> fuse is different because it's trying to allocate for the next batch,
+> not for the batch we're currently on.
+>
+> I'm a little annoyed because I posted almost this exact loop here:
+>
+> https://lore.kernel.org/linux-fsdevel/CAJfpegtrhGamoSqD-3Svfj3-iTdAbfD8TP44H_o+HE+g+CAnCA@mail.gmail.com/
+>
+> and you said "I think that's fine", modified only by your concern
+> for it not being obvious that nr_pages couldn't be decremented by
+> __readahead_batch(), so I modified the loop slightly to assign to
+> nr_pages.  The part you're now complaining about is unchanged.
 
-Perf checks the duplicate entries in a callchain before adding an entry.
-However the check is very slow especially with deeper call stack.
-Almost ~50% elapsed time of perf report is spent on the check when the
-call stack is always depth of 32.
+Your annoyance is perfectly understandable.   This is something I
+noticed now, not back then.
 
-The hist_entry__cmp() is used to compare the new entry with the old
-entries. It will go through all the available sorts in the sort_list,
-and call the specific cmp of each sort, which is very slow.
+>
+> > > +               if (nr_pages > max_pages)
+> > > +                       nr_pages = max_pages;
+> > > +               if (nr_pages == 0)
+> > > +                       break;
+> > > +               ia = fuse_io_alloc(NULL, nr_pages);
+> > > +               if (!ia)
+> > > +                       return;
+> > > +               ap = &ia->ap;
+> > > +               nr_pages = __readahead_batch(rac, ap->pages, nr_pages);
+> > > +               for (i = 0; i < nr_pages; i++) {
+> > > +                       fuse_wait_on_page_writeback(inode,
+> > > +                                                   readahead_index(rac) + i);
+> >
+> > What's wrong with ap->pages[i]->index?  Are we trying to wean off using ->index?
+>
+> It saves reading from a cacheline?  I wouldn't be surprised if the
+> compiler hoisted the read from rac->_index to outside the loop and just
+> iterated from rac->_index to rac->_index + nr_pages.
 
-Actually, for most cases, there are no duplicate entries in callchain.
-The symbols are usually different. It's much faster to do a quick check
-for symbols first. Only do the full cmp when the symbols are exactly the
-same.
+Hah, if such optimizations were worth anything with codepaths
+involving roundtrips to userspace...
 
-The quick check is only to check symbols, not dso. Export
-_sort__sym_cmp.
+Anyway, I'll let these be, and maybe clean them up later.
 
-  $ perf record --call-graph lbr ./tchain_edit_64
+Acked-by:  Miklos Szeredi <mszeredi@redhat.com>
 
-  Without the patch
-  $time perf report --stdio
-  real    0m21.142s
-  user    0m21.110s
-  sys     0m0.033s
-
-  With the patch
-  $time perf report --stdio
-  real    0m10.977s
-  user    0m10.948s
-  sys     0m0.027s
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Pavel Gerasimov <pavel.gerasimov@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Vitaly Slobodskoy <vitaly.slobodskoy@intel.com>
-Link: http://lore.kernel.org/lkml/20200319202517.23423-18-kan.liang@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/hist.c | 23 +++++++++++++++++++++++
- tools/perf/util/sort.c |  2 +-
- tools/perf/util/sort.h |  2 ++
- 3 files changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-index 283a69ff6a3d..c2550dbe7dc3 100644
---- a/tools/perf/util/hist.c
-+++ b/tools/perf/util/hist.c
-@@ -1070,6 +1070,20 @@ iter_next_cumulative_entry(struct hist_entry_iter *iter,
- 	return fill_callchain_info(al, node, iter->hide_unresolved);
- }
- 
-+static bool
-+hist_entry__fast__sym_diff(struct hist_entry *left,
-+			   struct hist_entry *right)
-+{
-+	struct symbol *sym_l = left->ms.sym;
-+	struct symbol *sym_r = right->ms.sym;
-+
-+	if (!sym_l && !sym_r)
-+		return left->ip != right->ip;
-+
-+	return !!_sort__sym_cmp(sym_l, sym_r);
-+}
-+
-+
- static int
- iter_add_next_cumulative_entry(struct hist_entry_iter *iter,
- 			       struct addr_location *al)
-@@ -1096,6 +1110,7 @@ iter_add_next_cumulative_entry(struct hist_entry_iter *iter,
- 	};
- 	int i;
- 	struct callchain_cursor cursor;
-+	bool fast = hists__has(he_tmp.hists, sym);
- 
- 	callchain_cursor_snapshot(&cursor, &callchain_cursor);
- 
-@@ -1106,6 +1121,14 @@ iter_add_next_cumulative_entry(struct hist_entry_iter *iter,
- 	 * It's possible that it has cycles or recursive calls.
- 	 */
- 	for (i = 0; i < iter->curr; i++) {
-+		/*
-+		 * For most cases, there are no duplicate entries in callchain.
-+		 * The symbols are usually different. Do a quick check for
-+		 * symbols first.
-+		 */
-+		if (fast && hist_entry__fast__sym_diff(he_cache[i], &he_tmp))
-+			continue;
-+
- 		if (hist_entry__cmp(he_cache[i], &he_tmp) == 0) {
- 			/* to avoid calling callback function */
- 			iter->he = NULL;
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index f14cc728c358..dc15ddc18b7d 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -237,7 +237,7 @@ static int64_t _sort__addr_cmp(u64 left_ip, u64 right_ip)
- 	return (int64_t)(right_ip - left_ip);
- }
- 
--static int64_t _sort__sym_cmp(struct symbol *sym_l, struct symbol *sym_r)
-+int64_t _sort__sym_cmp(struct symbol *sym_l, struct symbol *sym_r)
- {
- 	if (!sym_l || !sym_r)
- 		return cmp_null(sym_l, sym_r);
-diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-index cfa6ac6f7d06..66d39c4cfe2b 100644
---- a/tools/perf/util/sort.h
-+++ b/tools/perf/util/sort.h
-@@ -311,5 +311,7 @@ int64_t
- sort__daddr_cmp(struct hist_entry *left, struct hist_entry *right);
- int64_t
- sort__dcacheline_cmp(struct hist_entry *left, struct hist_entry *right);
-+int64_t
-+_sort__sym_cmp(struct symbol *sym_l, struct symbol *sym_r);
- char *hist_entry__srcline(struct hist_entry *he);
- #endif	/* __PERF_SORT_H */
--- 
-2.21.1
-
+Thanks,
+Miklos
