@@ -2,246 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E231B11BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C1B1B11EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgDTQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726743AbgDTQhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:37:48 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C652C025491
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:37:48 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id i10so12974676wrv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rj3jrSbU2b68oTmKDFbN7ThfXz7DCPKlENH6dIentbg=;
-        b=qOT0X9riAMzmEP5Ha7488hZVekV30Pk1csqcVzplu+ZIg38c2b8tJvtqrQxgpOYkB9
-         gX3MxO54dkj2kFQFhE5lK6hQo7mTnazAsr/J9Mos46z019jWW0wXkiX4mXVo7Slw+LmM
-         v5tq74Of3prsSVSua+OY6XUstDoUqWTCf0/NpP7ovNedfz5TSTxz9xs1B4lJkC9hP74b
-         YBH+u7CaAba8aqdOIlMvsOdBz5fvPCDxaisMIDG148fRwFWGWsEtfhVUIWBUGapQLE7h
-         bOZo0wZ/o5qKajlkAxKhsO8NZxFKfxwBbEQ6JKkH71oNt5TtD6msKqc81wIjQ6P9pA/e
-         A2cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rj3jrSbU2b68oTmKDFbN7ThfXz7DCPKlENH6dIentbg=;
-        b=Vkol3/RolP+ElhsSvJr5rwykLBNGkf9JciMf4b3cvgOWG7v4ZD5e7iEiKRNLHo2XZT
-         4uZq0v/ZlKrQGE+J4icD8IH/AxIn/alfDhvl62Rp6G6GCbdjmzvBzMx2e+METM0pp3W3
-         XqTAUcSdr+fny/0UTYIsVKHUD04qKE3WYfNS1RVbnWrbtKI6HWslczRcPbSzHFfZh4Ua
-         fTrbdVyrEYRtLLLOuv5KsbuTHg1NvLL6sWSN2QU6agD8dtoygPLW4n2ToKtg+2G54iEF
-         0yTF8B8j3g8JImWXJOrZ+fSAoV3A/DsqBS56ua+201psNpQlr2Hdrr6SkXYB7lMHFESj
-         gm/w==
-X-Gm-Message-State: AGi0PuZ/T7qs+Lunc+UM2X6H1opa9MVFR5yJrjiXB6pLpje2BMXN4W71
-        iJe7CXQUFlSL2blGlvCIZleqZw==
-X-Google-Smtp-Source: APiQypKAH6kAxnN7z1zkH/+viWwXnCewnUDNHJ9TNYyq8qYdBhojhij+2K2UR3NYJ6w9XnjttNtugg==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr21467911wrn.56.1587400666708;
-        Mon, 20 Apr 2020 09:37:46 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id s8sm42510wru.38.2020.04.20.09.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 09:37:46 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 17:37:44 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Kiran Gunda <kgunda@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH V5 4/4] backlight: qcom-wled: Add support for WLED5
- peripheral that is present on PM8150L PMICs
-Message-ID: <20200420163744.3qbeqwv7myzmam3d@holly.lan>
-References: <1586274430-28402-1-git-send-email-kgunda@codeaurora.org>
- <1586274430-28402-5-git-send-email-kgunda@codeaurora.org>
+        id S1727005AbgDTQlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:41:11 -0400
+Received: from mail-eopbgr1300122.outbound.protection.outlook.com ([40.107.130.122]:34400
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726620AbgDTQlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:41:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VQfX9tW6KmL7CGvGYqo5gtD+fQoMnvDfdADGsa9vZhdAXQVUhiTdQeGD4zSGQBDn6JU9ie9uxnO3cK+76bNRPpoio/glI2nH6gUIqSez8dSJH23Nx75T63ZtKofU7eKw2ZlTZ1FWeG8hvuZjxwmhPtI/8EBB5Xz3bgLKf3+Abahn4lsCvdVOipmEvIIPzU69cXPBgfaIrnDCCxb/8r75uSyXbvfslP39uWJ/F8AF5kGUQsFfb6Aah8LZwWw8s1htnpIQOJqfuLt28Hkme+JdDmuGCruKrzLtFQ/43FG6Gz7lmNP2FETSlA0dVjuqIO/+HtVIqSn19T0Q1Not3pZZ8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zj425DsWvodYJiPpBCxYf5VlUoVkfBWF89XmSQ8wYNc=;
+ b=IMuzwxWLRglLmSIZpwwW3VMxbAd+MUv0/zLewsBLjm/AONrR7Q/MIl6aNRmq3L+uqERKHXeDWh07BtCvNubmLLbl+kp0Bl3AbKKWagRsNhHjNiAz9kGnpycA0saLEJjkutrNne36vX8V0u5KcHQodox3V+mszYFbOCWLW0sqpv9sB9QDae6xKOZNiCqJyQDlFiQpxPL2KjXYqlUvAoH8h8hQD03+A8lAPwLF+QDUGTBOQbb1or7qOjOExcoeOZ/8sBr3V2IX/sZd7WyVyQfomhlGlNRE2RkQ7gdCNXhVn6RIsVwk+7qyi7afdsR6ICXS1GollOc1l4vLkuRVjl2E6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zj425DsWvodYJiPpBCxYf5VlUoVkfBWF89XmSQ8wYNc=;
+ b=ceif5E5erSxfE5/2l9WWl1/MZO5ZnBHGrLx6jpr5LRva65oqBKKFigp/1dUgmIsM7qHzsPlMhbNuYUkT0prfB6jNm8ZQapqFTUxaA/j3gsb25QKBGJ8vCtm3C+ERgav65iVD07DBfCCvdVRpRxJlVwQzYHyTPdfKr22YbFugW20=
+Received: from HK0P153MB0273.APCP153.PROD.OUTLOOK.COM (2603:1096:203:b2::12)
+ by HK0P153MB0115.APCP153.PROD.OUTLOOK.COM (2603:1096:203:19::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.2; Mon, 20 Apr
+ 2020 16:40:55 +0000
+Received: from HK0P153MB0273.APCP153.PROD.OUTLOOK.COM
+ ([fe80::2d07:e045:9d5b:898a]) by HK0P153MB0273.APCP153.PROD.OUTLOOK.COM
+ ([fe80::2d07:e045:9d5b:898a%2]) with mapi id 15.20.2958.001; Mon, 20 Apr 2020
+ 16:40:55 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Wei Liu <wei.liu@kernel.org>
+CC:     "bp@alien8.de" <bp@alien8.de>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, KY Srinivasan <kys@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH] x86/hyperv: Suspend/resume the VP assist page for
+ hibernation
+Thread-Topic: [PATCH] x86/hyperv: Suspend/resume the VP assist page for
+ hibernation
+Thread-Index: AQHWFRKUfBcacZSsfESBcN86F1My4aiB7qAAgABK3nA=
+Date:   Mon, 20 Apr 2020 16:40:54 +0000
+Message-ID: <HK0P153MB027347CE9D0C35A1C53B19F6BFD40@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+References: <1587104999-28927-1-git-send-email-decui@microsoft.com>
+ <20200417110007.uzfo6musx2x2suw7@debian>
+ <HK0P153MB0273A04F0585524883C46B0FBFD90@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+ <20200420120822.4bncj2iwgqbpoxei@debian>
+In-Reply-To: <20200420120822.4bncj2iwgqbpoxei@debian>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=decui@microsoft.com;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-20T16:40:50.7568635Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ede3ca55-cff0-4120-b2a0-d6d1ef9813cb;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=decui@microsoft.com; 
+x-originating-ip: [2601:600:a280:7f70:8ad:e9e1:6b1b:63b1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: af748047-704d-4f23-626b-08d7e54998af
+x-ms-traffictypediagnostic: HK0P153MB0115:|HK0P153MB0115:|HK0P153MB0115:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <HK0P153MB01150C8A5B47879297C1A22EBFD40@HK0P153MB0115.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 03793408BA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0P153MB0273.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(9686003)(4744005)(6916009)(81156014)(478600001)(55016002)(71200400001)(8990500004)(10290500003)(15650500001)(86362001)(64756008)(66556008)(66476007)(66946007)(6506007)(8936002)(66446008)(7696005)(33656002)(186003)(54906003)(52536014)(76116006)(316002)(5660300002)(82960400001)(2906002)(4326008)(8676002)(82950400001);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: microsoft.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wfTTrTcIdwod2EtRGi1WYsYXRZKbmcLHqILumZ11yqvEZVl03B4OXN3TYRSGyRaECKXux+lzFWquiKJapduAQW/q4GN5yaDEKcNbMBcVVVxbS0/5q32yzc8P9kteiVlg1CX5CLaXVLEtrWj+N3HHdFZ8zpXIoAjKH8xXYNtykMQtTMiIv+4BHtpNo11vBgRRmUEru6X7V+tft1EEWDJzDjTocKTnSJzdC8t6+0ANabsw2g2hp6SfWljmu8I5BIuTlOq2Z7xmMli2JDkQNFdXdOe32sOPfXXggmYZyi2uSsVCK+5cm8oK3rVpgFNEv8bLNCDUXSUs96X5FwHY/Ex8RD7eZ8jZeeBUC55uSN62HBfy6+PMaDZNjnhNyxmv8Z/3lpje/0GEZhUvz/jlsHxUDjP6ca4g9muoHxRBJ0+R8Ny+z1pvjTVoCeH9zhsfeP/N
+x-ms-exchange-antispam-messagedata: rshdaiudfT0+AOFZU4Cbf4xRTDG4JjQZJYvtPW8sfNxAlwZYCdCCM9ag2SQcCles6qjlgic9VCVg8f1gTm41jLRNkaLnAHjcVJayItqlQ5WFuq7RWHT8+NaqeGZ8j9uoQ2J0Jkms/HPbraK9/4E1AJ/mIpc+p5yzrRlfwq/6AV+L4uP4RHmzvRmLywMgAu6vlqgS7kjIayvzcUIOaHgP52Et/iCH0wbKQYDf5k1Rn6YbazWc3WOeGhEGaNKUE/NM9grhV9fUk0G1txd/5kIPIMnJP3W7SohHL+tNuawtNiDELS6P7wDWDs0RONihKDctmbNf0740yNZDJkcjxh8Pbx2sEGj7maewoiSNebTvfjm/rOehMOQWOOP4tsZZF2OE3CIiGj4rkXi7990mCOwVbctlkTuvs46/Fe4a7WdAV1154Hkscr+np8/sqYYTbhLdhE7OcX0hQrr9MpaNnQfGnINboelfSoCYo6IuyPvQL/s1g7gQIAa7NYMqV3NISHyHgJi9GwX3ceAD7GlZjuMebVKzXcRZ7Ry9IzN8jp5id2MsliRVRBSvlORN8vCyeD8PAjhtl99EGbtdcDEZrZaHPL1Ih0cwvEWJ+t3jNISv6gDOEJUKJAOCfXfSAGw/m+GbhIDx+Upfp4QUw6NG1cUSgnnZg7JtdOQjkDfyzT8KqW3sogryUtL+oZeuhncOyMOTBKK38EOL41ze3eH4uBz1mlUKsSumzgYdOFGn/ScrblPaP7IJjig9G9asEFuh2myCPW+bgpgBR4M1Y7fhERL4DaQaoo8hrpe+C+NVn8VNu7RIo5LUDjI74ucOPfbt/cqOCl8+qObsXcOF0Un3P0ihyaEHoYMcSjZjbjwcwZHv/EI=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586274430-28402-5-git-send-email-kgunda@codeaurora.org>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af748047-704d-4f23-626b-08d7e54998af
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2020 16:40:54.8851
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 36C6ZxQ5nok7QRiBXOFNPZm/Gpr8EhCt1dOxvocr9+wvzkpcbc0WVgNhDcrxSMYuLM0eYL67WFMUmmuEy7zORw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0P153MB0115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 09:17:10PM +0530, Kiran Gunda wrote:
-> From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-> 
-> PM8150L WLED supports the following:
->     - Two modulators and each sink can use any of the modulator
->     - Multiple CABC selection options from which one can be selected/enabled
->     - Multiple brightness width selection (12 bits to 15 bits)
-> 
-> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> From: Wei Liu <wei.liu@kernel.org>
+> Sent: Monday, April 20, 2020 5:08 AM
+>=20
+> I would suggest make this clear in the commit message to not give the
+> impression that Hyper-V has this weird behaviour of corrupting guest
+> memory for no reason.
+>=20
+> We can replace the paragraph starting with "The issue is: ..." with:
+>=20
 > ---
->  drivers/video/backlight/qcom-wled.c | 443 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 442 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index a6ddaa9..3a57011 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> ...
-> +static const u8 wled5_brightness_reg[MOD_MAX] = {
-> +	[MOD_A] = WLED5_SINK_REG_MOD_A_BRIGHTNESS_LSB,
-> +	[MOD_B] = WLED5_SINK_REG_MOD_B_BRIGHTNESS_LSB,
-> +};
-> +
-> +static const u8 wled5_src_sel_reg[MOD_MAX] = {
-> +	[MOD_A] = WLED5_SINK_REG_MOD_A_SRC_SEL,
-> +	[MOD_B] = WLED5_SINK_REG_MOD_B_SRC_SEL,
-> +};
-> +
-> +static const u8 wled5_brt_wid_sel_reg[MOD_MAX] = {
-> +	[MOD_A] = WLED5_SINK_REG_MOD_A_BRIGHTNESS_WIDTH_SEL,
-> +	[MOD_B] = WLED5_SINK_REG_MOD_B_BRIGHTNESS_WIDTH_SEL,
-> +};
-> +
+> Linux needs to update Hyper-V the correct VP assist page to prevent
+> Hyper-V from writing to a stale page, which causes guest memory
+> corruption.  The memory corruption may have caused some of the hangs and
+> triple faults we saw during non-boot CPUs resume.
+> ---
+> This What do you think?
 
-Each of these lookup tables are used exactly once... and half the time
-when this code chooses between MOD_A and MOD_B a ternary is used and
-half the time these lookup tables.
+This version is much better. I'll use it. Thanks, Wei!
 
-I suggest these be removed.
-
-
->  static int wled3_set_brightness(struct wled *wled, u16 brightness)
->  {
->  	int rc, i;
-> @@ -225,6 +291,25 @@ static int wled4_set_brightness(struct wled *wled, u16 brightness)
->  	return 0;
->  }
->  
-> +static int wled5_set_brightness(struct wled *wled, u16 brightness)
-> +{
-> +	int rc, offset;
-> +	u16 low_limit = wled->max_brightness * 1 / 1000;
-
-Multiplying by 1 is redundant.
-
-
-> +	u8 v[2];
-> +
-> +	/* WLED5's lower limit is 0.1% */
-> +	if (brightness < low_limit)
-> +		brightness = low_limit;
-> +
-> +	v[0] = brightness & 0xff;
-> +	v[1] = (brightness >> 8) & 0x7f;
-> +
-> +	offset = wled5_brightness_reg[wled->cfg.mod_sel];
-> +	rc = regmap_bulk_write(wled->regmap, wled->sink_addr + offset,
-> +			       v, 2);
-> +	return rc;
-> +}
-> +
->  static void wled_ovp_work(struct work_struct *work)
->  {
->  	struct wled *wled = container_of(work,
-> @@ -317,11 +420,67 @@ static int wled4_ovp_fault_status(struct wled *wled, bool *fault_set)
->  	return rc;
->  }
->  
-> +static int wled5_ovp_fault_status(struct wled *wled, bool *fault_set)
-> +{
-> +	int rc;
-> +	u32 int_rt_sts, fault_sts;
-> +
-> +	*fault_set = false;
-> +	rc = regmap_read(wled->regmap,
-> +			wled->ctrl_addr + WLED3_CTRL_REG_INT_RT_STS,
-> +			&int_rt_sts);
-> +	if (rc < 0) {
-> +		dev_err(wled->dev, "Failed to read INT_RT_STS rc=%d\n", rc);
-> +		return rc;
-> +	}
-> +
-> +	rc = regmap_read(wled->regmap,
-> +			wled->ctrl_addr + WLED3_CTRL_REG_FAULT_STATUS,
-> +			&fault_sts);
-> +	if (rc < 0) {
-> +		dev_err(wled->dev, "Failed to read FAULT_STATUS rc=%d\n", rc);
-> +		return rc;
-> +	}
-> +
-> +	if (int_rt_sts & WLED3_CTRL_REG_OVP_FAULT_STATUS)
-> +		*fault_set = true;
-> +
-> +	if (fault_sts & (WLED3_CTRL_REG_OVP_FAULT_BIT |
-> +			       WLED5_CTRL_REG_OVP_PRE_ALARM_BIT))
-
-Correct me if I'm wrong but isn't the only difference between the WLED4
-and WLED5 code that the wled5 code also checks the
-WLED5_CTRL_REG_OVP_PRE_ALARM_BIT ?
-
-If so why do we need to pull out (and duplicate) this code code using
-the function pointers?
-
-> +		*fault_set = true;
-> +
-> +	if (*fault_set)
-> +		dev_dbg(wled->dev, "WLED OVP fault detected, int_rt_sts=0x%x fault_sts=0x%x\n",
-> +			int_rt_sts, fault_sts);
-> +
-> +	return rc;
-> +}
-> +
-> @@ -615,6 +797,7 @@ static void wled_auto_string_detection(struct wled *wled)
->  
->  #define WLED_AUTO_DETECT_OVP_COUNT		5
->  #define WLED_AUTO_DETECT_CNT_DLY_US		USEC_PER_SEC
-> +
-
-Nit picking but this additional line is in the wrong patch ;-)
-
-
->  static bool wled4_auto_detection_required(struct wled *wled)
->  {
->  	s64 elapsed_time_us;
-> @@ -648,6 +831,46 @@ static bool wled4_auto_detection_required(struct wled *wled)
->  	return false;
->  }
->  
-> +static bool wled5_auto_detection_required(struct wled *wled)
-> +{
-> +	s64 elapsed_time_us;
-> +
-> +	if (!wled->cfg.auto_detection_enabled)
-> +		return false;
-> +
-> +	/*
-> +	 * Check if the OVP fault was an occasional one
-> +	 * or if it's firing continuously, the latter qualifies
-> +	 * for an auto-detection check.
-> +	 */
-> +	if (!wled->auto_detection_ovp_count) {
-> +		wled->start_ovp_fault_time = ktime_get();
-> +		wled->auto_detection_ovp_count++;
-> +	} else {
-> +		/*
-> +		 * WLED5 has OVP fault density interrupt configuration i.e. to
-> +		 * count the number of OVP alarms for a certain duration before
-> +		 * triggering OVP fault interrupt. By default, number of OVP
-> +		 * fault events counted before an interrupt is fired is 32 and
-> +		 * the time interval is 12 ms. If we see more than one OVP fault
-> +		 * interrupt, then that should qualify for a real OVP fault
-> +		 * condition to run auto calibration algorithm.
-> +		 */
-
-Given the above why do we have a software mechanism to wait until the
-second time the interrupt fires? I'm a bit rusty on this driver but
-wasn't there already some mechanism to slightly delay turning on the
-fault detection?
-
-
-Daniel.
+I'll post a v2 with the updated comments. I'll document Vitaly's concern ab=
+out
+nested virtualization in the comment.
+=20
+Thanks,
+-- Dexuan
