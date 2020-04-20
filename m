@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23D51B18C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F491B18DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgDTVuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:50:01 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35795 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgDTVuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:50:01 -0400
-Received: by mail-ot1-f67.google.com with SMTP id e20so9567902otl.2;
-        Mon, 20 Apr 2020 14:50:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vYmwwzqG7uqx9g2ELxFVG14owXz8xo4qOPYfFDEaBnk=;
-        b=gedjbVZE0RQ/kZpc1eNrGRNc9pMsnx0nNGWd5xRtMB4JI8RH8gu1zdE+C+AYeWYmcF
-         pNi1rNcYB8tMxVVyo0aUHXjAdJcD4bvOwKT2zmI7ikZ763EAf4OohhHkb1q2uX/ZBO+O
-         0INMGWVyl3s9ffJt1fc8dM6GMnAg/khX1N16x6PURcba8JCmGgWZPK2LBxODQbHpXXPL
-         QX7/ukn+lxKISBu+xnCWHcZ7exHVLu8HwyglTfde/PHfz4D58cGlx5ZkD/BsD5UR39SK
-         yCZU/a5R8DUFkf1Jw0tc1Iy1pdUdMHWbn1TsdEpbjN+6Pi8gtWR3iGmcpImBWz4em0B8
-         2tOg==
-X-Gm-Message-State: AGi0PuZRBmBLXMjSNxwI8dBKai/5fjqPh0yd8IDR/7q+zgSR9L82ij1h
-        jXosoTCGpWLsIYmiisuoLkjqTQk=
-X-Google-Smtp-Source: APiQypLo5amH2CJMms+WGoIdXKyJV3V9lJJ2mR1Um33qIA/Ag0+OPAipS7fQufoA90Fhx/wSicrR3w==
-X-Received: by 2002:a05:6830:1483:: with SMTP id s3mr11058611otq.176.1587419400257;
-        Mon, 20 Apr 2020 14:50:00 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i2sm188842oon.0.2020.04.20.14.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 14:49:59 -0700 (PDT)
-Received: (nullmailer pid 23817 invoked by uid 1000);
-        Mon, 20 Apr 2020 21:49:58 -0000
-Date:   Mon, 20 Apr 2020 16:49:58 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] phy: qcom: qmp: Add SM8250 UFS PHY
-Message-ID: <20200420214958.GA23753@bogus>
-References: <20200415060745.740193-1-bjorn.andersson@linaro.org>
+        id S1726944AbgDTVxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:53:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725989AbgDTVxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 17:53:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0EE2CAE47;
+        Mon, 20 Apr 2020 21:53:41 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 14:50:14 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de,
+        kvm@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, linux-mips@vger.kernel.org,
+        Paul Mackerras <paulus@ozlabs.org>, joel@joelfernandes.org,
+        will@kernel.org, kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH v2] kvm: Replace vcpu->swait with rcuwait
+Message-ID: <20200420215014.sarodevmhphnkkn7@linux-p48b>
+References: <20200324044453.15733-1-dave@stgolabs.net>
+ <20200324044453.15733-4-dave@stgolabs.net>
+ <20200420164132.tjzk5ebx35m66yce@linux-p48b>
+ <418acdb5001a9ae836095b7187338085@misterjones.org>
+ <20200420205641.6sgsllj6pmsnwrvp@linux-p48b>
+ <f7cc83fe-3e91-0057-9af2-26c201456689@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200415060745.740193-1-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f7cc83fe-3e91-0057-9af2-26c201456689@redhat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Apr 2020 23:07:45 -0700, Bjorn Andersson wrote:
-> The SM8250 UFS PHY can run off the same initialization sequence as
-> SM8150, but add the compatible to allow future changes.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom-qmp-phy.txt | 5 +++++
->  drivers/phy/qualcomm/phy-qcom-qmp.c                    | 3 +++
->  2 files changed, 8 insertions(+)
-> 
+On Mon, 20 Apr 2020, Paolo Bonzini wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+>On 20/04/20 22:56, Davidlohr Bueso wrote:
+>> On Mon, 20 Apr 2020, Marc Zyngier wrote:
+>>
+>>> This looks like a change in the semantics of the tracepoint. Before this
+>>> change, 'waited' would have been true if the vcpu waited at all. Here,
+>>> you'd
+>>> have false if it has been interrupted by a signal, even if the vcpu
+>>> has waited
+>>> for a period of time.
+>>
+>> Hmm but sleeps are now uninterruptible as we're using TASK_IDLE.
+>
+>Hold on, does that mean that you can't anymore send a signal in order to
+>kick a thread out of KVM_RUN?  Or am I just misunderstanding?
+
+Considering that the return value of the interruptible wait is not
+checked, I would not think this breaks KVM_RUN.
+
+Thanks,
+Davidlohr
