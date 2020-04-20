@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510C01B0D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4361B0D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgDTNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S1728674AbgDTNrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726307AbgDTNqw (ORCPT
+        by vger.kernel.org with ESMTP id S1728633AbgDTNrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:46:52 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EA1C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:46:52 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t40so4445542pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:46:52 -0700 (PDT)
+        Mon, 20 Apr 2020 09:47:00 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AEBC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:46:59 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id g30so4965178pfr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oVXo0ylRGYJ4zwuQfXiYyJn0JMdjSeEuDU/G14GSpRI=;
-        b=aSSpQWTqjHFqwRMNUGZzpNFg6nXaNN4W/AGY722ZMQ1vLO/09Mhj1CKZdp8tmcqpC6
-         S6NPwmSWHlUo1sM5YUo6eoe987jgRFw8NBYN4cvzZrg6z6zm9EVFKvIPnFTSgJt8GkMP
-         5J2TYhrpdG8fUkikFoHMfSEDcBqnOsTsXlP0ox66vBtXZVkzz7i4LFOCg5LoOaPF08MN
-         5UU5FZRP04YXxxCaUNx6eNoXLoHQ+HWUhR4/+ulaNM52VAot1LkCEaFbpD3RLhEacQyv
-         +3JcRRJvBATQLzZRF4p2b0f+iGlYo1v3S4daLCy2IsKfCznN/pyDCsplt+k39+VYwIYj
-         KGIw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d2ye63/S6Lz/zFEjTlSZ5tXRcsKe+oxNcP2htE8RYF4=;
+        b=EOHqZG5HDsWj1pX7eAu15S+Na0C0+2gIjJ3Gqh44ASXY86SITSXxPYdXl3f5lMHFYb
+         vRUcuEBDYyNpVAbkTYz/pb42HnoUdjmeUgPi4uCESD0+QNOxqsk6Yx+oBAm6HOlTsI5/
+         xQkHqi82zMX4MQjWdhcEqm1fJpABIpOIYgu+Y1xYiZUHNnQRHQIZQb7G3DFo/DJu/PxX
+         8N8giBAk/FDhukW4jCruQD909i/pkrZPTCC263Yw4VAIWqoqWWF71ferxhO9WGbNUkYO
+         3JsnXQsYI9PNQr0Aw7hHJEAjh/VBYnQUHomVNKCRqlcOBEBIbSqdM4rCAkpBhQ++A1Jc
+         k9jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oVXo0ylRGYJ4zwuQfXiYyJn0JMdjSeEuDU/G14GSpRI=;
-        b=IJ6ODd74yBPrCCBkdNflYp15eNOa9sxXHbbZkO6Ba/Vw9zaSPNfxcdBkFBdoW1UIJH
-         nX200S9xXABsg4c3sgTYGaO1l3w4nrSPQ9z9vYEM7JTO1sNpYZJqXXqe487/k7+e37dQ
-         QN60P3C0PVlpcgAXZccWDwGn4m8wocm1WSXYo6A1/gRFkFBYCzJcY2wXePcqNymYlpQA
-         ALf7GfpkgMYTskIs3sUHCzAe/NlLYAWuo9Zg0jgfCqXiHCTbX0tNxntZt62E/XCLlQNO
-         Jf1uBxSni/BNwES3kbTtr8zZd5+skv68cd4TwWJ5X4OExruWIJhprsDDUi6/Aymmx/Jc
-         qiew==
-X-Gm-Message-State: AGi0PublHvS2/Uj4vOtOOe1fa1yxDtcCs4jcf1OuMNEwHGadVYjExp1c
-        sBuRRHxMhWzlLRhZ3QCpbmJjoeOs
-X-Google-Smtp-Source: APiQypLfKCWIfDLE5D9Ilqwo6/7gH0ofgASq9lgw+gOe9g3kSwo9GM6we80kF/99uNBWGFZZWsAywQ==
-X-Received: by 2002:a17:90a:9a89:: with SMTP id e9mr22316534pjp.108.1587390411732;
-        Mon, 20 Apr 2020 06:46:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d2ye63/S6Lz/zFEjTlSZ5tXRcsKe+oxNcP2htE8RYF4=;
+        b=R8INdLzBQS19bsCLWrwDALmqzChJU2niwJDoLLrSUmIMH0oose+V5KuccJT1oCpW0M
+         Y/oJOmtq8LzWfw67hQoVRoqzPr/EvgaG59wveIeCifmM85bVQwpp5FF4M5dknwJre2v+
+         0ufqocpboH3nAcBS9fNnoMWTKezW4BLhFBG4OP+xMujZl+m/+3Ybz+/Jutv5YcQV9GPp
+         oSXxilsVbEwmGo/kceWi5WE7tS8ff61eDJg93mmosloWD8T614dJbHf+WT15J6lP7c2M
+         a9m/y9+XzKJA7IAyYU62PhketFq64BsCSMwovkxvmwo63rEzPmRnhBhJivFvlXLl2qdo
+         Bp0A==
+X-Gm-Message-State: AGi0PuZFv0aLenfb4Bgqw973y8ITuNXsUSU7xksgcotM0apWTKhCFFhe
+        Wuv9O+sp5ujk8JoozRdKs8Q=
+X-Google-Smtp-Source: APiQypLnHRU5ZOxZJIoEbGVKMX+6LC/FekS9VzSNqMtEtlFWpWc9c4S55BBJnxwdnhUQfJ71Dx6Ixg==
+X-Received: by 2002:a62:1950:: with SMTP id 77mr16774806pfz.326.1587390419535;
+        Mon, 20 Apr 2020 06:46:59 -0700 (PDT)
 Received: from localhost (89.208.244.140.16clouds.com. [89.208.244.140])
-        by smtp.gmail.com with ESMTPSA id 135sm1154133pfx.58.2020.04.20.06.46.50
+        by smtp.gmail.com with ESMTPSA id e135sm1117203pfh.37.2020.04.20.06.46.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 Apr 2020 06:46:51 -0700 (PDT)
+        Mon, 20 Apr 2020 06:46:59 -0700 (PDT)
 From:   Dejin Zheng <zhengdejin5@gmail.com>
 To:     broonie@kernel.org
 Cc:     Markus.Elfring@web.de, linux-kernel@vger.kernel.org,
         Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v2 0/2] use read_poll_timeout macro to simplify code
-Date:   Mon, 20 Apr 2020 21:46:45 +0800
-Message-Id: <20200420134647.9121-1-zhengdejin5@gmail.com>
+Subject: [PATCH v2 1/2] regmap: Simplify implementation of the regmap_read_poll_timeout() macro
+Date:   Mon, 20 Apr 2020 21:46:46 +0800
+Message-Id: <20200420134647.9121-2-zhengdejin5@gmail.com>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200420134647.9121-1-zhengdejin5@gmail.com>
+References: <20200420134647.9121-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,22 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify implementation of regmap_read_poll_timeout() macro and
-regmap_field_read_poll_timeout by read_poll_timeout() macro, they have
-many similar codes.
+Simplify the implementation of the macro regmap_read_poll_timeout()
+by using the macro read_poll_timeout().
 
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
 v1 -> v2:
 	- modify the commit comments by Markus's suggestion .
 
-Dejin Zheng (2):
-  regmap: Simplify implementation of the regmap_read_poll_timeout()
-    macro
-  regmap: Simplify implementation of the
-    regmap_field_read_poll_timeout() macro
+ include/linux/regmap.h | 25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
 
- include/linux/regmap.h | 48 ++++++++----------------------------------
- 1 file changed, 9 insertions(+), 39 deletions(-)
-
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 40b07168fd8e..299c1f6a03b4 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -17,6 +17,7 @@
+ #include <linux/err.h>
+ #include <linux/bug.h>
+ #include <linux/lockdep.h>
++#include <linux/iopoll.h>
+ 
+ struct module;
+ struct clk;
+@@ -122,26 +123,10 @@ struct reg_sequence {
+  */
+ #define regmap_read_poll_timeout(map, addr, val, cond, sleep_us, timeout_us) \
+ ({ \
+-	u64 __timeout_us = (timeout_us); \
+-	unsigned long __sleep_us = (sleep_us); \
+-	ktime_t __timeout = ktime_add_us(ktime_get(), __timeout_us); \
+-	int __ret; \
+-	might_sleep_if(__sleep_us); \
+-	for (;;) { \
+-		__ret = regmap_read((map), (addr), &(val)); \
+-		if (__ret) \
+-			break; \
+-		if (cond) \
+-			break; \
+-		if ((__timeout_us) && \
+-		    ktime_compare(ktime_get(), __timeout) > 0) { \
+-			__ret = regmap_read((map), (addr), &(val)); \
+-			break; \
+-		} \
+-		if (__sleep_us) \
+-			usleep_range((__sleep_us >> 2) + 1, __sleep_us); \
+-	} \
+-	__ret ?: ((cond) ? 0 : -ETIMEDOUT); \
++	int __ret, __tmp; \
++	__tmp = read_poll_timeout(regmap_read, __ret, __ret || (cond), \
++			sleep_us, timeout_us, false, (map), (addr), &(val)); \
++	__ret ?: __tmp; \
+ })
+ 
+ /**
 -- 
 2.25.0
 
