@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5E51B00DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9E11B00E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgDTFAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
+        id S1726183AbgDTFIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgDTFA3 (ORCPT
+        with ESMTP id S1725930AbgDTFIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:00:29 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35954C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:00:29 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b12so1399823pff.4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:00:29 -0700 (PDT)
+        Mon, 20 Apr 2020 01:08:36 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0F3C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:08:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id p16so1747613edm.10
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mpVmBINyItbN9tJRKVmVpOS+woKoJyrV26f3Xb0hHNE=;
-        b=Q/HqtMo5vgugwYLK5vfGCzNzBpiu8J4Z1fxAN6yp15Ll8JotAF3X576PMh9RlvqITs
-         OPgsqPX1s1WWPw+LkSAZkBBVzM/q3uexPnYWjCD6EM2U/UUJHknKJkMJ0nCQ/WB96HSz
-         XuwPkdK7W4A2UXjWuOwgwW/ucKlWxU/inxmxWm5vDo3kdZ2yWgC8vOhfDHoAfIad+yS/
-         lrZAmHtQKkqVLDgq/bnDeOqkaxOvrIaR+aLIluuYt7diBi+GHU5sx29dcf7xBZ4RHGSP
-         xo/0W34i0C4hy5vcf9rMgaHvTSFzCfCbM6bs0rxBGGWNjrJme2NUzFT+wVNYVe7ZS8Ai
-         P/hw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uosnnvhWZ3yyd1hjeyEdalFBW58ozyttD3SAmZ9epkk=;
+        b=eoqWpiOwRq7oi4XyC2As+GUHLC5NEcZO1OOE4PRCK1UPnSV64nsIERwHkSaXSb1dXW
+         8ciCXTUnSaOgWRKxTBfIk/x746ztoISrwImvbu7zUF//ygyqTnbEwNtwad8pWAE0tlLF
+         804WRCHLh/Po0dTXTLal3QEkVr8WjIdRa7gF/K9a+6RXlUwuMEDBQgKPvyO9l6kBNiFQ
+         sROA4R4733K1cB+fGzkmc2I49Ou2AL4qMfdApkWJwUKs1HpyfYya8lM6KJGumgV4MRl4
+         rKnBTsXYivznrdqhvAu6F57Kt1Wj4IbjIQ1/BkGhB7vdWkBLJOEtt0vSTZFUHrXOIUX6
+         OZug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mpVmBINyItbN9tJRKVmVpOS+woKoJyrV26f3Xb0hHNE=;
-        b=Ftk5vZXS9xB1QISEP+j+Rtw2c1obMJE0fhBXWMcihfAL0sK1gxRAT89A8uxQ0Nt+gN
-         vXrAMFzIHfyKmBQ5g7v6p+dr6kUXiekUY59YqHpa57hJdhCEr0NUFbvIqroJ7Q1jR+JZ
-         ISB+JCP8teELf4STOTFADSLu3gpgTkM7I9AkTfYd1dpcSQ0JQGeHdCmgrdvGul8S1Dot
-         p5PaI34qrMv0bKyVazkGCob3iMNCtyiroBNg23a3lhQ4QJmwj3iF3Jg+08cfeMTL9CTw
-         F3ohuHJKnpdw9l5j6SKc8MTZlg28IhKV5rG0UwzXHVS+pDWjqfcqtuacCwvdrnUaGHfI
-         7LWQ==
-X-Gm-Message-State: AGi0PuaIOFtiK0PJaQi3PYY6TmDLToyPLj9IO+NMWCPMrItq/dvpV4CP
-        kyRe05cvYh+qYM7bkKW3XIBY5g==
-X-Google-Smtp-Source: APiQypJxnzX7F+q4d+VoMv2cdy9NkKlZeFbo+lrQvAe+aYism0c9YRhFVztGdMBLIshqu+vARP19sw==
-X-Received: by 2002:a63:2057:: with SMTP id r23mr15012894pgm.232.1587358828683;
-        Sun, 19 Apr 2020 22:00:28 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id v9sm3698518pju.3.2020.04.19.22.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 22:00:27 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 22:00:51 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, s-anna@ti.com, elder@linaro.org,
-        Markus.Elfring@web.de, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] remoteproc: Fix IDR initialisation in
- rproc_alloc()
-Message-ID: <20200420050051.GB1516868@builder.lan>
-References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
- <20200415204858.2448-2-mathieu.poirier@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uosnnvhWZ3yyd1hjeyEdalFBW58ozyttD3SAmZ9epkk=;
+        b=ViIWyDDPNJOKGC9S9P78ts8wbvcwgO96SnXL9OSoozqk08oLNO90u+1lgxElwyXYlq
+         BLrHSbszU4ZfKKX3wERo/ES4yYomBuAD906pZyUU2Vn6CFobm6Om22HOCUe1D1j5v0Gj
+         LyBR1iLX5Xcdw6cr9NspBtm0A0YZop8QAABcEtUNIS8Ti46bbFDiMwsVUamgKLKOrCAP
+         q2CTydChgEnHQE65EOKVJclj+c4vky3tR9JCJ5SLNroPqCApuVGKmhosNxTmxnzDvhxI
+         5AJmvgzmiFpX89nOEcOrVhDS2qYhHRZRMYMeHxz2QpidTMikaZltpIjsSiUSZbdNnmMt
+         vmGQ==
+X-Gm-Message-State: AGi0PuaZkyZLJxxQpD93bHmQJFXVGI4L2figJxmzGX1nn7LMa+fUa3Ms
+        ErmdJHPnM0HyCq+PybBnb4y0kTqYmVrKOrP4sZH2Zg==
+X-Google-Smtp-Source: APiQypKvZgj9wXFg38gj+SIw0DMo/cjC6QoMNTqE70yXQ5Mpi1Piz373LSRUoNAHXo/kXfpbyB4oZQtKaQOTioBGdeE=
+X-Received: by 2002:a05:6402:2203:: with SMTP id cq3mr921641edb.154.1587359314565;
+ Sun, 19 Apr 2020 22:08:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415204858.2448-2-mathieu.poirier@linaro.org>
+References: <67FF611B-D10E-4BAF-92EE-684C83C9107E@amacapital.net> <CAHk-=wjePyyiNZo0oufYSn0s46qMYHoFyyNKhLOm5MXnKtfLcg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjePyyiNZo0oufYSn0s46qMYHoFyyNKhLOm5MXnKtfLcg@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sun, 19 Apr 2020 22:08:23 -0700
+Message-ID: <CAPcyv4jQ3s_ZVRvw6jAmm3vcebc-Ucf7FHYP3_nTybwdfQeG8Q@mail.gmail.com>
+Subject: Re: [PATCH] x86/memcpy: Introduce memcpy_mcsafe_fast
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        stable <stable@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15 Apr 13:48 PDT 2020, Mathieu Poirier wrote:
+On Sat, Apr 18, 2020 at 1:52 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sat, Apr 18, 2020 at 1:30 PM Andy Lutomirski <luto@amacapital.net> wro=
+te:
+> >
+> > Maybe I=E2=80=99m missing something obvious, but what=E2=80=99s the alt=
+ernative?  The _mcsafe variants don=E2=80=99t just avoid the REP mess =E2=
+=80=94 they also tell the kernel that this particular access is recoverable=
+ via extable.
+>
+> .. which they could easily do exactly the same way the user space
+> accessors do, just with a much simplified model that doesn't even care
+> about multiple sizes, since unaligned accesses weren't valid anyway.
+>
+> The thing is, all of the MCS code has been nasty. There's no reason
+> for it what-so-ever that I can tell. The hardware has been so
+> incredibly broken that it's basically unusable, and most of the
+> software around it seems to have been about testing.
+>
+> So I absolutely abhor that thing. Everything about that code has
+> screamed "yeah, we completely mis-designed the hardware, we're pushing
+> the problems into software, and nobody even uses it or can test it so
+> there's like 5 people who care".
+>
+> And I'm pushing back on it, because I think that the least the code
+> can do is to at least be simple.
+>
+> For example, none of those optimizations should exist. That function
+> shouldn't have been inline to begin with. And if it really really
+> matters from a performance angle that it was inline (which I doubt),
+> it shouldn't have looked like a memory copy, it should have looked
+> like "get_user()" (except without all the complications of actually
+> having to test addresses or worry about different sizes).
+>
+>
+> And it almost certainly shouldn't have been done in low-level asm
+> either. It could have been a single "read aligned word" interface
+> using an inline asm, and then everything else could have been done as
+> C code around it.
 
-> From: Alex Elder <elder@linaro.org>
-> 
-> If ida_simple_get() returns an error when called in rproc_alloc(),
-> put_device() is called to clean things up.  By this time the rproc
-> device type has been assigned, with rproc_type_release() as the
-> release function.
-> 
-> The first thing rproc_type_release() does is call:
->     idr_destroy(&rproc->notifyids);
-> 
-> But at the time the ida_simple_get() call is made, the notifyids
-> field in the remoteproc structure has not been initialized.
-> 
-> I'm not actually sure this case causes an observable problem, but
-> it's incorrect.  Fix this by initializing the notifyids field before
-> calling ida_simple_get() in rproc_alloc().
-> 
-> Fixes: b5ab5e24e960 ("remoteproc: maintain a generic child device for each rproc")
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Do we have examples of doing exception handling from C? I thought all
+the exception handling copy routines were assembly routines?
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> But no. The software side is almost as messy as the hardware side is.
+> I hate it. And since nobody sane can test it, and the broken hardware
+> is _so_ broken than nobody should ever use it, I have continually
+> pushed back against this kind of ugly nasty special code.
+>
+> We know the writes can't fault, since they are buffered. So they
+> aren't special at all.
 
-> ---
->  drivers/remoteproc/remoteproc_core.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index e12a54e67588..80056513ae71 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2053,6 +2053,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->  	rproc->dev.type = &rproc_type;
->  	rproc->dev.class = &rproc_class;
->  	rproc->dev.driver_data = rproc;
-> +	idr_init(&rproc->notifyids);
->  
->  	/* Assign a unique device index and name */
->  	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
-> @@ -2078,8 +2079,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->  
->  	mutex_init(&rproc->lock);
->  
-> -	idr_init(&rproc->notifyids);
-> -
->  	INIT_LIST_HEAD(&rproc->carveouts);
->  	INIT_LIST_HEAD(&rproc->mappings);
->  	INIT_LIST_HEAD(&rproc->traces);
-> -- 
-> 2.20.1
-> 
+The writes can mmu-fault now that memcpy_mcsafe() is also used by
+_copy_to_iter_mcsafe(). This allows a clean bypass of the block layer
+in fs/dax.c in addition to the pmem driver access of poisoned memory.
+Now that the fallback is a sane rep; movs; it can be considered for
+plain copy_to_iter() for other user copies so you get exception
+handling on kernel access of poison outside of persistent memory. To
+Andy's point I think a recoverable copy (for exceptions or faults) is
+generally useful.
+
+> We know the acceptable reads for the broken hardware basically boil
+> down to a single simple word-size aligned read, so you need _one_
+> special inline asm for that. The rest of the cases can be handled by
+> masking and shifting if you really really need to - and done better
+> that way than with byte accesses anyway.
+>
+> Then you have _one_ C file that implements everything using that
+> single operation (ok, if people absolutely want to do sizes, I guess
+> they can if they can just hide it in that one file), and you have one
+> header file that exposes the interfaces to it, and you're done.
+>
+> And you strive hard as hell to not impact anything else, because you
+> know that the hardware is unacceptable until all those special rules
+> go away. Which they apparently finally have.
+
+I understand the gripes about the mcsafe_slow() implementation, but
+how do I implement mcsafe_fast() any better than how it is currently
+organized given that, setting aside machine check handling,
+memcpy_mcsafe() is the core of a copy_to_iter*() front-end that can
+mmu-fault on either source or destination access?
