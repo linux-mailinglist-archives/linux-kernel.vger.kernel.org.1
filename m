@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B5B1B11E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C791B119E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgDTQlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726671AbgDTQkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:40:06 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF38EC025490
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:32:18 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so420638wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=acWWPzmaQW27xNanSJeIRIY/L2jzIwyKS2KUn4ii4yY=;
-        b=sYHDE5ieByXI+VBlh4AwOfEMN78KnBQoGXrMdWDqHsq/d/O4WAfCG/L0sgwr5lFBAx
-         kOQQYlarB1GjYuFFWl9Oyl5RCXz0dTvFRbnIYqEBMEA9EQaGhzaU6hT5nLBBS3lH4Czu
-         z+RqfkXZkgBXpU4Rbsy9comzYVVmwZqhYBdPw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=acWWPzmaQW27xNanSJeIRIY/L2jzIwyKS2KUn4ii4yY=;
-        b=adNUrfP/T26FwRmjdBn/jwOAPfHfhTZ5DWx7+Cu4V9rqxcvrJqv0KJjZPZdLplXUxx
-         M5OsSDyTMcfqSBsKh+ZWSPlAMxRVd+NKaI+M93GV74Gt+2fRBxDstbzc/fRvCojEkPX9
-         4UMbYHbp71eJgc4mj31AliVD057enVTe3QlfWLJhOlSPU/9RQrxbxlZ1X6pvKFIpYHhI
-         XfI55W0fqdNgKzaD1RaNJS3a4EzIPSTHGmw7QQPyTPTvVBZVsoS8+36Iel1vOh+TzMRI
-         RjmH2vU3SrOWqXb793Qr/ole4SxSobWgy/9B9KKlgeLOJ+2K5XR0h3mKXOfbhDsgoCSD
-         33ZA==
-X-Gm-Message-State: AGi0Pubq935VMuDlnhsFuj5RNvv/XhQdeAL++IX0a+/C+YkOvns0vtFX
-        qmLzgEEVft70nlzCSNtMwlA2UiXPo5M=
-X-Google-Smtp-Source: APiQypKu5siu6x5z4nZE2uzrNDMPyrb7orMB0oSDjCOQwuYBMHsWxg+aZuvF6v4jB7n+81W+V5BlDQ==
-X-Received: by 2002:a05:600c:1:: with SMTP id g1mr172545wmc.142.1587400337578;
-        Mon, 20 Apr 2020 09:32:17 -0700 (PDT)
-Received: from carbon ([94.26.108.4])
-        by smtp.gmail.com with ESMTPSA id z76sm186638wmc.9.2020.04.20.09.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 09:32:16 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 19:32:15 +0300
-From:   Petko Manolov <petko.manolov@konsulko.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] WRITE_ONCE_INC() and friends
-Message-ID: <20200420163215.GA43378@carbon>
-Mail-Followup-To: "Paul E. McKenney" <paulmck@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200419094439.GA32841@carbon>
- <491f0b0bc9e4419d93a78974fd7f44c7@AcuMS.aculab.com>
- <20200419182957.GA36919@carbon>
- <8e5a0283ed76465aac19a2b97a27ff15@AcuMS.aculab.com>
- <20200420150545.GB17661@paulmck-ThinkPad-P72>
+        id S1726310AbgDTQc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:32:28 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:35914 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgDTQc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:32:28 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 380E6FB03;
+        Mon, 20 Apr 2020 18:32:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id f8gHlc_cdbh4; Mon, 20 Apr 2020 18:32:25 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 5748D400FB; Mon, 20 Apr 2020 18:32:24 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 18:32:24 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Martin Kepplinger <martink@posteo.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx8mq-librem5-devkit: Use 0.9V for VDD_GPU
+Message-ID: <20200420163224.GA44571@bogon.m.sigxcpu.org>
+References: <d9bfb11e3d66376792089d54d7d52fe3778efa33.1584636213.git.agx@sigxcpu.org>
+ <20200420145459.GE32419@dragon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200420150545.GB17661@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200420145459.GE32419@dragon>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-04-20 08:05:45, Paul E. McKenney wrote:
-> On Sun, Apr 19, 2020 at 09:37:10PM +0000, David Laight wrote:
-> > From: Petko Manolov
-> > > Sent: 19 April 2020 19:30
-> > > 
-> > > On 20-04-19 18:02:50, David Laight wrote:
-> > > > From: Petko Manolov
-> > > > > Sent: 19 April 2020 10:45
-> > > > > Recently I started reading up on KCSAN and at some point I ran into stuff like:
-> > > > >
-> > > > > WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> > > > > WRITE_ONCE(p->mm->numa_scan_seq, READ_ONCE(p->mm->numa_scan_seq) + 1);
-> > > >
-> > > > If all the accesses use READ/WRITE_ONCE() why not just mark the structure
-> > > > field 'volatile'?
-> > > 
-> > > This is a bit heavy.  I guess you've read this one:
-> > > 
-> > > 	https://lwn.net/Articles/233479/
+Hi,
+On Mon, Apr 20, 2020 at 10:54:59PM +0800, Shawn Guo wrote:
+> On Thu, Mar 19, 2020 at 05:46:02PM +0100, Guido Günther wrote:
+> > According to the imx8mq data sheet running VDD_GPU at 0.9V is enough
+> > when not overclocking to 1GHz (which we currently don't do).
 > > 
-> > I remember reading something similar before.
-> > I also remember a very old gcc (2.95?) that did a readback
-> > after every volatile write on sparc (to flush the store buffer).
-> > That broke everything.
+> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> 
+> It doesn't apply to my branch.
+
+This was against linux next when i sent it, can you link to the branch
+it should apply to please?
+ -- Guido
+
+> 
+> Shawn
+> 
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > I suspect there is a lot more code that is attempting to be lockless
-> > these days.
-> > Ring buffers (one writer and one reader) are a typical example where
-> > you don't need locks but do need to use a consistent value.
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+> > index c47a26cf8e43..736b250bc9c2 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+> > @@ -318,7 +318,7 @@
+> >  				regulator-min-microvolt = <700000>;
+> >  				regulator-max-microvolt = <1300000>;
+> >  				regulator-always-on;
+> > -				rohm,dvs-run-voltage = <1000000>;
+> > +				rohm,dvs-run-voltage = <900000>;
+> >  			};
+> >  
+> >  			buck4_reg: BUCK4 {
+> > -- 
+> > 2.23.0
 > > 
-> > Now you may also need ordering between accesses - which I think needs
-> > more than volatile.
 > 
-> In Petko's patch, all needed ordering is supplied by the fact that it is the 
-> same variable being read and written.  But yes, in many other cases, more 
-> ordering is required.
-
-There's pros and cons, as usual.  Yet another macro(s) versus sorter/more 
-readable code.  This is why i decided to spam the list (and Paul) - in search 
-for another opinion.
-
-> > > And no, i am not sure all accesses are through READ/WRITE_ONCE().  If, for
-> > > example, all others are from withing spin_lock/unlock pairs then we _may_ not
-> > > need READ/WRITE_ONCE().
-> > 
-> > The cost of volatile accesses is probably minimal unless the
-> > code is written assuming the compiler will only access things once.
-> 
-> And there are variables marked as volatile, for example, jiffies.
-> 
-> But one downside of declaring variables volatile is that it can prevent KCSAN 
-> from spotting violations of the concurrency design for those variables.
-
-Which would be unfortunate.
-
-I just wish there was C type declaration that would force the compiler to do 
-what READ/WRITE_ONCE() does now, but i also know this is too naive... :)
-
-
-		Petko
-
-
-> > > I merely proposed the _INC() variant for better readability.
-> > 
-> > More like shorter code lines :-)
-> 
-> That too!  ;-)
-> 
-> 							Thanx, Paul
