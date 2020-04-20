@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32011AFF62
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 03:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57C51AFF5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 03:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgDTBGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 21:06:10 -0400
-Received: from mx.cjr.nz ([51.158.111.142]:30162 "EHLO mx.cjr.nz"
+        id S1726009AbgDTBDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 21:03:46 -0400
+Received: from mga04.intel.com ([192.55.52.120]:2723 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgDTBGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 21:06:09 -0400
-X-Greylist: delayed 455 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Apr 2020 21:06:08 EDT
-Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
-        (Authenticated sender: pc)
-        by mx.cjr.nz (Postfix) with ESMTPSA id 4D1BC7FCFC;
-        Mon, 20 Apr 2020 00:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
-        t=1587344312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UAr7dQ1lkh5Q0MOSA+C5E6a/FibwZsB/6txDi0hUANQ=;
-        b=NDBi3jMq9coPi8YRdzSeQB0Y1zLZ5hA6rcD82Eutcxbaudjs5HacYYdLbi6/XFiHiW6JRa
-        xjQLgknfdLihkIdqkp0WpVPftqBnWUtiIIxrPn+F+Wf/3dMwavyxXObm3+jjxI+Va6Hhvh
-        U2FQE/cL0C4A+YZJnwXe0GMtk/HbCTg5XJ9hqhj1QketlwCv9ANViPQF66gOvZD3Nli1Kj
-        EcyM3gGEZ6JHL0qzfei5TjQ73DVLh5pQJ0Z6OLuCUogsIsjcILpPR2vJzOlNqnIkpewArk
-        TuiohUvQfc08jNbN9FPzp2dA5vcdK/vskwY+ueQhovb/36hVqlUgPs1IKPmm1Q==
-From:   Paulo Alcantara <pc@cjr.nz>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     dhowells@redhat.com, linux-nfs <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, linux-afs@lists.infradead.org,
-        ceph-devel@vger.kernel.org, keyrings@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, fweimer@redhat.com
-Subject: Re: What's a good default TTL for DNS keys in the kernel
-In-Reply-To: <927453.1587285472@warthog.procyon.org.uk>
-References: <CAH2r5mv5p=WJQu2SbTn53FeTsXyN6ke_CgEjVARQ3fX8QAtK_w@mail.gmail.com>
- <3865908.1586874010@warthog.procyon.org.uk>
- <927453.1587285472@warthog.procyon.org.uk>
-Date:   Sun, 19 Apr 2020 21:58:25 -0300
-Message-ID: <87imhvj7m6.fsf@cjr.nz>
+        id S1725949AbgDTBDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 21:03:46 -0400
+IronPort-SDR: SV1sq4NIbHFCv/Bdbxvosxc/BMQNqjVbA89U0BUUwCqaffdmwg2K0RM+mRkExAHe9IQDoI6cXA
+ TCjEGTS9jiMA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2020 18:03:46 -0700
+IronPort-SDR: fW3Emu5AXRqLLewgTQcdcurUevbhcclKe+GY2wxiKpczEMkA9ZfkmyNklZVPDbuE/71bbd3jQi
+ 2Ob828pgvmlg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,405,1580803200"; 
+   d="scan'208";a="300141109"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Apr 2020 18:03:43 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <tim.c.chen@linux.intel.com>
+Subject: Re: [PATCH 3/4] mm/swapfile.c: compare tmp and max after trying to iterate on swap_map
+References: <20200419013921.14390-1-richard.weiyang@gmail.com>
+        <20200419013921.14390-3-richard.weiyang@gmail.com>
+Date:   Mon, 20 Apr 2020 09:03:43 +0800
+In-Reply-To: <20200419013921.14390-3-richard.weiyang@gmail.com> (Wei Yang's
+        message of "Sun, 19 Apr 2020 01:39:20 +0000")
+Message-ID: <87ftczt1cg.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ascii
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> writes:
+Wei Yang <richard.weiyang@gmail.com> writes:
 
-> Steve French <smfrench@gmail.com> wrote:
+> There are two duplicate code to handle the case when there is no
+> available swap entry. Just let the code go through and do the check at
+> second place.
 >
->> For SMB3/CIFS mounts, Paulo added support last year for automatic
->> reconnect if the IP address of the server changes.  It also is helpful
->> when DFS (global name space) addresses change.
+> No functional change is expected.
 >
-> What happens if the IP address the superblock is going to changes, then
-> another mount is made back to the original IP address?  Does the second mount
-> just pick the original superblock?
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> ---
+>  mm/swapfile.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 3aae700f9931..07b0bc095411 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -629,10 +629,6 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>  	tmp = cluster->next;
+>  	max = min_t(unsigned long, si->max,
+>  		    (cluster_next(&cluster->index) + 1) * SWAPFILE_CLUSTER);
+> -	if (tmp >= max) {
+> -		cluster_set_null(&cluster->index);
+> -		goto new_cluster;
+> -	}
 
-It is going to transparently reconnect to the new ip address, SMB share,
-and cifs superblock is kept unchanged.  We, however, update internal
-TCP_Server_Info structure to reflect new destination ip address.
+The code is to avoid to acquire the cluster lock unnecessarily.  So I think
+we should keep this.
 
-For the second mount, since the hostname (extracted out of the UNC path
-at mount time) resolves to a new ip address and that address was saved earlier
-in TCP_Server_Info structure during reconnect, we will end up
-reusing same cifs superblock as per fs/cifs/connect.c:cifs_match_super().
+Best Regards,
+Huang, Ying
+
+>  	ci = lock_cluster(si, tmp);
+>  	while (tmp < max) {
+>  		if (!si->swap_map[tmp])
