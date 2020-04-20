@@ -2,165 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CEB1B0F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBDE1B0F6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgDTPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 11:09:19 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:33771 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgDTPJS (ORCPT
+        id S1730116AbgDTPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 11:11:41 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:38932 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbgDTPLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:09:18 -0400
-Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MSLAe-1jolyG1rNA-00Sdja; Mon, 20 Apr 2020 17:09:16 +0200
-Received: by mail-qt1-f180.google.com with SMTP id s30so8728005qth.2;
-        Mon, 20 Apr 2020 08:09:16 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY3z8D16zKoWUD4YVPM+iyj+k1LVIvV+OUtnVYjaA39ULZVS5yE
-        fGpt8ftaLogAq3qRxhKIjow6BwsS1MWO+M/AlV8=
-X-Google-Smtp-Source: APiQypJgseXmlO6GHKcMOD3zsvuToKgCjFz6eeo4chliJJ+LnwdpDCUCjr2uKYzQRrYo6R5GA9ERvuoEBEzqxVkv29Y=
-X-Received: by 2002:ac8:2bce:: with SMTP id n14mr5618911qtn.18.1587395355149;
- Mon, 20 Apr 2020 08:09:15 -0700 (PDT)
+        Mon, 20 Apr 2020 11:11:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1587395500; x=1618931500;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=s3zQXyGmklidFX59symdn4Qk7S18R1EzO24cUdDxYl0=;
+  b=qpYH9t9yvf8FrIeX7VwOtBhLm/dzg8GfVxTdSOLPolvMQL1Nl8x7Kcai
+   Qv92P6jCBCmRRXV5c6g5+OoyggNkeUi+cKrwzmJLLfFlUapBJ7aT6c7JS
+   YDz5pj66zK+uI+Y3zd1FFWV+rzm5/agiIgdGmX6iyRZhxPR1JcKGLWpDv
+   UOpdCy2o+gVivXCwVbg2BVrvuLfHbO1S9/1bkNlBCDG8VbWvqvTBki+vo
+   u6NIS60WKiOOwOPUalTFZl3kL4E3JsDBuVXmpgjILIGarHCwAQeM5PaAe
+   zPRdWoiLr+mRrQXucYeD89bPKNX6rvOtTPSLlApqMUrlIAM+HipVu6zSh
+   Q==;
+IronPort-SDR: q2ZpVZlh1iXMbaXRUk1oL5rNmob3Uo9PiUrrjZohVNAfgo+F6zE0AWUq9F7Qiigp4JPxlGtH0L
+ 6vpqt5xJTkjbJT3OrOju1BcxHngD1LcaNPuXEDkcxQzFCi5UelqQDStyW1+WvV0eLCkYyJw89X
+ WdbzHjxr3f6zJGPwrwxm/4L28Mob6qx0RrOKLtG2DP1ujyckCmWL2yiuI32daz1yCCDYW0+Nj7
+ yIoLqjvlD8cz2YEUlAnuUxG7LG/FMqdAZ7VD1P3DIZ2PZDlpswhukSFJH8Wo3euJIuPzyWHz9g
+ vFI=
+X-IronPort-AV: E=Sophos;i="5.72,406,1580799600"; 
+   d="scan'208";a="72755047"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Apr 2020 08:11:39 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 20 Apr 2020 08:11:39 -0700
+Received: from soft-dev3.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Mon, 20 Apr 2020 08:11:08 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <davem@davemloft.net>,
+        <jiri@resnulli.us>, <ivecera@redhat.com>, <kuba@kernel.org>,
+        <roopa@cumulusnetworks.com>, <olteanv@gmail.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next 00/13] net: bridge: mrp: Add support for Media Redundancy Protocol(MRP)
+Date:   Mon, 20 Apr 2020 17:09:34 +0200
+Message-ID: <20200420150947.30974-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200420123844.3998746-1-arnd@arndb.de> <CAMuHMdUZR9A+nCYL_uUOJt48FQnJTJ9eMwWUuV-Z0UWJZ8SaSA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUZR9A+nCYL_uUOJt48FQnJTJ9eMwWUuV-Z0UWJZ8SaSA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 20 Apr 2020 17:08:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2y4n-jv3eNWW4q__YP=QA7UDuybs4nBwdTuiqWm247Tg@mail.gmail.com>
-Message-ID: <CAK8P3a2y4n-jv3eNWW4q__YP=QA7UDuybs4nBwdTuiqWm247Tg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sh: remove sh5 support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-sh list <linux-sh@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Magnus Damm <magnus.damm@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:K0FNXlbtXhDJYQno5K5L8jeEwJIrm2WxH8RgAIO5FZWELRYRGtN
- APx6kiZrV8Qj/f+nUBcEE3BTMjihf3MLusHcMmyXDC4l5wc4eitrTOWQRseIU41KFxRdsFe
- hUgae+wAhC51FljF56shldTh62uRaIvGXhQBWZAVUfpB4okzsuF8b4kaoYTp2sS/HamroT1
- GeAUlXDcxV8H2kPAHeBig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:urC7Rm9uIhA=:BdHT/5sokzOpk/ze7DDZfr
- 8GjCVmtbmj559dHAZa8paq3Dy24r82QXm3d807d6Ekxy6AQd/4gUtDiD05eeEwjRAmqtS2sMh
- QdW3H6h+2cmdRT1cK/Q9pW2abH43e8PnIHHiRUaUWUzAHlttH8jNxQg4N3WfJsPHUHrbgnCRb
- evLDrPstXa43hY5R44s9GGRVoXs9GCVe3P0hR76U75ZUhbJntmRgTeRga1wesaYVZzqvFxRkR
- FQd8TyKXT7WtBfFTqioOMSAuiNCu5PqTL3y1F3Prb6RZ5NZcaYxoIQmWTIDqhVdAQ76S1o6la
- upp4RJ68hdnqyQQyFuYblr9e6gOeV6CQeaA300ez3Ld5XIDIO/Ju4C3skcWRvA/a9YTz8Iip0
- kVvIONVHOlLTDAHnWJHhqxzuyYGF+noifDq+jC7Vnl1ms5RrJxosy54CisbonJ/pGEC6S0toz
- RYIx7rT8KEEE1XuvESMaCj1p7gL+JkSKRE2dxLSVh5dUQ40wLA3Z/Z+8X5GU4wSmUowMoYyQs
- ds1pK2p6ykRLEFg8zknfpsF5FUSVo1g/rQaDf42XiCeKwq590BBT5LBX133g/hBdkg+SGbxeJ
- BT2dtVW63Mf1v+jIk7fCx8qyvUlRFJZp5ZAk5Cwl36YsgTpeiiJjq7/y4irokWycQF/+lh9lj
- q6Ls2ks5cm8nKuN713gNKBv69Tw4sgGgXU0yr7vQGmYrCvfAXiCjEMSLHD7F3fo8kdorVgyqx
- 7+5SEddf63C3RfbIOUACo8624KAMD50++PeyMdWLRo72Dbul89iU/T3YnA+Xs7aFSncZIqowj
- JlctqlWyTo/2nEOiHxqLzEwqFn/BC3xfEmIjG6xlR52qvHzudM=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 4:40 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Arnd,
->
-> On Mon, Apr 20, 2020 at 2:40 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > sh5 never became a product and has probably never really worked.
-> >
-> > Remove it by recursively deleting all associated Kconfig options
-> > and all corresponding files.
->
-> Thanks a lot!
->
-> > For review purposes, this leaves out the files that can now be
-> > removed, in particular
-> >
-> >  arch/sh/drivers/pci/*-sh5.c
-> >  arch/sh/include/asm/*_64.h
-> >  arch/sh/include/uapi/asm/*_64.h
-> >  arch/sh/include/cpu-sh5/*
-> >  arch/sh/kernel/cpu/sh5/*
-> >  arch/sh/lib64/*
-> >  arch/sh/mm/*-sh5.c
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> A few nits below...
->
-> > --- a/arch/sh/Kconfig
-> > +++ b/arch/sh/Kconfig
-> > @@ -62,7 +62,7 @@ config SUPERH
-> >           <http://www.linux-sh.org/>.
-> >
-> >  config SUPERH32
->
-> Why keep the SUPERH32 symbol?
-> Because you forgot to clean a few files?
+Media Redundancy Protocol is a data network protocol standardized by
+International Electrotechnical Commission as IEC 62439-2. It allows rings of
+Ethernet switches to overcome any single failure with recovery time faster than
+STP. It is primarily used in Industrial Ethernet applications.
 
-It seemed simpler this way, but I can remove it as well.
+Based on the previous RFC[1][2][3][4][5], the MRP state machine and all the
+timers were moved to userspace, except for the timers used to generate MRP Test
+frames.  In this way the userspace doesn't know and should not know if the HW or
+the kernel will generate the MRP Test frames. The following changes were added
+to the bridge to support the MRP:
+- the existing netlink interface was extended with MRP support,
+- allow to detect when a MRP frame was received on a MRP ring port
+- allow MRP instance to forward/terminate MRP frames
+- generate MRP Test frames in case the HW doesn't have support for this
 
->     arch/sh/include/asm/bl_bit.h:#ifdef CONFIG_SUPERH32
->     arch/sh/include/asm/cache_insns.h:#ifdef CONFIG_SUPERH32
->     arch/sh/include/asm/checksum.h:#ifdef CONFIG_SUPERH32
+To be able to offload MRP support to HW, the switchdev API  was extend.
 
-Ah, I had removed these at first when I renamed the *_32.h over
-those files, but then decided to not do that, to keep the patch
-easier to review.
+With these changes the userspace doesn't do the following because already the
+kernel/HW will do:
+- doesn't need to forward/terminate MRP frames
+- doesn't need to generate MRP Test frames
+- doesn't need to detect when the ring is open/closed.
 
-> > --- a/arch/sh/include/asm/vmlinux.lds.h
-> > +++ b/arch/sh/include/asm/vmlinux.lds.h
-> > @@ -15,12 +15,6 @@
-> >  #define DWARF_EH_FRAME
-> >  #endif
-> >
-> > -#ifdef CONFIG_SUPERH64
-> > -#define EXTRA_TEXT             \
-> > -       *(.text64)              \
-> > -       *(.text..SHmedia32)
-> > -#else
-> >  #define EXTRA_TEXT
-> > -#endif
->
-> You might remove the empty definition, too, as you removed the sole user...
+The userspace application that is using the new netlink can be found here[6].
 
-Right, I planned to remove that one and forgot.
+The current implementation both in kernel and userspace supports only 2 roles:
+  MRM - this one is responsible to send MRP_Test and MRP_Topo frames on both
+  ring ports. It needs to process MRP_Test to know if the ring is open or
+  closed. This operation is desired to be offloaded to the HW because it
+  requires to generate and process up to 4000 frames per second. Whenever it
+  detects that the ring is open it sends MRP_Topo frames to notify all MRC about
+  changes in the topology. MRM needs also to process MRP_LinkChange frames,
+  these frames are generated by the MRC. When the ring is open then the state
+  of both ports is to forward frames and when the ring is closed then the
+  secondary port is blocked.
 
-> > --- a/arch/sh/kernel/vmlinux.lds.S
-> > +++ b/arch/sh/kernel/vmlinux.lds.S
->
-> > @@ -28,14 +21,13 @@ SECTIONS
-> >
-> >         _text = .;              /* Text and read-only data */
-> >
-> > -       .empty_zero_page : AT(ADDR(.empty_zero_page) - LOAD_OFFSET) {
-> > +       .empty_zero_page : AT(ADDR(.empty_zero_page)) {
-> >                 *(.empty_zero_page)
-> >         } = 0
-> >
-> > -       .text : AT(ADDR(.text) - LOAD_OFFSET) {
-> > +       .text : AT(ADDR(.text)) {
-> >                 HEAD_TEXT
-> >                 TEXT_TEXT
-> > -               EXTRA_TEXT
->
-> ... here.
->
-> >                 SCHED_TEXT
-> >                 CPUIDLE_TEXT
-> >                 LOCK_TEXT
->
-> I think at least some of the following should be cleant, too:
->
-> arch/sh/include/asm/elf.h:#ifdef __SH5__
-> arch/sh/include/uapi/asm/posix_types.h:# ifdef __SH5__
-> arch/sh/include/uapi/asm/swab.h:#ifdef __SH5__
-> arch/sh/include/uapi/asm/swab.h:#ifdef __SH5__
-> arch/sh/include/uapi/asm/unistd.h:# ifdef __SH5__
-> tools/arch/sh/include/asm/barrier.h:#if defined(__SH4A__) || defined(__SH5__)
+  MRC - this one is responsible to forward MRP frames between the ring ports.
+  In case one of the ring ports gets a link down or up, then MRC will generate
+  a MRP_LinkChange frames. This node should also process MRP_Topo frames and to
+  clear its FDB when it receives this frame.
 
-Good catch, thanks!
+ Userspace
+               Deamon +----------+ Client
+                +
+                |
+ +--------------|-----------------------------------------+
+  Kernel        |
+                + Netlink
 
-        Arnd
+                |                              + Interrupt
+                |                              |
+ +--------------|------------------------------|----------+
+  HW            | Switchdev                    |
+                +                              |
+
+The user interacts using the client (called 'mrp'), the client talks to the
+deamon (called 'mrp_server'), which talks with the kernel using netlink. The
+kernel will try to offload the requests to the HW via switchdev API.
+
+If this will be accepted then in the future the netlink interface can be
+expended with multiple attributes which are required by different roles of the
+MRP. Like Media Redundancy Automanager(MRA), Media Interconnect Manager(MIM) and
+Media Interconnect Client(MIC).
+
+[1] https://www.spinics.net/lists/netdev/msg623647.html
+[2] https://www.spinics.net/lists/netdev/msg624378.html
+[3] https://www.spinics.net/lists/netdev/msg627500.html
+[4] https://www.spinics.net/lists/netdev/msg641005.html
+[5] https://www.spinics.net/lists/netdev/msg643991.html
+[6] https://github.com/microchip-ung/mrp/tree/patch-v6
+
+-v1:
+  - fix bisectability issues
+  - in case of errors use extack
+
+-RFC v5:
+  - use nla_parse_nested
+  - rework the usage of the rcu in br_mrp
+  - reorder patches
+  - few other small issues raised by Nikolay
+
+-RFC v4:
+  - extend existing netlink interface to add mrp support
+  - use rcu locks
+
+-RFC v3:
+  - move MRP state machine in userspace
+  - create generic netlink interface for configuring the HW using switchdev API
+
+-RFC v2:
+  - extend switchdev API to offload to HW
+
+Horatiu Vultur (13):
+  bridge: uapi: mrp: Add mrp attributes.
+  net: bridge: Add port attribute IFLA_BRPORT_MRP_RING_OPEN
+  bridge: mrp: Update Kconfig
+  bridge: mrp: Expose function br_mrp_port_open
+  bridge: mrp: Add MRP interface.
+  bridge: mrp: Extend bridge interface
+  switchdev: mrp: Extend switchdev API to offload MRP
+  bridge: switchdev: mrp: Implement MRP API for switchdev
+  bridge: mrp: Connect MRP API with the switchev API
+  bridge: mrp: Implement netlink interface to configure MRP
+  bridge: mrp: Update Makefile
+  bridge: mrp: Integrate MRP into the bridge
+  net: bridge: Add checks for enabling the STP.
+
+ include/linux/if_bridge.h          |   1 +
+ include/linux/mrp_bridge.h         |  27 ++
+ include/net/switchdev.h            |  62 ++++
+ include/uapi/linux/if_bridge.h     |  42 +++
+ include/uapi/linux/if_ether.h      |   1 +
+ include/uapi/linux/if_link.h       |   1 +
+ include/uapi/linux/mrp_bridge.h    |  84 +++++
+ net/bridge/Kconfig                 |  12 +
+ net/bridge/Makefile                |   2 +
+ net/bridge/br_device.c             |   3 +
+ net/bridge/br_if.c                 |   2 +
+ net/bridge/br_input.c              |   3 +
+ net/bridge/br_ioctl.c              |   3 +-
+ net/bridge/br_mrp.c                | 551 +++++++++++++++++++++++++++++
+ net/bridge/br_mrp_netlink.c        | 117 ++++++
+ net/bridge/br_mrp_switchdev.c      | 141 ++++++++
+ net/bridge/br_netlink.c            |  15 +-
+ net/bridge/br_private.h            |  42 ++-
+ net/bridge/br_private_mrp.h        |  60 ++++
+ net/bridge/br_stp.c                |   6 +
+ net/bridge/br_stp_if.c             |  11 +-
+ net/bridge/br_sysfs_br.c           |   4 +-
+ tools/include/uapi/linux/if_link.h |   1 +
+ 23 files changed, 1183 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/mrp_bridge.h
+ create mode 100644 include/uapi/linux/mrp_bridge.h
+ create mode 100644 net/bridge/br_mrp.c
+ create mode 100644 net/bridge/br_mrp_netlink.c
+ create mode 100644 net/bridge/br_mrp_switchdev.c
+ create mode 100644 net/bridge/br_private_mrp.h
+
+-- 
+2.17.1
+
