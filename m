@@ -2,68 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829631B0E6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AF61B0E73
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgDTOa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729002AbgDTOa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:30:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 630E320B1F;
-        Mon, 20 Apr 2020 14:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587393057;
-        bh=1MM2YWhi3e2vrsxEwFMk4HeCduw6RjfxTXdbMfd5/ds=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mTh3SsZYt3dXwIf7fFg8vwSyGeIguoE1VxBW0XkQPhS2I+MYgjRNEwFga2HEcPiXC
-         Nby/pIucs017PdWVF6b8BB/ayosJVPfsmyNeWQnjdEvYSQAFVca3S+4S3ojLXhw3sK
-         4voasffhwOkHLE2CssNPWqoqyDQc9Z3HMyP+pOAw=
-Date:   Mon, 20 Apr 2020 16:30:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Allison Randal <allison@lohutok.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/9] drm/msm/adreno: add A640/A650 to gpulist
-Message-ID: <20200420143055.GC4125486@kroah.com>
-References: <20200420140313.7263-1-jonathan@marek.ca>
- <20200420140313.7263-2-jonathan@marek.ca>
+        id S1729451AbgDTOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:32:47 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7438 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728028AbgDTOcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:32:46 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9db2510000>; Mon, 20 Apr 2020 07:31:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 20 Apr 2020 07:32:46 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 20 Apr 2020 07:32:46 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Apr
+ 2020 14:32:46 +0000
+Received: from [10.26.73.5] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Apr
+ 2020 14:32:44 +0000
+Subject: Re: [PATCH] usb: gadget: tegra-xudc: Fix idle suspend/resume
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Nagarjuna Kristam <nkristam@nvidia.com>,
+        <linux-usb@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200417170537.2540914-1-thierry.reding@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <60250b1f-f721-0631-59bf-513576473f44@nvidia.com>
+Date:   Mon, 20 Apr 2020 15:32:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420140313.7263-2-jonathan@marek.ca>
+In-Reply-To: <20200417170537.2540914-1-thierry.reding@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587393105; bh=toH/pecuB89VX7SWlMWownm60l5bU9nUI52RJVrzz8o=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=QCL2VPUYrf4DBc6ejLE/f7QMmkZQSfsfbEkaSTvYZ41SuzRdyCEQq3wlwHQh98aF3
+         hPFCSGoZyz9Ox0myXXzupPMwVW1YbBMuY0kEY1sI46nQO+ILA+wrqjfI3/u/VdKxHN
+         weE1jP9LFeohRVRBwPFer9wNIGxbpUscAz2pJEb6spnJWEu9ob9SMdRudnHLx0ureW
+         bRJaBIGFbw0ArpEhYnOtIUPI/Li09my72cA9pTpYQliiItN1XBnudPEX48v2lZn5SJ
+         v71u5FMDgjb+8d69HuCBpIlTE4faHZ685krfc4Q0RGhZNX5bB5tKKHhpMsuZb6j94w
+         /1Sl1UmFhT82w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 10:03:05AM -0400, Jonathan Marek wrote:
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/gpu/drm/msm/adreno/adreno_device.c | 24 ++++++++++++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c    |  2 +-
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h    | 10 +++++++++
->  3 files changed, 35 insertions(+), 1 deletion(-)
 
-I know I don't accept patches without any changelog text, maybe other
-subsystem maintainers are more lax...
+On 17/04/2020 18:05, Thierry Reding wrote:
+> From: Thierry Reding <treding@nvidia.com>
+> 
+> When the XUDC device is idle (i.e. powergated), care must be taken not
+> to access any registers because that would lead to a crash.
+> 
+> Move the call to tegra_xudc_device_mode_off() into the same conditional
+> as the tegra_xudc_powergate() call to make sure we only force device
+> mode off if the XUDC is actually powered up.
+> 
+> Fixes: 49db427232fe ("usb: gadget: Add UDC driver for tegra XUSB device mode controller")
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  drivers/usb/gadget/udc/tegra-xudc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
+> index 52a6add961f4..dfabc54cdc27 100644
+> --- a/drivers/usb/gadget/udc/tegra-xudc.c
+> +++ b/drivers/usb/gadget/udc/tegra-xudc.c
+> @@ -3840,11 +3840,11 @@ static int __maybe_unused tegra_xudc_suspend(struct device *dev)
+>  
+>  	flush_work(&xudc->usb_role_sw_work);
+>  
+> -	/* Forcibly disconnect before powergating. */
+> -	tegra_xudc_device_mode_off(xudc);
+> -
+> -	if (!pm_runtime_status_suspended(dev))
+> +	if (!pm_runtime_status_suspended(dev)) {
+> +		/* Forcibly disconnect before powergating. */
+> +		tegra_xudc_device_mode_off(xudc);
+>  		tegra_xudc_powergate(xudc);
+> +	}
+>  
+>  	pm_runtime_disable(dev);
+
+
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
+-- 
+nvpublic
