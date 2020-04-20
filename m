@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B00D1B05A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB6E1B05AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgDTJ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 05:29:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38668 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgDTJ3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:29:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 73A92AEAA;
-        Mon, 20 Apr 2020 09:29:22 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm: compaction: avoid migrating non-cma pages to a
- cma area
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Qian Cai <cai@lca.pw>, Andrea Arcangeli <aarcange@redhat.com>,
-        Joonsoo Kim <js1304@gmail.com>
-References: <20200408194119.1076232-1-guro@fb.com>
- <225868db-b9b0-3614-de0f-4b264023df2b@suse.cz>
- <20200414154204.GC42877@carbon.lan>
- <c60fc30f-463c-31cd-0100-d26a92b83c9d@suse.cz>
- <20200417192116.GA338526@carbon.DHCP.thefacebook.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1fb8832f-18c1-cc12-7616-1d724b2bdb4f@suse.cz>
-Date:   Mon, 20 Apr 2020 11:29:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726089AbgDTJbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725775AbgDTJbi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 05:31:38 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC81C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 02:31:37 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F08140068F64889F873250A.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:1400:68f6:4889:f873:250a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5221D1EC0469;
+        Mon, 20 Apr 2020 11:31:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1587375096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CXhTfvXi11xyHHW7Yd77e/vXQQSj/cvzXDUeJIedA8g=;
+        b=fynmVLdY6AUb68D6SdKAM4i7yRswJcGa/nZw0Ce5PtMXYuLkgWosT91CehApC5vMx+21lk
+        Y+mGSvvLzToXwGFDVC6oYYlClGr866kd49Yqjn0u0XdohWOiLdU/+zAdxfhrUQWPAR9v+q
+        BU2sMXvgX5YPZnaaHzu+8TASg8aaJZE=
+Date:   Mon, 20 Apr 2020 11:31:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Evalds Iodzevics <evalds.iodzevics@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        tglx@linutronix.de, Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [PATCH] x86/microcode/intel: replace sync_core() with
+ native_cpuid_reg(eax)
+Message-ID: <20200420093129.GA21839@zn.tnic>
+References: <20200420120037.1537-1-evalds.iodzevics@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200417192116.GA338526@carbon.DHCP.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200420120037.1537-1-evalds.iodzevics@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/20 9:21 PM, Roman Gushchin wrote:
-> On Fri, Apr 17, 2020 at 10:37:14AM +0200, Vlastimil Babka wrote:
->> But I've only now also realized how dynamic setting cc->cma is. So in case a
->> zone consists mostly of CMA blocks, removing ALLOC_CMA in
->> __compaction_suitable() would be actually wrong and prevent compaction from
->> doing any work? Sigh. Any idea about that?
+On Mon, Apr 20, 2020 at 03:00:37PM +0300, Evalds Iodzevics wrote:
+> sync_core() always jums past cpuid instruction on 32 bit machines
+> because data structure boot_cpu_data are not populated so early in boot.
+
+I'm guessing because boot_cpu_data.cpuid_level is not properly set and
+very early code in head_32.S sets it to -1 temporarily until the highest
+CPUID level has been detected (or not).
+
+But the microcode loading happens *before* that.
+
+I'd probably be interested how you trigger that but since the backport
+got changed (see below) and yours is correcting it to the upstream
+variant then perhaps maybe I don't care that much. :)
+
+> It depends on commit 5dedade6dfa243c130b85d1e4daba6f027805033 for
+> native_cpuid_reg(eax) definitions
 > 
-> Hm, idk, is it a realistic setup? Looks like it depends significantly on
-> the exact usecase.
-
-Yes :/ depends e.g. on how many hugepages are reserved, right?
-
-> Another option is to move the cma area closer to the beginning of a zone.
-
-That wouldn't hurt I guess.
-
->> 
->> >> 
->> >> And long-term what happens if the "CMA using ZONE_MOVABLE" approach is merged
->> >> and there are not more CMA migratetypes to test? Might this change actually also
->> >> avoid your issue, as said pages without __GFP_MOVABLE won't end up in a
->> >> ZONE_MOVABLE?
->> > 
->> > Yeah, this is what I was thinking about. Basically I want to mimic this behavior
->> > right now. Once this approach will be implemented and merged, it will happen
->> > automatically: obviously, compaction won't move pages between different zones.
+> This patch is for 4.4 but also should apply to 4.9
 > 
-> After the second thought it's not so obvious: CMA would need to migrate pages
-> (data) between zones, right? It might bring some other complications.
-
-I don't recall how it was implemented, but I assume yeah. There shouldn't be
-complications I think, migrating out of CMA area should cause no issue for CMA,
-and such migrations between zones or even nodes already happen.
-
->> 
->> That will be much better. Can't wait, then :)
+> Signed-off-by: Evalds Iodzevics <evalds.iodzevics@gmail.com>
+> ---
+>  arch/x86/include/asm/microcode_intel.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Yeah, if it will happen soon-ish, we can just wait. I just don't know
-> how hard it is and how many edge cases are there to be figured out first.
-> 
-> Do you think that it's better to wait and do not merge this patch upstream?
+> diff --git a/arch/x86/include/asm/microcode_intel.h b/arch/x86/include/asm/microcode_intel.h
+> index 90343ba50485..92ce9c8a508b 100644
+> --- a/arch/x86/include/asm/microcode_intel.h
+> +++ b/arch/x86/include/asm/microcode_intel.h
+> @@ -60,7 +60,7 @@ static inline u32 intel_get_microcode_revision(void)
+>  	native_wrmsrl(MSR_IA32_UCODE_REV, 0);
+>  
+>  	/* As documented in the SDM: Do a CPUID 1 here */
+> -	sync_core();
+> +	native_cpuid_eax(1);
+>  
+>  	/* get the current revision from MSR 0x8B */
+>  	native_rdmsr(MSR_IA32_UCODE_REV, dummy, rev);
+> -- 
 
-We could probably merge it and watch for issues, but I'd like to have also Mel
-and Joonsoo comment on it :)
+Hrm, the original patch of mine did use native_cpuid_eax():
 
-Thanks,
-Vlastimil
+4167709bbf82 ("x86/microcode/intel: Add a helper which gives the microcode revision")
 
-> Thanks!
-> 
+but the backport:
 
+commit 98cc1464cfd6edf9dc7fa96aaaf596aae952029b
+Author: Borislav Petkov <bp@suse.de>
+Date:   Mon Jan 9 12:41:45 2017 +0100
+
+    x86/microcode/intel: Add a helper which gives the microcode revision
+    
+    commit 4167709bbf826512a52ebd6aafda2be104adaec9 upstream.
+    
+    Since on Intel we're required to do CPUID(1) first, before reading
+    the microcode revision MSR, let's add a special helper which does the
+    required steps so that we don't forget to do them next time, when we
+    want to read the microcode revision.
+    
+    Signed-off-by: Borislav Petkov <bp@suse.de>
+    Link: http://lkml.kernel.org/r/20170109114147.5082-4-bp@alien8.de
+    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+    [bwh: Backported to 4.4:
+     - Don't touch prev_rev variable in apply_microcode()
+     - Keep using sync_core(), which will alway includes the necessary CPUID
+     	^^^^^^^^^^^^^^^^^^^
+
+decided to use sync_core() for whatever reason. Perhaps because the
+native_cpuid* things weren't there. Adding Ben to Cc.
+
+I believe this is the background info Greg needed to figure out *why*
+you're doing this.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
