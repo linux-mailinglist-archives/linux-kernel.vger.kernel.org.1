@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BF71B0117
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46221B011A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgDTFlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:41:21 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.73]:53130 "EHLO fudan.edu.cn"
+        id S1726115AbgDTFo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:44:27 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:49655 "EHLO fudan.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725825AbgDTFlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:41:21 -0400
+        id S1726063AbgDTFo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:44:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=uzKBpRqWqrL68DjlrMLrFbymZnh9Mm1O4zM1L55rFDM=; b=i
-        jNJwWS9MAEI9JD1IO0CNdyHUIpjdCp5dQvv+ORw2Jkjxzh7t1SbxiAOXTN76OEHx
-        0m0OLF9y0UgWYedL1ITpz6MlrtmzmDOg+NyiN8VVYOmxEKftCe4gQ3rBlv6mnyMH
-        wVZxHKN3NUXlrCY8eHDipk/ySmBr3YhNixXSk5GfCk=
+        Message-Id; bh=Kde4d4Iskv/eESUo3kW89uQutTL1AA81UbKX+DBEwr0=; b=W
+        edNlbtZZjgiW2Kq8k8ac+CLyF4EGP7+i19/4xZApaEBNO3Wx9fyOFXDL9ZUPnIJ9
+        tCPlGpUr8EKV9xrHIQy436U9ijsoldMg+xFYHIGRiReOY82ID4wcnuLFOwkaCy4i
+        tdHmo+PT5icLN+7Fde4Y5v1nIBa83Xe9ysLpaFh88o=
 Received: from localhost.localdomain (unknown [120.229.255.67])
-        by app2 (Coremail) with SMTP id XQUFCgCnWOH6NZ1eM_odAA--.12310S3;
-        Mon, 20 Apr 2020 13:41:16 +0800 (CST)
+        by app1 (Coremail) with SMTP id XAUFCgD3_8dsNp1eenwWAA--.8407S3;
+        Mon, 20 Apr 2020 13:43:09 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
 Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
         Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] ceph: Fix potential ceph_osd_request refcnt leak
-Date:   Mon, 20 Apr 2020 13:40:43 +0800
-Message-Id: <1587361243-83431-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] drm/i915/selftests:  Fix i915_address_space refcnt leak
+Date:   Mon, 20 Apr 2020 13:41:54 +0800
+Message-Id: <1587361342-83494-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgCnWOH6NZ1eM_odAA--.12310S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrW5JFy5Cr47GryrJF1DKFg_yoW8Gryfpr
-        47Cw4UtrsYq3W8XF4kJ398W348ua18ZrWSyr1FgFy8CFn5Xa9IyF1Fq3sIqr47AFyxJr95
-        trs09r4DZa42yFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: XAUFCgD3_8dsNp1eenwWAA--.8407S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF43Gry7CFy3Jw4xArW3trb_yoW8Cw13pr
+        45Ca4Iyr90yw47ta9Fvws5W3WfA3WxKay8Cr1kWwn5Gr1UJa4Skr1Sgry5JFWUCrWfXry2
+        vrW2kFWava4FkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_GrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VU1U5r7UUUUU==
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8WwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
+        wI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbfOz3UUUUU==
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ceph_writepages_start() invokes ceph_osdc_start_request(), which
-increases the refcount of the ceph_osd_request object "req" and then
-submit the request.
+igt_ppgtt_pin_update() invokes i915_gem_context_get_vm_rcu(), which
+returns a reference of the i915_address_space object to "vm" with
+increased refcount.
 
-When ceph_writepages_start() returns or a new object is assigned to
-"req", the original local reference of "req" becomes invalid, so the
+When igt_ppgtt_pin_update() returns, "vm" becomes invalid, so the
 refcount should be decreased to keep refcount balanced.
 
-The reference counting issue happens in a normal path of
-ceph_writepages_start(). Before NULL assigned to "req", the function
-forgets to decrease its refcnt increased by ceph_osdc_start_request()
-and will cause a refcnt leak.
+The reference counting issue happens in two exception handling paths of
+igt_ppgtt_pin_update(). When i915_gem_object_create_internal() returns
+IS_ERR, the refcnt increased by i915_gem_context_get_vm_rcu() is not
+decreased, causing a refcnt leak.
 
-Fix this issue by calling ceph_osdc_put_request() before the original
-object pointed by "req" becomes invalid.
+Fix this issue by jumping to "out_vm" label when
+i915_gem_object_create_internal() returns IS_ERR.
 
-Fixes: 1d3576fd10f0 ("ceph: address space operations")
+Fixes: 4049866f0913 ("drm/i915/selftests: huge page tests")
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- fs/ceph/addr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/i915/gem/selftests/huge_pages.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 7ab616601141..b02c050a3418 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -1126,6 +1126,7 @@ static int ceph_writepages_start(struct address_space *mapping,
- 		req->r_mtime = inode->i_mtime;
- 		rc = ceph_osdc_start_request(&fsc->client->osdc, req, true);
- 		BUG_ON(rc);
-+		ceph_osdc_put_request(req);
- 		req = NULL;
+diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+index 9311250d7d6f..7a7763be6b2e 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
++++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+@@ -1578,8 +1578,10 @@ static int igt_ppgtt_pin_update(void *arg)
+ 		unsigned int page_size = BIT(first);
  
- 		wbc->nr_to_write -= i;
+ 		obj = i915_gem_object_create_internal(dev_priv, page_size);
+-		if (IS_ERR(obj))
+-			return PTR_ERR(obj);
++		if (IS_ERR(obj)) {
++			err = PTR_ERR(obj);
++			goto out_vm;
++		}
+ 
+ 		vma = i915_vma_instance(obj, vm, NULL);
+ 		if (IS_ERR(vma)) {
+@@ -1632,8 +1634,10 @@ static int igt_ppgtt_pin_update(void *arg)
+ 	}
+ 
+ 	obj = i915_gem_object_create_internal(dev_priv, PAGE_SIZE);
+-	if (IS_ERR(obj))
+-		return PTR_ERR(obj);
++	if (IS_ERR(obj)) {
++		err = PTR_ERR(obj);
++		goto out_vm;
++	}
+ 
+ 	vma = i915_vma_instance(obj, vm, NULL);
+ 	if (IS_ERR(vma)) {
 -- 
 2.7.4
 
