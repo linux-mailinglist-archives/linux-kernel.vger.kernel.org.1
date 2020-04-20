@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B089A1B0673
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FDE1B065F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDTKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 06:21:50 -0400
-Received: from smtp105.ord1c.emailsrvr.com ([108.166.43.105]:58808 "EHLO
-        smtp105.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725773AbgDTKVu (ORCPT
+        id S1726228AbgDTKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 06:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725775AbgDTKRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 06:21:50 -0400
-X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 06:21:49 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1587377714;
-        bh=KE+p7nNz2ulsXQ37ZSxFILCnrC3V3T2DkQkwLsftGEs=;
-        h=Subject:To:From:Date:From;
-        b=CvDuyE0Z+g2G9s2Gni0Wv0vFUbJGSIBmFLj4U6Dp1bZZrfPV165Lcp6o3VzQujoQX
-         psPfQJMNvi+dXEictMOYRYeN3WaOK68D3ptwDeVrSSyFwCxri+rpOENnlyYalgMtxd
-         qO8/z8J01IRpQmZZPTyk+jBmz17ooMiC62XvroDw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1587377714;
-        bh=KE+p7nNz2ulsXQ37ZSxFILCnrC3V3T2DkQkwLsftGEs=;
-        h=Subject:To:From:Date:From;
-        b=YD6ZZr+NVivTfMnXYy3qJaA8bX2C1qNXKS5LQhJL3LKkAR9M1R4vJu5gddOmUd1i3
-         /7c6zO2TaFOlQFzotuOnp9HXh5dqW0mmhDlaNrpKJ/lZ0FaihDzerJAE+PbNNzHxNX
-         ijF9WO6p1KpErJpm5uaN0AUvCrEOFpPrN1QH6OgU=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp6.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 96E37A0109;
-        Mon, 20 Apr 2020 06:15:13 -0400 (EDT)
-X-Sender-Id: abbotti@mev.co.uk
-Received: from [10.0.0.173] (remote.quintadena.com [81.133.34.160])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA)
-        by 0.0.0.0:465 (trex/5.7.12);
-        Mon, 20 Apr 2020 06:15:14 -0400
-Subject: Re: [PATCH] staging: comedi: Fix comedi_device refcnt leak in
- comedi_open
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xin Tan <tanxin.ctf@gmail.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu
-References: <1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <a5988c23-e552-b787-feb0-2d1bda8f1668@mev.co.uk>
-Date:   Mon, 20 Apr 2020 11:15:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 20 Apr 2020 06:17:05 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB6CC061A0C;
+        Mon, 20 Apr 2020 03:17:05 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a22so4214176pjk.5;
+        Mon, 20 Apr 2020 03:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FQwBgtUGJlKMOa45Jn8Rf9aNt1TP9LL5RxpacDSa9OM=;
+        b=HYtRrZdTeb5v2kfEkCPR+6rQT5fP8Y3gaiUuDtIE3OAsBfF7sVTxaklMTAYnGn5SKW
+         /xGeJGtrSZEaVdHl+gwf9cJGAZTspn5YbvOFqDszdKafBXZBoYgsjnHKXm1yyvcMRZ23
+         XbtfAnI8AAy3UW8SXzTQT/R1KdigVxLnsZ7cnKlFt7oawbLvZPNdXjhfP1TGHbrI87gU
+         kp1atExvEggE1ZhWy1HI/Z5KOTKe5R/rYmZB/BlHiQ8W/cklyVqrRWAZghT8EHNHZe6D
+         tGzK/mXt5zcN4SSFhbs+smf44hpcCBj1v1F2pSjWxKrm0QxGXn5DTp4M+ChG7DN2qSQl
+         IoKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FQwBgtUGJlKMOa45Jn8Rf9aNt1TP9LL5RxpacDSa9OM=;
+        b=JXz66/Y7F0G0WydGppYPwlcG/9EIPneu0nyCKic3ed+MIsJhSJGD4cDFSrISnY020V
+         jIReNiDg6KzD806seW54Rq27s4y9klb4NT+lzrxX9xoNnxTP1oH2qt1Do0YUqnT5T30U
+         LtKGipmXKN697l/F7O6TMaA9OU2NljDF25FqHjgkBLxOBcsjnc8WV3eqUFb6E1eczMdW
+         CZZI+ouLjPnqQDxaFYCNXoYrgv9+aeewAf5Ckuzo3eiQZgslM+76yvtznaddDfok5bAZ
+         mHC3CS7WyU8ceGrTmdAlbT1BY9SYqUK2TqsF60NMBueLu2K7Q5m5Juz+I8X/9BGOVV+a
+         lzCA==
+X-Gm-Message-State: AGi0PubJlYjKCKYZ3db+P/+IbdEiEqmZmF+EzcFqH2+umDrkHYs/9F/+
+        QWPVXwmx1U9vIRLB1ZFH9BwgzVdm4chfkeyleoOGHPlSG8E=
+X-Google-Smtp-Source: APiQypJj+uMW4TOJ5C9KzBmk/r05SyMy64CzHhYWv5u+jl5v/HYHaaiMN5M1jlvGcee7bIhVmuCv75dKPdRzCm/3LNQ=
+X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr20434411pjb.143.1587377824736;
+ Mon, 20 Apr 2020 03:17:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 061321d8-5d6b-4c3f-b7bb-fc78540ae002-1-1
+References: <alpine.DEB.2.21.2004201122490.9739@felia> <DB6PR0802MB25339A9DFF7F87CB06158476E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+In-Reply-To: <DB6PR0802MB25339A9DFF7F87CB06158476E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 20 Apr 2020 13:16:57 +0300
+Message-ID: <CAHp75VeCWDB4VOyV30fFQ5YwBuKL=W62b+A2Pr3=zH-JmxsoRg@mail.gmail.com>
+Subject: Re: MAINTAINERS: Wrong ordering in CCTRNG ARM TRUSTZONE CRYPTOCELL
+ TRUE RANDOM NUMBER GENERATOR (TRNG) DRIVER
+To:     Hadar Gat <Hadar.Gat@arm.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2020 06:44, Xiyu Yang wrote:
-> comedi_open() invokes comedi_dev_get_from_minor(), which returns a
-> reference of the COMEDI device to "dev" with increased refcount.
-> 
-> When comedi_open() returns, "dev" becomes invalid, so the refcount
-> should be decreased to keep refcount balanced.
-> 
-> The reference counting issue happens in one exception handling path of
-> comedi_open(). When "cfp" allocation is failed, the refcnt increased by
-> comedi_dev_get_from_minor() is not decreased, causing a refcnt leak.
-> 
-> Fix this issue by calling comedi_dev_put() on this error path when "cfp"
-> allocation is failed.
-> 
-> Fixes: 20f083c07565 ("staging: comedi: prepare support for per-file read
-> and write subdevices")
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->   drivers/staging/comedi/comedi_fops.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> index 08d1bbbebf2d..e84b4fb493d6 100644
-> --- a/drivers/staging/comedi/comedi_fops.c
-> +++ b/drivers/staging/comedi/comedi_fops.c
-> @@ -2725,8 +2725,10 @@ static int comedi_open(struct inode *inode, struct file *file)
->   	}
->   
->   	cfp = kzalloc(sizeof(*cfp), GFP_KERNEL);
-> -	if (!cfp)
-> +	if (!cfp) {
-> +		comedi_dev_put(dev);
->   		return -ENOMEM;
-> +	}
->   
->   	cfp->dev = dev;
->   
-> 
+On Mon, Apr 20, 2020 at 12:51 PM Hadar Gat <Hadar.Gat@arm.com> wrote:
 
-Thanks for spotting that!
 
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+> I was wondering why this patch was not applied.. somehow I didn't get this warning when running checkpatch.pl.
+
+It a quite recent feature, so, if you are not running linux-next on
+daily basis, you probably won't see it.
 
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
--=( MEV Ltd. is a company registered in England & Wales. )=-
--=( Registered number: 02862268.  Registered address:    )=-
--=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
+With Best Regards,
+Andy Shevchenko
