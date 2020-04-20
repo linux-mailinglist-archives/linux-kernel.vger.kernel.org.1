@@ -2,122 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67F51B16FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCFE1B1704
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgDTU0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
+        id S1728310AbgDTU07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgDTU0f (ORCPT
+        with ESMTP id S1728284AbgDTU04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:26:35 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81851C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:26:34 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g16so8515986eds.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:26:34 -0700 (PDT)
+        Mon, 20 Apr 2020 16:26:56 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FC9C061A0C;
+        Mon, 20 Apr 2020 13:26:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u9so5490625pfm.10;
+        Mon, 20 Apr 2020 13:26:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wwUPCWKp0XjwepXQOmIetCoyqhWj31DcYHiSp/UXrjU=;
-        b=0YmWV1n0z4XY862A56LDL9361hcUyKkvjduePmlWXnKre6rH3zuS2lFpfDJpRnc27j
-         qk6MKZWa1lYLFvgYbBc0dM5AhoXm/ZdEull8BAqiHShll2GfzVYe/Mgd8yFymvrZepRx
-         HK2CH461EJMbYocppHf6HjwMeCq+44KqJHni9CtwxWFh36TKIix0Uyg7akZwibmmBOLl
-         b4T7kRst9+BDXIKGZbcZ51LScJmLrRk2j6bvU1SPbExbSvouyA5mf76M960lsoWcCowM
-         nWd1JjYNlMOIWTNIU7hH31nMtlM20n5+wVYhsxgRPmJ/nf+XREzaccj/S7IvZPZqROc1
-         W1Ug==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fu9Uhr2WUQ553mJsjojbg9oYJpUAQFW34/wi7Gm0amg=;
+        b=Itehx/knDWwHPwVe6STk6VcC+aEK0W7ooUGEb791KaDO1o/vwOdA/JN9yFNuVtdy4+
+         n0dN1Nkmzau/ARNpn+G/YI3Fjguagorp8ldTOIgQqQVPHPPh4/bmjoFvrh0J50vXjq8p
+         URpW1BpKuPjhkIoxDFzspsPzM5KbiynyR3oBXa+wqtAXeFvlug5Sx+OTMQhCl6pKlGQj
+         WjUzdRMAr97FopmwNN2FxRfR9yuqm9Vbzh4breKXDnoDuL4DiU5tolDk37r2OiDhHCa4
+         oKvMWOql1K3zGjOSClA9u+ShXFYMFZL/TheBb6w4qnqdyslWRGwFUl3d4FwZ7eOkjrEb
+         Gxvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wwUPCWKp0XjwepXQOmIetCoyqhWj31DcYHiSp/UXrjU=;
-        b=ZonQ2Fsq74tVxMPFxjehohwBkcDv6E57sK8NodByRF0qyk7iN5MiDDIZfFNy3R0CiB
-         /grKX5fRBwI2B39OTzRyk9b0tn7A4Yjo9Gtq5952x5RZ84OTESQu9FDmDMdnxJz3dU9h
-         410qtNu9dvOiMn+hkVRKCYBl994y3jWu7vClVlwUgSgJO5uAp9Fn8apDVuAboN8BXwGa
-         WiK+VHtqVx9RBuf6FDpyeHzFOGsenX/ZjsZkfSwVhHMKlatgSlye7gxMAQStPyAfRU5U
-         1jWONzl6NYabmvK24iY5AfJrU82tZ/JggDBndFE/rD82jqG8f/RpIbaaCDhKfdtk6wew
-         GXhA==
-X-Gm-Message-State: AGi0PuY5RfpWbfT6XsGUyWPG5bmfcf9a0LTkZkuyUUn5enaSXc6HTgAB
-        bfDnecOAhCpyGEX8xpzq8IW4uiVvs81NObD4joeX
-X-Google-Smtp-Source: APiQypJPD/FkR6eQInJaCe11axRqNxPjye0HG0pNX0w10VJWP4Vuxwr6q4w9/9a603DJDHR6p9S2rG2NX4NP4J8beZA=
-X-Received: by 2002:a05:6402:1215:: with SMTP id c21mr16361574edw.128.1587414392996;
- Mon, 20 Apr 2020 13:26:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fu9Uhr2WUQ553mJsjojbg9oYJpUAQFW34/wi7Gm0amg=;
+        b=jq5ruqMCxcNO1zhKXdA5R2P24YtX057eveL6V7IbekrOFr1Kkn9Lub0r5PEaIsIGRW
+         3Vi39vwICsd6YiLQriG1pivUIAtPkHwRXyCX93XD54hGeGyfMe3Hjg97UWNiPo7P80xF
+         aPv/gnJvwAmM8orn5gVZQkxz/+FIesH2frvZnShcx1zvmHk2ncqrOXw5HiGLDuZ/9Qm5
+         4NifBy86XuaQlA0+xU0Q/pngfLxagVAB2xXHdrYx24HZ1iybt7WJy4p6e+kGr13zPpMB
+         3IgmY4eZeZ2PyxALsKxtsWdNoDXHBGVLkEm4gxhzRxzV2qkDySrIPG3yNk11+j4rozCK
+         3yoQ==
+X-Gm-Message-State: AGi0PubrONvy8qL9m1Lav8ZCyYh06UmFv2FvlQMiGMkr5nBPkfJWGQhj
+        uvr8XRwrVe3P4WZI5+JJt7c=
+X-Google-Smtp-Source: APiQypJpug56tVoemXOW5dw56pzrYkEFCOENPtf7Pdhh01jNMlZXJtyzWZDH5fcD2MEZ9xpXjlcP3g==
+X-Received: by 2002:a63:1820:: with SMTP id y32mr17486948pgl.182.1587414416044;
+        Mon, 20 Apr 2020 13:26:56 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
+        by smtp.gmail.com with ESMTPSA id 141sm338899pfz.171.2020.04.20.13.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 13:26:55 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH] net: bpf: add bpf_ktime_get_boot_ns()
+Date:   Mon, 20 Apr 2020 13:26:43 -0700
+Message-Id: <20200420202643.87198-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
-References: <00000000000064f6e505a3b243aa@google.com> <CAHC9VhTZ_itetT4cx32vW3A79tb76dzjaBC_0S8Y_=DcEBL2nw@mail.gmail.com>
- <CACT4Y+ZUpH3giZmiA51NZ1BhHOoGETqfxscBW6kBxWDf6-Q-HA@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZUpH3giZmiA51NZ1BhHOoGETqfxscBW6kBxWDf6-Q-HA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 20 Apr 2020 16:26:21 -0400
-Message-ID: <CAHC9VhQOvA8-9wCXn1CV4iz_OtoQAaAv9gS+kWsitU3-axsbzg@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in audit_log_vformat (2)
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com>,
-        Eric Paris <eparis@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        linux-audit@redhat.com, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 2:12 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Mon, Apr 20, 2020 at 6:29 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Mon, Apr 20, 2020 at 1:35 AM syzbot
-> > <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    5356842d [EXPERIMENTAL] kmsan: eagerly allocate shadow at ..
-> > > git tree:       https://github.com/google/kmsan.git master
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=12f06720100000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=49e69b4d71a420ceda3e
-> > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > > userspace arch: i386
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133b5dabe00000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143e1610100000
-> > >
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
-> > >
-> > > =====================================================
-> > > BUG: KMSAN: uninit-value in string_nocheck lib/vsprintf.c:608 [inline]
-> > > BUG: KMSAN: uninit-value in string+0x522/0x690 lib/vsprintf.c:689
-> > > CPU: 1 PID: 8854 Comm: syz-executor694 Not tainted 5.6.0-rc7-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > >  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
-> > >  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
-> > >  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
-> > >  string_nocheck lib/vsprintf.c:608 [inline]
-> > >  string+0x522/0x690 lib/vsprintf.c:689
-> > >  vsnprintf+0x207d/0x31b0 lib/vsprintf.c:2574
-> >
-> > Are there any ongoing problems with [vsn]printf() in the kernel at the
-> > moment with syzbot?
-> >
-> > I ask because on first look I'm not seeing any obvious problems in the
-> > audit portion of this code path.
->
-> None I am aware of. Alex?
-> Can it be related to data_len==0? I don't see any obvious checks for
-> this. And in that case will 0-terminate out-of-bounds (at offset -1?)
-> and print potentially uninit data. But I looked at the code only very
-> briefly so potentially I am totally wrong.
+From: Maciej Żenczykowski <maze@google.com>
 
-Bingo, that's likely it.  Thanks.
+On a device like a cellphone which is constantly suspending
+and resuming CLOCK_MONOTONIC is not particularly useful for
+keeping track of or reacting to external network events.
+Instead you want to use CLOCK_BOOTTIME.
 
-I was in the process of fixing another audit bug when I looked at this
-and got fixated on the varg stuff, not the variables themselves.  I'll
-have a patch out later today.
+Hence add bpf_ktime_get_boot_ns() as a mirror of bpf_ktime_get_ns()
+based around CLOCK_BOOTTIME instead of CLOCK_MONOTONIC.
 
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ drivers/media/rc/bpf-lirc.c    |  2 ++
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/bpf.h       | 13 ++++++++++++-
+ kernel/bpf/core.c              |  1 +
+ kernel/bpf/helpers.c           | 12 ++++++++++++
+ kernel/trace/bpf_trace.c       |  2 ++
+ net/core/filter.c              |  2 ++
+ tools/include/uapi/linux/bpf.h | 13 ++++++++++++-
+ 8 files changed, 44 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+index 0f3417d161b8..069c42f22a8c 100644
+--- a/drivers/media/rc/bpf-lirc.c
++++ b/drivers/media/rc/bpf-lirc.c
+@@ -103,6 +103,8 @@ lirc_mode2_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_map_peek_elem_proto;
+ 	case BPF_FUNC_ktime_get_ns:
+ 		return &bpf_ktime_get_ns_proto;
++	case BPF_FUNC_ktime_get_boot_ns:
++		return &bpf_ktime_get_boot_ns_proto;
+ 	case BPF_FUNC_tail_call:
+ 		return &bpf_tail_call_proto;
+ 	case BPF_FUNC_get_prandom_u32:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index fd2b2322412d..65217c52474d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1502,6 +1502,7 @@ extern const struct bpf_func_proto bpf_get_smp_processor_id_proto;
+ extern const struct bpf_func_proto bpf_get_numa_node_id_proto;
+ extern const struct bpf_func_proto bpf_tail_call_proto;
+ extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
++extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
+ extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
+ extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
+ extern const struct bpf_func_proto bpf_get_current_comm_proto;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 2e29a671d67e..2e13b094438d 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -652,6 +652,16 @@ union bpf_attr {
+  * u64 bpf_ktime_get_ns(void)
+  * 	Description
+  * 		Return the time elapsed since system boot, in nanoseconds.
++ * 		Does not include time the system was suspended.
++ * 		See: clock_gettime(CLOCK_MONOTONIC)
++ * 	Return
++ * 		Current *ktime*.
++ *
++ * u64 bpf_ktime_get_boot_ns(void)
++ * 	Description
++ * 		Return the time elapsed since system boot, in nanoseconds.
++ * 		Does include the time the system was suspended.
++ * 		See: clock_gettime(CLOCK_BOOTTIME)
+  * 	Return
+  * 		Current *ktime*.
+  *
+@@ -3151,7 +3161,8 @@ union bpf_attr {
+ 	FN(xdp_output),			\
+ 	FN(get_netns_cookie),		\
+ 	FN(get_current_ancestor_cgroup_id),	\
+-	FN(sk_assign),
++	FN(sk_assign),			\
++	FN(ktime_get_boot_ns),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 916f5132a984..d87877cd99c1 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2151,6 +2151,7 @@ const struct bpf_func_proto bpf_get_prandom_u32_proto __weak;
+ const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
++const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
+ 
+ const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index a5158a179e81..fb3ecc5dee7f 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -155,6 +155,18 @@ const struct bpf_func_proto bpf_ktime_get_ns_proto = {
+ 	.ret_type	= RET_INTEGER,
+ };
+ 
++BPF_CALL_0(bpf_ktime_get_boot_ns)
++{
++	/* NMI safe access to clock boottime */
++	return ktime_get_boot_fast_ns();
++}
++
++const struct bpf_func_proto bpf_ktime_get_boot_ns_proto = {
++	.func		= bpf_ktime_get_boot_ns,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++};
++
+ BPF_CALL_0(bpf_get_current_pid_tgid)
+ {
+ 	struct task_struct *task = current;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index ca1796747a77..e875c95d3ced 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -797,6 +797,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_map_peek_elem_proto;
+ 	case BPF_FUNC_ktime_get_ns:
+ 		return &bpf_ktime_get_ns_proto;
++	case BPF_FUNC_ktime_get_boot_ns:
++		return &bpf_ktime_get_boot_ns_proto;
+ 	case BPF_FUNC_tail_call:
+ 		return &bpf_tail_call_proto;
+ 	case BPF_FUNC_get_current_pid_tgid:
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 755867867e57..ec567d1e6fb9 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6009,6 +6009,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_tail_call_proto;
+ 	case BPF_FUNC_ktime_get_ns:
+ 		return &bpf_ktime_get_ns_proto;
++	case BPF_FUNC_ktime_get_boot_ns:
++		return &bpf_ktime_get_boot_ns_proto;
+ 	default:
+ 		break;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 2e29a671d67e..2e13b094438d 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -652,6 +652,16 @@ union bpf_attr {
+  * u64 bpf_ktime_get_ns(void)
+  * 	Description
+  * 		Return the time elapsed since system boot, in nanoseconds.
++ * 		Does not include time the system was suspended.
++ * 		See: clock_gettime(CLOCK_MONOTONIC)
++ * 	Return
++ * 		Current *ktime*.
++ *
++ * u64 bpf_ktime_get_boot_ns(void)
++ * 	Description
++ * 		Return the time elapsed since system boot, in nanoseconds.
++ * 		Does include the time the system was suspended.
++ * 		See: clock_gettime(CLOCK_BOOTTIME)
+  * 	Return
+  * 		Current *ktime*.
+  *
+@@ -3151,7 +3161,8 @@ union bpf_attr {
+ 	FN(xdp_output),			\
+ 	FN(get_netns_cookie),		\
+ 	FN(get_current_ancestor_cgroup_id),	\
+-	FN(sk_assign),
++	FN(sk_assign),			\
++	FN(ktime_get_boot_ns),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
 -- 
-paul moore
-www.paul-moore.com
+2.26.1.301.g55bc3eb7cb9-goog
+
