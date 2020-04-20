@@ -2,87 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566CE1B0B7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB8D1B0B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgDTM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:56:14 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41515 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726779AbgDTM4I (ORCPT
+        id S1728020AbgDTM4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726416AbgDTM4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:56:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587387367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aQuiO+56fM83jue+pc8NC1/acthLiygj2WkuZrb/ns0=;
-        b=UjHOBBPPEsCK/H1ldbtsoP5PjkYnZxG7c9L/PS2Fgc6ieJXmwG4Y4PKGW81rQAw7TanUq0
-        NKdxfWYjXjHMkDmL9Nv49j6m49rKdaJ1bB8La2WnzSWXDyoa5nUt7VqADOVULOobOusW0w
-        KYMeShv/mJvoqbRbJlKyFzD7+yw5Y/k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-RY_AvQcYMPu5lZgX1_CboA-1; Mon, 20 Apr 2020 08:56:05 -0400
-X-MC-Unique: RY_AvQcYMPu5lZgX1_CboA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 811081085983;
-        Mon, 20 Apr 2020 12:56:04 +0000 (UTC)
-Received: from sandy.ghostprotocols.net (unknown [10.3.128.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 961835C1BB;
-        Mon, 20 Apr 2020 12:56:03 +0000 (UTC)
-Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
-        id 11D06119; Mon, 20 Apr 2020 09:56:00 -0300 (BRT)
-Date:   Mon, 20 Apr 2020 09:55:59 -0300
-From:   Arnaldo Carvalho de Melo <acme@redhat.com>
-To:     jagdsh.linux@gmail.com
-Cc:     jolsa@kernel.org, ak@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] tools/lib/perf/: Remove duplicate headers
-Message-ID: <20200420125559.GA4471@redhat.com>
-References: <1587276836-17088-1-git-send-email-jagdsh.linux@gmail.com>
+        Mon, 20 Apr 2020 08:56:43 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D4C061A0C;
+        Mon, 20 Apr 2020 05:56:42 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z2so6436688iol.11;
+        Mon, 20 Apr 2020 05:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pcI0qWNc1N4Zlqa5f3AfBQvRhwW8Vt/U+TEuOLUSgd0=;
+        b=cJ4W1US+K62mAFMlX3vEoTunFkNtMdkgjMA9cd/b+CXfHHy+KLOwqk2tlEbEwPbuRH
+         xSXmkoHN++WSy+dCUUzGCY9SP3HjreMrDx4yidSHof12jzx8gg1S3xdgSKdfPYb+FdIV
+         e58IZzVYnDquHfGCiK/uyNtevWXNWmZG79zBz7IhlF5/0YRxcwiucINo/h7GiOA+LjbD
+         LngMieEa3T/tmA3/889Ic5nwImTg272p+BuXfPa7v3y+2FG5H44LloARO7mVe6vUzyGj
+         kpzB3udH8cimAN/yo/GqL27F79VRBj98oNpDXitS54sCr29fXiiMvwx1b6a0S0Lq8rQz
+         pH2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pcI0qWNc1N4Zlqa5f3AfBQvRhwW8Vt/U+TEuOLUSgd0=;
+        b=oSwUW2SMWfJ1XX94TWxY7L8gw0JZbvnrQcRNwDSgml/phwgMhXp9b8RowHxYNC3sto
+         +YMX4Ofv3SiELdhmeBF7CguARQLCEsQfmYloYUV8HqMRUGAL1JAAgjzMa+uGPij+gEqC
+         R4UpqhTP0oTuLL3algMgmVF+b1DfZa0QYDgndcljpBLkCOGNAZhqPJfgdBI10RmPwpGE
+         bPgUsDuBdMhw1nflMYHgMccSF+dnI+VULywyFFLyYpxG8u4cPN7GMY+N+akfS7NHQfcy
+         Us/n04wEOQdI+8gBE3rjh5lFzHfR8cbfXFUgR2kkH36dyBykVoVvLbT/LZXAJtJ/xJ+p
+         A3nw==
+X-Gm-Message-State: AGi0PuanRruMe3RyeN0FBZBLke6QMNGwarg3eRD4TG6n81hFKCW5QLii
+        w71udwyQbWvpDzia9AH5sOi7d0Adl/M8P4VrjMA=
+X-Google-Smtp-Source: APiQypJ157MeGNo8bgnTMRGL69DR4CbiKXoMr5w1w97C8gzFpIW/y2Ja9T72EhZhF6SM+EgLpNS1I3CzKErckee77Lc=
+X-Received: by 2002:a05:6602:2fcd:: with SMTP id v13mr15163961iow.124.1587387402154;
+ Mon, 20 Apr 2020 05:56:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587276836-17088-1-git-send-email-jagdsh.linux@gmail.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.5.20 (2009-12-10)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200418224435.23672-1-peron.clem@gmail.com> <20200418224435.23672-5-peron.clem@gmail.com>
+ <20200420124452.5vaoyw73n76jwmey@gilmour.lan>
+In-Reply-To: <20200420124452.5vaoyw73n76jwmey@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Mon, 20 Apr 2020 14:56:31 +0200
+Message-ID: <CAJiuCccAFk3X03OV2MhGuqY7YW0HtM_1gJO9cW0=6OoTkSB6gg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] ASoC: sun4i-i2s: Set sign extend sample
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Marcus Cooper <codekipper@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Apr 19, 2020 at 11:43:56AM +0530, jagdsh.linux@gmail.com escreveu:
-> From: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
-> 
-> Code cleanup: Remove duplicate headers which are included twice.
+Hi Maxime,
 
-Thanks, applied.
+On Mon, 20 Apr 2020 at 14:44, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Sun, Apr 19, 2020 at 12:44:32AM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > From: Marcus Cooper <codekipper@gmail.com>
+> >
+> > On the newer SoCs such as the H3 and A64 this is set by default
+> > to transfer a 0 after each sample in each slot. However the A10
+> > and A20 SoCs that this driver was developed on had a default
+> > setting where it padded the audio gain with zeros.
+> >
+> > This isn't a problem whilst we have only support for 16bit audio
+> > but with larger sample resolution rates in the pipeline then SEXT
+> > bits should be cleared so that they also pad at the LSB. Without
+> > this the audio gets distorted.
+> >
+> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  sound/soc/sunxi/sun4i-i2s.c | 22 ++++++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> >
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index a23c9f2a3f8c..618bbc5156f1 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > @@ -48,6 +48,9 @@
+> >  #define SUN4I_I2S_FMT0_FMT_I2S                               (0 << 0)
+> >
+> >  #define SUN4I_I2S_FMT1_REG           0x08
+> > +#define SUN4I_I2S_FMT1_REG_SEXT_MASK         BIT(8)
+> > +#define SUN4I_I2S_FMT1_REG_SEXT(sext)                        ((sext) <=
+< 8)
+> > +
+> >  #define SUN4I_I2S_FIFO_TX_REG                0x0c
+> >  #define SUN4I_I2S_FIFO_RX_REG                0x10
+> >
+> > @@ -105,6 +108,9 @@
+> >  #define SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED                (1 << 7)
+> >  #define SUN8I_I2S_FMT0_BCLK_POLARITY_NORMAL          (0 << 7)
+> >
+> > +#define SUN8I_I2S_FMT1_REG_SEXT_MASK         GENMASK(5,4)
+> > +#define SUN8I_I2S_FMT1_REG_SEXT(sext)                        ((sext) <=
+< 4)
+> > +
+> >  #define SUN8I_I2S_INT_STA_REG                0x0c
+> >  #define SUN8I_I2S_FIFO_TX_REG                0x20
+> >
+> > @@ -663,6 +669,12 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4=
+i_i2s *i2s,
+> >       }
+> >       regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> >                          SUN4I_I2S_CTRL_MODE_MASK, val);
+> > +
+> > +     /* Set sign extension to pad out LSB with 0 */
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
+> > +                        SUN4I_I2S_FMT1_REG_SEXT_MASK,
+> > +                        SUN4I_I2S_FMT1_REG_SEXT(0));
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -765,6 +777,11 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4=
+i_i2s *i2s,
+> >                          SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_=
+OUT,
+> >                          val);
+> >
+> > +     /* Set sign extension to pad out LSB with 0 */
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
+> > +                        SUN8I_I2S_FMT1_REG_SEXT_MASK,
+> > +                        SUN8I_I2S_FMT1_REG_SEXT(0));
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -867,6 +884,11 @@ static int sun50i_i2s_set_soc_fmt(const struct sun=
+4i_i2s *i2s,
+> >                          SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_=
+OUT,
+> >                          val);
+> >
+> > +     /* Set sign extension to pad out LSB with 0 */
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
+> > +                        SUN8I_I2S_FMT1_REG_SEXT_MASK,
+> > +                        SUN8I_I2S_FMT1_REG_SEXT(0));
+> > +
+>
+> If this is an issue only on the A10 / A20, why are you setting it up on t=
+he
+> other generations too?
 
-- Arnaldo
- 
-> Signed-off-by: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
-> ---
->  tools/lib/perf/evlist.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index 5b9f2ca..def5505 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -11,10 +11,8 @@
->  #include <internal/mmap.h>
->  #include <internal/cpumap.h>
->  #include <internal/threadmap.h>
-> -#include <internal/xyarray.h>
->  #include <internal/lib.h>
->  #include <linux/zalloc.h>
-> -#include <sys/ioctl.h>
->  #include <stdlib.h>
->  #include <errno.h>
->  #include <unistd.h>
-> -- 
-> 1.8.3.1
+To keep coherency between all set_soc_format(), and also avoid this
+kind of issue for future generation.
+As this doesn't cost much after all, and it avoid to rely on default,
+but what do you think ?
 
+Clement
+
+>
+> Maxime
