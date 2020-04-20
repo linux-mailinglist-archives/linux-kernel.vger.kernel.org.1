@@ -2,107 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBD91B0A52
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4748C1B0983
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgDTMrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728166AbgDTMrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:47:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 192E52072B;
-        Mon, 20 Apr 2020 12:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386833;
-        bh=wVsjuW5qeAGCM3ngUkESGHskmplY5sshpRswX7BlpvU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyodU6zGXI4CNn+2SOxcPI89/kot7QYauwRJS3DMUnyCY6Exp3DGS87Som05jjSbA
-         xZ6FmhEY5aqfI5GFbmzzvx3qPs2nuNmy6u3vmec+ZwA9hXR154BQTSHmQg18mdQMif
-         hLj6NUoVoIMJYFAqNYJBemKM/a4mOWkWz8WJU0fM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Stallard <code@timstallard.me.uk>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 06/60] net: ipv6: do not consider routes via gateways for anycast address check
+        id S1726674AbgDTMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:39:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:58701 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbgDTMjQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:39:16 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1N94FT-1jCQUQ2wfn-01695X; Mon, 20 Apr 2020 14:38:57 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-sh@vger.kernel.org
+Cc:     ysato@users.sourceforge.jp, dalias@libc.org,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 2/2] sh: remove unused sh5 files
 Date:   Mon, 20 Apr 2020 14:38:44 +0200
-Message-Id: <20200420121502.638950350@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
-User-Agent: quilt/0.66
+Message-Id: <20200420123844.3998746-2-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200420123844.3998746-1-arnd@arndb.de>
+References: <20200420123844.3998746-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:4Oj9p5Ct9AisTLnVzWd8JpP94Rf+sxGRgf5PRdiM0iWzEEmh13T
+ 71pRCXKJnyXHFPh64uKvE0HPB3ScElgUi8b8xu10QwNmSHlFd4cWqHuB1UJp5eD8T7NOmxN
+ BUXnU5XohZwCnSULSpqKjUdxqeJ3TwbQqfilT3qhDtxJZvmyJckmq6yon1lh461wmWlgubM
+ oE/uA8wbEl79BaOzr8SJw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5EuaTMvxZs4=:JnL5LRZXcGU3N2fUNo1CKK
+ OphPdmX779Ay1p3q9YQXFeYh7Xz0EX2SwUop7rfexeoQ9WMGhENVtzSOLx+VJyYv4ArITYLHC
+ B2TLwOpIq7RCAWZTUmSYzROn9LbkQgB5eMNoczmhmcxNGeCHxLvnFMOtiBn8n1RRcvfr0JmtO
+ e5O7PRKMtrE8qNdXuifbJr/lLDjQpSP6ngdRJoRAp1KyKEcuP88M/+iARTfW2CMmOsqjHFQdY
+ JjC4qiyGVyDFWwiTf+J/mhK5yfPIuCinT2+ixkUmel+LPN2YnFVVVqyXSzHDyiD8DZeIIVc+8
+ ro/0sRb6wD2RxsJzsGGKjapVTmmYxxp9VNpHqYFVLqa3tgyDu4Y/k2ycndRfdhIoHXZAhoJwR
+ Z7/+9gE4c5oaeNlRlzF5AnHZ3YvBwXGmOJ9sCIGKOImsSyb9QM6+zv1P4E9NXncHkVXqD2K1b
+ 1tA9nM0Q1/N8WDLC92luzhzUq230NYkzZivVaxfghzIMzD8vYtjMkRoSJc9CLzidUV5EzUot/
+ UIkBHipOCcUI5EQquLYs53gYHwi+v4ZbaD5I2k1B+WZKbyrUOpNHT2clD48h2xVQ1mo68b++Q
+ gO1j71hRdtKj3gXvKK7sROGdu//f63qRPkfXZgEXQB6oEOAegUrNHjnmPsUCVE5u1v4bOmIj+
+ +9ZOWYV0kSVupPVGasb7t25MCDuiMKh3r62VUWWLAPwQqY1yYv8XTjzhRozoyDxk/nP1P/uub
+ poIUBP6z2CmP7fIw4xm/Ht9ZzsLgofzovvGOcinMLUDojsdO81Uq7f0IAvnkRyCrHilmW2hFo
+ w4Y9iGcHmhHBVMrMZiLlKQLtE39xgl+yiMWnw83iWjtQEZJvTc=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Stallard <code@timstallard.me.uk>
+None of these files are used now that sh5 has been
+disabled, so they can be completely removed.
 
-[ Upstream commit 03e2a984b6165621f287fadf5f4b5cd8b58dcaba ]
-
-The behaviour for what is considered an anycast address changed in
-commit 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after
-encountering pmtu exception"). This now considers the first
-address in a subnet where there is a route via a gateway
-to be an anycast address.
-
-This breaks path MTU discovery and traceroutes when a host in a
-remote network uses the address at the start of a prefix
-(eg 2600:: advertised as 2600::/48 in the DFZ) as ICMP errors
-will not be sent to anycast addresses.
-
-This patch excludes any routes with a gateway, or via point to
-point links, like the behaviour previously from
-rt6_is_gw_or_nonexthop in net/ipv6/route.c.
-
-This can be tested with:
-ip link add v1 type veth peer name v2
-ip netns add test
-ip netns exec test ip link set lo up
-ip link set v2 netns test
-ip link set v1 up
-ip netns exec test ip link set v2 up
-ip addr add 2001:db8::1/64 dev v1 nodad
-ip addr add 2001:db8:100:: dev lo nodad
-ip netns exec test ip addr add 2001:db8::2/64 dev v2 nodad
-ip netns exec test ip route add unreachable 2001:db8:1::1
-ip netns exec test ip route add 2001:db8:100::/64 via 2001:db8::1
-ip netns exec test sysctl net.ipv6.conf.all.forwarding=1
-ip route add 2001:db8:1::1 via 2001:db8::2
-ping -I 2001:db8::1 2001:db8:1::1 -c1
-ping -I 2001:db8:100:: 2001:db8:1::1 -c1
-ip addr delete 2001:db8:100:: dev lo
-ip netns delete test
-
-Currently the first ping will get back a destination unreachable ICMP
-error, but the second will never get a response, with "icmp6_send:
-acast source" logged. After this patch, both get destination
-unreachable ICMP replies.
-
-Fixes: 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after encountering pmtu exception")
-Signed-off-by: Tim Stallard <code@timstallard.me.uk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/net/ip6_route.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/sh/drivers/pci/ops-sh5.c             |   65 -
+ arch/sh/drivers/pci/pci-sh5.c             |  217 ---
+ arch/sh/drivers/pci/pci-sh5.h             |  108 --
+ arch/sh/include/asm/bl_bit_64.h           |   37 -
+ arch/sh/include/asm/cache_insns_64.h      |   20 -
+ arch/sh/include/asm/mmu_context_64.h      |   75 -
+ arch/sh/include/asm/pgtable_64.h          |  307 ----
+ arch/sh/include/asm/processor_64.h        |  212 ---
+ arch/sh/include/asm/ptrace_64.h           |   14 -
+ arch/sh/include/asm/string_64.h           |   21 -
+ arch/sh/include/asm/switch_to_64.h        |   32 -
+ arch/sh/include/asm/syscall_64.h          |   75 -
+ arch/sh/include/asm/syscalls_64.h         |   18 -
+ arch/sh/include/asm/tlb_64.h              |   68 -
+ arch/sh/include/asm/traps_64.h            |   35 -
+ arch/sh/include/asm/uaccess_64.h          |   85 -
+ arch/sh/include/cpu-sh5/cpu/addrspace.h   |   12 -
+ arch/sh/include/cpu-sh5/cpu/cache.h       |   94 -
+ arch/sh/include/cpu-sh5/cpu/irq.h         |  113 --
+ arch/sh/include/cpu-sh5/cpu/mmu_context.h |   22 -
+ arch/sh/include/cpu-sh5/cpu/registers.h   |  103 --
+ arch/sh/include/cpu-sh5/cpu/rtc.h         |    9 -
+ arch/sh/include/uapi/asm/posix_types_64.h |   29 -
+ arch/sh/include/uapi/asm/ptrace_64.h      |   15 -
+ arch/sh/include/uapi/asm/unistd_64.h      |  423 -----
+ arch/sh/kernel/cpu/irq/intc-sh5.c         |  194 --
+ arch/sh/kernel/cpu/sh5/Makefile           |   16 -
+ arch/sh/kernel/cpu/sh5/clock-sh5.c        |   76 -
+ arch/sh/kernel/cpu/sh5/entry.S            | 2000 ---------------------
+ arch/sh/kernel/cpu/sh5/fpu.c              |  106 --
+ arch/sh/kernel/cpu/sh5/probe.c            |   72 -
+ arch/sh/kernel/cpu/sh5/setup-sh5.c        |  121 --
+ arch/sh/kernel/cpu/sh5/switchto.S         |  195 --
+ arch/sh/kernel/cpu/sh5/unwind.c           |  342 ----
+ arch/sh/kernel/head_64.S                  |  346 ----
+ arch/sh/kernel/irq_64.c                   |   48 -
+ arch/sh/kernel/process_64.c               |  461 -----
+ arch/sh/kernel/ptrace_64.c                |  576 ------
+ arch/sh/kernel/sh_ksyms_64.c              |   51 -
+ arch/sh/kernel/signal_64.c                |  567 ------
+ arch/sh/kernel/syscalls_64.S              |  419 -----
+ arch/sh/kernel/traps_64.c                 |  814 ---------
+ arch/sh/lib64/Makefile                    |   17 -
+ arch/sh/lib64/copy_page.S                 |   89 -
+ arch/sh/lib64/copy_user_memcpy.S          |  218 ---
+ arch/sh/lib64/memcpy.S                    |  202 ---
+ arch/sh/lib64/memset.S                    |   92 -
+ arch/sh/lib64/panic.c                     |   15 -
+ arch/sh/lib64/sdivsi3.S                   |  136 --
+ arch/sh/lib64/strcpy.S                    |   98 -
+ arch/sh/lib64/strlen.S                    |   34 -
+ arch/sh/lib64/udelay.c                    |   49 -
+ arch/sh/lib64/udivdi3.S                   |  121 --
+ arch/sh/lib64/udivsi3.S                   |   60 -
+ arch/sh/mm/cache-sh5.c                    |  621 -------
+ arch/sh/mm/tlb-sh5.c                      |  224 ---
+ 56 files changed, 10589 deletions(-)
+ delete mode 100644 arch/sh/drivers/pci/ops-sh5.c
+ delete mode 100644 arch/sh/drivers/pci/pci-sh5.c
+ delete mode 100644 arch/sh/drivers/pci/pci-sh5.h
+ delete mode 100644 arch/sh/include/asm/bl_bit_64.h
+ delete mode 100644 arch/sh/include/asm/cache_insns_64.h
+ delete mode 100644 arch/sh/include/asm/mmu_context_64.h
+ delete mode 100644 arch/sh/include/asm/pgtable_64.h
+ delete mode 100644 arch/sh/include/asm/processor_64.h
+ delete mode 100644 arch/sh/include/asm/ptrace_64.h
+ delete mode 100644 arch/sh/include/asm/string_64.h
+ delete mode 100644 arch/sh/include/asm/switch_to_64.h
+ delete mode 100644 arch/sh/include/asm/syscall_64.h
+ delete mode 100644 arch/sh/include/asm/syscalls_64.h
+ delete mode 100644 arch/sh/include/asm/tlb_64.h
+ delete mode 100644 arch/sh/include/asm/traps_64.h
+ delete mode 100644 arch/sh/include/asm/uaccess_64.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/addrspace.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/cache.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/irq.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/mmu_context.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/registers.h
+ delete mode 100644 arch/sh/include/cpu-sh5/cpu/rtc.h
+ delete mode 100644 arch/sh/include/uapi/asm/posix_types_64.h
+ delete mode 100644 arch/sh/include/uapi/asm/ptrace_64.h
+ delete mode 100644 arch/sh/include/uapi/asm/unistd_64.h
+ delete mode 100644 arch/sh/kernel/cpu/irq/intc-sh5.c
+ delete mode 100644 arch/sh/kernel/cpu/sh5/Makefile
+ delete mode 100644 arch/sh/kernel/cpu/sh5/clock-sh5.c
+ delete mode 100644 arch/sh/kernel/cpu/sh5/entry.S
+ delete mode 100644 arch/sh/kernel/cpu/sh5/fpu.c
+ delete mode 100644 arch/sh/kernel/cpu/sh5/probe.c
+ delete mode 100644 arch/sh/kernel/cpu/sh5/setup-sh5.c
+ delete mode 100644 arch/sh/kernel/cpu/sh5/switchto.S
+ delete mode 100644 arch/sh/kernel/cpu/sh5/unwind.c
+ delete mode 100644 arch/sh/kernel/head_64.S
+ delete mode 100644 arch/sh/kernel/irq_64.c
+ delete mode 100644 arch/sh/kernel/process_64.c
+ delete mode 100644 arch/sh/kernel/ptrace_64.c
+ delete mode 100644 arch/sh/kernel/sh_ksyms_64.c
+ delete mode 100644 arch/sh/kernel/signal_64.c
+ delete mode 100644 arch/sh/kernel/syscalls_64.S
+ delete mode 100644 arch/sh/kernel/traps_64.c
+ delete mode 100644 arch/sh/lib64/Makefile
+ delete mode 100644 arch/sh/lib64/copy_page.S
+ delete mode 100644 arch/sh/lib64/copy_user_memcpy.S
+ delete mode 100644 arch/sh/lib64/memcpy.S
+ delete mode 100644 arch/sh/lib64/memset.S
+ delete mode 100644 arch/sh/lib64/panic.c
+ delete mode 100644 arch/sh/lib64/sdivsi3.S
+ delete mode 100644 arch/sh/lib64/strcpy.S
+ delete mode 100644 arch/sh/lib64/strlen.S
+ delete mode 100644 arch/sh/lib64/udelay.c
+ delete mode 100644 arch/sh/lib64/udivdi3.S
+ delete mode 100644 arch/sh/lib64/udivsi3.S
+ delete mode 100644 arch/sh/mm/cache-sh5.c
+ delete mode 100644 arch/sh/mm/tlb-sh5.c
 
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -254,6 +254,7 @@ static inline bool ipv6_anycast_destinat
- 
- 	return rt->rt6i_flags & RTF_ANYCAST ||
- 		(rt->rt6i_dst.plen < 127 &&
-+		 !(rt->rt6i_flags & (RTF_GATEWAY | RTF_NONEXTHOP)) &&
- 		 ipv6_addr_equal(&rt->rt6i_dst.addr, daddr));
- }
- 
-
+diff --git a/arch/sh/drivers/pci/ops-sh5.c b/arch/sh/drivers/pci/ops-sh5.c
+deleted file mode 100644
+index 9fbaf72949ab..000000000000
+diff --git a/arch/sh/drivers/pci/pci-sh5.c b/arch/sh/drivers/pci/pci-sh5.c
+deleted file mode 100644
+index 03225d27770b..000000000000
+diff --git a/arch/sh/drivers/pci/pci-sh5.h b/arch/sh/drivers/pci/pci-sh5.h
+deleted file mode 100644
+index 91348af0ef6c..000000000000
+diff --git a/arch/sh/include/asm/bl_bit_64.h b/arch/sh/include/asm/bl_bit_64.h
+deleted file mode 100644
+index aac9780fe864..000000000000
+diff --git a/arch/sh/include/asm/cache_insns_64.h b/arch/sh/include/asm/cache_insns_64.h
+deleted file mode 100644
+index ed682b987b0d..000000000000
+diff --git a/arch/sh/include/asm/mmu_context_64.h b/arch/sh/include/asm/mmu_context_64.h
+deleted file mode 100644
+index bacafe0b887d..000000000000
+diff --git a/arch/sh/include/asm/pgtable_64.h b/arch/sh/include/asm/pgtable_64.h
+deleted file mode 100644
+index 1778bc5971e7..000000000000
+diff --git a/arch/sh/include/asm/processor_64.h b/arch/sh/include/asm/processor_64.h
+deleted file mode 100644
+index 53efc9f51ef1..000000000000
+diff --git a/arch/sh/include/asm/ptrace_64.h b/arch/sh/include/asm/ptrace_64.h
+deleted file mode 100644
+index 6ee08229b433..000000000000
+diff --git a/arch/sh/include/asm/string_64.h b/arch/sh/include/asm/string_64.h
+deleted file mode 100644
+index d51d6150a4e2..000000000000
+diff --git a/arch/sh/include/asm/switch_to_64.h b/arch/sh/include/asm/switch_to_64.h
+deleted file mode 100644
+index 2dbf2311669f..000000000000
+diff --git a/arch/sh/include/asm/syscall_64.h b/arch/sh/include/asm/syscall_64.h
+deleted file mode 100644
+index 72efcbc76f91..000000000000
+diff --git a/arch/sh/include/asm/syscalls_64.h b/arch/sh/include/asm/syscalls_64.h
+deleted file mode 100644
+index df42656cebea..000000000000
+diff --git a/arch/sh/include/asm/tlb_64.h b/arch/sh/include/asm/tlb_64.h
+deleted file mode 100644
+index 59fa0a23dad7..000000000000
+diff --git a/arch/sh/include/asm/traps_64.h b/arch/sh/include/asm/traps_64.h
+deleted file mode 100644
+index f28db6dfbe45..000000000000
+diff --git a/arch/sh/include/asm/uaccess_64.h b/arch/sh/include/asm/uaccess_64.h
+deleted file mode 100644
+index 0c19d02dc566..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/addrspace.h b/arch/sh/include/cpu-sh5/cpu/addrspace.h
+deleted file mode 100644
+index 6dd1e72f31b2..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/cache.h b/arch/sh/include/cpu-sh5/cpu/cache.h
+deleted file mode 100644
+index ef49538f386f..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/irq.h b/arch/sh/include/cpu-sh5/cpu/irq.h
+deleted file mode 100644
+index 4aa6ac54b9d6..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/mmu_context.h b/arch/sh/include/cpu-sh5/cpu/mmu_context.h
+deleted file mode 100644
+index 23c53be945b7..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/registers.h b/arch/sh/include/cpu-sh5/cpu/registers.h
+deleted file mode 100644
+index 372c1e1978b3..000000000000
+diff --git a/arch/sh/include/cpu-sh5/cpu/rtc.h b/arch/sh/include/cpu-sh5/cpu/rtc.h
+deleted file mode 100644
+index d7e25d435f4a..000000000000
+diff --git a/arch/sh/include/uapi/asm/posix_types_64.h b/arch/sh/include/uapi/asm/posix_types_64.h
+deleted file mode 100644
+index 3a9128d4aee3..000000000000
+diff --git a/arch/sh/include/uapi/asm/ptrace_64.h b/arch/sh/include/uapi/asm/ptrace_64.h
+deleted file mode 100644
+index a6f84eba5277..000000000000
+diff --git a/arch/sh/include/uapi/asm/unistd_64.h b/arch/sh/include/uapi/asm/unistd_64.h
+deleted file mode 100644
+index 75da54851f02..000000000000
+diff --git a/arch/sh/kernel/cpu/irq/intc-sh5.c b/arch/sh/kernel/cpu/irq/intc-sh5.c
+deleted file mode 100644
+index 1b3050facda8..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/Makefile b/arch/sh/kernel/cpu/sh5/Makefile
+deleted file mode 100644
+index 97d23ec3005f..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/clock-sh5.c b/arch/sh/kernel/cpu/sh5/clock-sh5.c
+deleted file mode 100644
+index dee6be2c2344..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/entry.S b/arch/sh/kernel/cpu/sh5/entry.S
+deleted file mode 100644
+index 81c8b64b977f..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/fpu.c b/arch/sh/kernel/cpu/sh5/fpu.c
+deleted file mode 100644
+index 3966b5ee8e93..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/probe.c b/arch/sh/kernel/cpu/sh5/probe.c
+deleted file mode 100644
+index 947250188065..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/setup-sh5.c b/arch/sh/kernel/cpu/sh5/setup-sh5.c
+deleted file mode 100644
+index dc8476d67244..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/switchto.S b/arch/sh/kernel/cpu/sh5/switchto.S
+deleted file mode 100644
+index d1beff755632..000000000000
+diff --git a/arch/sh/kernel/cpu/sh5/unwind.c b/arch/sh/kernel/cpu/sh5/unwind.c
+deleted file mode 100644
+index 3cb0cd9cea29..000000000000
+diff --git a/arch/sh/kernel/head_64.S b/arch/sh/kernel/head_64.S
+deleted file mode 100644
+index 67685e1f00e1..000000000000
+diff --git a/arch/sh/kernel/irq_64.c b/arch/sh/kernel/irq_64.c
+deleted file mode 100644
+index 7a1f50435e33..000000000000
+diff --git a/arch/sh/kernel/process_64.c b/arch/sh/kernel/process_64.c
+deleted file mode 100644
+index c2844a2e18cd..000000000000
+diff --git a/arch/sh/kernel/ptrace_64.c b/arch/sh/kernel/ptrace_64.c
+deleted file mode 100644
+index 11085e48eaa6..000000000000
+diff --git a/arch/sh/kernel/sh_ksyms_64.c b/arch/sh/kernel/sh_ksyms_64.c
+deleted file mode 100644
+index 9de17065afb4..000000000000
+diff --git a/arch/sh/kernel/signal_64.c b/arch/sh/kernel/signal_64.c
+deleted file mode 100644
+index b9aaa9266b34..000000000000
+diff --git a/arch/sh/kernel/syscalls_64.S b/arch/sh/kernel/syscalls_64.S
+deleted file mode 100644
+index 1bcb86f0b728..000000000000
+diff --git a/arch/sh/kernel/traps_64.c b/arch/sh/kernel/traps_64.c
+deleted file mode 100644
+index 37046f3a26d3..000000000000
+diff --git a/arch/sh/lib64/Makefile b/arch/sh/lib64/Makefile
+deleted file mode 100644
+index 69779ff741df..000000000000
+diff --git a/arch/sh/lib64/copy_page.S b/arch/sh/lib64/copy_page.S
+deleted file mode 100644
+index 0ec6fca63b56..000000000000
+diff --git a/arch/sh/lib64/copy_user_memcpy.S b/arch/sh/lib64/copy_user_memcpy.S
+deleted file mode 100644
+index 515f81b00202..000000000000
+diff --git a/arch/sh/lib64/memcpy.S b/arch/sh/lib64/memcpy.S
+deleted file mode 100644
+index 231ea595b39a..000000000000
+diff --git a/arch/sh/lib64/memset.S b/arch/sh/lib64/memset.S
+deleted file mode 100644
+index 453aa5f1d263..000000000000
+diff --git a/arch/sh/lib64/panic.c b/arch/sh/lib64/panic.c
+deleted file mode 100644
+index 38c954e04f6a..000000000000
+diff --git a/arch/sh/lib64/sdivsi3.S b/arch/sh/lib64/sdivsi3.S
+deleted file mode 100644
+index b422e2374430..000000000000
+diff --git a/arch/sh/lib64/strcpy.S b/arch/sh/lib64/strcpy.S
+deleted file mode 100644
+index b61631e523d4..000000000000
+diff --git a/arch/sh/lib64/strlen.S b/arch/sh/lib64/strlen.S
+deleted file mode 100644
+index c00b972f9999..000000000000
+diff --git a/arch/sh/lib64/udelay.c b/arch/sh/lib64/udelay.c
+deleted file mode 100644
+index f215b063da70..000000000000
+diff --git a/arch/sh/lib64/udivdi3.S b/arch/sh/lib64/udivdi3.S
+deleted file mode 100644
+index c032cb157589..000000000000
+diff --git a/arch/sh/lib64/udivsi3.S b/arch/sh/lib64/udivsi3.S
+deleted file mode 100644
+index e4788fb4fe82..000000000000
+diff --git a/arch/sh/mm/cache-sh5.c b/arch/sh/mm/cache-sh5.c
+deleted file mode 100644
+index 445b5e69b73c..000000000000
+diff --git a/arch/sh/mm/tlb-sh5.c b/arch/sh/mm/tlb-sh5.c
+deleted file mode 100644
+index e4bb2a8e0a69..000000000000
+-- 
+2.26.0
 
