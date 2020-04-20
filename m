@@ -2,128 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762D1B027C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA63B1B028E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgDTHOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:14:34 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:63860 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgDTHOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:14:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1587366872; x=1618902872;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KwU7xueAau9D+GU6TFQHWns+Dngy6h6T5a39ygBn5WE=;
-  b=gtoPqYCtd2Tsy2jHywZAvWH6Lz1Wq7kf3Ejl9IG69hUGxYOTbVDZzCwx
-   N6KOOuA5nE1bA2Nq/mYwF4wAKv1d5ijEPC7VHFxWvv5Rjg1r4GHiPM7gm
-   Son2a60o9TWaxiEys0GaKZUajsPh9CJLeJtrPD5X1FgwrUBnvXPdspDZ1
-   bBV2mFh9zoVL1KCG2N75YN+IMykPAU2bwMox2sZ1hbQArn7wtGV9J3lpo
-   909016hprSNkemfY+VEAEo9SDsnrV91eIKyIqbzxd7FnXFMusY51x/z5K
-   1iyEYMKcmeEeesceT2/w+Yn1AdHPrK+2hzd1KeIW9tvuVIQdcWLIQ7FYR
-   g==;
-IronPort-SDR: iHu8Qrvlhi6TppXa4/5HgckMMUuErJFlteZnfI2dsSdWkixVgEnPctKBgX2qqx3pbE6TVHSuk9
- pTz1RMglhQvI+F1/kJZK5ChVCOD8LEZDhcEBke1v0ZbN2vrYGUNPueLVPJM+2KWOSZph/eene4
- hgRGgUh/lfTK1E63uiUDY5TaRcFWesjwEjMXFN8jNAUQ2T6lKQT/vcdjk0Zs+NGVl60Pvm0Soj
- 9dNctr1p2znfar6SKSvnEJ/dbLqMqeK8y8oyktG93ukXPDn+XwUYVqrzJVTP2hj6bKIRxoYzOD
- tP8=
-X-IronPort-AV: E=Sophos;i="5.72,406,1580745600"; 
-   d="scan'208";a="140044046"
-Received: from mail-dm6nam10lp2106.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.106])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Apr 2020 15:14:31 +0800
+        id S1726141AbgDTHQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:16:15 -0400
+Received: from mail-dm6nam12on2117.outbound.protection.outlook.com ([40.107.243.117]:57049
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725773AbgDTHQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 03:16:13 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E/T/+zOGmkIIRzDGakv+uBc/TDirFP7HYEBa9RdO65N94vymWWyXJPF9CH8XV2bc4ABrdj25Hr9C8LlMqN4btjOuYX797/o8ANERR4qfweknAX014vDGQZBOS5kTmkmrhxAKyz+cJ1FdO22MVAaSj8Bl7ij353k7AhNJzkEdjHs+Zab3xQ8xXADJY7LZrtzJ2ntMhsxi1pSIvRavcZwAXDNf+CV0P2Tpc1jP5clU1Y0k66WFiHWaXFZYFfTWyD9+ZYrw7WbITPLZkxBpiJclqFqSVKduJQ6HVYkBf/V+KKG5v0nCTs19YEuJwaWH0+X3h90lWWF2oWR5nNZQyqNRLQ==
+ b=ITQS8bQSZfEkBfWEqYRoeO2K+t6He4hAkgoRaLbGJc5NrDcsVGlqf7ArYa2fMkNGTd/2Ja2YLlYCR5OQVvqQEmWSHb6/A33igGJU/x8RKWpLJvlKrkXZQNc6C2Mgn+IePd38rFHY5Xzjh1XtasMfPVAkDjdAboLIvrJdCuNjQP5kZOu6ydJzXGt/KPZ+Unrm6ZWSl+JKAo9mEP7q1RMd9MEk45gThuPNZ6D87mA+lbkCREcShDBODivuhuHz2ldEmufUGBdgG4g0CU2iie9oJ93U7p8w62bQhwN73thz4dYqE+HRo9ChBMI3/jaY+zjbuDEUFl9Uh11jK00ezfJ8Ig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KwU7xueAau9D+GU6TFQHWns+Dngy6h6T5a39ygBn5WE=;
- b=jdZFQuxwtSkHUo6Cql5AGLJONR0g4mNT1QMk8jlGRwh/A8oylob86IuXS3YLX+mZhmdzUuKKvhM+WVQ6nLeahKmUV7jIJDL6mK6xt4S5ylkqAfHHcTheQLRv9B1mBh3Q1/GONLDUMviAh6Q7xCB3jLUx3Gn90pfbho0dVjc2w6lBg0E0LYeTT1igD8pmlqhilD9EX+E2RZYt/ek4yMsuocU6JXDdfjJOfEzMc2kbhM/n+KIbjxfkg/l1N+tiBbNp4XtEtpvI5xtDJ98UXvTXHpjcbIySaF1CngMKZUM6iUGnWnbjwo/9z4O0tRjJDcUEj8t9ynSTw9H4BItIiFFEjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ bh=Obf8vJL6eB5UeU879i1Y2ZaUrwAqXiDjQeosQo0DGk0=;
+ b=OsGF/OK4v8EurgiZItl4OzhHFoWVhbgKRzGMy8beoVzBs2VvkVKDXUtMoB0bTyWswkNgrkr6r6d8f1vjAUlJ4g8KUP5RYtvpY8+ID1DiDVycBnKsa64ahobGYWxWqi+JCIZ1HzcZNw0EKnHDHVJlU7JzzLmTp7/b0C2nS9oAT2/VE02sYGrnZnOvCGaVhZQB4I+Egu//xe3EiMoS3o/e2sD2Z7Qx4GVHaQLu6eDpv1xhX1rmkW9DT2IYay14jNQsl39NFTSY9Xm2VG7G4s3IsNZ2BSvo2/h9TBYrw1aaKIS2lsPXrJcvdMbLDIUm9dVsJUYZdgcBHZV0XUNOo94iNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 204.77.163.244) smtp.rcpttodomain=zeniv.linux.org.uk
+ smtp.mailfrom=garmin.com; dmarc=temperror action=none header.from=garmin.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KwU7xueAau9D+GU6TFQHWns+Dngy6h6T5a39ygBn5WE=;
- b=IDokG2/5j8EL4dKdnQOZWiq4HkHzdjOWqXtyntKy+q66m2bebmx75sJev4zd4z42XXVbLmOFVyzY5k60dqcZSoGplKABuu6X8pqaYKJGK3W4EWcwRg/z2hF+s/xKQRy6qXFyyKb0WeBtl4ehW5tQ1l8InIql2iH/c+x8O617lS0=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB5216.namprd04.prod.outlook.com (2603:10b6:805:f7::15) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=Obf8vJL6eB5UeU879i1Y2ZaUrwAqXiDjQeosQo0DGk0=;
+ b=CU8fPaE/YUAdbdWZNiws63RKc4CHYrpnREhetAoYNuj88hjKb31Zgo4wug6abVk0ATDgU0K/WgcPkTIWwdC7LVF6cCeDRQkku1Uv08k4aXLPkjM/G8iFRe1lBiRSKVOGDS28kTsE6qRj0q8q7xEngOsqdnDnZSU8Ta7wkNv3rtiAUERKkd+8lr9JavZYo7YC22mHFqXKuS/QFUfq2Otc0PApoHuebMBteRW6dd8m1am8sOuMP9KmT1jM1yIKrercv/L63wvjGnSeHxdpIMxtr9qGIONXmAs/niGUo0GKb5GCP2S0IiYelHeijCgb18AAQ0v7J//lc/CmN/BwdXCyTw==
+Received: from MWHPR1701CA0021.namprd17.prod.outlook.com
+ (2603:10b6:301:14::31) by MN2PR04MB6943.namprd04.prod.outlook.com
+ (2603:10b6:208:1e8::23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Mon, 20 Apr
- 2020 07:14:29 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::3877:5e49:6cdd:c8b]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::3877:5e49:6cdd:c8b%5]) with mapi id 15.20.2921.027; Mon, 20 Apr 2020
- 07:14:29 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "robh@kernel.org" <robh@kernel.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "kwmad.kim@samsung.com" <kwmad.kim@samsung.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 03/10] scsi: ufs: add quirk to enable host controller
- without hce
-Thread-Topic: [PATCH v6 03/10] scsi: ufs: add quirk to enable host controller
- without hce
-Thread-Index: AQHWFON2F3tEHGSKoUec1wnTuJZOw6iBnIZw
-Date:   Mon, 20 Apr 2020 07:14:29 +0000
-Message-ID: <SN6PR04MB46403B55EB956336690B0C66FCD40@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200417175944.47189-1-alim.akhtar@samsung.com>
-        <CGME20200417181012epcas5p2004ac8f0d793abd4d58c096ff490da68@epcas5p2.samsung.com>
- <20200417175944.47189-4-alim.akhtar@samsung.com>
-In-Reply-To: <20200417175944.47189-4-alim.akhtar@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Avri.Altman@wdc.com; 
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3463cdf6-b593-4b35-e11f-08d7e4fa7799
-x-ms-traffictypediagnostic: SN6PR04MB5216:
-x-microsoft-antispam-prvs: <SN6PR04MB5216D064E09B63E65677511BFCD40@SN6PR04MB5216.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:400;
-x-forefront-prvs: 03793408BA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(54906003)(2906002)(71200400001)(4326008)(110136005)(7416002)(316002)(55016002)(5660300002)(186003)(8676002)(81156014)(66946007)(76116006)(66476007)(66556008)(64756008)(66446008)(86362001)(9686003)(7696005)(558084003)(52536014)(26005)(6506007)(478600001)(33656002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: imFiLJQLrq6/+8Ob3ol70vuoq2+bwySpC/nMzYbARCfJrfc/lpjAuJzwPqwQYi48juk2vTzW4bj57VLhJs2EkRqjSmoJuaobx9g97st1jWRY8QG6Gc+kpIVF24Km6wyeoXao+n3IWlmov4po2FZI1HRpC5XFkWwteBLbNHLDblJsx+D6DhTyf1mJxsL5ppXNX+cafTveUrZcS63t04YpTAcO63dBySpx+sf1BsCK1FaHWGbut4I8T0eQRsFNM+cGWDlPD9/3kia70vkDIkVfllEHbiOMPgQo1R3I6q5E3W6d23Szal/ADSmDhzrP13ulS/1gGs7bfbJh7AEIQiU/GJEIkTX5YK2kWPHhiEwNt1ybYV9TdNkyDaHlE6SaJAwxFxI6DALw4VhY2QiyQnZQMnd4XNPD41pzJiC5fJQW74GWgpxotwNZWNtarXRuAXZL
-x-ms-exchange-antispam-messagedata: XdXdP1NyAWF5duhh4xXjAN9VLtPzzhfzgVZDV0J7RbkRIY7zPd0sKiUR52hfattfnulev8J99COSPwdm6a+ECEyvk77PfLW3k++SMB/YIV2UZVhILlWWaqVEjqDFQcz8iNvfb65c69VIqaLPEuXxuw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ 2020 07:16:10 +0000
+Received: from MW2NAM10FT023.eop-nam10.prod.protection.outlook.com
+ (2603:10b6:301:14:cafe::73) by MWHPR1701CA0021.outlook.office365.com
+ (2603:10b6:301:14::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend
+ Transport; Mon, 20 Apr 2020 07:16:10 +0000
+Authentication-Results: spf=temperror (sender IP is 204.77.163.244)
+ smtp.mailfrom=garmin.com; zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=temperror action=none
+ header.from=garmin.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of garmin.com: DNS Timeout)
+Received: from edgetransport.garmin.com (204.77.163.244) by
+ MW2NAM10FT023.mail.protection.outlook.com (10.13.154.154) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2921.25 via Frontend Transport; Mon, 20 Apr 2020 07:16:09 +0000
+Received: from OLAWPA-EXMB7.ad.garmin.com (10.5.144.21) by
+ olawpa-edge5.garmin.com (10.60.4.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1466.3; Mon, 20 Apr 2020 02:16:08 -0500
+Received: from ola-d01c000-vm.ad.garmin.com (10.5.84.15) by
+ OLAWPA-EXMB7.ad.garmin.com (10.5.144.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 20 Apr 2020 02:16:07 -0500
+From:   Nate Karstens <nate.karstens@garmin.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-alpha@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        <sparclinux@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Changli Gao <xiaosuo@gmail.com>
+Subject: Implement close-on-fork
+Date:   Mon, 20 Apr 2020 02:15:44 -0500
+Message-ID: <20200420071548.62112-1-nate.karstens@garmin.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3463cdf6-b593-4b35-e11f-08d7e4fa7799
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2020 07:14:29.4635
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: OLAWPA-EXMB3.ad.garmin.com (10.5.144.15) To
+ OLAWPA-EXMB7.ad.garmin.com (10.5.144.21)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25366.005
+X-TM-AS-Result: No-2.672700-8.000000-10
+X-TMASE-MatchedRID: C0yCreAKqhU6Vyyhf+5DyNnDq+aDZjGZopGQY5bbP3IS39b8+3nDx2yH
+        arFSgTJkrAcfB2a374DtuEV8riQqnUL5qYNMJ0izSJA7ysb1rf4MoIRV9JcRcJgEXULQnZA+REq
+        3u7TSlyQQjJKRYDGkqiLlzUWeMnOUG9+YWBtn9f02Kcs0U8NADwD4keG7QhHmkaEC8FJraL9VBT
+        xVtaxF+PJULsnDyV0omyiLZetSf8nyb6HMFK1qexQabjOuIvShC24oEZ6SpSk6XEE7Yhw4FnGVL
+        azt5ExJKPeGqR8ehy43+ClJRg1TEJQKb8/efJar62rAP15pkWFJxvTFjNlhWphE9dJLY+2Ccilc
+        ogl42gi8ddZeVE3wUqPxvuJPX7GvZjWfMVA8wvMfAjFbCsqQWX7h78xQkeMv5UQ9TF0JjMw=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.672700-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25366.005
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFTY:;SFS:(10019020)(396003)(346002)(376002)(136003)(39860400002)(46966005)(44832011)(8936002)(82740400003)(356005)(426003)(86362001)(8676002)(63350400001)(2906002)(63370400001)(2616005)(7636003)(4326008)(36756003)(478600001)(5660300002)(4744005)(3480700007)(26005)(7696005)(110136005)(966005)(47076004)(316002)(336012)(6666004)(70206006)(70586007)(246002)(1076003)(186003)(7416002)(921003);DIR:OUT;SFP:1102;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3cebdd2a-378c-43a9-2eb3-08d7e4fab32f
+X-MS-TrafficTypeDiagnostic: MN2PR04MB6943:
+X-Microsoft-Antispam-PRVS: <MN2PR04MB6943FC5329299259A807F4529CD40@MN2PR04MB6943.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03793408BA
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m17TNnMaRIyO1oiSpiZwXGsMZvV085XaKj6cIq9LcdAlPse18AqAT5jmB0Pfph+DE56qOp/ls93+OtaHM3hDYWXM+t9Livwz4yaMr2GHRexfElAHXNTtptwdUqo+GBAP6UOA/8mrI+JsuFhJ+cEsJ60B6Kv9y/0U5nxiZ9z+9Jkboy3r86s5FILAAsXrApz76dvKLmFju84NLojir1cFDfFnJ0vGyuKAxBLB86VFqjejN5MVr85F7lv96hIDS0jEbovGBEOzeIlGDejU0GCf3yU4SnBYsqdUw/QreLKxdROMNl0LlqioduW57/nDuNw41Na+fixQ23Mzhpvzz346TRClrROBj49KhxrfZMN4F+elyaz2PYIii8ZawTgV6F8wyKu1l/9OuOXv0Ym5izUnJyGPOFvmR+N/1E70r0lOtn1Ov590XsxkCIWe87pEECs7pDdVjb7In1DTZSL4pdxIgZED15l9BuPj1qk1MLkhMxi5RCzvEh9apnYKIt3Q7Kgtjv+ppO2ILGqERXHWWH5T/MaYJLpTk8H/9OoA4/90Pdqo8DCmgIjCU501LVzhTSJc+PoWshGTD4yCyImwWvO5wYxpxVNAhQk3Hu57meqGmEk=
+X-OriginatorOrg: garmin.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 07:16:09.4056
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /QQT87oP9Bs6Jl1I5kIp1pFJaovHZxJXliFuLBQLpaj4W/5l9ywHiYZ7gFOq6Lh7tcByGtxn1GFdnk0l9TF70w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5216
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cebdd2a-378c-43a9-2eb3-08d7e4fab32f
+X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6943
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gU29tZSBob3N0IGNvbnRyb2xsZXJzIGRvbid0IHN1cHBvcnQgaG9zdCBjb250cm9sbGVy
-IGVuYWJsZSB2aWEgSENFLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogU2V1bmd3b24gSmVvbiA8ZXNz
-dXVqQGdtYWlsLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogQWxpbSBBa2h0YXIgPGFsaW0uYWtodGFy
-QHNhbXN1bmcuY29tPg0KUmV2aWV3ZWQtYnk6IEF2cmkgQWx0bWFuIDxhdnJpLmFsdG1hbkB3ZGMu
-Y29tPg0KDQo=
+Series of 4 patches to implement close-on-fork. Tests have been
+published to https://github.com/nkarstens/ltp/tree/close-on-fork.
+
+close-on-fork addresses race conditions in system(), which
+(depending on the implementation) is non-atomic in that it
+first calls a fork() and then an exec().
+
+This functionality was approved by the Austin Common Standards
+Revision Group for inclusion in the next revision of the POSIX
+standard (see issue 1318 in the Austin Group Defect Tracker).
+
+[PATCH 1/4] fs: Implement close-on-fork
+[PATCH 2/4] fs: Add O_CLOFORK flag for open(2) and dup3(2)
+[PATCH 3/4] fs: Add F_DUPFD_CLOFORK to fcntl(2)
+[PATCH 4/4] net: Add SOCK_CLOFORK
+
