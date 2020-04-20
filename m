@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C008C1B0A1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4DC1B0BD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgDTMol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:44:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38570 "EHLO mail.kernel.org"
+        id S1728816AbgDTM7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728595AbgDTMof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:44:35 -0400
+        id S1726828AbgDTMmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:42:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 402D22075A;
-        Mon, 20 Apr 2020 12:44:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95A7920724;
+        Mon, 20 Apr 2020 12:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386674;
-        bh=bAe1FRdeDniFj9uG2cgsWCRDVxEI8geVgSonvd04wvw=;
+        s=default; t=1587386536;
+        bh=MvXeFa5FcNNRthXLPyxuyxLB4bd5gGS+Nh1stta1QhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=03uJ5m9qZ36z2IGfb8H/oDlh5mK2qtD6bYUEWZwQtmRaEv+Gp0jj1BwOhbqOkJK21
-         XeHxLUP1wuLLiUJaUxscnsVGSof/TqxVGRUjZ4jzCyArRCZrw84aW3oaQn8TI1JlfI
-         IlhzGz2HyCgcoFFCCdSUV71b4ndePseHfq45ozjU=
+        b=ieJ2H9i5brXLWE6KSzIiPserer8Yp0bpQs/j2k3qELLgT00IUD3eN4tuL0YLijgo7
+         IV/iOPGEpqXFSEDcb9CFrAeZURRubL0ajcqgKyUwVpe11icYuu8aa8wQFs3f2caIpH
+         IxWZbf2zUU1y8fIWNm5F/NNYPKhPzx9/aSztz4Ww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.6 51/71] btrfs: check commit root generation in should_ignore_root
-Date:   Mon, 20 Apr 2020 14:39:05 +0200
-Message-Id: <20200420121519.463459744@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.5 62/65] x86/resctrl: Fix invalid attempt at removing the default resource group
+Date:   Mon, 20 Apr 2020 14:39:06 +0200
+Message-Id: <20200420121519.851928584@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
 
-commit 4d4225fc228e46948486d8b8207955f0c031b92e upstream.
+commit b0151da52a6d4f3951ea24c083e7a95977621436 upstream.
 
-Previously we would set the reloc root's last snapshot to transid - 1.
-However there was a problem with doing this, and we changed it to
-setting the last snapshot to the generation of the commit node of the fs
-root.
+The default resource group ("rdtgroup_default") is associated with the
+root of the resctrl filesystem and should never be removed. New resource
+groups can be created as subdirectories of the resctrl filesystem and
+they can be removed from user space.
 
-This however broke should_ignore_root().  The assumption is that if we
-are in a generation newer than when the reloc root was created, then we
-would find the reloc root through normal backref lookups, and thus can
-ignore any fs roots we find with an old enough reloc root.
+There exists a safeguard in the directory removal code
+(rdtgroup_rmdir()) that ensures that only subdirectories can be removed
+by testing that the directory to be removed has to be a child of the
+root directory.
 
-Now that the last snapshot could be considerably further in the past
-than before, we'd end up incorrectly ignoring an fs root.  Thus we'd
-find no nodes for the bytenr we were searching for, and we'd fail to
-relocate anything.  We'd loop through the relocate code again and see
-that there were still used space in that block group, attempt to
-relocate those bytenr's again, fail in the same way, and just loop like
-this forever.  This is tricky in that we have to not modify the fs root
-at all during this time, so we need to have a block group that has data
-in this fs root that is not shared by any other root, which is why this
-has been difficult to reproduce.
+A possible deadlock was recently fixed with
 
-Fixes: 054570a1dc94 ("Btrfs: fix relocation incorrectly dropping data references")
-CC: stable@vger.kernel.org # 4.9+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+  334b0f4e9b1b ("x86/resctrl: Fix a deadlock due to inaccurate reference").
+
+This fix involved associating the private data of the "mon_groups"
+and "mon_data" directories to the resource group to which they belong
+instead of NULL as before. A consequence of this change was that
+the original safeguard code preventing removal of "mon_groups" and
+"mon_data" found in the root directory failed resulting in attempts to
+remove the default resource group that ends in a BUG:
+
+  kernel BUG at mm/slub.c:3969!
+  invalid opcode: 0000 [#1] SMP PTI
+
+  Call Trace:
+  rdtgroup_rmdir+0x16b/0x2c0
+  kernfs_iop_rmdir+0x5c/0x90
+  vfs_rmdir+0x7a/0x160
+  do_rmdir+0x17d/0x1e0
+  do_syscall_64+0x55/0x1d0
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by improving the directory removal safeguard to ensure that
+subdirectories of the resctrl root directory can only be removed if they
+are a child of the resctrl filesystem's root _and_ not associated with
+the default resource group.
+
+Fixes: 334b0f4e9b1b ("x86/resctrl: Fix a deadlock due to inaccurate reference")
+Reported-by: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/884cbe1773496b5dbec1b6bd11bb50cffa83603d.1584461853.git.reinette.chatre@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/relocation.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -561,8 +561,8 @@ static int should_ignore_root(struct btr
- 	if (!reloc_root)
- 		return 0;
- 
--	if (btrfs_root_last_snapshot(&reloc_root->root_item) ==
--	    root->fs_info->running_transaction->transid - 1)
-+	if (btrfs_header_generation(reloc_root->commit_root) ==
-+	    root->fs_info->running_transaction->transid)
- 		return 0;
- 	/*
- 	 * if there is reloc tree and it was created in previous
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3006,7 +3006,8 @@ static int rdtgroup_rmdir(struct kernfs_
+ 	 * If the rdtgroup is a mon group and parent directory
+ 	 * is a valid "mon_groups" directory, remove the mon group.
+ 	 */
+-	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn) {
++	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn &&
++	    rdtgrp != &rdtgroup_default) {
+ 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP ||
+ 		    rdtgrp->mode == RDT_MODE_PSEUDO_LOCKED) {
+ 			ret = rdtgroup_ctrl_remove(kn, rdtgrp);
 
 
