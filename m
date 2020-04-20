@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA9F1B0866
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423D31B0867
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgDTLzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
+        id S1726485AbgDTLzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:55:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726969AbgDTLzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:55:47 -0400
+        id S1726973AbgDTLzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:55:51 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7244D2071C;
-        Mon, 20 Apr 2020 11:55:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3E5E2072B;
+        Mon, 20 Apr 2020 11:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587383747;
-        bh=nL1LeGOm8/WZgsO1KtQEkujWWsCxvxA5HwYdNWw6Wyk=;
+        s=default; t=1587383750;
+        bh=VZN1h7cjWd3DPg/tcndQSyK/rsbx7rzEzxBfHfiUW/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GjPd3WKi8ZJ1kqyPYUDMB4we/fxbCzUEw33vDfJ3D4bBHmGLU/RkdP2Mi9vzmAs8s
-         P+kuRB4kZOagMhPcgkPTo0aZug30HM48KckQc12t7mD1EPaqsMdFzwoE0nHp7n5QBG
-         nJigeeAvfAKVARXq2mLV/0vtGZIKAYkYN1+Ju5WM=
+        b=C2UXOjf6VNONVbXOgVWYYIhkpFxPfN5PiD8QJNS34jo2ix3QQvuGewdtpKNprMtCD
+         F7RgLlZUkRivVVGWlsa6idLIQeBlDZMiC2y+QNzXzGXWBcC7//O3HCLOu2u6J3HH3x
+         u3pvgLQuzG69I8RojPIMgpZZ3DSX2Eo3L8snKj18=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -30,12 +30,12 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 29/60] perf cs-etm: Implement ->evsel_is_auxtrace() callback
-Date:   Mon, 20 Apr 2020 08:52:45 -0300
-Message-Id: <20200420115316.18781-30-acme@kernel.org>
+Subject: [PATCH 30/60] perf s390-cpumsf: Implement ->evsel_is_auxtrace() callback
+Date:   Mon, 20 Apr 2020 08:52:46 -0300
+Message-Id: <20200420115316.18781-31-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200420115316.18781-1-acme@kernel.org>
 References: <20200420115316.18781-1-acme@kernel.org>
@@ -51,44 +51,55 @@ From: Adrian Hunter <adrian.hunter@intel.com>
 Implement ->evsel_is_auxtrace() callback.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Acked-by: Thomas Richter <tmricht@linux.ibm.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: http://lore.kernel.org/lkml/20200401101613.6201-6-adrian.hunter@intel.com
+Link: http://lore.kernel.org/lkml/20200401101613.6201-7-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/cs-etm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ tools/perf/util/s390-cpumcf-kernel.h | 1 +
+ tools/perf/util/s390-cpumsf.c        | 9 +++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 62d2f9b9ce1b..3c802fde4954 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -631,6 +631,16 @@ static void cs_etm__free(struct perf_session *session)
- 	zfree(&aux);
+diff --git a/tools/perf/util/s390-cpumcf-kernel.h b/tools/perf/util/s390-cpumcf-kernel.h
+index d4356030b504..f55ca07f3ca1 100644
+--- a/tools/perf/util/s390-cpumcf-kernel.h
++++ b/tools/perf/util/s390-cpumcf-kernel.h
+@@ -11,6 +11,7 @@
+ 
+ #define	S390_CPUMCF_DIAG_DEF	0xfeef	/* Counter diagnostic entry ID */
+ #define	PERF_EVENT_CPUM_CF_DIAG	0xBC000	/* Event: Counter sets */
++#define PERF_EVENT_CPUM_SF_DIAG	0xBD000 /* Event: Combined-sampling */
+ 
+ struct cf_ctrset_entry {	/* CPU-M CF counter set entry (8 byte) */
+ 	unsigned int def:16;	/* 0-15  Data Entry Format */
+diff --git a/tools/perf/util/s390-cpumsf.c b/tools/perf/util/s390-cpumsf.c
+index 6785cd87aa4d..d7779e48652f 100644
+--- a/tools/perf/util/s390-cpumsf.c
++++ b/tools/perf/util/s390-cpumsf.c
+@@ -1047,6 +1047,14 @@ static void s390_cpumsf_free(struct perf_session *session)
+ 	free(sf);
  }
  
-+static bool cs_etm__evsel_is_auxtrace(struct perf_session *session,
-+				      struct evsel *evsel)
++static bool
++s390_cpumsf_evsel_is_auxtrace(struct perf_session *session __maybe_unused,
++			      struct evsel *evsel)
 +{
-+	struct cs_etm_auxtrace *aux = container_of(session->auxtrace,
-+						   struct cs_etm_auxtrace,
-+						   auxtrace);
-+
-+	return evsel->core.attr.type == aux->pmu_type;
++	return evsel->core.attr.type == PERF_TYPE_RAW &&
++	       evsel->core.attr.config == PERF_EVENT_CPUM_SF_DIAG;
 +}
 +
- static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
+ static int s390_cpumsf_get_type(const char *cpuid)
  {
- 	struct machine *machine;
-@@ -2618,6 +2628,7 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
- 	etm->auxtrace.flush_events = cs_etm__flush_events;
- 	etm->auxtrace.free_events = cs_etm__free_events;
- 	etm->auxtrace.free = cs_etm__free;
-+	etm->auxtrace.evsel_is_auxtrace = cs_etm__evsel_is_auxtrace;
- 	session->auxtrace = &etm->auxtrace;
+ 	int ret, family = 0;
+@@ -1142,6 +1150,7 @@ int s390_cpumsf_process_auxtrace_info(union perf_event *event,
+ 	sf->auxtrace.flush_events = s390_cpumsf_flush;
+ 	sf->auxtrace.free_events = s390_cpumsf_free_events;
+ 	sf->auxtrace.free = s390_cpumsf_free;
++	sf->auxtrace.evsel_is_auxtrace = s390_cpumsf_evsel_is_auxtrace;
+ 	session->auxtrace = &sf->auxtrace;
  
- 	etm->unknown_thread = thread__new(999999999, 999999999);
+ 	if (dump_trace)
 -- 
 2.21.1
 
