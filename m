@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450EF1B0AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943501B0AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729483AbgDTMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:49:47 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:38485 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729458AbgDTMtj (ORCPT
+        id S1729541AbgDTMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:50:59 -0400
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:5751 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726835AbgDTMuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:49:39 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 6A6EF443;
-        Mon, 20 Apr 2020 08:49:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 20 Apr 2020 08:49:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=txlve3/CTcfnUvbwX40ZvP3ANaO
-        WQv9Voc732+vtkPc=; b=epRypLCKVuWg98xXbA3a5AvbDaH8iu8fZDyEzMaq4HH
-        w57IRkXMj2jRpWdzF2usdVUjFGOvqS8pXi5sGu3KxTAikuAZpHJn6j0O42snSnFT
-        gi6vftUyikzC5CeXoSbdYKjC1VRzATXqwIcJTiwWDiG7+09+4WnOs3wceTpfZEvq
-        Hf5Atd3Uxq6mtbDo4x2SXdszh1H2QoXU6XsXyuf1vNPY1QvrWjel5u+rKOyb20hK
-        mDkGfFJQRkHK47QvpdCzaYs/aF/hq7vxI+LQfKtLzhu61b0x+KXHdpUCyr60T9xj
-        zWnAwL2D+HGcSUEimLzQsBSPkflMfjst7go+zQvEnvA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=txlve3
-        /CTcfnUvbwX40ZvP3ANaOWQv9Voc732+vtkPc=; b=KOvFfcVn5xQCA9zcGTiZ4L
-        IZVQx3vvaNfJsrck/lZZQqKj8mYHONtc6U3GPyiV7aDSCadqzKdXB5aZoSO2AhNA
-        6kFEbJfpnVKNjvgqFQLCrp7R+OTnIbJj95LMWnowdqG/UDsaTwgVmbgPoCPl0Hv9
-        GEwuuYOTRKgRkcNllJIoDsRT6xlftgvux5kO4gVzsZNq3d8YHnWC5kJZ4eFDf4MR
-        kwKqnivtAt+2d2ID3NXJhMSRce8nWnV/YPZfUsMIZsn5XNEZ6E/7aVqqUu4RyoVT
-        9+1tDSgjv205twth4/Gvnqt+DhfZEUTWXQ7PD3vWOu7ZONe/DECvGbfTEz/TBveQ
-        ==
-X-ME-Sender: <xms:YZqdXhEMIFi3MBT888e2SjRyQ7H96ooFC1QiOMJksgR72ZJ6FermSw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:YZqdXoX-Kx7WUcDBTwV2x45WnAWGxuvzVQA1Az8s8R1aFh0FQQaYWQ>
-    <xmx:YZqdXnbHZfrqMy2qXc0qXm70aNuJZG-eeJ7ORLVRJ12nHGG7xB88fg>
-    <xmx:YZqdXiC309TCkuS7EBAb5CCm4JG5cWEy_W15s4z8SJA7dbG55_M5Bw>
-    <xmx:YpqdXlU6JyVeaSulfqpW_SIH2tIxat5ZaoQEQtF7qs5nCOeLCgpWnQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 42BA13280059;
-        Mon, 20 Apr 2020 08:49:37 -0400 (EDT)
-Date:   Mon, 20 Apr 2020 14:49:35 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Priit Laes <plaes@plaes.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 1/4] clk: sunxi-ng: a10/a20: rewrite init code to a
- platform driver
-Message-ID: <20200420124935.asfbgv7envb2af55@gilmour.lan>
-References: <20200417221730.555954-1-plaes@plaes.org>
- <20200417221730.555954-2-plaes@plaes.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5wt3lytiztwzv3ef"
-Content-Disposition: inline
-In-Reply-To: <20200417221730.555954-2-plaes@plaes.org>
+        Mon, 20 Apr 2020 08:50:51 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.122])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 1AD916647F5;
+        Mon, 20 Apr 2020 20:50:48 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        =?UTF-8?q?Nicolai=20H=C3=A4hnle?= <nicolai.haehnle@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH V2] amdgpu, fix unnessary check "info" NULL branch
+Date:   Mon, 20 Apr 2020 05:50:37 -0700
+Message-Id: <1587387039-120881-1-git-send-email-bernard@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VJTk5LS0tKSk9PT0tCSVlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pxw6MBw5FDg6SwweCRc3CwxK
+        NT4aFE9VSlVKTkNMSENMS09DT0hNVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSUlZV1kIAVlBSUhKSDcG
+X-HM-Tid: 0a7197a421a29373kuws1ad916647f5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+kvfree ensure that the null pointer will do nothing.
+If addr is NULL, first is_vmalloc_addr will not enter,
+and kfree function just return when addr is NULL. There
+will be no risk here.
 
---5wt3lytiztwzv3ef
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Sat, Apr 18, 2020 at 01:17:27AM +0300, Priit Laes wrote:
-> In order to register regmap for sun7i CCU, there needs to be
-> a device structure already bound to the CCU device node.
->=20
-> Convert the sun4i/sun7i CCU setup to platform driver to use
-> it later as platform device.
->=20
-> Signed-off-by: Priit Laes <plaes@plaes.org>
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+index af91627b..814bd5d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+@@ -98,8 +98,7 @@ static int amdgpu_cs_bo_handles_chunk(struct amdgpu_cs_parser *p,
+ 	return 0;
+ 
+ error_free:
+-	if (info)
+-		kvfree(info);
++	kvfree(info);
+ 
+ 	return r;
+ }
+-- 
+2.7.4
 
-You can't relly do that though. We have timers that need those clocks befor=
-e the
-device model is initialized.
-
-Maxime
-
---5wt3lytiztwzv3ef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp2aXwAKCRDj7w1vZxhR
-xf6RAP4lRgNAUaFxWq+xBoAy+3gdbbPDv06zoQib8NGNw5hqogEAz1ou9+SSxlMS
-L4kNm9nZdNMKsGOFEcPHX6r+OleJvQA=
-=yk2k
------END PGP SIGNATURE-----
-
---5wt3lytiztwzv3ef--
