@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077A01B0D60
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA211B0D69
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgDTNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726725AbgDTNvE (ORCPT
+        id S1728894AbgDTNwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:52:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54378 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728574AbgDTNv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:51:04 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CC8C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:51:04 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t14so12213664wrw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xL0eDIXpQBxMEh1rpP/FONQ6psNDwPofEEjDAjgV9+E=;
-        b=g9N4Prb+W/MZeBAamiu3mzs0P1/HfnhajHbNf6Z+BFG6AESZOAaf9tIdcTxFockEwT
-         EKWaFlouUpD/6fVZbNK0UTx2Jequz1Oq9PHEye186schaM/btM9eBXfEyafUFocZ4uoG
-         9pltSmbf6ROp/xZA9nnA49VLvIueiVYem97NDOVi92BD00TMnnEYBZ1zmUTNSjkm0Z31
-         VdcX8+PNRUSm0vWV05sEJ5T8GMqxfwe1n/O6bOaDggc/c8v7DZG/1gRKS6fRBhbxQKe3
-         Jw1jtrmpyMbhSiH1+qiF5nHqdAbioZLiViL9DeqUIgcbbxhwd3dFKn8Nl13HJkeUL/8l
-         VmOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xL0eDIXpQBxMEh1rpP/FONQ6psNDwPofEEjDAjgV9+E=;
-        b=dKou/T3zG1Mt/eTqWNG1AH+Pi+N+YpI53PaIbHM9nGMaq7YMOomx0s6N5N/erYaMer
-         L5vKUlureZQ5DxuY0uq2G/qxajI1xCytgyXpa8isTon6LsxOmr6Yc5qinfDqRB9qhSpU
-         rGo40W1gHbUQsWtJyGB7wSoc173FvM0tDQGeRr+zA+INmUblz3zlxcPFTnVVmRegBj1V
-         ZElvUIR49OjzVpyPCl/SinIjvoCCl1odEPIh9FwV908KihUrvQpU+XqnYZ4FN38YlGk7
-         EShpQpFs5i4WhH9OF+lhu+CLD110jJDbZEZGyfISr37fpK3WT+qzhaEZVVDoxygBtBJi
-         WinQ==
-X-Gm-Message-State: AGi0PubvqMQk0wi8pKu8dNtaFXNZssVU7o/7bd3K/93R6nj0DadLX0Jm
-        kCsDyY4G2sF8SZtB1RLbnt4ilw==
-X-Google-Smtp-Source: APiQypIkD9tDuLBwdY9svyS889RVUDhlwihT/636a3FV3sGGLOwXPv1ushYYNwKn2DXvjpEovZY5Zg==
-X-Received: by 2002:adf:decb:: with SMTP id i11mr18098981wrn.140.1587390663057;
-        Mon, 20 Apr 2020 06:51:03 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id b85sm1502032wmb.21.2020.04.20.06.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 06:51:02 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 14:51:00 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
-        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] backlight: lms501kf03: remove unused 'seq_sleep_in' and
- 'seq_up_dn'
-Message-ID: <20200420135100.lhwcdkl33jzomy6p@holly.lan>
-References: <20200417092257.13694-1-yanaijie@huawei.com>
+        Mon, 20 Apr 2020 09:51:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587390718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=00MEmElFq0InaxZeBkM2hq8Ej0A8kJ9QIciCtrGjSuQ=;
+        b=XPxAXLcT4vcdWp3FBtbVR1WnSlCI1p4kq9351SXFr7P9dtgcstFmqnCdVVg9LegUhs1ZGu
+        dMgcGCboRwYFWggJr/z3lhqZd7VNOZW4oh8zAjQLIxGPBWQW/XE7M4V3UHAeIu0rWpjQsX
+        Vb6/3yAqZRWcCzFECVCYXCxVFLehu5U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-CborrHU8Moqzqf41xip6Ww-1; Mon, 20 Apr 2020 09:51:54 -0400
+X-MC-Unique: CborrHU8Moqzqf41xip6Ww-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8779BA0CC8;
+        Mon, 20 Apr 2020 13:51:52 +0000 (UTC)
+Received: from max.home.com (ovpn-114-63.ams2.redhat.com [10.36.114.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7546310013A1;
+        Mon, 20 Apr 2020 13:51:49 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        "okir@suse.de" <okir@suse.de>,
+        "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
+        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
+        "akpm@osdl.org" <akpm@osdl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "kjlu@umn.edu" <kjlu@umn.edu>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>
+Subject: [PATCH] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
+Date:   Mon, 20 Apr 2020 15:51:47 +0200
+Message-Id: <20200420135147.21572-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200417092257.13694-1-yanaijie@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 05:22:57PM +0800, Jason Yan wrote:
-> Fix the following gcc warning:
-> 
-> drivers/video/backlight/lms501kf03.c:96:28: warning: ‘seq_sleep_in’
-> defined but not used [-Wunused-const-variable=]
->  static const unsigned char seq_sleep_in[] = {
->                             ^~~~~~~~~~~~
-> drivers/video/backlight/lms501kf03.c:92:28: warning: ‘seq_up_dn’ defined
-> but not used [-Wunused-const-variable=]
->  static const unsigned char seq_up_dn[] = {
->                             ^~~~~~~~~
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+nfs3_set_acl keeps track of the acl it allocated locally to determine if =
+an acl
+needs to be released at the end.  This results in a memory leak when the
+function allocates an acl as well as a default acl.  Fix by releasing acl=
+s
+that differ from the acl originally passed into nfs3_set_acl.
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: b7fa0554cf1b ("[PATCH] NFS: Add support for NFSv3 ACLs")
+Reported-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
+ fs/nfs/nfs3acl.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
+diff --git a/fs/nfs/nfs3acl.c b/fs/nfs/nfs3acl.c
+index c5c3fc6e6c60..26c94b32d6f4 100644
+--- a/fs/nfs/nfs3acl.c
++++ b/fs/nfs/nfs3acl.c
+@@ -253,37 +253,45 @@ int nfs3_proc_setacls(struct inode *inode, struct p=
+osix_acl *acl,
+=20
+ int nfs3_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+ {
+-	struct posix_acl *alloc =3D NULL, *dfacl =3D NULL;
++	struct posix_acl *orig =3D acl, *dfacl =3D NULL, *alloc;
+ 	int status;
+=20
+ 	if (S_ISDIR(inode->i_mode)) {
+ 		switch(type) {
+ 		case ACL_TYPE_ACCESS:
+-			alloc =3D dfacl =3D get_acl(inode, ACL_TYPE_DEFAULT);
++			alloc =3D get_acl(inode, ACL_TYPE_DEFAULT);
+ 			if (IS_ERR(alloc))
+ 				goto fail;
++			dfacl =3D alloc;
+ 			break;
+=20
+ 		case ACL_TYPE_DEFAULT:
+-			dfacl =3D acl;
+-			alloc =3D acl =3D get_acl(inode, ACL_TYPE_ACCESS);
++			alloc =3D get_acl(inode, ACL_TYPE_ACCESS);
+ 			if (IS_ERR(alloc))
+ 				goto fail;
++			dfacl =3D acl;
++			acl =3D alloc;
+ 			break;
+ 		}
+ 	}
+=20
+ 	if (acl =3D=3D NULL) {
+-		alloc =3D acl =3D posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
++		alloc =3D posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
+ 		if (IS_ERR(alloc))
+ 			goto fail;
++		acl =3D alloc;
+ 	}
+ 	status =3D __nfs3_proc_setacls(inode, acl, dfacl);
+-	posix_acl_release(alloc);
++out:
++	if (acl !=3D orig)
++		posix_acl_release(acl);
++	if (dfacl !=3D orig)
++		posix_acl_release(dfacl);
+ 	return status;
+=20
+ fail:
+-	return PTR_ERR(alloc);
++	status =3D PTR_ERR(alloc);
++	goto out;
+ }
+=20
+ const struct xattr_handler *nfs3_xattr_handlers[] =3D {
 
-> ---
->  drivers/video/backlight/lms501kf03.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/lms501kf03.c b/drivers/video/backlight/lms501kf03.c
-> index 8ae32e3573c1..c1bd02bb8b2e 100644
-> --- a/drivers/video/backlight/lms501kf03.c
-> +++ b/drivers/video/backlight/lms501kf03.c
-> @@ -89,14 +89,6 @@ static const unsigned char seq_rgb_gamma[] = {
->  	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
->  };
->  
-> -static const unsigned char seq_up_dn[] = {
-> -	0x36, 0x10,
-> -};
-> -
-> -static const unsigned char seq_sleep_in[] = {
-> -	0x10,
-> -};
-> -
->  static const unsigned char seq_sleep_out[] = {
->  	0x11,
->  };
-> -- 
-> 2.21.1
-> 
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+--=20
+2.25.3
+
