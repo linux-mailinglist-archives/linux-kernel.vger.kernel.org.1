@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8141B0655
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B089A1B0673
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgDTKOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 06:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726025AbgDTKOu (ORCPT
+        id S1726112AbgDTKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 06:21:50 -0400
+Received: from smtp105.ord1c.emailsrvr.com ([108.166.43.105]:58808 "EHLO
+        smtp105.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725773AbgDTKVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 06:14:50 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D81AC061A0C;
-        Mon, 20 Apr 2020 03:14:49 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id r14so4725926pfg.2;
-        Mon, 20 Apr 2020 03:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+plp5dslqkbN+jJKI4p9ucxk+mSNWrqMV1KZLrKDu8E=;
-        b=m9/NpKD3YMhtt1l8zNAhqW7YCnAg0vuezB4FcJjBiW0qtvgfYxDE8Q+jH26Che+j09
-         WIiar7jYNanQupQd41XmtOfKeb6r28kYQKdmiNBRV0NGpAjyGHWYazLmy0LhvSRtG7VN
-         F/EYszmDw8mDmw/UL6hH7uM4Z2xWXP8/jMBVVAeyRk4hPBRLlBoF/zj+XzzRf3LFLIJc
-         jRVwT7FgZTBNkxmx3j/36B68OKh/Ohr8aJ4+amz189J4w+rKjuS7VI8bO2jDK465A/qP
-         YyUi8XJGibpb/IY1phIMWcFWNIt2JoWTdMiP6PUoYsPXcR53zk5yYxQCgX5G/4jFgU9Z
-         R3bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+plp5dslqkbN+jJKI4p9ucxk+mSNWrqMV1KZLrKDu8E=;
-        b=LU5PwF+6Gg/WrxmaDCiTNgb5lFVMxYdVAajDfxQ/nWLkDDrLZKzgUiYFVj072q2/9i
-         SL4NlaagTJO23t7rl5Z940INTDX6AZq0FWn6+uMXNdwP9uDJ0lg+YFFKP2CmdH0RD0wX
-         Gg7kz9ALt7k4jG4hJdvQV6isuXoQhOrdKueUy2ms4X2mBLVNZMgfsLvOMDkxzlACbpVY
-         kGpczgHxlhjURJD9nVHRUKtQgEvn2immxTQiBrY+NDwkXM57oLnOjSbQhPmSyZ8VxUe5
-         sWlIKRckYIc8uO1LhdvBYbjYc/lbgHfVuKn+wRK6JzR+2dzME8pP35J6QZ3whMCqUhsR
-         29gw==
-X-Gm-Message-State: AGi0PuY6QMeQ59IUcCB6nE4m5N1qIHWgBO6uNRuCyvdoqcTCsXMXjWas
-        QM6WGNDe8lSp83Vm3EUgL5DoFI5CPNCsq9zvLck=
-X-Google-Smtp-Source: APiQypL5JJh3lWpj0tF/H74qWnVXLQrlL9upOg621u5MaM3c0nHwfxf/sSiqTVj423joY+7ivzMJipVARFeU3GeIT9M=
-X-Received: by 2002:aa7:8f26:: with SMTP id y6mr16420099pfr.36.1587377688814;
- Mon, 20 Apr 2020 03:14:48 -0700 (PDT)
+        Mon, 20 Apr 2020 06:21:50 -0400
+X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 06:21:49 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1587377714;
+        bh=KE+p7nNz2ulsXQ37ZSxFILCnrC3V3T2DkQkwLsftGEs=;
+        h=Subject:To:From:Date:From;
+        b=CvDuyE0Z+g2G9s2Gni0Wv0vFUbJGSIBmFLj4U6Dp1bZZrfPV165Lcp6o3VzQujoQX
+         psPfQJMNvi+dXEictMOYRYeN3WaOK68D3ptwDeVrSSyFwCxri+rpOENnlyYalgMtxd
+         qO8/z8J01IRpQmZZPTyk+jBmz17ooMiC62XvroDw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1587377714;
+        bh=KE+p7nNz2ulsXQ37ZSxFILCnrC3V3T2DkQkwLsftGEs=;
+        h=Subject:To:From:Date:From;
+        b=YD6ZZr+NVivTfMnXYy3qJaA8bX2C1qNXKS5LQhJL3LKkAR9M1R4vJu5gddOmUd1i3
+         /7c6zO2TaFOlQFzotuOnp9HXh5dqW0mmhDlaNrpKJ/lZ0FaihDzerJAE+PbNNzHxNX
+         ijF9WO6p1KpErJpm5uaN0AUvCrEOFpPrN1QH6OgU=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp6.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 96E37A0109;
+        Mon, 20 Apr 2020 06:15:13 -0400 (EDT)
+X-Sender-Id: abbotti@mev.co.uk
+Received: from [10.0.0.173] (remote.quintadena.com [81.133.34.160])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA)
+        by 0.0.0.0:465 (trex/5.7.12);
+        Mon, 20 Apr 2020 06:15:14 -0400
+Subject: Re: [PATCH] staging: comedi: Fix comedi_device refcnt leak in
+ comedi_open
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Xin Tan <tanxin.ctf@gmail.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu
+References: <1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <a5988c23-e552-b787-feb0-2d1bda8f1668@mev.co.uk>
+Date:   Mon, 20 Apr 2020 11:15:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200418105533.477ce529@collabora.com> <20200419222040.GJ185537@smile.fi.intel.com>
- <20200420111754.5863324b@collabora.com> <CAHp75VeOH+DC362tsEo13gr9fJpeCHXok=7O19B3njbxCOzd2A@mail.gmail.com>
- <20200420115256.3a0ff647@collabora.com>
-In-Reply-To: <20200420115256.3a0ff647@collabora.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 20 Apr 2020 13:14:42 +0300
-Message-ID: <CAHp75Vfp_WYNR8kHVsSVumGzuVbGEGpAjfXVvJAV7t6zXXY+HA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh R <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        masonccyang@mxic.com.tw, piotrs@cadence.com,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        "hauke.mehrtens" <hauke.mehrtens@intel.com>, qi-ming.wu@intel.com,
-        cheol.yong.kim@intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 061321d8-5d6b-4c3f-b7bb-fc78540ae002-1-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 12:53 PM Boris Brezillon
-<boris.brezillon@collabora.com> wrote:
-> On Mon, 20 Apr 2020 12:44:51 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
-> > On Mon, Apr 20, 2020 at 12:21 PM Boris Brezillon
-> > <boris.brezillon@collabora.com> wrote:
-> > > On Mon, 20 Apr 2020 01:20:40 +0300
-> > > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
-> > > > On Sat, Apr 18, 2020 at 10:55:33AM +0200, Boris Brezillon wrote:
-> > > > > On Fri, 17 Apr 2020 16:21:47 +0800
-> > > > > "Ramuthevar,Vadivel MuruganX"
-> > > > > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-> > > > >
-> > > > > > From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> > > >
-> > > > > > +static const struct of_device_id lgm_nand_match[] = {
-> > > > > > + { .compatible = "intel,lgm-nand", },
-> > > > > > + {}
-> > > > > > +};
-> > > > > > +MODULE_DEVICE_TABLE(of, lgm_nand_match);
-> > > > >
-> > > > > You probably have a missing "depends on OF" in your Kconfig.
-> > > >
-> > > > Since it's using device property API, dependency is not needed.
-> > > >
-> > >
-> > > There's no compile-time dependency, but this driver will be pretty
-> > > useless if all its users have the NAND controller node defined in their
-> > > DT and CONFIG_OF is not enabled.
-> >
-> > No, it's not.
-> > See [1] for the details how ACPI may utilize this table.
-> >
-> > [1]: https://www.kernel.org/doc/html/latest/firmware-guide/acpi/enumeration.html#device-tree-namespace-link-device-id
->
-> Except the NAND framework does use the OF lib when parsing common DT
-> properties (like nand-ecc-mode, etc), so it does depend on OF if you
-> want those props to be parsed, which, according to the DT binding patch,
-> is the case.
+On 20/04/2020 06:44, Xiyu Yang wrote:
+> comedi_open() invokes comedi_dev_get_from_minor(), which returns a
+> reference of the COMEDI device to "dev" with increased refcount.
+> 
+> When comedi_open() returns, "dev" becomes invalid, so the refcount
+> should be decreased to keep refcount balanced.
+> 
+> The reference counting issue happens in one exception handling path of
+> comedi_open(). When "cfp" allocation is failed, the refcnt increased by
+> comedi_dev_get_from_minor() is not decreased, causing a refcnt leak.
+> 
+> Fix this issue by calling comedi_dev_put() on this error path when "cfp"
+> allocation is failed.
+> 
+> Fixes: 20f083c07565 ("staging: comedi: prepare support for per-file read
+> and write subdevices")
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
+>   drivers/staging/comedi/comedi_fops.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> index 08d1bbbebf2d..e84b4fb493d6 100644
+> --- a/drivers/staging/comedi/comedi_fops.c
+> +++ b/drivers/staging/comedi/comedi_fops.c
+> @@ -2725,8 +2725,10 @@ static int comedi_open(struct inode *inode, struct file *file)
+>   	}
+>   
+>   	cfp = kzalloc(sizeof(*cfp), GFP_KERNEL);
+> -	if (!cfp)
+> +	if (!cfp) {
+> +		comedi_dev_put(dev);
+>   		return -ENOMEM;
+> +	}
+>   
+>   	cfp->dev = dev;
+>   
+> 
 
-I see, so, NAND framework can be transformed at some point. In any
-case, from driver perspective it's OF independent.
+Thanks for spotting that!
+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+-=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
+-=( MEV Ltd. is a company registered in England & Wales. )=-
+-=( Registered number: 02862268.  Registered address:    )=-
+-=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
