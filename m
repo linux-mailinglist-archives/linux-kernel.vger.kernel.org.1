@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD01B146F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886F01B1443
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgDTSZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 14:25:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46807 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726838AbgDTSZ0 (ORCPT
+        id S1727879AbgDTSTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 14:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgDTSTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:25:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587407125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VHKvl33Abr0fTYth11HDGBq8eZzlB7XRZhJAHr6xvHU=;
-        b=BnUTJulOfS8vvfBqcyfpVcWnBRYlugD2t/aETFK96iPR+tmPXfiK/g9tjMSUhvTxZ6M18K
-        CigN/CNVXhD3c7jEjVLN1HLoI5TEzBshWJif7syk3uvYKF77uT0OY/x9mGZq6h8WR/LFRn
-        chaoy8K5NBSZdfU01E1HfkQoUhSGC5E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-x0b4Iy8sNiq2TcpjLUSREA-1; Mon, 20 Apr 2020 14:25:23 -0400
-X-MC-Unique: x0b4Iy8sNiq2TcpjLUSREA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 952C910753F5;
-        Mon, 20 Apr 2020 18:25:22 +0000 (UTC)
-Received: from treble (ovpn-118-158.rdu2.redhat.com [10.10.118.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C58535D9E5;
-        Mon, 20 Apr 2020 18:25:19 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 13:25:16 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v2 2/9] livepatch: Apply vmlinux-specific KLP relocations
- early
-Message-ID: <20200420182516.6awwwbvoen62gwbr@treble>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
- <83eb0be61671eab05e2d7bcd0aa848f6e20087b0.1587131959.git.jpoimboe@redhat.com>
- <20200420175751.GA13807@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200420175751.GA13807@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Mon, 20 Apr 2020 14:19:43 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483D4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:19:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id f8so4258762plt.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=idNzN2pm7FEPN1n487Ax7LSZYU5+9Uhm24wE5AT9T4s=;
+        b=Vd5D+k03lqQVldIAukk7ZSeEk3nNjGfLlRkJtZcPLZa1qUfbt3YNor+uzJPtjhDEdK
+         siCEfcbX5/HSKmYiXqG/Dp0Z+kOqWn5OXn5OAls/y+r1Fh8h7HiQrhSig3OkH7/jBFNR
+         X00tFwMEKdkCgynoNQ2UzSmdN8ShZotARmEbxM/brXav5nNLOLIXywDh17aaFbG6Fl2R
+         dS7/NspoKF5bHe05Bp+zwCcaYv4YZHhCHIHd/2xJALdFt5fvQf8aMvDguHmzrgZ7edf7
+         Ovi9Byyy9yXeTW13Qb8eM9Wxfha0gyXwnMoKrmelBbGjVwDZcZbxMvpZjAWm64MKU1c5
+         +XQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=idNzN2pm7FEPN1n487Ax7LSZYU5+9Uhm24wE5AT9T4s=;
+        b=NIIsU5Zq4MmP7CXUskxPImclrAFRql+3rTMh4V8/XTFnafXlGYoK52eOyE21/nCvSw
+         sPlbs7ET+WB1N8Yx7GGoSCNIU8PcOWCemVpPAgVvoeCW74QizA8CKe9p9ZwbR2blNDaq
+         npDFXVbakDZcFUykfISnK7eog8/3dVGRV7+fmDjCN6dtQfAXUctgM3PtI7s6JFnv3KPZ
+         WlyacsFiklqmQR2PpSVdWDTLYMNN8tLhozIcQy6bN3v2K7/azxPaGhvA3BT5NFG2h7Zn
+         S7cEgMNNOu7HsoGGRtuDJsIDVhiKDXCsjpo2JCMeJ67gCbvLD/PLlMR052fdirXB+UTH
+         iAgA==
+X-Gm-Message-State: AGi0PuabZjQMvUf8ULopgkWzhnrgWn7bMx+g7vc0A3p2neomPQjDOJP6
+        abTtDJ2Nxxronzlnf+g8N1M=
+X-Google-Smtp-Source: APiQypIa5no58EAZMdGt72lHrrO+ZVAYnEQIiK1hn+NTjKtEri8J0x2+rKim+soaz3PrHXk1Fg2vPQ==
+X-Received: by 2002:a17:90a:f0c6:: with SMTP id fa6mr783307pjb.5.1587406782749;
+        Mon, 20 Apr 2020 11:19:42 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.182.233.24])
+        by smtp.gmail.com with ESMTPSA id x66sm146331pfb.173.2020.04.20.11.19.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 Apr 2020 11:19:42 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     adaplas@gmail.com, b.zolnierkie@samsung.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] video/fbdev/riva: Remove dead code
+Date:   Mon, 20 Apr 2020 23:57:24 +0530
+Message-Id: <1587407244-32574-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 01:57:51PM -0400, Joe Lawrence wrote:
-> On Fri, Apr 17, 2020 at 09:04:27AM -0500, Josh Poimboeuf wrote:
-> > 
-> > [ ... snip ... ]
-> > 
-> > diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> > index 40cfac8156fd..5fda3afc0285 100644
-> > --- a/kernel/livepatch/core.c
-> > +++ b/kernel/livepatch/core.c
-> > 
-> > [ ... snip ... ]
-> > 
-> > +int klp_write_relocations(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
-> > +			  const char *shstrtab, const char *strtab,
-> > +			  unsigned int symndx, struct module *pmod,
-> > +			  const char *objname)
-> >  {
-> >  	int i, cnt, ret = 0;
-> > -	const char *objname, *secname;
-> >  	char sec_objname[MODULE_NAME_LEN];
-> >  	Elf_Shdr *sec;
-> >  
-> > -	if (WARN_ON(!klp_is_object_loaded(obj)))
-> > -		return -EINVAL;
-> > -
-> > -	objname = klp_is_module(obj) ? obj->name : "vmlinux";
-> > -
-> >  	/* For each klp relocation section */
-> > -	for (i = 1; i < pmod->klp_info->hdr.e_shnum; i++) {
-> > -		sec = pmod->klp_info->sechdrs + i;
-> > -		secname = pmod->klp_info->secstrings + sec->sh_name;
-> > +	for (i = 1; i < ehdr->e_shnum; i++) {
-> > +		sec = sechdrs + i;
-> 
-> Hi Josh, minor bug:
-> 
-> Note the for loop through the section headers in
-> klp_write_relocations(), but its calling function ...
-> 
-> > [ ... snip ... ]
-> > 
-> > diff --git a/kernel/module.c b/kernel/module.c
-> > index 646f1e2330d2..d36ea8a8c3ec 100644
-> > --- a/kernel/module.c
-> > +++ b/kernel/module.c
-> > @@ -2334,11 +2334,12 @@ static int apply_relocations(struct module *mod, const struct load_info *info)
-> >  		if (!(info->sechdrs[infosec].sh_flags & SHF_ALLOC))
-> >  			continue;
-> >  
-> > -		/* Livepatch relocation sections are applied by livepatch */
-> >  		if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH)
-> > -			continue;
-> > -
-> > -		if (info->sechdrs[i].sh_type == SHT_REL)
-> > +			err = klp_write_relocations(info->hdr, info->sechdrs,
-> > +						    info->secstrings,
-> > +						    info->strtab,
-> > +						    info->index.sym, mod, NULL);
-> > +		else if (info->sechdrs[i].sh_type == SHT_REL)
-> >  			err = apply_relocate(info->sechdrs, info->strtab,
-> >  					     info->index.sym, i, mod);
-> >  		else if (info->sechdrs[i].sh_type == SHT_RELA)
-> 
-> ... apply_relocations() is also iterating over the section headers (the
-> diff context doesn't show it here, but i is an incrementing index over
-> sechdrs[]).
-> 
-> So if there is more than one KLP relocation section, we'll process them
-> multiple times.  At least the x86 relocation code will detect this and
-> fail the module load with an invalid relocation (existing value not
-> zero).
+These are dead code since 3.15. These can be removed forever if no
+plan to use it further.
 
-Ah, yes, good catch!
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ drivers/video/fbdev/riva/riva_hw.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
+diff --git a/drivers/video/fbdev/riva/riva_hw.c b/drivers/video/fbdev/riva/riva_hw.c
+index 0601c13..08c9ee4 100644
+--- a/drivers/video/fbdev/riva/riva_hw.c
++++ b/drivers/video/fbdev/riva/riva_hw.c
+@@ -1343,24 +1343,6 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+ /*
+  * Load fixed function state and pre-calculated/stored state.
+  */
+-#if 0
+-#define LOAD_FIXED_STATE(tbl,dev)                                       \
+-    for (i = 0; i < sizeof(tbl##Table##dev)/8; i++)                 \
+-        chip->dev[tbl##Table##dev[i][0]] = tbl##Table##dev[i][1]
+-#define LOAD_FIXED_STATE_8BPP(tbl,dev)                                  \
+-    for (i = 0; i < sizeof(tbl##Table##dev##_8BPP)/8; i++)            \
+-        chip->dev[tbl##Table##dev##_8BPP[i][0]] = tbl##Table##dev##_8BPP[i][1]
+-#define LOAD_FIXED_STATE_15BPP(tbl,dev)                                 \
+-    for (i = 0; i < sizeof(tbl##Table##dev##_15BPP)/8; i++)           \
+-        chip->dev[tbl##Table##dev##_15BPP[i][0]] = tbl##Table##dev##_15BPP[i][1]
+-#define LOAD_FIXED_STATE_16BPP(tbl,dev)                                 \
+-    for (i = 0; i < sizeof(tbl##Table##dev##_16BPP)/8; i++)           \
+-        chip->dev[tbl##Table##dev##_16BPP[i][0]] = tbl##Table##dev##_16BPP[i][1]
+-#define LOAD_FIXED_STATE_32BPP(tbl,dev)                                 \
+-    for (i = 0; i < sizeof(tbl##Table##dev##_32BPP)/8; i++)           \
+-        chip->dev[tbl##Table##dev##_32BPP[i][0]] = tbl##Table##dev##_32BPP[i][1]
+-#endif
+-
+ #define LOAD_FIXED_STATE(tbl,dev)                                       \
+     for (i = 0; i < sizeof(tbl##Table##dev)/8; i++)                 \
+         NV_WR32(&chip->dev[tbl##Table##dev[i][0]], 0, tbl##Table##dev[i][1])
 -- 
-Josh
+1.9.1
 
