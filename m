@@ -2,133 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDBB1B04E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E5C1B04E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgDTIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:55:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46598 "EHLO
+        id S1726321AbgDTIzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:55:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25424 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726197AbgDTIzL (ORCPT
+        with ESMTP id S1726112AbgDTIzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:55:11 -0400
+        Mon, 20 Apr 2020 04:55:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587372910;
+        s=mimecast20190719; t=1587372900;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=u10dY+i6fBYekNaQ1esFv0ta173yepYyDxciiIeLxE4=;
-        b=SjyQydHxsqkVLpWSr/nxQZ0jilH0LFoIqKdaIqQ9yVpIPoOm9K4lbkG1aocyh085yCR4VO
-        Wm2gGZM0XfpCK/Sv7eO6KKVi7TJZ5w+AHBGBuXK0Wjf9nTjcuirOljltzb6gfPSkngsxIV
-        05p5UspymbCK7Yx1+f7fzhtmibHzfjQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-bbEr7mmQNoWKDdCh7vvmxw-1; Mon, 20 Apr 2020 04:55:08 -0400
-X-MC-Unique: bbEr7mmQNoWKDdCh7vvmxw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 933C1149C3;
-        Mon, 20 Apr 2020 08:55:06 +0000 (UTC)
-Received: from krava (unknown [10.40.192.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D5D75D9CD;
-        Mon, 20 Apr 2020 08:54:50 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 10:54:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Tommi Rantala <tommi.t.rantala@nokia.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] perf tools: Move zstd_fini() to session deletion
-Message-ID: <20200420084931.GD718574@krava>
-References: <20200417132330.119407-1-tommi.t.rantala@nokia.com>
- <20200417132330.119407-2-tommi.t.rantala@nokia.com>
+        bh=9cmI+d9jEGAV5B+4qxcffmxY29w2CkbBGLpMqBxDQY4=;
+        b=KJ/l6bybn9qHNeOJVd8wxo3QbPernaQ8t+13j+opcMjQ4fyHHXNyQA41/FC8mIZqNh45qB
+        /R/7lGe/VrggB2knmmZ5PmAh2D+V0CSR0Ne7tjgXzSyvq4bZc4PA6vBfKaEQg5LxsHBo5t
+        x2Vc8ibUzRu5efw1ku5KNcRbAG85lIo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-3NjzvPzgNnOdvmg_WEmjYg-1; Mon, 20 Apr 2020 04:54:58 -0400
+X-MC-Unique: 3NjzvPzgNnOdvmg_WEmjYg-1
+Received: by mail-wr1-f72.google.com with SMTP id p16so5401402wro.16
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:54:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9cmI+d9jEGAV5B+4qxcffmxY29w2CkbBGLpMqBxDQY4=;
+        b=i53pVopIhcTnyYuKbZf1zzHlDb9HROArv4Ik+RQ3wTEPGychn3AlgGsSBiQZMXOYXS
+         VWN9V5WAxyRDtuPVsStv8EpsMpi0nduDkmHZ68DcmCfdwJuMcHWrDULZ88sVpIDeSqnD
+         gSvQrwqIuTy57W/xtUeUENK1U6VDS9Wix569ObDvbwSqKTJVjnsJbnn3kS/v0+Hwamx3
+         mCWSFXj+EZCUpKAQEBiABQCxMVO2evD8TZ2ioGCk/hO0UXiNXj8NR+Mf7Dnf6+fiF2G+
+         vXEwF9FzAdGv0wQuKVsXzRhpew5F8CCU5/u4uwm/MPf8QKu79suKve7wpc3alA1G9ANr
+         +VtQ==
+X-Gm-Message-State: AGi0PuZRn37ltjhen/Xnin45Mo8hGz6AQ+xOjwhHiAAr9YM1Mqwsnota
+        do37LEPq5DvIxp/wsBnjb01esfDv6oGGwZlwDzrqsN/5Cykb+T04zEq8utGhd4Mr22KPy6JUpkP
+        OUhq2JwMjztZmb1AfMfrHlUU8
+X-Received: by 2002:a05:6000:128d:: with SMTP id f13mr18290312wrx.241.1587372896940;
+        Mon, 20 Apr 2020 01:54:56 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKeRGLxf/y6pJNKdpsQC7qgLS/q4popfUP+84vRAUZ9MGRD/B/H5HBxQvPnVYUwjFN1JuIvcA==
+X-Received: by 2002:a05:6000:128d:: with SMTP id f13mr18290280wrx.241.1587372896561;
+        Mon, 20 Apr 2020 01:54:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id v131sm501219wmb.19.2020.04.20.01.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 01:54:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH 3/3] KVM: x86: move nested-related kvm_x86_ops to a separate struct
+In-Reply-To: <20200417164413.71885-4-pbonzini@redhat.com>
+References: <20200417164413.71885-1-pbonzini@redhat.com> <20200417164413.71885-4-pbonzini@redhat.com>
+Date:   Mon, 20 Apr 2020 10:54:54 +0200
+Message-ID: <874ktetu3l.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417132330.119407-2-tommi.t.rantala@nokia.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 04:23:27PM +0300, Tommi Rantala wrote:
-> Move zstd_fini() call to perf_session__delete(), so that we always
-> cleanup the zstd state when deleting the session.
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-it shold be orthogonal with zstd_init calls, which
-are not currently called within perf_session 
-
-I guess  zstd_initcould moved to perf_session__new,
-just need some nice way to pass rec->opts.comp_level
-
-jirka
-
-> 
-> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+> Clean up some of the patching of kvm_x86_ops, by moving kvm_x86_ops related to
+> nested virtualization into a separate struct.
+>
+> As a result, these ops will always be non-NULL on VMX.  This is not a problem:
+>
+> * check_nested_events is only called if is_guest_mode(vcpu) returns true
+>
+> * get_nested_state treats VMXOFF state the same as nested being disabled
+>
+> * set_nested_state fails if you attempt to set nested state while
+>   nesting is disabled
+>
+> * nested_enable_evmcs could already be called on a CPU without VMX enabled
+>   in CPUID.
+>
+> * nested_get_evmcs_version was fixed in the previous patch
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  tools/perf/builtin-inject.c | 1 -
->  tools/perf/builtin-record.c | 1 -
->  tools/perf/builtin-report.c | 1 -
->  tools/perf/util/session.c   | 1 +
->  4 files changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 7e124a7b8bfd..1ffb8393357a 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -836,7 +836,6 @@ int cmd_inject(int argc, const char **argv)
->  	ret = __cmd_inject(&inject);
+>  arch/x86/include/asm/kvm_host.h | 29 ++++++++++++++++-------------
+>  arch/x86/kvm/hyperv.c           |  4 ++--
+>  arch/x86/kvm/svm/nested.c       |  6 +++++-
+>  arch/x86/kvm/svm/svm.c          | 13 +++++--------
+>  arch/x86/kvm/svm/svm.h          |  3 ++-
+>  arch/x86/kvm/vmx/nested.c       | 16 +++++++++-------
+>  arch/x86/kvm/vmx/nested.h       |  2 ++
+>  arch/x86/kvm/vmx/vmx.c          |  7 +------
+>  arch/x86/kvm/x86.c              | 28 ++++++++++++++--------------
+>  9 files changed, 56 insertions(+), 52 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index fc38d95e28a4..ca0d0f9b3f92 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1178,7 +1178,6 @@ struct kvm_x86_ops {
+>  			       struct x86_exception *exception);
+>  	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu);
 >  
->  out_delete:
-> -	zstd_fini(&(inject.session->zstd_data));
->  	perf_session__delete(inject.session);
->  	return ret;
+> -	int (*check_nested_events)(struct kvm_vcpu *vcpu);
+>  	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
+>  
+>  	void (*sched_in)(struct kvm_vcpu *kvm, int cpu);
+> @@ -1211,6 +1210,7 @@ struct kvm_x86_ops {
+>  
+>  	/* pmu operations of sub-arch */
+>  	const struct kvm_pmu_ops *pmu_ops;
+> +	const struct kvm_x86_nested_ops *nested_ops;
+>  
+>  	/*
+>  	 * Architecture specific hooks for vCPU blocking due to
+> @@ -1238,14 +1238,6 @@ struct kvm_x86_ops {
+>  
+>  	void (*setup_mce)(struct kvm_vcpu *vcpu);
+>  
+> -	int (*get_nested_state)(struct kvm_vcpu *vcpu,
+> -				struct kvm_nested_state __user *user_kvm_nested_state,
+> -				unsigned user_data_size);
+> -	int (*set_nested_state)(struct kvm_vcpu *vcpu,
+> -				struct kvm_nested_state __user *user_kvm_nested_state,
+> -				struct kvm_nested_state *kvm_state);
+> -	bool (*get_vmcs12_pages)(struct kvm_vcpu *vcpu);
+> -
+>  	int (*smi_allowed)(struct kvm_vcpu *vcpu);
+>  	int (*pre_enter_smm)(struct kvm_vcpu *vcpu, char *smstate);
+>  	int (*pre_leave_smm)(struct kvm_vcpu *vcpu, const char *smstate);
+> @@ -1257,16 +1249,27 @@ struct kvm_x86_ops {
+>  
+>  	int (*get_msr_feature)(struct kvm_msr_entry *entry);
+>  
+> -	int (*nested_enable_evmcs)(struct kvm_vcpu *vcpu,
+> -				   uint16_t *vmcs_version);
+> -	uint16_t (*nested_get_evmcs_version)(struct kvm_vcpu *vcpu);
+> -
+>  	bool (*need_emulation_on_page_fault)(struct kvm_vcpu *vcpu);
+>  
+>  	bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
+>  	int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
+>  };
+>  
+> +struct kvm_x86_nested_ops {
+> +	int (*check_nested_events)(struct kvm_vcpu *vcpu);
+> +	int (*get_nested_state)(struct kvm_vcpu *vcpu,
+> +				struct kvm_nested_state __user *user_kvm_nested_state,
+> +				unsigned user_data_size);
+> +	int (*set_nested_state)(struct kvm_vcpu *vcpu,
+> +				struct kvm_nested_state __user *user_kvm_nested_state,
+> +				struct kvm_nested_state *kvm_state);
+> +	bool (*get_vmcs12_pages)(struct kvm_vcpu *vcpu);
+> +
+> +	int (*nested_enable_evmcs)(struct kvm_vcpu *vcpu,
+> +				   uint16_t *vmcs_version);
+> +	uint16_t (*nested_get_evmcs_version)(struct kvm_vcpu *vcpu);
+
+I think that 'nested' becomes superfluous within 'struct
+kvm_x86_nested_ops'.
+
+Like
+  kvm_x86_ops.nested_ops->nested_get_evmcs_version(vcpu);
+vs
+  kvm_x86_ops.nested_ops->get_evmcs_version(vcpu);
+
+
+> +};
+> +
+>  struct kvm_x86_init_ops {
+>  	int (*cpu_has_kvm_support)(void);
+>  	int (*disabled_by_bios)(void);
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index b850f676abe4..d1a0f9294d57 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1799,8 +1799,8 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>  	};
+>  	int i, nent = ARRAY_SIZE(cpuid_entries);
+>  
+> -	if (kvm_x86_ops.nested_get_evmcs_version)
+> -		evmcs_ver = kvm_x86_ops.nested_get_evmcs_version(vcpu);
+> +	if (kvm_x86_ops.nested_ops->nested_get_evmcs_version)
+> +		evmcs_ver = kvm_x86_ops.nested_ops->nested_get_evmcs_version(vcpu);
+>  
+>  	/* Skip NESTED_FEATURES if eVMCS is not supported */
+>  	if (!evmcs_ver)
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 3e5bd739a6f6..671b883fd14e 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -784,7 +784,7 @@ static bool nested_exit_on_intr(struct vcpu_svm *svm)
+>  	return (svm->nested.intercept & 1ULL);
 >  }
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 1ab349abe904..8ed00de1ca29 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1827,7 +1827,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  
+> -int svm_check_nested_events(struct kvm_vcpu *vcpu)
+> +static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_svm *svm = to_svm(vcpu);
+>  	bool block_nested_events =
+> @@ -825,3 +825,7 @@ int nested_svm_exit_special(struct vcpu_svm *svm)
+>  
+>  	return NESTED_EXIT_CONTINUE;
+>  }
+> +
+> +struct kvm_x86_nested_ops svm_nested_ops = {
+> +	.check_nested_events = svm_check_nested_events,
+> +};
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index a6f4e1bdb045..a91e397d6750 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3895,9 +3895,9 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+>  	/*
+>  	 * TODO: Last condition latch INIT signals on vCPU when
+>  	 * vCPU is in guest-mode and vmcb12 defines intercept on INIT.
+> -	 * To properly emulate the INIT intercept, SVM should implement
+> -	 * kvm_x86_ops.check_nested_events() and call nested_svm_vmexit()
+> -	 * there if an INIT signal is pending.
+> +	 * To properly emulate the INIT intercept,
+> +	 * svm_check_nested_events() should call nested_svm_vmexit()
+> +	 * if an INIT signal is pending.
+>  	 */
+>  	return !gif_set(svm) ||
+>  		   (svm->vmcb->control.intercept & (1ULL << INTERCEPT_INIT));
+> @@ -4025,6 +4025,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.sched_in = svm_sched_in,
+>  
+>  	.pmu_ops = &amd_pmu_ops,
+> +	.nested_ops = &svm_nested_ops,
+> +
+>  	.deliver_posted_interrupt = svm_deliver_avic_intr,
+>  	.dy_apicv_has_pending_interrupt = svm_dy_apicv_has_pending_interrupt,
+>  	.update_pi_irte = svm_update_pi_irte,
+> @@ -4039,14 +4041,9 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.mem_enc_reg_region = svm_register_enc_region,
+>  	.mem_enc_unreg_region = svm_unregister_enc_region,
+>  
+> -	.nested_enable_evmcs = NULL,
+> -	.nested_get_evmcs_version = NULL,
+> -
+>  	.need_emulation_on_page_fault = svm_need_emulation_on_page_fault,
+>  
+>  	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+> -
+> -	.check_nested_events = svm_check_nested_events,
+>  };
+>  
+>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index ca95204f9dde..98c2890d561d 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -398,9 +398,10 @@ int nested_svm_exit_handled(struct vcpu_svm *svm);
+>  int nested_svm_check_permissions(struct vcpu_svm *svm);
+>  int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
+>  			       bool has_error_code, u32 error_code);
+> -int svm_check_nested_events(struct kvm_vcpu *vcpu);
+>  int nested_svm_exit_special(struct vcpu_svm *svm);
+>  
+> +extern struct kvm_x86_nested_ops svm_nested_ops;
+> +
+>  /* avic.c */
+>  
+>  #define AVIC_LOGICAL_ID_ENTRY_GUEST_PHYSICAL_ID_MASK	(0xFF)
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index f228339cd0a0..8597141bd1c7 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -6440,12 +6440,14 @@ __init int nested_vmx_hardware_setup(struct kvm_x86_ops *ops,
+>  	exit_handlers[EXIT_REASON_INVVPID]	= handle_invvpid;
+>  	exit_handlers[EXIT_REASON_VMFUNC]	= handle_vmfunc;
+>  
+> -	ops->check_nested_events = vmx_check_nested_events;
+> -	ops->get_nested_state = vmx_get_nested_state;
+> -	ops->set_nested_state = vmx_set_nested_state;
+> -	ops->get_vmcs12_pages = nested_get_vmcs12_pages;
+> -	ops->nested_enable_evmcs = nested_enable_evmcs;
+> -	ops->nested_get_evmcs_version = nested_get_evmcs_version;
+> -
+>  	return 0;
+>  }
+> +
+> +struct kvm_x86_nested_ops vmx_nested_ops = {
+> +	.check_nested_events = vmx_check_nested_events,
+> +	.get_nested_state = vmx_get_nested_state,
+> +	.set_nested_state = vmx_set_nested_state,
+> +	.get_vmcs12_pages = nested_get_vmcs12_pages,
+> +	.nested_enable_evmcs = nested_enable_evmcs,
+> +	.nested_get_evmcs_version = nested_get_evmcs_version,
+> +};
+> diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
+> index 1514ff4db77f..7ce9572c3d3a 100644
+> --- a/arch/x86/kvm/vmx/nested.h
+> +++ b/arch/x86/kvm/vmx/nested.h
+> @@ -278,4 +278,6 @@ static inline bool nested_cr4_valid(struct kvm_vcpu *vcpu, unsigned long val)
+>  #define nested_guest_cr4_valid	nested_cr4_valid
+>  #define nested_host_cr4_valid	nested_cr4_valid
+>  
+> +extern struct kvm_x86_nested_ops vmx_nested_ops;
+> +
+>  #endif /* __KVM_X86_VMX_NESTED_H */
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 766303b31949..455cd2c8dbce 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7862,6 +7862,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>  	.post_block = vmx_post_block,
+>  
+>  	.pmu_ops = &intel_pmu_ops,
+> +	.nested_ops = &vmx_nested_ops,
+>  
+>  	.update_pi_irte = vmx_update_pi_irte,
+>  
+> @@ -7877,12 +7878,6 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>  	.pre_leave_smm = vmx_pre_leave_smm,
+>  	.enable_smi_window = enable_smi_window,
+>  
+> -	.check_nested_events = NULL,
+> -	.get_nested_state = NULL,
+> -	.set_nested_state = NULL,
+> -	.get_vmcs12_pages = NULL,
+> -	.nested_enable_evmcs = NULL,
+> -	.nested_get_evmcs_version = NULL,
+>  	.need_emulation_on_page_fault = vmx_need_emulation_on_page_fault,
+>  	.apic_init_signal_blocked = vmx_apic_init_signal_blocked,
+>  };
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 0492baeb78ab..5bcb4569196a 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3442,14 +3442,14 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  		r = KVM_X2APIC_API_VALID_FLAGS;
+>  		break;
+>  	case KVM_CAP_NESTED_STATE:
+> -		r = kvm_x86_ops.get_nested_state ?
+> -			kvm_x86_ops.get_nested_state(NULL, NULL, 0) : 0;
+> +		r = kvm_x86_ops.nested_ops->get_nested_state ?
+> +			kvm_x86_ops.nested_ops->get_nested_state(NULL, NULL, 0) : 0;
+>  		break;
+>  	case KVM_CAP_HYPERV_DIRECT_TLBFLUSH:
+>  		r = kvm_x86_ops.enable_direct_tlbflush != NULL;
+>  		break;
+>  	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
+> -		r = kvm_x86_ops.nested_enable_evmcs != NULL;
+> +		r = kvm_x86_ops.nested_ops->nested_enable_evmcs != NULL;
+>  		break;
+>  	default:
+>  		break;
+> @@ -4235,9 +4235,9 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>  		return kvm_hv_activate_synic(vcpu, cap->cap ==
+>  					     KVM_CAP_HYPERV_SYNIC2);
+>  	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
+> -		if (!kvm_x86_ops.nested_enable_evmcs)
+> +		if (!kvm_x86_ops.nested_ops->nested_enable_evmcs)
+>  			return -ENOTTY;
+> -		r = kvm_x86_ops.nested_enable_evmcs(vcpu, &vmcs_version);
+> +		r = kvm_x86_ops.nested_ops->nested_enable_evmcs(vcpu, &vmcs_version);
+>  		if (!r) {
+>  			user_ptr = (void __user *)(uintptr_t)cap->args[0];
+>  			if (copy_to_user(user_ptr, &vmcs_version,
+> @@ -4552,7 +4552,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  		u32 user_data_size;
+>  
+>  		r = -EINVAL;
+> -		if (!kvm_x86_ops.get_nested_state)
+> +		if (!kvm_x86_ops.nested_ops->get_nested_state)
+>  			break;
+>  
+>  		BUILD_BUG_ON(sizeof(user_data_size) != sizeof(user_kvm_nested_state->size));
+> @@ -4560,8 +4560,8 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  		if (get_user(user_data_size, &user_kvm_nested_state->size))
+>  			break;
+>  
+> -		r = kvm_x86_ops.get_nested_state(vcpu, user_kvm_nested_state,
+> -						  user_data_size);
+> +		r = kvm_x86_ops.nested_ops->get_nested_state(vcpu, user_kvm_nested_state,
+> +							     user_data_size);
+>  		if (r < 0)
+>  			break;
+>  
+> @@ -4582,7 +4582,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  		int idx;
+>  
+>  		r = -EINVAL;
+> -		if (!kvm_x86_ops.set_nested_state)
+> +		if (!kvm_x86_ops.nested_ops->set_nested_state)
+>  			break;
+>  
+>  		r = -EFAULT;
+> @@ -4604,7 +4604,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  			break;
+>  
+>  		idx = srcu_read_lock(&vcpu->kvm->srcu);
+> -		r = kvm_x86_ops.set_nested_state(vcpu, user_kvm_nested_state, &kvm_state);
+> +		r = kvm_x86_ops.nested_ops->set_nested_state(vcpu, user_kvm_nested_state, &kvm_state);
+>  		srcu_read_unlock(&vcpu->kvm->srcu, idx);
+>  		break;
 >  	}
->  
->  out_delete_session:
-> -	zstd_fini(&session->zstd_data);
->  	perf_session__delete(session);
->  
->  	if (!opts->no_bpf_event)
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 26d8fc27e427..e06e14980264 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -1579,7 +1579,6 @@ int cmd_report(int argc, const char **argv)
->  		report.block_reports = NULL;
+> @@ -7700,7 +7700,7 @@ static int inject_pending_event(struct kvm_vcpu *vcpu)
+>  	 * from L2 to L1.
+>  	 */
+>  	if (is_guest_mode(vcpu)) {
+> -		r = kvm_x86_ops.check_nested_events(vcpu);
+> +		r = kvm_x86_ops.nested_ops->check_nested_events(vcpu);
+>  		if (r != 0)
+>  			return r;
 >  	}
+> @@ -7762,7 +7762,7 @@ static int inject_pending_event(struct kvm_vcpu *vcpu)
+>  		 * KVM_REQ_EVENT only on certain events and not unconditionally?
+>  		 */
+>  		if (is_guest_mode(vcpu)) {
+> -			r = kvm_x86_ops.check_nested_events(vcpu);
+> +			r = kvm_x86_ops.nested_ops->check_nested_events(vcpu);
+>  			if (r != 0)
+>  				return r;
+>  		}
+> @@ -8185,7 +8185,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
 >  
-> -	zstd_fini(&(session->zstd_data));
->  	perf_session__delete(session);
->  	return ret;
->  }
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 0b0bfe5bef17..64e8b794b0bc 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -302,6 +302,7 @@ void perf_session__delete(struct perf_session *session)
->  	machines__exit(&session->machines);
->  	if (session->data)
->  		perf_data__close(session->data);
-> +	zstd_fini(&session->zstd_data);
->  	free(session);
->  }
+>  	if (kvm_request_pending(vcpu)) {
+>  		if (kvm_check_request(KVM_REQ_GET_VMCS12_PAGES, vcpu)) {
+> -			if (unlikely(!kvm_x86_ops.get_vmcs12_pages(vcpu))) {
+> +			if (unlikely(!kvm_x86_ops.nested_ops->get_vmcs12_pages(vcpu))) {
+>  				r = 0;
+>  				goto out;
+>  			}
+> @@ -8528,7 +8528,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+>  static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+>  {
+>  	if (is_guest_mode(vcpu))
+> -		kvm_x86_ops.check_nested_events(vcpu);
+> +		kvm_x86_ops.nested_ops->check_nested_events(vcpu);
 >  
-> -- 
-> 2.25.2
-> 
+>  	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
+>  		!vcpu->arch.apf.halted);
+
+-- 
+Vitaly
 
