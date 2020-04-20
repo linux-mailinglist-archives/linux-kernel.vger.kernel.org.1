@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845451B0314
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26B11B0326
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgDTHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:34:41 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40206 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgDTHek (ORCPT
+        id S1726410AbgDTHfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:35:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46427 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726055AbgDTHfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:34:40 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k13so9596971wrw.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J6rJMn+wy517qK6LezauDPAAdzw8pIiAhiJfakvu9RQ=;
-        b=CqN18lsOv7fQll9IjJqroG+4nX3gGZ9AYlVrG39JeEX1IV9H0BDz545zA3Nhs5zW5d
-         VHcEx283YbXXmoB/MI5EAIY36W+FZw0r05Em74gEAmle8jn4+R4VRkAAfQZDKpLAxfe6
-         /8V9K+zDv6/6wFvTA2umH+iAxl6VhyWWnU+zfNr9OZTqDry4+fNccbssKpXhOR9MDZQs
-         ejKA3/ntMEmJvKThIdZ1qEgfVdR4ME8LzUQyodxeu9WenSX/N8RVqr65xKn+uLiV0R8R
-         NChEc2YHqNwLOwp3E1DKfSP8rFl+ozBHglfz186hb+BLIlvIXbHyiM8ZrEZV+qyL3why
-         K9aQ==
-X-Gm-Message-State: AGi0PuaQujGAXOuK1v80CUHcWwkSjYffZWDKRLoqmalB1hsDFiqr6bxj
-        Is7n2+yxd0Q3o9W+o9J0obTecJjQ
-X-Google-Smtp-Source: APiQypLpNr3MZecJqP2+GqR3GqelU7seRMQZPFBobVF04nv7LWcIPzyQ5dbWLrvq1yrMMyhx2dsVpw==
-X-Received: by 2002:adf:ff89:: with SMTP id j9mr17118764wrr.245.1587368076910;
-        Mon, 20 Apr 2020 00:34:36 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id v1sm41809wrv.19.2020.04.20.00.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 00:34:36 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 09:34:34 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH v2] mm/page_alloc: fix watchdog soft lockups during
- set_zone_contiguous()
-Message-ID: <20200420073434.GE27314@dhcp22.suse.cz>
-References: <20200416073417.5003-1-david@redhat.com>
- <20200417151247.0068d5aa3f026ced2289ce31@linux-foundation.org>
+        Mon, 20 Apr 2020 03:35:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587368150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ddEryRA8fru8sR3cTZfHtReHkDM3BB1oRAtqx9hNvis=;
+        b=ULkgTSO7Zit4YIa/TepJ8PX8CtxFbCCWSCexscJs8ppY40n50f9CH+PFBgkxZcozymRr30
+        CB6Pg4m5nZgEuAHtSG7xD3j65+nwq40llotAIXrFsXBgnTs4hIyRY1IOJbArPW8kPF3XSK
+        rp/a0lL2e2cet3Jg6YCSpvqJkMo7We0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-77-0FRc6vd3N_eWC6A3SdG2Nw-1; Mon, 20 Apr 2020 03:35:47 -0400
+X-MC-Unique: 0FRc6vd3N_eWC6A3SdG2Nw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27C56149C5;
+        Mon, 20 Apr 2020 07:35:46 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F8D760C63;
+        Mon, 20 Apr 2020 07:35:39 +0000 (UTC)
+Subject: Re: [dm-devel] [PATCH 0/3] dm raid/raid1: enable discard support when
+ any devices support discard
+To:     dm-devel@redhat.com
+Cc:     Paul Wise <pabs3@bonedaddy.net>, Mike Snitzer <snitzer@redhat.com>,
+        linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>
+References: <20200419073026.197967-1-pabs3@bonedaddy.net>
+ <20200419131908.GA22398@redhat.com>
+ <9cb6a39a43178be29af2f47a92c2e84754b62b69.camel@bonedaddy.net>
+From:   Ondrej Kozina <okozina@redhat.com>
+Message-ID: <6bbf9d94-2fbb-f96f-ea85-a480ba109c55@redhat.com>
+Date:   Mon, 20 Apr 2020 09:35:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417151247.0068d5aa3f026ced2289ce31@linux-foundation.org>
+In-Reply-To: <9cb6a39a43178be29af2f47a92c2e84754b62b69.camel@bonedaddy.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17-04-20 15:12:47, Andrew Morton wrote:
-> On Thu, 16 Apr 2020 09:34:17 +0200 David Hildenbrand <david@redhat.com> wrote:
+On 4/19/20 4:48 PM, Paul Wise wrote:
+> On Sun, 2020-04-19 at 09:19 -0400, Mike Snitzer wrote:
 > 
-> > Without CONFIG_PREEMPT, it can happen that we get soft lockups detected,
-> > e.g., while booting up.
-> > 
-> > ...
-> > 
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -1607,6 +1607,7 @@ void set_zone_contiguous(struct zone *zone)
-> >  		if (!__pageblock_pfn_to_page(block_start_pfn,
-> >  					     block_end_pfn, zone))
-> >  			return;
-> > +		cond_resched();
-> >  	}
-> >  
-> >  	/* We confirm that there is no hole */
+>> You went overboard with implementation before checking to see if your
+>> work would be well received.  Your 2/3 patch header shows you're
+>> capable of analyzing past commits to explain the evolution of code,
+>> etc.  But yet you make no mention of this commit header which explicitly
+>> speaks to why what you're proposing is _not_ acceptable:
+>>
+>> commit 8a74d29d541cd86569139c6f3f44b2d210458071
+>> Author: Mike Snitzer <snitzer@redhat.com>
+>> Date:   Tue Nov 14 15:40:52 2017 -0500
+>>
+>>      dm: discard support requires all targets in a table support discards
 > 
-> I added cc:stable to this one.  Please let me know if that wasn't a
-> good idea.
+> I do remember seeing this commit while working on this, I guess I
+> ignored it in my attempts to get fstrim working on my rootfs, woops.
+> 
+>> I haven't looked closely at MD raid in this area but if you trully think
+>> underlying MD raid can cope with issuing discards to devices that don't
+>> support them (or that it avoids issuing them?) then please update
+>> dm-raid.c to conditionally set ti->discard_supported (if not all devices
+>> support discard).  That is how to inform DM core that the target knows
+>> better and it will manage discards issued to it.  It keeps the change
+>> local to dm-raid.c without the flag-day you're proposing.
+> 
+> On my system I have a HDD and an SSD, with /boot on MD RAID and / on
+> ext4 on DM RAID on 2 DM crypt volumes. In this setup fstrim works on
+> /boot but does not work on / and with my patches it works on / again.
+> In addition I don't see any messages in dmesg or other issues when
+> doing fstrim / with my patches.
 
-Really large memory setups tend to run on distribution kernels so
-backporting to old kernels doesn't really harm.
--- 
-Michal Hocko
-SUSE Labs
+Did you have discard allowed on both dm-crypt devices? dm-crypt (kernel) 
+does not allow discards by default.
+
+Regards O.
+
