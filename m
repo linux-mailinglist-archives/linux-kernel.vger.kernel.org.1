@@ -2,176 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17F01B1756
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCC31B16ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgDTUmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgDTUmO (ORCPT
+        id S1726811AbgDTU00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:26:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15600 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725774AbgDTU0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:42:14 -0400
-X-Greylist: delayed 963 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Apr 2020 13:42:13 PDT
-Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FCFC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
-        s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
-        References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=ZKaz9g+0dN4EMZTssIuTURp7XdyfTbM9NKhYQlFDI6Q=; b=hE3jjcIicpBLRbfMdYwOm7k70P
-        O5XW9hDIULhuBkjgZqgmGtvWgiB2l2dl/LygBV9Y2pixjriADPQEQMOsukOQjl2llEGEn3s33b9hA
-        L1tr4wdWUQQpQ/WZnBvi2bhGzwdSwYSPjtrGnFOuQlLon4ZP/pxUlkLv2NfWbYKx70iI=;
-Received: from [2a00:1370:8125:3f98:890:f100:d37d:7ada] (helo=home)
-        by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <puleglot@puleglot.ru>)
-        id 1jQczO-0006SG-8n; Mon, 20 Apr 2020 23:25:58 +0300
-Message-ID: <1c4b8a362761421eba0ded60bb4f0e11b7e42f3b.camel@tsoy.me>
-Subject: Re: [PATCH] ALSA: usb-audio: Add quirk for Focusrite Scarlett 2i2
-From:   Alexander Tsoy <alexander@tsoy.me>
-To:     Gregor Pintar <grpintar@gmail.com>, tiwai@suse.com, perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Date:   Mon, 20 Apr 2020 23:25:56 +0300
-In-Reply-To: <20200420201937.12634-1-grpintar@gmail.com>
-References: <20200420201937.12634-1-grpintar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 
+        Mon, 20 Apr 2020 16:26:25 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03KK4Cc2022033;
+        Mon, 20 Apr 2020 16:26:15 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ggr1r1dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 16:26:15 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03KKQ3Cj010970;
+        Mon, 20 Apr 2020 20:26:14 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma01dal.us.ibm.com with ESMTP id 30fs66gj4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 20:26:14 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03KKQDjV46203294
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 20:26:13 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F102AE05F;
+        Mon, 20 Apr 2020 20:26:13 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F943AE066;
+        Mon, 20 Apr 2020 20:26:12 +0000 (GMT)
+Received: from ghost4.ibm.com (unknown [9.163.56.120])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Apr 2020 20:26:12 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com
+Subject: [PATCH v10 0/7] soc: aspeed: Add XDMA engine driver
+Date:   Mon, 20 Apr 2020 15:26:04 -0500
+Message-Id: <20200420202611.17776-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_07:2020-04-20,2020-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=755
+ spamscore=0 impostorscore=0 malwarescore=0 suspectscore=3 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-В Пн, 20/04/2020 в 22:19 +0200, Gregor Pintar пишет:
-> Force it to use asynchronous playback.
+This series adds a driver to control the Aspeed XDMA engine embedded in the
+AST2500 and AST2600. The XDMA engine performs automatic DMA operations
+over PCI-E between the Aspeed SOC (acting as a BMC) and a host processor.
 
-Can we use snd_usb_audioformat_attributes_quirk() for such fixes? See
-the quirk for Griffin iMic as an example.
+Changes since v9:
+ - Remove the kernel command queue
+ - Use memcpy_toio instead to copy commands to the buffer
+ - Free the client's genalloc'd memory in the release method
+ - Switch the bindings documentation to yaml
+ - Add patches to fix SCU interrupt controller include
 
-> 
-> Same quirk has already been added for Focusrite Scarlett Solo (2nd
-> gen)
-> with a commit 46f5710f0b88 ("ALSA: usb-audio: Add quirk for Focusrite
-> Scarlett Solo").
-> 
-> This also seems to prevent regular clicks when playing at 44100Hz
-> on Scarlett 2i2 (2nd gen). I did not notice any side effects.
-> 
-> Signed-off-by: Gregor Pintar <grpintar@gmail.com>
-> ---
->  sound/usb/quirks-table.h | 84
-> ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 84 insertions(+)
-> 
-> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> index e009d584e..bc936bf79 100644
-> --- a/sound/usb/quirks-table.h
-> +++ b/sound/usb/quirks-table.h
-> @@ -2840,6 +2840,90 @@ YAMAHA_DEVICE(0x7010, "UB99"),
->  		}
->  	}
->  },
-> +{
-> +	/*
-> +	 * Focusrite Scarlett 2i2 2nd generation
-> +	 * Reports that playback should use Synch: Synchronous
-> +	 * while still providing a feedback endpoint. Synchronous
-> causes
-> +	 * snapping on some sample rates.
-> +	 * Force it to use Synch: Asynchronous.
-> +	 */
-> +	USB_DEVICE(0x1235, 0x8202),
-> +	.driver_info = (unsigned long) &(const struct
-> snd_usb_audio_quirk) {
-> +		.ifnum = QUIRK_ANY_INTERFACE,
-> +		.type = QUIRK_COMPOSITE,
-> +		.data = (const struct snd_usb_audio_quirk[]) {
-> +			{
-> +				.ifnum = 1,
-> +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-> +				.data = &(const struct audioformat) {
-> +					.formats =
-> SNDRV_PCM_FMTBIT_S32_LE,
-> +					.channels = 2,
-> +					.iface = 1,
-> +					.altsetting = 1,
-> +					.altset_idx = 1,
-> +					.attributes = 0,
-> +					.endpoint = 0x01,
-> +					.ep_attr =
-> USB_ENDPOINT_XFER_ISOC |
-> +						USB_ENDPOINT_SYNC_ASYNC
-> ,
-> +					.protocol = UAC_VERSION_2,
-> +					.rates = SNDRV_PCM_RATE_44100 |
-> +						SNDRV_PCM_RATE_48000 |
-> +						SNDRV_PCM_RATE_88200 |
-> +						SNDRV_PCM_RATE_96000 |
-> +						SNDRV_PCM_RATE_176400 |
-> +						SNDRV_PCM_RATE_192000,
-> +					.rate_min = 44100,
-> +					.rate_max = 192000,
-> +					.nr_rates = 6,
-> +					.rate_table = (unsigned int[])
-> {
-> +						44100, 48000, 88200,
-> +						96000, 176400, 192000
-> +					},
-> +					.clock = 41
-> +				}
-> +			},
-> +			{
-> +				.ifnum = 2,
-> +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-> +				.data = &(const struct audioformat) {
-> +					.formats =
-> SNDRV_PCM_FMTBIT_S32_LE,
-> +					.channels = 2,
-> +					.iface = 2,
-> +					.altsetting = 1,
-> +					.altset_idx = 1,
-> +					.attributes = 0,
-> +					.endpoint = 0x82,
-> +					.ep_attr =
-> USB_ENDPOINT_XFER_ISOC |
-> +						USB_ENDPOINT_SYNC_ASYNC
-> |
-> +						USB_ENDPOINT_USAGE_IMPL
-> ICIT_FB,
-> +					.protocol = UAC_VERSION_2,
-> +					.rates = SNDRV_PCM_RATE_44100 |
-> +						SNDRV_PCM_RATE_48000 |
-> +						SNDRV_PCM_RATE_88200 |
-> +						SNDRV_PCM_RATE_96000 |
-> +						SNDRV_PCM_RATE_176400 |
-> +						SNDRV_PCM_RATE_192000,
-> +					.rate_min = 44100,
-> +					.rate_max = 192000,
-> +					.nr_rates = 6,
-> +					.rate_table = (unsigned int[])
-> {
-> +						44100, 48000, 88200,
-> +						96000, 176400, 192000
-> +					},
-> +					.clock = 41
-> +				}
-> +			},
-> +			{
-> +				.ifnum = 3,
-> +				.type = QUIRK_IGNORE_INTERFACE
-> +			},
-> +			{
-> +				.ifnum = -1
-> +			}
-> +		}
-> +	}
-> +},
->  
->  /* Access Music devices */
->  {
+Changes since v8:
+ - Use DMA API to allocate memory from reserved region.
+ - Fix the driver for the AST2500 by keeping the command queue in kernel
+   memory and copying the whole buffer to the reserved memory area before
+   starting the operation.
+ - Add krefs to the client structure to prevent use-after-free.
+ - Switch reset-names binding to "device", "root-complex"
+
+Eddie James (7):
+  dt-bindings: soc: Add Aspeed XDMA Engine
+  soc: aspeed: Add XDMA Engine Driver
+  soc: aspeed: xdma: Add user interface
+  soc: aspeed: xdma: Add reset ioctl
+  ARM: dts: Aspeed: AST2600: Add XDMA PCI-E root control reset
+  ARM: dts: Aspeed: AST2500: Add missing SCU interrupt controller
+    include
+  ARM: dts: Aspeed: AST2600: Add missing SCU interrupt controller
+    include
+
+ .../devicetree/bindings/soc/aspeed/xdma.yaml  |  108 ++
+ MAINTAINERS                                   |    8 +
+ arch/arm/boot/dts/aspeed-g5.dtsi              |    1 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |    4 +-
+ drivers/soc/aspeed/Kconfig                    |    8 +
+ drivers/soc/aspeed/Makefile                   |    1 +
+ drivers/soc/aspeed/aspeed-xdma.c              | 1106 +++++++++++++++++
+ include/uapi/linux/aspeed-xdma.h              |   42 +
+ 8 files changed, 1277 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-xdma.c
+ create mode 100644 include/uapi/linux/aspeed-xdma.h
+
+-- 
+2.24.0
 
