@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817F61B0653
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551EA1B0652
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgDTKNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 06:13:07 -0400
-Received: from smtp.bonedaddy.net ([45.33.94.42]:49310 "EHLO
-        smtp.bonedaddy.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgDTKNH (ORCPT
+        id S1726048AbgDTKND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 06:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725773AbgDTKNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 06:13:07 -0400
-Received: from chianamo (n58-108-4-64.per1.wa.optusnet.com.au [58.108.4.64])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pabs3@bonedaddy.net)
-        by smtp.bonedaddy.net (Postfix) with ESMTPSA id DBE60180043;
-        Mon, 20 Apr 2020 06:13:03 -0400 (EDT)
-Authentication-Results: smtp.bonedaddy.net; dmarc=fail (p=none dis=none) header.from=bonedaddy.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bonedaddy.net;
-        s=mail; t=1587377585;
-        bh=jod12xCYdZoqLDqiEfNqvtxkjlDlQfPOlPJo+0zFZj4=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date;
-        b=kQKORLJllYva2I4fnjPn8rv4ux1Hg1BqcOaFMVMHHC0xUvXMiUqvo/wD2TghCCN+T
-         05QlnHjg6C7Pgbmn5NkC4fr/MZJRHMgsb59rfTIdoK/SIJjccG8OcHq0I8nQEV1KSA
-         /zlbyoL6cUujLcPhGke0jOq9rFpt5k2WPEC4JjzYzNByPEnr6Yj8gnDTlaWCJi68Gi
-         NZbpKD9flv1Q1J9S41ab0pMKvkpEcIEoLisLoFmtPedtuu/naWm3hRLgxK7uTuCLa4
-         et9LcCrOC7TkKGMbFDm8YrERe+TBhcVxCPXS/Njn9fyMvY9Phu3KlrIqKcA26Cbhy0
-         lcjoaKwhvGezQ==
-Message-ID: <a0034feda1f6f598c8376a418949b48109307e67.camel@bonedaddy.net>
-Subject: Re: [dm-devel] [PATCH 0/3] dm raid/raid1: enable discard support
- when any devices support discard
-From:   Paul Wise <pabs3@bonedaddy.net>
-To:     Ondrej Kozina <okozina@redhat.com>, dm-devel@redhat.com
-Cc:     Mike Snitzer <snitzer@redhat.com>, linux-kernel@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>
-In-Reply-To: <6bbf9d94-2fbb-f96f-ea85-a480ba109c55@redhat.com>
-References: <20200419073026.197967-1-pabs3@bonedaddy.net>
-         <20200419131908.GA22398@redhat.com>
-         <9cb6a39a43178be29af2f47a92c2e84754b62b69.camel@bonedaddy.net>
-         <6bbf9d94-2fbb-f96f-ea85-a480ba109c55@redhat.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-7gYIJ8Sm/tiyMSzyv4MA"
-Date:   Mon, 20 Apr 2020 18:13:01 +0800
+        Mon, 20 Apr 2020 06:13:02 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B72DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 03:13:02 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id c3so7559264otp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 03:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=cXTrFRdm1hEEH7WCw1J4X2ttSbNzQb2u2R9dNYaeyUj/2Dcd5WZ2pIicZVUQUsHuak
+         AtMcTI+4sv6W0YU4uHFX/AX/oWg3m46CXLaQgJFVm5UGazdBEIt5EyMPdBrYYx9mb3Kv
+         C5nipKTbHpSekqeYrnIjqbjdbCSduMoAFWTzFcn+62buxrq8xCMQ4DYKRBIXC0JS+t40
+         eIDuIJ2Saw8Z6BtpQCAL7g6EJ8YoX53gY4KxvLC/tZ6e4GOKrKpyC8ckMz/d6D8QAeMq
+         bUwdbdSpbN4rePxhEwl3T6fEQw6wnvdtcMve8vq9Ct48jurMP3WrFWlLQha6lRDz7pYK
+         OWiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=jZkkKET7MHpvaqxbJGPdtnxsJDw7ZVDdgzHUTdI1WcS9vivZZgXklDhn+yqDnRfcjO
+         ldR1lvJXE5r7mlzQph3cKPCx8t9rNviwFTpRTnfp/Nh1+R3pnBTcQN5h33E6VUXiZibs
+         ZPpISEnb+3NpiKs9yEHu1DRnUdwhCMGCbGmHI8hhWK22RtnELOcVSal5POyM3+7+R7EC
+         2/5zHjlG5Rwex1OhH68fFfFFvJBEIYsZvMWJIlJTNLC1ijQlI/kKlTsGHIBAP1glNndW
+         pTW7voXdgEtPp3f46idS6KcPc/CxB5Q7X5BvE0iLaNAaWmefaGJ196ZjFQX+lUNeffK1
+         /vrw==
+X-Gm-Message-State: AGi0Pubv6JpYyZf4dVoZ27ldC/ADUrBMxNBbRfo4fSTjq/0oLgw4S29U
+        cdb1KiSAkCcmF9Qx5PHgll3hl40DpTI9E5rGPNs=
+X-Google-Smtp-Source: APiQypI5wojJ1jLQpJOOZ18kwYqAXFt9y0NQvCShV54UkOJqH/MykHMwkBflBIm1DwjWVfK7QLczg24DygA8v5zaIWM=
+X-Received: by 2002:a05:6830:4b0:: with SMTP id l16mr1787877otd.178.1587377582029;
+ Mon, 20 Apr 2020 03:13:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Evolution 3.36.1-1 
+Received: by 2002:a9d:708b:0:0:0:0:0 with HTTP; Mon, 20 Apr 2020 03:13:01
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   MICHELLE GOODMAN <sarahluo125@gmail.com>
+Date:   Mon, 20 Apr 2020 10:13:01 +0000
+Message-ID: <CACxHpbVghiWcGyE5dbzp5mJ8zgt4Ja3yGvQ8A-PBf7M37dwxOQ@mail.gmail.com>
+Subject: From Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-7gYIJ8Sm/tiyMSzyv4MA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2020-04-20 at 09:35 +0200, Ondrej Kozina wrote:
-
-> Did you have discard allowed on both dm-crypt devices? dm-crypt
-> (kernel) does not allow discards by default.
-
-I did not, I guess that explains why I got no errors.
-
---=20
-bye,
-pabs
-
-https://bonedaddy.net/pabs3/
-
---=-7gYIJ8Sm/tiyMSzyv4MA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEYQsotVz8/kXqG1Y7MRa6Xp/6aaMFAl6ddakACgkQMRa6Xp/6
-aaMDqg/8Cj1meyJPg+ICUeg+WsYjGw/jaRrqC/UZzGwBCq/fguJ8BOwu+HtorOmM
-Kqr370rlTrjwdn4THs3So6PDSr3es270GKN0Cg1sO7z97lXUYQJA1RklOHRDw/5M
-EIw3uHHRNtutjWgyLScDBoy4kS+jzlNElwkj2M/amxTS2nlL99W5CI9sCdWwMjvm
-+ftXtELcNC8znWUBQlPJ/JnTu4/6kfKPytrzBWGvPxODgFosI8fA1K7kMoXNSvq7
-OSMCVZkq4AlhlHq+MIkXlPPE8pQoTbMTLflqD+wrusgEFGJMRYEGnndbg1vBrk5Y
-ieZ/z96mxOQ4VrFEeIC9IeY560Z/lb1MJJBYJRF7HF9ez02YAqevzmM85jzo6CMv
-7Bp8m+VcT/RcceAChWR14LOE+q3vJfhX1nu5wHatR3vTRYz5tFha+xqAypQMg504
-sVo+YzxIp/z45EDbinz7niePh8v4V04K1ne75G2R1iX++RcIurieGBS7+4OueAEl
-7anc/Evu+FPD/LDMlhGxVtiH1PqPk4ZJpD/Z6uVfKOQiOPhvF0RfPGJRE/8mW+uY
-VdECV0zqsWlTYaOmSH0FiCgq3zxW5Zw8rxYs+ioHUR/431c7zo3JLBJPEF8+3H4t
-x3hiW6iJ21Nw0ibptbIVJCg7jzqfMfe0cWHHqrynzZtfMIOzTAY=
-=GclY
------END PGP SIGNATURE-----
-
---=-7gYIJ8Sm/tiyMSzyv4MA--
-
+Hallo, ich hoffe du hast meine Nachricht erhalten.
+Ich brauche schnelle Reaktionen
+Danke
+Michelle
