@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D281B18F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3BE1B1889
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgDTWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:01:18 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16270 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726913AbgDTWBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:01:12 -0400
-IronPort-SDR: NcL4+SkEHL/QSArFK4VXYoLYWEvMyGptOjbs3d3ih755ENT1GUXVLmWWAHJoCpKNvxxIub7Q/a
- Kwf/vWuau0tg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 15:01:12 -0700
-IronPort-SDR: NaBAspYZuGnSTQEfEZz9R/EbojjS+9L7WFqbqEMeVWAABLhwoBVpCJ/CdN5nfrfXocev3M49EF
- hB6ewiUK3MTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,407,1580803200"; 
-   d="scan'208";a="455848368"
-Received: from unknown (HELO nsgsw-wilsonpoint.lm.intel.com) ([10.232.116.102])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Apr 2020 15:01:10 -0700
-From:   Jon Derrick <jonathan.derrick@intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     <linux-pci@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Sam Bobroff <sbobroff@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Frederick Lawler <fred@fredlawl.com>,
-        Rajat Jain <rajatja@google.com>,
-        "Patel, Mayurkumar" <mayurkumar.patel@intel.com>,
-        Olof Johansson <olof@lixom.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] PCI/DPC: Allow Native DPC Host Bridges to use DPC
-Date:   Mon, 20 Apr 2020 15:37:10 -0600
-Message-Id: <1587418630-13562-3-git-send-email-jonathan.derrick@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1587418630-13562-1-git-send-email-jonathan.derrick@intel.com>
-References: <1587418630-13562-1-git-send-email-jonathan.derrick@intel.com>
+        id S1726901AbgDTVhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726017AbgDTVhb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 17:37:31 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A7CC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:37:29 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j1so8627819wrt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W4Bn1MKtUzPQNpJZJxjnYoMLdILkHx07ckmoRRYi+ms=;
+        b=tS5kOR3qoRdmcADQh2JwfruP6cP7oYTN2pWbVQvnFxntw/YVLrXxpPVGiN63ZezMIS
+         plBnDsbuZJNqmm3OT8EQyL45pKUg2NTa1H4hINr0pKz53vePltPUwxaiRPhY4qHIA1bU
+         9JtGc/mJcSVNRN87ewx9FNh3VOS+iam+Hd/35UsRfe6xknjSwTcwqHwRP/5Lgq8YptIO
+         LHZSCeSKM+tkyVP+vzJjyyLKFxOILE5BKTAFS5RySgqNs0tBBPcACIkLEJv63g2J7mVI
+         UDCSDwGEdzCgOl4DJw6nvEArO1f35IxL4Y5qPPdf46F+gcoXUXjlVNdquYHEDoegc0qw
+         wEvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W4Bn1MKtUzPQNpJZJxjnYoMLdILkHx07ckmoRRYi+ms=;
+        b=co2hTYuXhe8NCI4MyrobKcxXd862N+1Fv1N9/XwY3bXORHlactX5IbxgdwtzGC0Pav
+         I+kyHmzMIEDTLQRFLN78qCz0KJ9hhQf4IXkblrA2NIE13c4Ghn72Gk1J1cPrBuNLnrBe
+         SkAMClEVoDc0T6MoQUXZk7fZLPK7pfxf5n2qMIqOxpLP3QQ0w7ocpQU3RB6dUOuGU6cI
+         iYwrRFsydVOEiYccRjw6TLnsUjrTVNDp9dmroAITNG/UGkkIXYgFYmyo99GggWK8Pym3
+         lEQhZ8YccF5vuswKxBK8IcuD6HCg0EFV3B/dvzPDYdetgrBS2/O15gZ06e2w+atrTbsU
+         zYwQ==
+X-Gm-Message-State: AGi0PuZKJQWghCEFUFD6ArjYKjZ7lpp0OvV3REQRWeHtfL7t5Fakj3+P
+        f/RlOGP2lbQZll/aRugL76k=
+X-Google-Smtp-Source: APiQypLKQe0tdxzMNB/vMLEy2jql+PPVAPjM0a7sQ7uIMk/qr+dKAYtIAx/FYpr5da1PzWMg1Gmx2A==
+X-Received: by 2002:a5d:4dcd:: with SMTP id f13mr5595480wru.417.1587418648160;
+        Mon, 20 Apr 2020 14:37:28 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id a7sm857114wmj.12.2020.04.20.14.37.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Apr 2020 14:37:27 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 21:37:26 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com
+Subject: Re: [PATCH 3/4] mm/swapfile.c: compare tmp and max after trying to
+ iterate on swap_map
+Message-ID: <20200420213726.juehv5yr5kyhlbxv@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20200419013921.14390-1-richard.weiyang@gmail.com>
+ <20200419013921.14390-3-richard.weiyang@gmail.com>
+ <87ftczt1cg.fsf@yhuang-dev.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ftczt1cg.fsf@yhuang-dev.intel.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing portdrv model prevents DPC services without either OS
-control (_OSC) granted to AER services, a Host Bridge requesting Native
-AER, or using one of the 'pcie_ports=' parameters of 'native' or
-'dpc-native'.
+On Mon, Apr 20, 2020 at 09:03:43AM +0800, Huang, Ying wrote:
+>Wei Yang <richard.weiyang@gmail.com> writes:
+>
+>> There are two duplicate code to handle the case when there is no
+>> available swap entry. Just let the code go through and do the check at
+>> second place.
+>>
+>> No functional change is expected.
+>>
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+>> ---
+>>  mm/swapfile.c | 4 ----
+>>  1 file changed, 4 deletions(-)
+>>
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 3aae700f9931..07b0bc095411 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -629,10 +629,6 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>>  	tmp = cluster->next;
+>>  	max = min_t(unsigned long, si->max,
+>>  		    (cluster_next(&cluster->index) + 1) * SWAPFILE_CLUSTER);
+>> -	if (tmp >= max) {
+>> -		cluster_set_null(&cluster->index);
+>> -		goto new_cluster;
+>> -	}
+>
+>The code is to avoid to acquire the cluster lock unnecessarily.  So I think
+>we should keep this.
+>
 
-The DPC port service driver itself will also fail to probe if the kernel
-assumes the port is using Firmware-First AER. It's a reasonable
-expectation that a port using Firmware-First AER will also be using
-Firmware-First DPC, however if a Host Bridge requests Native DPC, the
-DPC driver should allow it and not fail to bind due to AER capability
-settings.
+If you really want to avoid the lock, my suggestion is to add:
 
-Host Bridges which request Native DPC port services will also likely
-request Native AER, however it shouldn't be a requirement. This patch
-allows ports on those Host Bridges to have DPC port services.
+  if (tmp < max) {
+      ci = lock_cluster(si, tmp);
+          while (tmp < max) {
+	  ...
+	  }
+      unlock_cluster(ci);
+  }
 
-This will avoid the unlikely situation where the port is Firmware-First
-AER and Native DPC, and a BIOS or switch firmware preconfiguration of
-the DPC trigger could result in unhandled DPC events.
+Instead of do the similar thing twice.
 
-Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
----
- drivers/pci/pcie/dpc.c          | 3 ++-
- drivers/pci/pcie/portdrv_core.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+>Best Regards,
+>Huang, Ying
+>
+>>  	ci = lock_cluster(si, tmp);
+>>  	while (tmp < max) {
+>>  		if (!si->swap_map[tmp])
 
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index 7621704..3f3106f 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -284,7 +284,8 @@ static int dpc_probe(struct pcie_device *dev)
- 	int status;
- 	u16 ctl, cap;
- 
--	if (pcie_aer_get_firmware_first(pdev) && !pcie_ports_dpc_native)
-+	if (pcie_aer_get_firmware_first(pdev) && !pcie_ports_dpc_native &&
-+	    !pci_find_host_bridge(pdev->bus)->native_dpc)
- 		return -ENOTSUPP;
- 
- 	status = devm_request_threaded_irq(device, dev->irq, dpc_irq,
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index 50a9522..f2139a1 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -256,7 +256,8 @@ static int get_port_device_capability(struct pci_dev *dev)
- 	 */
- 	if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
- 	    pci_aer_available() &&
--	    (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
-+	    (pcie_ports_dpc_native || host->native_dpc ||
-+	     (services & PCIE_PORT_SERVICE_AER)))
- 		services |= PCIE_PORT_SERVICE_DPC;
- 
- 	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
 -- 
-1.8.3.1
-
+Wei Yang
+Help you, Help me
