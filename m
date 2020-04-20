@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8741B1498
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9391B1493
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgDTSej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 14:34:39 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:39311 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728050AbgDTSei (ORCPT
+        id S1728044AbgDTSea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 14:34:30 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:52178 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725613AbgDTSe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:34:38 -0400
+        Mon, 20 Apr 2020 14:34:29 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587407678; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1587407669; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=61buIY5X82HRMdX+d4mfLXJjssvVYLg7dZMcSf4n6g8=; b=nbXOIrR1sRYft8d/Gr0+sY4Dpj05d7Knh1tdDT71wywJnGg9ZuWLFFPm+poHQ/e/Vh/KBSfW
- 1uAGuTmrdUVbis15MxjOyGbW+Reru8O6RI/lCb2h6z+hvAyCT1jFEpGOHcNccDLkxFYpU9RZ
- WbV2Va0ZxErgD9EQCu6f+4r8Lo4=
-X-Mailgun-Sending-Ip: 104.130.122.26
+ Sender; bh=ax3N22sYBdeUbaN4NLYRPXOyfXR6puUCVOonkas/6+M=; b=bszZpNls/z4ARQpKv6n2f9lQbeaEVl00msYMDfwduW4S6zNa0ez76YFLtmUto7EptxcL6L1o
+ oUKZOjyfj28kXKHt5KuLvKwcnHHFwVr7dxjeE016gDLqftxLUZ8Kw7uquQvxcqsiqIaLQnLS
+ pVrOVOCpg+1PdSYe8fk0VP/1/uY=
+X-Mailgun-Sending-Ip: 104.130.122.27
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9deb2b.7f8fbaffa618-smtp-out-n05;
- Mon, 20 Apr 2020 18:34:19 -0000 (UTC)
+ by mxa.mailgun.org with ESMTP id 5e9deb33.7ff5c174ffb8-smtp-out-n05;
+ Mon, 20 Apr 2020 18:34:27 -0000 (UTC)
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 049ACC44795; Mon, 20 Apr 2020 18:34:17 +0000 (UTC)
+        id 604E4C43637; Mon, 20 Apr 2020 18:34:25 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -34,9 +34,9 @@ Received: from blr-ubuntu-311.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76F11C4478C;
-        Mon, 20 Apr 2020 18:34:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76F11C4478C
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7065CC00448;
+        Mon, 20 Apr 2020 18:34:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7065CC00448
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
 From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
@@ -53,9 +53,9 @@ Cc:     Stephen Boyd <swboyd@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Evan Green <evgreen@chromium.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv4 2/6] iommu/arm-smmu: Implement iommu_ops->def_domain_type call-back
-Date:   Tue, 21 Apr 2020 00:03:50 +0530
-Message-Id: <28c5d101cc4ac29aff3553ecec7cf256d0907ed7.1587407458.git.saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv4 3/6] iommu/arm-smmu: Allow client devices to select direct mapping
+Date:   Tue, 21 Apr 2020 00:03:51 +0530
+Message-Id: <7cf1f64167b5545b7f42275395be1f1e2ea3a6ac.1587407458.git.saiprakash.ranjan@codeaurora.org>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <cover.1587407458.git.saiprakash.ranjan@codeaurora.org>
 References: <cover.1587407458.git.saiprakash.ranjan@codeaurora.org>
@@ -66,59 +66,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the new def_domain_type call-back for the ARM
-SMMU driver. We need this to support requesting the domain
-type by the client devices.
+From: Jordan Crouse <jcrouse@codeaurora.org>
 
+Some client devices want to directly map the IOMMU themselves instead
+of using the DMA domain. Allow those devices to opt in to direct
+mapping by way of a list of compatible strings.
+
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+Co-developed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/arm-smmu.c | 12 ++++++++++++
- drivers/iommu/arm-smmu.h |  1 +
- 2 files changed, 13 insertions(+)
+ drivers/iommu/arm-smmu-qcom.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index e622f4e33379..b345a86085ce 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -1609,6 +1609,17 @@ static void arm_smmu_get_resv_regions(struct device *dev,
- 	iommu_dma_get_resv_regions(dev, head);
- }
+diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+index 64a4ab270ab7..5bedf21587a5 100644
+--- a/drivers/iommu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm-smmu-qcom.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+  */
  
-+static int arm_smmu_def_domain_type(struct device *dev)
++#include <linux/of_device.h>
+ #include <linux/qcom_scm.h>
+ 
+ #include "arm-smmu.h"
+@@ -11,6 +12,23 @@ struct qcom_smmu {
+ 	struct arm_smmu_device smmu;
+ };
+ 
++static const struct of_device_id qcom_smmu_client_of_match[] = {
++	{ .compatible = "qcom,adreno" },
++	{ .compatible = "qcom,mdp4" },
++	{ .compatible = "qcom,mdss" },
++	{ .compatible = "qcom,sc7180-mdss" },
++	{ .compatible = "qcom,sdm845-mdss" },
++	{ }
++};
++
++static int qcom_smmu_def_domain_type(struct device *dev)
 +{
-+	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	const struct arm_smmu_impl *impl = cfg->smmu->impl;
++	const struct of_device_id *match =
++		of_match_device(qcom_smmu_client_of_match, dev);
 +
-+	if (impl && impl->def_domain_type)
-+		return impl->def_domain_type(dev);
-+
-+	return 0;
++	return match ? IOMMU_DOMAIN_IDENTITY : 0;
 +}
 +
- static struct iommu_ops arm_smmu_ops = {
- 	.capable		= arm_smmu_capable,
- 	.domain_alloc		= arm_smmu_domain_alloc,
-@@ -1627,6 +1638,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.of_xlate		= arm_smmu_of_xlate,
- 	.get_resv_regions	= arm_smmu_get_resv_regions,
- 	.put_resv_regions	= generic_iommu_put_resv_regions,
-+	.def_domain_type	= arm_smmu_def_domain_type,
- 	.pgsize_bitmap		= -1UL, /* Restricted during device attach */
+ static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+ {
+ 	int ret;
+@@ -41,6 +59,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+ }
+ 
+ static const struct arm_smmu_impl qcom_smmu_impl = {
++	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
  };
  
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index 8d1cd54d82a6..d172c024be61 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -386,6 +386,7 @@ struct arm_smmu_impl {
- 	int (*init_context)(struct arm_smmu_domain *smmu_domain);
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
- 			 int status);
-+	int (*def_domain_type)(struct device *dev);
- };
- 
- static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, int n)
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
