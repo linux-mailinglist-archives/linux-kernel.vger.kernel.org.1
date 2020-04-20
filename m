@@ -2,99 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16321B1382
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90FA1B1388
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgDTRsw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Apr 2020 13:48:52 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:37376 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbgDTRsv (ORCPT
+        id S1726909AbgDTRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 13:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725784AbgDTRuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:48:51 -0400
-Received: by mail-oo1-f65.google.com with SMTP id g14so2326219ooa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:48:51 -0700 (PDT)
+        Mon, 20 Apr 2020 13:50:05 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0ABC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:50:05 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id np9so181116pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=LXSdkPjnzxTUAQ2gmzdrAwjLKwSSmeYYBYUwSx1ieH8=;
+        b=lmT9mwt19o9bRnq/+rGFfn4Y8RQtjYF4nfIuoML3AUmvyePPygh5CeUvHaBc1vwxbh
+         KyOX4Ul7i//EI+I0Jlv/C72Dn+anYH/lbklFTI0T9WFcax7VByCyCzoSFT/Yjq6FaCmd
+         R0jkcPc4X6opkn+C/I+a8iamdst7cuMQJyuvoh1fr47adsJfSfEzPruSB/lscoNzkpy+
+         nBqV3LvL3IliWEXzJoLHf6r7thppt8Dxx13RpUh/XBHvDOgivqmbd6fOMQK+cij0Ux70
+         hJQzJ4o+YqaHfl3L4RI+SEHNxxDbnQV025Az9Bm+HLYxABIJ6gUOq8xgTXYe+q+5jYHB
+         BKag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XCJB0Hcl+PXqI/c7jgEyi3+z3z4H8KBBmC1/eU1sakE=;
-        b=MK8iwwvVRYIa+4IuNEPMBu2NqCZNZ5G6uz+J4NZvHzV5XIcn6RTdJwk8IwuzMEGGHO
-         4zgmlXyg+zpjIMOypm4FVJZpE8yP6kWNg7wFwv+NL4ZaQBsAgOxdFkiGBx/Zgtc8SAfw
-         ZHfKfeXxHTvXlw5BDRMOzfQUPP1fuHWmKZX//CdGc9kBtj4Rvz6OQF4R1hO+urC35KPG
-         KGtYRcQVstoP1xBKEKp+K0YojENoekBxJye6sukGpQxQ7DoZ8lIHIV1/ITNq33Q8mmGL
-         ef+Nzetrv7NqMs0K8aeD9uIKRLnEFn2UcMDFhFpjafgQXKKzr2BTcwJd5SfgRQlZSugf
-         JuxQ==
-X-Gm-Message-State: AGi0PuYBGrhyu3xOt1BXKGa6epfcgwnPIJS9GWppzBvpVnoVhWk7hsIL
-        YlLG1x/J58Ijx9+c7iRKm73C4shsr5qY5iw4ZMLxKkWC
-X-Google-Smtp-Source: APiQypIRNWURXfy5vvGFTZuaLtS69iEfcbgyAP/4zA04W6udHPCGK71Ysn1XP96uFhfXFb0sXwJNcakqyUVajulCwgw=
-X-Received: by 2002:a4a:a126:: with SMTP id i38mr14002027ool.11.1587404930639;
- Mon, 20 Apr 2020 10:48:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=LXSdkPjnzxTUAQ2gmzdrAwjLKwSSmeYYBYUwSx1ieH8=;
+        b=XdZKfgsQwlm11rc4/tx233lx1F3DKgXr1LTmRqQqk7pUpE77+L3xAm0dG6ZS/p0tko
+         iLOj7pgM/KtK+hkMgZMKQBAS2I0BMRM9ZzfMfCWY1V3L2s/ejn65qtuqg10BcjgL99eN
+         xGXK7Y1rBR1K3lnejH1oJH35wwCeiOcMFYV0+L+uniJR494wjjRjWqf7nukBlxG8iC1d
+         kWzP4J14zRrWeQ4GarhtIC0lZ4qGKyBL1Hy9bDtiCTLdRc4Cyv7FWtfPRauv2hnL3PLC
+         dZvB59Jany8npj+A7dbwTRAccbNmlQc1br5htscE+5dDnw7hPvYgZVnoA5Vzgvd2UbhO
+         h5gg==
+X-Gm-Message-State: AGi0PuZZD29Gacynml1DwMozFlDBaAskhlvJJiz/hZnz9jhn8FqXDx7a
+        eJMv+RUQpKnvVLabtAFMJRLp2A==
+X-Google-Smtp-Source: APiQypIl8kHy0vJTSgDHO3NDFuVTWIshHMvzxHXxZrmdtN+gbYl77AXGCCx7BFvBIpJU8kB7GnmXpA==
+X-Received: by 2002:a17:90a:30e7:: with SMTP id h94mr584950pjb.186.1587405004347;
+        Mon, 20 Apr 2020 10:50:04 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
+        by smtp.gmail.com with ESMTPSA id j23sm256941pjz.13.2020.04.20.10.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 10:50:03 -0700 (PDT)
+From:   bsegall@google.com
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, bsegall@google.com, chiluk+linux@indeed.com,
+        vincent.guittot@linaro.org, pauld@redhead.com
+Subject: Re: [PATCH 1/2] sched: Defend cfs and rt bandwidth quota against overflow
+References: <20200420024421.22442-1-changhuaixin@linux.alibaba.com>
+        <20200420024421.22442-2-changhuaixin@linux.alibaba.com>
+Date:   Mon, 20 Apr 2020 10:50:01 -0700
+In-Reply-To: <20200420024421.22442-2-changhuaixin@linux.alibaba.com> (Huaixin
+        Chang's message of "Mon, 20 Apr 2020 10:44:20 +0800")
+Message-ID: <xm261roim4hi.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <cover.1585264062.git.gustavo@embeddedor.com> <14ff577604d25243c8a897f851b436ba87ae87cb.1585264062.git.gustavo@embeddedor.com>
- <CAMuHMdW4f-sPPY9sOU-xdVJ-0zsix4wcMTxUz48GopqnWDVTAg@mail.gmail.com> <50f85dd2-8250-1ca8-e2dd-4bba93a62736@embeddedor.com>
-In-Reply-To: <50f85dd2-8250-1ca8-e2dd-4bba93a62736@embeddedor.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Apr 2020 19:48:39 +0200
-Message-ID: <CAMuHMdVaAV+bfEivzEpJh8SysVr7jziyBPknCUc1=DtOwu7ZrA@mail.gmail.com>
-Subject: Re: [PATCH 2/2][next] m68k: amiga: config: Mark expected switch fall-through
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+Huaixin Chang <changhuaixin@linux.alibaba.com> writes:
 
-On Mon, Apr 20, 2020 at 6:03 PM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> On 4/20/20 02:17, Geert Uytterhoeven wrote:
-> > On Fri, Mar 27, 2020 at 12:25 AM Gustavo A. R. Silva
-> > <gustavo@embeddedor.com> wrote:
-> >> Mark switch cases where we are expecting to fall through.
-> >>
-> >> This patch fixes the following warning (Building: allmodconfig m68k):
-> >>
-> >> arch/m68k/amiga/config.c: In function ‘amiga_identify’:
-> >> ./arch/m68k/include/asm/amigahw.h:42:50: warning: this statement may fall through [-Wimplicit-fallthrough=]
-> >>  #define AMIGAHW_SET(name) (amiga_hw_present.name = 1)
-> >>                            ~~~~~~~~~~~~~~~~~~~~~~~^~~~
-> >> arch/m68k/amiga/config.c:223:3: note: in expansion of macro ‘AMIGAHW_SET’
-> >>    AMIGAHW_SET(PCMCIA);
-> >>    ^~~~~~~~~~~
-> >> arch/m68k/amiga/config.c:224:2: note: here
-> >>   case AMI_500:
-> >>   ^~~~
-> >>
-> >> Replace the existing /* fall through */ comments and fix the issue above
-> >> by using the new pseudo-keyword fallthrough;
-> >>
-> >> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > i.e. will queue in the m68k for-v5.8 branch.
-> >
+> Kernel limitation on cpu.cfs_quota_us is insufficient. Some large
+> numbers might cause overflow in to_ratio() calculation and produce
+> unexpected results.
 >
-> Geert,
+> For example, if we make two cpu cgroups and then write a reasonable
+> value and a large value into child's and parent's cpu.cfs_quota_us. This
+> will cause a write error.
 >
-> I wonder if you received the first patch of the series.
+> 	cd /sys/fs/cgroup/cpu
+> 	mkdir parent; mkdir parent/child
+> 	echo 8000 > parent/child/cpu.cfs_quota_us
+> 	# 17592186044416 is (1UL << 44)
+> 	echo 17592186044416 > parent/cpu.cfs_quota_us
+>
+> In this case, quota will overflow and thus fail the __cfs_schedulable
+> check. Similar overflow also affects rt bandwidth.
 
-No I haven't, and lore also only has the cover latter and patch 2/2:
-https://lore.kernel.org/linux-m68k/cover.1585264062.git.gustavo@embeddedor.com/
+More to the point is that I think doing
 
-Can you please resend? Thanks!
+echo 17592186044416 > parent/cpu.cfs_quota_us
+echo 8000 > parent/child/cpu.cfs_quota_us
 
-Gr{oetje,eeting}s,
+will only fail on the second write, while with this patch it will fail
+on the first, which should be more understandable.
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+to_ratio could be altered to avoid unnecessary internal overflow, but
+min_cfs_quota_period is less than 1<<BW_SHIFT, so a cutoff would still
+be needed.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Also tg_rt_schedulable sums a bunch of to_ratio(), and doesn't check for
+overflow on that sum, so if we consider preventing weirdness around
+schedulable checks and max quotas relevant we should probably fix that too.
+
+>
+> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+> ---
+>  kernel/sched/core.c  | 8 ++++++++
+>  kernel/sched/rt.c    | 9 +++++++++
+>  kernel/sched/sched.h | 2 ++
+>  3 files changed, 19 insertions(+)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 3a61a3b8eaa9..f0a74e35c3f0 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7390,6 +7390,8 @@ static DEFINE_MUTEX(cfs_constraints_mutex);
+>  
+>  const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
+>  static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
+> +/* More than 203 days if BW_SHIFT equals 20. */
+> +static const u64 max_cfs_runtime = MAX_BW_USEC * NSEC_PER_USEC;
+>  
+>  static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+>  
+> @@ -7417,6 +7419,12 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>  	if (period > max_cfs_quota_period)
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * Bound quota to defend quota against overflow during bandwidth shift.
+> +	 */
+> +	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+> +		return -EINVAL;
+> +
+>  	/*
+>  	 * Prevent race between setting of cfs_rq->runtime_enabled and
+>  	 * unthrottle_offline_cfs_rqs().
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index df11d88c9895..f5eea19d68c4 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -2569,6 +2569,9 @@ static int __rt_schedulable(struct task_group *tg, u64 period, u64 runtime)
+>  	return ret;
+>  }
+>  
+> +/* More than 203 days if BW_SHIFT equals 20. */
+> +static const u64 max_rt_runtime = MAX_BW_USEC * NSEC_PER_USEC;
+
+It looks to me like __rt_schedulable doesn't divide by NSEC_PER_USEC, so
+to_ratio is operating on nsec, and the limit is in nsec, and MAX_BW_USEC
+should probably not be named USEC then as well.
+
+> +
+>  static int tg_set_rt_bandwidth(struct task_group *tg,
+>  		u64 rt_period, u64 rt_runtime)
+>  {
+> @@ -2585,6 +2588,12 @@ static int tg_set_rt_bandwidth(struct task_group *tg,
+>  	if (rt_period == 0)
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * Bound quota to defend quota against overflow during bandwidth shift.
+> +	 */
+> +	if (rt_runtime != RUNTIME_INF && rt_runtime > max_rt_runtime)
+> +		return -EINVAL;
+> +
+>  	mutex_lock(&rt_constraints_mutex);
+>  	err = __rt_schedulable(tg, rt_period, rt_runtime);
+>  	if (err)
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index db3a57675ccf..6f6b7f545557 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1918,6 +1918,8 @@ extern void init_dl_inactive_task_timer(struct sched_dl_entity *dl_se);
+>  #define BW_SHIFT		20
+>  #define BW_UNIT			(1 << BW_SHIFT)
+>  #define RATIO_SHIFT		8
+> +#define MAX_BW_BITS		(64 - BW_SHIFT)
+> +#define MAX_BW_USEC		((1UL << MAX_BW_BITS) - 1)
+>  unsigned long to_ratio(u64 period, u64 runtime);
+>  
+>  extern void init_entity_runnable_average(struct sched_entity *se);
