@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDC11B12E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068DE1B12F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgDTRZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 13:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
+        id S1726863AbgDTR1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 13:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726729AbgDTRZg (ORCPT
+        by vger.kernel.org with ESMTP id S1726296AbgDTR1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:25:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40271C061A0C;
-        Mon, 20 Apr 2020 10:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=o0F7wvKezOu2wsXXMOT9z5o4JRXsHpFEn7bOH8AcSV0=; b=BUsCDXPcgJ0GHccgFTQ25h1CkF
-        Re0P+9gxGSlDlzMfVQgJBvuV+nTPMUiPe7TY4gU3XWzCbaQMy+ict/GKPTw1gItFFNyQi3ETs2ohR
-        XIYHS4RI3/qCco/QhgNOmtCMT1yYGqDBGrChXeXD8utw/Ixf8fqn6Ase9AOrPdASpgBcKSyKeqpvu
-        zaLtZWjMOMRIrb7WWgQ8fYDU3tCZ1LtughGTxFrEKQCwi96Y+xVhd8dXa4YOXWxUhjWUqr0sOEw18
-        FY8QC+WLuXQxCARLSoYNZvzpnqdJ4ExtbGRhQ0kciMZDPAplxLENyU0TSU2CIuEcHZaOzPRLqYoEW
-        tOAzM0ZQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jQaAq-0001Di-0s; Mon, 20 Apr 2020 17:25:36 +0000
-To:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] Documentation: admin-guide: sysctl/kernel: fix headings
- format and underlines
-Message-ID: <5a343483-c896-ffd8-7a06-024e04f69053@infradead.org>
-Date:   Mon, 20 Apr 2020 10:25:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 20 Apr 2020 13:27:07 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59727C061A0C;
+        Mon, 20 Apr 2020 10:27:07 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jQaCG-00035Q-7Y; Mon, 20 Apr 2020 19:27:04 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8BBD41C007F;
+        Mon, 20 Apr 2020 19:27:03 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 17:27:03 -0000
+From:   "tip-bot2 for Christian Brauner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] vdso/datapage: Use correct clock mode name in comment
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200420100615.1549804-1-christian.brauner@ubuntu.com>
+References: <20200420100615.1549804-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <158740362307.28353.13711119476762756523.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+The following commit has been merged into the timers/urgent branch of tip:
 
-Fix underline length warnings and drop the ending semi-colon from the
-title so that they match other title lines.
+Commit-ID:     ac84bac4062e7fc24f5e2c61c6a414b2a00a29ad
+Gitweb:        https://git.kernel.org/tip/ac84bac4062e7fc24f5e2c61c6a414b2a00a29ad
+Author:        Christian Brauner <christian.brauner@ubuntu.com>
+AuthorDate:    Mon, 20 Apr 2020 12:06:15 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 20 Apr 2020 19:19:52 +02:00
 
-linux-next-20200420/Documentation/admin-guide/sysctl/kernel.rst:281: WARNING: Title underline too short.
+vdso/datapage: Use correct clock mode name in comment
 
-hung_task_all_cpu_backtrace:
-================
+While the explanation for time namespace <-> vdso interactions is very
+helpful it uses the wrong name in the comment when describing the clock
+mode making grepping a bit annoying.
 
-linux-next-20200420/Documentation/admin-guide/sysctl/kernel.rst:564: WARNING: Title underline too short.
+This seems like an accidental oversight when moving from VCLOCK_TIMENS
+to VDSO_CLOCKMODE_TIMENS. It seems that
+660fd04f9317 ("lib/vdso: Prepare for time namespace support") misspelled
+VCLOCK_TIMENS as VLOCK_TIMENS which explains why it got missed when
+VCLOCK_TIMENS became VDSO_CLOCKMODE_TIMENS in
+2d6b01bd88cc ("lib/vdso: Move VCLOCK_TIMENS to vdso_clock_modes").
 
-oops_all_cpu_backtrace:
-================
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Update the comment to use VDSO_CLOCKMODE_TIMENS.
+
+Fixes: 660fd04f9317 ("lib/vdso: Prepare for time namespace support")
+Fixes: 2d6b01bd88cc ("lib/vdso: Move VCLOCK_TIMENS to vdso_clock_modes")
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andrei Vagin <avagin@gmail.com>
+Acked-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Link: https://lkml.kernel.org/r/20200420100615.1549804-1-christian.brauner@ubuntu.com
+
 ---
- Documentation/admin-guide/sysctl/kernel.rst |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/vdso/datapage.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux-next-20200420.orig/Documentation/admin-guide/sysctl/kernel.rst
-+++ linux-next-20200420/Documentation/admin-guide/sysctl/kernel.rst
-@@ -277,8 +277,8 @@ Path for the hotplug policy agent.
- Default value is "``/sbin/hotplug``".
- 
- 
--hung_task_all_cpu_backtrace:
--================
-+hung_task_all_cpu_backtrace
-+===========================
- 
- If this option is set, the kernel will send an NMI to all CPUs to dump
- their backtraces when a hung task is detected. This file shows up if
-@@ -560,8 +560,8 @@ rate for each task.
- scanned for a given scan.
- 
- 
--oops_all_cpu_backtrace:
--================
-+oops_all_cpu_backtrace
-+======================
- 
- If this option is set, the kernel will send an NMI to all CPUs to dump
- their backtraces when an oops event occurs. It should be used as a last
-
+diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
+index 5cbc9fc..7955c56 100644
+--- a/include/vdso/datapage.h
++++ b/include/vdso/datapage.h
+@@ -73,8 +73,8 @@ struct vdso_timestamp {
+  *
+  * @offset is used by the special time namespace VVAR pages which are
+  * installed instead of the real VVAR page. These namespace pages must set
+- * @seq to 1 and @clock_mode to VLOCK_TIMENS to force the code into the
+- * time namespace slow path. The namespace aware functions retrieve the
++ * @seq to 1 and @clock_mode to VDSO_CLOCKMODE_TIMENS to force the code into
++ * the time namespace slow path. The namespace aware functions retrieve the
+  * real system wide VVAR page, read host time and add the per clock offset.
+  * For clocks which are not affected by time namespace adjustment the
+  * offset must be zero.
