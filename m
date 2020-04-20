@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767A01B0D28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299771B0D0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgDTNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726845AbgDTNqs (ORCPT
+        id S1728350AbgDTNpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:45:41 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44888 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgDTNpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:46:48 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E863CC061A0C;
-        Mon, 20 Apr 2020 06:46:47 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 550A420CDB;
-        Mon, 20 Apr 2020 13:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1587390407; bh=e4TY+GCk2Ucsw3BDFnVc289FhHp/EOQdRohUPJEc2V8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wOR1An62VbncU0CYW2EAw5uFVILzJ6aK7EWmFNrlxIt7UpuJ0zyJgKQb/u+1ZpXFM
-         b7aktSdXpjWh1rIoZQN36L7XIyvn4KSnoCm3scMkYMETVysA965VfcdByYQy4RgPPd
-         Zi7oGcJ1QHhkkbosMZyH0Cdr+BfQI2tePms878XWiTYEdOa5lzUYXp58Pq9xUzkLdL
-         /TDxdOThySpGXqV3MNJCK8BYiCc+DS8GkCHIfOraRUD++s/WAyCxazH3pJCCkRyaEx
-         KsafmJcxCEfNdPsY/+UKSx8U8wukUc0I7kpOVRE4PXpBi4KSDiWUNS0b2TUpTm/XX9
-         CpN8ONb3t2VXw==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] MIPS: DTS: Loongson64: Add ACPI Controller Node
-Date:   Mon, 20 Apr 2020 21:45:28 +0800
-Message-Id: <20200420134536.210475-4-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200420134536.210475-1-jiaxun.yang@flygoat.com>
-References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
- <20200420134536.210475-1-jiaxun.yang@flygoat.com>
+        Mon, 20 Apr 2020 09:45:41 -0400
+Received: by mail-oi1-f196.google.com with SMTP id a2so4129569oia.11;
+        Mon, 20 Apr 2020 06:45:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j2ghh1pPF1fsAsPGVZzPt9RKgESh8HbBU2W/jDg7F0c=;
+        b=sz2E4b2PztQNahZiYkyEU0J3PMJJ/mPiaZ91IlSUJXHIGmoJw/i7KpCFwFH1KFBpXK
+         Xyq8Q88USPJwFUui7aqCeoCpfFmurmhFI7fHPCwsejrddy0MtwQTDs/ucehHd+jI+D9b
+         f2wKg4UNyJJPu2ha4RHXkBVETZU2anNIE8LNoeCik0cLu0u3FN6Eri2IJGV0/hdUZK2n
+         fTV/2CeSY9c9m+e2io2e4+RA/94xHx6uHOMgYJPNIH51gKW61/zipQfZ+y0wr6r0w6W6
+         dKuZlqc6SOntgm32b6VKZfgumdq3SS9KXCzF+BNWOJ45VhqZeFcCLjsmvna7wrxNA95W
+         7spA==
+X-Gm-Message-State: AGi0PuaNUTyUvozxy6U0UvhjHhHRegDXPoKrQu4IpAqHdlSOaB7k4GPr
+        zht7TsdavUSAnY++Th8/jzixirOq7MPr1jTL0JM=
+X-Google-Smtp-Source: APiQypIYWggq31kqe72PWGup1dXMLkkExcPMIqTIaghdiu2d6AzyZ3huwXP08u748n7J/APQ6LYfplz/CfuGBxsDgd0=
+X-Received: by 2002:aca:f541:: with SMTP id t62mr10124295oih.148.1587390339921;
+ Mon, 20 Apr 2020 06:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
+ <CAMuHMdUUJATs+G-hvty=fgyrhyx1EafpFHoWfcm=V_tVLn3q2A@mail.gmail.com> <DB6PR0802MB25330E55914346B46288C712E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+In-Reply-To: <DB6PR0802MB25330E55914346B46288C712E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Apr 2020 15:45:28 +0200
+Message-ID: <CAMuHMdV1Lp0uEOm_KtUA-nF7-6y1kfyvArcunrLipp6h5A_GMw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
+To:     Hadar Gat <Hadar.Gat@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ACPI Controller Node for RS780E PCH to fit newly added driver.
+Hi Hadar,
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/boot/dts/loongson/rs780e-pch.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+On Mon, Apr 20, 2020 at 2:27 PM Hadar Gat <Hadar.Gat@arm.com> wrote:
+> > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Sent: Monday, 20 April 2020 12:35
+> >
+> > On Fri, Mar 27, 2020 at 7:11 AM Hadar Gat <hadar.gat@arm.com> wrote:
+> > > The Arm CryptoCell is a hardware security engine.
+> > > This patch introduces driver for its TRNG (True Random Number
+> > > Generator) engine.
+> >
+> > Thanks for your series!
+> >
+> > I am wondering what is the relation between this and
+> > Documentation/devicetree/bindings/crypto/arm-cryptocell.txt?
+>
+> Arm TrustZone CryptoCell hardware contains both cryptographic engine (ccree) and true random number generator engine (cctrng).
 
-diff --git a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-index 45c54d555fa4..8687c4f7370a 100644
---- a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-@@ -21,6 +21,11 @@ rtc0: rtc@70 {
- 				interrupts = <8>;
- 				interrupt-parent = <&htpic>;
- 			};
-+
-+			acpi@800 {
-+				compatible = "loongson,rs780e-acpi";
-+				reg = <1 0x800 0x100>;
-+			};
- 		};
- 	};
- };
--- 
-2.26.0.rc2
+OK.
 
+> These are separate engines with some sharing in logic and interface.
+
+Do they share the same register block?
+
+> cctrng engine may not always be present.
+
+I assume that applies to e.g. the older 630p?
+
+> The devicetree documentation is in:
+> For ccree - Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> For cctrng - Documentation/devicetree/bindings/rng/arm-cctrng.yaml
+
+Thank you, I had already read both documents.
+
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
