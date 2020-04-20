@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55D51B09BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9381B0A0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728122AbgDTMl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34568 "EHLO mail.kernel.org"
+        id S1728547AbgDTMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728094AbgDTMlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:41:49 -0400
+        id S1728536AbgDTMoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:44:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 681E120735;
-        Mon, 20 Apr 2020 12:41:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98BE120738;
+        Mon, 20 Apr 2020 12:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386508;
-        bh=3WFfkTC2VyLFMYYkexTop0RZ0E1qTf1xEmB51Q2uf1k=;
+        s=default; t=1587386655;
+        bh=aj7jSU0TCG/lF1yPRu6YAFGC5R8mSASegSlZmQ/WKYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tr+/koOszpjEeDykoqySJR3/XB58LrqKidvfFu9RbXzDKoIwO/p42l/0YM417pdr7
-         djNFE+WAVZOG5cCe/mrXiroxKHlMlgS+PIuFZsbIJYn3Q4bYzK9SqgNVSNq5NupYCm
-         cmBLBLgrwQQ/hHj8Hu23SD1H9nzWmkh1xflC7hCc=
+        b=PsLtgSmK6Fr6QXeX26WCH+ZCom+6HdzdtHod61HO5kTkfcOyDRv58HB9O6JWAFIFZ
+         2EeG5VIZkAO9lPPJDfrsHNEB/HgnN366IEQur0+QrEZt2haQu2g5SIPN6akN9yXAxq
+         XUowJUbuiq9Xmmjv4SFGofGuhGzBBPjWSOR2OPKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 52/65] net/mlx5e: Encapsulate updating netdev queues into a function
-Date:   Mon, 20 Apr 2020 14:38:56 +0200
-Message-Id: <20200420121518.174265026@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Barber <barberadam995@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 43/71] ALSA: hda/realtek - Enable the headset mic on Asus FX505DT
+Date:   Mon, 20 Apr 2020 14:38:57 +0200
+Message-Id: <20200420121518.065453817@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Adam Barber <barberadam995@gmail.com>
 
-[ Upstream commit c2c95271f9f39ea9b34db2301b3b6c5105cdb447 ]
+commit 4963d66b8a26c489958063abb6900ea6ed8e4836 upstream.
 
-As a preparation for one of the following commits, create a function to
-encapsulate the code that notifies the kernel about the new amount of
-RX and TX queues. The code will be called multiple times in the next
-commit.
+On Asus FX505DT with Realtek ALC233, the headset mic is connected
+to pin 0x19, with default 0x411111f0.
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Enable headset mic by reconfiguring the pin to an external mic
+associated with the headphone on 0x21. Mic jack detection was also
+found to be working.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207131
+Signed-off-by: Adam Barber <barberadam995@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200410090032.2759-1-barberadam995@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 67fe002dfade5..35b0acce425f8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2895,6 +2895,17 @@ static void mlx5e_netdev_set_tcs(struct net_device *netdev)
- 		netdev_set_tc_queue(netdev, tc, nch, 0);
- }
- 
-+static void mlx5e_update_netdev_queues(struct mlx5e_priv *priv)
-+{
-+	int num_txqs = priv->channels.num * priv->channels.params.num_tc;
-+	int num_rxqs = priv->channels.num * priv->profile->rq_groups;
-+	struct net_device *netdev = priv->netdev;
-+
-+	mlx5e_netdev_set_tcs(netdev);
-+	netif_set_real_num_tx_queues(netdev, num_txqs);
-+	netif_set_real_num_rx_queues(netdev, num_rxqs);
-+}
-+
- static void mlx5e_build_txq_maps(struct mlx5e_priv *priv)
- {
- 	int i, ch;
-@@ -2916,13 +2927,7 @@ static void mlx5e_build_txq_maps(struct mlx5e_priv *priv)
- 
- void mlx5e_activate_priv_channels(struct mlx5e_priv *priv)
- {
--	int num_txqs = priv->channels.num * priv->channels.params.num_tc;
--	int num_rxqs = priv->channels.num * priv->profile->rq_groups;
--	struct net_device *netdev = priv->netdev;
--
--	mlx5e_netdev_set_tcs(netdev);
--	netif_set_real_num_tx_queues(netdev, num_txqs);
--	netif_set_real_num_rx_queues(netdev, num_rxqs);
-+	mlx5e_update_netdev_queues(priv);
- 
- 	mlx5e_build_txq_maps(priv);
- 	mlx5e_activate_channels(&priv->channels);
--- 
-2.20.1
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7253,6 +7253,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
 
 
