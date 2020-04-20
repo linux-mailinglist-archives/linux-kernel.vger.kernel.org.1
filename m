@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6301B09FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC351B0A01
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgDTMnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:43:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37508 "EHLO mail.kernel.org"
+        id S1728467AbgDTMnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728449AbgDTMnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:43:46 -0400
+        id S1727825AbgDTMns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:43:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8CA920724;
-        Mon, 20 Apr 2020 12:43:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBE820738;
+        Mon, 20 Apr 2020 12:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386625;
-        bh=Gu0i2Pei8hae0lYc1wBuHKJsRjOIcQjmE+NHC1K3lzk=;
+        s=default; t=1587386627;
+        bh=FCcXvTLuWCFsDQQPNpkZ4jF3bjg+075quiwNXKwV5lM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YrVZJks/l4f90rSbwS4NefbpixUBQoi++CGRONq7kqrw+Hz3AXEI9OyqZOsiBrTOo
-         xgvLeV0N9HOIA5Pbr5PStJ6mld/aU/2vZov23u6+NEE4dVO2gNu70lzcmqgAJi+XRr
-         zRkiCrcO7lmMJO34wavrZAtCqbC+P75VdYuJiZtQ=
+        b=oIxR8wnGVgoapzawd7aNGUdu4r5EsSqXXRgEnMkil1G9EtBH+wh95czoI1/cm92GG
+         pMc8/Lw3c1BB3BSDVS+5vD74aMJEj8zHzqjy9P6foPwfsshB3+83jUlPe+LH8ipY54
+         USEK+rEfNpGBLUeT61ZKIRqaQjOmVN4ek4Mvzzjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Josh Triplett <josh@joshtriplett.org>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.6 32/71] ext4: fix incorrect group count in ext4_fill_super error message
-Date:   Mon, 20 Apr 2020 14:38:46 +0200
-Message-Id: <20200420121515.279670886@linuxfoundation.org>
+Subject: [PATCH 5.6 33/71] ext4: fix incorrect inodes per group in error message
+Date:   Mon, 20 Apr 2020 14:38:47 +0200
+Message-Id: <20200420121515.515234631@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
 References: <20200420121508.491252919@linuxfoundation.org>
@@ -45,37 +46,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Josh Triplett <josh@joshtriplett.org>
 
-commit df41460a21b06a76437af040d90ccee03888e8e5 upstream.
+commit b9c538da4e52a7b79dfcf4cfa487c46125066dfb upstream.
 
-ext4_fill_super doublechecks the number of groups before mounting; if
-that check fails, the resulting error message prints the group count
-from the ext4_sb_info sbi, which hasn't been set yet. Print the freshly
-computed group count instead (which at that point has just been computed
-in "blocks_count").
+If ext4_fill_super detects an invalid number of inodes per group, the
+resulting error message printed the number of blocks per group, rather
+than the number of inodes per group. Fix it to print the correct value.
 
+Fixes: cd6bb35bf7f6d ("ext4: use more strict checks for inodes_per_block on mount")
+Link: https://lore.kernel.org/r/8be03355983a08e5d4eed480944613454d7e2550.1585434649.git.josh@joshtriplett.org
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-Fixes: 4ec1102813798 ("ext4: Add sanity checks for the superblock before mounting the filesystem")
-Link: https://lore.kernel.org/r/8b957cd1513fcc4550fe675c10bcce2175c33a49.1585431964.git.josh@joshtriplett.org
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/super.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -4286,9 +4286,9 @@ static int ext4_fill_super(struct super_
- 			EXT4_BLOCKS_PER_GROUP(sb) - 1);
- 	do_div(blocks_count, EXT4_BLOCKS_PER_GROUP(sb));
- 	if (blocks_count > ((uint64_t)1<<32) - EXT4_DESC_PER_BLOCK(sb)) {
--		ext4_msg(sb, KERN_WARNING, "groups count too large: %u "
-+		ext4_msg(sb, KERN_WARNING, "groups count too large: %llu "
- 		       "(block count %llu, first data block %u, "
--		       "blocks per group %lu)", sbi->s_groups_count,
-+		       "blocks per group %lu)", blocks_count,
- 		       ext4_blocks_count(es),
- 		       le32_to_cpu(es->s_first_data_block),
- 		       EXT4_BLOCKS_PER_GROUP(sb));
+@@ -4157,7 +4157,7 @@ static int ext4_fill_super(struct super_
+ 	if (sbi->s_inodes_per_group < sbi->s_inodes_per_block ||
+ 	    sbi->s_inodes_per_group > blocksize * 8) {
+ 		ext4_msg(sb, KERN_ERR, "invalid inodes per group: %lu\n",
+-			 sbi->s_blocks_per_group);
++			 sbi->s_inodes_per_group);
+ 		goto failed_mount;
+ 	}
+ 	sbi->s_itb_per_group = sbi->s_inodes_per_group /
 
 
