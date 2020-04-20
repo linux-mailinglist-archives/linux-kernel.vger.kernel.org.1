@@ -2,206 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3794D1B0EE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AA91B0EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgDTOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726102AbgDTOwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:52:04 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4E8C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 07:52:03 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id f59so3317138uaf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 07:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q/IW0rVYUl8ibIrc/id1YI3H7MyQzSZkTchvxN0ESh4=;
-        b=F4+FBrarJu0YoXSL1GjRqkxVmKsLO5XfO/Qs41zBmWfrM1YtnNIRDNZddMm3uGJzRR
-         6IyS7frBmtuqPU2YVFEaunzD89A0XXdrGsiob6IpNx53OqaA+ESaMVwbZTEOOOeLn6CR
-         kAqvT+FIOpGn9LyykzPnBgEZD+qUVJA1LUm0Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q/IW0rVYUl8ibIrc/id1YI3H7MyQzSZkTchvxN0ESh4=;
-        b=H6jj6zhd+E3eaQ3K5NGnUzeedo2xeMozVYcPAq32njBy0lH4doOkyX/8STolHo59XA
-         9iE7MFIk5mOg3xaUYYAH6TrMWo0crseRC2AzA8GzKgo23nEAvyXeUn+jBwYQLDoc9cZM
-         R54sVPsTvI/39oum/3jsHIziwJPkYpo0Ox082nSLBPpb6T2pVVJsRctv4cytJXh9ufhN
-         G9pbuHo/8D94ZC/NbQ89O5a3xp68nBLmeQt7PMLVia0GZ+r5ggF/JoWsFrKctt6fG7qq
-         2rc64AqzNEHt/FESc/I2W2vxpqsre6OdTpljr3lHAVYyw5vuzA9ocSrE9XQ6W+f3pjtK
-         pMwQ==
-X-Gm-Message-State: AGi0PuY+UNFl8rDsd4rnAFov4kPtv5QuMcfZUm9zPiXu/sva5ZcWjfMy
-        qLIf3rE+ElaJJnGNfs4Zs08NBZNSdb8=
-X-Google-Smtp-Source: APiQypISMUiI/TLvW4hXaymumfIstVxkfQqq0fgYaeMMvqH9F1jd7qpKtI8gK7EuX2Tqyl0JillDsw==
-X-Received: by 2002:a9f:3042:: with SMTP id i2mr6454515uab.138.1587394321860;
-        Mon, 20 Apr 2020 07:52:01 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id d83sm261735vka.34.2020.04.20.07.52.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2020 07:52:01 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id t8so3737822uap.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 07:52:00 -0700 (PDT)
-X-Received: by 2002:a9f:27ca:: with SMTP id b68mr8236936uab.8.1587394319880;
- Mon, 20 Apr 2020 07:51:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200324144754.v2.1.I9df0264e151a740be292ad3ee3825f31b5997776@changeid>
-In-Reply-To: <20200324144754.v2.1.I9df0264e151a740be292ad3ee3825f31b5997776@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 20 Apr 2020 07:51:48 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Uu-5quAn4w+9t3zRYcnLBx_PyoN1FE9_io4yvoxcA4Fg@mail.gmail.com>
-Message-ID: <CAD=FV=Uu-5quAn4w+9t3zRYcnLBx_PyoN1FE9_io4yvoxcA4Fg@mail.gmail.com>
-Subject: Re: [PATCH v2] bdev: Reduce time holding bd_mutex in sync in blkdev_close()
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Salman Qazi <sqazi@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729339AbgDTO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:56:12 -0400
+Received: from mga02.intel.com ([134.134.136.20]:55088 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgDTO4M (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:56:12 -0400
+IronPort-SDR: LRdVV/8qFANDV0iSqrq5Q1M347U/WHuIZ+7fRqWvM/4Qcs4HY3acEAEBF1XANhZ0cW0vjp5xzN
+ AAvmMxFsdSzA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 07:56:11 -0700
+IronPort-SDR: eSXRQPXmQQnzrAvjhoStN59burVeMlFfZw0/ehq/K0n+InVZGMqL5lNSIrthuecCCqfKahQMD9
+ jPd528WghEEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; 
+   d="scan'208";a="273202981"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by orsmga002.jf.intel.com with ESMTP; 20 Apr 2020 07:56:09 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v2] perf stat: Improve runtime stat for interval mode
+Date:   Mon, 20 Apr 2020 22:54:17 +0800
+Message-Id: <20200420145417.6864-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+For interval mode, the metric is printed after # if it exists. But
+it's not calculated by the counts generated in this interval. See
+following examples,
 
-On Tue, Mar 24, 2020 at 2:48 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> While trying to "dd" to the block device for a USB stick, I
-> encountered a hung task warning (blocked for > 120 seconds).  I
-> managed to come up with an easy way to reproduce this on my system
-> (where /dev/sdb is the block device for my USB stick) with:
->
->   while true; do dd if=/dev/zero of=/dev/sdb bs=4M; done
->
-> With my reproduction here are the relevant bits from the hung task
-> detector:
->
->  INFO: task udevd:294 blocked for more than 122 seconds.
->  ...
->  udevd           D    0   294      1 0x00400008
->  Call trace:
->   ...
->   mutex_lock_nested+0x40/0x50
->   __blkdev_get+0x7c/0x3d4
->   blkdev_get+0x118/0x138
->   blkdev_open+0x94/0xa8
->   do_dentry_open+0x268/0x3a0
->   vfs_open+0x34/0x40
->   path_openat+0x39c/0xdf4
->   do_filp_open+0x90/0x10c
->   do_sys_open+0x150/0x3c8
->   ...
->
->  ...
->  Showing all locks held in the system:
->  ...
->  1 lock held by dd/2798:
->   #0: ffffff814ac1a3b8 (&bdev->bd_mutex){+.+.}, at: __blkdev_put+0x50/0x204
->  ...
->  dd              D    0  2798   2764 0x00400208
->  Call trace:
->   ...
->   schedule+0x8c/0xbc
->   io_schedule+0x1c/0x40
->   wait_on_page_bit_common+0x238/0x338
->   __lock_page+0x5c/0x68
->   write_cache_pages+0x194/0x500
->   generic_writepages+0x64/0xa4
->   blkdev_writepages+0x24/0x30
->   do_writepages+0x48/0xa8
->   __filemap_fdatawrite_range+0xac/0xd8
->   filemap_write_and_wait+0x30/0x84
->   __blkdev_put+0x88/0x204
->   blkdev_put+0xc4/0xe4
->   blkdev_close+0x28/0x38
->   __fput+0xe0/0x238
->   ____fput+0x1c/0x28
->   task_work_run+0xb0/0xe4
->   do_notify_resume+0xfc0/0x14bc
->   work_pending+0x8/0x14
->
-> The problem appears related to the fact that my USB disk is terribly
-> slow and that I have a lot of RAM in my system to cache things.
-> Specifically my writes seem to be happening at ~15 MB/s and I've got
-> ~4 GB of RAM in my system that can be used for buffering.  To write 4
-> GB of buffer to disk thus takes ~4000 MB / ~15 MB/s = ~267 seconds.
->
-> The 267 second number is a problem because in __blkdev_put() we call
-> sync_blockdev() while holding the bd_mutex.  Any other callers who
-> want the bd_mutex will be blocked for the whole time.
->
-> The problem is made worse because I believe blkdev_put() specifically
-> tells other tasks (namely udev) to go try to access the device at right
-> around the same time we're going to hold the mutex for a long time.
->
-> Putting some traces around this (after disabling the hung task detector),
-> I could confirm:
->  dd:    437.608600: __blkdev_put() right before sync_blockdev() for sdb
->  udevd: 437.623901: blkdev_open() right before blkdev_get() for sdb
->  dd:    661.468451: __blkdev_put() right after sync_blockdev() for sdb
->  udevd: 663.820426: blkdev_open() right after blkdev_get() for sdb
->
-> A simple fix for this is to realize that sync_blockdev() works fine if
-> you're not holding the mutex.  Also, it's not the end of the world if
-> you sync a little early (though it can have performance impacts).
-> Thus we can make a guess that we're going to need to do the sync and
-> then do it without holding the mutex.  We still do one last sync with
-> the mutex but it should be much, much faster.
->
-> With this, my hung task warnings for my test case are gone.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> I didn't put a "Fixes" annotation here because, as far as I can tell,
-> this issue has been here "forever" unless someone knows of something
-> else that changed that made this possible to hit.  This could probably
-> get picked back to any stable tree that anyone is still maintaining.
->
-> Changes in v2:
-> - Don't bother holding the mutex when checking "bd_openers".
->
->  fs/block_dev.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 9501880dff5e..40c57a9cc91a 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1892,6 +1892,16 @@ static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part)
->         struct gendisk *disk = bdev->bd_disk;
->         struct block_device *victim = NULL;
->
-> +       /*
-> +        * Sync early if it looks like we're the last one.  If someone else
-> +        * opens the block device between now and the decrement of bd_openers
-> +        * then we did a sync that we didn't need to, but that's not the end
-> +        * of the world and we want to avoid long (could be several minute)
-> +        * syncs while holding the mutex.
-> +        */
-> +       if (bdev->bd_openers == 1)
-> +               sync_blockdev(bdev);
-> +
->         mutex_lock_nested(&bdev->bd_mutex, for_part);
->         if (for_part)
->                 bdev->bd_part_count--;
-> --
-> 2.25.1.696.g5e7596f4ac-goog
+ root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000422803            764,809      inst_retired.any          #      2.9 CPI
+      1.000422803          2,234,932      cycles
+      2.001464585          1,960,061      inst_retired.any          #      1.6 CPI
+      2.001464585          4,022,591      cycles
 
-Are you the right person to land this patch?  If so, is there anything
-else that needs to be done?  Jens: if you should be the person to land
-(as suggested by "git log" but not by "get_maintainer") I'm happy to
-repost with collected tags.  Originally I trusted "get_maintainer" to
-help point me to the right person.
+The second CPI should not be 1.6 (4,022,591/1,960,061 is 2.1)
 
-Thanks!
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000429493          2,869,311      cycles
+      1.000429493            816,875      instructions              #    0.28  insn per cycle
+      2.001516426          9,260,973      cycles
+      2.001516426          5,250,634      instructions              #    0.87  insn per cycle
 
--Doug
+The second 'insn per cycle' should not be 0.87 (5,250,634/9,260,973 is 0.57).
+
+The current code uses a global variable rt_stat for tracking and
+updating the std dev of runtime stat. Unlike the counts, rt_stat is
+not reset for interval. While the counts are reset for interval.
+
+perf_stat_process_counter()
+{
+        if (config->interval)
+                init_stats(ps->res_stats);
+}
+
+So for interval, the rt_stat should be reset either.
+
+This patch resets rt_stat before read_counters, so the runtime
+stat is only calculated by the counts generated in this interval.
+
+With this patch,
+
+ root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000420924          2,408,818      inst_retired.any          #      2.1 CPI
+      1.000420924          5,010,111      cycles
+      2.001448579          2,798,407      inst_retired.any          #      1.6 CPI
+      2.001448579          4,599,861      cycles
+
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000428555          2,769,714      cycles
+      1.000428555            774,462      instructions              #    0.28  insn per cycle
+      2.001471562          3,595,904      cycles
+      2.001471562          1,243,703      instructions              #    0.35  insn per cycle
+
+Now the second 'insn per cycle' and CPI are calculated by the counts
+generated in this interval.
+
+ v2:
+ ---
+ Use just existing perf_stat__reset_shadow_per_stat(&rt_stat).
+ We don't need to define new function perf_stat__reset_rt_stat.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/Documentation/perf-stat.txt | 2 ++
+ tools/perf/builtin-stat.c              | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 4d56586b2fb9..3fb5028aef08 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -176,6 +176,8 @@ Print count deltas every N milliseconds (minimum: 1ms)
+ The overhead percentage could be high in some cases, for instance with small, sub 100ms intervals.  Use with caution.
+ 	example: 'perf stat -I 1000 -e cycles -a sleep 5'
+ 
++If the metric exists, it is calculated by the counts generated in this interval and the metric is printed after #.
++
+ --interval-count times::
+ Print count deltas for fixed number of times.
+ This option should be used together with "-I" option.
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 9207b6c45475..3f050d85c277 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -359,6 +359,7 @@ static void process_interval(void)
+ 	clock_gettime(CLOCK_MONOTONIC, &ts);
+ 	diff_timespec(&rs, &ts, &ref_time);
+ 
++	perf_stat__reset_shadow_per_stat(&rt_stat);
+ 	read_counters(&rs);
+ 
+ 	if (STAT_RECORD) {
+-- 
+2.17.1
+
