@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153791B0AB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984EA1B0A6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgDTMty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
+        id S1729219AbgDTMsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729478AbgDTMto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:49:44 -0400
+        id S1729193AbgDTMsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:48:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08DAB20736;
-        Mon, 20 Apr 2020 12:49:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2CB5206DD;
+        Mon, 20 Apr 2020 12:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386984;
-        bh=lk8RXi6P02tjNYEpzp1QVhe8R8pqNPciBylaCpMcTC4=;
+        s=default; t=1587386887;
+        bh=1NfLBfy5ig5bHPBuxtRQkFN4mZIt4JKhzWxZE9M2dHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IWuliNSI8Dobkbo8e78sVhut3jzHJi+ZU4q2oAYCDWant3SSTAIN76c2q1FG+gC9s
-         XdbAFbp2XcztN+KBlYWS7v8gtEUEnhi8P60WSH863zm+gE2M/q12TcdV0XFGwC4Bmn
-         wqrXtiXgsLa691Yew/NagwiIvbE43l5S7bbvmD30=
+        b=DAR8zdUubllagQn25MwTRbFaKcFbqudbUta9Gt/y4rZfNgdrODkIlqo6z50SBQBSw
+         ilCcQstRY8z3S6U93rRKRC4A1qDiN7v5anbrdywH/Zq9tqaA7qOpxAjyENkPm/HMdQ
+         rNucuPbqdehXmMJ8pDz9LmxdK7rd90sJHcFG3B54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 19/40] ALSA: usb-audio: Dont create jack controls for PCM terminals
-Date:   Mon, 20 Apr 2020 14:39:29 +0200
-Message-Id: <20200420121459.811766207@linuxfoundation.org>
+        stable@vger.kernel.org, Prike Liang <Prike.Liang@amd.com>,
+        Mengbing Wang <Mengbing.Wang@amd.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 52/60] drm/amdgpu: fix the hw hang during perform system reboot and reset
+Date:   Mon, 20 Apr 2020 14:39:30 +0200
+Message-Id: <20200420121514.345458607@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-References: <20200420121444.178150063@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Prike Liang <Prike.Liang@amd.com>
 
-commit 7dc3c5a0172e6c0449502103356c3628d05bc0e0 upstream.
+commit b2a7e9735ab2864330be9d00d7f38c961c28de5d upstream.
 
-Some funky firmwares set the connector flag even on PCM terminals
-although it doesn't make sense (and even actually the firmware doesn't
-react properly!).  Let's skip creation of jack controls in such a
-case.
+The system reboot failed as some IP blocks enter power gate before perform
+hw resource destory. Meanwhile use unify interface to set device CGPG to ungate
+state can simplify the amdgpu poweroff or reset ungate guard.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200412081331.4742-4-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 487eca11a321ef ("drm/amdgpu: fix gfx hang during suspend with video playback (v2)")
+Signed-off-by: Prike Liang <Prike.Liang@amd.com>
+Tested-by: Mengbing Wang <Mengbing.Wang@amd.com>
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/mixer.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2107,7 +2107,8 @@ static int parse_audio_input_terminal(st
- 	check_input_term(state, term_id, &iterm);
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -2176,6 +2176,8 @@ static int amdgpu_device_ip_suspend_phas
+ {
+ 	int i, r;
  
- 	/* Check for jack detection. */
--	if (uac_v2v3_control_is_readable(bmctls, control))
-+	if ((iterm.type & 0xff00) != 0x0100 &&
-+	    uac_v2v3_control_is_readable(bmctls, control))
- 		build_connector_control(state->mixer, &iterm, true);
++	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
++	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
  
- 	return 0;
-@@ -3147,7 +3148,8 @@ static int snd_usb_mixer_controls(struct
- 			if (err < 0 && err != -EINVAL)
- 				return err;
- 
--			if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
-+			if ((state.oterm.type & 0xff00) != 0x0100 &&
-+			    uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
- 							 UAC2_TE_CONNECTOR)) {
- 				build_connector_control(state.mixer, &state.oterm,
- 							false);
-@@ -3172,7 +3174,8 @@ static int snd_usb_mixer_controls(struct
- 			if (err < 0 && err != -EINVAL)
- 				return err;
- 
--			if (uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
-+			if ((state.oterm.type & 0xff00) != 0x0100 &&
-+			    uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
- 							 UAC3_TE_INSERTION)) {
- 				build_connector_control(state.mixer, &state.oterm,
- 							false);
+ 	for (i = adev->num_ip_blocks - 1; i >= 0; i--) {
+ 		if (!adev->ip_blocks[i].status.valid)
 
 
