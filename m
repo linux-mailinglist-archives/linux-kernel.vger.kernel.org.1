@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFB31B1995
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D521B1997
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgDTWdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50652 "EHLO mail.kernel.org"
+        id S1728238AbgDTWe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:34:26 -0400
+Received: from ale.deltatee.com ([207.54.116.67]:47076 "EHLO ale.deltatee.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgDTWdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:33:53 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C24F20782;
-        Mon, 20 Apr 2020 22:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587422032;
-        bh=ViONWUUyMBUwXsCi2iskcpvlAwUnt1s05iWjG3WH8Pw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uDwWm7NxumBoTt+V8rV7xTtd1DxB+bFx9ihDXHb5kZqYopJHQgVgv8cAMvuSUqhnS
-         FVS1nKe//wXkKusDiwWiaObhZli1SvY6fERQPqRdGARnYi7sLQbizUt/zhSKkNZEum
-         Yo9Cjpi80RTrd2r5cBHttRMh9pz+VL7u6GiIRaAc=
-Date:   Mon, 20 Apr 2020 15:33:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     glider@google.com
-Cc:     adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-        sunhaoyl@outlook.com, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] fs/binfmt_elf.c: allocate initialized memory in
- fill_thread_core_info()
-Message-Id: <20200420153352.6682533e794f591dae7aafbc@linux-foundation.org>
-In-Reply-To: <20200419100848.63472-1-glider@google.com>
-References: <20200419100848.63472-1-glider@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726439AbgDTWe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:34:26 -0400
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1jQezX-00056i-9U; Mon, 20 Apr 2020 16:34:16 -0600
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@fb.com>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20200420164700.21620-1-logang@deltatee.com>
+ <20200420164700.21620-2-logang@deltatee.com>
+ <20200420222646.GA11115@redsun51.ssa.fujisawa.hgst.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <ce687c5d-eb19-e9b5-e03a-97dd2a04b4ea@deltatee.com>
+Date:   Mon, 20 Apr 2020 16:34:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200420222646.GA11115@redsun51.ssa.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, maxg@mellanox.com, Chaitanya.Kulkarni@wdc.com, axboe@fb.com, sagi@grimberg.me, hch@lst.de, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, kbusch@kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v12 1/9] nvme-core: Clear any SGL flags in passthru
+ commands
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Apr 2020 12:08:48 +0200 glider@google.com wrote:
 
-> KMSAN reported uninitialized data being written to disk when dumping
-> core. As a result, several kilobytes of kmalloc memory may be written to
-> the core file and then read by a non-privileged user.
+
+On 2020-04-20 4:26 p.m., Keith Busch wrote:
+> On Mon, Apr 20, 2020 at 10:46:52AM -0600, Logan Gunthorpe wrote:
+>> The host driver should decide whether to use SGLs or PRPs and they
+>> currently assume the flags are cleared after the call to
+>> nvme_setup_cmd(). However, passed-through commands may erroneously
+>> set these bits; so clear them for all cases.
+>>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+>> ---
+>>  drivers/nvme/host/core.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+>> index 91c1bd659947..f5283b300e87 100644
+>> --- a/drivers/nvme/host/core.c
+>> +++ b/drivers/nvme/host/core.c
+>> @@ -756,6 +756,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req,
+>>  	case REQ_OP_DRV_IN:
+>>  	case REQ_OP_DRV_OUT:
+>>  		memcpy(cmd, nvme_req(req)->cmd, sizeof(*cmd));
+>> +		/* passthru commands should let the driver set the SGL flags */
+>> +		cmd->common.flags &= ~NVME_CMD_SGL_ALL;
+>>  		break;
 > 
-> ...
->
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -1733,7 +1733,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
->  		    (!regset->active || regset->active(t->task, regset) > 0)) {
->  			int ret;
->  			size_t size = regset_size(t->task, regset);
-> -			void *data = kmalloc(size, GFP_KERNEL);
-> +			void *data = kzalloc(size, GFP_KERNEL);
->  			if (unlikely(!data))
->  				return 0;
->  			ret = regset->get(t->task, regset,
+> Is this really necessary? The passthrough handler currently rejects user
+> commands that set command flags:
 
-This seems to be a quite easy way of exposing quite a large amount of
-kernel memory contents, so I think I'll add a cc:stable to this patch?
+Yes, the flags coming from the passthru target's host (in subsequent
+patches in this series) may have these set and we need to clear them
+somewhere. The passthru code submits the requests directly using
+blk_execute_rq_nowait() and thus the check in nvme_user_cmd() doesn't apply.
 
+If I recall correctly, we had originally cleared the flags in the target
+code, but Christoph had suggested it should be done more generally in
+nvme_setup_cmd().
+
+Logan
