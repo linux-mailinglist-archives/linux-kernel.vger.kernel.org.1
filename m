@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184A21B1102
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FF31B10E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgDTQEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:04:34 -0400
-Received: from mail-dm6nam10on2078.outbound.protection.outlook.com ([40.107.93.78]:42592
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729774AbgDTQEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:04:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L4M4eydqaMyCK/goeNXQ5c5Psu0+7f0hhaX8M4mvMTrsuQus7+oKDtX+m0zg1rpkpR/YMz+OciYLrEWJlMNTW1lFLmD3CTkethW/VrFD83AnAeEXuBnd9XiFZb+lciLbOW9jIZ+P6FgcBLBuq6PxBmW+7Hf24dOiGG1w43oM6lFgfplFS1+OAFwu/7Y3FvxekAIGys7XgS1f58Zh8Re1tYzFb1ZUS6qgOtFDuAZC8DQxdipBFA7Tyw9meqe59mj+nrZzHx3Eir2x76p+/XdV4LsQpz1JoTfPWtrmm5tPatVADNQ9SAIfHSBhVzosMXWAgOosIx5ygJVY3lxOj2oFmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GYORL9S6ag8yEDGlBsbGblMNWbfeLXB8ypnNKgy/cc=;
- b=ZNjzvhti9Er1wPeWMaqEDWstKrDjZKPspQn+78Kmc1o3BgZIQYDqMmqNCuMoq/cVjZQFqT1VM5rrhB6P65coZPIt7NzuAnZjH8VKdjgXVXASB6Rmd6W8BvU3LI0Cq4LCw56i8ifgJj4pg8C68DiZpNJCbu9BKNDnOLELpYlwFOsUMtNpCkfpIs67xb85UnR+YsdAYign7APiyPseIf+qG4VX9wCnpzLmN1kEG+iS2g084ivdOqXvVXAyJe+8UocVxVebHD6miHGlmsb/5zHXvklLgqueM+DTNchwNP//HX3oYoPDnadUe0V1pqNJHyqIzvRLIC7XYf48/g0gCanGBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+        id S1728634AbgDTQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726067AbgDTQDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:03:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2E4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:03:38 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x3so5141669pfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GYORL9S6ag8yEDGlBsbGblMNWbfeLXB8ypnNKgy/cc=;
- b=OAhQ0f3+a5fXftSKoNQ1fZHj/KNw6xXoaCL9Rj3vT8bw55EwVqyPTQF3jsm5NEcPFw6RmH8VRt33Ue9Mx6Y1zgY+NIgBUgr8km5NlGT9+Xmwa229GnwaEeRfbb/t+DGFYYZ3DcJCzRHQmI9BcuGuhLcc9kXQ/2Ut+gO1+KCfvLw=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Jerome.Pouiller@silabs.com; 
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com (2603:10b6:300:10e::14)
- by MWHPR11MB1792.namprd11.prod.outlook.com (2603:10b6:300:10b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Mon, 20 Apr
- 2020 16:04:04 +0000
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::81d5:b62b:3770:ffbe]) by MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::81d5:b62b:3770:ffbe%10]) with mapi id 15.20.2921.030; Mon, 20 Apr
- 2020 16:04:04 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>
-Subject: [PATCH 16/16] staging: wfx: drop unused attribute 'join_complete_status'
-Date:   Mon, 20 Apr 2020 18:03:11 +0200
-Message-Id: <20200420160311.57323-17-Jerome.Pouiller@silabs.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420160311.57323-1-Jerome.Pouiller@silabs.com>
-References: <20200420160311.57323-1-Jerome.Pouiller@silabs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: DM6PR07CA0065.namprd07.prod.outlook.com
- (2603:10b6:5:74::42) To MWHPR11MB1775.namprd11.prod.outlook.com
- (2603:10b6:300:10e::14)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wdUyQ2R+xAzme4zTBxGVpmcGXSkai/iqAkUXoFX9w3s=;
+        b=jTfjRiH6h79dw6Vf3fXViAYxpCrKVFvSi+LZhi4eo5d5FiorCqIwFB7p6DeCxH5xFZ
+         YkJQ5uINYfcnZNrZqkZTkBb9aE1rLg/hcBrCG9XUr+Lfvw8CylmSiYDh7qW4kgtM1S+N
+         3zldiGWuMivdvzcnyRA4I+r3ETVgEzcT7m8ykPjgSRYSSB5rzf1oq6Dp8S4XXbdr0NrE
+         ETH0DH08ZzD8HUC/18rehJsqaCXplbY2zDAK6gUSSpNWm1duSYeklwepMeohvGCWHZKY
+         ttrcy+eFfOEA4M1np0QitC2Efdc4lUl6z+V9anSiwaohSAh4ivAGc5tzOSy925CIyKT3
+         Mvfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wdUyQ2R+xAzme4zTBxGVpmcGXSkai/iqAkUXoFX9w3s=;
+        b=hoMKgkxVCkmNJXvNBgU13X7fzzq9L0KJ7XTNr1g1eBl6W66VuE6nrw4q2s/HOD08kR
+         tgJZzOgESMTm7Cbbb18VHTebv21tsWYE0PfFJ/2HAq+BZjwZC9RKcl4oR8dVnFpDeSCZ
+         GbZycGDDXbXhVEQZ7blcgwyT6gknHsR6vG+OxHYl3hN6pwS+fLYQfzlJFR3n4TQPmuF6
+         GjDXplYMszCAH8MEJZotL0b4oddHiBCQ19h3QxrVS00cHWJEZVYoqzTcoYe2eHHnVGML
+         PkDbnYhfqYICMxMz+ZEpmeAIXyNj/JwcrXTIydhIdooeKNGRo7S98S72Q+T873GeScNy
+         6wPw==
+X-Gm-Message-State: AGi0PuZtGpLi0zPbPitA8RWb9TxpAjEyM5W5C9CxtnZLyv0fyZNepGd2
+        fWdCpT9Kf5515y+mRRiP7rhbnhTxeeI=
+X-Google-Smtp-Source: APiQypJ5iNL4218OdaaCTDZNjzbrKX4jLb4CSIfOcuvWsr3+g1DHAcODY91RRrVBpVw/SwHZjMvgLA==
+X-Received: by 2002:a63:7d19:: with SMTP id y25mr16642339pgc.78.1587398617573;
+        Mon, 20 Apr 2020 09:03:37 -0700 (PDT)
+Received: from gmail.com ([2601:600:817f:a132:df3e:521d:99d5:710d])
+        by smtp.gmail.com with ESMTPSA id d36sm1466311pgb.93.2020.04.20.09.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 09:03:36 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 09:03:34 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH] vdso/datapage: use correct clock mode name in comment
+Message-ID: <20200420160334.GA925174@gmail.com>
+References: <20200420100615.1549804-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.silabs.com (2a01:e35:2435:66a0:544b:f17b:7ae8:fb7) by DM6PR07CA0065.namprd07.prod.outlook.com (2603:10b6:5:74::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.26 via Frontend Transport; Mon, 20 Apr 2020 16:04:02 +0000
-X-Mailer: git-send-email 2.26.1
-X-Originating-IP: [2a01:e35:2435:66a0:544b:f17b:7ae8:fb7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd0b966c-a30c-40fc-d7ef-08d7e544728f
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1792:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB1792D1B76CC36428C522855493D40@MWHPR11MB1792.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-Forefront-PRVS: 03793408BA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1775.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(39850400004)(346002)(376002)(366004)(396003)(136003)(66476007)(66556008)(186003)(66946007)(4326008)(86362001)(16526019)(107886003)(6666004)(81156014)(7696005)(478600001)(52116002)(8676002)(66574012)(54906003)(316002)(6486002)(1076003)(2616005)(36756003)(8936002)(5660300002)(2906002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: silabs.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xqp/e7gvyTxWJPzZfltW3oBlzyzGmXe7iCnXCQKeA42uBHd3lU4gnl50yyu79TEKL4jgnWsGaZcTsWGv2Vhm9ODd0ZNbb2TbZQ4Jp5XWBgonoRFS7MpfAGZmns1nNfVqhG9EZ9aLHDpN1nhakRuQAmZ3xALj6L1BC4952+DX4Vm97TavCNzhRDeVaZGMoRkJVD6dIswDdCTHkrVGhviWjngwqtfzJMxaTBtM1+j7LhkCpqMGdnOyjcg9izZpmNdm4zV/O2O1O+qYzY5o0Dted+A6/eEEFlM5iy/iHrC1DDIVN7T3o03BuzjzKZm6CRx1/NyateyDRaO/knerBmyJvCFByn5MpwbLIVdmbr7yuQuf0ULQvzJjb1bH2IkmjaJafEbKByrYd1PNZ8sM9K9NlEXPxxW0jaFxZLPIRoMG99WcrTuU58QiHVOw2Ogd4P6K
-X-MS-Exchange-AntiSpam-MessageData: EfOukIfnxptBy3qLWXBoYi+GH+uNviOmdgJJ9qE6NM9+R+4RTiyNPsMrp/P5dGd79NM1Fvvdt4dhvLOImPVtQDA50o9bFfPwyDxI+9ZASOCOWgfCHgYWDIbL+l0SIcthFAzTjUB9tnLWfZvMHAdX96reJoRpqPibwbB5GA0XqkjPAMhQtsD9qq0/fVDe4tonT+CYl2gP9ripZ6+wmmcClDLfygzK926nA0tYkk3yJYWZv2kU/fc++sMrTqz/j4aQ3971haqoIWv3hh21Rsqaf4BQljQm+x4ZEacKFZuOY3a2HfyZsdDdBXhQaRcDeivHaqkjWaQAkppaaj/JNiejv81RgOEC7eaqJ5+VjNYmINeQr4sWwbLICltb8dpVsVrlNReu2cZHaTqC93tFss+6OZ2SWNnldlUlflaYZja+UdLaKe+6Zb5se938+fWeFhz2To29k25+AJyhiZrs5KrZjoKy6le43Ty5MdLuePPgGgT98TR3Uy89tohmuslLxpzkMZhDVl8nkSwcOZCvI6+pa++WYLdj48iMRQVqkKqUueamJps3W07Y0pktspwY4x8VuEKuiRBTpE+3+GBdSWC+1im9qtUb69TPy/2cTEzvwr2RK5y8EiKUXhLz16ifOLrhgtb4+xfjHGQ0d3ygzlz8Wp1d971IS92/WDttjw8f2KUmSfVHHcG5h8W72KD/ZDbcTeqjK4QLkwZJtzF+Xgxwqs9LoLkLTPu6eheGNyWKBUIYRb3TkY3+Vy6iijZEQZIlrwwQVHgoSYfL+I7P6ybSVqT1sG7IUwTDJDjDDGDPcJUW+FFc6koeJHf9JXaFO1f2ClpL0UiwOMNPNOAQrDyxmqv7guZYNUkhODAQuXyc1C4=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd0b966c-a30c-40fc-d7ef-08d7e544728f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 16:04:04.2859
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wOmbIbVLCI4U+GdrrwYGebjUMCCViDwiCtSo/vkj+x9KSYSvHFL5hNSOxfYS+lYtoA3xdjgcfJMLUCizRNynYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1792
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20200420100615.1549804-1-christian.brauner@ubuntu.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKVGhl
-IGZpZWxkIGpvaW5fY29tcGxldGVfc3RhdHVzIGlzIG5ldmVyIHJlYWQuIERyb3AgaXQuCgpTaWdu
-ZWQtb2ZmLWJ5OiBKw6lyw7RtZSBQb3VpbGxlciA8amVyb21lLnBvdWlsbGVyQHNpbGFicy5jb20+
-Ci0tLQogZHJpdmVycy9zdGFnaW5nL3dmeC9zdGEuYyB8IDIgLS0KIGRyaXZlcnMvc3RhZ2luZy93
-Zngvd2Z4LmggfCAyIC0tCiAyIGZpbGVzIGNoYW5nZWQsIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9zdGFnaW5nL3dmeC9zdGEuYyBiL2RyaXZlcnMvc3RhZ2luZy93Zngvc3Rh
-LmMKaW5kZXggMWU0M2UzYjY1OTUzLi41ZDVjODk1MWY1MGIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
-c3RhZ2luZy93Zngvc3RhLmMKKysrIGIvZHJpdmVycy9zdGFnaW5nL3dmeC9zdGEuYwpAQCAtMzYx
-LDEwICszNjEsOCBAQCBzdGF0aWMgdm9pZCB3ZnhfZG9fam9pbihzdHJ1Y3Qgd2Z4X3ZpZiAqd3Zp
-ZikKIAlyZXQgPSBoaWZfam9pbih3dmlmLCBjb25mLCB3dmlmLT5jaGFubmVsLCBzc2lkLCBzc2lk
-bGVuKTsKIAlpZiAocmV0KSB7CiAJCWllZWU4MDIxMV9jb25uZWN0aW9uX2xvc3Mod3ZpZi0+dmlm
-KTsKLQkJd3ZpZi0+am9pbl9jb21wbGV0ZV9zdGF0dXMgPSAtMTsKIAkJd2Z4X2RvX3Vuam9pbih3
-dmlmKTsKIAl9IGVsc2UgewotCQl3dmlmLT5qb2luX2NvbXBsZXRlX3N0YXR1cyA9IDA7CiAJCS8q
-IER1ZSB0byBiZWFjb24gZmlsdGVyaW5nIGl0IGlzIHBvc3NpYmxlIHRoYXQgdGhlCiAJCSAqIEFQ
-J3MgYmVhY29uIGlzIG5vdCBrbm93biBmb3IgdGhlIG1hYzgwMjExIHN0YWNrLgogCQkgKiBEaXNh
-YmxlIGZpbHRlcmluZyB0ZW1wb3JhcnkgdG8gbWFrZSBzdXJlIHRoZSBzdGFjawpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9zdGFnaW5nL3dmeC93ZnguaCBiL2RyaXZlcnMvc3RhZ2luZy93Zngvd2Z4LmgK
-aW5kZXggOGQyOWJmNzdjZmVkLi43MDZlOTVjZDEwOTIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc3Rh
-Z2luZy93Zngvd2Z4LmgKKysrIGIvZHJpdmVycy9zdGFnaW5nL3dmeC93ZnguaApAQCAtODIsOCAr
-ODIsNiBAQCBzdHJ1Y3Qgd2Z4X3ZpZiB7CiAKIAl1bnNpZ25lZCBsb25nCQl1YXBzZF9tYXNrOwog
-Ci0JaW50CQkJam9pbl9jb21wbGV0ZV9zdGF0dXM7Ci0KIAkvKiBhdm9pZCBzb21lIG9wZXJhdGlv
-bnMgaW4gcGFyYWxsZWwgd2l0aCBzY2FuICovCiAJc3RydWN0IG11dGV4CQlzY2FuX2xvY2s7CiAJ
-c3RydWN0IHdvcmtfc3RydWN0CXNjYW5fd29yazsKLS0gCjIuMjYuMQoK
+On Mon, Apr 20, 2020 at 12:06:15PM +0200, Christian Brauner wrote:
+> While the explanation for time namespace <-> vdso interactions is very
+> helpful it uses the wrong name in the comment when describing the clock
+> mode making grepping a bit annoying.
+> 
+> This seems like an accidental oversight when moving from VCLOCK_TIMENS
+> to VDSO_CLOCKMODE_TIMENS. It seems that
+> 660fd04f9317 ("lib/vdso: Prepare for time namespace support") misspelled
+> VCLOCK_TIMENS as VLOCK_TIMENS which explains why it got missed when
+> VCLOCK_TIMENS became VDSO_CLOCKMODE_TIMENS in
+> 2d6b01bd88cc ("lib/vdso: Move VCLOCK_TIMENS to vdso_clock_modes").
+> 
+> Update the commit to use VDSO_CLOCKMODE_TIMENS.
+> 
+> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Dmitry Safonov <dima@arista.com>
+> Cc: Andrei Vagin <avagin@gmail.com>
+> Fixes: 660fd04f9317 ("lib/vdso: Prepare for time namespace support")
+> Fixes: 2d6b01bd88cc ("lib/vdso: Move VCLOCK_TIMENS to vdso_clock_modes")
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+Acked-by: Andrei Vagin <avagin@gmail.com>
+
+Thanks,
+Andrei
