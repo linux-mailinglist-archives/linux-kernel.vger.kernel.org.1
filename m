@@ -2,240 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58971B144B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648AB1B1466
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgDTSUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 14:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgDTSUO (ORCPT
+        id S1727788AbgDTSXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 14:23:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54084 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgDTSXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:20:14 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B010C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:20:14 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id r16so1507345edw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZtO01bYahgOb7Z9oRmIlu41t03TJcXzE5gRBaNEAL7Q=;
-        b=hfCwL9e+vf+caPGwbcjlSh2CVWoPvLRnIJcrj9mrBBg13LqXHm391fyBRHAGUhOojJ
-         LFECsoHiwbzsCXzyE4yH5jK/CDgMbH7FByj4ye7bEj/Ofh9EY2YC2x6C7G6R7GjxFyvx
-         2gRQywjHtfuTQV7PlTAPcwJydCPzueCu7uy7izUk1uyjenndaa6On7aS8aabj3t4uFE+
-         p8oCadvi8p8EhSxf6uH8wrvny0KrtCMVNd4OS91UYmaa2RWisGlQjHRt7xajzGeHfkD+
-         77kA25TlmNCq/KLfxDuchQz6UT/xj/9zjeQ2akTKJ8eiod7ODfifUo9nA88OMQiZpONE
-         lY+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZtO01bYahgOb7Z9oRmIlu41t03TJcXzE5gRBaNEAL7Q=;
-        b=aKczS7kotAdB8t8Ir7051qp9U8AA2+6++s8qyeLAH7W99OwKKodzoMMbDpo/OnOeSS
-         2pNemaR6h8Yub3CGZPmyOIhRR8qoExRKIqkBmfzNCV36gpz5hKHYda2vsTRkO0Cz5fKw
-         bQSF1/idE52agrV3p7Jynzk37HPuvCM5vYz8dFKh2wvDdzQ9o1pXURFb46zxW6ZLRV4s
-         fVvBV/OlcsjbJdV0gt0unvUMTwiGuAU4L+i3vGL78klGHVo+gr5p57aozjXNo9CzFdo7
-         KPVldDmbaRRURBI4F7VcmR5ozn8zb79ivqH0ecY5nC21+3RGy+Xu3B20aggMzSPh9A+e
-         HXYg==
-X-Gm-Message-State: AGi0PubbvhK5yVqq6tHhvLkYuH7ZwBcKAiBBa90jKUsPBFngvVFh0ioV
-        JRmrUc2oYGhZz+OLIraq2Ueq0oXlz52BPau9uM3LmQ==
-X-Google-Smtp-Source: APiQypIB2bw4dzyFz/giglaCjVx3tH8usOa1T6pRutdl0wU2qwmyfZCwpwPbaM4BrQQaPmzCgUG//qy8oe92xQNI5M4=
-X-Received: by 2002:a50:ee86:: with SMTP id f6mr16488628edr.123.1587406812976;
- Mon, 20 Apr 2020 11:20:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <67FF611B-D10E-4BAF-92EE-684C83C9107E@amacapital.net>
- <CAHk-=wjePyyiNZo0oufYSn0s46qMYHoFyyNKhLOm5MXnKtfLcg@mail.gmail.com>
- <CAPcyv4jQ3s_ZVRvw6jAmm3vcebc-Ucf7FHYP3_nTybwdfQeG8Q@mail.gmail.com> <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 20 Apr 2020 11:20:01 -0700
-Message-ID: <CAPcyv4hrfZsg48Gw_s7xTLLhjLTk_U+PV0MsLnG+xh3652xFCQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/memcpy: Introduce memcpy_mcsafe_fast
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Mon, 20 Apr 2020 14:23:16 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KIIac3092955;
+        Mon, 20 Apr 2020 18:20:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=6b/iIEwamf7pHkazXYyFGaUjD4rBlltoOoTUlAlxESY=;
+ b=gsrW0Xy8imYbMgUhIwDTctqPrjznB6WPriWKwtM8tA/ViqR5LJ7nXrRo6zKPnOn6au/F
+ XsvRr1X2TitSM9LY8T/2kzWejhj67bMNDWhUiZqrX5UOcyFbZ9SktX9AVm4tGKaKxtsS
+ GOZ/M1AoL7AgJRrO+hD23+N3dyEAipkUUaYWDlGyObSHDJDQUCK5UDdvD/hJdYPtDtGA
+ rF7cJnLKk4a2TQSzHij+K3EQC6K5pkbsF+ARKXcRYPencr3rEYSZpGa5oaV2k4g86ofi
+ IqYHqXDYKKmd4aEimc1Bn/UrVfz9eCqjPauGpqXrd5PZtLQUpmq6TOgp57USW/Y8Ttgc Lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30fsgkrxjn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 18:20:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KICA4L007534;
+        Mon, 20 Apr 2020 18:20:40 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30gb1dtw7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 18:20:40 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03KIKRfO021197;
+        Mon, 20 Apr 2020 18:20:27 GMT
+Received: from [192.168.2.157] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Apr 2020 11:20:26 -0700
+Subject: Re: [PATCH v3 0/4] Clean up hugetlb boot command line processing
+To:     Qian Cai <cai@lca.pw>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S.Miller" <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        stable <stable@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Longpeng <longpeng2@huawei.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mina Almasry <almasrymina@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200417185049.275845-1-mike.kravetz@oracle.com>
+ <5E312000-05D8-4C5D-A7C0-DDDE1842CB0E@lca.pw>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <4c36c6ce-3774-78fa-abc4-b7346bf24348@oracle.com>
+Date:   Mon, 20 Apr 2020 11:20:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <5E312000-05D8-4C5D-A7C0-DDDE1842CB0E@lca.pw>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=2 spamscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004200147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 bulkscore=0 phishscore=0 suspectscore=2 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200147
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 10:29 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Apr 19, 2020 at 10:08 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> > Do we have examples of doing exception handling from C? I thought all
-> > the exception handling copy routines were assembly routines?
->
-> You need assembler for the actual access, but that's a _single_
-> instruction - best done as inline asm.
->
-> The best example of something that does *exactly* what you want to do is likely
->
->         unsafe_get_user();
->         unsafe_put_user();
->
-> which basically turns into a single instruction with exception
-> handling, with the exception hander jumping directly to an error
-> label.
->
-> Ok, so right now gcc can't do that for inline asm with outputs, so it
-> generates fairly nasty code (a secondary register with the error state
-> that then causes a conditional branch on it), but that's a compiler
-> limitation that will eventually go away (where "eventially" means that
-> it already works in LLVM with experimental patches).
->
-> You could literally mis-use those helpers as-is (please don't - the
-> code generation is correct, but at the very least we'd have to
-> re-organize a bit to make it a better interface, ie have an
-> alternative name like "unsafe_get_kernel()" for kernel pointer
-> accesses).
->
-> You'd have to do the alignment guarantees yourself, but there are
-> examples of that in this area too (strnlen_user() does exactly that -
-> aligned word accesses).
+On 4/20/20 8:34 AM, Qian Cai wrote:
+> 
+> 
+>> On Apr 17, 2020, at 2:50 PM, Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>
+>> Longpeng(Mike) reported a weird message from hugetlb command line processing
+>> and proposed a solution [1].  While the proposed patch does address the
+>> specific issue, there are other related issues in command line processing.
+>> As hugetlbfs evolved, updates to command line processing have been made to
+>> meet immediate needs and not necessarily in a coordinated manner.  The result
+>> is that some processing is done in arch specific code, some is done in arch
+>> independent code and coordination is problematic.  Semantics can vary between
+>> architectures.
+>>
+>> The patch series does the following:
+>> - Define arch specific arch_hugetlb_valid_size routine used to validate
+>>  passed huge page sizes.
+>> - Move hugepagesz= command line parsing out of arch specific code and into
+>>  an arch independent routine.
+>> - Clean up command line processing to follow desired semantics and
+>>  document those semantics.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20200305033014.1152-1-longpeng2@huawei.com
+>>
+>> Mike Kravetz (4):
+>>  hugetlbfs: add arch_hugetlb_valid_size
+>>  hugetlbfs: move hugepagesz= parsing to arch independent code
+>>  hugetlbfs: remove hugetlb_add_hstate() warning for existing hstate
+>>  hugetlbfs: clean up command line processing
+> 
+> Reverted this series fixed many undefined behaviors on arm64 with the config,
+> 
+> https://raw.githubusercontent.com/cailca/linux-mm/master/arm64.config
+> 
+> [   54.172683][    T1] UBSAN: shift-out-of-bounds in ./include/linux/hugetlb.h:555:34
+> [   54.180411][    T1] shift exponent 4294967285 is too large for 64-bit type 'unsigned long'
+> [   54.188885][    T1] CPU: 130 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc2-next-20200420 #1
+> [   54.197284][    T1] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
+> [   54.207888][    T1] Call trace:
+> [   54.211100][    T1]  dump_backtrace+0x0/0x224
+> [   54.215565][    T1]  show_stack+0x20/0x2c
+> [   54.219651][    T1]  dump_stack+0xfc/0x184
+> [   54.223829][    T1]  __ubsan_handle_shift_out_of_bounds+0x304/0x344
+> [   54.230204][    T1]  hugetlb_add_hstate+0x3ec/0x414
+> huge_page_size at include/linux/hugetlb.h:555
+> (inlined by) hugetlb_add_hstate at mm/hugetlb.c:3301
+> [   54.235191][    T1]  hugetlbpage_init+0x14/0x30
+> [   54.239824][    T1]  do_one_initcall+0x6c/0x144
+> [   54.244446][    T1]  do_initcall_level+0x158/0x1c4
+> [   54.249336][    T1]  do_initcalls+0x68/0xb0
+> [   54.253597][    T1]  do_basic_setup+0x28/0x30
+> [   54.258049][    T1]  kernel_init_freeable+0x19c/0x228
+> [   54.263188][    T1]  kernel_init+0x14/0x208
+> [   54.267473][    T1]  ret_from_fork+0x10/0x18
 
-Ok, I'll take a deeper look, but my initial reaction is that this
-approach could be a way to replace memcpy_mcsafe_slow(), but would be
-unfortunate for the fast case which can just use rep; movs;
+While rearranging the code (patch 3 in series), I made the incorrect
+assumption that CONT_XXX_SIZE == (1UL << CONT_XXX_SHIFT).  However,
+this is not the case.  Does the following patch fix these issues?
 
->
-> So the point here is that the current interfaces are garbage, _if_ the
-> whole "access a single value" is actually performance-critical.
->
-> And if that is *not* the case, then the best thing to do is likely to
-> just use a static call. No inlining of single instructions at all,
-> just always use a function call, and then pick the function
-> appropriately.
->
-> Honestly, I can't imagine that the "single access" case is so
-> timing-critical that the static call isn't the right model. Your use
-> case is _not_ as important or common as doing user accesses.
->
-> Finally, the big question is whether the completely broken hardware
-> even matters. Are there actual customers that actually use the garbage
-> "we can crash the machine" stuff?
->
-> Because when it comes to things like nvdimms etc, the _primary_
-> performance target would be getting the kernel entirely out of the
-> way, and allowing databases etc to just access the damn thing
-> directly.
->
-> And if you allow user space to access it directly, then you just have
-> to admit that it's not a software issue any more - it's the hardware
-> that is terminally broken and unusable garbage. It's not even
-> interesting to work around things in the kernel, because user space
-> can just crash the machine directly.
->
-> This is why I absolutely detest that thing so much. The hardware is
-> _so_ fundamentally broken that I have always considered the kernel
-> workarounds to basically be "staging" level stuff - good enough for
-> some random testing of known-broken stuff, but not something that
-> anybody sane should ever use.
->
-> So my preference would actually be to just call the broken cases to be
-> largely ignored, at least from a performance angle. If you can only
-> access it through the kernel, the biggest performance limitation is
-> that you cannot do any DAX-like thing at all safely, so then the
-> performance of some kernel accessors is completely secondary and
-> meaningless. When a kernel entry/exit takes a few thousand cycles on
-> the broken hardware (due to _other_ bugs), what's the point about
-> worrying about trying to inline some single access to the nvdimm?
->
-> Did the broken hardware ever spread out into the general public?
-> Because if not, then the proper thing to do might be to just make it a
-> compile-time option for the (few) customers that signed up for testing
-> the initial broken stuff, and make the way _forward_ be a clean model
-> without the need to worry about any exceptions at all.
+From b75cb4a0852e208bee8c4eb347dc076fcaa88859 Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Mon, 20 Apr 2020 10:41:18 -0700
+Subject: [PATCH] arm64/hugetlb: fix hugetlb initialization
 
-There are 3 classes of hardware, all of them trigger exceptions* it's
-just the recoverability of those exceptions that is different:
+When calling hugetlb_add_hstate() to initialize a new hugetlb size,
+be sure to use correct huge pages size order.
 
-1/ Recovery not supported all exceptions report PCC=1 (processor
-context corrupted) and the kernel decides to panic.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ arch/arm64/mm/hugetlbpage.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-2/ Recovery supported, user processes killed on consumption, panic on
-kernel consumption outside of an exception handler instrumented code
-path. Unfortunately there is no architectural way to distinguish
-class1 from class2 outside of a PCI quirk whitelist. The kernel prior
-to memcpy_mcsafe() just unconditionally enabled recovery for user
-consumption, panicked on kernel consumption, and hoped that exceptions
-are sent with PCC=0. The introduction of memcpy_mcsafe() to handle
-poison consumption from kernel-space without a panic introduced this
-not pretty caveat that some platforms needed to do special snowflake
-memcpy to avoid known scenarios** that trigger PCC=1 when they could
-otherwise trigger PCC=0. So a PCI quirk whitelist was added for those.
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 9ca840527296..a02411a1f19a 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -453,11 +453,11 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
+ static int __init hugetlbpage_init(void)
+ {
+ #ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
++	hugetlb_add_hstate(ilog2(PUD_SIZE) - PAGE_SHIFT);
+ #endif
+-	hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
+-	hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
+-	hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
++	hugetlb_add_hstate(ilog2(CONT_PMD_SIZE) - PAGE_SHIFT);
++	hugetlb_add_hstate(ilog2(PMD_SIZE) - PAGE_SHIFT);
++	hugetlb_add_hstate(ilog2(CONT_PTE_SIZE) - PAGE_SHIFT);
+ 
+ 	return 0;
+ }
+-- 
+2.25.2
 
-3/ Recovery supported *and* special snowflake memcpy rules relaxed.
-Still no architectural way to discover this state so let us just
-enable memcpy_mcsafe_fast() always and let the former whitelist become
-a blacklist of "this CPU requires you to do a dance to avoid some
-PCC=1 cases, but that dance impacts performance".
 
-* I'm at a loss of why you seem to be suggesting that hardware should
-/ could avoid all exceptions. What else could hardware do besides
-throw an exception on consumption of a naturally occuring multi-bit
-ECC error? Data is gone, and only software might know how to recover.
-
-** Unaligned access across a cacheline boundary, fast string consumption...
-
-> > The writes can mmu-fault now that memcpy_mcsafe() is also used by
-> > _copy_to_iter_mcsafe(). This allows a clean bypass of the block layer
-> > in fs/dax.c in addition to the pmem driver access of poisoned memory.
-> > Now that the fallback is a sane rep; movs; it can be considered for
-> > plain copy_to_iter() for other user copies so you get exception
-> > handling on kernel access of poison outside of persistent memory. To
-> > Andy's point I think a recoverable copy (for exceptions or faults) is
-> > generally useful.
->
-> I think that's completely independent.
->
-> If we have good reasons for having targets with exception handling,
-> then that has absolutely nothing to do with machine checks or buggy
-> hardware.
->
-> And it sure shouldn't be called "mcsafe", since it has nothing to do
-> with that situation any more.
-
-Ok, true.
-
-> > I understand the gripes about the mcsafe_slow() implementation, but
-> > how do I implement mcsafe_fast() any better than how it is currently
-> > organized given that, setting aside machine check handling,
-> > memcpy_mcsafe() is the core of a copy_to_iter*() front-end that can
-> > mmu-fault on either source or destination access?
->
-> So honestly, once it is NOT about the broken machine check garbage,
-> then it should be sold on its own independent reasons.
->
-> Do we want to have a "copy_to_iter_safe" that can handle page faults?
-> Because we have lots of those kinds of things, we have
->
->  - load_unaligned_zeropad()
->
->    This loads a single word knowing that the _first_ byte is valid,
-> but can take an exception and zero-pad if it crosses a page boundary
->
->  - probe_kernel_read()/write()
->
->    This is a kernel memcpy() with the source/destination perhaps being unmapped.
->
->  - various perf and tracing helpers that have special semantics.
->
-> but once it's about some generic interface, then it also needs to take
-> other architectures into account.
-
-For the fast case it's really just copy_user_enhanced_fast_string()
-without forced stac/clac when the source and dest are both kernel
-accesses.
