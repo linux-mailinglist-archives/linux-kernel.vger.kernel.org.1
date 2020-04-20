@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908BE1B12E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044421B12E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgDTRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 13:24:49 -0400
-Received: from verein.lst.de ([213.95.11.211]:42035 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgDTRYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:24:49 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4854D68C4E; Mon, 20 Apr 2020 19:24:46 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 19:24:45 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20200420172445.GA1372@lst.de>
-References: <20200420200009.54554500@canb.auug.org.au>
+        id S1726810AbgDTRZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 13:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726729AbgDTRZe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 13:25:34 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A3BC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:25:34 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jQaAb-00032c-0O; Mon, 20 Apr 2020 19:25:21 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 32130101623; Mon, 20 Apr 2020 19:25:20 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [patch 02/15] x86/cpu: Uninline CR4 accessors
+In-Reply-To: <20200420090102.GB24518@infradead.org>
+References: <20200419203137.214111265@linutronix.de> <20200419203335.856333226@linutronix.de> <20200420090102.GB24518@infradead.org>
+Date:   Mon, 20 Apr 2020 19:25:20 +0200
+Message-ID: <87v9luax33.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420200009.54554500@canb.auug.org.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+Christoph Hellwig <hch@infradead.org> writes:
+>> --- a/arch/x86/kernel/cpu/common.c
+>> +++ b/arch/x86/kernel/cpu/common.c
+>> @@ -387,7 +387,30 @@ void native_write_cr4(unsigned long val)
+>>  			  bits_missing);
+>>  	}
+>>  }
+>> -EXPORT_SYMBOL(native_write_cr4);
+>> +#if IS_MODULE(CONFIG_LKDTM)
+>> +EXPORT_SYMBOL_GPL(native_write_cr4);
+>> +#endif
+>
+> While this is better than what we had before we really need to have
+> a discussion on lkdtm - it needs a lot of crap that otherwise wouldn't
+> be exported, and I'm really worried about people enabling it and thus
+> adding exports even if they are conditional.  Can we force the code
+> to be built in require a boot option for it to be activated?
 
-can you fold in these two fixes into the original patches?
+I can live with that :)
 
-
-diff --git a/mm/nommu.c b/mm/nommu.c
-index d32ab47b58a9..371697bf372d 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -155,13 +155,13 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 		pgprot_t prot, unsigned long vm_flags, int node,
- 		const void *caller)
- {
--	return __vmalloc(size, gfp);
-+	return __vmalloc(size, gfp_mask);
- }
- 
- void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
- 		int node, const void *caller)
- {
--	return __vmalloc(size, gfp);
-+	return __vmalloc(size, gfp_mask);
- }
- 
- static void *__vmalloc_user_flags(unsigned long size, gfp_t flags)
