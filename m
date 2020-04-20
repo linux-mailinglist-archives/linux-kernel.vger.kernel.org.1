@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0A21B073B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B470A1B0742
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgDTLSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:18:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:46664 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgDTLSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:18:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C49371FB;
-        Mon, 20 Apr 2020 04:18:45 -0700 (PDT)
-Received: from [10.37.8.239] (unknown [10.37.8.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D67703F237;
-        Mon, 20 Apr 2020 04:18:43 -0700 (PDT)
-Subject: Re: [PATCH 15/15] tools headers: Synchronize linux/bits.h with the
- kernel sources
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-References: <20200414164854.26026-1-acme@kernel.org>
- <20200414164854.26026-16-acme@kernel.org>
- <7951882d-d13a-7b1e-36f4-73c188015161@arm.com>
- <20200416155404.GE2650@kernel.org>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <96ec5885-6f6a-288b-475d-99556113f95e@arm.com>
-Date:   Mon, 20 Apr 2020 12:19:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1725773AbgDTLUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725775AbgDTLUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:20:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F58C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 04:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f0cvpJYoLzD97qtyZ06Wi/pSIo+Zf1D3ZnjsqWEec+4=; b=NQpj3uRgKrebKItqEk5MSgmovV
+        ZGyV/nJ32iVTWVz4HSCbk/lB/ENDVMLV7AylNHRPegzphNzNxZquGuW3BbJO8FwpSgDFj5FvR/a5i
+        lZh9AOHIDVN8BR1Y5kpTuhY2rzFoxYBhuJBdwy2S0MHLsdwZTem75KHH554S2Yn+R/yoNuS2CIWTU
+        aQwVO6UH0HwwKqkNjBHqw2soj35C7UM6HIw7aNx1zkGH+RmO6MzqjMQnIfZ8L4m6VcEuwASBqAT5H
+        Up3sZvtk6xvWyvnwte4HXE4T29WmV/AxL2lDWgLY0jTfWfqJrY6cPJJjiuOr45FWMmhrB4TmDrOo6
+        2mCJjB7g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQUTC-0005QJ-Ff; Mon, 20 Apr 2020 11:20:10 +0000
+Date:   Mon, 20 Apr 2020 04:20:10 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     js1304@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Laura Abbott <labbott@redhat.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 01/10] mm/page-flags: introduce PageHighMemZone()
+Message-ID: <20200420112010.GA5820@bombadil.infradead.org>
+References: <1587369582-3882-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1587369582-3882-2-git-send-email-iamjoonsoo.kim@lge.com>
 MIME-Version: 1.0
-In-Reply-To: <20200416155404.GE2650@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587369582-3882-2-git-send-email-iamjoonsoo.kim@lge.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/20 4:54 PM, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Apr 15, 2020 at 10:14:06AM +0100, Vincenzo Frascino escreveu:
->> On 4/14/20 5:48 PM, Arnaldo Carvalho de Melo wrote:
->>> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->>>
->>> To pick up the changes in these csets:
->>>
->>>   295bcca84916 ("linux/bits.h: add compile time sanity check of GENMASK inputs")
->>>   3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
->>>
->>> To address this tools/perf build warning:
->>>
->>>   Warning: Kernel ABI header at 'tools/include/linux/bits.h' differs from latest version at 'include/linux/bits.h'
->>>   diff -u tools/include/linux/bits.h include/linux/bits.h
->>>
->>> This clashes with usage of userspace's static_assert(), that, at least
->>> on glibc, is guarded by a ifnded/endif pair, do the same to our copy of
->>> build_bug.h and avoid that diff in check_headers.sh so that we continue
->>> checking for drifts with the kernel sources master copy.
->>>
->>> This will all be tested with the set of build containers that includes
->>> uCLibc, musl libc, lots of glibc versions in lots of distros and cross
->>> build environments.
->>>
->>> The tools/objtool, tools/bpf, etc were tested as well.
->>>
->>
->> Acked-by: Vincenzo Frascino <vincenzo.frascino@arm.com> # vDSO parts
+On Mon, Apr 20, 2020 at 04:59:33PM +0900, js1304@gmail.com wrote:
+> ZONE_MOVABLE is special. It is considered as normal type zone on
+> !CONFIG_HIGHMEM, but, it is considered as highmem type zone
+> on CONFIG_HIGHMEM. Let's focus on later case. In later case, all pages
+> on the ZONE_MOVABLE has no direct mapping until now.
 > 
-> Hey, thanks a lot for checking it! :-)
->
+> However, following patchset
+> "mm/cma: manage the memory of the CMA area by using the ZONE_MOVABLE"
+> , which is once merged and reverted, will be tried again and will break
+> this assumption that all pages on the ZONE_MOVABLE has no direct mapping.
+> Hence, the ZONE_MOVABLE which is considered as highmem type zone could
+> have the both types of pages, direct mapped and not. Since
+> the ZONE_MOVABLE could have both type of pages, __GFP_HIGHMEM is still
+> required to allocate the memory from it. And, we conservatively need to
+> consider the ZONE_MOVABLE as highmem type zone.
 
-No issue :-) Thank you for updating the tools headers!
+I don't understand why CMA allocating pages from ZONE_MOVABLE somehow
+gives these pages a direct mapping.  Maybe you have a freaky layout in
+the architecture that makes no sense and that's what needs to be fixed?
 
-[...]
+My understanding of the zones is based on x86, and it looks like this
+on a 32-bit system with 8GB of memory:
 
--- 
-Regards,
-Vincenzo
+ZONE_DMA	0-16MB
+ZONE_NORMAL	16-896MB
+ZONE_HIGHMEM	896-xMB
+ZONE_MOVABLE	x-8192MB
+
+where x is a boot option used to partition the highmem between movable
+and unmovable.
+
+Now, why would allocating the CMA from ZONE_NORMAL suddenly make these
+pages part of the direct mapping?
