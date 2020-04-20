@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDBF1B05B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F811B05BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgDTJcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 05:32:15 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17866 "EHLO
-        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725775AbgDTJcO (ORCPT
+        id S1726201AbgDTJes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:34:48 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:37697 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgDTJes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:32:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1587375114; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=WwfkyFbcuXnFIazV/b/xCYn+RCxqzjkdrFPhj3trVx5QZLQfTgIgehU2EAdRQB2gRJtkjvd7XQwfF/8r6ihwtE2/hZvTYetzdENWO9MJzHubTiCdy/DfKvQw3AGJfKAWZPEQtUBs2n/kVFHkhnk77z47NbR6z4+4Z774zv304F4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1587375114; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=YWokOhjuoZJKbniCXhiZb2T0HCc4vugSkhCjBeD1p6M=; 
-        b=XlKsNGl86xQB1J1JLN3M564gAhsNgoPRi1BEAoKrYjjiSp8TyEZ8rkT6dL1GgQ2+W58ZQWPGZWkXkLqjkbtwp0b4lYk6jB19vaOcUtaDixkUIxSgQu76J5OgqS5EwsftgSHGbP9cZsFqpEJnBpqbO4J0NW75i5HDoOaEsk3njVo=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=flygoat.com;
-        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
-        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1587375114;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=YWokOhjuoZJKbniCXhiZb2T0HCc4vugSkhCjBeD1p6M=;
-        b=d+DuWXGMpg3iToKjczmPbUL5Q9L9a+f4ZfNK/k3pD27VNs1Arucf5MNzFzbVujal
-        k65yj4QlWG0kcIJNqYMeitByF5QOHF/5ZZkRigkxYI1AHik6SiMZ7zExzn0eGqXUb5p
-        9Y0dnk23KN2c8leB2DacSCLO5wFCSwRx3IiSLp1I=
-Received: from [127.0.0.1] (115.205.241.167 [115.205.241.167]) by mx.zoho.com.cn
-        with SMTPS id 1587375111104526.5026860230735; Mon, 20 Apr 2020 17:31:51 +0800 (CST)
-Date:   Mon, 20 Apr 2020 17:31:49 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/5] Loongson64: RS780E clean-ups
-User-Agent: K-9 Mail for Android
-Reply-to: jiaxun.yang@flygoat.com
-In-Reply-To: <20200420090726.GA9388@alpha.franken.de>
-References: <20200420073347.157230-1-jiaxun.yang@flygoat.com> <20200420090726.GA9388@alpha.franken.de>
-Message-ID: <3C79E5D5-594D-4139-88CE-050BBD9C6D88@flygoat.com>
+        Mon, 20 Apr 2020 05:34:48 -0400
+Received: by mail-oi1-f194.google.com with SMTP id r25so8200939oij.4;
+        Mon, 20 Apr 2020 02:34:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eIHG2hswjdFUq6BQvkp32Ue0/YbEmfyh/aX7pW2WSwE=;
+        b=df/f0wXMqMQ/asmO882ff5sDTPHwvyCE6F6aQh7Q3jeamWaJD/qeugpyDWa3ZIy+Mp
+         F1o6E3Uc85WU/6gRHwPgfMaCrYj6ytySZezpeH55x5KpUFNGzJkxb1UHrFmOJP/uWejf
+         2Vk0Zuq1sQguvo9ach9fTGdpkc6fUFGFGNmeuP+ecjazlUjy2twgH0IzepDTnQi0nS2I
+         wWJ2fQybV7BZTywNUk07Dp31nk2FFYHxtKAxKA/ptGeuKvvP5AmAVnO0Rm2xLVk7dfTF
+         U4xpdlBeIk+0rj4OKnJeCtji6CVkaHI0apFm4XL7jBazu9CQJBBhJQIYYhFsWKj7m9EH
+         2AVQ==
+X-Gm-Message-State: AGi0PuaEboCNB34bgFSOKnGUSiMExJf9ShbiF+jO1ZLwzlAxdoJZh0tX
+        mSmS9pWZx7KCG+k8esj7TUJph7u02QI8TZ2CaZo=
+X-Google-Smtp-Source: APiQypJhtSqdbmt4Os/Es5ncR9fFGF++rUVXcvOktw5ZpykEPOD7HqSq/stpq9bTaXkwjfzwVUVmxZsjM6O+gYBO63g=
+X-Received: by 2002:aca:d50f:: with SMTP id m15mr3538156oig.54.1587375285693;
+ Mon, 20 Apr 2020 02:34:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
+References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
+In-Reply-To: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Apr 2020 11:34:34 +0200
+Message-ID: <CAMuHMdUUJATs+G-hvty=fgyrhyx1EafpFHoWfcm=V_tVLn3q2A@mail.gmail.com>
+Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
+To:     Hadar Gat <hadar.gat@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hadar,
 
+On Fri, Mar 27, 2020 at 7:11 AM Hadar Gat <hadar.gat@arm.com> wrote:
+> The Arm CryptoCell is a hardware security engine.
+> This patch introduces driver for its TRNG (True Random Number Generator)
+> engine.
 
-=E4=BA=8E 2020=E5=B9=B44=E6=9C=8820=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=885=
-:07:26, Thomas Bogendoerfer <tsbogend@alpha=2Efranken=2Ede> =E5=86=99=E5=88=
-=B0:
->On Mon, Apr 20, 2020 at 03:33:35PM +0800, Jiaxun Yang wrote:
->> Basically ensure all RS780E stuff is enabled by DeviceTree=2E
->> So I can post LS7A support later on=2E
->>=20
->> Hi Thomas, could you please pick them into MIPS tree?
->
->well, first patch doesn't apply, because it relies on your PCI patch
->series=2E I've fixed this while applying and then faced
->
->arch/mips/loongson64/pci=2Eo: In function `pcibios_init':
->pci=2Ec:(=2Einit=2Etext+0x44): undefined reference to `sbx00_acpi_init'
->
->IMHO there is something to improve=2E=2E=2E
+Thanks for your series!
 
-Oops, sorry=2E
-It should depends on PCI series=2E
+I am wondering what is the relation between this and
+Documentation/devicetree/bindings/crypto/arm-cryptocell.txt?
 
-I'll send v2 without this requirement soon=2E
+Gr{oetje,eeting}s,
 
-Thanks=2E
+                        Geert
 
->
->Thomas=2E
->
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=20
-Jiaxun Yang
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
