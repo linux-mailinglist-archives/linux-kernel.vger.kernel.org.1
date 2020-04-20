@@ -2,97 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F2F1B0580
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1452A1B0587
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDTJWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 05:22:21 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:26907 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgDTJWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:22:21 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 495LnK5hkRz8L;
-        Mon, 20 Apr 2020 11:22:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1587374539; bh=3MXoIlRv+JlYYbnLOSIrj3nnS5x96d5V041E6lXJFOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cwsjvCbuaOQrYT5P5a4M9+BfRlVaTvanm1BxA0zi+/gKwN/31YiRn8FEZOvu8dK/w
-         VSehcnEl0n27LX7aWsyp33krF3pDiSE+xpaqTkWXb7WH3aGZ41NV3XIK31QLrah5Tp
-         Ep8NsdRh9vS0+VdRB3UawuReVWJmHkex4WBFE1T2znu43XmXoBPQ9j9kI+jZ8F0RTH
-         cr3aQDU8RX4I+JdMQl15TqLTOSgl7vk04pzLBzD7bQMIEkTEkSpx9z6jxakIlZO6wK
-         haVUgAKxNalhz6npsMnCszbvv4OIonFEs7yXMYikUAN+S3af+qVlVw5KarNvF+310L
-         GAEXcntkfydXg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Mon, 20 Apr 2020 11:22:09 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 07/11] power: supply: core: tabularize HWMON
- temperature labels
-Message-ID: <20200420092209.GA25831@qmqm.qmqm.pl>
-References: <29b5043db9a51ef7a0cb6e3a8c69c91e36045cd6.1585944770.git.mirq-linux@rere.qmqm.pl>
- <202004050928.d6QhVcsQ%lkp@intel.com>
- <CAKwvOdm5BhMdAmXR0gCLntkbvF7ajaNoWoHVCCio1CqbGzS6aQ@mail.gmail.com>
+        id S1726211AbgDTJY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:24:28 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:35115 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725773AbgDTJY1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 05:24:27 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03K9Mm8r004307;
+        Mon, 20 Apr 2020 11:24:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=s8K4dHG+7OIzZ7R9bQBGG4blMOhessXM8j6Dk6jooSY=;
+ b=ygm2kM8YY9J+l7QLFg5ttmVA3ljCeD57Dza2EZukwBnG3fad2rlhUw1zqXcWOL5E7r9W
+ vCHrnYjYfEJGbN5wTucgW6FCQurRm5zeuHaDQVg8o6RCNipCNe/l3o2SoDxCBDTRAD1l
+ 2viqm6axHYztGeKH7Ahdr+lg4NeWDU/aSgEJmStSVtvYP9mtJCeUiOjuQXfCjxkRZCBL
+ 2jSHr8mfEqp0UXeHD/0jyfWhKyGyxLB9i2olbZO5TcPNeAPFwJozSK7OczlGUGQibkeQ
+ qde5R7pnvtVVFt/eXnVUJ/L9vvDA+kP19UMA0Pl9Zz7Q1gejlcIZGpwh3A2v2+txGCxd uA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fqaw1ctx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 11:24:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0613410002A;
+        Mon, 20 Apr 2020 11:24:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E6A882BEC7A;
+        Mon, 20 Apr 2020 11:24:20 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.48) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Apr
+ 2020 11:24:19 +0200
+Subject: Re: [PATCH v2 2/7] remoteproc: Split firmware name allocation from
+ rproc_alloc()
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
+CC:     <s-anna@ti.com>, <elder@linaro.org>, <Markus.Elfring@web.de>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200415204858.2448-1-mathieu.poirier@linaro.org>
+ <20200415204858.2448-3-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <e980e9e6-04d6-60b8-c921-d2fb1f2b9a1b@st.com>
+Date:   Mon, 20 Apr 2020 11:24:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdm5BhMdAmXR0gCLntkbvF7ajaNoWoHVCCio1CqbGzS6aQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200415204858.2448-3-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_03:2020-04-17,2020-04-20 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 11:13:50AM -0700, Nick Desaulniers wrote:
-> On Sat, Apr 4, 2020 at 6:53 PM kbuild test robot <lkp@intel.com> wrote:
-> >
-> > Hi "Micha³,
-> >
-> > I love your patch! Perhaps something to improve:
-> >
-> > [auto build test WARNING on power-supply/for-next]
-> > [also build test WARNING on hwmon/hwmon-next linus/master v5.6 next-20200404]
-> > [if your patch is applied to the wrong git tree, please drop us a note to help
-> > improve the system. BTW, we also suggest to use '--base' option to specify the
-> > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Micha-Miros-aw/extensions-and-fixes/20200405-044024
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git for-next
-> > config: x86_64-randconfig-b002-20200405 (attached as .config)
-> > compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 62f3a9650a9f289a07a5f480764fb655178c2334)
-> > reproduce:
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # save the attached .config to linux build tree
-> >         COMPILER=clang make.cross ARCH=x86_64
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> drivers/power/supply/power_supply_hwmon.o: warning: objtool: power_supply_hwmon_read_string() falls through to next function power_supply_hwmon_write()
+Hi Mathieu,
+
+On 4/15/20 10:48 PM, Mathieu Poirier wrote:
+> Make the firmware name allocation a function on its own in an
+> effort to cleanup function rproc_alloc().
 > 
-> I'm guessing this is from the unreachable:
-> https://github.com/0day-ci/linux/commit/b8b2d14ca46ca54257f55c9af58ea25695b9ee36
-> I'll need to play with this some more as I couldn't reproduce with a
-> simplified test case, but looks like a compiler bug.  Filed
-> https://github.com/ClangBuiltLinux/linux/issues/978 for me to track.
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 66 ++++++++++++++++------------
+>  1 file changed, 39 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 80056513ae71..4dee63f319ba 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1979,6 +1979,33 @@ static const struct device_type rproc_type = {
+>  	.release	= rproc_type_release,
+>  };
+>  
+> +static int rproc_alloc_firmware(struct rproc *rproc,
+> +				const char *name, const char *firmware)
 
-Hi,
+nitpicking: here you do not allocate memory for the firmware but for its name
+The name of the function seems to me quite confusing...
 
-For gcc this is bug 51513 [1]. This does not affect correctness of the
-code, so I wonder if we should/need be trying to work around it.
+Else LGTM for the series
 
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=51513
+Thanks,
 
-Best Regards,
-Micha³ Miros³aw
+Arnaud
+
+> +{
+> +	char *p, *template = "rproc-%s-fw";
+> +	int name_len;
+> +
+> +	if (!firmware) {
+> +		/*
+> +		 * If the caller didn't pass in a firmware name then
+> +		 * construct a default name.
+> +		 */
+> +		name_len = strlen(name) + strlen(template) - 2 + 1;
+> +		p = kmalloc(name_len, GFP_KERNEL);
+> +		if (!p)
+> +			return -ENOMEM;
+> +		snprintf(p, name_len, template, name);
+> +	} else {
+> +		p = kstrdup(firmware, GFP_KERNEL);
+> +		if (!p)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	rproc->firmware = p;
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * rproc_alloc() - allocate a remote processor handle
+>   * @dev: the underlying device
+> @@ -2007,42 +2034,21 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>  			  const char *firmware, int len)
+>  {
+>  	struct rproc *rproc;
+> -	char *p, *template = "rproc-%s-fw";
+> -	int name_len;
+>  
+>  	if (!dev || !name || !ops)
+>  		return NULL;
+>  
+> -	if (!firmware) {
+> -		/*
+> -		 * If the caller didn't pass in a firmware name then
+> -		 * construct a default name.
+> -		 */
+> -		name_len = strlen(name) + strlen(template) - 2 + 1;
+> -		p = kmalloc(name_len, GFP_KERNEL);
+> -		if (!p)
+> -			return NULL;
+> -		snprintf(p, name_len, template, name);
+> -	} else {
+> -		p = kstrdup(firmware, GFP_KERNEL);
+> -		if (!p)
+> -			return NULL;
+> -	}
+> -
+>  	rproc = kzalloc(sizeof(struct rproc) + len, GFP_KERNEL);
+> -	if (!rproc) {
+> -		kfree(p);
+> +	if (!rproc)
+>  		return NULL;
+> -	}
+> +
+> +	if (rproc_alloc_firmware(rproc, name, firmware))
+> +		goto free_rproc;
+>  
+>  	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+> -	if (!rproc->ops) {
+> -		kfree(p);
+> -		kfree(rproc);
+> -		return NULL;
+> -	}
+> +	if (!rproc->ops)
+> +		goto free_firmware;
+>  
+> -	rproc->firmware = p;
+>  	rproc->name = name;
+>  	rproc->priv = &rproc[1];
+>  	rproc->auto_boot = true;
+> @@ -2091,6 +2097,12 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>  	rproc->state = RPROC_OFFLINE;
+>  
+>  	return rproc;
+> +
+> +free_firmware:
+> +	kfree(rproc->firmware);
+> +free_rproc:
+> +	kfree(rproc);
+> +	return NULL;
+>  }
+>  EXPORT_SYMBOL(rproc_alloc);
+>  
+> 
