@@ -2,205 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00991B188D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059281B1892
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgDTVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726021AbgDTVkt (ORCPT
+        id S1727104AbgDTVmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:42:36 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:42199 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgDTVmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:40:49 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAD8C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:40:48 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id t63so1226958wmt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4Gk/VYoQhPhQ7TbUJt9ppu0wX7IwMr6mSq4U87B4Pb4=;
-        b=d631R2gwMehAjcbsqcBoh4S2uRZcvSYuoWemely5PVflzq3Ass3LCUsCfgkdWtgc9F
-         TU/kozgTBVtlrpNUHjbEOMTrNAys+iW5pwg54cxSGmSkx/hQoOTACufZ8014modkhsZE
-         SXC0MGzMeMwozpMkt0xhoyZg1FPP+/p8xWJpo6ypBnSUFdq3eOLAVzqFeHBi/RJetGwZ
-         vCwyNvDg/FV4RHIrXnfaI06i5hbbyjuKfUKtND4vvWgvqIBd8sl4yQM1SC/T6rjpPUDn
-         GCaa3YJg5naB5dXMMlfzIsuxz3oBLhV45iKht+np77NGxU/ZR1zIqJ1CdkwI8C4BgCCn
-         M9IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4Gk/VYoQhPhQ7TbUJt9ppu0wX7IwMr6mSq4U87B4Pb4=;
-        b=GNQZ3Ti+lKFewy5cWLDtOjzdeOZUdmMyHK1/jNvy4EfzY5vueQdEvaroz6YIOJ6USn
-         SZUGSJq723XxACZYI44laOlp7ZC/oFOPB3qbQ4UMcBQ4Zvx1FJBHG3Ah6TR6yK2xYG8S
-         +WVk9JNK45vVR3tB3dqzkstiNdz15S8nxOCQmc5UIibDWrnLg9+f5S68CUpPpS5g8dHD
-         zlzu4x3i2uAH9gHDfECqeP4J7XFPcxHwbrMYUlPs7VDA5EPM8tT2i/3sb8dVRm1rj/YL
-         JJcmURBpl91A1TPXlxPmVwDW9d33dhIfMAx8YNMJNZylYS2YLX8+Fo6HQaXBKA71Prqv
-         rbag==
-X-Gm-Message-State: AGi0PuZ8kHDwoLzEd63rW7z/dU5V1FiOqy+9jRqv1nHgOn5XH+mtKkwj
-        Fd7kIvyRExzw2qhIJF83gd4=
-X-Google-Smtp-Source: APiQypLvpyyDBqeAgz8buD5OJjsPdNQop2mMLHkzAHCjiqgN9PjtiPL4xXegCiReIbsQ8ECaZ/lF/A==
-X-Received: by 2002:a7b:cf27:: with SMTP id m7mr1466022wmg.183.1587418847498;
-        Mon, 20 Apr 2020 14:40:47 -0700 (PDT)
-Received: from localhost.localdomain ([91.221.170.230])
-        by smtp.googlemail.com with ESMTPSA id q17sm755380wmj.45.2020.04.20.14.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 14:40:46 -0700 (PDT)
-From:   Gregor Pintar <grpintar@gmail.com>
-To:     tiwai@suse.com, perex@perex.cz, alexander@tsoy.me
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        grpintar@gmail.com
-Subject: [PATCH v2] ALSA: usb-audio: Add quirk for Focusrite Scarlett 2i2
-Date:   Mon, 20 Apr 2020 23:40:30 +0200
-Message-Id: <20200420214030.2361-1-grpintar@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1c4b8a362761421eba0ded60bb4f0e11b7e42f3b.camel@tsoy.me>
-References: <1c4b8a362761421eba0ded60bb4f0e11b7e42f3b.camel@tsoy.me>
+        Mon, 20 Apr 2020 17:42:35 -0400
+Received: from mail-qv1-f48.google.com ([209.85.219.48]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N4R0a-1jGQs00Klq-011W89; Mon, 20 Apr 2020 23:42:34 +0200
+Received: by mail-qv1-f48.google.com with SMTP id w18so5122189qvs.3;
+        Mon, 20 Apr 2020 14:42:33 -0700 (PDT)
+X-Gm-Message-State: AGi0PualUEhi4uUZDN0kCYhI80ZGhcHzOppoBETZ+UXxvpY79PUZofni
+        7dcLGqv/cngzeajeNlMEXfu/1XogC5IJcT+UiFo=
+X-Google-Smtp-Source: APiQypIgUdjRNfnUwa38offH8JKaHJxg+os0bXKNXtZGXrDeAqOxQJQNVTfvyx/OiWrFlTTAfX0HOISlTitW0n+H68k=
+X-Received: by 2002:a0c:b78e:: with SMTP id l14mr17430288qve.4.1587418952858;
+ Mon, 20 Apr 2020 14:42:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200416085627.1882-1-clay@daemons.net> <6fef3a00-6c18-b775-d1b4-dfd692261bd3@ti.com>
+ <20200420093610.GA28162@arctic-shiba-lx> <CAK8P3a36ZxNJxUS4UzrwJiMx8UrgYPkcv4X6yYw7EC4jRBbbGQ@mail.gmail.com>
+ <20200420170051.GB11862@localhost> <CAK8P3a11CqpDJzjy5QfV-ebHgRxUu8SRVTJPPmsus1O1+OL72Q@mail.gmail.com>
+ <20200420211819.GA16930@localhost> <CAK8P3a18540y3zqR=mqKhj-goinN3c-FGKvAnTHnLgBxiPa4mA@mail.gmail.com>
+ <20200420213406.GB20996@localhost>
+In-Reply-To: <20200420213406.GB20996@localhost>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 20 Apr 2020 23:42:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a22aSbpcVK-cZ6rhnPgbYEGU3z__G9xk1EexOPZd5Hmzw@mail.gmail.com>
+Message-ID: <CAK8P3a22aSbpcVK-cZ6rhnPgbYEGU3z__G9xk1EexOPZd5Hmzw@mail.gmail.com>
+Subject: Re: [PATCH] net: cpts: Condition WARN_ON on PTP_1588_CLOCK
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Clay McClure <clay@daemons.net>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:cZ5YXVdXtJ6gyIwvm/1dU3QPHP54/VYuklztbc1Qxo7hO+SKfzR
+ dKWV0hXxVIZqjKtpfDW3p72T8yKqVy0YeCY0vjHGNApnVNdeWzErWfFgNuFt3JaQNW5k1W6
+ LaNqp347KZ3EBESkKG9xTv8chWAMyGIYm397L3X4RvVz+GxQwL5E9CGCKRombGx1A3v21+M
+ Y2f+I1ks/l1j4rPDT0AjA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JRJ/w9Kf6w0=:GnNwQ71dY6QImfY39X165e
+ VjveLlOMCQqWJxX3ES/vc6CwU01B35SV++z1VeaRxrJLxyOOSHWqN8DpSruR+PJf4s0JtNw4M
+ wKHryZn4JMGmmPvu8Twx0VbUawBcYJpTFLHpdYxcCLUVEqI5d+yk0OG/l8g7tyCn89irEozMO
+ FPtTAlyHNfPc98ItHDkHiJENUzYT5GwHTKmOSbWK6SH94+9LAMfCIqTWrB8Z1H+e3fqKzzq33
+ gUwNTuSH/BnJuMRX3zEHv6NOPESGKlBG/2MWMQ17o2jWkjOkk1F2hJ8ablMLp5Q1sguOMw237
+ rrOpXxnmBe0f2ayiDOaTHa3EX1otuFBeBiO6xH81Lmdle3JB3oTuA42Y/TSaq8iK71fpW28sV
+ SZdnzrrcKZ+o5vvXzi/xpg7xUIuV03vipKgumOQ1TuVJStPLUjjU7XEYMBf3rgdqNg6NUB+xy
+ Bq/7xjcDEkavxh9QFACzuOekenXmjcTcJPNA61UiCUX95zc4h0GUz2xU8RhYJA6AwNhw91HTt
+ d0EggmfdmPaW4nmM2MO0tXVIUzoUqyZDbLRymzqtcEkeN+YTIbzHu1CaWwSZ2VlyBR2j9nUtz
+ LFSOCtlyD3+KakhR9RCuzYftKq8eSZehLmR+AoUmfoOlfKvCpPJ0Naalh9vB+5NmnHdJYddmP
+ s3ftDuZIvNwmYyg3JA6HxN2t868L56jmCk2Mx7lMNPYRcjKobACNk4JVGM8MNaaTTYymS4ayO
+ mHF6bO5sOeqJjKRzp6DlzDpKGLrfb3z1EZC42wccP2A+S5hDpqm7huIX9WlAuIDC1YZCJMB3d
+ 3nQuUDFbrlAXkLrSsGD/9chPekx0coM++k+Yxg0G8LruFp2sSw=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Force it to use asynchronous playback.
+On Mon, Apr 20, 2020 at 11:34 PM Richard Cochran
+<richardcochran@gmail.com> wrote:
+>
+> On Mon, Apr 20, 2020 at 11:21:20PM +0200, Arnd Bergmann wrote:
+> > It's not great, but we have other interfaces like this that can return NULL for
+> > success when the subsystem is disabled. The problem is when there is
+> > a mismatch between the caller treating NULL as failure when it is meant to
+> > be "successful lack of object returned".
+>
+> Yeah, that should be fixed.
+>
+> To be clear, do you all see a need to change the stubbed version of
+> ptp_clock_register() or not?
 
-Same quirk has already been added for Focusrite Scarlett Solo (2nd gen)
-with a commit 46f5710f0b88 ("ALSA: usb-audio: Add quirk for Focusrite
-Scarlett Solo").
+No, if the NULL return is only meant to mean "nothing wrong, keep going
+wihtout an object", that's fine with me. It does occasionally confuse driver
+writers (as seen here), so it's not a great interface, but there is no general
+solution to make it better.
 
-This also seems to prevent regular clicks when playing at 44100Hz
-on Scarlett 2i2 (2nd gen). I did not notice any side effects.
-
-Moved both quirks to snd_usb_audioformat_attributes_quirk() as suggested.
-
-Signed-off-by: Gregor Pintar <grpintar@gmail.com>
----
- sound/usb/quirks-table.h | 84 ----------------------------------------
- sound/usb/quirks.c       | 13 +++++++
- 2 files changed, 13 insertions(+), 84 deletions(-)
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index e009d584e..7e06ab108 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2756,90 +2756,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.type = QUIRK_MIDI_NOVATION
- 	}
- },
--{
--	/*
--	 * Focusrite Scarlett Solo 2nd generation
--	 * Reports that playback should use Synch: Synchronous
--	 * while still providing a feedback endpoint. Synchronous causes
--	 * snapping on some sample rates.
--	 * Force it to use Synch: Asynchronous.
--	 */
--	USB_DEVICE(0x1235, 0x8205),
--	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_COMPOSITE,
--		.data = (const struct snd_usb_audio_quirk[]) {
--			{
--				.ifnum = 1,
--				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
--				.data = & (const struct audioformat) {
--					.formats = SNDRV_PCM_FMTBIT_S32_LE,
--					.channels = 2,
--					.iface = 1,
--					.altsetting = 1,
--					.altset_idx = 1,
--					.attributes = 0,
--					.endpoint = 0x01,
--					.ep_attr = USB_ENDPOINT_XFER_ISOC |
--						   USB_ENDPOINT_SYNC_ASYNC,
--					.protocol = UAC_VERSION_2,
--					.rates = SNDRV_PCM_RATE_44100 |
--						 SNDRV_PCM_RATE_48000 |
--						 SNDRV_PCM_RATE_88200 |
--						 SNDRV_PCM_RATE_96000 |
--						 SNDRV_PCM_RATE_176400 |
--						 SNDRV_PCM_RATE_192000,
--					.rate_min = 44100,
--					.rate_max = 192000,
--					.nr_rates = 6,
--					.rate_table = (unsigned int[]) {
--						44100, 48000, 88200,
--						96000, 176400, 192000
--					},
--					.clock = 41
--				}
--			},
--			{
--				.ifnum = 2,
--				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
--				.data = & (const struct audioformat) {
--					.formats = SNDRV_PCM_FMTBIT_S32_LE,
--					.channels = 2,
--					.iface = 2,
--					.altsetting = 1,
--					.altset_idx = 1,
--					.attributes = 0,
--					.endpoint = 0x82,
--					.ep_attr = USB_ENDPOINT_XFER_ISOC |
--						   USB_ENDPOINT_SYNC_ASYNC |
--						   USB_ENDPOINT_USAGE_IMPLICIT_FB,
--					.protocol = UAC_VERSION_2,
--					.rates = SNDRV_PCM_RATE_44100 |
--						 SNDRV_PCM_RATE_48000 |
--						 SNDRV_PCM_RATE_88200 |
--						 SNDRV_PCM_RATE_96000 |
--						 SNDRV_PCM_RATE_176400 |
--						 SNDRV_PCM_RATE_192000,
--					.rate_min = 44100,
--					.rate_max = 192000,
--					.nr_rates = 6,
--					.rate_table = (unsigned int[]) {
--						44100, 48000, 88200,
--						96000, 176400, 192000
--					},
--					.clock = 41
--				}
--			},
--			{
--				.ifnum = 3,
--				.type = QUIRK_IGNORE_INTERFACE
--			},
--			{
--				.ifnum = -1
--			}
--		}
--	}
--},
- 
- /* Access Music devices */
- {
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index a8ece1701..6c2dfd3bf 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1806,6 +1806,19 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
- 		 */
- 		fp->attributes &= ~UAC_EP_CS_ATTR_FILL_MAX;
- 		break;
-+	case USB_ID(0x1235, 0x8202):  /* Focusrite Scarlett 2i2 2nd gen */
-+	case USB_ID(0x1235, 0x8205):  /* Focusrite Scarlett Solo 2nd gen */
-+		/*
-+		 * Reports that playback should use Synch: Synchronous
-+		 * while still providing a feedback endpoint.
-+		 * Synchronous causes snapping on some sample rates.
-+		 * Force it to use Synch: Asynchronous.
-+		 */
-+		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			fp->ep_attr &= ~USB_ENDPOINT_SYNCTYPE;
-+			fp->ep_attr |= USB_ENDPOINT_SYNC_ASYNC;
-+		}
-+		break;
- 	}
- }
- 
--- 
-2.20.1
-
+     Arnd
