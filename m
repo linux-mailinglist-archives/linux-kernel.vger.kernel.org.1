@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A9D1B096C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4605A1B096D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgDTMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:35:00 -0400
-Received: from sonic308-56.consmr.mail.ne1.yahoo.com ([66.163.187.31]:33616
-        "EHLO sonic308-56.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbgDTMfA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:35:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587386098; bh=vUjtVOr1LCIoQU4EvLR2F9kwRcMR3abpMUhjHVo2tTA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=ZAat9hhUWjP/atfHD0ffIBN+7WCe04k+RBhMeeTW/k9LJBxgHRtbPjYUjWEW5evpgHgAn1m9V7T91Eiv8SXPV8dl6PY9BeIQeiHCHiH5zxbZ7b/uifFejTbID7ujWJtAjHWwBEPKVSZkHdV6K2txIRD+APrzw/hh+wce9E8zvZvH9hUY0z9BFQTx1WeGLhZtZG6dn0WCMv7EFy45g0W6WKJyAAD8LP2tT9+vNDdMyXDUt9zqwsTfRWmXPCUVBNi6y737uoq43GRzX2TGF0pBE3nvwHGFQoDPsR3FNclgIdk4MJGnIktO+vQZXEWVLegxLJEEMzH1/V9T36tFsQ/7Eg==
-X-YMail-OSG: psG0Te0VM1kebIAtOULIzn2YINU.76ZrZDY8wcku_fhNoYB6CVpNiKAulaCQGQj
- 7fEn31wAWgkLpIqaqn74tat91yf9GEuySdnuXZ.5q_6rfMuQcdPvb0O0iCSpYfunCOBQVdNe0Wyd
- 5BqUlc7XAvpTufU3dQsfcTIvjm9_uQpWi1jp8pE_H5lC_r4NOOqA43_GE5lUhuuAEifYqOHdbs._
- 4AKdfmtuOia5Wtr446ZOsD4qdpTpHSaD9S5itYKHZIICU0ATC2Z9XsnuYFajlIbopDvA4GENPxX_
- uQM3XVd7RLWgUbPyZR8lAL4DPpwKCuS6gXRsRm2efMXj0DeP79oYW25GjjIQzWz.34_ZWzkVrl7h
- ivnVPczOfRz1g1E1ge9pg_9w04kfNNCM.rAzUGp51supirQQXy1LK7J6USBTwi4PmslJpE8.9r1n
- syatBKvqOR_EMcw1jSvSc0mZgp20SmdpfdgyowJPQyj.raC34iNmvb3_VxXffzST1uzAKtBjyJne
- a_Smd.4fx5yqfMrcFua2LjdXwL0lzl1F77JlsDSLzwBJeB9Z5lA5X7eqjHDlnmV.BJM_jvA5RLAU
- qvX3B5slsrLKoHZ1rmfH4_LF40.PfegfQfvbFBdUdtr4cMtIXgMn_YtEmjuOx24VLlJpqCQMdwPW
- dlCjhPXsejLLdZVtE8BJsCc.QkQtxlSLxwevQPvck5gHd5ClNP26ele7QM7PJGCU9GjZKp.bhcWs
- r34LDkFMCTWUaWmBSqTX6fMAE3EblTO6cTFEPi.tmb3I2PO1Czh.rKLrA6cuspoylrX_DX5ggagn
- xopWQyejQMG9bLCJUIjxDbqXVjF9wRXGf4Auc34FihMj1piSaSCBI.4OH5M24oSgcxFcspgcpJXM
- 7onN1tW0MqKTl8NvdoipStXS8MAH712kag0q2zE97QcTp_MPvWCQTs.Of_VZIOBzmRYdSzHBFEXF
- hYqNrsNlq4_A2Bs1S9sJJOwIs6Jedhju2tmuaIaFLGtYtKYHUnrBzVQsAUv7eMf7qA7yGvNHLiO9
- XgMbGYlg_ljjXSIjDuFDH_558NonqAhuJudumd0jRZk7_dJ47RJ5TsBAM6zh0Lw0R.6GSfJmO9T8
- 8pVHq33rlkCqw7HVaGq05DD973Dz7f7rVtAyinJVUSJzKS44cTdn6Z5_36JWVdJDrGVVP3f0xIBl
- 9L00OEN.X0ffots16Q3d2oiVMZ_l2.1xhcxIh4fV_JkT7NIKRGNHJDxv1GwAUM3j_M.3dXpFVDSG
- SE6.7eAqUWC7q6UScxiOqvexkddnl32fBt331wK4NfUB0ubXvevnH_GlyD8JYfko-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 20 Apr 2020 12:34:58 +0000
-Date:   Mon, 20 Apr 2020 12:34:56 +0000 (UTC)
-From:   REJOY <mrsrajoysmrsrajoyshassain@gmail.com>
-Reply-To: rejoyhassain02@gmail.com
-Message-ID: <122111686.3360330.1587386096623@mail.yahoo.com>
-Subject: i am so sorry if you received this letter in your spam,
+        id S1726907AbgDTMfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:35:04 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52656 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726020AbgDTMfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:35:02 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 42114F8280CD990CF8CC;
+        Mon, 20 Apr 2020 20:35:01 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 20:34:59 +0800
+Subject: Re: [PATCH] staging: mt7621-pinctrl: Use correct pointer type
+ argument for sizeof
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <gregkh@linuxfoundation.org>, <matthias.bgg@gmail.com>,
+        <nishkadg.linux@gmail.com>, <devel@driverdev.osuosl.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420123755.4353-1-yanaijie@huawei.com>
+ <20200420121900.GD2659@kadam>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <c6b155a6-28ae-e0f9-b866-4d17e8a45706@huawei.com>
+Date:   Mon, 20 Apr 2020 20:34:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <122111686.3360330.1587386096623.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200420121900.GD2659@kadam>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,24 +45,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-DEAR FRIEND.
+ÔÚ 2020/4/20 20:19, Dan Carpenter Ð´µÀ:
+> On Mon, Apr 20, 2020 at 08:37:55PM +0800, Jason Yan wrote:
+>> Fix the following coccicheck warning:
+>>
+>> drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c:223:14-36: WARNING: Use
+>> correct pointer type argument for sizeof
+>>
+>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+>> ---
+>>   drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+>> index d0f06790d38f..8883f2a8ea57 100644
+>> --- a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+>> +++ b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+>> @@ -220,7 +220,7 @@ static int rt2880_pinmux_index(struct rt2880_priv *p)
+>>   	/* allocate our function and group mapping index buffers */
+>>   	f = p->func = devm_kcalloc(p->dev,
+>>   				   p->func_count,
+>> -				   sizeof(struct rt2880_pmx_func),
+>> +				   sizeof(struct rt2880_pmx_func *),
+> 
+> Yes.  This fixes a bug.  We were allocating too much data.  But the
+> prefered style is:
+> 
+> 				sizeof(*p->func),
+> 
+> Please could you resend?
+> 
 
-YOU MAY BE WONDERING WHYI CONTACT YOU BUT SOMEONE LUCKY HAS TO BE CHOSEN WHICH IS YOU. I WANT YOU TO HANDLE THIS BUSINESS TRASACTION WITH ME IF CHANCE YOU TO DO INTERNATION BUSINESS I GO YOUR CONTACT FROM A RELIABLE WEB DIRECTORY.
+Sure, I will cook a new one.
 
-I RECEIVE YOUR CONTENT OF YOUR EMAIL FROM THIS DHL MASTER CARD OFFICES FUND OF $10.5 USD MILLION AFTER THE BOARD OF DIRECTORS MEETINGS, THE UNITED NATIONS GOVERNMENT HAVE DECIDED TO ISSUE YOU YOUR (ATM) VALUED AT 10.5 MILLION UNITED STATES DOLLAR.THIS IS TO BRING TO YOUR NOTICE THAT YOUR VALUED SUM OF 10.5 MILLION DOLLAR HAS BEING TODAY CREDITED INTO (ATM) MASTER CARD AND HAS BEEN HANDLE TO THE FOREIGN REMITTANCE DEPARTMENT TO SEND IT TO YOU TODAY IN YOUR FAVOR.
+> regards,
+> dan carpenter
+> 
+> 
+> .
+> 
 
-WITH YOUR (ATM) YOU WILL HAVE ACCESS TO MAKE DAILY WITHDRAWALS OF $5000,00 UNITED STATE DOLLARS DAILIES AS ALREADY PROGRAMMED UNTIL YOU WITHDRAW YOUR TOTAL SUM IN YOUR (ATM) CARD WHICH HAS REGISTERED IN OUR SYSTEM FOR PAYMENT RECORD, AS SOON AS WE RECEIVE YOUR INFORMATIONS AND YOUR HOME ADDRESS OF YOUR COUNTRY AS ALREADY PROGRAMMED, WE WILL SEND YOUR (ATM) CARD THROUGH DHL COURIER SERVICE, WE HAVE RECEIVED A SIGNAL FROM THE SWISS WORLD BANK TO INFECT YOUR TRANSFER TO YOU WITHIN ONE WEEK,
-
-WE HAVE JUST FINISHED OUR ANNUAL GENERAL MEETING WITH THE CENTRAL BANK OF AMERICA (BOA). AT THE END OF THE BOARD OF DIRECTORS MEETING TODAY, WE HAVE CONCLUDED TO IMMEDIATELY ISSUE YOU AS SOON AS POSSIBLE,
-
-AND YOUR VALUE SUM HAS BEEN CREDITED INTO YOUR (ATM) VISA CARD
-ACCOUNT. WHICH YOU WILL USE TO WITHDRAW YOUR FUND IN ANY PART OF THE WORLD, WE HAVE ISSUED AND CREDITED YOUR (ATM) CARD IN YOUR NAME TODAY,
-
-YOUR (ATM) WILL BE INSURE BY THE INSURANCE COMPANY AND SEND TO YOU
-THROUGH ANY AVAILABLE COURIER COMPANY OF OUR CHOICE.
-
-ONCE AGAIN CONGRATULATIONS TO YOU,
-
-DIRECTOR DHL SERVICE,
-THANKS,
-SINCERELY.
