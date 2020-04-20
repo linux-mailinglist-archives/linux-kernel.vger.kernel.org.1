@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFDF1B0A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC31B0BFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgDTMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S1729802AbgDTM7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728855AbgDTMpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:45:53 -0400
+        id S1728042AbgDTMlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:41:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB598206DD;
-        Mon, 20 Apr 2020 12:45:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 279A0206D4;
+        Mon, 20 Apr 2020 12:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386753;
-        bh=9cG006k3LbqtUOh3C3GQ/cY8hx5/Uc58zO0Ys8/zvsc=;
+        s=default; t=1587386496;
+        bh=BQw15EaX0H/tDEXPed4GXaY54eyMlZZmCdnxyv/tpqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPVoQCSjstu0YAR+jMwjXKwGpzRDQlR+zlC+MmMWRjYPAbm4pp8hsf/nzrL6Z63IE
-         /VYLrm/xJi0Teuyw63p0zu6F5vwU7F0fHtUtHxtjmb/GZxrjASmRPfw9KXQsQS+nQB
-         9RFWErxjs/3mMqVVg73m6jLNcMAVAmdH3jltKQVs=
+        b=h1Y3lZSoUye6zvorXKX49vd5UHHLZ3a7KWqXe7jtjkIme1grEmv4/WfgY8hRdmSji
+         EgKNzWm8MHIxPln98SrQfzOQKxJLmW7/LzuPjzPOeQx3VmXf6Wa2vsBIekywm3NKYf
+         EKE4MiagVZvxpk2LUbKqwr/YLDdCUb78eotldPZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Feras Daoud <ferasda@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.4 13/60] net/mlx5: Fix frequent ioread PCI access during recovery
+        stable@vger.kernel.org, Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.5 47/65] tracing: Fix the race between registering snapshot event trigger and triggering snapshot operation
 Date:   Mon, 20 Apr 2020 14:38:51 +0200
-Message-Id: <20200420121504.994289810@linuxfoundation.org>
+Message-Id: <20200420121517.073782170@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
-[ Upstream commit 8c702a53bb0a79bfa203ba21ef1caba43673c5b7 ]
+commit 0bbe7f719985efd9adb3454679ecef0984cb6800 upstream.
 
-High frequency of PCI ioread calls during recovery flow may cause the
-following trace on powerpc:
+Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
+or snapshot_count_trigger()) when register_snapshot_trigger() has completed
+registration but doesn't allocate buffer for 'snapshot' event trigger.  In
+the rare case, 'snapshot' operation always detects the lack of allocated
+buffer so make register_snapshot_trigger() allocate buffer first.
 
-[ 248.670288] EEH: 2100000 reads ignored for recovering device at
-location=Slot1 driver=mlx5_core pci addr=0000:01:00.1
-[ 248.670331] EEH: Might be infinite loop in mlx5_core driver
-[ 248.670361] CPU: 2 PID: 35247 Comm: kworker/u192:11 Kdump: loaded
-Tainted: G OE ------------ 4.14.0-115.14.1.el7a.ppc64le #1
-[ 248.670425] Workqueue: mlx5_health0000:01:00.1 health_recover_work
-[mlx5_core]
-[ 248.670471] Call Trace:
-[ 248.670492] [c00020391c11b960] [c000000000c217ac] dump_stack+0xb0/0xf4
-(unreliable)
-[ 248.670548] [c00020391c11b9a0] [c000000000045818]
-eeh_check_failure+0x5c8/0x630
-[ 248.670631] [c00020391c11ba50] [c00000000068fce4]
-ioread32be+0x114/0x1c0
-[ 248.670692] [c00020391c11bac0] [c00800000dd8b400]
-mlx5_error_sw_reset+0x160/0x510 [mlx5_core]
-[ 248.670752] [c00020391c11bb60] [c00800000dd75824]
-mlx5_disable_device+0x34/0x1d0 [mlx5_core]
-[ 248.670822] [c00020391c11bbe0] [c00800000dd8affc]
-health_recover_work+0x11c/0x3c0 [mlx5_core]
-[ 248.670891] [c00020391c11bc80] [c000000000164fcc]
-process_one_work+0x1bc/0x5f0
-[ 248.670955] [c00020391c11bd20] [c000000000167f8c]
-worker_thread+0xac/0x6b0
-[ 248.671015] [c00020391c11bdc0] [c000000000171618] kthread+0x168/0x1b0
-[ 248.671067] [c00020391c11be30] [c00000000000b65c]
-ret_from_kernel_thread+0x5c/0x80
+trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
+-----------------------------------------------------------
+cat trace
+...
+ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
+     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
+     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
+-----------------------------------------------------------
 
-Reduce the PCI ioread frequency during recovery by using msleep()
-instead of cond_resched()
+Link: http://lkml.kernel.org/r/20200414015145.66236-1-yangx.jy@cn.fujitsu.com
 
-Fixes: 3e5b72ac2f29 ("net/mlx5: Issue SW reset on FW assert")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Feras Daoud <ferasda@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Cc: stable@vger.kernel.org
+Fixes: 93e31ffbf417a ("tracing: Add 'snapshot' event trigger command")
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/health.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -243,7 +243,7 @@ recover_from_sw_reset:
- 		if (mlx5_get_nic_state(dev) == MLX5_NIC_IFC_DISABLED)
- 			break;
+---
+ kernel/trace/trace_events_trigger.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+--- a/kernel/trace/trace_events_trigger.c
++++ b/kernel/trace/trace_events_trigger.c
+@@ -1088,14 +1088,10 @@ register_snapshot_trigger(char *glob, st
+ 			  struct event_trigger_data *data,
+ 			  struct trace_event_file *file)
+ {
+-	int ret = register_trigger(glob, ops, data, file);
++	if (tracing_alloc_snapshot_instance(file->tr) != 0)
++		return 0;
  
--		cond_resched();
-+		msleep(20);
- 	} while (!time_after(jiffies, end));
+-	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
+-		unregister_trigger(glob, ops, data, file);
+-		ret = 0;
+-	}
+-
+-	return ret;
++	return register_trigger(glob, ops, data, file);
+ }
  
- 	if (mlx5_get_nic_state(dev) != MLX5_NIC_IFC_DISABLED) {
+ static int
 
 
