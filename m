@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEAE1B0A7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0D51B0AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgDTMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45248 "EHLO mail.kernel.org"
+        id S1729050AbgDTMrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728217AbgDTMse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:34 -0400
+        id S1729039AbgDTMrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6667F2072B;
-        Mon, 20 Apr 2020 12:48:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A67F4206DD;
+        Mon, 20 Apr 2020 12:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386913;
-        bh=ENj6Qt52KrnVwLM66JGBO+2QFyAr22rkd+rd3OdPeVk=;
+        s=default; t=1587386831;
+        bh=HaUo+E5NxLGCGdFw4NKrqAONKCA3eOeOzeVolfXxgx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uGB+clyx4p79u6Lj6O9ONhjiqFGqbdXM7gkIpvw/uakwbP7biQro9I4lEKOtyWdLO
-         eFdq7DJJu4FarEjv3x3z7OHYpf4H3Bk6ukz0FlNq19onF/JZrJK0cw7eCFVST1GndY
-         bshHcy4Nq8ezfbN2rmfISJuBz94naL+cLH+qg96A=
+        b=CcFhuSVb+ksShl3JkuC+WsYq0aJWNJmPPHaQAiaIAI8jFF0lqPWSyyMb8JDb9JbuO
+         xocPU3Gwl7v6PpfmWdMfvz5UUDm55OYRKf4Oo9bKwQyIU/B5Wyz0KKsLTa9RnOy+E/
+         YYKFQhkrY9Fkb1pXXzCBhpLDtYmHAeWxekoYmimw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 09/40] ovl: fix value of i_ino for lower hardlink corner case
-Date:   Mon, 20 Apr 2020 14:39:19 +0200
-Message-Id: <20200420121454.159987874@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 42/60] keys: Fix proc_keys_next to increase position index
+Date:   Mon, 20 Apr 2020 14:39:20 +0200
+Message-Id: <20200420121512.118553683@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-References: <20200420121444.178150063@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Goldstein <amir73il@gmail.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 300b124fcf6ad2cd99a7b721e0f096785e0a3134 upstream.
+commit 86d32f9a7c54ad74f4514d7fef7c847883207291 upstream.
 
-Commit 6dde1e42f497 ("ovl: make i_ino consistent with st_ino in more
-cases"), relaxed the condition nfs_export=on in order to set the value of
-i_ino to xino map of real ino.
+If seq_file .next function does not change position index,
+read after some lseek can generate unexpected output:
 
-Specifically, it also relaxed the pre-condition that index=on for
-consistent i_ino. This opened the corner case of lower hardlink in
-ovl_get_inode(), which calls ovl_fill_inode() with ino=0 and then
-ovl_init_inode() is called to set i_ino to lower real ino without the xino
-mapping.
+    $ dd if=/proc/keys bs=1  # full usual output
+    0f6bfdf5 I--Q---     2 perm 3f010000  1000  1000 user      4af2f79ab8848d0a: 740
+    1fb91b32 I--Q---     3 perm 1f3f0000  1000 65534 keyring   _uid.1000: 2
+    27589480 I--Q---     1 perm 0b0b0000     0     0 user      invocation_id: 16
+    2f33ab67 I--Q---   152 perm 3f030000     0     0 keyring   _ses: 2
+    33f1d8fa I--Q---     4 perm 3f030000  1000  1000 keyring   _ses: 1
+    3d427fda I--Q---     2 perm 3f010000  1000  1000 user      69ec44aec7678e5a: 740
+    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
+    521+0 records in
+    521+0 records out
+    521 bytes copied, 0,00123769 s, 421 kB/s
 
-Pass the correct values of ino;fsid in this case to ovl_fill_inode(), so it
-can initialize i_ino correctly.
+But a read after lseek in middle of last line results in the partial
+last line and then a repeat of the final line:
 
-Fixes: 6dde1e42f497 ("ovl: make i_ino consistent with st_ino in more ...")
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+    $ dd if=/proc/keys bs=500 skip=1
+    dd: /proc/keys: cannot skip to specified offset
+    g   _uid_ses.1000: 1
+    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
+    0+1 records in
+    0+1 records out
+    97 bytes copied, 0,000135035 s, 718 kB/s
+
+and a read after lseek beyond end of file results in the last line being
+shown:
+
+    $ dd if=/proc/keys bs=1000 skip=1   # read after lseek beyond end of file
+    dd: /proc/keys: cannot skip to specified offset
+    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
+    0+1 records in
+    0+1 records out
+    76 bytes copied, 0,000119981 s, 633 kB/s
+
+See https://bugzilla.kernel.org/show_bug.cgi?id=206283
+
+Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/overlayfs/inode.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ security/keys/proc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/overlayfs/inode.c
-+++ b/fs/overlayfs/inode.c
-@@ -884,7 +884,7 @@ struct inode *ovl_get_inode(struct super
- 	struct dentry *lowerdentry = lowerpath ? lowerpath->dentry : NULL;
- 	bool bylower = ovl_hash_bylower(sb, upperdentry, lowerdentry,
- 					oip->index);
--	int fsid = bylower ? oip->lowerpath->layer->fsid : 0;
-+	int fsid = bylower ? lowerpath->layer->fsid : 0;
- 	bool is_dir, metacopy = false;
- 	unsigned long ino = 0;
- 	int err = oip->newinode ? -EEXIST : -ENOMEM;
-@@ -934,6 +934,8 @@ struct inode *ovl_get_inode(struct super
- 			err = -ENOMEM;
- 			goto out_err;
- 		}
-+		ino = realinode->i_ino;
-+		fsid = lowerpath->layer->fsid;
- 	}
- 	ovl_fill_inode(inode, realinode->i_mode, realinode->i_rdev, ino, fsid);
- 	ovl_inode_init(inode, upperdentry, lowerdentry, oip->lowerdata);
+--- a/security/keys/proc.c
++++ b/security/keys/proc.c
+@@ -139,6 +139,8 @@ static void *proc_keys_next(struct seq_f
+ 	n = key_serial_next(p, v);
+ 	if (n)
+ 		*_pos = key_node_serial(n);
++	else
++		(*_pos)++;
+ 	return n;
+ }
+ 
 
 
