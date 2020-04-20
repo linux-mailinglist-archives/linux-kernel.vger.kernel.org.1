@@ -2,106 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7706D1B0EA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013411B0EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgDTOim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:38:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43886 "EHLO mail.kernel.org"
+        id S1729580AbgDTOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:40:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729982AbgDTOik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:38:40 -0400
+        id S1726364AbgDTOkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:40:03 -0400
 Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B845020735;
-        Mon, 20 Apr 2020 14:38:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39703206B9;
+        Mon, 20 Apr 2020 14:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587393519;
-        bh=+DGLsi3SfobUu4UEs06d75/bKEBz2SreRY+kidIQn6Y=;
+        s=default; t=1587393603;
+        bh=Lhz0nasPZld7LvSr8M4fskng9n+bjY4BzRtGx4zauhs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YgYrxMMOkdMkrfa20rx8C0mXWLlrggN53mVav7oRmEA41sLboek5srPajPXqshBDm
-         J92HLUex8je+lvGyjhV/zvab3y5j9/KaFqrpZilQPXW1oNTtPBpWwGQGxyXk/nl9f1
-         QsL3g3BpeEUkwHdl+glra55mcKph9rRjFuqZllCI=
-Date:   Mon, 20 Apr 2020 22:38:32 +0800
+        b=1NKTJk+45D6Kz97Y0b7tPm8VbegrEC3Q4MEo7a2KGwLtL84m5N1ACTltn0uCf83Yd
+         SN50U+x0WbPVr7W1EPvA/gt3YGGKLrnGvCfaiybZwWPmG4DFqBvI99aPHDDxX+hOqC
+         v0W51sI5Pu+7zsIOEiPQz17WTpm9d0g9IsCc0cZY=
+Date:   Mon, 20 Apr 2020 22:39:58 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org, eha@deif.com,
-        angelo@sysam.it, andrew.smirnov@gmail.com, gustavo@embeddedor.com,
-        weic@nvidia.com, mhosny@nvidia.com, michael@walle.cc,
-        peng.ma@nxp.com
-Subject: Re: [PATCH v5 12/12] arm64: dts: ls1028a-rdb: Add a spidev node for
- the mikroBUS
-Message-ID: <20200420143831.GB32419@dragon>
-References: <20200318001603.9650-1-olteanv@gmail.com>
- <20200318001603.9650-13-olteanv@gmail.com>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, abel.vesa@nxp.com,
+        t-kristo@ti.com, jonas.gorski@gmail.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH] clk: imx: clk-sscg-pll: Remove unnecessary blank lines
+Message-ID: <20200420143956.GC32419@dragon>
+References: <1584495566-15110-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200318001603.9650-13-olteanv@gmail.com>
+In-Reply-To: <1584495566-15110-1-git-send-email-Anson.Huang@nxp.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 02:16:03AM +0200, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Wed, Mar 18, 2020 at 09:39:25AM +0800, Anson Huang wrote:
+> Remove many unnecessary blank lines for cleanup.
 > 
-> For debugging, it is useful to have access to the DSPI controller
-> signals. On the reference design board, these are exported to either the
-> mikroBUS1 or mikroBUS2 connector (according to the CPLD register
-> BRDCFG3[SPI3]).
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
-> Changes in v5:
-> None.
-> 
-> Changes in v4:
-> None.
-> 
-> Changes in v3:
-> None.
-> 
-> Changes in v2:
-> Change compatible string for spidev node.
-> 
->  arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> index 6d05b76c2c7a..0d27b5667b8c 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> @@ -83,6 +83,20 @@
->  	};
->  };
->  
-> +&dspi2 {
-> +	bus-num = <2>;
-> +	status = "okay";
-> +
-> +	/* mikroBUS1 */
-> +	spidev@0 {
-> +		compatible = "rohm,dh2228fv";
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 
-Is the compatible documented?
-
-Shawn
-
-> +		spi-max-frequency = <20000000>;
-> +		fsl,spi-cs-sck-delay = <100>;
-> +		fsl,spi-sck-cs-delay = <100>;
-> +		reg = <0>;
-> +	};
-> +};
-> +
->  &esdhc {
->  	sd-uhs-sdr104;
->  	sd-uhs-sdr50;
-> -- 
-> 2.17.1
-> 
+Applied, thanks.
