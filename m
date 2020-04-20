@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70F71B0A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CB41B0AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgDTMsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:48:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45540 "EHLO mail.kernel.org"
+        id S1729134AbgDTMrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729291AbgDTMsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:46 -0400
+        id S1728618AbgDTMri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC5FE20736;
-        Mon, 20 Apr 2020 12:48:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C7F0206DD;
+        Mon, 20 Apr 2020 12:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386926;
-        bh=a2o+7wxm1EjJaOtWR/GTY6328eM1fT4ITgPauq9wxso=;
+        s=default; t=1587386858;
+        bh=2wn0F3Rb9BTNHNvimEOaOhQbgSSFphhXDg2fGL1HMX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFMyEPRJRrPKMnmiM41ZmjdJnGIAEqXC2JV7WvHNaG98iTAUH0TOQtDV2xqaublCo
-         U7U/bxWEF1L9aVhDBCHI72dWmb+sFz94t7LTbtWarl0XYWD5rfxC43EKLaq4YoiMiN
-         oWQzuudjCRL4UDnwlqqGcThtE2lciIIRn2RNf8XU=
+        b=Xv/3iubbAl6bhnVKoCwmUCYE/x4pOYDhB4pQkmMfuDd79I/qco4ZXao6e9W6wRNo+
+         5Zf/HSL9p+XK0hUbHJo+I9G1K8Kd0xii4bNrw6wVR/ad43oUc1OUhJb5hIyNeb9lIy
+         qIn6Z79Vo+UGuQge3VqPWJ7bt7P/pIxPgf539j6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 23/40] btrfs: check commit root generation in should_ignore_root
-Date:   Mon, 20 Apr 2020 14:39:33 +0200
-Message-Id: <20200420121500.696971642@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        James Morse <james.morse@arm.com>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 56/60] x86/resctrl: Preserve CDP enable over CPU hotplug
+Date:   Mon, 20 Apr 2020 14:39:34 +0200
+Message-Id: <20200420121515.373669661@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-References: <20200420121444.178150063@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: James Morse <james.morse@arm.com>
 
-commit 4d4225fc228e46948486d8b8207955f0c031b92e upstream.
+commit 9fe0450785abbc04b0ed5d3cf61fcdb8ab656b4b upstream.
 
-Previously we would set the reloc root's last snapshot to transid - 1.
-However there was a problem with doing this, and we changed it to
-setting the last snapshot to the generation of the commit node of the fs
-root.
+Resctrl assumes that all CPUs are online when the filesystem is mounted,
+and that CPUs remember their CDP-enabled state over CPU hotplug.
 
-This however broke should_ignore_root().  The assumption is that if we
-are in a generation newer than when the reloc root was created, then we
-would find the reloc root through normal backref lookups, and thus can
-ignore any fs roots we find with an old enough reloc root.
+This goes wrong when resctrl's CDP-enabled state changes while all the
+CPUs in a domain are offline.
 
-Now that the last snapshot could be considerably further in the past
-than before, we'd end up incorrectly ignoring an fs root.  Thus we'd
-find no nodes for the bytenr we were searching for, and we'd fail to
-relocate anything.  We'd loop through the relocate code again and see
-that there were still used space in that block group, attempt to
-relocate those bytenr's again, fail in the same way, and just loop like
-this forever.  This is tricky in that we have to not modify the fs root
-at all during this time, so we need to have a block group that has data
-in this fs root that is not shared by any other root, which is why this
-has been difficult to reproduce.
+When a domain comes online, enable (or disable!) CDP to match resctrl's
+current setting.
 
-Fixes: 054570a1dc94 ("Btrfs: fix relocation incorrectly dropping data references")
-CC: stable@vger.kernel.org # 4.9+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 5ff193fbde20 ("x86/intel_rdt: Add basic resctrl filesystem support")
+Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200221162105.154163-1-james.morse@arm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/relocation.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c     |    2 ++
+ arch/x86/kernel/cpu/resctrl/internal.h |    1 +
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |   13 +++++++++++++
+ 3 files changed, 16 insertions(+)
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -525,8 +525,8 @@ static int should_ignore_root(struct btr
- 	if (!reloc_root)
- 		return 0;
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -578,6 +578,8 @@ static void domain_add_cpu(int cpu, stru
+ 	d->id = id;
+ 	cpumask_set_cpu(cpu, &d->cpu_mask);
  
--	if (btrfs_root_last_snapshot(&reloc_root->root_item) ==
--	    root->fs_info->running_transaction->transid - 1)
-+	if (btrfs_header_generation(reloc_root->commit_root) ==
-+	    root->fs_info->running_transaction->transid)
- 		return 0;
- 	/*
- 	 * if there is reloc tree and it was created in previous
++	rdt_domain_reconfigure_cdp(r);
++
+ 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
+ 		kfree(d);
+ 		return;
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -601,5 +601,6 @@ bool has_busy_rmid(struct rdt_resource *
+ void __check_limbo(struct rdt_domain *d, bool force_free);
+ bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r);
+ bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r);
++void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+ 
+ #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1769,6 +1769,19 @@ static int set_cache_qos_cfg(int level,
+ 	return 0;
+ }
+ 
++/* Restore the qos cfg state when a domain comes online */
++void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
++{
++	if (!r->alloc_capable)
++		return;
++
++	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA])
++		l2_qos_cfg_update(&r->alloc_enabled);
++
++	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA])
++		l3_qos_cfg_update(&r->alloc_enabled);
++}
++
+ /*
+  * Enable or disable the MBA software controller
+  * which helps user specify bandwidth in MBps.
 
 
