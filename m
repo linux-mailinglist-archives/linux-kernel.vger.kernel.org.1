@@ -2,228 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D04C1B0BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFED1B0BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgDTM5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726991AbgDTM5Q (ORCPT
+        id S1729479AbgDTM6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:58:41 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47217 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726498AbgDTM6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:57:16 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA5BC061A0C;
-        Mon, 20 Apr 2020 05:57:15 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 131so7796994lfh.11;
-        Mon, 20 Apr 2020 05:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tPm2xK5bXSP7N2DNmYSwv/w1hgHQV6Cc27y/pzZWfQY=;
-        b=B0oZRtfsKT7z9b3Vnxi9c3bmbk/Nj8q1tD10VTGCsuYbEzUjoz7Q30/MfNtaZQFpgb
-         0FoasdcaN9HKu5elzPTO1bmNS3Sip5ei0B9PB4vrm5eqLfURo8KldRjIrb3FB4eKE5Za
-         ohV8ap6wPiYCT26sK2gy2cWRfdCJII3i7qh923rXHkgLTzNuL3bfIZdzHpru0rl9A+3c
-         pWqVSuq7by22grwljlYs5d6fuLlBdDFf1xlDJ4SlcjcdmvbNMuKEYelVDf0yeTm+Zgyi
-         W8qq37vSfnmu+VgI4KBDFCHM2tEGL7Hjaqf0pTH/q77rWMdJADethOlL6kITp/0GR2CT
-         /KHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tPm2xK5bXSP7N2DNmYSwv/w1hgHQV6Cc27y/pzZWfQY=;
-        b=PgZCYpNVh0yP0z/lzWgkVYKPvavbSqB5J+tABgIFL3jBvmrWYsSH9zl/C8TfFCRH4C
-         ubL4MZGz8Sg0LGogYtt1ITStZXeS+jXpepjEmFBYwNZgKUlO9ntuEJhESpxl5+N3tOTK
-         aj5RFTXxZFVr8U9aMcHkXxEnYkzYObu1w/ccec/MQft+/FKwLRVsV+fIGfvYeF53rki7
-         HRFa4vkXBTJjUX6T05bj1ezlhjJae2HCyJZxhivwm6/X7rBiy2V3hnTeZicAeN/fUxD9
-         AqMe5lBeY8LBBLSkgXloZGMx9oRUxqoFYuMQb1j7aa1atxZJDpEmjT4pP5/d+MI1bXA+
-         UFpA==
-X-Gm-Message-State: AGi0PuYJUkN3C+bZlHyenx8gKP0CeYS4LZ6I9l07SN/vbQ6H/NaC5VDL
-        xq3WhyrrYaO+vYMLEIMoJj0=
-X-Google-Smtp-Source: APiQypIC+ldoKXDKJzz2e+OC3ev8yJpC22Qj1o+rjgeQ5HKOAXbZ8o48IGcUY4rEcOpJOSRobdqb+g==
-X-Received: by 2002:a19:f614:: with SMTP id x20mr10421974lfe.84.1587387433857;
-        Mon, 20 Apr 2020 05:57:13 -0700 (PDT)
-Received: from [172.31.190.83] ([86.57.146.226])
-        by smtp.gmail.com with ESMTPSA id d3sm846814lfq.63.2020.04.20.05.57.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2020 05:57:13 -0700 (PDT)
-Subject: Re: INFO: rcu detected stall in io_uring_release
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+66243bb7126c410cefe6@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000009dcd905a3954340@google.com>
- <20200419040626.628-1-hdanton@sina.com> <20200420114719.GA2659@kadam>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <98a6f295-c7b4-390b-c618-b5f0043f4c1a@gmail.com>
-Date:   Mon, 20 Apr 2020 15:57:11 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 08:58:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 6E19F2F2;
+        Mon, 20 Apr 2020 08:58:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 20 Apr 2020 08:58:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=aze/A7yGJ51s7DTamiziq9DJpYM
+        G/+I750x+08txbDI=; b=Ii+EdH6Jeaqmldk0GUUKTjZenqnmB95KvKpRKgkRCWJ
+        2nVqfaCK8B+UCxaIqIqm8DiSb7CTKcO+fpD1ithdxUTyMGgdGlJrrLntiXP4UZvi
+        xkDS3BDUnHc5KmVf3E0WSnAkf5TQfwSIz5QU6TYd+ZnhuPA+DpgcqKhB4cIM5cdB
+        4sQRX9wX15UAEhsbKZa8wlNpLe+WBggwt656S5ZDMIVoGNC0KBJS+CorICP6CE5R
+        KiTWJOUDpdewvcSFLA1DrbjgEn7OL7/ier1+h1GQlSHd8fShb38HXH8b+csnX8Hj
+        FZIyNECoArj3DqnJ5gE5PX48dvzzGzp4D/9Nk6ampPg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=aze/A7
+        yGJ51s7DTamiziq9DJpYMG/+I750x+08txbDI=; b=pnS9onltAKhl1kQ5+RjDBB
+        JMEC+q1EQCm0nVI6wnS29xZDotOzZbIyBamKt7JYdt/shRTILGpPmctbjDZYsPJ0
+        K+UGBqEWIkfAHj44vTWFoH6G378+Yb2IBAoesVdvtpBajJbIeCcdovHBypsY/cC+
+        u8JPwp2QGbsrC2/ysgz78KOOuLm5thoBkdemLgHpPfztWEPK+yWMsosV/HMmq5Vr
+        PQ1KM2yZjy4FJU47ifjYvgKAhSbpqENLFEjn2IZVyDDcyRMhZjsAzj88htsbl7dt
+        Ag4zS0BYqajn7ZLFR2WRLu7Y+ibYagbmGDSrL0Z5UBlX+nd7ymPSQDkA/New+aDg
+        ==
+X-ME-Sender: <xms:e5ydXuwZoCYvaAfcRfFWKabubVv5keJiwQRSdA5V1WP0vZrUCvRk8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:e5ydXmZApy9qsFgrxVwQ_k0Yrxz2D6d__rmzC6cgQf_NOYLFg9fXSg>
+    <xmx:e5ydXsJbZIjypyZIT4i7w_MnLk0XFOqYI9OjthRgwPUA_bAHHj4MpQ>
+    <xmx:e5ydXt34X6N1WaPM-7hn6OFc11Hf23tZH_qpYyaa7JPua_zPpj1i9Q>
+    <xmx:fJydXvbmg5NTB1PxFCkUDDm-gCoZeW0NxJR7Nr3NQfsNVjRAyvOoPA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 454733280059;
+        Mon, 20 Apr 2020 08:58:35 -0400 (EDT)
+Date:   Mon, 20 Apr 2020 14:58:33 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Priit Laes <plaes@plaes.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 3/4] net: stmmac: dwmac-sunxi: Implement syscon-based
+ clock handling
+Message-ID: <20200420125833.ybciii45akcpv2fl@gilmour.lan>
+References: <20200417221730.555954-1-plaes@plaes.org>
+ <20200417221730.555954-4-plaes@plaes.org>
 MIME-Version: 1.0
-In-Reply-To: <20200420114719.GA2659@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tgkfcjzjoptw7qlt"
+Content-Disposition: inline
+In-Reply-To: <20200417221730.555954-4-plaes@plaes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/2020 2:47 PM, Dan Carpenter wrote:
-> On Sun, Apr 19, 2020 at 12:06:26PM +0800, Hillf Danton wrote:
->>
->> Sat, 18 Apr 2020 11:59:13 -0700
->>>
->>> syzbot found the following crash on:
->>>
->>> HEAD commit:    8f3d9f35 Linux 5.7-rc1
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=115720c3e00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=66243bb7126c410cefe6
->>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
->>>
->>> Unfortunately, I don't have any reproducer for this crash yet.
->>>
->>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
->>> Reported-by: syzbot+66243bb7126c410cefe6@syzkaller.appspotmail.com
->>>
->>> rcu: INFO: rcu_preempt self-detected stall on CPU
->>> rcu: 	0-....: (10500 ticks this GP) idle=57e/1/0x4000000000000002 softirq=44329/44329 fqs=5245 
->>> 	(t=10502 jiffies g=79401 q=2096)
->>> NMI backtrace for cpu 0
->>> CPU: 0 PID: 23184 Comm: syz-executor.5 Not tainted 5.7.0-rc1-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>> Call Trace:
->>>  <IRQ>
->>>  __dump_stack lib/dump_stack.c:77 [inline]
->>>  dump_stack+0x188/0x20d lib/dump_stack.c:118
->>>  nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
->>>  nmi_trigger_cpumask_backtrace+0x231/0x27e lib/nmi_backtrace.c:62
->>>  trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
->>>  rcu_dump_cpu_stacks+0x19b/0x1e5 kernel/rcu/tree_stall.h:254
->>>  print_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
->>>  check_cpu_stall kernel/rcu/tree_stall.h:549 [inline]
->>>  rcu_pending kernel/rcu/tree.c:3225 [inline]
->>>  rcu_sched_clock_irq.cold+0x55d/0xcfa kernel/rcu/tree.c:2296
->>>  update_process_times+0x25/0x60 kernel/time/timer.c:1727
->>>  tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:176
->>>  tick_sched_timer+0x4e/0x140 kernel/time/tick-sched.c:1320
->>>  __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
->>>  __hrtimer_run_queues+0x5ca/0xed0 kernel/time/hrtimer.c:1584
->>>  hrtimer_interrupt+0x312/0x770 kernel/time/hrtimer.c:1646
->>>  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1113 [inline]
->>>  smp_apic_timer_interrupt+0x15b/0x600 arch/x86/kernel/apic/apic.c:1138
->>>  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
->>>  </IRQ>
->>> RIP: 0010:io_ring_ctx_wait_and_kill+0x98/0x5a0 fs/io_uring.c:7301
->>> Code: 01 00 00 4d 89 f4 48 b8 00 00 00 00 00 fc ff df 4c 89 ed 49 c1 ec 03 48 c1 ed 03 49 01 c4 48 01 c5 eb 1c e8 3a ea 9d ff f3 90 <41> 80 3c 24 00 0f 85 53 04 00 00 48 83 bb 10 01 00 00 00 74 21 e8
->>> RSP: 0018:ffffc9000897fdf0 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
->>> RAX: ffff888024082080 RBX: ffff88808df8e000 RCX: 1ffff9200112ffab
->>> RDX: 0000000000000000 RSI: ffffffff81d549c6 RDI: ffff88808df8e300
->>> RBP: ffffed1011bf1c2c R08: 0000000000000001 R09: ffffed1011bf1c61
->>> R10: ffff88808df8e307 R11: ffffed1011bf1c60 R12: ffffed1011bf1c22
->>> R13: ffff88808df8e160 R14: ffff88808df8e110 R15: ffffffff81d54ed0
->>>  io_uring_release+0x3e/0x50 fs/io_uring.c:7324
->>>  __fput+0x33e/0x880 fs/file_table.c:280
->>>  task_work_run+0xf4/0x1b0 kernel/task_work.c:123
->>>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
->>>  exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
->>>  prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
->>>  syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
->>>  do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
->>>  entry_SYSCALL_64_after_hwframe+0x49/0xb3
->>
->> Make io ring ctx's percpu_ref balanced.
->>
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -5904,6 +5904,7 @@ static int io_submit_sqes(struct io_ring
->>  fail_req:
->>  			io_cqring_add_event(req, err);
->>  			io_double_put_req(req);
->> +			--submitted;
->>  			break;
->>  		}
-> 
-> 
-> fs/io_uring.c
->   5880          for (i = 0; i < nr; i++) {
->   5881                  const struct io_uring_sqe *sqe;
->   5882                  struct io_kiocb *req;
->   5883                  int err;
->   5884  
->   5885                  sqe = io_get_sqe(ctx);
->   5886                  if (unlikely(!sqe)) {
->   5887                          io_consume_sqe(ctx);
->   5888                          break;
->   5889                  }
->   5890                  req = io_alloc_req(ctx, statep);
->   5891                  if (unlikely(!req)) {
->   5892                          if (!submitted)
->   5893                                  submitted = -EAGAIN;
->   5894                          break;
->   5895                  }
->   5896  
->   5897                  err = io_init_req(ctx, req, sqe, statep, async);
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> On the success path io_init_req() takes some references like:
-> 
-> 	get_cred(req->work.creds);
 
-If a req have got into io_init_req(), than it'll be put at some point
-with io_put_req(). io_req_work_drop_env() called from there will clean
-up req->work.creds.
+--tgkfcjzjoptw7qlt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  
-> That one is probably buggy and should be put if the call to:
-> 
-> 	return io_req_set_file(state, req, fd, sqe_flags);
-> 
-> fails...  But io_req_set_file() takes some other references if it
-> succeeds like percpu_ref_get(req->fixed_file_refs); and it's not clear
-> that those are released if io_submit_sqe() fails.
+On Sat, Apr 18, 2020 at 01:17:29AM +0300, Priit Laes wrote:
+> Convert the sun7i-gmac driver to use a regmap-based driver,
+> instead of relying on the custom clock implementation.
+>=20
+> This allows to get rid of the last custom clock in the sun7i
+> device tree making the sun7i fully CCU-compatible.
+>=20
+> Compatibility with existing devicetrees is retained.
+>=20
+> Signed-off-by: Priit Laes <plaes@plaes.org>
+> ---
+>  .../net/ethernet/stmicro/stmmac/dwmac-sunxi.c | 124 ++++++++++++++++--
+>  1 file changed, 116 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c b/drivers/=
+net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> index 0e1ca2cba3c7..3476920bc762 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+> @@ -12,8 +12,11 @@
+>  #include <linux/module.h>
+>  #include <linux/phy.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_net.h>
+>  #include <linux/regulator/consumer.h>
+> +#include <linux/regmap.h>
+> +#include <linux/mfd/syscon.h>
+> =20
+>  #include "stmmac_platform.h"
+> =20
+> @@ -22,10 +25,20 @@ struct sunxi_priv_data {
+>  	int clk_enabled;
+>  	struct clk *tx_clk;
+>  	struct regulator *regulator;
+> +	struct regmap_field *regmap_field;
+> +};
+> +
+> +/* EMAC clock register @ 0x164 in the CCU address range */
+> +static const struct reg_field ccu_reg_field =3D {
+> +	.reg =3D 0x164,
+> +	.lsb =3D 0,
+> +	.msb =3D 31,
+>  };
+> =20
+>  #define SUN7I_GMAC_GMII_RGMII_RATE	125000000
+>  #define SUN7I_GMAC_MII_RATE		25000000
+> +#define SUN7I_A20_RGMII_CLK		((3 << 1) | (1 << 12))
+> +#define SUN7I_A20_MII_CLK		(1 << 12)
+> =20
+>  static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
+>  {
+> @@ -38,7 +51,20 @@ static int sun7i_gmac_init(struct platform_device *pde=
+v, void *priv)
+>  			return ret;
+>  	}
+> =20
+> -	/* Set GMAC interface port mode
+> +	if (gmac->regmap_field) {
+> +		if (phy_interface_mode_is_rgmii(gmac->interface)) {
+> +			regmap_field_write(gmac->regmap_field,
+> +					   SUN7I_A20_RGMII_CLK);
+> +			return clk_prepare_enable(gmac->tx_clk);
+> +		}
+> +		regmap_field_write(gmac->regmap_field, SUN7I_A20_MII_CLK);
+> +		return clk_enable(gmac->tx_clk);
+> +	}
+> +
+> +	/* Legacy devicetree support */
+> +
 
-The same should happen with req->fixed_file_refs, though I don't
-remember in details.
+Saying why exactly this is legacy would be great. Otherwise, we might end up
+with a legacy2 devicetree support somewhere down the line and no idea what =
+each
+actually mean.
 
-> 
->   5898                  io_consume_sqe(ctx);
->   5899                  /* will complete beyond this point, count as submitted */
->   5900                  submitted++;
+> +	/*
+> +	 * Set GMAC interface port mode
 
-Regarding, "--submitted" patch -- we take 1 ctx->refs per request, which
-is put in io_put_req(). So after a request passes the line above (5900),
-it's ref will be eventually dropped in io_put_req() and friends.
+Comments in net start on the first line
 
-And it's a bit more peculiar because io_submit_sqes() batch-takes N refs
-first, and then puts unused back at the end.
+>  	 *
+>  	 * The GMAC TX clock lines are configured by setting the clock
+>  	 * rate, which then uses the auto-reparenting feature of the
+> @@ -62,9 +88,15 @@ static void sun7i_gmac_exit(struct platform_device *pd=
+ev, void *priv)
+>  {
+>  	struct sunxi_priv_data *gmac =3D priv;
+> =20
+> -	if (gmac->clk_enabled) {
+> +	if (gmac->regmap_field) {
+> +		regmap_field_write(gmac->regmap_field, 0);
+>  		clk_disable(gmac->tx_clk);
+> -		gmac->clk_enabled =3D 0;
+> +	} else {
+> +		/* Legacy devicetree support */
+> +		if (gmac->clk_enabled) {
+> +			clk_disable(gmac->tx_clk);
+> +			gmac->clk_enabled =3D 0;
+> +		}
+>  	}
+>  	clk_unprepare(gmac->tx_clk);
+> =20
+> @@ -72,10 +104,53 @@ static void sun7i_gmac_exit(struct platform_device *=
+pdev, void *priv)
+>  		regulator_disable(gmac->regulator);
+>  }
+> =20
+> +static struct regmap *sun7i_gmac_get_syscon_from_dev(struct device_node =
+*node)
+> +{
+> +	struct device_node *syscon_node;
+> +	struct platform_device *syscon_pdev;
+> +	struct regmap *regmap =3D NULL;
+> +
+> +	syscon_node =3D of_parse_phandle(node, "syscon", 0);
+> +	if (!syscon_node)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	syscon_pdev =3D of_find_device_by_node(syscon_node);
+> +	if (!syscon_pdev) {
+> +		/* platform device might not be probed yet */
+> +		regmap =3D ERR_PTR(-EPROBE_DEFER);
+> +		goto out_put_node;
+> +	}
+> +
+> +	/* If no regmap is found then the other device driver is at fault */
+> +	regmap =3D dev_get_regmap(&syscon_pdev->dev, NULL);
+> +	if (!regmap)
+> +		regmap =3D ERR_PTR(-EINVAL);
+> +
+> +	platform_device_put(syscon_pdev);
+> +out_put_node:
+> +	of_node_put(syscon_node);
+> +	return regmap;
+> +}
+> +
+>  static void sun7i_fix_speed(void *priv, unsigned int speed)
+>  {
+>  	struct sunxi_priv_data *gmac =3D priv;
+> =20
+> +	if (gmac->regmap_field) {
+> +		clk_disable(gmac->tx_clk);
+> +		clk_unprepare(gmac->tx_clk);
+> +		if (speed =3D=3D 1000)
+> +			regmap_field_write(gmac->regmap_field,
+> +					   SUN7I_A20_RGMII_CLK);
+> +		else
+> +			regmap_field_write(gmac->regmap_field,
+> +					   SUN7I_A20_MII_CLK);
+> +		clk_prepare_enable(gmac->tx_clk);
+> +		return;
+> +	}
+> +
+> +	/* Legacy devicetree support... */
+> +
+>  	/* only GMII mode requires us to reconfigure the clock lines */
+>  	if (gmac->interface !=3D PHY_INTERFACE_MODE_GMII)
+>  		return;
+> @@ -102,6 +177,8 @@ static int sun7i_gmac_probe(struct platform_device *p=
+dev)
+>  	struct stmmac_resources stmmac_res;
+>  	struct sunxi_priv_data *gmac;
+>  	struct device *dev =3D &pdev->dev;
+> +	struct device_node *syscon_node;
+> +	struct regmap *regmap =3D NULL;
+>  	int ret;
+> =20
+>  	ret =3D stmmac_get_platform_resources(pdev, &stmmac_res);
+> @@ -124,11 +201,42 @@ static int sun7i_gmac_probe(struct platform_device =
+*pdev)
+>  		goto err_remove_config_dt;
+>  	}
+> =20
+> -	gmac->tx_clk =3D devm_clk_get(dev, "allwinner_gmac_tx");
+> -	if (IS_ERR(gmac->tx_clk)) {
+> -		dev_err(dev, "could not get tx clock\n");
+> -		ret =3D PTR_ERR(gmac->tx_clk);
+> -		goto err_remove_config_dt;
+> +	/* Attempt to fetch syscon node... */
+> +	syscon_node =3D of_parse_phandle(dev->of_node, "syscon", 0);
+> +	if (syscon_node) {
+> +		gmac->tx_clk =3D devm_clk_get(dev, "stmmaceth");
+> +		if (IS_ERR(gmac->tx_clk)) {
+> +			dev_err(dev, "Could not get TX clock\n");
+> +			ret =3D PTR_ERR(gmac->tx_clk);
+> +			goto err_remove_config_dt;
+> +		}
+> +
+> +		regmap =3D sun7i_gmac_get_syscon_from_dev(pdev->dev.of_node);
+> +		if (IS_ERR(regmap))
+> +			regmap =3D syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+> +								 "syscon");
+> +		if (IS_ERR(regmap)) {
+> +			ret =3D PTR_ERR(regmap);
+> +			dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
+> +			goto err_remove_config_dt;
+> +		}
+> +
+> +		gmac->regmap_field =3D devm_regmap_field_alloc(dev, regmap, ccu_reg_fi=
+eld);
+> +
+> +		if (IS_ERR(gmac->regmap_field)) {
+> +			ret =3D PTR_ERR(gmac->regmap_field);
+> +			dev_err(dev, "Unable to map syscon register: %d\n", ret);
+> +			goto err_remove_config_dt;
+> +		}
+> +	/* ...or fall back to legacy clock setup */
+> +	} else {
+> +		dev_info(dev, "Falling back to legacy devicetree support!\n");
+> +		gmac->tx_clk =3D devm_clk_get(dev, "allwinner_gmac_tx");
+> +		if (IS_ERR(gmac->tx_clk)) {
+> +			dev_err(dev, "could not get tx clock\n");
+> +			ret =3D PTR_ERR(gmac->tx_clk);
+> +			goto err_remove_config_dt;
+> +		}
+>  	}
+> =20
+>  	/* Optional regulator for PHY */
+> --=20
+> 2.25.2
+>=20
 
->   5901  
->   5902                  if (unlikely(err)) {
->   5903  fail_req:
->   5904                          io_cqring_add_event(req, err);
->   5905                          io_double_put_req(req);
->   5906                          break;
->   5907                  }
->   5908  
->   5909                  trace_io_uring_submit_sqe(ctx, req->opcode, req->user_data,
->   5910                                                  true, async);
->   5911                  err = io_submit_sqe(req, sqe, statep, &link);
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> here
-> 
->   5912                  if (err)
->   5913                          goto fail_req;
->   5914          }
-> 
-> regards,
-> dan carpenter
-> 
+--tgkfcjzjoptw7qlt
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Pavel Begunkov
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp2ceQAKCRDj7w1vZxhR
+xZLpAP95jFoC0Qc6mfzr6mzRMpJI06t+RyvL0dtKELzTASBpiwEAwpbsqJiv8Xgv
+JRFUO0am9FdhVeVkXmRMr03PhIeziQw=
+=JWDn
+-----END PGP SIGNATURE-----
+
+--tgkfcjzjoptw7qlt--
