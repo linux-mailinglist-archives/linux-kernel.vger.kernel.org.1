@@ -2,139 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D031B0AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632551B0AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729549AbgDTMvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:51:01 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:50963 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729141AbgDTMu5 (ORCPT
+        id S1729308AbgDTMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:51:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28334 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726723AbgDTMvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:50:57 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 467AB457;
-        Mon, 20 Apr 2020 08:50:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 Apr 2020 08:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=tBOAlHqUjXoeb6fAkzGVdh0v8Dq
-        4mrwbDL50ipwyYfc=; b=ZM90db3vCr9XtIH1GMdN+sK2FnPLtn3Qc0kasZSG/Px
-        jF/8Y6lt9gWqPgFppBzrFwpst4InLd6Hu4NVgU7XfWgT1TfuwpQksCKHEU97NHvG
-        tYzCi2Koj2eUbxYG5vpLjg5GhA7pODW4BHNK8oWSDX24sfREIzocc7E5rRv4iBWf
-        cX/TcA85AMAzbf310UIJQJU5qRRcyw9AwJaTH5KOhLWVv4iX8OuYjALH+D1HlNG3
-        BWgfpOhNcZ0RXbHWlna4eQkaPTIGph3GZzh1bMoGxSPxrTilg4rAW7Xeabf2UEAz
-        bhqyJmM76arzp1EdmHdDwnVhEsmi1h/a/ZoKr5tx5QA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=tBOAlH
-        qUjXoeb6fAkzGVdh0v8Dq4mrwbDL50ipwyYfc=; b=sDMoe/wDwHoQpIqtDFp7/0
-        skscWuXgRGF7dAvgXoGqIFmrG/PkxZphE+yJjpEtIgxo8D5SUghRxdbFR//JKJcg
-        MaC7gui5PSB4eJmgQ8dQKHcjtnzFmPB+GWavgJihDFEo4qmHRjhjLem+ZxEHBORo
-        QPKi/2WGiVC1KJPMjhrrHUby6H0+4K6tBklri98lREwT4eWoMbFZ/RyyP6akuZ8J
-        5fDYp1ufjmxRnGr9KFRhw4wUVKkB+aZOKw4T7Bhu7z4YCgWE9kuX2jlrZpiAfRRH
-        pNJR2LqpNmnZIza9WB+xs/qf9JTPowMHumvBJXld6dDKhGuNe0XXKgSeAVn2JHLA
-        ==
-X-ME-Sender: <xms:r5qdXgkF3FOSW1pgDJ4gDRl6TgmfqU9oLai7Fx6_f33TCDMN8ezZKg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdehjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:r5qdXsfdwWyT63VBq93b3u3N9Et1z9QVzfjhVhZ2zMmV7feIpRtPXA>
-    <xmx:r5qdXqYlO3Dpygwd_tFB87AxvzcmDnwuDVVR9FHU8JgsInGO8zftGw>
-    <xmx:r5qdXgbiqBCAqRRYx-k2Ci4KlN7WcA1WUDZU8zkJw8EoNLIJAmtn2w>
-    <xmx:r5qdXgkUAlMVbC8j0r1B2GZ-c7ZFW3ZqDuOP8cptLqGFouGa93XcBA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3A3A73065C04;
-        Mon, 20 Apr 2020 08:50:55 -0400 (EDT)
-Date:   Mon, 20 Apr 2020 14:50:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Priit Laes <plaes@plaes.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 2/4] clk: sunxi-ng: a20: export a regmap to access the
- GMAC register
-Message-ID: <20200420125054.k3mnegy6mjgq2lcd@gilmour.lan>
-References: <20200417221730.555954-1-plaes@plaes.org>
- <20200417221730.555954-3-plaes@plaes.org>
+        Mon, 20 Apr 2020 08:51:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587387110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qI4LH96Te2D61UkMMiu56eI+whpozLCjxv2Sx2J1tLs=;
+        b=HQwlnt3BGgNhDPFtbUWCR8ejXgm7dyvBoqwhR1Xord4cyNXZxG5fKz2CCeguBwCvf1w/zM
+        krINWkyUau/uYUCNLLUYt/M2rupgZM3BSSI/Optp+8nSJIUlyAbvf2wCxtT6w85GJWqU8n
+        804i+h/GFowqaUiW7dHEPhW1TUqx0fs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-Ml-2KNMWM828K23lPn3ExQ-1; Mon, 20 Apr 2020 08:51:48 -0400
+X-MC-Unique: Ml-2KNMWM828K23lPn3ExQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 162BF1005510;
+        Mon, 20 Apr 2020 12:51:47 +0000 (UTC)
+Received: from max.home.com (ovpn-114-63.ams2.redhat.com [10.36.114.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C5EB15DA7C;
+        Mon, 20 Apr 2020 12:51:43 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "akpm@osdl.org" <akpm@osdl.org>,
+        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "okir@suse.de" <okir@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
+        "kjlu@umn.edu" <kjlu@umn.edu>
+Subject: Re: [PATCH] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
+Date:   Mon, 20 Apr 2020 14:51:41 +0200
+Message-Id: <20200420125141.18002-1-agruenba@redhat.com>
+In-Reply-To: <7b95f2ac1e65635dcb160ca20e798d95b7503e49.camel@hammerspace.com>
+References: <1587361410-83560-1-git-send-email-xiyuyang19@fudan.edu.cn> <7b95f2ac1e65635dcb160ca20e798d95b7503e49.camel@hammerspace.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ahl7sjwrudp4rb5o"
-Content-Disposition: inline
-In-Reply-To: <20200417221730.555954-3-plaes@plaes.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mo., 20. Apr. 2020 um 14:15 Uhr schrieb Trond Myklebust <trondmy@hamme=
+rspace.com>:
+> I don't really see any alternative to adding a 'dfalloc' to track the
+> allocated dfacl separately.
 
---ahl7sjwrudp4rb5o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Something like the attached patch should work as well.
 
-On Sat, Apr 18, 2020 at 01:17:28AM +0300, Priit Laes wrote:
-> Only GMAC register is allowed to be written, read access to registers
-> is not restricted.
->=20
-> Export a regmap of the CCU.
->=20
-> Signed-off-by: Priit Laes <plaes@plaes.org>
-> ---
->  drivers/clk/sunxi-ng/ccu-sun4i-a10.c | 31 ++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->=20
-> diff --git a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c b/drivers/clk/sunxi-ng/=
-ccu-sun4i-a10.c
-> index 839e9d5a1cff..cba51c2c7eba 100644
-> --- a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
-> +++ b/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
-> @@ -1426,6 +1426,30 @@ static const struct sunxi_ccu_desc sun7i_a20_ccu_d=
-esc =3D {
->  	.num_resets	=3D ARRAY_SIZE(sunxi_a10_a20_ccu_resets),
->  };
-> =20
-> +/*
-> + * Add regmap for the GMAC driver (dwmac-sun8i) to allow access to
-> + * GMAC configuration register.
-> + */
-> +
-> +#define SUN7I_A20_GMAC_CFG_REG 0x164
-> +static bool sun7i_a20_ccu_regmap_accessible_reg(struct device *dev,
-> +						unsigned int reg)
-> +{
-> +	if (reg =3D=3D SUN7I_A20_GMAC_CFG_REG)
-> +		return true;
-> +	return false;
-> +}
-> +
-> +static struct regmap_config sun7i_a20_ccu_regmap_config =3D {
-> +	.reg_bits	=3D 32,
-> +	.val_bits	=3D 32,
-> +	.reg_stride	=3D 4,
-> +	.max_register	=3D 0x1f4, /* clk_out_b */
+Thanks,
+Andreas
 
-As far as I know, clk_out_b is a register that is also modified through that
-clock driver. How do you handle the concurrent accesses?
+---
+ fs/nfs/nfs3acl.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-Maxime
+diff --git a/fs/nfs/nfs3acl.c b/fs/nfs/nfs3acl.c
+index c5c3fc6e6c60..f1581f11c220 100644
+--- a/fs/nfs/nfs3acl.c
++++ b/fs/nfs/nfs3acl.c
+@@ -253,37 +253,41 @@ int nfs3_proc_setacls(struct inode *inode, struct p=
+osix_acl *acl,
+=20
+ int nfs3_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+ {
+-	struct posix_acl *alloc =3D NULL, *dfacl =3D NULL;
++	struct posix_acl *orig =3D acl, *dfacl =3D NULL;
+ 	int status;
+=20
+ 	if (S_ISDIR(inode->i_mode)) {
+ 		switch(type) {
+ 		case ACL_TYPE_ACCESS:
+-			alloc =3D dfacl =3D get_acl(inode, ACL_TYPE_DEFAULT);
+-			if (IS_ERR(alloc))
+-				goto fail;
++			dfacl =3D get_acl(inode, ACL_TYPE_DEFAULT);
++			status =3D PTR_ERR(dfacl);
++			if (IS_ERR(dfacl))
++				goto out;
+ 			break;
+=20
+ 		case ACL_TYPE_DEFAULT:
+ 			dfacl =3D acl;
+-			alloc =3D acl =3D get_acl(inode, ACL_TYPE_ACCESS);
+-			if (IS_ERR(alloc))
+-				goto fail;
++			acl =3D get_acl(inode, ACL_TYPE_ACCESS);
++			status =3D PTR_ERR(acl);
++			if (IS_ERR(acl))
++				goto out;
+ 			break;
+ 		}
+ 	}
+=20
+ 	if (acl =3D=3D NULL) {
+-		alloc =3D acl =3D posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
+-		if (IS_ERR(alloc))
+-			goto fail;
++		acl =3D posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
++		status =3D PTR_ERR(acl);
++		if (IS_ERR(acl))
++			goto out;
+ 	}
+ 	status =3D __nfs3_proc_setacls(inode, acl, dfacl);
+-	posix_acl_release(alloc);
++out:
++	if (acl !=3D orig)
++		posix_acl_release(acl);
++	if (dfacl !=3D orig)
++		posix_acl_release(dfacl);
+ 	return status;
+-
+-fail:
+-	return PTR_ERR(alloc);
+ }
+=20
+ const struct xattr_handler *nfs3_xattr_handlers[] =3D {
 
---ahl7sjwrudp4rb5o
-Content-Type: application/pgp-signature; name="signature.asc"
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+--=20
+2.25.3
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp2argAKCRDj7w1vZxhR
-xeXVAQDmNQz5L1EFRPYLu4y1O4Nl7C6aA+PFGDx33HStDUQvbAD/SCdOUUmrs/D3
-9HUgc0icssQhh/jpfcpB8M/MW4Fefg0=
-=eu9x
------END PGP SIGNATURE-----
-
---ahl7sjwrudp4rb5o--
