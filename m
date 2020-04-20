@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304261B1419
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6E11B1407
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgDTSMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 14:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgDTSMw (ORCPT
+        id S1727821AbgDTSJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 14:09:55 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.80]:22723 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbgDTSJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:12:52 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A568C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:12:52 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id n143so4939354qkn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ApN8wmrq6iDqYYI4CJMTNrRAj1G1KRWZLBPqVxRqFLw=;
-        b=PWDft4bzENX3CPDcyQ/HP7tqGBUmAXBgqGH4DMGg2irFP1qxcyjE+DDxX5eykC9s6S
-         zMqWUD0lGA/SrrHmzE9yP9mUYkZgwbaNgQB8YQ+oJOwXWBHvihr6pnv1Go5PUoGgJUdh
-         k7Pn8+9pv+DD7CgXVn+zV8NAzbA1RJqH36BvtE8hLrE5xfXWH0yfnyLjSsO/zAo3pedk
-         Rd8/Ga43wGDf6hq8fcW/KFdm7ZhnJ0LjPKCcgQr3x/vUR4d0R2DHBKAOi2vxQGSk7zBi
-         b7XRcT71lwIaUet8+dnngR/CKc3p/pqTj1Z7p8Y0j+WxzZbEyDezb0kQnYP5tftENfLa
-         gVqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ApN8wmrq6iDqYYI4CJMTNrRAj1G1KRWZLBPqVxRqFLw=;
-        b=sIV1ukkyYKd/ZC9AxmXJl01wxxP9ttJzdSh8KZRts2JvA0ksj8EUMyAs+ahVIBoE5e
-         phVgiYuU4qJVUN2UDg/wXvhHVC35hz6s7WDSvb9gPfkmCB8xXZJZTs3LxD4ZpjTs75Dn
-         2yetbROWxgDsxmB0/16oiLBXBw/PqoPOc85B9PB2mjG26b6MnhKGblVG9Pfs9qeoxVz1
-         Vsk6cKO7KFoPaWDvCZwiz6x4CWLM8QPhq5zdtRtPA+8TEIy6QTWSlVmZSmiJLTZIIX25
-         T77C/jOV0slYI0fr2+C2lP6JaFETBtJnI8DJvfOPq+mxekOAllwH5qv33n3bMie+/YHa
-         YPAg==
-X-Gm-Message-State: AGi0Pub2EnUSErjbS6xfLfBsgbaX5PDgXtRM7ekSzRlYEQnNetSR2Jgx
-        XY0TUJBfibsNiQP+YeB29VKTE7WDrEm963dKH6dLUIk1kcc=
-X-Google-Smtp-Source: APiQypLEhPySgD+zorc2IAkZBKw/mx4BbugsqsqOezviihtUZsnrO5kfZvs2/jHrfYj0W7bqQ6US9UAVlnGGotWL3vw=
-X-Received: by 2002:a05:620a:307:: with SMTP id s7mr15579555qkm.407.1587406370992;
- Mon, 20 Apr 2020 11:12:50 -0700 (PDT)
+        Mon, 20 Apr 2020 14:09:54 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id B48A72848A
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:09:52 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Qargj4g9sXVkQQargjFtPS; Mon, 20 Apr 2020 13:09:52 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:References:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=wJHD7TM3Fxu768MV0g98UB0HrQgL7g1TGpW7kc7eYmA=; b=tNk46QkHwbkRhl/pIcS2wG+G02
+        odFVU+69XYalTXZ55cswb2uY9LTYg1AEqtqpo9b3/S5mIVFEKMATcgSc24hrX3zvXLMZqD34wVlyr
+        F/S0uYUIIyY0zom6YAhFTwAwa904HAVlvCRvOuo3QqfHxC4TfpbsbZRd+s5kBiCSgiBbYxlKJxr7d
+        HIpwG2vPDiQKSKftvnXky++w/poyCBovxQnoPy0C164JiN+WDau9x5cWfsdKluft6KZzlM7KXfw3u
+        iF5O65eIjTpjA1zu1uStxusQYJX7souRp4akcRbIR+cabjI6lB5k2zcz0HgetteNKJdyR47nYmUDC
+        QlhL/NLA==;
+Received: from [201.166.169.58] (port=24020 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jQarf-0043yr-CF; Mon, 20 Apr 2020 13:09:51 -0500
+Date:   Mon, 20 Apr 2020 13:14:01 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 1/2][next] m68k: amiga: config: Replace zero-length
+ array with flexible-array member
+Message-ID: <20200420181401.GA32172@embeddedor>
 MIME-Version: 1.0
-References: <00000000000064f6e505a3b243aa@google.com> <CAHC9VhTZ_itetT4cx32vW3A79tb76dzjaBC_0S8Y_=DcEBL2nw@mail.gmail.com>
-In-Reply-To: <CAHC9VhTZ_itetT4cx32vW3A79tb76dzjaBC_0S8Y_=DcEBL2nw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 20 Apr 2020 20:12:39 +0200
-Message-ID: <CACT4Y+ZUpH3giZmiA51NZ1BhHOoGETqfxscBW6kBxWDf6-Q-HA@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in audit_log_vformat (2)
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     syzbot <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com>,
-        Eric Paris <eparis@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        linux-audit@redhat.com, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1585264062.git.gustavo@embeddedor.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.166.169.58
+X-Source-L: No
+X-Exim-ID: 1jQarf-0043yr-CF
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [201.166.169.58]:24020
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 6:29 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Mon, Apr 20, 2020 at 1:35 AM syzbot
-> <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    5356842d [EXPERIMENTAL] kmsan: eagerly allocate shadow at ..
-> > git tree:       https://github.com/google/kmsan.git master
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12f06720100000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=49e69b4d71a420ceda3e
-> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > userspace arch: i386
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133b5dabe00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143e1610100000
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
-> >
-> > =====================================================
-> > BUG: KMSAN: uninit-value in string_nocheck lib/vsprintf.c:608 [inline]
-> > BUG: KMSAN: uninit-value in string+0x522/0x690 lib/vsprintf.c:689
-> > CPU: 1 PID: 8854 Comm: syz-executor694 Not tainted 5.6.0-rc7-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
-> >  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
-> >  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
-> >  string_nocheck lib/vsprintf.c:608 [inline]
-> >  string+0x522/0x690 lib/vsprintf.c:689
-> >  vsnprintf+0x207d/0x31b0 lib/vsprintf.c:2574
->
-> Are there any ongoing problems with [vsn]printf() in the kernel at the
-> moment with syzbot?
->
-> I ask because on first look I'm not seeing any obvious problems in the
-> audit portion of this code path.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-None I am aware of. Alex?
-Can it be related to data_len==0? I don't see any obvious checks for
-this. And in that case will 0-terminate out-of-bounds (at offset -1?)
-and print potentially uninit data. But I looked at the code only very
-briefly so potentially I am totally wrong.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> >  audit_log_vformat+0x583/0xcd0 kernel/audit.c:1858
-> >  audit_log_format+0x220/0x260 kernel/audit.c:1892
-> >  audit_receive_msg kernel/audit.c:1344 [inline]
-> >  audit_receive+0x18a4/0x6d50 kernel/audit.c:1515
-> >  netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-> >  netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
-> >  netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
-> >  sock_sendmsg_nosec net/socket.c:652 [inline]
-> >  sock_sendmsg net/socket.c:672 [inline]
-> >  ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
-> >  ___sys_sendmsg net/socket.c:2399 [inline]
-> >  __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
-> >  __compat_sys_sendmsg net/compat.c:642 [inline]
-> >  __do_compat_sys_sendmsg net/compat.c:649 [inline]
-> >  __se_compat_sys_sendmsg net/compat.c:646 [inline]
-> >  __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
-> >  do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
-> >  do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
-> >  entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-> > RIP: 0023:0xf7fa0d99
-> > Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> > RSP: 002b:00000000ffb27c7c EFLAGS: 00000246 ORIG_RAX: 0000000000000172
-> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000200002c0
-> > RDX: 0000000000000000 RSI: 00000000080ea078 RDI: 00000000ffb27cd0
-> > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> >
-> > Uninit was created at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
-> >  kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
-> >  kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:82
-> >  slab_alloc_node mm/slub.c:2801 [inline]
-> >  __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4420
-> >  __kmalloc_reserve net/core/skbuff.c:142 [inline]
-> >  __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
-> >  alloc_skb include/linux/skbuff.h:1081 [inline]
-> >  netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
-> >  netlink_sendmsg+0x7d3/0x14d0 net/netlink/af_netlink.c:1893
-> >  sock_sendmsg_nosec net/socket.c:652 [inline]
-> >  sock_sendmsg net/socket.c:672 [inline]
-> >  ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
-> >  ___sys_sendmsg net/socket.c:2399 [inline]
-> >  __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
-> >  __compat_sys_sendmsg net/compat.c:642 [inline]
-> >  __do_compat_sys_sendmsg net/compat.c:649 [inline]
-> >  __se_compat_sys_sendmsg net/compat.c:646 [inline]
-> >  __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
-> >  do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
-> >  do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
-> >  entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-> > =====================================================
->
-> --
-> paul moore
-> www.paul-moore.com
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/CAHC9VhTZ_itetT4cx32vW3A79tb76dzjaBC_0S8Y_%3DDcEBL2nw%40mail.gmail.com.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ arch/m68k/amiga/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index c32ab8041cf6..06c15374200e 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -628,7 +628,7 @@ struct savekmsg {
+ 	unsigned long magic2;		/* SAVEKMSG_MAGIC2 */
+ 	unsigned long magicptr;		/* address of magic1 */
+ 	unsigned long size;
+-	char data[0];
++	char data[];
+ };
+ 
+ static struct savekmsg *savekmsg;
+-- 
+2.26.0
+
