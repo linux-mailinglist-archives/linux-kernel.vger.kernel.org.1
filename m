@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA051B09D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57771B0ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgDTMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        id S1728995AbgDTMrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728207AbgDTMmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:42:24 -0400
+        id S1726815AbgDTMqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:46:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F96E20736;
-        Mon, 20 Apr 2020 12:42:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D78A2078E;
+        Mon, 20 Apr 2020 12:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386543;
-        bh=HFt2cNSRVwRrNyRATsHeOZAVGfis+zFjOerb5zwBaPs=;
+        s=default; t=1587386802;
+        bh=41bMuC0XJaXuLe33x+qaMb1pSjt/qKw8s1GFHjLPPhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+XDTHnL5Wnrdx2/wPwvEYRCg0wlX1fQ0a6Oaik1o6ebFynhzmzmWlL6tUv3OvhVt
-         Rn8KpUnZTVGActOityj9mMPgeG3fAWslAX5fbxXJre1Y/7NwlUs3rApzpBX+RNV0Le
-         4LcuAAdR7futce0q9oyjOMOa8bh5cHthmDFHvKkA=
+        b=Yyea+H+2L09qpNSXUTn7Tw62lgO0ABf1PkmcD1alB6WIcNxiic9cvWyJOI7AAzzBF
+         kyLemsvI9lxxG7MK6Qq87pF2JsUJSuZ9GWVIQq7wTGJfXYiKkbFPn/bii15r4Ebmzh
+         S/QaiqCfdARAk1g65ohMolKqcH0vSWai8n49qXU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Allen <john.allen@amd.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.5 65/65] x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
+        stable@vger.kernel.org,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.4 31/60] ARM: dts: imx7-colibri: fix muxing of usbc_det pin
 Date:   Mon, 20 Apr 2020 14:39:09 +0200
-Message-Id: <20200420121520.415015152@linuxfoundation.org>
+Message-Id: <20200420121509.758653965@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Allen <john.allen@amd.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 
-commit bdf89df3c54518eed879d8fac7577fcfb220c67e upstream.
+commit 7007f2eca0f258710899ca486da00546d03db0ed upstream.
 
-Future AMD CPUs will have microcode patches that exceed the default 4K
-patch size. Raise our limit.
+USB_C_DET pin shouldn't be in ethernet group.
 
-Signed-off-by: John Allen <john.allen@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # v4.14..
-Link: https://lkml.kernel.org/r/20200409152931.GA685273@mojo.amd.com
+Creating a separate group allows one to use this pin
+as an USB ID pin.
+
+Fixes: b326629f25b7 ("ARM: dts: imx7: add Toradex Colibri iMX7S/iMX7D suppor")
+Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/microcode_amd.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx7-colibri.dtsi |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -41,7 +41,7 @@ struct microcode_amd {
- 	unsigned int			mpb[0];
- };
+--- a/arch/arm/boot/dts/imx7-colibri.dtsi
++++ b/arch/arm/boot/dts/imx7-colibri.dtsi
+@@ -346,7 +346,7 @@
+ &iomuxc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gpio1 &pinctrl_gpio2 &pinctrl_gpio3 &pinctrl_gpio4
+-		     &pinctrl_gpio7>;
++		     &pinctrl_gpio7 &pinctrl_usbc_det>;
  
--#define PATCH_MAX_SIZE PAGE_SIZE
-+#define PATCH_MAX_SIZE (3 * PAGE_SIZE)
+ 	pinctrl_gpio1: gpio1-grp {
+ 		fsl,pins = <
+@@ -451,7 +451,6 @@
  
- #ifdef CONFIG_MICROCODE_AMD
- extern void __init load_ucode_amd_bsp(unsigned int family);
+ 	pinctrl_enet1: enet1grp {
+ 		fsl,pins = <
+-			MX7D_PAD_ENET1_CRS__GPIO7_IO14			0x14
+ 			MX7D_PAD_ENET1_RGMII_RX_CTL__ENET1_RGMII_RX_CTL	0x73
+ 			MX7D_PAD_ENET1_RGMII_RD0__ENET1_RGMII_RD0	0x73
+ 			MX7D_PAD_ENET1_RGMII_RD1__ENET1_RGMII_RD1	0x73
+@@ -649,6 +648,12 @@
+ 		>;
+ 	};
+ 
++	pinctrl_usbc_det: gpio-usbc-det {
++		fsl,pins = <
++			MX7D_PAD_ENET1_CRS__GPIO7_IO14	0x14
++		>;
++	};
++
+ 	pinctrl_usbh_reg: gpio-usbh-vbus {
+ 		fsl,pins = <
+ 			MX7D_PAD_UART3_CTS_B__GPIO4_IO7	0x14 /* SODIMM 129 USBH PEN */
 
 
