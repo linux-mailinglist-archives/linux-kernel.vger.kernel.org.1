@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2CE1B19C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EE11B19C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgDTWt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:49:57 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:44226 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgDTWt4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:49:56 -0400
-Received: by mail-ot1-f68.google.com with SMTP id j4so9641344otr.11;
-        Mon, 20 Apr 2020 15:49:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WxapfpzO9hO69SC6FH5ie/6DnovyNGoMMyMXhqKbPBU=;
-        b=Mmdm+26eykaJdqR19q0NrZ2zAbxTEs/oMzm/89/ug7ywuGluks9FxC2dQcSAjnqDue
-         ic3FlvS51A+vcwboApnSWSPKN2NEdGSd2veMLJIKdEgm5x4Bc4yEV2nEpiYNuaCsd0iD
-         Rx62B4FXexRVSltTGwgUerDumKmqo9Qy0AEvrhISCMNqKYltYbgi76HLMvTnBCNVFAZ6
-         HU/C4SpN/vCzpET3RQO8vaB37WzZ/qL9GWhq0r2wAw9TJ0H0G8ORqv7n9drZVOH+nLXO
-         r9hxnEfgKhdsTGeSuNuz8TY3/xU2vZcb0Px4WjthXmEPirgUbCEQpgxmS3Nyqv7GD2aN
-         IlHQ==
-X-Gm-Message-State: AGi0PuZG1oDR6ZGYfP/DU0ic7TAMbJSz8ltMsKBJZViI8mmnXcqDRNjZ
-        uSSbP0OCPVDuKt864Od9WPApPv0=
-X-Google-Smtp-Source: APiQypLKcFOePhjlMDYofUDl5mlCPGBJze9fJqLOZ21TvgSwb9QwiaDLoKcHDilILHnRgmsVo9fqcg==
-X-Received: by 2002:a05:6830:155a:: with SMTP id l26mr10829424otp.246.1587422994251;
-        Mon, 20 Apr 2020 15:49:54 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id n38sm218272ooi.21.2020.04.20.15.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 15:49:53 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
+        id S1726743AbgDTWwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:52:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726006AbgDTWwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:52:40 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B5FC218AC;
+        Mon, 20 Apr 2020 22:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587423158;
+        bh=5C7s/qSVaNv2106+z5QfBbJ5HF3obzRVbPhXQwkzMnI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j87CF2BDztq+xDTfNKO0+xDowilpfPtOnTjkrx+LtOU/kJRmOlvqKFfU2pkDF2cDq
+         PhomJCqDYE25XANMzhIWFyaaphzfVSxWWcMREQOzYfuJlGzPlUdtGTVBISLqyCXIt9
+         RaIzewuD7N8gfFqK/neiGzr1TuIvWosE7DKZ8zHQ=
+Date:   Mon, 20 Apr 2020 15:52:37 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Dmitry Safonov <dima@arista.com>
 Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3] dt-bindings: Add a minimum version check for dtschema
-Date:   Mon, 20 Apr 2020 17:49:53 -0500
-Message-Id: <20200420224953.31327-1-robh@kernel.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
+Subject: Re: [PATCHv3 31/50] sh: Add loglvl to printk_address()
+Message-Id: <20200420155237.1b6532c0d0c6940fccd1b762@linux-foundation.org>
+In-Reply-To: <20200418201944.482088-32-dima@arista.com>
+References: <20200418201944.482088-1-dima@arista.com>
+        <20200418201944.482088-32-dima@arista.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dtschema package must be somewhat up to date as the tools and
-meta-schema checks are still evolving. Implement a version check,
-so this can be enforced. This will help ensure new schema submissions
-get checked against the latest meta-schemas.
+On Sat, 18 Apr 2020 21:19:25 +0100 Dmitry Safonov <dima@arista.com> wrote:
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v3:
- - Drop leading '0' in version month
- - Rework with Masahiro's shell commands
+> Currently, the log-level of show_stack() depends on a platform
+> realization. It creates situations where the headers are printed with
+> lower log level or higher than the stacktrace (depending on
+> a platform or user).
+> 
+> Furthermore, it forces the logic decision from user to an architecture
+> side. In result, some users as sysrq/kdb/etc are doing tricks with
+> temporary rising console_loglevel while printing their messages.
+> And in result it not only may print unwanted messages from other CPUs,
+> but also omit printing at all in the unlucky case where the printk()
+> was deferred.
+> 
+> Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
+> an easier approach than introducing more printk buffers.
+> Also, it will consolidate printings with headers.
+> 
+> Add log level argument to printk_address() as a preparation to introduce
+> show_stack_loglvl().
+> 
+> As a good side-effect show_fault_oops() now prints the address with
+> KERN_EMREG as the rest of output, making sure there won't be situation
+> where "PC: " is printed without actual address.
+> 
+> --- a/arch/sh/include/asm/kdebug.h
+> +++ b/arch/sh/include/asm/kdebug.h
+> @@ -12,7 +12,8 @@ enum die_val {
+>  };
+>  
+>  /* arch/sh/kernel/dumpstack.c */
+> -extern void printk_address(unsigned long address, int reliable);
+> +extern void printk_address(unsigned long address, int reliable,
+> +			   const char *loglvl);
+>  extern void dump_mem(const char *str, const char *loglvl,
+>  		     unsigned long bottom, unsigned long top);
+>  
+> ...
+>
+> --- a/arch/sh/mm/fault.c
+> +++ b/arch/sh/mm/fault.c
+> @@ -196,7 +196,7 @@ show_fault_oops(struct pt_regs *regs, unsigned long address)
+>  
+>  	printk(KERN_CONT " at %08lx\n", address);
+>  	printk(KERN_ALERT "PC:");
+> -	printk_address(regs->pc, 1);
+> +	printk_address(regs->pc, 1, KERN_ALERT);
+>  
 
-v2:
- - Use a build rule for the version check instead
----
- Documentation/devicetree/bindings/Makefile | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+It would be more intuitive to do
 
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 1df680d07461..67b0969281da 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -3,11 +3,19 @@ DT_DOC_CHECKER ?= dt-doc-validate
- DT_EXTRACT_EX ?= dt-extract-example
- DT_MK_SCHEMA ?= dt-mk-schema
- 
-+DT_SCHEMA_MIN_VERSION = 2020.4
-+
-+PHONY += check_dtschema_version
-+check_dtschema_version:
-+	@{ echo $(DT_SCHEMA_MIN_VERSION); \
-+	$(DT_DOC_CHECKER) --version 2>/dev/null || echo 0; } | sort -VC || \
-+	{ echo "ERROR: dtschema minimum version is v$(DT_SCHEMA_MIN_VERSION)" >&2; false; }
-+
- quiet_cmd_chk_binding = CHKDT   $(patsubst $(srctree)/%,%,$<)
-       cmd_chk_binding = $(DT_DOC_CHECKER) -u $(srctree)/$(src) $< ; \
-                         $(DT_EXTRACT_EX) $< > $@
- 
--$(obj)/%.example.dts: $(src)/%.yaml FORCE
-+$(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
- 	$(call if_changed,chk_binding)
- 
- # Use full schemas when checking %.example.dts
-@@ -34,11 +42,11 @@ override DTC_FLAGS := \
- 	-Wno-avoid_unnecessary_addr_size \
- 	-Wno-graph_child_address
- 
--$(obj)/processed-schema-examples.yaml: $(DT_DOCS) FORCE
-+$(obj)/processed-schema-examples.yaml: $(DT_DOCS) check_dtschema_version FORCE
- 	$(call if_changed,mk_schema)
- 
- $(obj)/processed-schema.yaml: DT_MK_SCHEMA_FLAGS := -u
--$(obj)/processed-schema.yaml: $(DT_SCHEMA_FILES) FORCE
-+$(obj)/processed-schema.yaml: $(DT_SCHEMA_FILES) check_dtschema_version FORCE
- 	$(call if_changed,mk_schema)
- 
- extra-y += processed-schema.yaml
--- 
-2.20.1
+	printk_address(KERN_ALERT, regs->pc, 1);
+
+because the loglevel always comes first.
+
+I guess it doesn't matter much, as sh seems to be rather dead.
 
