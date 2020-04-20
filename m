@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683741B11A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F21B119A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgDTQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725287AbgDTQdh (ORCPT
+        id S1726112AbgDTQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:29:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42948 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725271AbgDTQ3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:33:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CF0C025491;
-        Mon, 20 Apr 2020 09:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=CvAAuoxWyufDWEFP6WEdB7uoSrO8WvrXLQoymRvBxWA=; b=goQ2DYjOqDYIjUoE1hbxb7KL5m
-        kAAns3hsxydLwGCF628DLRfJUmcdZuDHht1BPGxhQgMr9Pd1pA8qQ+P5imIC6mULqPqu7u3eYP66c
-        djemYJzRQONbt9Acpf16FDPboAZtKVz5HI1s/aMr09SnTLOjwNGFv52Djy91MpRlJcnrTyXQsKabl
-        JeCcB7I5ysxZDfghDRWsWW/pF9Zt7U/eHdDSj0Rt3kjk8cX+jagkUUckmL+S1SbfvgoACMKIfwf0B
-        2K84eS5Y8zveh/If0gJoMKbCD/QR6boyifR3RWO+oMLT3ZfWLGOkYDrAzVhgQ3uwbGVQvt1aPVsI4
-        8Rs03b9w==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jQZMT-00057w-QB; Mon, 20 Apr 2020 16:33:33 +0000
-Subject: Re: linux-next: Tree for Apr 20 (media: usbvision)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20200420142610.390e5922@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <02165f8b-f19f-2293-065a-cf9ad4de9689@infradead.org>
-Date:   Mon, 20 Apr 2020 09:33:31 -0700
+        Mon, 20 Apr 2020 12:29:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KGIRrK097179;
+        Mon, 20 Apr 2020 16:29:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vaowHN1wYK+HPlBhnAmToCjB2mfzdaKTJsxFeKtQV/w=;
+ b=0dASc/nXEa8RpOpZQvXqmgXZXIEN6oc6b+2XX7OZFRB/ZBe6oSu84+c3XbxPG4jWlALT
+ SIZG79KJDRBfyWMyLXx2V6IkiLBiLYpOfMgL0PKJxfNeNQA6fVxDgQMwwFSTJ7GIDVjI
+ VGh/o+vBsQx4nInPwt0Xn67kwMH3GyknBMPHAwWmHhIa6yofIRIW16ttkRvOaKgRW/iA
+ NzpUulDJvOdUOrclk19A80q31tNNzeOQL5KEalEG+SzVL0PEKAyw8NoiuW0zqWlj/zZc
+ kpMsmwElf/uSRkd8ocql5imLV1G/NaUc9+JFYBDYAYuhhSsrTHPFRwNc0mZEsZ7NI2S6 pQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30grpgcs6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 16:29:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KGCOeU051492;
+        Mon, 20 Apr 2020 16:29:17 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30gbbb144c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 16:29:16 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03KGTF0w017518;
+        Mon, 20 Apr 2020 16:29:15 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Apr 2020 09:29:15 -0700
+Subject: Re: [patch 00/15] x86/tlb: Unexport per-CPU tlbstate
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <20200419203137.214111265@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <860bf6a4-e0c9-92a8-065d-780f4a5794c1@oracle.com>
+Date:   Mon, 20 Apr 2020 18:33:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200420142610.390e5922@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200419203137.214111265@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=911 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=963 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 clxscore=1011
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004200133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/20 9:26 PM, Stephen Rothwell wrote:
-> Hi all,
+
+
+On 4/19/20 10:31 PM, Thomas Gleixner wrote:
+> The per-CPU tlbstate contains sensitive information which should be really
+> only accessible in core code. It is exported to modules because some inline
+> functions which are required by KVM need access to it.
 > 
-> Changes since 20200417:
+> The following series creates regular exported functions for the few things
+> which are needed by KVM and hides the struct definition and some low level
+> helpers from modules.
+> 
+> The series is also available from git:
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel x86/tlb
+> 
+> Thanks,
+> 
+> 	tglx
 > 
 
-on i386:
-CONFIG_USB=m
-CONFIG_VIDEO_USBVISION=y
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_write_reg_irq':
-usbvision-core.c:(.text+0x8a4): undefined reference to `usb_submit_urb'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_isoc_irq':
-usbvision-core.c:(.text+0x2ee8): undefined reference to `usb_submit_urb'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_read_reg':
-usbvision-core.c:(.text+0x30ad): undefined reference to `usb_control_msg'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_write_reg':
-usbvision-core.c:(.text+0x3178): undefined reference to `usb_control_msg'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_set_output':
-usbvision-core.c:(.text+0x344e): undefined reference to `usb_control_msg'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_set_input':
-usbvision-core.c:(.text+0x3b9b): undefined reference to `usb_control_msg'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_setup':
-usbvision-core.c:(.text+0x4009): undefined reference to `usb_control_msg'
-ld: drivers/staging/media/usbvision/usbvision-core.o:usbvision-core.c:(.text+0x417f): more undefined references to `usb_control_msg' follow
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_set_alternate':
-usbvision-core.c:(.text+0x4518): undefined reference to `usb_set_interface'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_init_isoc':
-usbvision-core.c:(.text+0x4673): undefined reference to `usb_alloc_urb'
-ld: usbvision-core.c:(.text+0x46a5): undefined reference to `usb_alloc_coherent'
-ld: usbvision-core.c:(.text+0x4765): undefined reference to `usb_submit_urb'
-ld: drivers/staging/media/usbvision/usbvision-core.o: in function `usbvision_stop_isoc':
-usbvision-core.c:(.text+0x4837): undefined reference to `usb_kill_urb'
-ld: usbvision-core.c:(.text+0x485f): undefined reference to `usb_free_coherent'
-ld: usbvision-core.c:(.text+0x4874): undefined reference to `usb_free_urb'
-ld: usbvision-core.c:(.text+0x48f1): undefined reference to `usb_set_interface'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_release':
-usbvision-video.c:(.text+0x1a8a): undefined reference to `usb_free_urb'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_disconnect':
-usbvision-video.c:(.text+0x1b74): undefined reference to `usb_put_dev'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_radio_close':
-usbvision-video.c:(.text+0x1c89): undefined reference to `usb_set_interface'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_probe':
-usbvision-video.c:(.text+0x1e4b): undefined reference to `usb_get_dev'
-ld: usbvision-video.c:(.text+0x20e1): undefined reference to `usb_alloc_urb'
-ld: usbvision-video.c:(.text+0x2797): undefined reference to `usb_put_dev'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_exit':
-usbvision-video.c:(.exit.text+0x37): undefined reference to `usb_deregister'
-ld: drivers/staging/media/usbvision/usbvision-video.o: in function `usbvision_init':
-usbvision-video.c:(.init.text+0xf9): undefined reference to `usb_register_driver'
-ld: drivers/staging/media/usbvision/usbvision-i2c.o: in function `usbvision_i2c_write':
-usbvision-i2c.c:(.text+0x2f4): undefined reference to `usb_control_msg'
+For all patches.
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+alex.
