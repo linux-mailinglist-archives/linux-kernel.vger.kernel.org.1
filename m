@@ -2,129 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3161B0CB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F53C1B0CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgDTNe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:34:29 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:34151 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgDTNe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:34:29 -0400
-Received: by mail-pl1-f196.google.com with SMTP id a23so3962348plm.1;
-        Mon, 20 Apr 2020 06:34:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mjNECG0zUa98mbEEuBkvWe9Ieqz2VZ6WDWMOSc+uoj4=;
-        b=cqb/jFzBB1HQjTjaDPfE54d2LTUwpv6zu1eiGOpPV3gpBkhmot6VlnvHC6h7oqgTVO
-         /EEjuSDUXViO2ld35IUV8ekjaczxsnrsaMPWamq/l3bqJfzRzymXjJ67+y6zgwVTuoSI
-         GODCG8C81hlooGU/KfU0mVQ5FVC2saaN7Qb4h4yXlUbbLGq3PkmkSUepLto7HQuTIS41
-         /lwp49flMfl1YAokHBhKp0JS2CC2l/722VpR8ND54gvkTRTZOP8L3AUtUNOAEqOvnuUZ
-         uZT/0uI/ab4EsR/lSlnkFsK6IcWtumoEzXJzBB/xjVfbW9ATmIf0oTQRdFEkHNf85RB5
-         +LKA==
-X-Gm-Message-State: AGi0PuYUVhQXB3rNRD6r+M4QNyFlYQ0xhVDqss/nyIjTdPYxhDdogk2H
-        8FazRCmZME1OLlPO4nmWIge4Gg2XYrU=
-X-Google-Smtp-Source: APiQypLiTjAOOTMhMi73MBfvJzkDDzdD3K1JRvqWj1zfyAfnK4efY8DeenczBbc5+l2iDJffGN4tmg==
-X-Received: by 2002:a17:90a:364c:: with SMTP id s70mr21327906pjb.143.1587389668077;
-        Mon, 20 Apr 2020 06:34:28 -0700 (PDT)
-Received: from [100.124.9.192] ([104.129.199.10])
-        by smtp.gmail.com with ESMTPSA id c1sm1127223pfc.94.2020.04.20.06.34.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2020 06:34:26 -0700 (PDT)
-Subject: Re: [PATCH 2/4] loop: Factor out configuring loop from status.
-To:     Martijn Coenen <maco@android.com>, axboe@kernel.dk, hch@lst.de,
-        ming.lei@redhat.com
-Cc:     narayan@google.com, zezeozue@google.com, kernel-team@android.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@google.com, Chaitanya.Kulkarni@wdc.com
-References: <20200420080409.111693-1-maco@android.com>
- <20200420080409.111693-3-maco@android.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <50090c2e-d882-507f-43a7-5ed76c36390c@acm.org>
-Date:   Mon, 20 Apr 2020 06:34:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728338AbgDTNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:38:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55712 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726798AbgDTNiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 09:38:51 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9673631221DD9CA2C719;
+        Mon, 20 Apr 2020 21:36:40 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 21:36:34 +0800
+Subject: Re: [PATCH v2] staging: mt7621-pinctrl: Use correct pointer type
+ argument for sizeof
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <matthias.bgg@gmail.com>, <nishkadg.linux@gmail.com>,
+        <devel@driverdev.osuosl.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420124151.4356-1-yanaijie@huawei.com>
+ <20200420130715.GA4040736@kroah.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <6df8fd83-9888-1aab-c5a6-87e5b2f942ca@huawei.com>
+Date:   Mon, 20 Apr 2020 21:36:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200420080409.111693-3-maco@android.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200420130715.GA4040736@kroah.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 1:04 AM, Martijn Coenen wrote:
 
-No trailing dot at the end of a patch subject please.
 
->   static int
-> -loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
-> +loop_set_from_status(struct loop_device *lo, const struct loop_info64 *info)
->   {
->   	int err;
->   	struct loop_func_table *xfer;
->   	kuid_t uid = current_uid();
-> +
-> +	if ((unsigned int) info->lo_encrypt_key_size > LO_KEY_SIZE)
-> +		return -EINVAL;
-> +
-> +	err = loop_release_xfer(lo);
-> +	if (err)
-> +		return err;
-> +
-> +	if (info->lo_encrypt_type) {
-> +		unsigned int type = info->lo_encrypt_type;
-> +
-> +		if (type >= MAX_LO_CRYPT)
-> +			return -EINVAL;
-> +		xfer = xfer_funcs[type];
-> +		if (xfer == NULL)
-> +			return -EINVAL;
-> +	} else
-> +		xfer = NULL;
-> +
-> +	err = loop_init_xfer(lo, xfer, info);
-> +	if (err)
-> +		return err;
-> +
-> +	lo->lo_offset = info->lo_offset;
-> +	lo->lo_sizelimit = info->lo_sizelimit;
-> +	memcpy(lo->lo_file_name, info->lo_file_name, LO_NAME_SIZE);
-> +	memcpy(lo->lo_crypt_name, info->lo_crypt_name, LO_NAME_SIZE);
-> +	lo->lo_file_name[LO_NAME_SIZE-1] = 0;
-> +	lo->lo_crypt_name[LO_NAME_SIZE-1] = 0;
-> +
-> +	if (!xfer)
-> +		xfer = &none_funcs;
-> +	lo->transfer = xfer->transfer;
-> +	lo->ioctl = xfer->ioctl;
-> +
-> +	if ((lo->lo_flags & LO_FLAGS_AUTOCLEAR) !=
-> +	     (info->lo_flags & LO_FLAGS_AUTOCLEAR))
-> +		lo->lo_flags ^= LO_FLAGS_AUTOCLEAR;
-> +
-> +	lo->lo_encrypt_key_size = info->lo_encrypt_key_size;
-> +	lo->lo_init[0] = info->lo_init[0];
-> +	lo->lo_init[1] = info->lo_init[1];
-> +	if (info->lo_encrypt_key_size) {
-> +		memcpy(lo->lo_encrypt_key, info->lo_encrypt_key,
-> +		       info->lo_encrypt_key_size);
-> +		lo->lo_key_owner = uid;
-> +	}
-> +
-> +	return 0;
-> +}
+ÔÚ 2020/4/20 21:07, Greg KH Ð´µÀ:
+> On Mon, Apr 20, 2020 at 08:41:51PM +0800, Jason Yan wrote:
+>> Fix the following coccicheck warning:
+>>
+>> drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c:223:14-36: WARNING: Use
+>> correct pointer type argument for sizeof
+>>
+>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+>> ---
+>>   drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> What changed from v1?  Always put that below the --- line.
+> 
+> Please fix up and send a v3.
+> 
 
-Please add a (one line?) comment above this function that explains the 
-purpose of this function. Is the purpose of this function perhaps to 
-initialize loop device parameters based on the information received from 
-user space (the 'info' argument)?
+OK.
 
-Thanks,
+> thanks,
+> 
+> greg k-h
+> 
+> .
+> 
 
-Bart.
