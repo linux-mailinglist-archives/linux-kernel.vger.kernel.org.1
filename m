@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172211B0AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EE01B0AFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgDTMwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728009AbgDTMwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:52:17 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16736C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:52:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g6so4986372pgs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=MAn7hGAHod1EC34/XC7X7Tj9BVqJ/NY2c4VQxrVpxx4=;
-        b=daZG3iGdMhlZvCUWmVEiIQPAN6UZg2Qus2SFPnwoIfmc+BBFV+I59x3aN+XR7ZiuyC
-         uVXuH2J9d+6o0kUUSx8a9Fdfu9mELZ1pGfqiIvWfctQ+k5DHIayt/Hd80VX4oncWf0bi
-         7OaYA5rsFeBrcH6cYzSoDQ6FF/+spn5pBNcl4jIiNGjKfg7m3Ff0uD+C5jJ6OLan+EOz
-         B2SqolzEi0REFw2DdkMkTWW5ehMOY7IrcX6L4V0TUI4K0EWQsB0RST5N65TFiGKS709h
-         /5e05xO/i659emkH97AbLRoYSf2/P9AjtfM8ZgTzmVMmgE4nyasT6XiPHuz/nQ9rml6k
-         cWHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MAn7hGAHod1EC34/XC7X7Tj9BVqJ/NY2c4VQxrVpxx4=;
-        b=LfI0QAJ+z7jlHUp6f1yEmgqJkUYhnbJ4cqGRwYheUIEwpHnaRCvsMPmfvhpNDSpmqP
-         FXG2I2HRPbQzNChQ9aMgv+z/yX0BcfaziOsiSuWlXseReyQh5oz1Vnni1ad0FDWSf15A
-         nTP8/COy+ewvcsVAUVJmjqi1gM0tw1suDHRFkagZXubTdX43MemkQmXIQoAivp8ki4U2
-         KqucSY0Brmusdq3zXhbNE8+f+JSPyH8bTygR1Q7NIrbXsGPHyS2tv26YqM7NHAgnpp1x
-         kWjazNJXx7BiKT+OaYkcTAh5+xlql8Tsc2jzdffyJNhyc3k8doNlcF4HQomd7D4hgZ+p
-         kWvw==
-X-Gm-Message-State: AGi0PuZH+Pr6soOtFHQ+F+eHpoKumhXFBDyvVhH5+9+dOxxYw/BdDM0W
-        SikMqxFbzDA/f7o18jCHdJ54FtpU+bzVYA==
-X-Google-Smtp-Source: APiQypKjGYhisQKGfpwiryIzO08I2KAUmHs+YFxoaLHHjdOFdkb5X2HMDeQGuuuJMPwGpaWq1ouRpA==
-X-Received: by 2002:a62:83c3:: with SMTP id h186mr5992058pfe.192.1587387136218;
-        Mon, 20 Apr 2020 05:52:16 -0700 (PDT)
-Received: from localhost.localdomain ([203.163.233.7])
-        by smtp.gmail.com with ESMTPSA id z7sm1052038pff.47.2020.04.20.05.52.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Apr 2020 05:52:15 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-To:     linux-kernel@vger.kernel.org
-Cc:     ani@anirban.org, Ani Sinha <ani@anisinha.ca>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Frederick Lawler <fred@fredlawl.com>,
-        Denis Efremov <efremov@linux.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>, linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: pciehp: remove unused EMI() macro
-Date:   Mon, 20 Apr 2020 18:21:41 +0530
-Message-Id: <1587387114-38475-1-git-send-email-ani@anisinha.ca>
-X-Mailer: git-send-email 2.7.4
+        id S1727850AbgDTMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:52:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2416 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728937AbgDTMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:52:50 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3E7B429041ABCD99F1AA;
+        Mon, 20 Apr 2020 20:52:46 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.154) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 20:52:41 +0800
+Subject: Re: [PATCH] ASoC: wm89xx: Fix build error without CONFIG_I2C
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20200418090853.30340-1-yuehaibing@huawei.com>
+ <20200420102701.GB44490@ediswmail.ad.cirrus.com>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <geert@linux-m68k.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <f175d79f-ff45-18e5-f7e7-1b22a1495871@huawei.com>
+Date:   Mon, 20 Apr 2020 20:52:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
+MIME-Version: 1.0
+In-Reply-To: <20200420102701.GB44490@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EMI() macro seems to be unused. So removing it. Thanks
-Mika Westerberg <mika.westerberg@linux.intel.com> for
-pointing it out.
+On 2020/4/20 18:27, Charles Keepax wrote:
+> On Sat, Apr 18, 2020 at 05:08:53PM +0800, YueHaibing wrote:
+>> sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
+>> wm8900.c:(.text+0xa36): undefined reference to `__devm_regmap_init_i2c'
+>> sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
+>> wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+>> sound/soc/codecs/wm8900.o: In function `wm8900_exit':
+>> wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+>> sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
+>> wm8988.c:(.text+0x857): undefined reference to `__devm_regmap_init_i2c'
+>> sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
+>> wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+>> sound/soc/codecs/wm8988.o: In function `wm8988_exit':
+>> wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+>> sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
+>> wm8995.c:(.text+0x1c4f): undefined reference to `__devm_regmap_init_i2c'
+>> sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
+>> wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+>> sound/soc/codecs/wm8995.o: In function `wm8995_exit':
+>> wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+>>
+>> Add missing I2C dependency to fix this.
+>>
+> 
+> This doesn't look like the right fix there, all these parts can
+> be used on SPI so should be usable without I2C build in.
 
-Signed-off-by: Ani Sinha <ani@anisinha.ca>
----
- drivers/pci/hotplug/pciehp.h | 1 -
- 1 file changed, 1 deletion(-)
+Sorry, the patch title is wrong, the issue is CONFIG_I2C m but SND_SOC_WM8900 is y.
 
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index 5747967..4fd200d 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -148,7 +148,6 @@ struct controller {
- #define MRL_SENS(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_MRLSP)
- #define ATTN_LED(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_AIP)
- #define PWR_LED(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_PIP)
--#define EMI(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_EIP)
- #define NO_CMD_CMPL(ctrl)	((ctrl)->slot_cap & PCI_EXP_SLTCAP_NCCS)
- #define PSN(ctrl)		(((ctrl)->slot_cap & PCI_EXP_SLTCAP_PSN) >> 19)
- 
--- 
-2.7.4
+This should depends on SND_SOC_I2C_AND_SPI like others.
+
+> 
+> Thanks,
+> Charles
+> 
+> .
+> 
 
