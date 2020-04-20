@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB211B0320
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B1A1B030C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgDTHfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:35:13 -0400
-Received: from vultr.net.flygoat.com ([149.28.68.211]:59030 "EHLO
-        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbgDTHfN (ORCPT
+        id S1726050AbgDTHeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725994AbgDTHeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:35:13 -0400
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 8137120CF0;
-        Mon, 20 Apr 2020 07:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1587368112; bh=bDSuF4kuZpYpNlfsiSYtB4XVxy4h2Vp476P6s+KXRFk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HW2pgeCqOei8AF7Iy4NgvHPS8XAZbZ0Ei87BFcwHGFDytzJieqLuoGX575ssMDlk+
-         m5CYxBAOcqxZK1kVW9KG/stLt78tMqb0oE+kHrK0B9Q5KLZprWEEbA3iMWtdDJiS9X
-         Zk0t6KJBtg5WEsCbGUmZEnT5YVnKdNep/w+MhzemZP+sTMmXx6OucaumUblFZWrswz
-         //Q8rHXeHMqULxS68ai0itPfz0qkKTBaeiOwHNuhB2gonjLaFQupSLuL3a6xnat2Kr
-         OHhbheXb1nIWXFLreDFkViiOYUSo/KWk3oBr4VghpffVsXnt8alQGEYUypnoDsYURR
-         JAkDUSsh49vTg==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 5/5] MIPS: Loongson64: Mark RS780 HPET as broken
-Date:   Mon, 20 Apr 2020 15:33:40 +0800
-Message-Id: <20200420073347.157230-6-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
-References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+        Mon, 20 Apr 2020 03:34:31 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F3BC061A10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:31 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id c24so3228125uap.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=opCQWgYuAFYxLdRztezYqwdg+lsU+kLFUGlLQxUPDrg=;
+        b=pAtkxvUGU+urLdOoGr0lXgvyKlRl16BlV9bPojdE8r0nGdNQq0Sf8j3kDMPzqsRTNX
+         /LFbidWy/e3DGc29eEF6nu6yj59jxfAxBjHAb2EgMa+bg+B48EiqCITZNUxpRSsLnMrT
+         1pAPf2rlHJV8chg1gtTC1AdvdJrNEq9jnheHYXDf0XqoLc1k7T/9W8DO+0mdau7N8LYG
+         DLjtMznlnI3ljgsnfWjLUkhC+8JsNwrM8EnL6vcMmUgkJr/2MQGjDEJQS8mgEpIeVW0x
+         b34kleywutIxcGdICiWzOZaLbd2j2BLBRJKRpKtHFv0Q+/EHjk5AYIBWRS5G/u16KQBh
+         z7zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=opCQWgYuAFYxLdRztezYqwdg+lsU+kLFUGlLQxUPDrg=;
+        b=GNYnappPQVa5+G/EC98p35ONM416y2KWe530y/d3+/K0diZaP2GgsmUXyRDKQPzNsG
+         fNMJWNionP+3koxvv8ScvxPDo/E+OlyfZDWXa07FAy+fkkSfoyfGLX7Jz/T0uS90T9n4
+         FJrctUijhydIRjGAcnZ1ZrXWE5+eGng1G3XXydHdoCQpnRDfb5/Jj95DFPxMTPC6Wvbh
+         Dk6lwK5wY/MjZPjkeZWmSqTNU6KaRjq5JFbRy47MPVf8nuUoj96cYF3CQnKxQe+xn+W3
+         hYokyigK0d3o1E6mG4AZRUFNHMd3pLtQ9cJfteJvLZZG+NchhkdXxCXK7Z0aOntHaHPJ
+         qEow==
+X-Gm-Message-State: AGi0PubVFOLOWpbpO9Hf4NDGa2lYI49WHerzSYWlCA/5sfvYolM7onkE
+        UAhiUiGKXc5zYptryX0iSsZwJZpDZVWgJYIqH6VOhA==
+X-Google-Smtp-Source: APiQypIP0+2cZRffzlocpbxn2ONEPkD5ue7l25ETDalvg1y0d5aVMpH/wBvI56nsmtEm2deJhKL1tD2ouDEFeELmEvY=
+X-Received: by 2002:ab0:3343:: with SMTP id h3mr272200uap.19.1587368070353;
+ Mon, 20 Apr 2020 00:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200417154901.112236-1-colin.king@canonical.com>
+In-Reply-To: <20200417154901.112236-1-colin.king@canonical.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 20 Apr 2020 09:33:54 +0200
+Message-ID: <CAPDyKFocu+ckJE5WpMWuNTMJiwkfgQ4Ha-AXCF4mRJKMrhFa0A@mail.gmail.com>
+Subject: Re: [PATCH][next] sdhci: arasan: fix uninitialized value being
+ returned as error code
+To:     Colin King <colin.king@canonical.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is using some dangerous hack to set MMIO address for HPET,
-which might break systems with other kinds of PCH.
+On Fri, 17 Apr 2020 at 17:49, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently the error return value in variable ret is not being initialized
+> and so a successful return path is returning a garbage value. Since ret
+> is not being used the simple fix is just return 0 on a successful return.
+>
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: f73e66a36772 ("sdhci: arasan: Add support for Versal Tap Delays")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Also, as Loongson-3 cpufreq driver never appeared in mainline,
-this driver rarely got used.
+Thanks for the patch, but this time I have already applied [1] an
+earlier fix for it.
 
-So we temporarily mark it as broken until we find a better solution.
+Kind regards
+Uffe
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/loongson64/Kconfig | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+[...]
 
-diff --git a/arch/mips/loongson64/Kconfig b/arch/mips/loongson64/Kconfig
-index c386b8a3c753..16e6acab8cce 100644
---- a/arch/mips/loongson64/Kconfig
-+++ b/arch/mips/loongson64/Kconfig
-@@ -4,14 +4,12 @@ if MACH_LOONGSON64
- config RS780_HPET
- 	bool "RS780/SBX00 HPET Timer"
- 	depends on MACH_LOONGSON64
-+	depends on BROKEN
- 	select MIPS_EXTERNAL_TIMER
- 	help
- 	  This option enables the hpet timer of AMD RS780/SBX00.
- 
--	  If you want to enable the Loongson3 CPUFreq Driver, Please enable
--	  this option at first, otherwise, You will get wrong system time.
--
--	  If unsure, say Yes.
--
-+	  Note: This driver is doing some dangerous hack. Please only enable
-+	  it on RS780E systems.
- 
- endif # MACH_LOONGSON64
--- 
-2.26.0.rc2
-
+[1] https://patchwork.kernel.org/patch/11493633/
