@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709321B1811
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD8E1B1815
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgDTVKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:10:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27830 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725774AbgDTVKG (ORCPT
+        id S1726981AbgDTVLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:11:14 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33586 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbgDTVLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:10:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587417005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7lDCFaFUw4R9AWRYUPjaGqLtTptNqr4/gsP5Cs91YoI=;
-        b=IaLKHa1PFuA/zjjdIBFLmKdRMKCVJ9lh0yPCN6+ZetUHxOnTosHhGYu4brxt1WnXm/oo7y
-        FRclpDVS+1/h6W22/9AgfqGkd+8lazk1c9VuZ8ORrEZXgD+Mt8C0bvqoiTbf4AJ7dPd554
-        9YU52jBnpEuTHckXhMP/vbSxbQCDe4M=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-SGX-p1vmMweJlmMJgTzKJA-1; Mon, 20 Apr 2020 17:09:57 -0400
-X-MC-Unique: SGX-p1vmMweJlmMJgTzKJA-1
-Received: by mail-wr1-f72.google.com with SMTP id i10so6373886wrq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:09:56 -0700 (PDT)
+        Mon, 20 Apr 2020 17:11:13 -0400
+Received: by mail-ot1-f66.google.com with SMTP id j26so9453602ots.0;
+        Mon, 20 Apr 2020 14:11:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7lDCFaFUw4R9AWRYUPjaGqLtTptNqr4/gsP5Cs91YoI=;
-        b=b4WX2Mk+mEnH1LV3llhLOxyVQVqRSyTSto3S7y+NEZ7QEDIGaFSVStSuSKGAboKd8d
-         MBvqMBMvdoq/aWI476FUxEpYunls/QUFP/3ohbd/lMum9ee1HvWyHkaHxjxrFnM+ylVS
-         0QQ7hagKLr0ywXd5Zksb+OLT4tFFPNQnV0VUGIw3BbaptYjjnryfYvYa0/gklrX4tpqU
-         QKJbbGzzrK889NZsl+yr2kN36fBHV6lx02PWgN7sDmSxnOYAgmPtGXDtea/pNA2KGNS4
-         OsRR8uS3xtr9jNZT1afwq4h5G0LZkHhgyuMlS0sSThb7A+7QlTb0uV6H2uXz5x5cIc0w
-         5OiA==
-X-Gm-Message-State: AGi0PuYvCdSj6lBFYBIz9DsHSKvHC/d8PdObRIzefLU9zPx+zVMicfLq
-        O8rJdHJ38H3ulzn267OhGSty4Ps174z4z2gzn0ccCs5ddnTzLqTo7PBu+RFFW5nvfY/Ot2YUk1G
-        Gd+FwUlaJ7X292zEIgEZ8CvHV
-X-Received: by 2002:a1c:2e0a:: with SMTP id u10mr1274789wmu.119.1587416995501;
-        Mon, 20 Apr 2020 14:09:55 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK6od6W0dj1gZbWeyxDBs/v6PJZ1fc/3Z8V3Hi0ONmnXmb1L3h9dzlN2r24n5ADl1uYH1Bh5A==
-X-Received: by 2002:a1c:2e0a:: with SMTP id u10mr1274770wmu.119.1587416995274;
-        Mon, 20 Apr 2020 14:09:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5c18:5523:c13e:fa9f? ([2001:b07:6468:f312:5c18:5523:c13e:fa9f])
-        by smtp.gmail.com with ESMTPSA id j13sm901220wro.51.2020.04.20.14.09.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2020 14:09:54 -0700 (PDT)
-Subject: Re: [PATCH] kvm: add capability for halt polling
-To:     Jon Cargille <jcargill@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     David Matlack <dmatlack@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200417221446.108733-1-jcargill@google.com>
- <87d083td9f.fsf@vitty.brq.redhat.com>
- <CANxmayg3ML5_w=pY3=x7_TLOqawojxYGbqMLrXJn+r0b_gvWgA@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <02039a7b-01b4-ea5c-bd73-100ea753bf5e@redhat.com>
-Date:   Mon, 20 Apr 2020 23:09:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rrQbEYWwzszNqdguJ2RsCui3P5b9+iPM7VYp9zcM3Ro=;
+        b=HbVsvjmQYr619gz9TP0NL6EjK9+cab/080a+vAvYrAbdvHwIb43MMC+z13JqDaoSfu
+         MvKr40TGo5gCb7VGZeBC0neD0r7AGp1gvkFyu1IMtjDgMfVO+C5tvSqJQHQXxpXYQ51p
+         67MFAlFUpgdtmV5vNccURrIGQlQgcOiq/w2LqiyJBSIRqVkSpty8j67nM4ysJE50Kkml
+         yFrrsvP3H+2YuEjVHCy0ad/afjOLY0oMZf964Nvl8gNAZ2lmBPymoZ0z8bOpD6T9rm0I
+         bLMwI5gOTe+eberl6ey2E4DuemPOXymuyDKU+AU7cYB0x748HxWj6G6or0YQTILs4VDu
+         JgKw==
+X-Gm-Message-State: AGi0PuYI/zgCovtgZTH9wkXuw4BASg6fN7CkbroF65kxA7Ak9fOA5fie
+        9O9tpc5JotuFcIFiDc/2TCC75zk=
+X-Google-Smtp-Source: APiQypK7kvsoeDEAlVJFLzruH3SBuCc/ldyxdkjmBQzCeJggPL8JjNC8Q4RYtINDgl9EHYVK3puc/Q==
+X-Received: by 2002:a9d:7282:: with SMTP id t2mr10743537otj.302.1587417072722;
+        Mon, 20 Apr 2020 14:11:12 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a8sm206373otq.58.2020.04.20.14.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 14:11:12 -0700 (PDT)
+Received: (nullmailer pid 5880 invoked by uid 1000);
+        Mon, 20 Apr 2020 21:11:11 -0000
+Date:   Mon, 20 Apr 2020 16:11:11 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     mani@kernel.org
+Cc:     jic23@kernel.org, narcisaanamaria12@gmail.com, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com
+Subject: Re: [RESEND PATCH v3 1/3] dt-bindings: iio: chemical: Add binding
+ for CCS811 VOC sensor
+Message-ID: <20200420211111.GA754@bogus>
+References: <20200414184930.5576-1-mani@kernel.org>
+ <20200414184930.5576-2-mani@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANxmayg3ML5_w=pY3=x7_TLOqawojxYGbqMLrXJn+r0b_gvWgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414184930.5576-2-mani@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/20 20:47, Jon Cargille wrote:
->> Is it safe to allow any value from userspace here or would it maybe make
->> sense to only allow [0, global halt_poll_ns]?
-> I believe that any value is safe; a very large value effectively disables
-> halt-polling, which is equivalent to setting a value of zero to explicitly
-> disable it, which is legal.
+On Wed, Apr 15, 2020 at 12:19:28AM +0530, mani@kernel.org wrote:
+> From: Manivannan Sadhasivam <mani@kernel.org>
+> 
+> This commit adds devicetree binding for AMS CCS811 VOC sensor.
+> 
+> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> ---
+>  .../bindings/iio/chemical/ams,ccs811.yaml     | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> new file mode 100644
+> index 000000000000..5cb068666a3e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/chemical/ams,ccs811.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: AMS CCS811 VOC Sensor
+> +
+> +maintainers:
+> +  - Narcisa Vasile <narcisaanamaria12@gmail.com>
+> +
+> +description: |
+> +  Ultra-Low Power Digital Gas Sensor for Monitoring Indoor Air Quality.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ams,ccs811
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description: GPIO connected to the nRESET line. This is an active low
+> +                 input to CCS811.
+> +    maxItems: 1
+> +
+> +  wakeup-gpios:
+> +    description: GPIO connected to the nWAKE line. This is an active low
+> +                 input to CCS811.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
 
-Doesn't a large value make KVM poll all the time?  But you could do that
-just by running "for (;;)" so there's no reason to limit the parameter.
+Add:
 
-Paolo
+additionalProperties: false
 
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
