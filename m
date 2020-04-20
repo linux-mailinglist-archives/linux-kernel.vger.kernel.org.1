@@ -2,115 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724461B059C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533C61B05A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgDTJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 05:28:09 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40061 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgDTJ2I (ORCPT
+        id S1726201AbgDTJ3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725775AbgDTJ3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:28:08 -0400
-Received: by mail-ot1-f67.google.com with SMTP id i27so7479698ota.7;
-        Mon, 20 Apr 2020 02:28:07 -0700 (PDT)
+        Mon, 20 Apr 2020 05:29:43 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F31C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 02:29:42 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id c24so3331622uap.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 02:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+bXbV2G5yAsWPdoik74HL3zT7EvaYkbi6HLAip4kCPE=;
+        b=s4jIYNmDSCSre8L1fOBe4BKz3cwsdftChktN5JBQLZjCofDyAxUTDTCrR29bQ8dwx0
+         /UULMi3OKQNpg/O5WT4mJDqSI5Hk78M1a6nm2+fLJQyRjBbAfQNz/ioFJ7RxAG8dsQe2
+         HOv+Mde3TMlgY4x2WmVmPYgzvk8jN8pKNA7iRczjLE5el78RwB7Xddsct5dPQcj/nz85
+         zFiR2pBDqDB1AMP8msDaTcEmMj1fANeYRsk7sP3SyWpg9pD9/cptg1Hx8UJuzgV7ye2f
+         j04qjnuf2cPvH1WJr+/Uox3iREXQ9C4W9RHpflU+HXxQUURDtFXPr6Ee3zxVrTGNjEWd
+         Z32A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XArWxGkJ+VyTPp7Wsn4dbWWlVRq/sh+tie0xFdY8Wzs=;
-        b=ojOaIyFu+LU9btDCed/uPxLyuqV3WUmujQu0m5AcjAILyL5Lvg19rOd4HBy+AACJsv
-         LvaDBqXIrdve1aYS97NgjA3vkNNlp6aP6nVfk5G/6UZnWwojgx3DoKWXwMRtf9HFQKxB
-         ACwr5vITVf6jpzLXwT9+0L/m2rJTsQ1rzuF7BFfdzYL0UhU80r1tyJNIjlgsHseXjfmp
-         yfLbFKY35IikPdVZjTgtE6CO4w9K1BT2+M2E2ufuz2jnEyhm8FV4nZD/sVbyOIAhychr
-         j32zTqHpLkEjHh9goXjaiXberPImMq65mR8VvwhvR5hjmAkHPybtH6kXTaiNuDpwt84m
-         WicQ==
-X-Gm-Message-State: AGi0PuY8m7mN/kENFZS0JJkvdWpjS/r7pqSuLm1HAhvmPsvIHIBgDZaf
-        MIg5p3avFftXPITniRfIpA3ofK1aKBnAIHhY+LA=
-X-Google-Smtp-Source: APiQypKjsC6EXYlE5GmPZ4cHorgIglv7peKg70tltLFRlUNMnXipnoVRB6R66Yu9R4xLAwziPHJaRnQ/4in6/miu0rc=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr5224618ots.250.1587374887535;
- Mon, 20 Apr 2020 02:28:07 -0700 (PDT)
+        bh=+bXbV2G5yAsWPdoik74HL3zT7EvaYkbi6HLAip4kCPE=;
+        b=gJu25TD3zF0S6AVHEFc61IgtVFtQQCrIvuFcEWvWm8Eh5azOW0IETc0V+n/0syvwBp
+         QYyBY1UPrn30ivodOKX2G0iJj9p0uxfuPjvFoiUueaIq2L8fVnJSuYV3qJIZ+5lKAkGc
+         n8zF8930RfdfmCLJjI4Miv7W+wqaoBVh+BHllzkbbZky69uBj3mCiOPIs39QZCWj955J
+         5ggWSsU5425Ty14c0ntKq86qdOhW9t5k6RtKYaY2umJMwud1BWmdV/gT5J/K1ZCrO9Ds
+         SNiwcIfn7wFW7lPk5F2uJiMjFpVdjHvqgPBouObJ+XjaHkWvEaweQcEW+/tzE87rCIuG
+         F+8Q==
+X-Gm-Message-State: AGi0PuaiHcR+M4pSdwfdaGt9IGgLAFVHBDLqwUNKG4XUW7OMb18iS8d5
+        FaPs4xQnRws6iHDjRP/P8HCrfj/KMvKL9CUh6UfOW8fiNr0=
+X-Google-Smtp-Source: APiQypJSb26agvtaW3XUoWIUFAipBIghy203mcWakTXMxgBcN3TEPnxo9vAyT3jVrfHgyafMtr1eTIuTVfa92/Owf/U=
+X-Received: by 2002:ab0:3343:: with SMTP id h3mr517711uap.19.1587374982046;
+ Mon, 20 Apr 2020 02:29:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200414131348.444715-1-hch@lst.de> <20200414131348.444715-25-hch@lst.de>
-In-Reply-To: <20200414131348.444715-25-hch@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Apr 2020 11:27:56 +0200
-Message-ID: <CAMuHMdXktO=2n1tbE5RWRfE1CMd9bP-aHJQifO3J9HYxoQEuXQ@mail.gmail.com>
-Subject: Re: [PATCH 24/29] mm: remove __vmalloc_node_flags_caller
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+References: <1582181100-29914-1-git-send-email-sbhanu@codeaurora.org>
+ <CAPDyKFqSJ4h7UvQfQzWmSq9gg97A0MXvdcuXXaY7b-YUHs=V2g@mail.gmail.com>
+ <158334039680.7173.16159724456027777605@swboyd.mtv.corp.google.com>
+ <CAPDyKFqecH=AsvtN+JMxdk6pY2dntWUrhUWF6LEq_DLCcPe6pw@mail.gmail.com>
+ <158463974696.152100.8345578995373250448@swboyd.mtv.corp.google.com>
+ <CAPDyKFrL6uWaKK1zkn6ag2ZqW7ro50VGq6DJnTNyoFS2yGMmRw@mail.gmail.com> <158690616084.105027.4255268086188981149@swboyd.mtv.corp.google.com>
+In-Reply-To: <158690616084.105027.4255268086188981149@swboyd.mtv.corp.google.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 20 Apr 2020 11:29:06 +0200
+Message-ID: <CAPDyKFqw42Vvu1n-MbL+DEr3wsk9bgrRHmOLS=t57A+1P-yLMg@mail.gmail.com>
+Subject: Re: [PATCH V4] mmc: sdhci-msm: Update system suspend/resume callbacks
+ of sdhci-msm platform driver
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>, cang@codeaurora.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org, Linux MM <linux-mm@kvack.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-On Tue, Apr 14, 2020 at 3:21 PM Christoph Hellwig <hch@lst.de> wrote:
-> Just use __vmalloc_node instead which gets and extra argument.  To be
-> able to to use __vmalloc_node in all caller make it available outside
-> of vmalloc and implement it in nommu.c.
+On Wed, 15 Apr 2020 at 01:16, Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-One more nommu failure below...
-
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -150,8 +150,8 @@ void *__vmalloc(unsigned long size, gfp_t gfp_mask)
->  }
->  EXPORT_SYMBOL(__vmalloc);
+> Quoting Ulf Hansson (2020-03-20 03:22:01)
+> > On Thu, 19 Mar 2020 at 18:42, Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > Quoting Ulf Hansson (2020-03-06 02:07:41)
+> > > > On Wed, 4 Mar 2020 at 17:46, Stephen Boyd <swboyd@chromium.org> wrote:
+> > > > >
+> > > > > Quoting Ulf Hansson (2020-03-04 07:34:29)
+> > > > > > On Thu, 20 Feb 2020 at 07:45, Shaik Sajida Bhanu <sbhanu@codeaurora.org> wrote:
+> > > > > > >
+> > > > > > > The existing suspend/resume callbacks of sdhci-msm driver are just
+> > > > > > > gating/un-gating the clocks. During suspend cycle more can be done
+> > > > > > > like disabling controller, disabling card detection, enabling wake-up events.
+> > > > > > >
+> > > > > > > So updating the system pm callbacks for performing these extra
+> > > > > > > actions besides controlling the clocks.
+> > > > > > >
+> > > > > > > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > > > > > > ---
+> > > [...]
+> > > >
+> > > > >
+> > > > > >
+> > > > > > > +
+> > > > > > > +       ret = pm_runtime_force_suspend(dev);
+> > > > > >
+> > > > > > It looks to me that perhaps you could make use of solely
+> > > > > > pm_runtime_force_suspend(), then just skip calling
+> > > > > > sdhci_suspend|resume_host() altogether. Do you think that could work?
+> > > > >
+> > > > > Does that do all the things the commit text mentions is desired for
+> > > > > system suspend?
+> > > >
+> > > > No. :-)
+> > > >
+> > > > But why is system wakeup needed for an eMMC card?
+> > > >
+> > >
+> > > I don't know if system wakeup is needed for an eMMC card. Probably only
+> > > if you plug in a card and some daemon wants to wake up and probe the
+> > > card for auto-play or something like that? Seems possible so might as
+> > > well expose the CD gpio as a wakeup in that case and let userspace
+> > > decide if it wants to do that.
+> >
+> > Right, card detect IRQs could be useful for system wakeups.
+> >
+> > I assume you are using a GPIO IRQ for that, which is easily managed,
+> > as the runtime PM status of the mmc controller is irrelevant when
+> > configuring the GPIO IRQ as wakeup.
+> >
+> > We even have a helper for doing this, mmc_gpio_set_cd_wake().
 >
-> -void *__vmalloc_node_flags_caller(unsigned long size, int node, gfp_t flags,
-> -               void *caller)
-> +void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
-> +               int node, const void *caller)
->  {
->         return __vmalloc(size, flags);
+> Right. Maybe mmc_gpio_set_cd_wake() needs to be called from somewhere in
+> the sdhci core?
 
-On Mon, Apr 20, 2020 at 10:39 AM <noreply@ellerman.id.au> wrote:
-> FAILED linux-next/m5272c3_defconfig/m68k-gcc8 Mon Apr 20, 18:38
+Yes, that seems reasonable.
+
 >
-> http://kisskb.ellerman.id.au/kisskb/buildresult/14213623/
+> >
+> > >
+> > > Is runtime suspended state the same as system suspended state here
+> > > though? The commit text seems to imply that only clks are disabled when
+> > > it's desirable to disable the entire controller. I'm still fuzzy on how
+> > > runtime PM and system PM interact because it seems to have changed since
+> > > I looked last a few years ago. If the driver can stay in a runtime
+> > > suspended state across system suspend then I'm all for it. That would
+> > > save time for system PM transitions.
+> >
+> > In most cases this should be possible. And so far, for this case, I
+> > haven't found a good reason to why it shouldn't work.
+> >
+> > Although, perhaps we need to improve some of the sdhci's library
+> > functions for PM, to better support this.
+> >
 >
-> mm/nommu.c:164:25: error: 'flags' undeclared (first use in this function); did you mean 'class'?
+> So does that mean it's all just working then? Nothing to do here except
+> make wakeup irqs for CD work?
 
-"return __vmalloc(size, gfp_mask);"
+Well, if it "works " or not, I am not really sure.
 
-Gr{oetje,eeting}s,
+My point is, I think most of the things that need to be managed at
+system suspend/resume are the same things that need to be managed
+during runtime suspend/resume (except wakeups). So, rather than
+implementing a whole bunch of system suspend/resume specific things,
+why not make use of the runtime suspend/resume callbacks instead.
 
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards
+Uffe
