@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF5F1B0A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135B71B09AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgDTMr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
+        id S1727982AbgDTMlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729082AbgDTMr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:47:26 -0400
+        id S1727962AbgDTMlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:41:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5768A206DD;
-        Mon, 20 Apr 2020 12:47:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86B412070B;
+        Mon, 20 Apr 2020 12:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386845;
-        bh=DSUepHg9aX4y6qRmRkTuw/85pmvXZiSkSb8A/au42ZQ=;
+        s=default; t=1587386472;
+        bh=7+5pEKWARNc84ZkGGLnLU/rBEp2gTmMmQzl/RUdX5DU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Le/EvODU/JbjLe3VqR+wJHvn5R+u82T2W49lKV74CRczD5Eiw7adpU+NZu2eiA3nt
-         NgCLaUfbtP8r4ggcwNc7jWpQwTHYXl7qUKHwYiKLyzzGGh+y0h1ciywoQfYFtLf+Xz
-         ziZ5EcPtNkZCpr6IKHp3ObapD4ho4rVTckAqef74=
+        b=kElVvrx0LaR5a3wrP2MqsFpsfSUazkHRA+DIDWqBKXGE6Q4EiBabe987h+5BkyBfW
+         kL9MjUGtMXZvvKA0n/bA5nMI3TU8ShDHCTk8zO5+Wb8xHtuHcFP3X2GCE0kDu0Dnce
+         Cd1ITPb52Bt4Ui5SRgW6aw7PPLyKaYGqC+Nju5zk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 01/60] amd-xgbe: Use __napi_schedule() in BH context
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.5 35/65] ARM: dts: imx7-colibri: fix muxing of usbc_det pin
 Date:   Mon, 20 Apr 2020 14:38:39 +0200
-Message-Id: <20200420121500.708342089@linuxfoundation.org>
+Message-Id: <20200420121513.884223890@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -47,38 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 
-[ Upstream commit d518691cbd3be3dae218e05cca3f3fc9b2f1aa77 ]
+commit 7007f2eca0f258710899ca486da00546d03db0ed upstream.
 
-The driver uses __napi_schedule_irqoff() which is fine as long as it is
-invoked with disabled interrupts by everybody. Since the commit
-mentioned below the driver may invoke xgbe_isr_task() in tasklet/softirq
-context. This may lead to list corruption if another driver uses
-__napi_schedule_irqoff() in IRQ context.
+USB_C_DET pin shouldn't be in ethernet group.
 
-Use __napi_schedule() which safe to use from IRQ and softirq context.
+Creating a separate group allows one to use this pin
+as an USB ID pin.
 
-Fixes: 85b85c853401d ("amd-xgbe: Re-issue interrupt if interrupt status not cleared")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b326629f25b7 ("ARM: dts: imx7: add Toradex Colibri iMX7S/iMX7D suppor")
+Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/amd/xgbe/xgbe-drv.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-@@ -514,7 +514,7 @@ static void xgbe_isr_task(unsigned long
- 				xgbe_disable_rx_tx_ints(pdata);
+---
+ arch/arm/boot/dts/imx7-colibri.dtsi |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/boot/dts/imx7-colibri.dtsi
++++ b/arch/arm/boot/dts/imx7-colibri.dtsi
+@@ -345,7 +345,7 @@
+ &iomuxc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gpio1 &pinctrl_gpio2 &pinctrl_gpio3 &pinctrl_gpio4
+-		     &pinctrl_gpio7>;
++		     &pinctrl_gpio7 &pinctrl_usbc_det>;
  
- 				/* Turn on polling */
--				__napi_schedule_irqoff(&pdata->napi);
-+				__napi_schedule(&pdata->napi);
- 			}
- 		} else {
- 			/* Don't clear Rx/Tx status if doing per channel DMA
+ 	pinctrl_gpio1: gpio1-grp {
+ 		fsl,pins = <
+@@ -450,7 +450,6 @@
+ 
+ 	pinctrl_enet1: enet1grp {
+ 		fsl,pins = <
+-			MX7D_PAD_ENET1_CRS__GPIO7_IO14			0x14
+ 			MX7D_PAD_ENET1_RGMII_RX_CTL__ENET1_RGMII_RX_CTL	0x73
+ 			MX7D_PAD_ENET1_RGMII_RD0__ENET1_RGMII_RD0	0x73
+ 			MX7D_PAD_ENET1_RGMII_RD1__ENET1_RGMII_RD1	0x73
+@@ -648,6 +647,12 @@
+ 		>;
+ 	};
+ 
++	pinctrl_usbc_det: gpio-usbc-det {
++		fsl,pins = <
++			MX7D_PAD_ENET1_CRS__GPIO7_IO14	0x14
++		>;
++	};
++
+ 	pinctrl_usbh_reg: gpio-usbh-vbus {
+ 		fsl,pins = <
+ 			MX7D_PAD_UART3_CTS_B__GPIO4_IO7	0x14 /* SODIMM 129 USBH PEN */
 
 
