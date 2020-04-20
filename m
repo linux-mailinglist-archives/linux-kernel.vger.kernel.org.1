@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CC91B0A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BDC1B0A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgDTMrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42848 "EHLO mail.kernel.org"
+        id S1728814AbgDTMpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:45:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729014AbgDTMrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:47:04 -0400
+        id S1728784AbgDTMpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:45:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2D58206D4;
-        Mon, 20 Apr 2020 12:47:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14210206DD;
+        Mon, 20 Apr 2020 12:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386824;
-        bh=5v7DDvOv3fsCZHx1bL7Tqpej7JL2oFsZSdM7fuPngl4=;
+        s=default; t=1587386738;
+        bh=HBAym8ekahvMlEeslnbCh2FaaepabcjHWf4jPxOqKYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zEiHHwcSFCj6z6y6z5HI2l2t1w0V3Y68xa5eFuu2KyPsdrLNznueKDZMQo7wZjakp
-         WwKC4LzyxLjGD3SnxMWF3vGKArchRLza5lwup91WghoV55HBeFeiE6OkEtLGrkBzdy
-         EeXd6uLI0Rj4hJ/p0/htiNi3mKttX9MAAM8lVAC0=
+        b=yLFDyL805/K0OlHz1Im6XsPlIdFF6+BkDAJPv0pQpYpZAW1j5vAwBq8ym4jurn6Ce
+         uPtItv4M+X1zJF9VfXRx7VrxWN1g4w9GO20OPqMq0qg/3AoXeXx77Ec8O8GkuuYv7K
+         Q1Pfol9oiKc1fj5TZN2Mk2XL0ztrJAu8H1pW/cnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 40/60] ALSA: usb-audio: Check mapping at creating connector controls, too
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH 5.6 64/71] rcu: Dont acquire lock in NMI handler in rcu_nmi_enter_common()
 Date:   Mon, 20 Apr 2020 14:39:18 +0200
-Message-Id: <20200420121511.671502568@linuxfoundation.org>
+Message-Id: <20200420121521.714417792@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-commit 934b96594ed66b07dbc7e576d28814466df3a494 upstream.
+commit bf37da98c51825c90432d340e135cced37a7460d upstream.
 
-Add the mapping check to build_connector_control() so that the device
-specific quirk can provide the node to skip for the badly behaving
-connector controls.  As an example, ALC1220-VB-based codec implements
-the skip entry for the broken SPDIF connector detection.
+The rcu_nmi_enter_common() function can be invoked both in interrupt
+and NMI handlers.  If it is invoked from process context (as opposed
+to userspace or idle context) on a nohz_full CPU, it might acquire the
+CPU's leaf rcu_node structure's ->lock.  Because this lock is held only
+with interrupts disabled, this is safe from an interrupt handler, but
+doing so from an NMI handler can result in self-deadlock.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200412081331.4742-5-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This commit therefore adds "irq" to the "if" condition so as to only
+acquire the ->lock from irq handlers or process context, never from
+an NMI handler.
+
+Fixes: 5b14557b073c ("rcu: Avoid tick_dep_set_cpu() misordering")
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: <stable@vger.kernel.org> # 5.5.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/mixer.c      |   18 +++++++++++-------
- sound/usb/mixer_maps.c |    4 +++-
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1750,11 +1750,15 @@ static void get_connector_control_name(s
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -816,7 +816,7 @@ static __always_inline void rcu_nmi_ente
+ 			rcu_cleanup_after_idle();
  
- /* Build a mixer control for a UAC connector control (jack-detect) */
- static void build_connector_control(struct usb_mixer_interface *mixer,
-+				    const struct usbmix_name_map *imap,
- 				    struct usb_audio_term *term, bool is_input)
- {
- 	struct snd_kcontrol *kctl;
- 	struct usb_mixer_elem_info *cval;
- 
-+	if (check_ignored_ctl(find_map(imap, term->id, 0)))
-+		return;
-+
- 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
- 	if (!cval)
- 		return;
-@@ -2090,7 +2094,7 @@ static int parse_audio_input_terminal(st
- 	/* Check for jack detection. */
- 	if ((iterm.type & 0xff00) != 0x0100 &&
- 	    uac_v2v3_control_is_readable(bmctls, control))
--		build_connector_control(state->mixer, &iterm, true);
-+		build_connector_control(state->mixer, state->map, &iterm, true);
- 
- 	return 0;
- }
-@@ -3051,13 +3055,13 @@ static int snd_usb_mixer_controls_badd(s
- 		memset(&iterm, 0, sizeof(iterm));
- 		iterm.id = UAC3_BADD_IT_ID4;
- 		iterm.type = UAC_BIDIR_TERMINAL_HEADSET;
--		build_connector_control(mixer, &iterm, true);
-+		build_connector_control(mixer, map->map, &iterm, true);
- 
- 		/* Output Term - Insertion control */
- 		memset(&oterm, 0, sizeof(oterm));
- 		oterm.id = UAC3_BADD_OT_ID3;
- 		oterm.type = UAC_BIDIR_TERMINAL_HEADSET;
--		build_connector_control(mixer, &oterm, false);
-+		build_connector_control(mixer, map->map, &oterm, false);
- 	}
- 
- 	return 0;
-@@ -3132,8 +3136,8 @@ static int snd_usb_mixer_controls(struct
- 			if ((state.oterm.type & 0xff00) != 0x0100 &&
- 			    uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
- 							 UAC2_TE_CONNECTOR)) {
--				build_connector_control(state.mixer, &state.oterm,
--							false);
-+				build_connector_control(state.mixer, state.map,
-+							&state.oterm, false);
- 			}
- 		} else {  /* UAC_VERSION_3 */
- 			struct uac3_output_terminal_descriptor *desc = p;
-@@ -3158,8 +3162,8 @@ static int snd_usb_mixer_controls(struct
- 			if ((state.oterm.type & 0xff00) != 0x0100 &&
- 			    uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
- 							 UAC3_TE_INSERTION)) {
--				build_connector_control(state.mixer, &state.oterm,
--							false);
-+				build_connector_control(state.mixer, state.map,
-+							&state.oterm, false);
- 			}
- 		}
- 	}
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -350,9 +350,11 @@ static const struct usbmix_name_map dell
- };
- 
- /* Some mobos shipped with a dummy HD-audio show the invalid GET_MIN/GET_MAX
-- * response for Input Gain Pad (id=19, control=12).  Skip it.
-+ * response for Input Gain Pad (id=19, control=12) and the connector status
-+ * for SPDIF terminal (id=18).  Skip them.
-  */
- static const struct usbmix_name_map asus_rog_map[] = {
-+	{ 18, NULL }, /* OT, connector control */
- 	{ 19, NULL, 12 }, /* FU, Input Gain Pad */
- 	{}
- };
+ 		incby = 1;
+-	} else if (tick_nohz_full_cpu(rdp->cpu) &&
++	} else if (irq && tick_nohz_full_cpu(rdp->cpu) &&
+ 		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+ 		   READ_ONCE(rdp->rcu_urgent_qs) && !rdp->rcu_forced_tick) {
+ 		raw_spin_lock_rcu_node(rdp->mynode);
 
 
