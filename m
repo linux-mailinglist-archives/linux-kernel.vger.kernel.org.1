@@ -2,140 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292E91B085D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D8A1B0892
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgDTLz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:55:29 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50298 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726496AbgDTLz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:55:26 -0400
-X-UUID: 8cbfb7c460d0456ca6432414d944c442-20200420
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=G75ycipgYh3BzGzGfO3AsO2FJWOZiqx83AQbRPGl/w4=;
-        b=ukae1GDHcJMmsq2JCdcQfACm1ErS6V0y9GxlzzhgRVsntqwu7/tMG6z1bbznV/WKGANPXmHMsO2fNaq/yhOVs1SyMJK1NRYHJfwr2zXOaWpAJYKI5o84NJmwxcdn7FDs9x2OsISvWOB2MN5F0sHnG+oQTbQXoDqhhromAMsEcKc=;
-X-UUID: 8cbfb7c460d0456ca6432414d944c442-20200420
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1819460659; Mon, 20 Apr 2020 19:55:20 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 20 Apr 2020 19:55:11 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 20 Apr 2020 19:55:11 +0800
-Message-ID: <1587383712.11642.0.camel@mtksdaap41>
-Subject: Re: [PATCH v12 1/6] mfd: mt6397: Modify suspend/resume behavior
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Richard Fontana" <rfontana@redhat.com>,
-        <linux-rtc@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Ran Bi <ran.bi@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Josef Friedl <josef.friedl@speed.at>,
-        <srv_heupstream@mediatek.com>, Sebastian Reichel <sre@kernel.org>
-Date:   Mon, 20 Apr 2020 19:55:12 +0800
-In-Reply-To: <20200420111522.GB3612@dell>
-References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1586333531-21641-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20200416084910.GX2167633@dell> <1587379959.6297.2.camel@mtksdaap41>
-         <20200420111522.GB3612@dell>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726665AbgDTL6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:58:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726451AbgDTL6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:58:21 -0400
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 627172072B
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587383900;
+        bh=gpdluPeLo7CGG3nY3aVKpk6zHZ0E1zPD2glqhe/J7t0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tJf8qnli5ZQBL197jAHU6WnJ9E99SV8P7Mp3wBiaQI3TFW5+gBRQzt+NGrziggOM/
+         ecUVWzJxCGEfJoT2MMxrQkpChKbEJ2ZBbeYBP+ExUbxSTcJqhYBnBbNQB0kUE5tyMo
+         TblI1fYwJhMDdz8asUZGJp7zwcqG7ls/xJO+WE5w=
+Received: by mail-il1-f178.google.com with SMTP id x2so8110078ilp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 04:58:20 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZQQ1b/B1e74c0+h9Cq+QgmsrBXv2rv0R0FbokTiQWc4xg/4C+Z
+        uypdv8UOn8M9ey+v4yAwUm7rNH7V/Wb7cj1CVi4=
+X-Google-Smtp-Source: APiQypK+G8IQY4CVi3k9HiSAYgjQ6r4L4Ty55qjm9OY85VkznbQHJ6GHa0SyPkjAIQ77w1RqrgV8Q+98Sz62EMVvMQY=
+X-Received: by 2002:a92:991c:: with SMTP id p28mr15785948ili.258.1587383899723;
+ Mon, 20 Apr 2020 04:58:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200415210452.27436-1-kristen@linux.intel.com> <20200415210452.27436-9-kristen@linux.intel.com>
+In-Reply-To: <20200415210452.27436-9-kristen@linux.intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 20 Apr 2020 13:58:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGyQbdmeAwVBy5YPGKeksNq0KkBe-wmZZG=xkGY4Ds0Rg@mail.gmail.com>
+Message-ID: <CAMj1kXGyQbdmeAwVBy5YPGKeksNq0KkBe-wmZZG=xkGY4Ds0Rg@mail.gmail.com>
+Subject: Re: [PATCH 8/9] kallsyms: hide layout
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        hpa@zytor.com, arjan@linux.intel.com, X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-hardening@lists.openwall.com, rick.p.edgecomb@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIE1vbiwgMjAyMC0wNC0yMCBhdCAxMjoxNSArMDEwMCwgTGVlIEpvbmVzIHdyb3Rl
-Og0KPiBPbiBNb24sIDIwIEFwciAyMDIwLCBIc2luLWhzaXVuZyBXYW5nIHdyb3RlOg0KPiANCj4g
-PiBIaSwNCj4gPiANCj4gPiBPbiBUaHUsIDIwMjAtMDQtMTYgYXQgMDk6NDkgKzAxMDAsIExlZSBK
-b25lcyB3cm90ZToNCj4gPiA+IE9uIFdlZCwgMDggQXByIDIwMjAsIEhzaW4tSHNpdW5nIFdhbmcg
-d3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gU29tZSBwbWljcyBkb24ndCBuZWVkIGJhY2t1cCBpbnRl
-cnJ1cHQgc2V0dGluZ3MsIHNvIHdlIGNoYW5nZSB0byB1c2UNCj4gPiA+ID4gcG0gbm90aWZpZXIg
-Zm9yIHRoZSBwbWljcyB3aGljaCBhcmUgbmVjZXNzYXJ5IHRvIHN0b3JlIHNldHRpbmdzLg0KPiA+
-ID4gPiANCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogSHNpbi1Ic2l1bmcgV2FuZyA8aHNpbi1oc2l1
-bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4gPiAgZHJpdmVycy9tZmQv
-bXQ2Mzk3LWNvcmUuYyAgICAgICB8IDMwIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-PiA+ID4gPiAgZHJpdmVycy9tZmQvbXQ2Mzk3LWlycS5jICAgICAgICB8IDM1ICsrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystDQo+ID4gPiA+ICBpbmNsdWRlL2xpbnV4L21mZC9tdDYz
-OTcvY29yZS5oIHwgIDIgKysNCj4gPiA+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9u
-cygrKSwgMzEgZGVsZXRpb25zKC0pDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tZmQvbXQ2Mzk3LWNvcmUuYyBiL2RyaXZlcnMvbWZkL210NjM5Ny1jb3JlLmMNCj4gPiA+
-ID4gaW5kZXggMDQzN2M4NS4uZDJlNzBkOCAxMDA2NDQNCj4gPiA+ID4gLS0tIGEvZHJpdmVycy9t
-ZmQvbXQ2Mzk3LWNvcmUuYw0KPiA+ID4gPiArKysgYi9kcml2ZXJzL21mZC9tdDYzOTctY29yZS5j
-DQo+ID4gPiA+IEBAIC0xMDAsMzUgKzEwMCw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWZkX2Nl
-bGwgbXQ2Mzk3X2RldnNbXSA9IHsNCj4gPiA+ID4gIAl9DQo+ID4gPiA+ICB9Ow0KPiA+ID4gPiAg
-DQo+ID4gPiA+IC0jaWZkZWYgQ09ORklHX1BNX1NMRUVQDQo+ID4gPiA+IC1zdGF0aWMgaW50IG10
-NjM5N19pcnFfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gPiA+IC17DQo+ID4gPiA+
-IC0Jc3RydWN0IG10NjM5N19jaGlwICpjaGlwID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4g
-PiA+IC0NCj4gPiA+ID4gLQlyZWdtYXBfd3JpdGUoY2hpcC0+cmVnbWFwLCBjaGlwLT5pbnRfY29u
-WzBdLCBjaGlwLT53YWtlX21hc2tbMF0pOw0KPiA+ID4gPiAtCXJlZ21hcF93cml0ZShjaGlwLT5y
-ZWdtYXAsIGNoaXAtPmludF9jb25bMV0sIGNoaXAtPndha2VfbWFza1sxXSk7DQo+ID4gPiA+IC0N
-Cj4gPiA+ID4gLQllbmFibGVfaXJxX3dha2UoY2hpcC0+aXJxKTsNCj4gPiA+ID4gLQ0KPiA+ID4g
-PiAtCXJldHVybiAwOw0KPiA+ID4gPiAtfQ0KPiA+ID4gPiAtDQo+ID4gPiA+IC1zdGF0aWMgaW50
-IG10NjM5N19pcnFfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPiA+ID4gLXsNCj4gPiA+
-ID4gLQlzdHJ1Y3QgbXQ2Mzk3X2NoaXAgKmNoaXAgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4g
-PiA+ID4gLQ0KPiA+ID4gPiAtCXJlZ21hcF93cml0ZShjaGlwLT5yZWdtYXAsIGNoaXAtPmludF9j
-b25bMF0sIGNoaXAtPmlycV9tYXNrc19jdXJbMF0pOw0KPiA+ID4gPiAtCXJlZ21hcF93cml0ZShj
-aGlwLT5yZWdtYXAsIGNoaXAtPmludF9jb25bMV0sIGNoaXAtPmlycV9tYXNrc19jdXJbMV0pOw0K
-PiA+ID4gPiAtDQo+ID4gPiA+IC0JZGlzYWJsZV9pcnFfd2FrZShjaGlwLT5pcnEpOw0KPiA+ID4g
-PiAtDQo+ID4gPiA+IC0JcmV0dXJuIDA7DQo+ID4gPiA+IC19DQo+ID4gPiA+IC0jZW5kaWYNCj4g
-PiA+ID4gLQ0KPiA+ID4gPiAtc3RhdGljIFNJTVBMRV9ERVZfUE1fT1BTKG10NjM5N19wbV9vcHMs
-IG10NjM5N19pcnFfc3VzcGVuZCwNCj4gPiA+ID4gLQkJCW10NjM5N19pcnFfcmVzdW1lKTsNCj4g
-PiA+ID4gLQ0KPiA+ID4gPiAgc3RydWN0IGNoaXBfZGF0YSB7DQo+ID4gPiA+ICAJdTMyIGNpZF9h
-ZGRyOw0KPiA+ID4gPiAgCXUzMiBjaWRfc2hpZnQ7DQo+ID4gPiA+IEBAIC0yMzgsNyArMjA5LDYg
-QEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXQ2Mzk3X2RyaXZlciA9IHsNCj4gPiA+
-ID4gIAkuZHJpdmVyID0gew0KPiA+ID4gPiAgCQkubmFtZSA9ICJtdDYzOTciLA0KPiA+ID4gPiAg
-CQkub2ZfbWF0Y2hfdGFibGUgPSBvZl9tYXRjaF9wdHIobXQ2Mzk3X29mX21hdGNoKSwNCj4gPiA+
-ID4gLQkJLnBtID0gJm10NjM5N19wbV9vcHMsDQo+ID4gPiA+ICAJfSwNCj4gPiA+ID4gIAkuaWRf
-dGFibGUgPSBtdDYzOTdfaWQsDQo+ID4gPiA+ICB9Ow0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tZmQvbXQ2Mzk3LWlycS5jIGIvZHJpdmVycy9tZmQvbXQ2Mzk3LWlycS5jDQo+ID4gPiA+
-IGluZGV4IGIyZDNjZTEuLjI5MjQ5MTkgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvbWZk
-L210NjM5Ny1pcnEuYw0KPiA+ID4gPiArKysgYi9kcml2ZXJzL21mZC9tdDYzOTctaXJxLmMNCj4g
-PiA+ID4gQEAgLTksNiArOSw3IEBADQo+ID4gPiA+ICAjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+
-DQo+ID4gPiA+ICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gPiA+ICAj
-aW5jbHVkZSA8bGludXgvcmVnbWFwLmg+DQo+ID4gPiA+ICsjaW5jbHVkZSA8bGludXgvc3VzcGVu
-ZC5oPg0KPiA+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L21mZC9tdDYzMjMvY29yZS5oPg0KPiA+ID4g
-PiAgI2luY2x1ZGUgPGxpbnV4L21mZC9tdDYzMjMvcmVnaXN0ZXJzLmg+DQo+ID4gPiA+ICAjaW5j
-bHVkZSA8bGludXgvbWZkL210NjM5Ny9jb3JlLmg+DQo+ID4gPiA+IEBAIC04MSw3ICs4Miw3IEBA
-IHN0YXRpYyBzdHJ1Y3QgaXJxX2NoaXAgbXQ2Mzk3X2lycV9jaGlwID0gew0KPiA+ID4gPiAgc3Rh
-dGljIHZvaWQgbXQ2Mzk3X2lycV9oYW5kbGVfcmVnKHN0cnVjdCBtdDYzOTdfY2hpcCAqbXQ2Mzk3
-LCBpbnQgcmVnLA0KPiA+ID4gPiAgCQkJCSAgaW50IGlycWJhc2UpDQo+ID4gPiA+ICB7DQo+ID4g
-PiA+IC0JdW5zaWduZWQgaW50IHN0YXR1czsNCj4gPiA+ID4gKwl1bnNpZ25lZCBpbnQgc3RhdHVz
-ID0gMDsNCj4gPiA+IA0KPiA+ID4gVGhpcyBsb29rcyBsaWtlIGFuIHVucmVsYXRlZCBjaGFuZ2Us
-IG5vPw0KPiA+ID4gDQo+ID4gDQo+ID4gSXQgaXMgdG8gZml4IHRoZSBjb3Zlcml0eSBkZWZlY3Qu
-DQo+IA0KPiBXaGljaCBpc24ndCBtZW50aW9uZWQgaW4gdGhlIGNvbW1pdCBsb2cgYW5kIGRvZXNu
-J3QgaGF2ZSBhbnl0aGluZyB0bw0KPiBkbyB3aXRoIHRoaXMgcGF0Y2guICBUaHVzIGl0IHNob3Vs
-ZCBiZSBpbiBhIHNlcGFyYXRlIHBhdGNoLCBidXQgSSdtDQo+IG5vdCBnb2luZyB0byBsb3NlIGFu
-eSBzbGVlcCBvdmVyIGl0Lg0KPiANCg0KQ291bGQgSSBqdXN0IGFkZCBpdCB0byB0aGUgY29tbWl0
-IG1lc3NhZ2U/DQpUaGFua3MuDQoNCj4gPiA+ID4gIAlpbnQgaSwgaXJxLCByZXQ7DQo+ID4gPiA+
-ICANCj4gPiA+ID4gIAlyZXQgPSByZWdtYXBfcmVhZChtdDYzOTctPnJlZ21hcCwgcmVnLCAmc3Rh
-dHVzKTsNCj4gPiA+ID4gQEAgLTEyOCw2ICsxMjksMzYgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBp
-cnFfZG9tYWluX29wcyBtdDYzOTdfaXJxX2RvbWFpbl9vcHMgPSB7DQo+ID4gPiA+ICAJLm1hcCA9
-IG10NjM5N19pcnFfZG9tYWluX21hcCwNCj4gPiA+ID4gIH07DQo+ID4gPiANCj4gPiA+IE90aGVy
-IHRoYW4gdGhhdC4NCj4gPiA+IA0KPiA+ID4gRm9yIG15IG93biByZWZlcmVuY2U6DQo+ID4gPiAg
-IEFja2VkLWZvci1NRkQtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+DQo+ID4g
-PiANCj4gPiBUaGFua3MgZm9yIHlvdXIgcmV2aWV3LiBJIHdpbGwgYWRkIGl0IGluIHRoZSBuZXh0
-IHZlcnNpb24uDQo+ID4gDQo+IA0KDQo=
+On Wed, 15 Apr 2020 at 23:06, Kristen Carlson Accardi
+<kristen@linux.intel.com> wrote:
+>
+> To support finer grained kaslr (fgkaslr), we need to hide our sorted
+> list of symbols, since this will give away our new layout.
+> This patch makes /proc/kallsyms only visible to priviledged users.
+>
 
+Does it?
+
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> ---
+>  kernel/kallsyms.c | 138 +++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 137 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 16c8c605f4b0..861972b6a879 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/filter.h>
+>  #include <linux/ftrace.h>
+>  #include <linux/compiler.h>
+> +#include <linux/list_sort.h>
+>
+>  /*
+>   * These will be re-linked against their real values
+> @@ -446,6 +447,11 @@ struct kallsym_iter {
+>         int show_value;
+>  };
+>
+> +struct kallsyms_iter_list {
+> +       struct kallsym_iter iter;
+> +       struct list_head next;
+> +};
+> +
+>  int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
+>                             char *type, char *name)
+>  {
+> @@ -660,6 +666,121 @@ int kallsyms_show_value(void)
+>         }
+>  }
+>
+> +static int sorted_show(struct seq_file *m, void *p)
+> +{
+> +       struct list_head *list = m->private;
+> +       struct kallsyms_iter_list *iter;
+> +       int rc;
+> +
+> +       if (list_empty(list))
+> +               return 0;
+> +
+> +       iter = list_first_entry(list, struct kallsyms_iter_list, next);
+> +
+> +       m->private = iter;
+> +       rc = s_show(m, p);
+> +       m->private = list;
+> +
+> +       list_del(&iter->next);
+> +       kfree(iter);
+> +
+> +       return rc;
+> +}
+> +
+> +static void *sorted_start(struct seq_file *m, loff_t *pos)
+> +{
+> +       return m->private;
+> +}
+> +
+> +static void *sorted_next(struct seq_file *m, void *p, loff_t *pos)
+> +{
+> +       struct list_head *list = m->private;
+> +
+> +       (*pos)++;
+> +
+> +       if (list_empty(list))
+> +               return NULL;
+> +
+> +       return p;
+> +}
+> +
+> +static const struct seq_operations kallsyms_sorted_op = {
+> +       .start = sorted_start,
+> +       .next = sorted_next,
+> +       .stop = s_stop,
+> +       .show = sorted_show
+> +};
+> +
+> +static int kallsyms_list_cmp(void *priv, struct list_head *a,
+> +                               struct list_head *b)
+> +{
+> +       struct kallsyms_iter_list *iter_a, *iter_b;
+> +
+> +       iter_a = list_entry(a, struct kallsyms_iter_list, next);
+> +       iter_b = list_entry(b, struct kallsyms_iter_list, next);
+> +
+> +       return strcmp(iter_a->iter.name, iter_b->iter.name);
+> +}
+> +
+> +int get_all_symbol_name(void *data, const char *name, struct module *mod,
+> +                       unsigned long addr)
+> +{
+> +       unsigned long sym_pos;
+> +       struct kallsyms_iter_list *node, *last;
+> +       struct list_head *head = (struct list_head *)data;
+> +
+> +       node = kmalloc(sizeof(*node), GFP_KERNEL);
+> +       if (!node)
+> +               return -ENOMEM;
+> +
+> +       if (list_empty(head)) {
+> +               sym_pos = 0;
+> +               memset(node, 0, sizeof(*node));
+> +               reset_iter(&node->iter, 0);
+> +               node->iter.show_value = kallsyms_show_value();
+> +       } else {
+> +               last = list_first_entry(head, struct kallsyms_iter_list, next);
+> +               memcpy(node, last, sizeof(*node));
+> +               sym_pos = last->iter.pos;
+> +       }
+> +
+> +       INIT_LIST_HEAD(&node->next);
+> +       list_add(&node->next, head);
+> +
+> +       /*
+> +        * update_iter returns false when at end of file
+> +        * which in this case we don't care about and can
+> +        * safely ignore. update_iter() will increment
+> +        * the value of iter->pos, for ksymbol_core.
+> +        */
+> +       if (sym_pos >= kallsyms_num_syms)
+> +               sym_pos++;
+> +
+> +       (void) update_iter(&node->iter, sym_pos);
+> +
+> +       return 0;
+> +}
+> +
+> +static int kallsyms_sorted_open(struct inode *inode, struct file *file)
+> +{
+> +       int ret;
+> +       struct list_head *list;
+> +
+> +       list = __seq_open_private(file, &kallsyms_sorted_op, sizeof(*list));
+> +       if (!list)
+> +               return -ENOMEM;
+> +
+> +       INIT_LIST_HEAD(list);
+> +
+> +       ret = kallsyms_on_each_symbol(get_all_symbol_name, list);
+> +       if (ret != 0)
+> +               return ret;
+> +
+> +       list_sort(NULL, list, kallsyms_list_cmp);
+> +
+
+Could we do the sort at init time rather than open time?
+
+> +       return 0;
+> +}
+> +
+>  static int kallsyms_open(struct inode *inode, struct file *file)
+>  {
+>         /*
+> @@ -704,9 +825,24 @@ static const struct proc_ops kallsyms_proc_ops = {
+>         .proc_release   = seq_release_private,
+>  };
+>
+> +static const struct proc_ops kallsyms_sorted_proc_ops = {
+> +       .proc_open = kallsyms_sorted_open,
+> +       .proc_read = seq_read,
+> +       .proc_lseek = seq_lseek,
+> +       .proc_release = seq_release_private,
+> +};
+> +
+>  static int __init kallsyms_init(void)
+>  {
+> -       proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
+> +       /*
+> +        * When fine grained kaslr is enabled, we need to
+> +        * print out the symbols sorted by name rather than by
+> +        * by address, because this reveals the randomization order.
+> +        */
+> +       if (!IS_ENABLED(CONFIG_FG_KASLR))
+> +               proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
+> +       else
+> +               proc_create("kallsyms", 0444, NULL, &kallsyms_sorted_proc_ops);
+
+Can we just switch to the sorted version unconditionally instead? Or
+is the output order of /proc/kallsyms considered kernel ABI?
+
+>         return 0;
+>  }
+>  device_initcall(kallsyms_init);
+> --
+> 2.20.1
+>
