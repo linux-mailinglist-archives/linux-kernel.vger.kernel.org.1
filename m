@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121551B0A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153791B0AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgDTMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44538 "EHLO mail.kernel.org"
+        id S1728975AbgDTMty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:49:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728009AbgDTMsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:05 -0400
+        id S1729478AbgDTMto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:49:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FD78206DD;
-        Mon, 20 Apr 2020 12:48:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08DAB20736;
+        Mon, 20 Apr 2020 12:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386884;
-        bh=Eivq5juyMXA4AkvbRseQC8H4peMc7yxvOwgs/rLooDU=;
+        s=default; t=1587386984;
+        bh=lk8RXi6P02tjNYEpzp1QVhe8R8pqNPciBylaCpMcTC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JLCmvE9pklbDH+b+/CXvG5MlwdRCXxSdvE2Q2JYs1bXFKs+QjmHhucZHV4qPTC38k
-         KoUXT1A03slDEAnrox/0PZXTve+1SH9+UNnFAVAHWSz4T+lWTQQXt7QHUUcdiyHeMn
-         6/2OOEtUlZXXTMrYRztLPeH9TBPKR0qkG+XlToBE=
+        b=IWuliNSI8Dobkbo8e78sVhut3jzHJi+ZU4q2oAYCDWant3SSTAIN76c2q1FG+gC9s
+         XdbAFbp2XcztN+KBlYWS7v8gtEUEnhi8P60WSH863zm+gE2M/q12TcdV0XFGwC4Bmn
+         wqrXtiXgsLa691Yew/NagwiIvbE43l5S7bbvmD30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Lopatin <magist3r@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 51/60] drm/amd/powerplay: force the trim of the mclk dpm_levels if OD is enabled
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 19/40] ALSA: usb-audio: Dont create jack controls for PCM terminals
 Date:   Mon, 20 Apr 2020 14:39:29 +0200
-Message-Id: <20200420121514.095203591@linuxfoundation.org>
+Message-Id: <20200420121459.811766207@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
+References: <20200420121444.178150063@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Lopatin <magist3r@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 8c7f0a44b4b4ef16df8f44fbaee6d1f5d1593c83 upstream.
+commit 7dc3c5a0172e6c0449502103356c3628d05bc0e0 upstream.
 
-Should prevent flicker if PP_OVERDRIVE_MASK is set.
+Some funky firmwares set the connector flag even on PCM terminals
+although it doesn't make sense (and even actually the firmware doesn't
+react properly!).  Let's skip creation of jack controls in such a
+case.
 
-bug: https://bugs.freedesktop.org/show_bug.cgi?id=102646
-bug: https://bugs.freedesktop.org/show_bug.cgi?id=108941
-bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1088
-bug: https://gitlab.freedesktop.org/drm/amd/-/issues/628
-
-Signed-off-by: Sergei Lopatin <magist3r@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200412081331.4742-4-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/usb/mixer.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-@@ -3805,9 +3805,12 @@ static int smu7_trim_single_dpm_states(s
- {
- 	uint32_t i;
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2107,7 +2107,8 @@ static int parse_audio_input_terminal(st
+ 	check_input_term(state, term_id, &iterm);
  
-+	/* force the trim if mclk_switching is disabled to prevent flicker */
-+	bool force_trim = (low_limit == high_limit);
- 	for (i = 0; i < dpm_table->count; i++) {
- 	/*skip the trim if od is enabled*/
--		if (!hwmgr->od_enabled && (dpm_table->dpm_levels[i].value < low_limit
-+		if ((!hwmgr->od_enabled || force_trim)
-+			&& (dpm_table->dpm_levels[i].value < low_limit
- 			|| dpm_table->dpm_levels[i].value > high_limit))
- 			dpm_table->dpm_levels[i].enabled = false;
- 		else
+ 	/* Check for jack detection. */
+-	if (uac_v2v3_control_is_readable(bmctls, control))
++	if ((iterm.type & 0xff00) != 0x0100 &&
++	    uac_v2v3_control_is_readable(bmctls, control))
+ 		build_connector_control(state->mixer, &iterm, true);
+ 
+ 	return 0;
+@@ -3147,7 +3148,8 @@ static int snd_usb_mixer_controls(struct
+ 			if (err < 0 && err != -EINVAL)
+ 				return err;
+ 
+-			if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
++			if ((state.oterm.type & 0xff00) != 0x0100 &&
++			    uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
+ 							 UAC2_TE_CONNECTOR)) {
+ 				build_connector_control(state.mixer, &state.oterm,
+ 							false);
+@@ -3172,7 +3174,8 @@ static int snd_usb_mixer_controls(struct
+ 			if (err < 0 && err != -EINVAL)
+ 				return err;
+ 
+-			if (uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
++			if ((state.oterm.type & 0xff00) != 0x0100 &&
++			    uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
+ 							 UAC3_TE_INSERTION)) {
+ 				build_connector_control(state.mixer, &state.oterm,
+ 							false);
 
 
