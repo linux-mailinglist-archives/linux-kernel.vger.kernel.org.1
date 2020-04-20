@@ -2,246 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDE41B03C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207B81B038C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgDTIEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:04:07 -0400
-Received: from mail-vi1eur05on2073.outbound.protection.outlook.com ([40.107.21.73]:19936
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725815AbgDTIEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:04:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jq+Rs7gHWNGWMVh8pUA/TkbMm0hQEl8Zy6S45XOYoKCOWQFAvl88UGi2kjLHzEoJee6WHB/U9PilkB+QYJ4WGEBG9/REpOuBrlL+EXtpid9NQqhszu/MxI9BPy0ZajA1tB4mscClZAYefj9GhnmBd70tQy3uR4rPT+Kac5BlvUd34zvcP/hBzmNxaOstRxgcfCpNx+9G6ISsrtoi6e+KqWg3yjHjUvjp60VoYBI4kzSJetCbhMOpJaMxlzE4lVL3NJBbwr6NOJLeUZ88mnTW4TNyyZ4+Pc8gX9Zo50rBw9aunndsRiviRFqqPvpePCFrCmh6guIV26e69vMbUcBlkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K153R9bE61aSHkhMp7YFarvDCOF93LtDU0X2NK3WEtQ=;
- b=N6qNRPd3TKu0Lw76v1jOEI7wy9//zkiSGJpuaY2r96UtCWJfxO79l0fn0mTvHYPhE4ANEzNweF2k2w2DMxLmOrsJeZb2ZwO03ZtGG+hT8FKZLI5A/Pcg2Vibn2JV2fWKXHaOyJKENdNrvnxs8yZWG8HbGsG78EKmnMGmdnGCDD2okeyDomk44sxR+suJhUE3wjsJR3k0Fmg1XH+l3Q64EkoYQDRgL8W+JDvroWRu2s7qdqjO4v26+3md3CLCXKO89nZSTBkSmuN0T8kW/t+F5wy2OZThfeXoxZKwnTbUWHXEymrQdZnKP4oBR3LmhIVc52VNYhzy0gRfVWRmBv6BWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K153R9bE61aSHkhMp7YFarvDCOF93LtDU0X2NK3WEtQ=;
- b=gFEVKjEYIW+kFgGOKPfJ305+rKFHD8CXHkd5fCk7caKucLPFqoE/15/dSZrj0nyyuNBDufBIhgp+EEbadoHho/5A+i/NAdN0nwPj3OiWu3ybxOsSJLTydl3J2pGdqfyELMtONUgNjesE1eIHTixYNCADN8O8djDOAh+bjcwlwyQ=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2709.eurprd04.prod.outlook.com (2603:10a6:4:97::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Mon, 20 Apr
- 2020 08:03:58 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2921.027; Mon, 20 Apr 2020
- 08:03:58 +0000
-From:   peng.fan@nxp.com
-To:     viresh.kumar@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, rjw@rjwysocki.net
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        Anson.Huang@nxp.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 2/2] cpufreq: imx-cpufreq-dt: support i.MX7ULP
-Date:   Mon, 20 Apr 2020 15:55:14 +0800
-Message-Id: <1587369314-23452-3-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587369314-23452-1-git-send-email-peng.fan@nxp.com>
-References: <1587369314-23452-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR0601CA0010.apcprd06.prod.outlook.com (2603:1096:3::20)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S1726109AbgDTH52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:57:28 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:60873 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgDTH51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 03:57:27 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id f1d5d349;
+        Mon, 20 Apr 2020 07:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=mail; bh=0Z8VrEBoEqZW0fKOw8SFpT75CtM=; b=LEZN2u8UUIfHMWZ/6gzr
+        jda7Lan1GDm6qALfJit0LKgKlxjjh4TxYIysBvtXR8xoofnLuvZf0ZOJOhfuaIrb
+        QG+/BQ8XGxyixgk0GenBb+sDPPZlb7M6Y0B+yWGhA36cMrONeEZn/Eq0oI6WS977
+        l273zcfyJMyGuW8AMOzRM2IATs2s4pNzL0mYyKKimqFyIkBD1vFeMrYYJNbL/T1b
+        ufUeBxO2b+0c9kBdhT2buCza4PHsNFN9S3DcUJ+4sOCsqgnbtVgIwICISOoc3EDp
+        8PE3jm9sjwWS2TKvsZa7vVpbQK9f0TynAlNhBfOpBwTqg5qRYSKYTFXC6URD9Eru
+        cQ==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 111377eb (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 20 Apr 2020 07:46:50 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ebiggers@google.com, ardb@kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, stable@vger.kernel.org
+Subject: [PATCH crypto-stable] crypto: arch/lib - limit simd usage to PAGE_SIZE chunks
+Date:   Mon, 20 Apr 2020 01:57:11 -0600
+Message-Id: <20200420075711.2385190-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.67) by SG2PR0601CA0010.apcprd06.prod.outlook.com (2603:1096:3::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2921.25 via Frontend Transport; Mon, 20 Apr 2020 08:03:55 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: aa764f64-e488-4bec-15fb-08d7e501612e
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2709:|DB6PR0402MB2709:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB27092C142D0F6804F623E42888D40@DB6PR0402MB2709.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:826;
-X-Forefront-PRVS: 03793408BA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(366004)(376002)(136003)(346002)(396003)(956004)(2616005)(36756003)(316002)(186003)(86362001)(16526019)(81156014)(8676002)(8936002)(6506007)(26005)(69590400007)(52116002)(6512007)(478600001)(6486002)(5660300002)(66476007)(4326008)(66946007)(66556008)(2906002)(9686003)(6666004);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L4IzXwoEZngwua3yxcRj5WVuXjFPOPeDvX8TTeNNI81tQTnuw8Md1Oi1ybVt0TlbI2cnSEWWU0hBZ98v9ZtgsqDlXp8aK9bSomiWaoXx7pniuGgj/SJAr4C2mP+4vNz/EFW5W+JP5F2LDdIB03MC7iQeTnwn8YVYgFSh2SscEiJb2REVPQ6WC1zQASto1pQ6otK/4ni3JZXYw091xExDKGuWykL6SpK6wRsFqWOryoBMrt/DZ3Ozf1ZMRtl954kFhgIPe850YImeZHQ1GAesQ/hWC6lqYJ1hGFddpvY/VXgxidNryk4R+D077irBauNDAjJSoI+D+cS3yL+nPxzrXL9hkr1fmolI7jxMgvM5us4ZkH6i29titwUmdEZHjte3UV2TmqPOBV3vmAZY0tvwDvgpQcs+ZprqWz/+z5vn22HlHYVyUENWWWAGV7LJNYIQv4TWWiHQDTlgHmj8Ui1KUL4VeR9tar5jEgcam3Reycy6LyOgWVm0zL9j+as3ytid
-X-MS-Exchange-AntiSpam-MessageData: c/wD1wQ3U5R6suQfIoQ+fF195FPzwQQ19UXvlxOMT8VdFoSOBbASD1BEh2eAZmDmHi6NA+p0q2yNdRbPtPNvt26nVwbHOlYhix36D7xCTQWlJA/9F9Q+rMFbOTy4zAIDx/KJy7XzLVNEJ78eqCwHzA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa764f64-e488-4bec-15fb-08d7e501612e
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 08:03:58.6761
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PvdxxxvFQdl6dgUivwrrOZiVKURUOE4uqpYZw8DwJWUzwg3uXfdQqG4qOGPMTEFTVZLZl+zOh0XBbBNNO/QgzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2709
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+The initial Zinc patchset, after some mailing list discussion, contained
+code to ensure that kernel_fpu_enable would not be kept on for more than
+a PAGE_SIZE chunk, since it disables preemption. The choice of PAGE_SIZE
+isn't totally scientific, but it's not a bad guess either, and it's
+what's used in both the x86 poly1305 and blake2s library code already.
+Unfortunately it appears to have been left out of the final patchset
+that actually added the glue code. So, this commit adds back the
+PAGE_SIZE chunking.
 
-i.MX7ULP's ARM core clock design is totally different compared
-with i.MX7D/8M SoCs which supported by imx-cpufreq-dt. It needs
-get_intermediate and target_intermedate to configure clk MUX ready,
-before let OPP configure ARM core clk.
-                                          |---FIRC
-     |------RUN---...---SCS(MUX2) --------|
-ARM --(MUX1)                              |---SPLL_PFD0(CLK_SET_RATE_GATE)
-     |------HSRUN--...--HSRUN_SCS(MUX3)---|
-                                          |---SRIC
-
-FIRC is step clk, SPLL_PFD0 is the normal clk driving ARM core.
-MUX2 and MUX3 share same inputs. So if MUX2/MUX3 both sources from
-SPLL_PFD0, both MUXes will lose input when configure SPLL_PFD0.
-So the target_intermediate will configure MUX2/MUX3 to FIRC, to avoid
-ARM core lose clk when configure SPLL_PFD0.
-
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Fixes: 84e03fa39fbe ("crypto: x86/chacha - expose SIMD ChaCha routine as library function")
+Fixes: b3aad5bad26a ("crypto: arm64/chacha - expose arm64 ChaCha routine as library function")
+Fixes: a44a3430d71b ("crypto: arm/chacha - expose ARM ChaCha routine as library function")
+Fixes: f569ca164751 ("crypto: arm64/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+Fixes: a6b803b3ddc7 ("crypto: arm/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- drivers/cpufreq/imx-cpufreq-dt.c | 84 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 82 insertions(+), 2 deletions(-)
+Eric, Ard - I'm wondering if this was in fact just an oversight in Ard's
+patches, or if there was actually some later discussion in which we
+concluded that the PAGE_SIZE chunking wasn't required, perhaps because
+of FPU changes. If that's the case, please do let me know, in which case
+I'll submit a _different_ patch that removes the chunking from x86 poly
+and blake. I can't find any emails that would indicate that, but I might
+be mistaken.
 
-diff --git a/drivers/cpufreq/imx-cpufreq-dt.c b/drivers/cpufreq/imx-cpufreq-dt.c
-index de206d2745fe..b019b05940e8 100644
---- a/drivers/cpufreq/imx-cpufreq-dt.c
-+++ b/drivers/cpufreq/imx-cpufreq-dt.c
-@@ -3,7 +3,9 @@
-  * Copyright 2019 NXP
-  */
+ arch/arm/crypto/chacha-glue.c        | 16 +++++++++++++---
+ arch/arm/crypto/poly1305-glue.c      | 17 +++++++++++++----
+ arch/arm64/crypto/chacha-neon-glue.c | 16 +++++++++++++---
+ arch/arm64/crypto/poly1305-glue.c    | 17 +++++++++++++----
+ arch/x86/crypto/chacha_glue.c        | 16 +++++++++++++---
+ 5 files changed, 65 insertions(+), 17 deletions(-)
+
+diff --git a/arch/arm/crypto/chacha-glue.c b/arch/arm/crypto/chacha-glue.c
+index 6fdb0ac62b3d..0e29ebac95fd 100644
+--- a/arch/arm/crypto/chacha-glue.c
++++ b/arch/arm/crypto/chacha-glue.c
+@@ -91,9 +91,19 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+ 		return;
+ 	}
  
-+#include <linux/clk.h>
- #include <linux/cpu.h>
-+#include <linux/cpufreq.h>
- #include <linux/err.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-@@ -12,8 +14,11 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- 
-+#include "cpufreq-dt.h"
+-	kernel_neon_begin();
+-	chacha_doneon(state, dst, src, bytes, nrounds);
+-	kernel_neon_end();
++	for (;;) {
++		unsigned int todo = min_t(unsigned int, PAGE_SIZE, bytes);
 +
- #define OCOTP_CFG3_SPEED_GRADE_SHIFT	8
- #define OCOTP_CFG3_SPEED_GRADE_MASK	(0x3 << 8)
- #define IMX8MN_OCOTP_CFG3_SPEED_GRADE_MASK	(0xf << 8)
-@@ -22,13 +27,62 @@
- #define IMX8MP_OCOTP_CFG3_MKT_SEGMENT_SHIFT    5
- #define IMX8MP_OCOTP_CFG3_MKT_SEGMENT_MASK     (0x3 << 5)
- 
-+#define IMX7ULP_MAX_RUN_FREQ	528000
++		kernel_neon_begin();
++		chacha_doneon(state, dst, src, todo, nrounds);
++		kernel_neon_end();
 +
- /* cpufreq-dt device registered by imx-cpufreq-dt */
- static struct platform_device *cpufreq_dt_pdev;
- static struct opp_table *cpufreq_opp_table;
-+static struct device *cpu_dev;
-+
-+enum IMX7ULP_CPUFREQ_CLKS {
-+	ARM,
-+	CORE,
-+	SCS_SEL,
-+	HSRUN_CORE,
-+	HSRUN_SCS_SEL,
-+	FIRC,
-+};
-+
-+static struct clk_bulk_data imx7ulp_clks[] = {
-+	{ .id = "arm" },
-+	{ .id = "core" },
-+	{ .id = "scs_sel" },
-+	{ .id = "hsrun_core" },
-+	{ .id = "hsrun_scs_sel" },
-+	{ .id = "firc" },
-+};
-+
-+static unsigned int imx7ulp_get_intermediate(struct cpufreq_policy *policy,
-+					     unsigned int index)
-+{
-+	return clk_get_rate(imx7ulp_clks[FIRC].clk);
-+}
-+
-+static int imx7ulp_target_intermediate(struct cpufreq_policy *policy,
-+					unsigned int index)
-+{
-+	unsigned int newfreq = policy->freq_table[index].frequency;
-+
-+	clk_set_parent(imx7ulp_clks[SCS_SEL].clk, imx7ulp_clks[FIRC].clk);
-+	clk_set_parent(imx7ulp_clks[HSRUN_SCS_SEL].clk, imx7ulp_clks[FIRC].clk);
-+
-+	if (newfreq > IMX7ULP_MAX_RUN_FREQ)
-+		clk_set_parent(imx7ulp_clks[ARM].clk,
-+			       imx7ulp_clks[HSRUN_CORE].clk);
-+	else
-+		clk_set_parent(imx7ulp_clks[ARM].clk, imx7ulp_clks[CORE].clk);
-+
-+	return 0;
-+}
-+
-+static struct cpufreq_dt_platform_data imx7ulp_data = {
-+	.target_intermediate = imx7ulp_target_intermediate,
-+	.get_intermediate = imx7ulp_get_intermediate,
-+};
- 
- static int imx_cpufreq_dt_probe(struct platform_device *pdev)
- {
--	struct device *cpu_dev = get_cpu_device(0);
-+	struct platform_device *dt_pdev;
- 	u32 cell_value, supported_hw[2];
- 	int speed_grade, mkt_segment;
- 	int ret;
-@@ -36,6 +90,29 @@ static int imx_cpufreq_dt_probe(struct platform_device *pdev)
- 	if (!of_find_property(cpu_dev->of_node, "cpu-supply", NULL))
- 		return -ENODEV;
- 
-+	cpu_dev = get_cpu_device(0);
-+
-+	if (of_machine_is_compatible("fsl,imx7ulp")) {
-+		ret = clk_bulk_get(cpu_dev, ARRAY_SIZE(imx7ulp_clks),
-+				   imx7ulp_clks);
-+		if (ret)
-+			return ret;
-+
-+		dt_pdev = platform_device_register_data(NULL, "cpufreq-dt",
-+							-1, &imx7ulp_data,
-+							sizeof(imx7ulp_data));
-+		if (IS_ERR(dt_pdev)) {
-+			clk_bulk_put(ARRAY_SIZE(imx7ulp_clks), imx7ulp_clks);
-+			ret = PTR_ERR(dt_pdev);
-+			dev_err(&pdev->dev, "Failed to register cpufreq-dt: %d\n", ret);
-+			return ret;
-+		}
-+
-+		cpufreq_dt_pdev = dt_pdev;
-+
-+		return 0;
++		bytes -= todo;
++		if (!bytes)
++			break;
++		src += todo;
++		dst += todo;
 +	}
-+
- 	ret = nvmem_cell_read_u32(cpu_dev, "speed_grade", &cell_value);
- 	if (ret)
- 		return ret;
-@@ -98,7 +175,10 @@ static int imx_cpufreq_dt_probe(struct platform_device *pdev)
- static int imx_cpufreq_dt_remove(struct platform_device *pdev)
- {
- 	platform_device_unregister(cpufreq_dt_pdev);
--	dev_pm_opp_put_supported_hw(cpufreq_opp_table);
-+	if (!of_machine_is_compatible("fsl,imx7ulp"))
-+		dev_pm_opp_put_supported_hw(cpufreq_opp_table);
-+	else
-+		clk_bulk_put(ARRAY_SIZE(imx7ulp_clks), imx7ulp_clks);
- 
- 	return 0;
  }
+ EXPORT_SYMBOL(chacha_crypt_arch);
+ 
+diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
+index ceec04ec2f40..536a4a943ebe 100644
+--- a/arch/arm/crypto/poly1305-glue.c
++++ b/arch/arm/crypto/poly1305-glue.c
+@@ -160,13 +160,22 @@ void poly1305_update_arch(struct poly1305_desc_ctx *dctx, const u8 *src,
+ 		unsigned int len = round_down(nbytes, POLY1305_BLOCK_SIZE);
+ 
+ 		if (static_branch_likely(&have_neon) && do_neon) {
+-			kernel_neon_begin();
+-			poly1305_blocks_neon(&dctx->h, src, len, 1);
+-			kernel_neon_end();
++			for (;;) {
++				unsigned int todo = min_t(unsigned int, PAGE_SIZE, len);
++
++				kernel_neon_begin();
++				poly1305_blocks_neon(&dctx->h, src, todo, 1);
++				kernel_neon_end();
++
++				len -= todo;
++				if (!len)
++					break;
++				src += todo;
++			}
+ 		} else {
+ 			poly1305_blocks_arm(&dctx->h, src, len, 1);
++			src += len;
+ 		}
+-		src += len;
+ 		nbytes %= POLY1305_BLOCK_SIZE;
+ 	}
+ 
+diff --git a/arch/arm64/crypto/chacha-neon-glue.c b/arch/arm64/crypto/chacha-neon-glue.c
+index 37ca3e889848..3eff767f4f77 100644
+--- a/arch/arm64/crypto/chacha-neon-glue.c
++++ b/arch/arm64/crypto/chacha-neon-glue.c
+@@ -87,9 +87,19 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+ 	    !crypto_simd_usable())
+ 		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
+ 
+-	kernel_neon_begin();
+-	chacha_doneon(state, dst, src, bytes, nrounds);
+-	kernel_neon_end();
++	for (;;) {
++		unsigned int todo = min_t(unsigned int, PAGE_SIZE, bytes);
++
++		kernel_neon_begin();
++		chacha_doneon(state, dst, src, todo, nrounds);
++		kernel_neon_end();
++
++		bytes -= todo;
++		if (!bytes)
++			break;
++		src += todo;
++		dst += todo;
++	}
+ }
+ EXPORT_SYMBOL(chacha_crypt_arch);
+ 
+diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
+index e97b092f56b8..616134bef02c 100644
+--- a/arch/arm64/crypto/poly1305-glue.c
++++ b/arch/arm64/crypto/poly1305-glue.c
+@@ -143,13 +143,22 @@ void poly1305_update_arch(struct poly1305_desc_ctx *dctx, const u8 *src,
+ 		unsigned int len = round_down(nbytes, POLY1305_BLOCK_SIZE);
+ 
+ 		if (static_branch_likely(&have_neon) && crypto_simd_usable()) {
+-			kernel_neon_begin();
+-			poly1305_blocks_neon(&dctx->h, src, len, 1);
+-			kernel_neon_end();
++			for (;;) {
++				unsigned int todo = min_t(unsigned int, PAGE_SIZE, len);
++
++				kernel_neon_begin();
++				poly1305_blocks_neon(&dctx->h, src, todo, 1);
++				kernel_neon_end();
++
++				len -= todo;
++				if (!len)
++					break;
++				src += todo;
++			}
+ 		} else {
+ 			poly1305_blocks(&dctx->h, src, len, 1);
++			src += len;
+ 		}
+-		src += len;
+ 		nbytes %= POLY1305_BLOCK_SIZE;
+ 	}
+ 
+diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
+index b412c21ee06e..10733035b81c 100644
+--- a/arch/x86/crypto/chacha_glue.c
++++ b/arch/x86/crypto/chacha_glue.c
+@@ -153,9 +153,19 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+ 	    bytes <= CHACHA_BLOCK_SIZE)
+ 		return chacha_crypt_generic(state, dst, src, bytes, nrounds);
+ 
+-	kernel_fpu_begin();
+-	chacha_dosimd(state, dst, src, bytes, nrounds);
+-	kernel_fpu_end();
++	for (;;) {
++		unsigned int todo = min_t(unsigned int, PAGE_SIZE, bytes);
++
++		kernel_fpu_begin();
++		chacha_dosimd(state, dst, src, todo, nrounds);
++		kernel_fpu_end();
++
++		bytes -= todo;
++		if (!bytes)
++			break;
++		src += todo;
++		dst += todo;
++	}
+ }
+ EXPORT_SYMBOL(chacha_crypt_arch);
+ 
 -- 
-2.16.4
+2.26.1
 
