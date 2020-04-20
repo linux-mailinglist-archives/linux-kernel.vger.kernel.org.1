@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831431B0112
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BFC1B0116
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgDTFil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgDTFil (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:38:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89A0C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:38:39 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j7so940909pgj.13
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:38:39 -0700 (PDT)
+        id S1726017AbgDTFky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:40:54 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:35491 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725865AbgDTFky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:40:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8DAiM3FZELhORq/Bkh+uGmRYVoaeDncRDNKlRNgM+4Y=;
-        b=smlPb7p2KjV8mhZbGKmTb4FX3kZIhWgjjinJsbrd9ObCjFQk4dwr/dBChq1xnFdwQJ
-         mO3M4fRuYB/26Gk/5Z2TaacEs7BOqzeHo1G1LtMSoEn/Ex4Darq/MNVOWTmsK/EcIc8+
-         84Re3GZDzlIFY81FVHvn8p39jLDuerjdsdvtBbikdCBKCTl6TRl7A6aS9xp7/5FpbROb
-         tBt/0mGhvCQn4gqrzZR75FvBziVFzEFb8B8vQYLF3r+xbMxmUfwq/kWLUNSEt1ZLyjIG
-         ZrJa67PV1D8ORryty0/ydOYC0IQHGaC1mTkRq53u60Q4n4AnAAYz0QJkNyjd7ZYMyCph
-         3LuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8DAiM3FZELhORq/Bkh+uGmRYVoaeDncRDNKlRNgM+4Y=;
-        b=QgHaWqtzARwrlaqCH1XrSw1LZ+lzRnhg/VM/vSQi7ZaN1+uwRG4noJxotqSs78RLs9
-         8tSDMJhotpzU51W8473fZsuw5ns6VnVmrXQxi+ZLrxlG8A/GHVG7QaXvQZimISy+fJrJ
-         My3/fel8I5f7t1d6b1MQ80VC3kQrVHV3I52iRnoe48RTM9ATffSsBqtZ6XoOWFQNBNfJ
-         eCF/U68GPgUQHP5JENyD36D5/0pJ6uUBEqub6JTL7Ru0Amt3BnkkIUfiFkXGbyI210AR
-         bAPG9mN2eXhuB/sEEm9PEdWw2Vc8Ujxw2E8sMXRTSegFtsnqjLyF1rvZeZxNwVkHBu7J
-         FiGA==
-X-Gm-Message-State: AGi0PuaTISCyjz+FXpR+8R3ZQOm2qNHwNdR439Y4ksQmH9Hif+k/VPKL
-        YyYSUp9xsk2lD7KnA3gaqbHjig==
-X-Google-Smtp-Source: APiQypIcQ5RUUaAcPqXTbhFsBCZvKcSGvCrv59l6EnBYvnD8ONdi4RqBSAZ23H/8nSSkv0dtZ1OXhg==
-X-Received: by 2002:a62:1801:: with SMTP id 1mr6338097pfy.230.1587361119235;
-        Sun, 19 Apr 2020 22:38:39 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id r13sm31317pgj.9.2020.04.19.22.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 22:38:38 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 22:39:01 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, evgreen@chromium.org,
-        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/5] remoteproc: qcom: pas: Add SC7180 Modem support
-Message-ID: <20200420053901.GH1516868@builder.lan>
-References: <20200417142605.28885-1-sibis@codeaurora.org>
- <20200417142605.28885-3-sibis@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417142605.28885-3-sibis@codeaurora.org>
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=DjbzqYNqeqnbjCD12TkNbwM+GA7agGlpqtiuflvqEeQ=; b=k
+        QyQgJig8hKn5pXyORfGGMB5fbkIDU/UUr9OUc6iZFYW6poCBKP8a+pWLSG/fOyAb
+        mUua/+BkruHG1HZE6h3rWG1wl5BUTY+BE5IVtTvL37K8RvoL3rSzx1/QKo+r2kIo
+        p5Cp77xV8SyL/bq+w90f0op7nze1W9NBqWMfiyFqyY=
+Received: from localhost.localdomain (unknown [120.229.255.67])
+        by app1 (Coremail) with SMTP id XAUFCgBXSHW6NZ1evHYWAA--.63135S3;
+        Mon, 20 Apr 2020 13:40:12 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Jeff Mahoney <jeffm@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] btrfs: Fix refcnt leak in btrfs_recover_relocation
+Date:   Mon, 20 Apr 2020 13:39:39 +0800
+Message-Id: <1587361180-83334-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XAUFCgBXSHW6NZ1evHYWAA--.63135S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr4xKF1rKw4kKw4ruF48JFb_yoW8Gr4fpr
+        47Cw1Fgry5tw1kArsxKan5Cr1fGa1DWw18GrsYgws5Xws3J3WSya4jvwnrtry8tr1qqw4U
+        XrsY9rW5Arn8C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
+        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUOlksUUUUU
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17 Apr 07:26 PDT 2020, Sibi Sankar wrote:
+btrfs_recover_relocation() invokes btrfs_join_transaction(), which joins
+a btrfs_trans_handle object into transactions and returns a reference of
+it with increased refcount to "trans".
 
-> Add support for booting the Modem DSP found on Qualcomm's SC7180 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+When btrfs_recover_relocation() returns, "trans" becomes invalid, so the
+refcount should be decreased to keep refcount balanced.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The reference counting issue happens in one exception handling path of
+btrfs_recover_relocation(). When read_fs_root() failed, the refcnt
+increased by btrfs_join_transaction() is not decreased, causing a refcnt
+leak.
 
-Regards,
-Bjorn
+Fix this issue by calling btrfs_end_transaction() on this error path
+when read_fs_root() failed.
 
-> ---
->  drivers/remoteproc/qcom_q6v5_pas.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> index 7a63efb854052..33b0bff770a7f 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -637,6 +637,7 @@ static const struct of_device_id adsp_of_match[] = {
->  	{ .compatible = "qcom,qcs404-adsp-pas", .data = &adsp_resource_init },
->  	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
->  	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
-> +	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
->  	{ .compatible = "qcom,sdm845-adsp-pas", .data = &adsp_resource_init},
->  	{ .compatible = "qcom,sdm845-cdsp-pas", .data = &cdsp_resource_init},
->  	{ .compatible = "qcom,sm8150-adsp-pas", .data = &sm8150_adsp_resource},
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error
+handling")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ fs/btrfs/relocation.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 995d4b8b1cfd..46a451594c7a 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4606,6 +4606,7 @@ int btrfs_recover_relocation(struct btrfs_root *root)
+ 		if (IS_ERR(fs_root)) {
+ 			err = PTR_ERR(fs_root);
+ 			list_add_tail(&reloc_root->root_list, &reloc_roots);
++			btrfs_end_transaction(trans);
+ 			goto out_free;
+ 		}
+ 
+-- 
+2.7.4
+
