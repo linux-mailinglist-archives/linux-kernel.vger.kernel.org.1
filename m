@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2A41B0A85
+	by mail.lfdr.de (Postfix) with ESMTP id 385161B0A84
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgDTMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45632 "EHLO mail.kernel.org"
+        id S1729334AbgDTMs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729321AbgDTMsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:51 -0400
+        id S1729327AbgDTMsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:48:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8915B20736;
-        Mon, 20 Apr 2020 12:48:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1DE320735;
+        Mon, 20 Apr 2020 12:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386931;
-        bh=D+r3/ZPsZAPbTUAkTAu0VfQ1jRA/yMEXedkNJkr1pvQ=;
+        s=default; t=1587386933;
+        bh=Td6phF6OipQfRwHy9dH1WczrdeUDuqNXLRmhK2Nm+34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OmFKcZ7tHU0Nrx5bY/Tui2XZ9EPD/DEQea0gNZdPFLHaGLqRE9ICD1wFB70qjrGK8
-         Hov/1uB7ADLTYnDqlx9LtvcwipQTaU9/AiEBqvgP/nRzOfHVMXLiOQWkMvyhQBs6+/
-         VBn2zNKdaWsGC+t/773LSPVjcDfp8TGccERdzCIY=
+        b=St83J7M57uUAz4vkN92neg2uX2A3o5BZF/q7HE3VjmBwAA2USNoldlgh9DfUUjX6g
+         hsgQss+jLk0GWdLeneNrZnmEer3Y7xD47NCXK91KuW3K1g36HBkth2jBB941w11syR
+         tJ6u5wLu76zU6Ck/f94BKqh5gqSuLn0+qEd2tWvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/40] usb: dwc3: gadget: dont enable interrupt when disabling endpoint
-Date:   Mon, 20 Apr 2020 14:39:35 +0200
-Message-Id: <20200420121501.489818182@linuxfoundation.org>
+Subject: [PATCH 4.19 26/40] usb: dwc3: gadget: Dont clear flags before transfer ended
+Date:   Mon, 20 Apr 2020 14:39:36 +0200
+Message-Id: <20200420121502.311210933@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
 References: <20200420121444.178150063@linuxfoundation.org>
@@ -44,74 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit c5353b225df9b2d0cf881873eef6f680e43c9aa2 ]
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-Since we're disabling the endpoint anyway, we don't worry about
-getting endpoint command completion interrupt.
+[ Upstream commit a114c4ca64bd522aec1790c7e5c60c882f699d8f ]
 
-Signed-off-by: Felipe Balbi <felipe.balbi@linux.intel.com>
+We track END_TRANSFER command completion. Don't clear transfer
+started/ended flag prematurely. Otherwise, we'd run into the problem
+with restarting transfer before END_TRANSFER command finishes.
+
+Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from event status")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/gadget.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/usb/dwc3/gadget.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 7b8b463676ad6..019aee3a79568 100644
+index 019aee3a79568..8a4455d0af8b9 100644
 --- a/drivers/usb/dwc3/gadget.c
 +++ b/drivers/usb/dwc3/gadget.c
-@@ -688,12 +688,13 @@ static int __dwc3_gadget_ep_enable(struct dwc3_ep *dep, unsigned int action)
- 	return 0;
- }
+@@ -2366,10 +2366,8 @@ static void dwc3_gadget_endpoint_transfer_in_progress(struct dwc3_ep *dep,
  
--static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force);
-+static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force,
-+		bool interrupt);
- static void dwc3_remove_requests(struct dwc3 *dwc, struct dwc3_ep *dep)
- {
- 	struct dwc3_request		*req;
- 
--	dwc3_stop_active_transfer(dep, true);
-+	dwc3_stop_active_transfer(dep, true, false);
- 
- 	/* - giveback all requests to gadget driver */
- 	while (!list_empty(&dep->started_list)) {
-@@ -1416,7 +1417,7 @@ static int dwc3_gadget_ep_dequeue(struct usb_ep *ep,
- 		}
- 		if (r == req) {
- 			/* wait until it is processed */
--			dwc3_stop_active_transfer(dep, true);
-+			dwc3_stop_active_transfer(dep, true, true);
- 
- 			if (!r->trb)
- 				goto out0;
-@@ -2366,7 +2367,7 @@ static void dwc3_gadget_endpoint_transfer_in_progress(struct dwc3_ep *dep,
  	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
  
- 	if (stop) {
--		dwc3_stop_active_transfer(dep, true);
-+		dwc3_stop_active_transfer(dep, true, true);
- 		dep->flags = DWC3_EP_ENABLED;
- 	}
+-	if (stop) {
++	if (stop)
+ 		dwc3_stop_active_transfer(dep, true, true);
+-		dep->flags = DWC3_EP_ENABLED;
+-	}
  
-@@ -2488,7 +2489,8 @@ static void dwc3_reset_gadget(struct dwc3 *dwc)
- 	}
- }
- 
--static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force)
-+static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force,
-+	bool interrupt)
- {
- 	struct dwc3 *dwc = dep->dwc;
- 	struct dwc3_gadget_ep_cmd_params params;
-@@ -2532,7 +2534,7 @@ static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force)
- 
- 	cmd = DWC3_DEPCMD_ENDTRANSFER;
- 	cmd |= force ? DWC3_DEPCMD_HIPRI_FORCERM : 0;
--	cmd |= DWC3_DEPCMD_CMDIOC;
-+	cmd |= interrupt ? DWC3_DEPCMD_CMDIOC : 0;
- 	cmd |= DWC3_DEPCMD_PARAM(dep->resource_index);
- 	memset(&params, 0, sizeof(params));
- 	ret = dwc3_send_gadget_ep_cmd(dep, cmd, &params);
+ 	/*
+ 	 * WORKAROUND: This is the 2nd half of U1/U2 -> U0 workaround.
 -- 
 2.20.1
 
