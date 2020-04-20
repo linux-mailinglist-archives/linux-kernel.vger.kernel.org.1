@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1781B010C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6B41B0114
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgDTFiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgDTFiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:38:11 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA40AC061A41
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:38:09 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o15so3949223pgi.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:38:09 -0700 (PDT)
+        id S1726228AbgDTFjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:39:16 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:45888 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725815AbgDTFjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:39:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vXuywTNcLCyXfTRCxE+/gbb1J166gbMzJgknZr7hvR8=;
-        b=QTdCHYpBWRjtP0C4ZMM3bnQLyxnOq96YEAJGGD0d78YRbQeZQT8OnZbNZjwnEzHua8
-         Vknv71fXdd2Qj/rQK+wRt2jNvPa+0uPEzUFlczgphZpuDNvlkG7/dplzSHE2CU69xi0m
-         bkQKbkS5Tzf8EOz35CSAlzVUmEhuOyaRiwsG4m+/8TzyHaxfZYNtaTaTfx95Vhrr9o4K
-         UHqadDGzSpBfM5Ovg60skbf0nxGNBNltrwpLNRqkmDU3jd8mEo7yUpfX7C+JxrX/d8Nl
-         sU1BQCPyQFK5NcKr0MmerpWTLfhcomYPEp1wvxvjU+vXG8+X49UAHFUA6vVH+eMdQHsf
-         YcgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vXuywTNcLCyXfTRCxE+/gbb1J166gbMzJgknZr7hvR8=;
-        b=LbYn11JMw+QPVSoUuyemweiUS4jRdnFVIuVe5gIfU8xtQiCEmqF98g/DkIiwoACu2j
-         bvQnNJD1gMern6oOJaAVKwx1cbVrexvtLjLV42TH8j8dOxTvhS3bj5bw+KhYrCKKb3x/
-         FMBpwMJkDOdyKU2o1rX2WpvpynOPnh4w0ZceGuDKc27U8pkwTcRxzBjX1MaaT3Hkrq0a
-         akSsZGWQDLih8HCA+nbwgswOwcNcshegw0YKvpZNe6z4ydgZJCflBLMxKwlw7aQ6CNnS
-         uH2O1SLU5Ktb4BSGvSEfZECorVxxaKhbrDsfE5cIaBqVN6C518Kj5EqrScZCr4yP7FIp
-         Y7rg==
-X-Gm-Message-State: AGi0PubvBmcgH4MbT8UJgf6hKZN35IxWTQTD3teCD12lazfF6RbF+zE+
-        W3qgqgGsqRRo+tkDiCJPn1EHhw==
-X-Google-Smtp-Source: APiQypKbM9MWn5psD/g3DSNrwZ2q4sHKh/sP1sgRu/OJZVr7IHFEztIdXYyLOc0WGGxhnqioUWIZ2w==
-X-Received: by 2002:aa7:9a84:: with SMTP id w4mr15363759pfi.111.1587361089160;
-        Sun, 19 Apr 2020 22:38:09 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id c80sm12136004pfb.82.2020.04.19.22.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2020 22:38:08 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 22:38:31 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, evgreen@chromium.org,
-        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: remoteproc: qcom: Add SC7180 MPSS
- support
-Message-ID: <20200420053831.GG1516868@builder.lan>
-References: <20200417142605.28885-1-sibis@codeaurora.org>
- <20200417142605.28885-2-sibis@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417142605.28885-2-sibis@codeaurora.org>
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=7jeYy+0kw+BDwc27sM9Qazk8Eah3Qmvz5cfU906WJME=; b=l
+        eDBAAKMySPKhlRK1SN0tEEU24/SP82dlmZf7+5N8hjRjQxDg2/Si8IBY+xsuJmuM
+        FOaC01foEiZ9nTDfw7w1M5n1ZyYPU1McSpYJnk3p8ZcVbLYShYJ8d/dC9ebwLMPh
+        MoNKSV/JinuCkUSCOzU5u2z/DHcTlpDw6F3sDek2J0=
+Received: from localhost.localdomain (unknown [61.129.42.58])
+        by app2 (Coremail) with SMTP id XQUFCgCXn+N3NZ1elfUdAA--.15497S3;
+        Mon, 20 Apr 2020 13:39:04 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+Date:   Mon, 20 Apr 2020 13:38:40 +0800
+Message-Id: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgCXn+N3NZ1elfUdAA--.15497S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4DuF48Jw4fXFyDJw1DWrg_yoW5GFW3pr
+        yDKFs0gr1rCr1qva1xG390qw1Fg3WkGw4UGr98Crsaqw43JwnxZF9Iy3WYyry5tFWfXrZr
+        Xa1Yv34UAF9FkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUXTmhUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 17 Apr 07:26 PDT 2020, Sibi Sankar wrote:
+btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
+returns a local reference of the blcok group that contains the given
+bytenr to "block_group" with increased refcount.
 
-> Add MPSS PAS support for SC7180 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+When btrfs_remove_block_group() returns, "block_group" becomes invalid,
+so the refcount should be decreased to keep refcount balanced.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The reference counting issue happens in several exception handling paths
+of btrfs_remove_block_group(). When those error scenarios occur such as
+btrfs_alloc_path() returns NULL, the function forgets to decrease its
+refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+leak.
 
-Regards,
-Bjorn
+Fix this issue by jumping to "out_put_group" label and calling
+btrfs_put_block_group() when those error scenarios occur.
 
-> ---
->  Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> index 9938918b2fea3..22604d2cd3f87 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> @@ -15,6 +15,7 @@ on the Qualcomm ADSP Hexagon core.
->  		    "qcom,qcs404-adsp-pas"
->  		    "qcom,qcs404-cdsp-pas"
->  		    "qcom,qcs404-wcss-pas"
-> +		    "qcom,sc7180-mpss-pas"
->  		    "qcom,sdm845-adsp-pas"
->  		    "qcom,sdm845-cdsp-pas"
->  		    "qcom,sm8150-adsp-pas"
-> @@ -46,6 +47,7 @@ on the Qualcomm ADSP Hexagon core.
->  	qcom,sm8150-slpi-pas:
->  		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
->  	qcom,qcs404-wcss-pas:
-> +	qcom,sc7180-mpss-pas:
->  	qcom,sm8150-mpss-pas:
->  		    must be "wdog", "fatal", "ready", "handover", "stop-ack",
->  		    "shutdown-ack"
-> @@ -106,6 +108,7 @@ on the Qualcomm ADSP Hexagon core.
->  	qcom,sm8150-adsp-pas:
->  	qcom,sm8150-cdsp-pas:
->  		    must be "cx", "load_state"
-> +	qcom,sc7180-mpss-pas:
->  	qcom,sm8150-mpss-pas:
->  		    must be "cx", "load_state", "mss"
->  	qcom,sm8150-slpi-pas:
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ fs/btrfs/block-group.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 404e050ce8ee..d9f432bd3329 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -916,7 +916,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto out_put_group;
+ 	}
+ 
+ 	/*
+@@ -954,7 +954,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_orphan_add(trans, BTRFS_I(inode));
+ 		if (ret) {
+ 			btrfs_add_delayed_iput(inode);
+-			goto out;
++			goto out_put_group;
+ 		}
+ 		clear_nlink(inode);
+ 		/* One for the block groups ref */
+@@ -977,13 +977,13 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
+ 	if (ret < 0)
+-		goto out;
++		goto out_put_group;
+ 	if (ret > 0)
+ 		btrfs_release_path(path);
+ 	if (ret == 0) {
+ 		ret = btrfs_del_item(trans, tree_root, path);
+ 		if (ret)
+-			goto out;
++			goto out_put_group;
+ 		btrfs_release_path(path);
+ 	}
+ 
+@@ -1102,7 +1102,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	ret = remove_block_group_free_space(trans, block_group);
+ 	if (ret)
+-		goto out;
++		goto out_put_group;
+ 
+ 	btrfs_put_block_group(block_group);
+ 	btrfs_put_block_group(block_group);
+@@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		btrfs_delayed_refs_rsv_release(fs_info, 1);
+ 	btrfs_free_path(path);
+ 	return ret;
++out_put_group:
++	btrfs_put_block_group(block_group);
++	goto out;
+ }
+ 
+ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+-- 
+2.7.4
+
