@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D76E1B0BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677DD1B09BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgDTM7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:59:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S1728100AbgDTMlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726659AbgDTMlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:41:39 -0400
+        id S1728068AbgDTMll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:41:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9773A20735;
-        Mon, 20 Apr 2020 12:41:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09ABF2070B;
+        Mon, 20 Apr 2020 12:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386499;
-        bh=bAe1FRdeDniFj9uG2cgsWCRDVxEI8geVgSonvd04wvw=;
+        s=default; t=1587386501;
+        bh=OPmzf2w8oZFjQUcdq4pZIniqTy2a1AU4Sm2JRKbbTW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=osib+93hktQ50XGWOCNmeREC6HHtI9mdC/zIjVXbGkZgbg311IJ9QNIq9KvY8l4Xp
-         rDCFaR0sN/6AXYoixzR4Sc4qorTvox1RJhNcXSL1uYjmNPc2+rjkdg/+UhuTVYztBD
-         rFvM8R4L2l/zdNK+xmbZF0PMrH0Pm4Zb0ccsGXv0=
+        b=OtQX77vIGEEPM+IH4Teq9u0aZMWC+8uNA9ECmgGhkOzjjnRQeOJpWqm9CxfRw1Ia/
+         /VX40yXaooBEuCBHSNIHPcGxncgUvBLb3M3A3cqsdM19balS4IOxOwCwr7X7W3zdKk
+         +Jy2SAtNUU123S1WlH94HE1JVa+6WMg/3l1Vhb58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.5 48/65] btrfs: check commit root generation in should_ignore_root
-Date:   Mon, 20 Apr 2020 14:38:52 +0200
-Message-Id: <20200420121517.312843052@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.5 49/65] nl80211: fix NL80211_ATTR_FTM_RESPONDER policy
+Date:   Mon, 20 Apr 2020 14:38:53 +0200
+Message-Id: <20200420121517.544003407@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
 References: <20200420121505.909671922@linuxfoundation.org>
@@ -44,54 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 4d4225fc228e46948486d8b8207955f0c031b92e upstream.
+commit 0e012b4e4b5ec8e064be3502382579dd0bb43269 upstream.
 
-Previously we would set the reloc root's last snapshot to transid - 1.
-However there was a problem with doing this, and we changed it to
-setting the last snapshot to the generation of the commit node of the fs
-root.
+The nested policy here should be established using the
+NLA_POLICY_NESTED() macro so the length is properly
+filled in.
 
-This however broke should_ignore_root().  The assumption is that if we
-are in a generation newer than when the reloc root was created, then we
-would find the reloc root through normal backref lookups, and thus can
-ignore any fs roots we find with an old enough reloc root.
-
-Now that the last snapshot could be considerably further in the past
-than before, we'd end up incorrectly ignoring an fs root.  Thus we'd
-find no nodes for the bytenr we were searching for, and we'd fail to
-relocate anything.  We'd loop through the relocate code again and see
-that there were still used space in that block group, attempt to
-relocate those bytenr's again, fail in the same way, and just loop like
-this forever.  This is tricky in that we have to not modify the fs root
-at all during this time, so we need to have a block group that has data
-in this fs root that is not shared by any other root, which is why this
-has been difficult to reproduce.
-
-Fixes: 054570a1dc94 ("Btrfs: fix relocation incorrectly dropping data references")
-CC: stable@vger.kernel.org # 4.9+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: stable@vger.kernel.org
+Fixes: 81e54d08d9d8 ("cfg80211: support FTM responder configuration/statistics")
+Link: https://lore.kernel.org/r/20200412004029.9d0722bb56c8.Ie690bfcc4a1a61ff8d8ca7e475d59fcaa52fb2da@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/relocation.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/wireless/nl80211.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -561,8 +561,8 @@ static int should_ignore_root(struct btr
- 	if (!reloc_root)
- 		return 0;
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -618,10 +618,8 @@ const struct nla_policy nl80211_policy[N
+ 	[NL80211_ATTR_HE_CAPABILITY] = { .type = NLA_BINARY,
+ 					 .len = NL80211_HE_MAX_CAPABILITY_LEN },
  
--	if (btrfs_root_last_snapshot(&reloc_root->root_item) ==
--	    root->fs_info->running_transaction->transid - 1)
-+	if (btrfs_header_generation(reloc_root->commit_root) ==
-+	    root->fs_info->running_transaction->transid)
- 		return 0;
- 	/*
- 	 * if there is reloc tree and it was created in previous
+-	[NL80211_ATTR_FTM_RESPONDER] = {
+-		.type = NLA_NESTED,
+-		.validation_data = nl80211_ftm_responder_policy,
+-	},
++	[NL80211_ATTR_FTM_RESPONDER] =
++		NLA_POLICY_NESTED(nl80211_ftm_responder_policy),
+ 	[NL80211_ATTR_TIMEOUT] = NLA_POLICY_MIN(NLA_U32, 1),
+ 	[NL80211_ATTR_PEER_MEASUREMENTS] =
+ 		NLA_POLICY_NESTED(nl80211_pmsr_attr_policy),
 
 
