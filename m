@@ -2,469 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FA21B04DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDBB1B04E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgDTIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:53:46 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:47842 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725865AbgDTIxq (ORCPT
+        id S1726402AbgDTIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:55:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46598 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726197AbgDTIzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:53:46 -0400
+        Mon, 20 Apr 2020 04:55:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587372822;
+        s=mimecast20190719; t=1587372910;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RmrS7qkwt35t4EXFiKayHGncdq2IWr33u2Go4YZXc7c=;
-        b=CPdryS/pQWNcbZj4FSPQ6WUzKhR+TQdGEpFZXgFDdFZFDFR3NBHqeQQ+irtGNMzAdLyqzF
-        4GGWUzq0K33ztkTGDb0IunHK6QgqxvMne5UvhRujR2RoQBrHEkCQBOZNHAVmyrZ7TYtAB9
-        pdOODsEi1f+yFw/XWE/Pg/AbZjKoT1A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-KPxVe_3uP36QuBck0lnpMQ-1; Mon, 20 Apr 2020 04:53:41 -0400
-X-MC-Unique: KPxVe_3uP36QuBck0lnpMQ-1
-Received: by mail-wm1-f72.google.com with SMTP id n127so3279965wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:53:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RmrS7qkwt35t4EXFiKayHGncdq2IWr33u2Go4YZXc7c=;
-        b=RM71gg6q1EtNr1l7ESHoPigUFwGL2jPbkY7OqW4v3e+KG1CPCL0wpYNZmQ5QcVREwH
-         MVLpB8qUBuM9+dlYIwUEA0QEV2+994LVS1cM0Y0357PCSSlZeI0OqCSpmvHRs1iPvBmc
-         eI9Oo4TW9DFUuLTmTJLltL6s25uJPm4G38iiU7U7Bwew85iRnMtioXmmodVio28FWd8a
-         gNdIhV6yZjyhw9Xo9vObBti3aQ0ZtkP8YvZ03DpSv4INXgYKFv3RxkxIEBa/2GtzSkJ/
-         CQ2PP1vNL0Es1E+YvslP1a1xhJ1iMWZY5GbqNDTQMjwCufpT2QLtW+RPKAyLBkXfvQO4
-         cKYA==
-X-Gm-Message-State: AGi0PuYK+FMa30DkCNeJM7b/tfSX6oIUH1pcU+X4LJZJ3AYj7LbcmQNx
-        CrWSu6PiM70CK/hrZtLKy4m6LpQ9iYeBw9dgpQTPoSV95mmwrA3s6CyW7oDsXfrsln+KeSZuppn
-        KpjvoHZgjfU2kSt/bE9LYG4d7
-X-Received: by 2002:a1c:c2d4:: with SMTP id s203mr17895861wmf.128.1587372819672;
-        Mon, 20 Apr 2020 01:53:39 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJsZyIuvWzhKvOmT0MutOJONbyQZ29IytBsY2FgimKhxRpa/HmhbKrbbJrL8oPDyc5sjsP/Aw==
-X-Received: by 2002:a1c:c2d4:: with SMTP id s203mr17895823wmf.128.1587372819224;
-        Mon, 20 Apr 2020 01:53:39 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-212-96-48-140.catv.broadband.hu. [212.96.48.140])
-        by smtp.gmail.com with ESMTPSA id p16sm275792wro.21.2020.04.20.01.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 01:53:38 -0700 (PDT)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Stefan Metzmacher <metze@samba.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        Eric Sandeen <sandeen@sandeen.net>
-Subject: [PATCH v2] vfs: add faccessat2 syscall
-Date:   Mon, 20 Apr 2020 10:53:36 +0200
-Message-Id: <20200420085336.21065-1-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.21.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u10dY+i6fBYekNaQ1esFv0ta173yepYyDxciiIeLxE4=;
+        b=SjyQydHxsqkVLpWSr/nxQZ0jilH0LFoIqKdaIqQ9yVpIPoOm9K4lbkG1aocyh085yCR4VO
+        Wm2gGZM0XfpCK/Sv7eO6KKVi7TJZ5w+AHBGBuXK0Wjf9nTjcuirOljltzb6gfPSkngsxIV
+        05p5UspymbCK7Yx1+f7fzhtmibHzfjQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-bbEr7mmQNoWKDdCh7vvmxw-1; Mon, 20 Apr 2020 04:55:08 -0400
+X-MC-Unique: bbEr7mmQNoWKDdCh7vvmxw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 933C1149C3;
+        Mon, 20 Apr 2020 08:55:06 +0000 (UTC)
+Received: from krava (unknown [10.40.192.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D5D75D9CD;
+        Mon, 20 Apr 2020 08:54:50 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 10:54:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Tommi Rantala <tommi.t.rantala@nokia.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] perf tools: Move zstd_fini() to session deletion
+Message-ID: <20200420084931.GD718574@krava>
+References: <20200417132330.119407-1-tommi.t.rantala@nokia.com>
+ <20200417132330.119407-2-tommi.t.rantala@nokia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417132330.119407-2-tommi.t.rantala@nokia.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POSIX defines faccessat() as having a fourth "flags" argument, while the
-linux syscall doesn't have it.  Glibc tries to emulate AT_EACCESS and
-AT_SYMLINK_NOFOLLOW, but AT_EACCESS emulation is broken.
+On Fri, Apr 17, 2020 at 04:23:27PM +0300, Tommi Rantala wrote:
+> Move zstd_fini() call to perf_session__delete(), so that we always
+> cleanup the zstd state when deleting the session.
 
-Add a new faccessat(2) syscall with the added flags argument and implement
-both flags.
+it shold be orthogonal with zstd_init calls, which
+are not currently called within perf_session 
 
-The value of AT_EACCESS is defined in glibc headers to be the same as
-AT_REMOVEDIR.  Use this value for the kernel interface as well, together
-with the explanatory comment.
+I guess  zstd_initcould moved to perf_session__new,
+just need some nice way to pass rec->opts.comp_level
 
-Also add AT_EMPTY_PATH support, which is not documented by POSIX, but can
-be useful and is trivial to implement.
+jirka
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
-v2:
- - add AT_EMPTY_PATH
-
-arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
- arch/arm/tools/syscall.tbl                  |  1 +
- arch/arm64/include/asm/unistd.h             |  2 +-
- arch/arm64/include/asm/unistd32.h           |  2 +
- arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
- arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
- arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
- arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_n64.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
- arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
- arch/s390/kernel/syscalls/syscall.tbl       |  1 +
- arch/sh/kernel/syscalls/syscall.tbl         |  1 +
- arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
- fs/internal.h                               |  1 -
- fs/open.c                                   | 58 ++++++++++++++++-----
- include/linux/syscalls.h                    |  7 ++-
- include/uapi/asm-generic/unistd.h           |  4 +-
- include/uapi/linux/fcntl.h                  | 10 ++++
- 23 files changed, 82 insertions(+), 18 deletions(-)
-
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index 36d42da7466a..5ddd128d4b7a 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -477,3 +477,4 @@
- # 545 reserved for clone3
- 547	common	openat2				sys_openat2
- 548	common	pidfd_getfd			sys_pidfd_getfd
-+549	common	faccessat2			sys_faccessat2
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 4d1cf74a2caa..d5cae5ffede0 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -451,3 +451,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 803039d504de..3b859596840d 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		439
-+#define __NR_compat_syscalls		440
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index c1c61635f89c..6d95d0c8bf2f 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -883,6 +883,8 @@ __SYSCALL(__NR_clone3, sys_clone3)
- __SYSCALL(__NR_openat2, sys_openat2)
- #define __NR_pidfd_getfd 438
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-+#define __NR_faccessat2 439
-+__SYSCALL(__NR_faccessat2, sys_faccessat2)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index 042911e670b8..49e325b604b3 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -358,3 +358,4 @@
- # 435 reserved for clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index f4f49fcb76d0..f71b1bbcc198 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -437,3 +437,4 @@
- 435	common	clone3				__sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index 4c67b11f9c9e..edacc4561f2b 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -443,3 +443,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index 1f9e8ad636cc..f777141f5256 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -376,3 +376,4 @@
- 435	n32	clone3				__sys_clone3
- 437	n32	openat2				sys_openat2
- 438	n32	pidfd_getfd			sys_pidfd_getfd
-+439	n32	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index c0b9d802dbf6..da8c76394e17 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -352,3 +352,4 @@
- 435	n64	clone3				__sys_clone3
- 437	n64	openat2				sys_openat2
- 438	n64	pidfd_getfd			sys_pidfd_getfd
-+439	n64	faccessat2			sys_faccessat2
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index ac586774c980..13280625d312 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -425,3 +425,4 @@
- 435	o32	clone3				__sys_clone3
- 437	o32	openat2				sys_openat2
- 438	o32	pidfd_getfd			sys_pidfd_getfd
-+439	o32	faccessat2			sys_faccessat2
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index 52a15f5cd130..5a758fa6ec52 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -435,3 +435,4 @@
- 435	common	clone3				sys_clone3_wrapper
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index 220ae11555f2..f833a3190822 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -527,3 +527,4 @@
- 435	spu	clone3				sys_ni_syscall
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index bd7bd3581a0f..bfdcb7633957 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -440,3 +440,4 @@
- 435  common	clone3			sys_clone3			sys_clone3
- 437  common	openat2			sys_openat2			sys_openat2
- 438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
-+439  common	faccessat2		sys_faccessat2			sys_faccessat2
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index c7a30fcd135f..acc35daa1b79 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -440,3 +440,4 @@
- # 435 reserved for clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index f13615ecdecc..8004a276cb74 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -483,3 +483,4 @@
- # 435 reserved for clone3
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 54581ac671b4..d8f8a1a69ed1 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -442,3 +442,4 @@
- 435	i386	clone3			sys_clone3
- 437	i386	openat2			sys_openat2
- 438	i386	pidfd_getfd		sys_pidfd_getfd
-+439	i386	faccessat2		sys_faccessat2
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 37b844f839bc..78847b32e137 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -359,6 +359,7 @@
- 435	common	clone3			sys_clone3
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd		sys_pidfd_getfd
-+439	common	faccessat2		sys_faccessat2
- 
- #
- # x32-specific system call numbers start at 512 to avoid cache impact
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 85a9ab1bc04d..69d0d73876b3 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -408,3 +408,4 @@
- 435	common	clone3				sys_clone3
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
-+439	common	faccessat2			sys_faccessat2
-diff --git a/fs/internal.h b/fs/internal.h
-index aa5d45524e87..0d467e32dd7e 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -126,7 +126,6 @@ extern struct open_how build_open_how(int flags, umode_t mode);
- extern int build_open_flags(const struct open_how *how, struct open_flags *op);
- 
- long do_sys_ftruncate(unsigned int fd, loff_t length, int small);
--long do_faccessat(int dfd, const char __user *filename, int mode);
- int do_fchmodat(int dfd, const char __user *filename, umode_t mode);
- int do_fchownat(int dfd, const char __user *filename, uid_t user, gid_t group,
- 		int flag);
-diff --git a/fs/open.c b/fs/open.c
-index 719b320ede52..6f3cdf109ec0 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -345,21 +345,14 @@ SYSCALL_DEFINE4(fallocate, int, fd, int, mode, loff_t, offset, loff_t, len)
-  * We do this by temporarily clearing all FS-related capabilities and
-  * switching the fsuid/fsgid around to the real ones.
-  */
--long do_faccessat(int dfd, const char __user *filename, int mode)
-+static const struct cred *access_override_creds(void)
- {
- 	const struct cred *old_cred;
- 	struct cred *override_cred;
--	struct path path;
--	struct inode *inode;
--	int res;
--	unsigned int lookup_flags = LOOKUP_FOLLOW;
--
--	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
--		return -EINVAL;
- 
- 	override_cred = prepare_creds();
- 	if (!override_cred)
--		return -ENOMEM;
-+		return NULL;
- 
- 	override_cred->fsuid = override_cred->uid;
- 	override_cred->fsgid = override_cred->gid;
-@@ -394,6 +387,38 @@ long do_faccessat(int dfd, const char __user *filename, int mode)
- 	override_cred->non_rcu = 1;
- 
- 	old_cred = override_creds(override_cred);
-+
-+	/* override_cred() gets its own ref */
-+	put_cred(override_cred);
-+
-+	return old_cred;
-+}
-+
-+long do_faccessat(int dfd, const char __user *filename, int mode, int flags)
-+{
-+	const struct cred *old_cred = NULL;
-+	struct path path;
-+	struct inode *inode;
-+	int res;
-+	unsigned int lookup_flags = LOOKUP_FOLLOW;
-+
-+	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
-+		return -EINVAL;
-+
-+	if (flags & ~(AT_EACCESS | AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH))
-+		return -EINVAL;
-+
-+	if (flags & AT_SYMLINK_NOFOLLOW)
-+		lookup_flags &= ~LOOKUP_FOLLOW;
-+	if (flags & AT_EMPTY_PATH)
-+		lookup_flags |= LOOKUP_EMPTY;
-+
-+	if (!(flags & AT_EACCESS)) {
-+		old_cred = access_override_creds();
-+		if (!old_cred)
-+			return -ENOMEM;
-+	}
-+
- retry:
- 	res = user_path_at(dfd, filename, lookup_flags, &path);
- 	if (res)
-@@ -435,19 +460,26 @@ long do_faccessat(int dfd, const char __user *filename, int mode)
- 		goto retry;
- 	}
- out:
--	revert_creds(old_cred);
--	put_cred(override_cred);
-+	if (old_cred)
-+		revert_creds(old_cred);
-+
- 	return res;
- }
- 
- SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
- {
--	return do_faccessat(dfd, filename, mode);
-+	return do_faccessat(dfd, filename, mode, 0);
-+}
-+
-+SYSCALL_DEFINE4(faccessat2, int, dfd, const char __user *, filename, int, mode,
-+		int, flags)
-+{
-+	return do_faccessat(dfd, filename, mode, flags);
- }
- 
- SYSCALL_DEFINE2(access, const char __user *, filename, int, mode)
- {
--	return do_faccessat(AT_FDCWD, filename, mode);
-+	return do_faccessat(AT_FDCWD, filename, mode, 0);
- }
- 
- int ksys_chdir(const char __user *filename)
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 1815065d52f3..baec24782301 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -428,6 +428,8 @@ asmlinkage long sys_ftruncate64(unsigned int fd, loff_t length);
- #endif
- asmlinkage long sys_fallocate(int fd, int mode, loff_t offset, loff_t len);
- asmlinkage long sys_faccessat(int dfd, const char __user *filename, int mode);
-+asmlinkage long sys_faccessat2(int dfd, const char __user *filename, int mode,
-+			       int flags);
- asmlinkage long sys_chdir(const char __user *filename);
- asmlinkage long sys_fchdir(unsigned int fd);
- asmlinkage long sys_chroot(const char __user *filename);
-@@ -1333,11 +1335,12 @@ static inline int ksys_chmod(const char __user *filename, umode_t mode)
- 	return do_fchmodat(AT_FDCWD, filename, mode);
- }
- 
--extern long do_faccessat(int dfd, const char __user *filename, int mode);
-+extern long do_faccessat(int dfd, const char __user *filename, int mode,
-+			 int flags);
- 
- static inline long ksys_access(const char __user *filename, int mode)
- {
--	return do_faccessat(AT_FDCWD, filename, mode);
-+	return do_faccessat(AT_FDCWD, filename, mode, 0);
- }
- 
- extern int do_fchownat(int dfd, const char __user *filename, uid_t user,
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 3a3201e4618e..f4a01305d9a6 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -855,9 +855,11 @@ __SYSCALL(__NR_clone3, sys_clone3)
- __SYSCALL(__NR_openat2, sys_openat2)
- #define __NR_pidfd_getfd 438
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-+#define __NR_faccessat2 439
-+__SYSCALL(__NR_faccessat2, sys_faccessat2)
- 
- #undef __NR_syscalls
--#define __NR_syscalls 439
-+#define __NR_syscalls 440
- 
- /*
-  * 32 bit systems traditionally used different
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index ca88b7bce553..2f86b2ad6d7e 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -84,10 +84,20 @@
- #define DN_ATTRIB	0x00000020	/* File changed attibutes */
- #define DN_MULTISHOT	0x80000000	/* Don't remove notifier */
- 
-+/*
-+ * The constants AT_REMOVEDIR and AT_EACCESS have the same value.  AT_EACCESS is
-+ * meaningful only to faccessat, while AT_REMOVEDIR is meaningful only to
-+ * unlinkat.  The two functions do completely different things and therefore,
-+ * the flags can be allowed to overlap.  For example, passing AT_REMOVEDIR to
-+ * faccessat would be undefined behavior and thus treating it equivalent to
-+ * AT_EACCESS is valid undefined behavior.
-+ */
- #define AT_FDCWD		-100    /* Special value used to indicate
-                                            openat should use the current
-                                            working directory. */
- #define AT_SYMLINK_NOFOLLOW	0x100   /* Do not follow symbolic links.  */
-+#define AT_EACCESS		0x200	/* Test access permitted for
-+                                           effective IDs, not real IDs.  */
- #define AT_REMOVEDIR		0x200   /* Remove directory instead of
-                                            unlinking file.  */
- #define AT_SYMLINK_FOLLOW	0x400   /* Follow symbolic links.  */
--- 
-2.21.1
+> 
+> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+> ---
+>  tools/perf/builtin-inject.c | 1 -
+>  tools/perf/builtin-record.c | 1 -
+>  tools/perf/builtin-report.c | 1 -
+>  tools/perf/util/session.c   | 1 +
+>  4 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> index 7e124a7b8bfd..1ffb8393357a 100644
+> --- a/tools/perf/builtin-inject.c
+> +++ b/tools/perf/builtin-inject.c
+> @@ -836,7 +836,6 @@ int cmd_inject(int argc, const char **argv)
+>  	ret = __cmd_inject(&inject);
+>  
+>  out_delete:
+> -	zstd_fini(&(inject.session->zstd_data));
+>  	perf_session__delete(inject.session);
+>  	return ret;
+>  }
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 1ab349abe904..8ed00de1ca29 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1827,7 +1827,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  	}
+>  
+>  out_delete_session:
+> -	zstd_fini(&session->zstd_data);
+>  	perf_session__delete(session);
+>  
+>  	if (!opts->no_bpf_event)
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 26d8fc27e427..e06e14980264 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -1579,7 +1579,6 @@ int cmd_report(int argc, const char **argv)
+>  		report.block_reports = NULL;
+>  	}
+>  
+> -	zstd_fini(&(session->zstd_data));
+>  	perf_session__delete(session);
+>  	return ret;
+>  }
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 0b0bfe5bef17..64e8b794b0bc 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -302,6 +302,7 @@ void perf_session__delete(struct perf_session *session)
+>  	machines__exit(&session->machines);
+>  	if (session->data)
+>  		perf_data__close(session->data);
+> +	zstd_fini(&session->zstd_data);
+>  	free(session);
+>  }
+>  
+> -- 
+> 2.25.2
+> 
 
