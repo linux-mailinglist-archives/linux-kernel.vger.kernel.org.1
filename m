@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546541B09C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540621B0B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgDTMmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
+        id S1728408AbgDTMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:46:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728139AbgDTMmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:42:08 -0400
+        id S1728924AbgDTMq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:46:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C0DE21473;
-        Mon, 20 Apr 2020 12:42:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AF6020747;
+        Mon, 20 Apr 2020 12:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386528;
-        bh=e2LmvBy0QEq7kzKFYINQFw6ZWjivBByKAKZVzSDNcRY=;
+        s=default; t=1587386785;
+        bh=YMFdLjTiqvREH9qsLeoZ6Ek6B94lsHuwlxz7QT5Acaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqxEszSxAYZGjHaMf4M2ftJ8DEqhKLdA+HKwzvpGA8IoUrqU3FWim5K1rZaWK6Cc1
-         1dnoVa19bwn4DK8AzA++VJoZ7p2qEZ1grC+f2lmKrCTzDsdIFPVO4zUhGnZQX9hc+9
-         taMeFYsvxcC8egS5SgN3bWIzPbI5DRG0EprJ/sOs=
+        b=uUPaaQgLDn7d3L6Pg1nATn5IafHpqpp79Ar++nl/x3KWWvZfIvpuPrhn3UDPd0opd
+         ArIU1VfKJac8rUN8HkEYcktCDeJ3njEk3teyRdnyU8IIw7NURAkGT0p33J1mHlqc1K
+         U8BITq+RfNB5T2nDf3+y1p6h2Ep88eNZI7eG9qNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.5 59/65] ext4: do not zeroout extents beyond i_disksize
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 5.4 25/60] pwm: pca9685: Fix PWM/GPIO inter-operation
 Date:   Mon, 20 Apr 2020 14:39:03 +0200
-Message-Id: <20200420121519.396618789@linuxfoundation.org>
+Message-Id: <20200420121508.498494051@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +48,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Sven Van Asbroeck <TheSven73@gmail.com>
 
-commit 801674f34ecfed033b062a0f217506b93c8d5e8a upstream.
+commit 9cc5f232a4b6a0ef6e9b57876d61b88f61bdd7c2 upstream.
 
-We do not want to create initialized extents beyond end of file because
-for e2fsck it is impossible to distinguish them from a case of corrupted
-file size / extent tree and so it complains like:
+This driver allows pwms to be requested as gpios via gpiolib. Obviously,
+it should not be allowed to request a GPIO when its corresponding PWM is
+already requested (and vice versa). So it requires some exclusion code.
 
-Inode 12, i_size is 147456, should be 163840.  Fix? no
+Given that the PWMm and GPIO cores are not synchronized with respect to
+each other, this exclusion code will also require proper
+synchronization.
 
-Code in ext4_ext_convert_to_initialized() and
-ext4_split_convert_extents() try to make sure it does not create
-initialized extents beyond inode size however they check against
-inode->i_size which is wrong. They should instead check against
-EXT4_I(inode)->i_disksize which is the current inode size on disk.
-That's what e2fsck is going to see in case of crash before all dirty
-data is written. This bug manifests as generic/456 test failure (with
-recent enough fstests where fsx got fixed to properly pass
-FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
-mount option.
+Such a mechanism was in place, but was inadvertently removed by Uwe's
+clean-up in commit e926b12c611c ("pwm: Clear chip_data in pwm_put()").
 
-CC: stable@vger.kernel.org
-Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20200331105016.8674-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Upon revisiting the synchronization mechanism, we found that
+theoretically, it could allow two threads to successfully request
+conflicting PWMs/GPIOs.
+
+Replace with a bitmap which tracks PWMs in-use, plus a mutex. As long as
+PWM and GPIO's respective request/free functions modify the in-use
+bitmap while holding the mutex, proper synchronization will be
+guaranteed.
+
+Reported-by: YueHaibing <yuehaibing@huawei.com>
+Fixes: e926b12c611c ("pwm: Clear chip_data in pwm_put()")
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: YueHaibing <yuehaibing@huawei.com>
+Link: https://lkml.org/lkml/2019/5/31/963
+Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+[cg: Tested on an i.MX6Q board with two NXP PCA9685 chips]
+Tested-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+Reviewed-by: Sven Van Asbroeck <TheSven73@gmail.com> # cg's rebase
+Link: https://lore.kernel.org/lkml/20200330160238.GD2817345@ulmo/
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/extents.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/pwm/pwm-pca9685.c |   85 +++++++++++++++++++++++++---------------------
+ 1 file changed, 48 insertions(+), 37 deletions(-)
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3570,8 +3570,8 @@ static int ext4_ext_convert_to_initializ
- 		(unsigned long long)map->m_lblk, map_len);
+--- a/drivers/pwm/pwm-pca9685.c
++++ b/drivers/pwm/pwm-pca9685.c
+@@ -20,6 +20,7 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/pm_runtime.h>
++#include <linux/bitmap.h>
  
- 	sbi = EXT4_SB(inode->i_sb);
--	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
--		inode->i_sb->s_blocksize_bits;
-+	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-+			>> inode->i_sb->s_blocksize_bits;
- 	if (eof_block < map->m_lblk + map_len)
- 		eof_block = map->m_lblk + map_len;
+ /*
+  * Because the PCA9685 has only one prescaler per chip, changing the period of
+@@ -74,6 +75,7 @@ struct pca9685 {
+ #if IS_ENABLED(CONFIG_GPIOLIB)
+ 	struct mutex lock;
+ 	struct gpio_chip gpio;
++	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
+ #endif
+ };
  
-@@ -3826,8 +3826,8 @@ static int ext4_split_convert_extents(ha
- 		  __func__, inode->i_ino,
- 		  (unsigned long long)map->m_lblk, map->m_len);
+@@ -83,51 +85,51 @@ static inline struct pca9685 *to_pca(str
+ }
  
--	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
--		inode->i_sb->s_blocksize_bits;
-+	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-+			>> inode->i_sb->s_blocksize_bits;
- 	if (eof_block < map->m_lblk + map->m_len)
- 		eof_block = map->m_lblk + map->m_len;
- 	/*
+ #if IS_ENABLED(CONFIG_GPIOLIB)
+-static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
++static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, int pwm_idx)
+ {
+-	struct pca9685 *pca = gpiochip_get_data(gpio);
+-	struct pwm_device *pwm;
++	bool is_inuse;
+ 
+ 	mutex_lock(&pca->lock);
+-
+-	pwm = &pca->chip.pwms[offset];
+-
+-	if (pwm->flags & (PWMF_REQUESTED | PWMF_EXPORTED)) {
+-		mutex_unlock(&pca->lock);
+-		return -EBUSY;
++	if (pwm_idx >= PCA9685_MAXCHAN) {
++		/*
++		 * "all LEDs" channel:
++		 * pretend already in use if any of the PWMs are requested
++		 */
++		if (!bitmap_empty(pca->pwms_inuse, PCA9685_MAXCHAN)) {
++			is_inuse = true;
++			goto out;
++		}
++	} else {
++		/*
++		 * regular channel:
++		 * pretend already in use if the "all LEDs" channel is requested
++		 */
++		if (test_bit(PCA9685_MAXCHAN, pca->pwms_inuse)) {
++			is_inuse = true;
++			goto out;
++		}
+ 	}
+-
+-	pwm_set_chip_data(pwm, (void *)1);
+-
++	is_inuse = test_and_set_bit(pwm_idx, pca->pwms_inuse);
++out:
+ 	mutex_unlock(&pca->lock);
+-	pm_runtime_get_sync(pca->chip.dev);
+-	return 0;
++	return is_inuse;
+ }
+ 
+-static bool pca9685_pwm_is_gpio(struct pca9685 *pca, struct pwm_device *pwm)
++static void pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
+ {
+-	bool is_gpio = false;
+-
+ 	mutex_lock(&pca->lock);
++	clear_bit(pwm_idx, pca->pwms_inuse);
++	mutex_unlock(&pca->lock);
++}
+ 
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
+-		unsigned int i;
+-
+-		/*
+-		 * Check if any of the GPIOs are requested and in that case
+-		 * prevent using the "all LEDs" channel.
+-		 */
+-		for (i = 0; i < pca->gpio.ngpio; i++)
+-			if (gpiochip_is_requested(&pca->gpio, i)) {
+-				is_gpio = true;
+-				break;
+-			}
+-	} else if (pwm_get_chip_data(pwm)) {
+-		is_gpio = true;
+-	}
++static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
++{
++	struct pca9685 *pca = gpiochip_get_data(gpio);
+ 
+-	mutex_unlock(&pca->lock);
+-	return is_gpio;
++	if (pca9685_pwm_test_and_set_inuse(pca, offset))
++		return -EBUSY;
++	pm_runtime_get_sync(pca->chip.dev);
++	return 0;
+ }
+ 
+ static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned int offset)
+@@ -162,6 +164,7 @@ static void pca9685_pwm_gpio_free(struct
+ 
+ 	pca9685_pwm_gpio_set(gpio, offset, 0);
+ 	pm_runtime_put(pca->chip.dev);
++	pca9685_pwm_clear_inuse(pca, offset);
+ }
+ 
+ static int pca9685_pwm_gpio_get_direction(struct gpio_chip *chip,
+@@ -213,12 +216,17 @@ static int pca9685_pwm_gpio_probe(struct
+ 	return devm_gpiochip_add_data(dev, &pca->gpio, pca);
+ }
+ #else
+-static inline bool pca9685_pwm_is_gpio(struct pca9685 *pca,
+-				       struct pwm_device *pwm)
++static inline bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca,
++						  int pwm_idx)
+ {
+ 	return false;
+ }
+ 
++static inline void
++pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
++{
++}
++
+ static inline int pca9685_pwm_gpio_probe(struct pca9685 *pca)
+ {
+ 	return 0;
+@@ -402,7 +410,7 @@ static int pca9685_pwm_request(struct pw
+ {
+ 	struct pca9685 *pca = to_pca(chip);
+ 
+-	if (pca9685_pwm_is_gpio(pca, pwm))
++	if (pca9685_pwm_test_and_set_inuse(pca, pwm->hwpwm))
+ 		return -EBUSY;
+ 	pm_runtime_get_sync(chip->dev);
+ 
+@@ -411,8 +419,11 @@ static int pca9685_pwm_request(struct pw
+ 
+ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+ {
++	struct pca9685 *pca = to_pca(chip);
++
+ 	pca9685_pwm_disable(chip, pwm);
+ 	pm_runtime_put(chip->dev);
++	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
+ }
+ 
+ static const struct pwm_ops pca9685_pwm_ops = {
 
 
