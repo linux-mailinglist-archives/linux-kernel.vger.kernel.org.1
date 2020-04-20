@@ -2,200 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBE71B122F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284031B1245
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgDTQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:47:24 -0400
-Received: from ale.deltatee.com ([207.54.116.67]:43036 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgDTQrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:47:18 -0400
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jQZZb-0008F9-BL; Mon, 20 Apr 2020 10:47:10 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jQZZa-0005e0-Kv; Mon, 20 Apr 2020 10:47:06 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Mon, 20 Apr 2020 10:47:00 -0600
-Message-Id: <20200420164700.21620-10-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200420164700.21620-1-logang@deltatee.com>
-References: <20200420164700.21620-1-logang@deltatee.com>
+        id S1726102AbgDTQt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:49:56 -0400
+Received: from mail-bn7nam10on2132.outbound.protection.outlook.com ([40.107.92.132]:64417
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725774AbgDTQt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:49:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FcjKyiIF+GWzJGroIBjS65VWWhbLr4vglc+Dh9tIhKIYh0hF5Tbq1zHAc2lG4usl6QWUKkJRkQU4sRpNGwk4+Ia7jJ9yjXyo3bsm49Qg5mBqlNhFjomLE6Qz+wvcComwbit7ZtUqpcrAy5xMU149GqWFnX/8k+imdMK6NP4IDVkx2+egEMtQMDJG5J/Bn6kUFQEXeKmxiE4fCGRj1gM842BDQZH/Nh9E3iMlyc+Z6H9EbgNKrIPz8idheiLztncgQiAp3GPwJNLx20k1UilHdMZTlapDSL+n4MJOLUACX2/QXH6lN4ww1aqo7m14UFzjvTpGOuTUUMMbg8hhzKRNfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8TrsWHmGMfVK3UsEYXAjfO2qhKkDM+pHIevmr4NNyzg=;
+ b=cbp2QrNfm0MWHxkVfejrJTW4qQxLa2AKTYVA/RfYRo9v/4uo2qbTrfS4elZfgsbe6JrjNg2QdEK+l9EQv3AayrJGuKnjYfUacb9htJgoJDPonAGt5fV47gvVAbb0rMII7zltm4vgjas74z7aukqJXSpj89hDOltBjSquQIIklHZi6qFJtGn3STgQebN4ysiF9DAdiaIjKg8eQEMW5gn22Bb0zUfwflRsbLgAlDgcQkZcd12va5NHBxCltyKn3uT3yFg8amOOoTWO1GaAVoLlxu0fbfMtqMMoBLr7jmntk4tqtnaDd45r4qgxbZs72A87ndFK7/0ih4zGI4ouwaqTvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8TrsWHmGMfVK3UsEYXAjfO2qhKkDM+pHIevmr4NNyzg=;
+ b=aB/kj+RCCYGjAnSJeDe+VBxbzeVpjX2vEsIFKq8Gb/piWcdo3pFN/T9ZHWw/cv9IfC4aEIMjHXf91ITRX8pneODMZd645SBrw7ITbeIn1ayiPoYyxy0szpgLrG7VgwqN4SuPndzQkMpM18WCJoTpbL3t/RxXb1Ar1NvT/tQrniw=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=mikelley@microsoft.com; 
+Received: from BN6PR21MB0178.namprd21.prod.outlook.com (2603:10b6:404:94::12)
+ by BN6PR21MB0626.namprd21.prod.outlook.com (2603:10b6:404:11a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.2; Mon, 20 Apr
+ 2020 16:49:53 +0000
+Received: from BN6PR21MB0178.namprd21.prod.outlook.com
+ ([fe80::a97c:360c:9ed2:12ec]) by BN6PR21MB0178.namprd21.prod.outlook.com
+ ([fe80::a97c:360c:9ed2:12ec%11]) with mapi id 15.20.2958.001; Mon, 20 Apr
+ 2020 16:49:53 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     mikelley@microsoft.com
+Subject: [PATCH 1/1] Drivers: hv: Move AEOI determination to architecture dependent code
+Date:   Mon, 20 Apr 2020 09:49:26 -0700
+Message-Id: <20200420164926.24471-1-mikelley@microsoft.com>
+X-Mailer: git-send-email 2.18.2
+Content-Type: text/plain
+X-ClientProxiedBy: MWHPR12CA0063.namprd12.prod.outlook.com
+ (2603:10b6:300:103::25) To BN6PR21MB0178.namprd21.prod.outlook.com
+ (2603:10b6:404:94::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, Chaitanya.Kulkarni@wdc.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH v12 9/9] nvmet-configfs: Introduce passthru configfs interface
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from MHKdev.corp.microsoft.com (131.107.160.108) by MWHPR12CA0063.namprd12.prod.outlook.com (2603:10b6:300:103::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Mon, 20 Apr 2020 16:49:51 +0000
+X-Mailer: git-send-email 2.18.2
+X-Originating-IP: [131.107.160.108]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ddde19f2-bc7d-4b0a-0e44-08d7e54ad918
+X-MS-TrafficTypeDiagnostic: BN6PR21MB0626:|BN6PR21MB0626:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR21MB06268DD8A41858390973AE52D7D40@BN6PR21MB0626.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 03793408BA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR21MB0178.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(39860400002)(366004)(346002)(36756003)(5660300002)(52116002)(66476007)(66556008)(6486002)(7696005)(66946007)(10290500003)(4326008)(2906002)(478600001)(2616005)(956004)(6666004)(107886003)(8936002)(82960400001)(82950400001)(8676002)(26005)(81156014)(316002)(86362001)(1076003)(16526019)(186003)(921003);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: microsoft.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R8Bm5UGk5bJoWscR5lZsCApfJbmBfMSjuN8ZBumklCt5JyAtUOCBaAH6RVYrGpO81KOBTTYu4G7L1LnEC5AkVaRfcBJZBahHG81gm/ubLzCLhhH3FviaaZP2K+SkupEPgaq0QEiSJCu1CwsGN/hKFEg9Ri3a/zWB2EJNcjjt7//hLq6wqfH2vksyDfj09DAQLNZf4qNOUFIaY6NwBgZyTfGyHJ8Jk3dx/AojDmRmcoyADe1+DN04OBaMKY1Ox0XEd36TG9a5M+SwUIV3giIqCW2zIKK/fkY/JZwAcFkO3FVosyh/hqv00SjWFAdaL4bwPIItsSeRMJrxWCQypYLqTAQ4sD303jO9Gba+TY6YLZmCuAOVEf83ZI0Cf4A56ZcvMxpF2pK+Cs6KFKTkHjjyH1JhPMgbAWsmvM2Mm2NW9lXqSk4y8LievWpIXHXZYJMHz/uPKHXrugpvzSZiSBs+kvPIz+wNA0vo6GdKFBdCdyk=
+X-MS-Exchange-AntiSpam-MessageData: SBBx8QmRvzF1TqZbt4NjeO9wEX/xuByUr9ReupOY8euHcTYKpNzviEFW/uhV2PElVwKdcWK9TpZDIscqbFu1XUhz41bC4Ili2YAhT03kIhbCRmWWwox13BOcNY1ncHwgX9OQkVclkcLmHgfJoFiPFhjJCLDG+3Xplloq56vu5LAu/rBdjoj+IP//Kt5RA0zDGoIs1BPjrODlDTN857+/Q5tHp9Gt8xXPLalBJNw5fLo4gD07hdWg3/Ox23bmeZ1McWh6+Ua3d1mJhdn6APoO+Rv6p1kqTBfgcbGjHAwsrDu+12c1PyvY/42YnmspdBSFGFtXwReyJzjX/Mt56zLZ+33IU+RwxWs8Se+PEcncrDVZ6zHV8dF3vnyiLrdRXM6u5UbFeFzZzwAHNdRMZ/69wUM1DNoSHXyRTsqn+xcL1jdDtmRxilzvO8roq2zxpIU7YamDunw44pyLwMBHjvpefELW1o/VOh+nQtFpeytd39jSUFrZFE1nRX5wmG6gRuBtdzrZuq8stLcCqcH+OyGD1mxi4ywl0dlVzqadv+GqsIjbSSAt2+UjdjTFmp6VvcGdh79RpkpRfDdk3Jy++cjggYLBtgfBvq15Za8226Rm4CQ4Vo5Ikfem9E/UPyzN11n3iPldlgXHBVbwD2z0/ySk/E4uKER8E/VotqEO2gDkxAzE4WP6ZVpLrjqckvOK9GJglP+C6zSxCGmDdJiXNXw0chfrb69axXDDAJEyjgL1wovF6fCMMZw1dPFr5oRkr1V/XEMzsEJeE3hvUwFNFq4gtkgvC2XOldvKNkjtiOHVeqAX0tD/7dZ7K5lNWxNalOwb
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddde19f2-bc7d-4b0a-0e44-08d7e54ad918
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 16:49:53.2315
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vjKkDVFuhSXZxIoCZnk7qud4n5pEvFXyEm7wH+yP7J6VOVgWlh3CmGmrXGIU4uGAUzTzRwTp1FPXE74YraLDqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR21MB0626
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_NVME_TARGET_PASSTHRU as 'passthru' directory will
-be added to each subsystem. The directory is similar to a namespace
-and has two attributes: device_path and enable. The user must set the
-path to the nvme controller's char device and write '1' to enable the
-subsystem to use passthru.
+Hyper-V on ARM64 doesn't provide a flag for the AEOI recommendation
+in ms_hyperv.hints, so having the test in architecture independent
+code doesn't work. Resolve this by moving the check of the flag
+to an architecture dependent helper function. No functionality is
+changed.
 
-Any given subsystem is prevented from enabling both a regular namespace
-and the passthru device. If one is enabled, enabling the other will
-produce an error.
-
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 ---
- drivers/nvme/target/configfs.c | 99 ++++++++++++++++++++++++++++++++++
- drivers/nvme/target/nvmet.h    |  1 +
- 2 files changed, 100 insertions(+)
+ arch/x86/include/asm/mshyperv.h | 2 ++
+ drivers/hv/hv.c                 | 6 +-----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
-index e0ce6e5feb3a..59eb52a0d06c 100644
---- a/drivers/nvme/target/configfs.c
-+++ b/drivers/nvme/target/configfs.c
-@@ -613,6 +613,103 @@ static const struct config_item_type nvmet_namespaces_type = {
- 	.ct_owner		= THIS_MODULE,
- };
+diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+index 1c42ecbe75cb..d30805ed323e 100644
+--- a/arch/x86/include/asm/mshyperv.h
++++ b/arch/x86/include/asm/mshyperv.h
+@@ -35,6 +35,8 @@ typedef int (*hyperv_fill_flush_list_func)(
+ 	rdmsrl(HV_X64_MSR_SINT0 + int_num, val)
+ #define hv_set_synint_state(int_num, val) \
+ 	wrmsrl(HV_X64_MSR_SINT0 + int_num, val)
++#define hv_recommend_using_aeoi() \
++	(!(ms_hyperv.hints & HV_DEPRECATING_AEOI_RECOMMENDED))
  
-+#ifdef CONFIG_NVME_TARGET_PASSTHRU
-+
-+static ssize_t nvmet_passthru_device_path_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return snprintf(page, PAGE_SIZE, "%s\n", subsys->passthru_ctrl_path);
-+}
-+
-+static ssize_t nvmet_passthru_device_path_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	size_t len;
-+	int ret;
-+
-+	mutex_lock(&subsys->lock);
-+
-+	ret = -EBUSY;
-+	if (subsys->passthru_ctrl)
-+		goto out_unlock;
-+
-+	ret = -EINVAL;
-+	len = strcspn(page, "\n");
-+	if (!len)
-+		goto out_unlock;
-+
-+	kfree(subsys->passthru_ctrl_path);
-+	ret = -ENOMEM;
-+	subsys->passthru_ctrl_path = kstrndup(page, len, GFP_KERNEL);
-+	if (!subsys->passthru_ctrl_path)
-+		goto out_unlock;
-+
-+	mutex_unlock(&subsys->lock);
-+
-+	return count;
-+out_unlock:
-+	mutex_unlock(&subsys->lock);
-+	return ret;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, device_path);
-+
-+static ssize_t nvmet_passthru_enable_show(struct config_item *item,
-+		char *page)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+
-+	return sprintf(page, "%d\n", subsys->passthru_ctrl ? 1 : 0);
-+}
-+
-+static ssize_t nvmet_passthru_enable_store(struct config_item *item,
-+		const char *page, size_t count)
-+{
-+	struct nvmet_subsys *subsys = to_subsys(item->ci_parent);
-+	bool enable;
-+	int ret = 0;
-+
-+	if (strtobool(page, &enable))
-+		return -EINVAL;
-+
-+	if (enable)
-+		ret = nvmet_passthru_ctrl_enable(subsys);
-+	else
-+		nvmet_passthru_ctrl_disable(subsys);
-+
-+	return ret ? ret : count;
-+}
-+CONFIGFS_ATTR(nvmet_passthru_, enable);
-+
-+static struct configfs_attribute *nvmet_passthru_attrs[] = {
-+	&nvmet_passthru_attr_device_path,
-+	&nvmet_passthru_attr_enable,
-+	NULL,
-+};
-+
-+static const struct config_item_type nvmet_passthru_type = {
-+	.ct_attrs		= nvmet_passthru_attrs,
-+	.ct_owner		= THIS_MODULE,
-+};
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+	config_group_init_type_name(&subsys->passthru_group,
-+				    "passthru", &nvmet_passthru_type);
-+	configfs_add_default_group(&subsys->passthru_group,
-+				   &subsys->group);
-+}
-+
-+#else /* CONFIG_NVME_TARGET_PASSTHRU */
-+
-+static void nvmet_add_passthru_group(struct nvmet_subsys *subsys)
-+{
-+}
-+
-+#endif /* CONFIG_NVME_TARGET_PASSTHRU */
-+
- static int nvmet_port_subsys_allow_link(struct config_item *parent,
- 		struct config_item *target)
- {
-@@ -1047,6 +1144,8 @@ static struct config_group *nvmet_subsys_make(struct config_group *group,
- 	configfs_add_default_group(&subsys->allowed_hosts_group,
- 			&subsys->group);
+ #define hv_get_crash_ctl(val) \
+ 	rdmsrl(HV_X64_MSR_CRASH_CTL, val)
+diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
+index 6098e0cbdb4b..533c8b82b344 100644
+--- a/drivers/hv/hv.c
++++ b/drivers/hv/hv.c
+@@ -184,11 +184,7 @@ void hv_synic_enable_regs(unsigned int cpu)
  
-+	nvmet_add_passthru_group(subsys);
-+
- 	return &subsys->group;
- }
+ 	shared_sint.vector = HYPERVISOR_CALLBACK_VECTOR;
+ 	shared_sint.masked = false;
+-	if (ms_hyperv.hints & HV_DEPRECATING_AEOI_RECOMMENDED)
+-		shared_sint.auto_eoi = false;
+-	else
+-		shared_sint.auto_eoi = true;
+-
++	shared_sint.auto_eoi = hv_recommend_using_aeoi();
+ 	hv_set_synint_state(VMBUS_MESSAGE_SINT, shared_sint.as_uint64);
  
-diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 76c3a7cb9c89..d40452e50212 100644
---- a/drivers/nvme/target/nvmet.h
-+++ b/drivers/nvme/target/nvmet.h
-@@ -243,6 +243,7 @@ struct nvmet_subsys {
- #ifdef CONFIG_NVME_TARGET_PASSTHRU
- 	struct nvme_ctrl	*passthru_ctrl;
- 	char			*passthru_ctrl_path;
-+	struct config_group	passthru_group;
- #endif /* CONFIG_NVME_TARGET_PASSTHRU */
- };
- 
+ 	/* Enable the global synic bit */
 -- 
-2.20.1
+2.18.2
 
