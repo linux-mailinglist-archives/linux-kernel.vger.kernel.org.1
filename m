@@ -2,281 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA4D1B1635
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5EE1B161F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgDTTu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 15:50:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29928 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgDTTu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 15:50:56 -0400
-IronPort-SDR: SU0wFcC3/jp89SgeR6C4eMLHrZz0CqNkwgor5EPwtDabg8u2GlMEeB3n85vSgkovMkqUMfouYV
- 6YF3oFpOYjqA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 12:50:55 -0700
-IronPort-SDR: vuU1+qNudpt5S6XiTVN1/qWLdwJxLUdo+QM8M4wxEuG23V9HzgaOuq9QGE0TNtDDPNp7RfSEkN
- +2kn3RP3gbJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,407,1580803200"; 
-   d="scan'208";a="401946211"
-Received: from coffy.sc.intel.com ([10.3.79.166])
-  by orsmga004.jf.intel.com with ESMTP; 20 Apr 2020 12:50:54 -0700
-From:   Jithu Joseph <jithu.joseph@intel.com>
-To:     dvhart@infradead.org, andy@infradead.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
-        sean.v.kelley@intel.com, kuo-lang.tseng@intel.com,
-        Jithu Joseph <jithu.joseph@intel.com>
-Subject: [PATCH 1/1] platform/x86: Add Slim Bootloader firmware update signaling driver
-Date:   Mon, 20 Apr 2020 12:44:05 -0700
-Message-Id: <20200420194405.8281-2-jithu.joseph@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200420194405.8281-1-jithu.joseph@intel.com>
-References: <20200420194405.8281-1-jithu.joseph@intel.com>
+        id S1726584AbgDTToh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 15:44:37 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:48273 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725896AbgDTTog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 15:44:36 -0400
+Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M7sYM-1jMkSm1vDG-0053pr; Mon, 20 Apr 2020 21:44:34 +0200
+Received: by mail-qt1-f178.google.com with SMTP id w29so9661864qtv.3;
+        Mon, 20 Apr 2020 12:44:34 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYoALa4sLLrMnt1pUNuGr/C6Fz2eFN26ec64BXUS1pSSHuiE+sf
+        bw/jAlU/zbQ4fzdCtyPX0KOmWVYG/Q3mXLhmfFM=
+X-Google-Smtp-Source: APiQypIQ/d1G7kkipasQ9Xx8TSOfP/G9AkgCeJ084oCa3E5yGJoAUJ8JtONcb4zbeOgvQqIRkO6e4rHHZmSKchIZTzo=
+X-Received: by 2002:ac8:2bce:: with SMTP id n14mr6857624qtn.18.1587411873264;
+ Mon, 20 Apr 2020 12:44:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200420081154.597ffa59@canb.auug.org.au> <20200420081323.4fb9889b@canb.auug.org.au>
+ <20200420151843.GS37466@atomide.com>
+In-Reply-To: <20200420151843.GS37466@atomide.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 20 Apr 2020 21:44:17 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Ln+hkSQnQ8jzYSWvJ=bZ9V5juzDYcJoZvx0y-QpfrtA@mail.gmail.com>
+Message-ID: <CAK8P3a1Ln+hkSQnQ8jzYSWvJ=bZ9V5juzDYcJoZvx0y-QpfrtA@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm-soc tree
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ExlieJouP1/VpeLaoThqXQuMV7d8wotKI9pINbIO64zgCrRGTwB
+ vorL1upYmxt/gVGLXHdciGrjlgddD/AU4D3KB916n3Y0rsR4k9ztGFiMB3Qt/igZR+4qGv2
+ wmcCmDEUbvoFxJY6FBgF6+RssJbnoWdm9Ulgd2cdKDpBSRPBFqCvxO2sRYwKmvO21uObjGj
+ 3YOtynxeeD/K8mRFLtGzw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s7CYPavXeN8=:/j2AV2kY2iO9xeu999XoFF
+ 3Elne8znV2CtqgLilfGnE/Roaiz0bQyUKH57GZZqgBz5rhbo7kGM0bSdzFDjp+egwtg8viYE8
+ ekTv5M/H4Lg4Ngrrod5YCadTI0wE7Itbz0VbJ8IYtbgRqNao74YJr+TaIxMFhlgsRwDv8cRT/
+ 8IQRyhdLtuzEwlJNGBPQfTb6eNdgu3AcNLRAhNEw2K7LNEMErWve+VNadnKVsZF+KcaznjpLz
+ 5OjGjxCHjMTlS1Hgsc2lRe92PHpCw06uJuNWOyOIV/1HynAtJDVs2H8OSuONGqmlI2fY/FN6Y
+ oRv2q75s435fc9QFMnffqILsisfagPIo9pHhT9LBTTFq9cxFRzoxYTcxGhchg3BzT7F2Gcpg1
+ rBWEKwLn4hJaWQ98FBHeTmyYUZO0RKhWQjoFxVR9+tABlaZGZ8Zwte0y+3izmrUQT48PzVr/e
+ S4O2gnqKF+38pIPajaMi7EhPb9LTSqdhVk4dnPPfAcb1+QCuyXxyAL4bVD28QQYET/rWytKR6
+ nxCQuPY7vAZxSM2FwxAe4yffTRPcGXOlmjXVJGf3KYnA++1nLzQ+wrCDLcMS0WnF1AF4cwP1n
+ ZwdDd6ktdwsjH5Pm447Z5hQ23CihHcazVLEY9eK0upqm3V18dUZtSq43y1ogchJ0HnRIU3GMG
+ 7O618izAB+h3lMG7a+4b9gvvq+3kPJRJIm+e7JzMNFuySPKWOTIMJHePDceZOF2Ddm44JBrjs
+ 3KgMRszmtDKlivN1UBTfLjdbwxDGHD7yxZ9L+IopL2wWV5xerTg359DbjfHsgdhHyMxj2Gd4k
+ q1tHw9rXKfm9aKQ7Mf0v97fE85OMpO2uaHb6a+6fg5n+mu9/64=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Slim Bootloader(SBL) [1] is a small open-source boot firmware,
-designed for running on certain Intel platforms. SBL can be
-thought-of as fulfilling the role of a minimal BIOS
-implementation, i.e initializing the hardware and booting
-Operating System.
+On Mon, Apr 20, 2020 at 5:18 PM Tony Lindgren <tony@atomide.com> wrote:
+>
+> * Stephen Rothwell <sfr@canb.auug.org.au> [200419 22:14]:
+> > Hi all,
+> >
+> > On Mon, 20 Apr 2020 08:11:54 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > >
+> > > Commit
+> > >
+> > >   512e8d40f91d ("ARM: dts: OMAP3: disable RNG on N950/N9")
+> > >
+> > > is missing a Signed-off-by from its committer.
+> >
+> > Sorry, that is in the arm-soc-fixes tree.
+>
+> Hmm so the commit I sent a pull request [0] for does have Signed-off-by
+> for commit 07bdc492cff6 ("ARM: dts: OMAP3: disable RNG on N950/N9").
+>
+> Seems like some commits in arm-soc-fixes accidentally got rebased?
 
-Since SBL is not UEFI compliant, firmware update cannot be triggered
-using standard UEFI runtime services. Further considering performance
-impact, SBL doesn't look for a firmware update image on every reset
-and does so only when firmware update signal is asserted.
+Indeed, I found my mistake now and uploaded a fixed branch.
 
-SBL exposes an ACPI-WMI device which comes up in sysfs as
-/sys/bus/wmi/44FADEB1xxx and this driver adds a
-"firmware_update_request" device attribute. This attribute normally
-has a value of 0 and userspace can signal SBL to update firmware,
-on next reboot, by writing a value of 1:
-
-echo 1 > /sys/bus/wmi/devices/44FADEB1-B204-40F2-8581-394BBDC1B651/firmware_update_request
-
-This driver only implements a signaling mechanism, the actual firmware
-update process and various details like firmware update image format,
-firmware image location etc are defined by SBL [2] and are not in the
-scope of this driver.
-
-[1] https://slimbootloader.github.io
-[2] https://slimbootloader.github.io/security/firmware-update.html
-
-Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
----
- MAINTAINERS                        |   7 ++
- drivers/platform/x86/Kconfig       |  10 ++
- drivers/platform/x86/Makefile      |   1 +
- drivers/platform/x86/sbl_fwu_wmi.c | 143 +++++++++++++++++++++++++++++
- 4 files changed, 161 insertions(+)
- create mode 100644 drivers/platform/x86/sbl_fwu_wmi.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..fb5542afff39 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15449,6 +15449,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
- F:	include/linux/srcu*.h
- F:	kernel/rcu/srcu*.c
- 
-+SLIM BOOTLOADER (SBL) FIRMWARE UPDATE WMI DRIVER
-+M:	Jithu Joseph <jithu.joseph@intel.com>
-+R:	Maurice Ma <maurice.ma@intel.com>
-+S:	Maintained
-+W:	https://slimbootloader.github.io/security/firmware-update.html
-+F:	drivers/platform/x86/sbl_fwu_wmi.c
-+
- SMACK SECURITY MODULE
- M:	Casey Schaufler <casey@schaufler-ca.com>
- L:	linux-security-module@vger.kernel.org
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 0ad7ad8cf8e1..aac2bae19a35 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -114,6 +114,16 @@ config XIAOMI_WMI
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called xiaomi-wmi.
- 
-+config SBL_FWU_WMI
-+	tristate "WMI driver for Slim Bootloader firmware update signaling"
-+	depends on ACPI_WMI
-+	help
-+	  Say Y here if you want to be able to use the WMI interface to signal
-+	  Slim Bootloader to trigger update on next reboot.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called sbl-fwu-wmi.
-+
- config ACERHDF
- 	tristate "Acer Aspire One temperature and fan driver"
- 	depends on ACPI && THERMAL
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 53408d965874..3d53828e62d5 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
- obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
- obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
- obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
-+obj-$(CONFIG_SBL_FWU_WMI)		+= sbl_fwu_wmi.o
- 
- # Acer
- obj-$(CONFIG_ACERHDF)		+= acerhdf.o
-diff --git a/drivers/platform/x86/sbl_fwu_wmi.c b/drivers/platform/x86/sbl_fwu_wmi.c
-new file mode 100644
-index 000000000000..d3a4a3b0ab5d
---- /dev/null
-+++ b/drivers/platform/x86/sbl_fwu_wmi.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Slim Bootloader(SBL) firmware update signaling driver
-+ *
-+ * Slim Bootloader is a small, open-source, non UEFI compliant, boot firmware
-+ * optimized for running on certain Intel platforms.
-+ *
-+ * SBL exposes an ACPI-WMI device via /sys/bus/wmi/<SBL_FWU_WMI_GUID>.
-+ * This driver further adds "firmware_update_request" device attribute.
-+ * This attribute normally has a value of 0 and userspace can signal SBL
-+ * to update firmware, on next reboot, by writing a value of 1.
-+ *
-+ * More details of SBL firmware update process is available at:
-+ * https://slimbootloader.github.io/security/firmware-update.html
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/wmi.h>
-+
-+#define SBL_FWU_WMI_GUID  "44FADEB1-B204-40F2-8581-394BBDC1B651"
-+
-+static int get_fwu_request(struct device *dev, u32 *out)
-+{
-+	struct acpi_buffer result = {ACPI_ALLOCATE_BUFFER, NULL};
-+	union acpi_object *obj;
-+	acpi_status status;
-+
-+	status = wmi_query_block(SBL_FWU_WMI_GUID, 0, &result);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "wmi_query_block failed\n");
-+		return -ENODEV;
-+	}
-+
-+	obj = (union acpi_object *)result.pointer;
-+	if (!obj || obj->type != ACPI_TYPE_INTEGER) {
-+		dev_warn(dev, "wmi_query_block returned invalid value\n");
-+		kfree(obj);
-+		return -EINVAL;
-+	}
-+
-+	*out = obj->integer.value;
-+	kfree(obj);
-+
-+	return 0;
-+}
-+
-+static int set_fwu_request(struct device *dev, u32 in)
-+{
-+	struct acpi_buffer input;
-+	acpi_status status;
-+	u32 value;
-+
-+	value = in;
-+	input.length = sizeof(u32);
-+	input.pointer = &value;
-+
-+	status = wmi_set_block(SBL_FWU_WMI_GUID, 0, &input);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "wmi_set_block failed\n");
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+static ssize_t firmware_update_request_show(struct device *dev,
-+					    struct device_attribute *attr,
-+					    char *buf)
-+{
-+	u32 val;
-+	int ret;
-+
-+	ret = get_fwu_request(dev, &val);
-+	if (ret)
-+		return ret;
-+
-+	return sprintf(buf, "%d\n", val);
-+}
-+
-+static ssize_t firmware_update_request_store(struct device *dev,
-+					     struct device_attribute *attr,
-+					     const char *buf, size_t count)
-+{
-+	bool val;
-+	int ret;
-+
-+	ret = kstrtobool(buf, &val);
-+	if (ret)
-+		return ret;
-+
-+	ret = set_fwu_request(dev, val ? 1 : 0);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(firmware_update_request);
-+
-+static struct attribute *firmware_update_attrs[] = {
-+	&dev_attr_firmware_update_request.attr,
-+	NULL
-+};
-+
-+ATTRIBUTE_GROUPS(firmware_update);
-+
-+static int sbl_fwu_wmi_probe(struct wmi_device *wdev, const void *context)
-+{
-+	dev_info(&wdev->dev, "Slim Bootloader signaling driver attached\n");
-+	return 0;
-+}
-+
-+static int sbl_fwu_wmi_remove(struct wmi_device *wdev)
-+{
-+	dev_info(&wdev->dev, "Slim Bootloader signaling driver removed\n");
-+	return 0;
-+}
-+
-+static const struct wmi_device_id sbl_fwu_wmi_id_table[] = {
-+	{ .guid_string = SBL_FWU_WMI_GUID },
-+	{}
-+};
-+
-+static struct wmi_driver sbl_fwu_wmi_driver = {
-+	.driver = {
-+		.name = "sbl-fwu-wmi",
-+		.dev_groups = firmware_update_groups,
-+	},
-+	.probe = sbl_fwu_wmi_probe,
-+	.remove = sbl_fwu_wmi_remove,
-+	.id_table = sbl_fwu_wmi_id_table,
-+};
-+
-+module_wmi_driver(sbl_fwu_wmi_driver);
-+
-+MODULE_DEVICE_TABLE(wmi, sbl_fwu_wmi_id_table);
-+MODULE_AUTHOR("Jithu Joseph <jithu.joseph@intel.com>");
-+MODULE_DESCRIPTION("Slim Bootloader firmware update signaling driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
-
+      Arnd
