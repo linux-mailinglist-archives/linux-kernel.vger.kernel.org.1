@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9F91B0A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEA51B09BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgDTMoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37832 "EHLO mail.kernel.org"
+        id S1728090AbgDTMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728505AbgDTMoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:44:03 -0400
+        id S1728073AbgDTMlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:41:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BD7A20738;
-        Mon, 20 Apr 2020 12:44:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FE2E20735;
+        Mon, 20 Apr 2020 12:41:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386642;
-        bh=eZOTwLQ+89n4izqg2qhLqC8W3atJDfDu9J0twFIibYk=;
+        s=default; t=1587386504;
+        bh=3w05jCYjIhoDyDncLmt8aY0aq/NFMnH9Bfe0njl5I1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UJ2NpiQCI7mbh6PVzSSjByAjC6kR4YpeypkIoWywYfwsWPj1qBuL3EE49SuoDyCxS
-         PyPA7nye4I996bmwumfpZuxjPi63Y2Ex+C45vHswgLpR1Ziq+A0QJu0Z2p2JPOycRk
-         951Vk+8NqTgyV3Ktrh9jEd+r9hNf1af7K6cm5L0Y=
+        b=A0en1bzV10ZcECkn4SuSifbIaOH0DiatyCgRFik3kmHFN8vX9tB0lqYZcYyDezp/Z
+         wjI86Fmf5lQdFvWj6QMJznif9gHJI+Q4V3FCz21GsA7JoSxkphOvKXU8bWl6RviNxt
+         am4rnaVxxeLk4JO08p96c4zq6skgwQIUEupPoK8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.6 39/71] usb: dwc3: gadget: Dont clear flags before transfer ended
-Date:   Mon, 20 Apr 2020 14:38:53 +0200
-Message-Id: <20200420121517.193262046@linuxfoundation.org>
+        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.5 50/65] mac80211: fix race in ieee80211_register_hw()
+Date:   Mon, 20 Apr 2020 14:38:54 +0200
+Message-Id: <20200420121517.737681332@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Sumit Garg <sumit.garg@linaro.org>
 
-commit a114c4ca64bd522aec1790c7e5c60c882f699d8f upstream.
+commit 52e04b4ce5d03775b6a78f3ed1097480faacc9fd upstream.
 
-We track END_TRANSFER command completion. Don't clear transfer
-started/ended flag prematurely. Otherwise, we'd run into the problem
-with restarting transfer before END_TRANSFER command finishes.
+A race condition leading to a kernel crash is observed during invocation
+of ieee80211_register_hw() on a dragonboard410c device having wcn36xx
+driver built as a loadable module along with a wifi manager in user-space
+waiting for a wifi device (wlanX) to be active.
 
-Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from event status")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Sequence diagram for a particular kernel crash scenario:
+
+    user-space  ieee80211_register_hw()  ieee80211_tasklet_handler()
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+       |                    |                 |
+       |<---phy0----wiphy_register()          |
+       |-----iwd if_add---->|                 |
+       |                    |<---IRQ----(RX packet)
+       |              Kernel crash            |
+       |              due to unallocated      |
+       |              workqueue.              |
+       |                    |                 |
+       |       alloc_ordered_workqueue()      |
+       |                    |                 |
+       |              Misc wiphy init.        |
+       |                    |                 |
+       |            ieee80211_if_add()        |
+       |                    |                 |
+
+As evident from above sequence diagram, this race condition isn't specific
+to a particular wifi driver but rather the initialization sequence in
+ieee80211_register_hw() needs to be fixed. So re-order the initialization
+sequence and the updated sequence diagram would look like:
+
+    user-space  ieee80211_register_hw()  ieee80211_tasklet_handler()
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+       |                    |                 |
+       |       alloc_ordered_workqueue()      |
+       |                    |                 |
+       |              Misc wiphy init.        |
+       |                    |                 |
+       |<---phy0----wiphy_register()          |
+       |-----iwd if_add---->|                 |
+       |                    |<---IRQ----(RX packet)
+       |                    |                 |
+       |            ieee80211_if_add()        |
+       |                    |                 |
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Link: https://lore.kernel.org/r/1586254255-28713-1-git-send-email-sumit.garg@linaro.org
+[Johannes: fix rtnl imbalances]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/mac80211/main.c |   24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2570,10 +2570,8 @@ static void dwc3_gadget_endpoint_transfe
+--- a/net/mac80211/main.c
++++ b/net/mac80211/main.c
+@@ -1051,7 +1051,7 @@ int ieee80211_register_hw(struct ieee802
+ 		local->hw.wiphy->signal_type = CFG80211_SIGNAL_TYPE_UNSPEC;
+ 		if (hw->max_signal <= 0) {
+ 			result = -EINVAL;
+-			goto fail_wiphy_register;
++			goto fail_workqueue;
+ 		}
+ 	}
  
- 	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
+@@ -1113,7 +1113,7 @@ int ieee80211_register_hw(struct ieee802
  
--	if (stop) {
-+	if (stop)
- 		dwc3_stop_active_transfer(dep, true, true);
--		dep->flags = DWC3_EP_ENABLED;
--	}
+ 	result = ieee80211_init_cipher_suites(local);
+ 	if (result < 0)
+-		goto fail_wiphy_register;
++		goto fail_workqueue;
  
+ 	if (!local->ops->remain_on_channel)
+ 		local->hw.wiphy->max_remain_on_channel_duration = 5000;
+@@ -1139,10 +1139,6 @@ int ieee80211_register_hw(struct ieee802
+ 
+ 	local->hw.wiphy->max_num_csa_counters = IEEE80211_MAX_CSA_COUNTERS_NUM;
+ 
+-	result = wiphy_register(local->hw.wiphy);
+-	if (result < 0)
+-		goto fail_wiphy_register;
+-
  	/*
- 	 * WORKAROUND: This is the 2nd half of U1/U2 -> U0 workaround.
+ 	 * We use the number of queues for feature tests (QoS, HT) internally
+ 	 * so restrict them appropriately.
+@@ -1198,9 +1194,9 @@ int ieee80211_register_hw(struct ieee802
+ 		goto fail_flows;
+ 
+ 	rtnl_lock();
+-
+ 	result = ieee80211_init_rate_ctrl_alg(local,
+ 					      hw->rate_control_algorithm);
++	rtnl_unlock();
+ 	if (result < 0) {
+ 		wiphy_debug(local->hw.wiphy,
+ 			    "Failed to initialize rate control algorithm\n");
+@@ -1254,6 +1250,12 @@ int ieee80211_register_hw(struct ieee802
+ 		local->sband_allocated |= BIT(band);
+ 	}
+ 
++	result = wiphy_register(local->hw.wiphy);
++	if (result < 0)
++		goto fail_wiphy_register;
++
++	rtnl_lock();
++
+ 	/* add one default STA interface if supported */
+ 	if (local->hw.wiphy->interface_modes & BIT(NL80211_IFTYPE_STATION) &&
+ 	    !ieee80211_hw_check(hw, NO_AUTO_VIF)) {
+@@ -1293,17 +1295,17 @@ int ieee80211_register_hw(struct ieee802
+ #if defined(CONFIG_INET) || defined(CONFIG_IPV6)
+  fail_ifa:
+ #endif
++	wiphy_unregister(local->hw.wiphy);
++ fail_wiphy_register:
+ 	rtnl_lock();
+ 	rate_control_deinitialize(local);
+ 	ieee80211_remove_interfaces(local);
+- fail_rate:
+ 	rtnl_unlock();
++ fail_rate:
+  fail_flows:
+ 	ieee80211_led_exit(local);
+ 	destroy_workqueue(local->workqueue);
+  fail_workqueue:
+-	wiphy_unregister(local->hw.wiphy);
+- fail_wiphy_register:
+ 	if (local->wiphy_ciphers_allocated)
+ 		kfree(local->hw.wiphy->cipher_suites);
+ 	kfree(local->int_scan_req);
+@@ -1353,8 +1355,8 @@ void ieee80211_unregister_hw(struct ieee
+ 	skb_queue_purge(&local->skb_queue_unreliable);
+ 	skb_queue_purge(&local->skb_queue_tdls_chsw);
+ 
+-	destroy_workqueue(local->workqueue);
+ 	wiphy_unregister(local->hw.wiphy);
++	destroy_workqueue(local->workqueue);
+ 	ieee80211_led_exit(local);
+ 	kfree(local->int_scan_req);
+ }
 
 
