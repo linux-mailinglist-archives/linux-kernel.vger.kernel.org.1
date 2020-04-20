@@ -2,110 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1251B16F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EA01B1707
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgDTU02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbgDTU0Z (ORCPT
+        id S1728319AbgDTU1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:27:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31384 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726766AbgDTU00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:26:25 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE104C061A0C;
-        Mon, 20 Apr 2020 13:26:24 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id u13so13849211wrp.3;
-        Mon, 20 Apr 2020 13:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m86kfkguQyuXw4Padwd/5nB4RFgQInyY94SnHr1Z+AI=;
-        b=MNaaf1hFhkSNGsG0/WejBweFAMVqbFBOqTAhKWVbiIqSizUOwh+IXdBtBdMQOCBokB
-         vv+yP9h2nNbyp6aTAwifzxnJbGPVJqTGq4LRcyJUWDGhz9jUEuWFbBWpcaXRNRmd/YMf
-         RCs6t56EELxuk4xEKs+aqdw0M8QA2xnRRU28HKvQf1dqgCP3rcnFbrALfZGdQjgadPMw
-         Uq6PKbW3wtfYIzF3QHPHCuvePPApbnd0V+z2ZGc4HpJ2tCq3EA0oAn/deiaC8+9KEanT
-         iVDYBcvbxNT142KA+Mrwyo2m3kkBUAJ8vdFRnEFZlHAcHmM1Yfs1FE53iFsveq6S5GyB
-         my8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m86kfkguQyuXw4Padwd/5nB4RFgQInyY94SnHr1Z+AI=;
-        b=kbZ2Gy/qLbltHZx4u711Wx1zLoSo8oP96cfE67fsr5EEVBLNbPrOAvAdJ0EefV6iOJ
-         AdjQvghnVXgKH/8XeEJWTve24CPfNPwDedYu7xJsESisSHbAPZeJQDiKPkblXqY7oRrN
-         7oMxeR/r/JUvqnM7Y79uKfHzT8bsp18UiFWLBxxDJCmhYoocUz54hWIq4X260ngeNEWb
-         J2DssGJic95xq+qO4ADUzCeiXpxnGt48NUiZaFS1BPdQ0s/H4Zghc3SmVp4Mg7/ApoQk
-         pJqdgb9u2bb0bgP0Fj29UiqzTU0KTVDO+DeDY7ceSYMF1YAvFHUSczAy+P8/wucF7JdK
-         g+rw==
-X-Gm-Message-State: AGi0PuZSotbhQlPAWr4nEnCO+qTPFmQxxcXpgsvXILK2DvDiytXU/BbS
-        XY2amK7YwW9dzmKVJZp/E0BE5FoZxTA=
-X-Google-Smtp-Source: APiQypKTMMF9oO9FvAFJ4xYhaXCar71+2ejW0w10+TOcqLClxYzLCLiWyqCAI3/BWVAKJrMuDVhxew==
-X-Received: by 2002:adf:ea44:: with SMTP id j4mr22176574wrn.38.1587414383380;
-        Mon, 20 Apr 2020 13:26:23 -0700 (PDT)
-Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id l19sm657846wmj.14.2020.04.20.13.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 13:26:22 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     robh+dt@kernel.org, khilman@baylibre.com, narmstrong@baylibre.com,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 0/4] meson-ee-pwrc: support for Meson8/8b/8m2 and GX
-Date:   Mon, 20 Apr 2020 22:26:08 +0200
-Message-Id: <20200420202612.369370-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.1
+        Mon, 20 Apr 2020 16:26:26 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03KK3TZe074910;
+        Mon, 20 Apr 2020 16:26:19 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30gcs3mgum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 16:26:19 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03KKPiJe013625;
+        Mon, 20 Apr 2020 20:26:19 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma03dal.us.ibm.com with ESMTP id 30fs66gh6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 20:26:19 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03KKQI9040108318
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 20:26:18 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 284BCAE05C;
+        Mon, 20 Apr 2020 20:26:18 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 328A8AE05F;
+        Mon, 20 Apr 2020 20:26:17 +0000 (GMT)
+Received: from ghost4.ibm.com (unknown [9.163.56.120])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Apr 2020 20:26:17 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com
+Subject: [PATCH v10 4/7] soc: aspeed: xdma: Add reset ioctl
+Date:   Mon, 20 Apr 2020 15:26:08 -0500
+Message-Id: <20200420202611.17776-5-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20200420202611.17776-1-eajames@linux.ibm.com>
+References: <20200420202611.17776-1-eajames@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_07:2020-04-20,2020-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
+ phishscore=0 adultscore=0 clxscore=1015 spamscore=0 mlxscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for all "older" SoCs to the meson-ee-pwrc
-driver. I wanted to compare as much as I could between my Meson8b EC-100
-(Endless Mini) and the Le Potato board so I added support for GXBB, GXL
-and GXM as well as for the SoCs that I'm actually working on. I will
-send the ARM64 dts patches once all of this is reviewed and merged.
+Users of the XDMA engine need a way to reset it if something goes wrong.
+Problems on the host side, or user error, such as incorrect host
+address, may result in the DMA operation never completing and no way to
+determine what went wrong. Therefore, add an ioctl to reset the engine
+so that users can recover in this situation.
 
-I successfully tested the Meson8b part on EC-100 where u-boot does not
-initialize the VPU controller. So this the board where I have been
-struggling most.
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Acked-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ drivers/soc/aspeed/aspeed-xdma.c | 32 ++++++++++++++++++++++++++++++++
+ include/uapi/linux/aspeed-xdma.h |  4 ++++
+ 2 files changed, 36 insertions(+)
 
-
-Changes since v2 at [1]:
-- don't remove the "reset-names" property from the main description
-  (only make it optional and switch from items to minItems) to fix
-  a dt_binding_check found by Rob (or his bot) - thanks and sorry!
-
-Changes since v1 at [0]:
-- rename PWRC_GXBB_ETH_ID to PWRC_GXBB_ETHERNET_MEM_ID. Spotted by
-  Neil, thanks!
-- update cover-letter since Neil confirmed (thanks!) that the "dvin"
-  reset really belongs to the VPU on GXBB, GXL and GXM
-- removed RFC status
-
-
-[0] https://patchwork.kernel.org/cover/11489163/
-[1] https://patchwork.kernel.org/cover/11496013/
-
-
-Martin Blumenstingl (4):
-  dt-bindings: power: meson-ee-pwrc: add support for Meson8/8b/8m2
-  dt-bindings: power: meson-ee-pwrc: add support for the Meson GX SoCs
-  soc: amlogic: meson-ee-pwrc: add support for Meson8/Meson8b/Meson8m2
-  soc: amlogic: meson-ee-pwrc: add support for the Meson GX SoCs
-
- .../bindings/power/amlogic,meson-ee-pwrc.yaml | 102 +++++++++++++++---
- drivers/soc/amlogic/meson-ee-pwrc.c           |  98 ++++++++++++++++-
- include/dt-bindings/power/meson-gxbb-power.h  |  13 +++
- include/dt-bindings/power/meson8-power.h      |  13 +++
- 4 files changed, 206 insertions(+), 20 deletions(-)
- create mode 100644 include/dt-bindings/power/meson-gxbb-power.h
- create mode 100644 include/dt-bindings/power/meson8-power.h
-
+diff --git a/drivers/soc/aspeed/aspeed-xdma.c b/drivers/soc/aspeed/aspeed-xdma.c
+index adfb9e13c8b9..64e1c70e046d 100644
+--- a/drivers/soc/aspeed/aspeed-xdma.c
++++ b/drivers/soc/aspeed/aspeed-xdma.c
+@@ -648,6 +648,37 @@ static __poll_t aspeed_xdma_poll(struct file *file,
+ 	return mask;
+ }
+ 
++static long aspeed_xdma_ioctl(struct file *file, unsigned int cmd,
++			      unsigned long param)
++{
++	unsigned long flags;
++	struct aspeed_xdma_client *client = file->private_data;
++	struct aspeed_xdma *ctx = client->ctx;
++
++	switch (cmd) {
++	case ASPEED_XDMA_IOCTL_RESET:
++		spin_lock_irqsave(&ctx->engine_lock, flags);
++		if (ctx->in_reset) {
++			spin_unlock_irqrestore(&ctx->engine_lock, flags);
++			return 0;
++		}
++
++		ctx->in_reset = true;
++		spin_unlock_irqrestore(&ctx->engine_lock, flags);
++
++		if (READ_ONCE(ctx->current_client))
++			dev_warn(ctx->dev,
++				 "User reset with transfer in progress.\n");
++
++		aspeed_xdma_reset(ctx);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static void aspeed_xdma_vma_close(struct vm_area_struct *vma)
+ {
+ 	int rc;
+@@ -742,6 +773,7 @@ static const struct file_operations aspeed_xdma_fops = {
+ 	.owner			= THIS_MODULE,
+ 	.write			= aspeed_xdma_write,
+ 	.poll			= aspeed_xdma_poll,
++	.unlocked_ioctl		= aspeed_xdma_ioctl,
+ 	.mmap			= aspeed_xdma_mmap,
+ 	.open			= aspeed_xdma_open,
+ 	.release		= aspeed_xdma_release,
+diff --git a/include/uapi/linux/aspeed-xdma.h b/include/uapi/linux/aspeed-xdma.h
+index 2efaa6067c39..3a3646fd1e9e 100644
+--- a/include/uapi/linux/aspeed-xdma.h
++++ b/include/uapi/linux/aspeed-xdma.h
+@@ -4,8 +4,12 @@
+ #ifndef _UAPI_LINUX_ASPEED_XDMA_H_
+ #define _UAPI_LINUX_ASPEED_XDMA_H_
+ 
++#include <linux/ioctl.h>
+ #include <linux/types.h>
+ 
++#define __ASPEED_XDMA_IOCTL_MAGIC	0xb7
++#define ASPEED_XDMA_IOCTL_RESET		_IO(__ASPEED_XDMA_IOCTL_MAGIC, 0)
++
+ /*
+  * aspeed_xdma_direction
+  *
 -- 
-2.26.1
+2.24.0
 
