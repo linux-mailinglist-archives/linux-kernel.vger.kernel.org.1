@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1291B0A80
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD021B0A61
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgDTMsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
+        id S1729123AbgDTMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729300AbgDTMsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:42 -0400
+        id S1729091AbgDTMrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D35332082E;
-        Mon, 20 Apr 2020 12:48:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABC122072B;
+        Mon, 20 Apr 2020 12:47:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386921;
-        bh=N3SYcejc4Dv4IM02RTBR2f2yjBYBu8UqWsPgUiD0uOU=;
+        s=default; t=1587386853;
+        bh=JNYBM1DqjYWaI/f+MVZCYi82oRdiai3bNp++sT13rCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lyi1AsiVAjCLMRWGrLk13WxfsUQvjgwKikiGXbCqqf2vnqPof1y+GcT0Djt1/6T8n
-         m5/B5rs+J+PTwqRTebWJscIYf+jCdybwRgUVXgNLK00G2THgSZGSMDluBToRPSqVaG
-         F2aKy5cW050OMtSXD5XF+8z0+WYsB2k0Bt+gL2kk=
+        b=cz7h+WJY8Kj+y9YEvEGQip8tzf//QasqK1F2HCZzn4Vi6CyYB23xSWmBYWP/vM3bQ
+         ax6/b+44xtlRN2YmVRDl6HgjnXX1PdOKZcFYZh/9b2xrxHpp6ZSOXGO//jSKpu09O4
+         mA3XooOfMW9eVBkY3ulzxWAkxTSJyyVH2C4sY32A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 21/40] keys: Fix proc_keys_next to increase position index
-Date:   Mon, 20 Apr 2020 14:39:31 +0200
-Message-Id: <20200420121500.246935593@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.4 54/60] ext4: do not zeroout extents beyond i_disksize
+Date:   Mon, 20 Apr 2020 14:39:32 +0200
+Message-Id: <20200420121514.830085605@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-References: <20200420121444.178150063@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Jan Kara <jack@suse.cz>
 
-commit 86d32f9a7c54ad74f4514d7fef7c847883207291 upstream.
+commit 801674f34ecfed033b062a0f217506b93c8d5e8a upstream.
 
-If seq_file .next function does not change position index,
-read after some lseek can generate unexpected output:
+We do not want to create initialized extents beyond end of file because
+for e2fsck it is impossible to distinguish them from a case of corrupted
+file size / extent tree and so it complains like:
 
-    $ dd if=/proc/keys bs=1  # full usual output
-    0f6bfdf5 I--Q---     2 perm 3f010000  1000  1000 user      4af2f79ab8848d0a: 740
-    1fb91b32 I--Q---     3 perm 1f3f0000  1000 65534 keyring   _uid.1000: 2
-    27589480 I--Q---     1 perm 0b0b0000     0     0 user      invocation_id: 16
-    2f33ab67 I--Q---   152 perm 3f030000     0     0 keyring   _ses: 2
-    33f1d8fa I--Q---     4 perm 3f030000  1000  1000 keyring   _ses: 1
-    3d427fda I--Q---     2 perm 3f010000  1000  1000 user      69ec44aec7678e5a: 740
-    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
-    521+0 records in
-    521+0 records out
-    521 bytes copied, 0,00123769 s, 421 kB/s
+Inode 12, i_size is 147456, should be 163840.  Fix? no
 
-But a read after lseek in middle of last line results in the partial
-last line and then a repeat of the final line:
+Code in ext4_ext_convert_to_initialized() and
+ext4_split_convert_extents() try to make sure it does not create
+initialized extents beyond inode size however they check against
+inode->i_size which is wrong. They should instead check against
+EXT4_I(inode)->i_disksize which is the current inode size on disk.
+That's what e2fsck is going to see in case of crash before all dirty
+data is written. This bug manifests as generic/456 test failure (with
+recent enough fstests where fsx got fixed to properly pass
+FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
+mount option.
 
-    $ dd if=/proc/keys bs=500 skip=1
-    dd: /proc/keys: cannot skip to specified offset
-    g   _uid_ses.1000: 1
-    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
-    0+1 records in
-    0+1 records out
-    97 bytes copied, 0,000135035 s, 718 kB/s
-
-and a read after lseek beyond end of file results in the last line being
-shown:
-
-    $ dd if=/proc/keys bs=1000 skip=1   # read after lseek beyond end of file
-    dd: /proc/keys: cannot skip to specified offset
-    3ead4096 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
-    0+1 records in
-    0+1 records out
-    76 bytes copied, 0,000119981 s, 633 kB/s
-
-See https://bugzilla.kernel.org/show_bug.cgi?id=206283
-
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code ...")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+CC: stable@vger.kernel.org
+Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20200331105016.8674-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/keys/proc.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/ext4/extents.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/security/keys/proc.c
-+++ b/security/keys/proc.c
-@@ -144,6 +144,8 @@ static void *proc_keys_next(struct seq_f
- 	n = key_serial_next(p, v);
- 	if (n)
- 		*_pos = key_node_serial(n);
-+	else
-+		(*_pos)++;
- 	return n;
- }
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3549,8 +3549,8 @@ static int ext4_ext_convert_to_initializ
+ 		(unsigned long long)map->m_lblk, map_len);
  
+ 	sbi = EXT4_SB(inode->i_sb);
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map_len)
+ 		eof_block = map->m_lblk + map_len;
+ 
+@@ -3805,8 +3805,8 @@ static int ext4_split_convert_extents(ha
+ 		  __func__, inode->i_ino,
+ 		  (unsigned long long)map->m_lblk, map->m_len);
+ 
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map->m_len)
+ 		eof_block = map->m_lblk + map->m_len;
+ 	/*
 
 
