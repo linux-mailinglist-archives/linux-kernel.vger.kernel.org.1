@@ -2,140 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E0E1B170E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5131B171B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgDTU1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:27:45 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58735 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgDTU1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:27:44 -0400
-IronPort-SDR: HpECctyJuHToKaYf+LrjpHWA4vyt3whEAYnA65yzV4dm5fRmGAMeszfPncpbVmRmMwDyd3+v6l
- 9UOcul7pEiQg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 13:27:43 -0700
-IronPort-SDR: tVLifL0TMehNj1g431MDsXUpEasX5cgYZXC1emapeqha5wEeB37vX/r5pIf2nHANdmTnkSbrx3
- irWPEl3DqFQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,407,1580803200"; 
-   d="scan'208";a="245478792"
-Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
-  by fmsmga007.fm.intel.com with ESMTP; 20 Apr 2020 13:27:42 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 20 Apr 2020 13:27:41 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 20 Apr 2020 13:27:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vy2CtMogI0RgLdIhkRCw+As/8gYfbr6FxxEzffYnnKjEljwZ3VE1H9AbR7EmhE6lYM+2beq3pJjWc41e8RXWA0Xw+WPJ7xU3Kujv7nXdjKFvBLZDQ/wGZtnJzI0obQYx5zEk/rgH03rrB4JnCIJe8JPWPO3DQWAp56Uf2Q6GbFHEPNlOv9+H+s2zmOM3u+Tw6SgY7hX7xX4KLAc6K/qtg1bj2oTYMQlp/EYLK5DJObVptn0+KgLqFgml74Zg2JIlEujQQQcrEloh18pWMOzfO94WTPuUseCEmw6/SxrNuPOFbwsRlh6miWCSLRqrFLXEetPeB0enuczf0aR0hCxf7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZTaBsf8cC9KkazSh/ne37W484wpbAWQUNs/le6U4ipo=;
- b=kAivCaCwnsSOfdmoPOo7TSrYMuAOdazXGhzdJe17Rrdr3tb6+2UczVOEmdkq7LwnhnGIA+qOW/cV49Mmu7JAn7wIvnVo/nlxD35O7A1GmXU9PLxWM+0Bgg3HCze2klksbmKk5kP9U6jnozqX0ruCMLREzbLP/rvo8hdkwM2Oraa8EEE0cpbO9gfoeW7etr7CK/tpFUSN8mVhu7kGtQ/RdJ9QnONXZp3iYtSzAa9Gk3NYirGBib/Je0ROkF59jOi2scPaTZZ4NC8gtRkwDsni4XTh2CkGyHWrH0KDsIEenWHpSgOQHZXv1I9gTEx+wVVFXIMzRmrD7/Jst3qV5TtDMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZTaBsf8cC9KkazSh/ne37W484wpbAWQUNs/le6U4ipo=;
- b=zRKuZBkjt2vfEbciGM0wxb6vMXgiOjhzgl1fMvi3rTRZ9xPDRLN5WxD3ll8q2hT+KmPTiDpmFzaMYYe5Sh+9SAy1Lu1wQbkwyidneSODSnyRdcaRZgqlV0X4DMmuyKPnrbUkCf61J/42B4Pfs3PEq4TKl2slRKLSqUCsYyhrE8s=
-Received: from DM6PR11MB2890.namprd11.prod.outlook.com (2603:10b6:5:63::20) by
- DM6PR11MB3771.namprd11.prod.outlook.com (2603:10b6:5:13f::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2921.27; Mon, 20 Apr 2020 20:27:39 +0000
-Received: from DM6PR11MB2890.namprd11.prod.outlook.com
- ([fe80::40b:5b49:b17d:d875]) by DM6PR11MB2890.namprd11.prod.outlook.com
- ([fe80::40b:5b49:b17d:d875%7]) with mapi id 15.20.2921.027; Mon, 20 Apr 2020
- 20:27:39 +0000
-From:   "Brown, Aaron F" <aaron.f.brown@intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-CC:     "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [Intel-wired-lan] [PATCH 1/1] e1000e: Disable s0ix flow for X1
- Carbon 7th
-Thread-Topic: [Intel-wired-lan] [PATCH 1/1] e1000e: Disable s0ix flow for X1
- Carbon 7th
-Thread-Index: AQHV/a8PVM8h+1P/RkaXQ/UmmFEy2KiCqHcQ
-Date:   Mon, 20 Apr 2020 20:27:39 +0000
-Message-ID: <DM6PR11MB2890E32FBCE91DF33D252087BCD40@DM6PR11MB2890.namprd11.prod.outlook.com>
-References: <20200319052629.7282-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20200319052629.7282-1-kai.heng.feng@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=aaron.f.brown@intel.com; 
-x-originating-ip: [192.55.52.220]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b63364b4-465b-4b2f-322a-08d7e5694581
-x-ms-traffictypediagnostic: DM6PR11MB3771:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3771E122F38C33F1CA6DE90EBCD40@DM6PR11MB3771.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 03793408BA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2890.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(346002)(376002)(396003)(39860400002)(366004)(136003)(81156014)(8676002)(52536014)(55016002)(9686003)(8936002)(66556008)(66476007)(66446008)(66946007)(64756008)(316002)(86362001)(76116006)(2906002)(4744005)(966005)(5660300002)(478600001)(4326008)(26005)(53546011)(6506007)(33656002)(7696005)(6636002)(186003)(54906003)(71200400001)(110136005)(32563001);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xpmWH2HboTeUv1DR/3zfzXWx7ZQbJshA/XX8wExfCxRMzcC5p9I+0XA1JuTSTO/Qxzar0IjA8w1GB481+NB1CoUpq7uBXvqfsnk7ZcIzvm1gHtYdS7+JZBSdESMLoUjeFQogkxL99pZXw35w/5FGEQca4souPbpf1Jdw9XbynnPlnCvwFGeF6eizd+nZ4kc++XvEYdj2HCG0Z6JZxrOCvzZ51XFhSikS2BoTvYUDbTXDzynh5nOtF/2lLh11sNLoa/zxWcj5hUaKLlGLQJQUwxBtqHdYTaodXTgcHi9a3bZvK2yTpMCcznNN+HnkT96hlg9CojeL666tNKvil7lKwJcksFvhDd+0vUPves9rW0Ne+Q1CenRfP8M0nMi1dXEJGJXsT8C52F0ECx9gMy63u10aT3Clx+KoA8RXBtQLWXxlvbyFGYeYPrMQpKjygyA09EP3N3iLjeEXZ4uWisgSaYVCGuzOkrixkNTDCreF2N+/UODbLMfRqWrCGssWri29WYWRmohtl7ico5b7f6732q2LE7spulbYrZ41NX7prP3EO5+C2xHQhANzbLArlVcW
-x-ms-exchange-antispam-messagedata: fSkbC9muQIRXx+PFg46mWBCAiPijDWejiIrDcVNfw38xLn9ISWqBnxxm7KrMOCX098RTCjcOz9gjcdnwenkU+av5wASBa9Y1qCRfBJ0KY25kg6Xfigohw1X+aG+t/iftzi6xVVMiB8ep44/4nZNolQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726173AbgDTU3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgDTU3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 16:29:53 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3823BC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:29:53 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 198so9183418lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wlD7exmpP2wJ9RvD3qhW6lLoxeeNIloAY3kkOGxGrPg=;
+        b=CSrYF4gwenMWMaslCcQijRCNO9eq1UfvXXSV8pttbEiArbr/aQ0aFZA3NJEU462YCW
+         ta5FSBuZKNh3DjHJ9A+mTPvAqqcxx8gsP38e2aO+vWiQFGoU+OZBQPi5EAKOFGJQ9FJj
+         Vj0bLG8tDjADXIf3/IHx2bOqwK0ghVn+Kk1WRa2/rhWY7yuPOAVIzb8+OB+1AXr7/mDV
+         nPN9r/51dJd8TEtzmYhidX88xsTU+niNazjYNoDQ5+L3ER1iCQuriV+bIdRjpF61vIIh
+         PYP3+KLT6Gdt17ScXYNgHxdjm+9KFieAZARtrDpZtitChEwJQ6XlOk4yvS9U0YGCd6pb
+         P9Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wlD7exmpP2wJ9RvD3qhW6lLoxeeNIloAY3kkOGxGrPg=;
+        b=PlZ0pIeCINJBgFnjvESVkmBOFHrZfxXUSbCAM2M6tB10gaXaEpjcgLAVwxEBgqCfWr
+         qdJUyVsjWUUvxnZFUFvbej5e1X2rTGTeMfLEoKPJlhedSeXyY3ChUGuEfNCxXoLuvuzc
+         00bcGbGhnClwLa8HSUe7+rLC2Y7nA0IEQ2v+1a8IG+OBfBhaoFDDQwgh4A09jI7+3Ocy
+         /F8Lt9ri905Fdt3w1/cml5ytqQxdwYixTqvuXaPvHiZ9EVwZyAlau0MhEB2pRbF+7JHz
+         nYiQbW3kuT7GcB4ucka3k0DFRJmhTTT8m1U8gwx6JQZ+e9ana3MwGj58+QbFO8TGpFm9
+         21Aw==
+X-Gm-Message-State: AGi0PubOMtqmhPWudePC1i6fWiwZ4Q08kL7W0yUA6JbDRO7hr17dpiRn
+        S5rA88yDKvrLrW5tz/+yLejO2W6frdR388VA25tTaQ==
+X-Google-Smtp-Source: APiQypLQCUkv6jgt7apw+kFJDyvgCCL6sERDkdJtPaDNmQPtni41e7GpE29ZEcuR1aLfVCe6v6zEwl2b/z0I/2n6J3c=
+X-Received: by 2002:a05:6512:1109:: with SMTP id l9mr11730849lfg.12.1587414591448;
+ Mon, 20 Apr 2020 13:29:51 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b63364b4-465b-4b2f-322a-08d7e5694581
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2020 20:27:39.5746
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jv4OYtQfeb9M9zHAm81IuXU9kf3/fDbovrE62YapY88vvNbPhg1SjpBS4jvPb2qiPx45OfgbinLrUlVEHMoD6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3771
-X-OriginatorOrg: intel.com
+References: <20200417185049.275845-1-mike.kravetz@oracle.com>
+ <5E312000-05D8-4C5D-A7C0-DDDE1842CB0E@lca.pw> <4c36c6ce-3774-78fa-abc4-b7346bf24348@oracle.com>
+In-Reply-To: <4c36c6ce-3774-78fa-abc4-b7346bf24348@oracle.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Mon, 20 Apr 2020 22:29:40 +0200
+Message-ID: <CADYN=9+=tCDmddTYGY44onvrzbg7yrbacMDSxd4hhD+=b=Yeiw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Clean up hugetlb boot command line processing
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Qian Cai <cai@lca.pw>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S.Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Longpeng <longpeng2@huawei.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mina Almasry <almasrymina@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of K=
-ai-
-> Heng Feng
-> Sent: Wednesday, March 18, 2020 10:26 PM
-> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
-> Cc: open list:NETWORKING DRIVERS <netdev@vger.kernel.org>; Kai-Heng Feng
-> <kai.heng.feng@canonical.com>; moderated list:INTEL ETHERNET DRIVERS
-> <intel-wired-lan@lists.osuosl.org>; David S. Miller <davem@davemloft.net>=
-;
-> open list <linux-kernel@vger.kernel.org>
-> Subject: [Intel-wired-lan] [PATCH 1/1] e1000e: Disable s0ix flow for X1 C=
-arbon
-> 7th
->=20
-> The s0ix flow makes X1 Carbon 7th can only run S2Idle for only once.
->=20
-> Temporarily disable it until Intel found a solution.
->=20
-> Link: https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-
-> 20200316/019222.html
-> BugLink: https://bugs.launchpad.net/bugs/1865570
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On Mon, 20 Apr 2020 at 20:23, Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 4/20/20 8:34 AM, Qian Cai wrote:
+> >
+> >
+> >> On Apr 17, 2020, at 2:50 PM, Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>
+> >> Longpeng(Mike) reported a weird message from hugetlb command line processing
+> >> and proposed a solution [1].  While the proposed patch does address the
+> >> specific issue, there are other related issues in command line processing.
+> >> As hugetlbfs evolved, updates to command line processing have been made to
+> >> meet immediate needs and not necessarily in a coordinated manner.  The result
+> >> is that some processing is done in arch specific code, some is done in arch
+> >> independent code and coordination is problematic.  Semantics can vary between
+> >> architectures.
+> >>
+> >> The patch series does the following:
+> >> - Define arch specific arch_hugetlb_valid_size routine used to validate
+> >>  passed huge page sizes.
+> >> - Move hugepagesz= command line parsing out of arch specific code and into
+> >>  an arch independent routine.
+> >> - Clean up command line processing to follow desired semantics and
+> >>  document those semantics.
+> >>
+> >> [1] https://lore.kernel.org/linux-mm/20200305033014.1152-1-longpeng2@huawei.com
+> >>
+> >> Mike Kravetz (4):
+> >>  hugetlbfs: add arch_hugetlb_valid_size
+> >>  hugetlbfs: move hugepagesz= parsing to arch independent code
+> >>  hugetlbfs: remove hugetlb_add_hstate() warning for existing hstate
+> >>  hugetlbfs: clean up command line processing
+> >
+> > Reverted this series fixed many undefined behaviors on arm64 with the config,
+> >
+> > https://raw.githubusercontent.com/cailca/linux-mm/master/arm64.config
+> >
+> > [   54.172683][    T1] UBSAN: shift-out-of-bounds in ./include/linux/hugetlb.h:555:34
+> > [   54.180411][    T1] shift exponent 4294967285 is too large for 64-bit type 'unsigned long'
+> > [   54.188885][    T1] CPU: 130 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc2-next-20200420 #1
+> > [   54.197284][    T1] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
+> > [   54.207888][    T1] Call trace:
+> > [   54.211100][    T1]  dump_backtrace+0x0/0x224
+> > [   54.215565][    T1]  show_stack+0x20/0x2c
+> > [   54.219651][    T1]  dump_stack+0xfc/0x184
+> > [   54.223829][    T1]  __ubsan_handle_shift_out_of_bounds+0x304/0x344
+> > [   54.230204][    T1]  hugetlb_add_hstate+0x3ec/0x414
+> > huge_page_size at include/linux/hugetlb.h:555
+> > (inlined by) hugetlb_add_hstate at mm/hugetlb.c:3301
+> > [   54.235191][    T1]  hugetlbpage_init+0x14/0x30
+> > [   54.239824][    T1]  do_one_initcall+0x6c/0x144
+> > [   54.244446][    T1]  do_initcall_level+0x158/0x1c4
+> > [   54.249336][    T1]  do_initcalls+0x68/0xb0
+> > [   54.253597][    T1]  do_basic_setup+0x28/0x30
+> > [   54.258049][    T1]  kernel_init_freeable+0x19c/0x228
+> > [   54.263188][    T1]  kernel_init+0x14/0x208
+> > [   54.267473][    T1]  ret_from_fork+0x10/0x18
+>
+> While rearranging the code (patch 3 in series), I made the incorrect
+> assumption that CONT_XXX_SIZE == (1UL << CONT_XXX_SHIFT).  However,
+> this is not the case.  Does the following patch fix these issues?
+>
+> From b75cb4a0852e208bee8c4eb347dc076fcaa88859 Mon Sep 17 00:00:00 2001
+> From: Mike Kravetz <mike.kravetz@oracle.com>
+> Date: Mon, 20 Apr 2020 10:41:18 -0700
+> Subject: [PATCH] arm64/hugetlb: fix hugetlb initialization
+>
+> When calling hugetlb_add_hstate() to initialize a new hugetlb size,
+> be sure to use correct huge pages size order.
+>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
->  drivers/net/ethernet/intel/e1000e/netdev.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
+>  arch/arm64/mm/hugetlbpage.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+> index 9ca840527296..a02411a1f19a 100644
+> --- a/arch/arm64/mm/hugetlbpage.c
+> +++ b/arch/arm64/mm/hugetlbpage.c
+> @@ -453,11 +453,11 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
+>  static int __init hugetlbpage_init(void)
+>  {
+>  #ifdef CONFIG_ARM64_4K_PAGES
+> -       hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
+> +       hugetlb_add_hstate(ilog2(PUD_SIZE) - PAGE_SHIFT);
+>  #endif
+> -       hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
+> -       hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
+> -       hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
+> +       hugetlb_add_hstate(ilog2(CONT_PMD_SIZE) - PAGE_SHIFT);
+> +       hugetlb_add_hstate(ilog2(PMD_SIZE) - PAGE_SHIFT);
+> +       hugetlb_add_hstate(ilog2(CONT_PTE_SIZE) - PAGE_SHIFT);
+>
+>         return 0;
+>  }
 
-I do not have access to the "X1 Carbon 7th" this patch targets, but from a =
-regression perspective against a number of other e1000e based parts:
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+I build this for an arm64 kernel and ran it in qemu and it worked.
+
+Cheers,
+Anders
