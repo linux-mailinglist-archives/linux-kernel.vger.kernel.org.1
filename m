@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B1A1B030C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845451B0314
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgDTHeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725994AbgDTHeb (ORCPT
+        id S1726141AbgDTHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:34:41 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:40206 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgDTHek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:34:31 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F3BC061A10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:31 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id c24so3228125uap.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=opCQWgYuAFYxLdRztezYqwdg+lsU+kLFUGlLQxUPDrg=;
-        b=pAtkxvUGU+urLdOoGr0lXgvyKlRl16BlV9bPojdE8r0nGdNQq0Sf8j3kDMPzqsRTNX
-         /LFbidWy/e3DGc29eEF6nu6yj59jxfAxBjHAb2EgMa+bg+B48EiqCITZNUxpRSsLnMrT
-         1pAPf2rlHJV8chg1gtTC1AdvdJrNEq9jnheHYXDf0XqoLc1k7T/9W8DO+0mdau7N8LYG
-         DLjtMznlnI3ljgsnfWjLUkhC+8JsNwrM8EnL6vcMmUgkJr/2MQGjDEJQS8mgEpIeVW0x
-         b34kleywutIxcGdICiWzOZaLbd2j2BLBRJKRpKtHFv0Q+/EHjk5AYIBWRS5G/u16KQBh
-         z7zQ==
+        Mon, 20 Apr 2020 03:34:40 -0400
+Received: by mail-wr1-f67.google.com with SMTP id k13so9596971wrw.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:34:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=opCQWgYuAFYxLdRztezYqwdg+lsU+kLFUGlLQxUPDrg=;
-        b=GNYnappPQVa5+G/EC98p35ONM416y2KWe530y/d3+/K0diZaP2GgsmUXyRDKQPzNsG
-         fNMJWNionP+3koxvv8ScvxPDo/E+OlyfZDWXa07FAy+fkkSfoyfGLX7Jz/T0uS90T9n4
-         FJrctUijhydIRjGAcnZ1ZrXWE5+eGng1G3XXydHdoCQpnRDfb5/Jj95DFPxMTPC6Wvbh
-         Dk6lwK5wY/MjZPjkeZWmSqTNU6KaRjq5JFbRy47MPVf8nuUoj96cYF3CQnKxQe+xn+W3
-         hYokyigK0d3o1E6mG4AZRUFNHMd3pLtQ9cJfteJvLZZG+NchhkdXxCXK7Z0aOntHaHPJ
-         qEow==
-X-Gm-Message-State: AGi0PubVFOLOWpbpO9Hf4NDGa2lYI49WHerzSYWlCA/5sfvYolM7onkE
-        UAhiUiGKXc5zYptryX0iSsZwJZpDZVWgJYIqH6VOhA==
-X-Google-Smtp-Source: APiQypIP0+2cZRffzlocpbxn2ONEPkD5ue7l25ETDalvg1y0d5aVMpH/wBvI56nsmtEm2deJhKL1tD2ouDEFeELmEvY=
-X-Received: by 2002:ab0:3343:: with SMTP id h3mr272200uap.19.1587368070353;
- Mon, 20 Apr 2020 00:34:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J6rJMn+wy517qK6LezauDPAAdzw8pIiAhiJfakvu9RQ=;
+        b=CqN18lsOv7fQll9IjJqroG+4nX3gGZ9AYlVrG39JeEX1IV9H0BDz545zA3Nhs5zW5d
+         VHcEx283YbXXmoB/MI5EAIY36W+FZw0r05Em74gEAmle8jn4+R4VRkAAfQZDKpLAxfe6
+         /8V9K+zDv6/6wFvTA2umH+iAxl6VhyWWnU+zfNr9OZTqDry4+fNccbssKpXhOR9MDZQs
+         ejKA3/ntMEmJvKThIdZ1qEgfVdR4ME8LzUQyodxeu9WenSX/N8RVqr65xKn+uLiV0R8R
+         NChEc2YHqNwLOwp3E1DKfSP8rFl+ozBHglfz186hb+BLIlvIXbHyiM8ZrEZV+qyL3why
+         K9aQ==
+X-Gm-Message-State: AGi0PuaQujGAXOuK1v80CUHcWwkSjYffZWDKRLoqmalB1hsDFiqr6bxj
+        Is7n2+yxd0Q3o9W+o9J0obTecJjQ
+X-Google-Smtp-Source: APiQypLpNr3MZecJqP2+GqR3GqelU7seRMQZPFBobVF04nv7LWcIPzyQ5dbWLrvq1yrMMyhx2dsVpw==
+X-Received: by 2002:adf:ff89:: with SMTP id j9mr17118764wrr.245.1587368076910;
+        Mon, 20 Apr 2020 00:34:36 -0700 (PDT)
+Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
+        by smtp.gmail.com with ESMTPSA id v1sm41809wrv.19.2020.04.20.00.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 00:34:36 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 09:34:34 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH v2] mm/page_alloc: fix watchdog soft lockups during
+ set_zone_contiguous()
+Message-ID: <20200420073434.GE27314@dhcp22.suse.cz>
+References: <20200416073417.5003-1-david@redhat.com>
+ <20200417151247.0068d5aa3f026ced2289ce31@linux-foundation.org>
 MIME-Version: 1.0
-References: <20200417154901.112236-1-colin.king@canonical.com>
-In-Reply-To: <20200417154901.112236-1-colin.king@canonical.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 20 Apr 2020 09:33:54 +0200
-Message-ID: <CAPDyKFocu+ckJE5WpMWuNTMJiwkfgQ4Ha-AXCF4mRJKMrhFa0A@mail.gmail.com>
-Subject: Re: [PATCH][next] sdhci: arasan: fix uninitialized value being
- returned as error code
-To:     Colin King <colin.king@canonical.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417151247.0068d5aa3f026ced2289ce31@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 at 17:49, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently the error return value in variable ret is not being initialized
-> and so a successful return path is returning a garbage value. Since ret
-> is not being used the simple fix is just return 0 on a successful return.
->
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: f73e66a36772 ("sdhci: arasan: Add support for Versal Tap Delays")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Fri 17-04-20 15:12:47, Andrew Morton wrote:
+> On Thu, 16 Apr 2020 09:34:17 +0200 David Hildenbrand <david@redhat.com> wrote:
+> 
+> > Without CONFIG_PREEMPT, it can happen that we get soft lockups detected,
+> > e.g., while booting up.
+> > 
+> > ...
+> > 
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -1607,6 +1607,7 @@ void set_zone_contiguous(struct zone *zone)
+> >  		if (!__pageblock_pfn_to_page(block_start_pfn,
+> >  					     block_end_pfn, zone))
+> >  			return;
+> > +		cond_resched();
+> >  	}
+> >  
+> >  	/* We confirm that there is no hole */
+> 
+> I added cc:stable to this one.  Please let me know if that wasn't a
+> good idea.
 
-Thanks for the patch, but this time I have already applied [1] an
-earlier fix for it.
-
-Kind regards
-Uffe
-
-[...]
-
-[1] https://patchwork.kernel.org/patch/11493633/
+Really large memory setups tend to run on distribution kernels so
+backporting to old kernels doesn't really harm.
+-- 
+Michal Hocko
+SUSE Labs
