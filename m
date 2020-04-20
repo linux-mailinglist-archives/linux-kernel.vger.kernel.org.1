@@ -2,194 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C051B0D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379561B0D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgDTNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:45:07 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:41119 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgDTNpG (ORCPT
+        id S1728466AbgDTNqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725944AbgDTNqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:45:06 -0400
-Received: by mail-oi1-f193.google.com with SMTP id k9so8751350oia.8;
-        Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=30fPuFeZ8+KowrZfxxMKA5oN9jvkWbTz83d3a3WghjU=;
-        b=rlpq95L/PL26iyvWu9o7ByjWXc7PAbQeY6E8IPpcK0R6zn2/QVS2o9WicO83ZLK96x
-         unG965rNSu84pPEvq/KuQ9QhXHlDwsBTjlQWTwKqnVps/edKViQEq0XUHmC83PGrChzP
-         B5VfRLSHUuuHIsMvOs9jDKpZgr0EnFspOmURXUFn+XB4dpfMhpG3RHAjCek7e9B16Obc
-         /oE90sRBOwgMIUpUOqnHm+0PperCO2rExyEX7x+ZCcjEBd1dmNuiygw35pLhW1UUAptq
-         vFFGo0mRDr4fBQX9ckX3I4zdI7lbqTPM0Didxwx2eieJy3ExIOnFOiliGo7lIsOkG9c4
-         dhUQ==
-X-Gm-Message-State: AGi0PuZ2viCHTn0AAAg+pd6lE6x4fcRaLfuJXCX+2TFZ9lin+lrQ2glu
-        ahtPhGfrROHMFhgccz2kryh3pMSnvXoWQQtRnwA=
-X-Google-Smtp-Source: APiQypLA1Qn55GQn4mJL7GDyTOFPDO/nthf1o88r87quKKxquHFgIz8br0NuoDllWsVGK1L+6g+sKJxp7nqM8ixUaKU=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr10122357oih.148.1587390304100;
- Mon, 20 Apr 2020 06:45:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com> <1585289423-18440-3-git-send-email-hadar.gat@arm.com>
-In-Reply-To: <1585289423-18440-3-git-send-email-hadar.gat@arm.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Apr 2020 15:44:51 +0200
-Message-ID: <CAMuHMdV6Uce79MPs7jfJfX3WOqAMH22vf2V_=Ui0zLHYqsJ+Xg@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] hw_random: cctrng: introduce Arm CryptoCell driver
-To:     Hadar Gat <hadar.gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Mon, 20 Apr 2020 09:46:24 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F50C061A0C;
+        Mon, 20 Apr 2020 06:46:24 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 0CFF820CD8;
+        Mon, 20 Apr 2020 13:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587390382; bh=pAU0GQtIe9CHI3zEvVQ1okUdMcuIoJdTgDyCDw9GKa0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hicy5CuBUVkL+GjmHHgahKbGXfIOV7xU5qO9uM1DXePwmgRRE+Qc080dMhME8SrEl
+         ix8+eCtdGMwxqHABdEky2mXP0tgimZmn1VF/tEUlfTx/3c3XePU9wQG0w+NqWioJyE
+         2a43/4letXnP+yNs6W1ZyeT0U5FJQj9N1uUjqJniFGsaYKTsMGeFtQYalQoGI+zlOk
+         eLD49M4zm/+ePKfoIXU7uBs4JCLyXYS9gugchvCOBzWMDIdBVHJnvxUSykZiYH32+M
+         PhnIHd0pC7tOy20W2ru/Cn65pcWSyG931fnjQ5o933wzA70rQtsqU0Pa5r7dCvFk4J
+         OoiGIp/R11hVQ==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <ofir.drang@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/5] MIPS: Loongson64: Remove dead RTC code
+Date:   Mon, 20 Apr 2020 21:45:25 +0800
+Message-Id: <20200420134536.210475-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hadar,
+RTC is now enabled by devicetree. So platform code is
+no longer needed.
 
-On Fri, Mar 27, 2020 at 7:11 AM Hadar Gat <hadar.gat@arm.com> wrote:
-> Introduce low level Arm CryptoCell TRNG HW support.
->
-> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+v2: Rebase to mips-next
+---
+ .../include/asm/mach-loongson64/mc146818rtc.h | 36 -----------------
+ arch/mips/loongson64/Kconfig                  |  4 --
+ arch/mips/loongson64/Makefile                 |  1 -
+ arch/mips/loongson64/rtc.c                    | 39 -------------------
+ arch/mips/loongson64/time.c                   |  8 +---
+ 5 files changed, 1 insertion(+), 87 deletions(-)
+ delete mode 100644 arch/mips/include/asm/mach-loongson64/mc146818rtc.h
+ delete mode 100644 arch/mips/loongson64/rtc.c
 
-Thanks for your patch!
-
-> --- /dev/null
-> +++ b/drivers/char/hw_random/cctrng.c
-
-> +static int cctrng_probe(struct platform_device *pdev)
-> +{
-> +       struct resource *req_mem_cc_regs = NULL;
-> +       struct cctrng_drvdata *drvdata;
-> +       struct device *dev = &pdev->dev;
-> +       int rc = 0;
-> +       u32 val;
-> +       int irq;
-> +
-> +       drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> +       if (!drvdata)
-> +               return -ENOMEM;
-> +
-> +       drvdata->rng.name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
-> +       if (!drvdata->rng.name)
-> +               return -ENOMEM;
-> +
-> +       drvdata->rng.read = cctrng_read;
-> +       drvdata->rng.priv = (unsigned long)drvdata;
-> +       drvdata->rng.quality = CC_TRNG_QUALITY;
-> +
-> +       platform_set_drvdata(pdev, drvdata);
-> +       drvdata->pdev = pdev;
-> +
-> +       drvdata->circ.buf = (char *)drvdata->data_buf;
-> +
-> +       /* Get device resources */
-> +       /* First CC registers space */
-> +       req_mem_cc_regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       /* Map registers space */
-> +       drvdata->cc_base = devm_ioremap_resource(dev, req_mem_cc_regs);
-> +       if (IS_ERR(drvdata->cc_base)) {
-> +               dev_err(dev, "Failed to ioremap registers");
-> +               return PTR_ERR(drvdata->cc_base);
-> +       }
-> +
-> +       dev_dbg(dev, "Got MEM resource (%s): %pR\n", req_mem_cc_regs->name,
-> +               req_mem_cc_regs);
-> +       dev_dbg(dev, "CC registers mapped from %pa to 0x%p\n",
-> +               &req_mem_cc_regs->start, drvdata->cc_base);
-> +
-> +       /* Then IRQ */
-> +       irq = platform_get_irq(pdev, 0);
-> +       if (irq < 0) {
-> +               dev_err(dev, "Failed getting IRQ resource\n");
-> +               return irq;
-> +       }
-> +
-> +       /* parse sampling rate from device tree */
-> +       rc = cc_trng_parse_sampling_ratio(drvdata);
-> +       if (rc) {
-> +               dev_err(dev, "Failed to get legal sampling ratio for rosc\n");
-> +               return rc;
-> +       }
-> +
-> +       rc = cc_trng_clk_init(drvdata);
-> +       if (rc) {
-> +               dev_err(dev, "cc_trng_clk_init failed\n");
-> +               return rc;
-> +       }
-> +
-> +       INIT_WORK(&drvdata->compwork, cc_trng_compwork_handler);
-> +       INIT_WORK(&drvdata->startwork, cc_trng_startwork_handler);
-> +       spin_lock_init(&drvdata->read_lock);
-> +
-> +       /* register the driver isr function */
-> +       rc = devm_request_irq(dev, irq, cc_isr, IRQF_SHARED, "cctrng", drvdata);
-
-Shoudn't this be done after clearing the pending interrupts below?
-
-> +       if (rc) {
-> +               dev_err(dev, "Could not register to interrupt %d\n", irq);
-> +               goto post_clk_err;
-> +       }
-> +       dev_dbg(dev, "Registered to IRQ: %d\n", irq);
-> +
-> +       /* Clear all pending interrupts */
-> +       val = cc_ioread(drvdata, CC_HOST_RGF_IRR_REG_OFFSET);
-> +       dev_dbg(dev, "IRR=0x%08X\n", val);
-> +       cc_iowrite(drvdata, CC_HOST_RGF_ICR_REG_OFFSET, val);
-
-The above accesses the engine's registers...
-
-> +
-> +       /* unmask HOST RNG interrupt */
-> +       cc_iowrite(drvdata, CC_HOST_RGF_IMR_REG_OFFSET,
-> +                  cc_ioread(drvdata, CC_HOST_RGF_IMR_REG_OFFSET) &
-> +                  ~CC_HOST_RNG_IRQ_MASK);
-> +
-> +       /* init PM */
-> +       rc = cc_trng_pm_init(drvdata);
-> +       if (rc) {
-> +               dev_err(dev, "cc_trng_pm_init failed\n");
-> +               goto post_clk_err;
-> +       }
-
-> +
-> +       /* increment device's usage counter */
-> +       rc = cc_trng_pm_get(dev);
-
-... but only here is Runtime PM initialized, and the device guaranteed
-to be powered.  If a device is accessed while powered down, this may
-lead to an asynchronous external abort, or a plain lockup.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/mips/include/asm/mach-loongson64/mc146818rtc.h b/arch/mips/include/asm/mach-loongson64/mc146818rtc.h
+deleted file mode 100644
+index ebdccfee50be..000000000000
+--- a/arch/mips/include/asm/mach-loongson64/mc146818rtc.h
++++ /dev/null
+@@ -1,36 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 1998, 2001, 03, 07 by Ralf Baechle (ralf@linux-mips.org)
+- *
+- * RTC routines for PC style attached Dallas chip.
+- */
+-#ifndef __ASM_MACH_LOONGSON64_MC146818RTC_H
+-#define __ASM_MACH_LOONGSON64_MC146818RTC_H
+-
+-#include <linux/io.h>
+-
+-#define RTC_PORT(x)	(0x70 + (x))
+-#define RTC_IRQ		8
+-
+-static inline unsigned char CMOS_READ(unsigned long addr)
+-{
+-	outb_p(addr, RTC_PORT(0));
+-	return inb_p(RTC_PORT(1));
+-}
+-
+-static inline void CMOS_WRITE(unsigned char data, unsigned long addr)
+-{
+-	outb_p(addr, RTC_PORT(0));
+-	outb_p(data, RTC_PORT(1));
+-}
+-
+-#define RTC_ALWAYS_BCD	0
+-
+-#ifndef mc146818_decode_year
+-#define mc146818_decode_year(year) ((year) < 70 ? (year) + 2000 : (year) + 1970)
+-#endif
+-
+-#endif /* __ASM_MACH_LOONGSON64_MC146818RTC_H */
+diff --git a/arch/mips/loongson64/Kconfig b/arch/mips/loongson64/Kconfig
+index 48b29c198acf..c386b8a3c753 100644
+--- a/arch/mips/loongson64/Kconfig
++++ b/arch/mips/loongson64/Kconfig
+@@ -14,8 +14,4 @@ config RS780_HPET
+ 	  If unsure, say Yes.
+ 
+ 
+-config LOONGSON_MC146818
+-	bool
+-	default n
+-
+ endif # MACH_LOONGSON64
+diff --git a/arch/mips/loongson64/Makefile b/arch/mips/loongson64/Makefile
+index b7f40b179c71..32b8c224852f 100644
+--- a/arch/mips/loongson64/Makefile
++++ b/arch/mips/loongson64/Makefile
+@@ -9,5 +9,4 @@ obj-$(CONFIG_SMP)	+= smp.o
+ obj-$(CONFIG_NUMA)	+= numa.o
+ obj-$(CONFIG_RS780_HPET) += hpet.o
+ obj-$(CONFIG_PCI) += pci.o
+-obj-$(CONFIG_LOONGSON_MC146818) += rtc.o
+ obj-$(CONFIG_SUSPEND) += pm.o
+diff --git a/arch/mips/loongson64/rtc.c b/arch/mips/loongson64/rtc.c
+deleted file mode 100644
+index 8d7628c0f513..000000000000
+--- a/arch/mips/loongson64/rtc.c
++++ /dev/null
+@@ -1,39 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- *  Lemote Fuloong platform support
+- *
+- *  Copyright(c) 2010 Arnaud Patard <apatard@mandriva.com>
+- */
+-
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/platform_device.h>
+-#include <linux/mc146818rtc.h>
+-
+-static struct resource loongson_rtc_resources[] = {
+-	{
+-		.start	= RTC_PORT(0),
+-		.end	= RTC_PORT(1),
+-		.flags	= IORESOURCE_IO,
+-	}, {
+-		.start	= RTC_IRQ,
+-		.end	= RTC_IRQ,
+-		.flags	= IORESOURCE_IRQ,
+-	}
+-};
+-
+-static struct platform_device loongson_rtc_device = {
+-	.name		= "rtc_cmos",
+-	.id		= -1,
+-	.resource	= loongson_rtc_resources,
+-	.num_resources	= ARRAY_SIZE(loongson_rtc_resources),
+-};
+-
+-
+-static int __init loongson_rtc_platform_init(void)
+-{
+-	platform_device_register(&loongson_rtc_device);
+-	return 0;
+-}
+-
+-device_initcall(loongson_rtc_platform_init);
+diff --git a/arch/mips/loongson64/time.c b/arch/mips/loongson64/time.c
+index 1245f22cec84..91e842b58365 100644
+--- a/arch/mips/loongson64/time.c
++++ b/arch/mips/loongson64/time.c
+@@ -6,7 +6,7 @@
+  * Copyright (C) 2009 Lemote Inc.
+  * Author: Wu Zhangjin, wuzhangjin@gmail.com
+  */
+-#include <asm/mc146818-time.h>
++
+ #include <asm/time.h>
+ #include <asm/hpet.h>
+ 
+@@ -21,9 +21,3 @@ void __init plat_time_init(void)
+ 	setup_hpet_timer();
+ #endif
+ }
+-
+-void read_persistent_clock64(struct timespec64 *ts)
+-{
+-	ts->tv_sec = mc146818_get_cmos_time();
+-	ts->tv_nsec = 0;
+-}
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.0.rc2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
