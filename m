@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C404F1B0BE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D041B0BFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgDTM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:59:26 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:54075 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728078AbgDTM7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:59:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 0B0C52F2;
-        Mon, 20 Apr 2020 08:59:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 Apr 2020 08:59:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=Z4Tx++3ZiTnOn+3/RNXgeV13mzY
-        czYnd6hnaCAv6DxU=; b=t/XOmMYQJv7YFcnsTVIYHEhbPvHuvMrvIfpfUglv4yC
-        pWRgDVBdxfzJQvjsLV3/ksnCZuLGab+iKs3XRDR5Wf1hrdrZ88Dfqh0SkXBFyZ7b
-        WNVVbJyvnA7CQQSjuif+8TL1QyCy1B0RSEFakcGubek2nG4RhqfNd3BbBURm2ghI
-        3P7jcJZhpc9zMe3fLpD4Up6dqujQuCXg1Kru3v+GonZ+rrj4PIMTVLXJ7DLUqAEh
-        85boYT4Jx2Ohe/zEr6luqckz5gDU9cy2ZrAnExq5bl3Wd4j6tES3mvR17EHPCM6T
-        svYYepcg4yI2CEbyhv92+LhlwtPUke+gJT52TRzEo/Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Z4Tx++
-        3ZiTnOn+3/RNXgeV13mzYczYnd6hnaCAv6DxU=; b=OdaLG8aCJmXh7rG4CSRUqF
-        4FiigsUn6otSH2vWMkFc3CpVemP3dEXEWL0I1QywaZdTOpNnFnYqDeBqN11fJG1o
-        smoQJpBGP0A8GzHLwhRNJ7XNNdycXXHoyTPwNOh3FuHK+u9UlhKcI8fi9T7SM7zV
-        Se39pa61EkaACX5uO1ggA0+WIwOybGH9kH9BWZtpBh9XSrUaWZvNbp7ViE9nCRNo
-        wsneUcvbVXTq2Nzb5QByxvmUbI6tRLKVy5IpluocEtPbVOPPUWdImDhhzPoxPYk5
-        H5rNF/zJ3x6uw3+L4hNBeG35HXYmQWi+RkgY0sknv+G2Khr1KwdpK2hyDrJnxwlw
-        ==
-X-ME-Sender: <xms:qZydXkWOP9VFnj_bMXgrmtEhJk5Yxl6WycU11XNhdDyXkH1vEgdnNA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdehkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:qZydXs2GooQrliKtdJGCuEaQlJe6YIXOVxqh8NP2GgxkxH-C9wPiKw>
-    <xmx:qZydXjaA9koIQRTh0YItL0TdRxY7pbBKFhtm_hxVx_qmi89LcDfw7w>
-    <xmx:qZydXnok7HbV5kG-bom49qpFyTDPsN0jpV5A-t-B-YJGBsNgq_Lvxw>
-    <xmx:qZydXhnAID3tdIYtMuaKHVCA1Y7TScwjZCevTJjvL_5OEtOnmGkwaQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CB79C3065C16;
-        Mon, 20 Apr 2020 08:59:20 -0400 (EDT)
-Date:   Mon, 20 Apr 2020 14:59:19 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Priit Laes <plaes@plaes.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 4/4] ARM: dts: sun7i: Use syscon-based implementation for
- gmac
-Message-ID: <20200420125919.3bqosps7nzwvmasn@gilmour.lan>
-References: <20200417221730.555954-1-plaes@plaes.org>
- <20200417221730.555954-5-plaes@plaes.org>
+        id S1728914AbgDTNAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:00:00 -0400
+Received: from mail-bn8nam11on2090.outbound.protection.outlook.com ([40.107.236.90]:17453
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727997AbgDTM74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:59:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MJgm8ByAeavVY2C1Z5e1lNqv436U0EzkBoOHlRAa9ZsOYJLdxJZPOlvN76iLGm73xOuQD2kzXszY/LuvReboQ9+IdFkDth/kiDhIbGRFolV04fIlAcMRxkqjQ0N0ZLI5uQ9IolbPCzUXkkCaZSNc6a6EbGKuitr082IEXuLJpyi+OFArwcJUhPoFUqn04OI8uwLVf53MFx4iuB7bsPQ8fy3Y0QPl9v0M5E7tx9D4XpCilt4i3E+SLZOmq0cXdmMK7pUzPUdFluZ13lVAZ/h/jQfS2V+0zj5QIx4LF2ghbD8tMZYjvgLvdnLyVfkLBUqSA37KefIu8gwLaTne0afpDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pNUTpXLxVw22FrPqKSdiBc2LEeXXyz9zkZeq/OEZbCM=;
+ b=oZkU0rzaETvw5wWwGzBMLgtWBgLLRiHnFdMZTlqdnIrNZlzqPTWzyeJ2gP63B2uRjfqFOp9lxsU4/glWLeTk20FvOxFpLCeytqJ2krTDYwPBcXkxeo1akk7YtAZUsvDVVZDQA6LcCGsFVcbwNfTj4vASf0lGZ1/29VsCQF8yCvEg6Kf5SxBb1xVfxlxz8X++PENbNcsSHXuojUp2GkfrgnxvwiXz/dqyOtGz/ccM5foeZdqptCQ2VmkZlGUxeP4fkOg5GonchHDhfeke4WVj5GBQ6aVTphupHEZ8vkTsf/1Rvr8HNPnYsQqNKbBl35zQ5bp/wn4LZr1Nj/iLv5Brgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pNUTpXLxVw22FrPqKSdiBc2LEeXXyz9zkZeq/OEZbCM=;
+ b=Nj1piSFnTTPg+xlSVptaDBeilZK7ot1hLnQwnkpapMEmhEmsbectFZwcPXGf9Q39mptl5G235ttGTiC7pERO1p/+M91dIftO52xtYPZXTDBWwlupJk57ARKGJQCj7+Nk0+LI7mPl2OXRlY6XqBu08hot01OL3G6r0LRosi5Uo5o=
+Received: from CH2PR13MB3398.namprd13.prod.outlook.com (2603:10b6:610:2a::33)
+ by CH2PR13MB3496.namprd13.prod.outlook.com (2603:10b6:610:2a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.6; Mon, 20 Apr
+ 2020 12:59:52 +0000
+Received: from CH2PR13MB3398.namprd13.prod.outlook.com
+ ([fe80::49f6:ce9b:9803:2493]) by CH2PR13MB3398.namprd13.prod.outlook.com
+ ([fe80::49f6:ce9b:9803:2493%6]) with mapi id 15.20.2937.011; Mon, 20 Apr 2020
+ 12:59:52 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "akpm@osdl.org" <akpm@osdl.org>,
+        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "agruenba@redhat.com" <agruenba@redhat.com>,
+        "okir@suse.de" <okir@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
+        "kjlu@umn.edu" <kjlu@umn.edu>
+Subject: Re: [PATCH] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
+Thread-Topic: [PATCH] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
+Thread-Index: AQHWFta2cwgyqFk5TU+ydXFUjCaulaiB7LGAgAAKgYCAAAJHAA==
+Date:   Mon, 20 Apr 2020 12:59:52 +0000
+Message-ID: <52a445020247f4dbe810ce757e48cd563a69c4ce.camel@hammerspace.com>
+References: <1587361410-83560-1-git-send-email-xiyuyang19@fudan.edu.cn>
+         <7b95f2ac1e65635dcb160ca20e798d95b7503e49.camel@hammerspace.com>
+         <20200420125141.18002-1-agruenba@redhat.com>
+In-Reply-To: <20200420125141.18002-1-agruenba@redhat.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=trondmy@hammerspace.com; 
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 32783e68-6fe2-4122-0752-08d7e52ab75e
+x-ms-traffictypediagnostic: CH2PR13MB3496:
+x-microsoft-antispam-prvs: <CH2PR13MB34960FA97851C6A5238CD96CB8D40@CH2PR13MB3496.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:792;
+x-forefront-prvs: 03793408BA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3398.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39830400003)(346002)(136003)(366004)(396003)(71200400001)(186003)(2616005)(7416002)(6512007)(81156014)(4326008)(6486002)(8936002)(8676002)(36756003)(5660300002)(76116006)(91956017)(66946007)(54906003)(110136005)(316002)(6506007)(86362001)(2906002)(66476007)(478600001)(64756008)(66556008)(66446008)(26005);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: hammerspace.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B8nSvac+na1QkqszUFa6Qa3xE3ACQnh+Gs6eZvpwxXlyA/NW1uwr8XtgF2gfyafYKtZ2j8jWJwbS4g8tJ6qq0ErQues41A1mIFGMGpS0e+BAj32H1kkM2FVcxILuwKYNaKRg8MPbinx4+gQlMCh4LqB3SAovcwkJ1K4tKmg0g2AagzFHRE+uqytrg5jp4C9/iJ2XMk8BRMnmP2ttC+BkIQlJJtDQmJi6jb+GXt+GJ1xfW6T/45seNw0HWOKFB8whMYYgOwq9EGM9v9ZMOln5EbabW+oMVK6l8vkSAROH52Hpvnca/IqeN0bvHS6qlXcfCzVFSWQL7kotWmNxT6QOKpL65sZQlIfF+uYx9eCraka/lrBIHw9EM3Yi4jvfbGwKbHPQy82HuWnJiZ1sQBlWEBI2pC+k+GUuHJcCCxpudUyP5OdpFXd3Rnm6YEMjcl8J
+x-ms-exchange-antispam-messagedata: gDOFA2djVuqIgOysl7JAqAP8HhAZMXyIvgofepCbluxS7tRI40oP+IzmuDmInRDEKplkls19h3SpweRdpA4b/YQ383fy/KZt3h9rhxo3CcCY/tmRoO+vBsQ/Fi4enYUXejIuemUWzBEhBxbD49DpJOkd9wlel6Sz3d9C/hhM6uZV/9mx3Y+i0nc9ZI0UtKDYxPZqf7VBtplh84JWc+NOrTGlbIS81BoJRiZr/AbNkLReQoYdwfO/qbTmdu3kKD+NSaRETMn07X98ccAhPObQgEo2OG5MoO6qs7AEG1tYMVCwJU4pbWTQ7e973d0K8n/gsfI/i3Nx2VAhIvh6yiZYW+qBEqA1Poc45H7jcH9lFwSLJwnVRTtMkxLtUBwlNW3Ns1PNaYkqUf3M8++N3Mgp+B+4Qn/AJ+HPSvrpZqrK2N4kj1RWD2rBmNTsalu1p1quqoxtHH9NZCiBsALSp6jntDuJnd30aERXiK8wjwYdi1AB/9Pne8wsxwmFNhw9+FeVu/D4eU9jtaztMqCN4smwhDR5FI8nb8mLyu4h6BIX1aiGnZsI3PXAqm2R/NLKJ815ln2oszc4ZxmtGxGWA/sP4wFsAh6ZnbOgqJQYkcWoMga+ZEM22OseKwhBBgyxo6TwbJ3q+6J/FWFqZLNLShJ82mAjErYQH0tqTCbVJSm9L4j/nSDRm34BBMB4UVoElZ4VOu4b0jHdIp5kMURDU8d6E6iH0OLd8Gc0ka7VT+grJ3c6sinCWpavIH/N6LzQFXbJ6fFhdUDIAKh/zgCQNsnlyWvuIerNA1PBa1j+Sjhdato=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C692E65B68AA0E41952FAE2CB5F81E23@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lxwfdky4v247xqnt"
-Content-Disposition: inline
-In-Reply-To: <20200417221730.555954-5-plaes@plaes.org>
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32783e68-6fe2-4122-0752-08d7e52ab75e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2020 12:59:52.2545
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bJHnrFY4AqSHMU+yMHgsnxKxbcaGuDLhEphM2cfKf+FGOkALzb/q7BZX+YSG0GbHyJwv1uRpbcxrgcKozU2NWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3496
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---lxwfdky4v247xqnt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Apr 18, 2020 at 01:17:30AM +0300, Priit Laes wrote:
-> Use syscon-based approach to access gmac clock configuration
-> register, instead of relying on a custom clock driver.
->=20
-> As a bonus, we can now drop the custom clock implementation
-> and dummy clocks making sun7i fully CCU-compatible.
->=20
-> Signed-off-by: Priit Laes <plaes@plaes.org>
-> ---
->  arch/arm/boot/dts/sun7i-a20.dtsi | 36 +++-----------------------------
->  1 file changed, 3 insertions(+), 33 deletions(-)
->=20
-> diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a=
-20.dtsi
-> index ffe1d10a1a84..750962a94fad 100644
-> --- a/arch/arm/boot/dts/sun7i-a20.dtsi
-> +++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-> @@ -219,37 +219,6 @@ osc32k: clk-32k {
->  			clock-frequency =3D <32768>;
->  			clock-output-names =3D "osc32k";
->  		};
-> -
-> -		/*
-> -		 * The following two are dummy clocks, placeholders
-> -		 * used in the gmac_tx clock. The gmac driver will
-> -		 * choose one parent depending on the PHY interface
-> -		 * mode, using clk_set_rate auto-reparenting.
-> -		 *
-> -		 * The actual TX clock rate is not controlled by the
-> -		 * gmac_tx clock.
-> -		 */
-> -		mii_phy_tx_clk: clk-mii-phy-tx {
-> -			#clock-cells =3D <0>;
-> -			compatible =3D "fixed-clock";
-> -			clock-frequency =3D <25000000>;
-> -			clock-output-names =3D "mii_phy_tx";
-> -		};
-> -
-> -		gmac_int_tx_clk: clk-gmac-int-tx {
-> -			#clock-cells =3D <0>;
-> -			compatible =3D "fixed-clock";
-> -			clock-frequency =3D <125000000>;
-> -			clock-output-names =3D "gmac_int_tx";
-> -		};
-> -
-> -		gmac_tx_clk: clk@1c20164 {
-> -			#clock-cells =3D <0>;
-> -			compatible =3D "allwinner,sun7i-a20-gmac-clk";
-> -			reg =3D <0x01c20164 0x4>;
-> -			clocks =3D <&mii_phy_tx_clk>, <&gmac_int_tx_clk>;
-> -			clock-output-names =3D "gmac_tx";
-> -		};
->  	};
-> =20
-> =20
-> @@ -1511,11 +1480,12 @@ mali: gpu@1c40000 {
-> =20
->  		gmac: ethernet@1c50000 {
->  			compatible =3D "allwinner,sun7i-a20-gmac";
-> +			syscon =3D <&ccu>;
->  			reg =3D <0x01c50000 0x10000>;
->  			interrupts =3D <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
->  			interrupt-names =3D "macirq";
-> -			clocks =3D <&ccu CLK_AHB_GMAC>, <&gmac_tx_clk>;
-> -			clock-names =3D "stmmaceth", "allwinner_gmac_tx";
-> +			clocks =3D <&ccu CLK_AHB_GMAC>;
-> +			clock-names =3D "stmmaceth";
-
-I guess you also need to update the binding so that it considers it valid?
-
-Maxime
-
---lxwfdky4v247xqnt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp2cpwAKCRDj7w1vZxhR
-xV8eAPwMjpw8ngiA7+PMTh3y1+0bYmvhl8gwYCzmS3VzAT3r4QEAhXCLgzR7Iy1z
-EImQYxxDHoP0F/irj6QPAyoSRxOrswc=
-=URSt
------END PGP SIGNATURE-----
-
---lxwfdky4v247xqnt--
+T24gTW9uLCAyMDIwLTA0LTIwIGF0IDE0OjUxICswMjAwLCBBbmRyZWFzIEdydWVuYmFjaGVyIHdy
+b3RlOg0KPiBBbSBNby4sIDIwLiBBcHIuIDIwMjAgdW0gMTQ6MTUgVWhyIHNjaHJpZWIgVHJvbmQg
+TXlrbGVidXN0IDwNCj4gdHJvbmRteUBoYW1tZXJzcGFjZS5jb20+Og0KPiA+IEkgZG9uJ3QgcmVh
+bGx5IHNlZSBhbnkgYWx0ZXJuYXRpdmUgdG8gYWRkaW5nIGEgJ2RmYWxsb2MnIHRvIHRyYWNrDQo+
+ID4gdGhlDQo+ID4gYWxsb2NhdGVkIGRmYWNsIHNlcGFyYXRlbHkuDQo+IA0KPiBTb21ldGhpbmcg
+bGlrZSB0aGUgYXR0YWNoZWQgcGF0Y2ggc2hvdWxkIHdvcmsgYXMgd2VsbC4NCj4gDQo+IFRoYW5r
+cywNCj4gQW5kcmVhcw0KPiANCj4gLS0tDQo+ICBmcy9uZnMvbmZzM2FjbC5jIHwgMzIgKysrKysr
+KysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNlcnRp
+b25zKCspLCAxNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9mcy9uZnMvbmZzM2Fj
+bC5jIGIvZnMvbmZzL25mczNhY2wuYw0KPiBpbmRleCBjNWMzZmM2ZTZjNjAuLmYxNTgxZjExYzIy
+MCAxMDA2NDQNCj4gLS0tIGEvZnMvbmZzL25mczNhY2wuYw0KPiArKysgYi9mcy9uZnMvbmZzM2Fj
+bC5jDQo+IEBAIC0yNTMsMzcgKzI1Myw0MSBAQCBpbnQgbmZzM19wcm9jX3NldGFjbHMoc3RydWN0
+IGlub2RlICppbm9kZSwNCj4gc3RydWN0IHBvc2l4X2FjbCAqYWNsLA0KPiAgDQo+ICBpbnQgbmZz
+M19zZXRfYWNsKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBwb3NpeF9hY2wgKmFjbCwgaW50
+DQo+IHR5cGUpDQo+ICB7DQo+IC0Jc3RydWN0IHBvc2l4X2FjbCAqYWxsb2MgPSBOVUxMLCAqZGZh
+Y2wgPSBOVUxMOw0KPiArCXN0cnVjdCBwb3NpeF9hY2wgKm9yaWcgPSBhY2wsICpkZmFjbCA9IE5V
+TEw7DQo+ICAJaW50IHN0YXR1czsNCj4gIA0KPiAgCWlmIChTX0lTRElSKGlub2RlLT5pX21vZGUp
+KSB7DQo+ICAJCXN3aXRjaCh0eXBlKSB7DQo+ICAJCWNhc2UgQUNMX1RZUEVfQUNDRVNTOg0KPiAt
+CQkJYWxsb2MgPSBkZmFjbCA9IGdldF9hY2woaW5vZGUsDQo+IEFDTF9UWVBFX0RFRkFVTFQpOw0K
+PiAtCQkJaWYgKElTX0VSUihhbGxvYykpDQo+IC0JCQkJZ290byBmYWlsOw0KPiArCQkJZGZhY2wg
+PSBnZXRfYWNsKGlub2RlLCBBQ0xfVFlQRV9ERUZBVUxUKTsNCj4gKwkJCXN0YXR1cyA9IFBUUl9F
+UlIoZGZhY2wpOw0KPiArCQkJaWYgKElTX0VSUihkZmFjbCkpDQo+ICsJCQkJZ290byBvdXQ7DQo+
+ICAJCQlicmVhazsNCj4gIA0KPiAgCQljYXNlIEFDTF9UWVBFX0RFRkFVTFQ6DQo+ICAJCQlkZmFj
+bCA9IGFjbDsNCj4gLQkJCWFsbG9jID0gYWNsID0gZ2V0X2FjbChpbm9kZSwgQUNMX1RZUEVfQUND
+RVNTKTsNCj4gLQkJCWlmIChJU19FUlIoYWxsb2MpKQ0KPiAtCQkJCWdvdG8gZmFpbDsNCj4gKwkJ
+CWFjbCA9IGdldF9hY2woaW5vZGUsIEFDTF9UWVBFX0FDQ0VTUyk7DQo+ICsJCQlzdGF0dXMgPSBQ
+VFJfRVJSKGFjbCk7DQo+ICsJCQlpZiAoSVNfRVJSKGFjbCkpDQo+ICsJCQkJZ290byBvdXQ7DQo+
+ICAJCQlicmVhazsNCj4gIAkJfQ0KPiAgCX0NCj4gIA0KPiAgCWlmIChhY2wgPT0gTlVMTCkgew0K
+PiAtCQlhbGxvYyA9IGFjbCA9IHBvc2l4X2FjbF9mcm9tX21vZGUoaW5vZGUtPmlfbW9kZSwNCj4g
+R0ZQX0tFUk5FTCk7DQo+IC0JCWlmIChJU19FUlIoYWxsb2MpKQ0KPiAtCQkJZ290byBmYWlsOw0K
+PiArCQlhY2wgPSBwb3NpeF9hY2xfZnJvbV9tb2RlKGlub2RlLT5pX21vZGUsIEdGUF9LRVJORUwp
+Ow0KPiArCQlzdGF0dXMgPSBQVFJfRVJSKGFjbCk7DQo+ICsJCWlmIChJU19FUlIoYWNsKSkNCj4g
+KwkJCWdvdG8gb3V0Ow0KPiAgCX0NCj4gIAlzdGF0dXMgPSBfX25mczNfcHJvY19zZXRhY2xzKGlu
+b2RlLCBhY2wsIGRmYWNsKTsNCj4gLQlwb3NpeF9hY2xfcmVsZWFzZShhbGxvYyk7DQo+ICtvdXQ6
+DQo+ICsJaWYgKGFjbCAhPSBvcmlnKQ0KPiArCQlwb3NpeF9hY2xfcmVsZWFzZShhY2wpOw0KPiAr
+CWlmIChkZmFjbCAhPSBvcmlnKQ0KPiArCQlwb3NpeF9hY2xfcmVsZWFzZShkZmFjbCk7DQo+ICAJ
+cmV0dXJuIHN0YXR1czsNCj4gLQ0KPiAtZmFpbDoNCj4gLQlyZXR1cm4gUFRSX0VSUihhbGxvYyk7
+DQo+ICB9DQo+ICANCj4gIGNvbnN0IHN0cnVjdCB4YXR0cl9oYW5kbGVyICpuZnMzX3hhdHRyX2hh
+bmRsZXJzW10gPSB7DQo+IA0KPiBiYXNlLWNvbW1pdDogYWU4M2QwYjQxNmRiMDAyZmU5NTYwMWU3
+Zjk3ZjY0YjU5NTE0ZDkzNg0KDQpXZWxsLCB0aGF0IHNob3VsZCBPb3BzIHdoZW4gZWl0aGVyIElT
+X0VSUihhY2wpIG9yIElTX0VSUihkZmFjbCkNCnRyaWdnZXJzLCBzaG91bGRuJ3QgaXQ/IPCfmYIN
+Cg0KLS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFt
+bWVyc3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
