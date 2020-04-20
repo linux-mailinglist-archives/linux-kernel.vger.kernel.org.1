@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166DF1B04FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1B61B0516
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgDTI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:59:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52234 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725959AbgDTI67 (ORCPT
+        id S1726469AbgDTJAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:00:13 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1986 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725994AbgDTI7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:58:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587373137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bz93CG5tgmLS8pJDkO23pSfLYauBKXmOP1VWfhP+LYw=;
-        b=aQxT1hRtQGyPIMj2Pfy8IFUnex+XVkj6ZCx0kaPk690G4TUyFGbuOXpuZc/sofBPJa9YHa
-        r4+CWUV0wbUEcEOooOni9hJ3oshgm1i4g2zHO3wDPs+oPZTuqV09THa3VFKc1iGAFq0sNP
-        Fo1fNyPjVAbJdP6948FXk9K8Dyta/sU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-TtXea8YEM1Wt7GgfmbBbvQ-1; Mon, 20 Apr 2020 04:58:52 -0400
-X-MC-Unique: TtXea8YEM1Wt7GgfmbBbvQ-1
-Received: by mail-qv1-f69.google.com with SMTP id dc4so9541438qvb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:58:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bz93CG5tgmLS8pJDkO23pSfLYauBKXmOP1VWfhP+LYw=;
-        b=RcPAG7VV/lnodCS25kolo+s8Ik5dG3WTT+CznIwzHbtNXGbiTRxnABKX5FlVLnHCWw
-         W2LIgwnWkwb0l57eQb5OkSjg/JKG7OU9Aks1HM+zSaR9wwz62itcejVh0BsMl9SqtCB7
-         BFjZAFPGfnX3aE5LH0/QXwwhh/C6JnWufb5dGzp3NgKYIoe+0chEAjHB1WIOKNLw/q9T
-         eNwE8FwiPucaLbohVUVce8c6z8vK20Kvn061HE884P76j7kdV2YR4O66BjBLmuVFAeKo
-         dU8GbX2Gw3zaCADNy83BRuWU9AqIkn+VggYicmQyhsojFrWAJcmJYJ5pQtqVAxya5Od2
-         qsUA==
-X-Gm-Message-State: AGi0PubYoi3VBak9oUe95NizNz/WakwqHtrXjl1XaXOyxt/Q6ctvvJtX
-        al9J8XoOGb+wAey4sGT4lkhZ58Wty5XfwKAuRiHMUjWQY3vfTwJSx4m1Uww4GbPaex2Q9KvN+bO
-        ONGteolLJ3HOGDr5zlsy5puLgoguY4FdHXnpw37cU
-X-Received: by 2002:ae9:ed92:: with SMTP id c140mr8007661qkg.29.1587373131729;
-        Mon, 20 Apr 2020 01:58:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIjRvIlDDg57MantknXiQ5Jwc+acww2bCZ5DeZC+XsS6aRa5FxXy575F8K7vkHScc9X0dsku5X4PlBNJJp3zz0=
-X-Received: by 2002:ae9:ed92:: with SMTP id c140mr8007648qkg.29.1587373131491;
- Mon, 20 Apr 2020 01:58:51 -0700 (PDT)
+        Mon, 20 Apr 2020 04:59:54 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03K8sD9j003373;
+        Mon, 20 Apr 2020 10:59:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=eJoZbHi/I6MY38k32qFAxyb0cVPXzFRkdeC8iLkMElA=;
+ b=kyn4copkXqQLxXx9YX8xvUqmi0n4zjrv7lNa7I+ynYkdF24V8WOR2EgCLkVY8slp2okH
+ NUQejmQhM1A0GYsvZFmeGDdWey04hxq+YuDg6N6KMth+zUh7jd+CDBVw9XgnFlGaFS2l
+ StEbPXF2hUwp7PY2HlecKPSPKOmaRNyIPGpbiRFhuv8ZOyo3kQSFk5ZJjwvTpnZrJBXU
+ aR8xdcxNT5Nb+m3PGzp8aZIHERTzHyPam5QhjekOwVa8iU4oaoeBytgk8ozaEQ/1NhhK
+ RlbMkpJumWHw5yLbnouXB0eCp6qZUsg0X4x2LtNXXJkRrGIaPBwRG+ZOpzkVOryP+CHF ww== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fpp8hdhn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 10:59:36 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF763100039;
+        Mon, 20 Apr 2020 10:59:34 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7AD9B2BC7DA;
+        Mon, 20 Apr 2020 10:59:34 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 20 Apr 2020 10:59:33
+ +0200
+From:   Benjamin Gaignard <benjamin.gaignard@st.com>
+To:     <fabrice.gasnier@st.com>, <lee.jones@linaro.org>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: [RESEND v6 0/6] clockevent: add low power STM32 timer
+Date:   Mon, 20 Apr 2020 10:59:24 +0200
+Message-ID: <20200420085930.26989-1-benjamin.gaignard@st.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-References: <20200416143532.11743-1-mszeredi@redhat.com> <c47459a5-3323-121e-ec66-4a8eb2a8afca@samba.org>
- <CAOssrKe7RNyReAFLoQGBDm79qMdXEubhP5QhG_+UmGZXgeXBkA@mail.gmail.com> <3dce8811-a54e-1f74-c7ed-715b97a4652c@samba.org>
-In-Reply-To: <3dce8811-a54e-1f74-c7ed-715b97a4652c@samba.org>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Mon, 20 Apr 2020 10:58:40 +0200
-Message-ID: <CAOssrKcVddL5URQ0Vy79eQOscqTTK115Ro0Eqe8Q9kdkNJspCg@mail.gmail.com>
-Subject: Re: [PATCH] vfs: add faccessat2 syscall
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE3.st.com
+ (10.75.127.9)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_03:2020-04-17,2020-04-20 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 10:23 PM Stefan Metzmacher <metze@samba.org> wrote:
->
-> Am 18.04.20 um 21:00 schrieb Miklos Szeredi:
-> > On Sat, Apr 18, 2020 at 8:36 PM Stefan Metzmacher <metze@samba.org> wrote:
-> >>
-> >> Hi Miklos,
-> >>
-> >>> POSIX defines faccessat() as having a fourth "flags" argument, while the
-> >>> linux syscall doesn't have it.  Glibc tries to emulate AT_EACCESS and
-> >>> AT_SYMLINK_NOFOLLOW, but AT_EACCESS emulation is broken.
-> >>>
-> >>> Add a new faccessat(2) syscall with the added flags argument and implement
-> >>> both flags.
-> >>>
-> >>> The value of AT_EACCESS is defined in glibc headers to be the same as
-> >>> AT_REMOVEDIR.  Use this value for the kernel interface as well, together
-> >>> with the explanatory comment.
-> >>
-> >> It would be nice if resolv_flags would also be passed in addition to the
-> >> at flags.
-> >> See:https://lore.kernel.org/linux-api/CAHk-=wiaL6zznNtCHKg6+MJuCqDxO=yVfms3qR9A0czjKuSSiA@mail.gmail.com/
-> >>
-> >> We should avoid expecting yet another syscall in near future.
-> >
-> > What is the objection against
-> >
-> > openat(... O_PATH)
-> > foobarat(fd, AT_EMPTY_PATH, ...)
->
-> openat2(), foobarat(), close() are 3 syscalls vs. just one.
+This series add low power timer as boadcast clockevent device.
+Low power timer could runs even when CPUs are in idle mode and 
+could wakeup them.
 
-That's not a good argument.  We could have a million specialized
-syscalls that all do very useful things.  Except it would be a
-nightmare in terms of maintenance...
+Lee has acked the MFD part and Rob as reviewed the bindings.
+Clocksource driver still need to be reviewed by maintainers.
 
-"do one thing and do it well"
+version 6:
+- simplify binding, DT and code to use only one interrupt
 
-> As we have the new features available, I think it would be
-> good to expose them to userspace for all new syscalls, so
-> that applications can avoid boiler plate stuff around each syscall
-> and get better performance in a world where context switches are not for
-> free.
+version 5:
+- document interrupts and interrupt-names bindings
+- use a different wake up interrupt
+- add device-tree patch
+- make STM32MP157 select low power timer configuration flag
+- enable fast_io in regmap configuration
 
-The io-uring guys are working on that problem, AFAIK.
+version 4:
+- move defines in mfd/stm32-lptimer.h
+- change compatible and subnode names
+- document wakeup-source property
+- reword commit message
+- make driver Kconfig depends of MFD_STM32_LPTIMER
+- remove useless include
+- remove rate and clk fields from the private structure
+- to add comments about the registers sequence in stm32_clkevent_lp_set_timer
+- rework probe function and use devm_request_irq()
+- do not allow module to be removed
 
-Thanks,
-Miklos
+version 3:
+- fix timer set sequence
+- don't forget to free irq on remove function
+- use devm_kzalloc to simplify errors handling in probe function
+
+version 2:
+- stm32 clkevent driver is now a child of the stm32 lp timer node
+- add a probe function and adpat the driver to use regmap provide
+  by it parent
+- stop using timer_of helpers
+
+Benjamin Gaignard (6):
+  dt-bindings: mfd: Document STM32 low power timer bindings
+  ARM: dts: stm32: Add timer subnodes on stm32mp15 SoCs
+  mfd: stm32: Add defines to be used for clkevent purpose
+  mfd: stm32: enable regmap fast_io for stm32-lptimer
+  clocksource: Add Low Power STM32 timers driver
+  ARM: mach-stm32: select low power timer for STM32MP157
+
+ .../devicetree/bindings/mfd/st,stm32-lptimer.yaml  |  19 ++
+ arch/arm/boot/dts/stm32mp151.dtsi                  |  35 ++++
+ arch/arm/mach-stm32/Kconfig                        |   1 +
+ drivers/clocksource/Kconfig                        |   4 +
+ drivers/clocksource/Makefile                       |   1 +
+ drivers/clocksource/timer-stm32-lp.c               | 221 +++++++++++++++++++++
+ drivers/mfd/stm32-lptimer.c                        |   1 +
+ include/linux/mfd/stm32-lptimer.h                  |   5 +
+ 8 files changed, 287 insertions(+)
+ create mode 100644 drivers/clocksource/timer-stm32-lp.c
+
+-- 
+2.15.0
 
