@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316431B0D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E843D1B0D15
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgDTNq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:46:57 -0400
-Received: from vultr.net.flygoat.com ([149.28.68.211]:59124 "EHLO
-        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbgDTNq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:46:56 -0400
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id DAEAF20CDC;
-        Mon, 20 Apr 2020 13:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1587390416; bh=nCAhVn2ma9z8r8dWxnzAROBI/Q4gJteYeVtwI1Vc6vc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJxFOh2EDvaxPBm7aU2KZJuJeqI+XsTgBv/gsCc24ctcMiVi3FDtCN8+ZiuPF3o54
-         OLGjhjRgCy5aDMABnqp1+wnfKr2g7Twn9kSeQPouMHGDxnHczqCIIjaWfDUU7ox8fZ
-         G2uuhVlRCFHjmQj6L7uKOwOu31JfKtOcnumBc90nD0lizLRx9CwzwN4/JCSY84WKIr
-         jzbqjoTzNQTKGsjU3MjoryhL5zSbPSIeXzVJm7nvXyX84mk165dAGm6bbOc63G5Wv2
-         AQWWUAh/BJrAIfwZc+t1peCbw76rtfC1HSiWYLYPE5Pyy4zjFQ9TnH239uPdOs1Z/4
-         roF8KwAjL1wlQ==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] MIPS: Loongson64: Mark RS780 HPET as broken
-Date:   Mon, 20 Apr 2020 21:45:29 +0800
-Message-Id: <20200420134536.210475-5-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200420134536.210475-1-jiaxun.yang@flygoat.com>
-References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
- <20200420134536.210475-1-jiaxun.yang@flygoat.com>
+        id S1728428AbgDTNqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:46:11 -0400
+Received: from mga17.intel.com ([192.55.52.151]:2419 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgDTNqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 09:46:10 -0400
+IronPort-SDR: aetgUe4Rqc1vqtAFF1LKm3PYmrR0/PJuvDqQBQaS+0eHy1mGAmxMDgGj3nkLyzcsoL2GwD9kNh
+ i/9hxBJxvfzg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 06:46:09 -0700
+IronPort-SDR: 1YErZVp17AT81ueYfmLyxl8OVkXE568E5vDmzNW6ZfxrwHXYz/y0+7gGoYzB8XPKixV/CxDvPh
+ FOz+2/DC8oAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; 
+   d="scan'208";a="333930677"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga001.jf.intel.com with ESMTP; 20 Apr 2020 06:46:07 -0700
+Subject: Re: linux-next: Tree for Apr 17 (mmc/host/sdhci-of-at91.c)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ludovic Desroches <ludovic.desroches@atmel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+References: <20200417145017.3932443d@canb.auug.org.au>
+ <995a958c-15a1-cb05-e276-065c7f6e57fd@infradead.org>
+ <CAPDyKFqE7zfaKSbpBoBbrSCEnx+70dOrWs+=QG_x2G-Fpt6=ng@mail.gmail.com>
+ <ce11a0b5-22a6-dd18-f858-5d30f43e1128@intel.com>
+ <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <60d26835-245f-9f47-3027-39710d28db74@intel.com>
+Date:   Mon, 20 Apr 2020 16:45:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is using some dangerous hack to set MMIO address for HPET,
-which might break systems with other kinds of PCH.
+On 20/04/20 3:27 pm, Masahiro Yamada wrote:
+> On Mon, Apr 20, 2020 at 7:28 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 20/04/20 12:12 pm, Ulf Hansson wrote:
+>>> + Masahiro Yamada, Adrian Hunter
+>>>
+>>> On Fri, 17 Apr 2020 at 16:48, Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>
+>>>> On 4/16/20 9:50 PM, Stephen Rothwell wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> Changes since 20200416:
+>>>>>
+>>>>
+>>>> on i386:
+>>>>
+>>>>   CC      drivers/mmc/host/sdhci-of-at91.o
+>>>> In file included from ../include/linux/build_bug.h:5:0,
+>>>>                  from ../include/linux/bitfield.h:10,
+>>>>                  from ../drivers/mmc/host/sdhci-of-at91.c:9:
+>>>> ../drivers/mmc/host/sdhci-of-at91.c: In function ‘sdhci_at91_set_clks_presets’:
+>>>> ../include/linux/compiler.h:394:38: error: call to ‘__compiletime_assert_63’ declared with attribute error: FIELD_PREP: value too large for the field
+>>>>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>>                                       ^
+>>>> ../include/linux/compiler.h:375:4: note: in definition of macro ‘__compiletime_assert’
+>>>>     prefix ## suffix();    \
+>>>>     ^~~~~~
+>>>> ../include/linux/compiler.h:394:2: note: in expansion of macro ‘_compiletime_assert’
+>>>>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>>   ^~~~~~~~~~~~~~~~~~~
+>>>> ../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+>>>>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>>>>                                      ^~~~~~~~~~~~~~~~~~
+>>>> ../include/linux/bitfield.h:49:3: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+>>>>    BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?  \
+>>>>    ^~~~~~~~~~~~~~~~
+>>>> ../include/linux/bitfield.h:94:3: note: in expansion of macro ‘__BF_FIELD_CHECK’
+>>>>    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
+>>>>    ^~~~~~~~~~~~~~~~
+>>>> ../drivers/mmc/host/sdhci-of-at91.c:185:11: note: in expansion of macro ‘FIELD_PREP’
+>>>>   caps1 |= FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
+>>
+>> My guess is the compiler has decided clk_mul is constant (probably (unsigned
+>> int)-1) because there is no CONFIG_COMMON_CLK i.e. clk_get_rate() is 0
+>>
+>> So maybe add to config MMC_SDHCI_OF_AT91
+>>
+>>         depends on COMMON_CLK
+>>
+>>>>            ^~~~~~~~~~
+> 
+> 
+> 
+> I checked include/linux/clk.h
+> 
+> 
+> clk_get_rate() is guarded by CONFIG_HAVE_CLK.
+> 
+> I think
+> 
+>     depends on HAVE_CLK
 
-Also, as Loongson-3 cpufreq driver never appeared in mainline,
-this driver rarely got used.
-
-So we temporarily mark it as broken until we find a better solution.
-
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/loongson64/Kconfig | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/arch/mips/loongson64/Kconfig b/arch/mips/loongson64/Kconfig
-index c386b8a3c753..517f1f8e81fb 100644
---- a/arch/mips/loongson64/Kconfig
-+++ b/arch/mips/loongson64/Kconfig
-@@ -4,14 +4,12 @@ if MACH_LOONGSON64
- config RS780_HPET
- 	bool "RS780/SBX00 HPET Timer"
- 	depends on MACH_LOONGSON64
-+	depends on BROKEN
- 	select MIPS_EXTERNAL_TIMER
- 	help
- 	  This option enables the hpet timer of AMD RS780/SBX00.
- 
--	  If you want to enable the Loongson3 CPUFreq Driver, Please enable
--	  this option at first, otherwise, You will get wrong system time.
--
--	  If unsure, say Yes.
--
-+	  Note: This driver is doing some dangerous hack. Please only enable
-+	  it on RS780E systems.
- 
- endif # MACH_LOONGSON64
--- 
-2.26.0.rc2
-
+Okay
