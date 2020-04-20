@@ -2,300 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CDB1B1637
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53171B163D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgDTTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 15:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        id S1727985AbgDTTv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 15:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725897AbgDTTvI (ORCPT
+        by vger.kernel.org with ESMTP id S1726109AbgDTTv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 15:51:08 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0864BC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:51:08 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id h11so4331190plr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:51:07 -0700 (PDT)
+        Mon, 20 Apr 2020 15:51:56 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD576C061A0C;
+        Mon, 20 Apr 2020 12:51:56 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o10so2360354pgb.6;
+        Mon, 20 Apr 2020 12:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cXndO/9atMRBj3ki1OBgBAxeMbivxmBoqy5um/+TbH8=;
-        b=aKHshmB81P4jVzDuwe3k2sHJgUvtTm1Mcpd9HHn/+ZTXeDzs7LPgFHPinxZV33OTkh
-         pLup8x0WaJi7Rrvq6bARbjU8MnPvOUz5zJ3g9oxEkLBsKDGJqaVZWwXxnYq1LL6H1qil
-         tr81s68QkcTewzitq+PCd8ExjXkLEROJBeVCzKrIcaoq2OdEGEhcFOUG7KR85Pc97QDH
-         84FqeclwwQj8vxNGHVZBKGCtRCMAcAaDadYuUhNJrNdDxQ1EZqIJU2RtbsCz9PD6tmd1
-         qJWWGZ7TrLLUAGVfObzkBCWMqvO4NuJBKPEQiRHjO0zwiEkLg5DxUBkdmMsLmlKs479o
-         C9hg==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gfbJjm1Sf6mKMssI9xCaVtP/MJBYEDKbhSsjEdXyNZk=;
+        b=Xp4hOpmogasRFmoELwe1D0+DNzVSi1WH58/+nQEWWgmgvfwLPUa5byi2KqEDlWK4Ha
+         lQZQb/n1DKBhHjD5lH8F05w46QB3XK/+k2TVBPLtYXgaGld68ZpLvTWf5wauA6O78EB8
+         Oe6p4BDiqZXlnu1V7rVlyYHgkbaXt/xwVYCawZU1Shk4OANkAJKOBE6lKj+4WamDzLyP
+         tF8teYQCXA2q8s2lvWSB31RvzJxtopUJCcc8eiaxo9Y+R7k0gEovaVAVP+nMbpR8rXD1
+         7aIMtXsIMHnE+UCQWm7iYaMePq0AWTgfUiv5po+xVoIAh6xmh/VYCRqBjCPL1rlVIPQ1
+         ejHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cXndO/9atMRBj3ki1OBgBAxeMbivxmBoqy5um/+TbH8=;
-        b=Pg3K7Kar6mM+0RXvFkZEGNQeCp+dFR98tNWN+ZXxsucAY4L6WsTjDPDdqQrpS0H7Gi
-         xkqm/JRJOepfC3MoS1zV4qt5v7F03vTmklPcikOIeUad099g254P2h1XvnKlPC00+cqT
-         +23k/FQEWcu8tkmXsOZN2h9EKAuZ3GSJ6AXeIK1/tZkcd/tGxC4XVKktwG8b1gpLAMGZ
-         m8okWhy9hf2gBWL0/BXpIHfuPkZ6kMGjHVw0/sqdO2fjki5fZ2hgr04pMvopHXjTkDCG
-         aMhRCyzvkDCiHb7qaG3Iq/hI3NZ8LrAITNcLWTyE8AYeLUTViOB6e9K/wxjksjnt3qgp
-         qkAQ==
-X-Gm-Message-State: AGi0PuY7lT/Cz/U+3aCkqBSdihFO00DoYPk9Pmlebk7eZhTA4CLB6zkK
-        gNOS56tWWEIa0EG2WC+1EluxrA==
-X-Google-Smtp-Source: APiQypKiYnTS3YZu4PQkYRxyoy2DcBPSp/lxOL17ZNtEaP8IVuejdUpKA+GupS/4BaQVy3zMZNf0Xg==
-X-Received: by 2002:a17:902:7618:: with SMTP id k24mr8746327pll.71.1587412267357;
-        Mon, 20 Apr 2020 12:51:07 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id d8sm289923pfd.159.2020.04.20.12.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 12:51:06 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 12:51:30 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/9] Revert "drm/msm/a6xx: Use the DMA API for GMU memory
- objects"
-Message-ID: <20200420195130.GQ576963@builder.lan>
-References: <20200420140313.7263-1-jonathan@marek.ca>
- <20200420140313.7263-3-jonathan@marek.ca>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=gfbJjm1Sf6mKMssI9xCaVtP/MJBYEDKbhSsjEdXyNZk=;
+        b=bAp19XhigKUKBlktjafq+RXV7hDftRRiqfzNRPTmn7V4sI+LjEP5Jb1vwfY56T0+FN
+         4+x6hkEE1hSNiKZThHlmDKgx/O4OeN0NJHRej1EMK08wL2UbVPU9xKprD6iMUMtO/Tjn
+         E+yC9BR9MT7mrp19PpvCPHrOmshSeR+pIa1W1IhBJ1aCvjuE3sHzj85pzJp1KZKGPPc7
+         BflMuuxS81/8Sl9kaYhyH2KuwIRK+cbP7vkoxEC881vt+t73EzniWQkICEEzZxcBxsh+
+         I1Pe9epH5wDGwx1R7HZwAdPiJYPnCajpcQO7vBGoXRKHCgMMM4f/hnJgWuNy6CDzCETM
+         z0VQ==
+X-Gm-Message-State: AGi0Pua+JBV46/sfsXcrZ1vl61JGh5GlCFuCwKGcQrnfHtqVUpK2bg6R
+        0oPU6ZfmOeDkn2vjdavXSEw68CQt
+X-Google-Smtp-Source: APiQypLJC7QJM5+PKOQHeD2GkfQVvJK8WyZsqM02DgXbdKsRKfPkNmObVsvY4/BjO0WU9m17vk8deQ==
+X-Received: by 2002:a65:4c41:: with SMTP id l1mr18028512pgr.43.1587412316178;
+        Mon, 20 Apr 2020 12:51:56 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c15sm144605pgk.66.2020.04.20.12.51.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Apr 2020 12:51:55 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/40] 4.19.117-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+References: <20200420121444.178150063@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <8e489b3d-eb31-89d1-ec79-e89e3c30707e@roeck-us.net>
+Date:   Mon, 20 Apr 2020 12:51:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420140313.7263-3-jonathan@marek.ca>
+In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 20 Apr 07:03 PDT 2020, Jonathan Marek wrote:
-
-> This reverts commit a5fb8b918920c6f7706a8b5b8ea535a7f077a7f6.
-
-Why?
-
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 115 +++++++++++++++++++++++---
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.h |   6 +-
->  2 files changed, 107 insertions(+), 14 deletions(-)
+On 4/20/20 5:39 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.117 release.
+> There are 40 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index c4e71abbdd53..748cd379065f 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2017-2019 The Linux Foundation. All rights reserved. */
->  
->  #include <linux/clk.h>
-> -#include <linux/dma-mapping.h>
->  #include <linux/interconnect.h>
->  #include <linux/pm_domain.h>
->  #include <linux/pm_opp.h>
-> @@ -921,10 +920,21 @@ int a6xx_gmu_stop(struct a6xx_gpu *a6xx_gpu)
->  
->  static void a6xx_gmu_memory_free(struct a6xx_gmu *gmu, struct a6xx_gmu_bo *bo)
->  {
-> +	int count, i;
-> +	u64 iova;
-> +
->  	if (IS_ERR_OR_NULL(bo))
->  		return;
->  
-> -	dma_free_wc(gmu->dev, bo->size, bo->virt, bo->iova);
-> +	count = bo->size >> PAGE_SHIFT;
-> +	iova = bo->iova;
-> +
-> +	for (i = 0; i < count; i++, iova += PAGE_SIZE) {
-> +		iommu_unmap(gmu->domain, iova, PAGE_SIZE);
-> +		__free_pages(bo->pages[i], 0);
-> +	}
-> +
-> +	kfree(bo->pages);
->  	kfree(bo);
->  }
->  
-> @@ -932,6 +942,7 @@ static struct a6xx_gmu_bo *a6xx_gmu_memory_alloc(struct a6xx_gmu *gmu,
->  		size_t size)
->  {
->  	struct a6xx_gmu_bo *bo;
-> +	int ret, count, i;
->  
->  	bo = kzalloc(sizeof(*bo), GFP_KERNEL);
->  	if (!bo)
-> @@ -939,14 +950,86 @@ static struct a6xx_gmu_bo *a6xx_gmu_memory_alloc(struct a6xx_gmu *gmu,
->  
->  	bo->size = PAGE_ALIGN(size);
->  
-> -	bo->virt = dma_alloc_wc(gmu->dev, bo->size, &bo->iova, GFP_KERNEL);
-> +	count = bo->size >> PAGE_SHIFT;
->  
-> -	if (!bo->virt) {
-> +	bo->pages = kcalloc(count, sizeof(struct page *), GFP_KERNEL);
-> +	if (!bo->pages) {
->  		kfree(bo);
->  		return ERR_PTR(-ENOMEM);
->  	}
->  
-> +	for (i = 0; i < count; i++) {
-> +		bo->pages[i] = alloc_page(GFP_KERNEL);
-> +		if (!bo->pages[i])
-> +			goto err;
-> +	}
-> +
-> +	bo->iova = gmu->uncached_iova_base;
-> +
-> +	for (i = 0; i < count; i++) {
-> +		ret = iommu_map(gmu->domain,
-> +			bo->iova + (PAGE_SIZE * i),
-> +			page_to_phys(bo->pages[i]), PAGE_SIZE,
-> +			IOMMU_READ | IOMMU_WRITE);
-> +
-> +		if (ret) {
-> +			DRM_DEV_ERROR(gmu->dev, "Unable to map GMU buffer object\n");
-> +
-> +			for (i = i - 1 ; i >= 0; i--)
-> +				iommu_unmap(gmu->domain,
-> +					bo->iova + (PAGE_SIZE * i),
-> +					PAGE_SIZE);
-> +
-> +			goto err;
-> +		}
-> +	}
-> +
-> +	bo->virt = vmap(bo->pages, count, VM_IOREMAP,
-> +		pgprot_writecombine(PAGE_KERNEL));
-> +	if (!bo->virt)
-> +		goto err;
-> +
-> +	/* Align future IOVA addresses on 1MB boundaries */
-> +	gmu->uncached_iova_base += ALIGN(size, SZ_1M);
-> +
->  	return bo;
-> +
-> +err:
-> +	for (i = 0; i < count; i++) {
-> +		if (bo->pages[i])
-> +			__free_pages(bo->pages[i], 0);
-> +	}
-> +
-> +	kfree(bo->pages);
-> +	kfree(bo);
-> +
-> +	return ERR_PTR(-ENOMEM);
-> +}
-> +
-> +static int a6xx_gmu_memory_probe(struct a6xx_gmu *gmu)
-> +{
-> +	int ret;
-> +
-> +	/*
-> +	 * The GMU address space is hardcoded to treat the range
-> +	 * 0x60000000 - 0x80000000 as un-cached memory. All buffers shared
-> +	 * between the GMU and the CPU will live in this space
-> +	 */
-> +	gmu->uncached_iova_base = 0x60000000;
-> +
-> +
-> +	gmu->domain = iommu_domain_alloc(&platform_bus_type);
-> +	if (!gmu->domain)
-> +		return -ENODEV;
-> +
-> +	ret = iommu_attach_device(gmu->domain, gmu->dev);
-> +
-> +	if (ret) {
-> +		iommu_domain_free(gmu->domain);
-> +		gmu->domain = NULL;
-> +	}
-> +
-> +	return ret;
->  }
->  
->  /* Return the 'arc-level' for the given frequency */
-> @@ -1206,6 +1289,10 @@ void a6xx_gmu_remove(struct a6xx_gpu *a6xx_gpu)
->  
->  	a6xx_gmu_memory_free(gmu, gmu->hfi);
->  
-> +	iommu_detach_device(gmu->domain, gmu->dev);
-> +
-> +	iommu_domain_free(gmu->domain);
-> +
->  	free_irq(gmu->gmu_irq, gmu);
->  	free_irq(gmu->hfi_irq, gmu);
->  
-> @@ -1226,15 +1313,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
->  
->  	gmu->dev = &pdev->dev;
->  
-> -	/* Pass force_dma false to require the DT to set the dma region */
-> -	ret = of_dma_configure(gmu->dev, node, false);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* Set the mask after the of_dma_configure() */
-> -	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(31));
-> -	if (ret)
-> -		return ret;
-> +	of_dma_configure(gmu->dev, node, true);
->  
->  	/* Fow now, don't do anything fancy until we get our feet under us */
->  	gmu->idle_level = GMU_IDLE_STATE_ACTIVE;
-> @@ -1246,6 +1325,11 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
->  	if (ret)
->  		goto err_put_device;
->  
-> +	/* Set up the IOMMU context bank */
-> +	ret = a6xx_gmu_memory_probe(gmu);
-> +	if (ret)
-> +		goto err_put_device;
-> +
->  	/* Allocate memory for for the HFI queues */
->  	gmu->hfi = a6xx_gmu_memory_alloc(gmu, SZ_16K);
->  	if (IS_ERR(gmu->hfi))
-> @@ -1291,6 +1375,11 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
->  err_memory:
->  	a6xx_gmu_memory_free(gmu, gmu->hfi);
->  
-> +	if (gmu->domain) {
-> +		iommu_detach_device(gmu->domain, gmu->dev);
-> +
-> +		iommu_domain_free(gmu->domain);
-> +	}
->  	ret = -ENODEV;
->  
->  err_put_device:
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> index 4af65a36d5ca..2af91ed7ed0c 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> @@ -12,7 +12,8 @@
->  struct a6xx_gmu_bo {
->  	void *virt;
->  	size_t size;
-> -	dma_addr_t iova;
-> +	u64 iova;
-> +	struct page **pages;
->  };
->  
->  /*
-> @@ -48,6 +49,9 @@ struct a6xx_gmu {
->  	int hfi_irq;
->  	int gmu_irq;
->  
-> +	struct iommu_domain *domain;
-> +	u64 uncached_iova_base;
-> +
->  	struct device *gxpd;
->  
->  	int idle_level;
-> -- 
-> 2.26.1
+> Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
+> Anything received after that time might be too late.
 > 
+
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 418 pass: 418 fail: 0
+
+Guenter
