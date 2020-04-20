@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85EB1B0ED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD33D1B0ED5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgDTOqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:46:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
+        id S1728101AbgDTOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:47:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgDTOqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:46:51 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        id S1726102AbgDTOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:47:42 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B6C9206D5;
-        Mon, 20 Apr 2020 14:46:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B72B7206D5;
+        Mon, 20 Apr 2020 14:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587394011;
-        bh=/IPyAGYnCw1gtPtCf3Qro0SLyqMiQcu4OSyyNBu1dSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RWlOb5rLlNT5NcnsBjC1VII2xSKyaQFU2hwCWHuX6z8/o4g67upM16l0x1kovzmsk
-         zVVzxuVIRMaiEVWU2bHcVsGxXt/A03OOLlY/q4volpIQeK4e/f+0pwAf+NibrBOnY4
-         HhNjhnXFrleNSewnZPS+xa3D3pNv9/TO+FnxNf+w=
-Date:   Mon, 20 Apr 2020 22:46:43 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     s.hauer@pengutronix.de, jassisinghbrar@gmail.com,
-        o.rempel@pengutronix.de, leonard.crestez@nxp.com,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        Anson.Huang@nxp.com, aisheng.dong@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 4/4] firmware: imx-scu: Support one TX and one RX
-Message-ID: <20200420144630.GD32419@dragon>
-References: <1584604193-2945-1-git-send-email-peng.fan@nxp.com>
- <1584604193-2945-5-git-send-email-peng.fan@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1584604193-2945-5-git-send-email-peng.fan@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1587394062;
+        bh=e/ao3OPRg3Up068uO5kqAkXf43yc13CAhl2PZ2TOkIM=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=Vw56rg/6N87yR7MAT8by2Fu4xlwJxlqMLtkikG1DE9IFNslimTgxEITfVfzgduasC
+         +YswLy/JCnr2KrxRauu+IMMsWIEwQkaBObwfdoClILRmNFnIAjWKgmQ6JJrnBYA/vY
+         3wj/dSg+RsTWcM709gcmi3m4k9D94L3w5DFfI1nE=
+Date:   Mon, 20 Apr 2020 15:47:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Markus.Elfring@web.de
+In-Reply-To: <20200420134647.9121-1-zhengdejin5@gmail.com>
+References: <20200420134647.9121-1-zhengdejin5@gmail.com>
+Subject: Re: [PATCH v2 0/2] use read_poll_timeout macro to simplify code
+Message-Id: <158739405971.23005.4028325729913635797.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 03:49:53PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, 20 Apr 2020 21:46:45 +0800, Dejin Zheng wrote:
+> Simplify implementation of regmap_read_poll_timeout() macro and
+> regmap_field_read_poll_timeout by read_poll_timeout() macro, they have
+> many similar codes.
 > 
-> Current imx-scu requires four TX and four RX to communicate with
-> SCU. This is low efficient and causes lots of mailbox interrupts.
+> v1 -> v2:
+> 	- modify the commit comments by Markus's suggestion .
 > 
-> With imx-mailbox driver could support one TX to use all four transmit
-> registers and one RX to use all four receive registers, imx-scu
-> could use one TX and one RX.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> [...]
 
-Applied, thanks.
+Applied to
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-5.8
+
+Thanks!
+
+[1/2] regmap: Simplify implementation of the regmap_read_poll_timeout() macro
+      commit: e44ab4e14d6f4c448ae555132090c1a116b19e5c
+[2/2] regmap: Simplify implementation of the regmap_field_read_poll_timeout() macro
+      commit: 148c01d176237115d9c2805f6d29c0b6a72fbd10
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
