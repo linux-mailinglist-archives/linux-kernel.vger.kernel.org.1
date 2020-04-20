@@ -2,150 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0BC1B1199
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBB21B11E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgDTQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:29:19 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:49576 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725774AbgDTQ22 (ORCPT
+        id S1726979AbgDTQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726620AbgDTQkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:28:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587400108; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QA9CZuPAM8s1GI09MkFEN/LL8wgIB+Q0f+qXwJ/VpWg=;
- b=CHOzMuizuOZ8szlYs1XgI2AqoUZ10WffvJEum/q4inG48PFB1dUk7H7wJHUxTWDUFpsp1Qro
- 7WZrxKdH1toZl7ZytLRUILW+Kztfcgy2WP1OiU1vpc6TxVZQYfSLSaeLqCGR4ZBrQ+Oxguzt
- V3MTjtbwg73aKcoP5PtnENu8RVE=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9dcdac.7f23024071f0-smtp-out-n04;
- Mon, 20 Apr 2020 16:28:28 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06E2BC43637; Mon, 20 Apr 2020 16:28:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3245DC433D2;
-        Mon, 20 Apr 2020 16:28:26 +0000 (UTC)
+        Mon, 20 Apr 2020 12:40:06 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB1AC02548C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:29:13 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id rh22so8421136ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 09:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ADwP4J7IK4ZO4/FeXMdsiZ7Oi0mA5szLvM9bZ/wIlVw=;
+        b=pqBfSEt6rHfX3RSfPLPKS8QqwY5eOMyYYA83fHsUZhTYeXGqbfZGc1ytRP83CaviLN
+         o3MDlzJ5uPi24g91wqSTFBsSqEeN8SNVlXiHUOSAFDNbglu75TGjwQNF+eHyYfwr2Tue
+         2KSre4gydb3PyUUsiDGPjF7lNCDMunFdllXFRfBKmD/1DTRgalBCwmQi8Yee0tyZfwfB
+         Sg94o0QWzHAdDjVL6aGPDeYNW1qPGDvc40bm1Ug1mr/taumLv5zMqIgJUphkp6zZ2zbE
+         LDt5DWaVfEPAM0v540kK7qKId3Ra/GvyJ2Fd7+wn23bqOprHuya4O+QsaEnq+KApW9+y
+         nTRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ADwP4J7IK4ZO4/FeXMdsiZ7Oi0mA5szLvM9bZ/wIlVw=;
+        b=doauWenQhqUVfXRmoNY0Jjvmf143qxlmtTEKH2sFmFniawym5YUaIPj1VK2Lt0uraR
+         LFaimitjW5Xjr4Z0dql9qOUJQUYXZy8nblCC9MEpff3Qn6DOY+00fR6vvi1dCvR6PaMX
+         1UvpBnoaE0NzvMhPU8PlpiWDJwoENUgv+MOQQcPHBlbHU5IgdY0B1r1EUtHSXzuFlFRz
+         7MoVjVLOOX1979+b/jnAUTLuBLv6JR31SiRvlacyrYL8xDpc1RsgM/+KoHWE+ifJlk0S
+         S9dRXWFKLbOSHJnQL317eru0ruxQbzSOR6QbDta3UmcHY5ZtHzil3h6gjyUzBmfOL3Ks
+         tjqQ==
+X-Gm-Message-State: AGi0PubPHfzO6NcN5TkDi3nERqVdyoU7lAl3cRGMFMozi+NKDSNIa7oR
+        IHCUyAFMOqyoND1jASmaxybiWtCAJQ6NX/ZL085o
+X-Google-Smtp-Source: APiQypJOx+QtGHpApXq7StDWqtb3Dbw0rrRBcAGyacI+MqeDDQUA9BY0GHvvNTbAXh33CNXa72AcAyfbaf4xknqsC7I=
+X-Received: by 2002:a17:906:29c4:: with SMTP id y4mr16892261eje.95.1587400152394;
+ Mon, 20 Apr 2020 09:29:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 20 Apr 2020 21:58:26 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        iommu@lists.linux-foundation.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/6] iommu/arm-smmu: Allow client devices to select
- direct mapping
-In-Reply-To: <e35b10dc-8e58-f201-8485-9543dafbadfe@arm.com>
-References: <cover.1587392905.git.saiprakash.ranjan@codeaurora.org>
- <14539e787e6d8b7bd0a6d8f8a001baae6f691988.1587392905.git.saiprakash.ranjan@codeaurora.org>
- <e35b10dc-8e58-f201-8485-9543dafbadfe@arm.com>
-Message-ID: <65f21f15b90f73e16c0bb5bb75e835e6@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <00000000000064f6e505a3b243aa@google.com>
+In-Reply-To: <00000000000064f6e505a3b243aa@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 20 Apr 2020 12:29:01 -0400
+Message-ID: <CAHC9VhTZ_itetT4cx32vW3A79tb76dzjaBC_0S8Y_=DcEBL2nw@mail.gmail.com>
+Subject: Re: KMSAN: uninit-value in audit_log_vformat (2)
+To:     syzbot <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com>
+Cc:     Eric Paris <eparis@redhat.com>, glider@google.com,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-20 21:27, Robin Murphy wrote:
-> On 2020-04-20 3:37 pm, Sai Prakash Ranjan wrote:
->> From: Jordan Crouse <jcrouse@codeaurora.org>
->> 
->> Some client devices want to directly map the IOMMU themselves instead
->> of using the DMA domain. Allow those devices to opt in to direct
->> mapping by way of a list of compatible strings.
->> 
->> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->> Co-developed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>   drivers/iommu/arm-smmu-qcom.c | 19 +++++++++++++++++++
->>   drivers/iommu/arm-smmu.h      |  1 +
->>   2 files changed, 20 insertions(+)
->> 
->> diff --git a/drivers/iommu/arm-smmu-qcom.c 
->> b/drivers/iommu/arm-smmu-qcom.c
->> index 64a4ab270ab7..0b3f159065aa 100644
->> --- a/drivers/iommu/arm-smmu-qcom.c
->> +++ b/drivers/iommu/arm-smmu-qcom.c
->> @@ -3,6 +3,7 @@
->>    * Copyright (c) 2019, The Linux Foundation. All rights reserved.
->>    */
->>   +#include <linux/of_device.h>
->>   #include <linux/qcom_scm.h>
->>     #include "arm-smmu.h"
->> @@ -11,6 +12,23 @@ struct qcom_smmu {
->>   	struct arm_smmu_device smmu;
->>   };
->>   +static const struct of_device_id qcom_smmu_client_of_match[] = {
->> +	{ .compatible = "qcom,adreno" },
->> +	{ .compatible = "qcom,mdp4" },
->> +	{ .compatible = "qcom,mdss" },
->> +	{ .compatible = "qcom,sc7180-mdss" },
->> +	{ .compatible = "qcom,sdm845-mdss" },
->> +	{ }
->> +};
->> +
->> +static int qcom_smmu_request_domain(struct device *dev)
->> +{
->> +	const struct of_device_id *match =
->> +		of_match_device(qcom_smmu_client_of_match, dev);
->> +
->> +	return match ? IOMMU_DOMAIN_IDENTITY : 0;
->> +}
->> +
->>   static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
->>   {
->>   	int ret;
->> @@ -41,6 +59,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device 
->> *smmu)
->>   }
->>     static const struct arm_smmu_impl qcom_smmu_impl = {
->> +	.req_domain = qcom_smmu_request_domain,
->>   	.reset = qcom_smmu500_reset,
->>   };
->>   diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
->> index 8d1cd54d82a6..662fdb4dccd2 100644
->> --- a/drivers/iommu/arm-smmu.h
->> +++ b/drivers/iommu/arm-smmu.h
->> @@ -386,6 +386,7 @@ struct arm_smmu_impl {
->>   	int (*init_context)(struct arm_smmu_domain *smmu_domain);
->>   	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
->>   			 int status);
->> +	int (*req_domain)(struct device *dev);
-> 
-> Nit: since the point is to implement the full
-> iommu_ops::def_domain_type interface, can we call it def_domain_type
-> please?
-> 
+On Mon, Apr 20, 2020 at 1:35 AM syzbot
+<syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    5356842d [EXPERIMENTAL] kmsan: eagerly allocate shadow at ..
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12f06720100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
+> dashboard link: https://syzkaller.appspot.com/bug?extid=49e69b4d71a420ceda3e
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> userspace arch: i386
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133b5dabe00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143e1610100000
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
+>
+> =====================================================
+> BUG: KMSAN: uninit-value in string_nocheck lib/vsprintf.c:608 [inline]
+> BUG: KMSAN: uninit-value in string+0x522/0x690 lib/vsprintf.c:689
+> CPU: 1 PID: 8854 Comm: syz-executor694 Not tainted 5.6.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+>  string_nocheck lib/vsprintf.c:608 [inline]
+>  string+0x522/0x690 lib/vsprintf.c:689
+>  vsnprintf+0x207d/0x31b0 lib/vsprintf.c:2574
 
-Sure, will send the next version shortly.
+Are there any ongoing problems with [vsn]printf() in the kernel at the
+moment with syzbot?
 
-Thanks,
-Sai
+I ask because on first look I'm not seeing any obvious problems in the
+audit portion of this code path.
+
+>  audit_log_vformat+0x583/0xcd0 kernel/audit.c:1858
+>  audit_log_format+0x220/0x260 kernel/audit.c:1892
+>  audit_receive_msg kernel/audit.c:1344 [inline]
+>  audit_receive+0x18a4/0x6d50 kernel/audit.c:1515
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+>  netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
+>  netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg net/socket.c:672 [inline]
+>  ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
+>  ___sys_sendmsg net/socket.c:2399 [inline]
+>  __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
+>  __compat_sys_sendmsg net/compat.c:642 [inline]
+>  __do_compat_sys_sendmsg net/compat.c:649 [inline]
+>  __se_compat_sys_sendmsg net/compat.c:646 [inline]
+>  __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
+>  do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
+>  entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
+> RIP: 0023:0xf7fa0d99
+> Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 002b:00000000ffb27c7c EFLAGS: 00000246 ORIG_RAX: 0000000000000172
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000200002c0
+> RDX: 0000000000000000 RSI: 00000000080ea078 RDI: 00000000ffb27cd0
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>
+> Uninit was created at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+>  kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+>  kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:82
+>  slab_alloc_node mm/slub.c:2801 [inline]
+>  __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4420
+>  __kmalloc_reserve net/core/skbuff.c:142 [inline]
+>  __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
+>  alloc_skb include/linux/skbuff.h:1081 [inline]
+>  netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
+>  netlink_sendmsg+0x7d3/0x14d0 net/netlink/af_netlink.c:1893
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg net/socket.c:672 [inline]
+>  ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
+>  ___sys_sendmsg net/socket.c:2399 [inline]
+>  __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
+>  __compat_sys_sendmsg net/compat.c:642 [inline]
+>  __do_compat_sys_sendmsg net/compat.c:649 [inline]
+>  __se_compat_sys_sendmsg net/compat.c:646 [inline]
+>  __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
+>  do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
+>  entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
+> =====================================================
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+paul moore
+www.paul-moore.com
