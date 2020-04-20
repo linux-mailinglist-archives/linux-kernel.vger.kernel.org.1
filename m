@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C96F1B07F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C161B07FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgDTLqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
+        id S1726507AbgDTLrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726209AbgDTLqO (ORCPT
+        by vger.kernel.org with ESMTP id S1726209AbgDTLrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:46:14 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47960C061A0C;
-        Mon, 20 Apr 2020 04:46:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 495PzR6DxYz9sP7;
-        Mon, 20 Apr 2020 21:46:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587383172;
-        bh=rYA37vpdMZ6Kzw5PBJIBUkD+KbN6CKQMbo7WfkOgxyM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Cl+jNt7ugSPR+4363I19TYOXf0mf7SVtEytP8ydHiLc7FLzeFlFrk93mjBQktlp0l
-         YwhyvU7JMLgwKgRwI7fTH7sDPAIZkJVVRVoC6QQslwEtTZ3iYaVhCYoSNH3kLciNcS
-         BGauCrtx+SdbSARQ+t66ZewqimvPU3wf0MZ5B/qttS6DHbjvKY0jLhQJtr3Ya1b8Ql
-         +cA8SKxos1Aahrz/P120gVL8DYT2AsvrR14Zo+B+4g8hGSImSygKYaC8sMtN+D2U2U
-         iXFIpRAob2WfBrVY6ORewFT+MfiTkyz0bvlvk7XQTGja668B/WchHF4C6WRiebaCNT
-         ROb+xy3FYT2Zg==
-Date:   Mon, 20 Apr 2020 21:46:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: linux-next: build failure in Linus tree
-Message-ID: <20200420214611.17a6411f@canb.auug.org.au>
+        Mon, 20 Apr 2020 07:47:52 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6B6C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 04:47:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uHONsJr4KTEbnxxWPAu0Ew27QiCD45QjANeqi0Gi8dc=; b=vTp2gHceK5xxpBGqQ42nYZb4gH
+        mnA9XPuy7DRtkA60Df0jiiy97/SlJOp04WyRhiU2mpwpDKgFglWyL1et7pobaqGcOc2KccsuF2tq9
+        r5lih7DbF8DvviZnMY/w5D0UBLT+IiaxgUTqMMpPkt9AjH9jrTkixQFC0wACrJMjGEk6Ypq5kXWAY
+        Enrz0NYVa7bS0ZJ9fmx5Ey2JFVZ92VN3WLWH6S77jP9kly7KVGeeU0JOr2oZ6Fqbe9MjBwf988D8x
+        qQdAEkIR9vO3f6xiZFwx27vF2CccaawMTkPYXmpoMSIcPYUCUC33+3xeKPy23pnPnYuuhuFETPpJ/
+        j5F/QxdA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQUt4-0004FH-Oq; Mon, 20 Apr 2020 11:46:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 25CFD3024EA;
+        Mon, 20 Apr 2020 13:46:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15FA32B8DAF8C; Mon, 20 Apr 2020 13:46:51 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 13:46:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhenyu Ye <yezhenyu2@huawei.com>
+Cc:     mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org,
+        npiggin@gmail.com, arnd@arndb.de, rostedt@goodmis.org,
+        maz@kernel.org, suzuki.poulose@arm.com, tglx@linutronix.de,
+        yuzhao@google.com, Dave.Martin@arm.com, steven.price@arm.com,
+        broonie@kernel.org, guohanjun@huawei.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org,
+        xiexiangyou@huawei.com, prime.zeng@hisilicon.com,
+        zhangshaokun@hisilicon.com, kuhn.chenqun@huawei.com
+Subject: Re: [PATCH v1 4/6] tlb: mmu_gather: add tlb_set_*_range APIs
+Message-ID: <20200420114651.GD20696@hirez.programming.kicks-ass.net>
+References: <20200403090048.938-1-yezhenyu2@huawei.com>
+ <20200403090048.938-5-yezhenyu2@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ddFbppuYT7RYq=5e82jxPkw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403090048.938-5-yezhenyu2@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ddFbppuYT7RYq=5e82jxPkw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Apr 03, 2020 at 05:00:46PM +0800, Zhenyu Ye wrote:
+> From: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> 
+> tlb_set_{pte|pmd|pud|p4d}_range() adjust the tlb->start and
+> tlb->end, then set corresponding cleared_*.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+> ---
+>  include/asm-generic/tlb.h | 55 ++++++++++++++++++++++++++++-----------
+>  1 file changed, 40 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index f391f6b500b4..ee91310a65c6 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -511,6 +511,38 @@ static inline void tlb_end_vma(struct mmu_gather *tlb, struct vm_area_struct *vm
+>  }
+>  #endif
+>  
+> +/*
+> + * tlb_set_{pte|pmd|pud|p4d}_range() adjust the tlb->start and tlb->end,
+> + * and set corresponding cleared_*.
+> + */
+> +static inline void tlb_set_pte_range(struct mmu_gather *tlb,
+> +				     unsigned long address, unsigned long size)
+> +{
+> +	__tlb_adjust_range(tlb, address, size);
+> +	tlb->cleared_ptes = 1;
+> +}
+> +
+> +static inline void tlb_set_pmd_range(struct mmu_gather *tlb,
+> +				     unsigned long address, unsigned long size)
+> +{
+> +	__tlb_adjust_range(tlb, address, size);
+> +	tlb->cleared_pmds = 1;
+> +}
+> +
+> +static inline void tlb_set_pud_range(struct mmu_gather *tlb,
+> +				     unsigned long address, unsigned long size)
+> +{
+> +	__tlb_adjust_range(tlb, address, size);
+> +	tlb->cleared_puds = 1;
+> +}
+> +
+> +static inline void tlb_set_p4d_range(struct mmu_gather *tlb,
+> +				     unsigned long address, unsigned long size)
+> +{
+> +	__tlb_adjust_range(tlb, address, size);
+> +	tlb->cleared_p4ds = 1;
+> +}
 
-Hi all,
+Uhm.. when I wrote that patch they were called tlb_flush_p*_range():
 
-[reported by kernelci.org bot]
+  https://lkml.kernel.org/r/20200401122004.GE20713@hirez.programming.kicks-ass.net
 
-For a while now, building Linus' tree, the linux-next build (arm
-qcom_defconfig) fails like this:
-
-ERROR: modpost: "rd_full" [drivers/gpu/drm/msm/msm.ko] undefined!
-
-Caused by commit
-
-  e515af8d4a6f ("drm/msm: devcoredump should dump MSM_SUBMIT_BO_DUMP buffer=
-s")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ddFbppuYT7RYq=5e82jxPkw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6di4MACgkQAVBC80lX
-0Gx/ewf8DfMP18h16dr1/hnjFwLP+kTSwFPbISESZcrRWHP13ACa7U2IwUWYcqYg
-bcQCAw1rTgsBpIk//D6dop8QZcKtJ65/LMOlfPLlEc5dIpaKPdAkWdwzcdBwq/EH
-n4QltD7w6EUqX0rLE4puBiG5Qm4JITr1k9pqyk4TF56ySmBnlaAXfWaPnpEIl1O5
-UQcRq2DPKUoPIQ39gtqaw2NGMlQ8f1MXbICOTOeOA3B4TPiAU8eQKu8KyEIOBEPT
-F+hR22fdiFWRuB6BJgQmuUS84+sLI6Og0nc+1QgxMBUbc31pQmHlFgiCqQeMklqL
-aL5xNufi2a9EIX0YypQZAk6PhC/hqg==
-=4WOX
------END PGP SIGNATURE-----
-
---Sig_/ddFbppuYT7RYq=5e82jxPkw--
+Your current naming makes no sense what so ever, we do not "set" the
+range.
