@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078051B0B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5BC1B0B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgDTMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:45:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
+        id S1728979AbgDTMq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:46:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727962AbgDTMoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:44:44 -0400
+        id S1728071AbgDTMqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:46:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D06720736;
-        Mon, 20 Apr 2020 12:44:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1A5E22242;
+        Mon, 20 Apr 2020 12:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386684;
-        bh=WhMu6k3YzRYYu55dKp7nGrT7kR2HXHgEVPODScMIWZ4=;
+        s=default; t=1587386797;
+        bh=JOOTuWI6U2ZH4Csf9zK1OR4MtIve53GIFno1otkRgWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BhyBOrSSY1jYX0jKHxODYUxT6IXZ2JFKHGTaW5nfvGoF1Lh1eZIR0GPNlpsawoUQk
-         b9y+o84k6hVSLhlHRrq+2/owySkda+hsedJHk8YJnccUwyp0/SkkB6Uwtysrz4RXtV
-         2Vlkh3AhUeuQ94mL6ot8hiuMLammCVwR4zikIq5Q=
+        b=ifshT+GUX2dC2aDXp88j3uDPPOfEM3QV7ATZcxoEgBmVfaLadwdKEqWQmXT9U+1U5
+         pajfn7BLU+7gbl1KGJ7kX66BUmZL7/p3YpdQrGLCHpZGLcrRs2Kl//m8QEkJd2qy8i
+         e2LQqLQ9KT428Bou5x6zVXIH6sffLYgTdq2K+m/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+6693adf1698864d21734@syzkaller.appspotmail.com,
-        syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com,
-        stable@kernel.org, Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.6 54/71] mac80211_hwsim: Use kstrndup() in place of kasprintf()
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.4 30/60] clk: at91: usb: use proper usbs_mask
 Date:   Mon, 20 Apr 2020 14:39:08 +0200
-Message-Id: <20200420121519.961151765@linuxfoundation.org>
+Message-Id: <20200420121509.331290084@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,68 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-commit 7ea862048317aa76d0f22334202779a25530980c upstream.
+commit d7a83d67a1694c42cc95fc0755d823f7ca3bfcfb upstream.
 
-syzbot reports a warning:
+Use usbs_mask passed as argument. The usbs_mask is different for
+SAM9X60.
 
-precision 33020 too large
-WARNING: CPU: 0 PID: 9618 at lib/vsprintf.c:2471 set_precision+0x150/0x180 lib/vsprintf.c:2471
- vsnprintf+0xa7b/0x19a0 lib/vsprintf.c:2547
- kvasprintf+0xb2/0x170 lib/kasprintf.c:22
- kasprintf+0xbb/0xf0 lib/kasprintf.c:59
- hwsim_del_radio_nl+0x63a/0x7e0 drivers/net/wireless/mac80211_hwsim.c:3625
- genl_family_rcv_msg_doit net/netlink/genetlink.c:672 [inline]
- ...
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Thus it seems that kasprintf() with "%.*s" format can not be used for
-duplicating a string with arbitrary length. Replace it with kstrndup().
-
-Note that later this string is limited to NL80211_WIPHY_NAME_MAXLEN == 64,
-but the code is simpler this way.
-
-Reported-by: syzbot+6693adf1698864d21734@syzkaller.appspotmail.com
-Reported-by: syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com
-Cc: stable@kernel.org
-Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-Link: https://lore.kernel.org/r/20200410123257.14559-1-tuomas.tynkkynen@iki.fi
-[johannes: add note about length limit]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 2423eeaead6f8 ("clk: at91: usb: Add sam9x60 support")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lkml.kernel.org/r/1579261009-4573-4-git-send-email-claudiu.beznea@microchip.com
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/mac80211_hwsim.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/clk/at91/clk-usb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -3600,9 +3600,9 @@ static int hwsim_new_radio_nl(struct sk_
- 	}
+--- a/drivers/clk/at91/clk-usb.c
++++ b/drivers/clk/at91/clk-usb.c
+@@ -211,7 +211,7 @@ _at91sam9x5_clk_register_usb(struct regm
  
- 	if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 		param.hwname = hwname;
-@@ -3622,9 +3622,9 @@ static int hwsim_del_radio_nl(struct sk_
- 	if (info->attrs[HWSIM_ATTR_RADIO_ID]) {
- 		idx = nla_get_u32(info->attrs[HWSIM_ATTR_RADIO_ID]);
- 	} else if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 	} else
+ 	usb->hw.init = &init;
+ 	usb->regmap = regmap;
+-	usb->usbs_mask = SAM9X5_USBS_MASK;
++	usb->usbs_mask = usbs_mask;
+ 
+ 	hw = &usb->hw;
+ 	ret = clk_hw_register(NULL, &usb->hw);
 
 
