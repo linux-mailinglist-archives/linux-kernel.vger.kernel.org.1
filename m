@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30CB1B0CCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBFB1B0CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgDTNhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgDTNhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:37:02 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EA2320857;
-        Mon, 20 Apr 2020 13:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587389822;
-        bh=qSLyEMdFkBck+mljMG13xzjAvLPCpubntm0n35wtzGs=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=X8saqD15vVDUMhQNyFjal0htzRh6HLHdz+2WF0LiYC0e9/L7Lf320pqnRVNfBAyyJ
-         KmaacoKfXa27AZGbOcLheP898y5RcrH24Pg9NdnUeDSDBKfSSxCaSZXQi7CM1yCVVO
-         skWB4SL1hP1YiR6uMzDMxifWAlT7lxllurGLp9W4=
-Date:   Mon, 20 Apr 2020 14:36:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20200420114511.450560-1-jbrunet@baylibre.com>
-References: <20200420114511.450560-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH 0/2] ASoC: meson: fix codec-to-codec link setup
-Message-Id: <158738981360.28730.10303799966440949108.b4-ty@kernel.org>
+        id S1728213AbgDTNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:35:35 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10707 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgDTNfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 09:35:34 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5e9da511745-d6a09; Mon, 20 Apr 2020 21:35:15 +0800 (CST)
+X-RM-TRANSID: 2eeb5e9da511745-d6a09
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.1.173.179])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45e9da5102c1-7b0dc;
+        Mon, 20 Apr 2020 21:35:14 +0800 (CST)
+X-RM-TRANSID: 2ee45e9da5102c1-7b0dc
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     ssantosh@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] memory: emif: omit superfluous error message in emif_probe()
+Date:   Mon, 20 Apr 2020 21:37:04 +0800
+Message-Id: <20200420133704.18364-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 13:45:09 +0200, Jerome Brunet wrote:
-> This patchset fixes the problem reported by Marc in this thread [0]
-> The problem was due to an error in the meson card drivers which had
-> the "no_pcm" dai_link property set on codec-to-codec links
-> 
-> [0]: https://lore.kernel.org/r/20200417122732.GC5315@sirena.org.uk
-> 
-> Jerome Brunet (2):
->   ASoC: meson: axg-card: fix codec-to-codec link setup
->   ASoC: meson: gx-card: fix codec-to-codec link setup
-> 
-> [...]
+In the function emif_probe(), when get irq failed,
+the function platform_get_irq() logs an error message,
+so remove redundant message here.
 
-Applied to
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/memory/emif.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-	broonie/sound.git for-5.7
+diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+index 9d9127bf2..3ac9f355d 100644
+--- a/drivers/memory/emif.c
++++ b/drivers/memory/emif.c
+@@ -1563,11 +1563,8 @@ static int __init_or_module emif_probe(struct platform_device *pdev)
+ 		goto error;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(emif->dev, "%s: error getting IRQ resource - %d\n",
+-			__func__, irq);
++	if (irq < 0)
+ 		goto error;
+-	}
+ 
+ 	emif_onetime_settings(emif);
+ 	emif_debugfs_init(emif);
+-- 
+2.20.1.windows.1
 
-Thanks!
 
-[1/2] ASoC: meson: axg-card: fix codec-to-codec link setup
-      commit: 1164284270779e1865cc2046a2a01b58a1e858a9
-[2/2] ASoC: meson: gx-card: fix codec-to-codec link setup
-      commit: de911b4e683f9c28a063bb62991f2db206c38ba4
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
