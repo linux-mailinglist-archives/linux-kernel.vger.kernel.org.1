@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA0F1B0BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CA31B09ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgDTMlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
+        id S1728402AbgDTMn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:43:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727950AbgDTMlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:41:09 -0400
+        id S1726697AbgDTMn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:43:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 108792072B;
-        Mon, 20 Apr 2020 12:41:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DC0422202;
+        Mon, 20 Apr 2020 12:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386469;
-        bh=JOOTuWI6U2ZH4Csf9zK1OR4MtIve53GIFno1otkRgWE=;
+        s=default; t=1587386605;
+        bh=NbH8+8pzy146C4wMp9YpqWUeZEX5f2w+yixkPV9fmYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqmmzPVOMRsaIvc8CrDpjVcGAmwlRHcnDl15JIzKsc/VA/nTEJVWtFNrVfCyeEVmz
-         vugL2KB9jOcCeoIOH9PrIJxfR3rkbVmJ2R8nZLbVbm7qJZnmdmjK3qZjr+IMrCrqzc
-         +ESdIwg+l0aOfD8OejyGlK2P19/cjUCN2Jl5/ewU=
+        b=wBl1CJQEIIj3ojpcrWS5bg9A2/W1jIFGZHKKb7MlyowSPQLRbrSfLgsiPSUaJH1C6
+         tSsnEAd4GVRkfeB1AOiPZ8WZNU7rY8d7M2Ujn40KL7WpwFzH/nqbArc+1o0iluen1r
+         XXtXNt1QRcQBVAaN4s2CUe8tE3a0Y+LJ4ZOWTOx4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.5 34/65] clk: at91: usb: use proper usbs_mask
-Date:   Mon, 20 Apr 2020 14:38:38 +0200
-Message-Id: <20200420121513.672436645@linuxfoundation.org>
+        stable@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH 5.6 25/71] platform/chrome: cros_ec_rpmsg: Fix race with host event
+Date:   Mon, 20 Apr 2020 14:38:39 +0200
+Message-Id: <20200420121513.515098905@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Pi-Hsun Shih <pihsun@chromium.org>
 
-commit d7a83d67a1694c42cc95fc0755d823f7ca3bfcfb upstream.
+commit f775ac78fcfc6bdc96bdda07029d11f2a5e84869 upstream.
 
-Use usbs_mask passed as argument. The usbs_mask is different for
-SAM9X60.
+Host event can be sent by remoteproc by any time, and
+cros_ec_rpmsg_callback would be called after cros_ec_rpmsg_create_ept.
+But the cros_ec_device is initialized after that, which cause host event
+handler to use cros_ec_device that are not initialized properly yet.
 
-Fixes: 2423eeaead6f8 ("clk: at91: usb: Add sam9x60 support")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Link: https://lkml.kernel.org/r/1579261009-4573-4-git-send-email-claudiu.beznea@microchip.com
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fix this by don't schedule host event handler before cros_ec_register
+returns. Instead, remember that we have a pending host event, and
+schedule host event handler after cros_ec_register.
+
+Fixes: 71cddb7097e2 ("platform/chrome: cros_ec_rpmsg: Fix race with host command when probe failed.")
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/at91/clk-usb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/chrome/cros_ec_rpmsg.c |   16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
---- a/drivers/clk/at91/clk-usb.c
-+++ b/drivers/clk/at91/clk-usb.c
-@@ -211,7 +211,7 @@ _at91sam9x5_clk_register_usb(struct regm
+--- a/drivers/platform/chrome/cros_ec_rpmsg.c
++++ b/drivers/platform/chrome/cros_ec_rpmsg.c
+@@ -44,6 +44,8 @@ struct cros_ec_rpmsg {
+ 	struct completion xfer_ack;
+ 	struct work_struct host_event_work;
+ 	struct rpmsg_endpoint *ept;
++	bool has_pending_host_event;
++	bool probe_done;
+ };
  
- 	usb->hw.init = &init;
- 	usb->regmap = regmap;
--	usb->usbs_mask = SAM9X5_USBS_MASK;
-+	usb->usbs_mask = usbs_mask;
+ /**
+@@ -177,7 +179,14 @@ static int cros_ec_rpmsg_callback(struct
+ 		memcpy(ec_dev->din, resp->data, len);
+ 		complete(&ec_rpmsg->xfer_ack);
+ 	} else if (resp->type == HOST_EVENT_MARK) {
+-		schedule_work(&ec_rpmsg->host_event_work);
++		/*
++		 * If the host event is sent before cros_ec_register is
++		 * finished, queue the host event.
++		 */
++		if (ec_rpmsg->probe_done)
++			schedule_work(&ec_rpmsg->host_event_work);
++		else
++			ec_rpmsg->has_pending_host_event = true;
+ 	} else {
+ 		dev_warn(ec_dev->dev, "rpmsg received invalid type = %d",
+ 			 resp->type);
+@@ -240,6 +249,11 @@ static int cros_ec_rpmsg_probe(struct rp
+ 		return ret;
+ 	}
  
- 	hw = &usb->hw;
- 	ret = clk_hw_register(NULL, &usb->hw);
++	ec_rpmsg->probe_done = true;
++
++	if (ec_rpmsg->has_pending_host_event)
++		schedule_work(&ec_rpmsg->host_event_work);
++
+ 	return 0;
+ }
+ 
 
 
