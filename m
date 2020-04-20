@@ -2,150 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364591B00E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AF11B00DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 06:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgDTFFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:05:55 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.100]:27081 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725710AbgDTFFy (ORCPT
+        id S1726012AbgDTE7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 00:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgDTE7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:05:54 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 567976B8C53
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 23:50:39 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id QOOFj5xt78vkBQOOFjrEDG; Sun, 19 Apr 2020 23:50:39 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CHujRiFmd5pZFVRiQTFT1RW/nzEZTJvFxnpg+9DhJxs=; b=f3IISkMVa4MjTJKhU6eqWO1lZZ
-        6UPQ90illbbtVxgUUzhL4ALrgxg3QUv4gZ3cLmkL67rNOSinBh7ZispKC+1NBF6h8qpy2aIm3YQnv
-        2GX/5qnG3vZsHveCspOJ8QDUsx1Fi+eUbTED1T2U5QsnLwsvH/9923l/kQM7EOH60K5TFA+iTL35Q
-        4Fk5GsDPkQ04lCa5BRUmn1g44yawK1h7sN93frT4xYQz+NuyicTRvlCOeRjv4B2rqmLp5rWGCsQvS
-        gLnMY7iEuDwlaC4lFJqKhSijpZ8wmFMtvgSH2AB25XUoWQL9aAVjqUCDAHcoVg082em4VxiNaHum8
-        un14IdiQ==;
-Received: from [201.162.169.27] (port=11454 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jQOOE-000i0r-Tv; Sun, 19 Apr 2020 23:50:39 -0500
-Subject: Re: [GIT PULL] flexible-array member convertion patches for 5.7-rc2
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20200418213828.GA10666@embeddedor>
- <20200420111210.50737f67@canb.auug.org.au>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <240ba9d8-e2ce-8585-e363-2feb27ee54a9@embeddedor.com>
-Date:   Sun, 19 Apr 2020 23:54:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 00:59:05 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D35C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 21:59:05 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 18so741962pfx.6
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 21:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wAPlRWgezwhMIxEulFfKKHAsUfPFwC0PHoMBzV+JlwI=;
+        b=qvZErNLWFA0MXJfaPogJoSFPlbsjkzOdKBcpC+dBEjVp/ttD4NrntsY2Bh67whd53Q
+         QZVuESc+tpPhztFQacvq89rHOoUZSP8b1y5dCfp5JqE434zmbJCRbGxtHxZ28xxGbWtA
+         vPkwmKU/ojlORtYLz+CKQnJig9d0kdFkA+Km2qnqKuQ13aCGl/RkE4pozk+zWwYAxvI9
+         8TwwzxNZM6RzxBjEsHU/oIB6Oi463KgbGsMKGk0ieiuh1h9trvYo+i7SjLVBSs6snd12
+         LMy5FfgTyuwkgO8iZz5T0d2TGNAQ/oTBnf08bsEmP8yrfqBxK9GRLJ83MGNVkaeDhmbE
+         ApwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wAPlRWgezwhMIxEulFfKKHAsUfPFwC0PHoMBzV+JlwI=;
+        b=JMJN5MfZNcIhca33pGinmedERz3ELjItqBNzpLka5epyRELOkI17Z6lkWsMKUWH9Iu
+         +6H2mR08cEaI7mj8lW8cYAea8FzcN1uKL85DHgolHABG76IQMjJBgedCyKZllFfHWu9N
+         w7wS1rcOvGuVnHTv7XSVXfWqJbZtyofJ+MM3JkLoLWIXIWDl8Z2h4B/TQZGYBCJrh1Dh
+         aXzNUQdA4LStdrIw1AL/kcmeknrICmNmO73Gpiw8WNHyu+ucraCXFPocQDSmubQF4sCe
+         uOQ7LBedoCxWsAwf3nTmWJUJYRvBAwErHfzbkUqFeU0g2VQFpEJqjkIdrRzSFZC4TwUO
+         N0SA==
+X-Gm-Message-State: AGi0PubStiVU3iS7RgDesZSvkx/T4DNujEj/Fmcx4+UFrwsiletKovF/
+        pT1hWtUDPbDmvSUiy3eB4BJMnA==
+X-Google-Smtp-Source: APiQypI+Xh29Tan/fCXAwKqqgM92mQvjPxDij3ZhoXScf9xhZvC1wYM79H9afYGS/FHuHt2MKQ2cug==
+X-Received: by 2002:a63:1562:: with SMTP id 34mr14547089pgv.150.1587358744684;
+        Sun, 19 Apr 2020 21:59:04 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id fy21sm12601107pjb.25.2020.04.19.21.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Apr 2020 21:59:03 -0700 (PDT)
+Date:   Sun, 19 Apr 2020 21:59:27 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] remoteproc: Use a local copy for the name field
+Message-ID: <20200420045927.GA1516868@builder.lan>
+References: <20200417002036.24359-1-s-anna@ti.com>
+ <20200417002036.24359-3-s-anna@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20200420111210.50737f67@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.169.27
-X-Source-L: No
-X-Exim-ID: 1jQOOE-000i0r-Tv
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.169.27]:11454
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417002036.24359-3-s-anna@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Thu 16 Apr 17:20 PDT 2020, Suman Anna wrote:
 
-On 4/19/20 20:12, Stephen Rothwell wrote:
-> Hi Gustavo,
+> The current name field used in the remoteproc structure is simply
+> a pointer to a name field supplied during the rproc_alloc() call.
+> The pointer passed in by remoteproc drivers during registration is
+> typically a dev_name pointer, but it is possible that the pointer
+> will no longer remain valid if the devices themselves were created
+> at runtime like in the case of of_platform_populate(), and were
+> deleted upon any failures within the respective remoteproc driver
+> probe function.
 > 
-> On Sat, 18 Apr 2020 16:38:28 -0500 "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
->>
->> Notice that all of these patches have been baking in linux-next for
->> quite a while now and, 238 more of these patches have already been
->> merged into 5.7-rc1.
+> So, allocate and maintain a local copy for this name field to
+> keep it agnostic of the logic used in the remoteproc drivers.
 > 
-> Except that you rebased these just yesterday :-(
-> 
-> I understand why you did that (because there are still three earlier
-> patches in the linux-next version of this tree), but please try to
-> avoid this in the future.
-> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
 
-That's correct.  I'm sorry for any trouble that may have caused you.
-I will try to avoid doing that in the future.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> Also, please clean up your linux-next included branch to avoid
-> conflicts in the future, thanks.
+Regards,
+Bjorn
+
+> ---
+> v1:
+>  - Patch baselined on top of Mathieu's rproc_alloc() refactor
+>    series, and so addresses Bjorn's simplified cleanup comments
+>  - Switch to {kstrdup/kfree}_const variants
+> v0: https://patchwork.kernel.org/patch/11456385/
 > 
-
-Done! :)
-
-Thanks
---
-Gustavo
+>  drivers/remoteproc/remoteproc_core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index e38f627059ac..3cebface3f26 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1984,6 +1984,7 @@ static void rproc_type_release(struct device *dev)
+>  
+>  	kfree(rproc->firmware);
+>  	kfree(rproc->ops);
+> +	kfree_const(rproc->name);
+>  	kfree(rproc);
+>  }
+>  
+> @@ -2069,7 +2070,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>  	if (!rproc)
+>  		return NULL;
+>  
+> -	rproc->name = name;
+>  	rproc->priv = &rproc[1];
+>  	rproc->auto_boot = true;
+>  	rproc->elf_class = ELFCLASS32;
+> @@ -2081,6 +2081,10 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+>  	rproc->dev.driver_data = rproc;
+>  	idr_init(&rproc->notifyids);
+>  
+> +	rproc->name = kstrdup_const(name, GFP_KERNEL);
+> +	if (!rproc->name)
+> +		goto put_device;
+> +
+>  	if (rproc_alloc_firmware(rproc, name, firmware))
+>  		goto put_device;
+>  
+> -- 
+> 2.26.0
+> 
