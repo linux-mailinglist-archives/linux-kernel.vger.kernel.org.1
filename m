@@ -2,121 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B607F1B1666
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C141B1668
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgDTT6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 15:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727914AbgDTT6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 15:58:38 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1955C0610D6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:58:36 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id n143so5352418qkn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=zzywysm.com; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=1CahSbHOz6rwR75qjwbzvpk5/lxzAsXTVlJJFrluNmk=;
-        b=DHwk8VKEaaVWe6umPwn75HeYPWa4/to4TPUyIyniHa8w0VjI4jbFRgfwiJbMPyVTBF
-         XIxMCwftVuZ5LMDuVHb9gd/oo9bVOeOag3KnWsbyRKiBySEDw18VNG9po6wPOgaX+JV0
-         U696lIpKGeSvPcCzw56gqM/agX1+2/QWVes4jWwOX1kSM0DMbVae9AqQEle3/5swq1WR
-         3E0xc6MJg7TbdMO3xq2INKKP9cMKexf1GETBAnT4Wc/qvIJu4eZ79zfLThZbNisSrGcf
-         uNvuImd6aWtDGh5xTm0hSIil3sDlm0TTj3TRSR1SEsiBL/e+4Ps6DP19SkF+CcVNT33D
-         HkgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=1CahSbHOz6rwR75qjwbzvpk5/lxzAsXTVlJJFrluNmk=;
-        b=Xw/W2Fw8YRlcDombglGdm0kSZlwsJdEgH++xIfdGhzAJAOtNMED3jXjyUOzqtTGJFO
-         wLFCTUzvsne5tb3XtFRqhdbG2FluEb277SWTQzKsJFB0S6RH57aws0uqbGsui3BG3dl7
-         HTU83FADNaFjjOgvGPETHHRIJrQ/bcyiDiUUxBGk4FTJx5IZS2ka/QaAEBNSBtWW3Dt7
-         YnktaRX9c+q4rqfePWo9IdYZBRHxR3G4XCFYp06RkTmfNZAqGgn8TtVay0GVNwvS4qi4
-         P5BSZGPuP1a3hf2O0zSoUhNVgnuM3c1IGJKnvTf7Z8XmAyzJ6uO8BSyVN1b86Qkco5o1
-         eHtA==
-X-Gm-Message-State: AGi0PuYjfrvU6zUZ/n6Xtp5xr7A8yBJ1Or1pcCDwo+hW5uKeIx10BJiO
-        LudT+y1oiQ3It1+pths0RYDhIw==
-X-Google-Smtp-Source: APiQypLbKFRt3y7j9cRt5ohxKGUgZ2cg5IXsM72wAdwrD/eEvlPuY2BnSQ46fW3IHvQ9kSE9m6xMag==
-X-Received: by 2002:a37:5284:: with SMTP id g126mr18284316qkb.51.1587412716060;
-        Mon, 20 Apr 2020 12:58:36 -0700 (PDT)
-Received: from [10.19.49.2] (ec2-3-17-74-181.us-east-2.compute.amazonaws.com. [3.17.74.181])
-        by smtp.gmail.com with ESMTPSA id j2sm241058qtp.5.2020.04.20.12.58.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Apr 2020 12:58:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 2/9] fix empty-body warning in posix_acl.c
-From:   Zzy Wysm <zzy@zzywysm.com>
-In-Reply-To: <CAHk-=wjSzuTyyBkmMDG4fx_sXzLJsh+9Xk-ubgbpJzJq_kzPsA@mail.gmail.com>
-Date:   Mon, 20 Apr 2020 14:58:31 -0500
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        target-devel <target-devel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F8B969BE-A2B1-4E6D-8746-BBFBE6399328@zzywysm.com>
-References: <20200418184111.13401-1-rdunlap@infradead.org>
- <20200418184111.13401-3-rdunlap@infradead.org>
- <CAHk-=wjSzuTyyBkmMDG4fx_sXzLJsh+9Xk-ubgbpJzJq_kzPsA@mail.gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1728173AbgDTT7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 15:59:02 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51904 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726324AbgDTT7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 15:59:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=T3mQKlhtFGHs08GyVcsfNUPTltwQz0CSj49TT0aYLW8=; b=P1Np4OloDgFFs80Ll4OLOvuvSC
+        VSqwuxEmQpE2ZXTUWXpxyh8L6nYVRvzuZallxuqbat1Eoc0d/mR3KoWt+Ocn3vJjvPqi+d+2AQli3
+        3rgHr08EN7Y5vTSwLc8qaMoQY6zBDHV6ToLAmz8c05ZW/TQC1kUUTdIeTzB3ER+Xx5vs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jQcZF-003tRE-Pl; Mon, 20 Apr 2020 21:58:57 +0200
+Date:   Mon, 20 Apr 2020 21:58:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 1/3] dt-bindings: net: Correct description of
+ 'broken-turn-around'
+Message-ID: <20200420195857.GI917792@lunn.ch>
+References: <20200420180723.27936-1-f.fainelli@gmail.com>
+ <20200420180723.27936-2-f.fainelli@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420180723.27936-2-f.fainelli@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 20, 2020 at 11:07:21AM -0700, Florian Fainelli wrote:
+> The turn around bytes (2) are placed between the control phase of the
+> MDIO transaction and the data phase, correct the wording to be more
+> exact.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-> On Apr 18, 2020, at 1:53 PM, Linus Torvalds =
-<torvalds@linux-foundation.org> wrote:
->=20
-> Thirdly, there's a *reason* why "-Wextra" isn't used.
->=20
-> The warnings enabled by -Wextra are usually complete garbage, and
-> trying to fix them often makes the code worse. Exactly like here.
->=20
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-As the instigator of this warning cleanup activity, even _I_ don=E2=80=99t=
- recommend
-building with all of -Wextra.  Doing so on an allmodconfig build =
-generates=20
-500 megabytes of warning text (not exaggerating), primarily due to=20
--Wunused-parameter and Wmissing-field-initializers.
-
-I strongly recommend disabling them with -Wno-unused-parameter=20
--Wno-missing-field-initializers since the spew is completely =
-unactionable.
-
-On the other hand, -Woverride-init found a legit bug that was breaking =
-DVD
-drives, fixed in commit 03264ddde2453f6877a7d637d84068079632a3c5.
-
-I believe finding a good set of compiler warning settings can lead to =
-lots of=20
-good bugs being spotted and (hopefully) fixed.  Why let syzbot do all =
-the work?
-
-zzy
-
+    Andrew
