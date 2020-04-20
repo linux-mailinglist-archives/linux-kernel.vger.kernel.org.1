@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7961B1578
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044AA1B1571
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbgDTTJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 15:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        id S1728102AbgDTTJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 15:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728022AbgDTTJj (ORCPT
+        by vger.kernel.org with ESMTP id S1727914AbgDTTJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 15:09:39 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8F0C061A0C;
-        Mon, 20 Apr 2020 12:09:38 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d17so13538878wrg.11;
-        Mon, 20 Apr 2020 12:09:38 -0700 (PDT)
+        Mon, 20 Apr 2020 15:09:36 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6930C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:09:35 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y24so803616wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 12:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pMhdquAr/HzwmzyKmiKytwMMb3XOVcxGDwBpxb4EVIg=;
-        b=hYuN6zysHNYcwwxQGzpo9119HGSST2EZyKQOVX+aYFlmAyUyJEVYJsDF4z+TXPld/M
-         k1aNILU9rvMgcfkNJz65/RdrQUOwZvF1PhkxO1qEUWzCDB5c6g8M9sKJoFmINh9Zxi2m
-         4NQY7cpT9lYejThY7YkiTitFdqt4z3LDerfseEIiDgcRcof8FlRAOOqdjr+y2//8lyu6
-         eL+MTW9Xe703kSnHY8m1zGqGeGxtJQMqqW5DC3+gf9FJuiUKlW6jGx95ZuNjhFP8iDe2
-         IQwDvA7mLApN39aBCanhDaxLh+0LER2kyFEio8bLeXiXngzpKob4wjdmDofS3s/y9fFW
-         f4ig==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=YqYAor/ApIIt19cJKNwvcsnIqUVFNbWnoDijOlyYHgE=;
+        b=RkHoxipA4EHNod4vicJf9LOy+sn0bQNs3ayzNA/jOY17MxAXRE7yU5VPBddPX8EjeW
+         GxPad84V6zusnUj3iAko9TOGoFmHKphICMcklCO3Nof5dAltqODzkw5BK0z7KaSWOvFT
+         QzlZ1iJ3gJrrhr/h9aXAwqnftbTNeburqANKUi+aDOm7+RCBh3//082lgWECbkZGSU0B
+         adZFyAriXfbbMRazzInxtJ3jftZbDEJaQyp0jHjutJTdZjTbBGW/j0KRP1/WSkG18Vzg
+         C+gM7vsdsEOozUGlIAMyghOrUsu0CzeelrnEhoHpmQyMs6Vkwi3Xj5O3FIwyxkJ9pmF8
+         ua3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pMhdquAr/HzwmzyKmiKytwMMb3XOVcxGDwBpxb4EVIg=;
-        b=LTCeMIAQ2kmGGy9ui5aY/Xi2suWo1hw3fBo4p+94dEMjOAMixgZKQ0sdgr9LFPTc+J
-         +TLG/swPJv4Rg9gVDcjGDPfrsTIsVP9Tx1bZAPo0xHHGhtlVrpWcQyG0/Fvabz0SGBAE
-         JQsjZgDfMsI7jevKWyCWekZP/wgou4/KPIMNV+rcaA7rwzDQ9Iam8js8m5kVKGI9BWgN
-         sWY+ybjxwsCLNcRJczC2l07vtXNytNDFxPmEEBYEnkIpM2GHeGlS+xh+DIm62M/Py8O+
-         ab/N0s0ntUaF48aS3ciyeiLXATF7vHw07dYNUEd96cDt4Cqb2/8pra7gwKldgWA0flTo
-         0wnw==
-X-Gm-Message-State: AGi0PuZg5EC5gSr0N+OM43Siz9nmGZjXX8SGxumELuTf0UwtxXkzpzfu
-        Uqg1qd4ha8c2cbBbZL7TA4Y=
-X-Google-Smtp-Source: APiQypLQvSn0BosVRuMhVoCRqWBE5h7XjuUYVu/ikcSJ6qJtVhmmUeri08ztEGOkX+C6ICTmM5iSpw==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr22168182wrn.56.1587409777141;
-        Mon, 20 Apr 2020 12:09:37 -0700 (PDT)
-Received: from mail.broadcom.com ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id y5sm621251wru.15.2020.04.20.12.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 12:09:36 -0700 (PDT)
-From:   Kamal Dasu <kdasu.kdev@gmail.com>
-To:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Patch v3 9/9] spi: bcm-qspi: MSPI_SPCR0_MSB MSTR bit exists only on legacy controllers
-Date:   Mon, 20 Apr 2020 15:08:53 -0400
-Message-Id: <20200420190853.45614-10-kdasu.kdev@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200420190853.45614-1-kdasu.kdev@gmail.com>
-References: <20200420190853.45614-1-kdasu.kdev@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=YqYAor/ApIIt19cJKNwvcsnIqUVFNbWnoDijOlyYHgE=;
+        b=HSjzhVo8sZccLcMOGBRH2o275Ncolv4pkEb4VedSndD2ZOcghPg8mTrR3b/3T0E39+
+         6nlUxjr6ijXi3QUBc2JsafegEPkzyx6jhz732540qb+gmTABFpoMyw+akTbm7+f3rSsD
+         K/mkRRIaNJQhwbKpd6gOCOi/9F2uWKkDUlJ5fvLBYl141YdPYR+oRrsarWgKv7a5ugl8
+         2Qgmm6Gkvy8rPoztn9rQHWMRD+fYMU1samQ7ZXJDDBRV0PF7/Bg0cskBZkVOzp7RYGqg
+         6Smv3YR2danZvox+XmEEDsM8rlkDYl3I8xVNohMPjtkpoGz+GguGQE/sNh/gz4PNgaXV
+         c/eQ==
+X-Gm-Message-State: AGi0PuYznh6D0Mgp5JXbjUzZbKKcqPrXIQ+IXFLpHh0Xt0Ry/EI++9e5
+        zlwZN6oj+pHo8lY2S7Si+7yNEjtm6+i1lA==
+X-Google-Smtp-Source: APiQypIaJHSST6LTUwkLJR90NqbKD7bSzv6kj4q+6e2lfqOr49jh2OLHaLhYepFQf9wXy2EEYGaStQ==
+X-Received: by 2002:a1c:41d7:: with SMTP id o206mr852216wma.89.1587409774567;
+        Mon, 20 Apr 2020 12:09:34 -0700 (PDT)
+Received: from gmail.com ([64.225.109.20])
+        by smtp.gmail.com with ESMTPSA id l4sm568959wrw.25.2020.04.20.12.09.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Apr 2020 12:09:33 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 21:09:16 +0200
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clang-format for v5.7-rc3
+Message-ID: <20200420190916.GA11695@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: elm/2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set MASTER bit on the MSPI_SPCR0_MSB only for legacy MSPI and HIF_MSPI
-controllers.
+Hi Linus,
 
-Fixes: fa236a7ef240 ("spi: bcm-qspi: Add Broadcom MSPI driver")
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/spi/spi-bcm-qspi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+The usual update for clang-format plus a requested C++ formatting change
+(to align it with one of the C++ files we have).
 
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index 99f2cfcbb50c..681d09085175 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -576,11 +576,17 @@ static void bcm_qspi_hw_set_parms(struct bcm_qspi *qspi,
- 	spcr = clamp_val(spbr, bcm_qspi_spbr_min(qspi), QSPI_SPBR_MAX);
- 	bcm_qspi_write(qspi, MSPI, MSPI_SPCR0_LSB, spcr);
- 
--	spcr = MSPI_MASTER_BIT;
-+	if (!qspi->mspi_maj_rev)
-+		/* legacy controller */
-+		spcr = MSPI_MASTER_BIT;
-+	else
-+		spcr = 0;
-+
- 	/* for 16 bit the data should be zero */
- 	if (xp->bits_per_word != 16)
- 		spcr |= xp->bits_per_word << 2;
- 	spcr |= xp->mode & 3;
-+
- 	bcm_qspi_write(qspi, MSPI, MSPI_SPCR0_MSB, spcr);
- 
- 	if (bcm_qspi_has_fastbr(qspi)) {
--- 
-2.17.1
+Cheers,
+Miguel
 
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/ojeda/linux.git tags/clang-format-for-linus-v5.7-rc3
+
+for you to fetch changes up to 5d65a0218fee471e2cd512a8139ec857183b4721:
+
+  clang-format: Update with the latest for_each macro list (2020-04-18 13:49:33 +0200)
+
+----------------------------------------------------------------
+Two trivial clang-format changes:
+
+ - Don't indent C++ namespaces (Ian Rogers)
+
+ - The usual clang-format macro list update (Miguel Ojeda)
+
+----------------------------------------------------------------
+Ian Rogers (1):
+      clang-format: don't indent namespaces
+
+Miguel Ojeda (1):
+      clang-format: Update with the latest for_each macro list
+
+ .clang-format | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
