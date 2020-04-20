@@ -2,85 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4B51B0F9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921C91B0FA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgDTPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 11:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgDTPMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:12:35 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4511C061A0F;
-        Mon, 20 Apr 2020 08:12:34 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id w6so5764697ilg.1;
-        Mon, 20 Apr 2020 08:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1KANu4cUD65S82lmIiU07FeIllaQkhNpX/3s3IPgN3E=;
-        b=RgDFb32KuNLLsna2y/5I+2tdw6jgmi60xwvuo7s1rSDaE/7w30gtcWsShaerB09w4m
-         1YrgVlC4K7UV3jIfy/IckwYodny0QH0BAqqFhyYZJi0XCfugelfX2MxoMShXqKdWw4Lm
-         4ma+xK9Cn6F0Hudx69m1Sub1EGdR7hP/4k7v///Q+u6yL1uoM+MzceMw7Opc1ody8izi
-         kM/ctkn4CPaJuXDhGH9KY4Ls5LpjiQdghcg4EJ3LLUbHuP7GddectBN7nYYpfHt5fLxO
-         LXK5GzQln+bSYXlFEc9wlyk6Qv4E+cIfWND/VxRF1T0B6+t9dJKV+MbD/vq5VJV0aYIj
-         luZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1KANu4cUD65S82lmIiU07FeIllaQkhNpX/3s3IPgN3E=;
-        b=Htc47bAuASVbzIEVlO9kltvrnjMH+j3lwjAH5mxTptj/Ja5hTr7MYmnR+rlkkmTSEZ
-         9NztRsH5Gt3J6y3XW9538BtQiNp1G0PrjagwGGwaRzar6CXu0Z8DdQpWqYx9xOHeXRFH
-         ch/8qGDnFs0bY3VqAyMs5nMCxBUz6Z9WmIZsRPCZSS5I7CRNzMUn2twljDnoXBJGowsY
-         1/2Li+ykP/qGMT4sUSaVeMP5gqk2NJ0NmVWRiMub6aS6P3pX684O9F9IETf28wxdDmA8
-         9725W1VhzdgvfnWrU78HNjDS1aJ9AeUtWmVti2jVq2NxOeNHLisIwckH25Pmu3pWIwue
-         CErg==
-X-Gm-Message-State: AGi0Pua1o8q9+syKclcqYBvn26gq4MBiM4q/x13l/49SZt/cJH0WNknS
-        kwmTbRkD05m+vISqt006mtE3w0dDDmDCZmlxJL4=
-X-Google-Smtp-Source: APiQypL2E1Y6m/iRXIttTCmhHlg64CrNNr4IVdxn0m3KXmrJwlEWOznwojod+3UwyRO0rYWdfr+1tjDqAQ3nBBsAuKU=
-X-Received: by 2002:a92:5dca:: with SMTP id e71mr15507083ilg.34.1587395554381;
- Mon, 20 Apr 2020 08:12:34 -0700 (PDT)
+        id S1728701AbgDTPNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 11:13:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:50702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727862AbgDTPNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 11:13:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B530C31B;
+        Mon, 20 Apr 2020 08:13:46 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D4033F73D;
+        Mon, 20 Apr 2020 08:13:44 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 16:13:41 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200420151341.7zni3bwroso2kpdc@e107158-lin.cambridge.arm.com>
+References: <20200403123020.13897-1-qais.yousef@arm.com>
+ <292dbd54-e590-dc4f-41e6-5f86e478c0ee@arm.com>
 MIME-Version: 1.0
-References: <20200419192339.32023-1-kdasu.kdev@gmail.com> <20200419192339.32023-4-kdasu.kdev@gmail.com>
- <63176468-53b6-c11a-9e33-2ca9dd06f7a3@gmail.com>
-In-Reply-To: <63176468-53b6-c11a-9e33-2ca9dd06f7a3@gmail.com>
-From:   Kamal Dasu <kdasu.kdev@gmail.com>
-Date:   Mon, 20 Apr 2020 11:12:21 -0400
-Message-ID: <CAC=U0a1mOWo3ucMJ7x5wuWQ44NRA2+Dj6fKAi1dbevNaxcYJzA@mail.gmail.com>
-Subject: Re: [Patch v2 3/9] spi: bcm-qspi: Handle lack of MSPI_REV offset
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <292dbd54-e590-dc4f-41e6-5f86e478c0ee@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes missed this one.
-Should I send a v3 of the entire set.
+On 04/20/20 10:29, Dietmar Eggemann wrote:
+> On 03.04.20 14:30, Qais Yousef wrote:
+> 
+> [...]
+> 
+> > @@ -924,6 +945,14 @@ uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+> >  	return uc_req;
+> >  }
+> >  
+> > +static void uclamp_rt_sync_default_util_min(struct task_struct *p)
+> > +{
+> > +	struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+> > +
+> > +	if (!uc_se->user_defined)
+> > +		uclamp_se_set(uc_se, sysctl_sched_rt_default_uclamp_util_min, false);
+> > +}
+> > +
+> >  unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+> >  {
+> >  	struct uclamp_se uc_eff;
+> > @@ -1030,6 +1059,12 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+> >  	if (unlikely(!p->sched_class->uclamp_enabled))
+> >  		return;
+> >  
+> > +	/*
+> > +	 * When sysctl_sched_rt_default_uclamp_util_min value is changed by the
+> > +	 * user, we apply any new value on the next wakeup, which is here.
+> > +	 */
+> > +	uclamp_rt_sync_default_util_min(p);
+> > +
+> 
+> Does this have to be an extra function? Can we not reuse
+> uclamp_tg_restrict() by slightly rename it to uclamp_restrict()?
 
-Kamal
+Hmm the thing is that we're not restricting here. In contrary we're boosting,
+so the name would be misleading.
 
-On Sun, Apr 19, 2020 at 3:44 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> Hi Kamal,
->
-> On 4/19/2020 12:23 PM, Kamal Dasu wrote:
-> > Older MIPS chips have a QSPI/MSPI controller that does not have the
-> > MSPI_REV offset, reading from that offset will cause a bus error. Match
-> > their compatible string and do not perform a read from that register in
-> > that case.
-> >
-> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->
-> This patch should also have a From: that is from me.
-> --
-> Florian
+> 
+> This function will then deal with enforcing restrictions, whether system
+> and taskgroup hierarchy related or default value (latter only for rt-min
+> right now since the others are fixed) related.
+> 
+> uclamp_eff_get() -> uclamp_restrict() is called from:
+> 
+>   'enqueue_task(), uclamp_update_active() -> uclamp_rq_inc() -> uclamp_rq_inc_id()' and
+> 
+>   'task_fits_capacity() -> clamp_task_util(), rt_task_fits_capacity() -> uclamp_eff_value()' and
+> 
+>   'schedutil_cpu_util(), find_energy_efficient_cpu() -> uclamp_rq_util_with() -> uclamp_eff_value()'
+> 
+> so there would be more check-points than the one in 'enqueue_task() -> uclamp_rq_inc()' now.
+
+I think you're revolving around the same idea that Patrick was suggesting.
+I think it is possible to do something in uclamp_eff_get() too.
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> Only lightly tested:
+> 
+> ---8<---
+> 
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Date: Sun, 19 Apr 2020 01:20:17 +0200
+> Subject: [PATCH] sched/core: uclamp: Move uclamp_rt_sync_default_util_min()
+>  into uclamp_tg_restrict()
+> 
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>  kernel/sched/core.c | 34 +++++++++++++++-------------------
+>  1 file changed, 15 insertions(+), 19 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 8f4e0d5c7daf..6802113d6d4b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -899,12 +899,22 @@ unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+>  }
+>  
+>  static inline struct uclamp_se
+> -uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+> +uclamp_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+>  {
+> -	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+> -#ifdef CONFIG_UCLAMP_TASK_GROUP
+> -	struct uclamp_se uc_max;
+> +	struct uclamp_se uc_req, __maybe_unused uc_max;
+> +
+> +	if (unlikely(rt_task(p)) && clamp_id == UCLAMP_MIN &&
+> +	    !uc_req.user_defined) {
+> +		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+> +		int rt_min = sysctl_sched_rt_default_uclamp_util_min;
+> +
+> +		if (uc_se->value != rt_min)
+> +			uclamp_se_set(uc_se, rt_min, false);
+> +	}
+>  
+> +	uc_req = p->uclamp_req[clamp_id];
+> +
+> +#ifdef CONFIG_UCLAMP_TASK_GROUP
+>  	/*
+>  	 * Tasks in autogroups or root task group will be
+>  	 * restricted by system defaults.
+> @@ -933,7 +943,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+>  static inline struct uclamp_se
+>  uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+>  {
+> -	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+> +	struct uclamp_se uc_req = uclamp_restrict(p, clamp_id);
+>  	struct uclamp_se uc_max = uclamp_default[clamp_id];
+>  
+>  	/* System default restrictions always apply */
+> @@ -943,14 +953,6 @@ uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+>  	return uc_req;
+>  }
+>  
+> -static void uclamp_rt_sync_default_util_min(struct task_struct *p)
+> -{
+> -	struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+> -
+> -	if (!uc_se->user_defined)
+> -		uclamp_se_set(uc_se, sysctl_sched_rt_default_uclamp_util_min, false);
+> -}
+> -
+>  unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+>  {
+>  	struct uclamp_se uc_eff;
+> @@ -1057,12 +1059,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+>  	if (unlikely(!p->sched_class->uclamp_enabled))
+>  		return;
+>  
+> -	/*
+> -	 * When sysctl_sched_rt_default_uclamp_util_min value is changed by the
+> -	 * user, we apply any new value on the next wakeup, which is here.
+> -	 */
+> -	uclamp_rt_sync_default_util_min(p);
+> -
+>  	for_each_clamp_id(clamp_id)
+>  		uclamp_rq_inc_id(rq, p, clamp_id);
+>  
+> -- 
+> 2.17.1
