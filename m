@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21BC1B0E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7B1B0E54
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgDTO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39742 "EHLO mail.kernel.org"
+        id S1729898AbgDTO1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:27:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbgDTO1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:27:44 -0400
+        id S1726805AbgDTO1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:27:50 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7772E20857;
-        Mon, 20 Apr 2020 14:27:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65B4120B1F;
+        Mon, 20 Apr 2020 14:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587392864;
-        bh=ac2OWWBXr53L9YPDwHbJzkfcGUHqONQngqqS3KBJ9c4=;
+        s=default; t=1587392870;
+        bh=bPab1cXXjTKCGuVPa8Wpl3AqXztqKcJ3d16mm/JZp5o=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=dc9gBCaHLppl0lmTl0FUd0mpoZ+mCwdv5If1wx36/CY6OYatqWHnHzjp7AGCe0ZC6
-         IdX6hFxgFvrL0hTzILU3XhyMgDGS7eV7x1CSVjmE6aHLqMotG3YLBqWvg/5N/jd3Z4
-         V3OkQRSL9jR6QUKQucJHQbDaerx4bDIcMdXSLNuU=
-Date:   Mon, 20 Apr 2020 15:27:41 +0100
+        b=kyEso5E+3LJnfxMS4uFChrckuUkcqy5XEwf6azX4hEDUzA0EXVht9utTshsBId9hn
+         xdkC3feXceOdrz4N3WDbt3dvFL0GcBSMsofdSX/4/kkPdgek9rDQ84kmgDWDZAyC/v
+         j4tOxeX76NyXMALvzpEONuAPOlr24/Jr0jkg3VL8=
+Date:   Mon, 20 Apr 2020 15:27:47 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, linux-kernel@vger.kernel.org,
-        Jason Yan <yanaijie@huawei.com>, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, perex@perex.cz
-In-Reply-To: <20200420042911.19379-1-yanaijie@huawei.com>
-References: <20200420042911.19379-1-yanaijie@huawei.com>
-Subject: Re: [PATCH] ASoC: wcd934x: remove unneeded semicolon
-Message-Id: <158739283776.7647.11335076851233885002.b4-ty@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>, tiwai@suse.com,
+        lgirdwood@gmail.com, geert@linux-m68k.org, perex@perex.cz
+Cc:     ckeepax@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200420125343.20920-1-yuehaibing@huawei.com>
+References: <20200418090853.30340-1-yuehaibing@huawei.com> <20200420125343.20920-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH] ASoC: wm89xx: Add missing dependency
+Message-Id: <158739283776.7647.10304654124585055590.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 12:29:11 +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
-> 
-> sound/soc/codecs/wcd934x.c:3621:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:4270:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:4018:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:4043:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3804:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3866:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3596:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3542:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3673:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:3723:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:2492:2-3: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:1790:3-4: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:1806:3-4: Unneeded semicolon
-> sound/soc/codecs/wcd934x.c:1812:2-3: Unneeded semicolon
+On Mon, 20 Apr 2020 20:53:43 +0800, YueHaibing wrote:
+> sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
+> wm8900.c:(.text+0xa36): undefined reference to `__devm_regmap_init_i2c'
+> sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
+> wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+> sound/soc/codecs/wm8900.o: In function `wm8900_exit':
+> wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+> sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
+> wm8988.c:(.text+0x857): undefined reference to `__devm_regmap_init_i2c'
+> sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
+> wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+> sound/soc/codecs/wm8988.o: In function `wm8988_exit':
+> wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
+> sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
+> wm8995.c:(.text+0x1c4f): undefined reference to `__devm_regmap_init_i2c'
+> sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
+> wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
+> sound/soc/codecs/wm8995.o: In function `wm8995_exit':
+> wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
 > 
 > [...]
 
@@ -63,8 +66,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wcd934x: remove unneeded semicolon
-      commit: b40efd0f254356556443355bc87c9a5e6e3d9dee
+[1/1] ASoC: wm89xx: Add missing dependency
+      commit: 9bff3d3024e51122c0c09634056debcd6c7359ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
