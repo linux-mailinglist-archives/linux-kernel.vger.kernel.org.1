@@ -2,337 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649931B04B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0DC1B04A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgDTInT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgDTInJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:43:09 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE55CC061A0C;
-        Mon, 20 Apr 2020 01:43:08 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j2so11018625wrs.9;
-        Mon, 20 Apr 2020 01:43:08 -0700 (PDT)
+        id S1726083AbgDTImY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:42:24 -0400
+Received: from mail-dm6nam11on2054.outbound.protection.outlook.com ([40.107.223.54]:53994
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725773AbgDTImX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 04:42:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wp2arRIEIq0PINB5d2XUS/5m9sDFI7If5aHTp3RZ2mVM1ImP/2TekTvPpNH5jtW8Bq8t0sMllieZ0J6sj1wFsNUbnqwYRysPzD3+stBmSEE/Yfo5gmYFjSP1vt9JQAqExyzhKwQyk+bcfDAWaqqk1MxSBr0ne/nIU0gTkNvqmd5mWrN7RvX1HfeEbmsMCDBinY+ka0Fx9lnCdH2B8mqr7ulqWRgu34XKctss750gG+K9uYTbTol3AXSuEz6vHVdyirFgNKyp9gsLdJb1p018zKBKl1ptvRlKje1d/PAoLAdlcpT+BYocVG0pxpqS7QMQUCj2U6IxAwemJxfGiy7B4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vLjunkOMTujSsQJr/f8gk5IQLC5TKKCawDBQAt4Wo8k=;
+ b=odtRPbjDcQ38J20t+1FR8UrzbUr+Ms8GDCuPrjZT7syIpArDMIRY30TSVfu2SXZKlb4f3ADy9hqFP5jFl5l4BFGI9DQzAKQtWQwp6XRXUYBldvywIo1uZ6AA9jAF8L1zgcaWXFonOZl2XY7McJwYJ8MFSzyVUkWEA8QCETkfQqIWjgMH3yRutN2gbyYX3IzkC2haGovOV1RqDgp2NssyM/AW8ykroaL72yjHu+5uEqcoj5catvZW5/veErHCKBgNo9wJNpPA1KWahIFi5ge4V73C6v+hEYZ7+Djdn+a161l8UXeqsH45Tw3EI2nnZrZrmpPIqBERsXABPX6I9SvQrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hRRIkqL6fbq8TpMuecFXBC2M0LcF4y35GjVFBof8OL4=;
-        b=LvrP8zzSE1w42oWbY5ycewQFc6Nu2hLhU9aazl5iaxNiedEQZJgw3BH8Kal7nZS092
-         CVSTyf44G1A69gWsO3zKIrMQNafxU3PmEGnWj8Le6sevEtMnjZ2xMgpZhZjypmuGXgM2
-         ASrI/tfW1/wIouvoAaPUGQrVeHLqeKP+XM7ySiW4qUfQKUh8Ff2D8tD00cH9AhYVQH+z
-         FS/bhBRPg7nz5iCOPgYYeFj636GVnQd6pP21zqpWXdW43hI2SVFc2ptIVMS9uWJ6FMvl
-         Kh4amPTzjuO9mo6QgQkSzKYEP3oQhoykQ5p2/qaNd0OjqMRDIXgB/IuE2JEQrsd1W6A/
-         s3tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hRRIkqL6fbq8TpMuecFXBC2M0LcF4y35GjVFBof8OL4=;
-        b=uiu0/s2bNrm/XFx/IqNlCBQjooXhlJl+GQHlC/fgbs6iz730ohOx/WVCOMf1FOGnUO
-         WLJuJAHJPE0lbXUUi+Ka7Ae9UpUAtcWoZqLsWEOSnzW3h9c1USaexXv8NI46MKoMrbtx
-         GJyrglwbwgJNCk55Q0eRmq8uy08rRGLRanBcXb4n/urky8fMyjIRuamxR8nqw3KTomkA
-         f35o9b0ZMSeoA2VjpiWd68yu6kMJxZ1hvz/1+5efs2sL+Tx+QtbikMvlLza7g0XS/lf6
-         3L/LwaJJ4CBsvQj/kJtrqE4YJOS0CnzVruS9sbYa7ft0/F2Zpjt1/kYpsdsFZII1yz22
-         qK1Q==
-X-Gm-Message-State: AGi0Pub3BUyIntWbegn1SMtZKtS/zXqBnT9bWWXfSCmfPlHO9eQSJSB6
-        z+JIgyiP+blT0qbs5X0K8D8wioifoPU=
-X-Google-Smtp-Source: APiQypKiRV4EIzXvp2eVvpsZ7wGh/mmqFvoaEzfv+7V1f6vTzOxoHgNkPGLu+bGYJuriLUAfu7rxUA==
-X-Received: by 2002:adf:f342:: with SMTP id e2mr16676885wrp.146.1587372187496;
-        Mon, 20 Apr 2020 01:43:07 -0700 (PDT)
-Received: from meru.fronius.com ([2a01:cb18:832e:5f00:c546:5ea:178b:4074])
-        by smtp.gmail.com with ESMTPSA id g74sm403183wme.44.2020.04.20.01.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 01:43:06 -0700 (PDT)
-From:   Mathieu Othacehe <m.othacehe@gmail.com>
-To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mathieu Othacehe <m.othacehe@gmail.com>
-Subject: [PATCH v3 4/4] iio: vcnl4000: Add buffer support for VCNL4010/20.
-Date:   Mon, 20 Apr 2020 10:42:10 +0200
-Message-Id: <20200420084210.14245-5-m.othacehe@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200420084210.14245-1-m.othacehe@gmail.com>
-References: <20200420084210.14245-1-m.othacehe@gmail.com>
-MIME-Version: 1.0
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vLjunkOMTujSsQJr/f8gk5IQLC5TKKCawDBQAt4Wo8k=;
+ b=2K4NEw3C2ccRpPr2EraG/OYqDTOPeUxzql3jPhGKhSbExMe46hfUfvUwkGq0ovLkMlBeKEap2NnwAUT6VjEUs6ijqAOUjhtAGbWen9vGBoQrmioKEoTJH/dNN1VanbiVyTFOr9/qKXbgWAkrmV8rpktl5vcFSa1MBFEugtSNqU0=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Christian.Koenig@amd.com; 
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com (2603:10b6:5:2a9::15)
+ by DM6PR12MB2986.namprd12.prod.outlook.com (2603:10b6:5:39::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Mon, 20 Apr
+ 2020 08:42:20 +0000
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766]) by DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766%3]) with mapi id 15.20.2921.030; Mon, 20 Apr 2020
+ 08:42:20 +0000
+Subject: Re: [PATCH 02/10] drm/ttm: separate PageHighMem() and
+ PageHighMemZone() use case
+To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Laura Abbott <labbott@redhat.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <1587369582-3882-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1587369582-3882-3-git-send-email-iamjoonsoo.kim@lge.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <412ea2bd-1719-c086-b3e7-64eec6e2bdc4@amd.com>
+Date:   Mon, 20 Apr 2020 10:42:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+In-Reply-To: <1587369582-3882-3-git-send-email-iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: FR2P281CA0012.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::22) To DM6PR12MB4401.namprd12.prod.outlook.com
+ (2603:10b6:5:2a9::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FR2P281CA0012.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27 via Frontend Transport; Mon, 20 Apr 2020 08:42:16 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3b69fc7d-3552-4bdf-e478-08d7e506bcf6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2986:|DM6PR12MB2986:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2986BB630A10B5E8EBD1F7EF83D40@DM6PR12MB2986.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 03793408BA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4401.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(316002)(478600001)(31696002)(86362001)(2616005)(5660300002)(8676002)(4326008)(31686004)(81156014)(8936002)(2906002)(66476007)(6486002)(7416002)(66556008)(66946007)(186003)(36756003)(6666004)(16526019)(52116002)(6916009)(54906003);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vh3wa98Vj9ha5Phk51yJRug1CIKrX9NgXP5/+qxBnhRf/a7L2mJjbx4opWk5MvF7Tj9L897SwrvivUVa9rsR1KG0K41OBwZL64QlGR2AC1/loB/wX1epdeRXnygfWlZBs/AUBkhSk9T+BE/gabiY2usVNjwGNjKOx8wiPQbFrJZ+/F0YO49jSv+bIGVw5SxDFjbN9P6xU4MBh4d1l3pn/pP89v6rXGajUI7oZcpk5eOJrAeMarNBs7oc1sAxhwQKm/1zWWR73rTRnFH3xg3E9MpqmpUxpIzevohjWdRHyJNqDdlLWYFSucSuV4+kd6UfdZcaAEFH8qM7Kqi3DcVwxRpZgyTVowGvvkN3muVw/tTpwVS6ciT0W456JO96BC7xHIluEI4OIerlfmpKEXarQxrMH1N82YWVU9kuxMc9Kc2CWSLbZtm8k4w80UMovlIm
+X-MS-Exchange-AntiSpam-MessageData: ER6FbkZcFJB1JRsECEdwvm/t9ijo13NwCdGycv1lp0O6R9ZZSQi0CXMbPTqEt08NqvR5ZRHPT5VeFPfrYGyHJJSbqNew1Mc+toIiQgKXSHz4dFKCtE+BwnCtkrHezv0BV0Xc25oTni+2sZVW05Ko3Ei9VKiw6d96XH9F0yNElMM5HwPVYZyqPKrPR9BySRrLvZdMp2cKYzcNdItao3R3fCHAHpqO0UbQk3o4r1ErGlvf4LrISOjYLh789soLhA4gBH5eYkUlvXAJNDCYhsMNEC/jxErPjrlnURPxSc9QCjdotRf9iLLZ/KjXoE1XPd4gdnQbvTBGvfLL6XHbODELOnNhEQxD2HQzT8++uGb1imyGKDvY9YkYuqzCH/69rAGXK7skU3ptHYBU/hueQDVnh4gb3kI+Z0aGTLzwlZPCKRAA4OMI5QFB/P1m6KzvLzKKhihKQ5vYgvtc6xKM5JA2UepWetoyQEpDxA98YnroPNBGjoi3zuVKTRqxZUt74Sj3+5MtKvFug7CyWLYNa+rJBoSSzSwmHIcAF0B5KfR9+lAEjvXKicbqOESRpfef5dWZ6klmyxQ4ByuAomeD10xpQOOgud6CY2HiEsAt1Rlt05E0lb2qQXZZENKKozOqmYY0+782a0mMo6j2hPkiExz1a4y//P7Pw0Ux5syP0GNQ4rf7zNu9QRbdz6o1/h5TQvhW8535DM7Codn50WeLh6GST8OpIUGlKolHa7khsCOaXCc0Bj5gBMq0egFrnZW31poHtAoYjnAq52Zy/Ea7mfHCtnKCdqcbPo2/9lsmG4XqPhANmUL0zsqFxdGCBZsOKcVw/wJR96oR5xw9Rgu6pwpDR4oeADry15ob5o7gXLEzqKo=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b69fc7d-3552-4bdf-e478-08d7e506bcf6
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 08:42:20.2152
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nzB7US6Z+bTj64iR1l0M7fq9VlIoMNULa78R1oQ2pf9/ttWuoN9rO46D0HkWrmxb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2986
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VCNL4010 and VCNL4020 chips are able to raise interrupts on data ready.
-Use it to provide triggered buffer support for proximity data.
+Am 20.04.20 um 09:59 schrieb js1304@gmail.com:
+> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>
+> Until now, PageHighMem() is used for two different cases. One is to check
+> if there is a direct mapping for this page or not. The other is to check
+> the zone of this page, that is, weather it is the highmem type zone or not.
+>
+> Now, we have separate functions, PageHighMem() and PageHighMemZone() for
+> each cases. Use appropriate one.
+>
+> Note that there are some rules to determine the proper macro.
+>
+> 1. If PageHighMem() is called for checking if the direct mapping exists
+> or not, use PageHighMem().
+> 2. If PageHighMem() is used to predict the previous gfp_flags for
+> this page, use PageHighMemZone(). The zone of the page is related to
+> the gfp_flags.
+> 3. If purpose of calling PageHighMem() is to count highmem page and
+> to interact with the system by using this count, use PageHighMemZone().
+> This counter is usually used to calculate the available memory for an
+> kernel allocation and pages on the highmem zone cannot be available
+> for an kernel allocation.
+> 4. Otherwise, use PageHighMemZone(). It's safe since it's implementation
+> is just copy of the previous PageHighMem() implementation and won't
+> be changed.
+>
+> I apply the rule #4 for this patch.
+>
+> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-Those two chips also provide ambient light data. However, they are sampled
-at different rate than proximity data. As this is not handled by the IIO
-framework for now, and the sample frequencies of ambient light data are
-very low, do add buffer support for them.
+Reviewed-by: Christian König <christian.koenig@amd.com> for the TTM 
+changes, but I can't judge if the general approach makes sense or not.
 
-Signed-off-by: Mathieu Othacehe <m.othacehe@gmail.com>
----
- drivers/iio/light/Kconfig    |   2 +
- drivers/iio/light/vcnl4000.c | 173 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 173 insertions(+), 2 deletions(-)
+Regards,
+Christian.
 
-diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
-index 74970f18a93b..05f61b1e223a 100644
---- a/drivers/iio/light/Kconfig
-+++ b/drivers/iio/light/Kconfig
-@@ -506,6 +506,8 @@ config US5182D
- 
- config VCNL4000
- 	tristate "VCNL4000/4010/4020/4200 combined ALS and proximity sensor"
-+	select IIO_BUFFER
-+	select IIO_TRIGGERED_BUFFER
- 	depends on I2C
- 	help
- 	  Say Y here if you want to build a driver for the Vishay VCNL4000,
-diff --git a/drivers/iio/light/vcnl4000.c b/drivers/iio/light/vcnl4000.c
-index 3f9d63858b51..a0b98fc1c7a9 100644
---- a/drivers/iio/light/vcnl4000.c
-+++ b/drivers/iio/light/vcnl4000.c
-@@ -5,6 +5,7 @@
-  *
-  * Copyright 2012 Peter Meerwald <pmeerw@pmeerw.net>
-  * Copyright 2019 Pursim SPC
-+ * Copyright 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-  *
-  * IIO driver for:
-  *   VCNL4000/10/20 (7-bit I2C slave address 0x13)
-@@ -14,8 +15,7 @@
-  * TODO:
-  *   allow to adjust IR current
-  *   proximity threshold and event handling
-- *   periodic ALS/proximity measurement (VCNL4010/20)
-- *   interrupts (VCNL4010/20/40, VCNL4200)
-+ *   interrupts (VCNL4040, VCNL4200)
-  */
- 
- #include <linux/module.h>
-@@ -25,9 +25,13 @@
- #include <linux/pm_runtime.h>
- #include <linux/interrupt.h>
- 
-+#include <linux/iio/buffer.h>
- #include <linux/iio/events.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
-+#include <linux/iio/trigger.h>
-+#include <linux/iio/trigger_consumer.h>
-+#include <linux/iio/triggered_buffer.h>
- 
- #define VCNL4000_DRV_NAME "vcnl4000"
- #define VCNL4000_PROD_ID	0x01
-@@ -890,7 +894,14 @@ static const struct iio_chan_spec vcnl4010_channels[] = {
- 		.event_spec = vcnl4000_event_spec,
- 		.num_event_specs = ARRAY_SIZE(vcnl4000_event_spec),
- 		.ext_info = vcnl4000_ext_info,
-+		.scan_type = {
-+			.sign = 'u',
-+			.realbits = 16,
-+			.storagebits = 16,
-+			.endianness = IIO_CPU,
-+		},
- 	},
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
- };
- 
- static IIO_CONST_ATTR(in_illuminance_sampling_frequency_available,
-@@ -1012,10 +1023,153 @@ static irqreturn_t vcnl4010_irq_thread(int irq, void *p)
- 		mutex_unlock(&data->vcnl4000_lock);
- 	}
- 
-+	if (isr & VCNL4010_INT_DRDY && iio_buffer_enabled(indio_dev))
-+		iio_trigger_poll_chained(indio_dev->trig);
-+
-+end:
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t vcnl4010_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct vcnl4000_data *data = iio_priv(indio_dev);
-+	const unsigned long *active_scan_mask = indio_dev->active_scan_mask;
-+	u16 buffer[8] = {0}; /* 1x16-bit + ts */
-+	bool data_read = false;
-+	unsigned long isr;
-+	int val = 0;
-+	int ret;
-+
-+	mutex_lock(&data->vcnl4000_lock);
-+	ret = i2c_smbus_read_byte_data(data->client, VCNL4010_ISR);
-+	mutex_unlock(&data->vcnl4000_lock);
-+
-+	if (ret < 0)
-+		goto end;
-+
-+	isr = ret;
-+
-+	if (test_bit(0, active_scan_mask)) {
-+		if (test_bit(VCNL4010_INT_PROXIMITY, &isr)) {
-+			ret = vcnl4000_read_data(data,
-+						 VCNL4000_PS_RESULT_HI,
-+						 &val);
-+			if (ret < 0)
-+				goto end;
-+
-+			buffer[0] = val;
-+			data_read = true;
-+		}
-+	}
-+
-+	mutex_lock(&data->vcnl4000_lock);
-+	ret = i2c_smbus_write_byte_data(data->client, VCNL4010_ISR,
-+					isr & VCNL4010_INT_DRDY);
-+	mutex_unlock(&data->vcnl4000_lock);
-+
-+	if (ret < 0 || !data_read)
-+		goto end;
-+
-+	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-+					   iio_get_time_ns(indio_dev));
-+
- end:
-+	iio_trigger_notify_done(indio_dev->trig);
- 	return IRQ_HANDLED;
- }
- 
-+static int vcnl4010_buffer_postenable(struct iio_dev *indio_dev)
-+{
-+	struct vcnl4000_data *data = iio_priv(indio_dev);
-+	int ret;
-+	int cmd;
-+
-+	ret = iio_triggered_buffer_postenable(indio_dev);
-+	if (ret)
-+		return ret;
-+
-+	mutex_lock(&data->vcnl4000_lock);
-+
-+	ret = i2c_smbus_read_byte_data(data->client, VCNL4000_COMMAND);
-+	if (ret < 0)
-+		goto end;
-+
-+	/* Do not enable the buffer if we are already capturing events. */
-+	if ((ret & VCNL4000_SELF_TIMED_EN) > 0) {
-+		ret = -EBUSY;
-+		goto end;
-+	}
-+
-+	ret = i2c_smbus_write_byte_data(data->client, VCNL4010_INT_CTRL,
-+					VCNL4010_INT_PROX_EN);
-+	if (ret < 0)
-+		goto end;
-+
-+	cmd = VCNL4000_SELF_TIMED_EN | VCNL4000_PROX_EN;
-+	ret = i2c_smbus_write_byte_data(data->client, VCNL4000_COMMAND, cmd);
-+	if (ret < 0)
-+		goto end;
-+
-+end:
-+	mutex_unlock(&data->vcnl4000_lock);
-+	if (ret < 0)
-+		iio_triggered_buffer_predisable(indio_dev);
-+
-+	return ret;
-+}
-+
-+static int vcnl4010_buffer_predisable(struct iio_dev *indio_dev)
-+{
-+	struct vcnl4000_data *data = iio_priv(indio_dev);
-+	int ret, ret_disable;
-+
-+	mutex_lock(&data->vcnl4000_lock);
-+
-+	ret = i2c_smbus_write_byte_data(data->client, VCNL4010_INT_CTRL, 0);
-+	if (ret < 0)
-+		goto end;
-+
-+	ret = i2c_smbus_write_byte_data(data->client, VCNL4000_COMMAND, 0);
-+
-+end:
-+	mutex_unlock(&data->vcnl4000_lock);
-+
-+	ret_disable = iio_triggered_buffer_predisable(indio_dev);
-+	if (ret == 0)
-+		ret = ret_disable;
-+
-+	return ret;
-+}
-+
-+static const struct iio_buffer_setup_ops vcnl4010_buffer_ops = {
-+	.postenable = &vcnl4010_buffer_postenable,
-+	.predisable = &vcnl4010_buffer_predisable,
-+};
-+
-+static const struct iio_trigger_ops vcnl4010_trigger_ops = {
-+	.validate_device = iio_trigger_validate_own_device,
-+};
-+
-+static int vcnl4010_probe_trigger(struct iio_dev *indio_dev)
-+{
-+	struct vcnl4000_data *data = iio_priv(indio_dev);
-+	struct i2c_client *client = data->client;
-+	struct iio_trigger *trigger;
-+
-+	trigger = devm_iio_trigger_alloc(&client->dev, "%s-dev%d",
-+					 indio_dev->name, indio_dev->id);
-+	if (!trigger)
-+		return -ENOMEM;
-+
-+	trigger->dev.parent = &client->dev;
-+	trigger->ops = &vcnl4010_trigger_ops;
-+	iio_trigger_set_drvdata(trigger, indio_dev);
-+
-+	return devm_iio_trigger_register(&client->dev, trigger);
-+}
-+
- static int vcnl4000_probe(struct i2c_client *client,
- 			  const struct i2c_device_id *id)
- {
-@@ -1052,6 +1206,16 @@ static int vcnl4000_probe(struct i2c_client *client,
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 
- 	if (client->irq && data->chip_spec->irq_support) {
-+		ret = devm_iio_triggered_buffer_setup(&client->dev, indio_dev,
-+						      NULL,
-+						      vcnl4010_trigger_handler,
-+						      &vcnl4010_buffer_ops);
-+		if (ret < 0) {
-+			dev_err(&client->dev,
-+				"unable to setup iio triggered buffer\n");
-+			return ret;
-+		}
-+
- 		ret = devm_request_threaded_irq(&client->dev, client->irq,
- 						NULL, vcnl4010_irq_thread,
- 						IRQF_TRIGGER_FALLING |
-@@ -1062,6 +1226,10 @@ static int vcnl4000_probe(struct i2c_client *client,
- 			dev_err(&client->dev, "irq request failed\n");
- 			return ret;
- 		}
-+
-+		ret = vcnl4010_probe_trigger(indio_dev);
-+		if (ret < 0)
-+			return ret;
- 	}
- 
- 	ret = pm_runtime_set_active(&client->dev);
-@@ -1157,5 +1325,6 @@ static struct i2c_driver vcnl4000_driver = {
- module_i2c_driver(vcnl4000_driver);
- 
- MODULE_AUTHOR("Peter Meerwald <pmeerw@pmeerw.net>");
-+MODULE_AUTHOR("Mathieu Othacehe <m.othacehe@gmail.com>");
- MODULE_DESCRIPTION("Vishay VCNL4000 proximity/ambient light sensor driver");
- MODULE_LICENSE("GPL");
--- 
-2.26.0
+> ---
+>   drivers/gpu/drm/ttm/ttm_memory.c         | 4 ++--
+>   drivers/gpu/drm/ttm/ttm_page_alloc.c     | 2 +-
+>   drivers/gpu/drm/ttm/ttm_page_alloc_dma.c | 2 +-
+>   drivers/gpu/drm/ttm/ttm_tt.c             | 2 +-
+>   4 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/ttm/ttm_memory.c b/drivers/gpu/drm/ttm/ttm_memory.c
+> index acd63b7..d071b71 100644
+> --- a/drivers/gpu/drm/ttm/ttm_memory.c
+> +++ b/drivers/gpu/drm/ttm/ttm_memory.c
+> @@ -641,7 +641,7 @@ int ttm_mem_global_alloc_page(struct ttm_mem_global *glob,
+>   	 */
+>   
+>   #ifdef CONFIG_HIGHMEM
+> -	if (PageHighMem(page) && glob->zone_highmem != NULL)
+> +	if (PageHighMemZone(page) && glob->zone_highmem != NULL)
+>   		zone = glob->zone_highmem;
+>   #else
+>   	if (glob->zone_dma32 && page_to_pfn(page) > 0x00100000UL)
+> @@ -656,7 +656,7 @@ void ttm_mem_global_free_page(struct ttm_mem_global *glob, struct page *page,
+>   	struct ttm_mem_zone *zone = NULL;
+>   
+>   #ifdef CONFIG_HIGHMEM
+> -	if (PageHighMem(page) && glob->zone_highmem != NULL)
+> +	if (PageHighMemZone(page) && glob->zone_highmem != NULL)
+>   		zone = glob->zone_highmem;
+>   #else
+>   	if (glob->zone_dma32 && page_to_pfn(page) > 0x00100000UL)
+> diff --git a/drivers/gpu/drm/ttm/ttm_page_alloc.c b/drivers/gpu/drm/ttm/ttm_page_alloc.c
+> index b40a467..847fabe 100644
+> --- a/drivers/gpu/drm/ttm/ttm_page_alloc.c
+> +++ b/drivers/gpu/drm/ttm/ttm_page_alloc.c
+> @@ -530,7 +530,7 @@ static int ttm_alloc_new_pages(struct list_head *pages, gfp_t gfp_flags,
+>   		/* gfp flags of highmem page should never be dma32 so we
+>   		 * we should be fine in such case
+>   		 */
+> -		if (PageHighMem(p))
+> +		if (PageHighMemZone(p))
+>   			continue;
+>   
+>   #endif
+> diff --git a/drivers/gpu/drm/ttm/ttm_page_alloc_dma.c b/drivers/gpu/drm/ttm/ttm_page_alloc_dma.c
+> index faefaae..338b2a2 100644
+> --- a/drivers/gpu/drm/ttm/ttm_page_alloc_dma.c
+> +++ b/drivers/gpu/drm/ttm/ttm_page_alloc_dma.c
+> @@ -747,7 +747,7 @@ static int ttm_dma_pool_alloc_new_pages(struct dma_pool *pool,
+>   		/* gfp flags of highmem page should never be dma32 so we
+>   		 * we should be fine in such case
+>   		 */
+> -		if (PageHighMem(p))
+> +		if (PageHighMemZone(p))
+>   			continue;
+>   #endif
+>   
+> diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+> index 2ec448e..6e094dd 100644
+> --- a/drivers/gpu/drm/ttm/ttm_tt.c
+> +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+> @@ -119,7 +119,7 @@ static int ttm_tt_set_page_caching(struct page *p,
+>   {
+>   	int ret = 0;
+>   
+> -	if (PageHighMem(p))
+> +	if (PageHighMemZone(p))
+>   		return 0;
+>   
+>   	if (c_old != tt_cached) {
 
