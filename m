@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1451B13B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9701B13BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgDTR6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 13:58:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27039 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726895AbgDTR6G (ORCPT
+        id S1727065AbgDTR6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 13:58:55 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:45057 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgDTR6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:58:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587405484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=37Z6hANsBQ4dsxMNn94eIgKjUPnUG7LLhH5O/teSf/E=;
-        b=jCD4Q3cZdKXpRGlEQr6R9iiSjuY0g7HC8uvGJRovevwDPupy+ezIgi0gNgiRoIUaRzU6Up
-        IpMQjRgqEAJ8922lYK9EfkNhn68oSc/M/CsKMpaeNTivignAdZUBNouB4D6oQxVNT4piJU
-        4rdk+lkDD58ksm5MjtlSWpW5Lp7txmc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-Kfi4jOZsMey4R9IIxSsqFw-1; Mon, 20 Apr 2020 13:58:02 -0400
-X-MC-Unique: Kfi4jOZsMey4R9IIxSsqFw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F66F1085982;
-        Mon, 20 Apr 2020 17:57:54 +0000 (UTC)
-Received: from redhat.com (ovpn-112-171.phx2.redhat.com [10.3.112.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C0D976E71;
-        Mon, 20 Apr 2020 17:57:53 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 13:57:51 -0400
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v2 2/9] livepatch: Apply vmlinux-specific KLP relocations
- early
-Message-ID: <20200420175751.GA13807@redhat.com>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
- <83eb0be61671eab05e2d7bcd0aa848f6e20087b0.1587131959.git.jpoimboe@redhat.com>
+        Mon, 20 Apr 2020 13:58:55 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k133so9585558oih.12;
+        Mon, 20 Apr 2020 10:58:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/5W/lQ34ReMbXEDzAwXh6BEJq3UIgkv6eyC5gc3Bzrc=;
+        b=DCtJIGOOq+iLeyfXoqlKonov6uscXH2dVocB7nTZINfqAIVN0WbrXHdNbIL/bJvdai
+         oVQMVNw+60f2vEFZw/OlcDZ7bKk9ELCpEmfpvyq/BxrbvfdycFLYgRDrA7uzcwqZcmf3
+         UNwYx2O6g7UowndWjb2BzBP9siWPJAn+2C0q/KYFuApLkffjZBG21nvJapkBb3xSX4zK
+         c1pymcxm5aIom8+aiPzKDEtLa0x3c176AYXbRtxof/651OX7ND0X/9buReTS9TyI99DX
+         M4+4IVByT0Mv84DcTFpRKixgMVb7Wnw0T5gsjKAhXPhkmM1akLuaUpA9kG2DQlvTSkrl
+         5MVQ==
+X-Gm-Message-State: AGi0Pua+8udAhR8VxEiTG1O4lRL92uJCMMbhk4ougb1/mZ1l07w/IzoO
+        0oY32BkkZCqyO+YSYEXYHA==
+X-Google-Smtp-Source: APiQypJG2laHDj1gFHJr/T8u1/7WLO1L1HK3oDn1rmL0PRluF7lKVfIH0ZzkLa/bWiGt+rj/5P4Hsg==
+X-Received: by 2002:aca:c68b:: with SMTP id w133mr422169oif.175.1587405534277;
+        Mon, 20 Apr 2020 10:58:54 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w18sm33636oos.13.2020.04.20.10.58.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 10:58:53 -0700 (PDT)
+Received: (nullmailer pid 5416 invoked by uid 1000);
+        Mon, 20 Apr 2020 17:58:52 -0000
+Date:   Mon, 20 Apr 2020 12:58:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Benjamin Gaignard <benjamin.gaignard@st.com>
+Cc:     robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, gregkh@linuxfoundation.org,
+        loic.pallardy@st.com, linus.walleij@linaro.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: Re: [PATCH 3/5] dt-bindings: bus: Add STM32 ETZPC firewall controller
+Message-ID: <20200420175852.GA5063@bogus>
+References: <20200420134800.31604-1-benjamin.gaignard@st.com>
+ <20200420134800.31604-4-benjamin.gaignard@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <83eb0be61671eab05e2d7bcd0aa848f6e20087b0.1587131959.git.jpoimboe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200420134800.31604-4-benjamin.gaignard@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 09:04:27AM -0500, Josh Poimboeuf wrote:
+On Mon, 20 Apr 2020 15:47:58 +0200, Benjamin Gaignard wrote:
+> Document STM32 ETZPC firewall controller bindings
 > 
-> [ ... snip ... ]
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+> ---
+>  .../bindings/bus/stm32/st,stm32-etzpc.yaml         | 46 ++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/bus/stm32/st,stm32-etzpc.yaml
 > 
-> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> index 40cfac8156fd..5fda3afc0285 100644
-> --- a/kernel/livepatch/core.c
-> +++ b/kernel/livepatch/core.c
-> 
-> [ ... snip ... ]
-> 
-> +int klp_write_relocations(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
-> +			  const char *shstrtab, const char *strtab,
-> +			  unsigned int symndx, struct module *pmod,
-> +			  const char *objname)
->  {
->  	int i, cnt, ret = 0;
-> -	const char *objname, *secname;
->  	char sec_objname[MODULE_NAME_LEN];
->  	Elf_Shdr *sec;
->  
-> -	if (WARN_ON(!klp_is_object_loaded(obj)))
-> -		return -EINVAL;
-> -
-> -	objname = klp_is_module(obj) ? obj->name : "vmlinux";
-> -
->  	/* For each klp relocation section */
-> -	for (i = 1; i < pmod->klp_info->hdr.e_shnum; i++) {
-> -		sec = pmod->klp_info->sechdrs + i;
-> -		secname = pmod->klp_info->secstrings + sec->sh_name;
-> +	for (i = 1; i < ehdr->e_shnum; i++) {
-> +		sec = sechdrs + i;
 
-Hi Josh, minor bug:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Note the for loop through the section headers in
-klp_write_relocations(), but its calling function ...
+Documentation/devicetree/bindings/bus/stm32/st,stm32-etzpc.example.dts:17.5-24.11: Warning (unit_address_vs_reg): /example-0/soc: node has a reg or ranges property, but no unit name
 
-> [ ... snip ... ]
-> 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 646f1e2330d2..d36ea8a8c3ec 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -2334,11 +2334,12 @@ static int apply_relocations(struct module *mod, const struct load_info *info)
->  		if (!(info->sechdrs[infosec].sh_flags & SHF_ALLOC))
->  			continue;
->  
-> -		/* Livepatch relocation sections are applied by livepatch */
->  		if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH)
-> -			continue;
-> -
-> -		if (info->sechdrs[i].sh_type == SHT_REL)
-> +			err = klp_write_relocations(info->hdr, info->sechdrs,
-> +						    info->secstrings,
-> +						    info->strtab,
-> +						    info->index.sym, mod, NULL);
-> +		else if (info->sechdrs[i].sh_type == SHT_REL)
->  			err = apply_relocate(info->sechdrs, info->strtab,
->  					     info->index.sym, i, mod);
->  		else if (info->sechdrs[i].sh_type == SHT_RELA)
+See https://patchwork.ozlabs.org/patch/1273431
 
-... apply_relocations() is also iterating over the section headers (the
-diff context doesn't show it here, but i is an incrementing index over
-sechdrs[]).
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-So if there is more than one KLP relocation section, we'll process them
-multiple times.  At least the x86 relocation code will detect this and
-fail the module load with an invalid relocation (existing value not
-zero).
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
--- Joe
-
+Please check and re-submit.
