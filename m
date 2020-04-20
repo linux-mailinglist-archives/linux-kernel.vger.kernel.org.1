@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4578C1B08F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228A91B0901
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgDTMMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726262AbgDTMMD (ORCPT
+        id S1726910AbgDTMN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:13:29 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:36580 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgDTMNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:12:03 -0400
-X-Greylist: delayed 1450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Apr 2020 05:12:02 PDT
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B118BC061A0C;
-        Mon, 20 Apr 2020 05:12:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hyyhVGnvFilfrdqHNEg1EViEFDU1g/FpAPCa//Vm+Ms=; b=Ro0x8c1X2BeWf7TvQCOYH/vp3B
-        u8UbmQW+uedKRoJDHljAHvWQiYcHgwyhXDsYpGMGpRc80vsD3ENgjZpqt4uTgcirKDrKKeGgWYAyY
-        ZdLOtoEXXnkEIIYIgtOd2v44QGGlsqtBytg1uHI4aUjAP+tySOzwCO0pMaNI4vnP8sO/U4uyY/AYw
-        d38ygCc2ptooChKwRxRBjX+o9uNLnCDhAgfbMRqM/V6UxIBMCZfakSu78Qm33nl6LrUeHJ2hefPO1
-        vEJIvFQvXjsgirK1UOM25FkhTaoPeJvqbvqpKGNGES42UZvmNSpym3h0VhGh8VlZkE+EvNJc7cHTL
-        DqHfGkfA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jQVGL-0004t8-1H; Mon, 20 Apr 2020 12:10:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D050B3024EA;
-        Mon, 20 Apr 2020 14:10:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C09EF2B8DAF8C; Mon, 20 Apr 2020 14:10:55 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 14:10:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zhenyu Ye <yezhenyu2@huawei.com>
-Cc:     mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
-        aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org,
-        npiggin@gmail.com, arnd@arndb.de, rostedt@goodmis.org,
-        maz@kernel.org, suzuki.poulose@arm.com, tglx@linutronix.de,
-        yuzhao@google.com, Dave.Martin@arm.com, steven.price@arm.com,
-        broonie@kernel.org, guohanjun@huawei.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org,
-        xiexiangyou@huawei.com, prime.zeng@hisilicon.com,
-        zhangshaokun@hisilicon.com, kuhn.chenqun@huawei.com
-Subject: Re: [PATCH v1 6/6] arm64: tlb: Set the TTL field in flush_tlb_range
-Message-ID: <20200420121055.GF20696@hirez.programming.kicks-ass.net>
-References: <20200403090048.938-1-yezhenyu2@huawei.com>
- <20200403090048.938-7-yezhenyu2@huawei.com>
+        Mon, 20 Apr 2020 08:13:25 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KBqb1C187946;
+        Mon, 20 Apr 2020 12:13:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=C7+fcI4KZiXfIWW4U2ZyjNo5atQa1VYMh+jlIP/eLqg=;
+ b=Z59B/qFcgrXjwvapB0YXbiA1Yn0eCWArZonLrcdXNPnDLJa4sqvAVyR2SbBaH1kGvhYk
+ zwbnoQik+OQRLeMkkIe3SEN/kOyPZ20qakX+GJwVD7ijsa9XhYQFdjKECQVPr3/yoVWu
+ 51CF0obZjwaJqyqmNbi1yAKIlCW7+0LH7cZjMhacR8s2H3wSBXZguHdmhO5yo3Yml63f
+ 6NAZtVI7Xe5EJpDzxwOn5hU66Kp/KaLQRVp22BLvw/P4PZol1Yv01X1pmZJsy2gndTJ1
+ IW+QqlTWpD5rPvaff3Qiz2T1bxO6IFZsXdS6VpFgN+U6UBjXZjgjVUKpRzO0Pmu60KWW Sg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30ft6mxrnh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 12:13:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KC8Io9102341;
+        Mon, 20 Apr 2020 12:11:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30gb1d2r19-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 12:11:15 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03KCB9nC001397;
+        Mon, 20 Apr 2020 12:11:12 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Apr 2020 05:11:09 -0700
+Date:   Mon, 20 Apr 2020 15:10:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
+        "John B . Wyatt IV" <jbwyatt4@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH] staging: vt6656: Use fls instead of for loop in
+ vnt_update_top_rates
+Message-ID: <20200420121059.GC2659@kadam>
+References: <20200419100921.5421-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403090048.938-7-yezhenyu2@huawei.com>
+In-Reply-To: <20200419100921.5421-1-oscar.carter@gmx.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=849 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004200107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=914 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 05:00:48PM +0800, Zhenyu Ye wrote:
-> This patch uses the cleared_* in struct mmu_gather to set the
-> TTL field in flush_tlb_range().
-> 
-> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
-> ---
->  arch/arm64/include/asm/tlb.h      | 26 +++++++++++++++++++++++++-
->  arch/arm64/include/asm/tlbflush.h | 14 ++++++++------
->  2 files changed, 33 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
-> index b76df828e6b7..d5ab72eccff4 100644
-> --- a/arch/arm64/include/asm/tlb.h
-> +++ b/arch/arm64/include/asm/tlb.h
-> @@ -21,11 +21,34 @@ static void tlb_flush(struct mmu_gather *tlb);
->  
->  #include <asm-generic/tlb.h>
->  
-> +/*
-> + * get the tlbi levels in arm64.  Default value is 0 if more than one
-> + * of cleared_* is set or neither is set.
-> + * Arm64 doesn't support p4ds now.
-> + */
-> +static inline int tlb_get_level(struct mmu_gather *tlb)
-> +{
-> +	int sum = tlb->cleared_ptes + tlb->cleared_pmds +
-> +		  tlb->cleared_puds + tlb->cleared_p4ds;
-> +
-> +	if (sum != 1)
-> +		return 0;
-> +	else if (tlb->cleared_ptes)
-> +		return 3;
-> +	else if (tlb->cleared_pmds)
-> +		return 2;
-> +	else if (tlb->cleared_puds)
-> +		return 1;
-> +
-> +	return 0;
-> +}
+On Sun, Apr 19, 2020 at 12:09:21PM +0200, Oscar Carter wrote:
+> -	for (i = RATE_11M;; i--) {
+> -		if (priv->basic_rates & (u16)(1 << i)) {
+> -			top_cck = i;
+> -			break;
+> -		}
+> -		if (i == RATE_1M)
+> -			break;
+> -	}
+> +	pos = fls(priv->basic_rates & GENMASK(RATE_54M, RATE_6M));
+> +	priv->top_ofdm_basic_rate = pos ? pos-- : RATE_24M;
+                                          ^^^^^
+Argh...  Come on.  I don't want to have to break out the C standard to
+see if this is defined behavior and where the sequence points are.  A
+pre-op would be clear but the most clear thing is to write it like this:
 
-That's some mighty wonky code. Please look at the generated asm.
+	priv->top_ofdm_basic_rate = pos ? (pos - 1) : RATE_24M;
+
+
+> 
+> -	priv->top_cck_basic_rate = top_cck;
+> +	pos = fls(priv->basic_rates & GENMASK(RATE_11M, RATE_1M));
+> +	priv->top_cck_basic_rate = pos ? pos-- : RATE_1M;
+                                         ^^^^^
+Same.
+
+regards,
+dan carpenter
+
