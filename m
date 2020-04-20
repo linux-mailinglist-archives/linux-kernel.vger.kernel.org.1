@@ -2,80 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1111B17EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F39A1B17E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgDTVED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgDTVEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:04:02 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C73920724;
-        Mon, 20 Apr 2020 21:03:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587416641;
-        bh=B6tu4PQYxSMIHwT8IIW2BqLBbquTlTHzD+k7VKRWKiY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KLGeSVsaKscXEomFaxLVk4/08pxBFxLmWwvvp/xVS1rq81o2K8P2Bnl1v4kjl/sb2
-         XFU86f/Aa7FwnQNCuJpc1uYdan2zLkqza8h9twbemUXWVnnZf6ZvW2IinHp4Lp24AC
-         ML8bBjhsBDp85WIi7Pe/U+i6OaK7Z5IAiZJu87jg=
-Date:   Mon, 20 Apr 2020 22:03:55 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        nouveau@lists.freedesktop.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm/thp: Rename pmd_mknotpresent() as pmd_mknotvalid()
-Message-ID: <20200420210354.GD29998@willie-the-truck>
-References: <1584680057-13753-1-git-send-email-anshuman.khandual@arm.com>
- <1584680057-13753-3-git-send-email-anshuman.khandual@arm.com>
+        id S1727076AbgDTVEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:04:00 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:37426 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbgDTVEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 17:04:00 -0400
+Received: by mail-oo1-f65.google.com with SMTP id g14so2455593ooa.4;
+        Mon, 20 Apr 2020 14:03:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=k3k0EYf2IYgH6XQhQIOehLwJor59vFsYaCxaDBtqyJs=;
+        b=jQyfWpAZcBGN/9q/db0cKtGPOvTTC72DHUIL3MgLnjsK05jkykciz4aPQifSno1p9B
+         nnP7y0mxjsbHTE5wmEpajLn4bEHSdvBBA3jgxMgSqREFV0Xqo5uoH1CeERXoT46NWLHT
+         G9n3hfwNkYvK92QrYxLQccyFEwYNp6RHk3mobapj/v4W+rcABOXLoMDmI+OL+HYpybes
+         6gPNyewcSGgTQ57FDIBQDL+kg2uTYs9yQalIyQBt4GCkUFCo1QpWoKB0+XvcIb1nIqmi
+         o1lBFpVjY3PUyKknbc5a44dCT1TqUkV5oszEw4eWZzA7KNGe61/4Q1rxLCuJGEOAQIiL
+         PlZA==
+X-Gm-Message-State: AGi0PuZ2z/K3+atqu+09iKst6QH2Kmo7PnhXhp0bYLfM/apZFdYm+Lzj
+        boq2ah6RlUghgtHqZATTdw==
+X-Google-Smtp-Source: APiQypLn1lVD/qUvj+MWk2m8JUL4UNVyrhfFu9tYRED9AQILx2Ta2a1VWLY0RN2xlNO+ZWAT0ojpWQ==
+X-Received: by 2002:a4a:d103:: with SMTP id k3mr14219011oor.68.1587416639023;
+        Mon, 20 Apr 2020 14:03:59 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s69sm214690otb.4.2020.04.20.14.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 14:03:58 -0700 (PDT)
+Received: (nullmailer pid 25404 invoked by uid 1000);
+        Mon, 20 Apr 2020 21:03:56 -0000
+Date:   Mon, 20 Apr 2020 16:03:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 2/8] dt-bindings: clock: Add YAML schemas for QCOM A53
+ PLL
+Message-ID: <20200420210356.GA23568@bogus>
+References: <1586832922-29191-1-git-send-email-sivaprak@codeaurora.org>
+ <1586832922-29191-3-git-send-email-sivaprak@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1584680057-13753-3-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1586832922-29191-3-git-send-email-sivaprak@codeaurora.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 10:24:17AM +0530, Anshuman Khandual wrote:
-> pmd_present() is expected to test positive after pmdp_mknotpresent() as the
-> PMD entry still points to a valid huge page in memory. pmdp_mknotpresent()
-> implies that given PMD entry is just invalidated from MMU perspective while
-> still holding on to pmd_page() referred valid huge page thus also clearing
-> pmd_present() test. This creates the following situation which is counter
-> intuitive.
+On Tue, Apr 14, 2020 at 08:25:16AM +0530, Sivaprakash Murugesan wrote:
+> This patch adds schema for primary CPU PLL found on few Qualcomm
+> platforms.
 > 
-> [pmd_present(pmd_mknotpresent(pmd)) = true]
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> ---
+> [V3]
+>  * Fixed dt binding error in "$id" field.
 > 
-> This renames pmd_mknotpresent() as pmd_mknotvalid() reflecting the helper's
-> functionality more accurately while changing the above mentioned situation
-> as follows. This does not create any functional change.
+>  .../devicetree/bindings/clock/qcom,a53pll.txt      | 22 --------
+>  .../devicetree/bindings/clock/qcom,a53pll.yaml     | 60 ++++++++++++++++++++++
+>  2 files changed, 60 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/qcom,a53pll.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
 > 
-> [pmd_present(pmd_mknotvalid(pmd)) = true]
-> 
-> This is not applicable for platforms that define own pmdp_invalidate() via
-> __HAVE_ARCH_PMDP_INVALIDATE. Suggestion for renaming came during a previous
-> discussion here.
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,a53pll.txt b/Documentation/devicetree/bindings/clock/qcom,a53pll.txt
+> deleted file mode 100644
+> index e3fa811..0000000
+> --- a/Documentation/devicetree/bindings/clock/qcom,a53pll.txt
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -Qualcomm MSM8916 A53 PLL Binding
+> ---------------------------------
+> -The A53 PLL on MSM8916 platforms is the main CPU PLL used used for frequencies
+> -above 1GHz.
+> -
+> -Required properties :
+> -- compatible : Shall contain only one of the following:
+> -
+> -		"qcom,msm8916-a53pll"
+> -
+> -- reg : shall contain base register location and length
+> -
+> -- #clock-cells : must be set to <0>
+> -
+> -Example:
+> -
+> -	a53pll: clock@b016000 {
+> -		compatible = "qcom,msm8916-a53pll";
+> -		reg = <0xb016000 0x40>;
+> -		#clock-cells = <0>;
+> -	};
+> -
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml b/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
+> new file mode 100644
+> index 0000000..c865293
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,a53pll.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm A53 PLL Binding
+> +
+> +maintainers:
+> +  - Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> +
+> +description:
+> +  The A53 PLL on few Qualcomm platforms is the main CPU PLL used used for
+> +  frequencies above 1GHz.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,msm8916-a53pll
+> +      - qcom,ipq6018-a53pll
 
-Bikeshed alert: maybe pmd_mkinvalid() would be better, given that this is
-a one-trick pony for pmdp_invalidate()?
+This new compatible goes in the next patch.
 
-Will
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 0
+> +
+> +  clocks:
+> +    description: clocks required for this controller.
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    description: clock output names of required clocks.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  #Example 1 - A53 PLL found on MSM8916 devices
+> +  - |
+> +    a53pll: clock@b016000 {
+> +        compatible = "qcom,msm8916-a53pll";
+> +        reg = <0xb016000 0x40>;
+> +        #clock-cells = <0>;
+> +    };
+> +
+> +  #Example 2 - A53 PLL found on IPQ6018 devices
+> +  - |
+> +    a53pll_ipq: clock@b116000 {
+> +        compatible = "qcom,ipq6018-a53pll";
+> +        reg = <0x0b116000 0x40>;
+> +        #clock-cells = <0>;
+> +        clocks = <&xo>;
+> +        clock-names = "xo";
+> +    };
+> -- 
+> 2.7.4
+> 
