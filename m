@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B291B0B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9A31B0A78
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgDTMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
+        id S1728733AbgDTMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728772AbgDTMpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:45:33 -0400
+        id S1729246AbgDTMs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:48:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27E6222202;
-        Mon, 20 Apr 2020 12:45:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25FA92072B;
+        Mon, 20 Apr 2020 12:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386733;
-        bh=Sf4Vh/rSwyKRWT01j6WPSw7LFC92TStfAQekuw4H//Y=;
+        s=default; t=1587386906;
+        bh=cGSnqVk3XEiivt42E5/JP8PziBdXoNJf7P8/UlVSRX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nbfY4Auaf9+mEA0y2Tlc7DTE/eIPXrsgOZK2N6I/dcTUgUjmAcwlH5/ivzFL0POTV
-         XJEyiwnBP2qA2gmkbfqGAhhV3gNY57ndwApD04QVRBbQ39CJQZmfwWVbuKcXnl9bQC
-         QfHVSgEVWcQi5K1SvMRagYPhzGyykS1TK+PeQjeo=
+        b=OiZe7byB0hu95WBg1OY03bkT0TwftMNBSUFq4C/XcjFMkUHcQh0zpF6yIDgX/UDt/
+         D/QrDoiY94E8BeaA3R5JifKAW+uog3fRvca3jspI2mfNvew613Eeq+Rrcx1UiHU8cE
+         O/xkuXPlmRch4roxr4OR0sF+YD9ooewHHl0SMquY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>
-Subject: [PATCH 5.6 62/71] drm/nouveau/sec2/gv100-: add missing MODULE_FIRMWARE()
+        stable@vger.kernel.org, Dmitry Yakunin <zeil@yandex-team.ru>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 06/40] net: revert default NAPI poll timeout to 2 jiffies
 Date:   Mon, 20 Apr 2020 14:39:16 +0200
-Message-Id: <20200420121521.357918260@linuxfoundation.org>
+Message-Id: <20200420121452.817040909@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
+References: <20200420121444.178150063@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,61 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-commit 92f673a12d14b5393138d2b1cfeb41d72b47362d upstream.
+[ Upstream commit a4837980fd9fa4c70a821d11831698901baef56b ]
 
-ASB was failing to load on Turing GPUs when firmware is being loaded
-from initramfs, leaving the GPU in an odd state and causing suspend/
-resume to fail.
+For HZ < 1000 timeout 2000us rounds up to 1 jiffy but expires randomly
+because next timer interrupt could come shortly after starting softirq.
 
-Add missing MODULE_FIRMWARE() lines for initramfs generators.
+For commonly used CONFIG_HZ=1000 nothing changes.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Cc: <stable@vger.kernel.org> # 5.6
+Fixes: 7acf8a1e8a28 ("Replace 2 jiffies with sysctl netdev_budget_usecs to enable softirq tuning")
+Reported-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c |    3 +++
- drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c |   16 ++++++++++++++++
- 2 files changed, 19 insertions(+)
+ net/core/dev.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c
-@@ -25,6 +25,9 @@
- MODULE_FIRMWARE("nvidia/gp108/sec2/desc.bin");
- MODULE_FIRMWARE("nvidia/gp108/sec2/image.bin");
- MODULE_FIRMWARE("nvidia/gp108/sec2/sig.bin");
-+MODULE_FIRMWARE("nvidia/gv100/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/gv100/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/gv100/sec2/sig.bin");
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3934,7 +3934,8 @@ EXPORT_SYMBOL(netdev_max_backlog);
  
- static const struct nvkm_sec2_fwif
- gp108_sec2_fwif[] = {
---- a/drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c
-@@ -56,6 +56,22 @@ tu102_sec2_nofw(struct nvkm_sec2 *sec2,
- 	return 0;
- }
- 
-+MODULE_FIRMWARE("nvidia/tu102/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/tu102/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/tu102/sec2/sig.bin");
-+MODULE_FIRMWARE("nvidia/tu104/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/tu104/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/tu104/sec2/sig.bin");
-+MODULE_FIRMWARE("nvidia/tu106/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/tu106/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/tu106/sec2/sig.bin");
-+MODULE_FIRMWARE("nvidia/tu116/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/tu116/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/tu116/sec2/sig.bin");
-+MODULE_FIRMWARE("nvidia/tu117/sec2/desc.bin");
-+MODULE_FIRMWARE("nvidia/tu117/sec2/image.bin");
-+MODULE_FIRMWARE("nvidia/tu117/sec2/sig.bin");
-+
- static const struct nvkm_sec2_fwif
- tu102_sec2_fwif[] = {
- 	{  0, gp102_sec2_load, &tu102_sec2, &gp102_sec2_acr_1 },
+ int netdev_tstamp_prequeue __read_mostly = 1;
+ int netdev_budget __read_mostly = 300;
+-unsigned int __read_mostly netdev_budget_usecs = 2000;
++/* Must be at least 2 jiffes to guarantee 1 jiffy timeout */
++unsigned int __read_mostly netdev_budget_usecs = 2 * USEC_PER_SEC / HZ;
+ int weight_p __read_mostly = 64;           /* old backlog weight */
+ int dev_weight_rx_bias __read_mostly = 1;  /* bias for backlog weight */
+ int dev_weight_tx_bias __read_mostly = 1;  /* bias for output_queue quota */
 
 
