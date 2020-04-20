@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF001B0250
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F214A1B0257
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgDTHIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726063AbgDTHIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:08:23 -0400
-Received: from localhost (unknown [171.61.106.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68B9021473;
-        Mon, 20 Apr 2020 07:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587366503;
-        bh=UWEF8anj4RInPM8cOzySci9CGjDHuS3EH9QM7a51Be8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v+NqI280vQ0VCqH7CFazIGBoespfaQ5HGIU7y9J2GNVY4lMAUOyBbvpPX3sSXWXgy
-         uEPdiyzLVxLSdJwO3fphUYn1lb3EWyd1q11gtKxizOmm0jXTOZjpgZJUBHLrYpwqA8
-         ZZ7+VyedZzVd8OfTl+41EHEJVHcbrsQlXlIMDMkE=
-Date:   Mon, 20 Apr 2020 12:38:16 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soundwire: intel: use asoc_rtd_to_cpu() /
- asoc_rtd_to_codec() macro for DAI pointer
-Message-ID: <20200420070816.GU72691@vkoul-mobl>
-References: <87y2qqvdxu.wl-kuninori.morimoto.gx@renesas.com>
+        id S1726232AbgDTHJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:09:12 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:41102 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgDTHJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 03:09:11 -0400
+Received: by mail-oi1-f194.google.com with SMTP id k9so7907021oia.8;
+        Mon, 20 Apr 2020 00:09:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VqzgTPsqGqTG082KlFRd2nLB+TsOjdtbh8/Iv4M7mXY=;
+        b=ahcYLo7IbBzfuCDl+KHDYQ2aDaoyhg9pWdZbGL5KfhjepQfDbub7TScjqLLAzJWdyl
+         ElSo5n4jfCJKBRURm+8SyZJc1SGLiOSkWoYdtFNeEPLZ5dpbnbG/mX+rW41IsI6NnPLc
+         /wHPoX75byzha/qby1htio5dA6RpetExdByzoCacqS57ZW37OnPzRQdQ9xUcNI/vBc+Y
+         +DP0GUUDOozTDIe+Y+eeh92ScmYQ0ysy+prXk7UNC+HecdA23VVD0kzuENZYlJjFGMie
+         GQRl5s53ig4Xr18Di5lgDCP5sZWdmHzHcE4ZBmJCitYGLkzjerTMPO+yJjGzg/y5YOfO
+         6woQ==
+X-Gm-Message-State: AGi0PubUssHcLSwoyd9lA5FnJ5ww6P37vR7eBoY622ubgKNP5oEAwJ4g
+        Sxo1wInqmt7aR2XmHrTERi72gw0RSrIhIlB3YZg=
+X-Google-Smtp-Source: APiQypKGHCQK5p6sv+gc747Hng/rlsT/C7m3rCTyS0eq9olqr91xBNYEDwUpFysdhr4rAeuomxGpe2n/QxOaYd1MVVY=
+X-Received: by 2002:aca:d50f:: with SMTP id m15mr3273957oig.54.1587366550697;
+ Mon, 20 Apr 2020 00:09:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2qqvdxu.wl-kuninori.morimoto.gx@renesas.com>
+References: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Apr 2020 09:08:58 +0200
+Message-ID: <CAMuHMdUDO_rTzZbtOsMvH=uFG1oytTYDdJY_WSE7+70EERDNSw@mail.gmail.com>
+Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-04-20, 16:01, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Now ALSA SoC needs to use asoc_rtd_to_codec(),
-> otherwise, it will be compile error.
+On Sat, Apr 18, 2020 at 9:07 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+> If 'ioremap' fails, we must free 'bridge', as done in other error handling
+> path bellow.
+>
+> Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Applied, thanks
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-~Vinod
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
