@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8387C1B1884
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567C81B18F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgDTVhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726017AbgDTVhC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:37:02 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA97C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:37:02 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id w29so9968516qtv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CGpR1rIaKdDduSGmslkbgwO1HLCBO6wZTx9DKYZPcys=;
-        b=P8vJiVfMaQcO0jKGtW7wH+FAbz8kXDXPqrJWejAU0NGX4Cgjg/9Cu1iHQyAMgY5kO5
-         5nhJbfjZRWuWpz41LXkq2xCBD1LcxaT3rQoQSUYKwotBwFvjroSAhYiHMc82PwQZswLg
-         UT6XCOrBFry8UdNu/tc4aC+eySS3HLPKGT0dLPMztZKg0P7s4QqmWX4fDcykPK4ne/dS
-         yCEjv/VlPjMStwqvMiZCXte/76PwTVVF//S4qhmHDJbkxsRh0Q2R/6a9KcP79PHVyqSf
-         ApGR9P0NyQ4DlduFCRO0HkQLACFqywkhdrjYEFFFT6S2QsOUxXuA3JUK2iYGHAdDLFmN
-         ysiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CGpR1rIaKdDduSGmslkbgwO1HLCBO6wZTx9DKYZPcys=;
-        b=Br8BSUS2UWUh/YxsCPTerEDVAC6cZKTqobfNJ/5hHEjaJ6o465v2sEfjDVksvKAAcI
-         1qtuSsDHiOehPJ4C/t2uFergNX8xiEGs68iSiTnFQs1q4pqVHPoAz01rxhAmlcqpx8IK
-         em3Le7jcdb0hcz7lotvs3pnvcI6xnBlFGXZDQy0RhSsMCtkp98TFnSoADqc5uk7IuNDv
-         J9gLiVRSgDVTa682bwk12jvAYYSLSP4FTE/WcGRl6xntlttAVudKlOJoPqot/RsTf+6A
-         esBdc+EtrdLvm/PtUi7amyc+oxKd/N+pzx/n5BEkRoLykHZ/ggBMKn/ckHPPHu5v/ZBX
-         5EDw==
-X-Gm-Message-State: AGi0PuZ5dxumhNl7DaVUUyHbIC61cpfP6qd9+zB2OfnHfyub/aP8hvyS
-        TUwnNwhstqKvP5hHl1cdWMtAGq6Ize/gGR5UPRINqw==
-X-Google-Smtp-Source: APiQypLVUySyb08Bv9qnAioLafiJuLQTQKZ18k9/vbZvwcqAxM1HYKaPULs0p08vm88dSki28hqGRP1aymIgXeqALRk=
-X-Received: by 2002:ac8:748b:: with SMTP id v11mr18067843qtq.238.1587418621139;
- Mon, 20 Apr 2020 14:37:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200414150556.10920-1-qais.yousef@arm.com> <20200414150556.10920-3-qais.yousef@arm.com>
- <20200414121956.3687d6e9@gandalf.local.home> <20200415093617.GZ20730@hirez.programming.kicks-ass.net>
- <20200420154317.klwoztvdybmvykwe@e107158-lin.cambridge.arm.com>
-In-Reply-To: <20200420154317.klwoztvdybmvykwe@e107158-lin.cambridge.arm.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 20 Apr 2020 14:36:49 -0700
-Message-ID: <CABk29NskBLS+s2J-FjzdmnrxvKR_+zQ1GxGkgiui=A1b-fvXtQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] cpumask: Make cpumask_any() truly random
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Paul Turner <pjt@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726758AbgDTWBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:01:10 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16270 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgDTWBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:01:10 -0400
+IronPort-SDR: qoKQfzJteL6RsgVaj3P4Yh5WIKXd7CNFILYXA790Hs7HO4gfQMQp0475twJRuDUWVbtjeJ5NYn
+ /eIut/iIlViQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 15:01:09 -0700
+IronPort-SDR: v2mUQIi7v4D2xKtxr60yP70J2b/UTKidQjQWc+qcN/GLGbMyj6G/H9MxT9qEkCptVqixd2RvNN
+ D8D5syiZFlVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,407,1580803200"; 
+   d="scan'208";a="455848311"
+Received: from unknown (HELO nsgsw-wilsonpoint.lm.intel.com) ([10.232.116.102])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Apr 2020 15:01:07 -0700
+From:   Jon Derrick <jonathan.derrick@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     <linux-pci@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frederick Lawler <fred@fredlawl.com>,
+        Rajat Jain <rajatja@google.com>,
+        "Patel, Mayurkumar" <mayurkumar.patel@intel.com>,
+        Olof Johansson <olof@lixom.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Honoring Native AER/DPC Host Bridges
+Date:   Mon, 20 Apr 2020 15:37:08 -0600
+Message-Id: <1587418630-13562-1-git-send-email-jonathan.derrick@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 8:43 AM Qais Yousef <qais.yousef@arm.com> wrote:
->
-> On 04/15/20 11:36, Peter Zijlstra wrote:
-> > On Tue, Apr 14, 2020 at 12:19:56PM -0400, Steven Rostedt wrote:
-> > > Do we care if this gets preempted and migrated to a new CPU where we read
-> > > "prev" from one distribute_cpu_mask_prev on one CPU and write it to another
-> > > CPU?
-> >
-> > I don't think we do; that just adds to the randomness ;-), but you do
->
-> Yep we don't care and it should enhance the randomness.
->
-> > raise a good point in that __this_cpu_*() ops assume preemption is
-> > already disabled, which is true of the one exiting
-> > cpumask_any_and_distribute() caller, but is no longer true after patch
-> > 1, and this patch repeats the mistake.
-> >
-> > So either we need to disable preemption across the function or
-> > transition to this_cpu_*() ops.
->
-> Sorry wasn't aware about the preemption check in __this_cpu_write().
->
-> Transitioning to this_cpu_write() makes sense. Unless Josh comes back it'll
-> break something he noticed.
+The two patches here force AER and DPC to honor the Host Bridge's Native
+AER/DPC settings. This is under the assumption that when these bits are set,
+that Firmware-First AER/DPC should not be in use for these ports. This
+assumption seems to be true in ACPI, which explicitly clears these capability
+settings in the host bridge if the service cannot be negotiated with _OSC.
 
-Yep, this_cpu_* makes sense to me.  Preemption is ok, since prev must
-always be a valid cpu id, thus we just get a little more _random_ from
-this pseudorandom implementation.
+This also fixes an issue I've seen in a few platforms whose BIOS and/or switch
+firmware leaves DPC preconfigured. In these cases, the kernel DPC driver cannot
+bind a handler to the interrupt and could result in unmanaged DPC link down
+events.
+
+Jon Derrick (2):
+  PCI/AER: Allow Native AER Host Bridges to use AER
+  PCI/DPC: Allow Native DPC Host Bridges to use DPC
+
+ drivers/pci/pcie/aer.c          | 3 +++
+ drivers/pci/pcie/dpc.c          | 3 ++-
+ drivers/pci/pcie/portdrv_core.c | 3 ++-
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
+-- 
+1.8.3.1
+
