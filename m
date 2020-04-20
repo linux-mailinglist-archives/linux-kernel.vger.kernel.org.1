@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32531B0D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792561B0D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgDTNv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:51:56 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32730 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728453AbgDTNvz (ORCPT
+        id S1728968AbgDTNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728013AbgDTNw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:51:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587390714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7gTi1IicJlsSKfDG5naKX5cqpPONHfHCE+Bv1EVj7p4=;
-        b=gUoBBpw6NCikbS3zprdf3+h9DSV9fUBYnEjk0fyv1ZGJ+fgBEMHeSxNtRQpCHLPFwWjTtM
-        znBsleMobdmCdvT1hsYHbceZoZhiwx+vldo7rM6t9G0AkJofPcC9Q3m8LWFXnppKpz6WJ2
-        S+2mueE5Kx/tA/3NNf/8nwffUBmfEys=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-INKShmURNTy5bpxBXC5Pew-1; Mon, 20 Apr 2020 09:51:51 -0400
-X-MC-Unique: INKShmURNTy5bpxBXC5Pew-1
-Received: by mail-qv1-f69.google.com with SMTP id p12so10239683qvm.21
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:51:51 -0700 (PDT)
+        Mon, 20 Apr 2020 09:52:29 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A98C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:52:29 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id k9so8773530oia.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 06:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BQUgbiyZb+jYVEi0SfDLJ2/mIN7+gST/mtLReyFlCSA=;
+        b=nsbDnE56mnEJVgaGdrD0DXRmBn3Pm8c3aGT+FDy23L6wLjnSLVSIz6hAoNu1qM5/gX
+         L+AFbEss+yOs5l7+2RnX1cBT4oa+hFfo8eCr6GMs6WY+gneaArGDdOzUrO8Mjaf5d1qj
+         BSOiyWaoa+yqN5oKDGRLbRSKCc7ntOf464elO2pfXu+9RiNOzqeWTbZ7SCv6FKynzrsL
+         rSMuOH5Elogkj8MSPblHvaXGU6k16D6FOnCnijh8lWXr1T/JRiVbiYVgmGeqeAwsrMSB
+         GHsalLsfHBezM6NBfGVXdoLGhlTgllMEhD2DL4ekPb9zBY2kc6lP3IvKPFhaZSj/+tZv
+         eFBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7gTi1IicJlsSKfDG5naKX5cqpPONHfHCE+Bv1EVj7p4=;
-        b=K8pK4tKBb8RMxoOrp6sNcvec3aX1U6n1jNcoQTERw+JtK7QlaRGzFS84vFdS2UsLBe
-         FsP7ouhjIrdhRNreUZdDhBWIagFp/O4Kh27oeC+SPCuJqRcN7rhkCFWSj22YyczxJhxz
-         Ybk17/y1Ny3sQJWtoH7rO+1k48NWITj3QS5la7xoyYeXqAEmE5e3zCukrsdMP3YCEeSF
-         PioSeN7Flj7mrepY+XFyd3YcYtHvNbIzmlMKlZ8+bJSG44xgIhHUinVnb8fZ5ke2yHdA
-         O/+ahpqHWvMvZrTB+EJLfaBVeswCs7Fk60fCnJUcmpcM2b9ymB7lJJljOazf59unZMSz
-         p4xg==
-X-Gm-Message-State: AGi0PuZbFHcEzbvgwLhdLafF1dXr5DHRJvTF5WsfFrq/2lVCzINTNxRV
-        T1N3F+ZNOyIbm1lDIoeeFUhXAS8G0VJlUD2NBXTTgy0PptXJTyd7bi51Ybp3mOXHleUt8n8ySP7
-        zI5e2vNfBWekg8BYi3kqSSR+c
-X-Received: by 2002:a05:620a:1009:: with SMTP id z9mr15818457qkj.270.1587390711071;
-        Mon, 20 Apr 2020 06:51:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIL/5HvAE8uGB2QeYJcMl1quKM2t1afKsHoOGNm7ioq9h6iVSe8lTD2IPGc1eogwV5ywc6E9A==
-X-Received: by 2002:a05:620a:1009:: with SMTP id z9mr15818438qkj.270.1587390710884;
-        Mon, 20 Apr 2020 06:51:50 -0700 (PDT)
-Received: from xz-x1 (CPEf81d0fb19163-CMf81d0fb19160.cpe.net.fido.ca. [72.137.123.47])
-        by smtp.gmail.com with ESMTPSA id y9sm606038qkb.41.2020.04.20.06.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 06:51:50 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 09:51:48 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm/eventfd: remove unneeded conversion to bool
-Message-ID: <20200420135148.GK287932@xz-x1>
-References: <20200420123805.4494-1-yanaijie@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BQUgbiyZb+jYVEi0SfDLJ2/mIN7+gST/mtLReyFlCSA=;
+        b=JbfGaPdJG5Ez3Jt9A+a6OZbnPDJZ60yvzCivAX7cf2HQmg4XpJE9fB8mi7Xxqza5e2
+         BkfVgDICj1tA7BxLlrazhR1dQkCmsVEz1T+bSn/GWXyZ6fVv/eZNQOqTNOq80cDSvLuZ
+         8aeVilHvPV7ZkUSpugmbytKv9r1jA3qBclvrZtn5Cqa7WH9fS40IMx9k3VkrBTvwjAwW
+         UVTFPyAVUxbnt2VivLCR3+cvlfA5qNXcBy8pble8g8ImM8cNucRZKtiKkWlQb4n1qI+g
+         5xeQCQr/fGJcktkUP5yxuYTDnWCA0kvTzDAUupoQXlGbgRtyOq+/U1LPN1GBEn0VCE31
+         MuYA==
+X-Gm-Message-State: AGi0PuajGuQTuPuwcV1AajnGbRqOiHcnUvpolphrD0E5cDnXWX0D1BON
+        W96Mal1LiKpBUjB5PiPx4urWHsgrcITRbXzbB4Xmig==
+X-Google-Smtp-Source: APiQypJGCg29rkWLWR5Nr55pighT0ZM7gIcGM52C97e5ZhoAJ6psZg8e0l7rCD72PjWqQt2iYSOKOJZSvTSzN6yp+7s=
+X-Received: by 2002:a54:4398:: with SMTP id u24mr10852970oiv.5.1587390748665;
+ Mon, 20 Apr 2020 06:52:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200420123805.4494-1-yanaijie@huawei.com>
+References: <1585286988-10671-1-git-send-email-sumit.garg@linaro.org> <CAFA6WYOqB2BwrZhgm1=btEmPwxYVpKKFAgOE2mYOUrUykgmiLw@mail.gmail.com>
+In-Reply-To: <CAFA6WYOqB2BwrZhgm1=btEmPwxYVpKKFAgOE2mYOUrUykgmiLw@mail.gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 20 Apr 2020 15:52:17 +0200
+Message-ID: <CAHUa44GF1i6V_tNKqeYdcyxNmdBG=Zoir6Yx2UCMn5kkj1FimA@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Enhance TEE kernel client interface
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Stuart Yoder <stuart.yoder@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 08:38:05PM +0800, Jason Yan wrote:
-> The '==' expression itself is bool, no need to convert it to bool again.
-> This fixes the following coccicheck warning:
-> 
-> virt/kvm/eventfd.c:724:38-43: WARNING: conversion to bool not needed
-> here
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Hi Sumit,
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+On Fri, Apr 17, 2020 at 12:45 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Hi Jens,
+>
+> On Fri, 27 Mar 2020 at 11:00, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Earlier this patch-set was part of TEE Trusted keys patch-set [1]. But
+> > since these are completely independent enhancements for TEE kernel
+> > client interface which can be merged separately while TEE Trusted keys
+> > discussions are ongoing.
+> >
+> > Patch #1 enables support for registered kernel shared memory with TEE.
+> >
+> > Patch #2 enables support for private kernel login method required for
+> > cases like trusted keys where we don't wan't user-space to directly
+> > access TEE service.
+> >
+> > [1] https://lkml.org/lkml/2019/10/31/430
+> >
+> > Changes in v6:
+> > - Reserve only half of GP implementation defined range for kernel space.
+> >
+> > Changes in v5:
+> > - Misc. renaming of variables.
+> >
+> > Sumit Garg (2):
+> >   tee: enable support to register kernel memory
+> >   tee: add private login method for kernel clients
+> >
+>
+> In case we don't have any further comments, would you like to pick up these?
 
--- 
-Peter Xu
+Thanks for the reminder. I'm picking this up.
 
+Jerome, it's not too late to provide a tag if you like.
+
+Cheers,
+Jens
