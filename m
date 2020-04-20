@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB041B1693
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576A41B169B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgDTUDK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Apr 2020 16:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
+        id S1728266AbgDTUDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgDTUDI (ORCPT
+        with ESMTP id S1726601AbgDTUDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:03:08 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32C4C061A10;
-        Mon, 20 Apr 2020 13:03:08 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jQcdF-00060v-CF; Mon, 20 Apr 2020 22:03:05 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id F1C7B1C0483;
-        Mon, 20 Apr 2020 22:03:04 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 20:03:04 -0000
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/core] x86/elf: Add table to document READ_IMPLIES_EXEC
-Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@suse.de>,
-        Jason Gunthorpe <jgg@mellanox.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200327064820.12602-2-keescook@chromium.org>
-References: <20200327064820.12602-2-keescook@chromium.org>
+        Mon, 20 Apr 2020 16:03:50 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B75EC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:03:50 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id i22so9255563otp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QmIL5crnJ6coQ/xisfoITs7FajvHe0i8ibpe9qH1tOw=;
+        b=xuIILliRNJohVGgFgY8Ms3DxS6dM2StIfONK2qFe0AJUBtvHWTQ+PuLfZ8iVFAaLyl
+         FqlWJBi359Otp3AFIB7rdOUDIzzrDAK0yNelRgxBIzrNdfPIjMaIokCtpSNpP2g4X8/V
+         2X04SfMv9FkywwCay+XPYQCQmO4Lckm5nPdKUlGRnLQS1AHH2Vj3XqXkvufoH19haXXQ
+         ih3EaGimgqsAXoyr7rpJC2k3/5hdLXkwT9rxvWl1xgge15HPAPQ36dA9OgkKz25jB429
+         miykesCoC5NyBfgxteOC6N+LQIber5p7oZtX01rwDBFEnvh0pWgkqXfjEQvSTbmavZ+3
+         LK9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QmIL5crnJ6coQ/xisfoITs7FajvHe0i8ibpe9qH1tOw=;
+        b=o6DR4yb4i2yyDaCQFwpKNoYxVMnLePJm0YpA6fAwBGDZfNr6NxpGnj/79liXv8mY8w
+         PC2JKh2We2+7LycIqmD3Pv23DcGcHkcy0r1HEmYKdApRpvf7txTTUvUUyX+cV/bEac9v
+         2nzAjN9LQXCAXhUizqCwRrsTph/YIElaBYxgrWihmjnwXAGFeyI9Joph8egzyzKppl4x
+         e9gnVnHMGScz1kwVyPwSkZPmFl2SxudDHQ3EgtgdU2DiWMSGM/E6PzSGRnr58yuFYmtv
+         KIWYTFmdk1JA9gOGxkhBEAxzpQyW2t7/hC5DIPwPnQ1YM+4CDsk1Ykm1w0+s7kuR4zMB
+         ixKw==
+X-Gm-Message-State: AGi0PuYaC54A33EaguqwN9JcAQh4wkZVpIJXjnFZNOd5Wwn4yEs0xSIn
+        3EIiKDCZCrjRLaTZWpwKDh2u3xhQOUPcR4AsdVza+SOQ
+X-Google-Smtp-Source: APiQypK2nqgSukevEMOkrgEiY+Twkm4ExNtv93iL2MCVA6EiSnE9I0/kG/gRCZfwm2sf3tRai+xV044YMqqalBHAyGM=
+X-Received: by 2002:a05:6830:22dc:: with SMTP id q28mr10406884otc.221.1587413029451;
+ Mon, 20 Apr 2020 13:03:49 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <158741298454.28353.11194052681441645315.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200414134629.54567-1-orjan.eide@arm.com> <20200414141849.55654-1-orjan.eide@arm.com>
+ <20200414142810.GA958163@kroah.com> <CALAqxLX-SUhHPH6ewt-s9cEMc8DtMTgXem=JruAkLofuJf1syg@mail.gmail.com>
+ <20200416102508.GA820251@kroah.com> <20200420082207.ui7iyg7dsnred2vv@wittgenstein>
+In-Reply-To: <20200420082207.ui7iyg7dsnred2vv@wittgenstein>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 20 Apr 2020 13:03:39 -0700
+Message-ID: <CALAqxLW-txNEqW=P_9VTxvOVu_fgpjzHHDbR5BhtpYwhg1SXgw@mail.gmail.com>
+Subject: Re: [PATCH] staging: android: ion: Skip sync if not mapped
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Todd Kjos <tkjos@android.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Anders Pedersen <anders.pedersen@arm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Darren Hart (VMware)" <dvhart@infradead.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        nd <nd@arm.com>, Martijn Coenen <maco@android.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-media@vger.kernel.org, Laura Abbott <laura@labbott.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/core branch of tip:
+On Mon, Apr 20, 2020 at 1:22 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> On Thu, Apr 16, 2020 at 12:25:08PM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Apr 14, 2020 at 09:41:31PM -0700, John Stultz wrote:
+> > > But I do think we can mark it as deprecated and let folks know that
+> > > around the end of the year it will be deleted.
+> >
+> > No one ever notices "depreciated" things, they only notice if the code
+> > is no longer there :)
+> >
+> > So I'm all for just deleting it and seeing who even notices...
+>
+> Agreed.
 
-Commit-ID:     9d9e435f3f2492bfd196acacb61cc9a9212d8170
-Gitweb:        https://git.kernel.org/tip/9d9e435f3f2492bfd196acacb61cc9a9212d8170
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Thu, 26 Mar 2020 23:48:15 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 20 Apr 2020 15:28:40 +02:00
+I mean, I get there's not much love for ION in staging, and I too am
+eager to see it go, but I also feel like in the discussions around
+submitting the dmabuf heaps at talks, etc, that there was clear value
+in removing ION after a short time so that folks could transition
+being able to test both implementations against the same kernel so
+performance regressions, etc could be worked out.
 
-x86/elf: Add table to document READ_IMPLIES_EXEC
+I am actively getting many requests for help for vendors who are
+looking at dmabuf heaps and are starting the transition process, and
+I'm trying my best to motivate them to directly work within the
+community so their needed heap functionality can go upstream. But it's
+going to be a process, and their first attempts aren't going to
+magically land upstream.  I think being able to really compare their
+implementations as they iterate and push things upstream will help in
+order to be able to have upstream solutions that are also properly
+functional for production usage.
 
-Add a table to document the current behavior of READ_IMPLIES_EXEC in
-preparation for changing the behavior.
+The dmabuf heaps have been in an official kernel now for all of three
+weeks. So yea, we can "delete [ION] and see who even notices", but I
+worry that may seem a bit like contempt for the folks doing the work
+on transitioning over, which doesn't help getting them to participate
+within the community.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Link: https://lkml.kernel.org/r/20200327064820.12602-2-keescook@chromium.org
----
- arch/x86/include/asm/elf.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 69c0f89..ee459d4 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -281,6 +281,25 @@ extern u32 elf_hwcap2;
- /*
-  * An executable for which elf_read_implies_exec() returns TRUE will
-  * have the READ_IMPLIES_EXEC personality flag set automatically.
-+ *
-+ * The decision process for determining the results are:
-+ *
-+ *                 CPU: | lacks NX*  | has NX, ia32     | has NX, x86_64 |
-+ * ELF:                 |            |                  |                |
-+ * ---------------------|------------|------------------|----------------|
-+ * missing PT_GNU_STACK | exec-all   | exec-all         | exec-all       |
-+ * PT_GNU_STACK == RWX  | exec-all   | exec-all         | exec-all       |
-+ * PT_GNU_STACK == RW   | exec-none  | exec-none        | exec-none      |
-+ *
-+ *  exec-all  : all PROT_READ user mappings are executable, except when
-+ *              backed by files on a noexec-filesystem.
-+ *  exec-none : only PROT_EXEC user mappings are executable.
-+ *
-+ *  *this column has no architectural effect: NX markings are ignored by
-+ *   hardware, but may have behavioral effects when "wants X" collides with
-+ *   "cannot be X" constraints in memory permission flags, as in
-+ *   https://lkml.kernel.org/r/20190418055759.GA3155@mellanox.com
-+ *
-  */
- #define elf_read_implies_exec(ex, executable_stack)	\
- 	(executable_stack != EXSTACK_DISABLE_X)
+thanks
+-john
