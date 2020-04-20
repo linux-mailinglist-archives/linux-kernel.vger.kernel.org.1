@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633531B0102
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F4F1B0105
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgDTFfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:35:15 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42744 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgDTFfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:35:14 -0400
-Received: by mail-io1-f71.google.com with SMTP id e6so8884592iol.9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:35:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=h/BvHvMfds32NfgtE98V2KP6Bs++QvZcaliDj82Cs0E=;
-        b=gTs9h4IUvlAtFJdcKcw4GFQK5PJe8uGdtW+hXjgxJuIylmMCogMV+zjeSaHJ2CpYDZ
-         mrH4MUT+mzYZbWLsV6EWYipovsXoyj/GiiYZxNnh79LNACRRETwwfcoDYBiETGL/mEp8
-         uZ3CF26oTkFL/nLLX2xrVLdGJvjVGMuS1I5xBugTiUgpHUQUpRRPv9HhcXciKd+o41xv
-         4Z3jTcOP3NGduqc8tpTRaE3QSYTt/JMx5xMM4jo8MPRkmbzF4cHwQ0AjPYKA14C8WPwb
-         fAy/RA9HYeDAil7k2CIdYagfsbAgwg6Fjf9AaTBPpoq9CDesnFDf/tT+sdoD+RgPN0km
-         j9rg==
-X-Gm-Message-State: AGi0Pua5GmpezgpGCQTCUKRPy/E3lnm4033CrOq2KrzX49fiTssEC5SF
-        wyCTckVhaeOnRpgFrz5ZOgo69NRFDki3hw7fMSyZnHAwDyZ3
-X-Google-Smtp-Source: APiQypLbMNCAg8juI7DU5HhW3a6QLULnSLinXE3REp1inSW17hBXgpxyQyOzwzcnKgTIuhgyGKBF8HWyhClxQa95esEk7KAEOrVS
-MIME-Version: 1.0
-X-Received: by 2002:a92:5d5b:: with SMTP id r88mr14510816ilb.206.1587360913748;
- Sun, 19 Apr 2020 22:35:13 -0700 (PDT)
-Date:   Sun, 19 Apr 2020 22:35:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000064f6e505a3b243aa@google.com>
-Subject: KMSAN: uninit-value in audit_log_vformat (2)
-From:   syzbot <syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com>
-To:     eparis@redhat.com, glider@google.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org, paul@paul-moore.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726105AbgDTFgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:36:48 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:39683 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725379AbgDTFgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:36:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=JGxxB+JBK0HpcebHZbn7qDbFyNSU19wTCnP6IIC4qB8=; b=a
+        FSBgb9uoaxIVUrYbg/R7Jz8D/WC46aPim0lNGUOk3OvLiKN04+SrxbZNL/Koeb7v
+        nKrfobgdSLYR1+BafisxavSuMlUwvd7Gee5Enxxl6RGu7lgFvfguLCymAm86HlfU
+        8/CYA9YKD5O2C7WRXfyDEriweI2jR+gwibuuaHN7PA=
+Received: from localhost.localdomain (unknown [61.129.42.58])
+        by app2 (Coremail) with SMTP id XQUFCgDXh+DdNJ1eYfAdAA--.6054S3;
+        Mon, 20 Apr 2020 13:36:30 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] apparmor: Fix aa_label refcnt leak in policy_update
+Date:   Mon, 20 Apr 2020 13:35:28 +0800
+Message-Id: <1587360928-83032-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgDXh+DdNJ1eYfAdAA--.6054S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury7JF17tr4fCFWDXr1kXwb_yoW8WryDpr
+        WUK34qkFs8tF17Jrnxta45u3yakay7Gr1rtay3Gw1IyFs8Jw48uF1fK3s0gryrGrn5Arsr
+        ZrsIvrWrZ3WxCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUWv3bUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+policy_update() invokes begin_current_label_crit_section(), which
+returns a reference of the updated aa_label object to "label" with
+increased refcount.
 
-syzbot found the following crash on:
+When policy_update() returns, "label" becomes invalid, so the refcount
+should be decreased to keep refcount balanced.
 
-HEAD commit:    5356842d [EXPERIMENTAL] kmsan: eagerly allocate shadow at ..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f06720100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
-dashboard link: https://syzkaller.appspot.com/bug?extid=49e69b4d71a420ceda3e
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133b5dabe00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143e1610100000
+The reference counting issue happens in one exception handling path of
+policy_update(). When aa_may_manage_policy() returns not NULL, the
+refcnt increased by begin_current_label_crit_section() is not decreased,
+causing a refcnt leak.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
+Fix this issue by jumping to "end_section" label when
+aa_may_manage_policy() returns not NULL.
 
-=====================================================
-BUG: KMSAN: uninit-value in string_nocheck lib/vsprintf.c:608 [inline]
-BUG: KMSAN: uninit-value in string+0x522/0x690 lib/vsprintf.c:689
-CPU: 1 PID: 8854 Comm: syz-executor694 Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- string_nocheck lib/vsprintf.c:608 [inline]
- string+0x522/0x690 lib/vsprintf.c:689
- vsnprintf+0x207d/0x31b0 lib/vsprintf.c:2574
- audit_log_vformat+0x583/0xcd0 kernel/audit.c:1858
- audit_log_format+0x220/0x260 kernel/audit.c:1892
- audit_receive_msg kernel/audit.c:1344 [inline]
- audit_receive+0x18a4/0x6d50 kernel/audit.c:1515
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:642 [inline]
- __do_compat_sys_sendmsg net/compat.c:649 [inline]
- __se_compat_sys_sendmsg net/compat.c:646 [inline]
- __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
- do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
- do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
- entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7fa0d99
-Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffb27c7c EFLAGS: 00000246 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000200002c0
-RDX: 0000000000000000 RSI: 00000000080ea078 RDI: 00000000ffb27cd0
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:82
- slab_alloc_node mm/slub.c:2801 [inline]
- __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4420
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1081 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
- netlink_sendmsg+0x7d3/0x14d0 net/netlink/af_netlink.c:1893
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x451/0x5f0 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:642 [inline]
- __do_compat_sys_sendmsg net/compat.c:649 [inline]
- __se_compat_sys_sendmsg net/compat.c:646 [inline]
- __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:646
- do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
- do_fast_syscall_32+0x3c7/0x6e0 arch/x86/entry/common.c:410
- entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-=====================================================
-
-
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ security/apparmor/apparmorfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+index 280741fc0f5f..f6a3ecfadf80 100644
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -454,7 +454,7 @@ static ssize_t policy_update(u32 mask, const char __user *buf, size_t size,
+ 	 */
+ 	error = aa_may_manage_policy(label, ns, mask);
+ 	if (error)
+-		return error;
++		goto end_section;
+ 
+ 	data = aa_simple_write_to_buffer(buf, size, size, pos);
+ 	error = PTR_ERR(data);
+@@ -462,6 +462,7 @@ static ssize_t policy_update(u32 mask, const char __user *buf, size_t size,
+ 		error = aa_replace_profiles(ns, label, mask, data);
+ 		aa_put_loaddata(data);
+ 	}
++end_section:
+ 	end_current_label_crit_section(label);
+ 
+ 	return error;
+-- 
+2.7.4
+
