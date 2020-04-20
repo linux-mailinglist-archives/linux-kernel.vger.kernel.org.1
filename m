@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8DA1B0969
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3652A1B08C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgDTMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:34:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:52256 "EHLO loongson.cn"
+        id S1726677AbgDTMID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:08:03 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2413 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgDTMeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:34:04 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb9uzlp1eHSgqAA--.29S6;
-        Mon, 20 Apr 2020 20:34:00 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3 4/4] test_kmod: Avoid potential double free in trigger_config_run_type()
-Date:   Mon, 20 Apr 2020 20:33:55 +0800
-Message-Id: <1587386035-5188-5-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1587386035-5188-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1587386035-5188-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1725944AbgDTMIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:08:02 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BEAFDC9AE20436C7EF10;
+        Mon, 20 Apr 2020 20:07:59 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 20:07:49 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] ptp: Remove unneeded conversion to bool
+Date:   Mon, 20 Apr 2020 20:34:31 +0800
+Message-ID: <20200420123431.7040-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxb9uzlp1eHSgqAA--.29S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7WryUur17WFWUWry7Zw1fWFg_yoWDCwb_uF
-        17Jr1DWw1UJFya9w13uws3ZFs7ta4Utr18Zrs7tay7Gryaqr9xX3s5trn5XasxW398trWS
-        g390yFn29wsxujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbhAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-        F7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr
-        1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF04
-        k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18
-        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr4
-        1lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
-        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4
-        A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUe73vUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reset the member "test_fs" of the test configuration after a call
-of the function "kfree_const" to a null pointer so that a double
-memory release will not be performed.
+The '==' expression itself is bool, no need to convert it to bool again.
+This fixes the following coccicheck warning:
 
-Fixes: d9c6a72d6fa2 ("kmod: add test driver to stress test the module loader")
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+drivers/ptp/ptp_ines.c:403:55-60: WARNING: conversion to bool not
+needed here
+drivers/ptp/ptp_ines.c:404:55-60: WARNING: conversion to bool not
+needed here
+
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
+ drivers/ptp/ptp_ines.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v3:
-  - use the quotes with correct format in the commit message,
-    sorry for that
-
-v2:
-  - update the commit message suggested by Markus Elfring
-  - add the Fixes tag
-
- lib/test_kmod.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/test_kmod.c b/lib/test_kmod.c
-index e651c37..eab5277 100644
---- a/lib/test_kmod.c
-+++ b/lib/test_kmod.c
-@@ -745,7 +745,7 @@ static int trigger_config_run_type(struct kmod_test_device *test_dev,
- 		break;
- 	case TEST_KMOD_FS_TYPE:
- 		kfree_const(config->test_fs);
--		config->test_driver = NULL;
-+		config->test_fs = NULL;
- 		copied = config_copy_test_fs(config, test_str,
- 					     strlen(test_str));
- 		break;
+diff --git a/drivers/ptp/ptp_ines.c b/drivers/ptp/ptp_ines.c
+index dfda54cbd866..52d77db39829 100644
+--- a/drivers/ptp/ptp_ines.c
++++ b/drivers/ptp/ptp_ines.c
+@@ -400,8 +400,8 @@ static int ines_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+ 	ines_write32(port, ts_stat_rx, ts_stat_rx);
+ 	ines_write32(port, ts_stat_tx, ts_stat_tx);
+ 
+-	port->rxts_enabled = ts_stat_rx == TS_ENABLE ? true : false;
+-	port->txts_enabled = ts_stat_tx == TS_ENABLE ? true : false;
++	port->rxts_enabled = ts_stat_rx == TS_ENABLE;
++	port->txts_enabled = ts_stat_tx == TS_ENABLE;
+ 
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 
 -- 
-2.1.0
+2.21.1
 
