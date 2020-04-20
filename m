@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C541B08CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A9D1B096C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgDTMIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:08:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55926 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726581AbgDTMIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:08:17 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9F657B648C2AFE2537E3;
-        Mon, 20 Apr 2020 20:08:14 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
- 20:08:07 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <kpsingh@chromium.org>, <intel-wired-lan@lists.osuosl.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] i40e: Remove unneeded conversion to bool
-Date:   Mon, 20 Apr 2020 20:34:48 +0800
-Message-ID: <20200420123448.7382-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726821AbgDTMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:35:00 -0400
+Received: from sonic308-56.consmr.mail.ne1.yahoo.com ([66.163.187.31]:33616
+        "EHLO sonic308-56.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726020AbgDTMfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:35:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587386098; bh=vUjtVOr1LCIoQU4EvLR2F9kwRcMR3abpMUhjHVo2tTA=; h=Date:From:Reply-To:Subject:References:From:Subject; b=ZAat9hhUWjP/atfHD0ffIBN+7WCe04k+RBhMeeTW/k9LJBxgHRtbPjYUjWEW5evpgHgAn1m9V7T91Eiv8SXPV8dl6PY9BeIQeiHCHiH5zxbZ7b/uifFejTbID7ujWJtAjHWwBEPKVSZkHdV6K2txIRD+APrzw/hh+wce9E8zvZvH9hUY0z9BFQTx1WeGLhZtZG6dn0WCMv7EFy45g0W6WKJyAAD8LP2tT9+vNDdMyXDUt9zqwsTfRWmXPCUVBNi6y737uoq43GRzX2TGF0pBE3nvwHGFQoDPsR3FNclgIdk4MJGnIktO+vQZXEWVLegxLJEEMzH1/V9T36tFsQ/7Eg==
+X-YMail-OSG: psG0Te0VM1kebIAtOULIzn2YINU.76ZrZDY8wcku_fhNoYB6CVpNiKAulaCQGQj
+ 7fEn31wAWgkLpIqaqn74tat91yf9GEuySdnuXZ.5q_6rfMuQcdPvb0O0iCSpYfunCOBQVdNe0Wyd
+ 5BqUlc7XAvpTufU3dQsfcTIvjm9_uQpWi1jp8pE_H5lC_r4NOOqA43_GE5lUhuuAEifYqOHdbs._
+ 4AKdfmtuOia5Wtr446ZOsD4qdpTpHSaD9S5itYKHZIICU0ATC2Z9XsnuYFajlIbopDvA4GENPxX_
+ uQM3XVd7RLWgUbPyZR8lAL4DPpwKCuS6gXRsRm2efMXj0DeP79oYW25GjjIQzWz.34_ZWzkVrl7h
+ ivnVPczOfRz1g1E1ge9pg_9w04kfNNCM.rAzUGp51supirQQXy1LK7J6USBTwi4PmslJpE8.9r1n
+ syatBKvqOR_EMcw1jSvSc0mZgp20SmdpfdgyowJPQyj.raC34iNmvb3_VxXffzST1uzAKtBjyJne
+ a_Smd.4fx5yqfMrcFua2LjdXwL0lzl1F77JlsDSLzwBJeB9Z5lA5X7eqjHDlnmV.BJM_jvA5RLAU
+ qvX3B5slsrLKoHZ1rmfH4_LF40.PfegfQfvbFBdUdtr4cMtIXgMn_YtEmjuOx24VLlJpqCQMdwPW
+ dlCjhPXsejLLdZVtE8BJsCc.QkQtxlSLxwevQPvck5gHd5ClNP26ele7QM7PJGCU9GjZKp.bhcWs
+ r34LDkFMCTWUaWmBSqTX6fMAE3EblTO6cTFEPi.tmb3I2PO1Czh.rKLrA6cuspoylrX_DX5ggagn
+ xopWQyejQMG9bLCJUIjxDbqXVjF9wRXGf4Auc34FihMj1piSaSCBI.4OH5M24oSgcxFcspgcpJXM
+ 7onN1tW0MqKTl8NvdoipStXS8MAH712kag0q2zE97QcTp_MPvWCQTs.Of_VZIOBzmRYdSzHBFEXF
+ hYqNrsNlq4_A2Bs1S9sJJOwIs6Jedhju2tmuaIaFLGtYtKYHUnrBzVQsAUv7eMf7qA7yGvNHLiO9
+ XgMbGYlg_ljjXSIjDuFDH_558NonqAhuJudumd0jRZk7_dJ47RJ5TsBAM6zh0Lw0R.6GSfJmO9T8
+ 8pVHq33rlkCqw7HVaGq05DD973Dz7f7rVtAyinJVUSJzKS44cTdn6Z5_36JWVdJDrGVVP3f0xIBl
+ 9L00OEN.X0ffots16Q3d2oiVMZ_l2.1xhcxIh4fV_JkT7NIKRGNHJDxv1GwAUM3j_M.3dXpFVDSG
+ SE6.7eAqUWC7q6UScxiOqvexkddnl32fBt331wK4NfUB0ubXvevnH_GlyD8JYfko-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 20 Apr 2020 12:34:58 +0000
+Date:   Mon, 20 Apr 2020 12:34:56 +0000 (UTC)
+From:   REJOY <mrsrajoysmrsrajoyshassain@gmail.com>
+Reply-To: rejoyhassain02@gmail.com
+Message-ID: <122111686.3360330.1587386096623@mail.yahoo.com>
+Subject: i am so sorry if you received this letter in your spam,
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <122111686.3360330.1587386096623.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The '==' expression itself is bool, no need to convert it to bool again.
-This fixes the following coccicheck warning:
 
-drivers/net/ethernet/intel/i40e/i40e_main.c:1614:52-57: WARNING:
-conversion to bool not needed here
-drivers/net/ethernet/intel/i40e/i40e_main.c:11439:52-57: WARNING:
-conversion to bool not needed here
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+DEAR FRIEND.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 8c3e753bfb9d..2a037ec244b9 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -1611,7 +1611,7 @@ static int i40e_config_rss_aq(struct i40e_vsi *vsi, const u8 *seed,
- 		}
- 	}
- 	if (lut) {
--		bool pf_lut = vsi->type == I40E_VSI_MAIN ? true : false;
-+		bool pf_lut = vsi->type == I40E_VSI_MAIN;
- 
- 		ret = i40e_aq_set_rss_lut(hw, vsi->id, pf_lut, lut, lut_size);
- 		if (ret) {
-@@ -11436,7 +11436,7 @@ static int i40e_get_rss_aq(struct i40e_vsi *vsi, const u8 *seed,
- 	}
- 
- 	if (lut) {
--		bool pf_lut = vsi->type == I40E_VSI_MAIN ? true : false;
-+		bool pf_lut = vsi->type == I40E_VSI_MAIN;
- 
- 		ret = i40e_aq_get_rss_lut(hw, vsi->id, pf_lut, lut, lut_size);
- 		if (ret) {
--- 
-2.21.1
+YOU MAY BE WONDERING WHYI CONTACT YOU BUT SOMEONE LUCKY HAS TO BE CHOSEN WHICH IS YOU. I WANT YOU TO HANDLE THIS BUSINESS TRASACTION WITH ME IF CHANCE YOU TO DO INTERNATION BUSINESS I GO YOUR CONTACT FROM A RELIABLE WEB DIRECTORY.
 
+I RECEIVE YOUR CONTENT OF YOUR EMAIL FROM THIS DHL MASTER CARD OFFICES FUND OF $10.5 USD MILLION AFTER THE BOARD OF DIRECTORS MEETINGS, THE UNITED NATIONS GOVERNMENT HAVE DECIDED TO ISSUE YOU YOUR (ATM) VALUED AT 10.5 MILLION UNITED STATES DOLLAR.THIS IS TO BRING TO YOUR NOTICE THAT YOUR VALUED SUM OF 10.5 MILLION DOLLAR HAS BEING TODAY CREDITED INTO (ATM) MASTER CARD AND HAS BEEN HANDLE TO THE FOREIGN REMITTANCE DEPARTMENT TO SEND IT TO YOU TODAY IN YOUR FAVOR.
+
+WITH YOUR (ATM) YOU WILL HAVE ACCESS TO MAKE DAILY WITHDRAWALS OF $5000,00 UNITED STATE DOLLARS DAILIES AS ALREADY PROGRAMMED UNTIL YOU WITHDRAW YOUR TOTAL SUM IN YOUR (ATM) CARD WHICH HAS REGISTERED IN OUR SYSTEM FOR PAYMENT RECORD, AS SOON AS WE RECEIVE YOUR INFORMATIONS AND YOUR HOME ADDRESS OF YOUR COUNTRY AS ALREADY PROGRAMMED, WE WILL SEND YOUR (ATM) CARD THROUGH DHL COURIER SERVICE, WE HAVE RECEIVED A SIGNAL FROM THE SWISS WORLD BANK TO INFECT YOUR TRANSFER TO YOU WITHIN ONE WEEK,
+
+WE HAVE JUST FINISHED OUR ANNUAL GENERAL MEETING WITH THE CENTRAL BANK OF AMERICA (BOA). AT THE END OF THE BOARD OF DIRECTORS MEETING TODAY, WE HAVE CONCLUDED TO IMMEDIATELY ISSUE YOU AS SOON AS POSSIBLE,
+
+AND YOUR VALUE SUM HAS BEEN CREDITED INTO YOUR (ATM) VISA CARD
+ACCOUNT. WHICH YOU WILL USE TO WITHDRAW YOUR FUND IN ANY PART OF THE WORLD, WE HAVE ISSUED AND CREDITED YOUR (ATM) CARD IN YOUR NAME TODAY,
+
+YOUR (ATM) WILL BE INSURE BY THE INSURANCE COMPANY AND SEND TO YOU
+THROUGH ANY AVAILABLE COURIER COMPANY OF OUR CHOICE.
+
+ONCE AGAIN CONGRATULATIONS TO YOU,
+
+DIRECTOR DHL SERVICE,
+THANKS,
+SINCERELY.
