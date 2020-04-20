@@ -2,146 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3474B1B0305
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DDC1B030F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgDTHcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S1726181AbgDTHee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726116AbgDTHb7 (ORCPT
+        by vger.kernel.org with ESMTP id S1725994AbgDTHec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:31:59 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224A4C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:31:59 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x4so9803253wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Irkm1t7texpDTdUbbf1TCyy80mJcHmDgDPGpxK2nECY=;
-        b=shohTt/yf8dzKqAja5yZw/W0nu5rJUWnkH4GMCrvNWxjOWfSHvdGqPHblWnvz7cNc/
-         wHLoKebMkLi1F7mwe5VShLwnv1iOBGdw4GlovkR4aPUdz6Gfzigr7Q+f8i6jUmsQh3dq
-         mDTsITXiv85lr9ix8WBZ9axZuO8DIdt78O8zCx+Ahl8svy5UC/y/tv5xQwDC5sW9lpzg
-         CmYMN+AIE1vQItJdb233MwfuIwlGjdNxW+ckrnhBJN/ozn7otWkTcCLYjoAxOmLOBvOs
-         tEy6wM4XOoxRS/bTJezonmZr3h+gc/OT7MWydSWG66T3E5RPmTyg5QbfpCNqvKHQyew2
-         Q2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Irkm1t7texpDTdUbbf1TCyy80mJcHmDgDPGpxK2nECY=;
-        b=dfFqKqZeKiIn934TpWIMV8JliHDReLZNIrboGBs4bkXhWsAyHKer2scpHSyvE3M0Rv
-         zkWyx59LhJdRq9VehfDAhxlOPqeLa3/BDLzo6sbNY2BsE3BW7agSwn02fCsjk9tEJG9X
-         zHKLwnsMwqeU/A60CN0HhGTRldFr8NwLlt7a8jY+JZWHHQ5c5KhRmVnDXfoeiIpA9B7a
-         5mJqgwvyqIE5Iriploe7C8oEXDvJqxbV747UMfcl+7SHAEkkPI/M6jB7kt7wq594LZyG
-         PzoG0rW2y/DnojziskILOBhZlUckM7GZZTyVzrrsTadVJ8bzchKXHUnDc2FzuIqqlRcl
-         1S3w==
-X-Gm-Message-State: AGi0PuZ5aK1I00bFmfd9ULz3x5XJhVmO3YJ/yi+XEUjRaO1qaCiyfRit
-        MFjaKZSWdnqsM0v1GMXBcXhP8YEjjyA=
-X-Google-Smtp-Source: APiQypIWmIdKdy/1oq6wCDylTuILAe8zIGt4RJL7gzOKN1D2xzlvfQAJXOgmUgbaFZcGZB2rGNMlWw==
-X-Received: by 2002:a1c:7415:: with SMTP id p21mr15895325wmc.93.1587367917882;
-        Mon, 20 Apr 2020 00:31:57 -0700 (PDT)
-Received: from dell ([95.149.164.107])
-        by smtp.gmail.com with ESMTPSA id u7sm200895wmg.41.2020.04.20.00.31.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 00:31:57 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 08:31:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Support Opensource <Support.Opensource@diasemi.com>
-Subject: Re: [RESEND PATCH v2 1/2] mfd: da9063: Fix revision handling to
- correctly select reg tables
-Message-ID: <20200420073155.GK3737@dell>
-References: <cover.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
- <f830d0c2c2210253855d26c05b0e941e9e6f77a9.1586162737.git.Adam.Thomson.Opensource@diasemi.com>
- <20200416075944.GU2167633@dell>
- <AM6PR10MB22634D3B677E57EED0514DF680D80@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
- <20200417092410.GF2167633@dell>
- <AM6PR10MB2263F5CE9B3627A256BD695880D90@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
+        Mon, 20 Apr 2020 03:34:32 -0400
+X-Greylist: delayed 1318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Apr 2020 00:34:32 PDT
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A83EC061A0C;
+        Mon, 20 Apr 2020 00:34:32 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 69C8920CEA;
+        Mon, 20 Apr 2020 07:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587368071; bh=gcui++ieWd7uwUAXv2hAzwbMmKtI8T9QNmQZh73J2Qk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XHmXv7huslucaxXmqOOJUJ/Win32d7xMmz0ZjpHmbC0Jbfd6DEG2cb+lNrY8P+XGL
+         pxHRSUBpO2XZ+N7V5RXmie5d9KZuI1fS7dkHYPSUXJjGBjLhSrLmTgQWpdlBSZ+5+a
+         xeqNgPtWPiTVfGg4eJMnMWAUXp1Qo+tpVJ2ZUrQv5sKJdfdDZ4GtVgEEDs5cYP9NKe
+         dhTnof8mboy9kUY32glwsQJJWResjPdnOeeTIOYVsKHaIthmuGiOlMXX8XTR9b3oAZ
+         iOypWNY/ki9OZyDBFYXzhY9cfu9j40Vkz02XfB+NLtuNdFU4BubiUCFRN2VMcdJjDt
+         obnScb8DT0sEw==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 0/5] Loongson64: RS780E clean-ups
+Date:   Mon, 20 Apr 2020 15:33:35 +0800
+Message-Id: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM6PR10MB2263F5CE9B3627A256BD695880D90@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020, Adam Thomson wrote:
+Basically ensure all RS780E stuff is enabled by DeviceTree.
+So I can post LS7A support later on.
 
-> On 17 April 2020 10:24, Lee Jones wrote:
-> 
-> > > > > +		return -EINVAL;
-> > > >
-> > > > Do you want to fail silently here?
-> > >
-> > > Well an error message is printed in the calling code, so didn't feel like it
-> > > was necessary to have additional debug here. Felt like bloat.
-> > 
-> > As a user, I would prefer a more specific reason.
-> > 
-> > Thus, I would provide an error message here and omit the generic one.
-> 
-> I can update although I'll of course then need to do similar messages for the
-> other error legs of this function. FWIW, as this is only being called once in
-> the same file this error leg of code currently can never occur.
+Hi Thomas, could you please pick them into MIPS tree?
 
-As a tiny improvement, it's not a deal breaker.  If it's too much
-work, you can either submit a subsequent patch or omit it completely.
+Thanks.
 
-> > > > > +}
-> > > > > +
-> > > > > +enum {
-> > > > > +	DA9063_DEV_ID_REG = 0,
-> > > > > +	DA9063_VAR_ID_REG,
-> > > > > +	DA9063_CHIP_ID_REGS,
-> > > > > +};
-> > > > > +
-> > > > > +static int da9063_get_device_type(struct i2c_client *i2c, struct da9063
-> > > > *da9063)
-> > > > > +{
-> > > > > +	int ret;
-> > > > > +	u8 buf[DA9063_CHIP_ID_REGS];
-> > > >
-> > > > Really small nit: Could you reverse these please.
-> > >
-> > > Yep, agreed.
-> > >
-> > > >
-> > > > > +	ret = da9063_i2c_blockreg_read(i2c, DA9063_REG_DEVICE_ID, buf,
-> > > > > +				       DA9063_CHIP_ID_REGS);
-> > > > > +	if (ret < 0) {
-> > > >
-> > > > if (ret)
-> > > >
-> > > > Or better yet, as this is a read function, you could just return
-> > > > i2c_transfer() and do the appropriate error checking here *instead*.
-> > >
-> > > I think given that the function handles all of the I2C specific stuff I'd prefer
-> > > it be kept there. Logically that to me makes more sense. Can change this to
-> > > 'if (ret)'
-> > 
-> > Yes, not that I understand the message length (3) has more do to with
-> > the I2C interactions (rather than a derisive of 'count'), it makes
-> > sense to handle that inside the function.
-> > 
-> > However, it does seem odd to handle the return value of a *_read()
-> > function in this way.  They usually return the number of bytes read,
-> > which in this case would be DA9063_CHIP_ID_REGS (count), right?
-> 
-> Well regmap_bulk_read and regmap_read return 0 for success and negative for
-> failure so I'd disagree on this part.
+Jiaxun Yang (5):
+  MIPS: Loongson64: Remove dead RTC code
+  MIPS: Loongson64: Make RS780E ACPI as a platform driver
+  dt-bindings: Document Loongson RS780E PCH ACPI Controller
+  MIPS: DTS: Loongson64: Add ACPI Controller Node
+  MIPS: Loongson64: Mark RS780 HPET as broken
 
-Fair enough. :)
+ .../bindings/mips/loongson/rs780e-acpi.yaml   | 40 +++++++++++++
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi   |  5 ++
+ .../include/asm/mach-loongson64/mc146818rtc.h | 36 ------------
+ arch/mips/loongson64/Kconfig                  | 12 +---
+ arch/mips/loongson64/Makefile                 |  3 +-
+ arch/mips/loongson64/rtc.c                    | 39 -------------
+ arch/mips/loongson64/time.c                   |  8 +--
+ drivers/platform/mips/Kconfig                 |  6 ++
+ drivers/platform/mips/Makefile                |  1 +
+ .../platform/mips/rs780e-acpi.c               | 58 ++++++++++++-------
+ 10 files changed, 95 insertions(+), 113 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
+ delete mode 100644 arch/mips/include/asm/mach-loongson64/mc146818rtc.h
+ delete mode 100644 arch/mips/loongson64/rtc.c
+ rename arch/mips/loongson64/acpi_init.c => drivers/platform/mips/rs780e-acpi.c (70%)
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.26.0.rc2
+
