@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEA11B192A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCA91B193A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728498AbgDTWMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:12:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57977 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgDTWMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:12:34 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jQeeT-0000To-Bq; Mon, 20 Apr 2020 22:12:29 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: trigger: remove redundant assignment to variable ret
-Date:   Mon, 20 Apr 2020 23:12:29 +0100
-Message-Id: <20200420221229.99150-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728546AbgDTWNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727944AbgDTWM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:12:59 -0400
+Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4053E206E9;
+        Mon, 20 Apr 2020 22:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587420779;
+        bh=u8p0jHaF21T4UpqWTkdDV4RwTi3BMeCpFwuNvwfsqJU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=glBJYPYaB1Kjc2rK8ALzFmYe5Y8oxFn04YU/W79os1OPzcQ9wLbQjhyZIDiybTDdj
+         yv7BaL0HUSVRelCLSKXaNZB3UIUreLhknpimvro5ePfnGawX0uZPMpoBpaXYxawf0Y
+         4ENEUpZXJmR3jX6AU4FIcV9beDga5F+fE8Gz6Mhg=
+Date:   Tue, 21 Apr 2020 00:12:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/33] docs: update recommended Sphinx version to
+ 2.4.4
+Message-ID: <20200421001255.7c7e5065@coco.lan>
+In-Reply-To: <20200420152729.40cb10e1@lwn.net>
+References: <cover.1586881715.git.mchehab+huawei@kernel.org>
+        <498f701c618f7d0cf5f0a37e5889ee926f7c8bf4.1586881715.git.mchehab+huawei@kernel.org>
+        <20200420152729.40cb10e1@lwn.net>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Em Mon, 20 Apr 2020 15:27:29 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-The variable ret is being assigned with a value that is never read
-and it is being updated later with a new value. The initialization is
-redundant and can be removed.
+> On Tue, 14 Apr 2020 18:48:30 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> 
+> > The Sphinx check script is already smart enough to keep
+> > working, with older versions, warning the users that
+> > an upgrade is recommended (and explaining how):
+> > 
+> > 	Sphinx version 1.7.9
+> > 	Warning: It is recommended at least Sphinx version 2.4.4.
+> > 	Detected OS: Fedora release 31 (Thirty One).
+> > 
+> > 	To upgrade Sphinx, use:
+> > 
+> > 		/usr/bin/virtualenv sphinx_2.4.4
+> > 		. sphinx_2.4.4/bin/activate
+> > 		pip install -r ./Documentation/sphinx/requirements.txt  
+> 
+> Sigh...that version is all of a month and some old.  I hate to be pushing
+> people that hard on the upgrade treadmill.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/leds/trigger/ledtrig-timer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yeah, I see the point. 
 
-diff --git a/drivers/leds/trigger/ledtrig-timer.c b/drivers/leds/trigger/ledtrig-timer.c
-index 34a68604c46c..b4688d1d9d2b 100644
---- a/drivers/leds/trigger/ledtrig-timer.c
-+++ b/drivers/leds/trigger/ledtrig-timer.c
-@@ -28,7 +28,7 @@ static ssize_t led_delay_on_store(struct device *dev,
- {
- 	struct led_classdev *led_cdev = led_trigger_get_led(dev);
- 	unsigned long state;
--	ssize_t ret = -EINVAL;
-+	ssize_t ret;
- 
- 	ret = kstrtoul(buf, 10, &state);
- 	if (ret)
-@@ -53,7 +53,7 @@ static ssize_t led_delay_off_store(struct device *dev,
- {
- 	struct led_classdev *led_cdev = led_trigger_get_led(dev);
- 	unsigned long state;
--	ssize_t ret = -EINVAL;
-+	ssize_t ret;
- 
- 	ret = kstrtoul(buf, 10, &state);
- 	if (ret)
--- 
-2.25.1
+Please notice that the above will only appear if someone calls "make htmldocs"
+and no sphinx-build is found at the patch (or if the version is below the
+lower bond - 1.4.x).
 
+> I'm still looking over the set, and will probably apply this, but I think
+> we should consider tweaking this before 5.8:
+> 
+>  - Can we make the warning more explicit that 2.4.4 is needed *if you are
+>    generating PDF*?  Most people, I think, don't do that, and can live
+>    happily with an older version.
+
+Sure. I can work on a patch for such purpose. 
+
+>  - Perhaps the time has come to raise the lower bound to, say, 1.7?  That
+>    might let us get rid of a bit of cruft.
+
+If we move the lower bound, it will start to refuse running "make htmldocs"
+with versions below 1.7.
+
+I'm ok on rising the lower limit. Yet, not sure if this is worth.
+I mean, last time I checked, html builds fine with older versions.
+
+Ok, if we rise the bar, we may be able to do some cleanups at the
+extensions, removing some backward-compatible code. So, I would wait
+for some future Sphinx version where the extensions would stop working,
+requiring someone to touch them.
+
+Thanks,
+Mauro
