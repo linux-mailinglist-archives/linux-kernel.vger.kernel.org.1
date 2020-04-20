@@ -2,155 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFC41B16CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E23D1B16D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgDTUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:20:50 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35371 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgDTUUt (ORCPT
+        id S1726601AbgDTUXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:23:16 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45275 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbgDTUXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:20:49 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r14so5504683pfg.2;
-        Mon, 20 Apr 2020 13:20:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d1vWaAPFpe9d3hkanubiEklkGNiGAMFeNwjfGMilTAM=;
-        b=LeVI8eYmduC3eSID+7FWU0p9yLY37GgrNrdLWBRe9VoJYlZn2kWImhhrT2eEXYNd76
-         UBZVREbjdvmB/0/eDpPa01hkEIcGs5UqFdEoJKXAca9sKm2qRmbGmdj1xLLBBvgz0Hu3
-         OEIsIBF4U5qrcINt8QH5MuJ6lBjqNHJ8cWimEzTQn6WWBsIHnSOSo0VlA/IBkG4j0gVI
-         mqfizBn2XPgkf4DaNOw9U6l5d0eEciEtZeAiVbL+4HGTY6tpmik+SMiHLOYwH88Nz2Mh
-         +6slvJBhQNWFJF0hUkuWtprTuGX+9isngFy6MMNprYuUQVPRVK9Cy33rQdkrx291gWhc
-         aicw==
-X-Gm-Message-State: AGi0PuZ6wewRQbWpNgs+cyzBq4IXUCjaAAUPkV84p1X9K+mAiG/nU7Qx
-        VHKfGLKfCaWyWy7GN9VoI2I=
-X-Google-Smtp-Source: APiQypKeLBYdrxP6j03MnlZSHUnvhneLWrQZJtLtlDqcB+PbOXVLX2G83VQJBNiL+R9imcwu/VBFUQ==
-X-Received: by 2002:a62:dd03:: with SMTP id w3mr8749988pff.76.1587414048659;
-        Mon, 20 Apr 2020 13:20:48 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id f3sm337607pfd.144.2020.04.20.13.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 13:20:46 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 190554028E; Mon, 20 Apr 2020 20:20:46 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 20:20:46 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/10] blktrace: add checks for created debugfs files
- on setup
-Message-ID: <20200420202046.GN11244@42.do-not-panic.com>
-References: <20200419194529.4872-1-mcgrof@kernel.org>
- <20200419194529.4872-9-mcgrof@kernel.org>
- <38240225-e48e-3035-0baa-4929948b23a3@acm.org>
- <20200419230537.GG11244@42.do-not-panic.com>
- <c69b67d1-f887-600b-f3ab-54ab0b7dcb13@acm.org>
- <20200420114038.GE3906674@kroah.com>
- <20200420184445.GK11244@42.do-not-panic.com>
- <20200420201101.GB302402@kroah.com>
+        Mon, 20 Apr 2020 16:23:14 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3E4D45C00A5;
+        Mon, 20 Apr 2020 16:23:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 20 Apr 2020 16:23:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=j+rtBs4i+LTG85XDMivqbYA15v9
+        KeFIawbkmfnjtAW0=; b=lQv7Xo3FCSWwpKQtFtW/07XH376+sJrM1WB5Vgoq13t
+        rRW/yCevF+1Zuuvw9RRDm1iRGAC3Qy4oSd8oKI66+5uQC1Mxa7R9rQeVlFKoKUIB
+        +FrLzTUdjv+MdNfJ6RcbFdyZIx8UFaRIBtK4k8pDgUt13ocMB0jiQ5+kaQllJ1tT
+        bYEYXpO6+1IjYV+DJSIz4sBGpcOlxg+vuosNUyw/PmK1Utv7MaSNv/Dymv+R5UU7
+        oomw7BO89pCPg33s2r++0rsGnrezOnMViVsoGh/zouSjM3wN9i43N2i75hNArewv
+        PO86lMXoIm6gd5ViYaiP8ZfcmRQFqcYopNddIkV1D6g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=j+rtBs
+        4i+LTG85XDMivqbYA15v9KeFIawbkmfnjtAW0=; b=Hf3f9tYbUGtFb3r2BtNy/Q
+        lSzNPUf4XcRFeGfsMJND+HzETGV+Jdzoko52w07d0nhO4Gt5Xfqiqw7eGi9Io1zY
+        R6wWH8NGw6Sw4Kr5arjjzcUMMke262OfwB86KOvGZdoKfjoSnqO7p/iMdVRwpMHn
+        qDvkrGQHOOxPSS4VtduzDS5pUJAA65dvqvkVc6LqRPbSZqHmY8WWfpRqBP1nBL8j
+        Mrq1FsJIy1tsj8PBnoNOlEaCbF5PXRO8EFVyXhzbJvAPzWaP00XlalzHm/pgqsdk
+        7zh6LGfZ2TIQCgnzW4Bpcyhq3v99dgycIntr9WIi2BLZs47nVjsW9LbRCQ+m6bTg
+        ==
+X-ME-Sender: <xms:sASeXlRwLyiPGlyFfP_6Nd1II9Uq4Izyi55V8eB0t3o4PojH4Jrzog>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgddugedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddt
+    vdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhessh
+    htfigtgidrgiihiieqnecukfhppedutdejrddutdejrddukeejrdduuddtnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgrthhrihgtkhessh
+    htfigtgidrgiihii
+X-ME-Proxy: <xmx:sASeXslZrvlhfwekb1JCjs2zhYROfTKePadJWyyVG1khsPFdeX_CGA>
+    <xmx:sASeXlQGdLTwj57G2fP5rfvq3VxP0wpFHM8e3XtMArUJUdPwgglIFA>
+    <xmx:sASeXqN3HA9-Y8exD5U7MfkbXs6ypu0JZVZSgbrbx2Dk6Fl9fyvzFw>
+    <xmx:sQSeXi7xIRZNJoJVxNJ0M7VPbtXyZbxobguIKPTpcVRN0bmxTFsZdw>
+Received: from localhost (mobile-107-107-187-110.mycingular.net [107.107.187.110])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BBD7B328005D;
+        Mon, 20 Apr 2020 16:23:11 -0400 (EDT)
+Date:   Mon, 20 Apr 2020 15:23:10 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Patrick Williams <alpawi@amazon.com>,
+        =?iso-8859-1?Q?Bj=F6rn_Ard=F6?= <bjorn.ardo@axis.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] i2c: slave-eeprom: support additional models
+Message-ID: <20200420202310.GA95151@heinlein.lan.stwcx.xyz>
+References: <20191001164009.21610-1-alpawi@amazon.com>
+ <20191001164009.21610-2-alpawi@amazon.com>
+ <20200420164619.GE3721@ninjato>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
 Content-Disposition: inline
-In-Reply-To: <20200420201101.GB302402@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200420164619.GE3721@ninjato>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 10:11:01PM +0200, Greg KH wrote:
-> On Mon, Apr 20, 2020 at 06:44:45PM +0000, Luis Chamberlain wrote:
-> > On Mon, Apr 20, 2020 at 01:40:38PM +0200, Greg KH wrote:
-> > > On Sun, Apr 19, 2020 at 04:17:46PM -0700, Bart Van Assche wrote:
-> > > > On 4/19/20 4:05 PM, Luis Chamberlain wrote:
-> > > > > On Sun, Apr 19, 2020 at 03:57:58PM -0700, Bart Van Assche wrote:
-> > > > > > On 4/19/20 12:45 PM, Luis Chamberlain wrote:
-> > > > > > > Even though debugfs can be disabled, enabling BLK_DEV_IO_TRACE will
-> > > > > > > select DEBUG_FS, and blktrace exposes an API which userspace uses
-> > > > > > > relying on certain files created in debugfs. If files are not created
-> > > > > > > blktrace will not work correctly, so we do want to ensure that a
-> > > > > > > blktrace setup creates these files properly, and otherwise inform
-> > > > > > > userspace.
-> > > > > > > 
-> > > > > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > > > > > ---
-> > > > > > >    kernel/trace/blktrace.c | 8 +++++---
-> > > > > > >    1 file changed, 5 insertions(+), 3 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> > > > > > > index 9cc0153849c3..fc32a8665ce8 100644
-> > > > > > > --- a/kernel/trace/blktrace.c
-> > > > > > > +++ b/kernel/trace/blktrace.c
-> > > > > > > @@ -552,17 +552,19 @@ static int blk_trace_create_debugfs_files(struct blk_user_trace_setup *buts,
-> > > > > > >    					  struct dentry *dir,
-> > > > > > >    					  struct blk_trace *bt)
-> > > > > > >    {
-> > > > > > > -	int ret = -EIO;
-> > > > > > > -
-> > > > > > >    	bt->dropped_file = debugfs_create_file("dropped", 0444, dir, bt,
-> > > > > > >    					       &blk_dropped_fops);
-> > > > > > > +	if (!bt->dropped_file)
-> > > > > > > +		return -ENOMEM;
-> > > > > > >    	bt->msg_file = debugfs_create_file("msg", 0222, dir, bt, &blk_msg_fops);
-> > > > > > > +	if (!bt->msg_file)
-> > > > > > > +		return -ENOMEM;
-> > > > > > >    	bt->rchan = relay_open("trace", dir, buts->buf_size,
-> > > > > > >    				buts->buf_nr, &blk_relay_callbacks, bt);
-> > > > > > >    	if (!bt->rchan)
-> > > > > > > -		return ret;
-> > > > > > > +		return -EIO;
-> > > > > > >    	return 0;
-> > > > > > >    }
-> > > > > > 
-> > > > > > I should have had a look at this patch before I replied to the previous
-> > > > > > patch.
-> > > > > > 
-> > > > > > Do you agree that the following code can be triggered by
-> > > > > > debugfs_create_file() and also that debugfs_create_file() never returns
-> > > > > > NULL?
-> > > > > 
-> > > > > If debugfs is enabled, and not that we know it is in this blktrace code,
-> > > > > as we select it, it can return ERR_PTR(-ERROR) if an error occurs.
-> > > > 
-> > > > This is what I found in include/linux/debugfs.h in case debugfs is disabled:
-> > > > 
-> > > > static inline struct dentry *debugfs_create_file(const char *name,
-> > > > 	umode_t mode, struct dentry *parent, void *data,
-> > > > 	const struct file_operations *fops)
-> > > > {
-> > > > 	return ERR_PTR(-ENODEV);
-> > > > }
-> > > > 
-> > > > I have not found any code path that can cause debugfs_create_file() to
-> > > > return NULL. Did I perhaps overlook something? If not, it's not clear to me
-> > > > why the above patch adds checks that check whether debugfs_create_file()
-> > > > returns NULL?
-> > > 
-> > > Short answer, yes, it can return NULL.  Correct answer is, you don't
-> > > care, don't check the value and don't do anything about it.  It's
-> > > debugging code, userspace doesn't care, so just keep moving on.
-> > 
-> > Thing is this code *exposes* knobs to userspace for an API that *does*
-> > exepect those files to exist. That is, blktrace *relies* on these
-> > debugfs files to exist. So the kconfig which enables blktrace
-> > CONFIG_BLK_DEV_IO_TRACE selects DEBUG_FS.
-> 
-> That's nice, but again, no kernel code should do anything different
-> depending on what debugfs happens to be doing at that point in time.
 
-So even if the debugfs files were *not* created, and this code executes only
-if DEBUG_FS, you don't think we should inform userspace if the blktrace
-setup ioctl, which sets up these debugfs, didn't happen?
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The "recovery" here would just be to destroy the blktrace setup, and
-inform userspace that the blktrace setup ioctl failed.
+On Mon, Apr 20, 2020 at 06:46:19PM +0200, Wolfram Sang wrote:
+> On Tue, Oct 01, 2019 at 11:40:06AM -0500, Patrick Williams wrote:
+> > Add support for emulating the following EEPROMs:
+> >     * 24c01  - 1024 bit
+> >     * 24c128 - 128k bit
+> >     * 24c256 - 256k bit
+> >     * 24c512 - 512k bit
+> >=20
+> > The flag bits in the device id were shifted up 1 bit to make
+> > room for saving the 24c512's size.  24c512 uses the full 16-bit
+> > address space of a 2-byte addressable EEPROM.
+> >=20
+> > Signed-off-by: Patrick Williams <alpawi@amazon.com>
+>=20
+> Do you really need them or is it just nice to have?
+>=20
+> I am undecided. I definately don't want all the EEPROM types which
+> exist, but the full 16 bit address range makes sense...
+>=20
+> More opinions welcome.
+>=20
 
-  Luis
+I don't remember exactly which ones we needed (and I am no longer at
+Amazon), but it was pretty trivial to add them all to the table so I
+went ahead and did it.  As long as we had one of the 2-byte addressable
+EEPROMs, anything else necessary could be handleded as a small
+out-of-tree patch.
+
+--=20
+Patrick Williams
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl6eBKwACgkQqwNHzC0A
+wRm+3w/+LxsR2vMn880CT3tcUun6w0nwd9uLyu8glBEEBgpOOLFe8X89BXGNPeJP
+Kll58XbbYuOVxLG2jJwrz7K5KRW2tU+7R/hYtOV31jXDldxmEF23IbyJewxghmri
+YF4HB33xVDW2Jp9DWzwbgOjOgny6fJwUZ4Fi1OJ+xYNBIi1BRoG1url8qyVugka8
+zKumoV2Cn28E/XnSl2w/qMFSA7mqfYZlzo5ChXZMuuNDx9CiZaBmDDv3ymegmD7r
+2zvZRIweqex1xsVFWO7HJ0dAryQAez+giAkGS0b8u1pfa1m1ysNyspamJ6+ZRFtL
+Xyw2JxlEbdEHSZ+hiinUidOwv52TP8C5Zk8yirzDsVFM+ODCB8Noj3omFoFAgdLS
+sRvmzjYCZr31BlznVnF65L6e4O9+kVSU57Olu5FYZb5Wb6cEoJF+NhMxWizT6s5D
+Qym/vqSGtcU2jSzHBCTL9qkp6fZuqxdgmZ2TPMOhlgVibhnx6k1hnlnIVbbYuRUl
+EsuiTj9GQ9pGRfkpttrUuZd74mHrw8le63LOmmNJvRsEipReH0rcwqMCdQP0vy58
+/BnTDpaONj90J2IWtwLwoO1LvGUugTkx4/HiZmHfPFnih+dLjsOVAAunraDd+f8g
+0Hdjzg1CilbUJ5hECb4L+IO07K0hc+mBqpAhDUcQMDahdKOJo84=
+=6TW6
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
