@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F491B18DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CCE1B18C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgDTVxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:53:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36894 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgDTVxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:53:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0EE2CAE47;
-        Mon, 20 Apr 2020 21:53:41 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 14:50:14 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de,
-        kvm@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, linux-mips@vger.kernel.org,
-        Paul Mackerras <paulus@ozlabs.org>, joel@joelfernandes.org,
-        will@kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH v2] kvm: Replace vcpu->swait with rcuwait
-Message-ID: <20200420215014.sarodevmhphnkkn7@linux-p48b>
-References: <20200324044453.15733-1-dave@stgolabs.net>
- <20200324044453.15733-4-dave@stgolabs.net>
- <20200420164132.tjzk5ebx35m66yce@linux-p48b>
- <418acdb5001a9ae836095b7187338085@misterjones.org>
- <20200420205641.6sgsllj6pmsnwrvp@linux-p48b>
- <f7cc83fe-3e91-0057-9af2-26c201456689@redhat.com>
+        id S1726836AbgDTVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:50:47 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:45090 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgDTVur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 17:50:47 -0400
+Received: by mail-oo1-f65.google.com with SMTP id 190so2477101ooa.12;
+        Mon, 20 Apr 2020 14:50:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7xwngnSK8jmnAaejETa55CBwGjsk6/73FAqW38IllgE=;
+        b=Rin9IecO8JGnaays3m+wYsoTpYD1UQvsavlAXXxwjKli9SyK1kGYZVhYszcR6kfTGk
+         M9ohTQZ8Jh9HUvZofFjz1qWbVmqeA+IpzBpFAkC7bCW4K7YV+cF0fSKM/nUbuLFhh/fp
+         ACfhgsy0nGqJmgMF4sdHDtwYByd0BDsm4ATRGyltX8gfkHSR+4Zww0ct5dgmsxZvN5ni
+         B+oQRo+31v3lBXVaBlOIj75shybHJGluDkYkt+qDVmF6UAoY+zIO/lKcDtgP3u1/SQ74
+         eZuImJ1Nx5Z5NDXqETjO6QbljGDVWfq3yhvYaiHVgk1EgaNbMSgawZ4Y8L6E4oQaBaum
+         r6yw==
+X-Gm-Message-State: AGi0PuYysfkzPKKKkMu6+UGE1t9VsKmcRvEFtFgMdha2ZwukoC8sRljt
+        SxG5ldFtVldBUX6mWBxPK7nMvgY=
+X-Google-Smtp-Source: APiQypJhyooTQnBIqCxkrUYA7KEn8ivtsUF56mCc5Ma81d4iZ1WrQcXl9dcA1hU4Gy29XIJF5PRJQQ==
+X-Received: by 2002:a4a:9c93:: with SMTP id z19mr14484786ooj.3.1587419446616;
+        Mon, 20 Apr 2020 14:50:46 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h137sm178626oib.33.2020.04.20.14.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 14:50:45 -0700 (PDT)
+Received: (nullmailer pid 24997 invoked by uid 1000);
+        Mon, 20 Apr 2020 21:50:44 -0000
+Date:   Mon, 20 Apr 2020 16:50:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Add SM8250 power domains
+Message-ID: <20200420215044.GA24921@bogus>
+References: <20200415062154.741179-1-bjorn.andersson@linaro.org>
+ <20200415062154.741179-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f7cc83fe-3e91-0057-9af2-26c201456689@redhat.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200415062154.741179-2-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020, Paolo Bonzini wrote:
+On Tue, 14 Apr 2020 23:21:53 -0700, Bjorn Andersson wrote:
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
+>  drivers/soc/qcom/rpmhpd.c                     | 19 +++++++++++++++++++
+>  include/dt-bindings/power/qcom-rpmpd.h        | 12 ++++++++++++
+>  3 files changed, 32 insertions(+)
+> 
 
->On 20/04/20 22:56, Davidlohr Bueso wrote:
->> On Mon, 20 Apr 2020, Marc Zyngier wrote:
->>
->>> This looks like a change in the semantics of the tracepoint. Before this
->>> change, 'waited' would have been true if the vcpu waited at all. Here,
->>> you'd
->>> have false if it has been interrupted by a signal, even if the vcpu
->>> has waited
->>> for a period of time.
->>
->> Hmm but sleeps are now uninterruptible as we're using TASK_IDLE.
->
->Hold on, does that mean that you can't anymore send a signal in order to
->kick a thread out of KVM_RUN?  Or am I just misunderstanding?
-
-Considering that the return value of the interruptible wait is not
-checked, I would not think this breaks KVM_RUN.
-
-Thanks,
-Davidlohr
+Acked-by: Rob Herring <robh@kernel.org>
