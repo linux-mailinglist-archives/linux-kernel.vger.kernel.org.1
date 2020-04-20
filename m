@@ -2,200 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F951B0DAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3EE1B0DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgDTODV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:03:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38394 "EHLO mx2.suse.de"
+        id S1729581AbgDTOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:04:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39096 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726871AbgDTODV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:03:21 -0400
+        id S1727919AbgDTOEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:04:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 63091ABD7;
-        Mon, 20 Apr 2020 14:03:18 +0000 (UTC)
-Subject: Re: [patch 05/15] x86/tlb: Move __flush_tlb() out of line
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        by mx2.suse.de (Postfix) with ESMTP id 16C32ABD7;
+        Mon, 20 Apr 2020 14:04:07 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 14:04:06 +0000 (UTC)
+From:   Michael Matz <matz@suse.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     Jakub Jelinek <jakub@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-References: <20200419203137.214111265@linutronix.de>
- <20200419203336.134117165@linutronix.de>
- <5857df01-abeb-c6cd-8e92-64eb365dc835@amd.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <fab4e80a-3df2-a177-c5fe-1ab995953727@suse.com>
-Date:   Mon, 20 Apr 2020 16:03:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
+In-Reply-To: <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
+Message-ID: <alpine.LSU.2.21.2004201401120.11688@wotan.suse.de>
+References: <20200415074842.GA31016@zn.tnic> <alpine.LSU.2.21.2004151445520.11688@wotan.suse.de> <20200415231930.19755bc7@sf> <20200417075739.GA7322@zn.tnic> <20200417080726.GS2424@tucnak> <20200417084224.GB7322@zn.tnic> <20200417085859.GU2424@tucnak>
+ <20200417090909.GC7322@zn.tnic> <CAKwvOdnFXPBJsAUD++HtYS5JiR2KmX73M5GAUe-tvX-JYV7DaA@mail.gmail.com> <CAKwvOdmNwNwa6rMC27-QZq8VDrYdTQeQqss-bAwF1EMmnAHxdw@mail.gmail.com> <20200417190607.GY2424@tucnak>
+ <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <5857df01-abeb-c6cd-8e92-64eb365dc835@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.04.20 15:48, Tom Lendacky wrote:
-> On 4/19/20 3:31 PM, Thomas Gleixner wrote:
->> cpu_tlbstate is exported because various TLB related functions need 
->> access
->> to it, but cpu_tlbstate is sensitive information which should only be
->> accessed by well contained kernel functions and not be directly 
->> exposed to
->> modules.
->>
->> The various TLB flush functions need access to cpu_tlbstate. As a first
->> step move __flush_tlb() out of line and hide the native function. The
->> latter can be static when CONFIG_PARAVIRT is disabled.
->>
->> Consolidate the name space while at it and remove the pointless extra
->> wrapper in the paravirt code.
->>
->> No functional change.
->>
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Thomas Lendacky <Thomas.Lendacky@amd.com>
->> Cc: Juergen Gross <jgross@suse.com>
->> ---
->>   arch/x86/include/asm/paravirt.h    |    4 +++-
->>   arch/x86/include/asm/tlbflush.h    |   29 +++++------------------------
->>   arch/x86/kernel/cpu/mtrr/generic.c |    4 ++--
->>   arch/x86/kernel/paravirt.c         |    7 +------
->>   arch/x86/mm/mem_encrypt.c          |    2 +-
->>   arch/x86/mm/tlb.c                  |   33 
->> ++++++++++++++++++++++++++++++++-
->>   arch/x86/platform/uv/tlb_uv.c      |    2 +-
->>   7 files changed, 45 insertions(+), 36 deletions(-)
->>
->> --- a/arch/x86/include/asm/paravirt.h
->> +++ b/arch/x86/include/asm/paravirt.h
->> @@ -47,7 +47,9 @@ static inline void slow_down_io(void)
->>   #endif
->>   }
->> -static inline void __flush_tlb(void)
->> +void native_flush_tlb_local(void);
->> +
->> +static inline void __flush_tlb_local(void)
->>   {
->>       PVOP_VCALL0(mmu.flush_tlb_user);
->>   }
->> --- a/arch/x86/include/asm/tlbflush.h
->> +++ b/arch/x86/include/asm/tlbflush.h
->> @@ -140,12 +140,13 @@ static inline unsigned long build_cr3_no
->>       return __sme_pa(pgd) | kern_pcid(asid) | CR3_NOFLUSH;
->>   }
->> +void flush_tlb_local(void);
->> +
->>   #ifdef CONFIG_PARAVIRT
->>   #include <asm/paravirt.h>
->>   #else
->> -#define __flush_tlb() __native_flush_tlb()
->> -#define __flush_tlb_global() __native_flush_tlb_global()
->> -#define __flush_tlb_one_user(addr) __native_flush_tlb_one_user(addr)
->> +#define __flush_tlb_global()        __native_flush_tlb_global()
->> +#define __flush_tlb_one_user(addr)    __native_flush_tlb_one_user(addr)
->>   #endif
->>   struct tlb_context {
->> @@ -371,24 +372,6 @@ static inline void invalidate_user_asid(
->>   }
->>   /*
->> - * flush the entire current user mapping
->> - */
->> -static inline void __native_flush_tlb(void)
->> -{
->> -    /*
->> -     * Preemption or interrupts must be disabled to protect the access
->> -     * to the per CPU variable and to prevent being preempted between
->> -     * read_cr3() and write_cr3().
->> -     */
->> -    WARN_ON_ONCE(preemptible());
->> -
->> -    invalidate_user_asid(this_cpu_read(cpu_tlbstate.loaded_mm_asid));
->> -
->> -    /* If current->mm == NULL then the read_cr3() "borrows" an mm */
->> -    native_write_cr3(__native_read_cr3());
->> -}
->> -
->> -/*
->>    * flush everything
->>    */
->>   static inline void __native_flush_tlb_global(void)
->> @@ -461,7 +444,7 @@ static inline void __flush_tlb_all(void)
->>           /*
->>            * !PGE -> !PCID (setup_pcid()), thus every flush is total.
->>            */
->> -        __flush_tlb();
->> +        flush_tlb_local();
->>       }
->>   }
->> @@ -537,8 +520,6 @@ struct flush_tlb_info {
->>       bool            freed_tables;
->>   };
->> -#define local_flush_tlb() __flush_tlb()
->> -
->>   #define flush_tlb_mm(mm)                        \
->>           flush_tlb_mm_range(mm, 0UL, TLB_FLUSH_ALL, 0UL, true)
->> --- a/arch/x86/kernel/cpu/mtrr/generic.c
->> +++ b/arch/x86/kernel/cpu/mtrr/generic.c
->> @@ -761,7 +761,7 @@ static void prepare_set(void) __acquires
->>       /* Flush all TLBs via a mov %cr3, %reg; mov %reg, %cr3 */
->>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
->> -    __flush_tlb();
->> +    flush_tlb_local();
->>       /* Save MTRR state */
->>       rdmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
->> @@ -778,7 +778,7 @@ static void post_set(void) __releases(se
->>   {
->>       /* Flush TLBs (no need to flush caches - they are disabled) */
->>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
->> -    __flush_tlb();
->> +    flush_tlb_local();
->>       /* Intel (P6) standard MTRRs */
->>       mtrr_wrmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
->> --- a/arch/x86/kernel/paravirt.c
->> +++ b/arch/x86/kernel/paravirt.c
->> @@ -160,11 +160,6 @@ unsigned paravirt_patch_insns(void *insn
->>       return insn_len;
->>   }
->> -static void native_flush_tlb(void)
->> -{
->> -    __native_flush_tlb();
->> -}
->> -
->>   /*
->>    * Global pages have to be flushed a bit differently. Not a real
->>    * performance problem because this does not happen often.
->> @@ -359,7 +354,7 @@ struct paravirt_patch_template pv_ops =
->>   #endif /* CONFIG_PARAVIRT_XXL */
->>       /* Mmu ops. */
->> -    .mmu.flush_tlb_user    = native_flush_tlb,
->> +    .mmu.flush_tlb_user    = native_flush_tlb_local,
->>       .mmu.flush_tlb_kernel    = native_flush_tlb_global,
->>       .mmu.flush_tlb_one_user    = native_flush_tlb_one_user,
->>       .mmu.flush_tlb_others    = native_flush_tlb_others,
->> --- a/arch/x86/mm/mem_encrypt.c
->> +++ b/arch/x86/mm/mem_encrypt.c
->> @@ -134,7 +134,7 @@ static void __init __sme_early_map_unmap
->>           size = (size <= PMD_SIZE) ? 0 : size - PMD_SIZE;
->>       } while (size);
->> -    __native_flush_tlb();
->> +    flush_tlb_local();
+Hello,
+
+On Fri, 17 Apr 2020, Nick Desaulniers wrote:
+
+> Ah seems we do have __attribute__((no_selector))
+> (https://reviews.llvm.org/D46300,
+> https://releases.llvm.org/7.0.0/tools/clang/docs/AttributeReference.html#no-stack-protector-clang-no-stack-protector-clang-no-stack-protector)
+> which differs from GCC attribute name.
+
+As you will discover upthread that was tried with GCC and found 
+insufficient, as GCC is a bit surprising with optimize attributes: it 
+resets every -f option from the command line and applies only the ones 
+from the attributes.  Including a potential -fno-omit-frame-pointer, 
+causing all kinds of itches :)
+
+(The similar attribute in clang might work less surprising of course).
+
+
+Ciao,
+Michael.
+
 > 
-> This invoked __native_flush_tlb() because of how early it is called and 
-> the paravirt ops support isn't set up yet, resulting in a crash if not 
-> invoking the native version directly. So this needs a "native" version 
-> of the tlb flush to invoke.
-
-I don't think this is still true. With my rework of pvops to have all
-functions in one struct which is initialized statically initially
-everything should work from the time the kernel is mapped.
-
-In case it doesn't there is something very wrong IMO.
-
-
-Juergen
+> I'm still catching up on the thread (and my cat is insistent about
+> sleeping on my lap while I'm trying to use my laptop), but I like
+> https://lore.kernel.org/lkml/20200417190607.GY2424@tucnak/T/#m23d197d3a66a6c7d04c5444af4f51d940895b412
+> if it additionally defined __no_stack_protector for compiler-clang.h.
+> 
+> On Fri, Apr 17, 2020 at 12:06 PM Jakub Jelinek <jakub@redhat.com> wrote:
+> >
+> > On Fri, Apr 17, 2020 at 11:22:25AM -0700, Nick Desaulniers wrote:
+> > > > Sorry, I don't quite follow.  The idea is that an empty asm statement
+> > > > in foo() should prevent foo() from being inlined into bar()?
+> > >
+> > > s/inlined/tail called/
+> >
+> > Yeah.  The thing is, the caller changes the stack protector guard base
+> > value, so at the start of the function it saves a different value then
+> > it compares at the end.  But, the function that it calls at the end
+> > actually doesn't return, so this isn't a problem.
+> > If it is tail called though, the stack protector guard checking is done
+> > before the tail call and it crashes.
+> > If the called function is marked with noreturn attribute or _Noreturn,
+> > at least GCC will also not tail call it and all is fine, but not sure
+> > what LLVM does in that case.
+> 
+> Seems fine? https://godbolt.org/z/VEoEfw
+> (try commenting out the __attribute__((noreturn)) to observe the tail calls.
+> 
