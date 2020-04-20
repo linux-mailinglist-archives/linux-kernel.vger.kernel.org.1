@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60151B1A07
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 01:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC2E1B1A08
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 01:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgDTXQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 19:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S1728223AbgDTXQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 19:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727787AbgDTXQF (ORCPT
+        by vger.kernel.org with ESMTP id S1726803AbgDTXQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 19:16:05 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E0FC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:05 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h69so5851288pgc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:05 -0700 (PDT)
+        Mon, 20 Apr 2020 19:16:07 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7130C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:06 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h11so4523462plr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KASPutP8+Wt/2CivAD5BVxDPcY0aTKQ2tUjRHF1fuqg=;
-        b=IG13ZSrTS4xSdhY/QebJdMqrM/vT/5xW3to2DDrjBlMngXoczlq2XfhiQFBBCmotlF
-         Gyu7pZbJejO+Jr8yqmUwxTBj0EG6HOEU7mHsGotvbNYroOHdXzZt3dIEabZS6mjMDhdt
-         gUEL/Ek5qwWEoMwrV8rE3GuVb04skEngiDYAvdUg39+Lbxy2Z9A6lXkyHCmyZEdk7Fuo
-         aum/OwPdMFsI8TD/TnqdhJBdvrgRHZc+zHhSWI1MVb8k0M49nOC3ZgMmc4cRvXNVYEeZ
-         I6P8ZfkyIe+PaEQy3rMf92IvgclRCaaaTtAxHGNDmbCAE4XwrxfG1SMqlsO/nI/yKZQG
-         in9A==
+        bh=dza4hzfaFmzh3Frpav4RG02VUoiCOrQpepiedtPNL7c=;
+        b=b7QPcncixOowdwF513j6U8tfP77Wo0PggKWFrKwbYZ+AZhIlNRMWMxvbjH9NTix8d1
+         VgiSGYX7jCL7iQwB41rdDoysn8OpMSMMyb6H8kY81Nc37HlxDcKr1vdq8xjk7FYtrvvg
+         NuClw43cR1SWUI3OhxNfgvAsoOaTNpcyU4JgbNdqZHAv181LAnFojOMsJpELoNsJtS8d
+         RW3sJ/qE0LQk4MbOd0vPS/55LrXM8oE34jhqJEMkiI8QN2pncle4A3hId46+R22aqFmm
+         qVLDzhdjfnMK8pq4h7HNLmUjdfovJjMcSfTVmxwAYMLvJTePO9TvZtj5ZJmJlHWxijke
+         pAYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KASPutP8+Wt/2CivAD5BVxDPcY0aTKQ2tUjRHF1fuqg=;
-        b=LlFQbKVFw9VyfV7bWBlbzmyD2q1JikceSkB8oGL3+OXROhu40IhQi/qnFmkaKUsL70
-         rnEZnnj3Axu7IPYsYbW6fYgq0FDD2VvDOEUZ5SxUxuoYJN90bnHd++trAjRA5IK+leSo
-         lQNQ9MZluML7WDKNP2cvVQAKty3XvWAtZSZeYiE9F1l+3tLwK3yVjLfjpQZM6/ATMazw
-         Jec574XMswhs7g2CHV228wsNHILx518OpvzHXrTb/5SI6IldH2T2s5be+pP3caNpo3m4
-         PSDfA6lunKugz2yo2/R1fVpwCz+ld9zOM9auWdukszOLJWBTpvR5YzpEYm9uq5kUHNA/
-         VDTA==
-X-Gm-Message-State: AGi0Pua432L1u17qC1ZIT9owrV2WTkWKnJl8n1MWf8TOmwBPb8n/9And
-        1W0xHHpquPwVozxltMFZ9sl/7p8xJ1Y=
-X-Google-Smtp-Source: APiQypJqbaUChBQV737Tz6wMqMVNrF6DfwFKPYnIC0lHRs1zJCJKHciybyFNgByZKuGHiZgmUHPmMg==
-X-Received: by 2002:a62:ea06:: with SMTP id t6mr19109437pfh.298.1587424565358;
-        Mon, 20 Apr 2020 16:16:05 -0700 (PDT)
+        bh=dza4hzfaFmzh3Frpav4RG02VUoiCOrQpepiedtPNL7c=;
+        b=PO7Igee70JfNVFElyaAzm2cEiBTPR1yvxSee8EXqiL8iIdYBJkzuS5iE9UsVlHOZKh
+         k22FPEqT1t8MOiq09BMVtVlvjJXiE/pLqgxKy7w9gcy/KpGti5lLcfPdGOnlXFeNEQ1B
+         e/c2Te8RWSGlppp076AyZuU6qan4lRTmA6Ac4YP6bl38uqKQsbiW/WVpTNKjGFuS4aGa
+         BFyxCQfK3yTDTWgbWwapZsL1mzYypQBUlBRK1DAi6QlHdLq/Z0sTwA2y4SzoHvoE2yKi
+         Nb1GiTKMaogZVnfUD2OSGzOA2gt9Ku6UPeFGxxdrGIjwwlBhHyb1C4O+85kPDHsF3ElZ
+         DZvQ==
+X-Gm-Message-State: AGi0Pub1RIszWPylMdA/9UMEXT17JAqpm8iGy1k7zoey7dnWwfioVC0Q
+        tZeulyGBMUqrSex3onY7O7CCjQ==
+X-Google-Smtp-Source: APiQypKzxNRdPzrHdiqjIdsTokoS2NTxm85nq87jtVQxHeiZu7I1gt5bgqxgTT5C4qCWWE8/gbk5dQ==
+X-Received: by 2002:a17:902:b108:: with SMTP id q8mr19688672plr.214.1587424566380;
+        Mon, 20 Apr 2020 16:16:06 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id l15sm435354pgk.59.2020.04.20.16.16.04
+        by smtp.gmail.com with ESMTPSA id l15sm435354pgk.59.2020.04.20.16.16.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 16:16:04 -0700 (PDT)
+        Mon, 20 Apr 2020 16:16:05 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com
 Cc:     elder@linaro.org, s-anna@ti.com, Markus.Elfring@web.de,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/4] remoteproc: Restructure firmware name allocation
-Date:   Mon, 20 Apr 2020 17:15:59 -0600
-Message-Id: <20200420231601.16781-3-mathieu.poirier@linaro.org>
+Subject: [PATCH v3 3/4] remoteproc: Split rproc_ops allocation from rproc_alloc()
+Date:   Mon, 20 Apr 2020 17:16:00 -0600
+Message-Id: <20200420231601.16781-4-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200420231601.16781-1-mathieu.poirier@linaro.org>
 References: <20200420231601.16781-1-mathieu.poirier@linaro.org>
@@ -65,43 +65,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve the readability of function rproc_alloc_firmware() by using
-a non-negated condition and moving the comment out of the conditional
-block
+Make the rproc_ops allocation a function on its own in an effort
+to clean up function rproc_alloc().
 
-Suggested-by: Alex Elder <elder@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Alex Elder <elder@linaro.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/remoteproc/remoteproc_core.c | 33 ++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index db8a15fc1e4a..45529d40342f 100644
+index 45529d40342f..15318507aedb 100644
 --- a/drivers/remoteproc/remoteproc_core.c
 +++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2011,14 +2011,14 @@ static int rproc_alloc_firmware(struct rproc *rproc,
- {
- 	const char *p;
+@@ -2028,6 +2028,26 @@ static int rproc_alloc_firmware(struct rproc *rproc,
+ 	return 0;
+ }
  
--	if (!firmware)
--		/*
--		 * If the caller didn't pass in a firmware name then
--		 * construct a default name.
--		 */
--		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
--	else
-+	/*
-+	 * Allocate a firmware name if the caller gave us one to work
-+	 * with.  Otherwise construct a new one using a default pattern.
-+	 */
-+	if (firmware)
- 		p = kstrdup_const(firmware, GFP_KERNEL);
-+	else
-+		p = kasprintf(GFP_KERNEL, "rproc-%s-fw", name);
++static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
++{
++	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
++	if (!rproc->ops)
++		return -ENOMEM;
++
++	if (rproc->ops->load)
++		return 0;
++
++	/* Default to ELF loader if no load function is specified */
++	rproc->ops->load = rproc_elf_load_segments;
++	rproc->ops->parse_fw = rproc_elf_load_rsc_table;
++	rproc->ops->find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table;
++	if (!rproc->ops->sanity_check)
++		rproc->ops->sanity_check = rproc_elf32_sanity_check;
++	rproc->ops->get_boot_addr = rproc_elf_get_boot_addr;
++
++	return 0;
++}
++
+ /**
+  * rproc_alloc() - allocate a remote processor handle
+  * @dev: the underlying device
+@@ -2067,8 +2087,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 	if (rproc_alloc_firmware(rproc, name, firmware))
+ 		goto free_rproc;
  
- 	if (!p)
- 		return -ENOMEM;
+-	rproc->ops = kmemdup(ops, sizeof(*ops), GFP_KERNEL);
+-	if (!rproc->ops)
++	if (rproc_alloc_ops(rproc, ops))
+ 		goto free_firmware;
+ 
+ 	rproc->name = name;
+@@ -2096,16 +2115,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 
+ 	atomic_set(&rproc->power, 0);
+ 
+-	/* Default to ELF loader if no load function is specified */
+-	if (!rproc->ops->load) {
+-		rproc->ops->load = rproc_elf_load_segments;
+-		rproc->ops->parse_fw = rproc_elf_load_rsc_table;
+-		rproc->ops->find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table;
+-		if (!rproc->ops->sanity_check)
+-			rproc->ops->sanity_check = rproc_elf32_sanity_check;
+-		rproc->ops->get_boot_addr = rproc_elf_get_boot_addr;
+-	}
+-
+ 	mutex_init(&rproc->lock);
+ 
+ 	INIT_LIST_HEAD(&rproc->carveouts);
 -- 
 2.20.1
 
