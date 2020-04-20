@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D056D1B0AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B291B0B42
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729594AbgDTMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:53:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42718 "EHLO mail.kernel.org"
+        id S1728801AbgDTMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728987AbgDTMq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:46:59 -0400
+        id S1728772AbgDTMpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:45:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4D27206D4;
-        Mon, 20 Apr 2020 12:46:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27E6222202;
+        Mon, 20 Apr 2020 12:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386819;
-        bh=VnYYLsz/sYIWnIIfbHRQhrU0U/h+gGUu95y/4hL63Ng=;
+        s=default; t=1587386733;
+        bh=Sf4Vh/rSwyKRWT01j6WPSw7LFC92TStfAQekuw4H//Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VVY8M7S1AIGbqZkUUPi/mucvz/Sh+dSPWSBZ8JDRfyjcoC82QCE6ysg8cB3zE6Jxv
-         DalJ1CLrhs54IS5suS4yfawGGLyejaiZEWMfxjLXP+zFf958SoaGkhI0O/SuwwFd19
-         RqzMILVt2WEDSJP/K6dwhsh1mU9fcLuGu8iPIB6g=
+        b=nbfY4Auaf9+mEA0y2Tlc7DTE/eIPXrsgOZK2N6I/dcTUgUjmAcwlH5/ivzFL0POTV
+         XJEyiwnBP2qA2gmkbfqGAhhV3gNY57ndwApD04QVRBbQ39CJQZmfwWVbuKcXnl9bQC
+         QfHVSgEVWcQi5K1SvMRagYPhzGyykS1TK+PeQjeo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 38/60] ALSA: usb-audio: Dont override ignore_ctl_error value from the map
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>
+Subject: [PATCH 5.6 62/71] drm/nouveau/sec2/gv100-: add missing MODULE_FIRMWARE()
 Date:   Mon, 20 Apr 2020 14:39:16 +0200
-Message-Id: <20200420121511.186018233@linuxfoundation.org>
+Message-Id: <20200420121521.357918260@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit 3507245b82b4362dc9721cbc328644905a3efa22 upstream.
+commit 92f673a12d14b5393138d2b1cfeb41d72b47362d upstream.
 
-The mapping table may contain also ignore_ctl_error flag for devices
-that are known to behave wild.  Since this flag always writes the
-card's own ignore_ctl_error flag, it overrides the value already set
-by the module option, so it doesn't follow user's expectation.
-Let's fix the code not to clear the flag that has been set by user.
+ASB was failing to load on Turing GPUs when firmware is being loaded
+from initramfs, leaving the GPU in an odd state and causing suspend/
+resume to fail.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200412081331.4742-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Add missing MODULE_FIRMWARE() lines for initramfs generators.
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Cc: <stable@vger.kernel.org> # 5.6
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/mixer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c |    3 +++
+ drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c |   16 ++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3085,7 +3085,7 @@ static int snd_usb_mixer_controls(struct
- 		if (map->id == state.chip->usb_id) {
- 			state.map = map->map;
- 			state.selector_map = map->selector_map;
--			mixer->ignore_ctl_error = map->ignore_ctl_error;
-+			mixer->ignore_ctl_error |= map->ignore_ctl_error;
- 			break;
- 		}
- 	}
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/sec2/gp108.c
+@@ -25,6 +25,9 @@
+ MODULE_FIRMWARE("nvidia/gp108/sec2/desc.bin");
+ MODULE_FIRMWARE("nvidia/gp108/sec2/image.bin");
+ MODULE_FIRMWARE("nvidia/gp108/sec2/sig.bin");
++MODULE_FIRMWARE("nvidia/gv100/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/gv100/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/gv100/sec2/sig.bin");
+ 
+ static const struct nvkm_sec2_fwif
+ gp108_sec2_fwif[] = {
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/sec2/tu102.c
+@@ -56,6 +56,22 @@ tu102_sec2_nofw(struct nvkm_sec2 *sec2,
+ 	return 0;
+ }
+ 
++MODULE_FIRMWARE("nvidia/tu102/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/tu102/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/tu102/sec2/sig.bin");
++MODULE_FIRMWARE("nvidia/tu104/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/tu104/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/tu104/sec2/sig.bin");
++MODULE_FIRMWARE("nvidia/tu106/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/tu106/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/tu106/sec2/sig.bin");
++MODULE_FIRMWARE("nvidia/tu116/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/tu116/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/tu116/sec2/sig.bin");
++MODULE_FIRMWARE("nvidia/tu117/sec2/desc.bin");
++MODULE_FIRMWARE("nvidia/tu117/sec2/image.bin");
++MODULE_FIRMWARE("nvidia/tu117/sec2/sig.bin");
++
+ static const struct nvkm_sec2_fwif
+ tu102_sec2_fwif[] = {
+ 	{  0, gp102_sec2_load, &tu102_sec2, &gp102_sec2_acr_1 },
 
 
