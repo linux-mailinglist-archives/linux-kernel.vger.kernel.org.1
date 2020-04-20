@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7F11B09D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AAD1B0A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgDTMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
+        id S1729068AbgDTMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgDTMm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:42:28 -0400
+        id S1729058AbgDTMrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08AEC20724;
-        Mon, 20 Apr 2020 12:42:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 031B2206DD;
+        Mon, 20 Apr 2020 12:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386548;
-        bh=PRh9IJDdS+o73XwbAPa6itI1Z1L1fcKUk3RuRn007Zk=;
+        s=default; t=1587386838;
+        bh=bEjaCmYY0pfSHupnWZ/TGkvHI37YcRbek+nsIYvW0Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lXSW/gwlY6FTpnuphbNJRVuNdUygkLsMLnMwIqYm2Vi0vixIO8fTbkCYovqBxcRSZ
-         T6NknDscyCbLI1gAO5a471TIEFVSKGceuLcvxrAPLCmT2C3BFEV7vRytKH40kNab77
-         aS+SW5aRNwlT3j/tWyldva/uxGO702MPDmVhYzPg=
+        b=d6RYX0SOPHNLJUXJ6L9if7GKieUr0Q/9VRo0QG2cXSp2W7EvzsvDBh7PPSJkBaAvu
+         Cv2dKAdFwpIp2LLKfrHn7VaVoSh8WTjNtoObaxHotaOE4wsPNdyG82d72ZlxpdGTly
+         5yWkNWJlbV6P/b1YYfTJL6BxTtQ6bHrYFy2ynR04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.5 41/65] ALSA: usb-audio: Filter error from connector kctl ops, too
-Date:   Mon, 20 Apr 2020 14:38:45 +0200
-Message-Id: <20200420121515.390565476@linuxfoundation.org>
+        stable@vger.kernel.org, Wang Wenhu <wenhu.wang@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 08/60] net: qrtr: send msgs from local of same id as broadcast
+Date:   Mon, 20 Apr 2020 14:38:46 +0200
+Message-Id: <20200420121503.146851238@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Wang Wenhu <wenhu.wang@vivo.com>
 
-commit 48cc42973509afac24e83d6edc23901d102872d1 upstream.
+[ Upstream commit 6dbf02acef69b0742c238574583b3068afbd227c ]
 
-The ignore_ctl_error option should filter the error at kctl accesses,
-but there was an overlook: mixer_ctl_connector_get() returns an error
-from the request.
+If the local node id(qrtr_local_nid) is not modified after its
+initialization, it equals to the broadcast node id(QRTR_NODE_BCAST).
+So the messages from local node should not be taken as broadcast
+and keep the process going to send them out anyway.
 
-This patch covers the forgotten code path and apply filter_error()
-properly.  The locking error is still returned since this is a fatal
-error that has to be reported even with ignore_ctl_error option.
+The definitions are as follow:
+static unsigned int qrtr_local_nid = NUMA_NO_NODE;
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200412081331.4742-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: fdf5fd397566 ("net: qrtr: Broadcast messages only from control port")
+Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/usb/mixer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/qrtr/qrtr.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1446,7 +1446,7 @@ error:
- 		usb_audio_err(chip,
- 			"cannot get connectors status: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
- 			UAC_GET_CUR, validx, idx, cval->val_type);
--		return ret;
-+		return filter_error(cval, ret);
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -763,20 +763,21 @@ static int qrtr_sendmsg(struct socket *s
+ 
+ 	node = NULL;
+ 	if (addr->sq_node == QRTR_NODE_BCAST) {
+-		enqueue_fn = qrtr_bcast_enqueue;
+-		if (addr->sq_port != QRTR_PORT_CTRL) {
++		if (addr->sq_port != QRTR_PORT_CTRL &&
++		    qrtr_local_nid != QRTR_NODE_BCAST) {
+ 			release_sock(sk);
+ 			return -ENOTCONN;
+ 		}
++		enqueue_fn = qrtr_bcast_enqueue;
+ 	} else if (addr->sq_node == ipc->us.sq_node) {
+ 		enqueue_fn = qrtr_local_enqueue;
+ 	} else {
+-		enqueue_fn = qrtr_node_enqueue;
+ 		node = qrtr_node_lookup(addr->sq_node);
+ 		if (!node) {
+ 			release_sock(sk);
+ 			return -ECONNRESET;
+ 		}
++		enqueue_fn = qrtr_node_enqueue;
  	}
  
- 	ucontrol->value.integer.value[0] = val;
+ 	plen = (len + 3) & ~3;
 
 
