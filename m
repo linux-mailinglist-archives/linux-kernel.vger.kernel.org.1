@@ -2,416 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9571B1221
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5731B11F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgDTQpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:45:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46888 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgDTQpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:45:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CEBECACA2;
-        Mon, 20 Apr 2020 16:44:59 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 09:41:32 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de, pbonzini@redhat.com
-Cc:     bigeasy@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        torvalds@linux-foundation.org, will@kernel.org,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH v2] kvm: Replace vcpu->swait with rcuwait
-Message-ID: <20200420164132.tjzk5ebx35m66yce@linux-p48b>
-References: <20200324044453.15733-1-dave@stgolabs.net>
- <20200324044453.15733-4-dave@stgolabs.net>
+        id S1726343AbgDTQmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:42:23 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:25265 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725550AbgDTQmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:42:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587400942; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=ubP5W8F6e9FFlNVIC2E3q1WwK9ltQ3l642E1CJn0x9M=; b=BFrKHN5g3gAjmxogp4mpjPSM2XVJRoojTWefdifMvzZAckTTa9oilT4QF548z9EAiNAWhuAG
+ GrPb68nnycGbo/cW0lccueNt4u6ZgM1HPkNloTOpcKvbTK2OeOdUws2MYjWzuBhsC8W11Nej
+ d31Fcjl9yUYopFy9H5qG99XMlgU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9dd0ec.7f8fbf572ae8-smtp-out-n05;
+ Mon, 20 Apr 2020 16:42:20 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EC5AFC43637; Mon, 20 Apr 2020 16:42:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-311.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 819D4C433D2;
+        Mon, 20 Apr 2020 16:42:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 819D4C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 0/6] iommu/arm-smmu: Allow client devices to select identity mapping
+Date:   Mon, 20 Apr 2020 22:11:58 +0530
+Message-Id: <cover.1587400573.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200324044453.15733-4-dave@stgolabs.net>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of any sort of waitqueue (simple or regular) for
-wait/waking vcpus has always been an overkill and semantically
-wrong. Because this is per-vcpu (which is blocked) there is
-only ever a single waiting vcpu, thus no need for any sort of
-queue.
+This series allows DRM, Modem devices to set a default
+identity mapping in qcom smmu implementation.
 
-As such, make use of the rcuwait primitive, with the following
-considerations:
+Patch 1 is cleanup to support other SoCs to call into
+QCOM specific  implementation.
+Patch 2 sets the default identity domain for DRM devices.
+Patch 3 implements def_domain_type callback for arm-smmu.
+Patch 4 sets the default identity domain for modem device.
+Patch 5-6 adds the iommus property for mss pil.
 
-  - rcuwait already provides the proper barriers that serialize
-  concurrent waiter and waker.
+This is based on Joerg's tree:
+ - https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device-v2
 
-  - Task wakeup is done in rcu read critical region, with a
-  stable task pointer.
+v3:
+ * Use arm_smmu_master_cfg to get impl instead of long way as per Robin.
+ * Use def_domain_type name for the callback in arm_smmu_imp as per Robin
 
-  - Because there is no concurrency among waiters, we need
-  not worry about rcuwait_wait_event() calls corrupting
-  the wait->task. As a consequence, this saves the locking
-  done in swait when modifying the queue. This also applies
-  to per-vcore wait for powerpc kvm-hv.
+Jordan Crouse (1):
+  iommu/arm-smmu: Allow client devices to select direct mapping
 
-The x86-tscdeadline_latency test mentioned in 8577370fb0cb
-("KVM: Use simple waitqueue for vcpu->wq") shows that, on avg,
-latency is reduced by around 15-20% with this change.
+Sai Prakash Ranjan (2):
+  iommu: arm-smmu-impl: Convert to a generic reset implementation
+  iommu/arm-smmu: Implement iommu_ops->def_domain_type call-back
 
-This patch also changes TASK_INTERRUPTIBLE for TASK_IDLE, as
-kvm is (ab)using the former such that idle vcpus do no contribute
-to the loadavg. Let use the correct semantics for this.
+Sibi Sankar (3):
+  iommu/arm-smmu-qcom: Request direct mapping for modem device
+  dt-bindings: remoteproc: qcom: Add iommus property
+  arm64: dts: qcom: sdm845-cheza: Add iommus property
 
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-mips@vger.kernel.org
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
-v2: Added missing semicolon in mips change.
+ .../bindings/remoteproc/qcom,q6v5.txt         |  3 ++
+ arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi    |  5 +++
+ drivers/iommu/arm-smmu-impl.c                 |  8 ++--
+ drivers/iommu/arm-smmu-qcom.c                 | 37 +++++++++++++++++--
+ drivers/iommu/arm-smmu.c                      | 12 ++++++
+ drivers/iommu/arm-smmu.h                      |  1 +
+ 6 files changed, 60 insertions(+), 6 deletions(-)
 
-The rest of the patches in this series continues to apply on tip,
-as such I am only sending a v2 for this particular patch.
-
- arch/mips/kvm/mips.c                  |  6 ++----
- arch/powerpc/include/asm/kvm_book3s.h |  2 +-
- arch/powerpc/include/asm/kvm_host.h   |  2 +-
- arch/powerpc/kvm/book3s_hv.c          | 22 ++++++++--------------
- arch/powerpc/kvm/powerpc.c            |  2 +-
- arch/x86/kvm/lapic.c                  |  2 +-
- include/linux/kvm_host.h              | 10 +++++-----
- virt/kvm/arm/arch_timer.c             |  2 +-
- virt/kvm/arm/arm.c                    |  9 +++++----
- virt/kvm/async_pf.c                   |  3 +--
- virt/kvm/kvm_main.c                   | 31 +++++++++++--------------------
- 11 files changed, 37 insertions(+), 54 deletions(-)
-
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 71244bf87c3a..c14166dcac51 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -290,8 +290,7 @@ static enum hrtimer_restart kvm_mips_comparecount_wakeup(struct hrtimer *timer)
- 	kvm_mips_callbacks->queue_timer_int(vcpu);
- 
- 	vcpu->arch.wait = 0;
--	if (swq_has_sleeper(&vcpu->wq))
--		swake_up_one(&vcpu->wq);
-+	rcuwait_wake_up(&vcpu->wait);
- 
- 	return kvm_mips_count_timeout(vcpu);
- }
-@@ -517,8 +516,7 @@ int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
- 
- 	dvcpu->arch.wait = 0;
- 
--	if (swq_has_sleeper(&dvcpu->wq))
--		swake_up_one(&dvcpu->wq);
-+	rcuwait_wake_up(&dvcpu->wait);
- 
- 	return 0;
- }
-diff --git a/arch/powerpc/include/asm/kvm_book3s.h b/arch/powerpc/include/asm/kvm_book3s.h
-index 506e4df2d730..6e5d85ba588d 100644
---- a/arch/powerpc/include/asm/kvm_book3s.h
-+++ b/arch/powerpc/include/asm/kvm_book3s.h
-@@ -78,7 +78,7 @@ struct kvmppc_vcore {
- 	struct kvm_vcpu *runnable_threads[MAX_SMT_THREADS];
- 	struct list_head preempt_list;
- 	spinlock_t lock;
--	struct swait_queue_head wq;
-+	struct rcuwait wait;
- 	spinlock_t stoltb_lock;	/* protects stolen_tb and preempt_tb */
- 	u64 stolen_tb;
- 	u64 preempt_tb;
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-index 6e8b8ffd06ad..e2b4a1e3fb7d 100644
---- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -752,7 +752,7 @@ struct kvm_vcpu_arch {
- 	u8 irq_pending; /* Used by XIVE to signal pending guest irqs */
- 	u32 last_inst;
- 
--	struct swait_queue_head *wqp;
-+	struct rcuwait *waitp;
- 	struct kvmppc_vcore *vcore;
- 	int ret;
- 	int trap;
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 2cefd071b848..1a7a22122211 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -231,13 +231,11 @@ static bool kvmppc_ipi_thread(int cpu)
- static void kvmppc_fast_vcpu_kick_hv(struct kvm_vcpu *vcpu)
- {
- 	int cpu;
--	struct swait_queue_head *wqp;
-+	struct rcuwait *wait;
- 
--	wqp = kvm_arch_vcpu_wq(vcpu);
--	if (swq_has_sleeper(wqp)) {
--		swake_up_one(wqp);
-+	wait = kvm_arch_vcpu_get_wait(vcpu);
-+	if (rcuwait_wake_up(wait))
- 		++vcpu->stat.halt_wakeup;
--	}
- 
- 	cpu = READ_ONCE(vcpu->arch.thread_cpu);
- 	if (cpu >= 0 && kvmppc_ipi_thread(cpu))
-@@ -2116,7 +2114,7 @@ static struct kvmppc_vcore *kvmppc_vcore_create(struct kvm *kvm, int id)
- 
- 	spin_lock_init(&vcore->lock);
- 	spin_lock_init(&vcore->stoltb_lock);
--	init_swait_queue_head(&vcore->wq);
-+	rcuwait_init(&vcore->wait);
- 	vcore->preempt_tb = TB_NIL;
- 	vcore->lpcr = kvm->arch.lpcr;
- 	vcore->first_vcpuid = id;
-@@ -3779,7 +3777,6 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 	ktime_t cur, start_poll, start_wait;
- 	int do_sleep = 1;
- 	u64 block_ns;
--	DECLARE_SWAITQUEUE(wait);
- 
- 	/* Poll for pending exceptions and ceded state */
- 	cur = start_poll = ktime_get();
-@@ -3807,10 +3804,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 		}
- 	}
- 
--	prepare_to_swait_exclusive(&vc->wq, &wait, TASK_INTERRUPTIBLE);
--
- 	if (kvmppc_vcore_check_block(vc)) {
--		finish_swait(&vc->wq, &wait);
- 		do_sleep = 0;
- 		/* If we polled, count this as a successful poll */
- 		if (vc->halt_poll_ns)
-@@ -3823,8 +3817,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 	vc->vcore_state = VCORE_SLEEPING;
- 	trace_kvmppc_vcore_blocked(vc, 0);
- 	spin_unlock(&vc->lock);
--	schedule();
--	finish_swait(&vc->wq, &wait);
-+	rcuwait_wait_event(&vc->wait,
-+			   kvmppc_vcore_check_block(vc), TASK_IDLE);
- 	spin_lock(&vc->lock);
- 	vc->vcore_state = VCORE_INACTIVE;
- 	trace_kvmppc_vcore_blocked(vc, 1);
-@@ -3935,7 +3929,7 @@ static int kvmppc_run_vcpu(struct kvm_run *kvm_run, struct kvm_vcpu *vcpu)
- 			kvmppc_start_thread(vcpu, vc);
- 			trace_kvm_guest_enter(vcpu);
- 		} else if (vc->vcore_state == VCORE_SLEEPING) {
--			swake_up_one(&vc->wq);
-+		        rcuwait_wake_up(&vc->wait);
- 		}
- 
- 	}
-@@ -4274,7 +4268,7 @@ static int kvmppc_vcpu_run_hv(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 	}
- 	user_vrsave = mfspr(SPRN_VRSAVE);
- 
--	vcpu->arch.wqp = &vcpu->arch.vcore->wq;
-+	vcpu->arch.waitp = &vcpu->arch.vcore->wait;
- 	vcpu->arch.pgdir = kvm->mm->pgd;
- 	vcpu->arch.state = KVMPPC_VCPU_BUSY_IN_HOST;
- 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 302e9dccdd6d..32a0fab53fc9 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -754,7 +754,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	if (err)
- 		goto out_vcpu_uninit;
- 
--	vcpu->arch.wqp = &vcpu->wq;
-+	vcpu->arch.waitp = &vcpu->wait;
- 	kvmppc_create_vcpu_debugfs(vcpu, vcpu->vcpu_id);
- 	return 0;
- 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index e3099c642fec..a4420c26dfbc 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1815,7 +1815,7 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcpu *vcpu)
- 	/* If the preempt notifier has already run, it also called apic_timer_expired */
- 	if (!apic->lapic_timer.hv_timer_in_use)
- 		goto out;
--	WARN_ON(swait_active(&vcpu->wq));
-+	WARN_ON(rcu_dereference(vcpu->wait.task));
- 	cancel_hv_timer(apic);
- 	apic_timer_expired(apic);
- 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index bcb9b2ac0791..93ab0ab66de5 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -23,7 +23,7 @@
- #include <linux/irqflags.h>
- #include <linux/context_tracking.h>
- #include <linux/irqbypass.h>
--#include <linux/swait.h>
-+#include <linux/rcuwait.h>
- #include <linux/refcount.h>
- #include <linux/nospec.h>
- #include <asm/signal.h>
-@@ -277,7 +277,7 @@ struct kvm_vcpu {
- 	struct mutex mutex;
- 	struct kvm_run *run;
- 
--	struct swait_queue_head wq;
-+	struct rcuwait wait;
- 	struct pid __rcu *pid;
- 	int sigset_active;
- 	sigset_t sigset;
-@@ -952,12 +952,12 @@ static inline bool kvm_arch_has_assigned_device(struct kvm *kvm)
- }
- #endif
- 
--static inline struct swait_queue_head *kvm_arch_vcpu_wq(struct kvm_vcpu *vcpu)
-+static inline struct rcuwait *kvm_arch_vcpu_get_wait(struct kvm_vcpu *vcpu)
- {
- #ifdef __KVM_HAVE_ARCH_WQP
--	return vcpu->arch.wqp;
-+	return vcpu->arch.waitp;
- #else
--	return &vcpu->wq;
-+	return &vcpu->wait;
- #endif
- }
- 
-diff --git a/virt/kvm/arm/arch_timer.c b/virt/kvm/arm/arch_timer.c
-index 0d9438e9de2a..4be71cb58691 100644
---- a/virt/kvm/arm/arch_timer.c
-+++ b/virt/kvm/arm/arch_timer.c
-@@ -593,7 +593,7 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
- 	if (map.emul_ptimer)
- 		soft_timer_cancel(&map.emul_ptimer->hrtimer);
- 
--	if (swait_active(kvm_arch_vcpu_wq(vcpu)))
-+	if (rcu_dereference(kvm_arch_vpu_get_wait(vcpu)) != NULL)
- 		kvm_timer_blocking(vcpu);
- 
- 	/*
-diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
-index eda7b624eab8..98740a5b8c9b 100644
---- a/virt/kvm/arm/arm.c
-+++ b/virt/kvm/arm/arm.c
-@@ -579,16 +579,17 @@ void kvm_arm_resume_guest(struct kvm *kvm)
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
- 		vcpu->arch.pause = false;
--		swake_up_one(kvm_arch_vcpu_wq(vcpu));
-+		rcuwait_wake_up(kvm_arch_vcpu_get_wait(vcpu));
- 	}
- }
- 
- static void vcpu_req_sleep(struct kvm_vcpu *vcpu)
- {
--	struct swait_queue_head *wq = kvm_arch_vcpu_wq(vcpu);
-+	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
- 
--	swait_event_interruptible_exclusive(*wq, ((!vcpu->arch.power_off) &&
--				       (!vcpu->arch.pause)));
-+	rcuwait_wait_event(*wait,
-+			   (!vcpu->arch.power_off) &&(!vcpu->arch.pause),
-+			   TASK_IDLE);
- 
- 	if (vcpu->arch.power_off || vcpu->arch.pause) {
- 		/* Awaken to handle a signal, request we sleep again later. */
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index 15e5b037f92d..10b533f641a6 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -80,8 +80,7 @@ static void async_pf_execute(struct work_struct *work)
- 
- 	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
- 
--	if (swq_has_sleeper(&vcpu->wq))
--		swake_up_one(&vcpu->wq);
-+	rcuwait_wake_up(&vcpu->wait);
- 
- 	mmput(mm);
- 	kvm_put_kvm(vcpu->kvm);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 70f03ce0e5c1..887efb39fb1a 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -343,7 +343,7 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
- 	vcpu->kvm = kvm;
- 	vcpu->vcpu_id = id;
- 	vcpu->pid = NULL;
--	init_swait_queue_head(&vcpu->wq);
-+	rcuwait_init(&vcpu->wait);
- 	kvm_async_pf_vcpu_init(vcpu);
- 
- 	vcpu->pre_pcpu = -1;
-@@ -2465,9 +2465,8 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
- void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- {
- 	ktime_t start, cur;
--	DECLARE_SWAITQUEUE(wait);
--	bool waited = false;
- 	u64 block_ns;
-+	int block_check = -EINTR;
- 
- 	kvm_arch_vcpu_blocking(vcpu);
- 
-@@ -2491,17 +2490,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 		} while (single_task_running() && ktime_before(cur, stop));
- 	}
- 
--	for (;;) {
--		prepare_to_swait_exclusive(&vcpu->wq, &wait, TASK_INTERRUPTIBLE);
--
--		if (kvm_vcpu_check_block(vcpu) < 0)
--			break;
--
--		waited = true;
--		schedule();
--	}
--
--	finish_swait(&vcpu->wq, &wait);
-+	rcuwait_wait_event(&vcpu->wait,
-+			   (block_check = kvm_vcpu_check_block(vcpu)) < 0,
-+			   TASK_IDLE);
- 	cur = ktime_get();
- out:
- 	kvm_arch_vcpu_unblocking(vcpu);
-@@ -2525,18 +2516,17 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
--	trace_kvm_vcpu_wakeup(block_ns, waited, vcpu_valid_wakeup(vcpu));
-+	trace_kvm_vcpu_wakeup(block_ns, !block_check, vcpu_valid_wakeup(vcpu));
- 	kvm_arch_vcpu_block_finish(vcpu);
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_block);
- 
- bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu)
- {
--	struct swait_queue_head *wqp;
-+	struct rcuwait *wait;
- 
--	wqp = kvm_arch_vcpu_wq(vcpu);
--	if (swq_has_sleeper(wqp)) {
--		swake_up_one(wqp);
-+	wait = kvm_arch_vcpu_get_wait(vcpu);
-+	if (rcuwait_wake_up(wait)) {
- 		WRITE_ONCE(vcpu->ready, true);
- 		++vcpu->stat.halt_wakeup;
- 		return true;
-@@ -2678,7 +2668,8 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
- 				continue;
- 			if (vcpu == me)
- 				continue;
--			if (swait_active(&vcpu->wq) && !vcpu_dy_runnable(vcpu))
-+			if (rcu_dereference(vcpu->wait.task) &&
-+			    !vcpu_dy_runnable(vcpu))
- 				continue;
- 			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
- 				!kvm_arch_vcpu_in_kernel(vcpu))
 -- 
-2.16.4
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
