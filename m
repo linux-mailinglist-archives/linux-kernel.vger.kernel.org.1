@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3EE1B0DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81921B0DF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgDTOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:04:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39096 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727919AbgDTOEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:04:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 16C32ABD7;
-        Mon, 20 Apr 2020 14:04:07 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 14:04:06 +0000 (UTC)
-From:   Michael Matz <matz@suse.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-cc:     Jakub Jelinek <jakub@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
-In-Reply-To: <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
-Message-ID: <alpine.LSU.2.21.2004201401120.11688@wotan.suse.de>
-References: <20200415074842.GA31016@zn.tnic> <alpine.LSU.2.21.2004151445520.11688@wotan.suse.de> <20200415231930.19755bc7@sf> <20200417075739.GA7322@zn.tnic> <20200417080726.GS2424@tucnak> <20200417084224.GB7322@zn.tnic> <20200417085859.GU2424@tucnak>
- <20200417090909.GC7322@zn.tnic> <CAKwvOdnFXPBJsAUD++HtYS5JiR2KmX73M5GAUe-tvX-JYV7DaA@mail.gmail.com> <CAKwvOdmNwNwa6rMC27-QZq8VDrYdTQeQqss-bAwF1EMmnAHxdw@mail.gmail.com> <20200417190607.GY2424@tucnak>
- <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728486AbgDTOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:08:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43464 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgDTOIv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:08:51 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jQX6N-0006NI-2h; Mon, 20 Apr 2020 14:08:47 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu: fix a dereference on pointer hive before it is null checked
+Date:   Mon, 20 Apr 2020 15:08:46 +0100
+Message-Id: <20200420140846.78062-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Fri, 17 Apr 2020, Nick Desaulniers wrote:
+Currently pointer hive is being dereferenced before it is being null
+checked and hence can lead to null pointer dereference issues. Fix this
+by only dereferencing pointer hive after it has been null checked.
 
-> Ah seems we do have __attribute__((no_selector))
-> (https://reviews.llvm.org/D46300,
-> https://releases.llvm.org/7.0.0/tools/clang/docs/AttributeReference.html#no-stack-protector-clang-no-stack-protector-clang-no-stack-protector)
-> which differs from GCC attribute name.
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 25d4275e1931 ("drm/amdgpu: fix race between pstate and remote buffer map")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-As you will discover upthread that was tried with GCC and found 
-insufficient, as GCC is a bit surprising with optimize attributes: it 
-resets every -f option from the command line and applies only the ones 
-from the attributes.  Including a potential -fno-omit-frame-pointer, 
-causing all kinds of itches :)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+index 54d8a3e7e75c..2c0a59ba2826 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+@@ -389,15 +389,17 @@ int amdgpu_xgmi_set_pstate(struct amdgpu_device *adev, int pstate)
+ {
+ 	int ret = 0;
+ 	struct amdgpu_hive_info *hive = amdgpu_get_xgmi_hive(adev, 0);
+-	struct amdgpu_device *request_adev = hive->hi_req_gpu ?
+-						hive->hi_req_gpu : adev;
++	struct amdgpu_device *request_adev;
+ 	bool is_hi_req = pstate == AMDGPU_XGMI_PSTATE_MAX_VEGA20;
+-	bool init_low = hive->pstate == AMDGPU_XGMI_PSTATE_UNKNOWN;
++	bool init_low;
+ 
+ 	/* fw bug so temporarily disable pstate switching */
+ 	if (!hive || adev->asic_type == CHIP_VEGA20)
+ 		return 0;
+ 
++	request_adev = hive->hi_req_gpu ? hive->hi_req_gpu : adev;
++	init_low = hive->pstate == AMDGPU_XGMI_PSTATE_UNKNOWN;
++
+ 	mutex_lock(&hive->hive_lock);
+ 
+ 	if (is_hi_req)
+-- 
+2.25.1
 
-(The similar attribute in clang might work less surprising of course).
-
-
-Ciao,
-Michael.
-
-> 
-> I'm still catching up on the thread (and my cat is insistent about
-> sleeping on my lap while I'm trying to use my laptop), but I like
-> https://lore.kernel.org/lkml/20200417190607.GY2424@tucnak/T/#m23d197d3a66a6c7d04c5444af4f51d940895b412
-> if it additionally defined __no_stack_protector for compiler-clang.h.
-> 
-> On Fri, Apr 17, 2020 at 12:06 PM Jakub Jelinek <jakub@redhat.com> wrote:
-> >
-> > On Fri, Apr 17, 2020 at 11:22:25AM -0700, Nick Desaulniers wrote:
-> > > > Sorry, I don't quite follow.  The idea is that an empty asm statement
-> > > > in foo() should prevent foo() from being inlined into bar()?
-> > >
-> > > s/inlined/tail called/
-> >
-> > Yeah.  The thing is, the caller changes the stack protector guard base
-> > value, so at the start of the function it saves a different value then
-> > it compares at the end.  But, the function that it calls at the end
-> > actually doesn't return, so this isn't a problem.
-> > If it is tail called though, the stack protector guard checking is done
-> > before the tail call and it crashes.
-> > If the called function is marked with noreturn attribute or _Noreturn,
-> > at least GCC will also not tail call it and all is fine, but not sure
-> > what LLVM does in that case.
-> 
-> Seems fine? https://godbolt.org/z/VEoEfw
-> (try commenting out the __attribute__((noreturn)) to observe the tail calls.
-> 
