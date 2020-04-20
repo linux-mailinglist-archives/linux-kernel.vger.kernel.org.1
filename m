@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1329D1B0C97
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F171B0C9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgDTN1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:27:54 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41617 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725897AbgDTN1x (ORCPT
+        id S1728071AbgDTNa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726389AbgDTNa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:27:53 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 4FCB253A;
-        Mon, 20 Apr 2020 09:27:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 Apr 2020 09:27:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=C1acu8SOYXvfCrT29OikkU8tqdr
-        tQ88j/dfAu0WvkG0=; b=vvkimXxXCrJAXaUZFh9Qb2mhAU8anR4eWyvNHVUjkKv
-        3ffCHDg1hncrLGuYgwm6/cX6y+RLcBQL8Prwoqgj/UWGvMci1Nb2JrI6vy1Bs6lx
-        jouwojDVTdWMS+CPS6NlcJeJI/TnoxPyXecl76tlAf4B5e6k+WtyqJe2vF0gkruj
-        7207wqQ02t4nPmOt90NkJ6kTI/vn9D1SjprMi7T/rgjTpRMUomj2bOaFbz0lyJdz
-        IJ69d4CPNjF+J/Gkz5R6GSYJvfjqELm1xxxC/Kgsu/bVXFKAFrLnOIorA2PE/d80
-        pxCTb0/KtBY5WGp4nrpej8qp/dtGxr2nWck8F6Guo7w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=C1acu8
-        SOYXvfCrT29OikkU8tqdrtQ88j/dfAu0WvkG0=; b=kBCxFHsqpKac7qMEIGr8Fm
-        y2f+bDdBSXx9PTzgT9s8OZDuCZ853MVb9qP2HKpSb3lkDuWg1KyJJrCpjdfbfKEt
-        xL5GNn0OciaSIEuoXwTAt2D/qWDnSzZ/Lo59AlXZBufnucpK4R0gy1V3aFoHjyE1
-        A7ERK5F9veSaLKtFlmqnm5gsur9p/2SVC6TX/j2+Fntui/d9cFcVIrUF6cr6oIkN
-        CGr1j3nBjhvn7rq8IEUCx2kuOWAwhHKB0S0BbC6KHcn7NfIR3VvIQ63mhKi+iD1a
-        jdolVonx84aakDsW7s43GQPmF2XeY+GuOiw/+z3/wvdFpwd/C10TptLyVrZaglHg
-        ==
-X-ME-Sender: <xms:UqOdXhtx8HTOSqU3DX4z4eehe4Fw8qON_pPgj_3zXkeM2pOVt9BqRA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdeigecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:UqOdXokU1CLUum6CNOsVRCBwnMltaVCJ6DAU3R_-SX26_g3n4AgjgQ>
-    <xmx:UqOdXvUrA9MtKTCZJ0LlfvgJR9BR07kEVKUb6G-5uJ0yctdLLeZDOA>
-    <xmx:UqOdXsvrVzdoOLrptwf2Vd-YLiAqIRQhdzR4IG56CPqux0EVW44PgQ>
-    <xmx:V6OdXsUhYIqsRhlW-qjcISecj48hamvzoL52E7GJTLe7P8eetin5HQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 778AE3065C16;
-        Mon, 20 Apr 2020 09:27:46 -0400 (EDT)
-Date:   Mon, 20 Apr 2020 15:27:45 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: allwinner: sun50i-a64: Add missing
- address/size-cells
-Message-ID: <20200420132745.7sa4zf2c2xp7ffrc@gilmour.lan>
-References: <20200420103113.577969-1-megous@megous.com>
+        Mon, 20 Apr 2020 09:30:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75979C061A0C;
+        Mon, 20 Apr 2020 06:30:27 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o10so1814212pgb.6;
+        Mon, 20 Apr 2020 06:30:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=FFlSkMRcAhMtXPXTewG4f4dqL8kmUAL3zfykcT5xeQ8=;
+        b=mAWPWfc/EH0Ir9h7bVjFcY1nyyYrt11a7uayBmd57IfjS7ljeKqAdVOKnQ8DqLva//
+         7XxyiVEkovEyXPROCsKn2xjxV5v+HA6qmWZzp+eQDbEa977hKerQusxjfoxTYER6WXwk
+         fuzOHclRQQDo8yNKu0mcotCzCYMunDK9P3jYbXMQyfUd9Fh/xrjtVDtgLIWDR0BFU6Dd
+         grztPf8Qqt7k17SY/K9ywc8iArc7U475lLaO/AGf3xOj8RwIu6pTeY7whw9dlAoRcsfB
+         7BkHYkIfwLynhkxpp+771EdgOdDhASt3IZSRhnc64GWxQSEpwEWyyiaI1sKbkotzu5cb
+         CeBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=FFlSkMRcAhMtXPXTewG4f4dqL8kmUAL3zfykcT5xeQ8=;
+        b=FUp4yqT0v2oTcumsMM6GVHL31k8bOry8gJTgBIdebZKO4OEauueDhjGQQrkfifiwO6
+         dc2ov1DIIkS8Ip1P/MKj2uRF3bBGBksaJ7jBZnZ1GkNdIQAL2u0XR1GUSOZTy7UnXttj
+         +IuNILDh6QzeEkFQnjDQsd0tcZ4TyCaBWWv2/tTEXzlt0NInnIhnprNJiYWIj5JQD48E
+         QuiPKoRyz3aJ0hJmSO/0IDAovBrGEauoqZvIfVUjfAVmGaMS9uCuiYe8z7NRxCQteixX
+         cKn24r5I960avb6Zclrq05zvyEXgltWNHWfTSX1MhvFCT+TraJpTOksO7duYa0mPfyYF
+         poJA==
+X-Gm-Message-State: AGi0PuZPlGwyPCJAOs+3Kng0l7jjNBVL6rIK+PSVkwSdGpufEnvsmy8h
+        qe0TofLtkznGKvWj6hVQ9AmIlZZg
+X-Google-Smtp-Source: APiQypIg/amfby2BJcy5FXvej/+kmd6kuERwpw+wJiX8y3W5EVXrWsTGtCddEqUpRUVv+jOObaPcSA==
+X-Received: by 2002:a63:4c1:: with SMTP id 184mr16161358pge.156.1587389427069;
+        Mon, 20 Apr 2020 06:30:27 -0700 (PDT)
+Received: from localhost (89.208.244.140.16clouds.com. [89.208.244.140])
+        by smtp.gmail.com with ESMTPSA id y26sm1088884pfn.185.2020.04.20.06.30.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Apr 2020 06:30:26 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 21:30:23 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] regmap: redefined regmap_read_poll_timeout to
+ simplify code
+Message-ID: <20200420133023.GB8103@nuc8i5>
+References: <3376dcba-4285-c894-915e-2f41cbf23caa@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="knpeiqpl5v5uzrh4"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200420103113.577969-1-megous@megous.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3376dcba-4285-c894-915e-2f41cbf23caa@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Apr 19, 2020 at 07:09:14PM +0200, Markus Elfring wrote:
+> > use read_poll_timeout macro to redefined regmap_read_poll_timeout
+> > and also remove the duplicate code.
+> 
+> How do you think about a wording variant like the following?
+> 
+>    Subject:
+>    [PATCH 1/2] regmap: Simplify implementation of the regmap_read_poll_timeout() macro
+> 
+>    Change description:
+>    Simplify the implementation of the macro “regmap_read_poll_timeout”
+>    by using the macro “read_poll_timeout”.
+>
+Good, I will send the patch v2.
+> 
+> …
+> > +++ b/include/linux/regmap.h
+> …
+> > @@ -122,26 +123,10 @@ struct reg_sequence {
+> >   */
+> >  #define regmap_read_poll_timeout(map, addr, val, cond, sleep_us, timeout_us) \
+> >  ({ \
+> …
+> > +	int __ret, __tmp; \
+> > +	__tmp = read_poll_timeout(regmap_read, __ret, __ret || (cond), \
+> > +			sleep_us, timeout_us, false, (map), (addr), &(val)); \
+> > +	__ret ?: __tmp; \
+> >  })
+> 
+> * Can this macro work also with variable names which do not contain
+>   double underscores?
+>
+Yes, this is to avoid using the same variable with its caller.
 
---knpeiqpl5v5uzrh4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> * Can the tag “Fixes” be relevant for such an adjustment?
+>
+I think It is not relevant and we don't need add it.
 
-On Mon, Apr 20, 2020 at 12:31:13PM +0200, Ondrej Jirman wrote:
-> The binding specifies #address-cells and #size-cells should be present.
-> Without them present, dtc issues a warning because default for
-> #address-cells seems to be <2>:
->=20
-> arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi:1108.4-52:
->   Warning (dma_ranges_format):
->     /soc/dram-controller@1c62000:dma-ranges:
->     "dma-ranges" property has invalid length (12 bytes)
->     (parent #address-cells =3D=3D 1, child #address-cells =3D=3D 2,
->     #size-cells =3D=3D 1)
->=20
-> mbus #address-cells should be 1.
->=20
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
+BR,
+Dejin
 
-Applied, thanks
-
-Maxime
-
---knpeiqpl5v5uzrh4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXp2jUQAKCRDj7w1vZxhR
-xTOZAQDH2dxXT4rG7cY/ZynLPx95CqmiIV9TpnSMdmyts6jejgD+L7nEB36P07Yi
-F2c44pcXcdYfUaXsokS1a2/3IdEFHgM=
-=PFLR
------END PGP SIGNATURE-----
-
---knpeiqpl5v5uzrh4--
+> Regards,
+> Markus
