@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC541B0B0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BAF1B0A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgDTMxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42418 "EHLO mail.kernel.org"
+        id S1729242AbgDTMsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:48:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728207AbgDTMqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:46:47 -0400
+        id S1729206AbgDTMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:48:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A639206DD;
-        Mon, 20 Apr 2020 12:46:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E309206DD;
+        Mon, 20 Apr 2020 12:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386807;
-        bh=bCDq43JudMUVyE16zfPz7jVRgValKuqje5YUNUC1vdY=;
+        s=default; t=1587386892;
+        bh=PMPsZAyKkO1vYVopSB3WRyEZCJka8hrgwZwx7kCYqug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJS66V0vzphSMuy+gEKC/I60WjwNaOOsusuLhaneAaOY9sdR5PZKms4J5lLZTMMo8
-         bPBu14eLwIPasr6dgupUNal1KT+aKTi0NEMEPmAahmmOk5ZP5g0ARQGKq9A3+w1b9Z
-         vbrsf+jUZ3KlJDV6alS0Q29TEDfmGhOBqQPlKJos=
+        b=GJXwV6fQ3TbUvr6OzlUnLuJrbNFHZfpBPvwbmq9dBInM492SfVfML64mBexZ+9v3e
+         ju/WuoUgvxvS9iPu2ZVs2HhXvBGyhUuviHZ0FhWv6om2q+l6wvFffO6zL/W6rqd2UK
+         nAequH2EbGM8ZoIIEQ5lI6W5ph2lE5Bjxz6FOjMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 33/60] usb: dwc3: gadget: Dont clear flags before transfer ended
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 01/40] amd-xgbe: Use __napi_schedule() in BH context
 Date:   Mon, 20 Apr 2020 14:39:11 +0200
-Message-Id: <20200420121510.387048885@linuxfoundation.org>
+Message-Id: <20200420121449.587223612@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
+References: <20200420121444.178150063@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,36 +47,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-commit a114c4ca64bd522aec1790c7e5c60c882f699d8f upstream.
+[ Upstream commit d518691cbd3be3dae218e05cca3f3fc9b2f1aa77 ]
 
-We track END_TRANSFER command completion. Don't clear transfer
-started/ended flag prematurely. Otherwise, we'd run into the problem
-with restarting transfer before END_TRANSFER command finishes.
+The driver uses __napi_schedule_irqoff() which is fine as long as it is
+invoked with disabled interrupts by everybody. Since the commit
+mentioned below the driver may invoke xgbe_isr_task() in tasklet/softirq
+context. This may lead to list corruption if another driver uses
+__napi_schedule_irqoff() in IRQ context.
 
-Fixes: 6d8a019614f3 ("usb: dwc3: gadget: check for Missed Isoc from event status")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Use __napi_schedule() which safe to use from IRQ and softirq context.
+
+Fixes: 85b85c853401d ("amd-xgbe: Re-issue interrupt if interrupt status not cleared")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/dwc3/gadget.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2567,10 +2567,8 @@ static void dwc3_gadget_endpoint_transfe
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+@@ -515,7 +515,7 @@ static void xgbe_isr_task(unsigned long
+ 				xgbe_disable_rx_tx_ints(pdata);
  
- 	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
- 
--	if (stop) {
-+	if (stop)
- 		dwc3_stop_active_transfer(dep, true, true);
--		dep->flags = DWC3_EP_ENABLED;
--	}
- 
- 	/*
- 	 * WORKAROUND: This is the 2nd half of U1/U2 -> U0 workaround.
+ 				/* Turn on polling */
+-				__napi_schedule_irqoff(&pdata->napi);
++				__napi_schedule(&pdata->napi);
+ 			}
+ 		} else {
+ 			/* Don't clear Rx/Tx status if doing per channel DMA
 
 
