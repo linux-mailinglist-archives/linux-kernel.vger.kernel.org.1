@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1308C1AFF6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 03:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34CA1AFF5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 03:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgDTBHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Apr 2020 21:07:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:62984 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgDTBHE (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 19 Apr 2020 21:07:04 -0400
-IronPort-SDR: MqMSTn2zMZYZthSafUtDvLqrl/M4z2UP+bc6JpOGh3Dns5gXmgGIKJ+hhl3XzNdjRqnpq2VY0M
- mmUTeD/ZL79Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2020 18:07:04 -0700
-IronPort-SDR: PjJypzSdi2HOTELPQw+KkxosxeoMSbFJr3UwGsh0tkclkB9s7kg77tBKOJkztTPXwCZCJsZjYC
- kMW2kdl1ZgaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,405,1580803200"; 
-   d="scan'208";a="364855003"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Apr 2020 18:07:01 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v3 3/7] perf util: Return per-event callchain streams
-Date:   Mon, 20 Apr 2020 09:04:47 +0800
-Message-Id: <20200420010451.24405-4-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200420010451.24405-1-yao.jin@linux.intel.com>
-References: <20200420010451.24405-1-yao.jin@linux.intel.com>
+        id S1726109AbgDTBFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Apr 2020 21:05:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49350 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725949AbgDTBFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Apr 2020 21:05:00 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 131943B4B51D164DD656;
+        Mon, 20 Apr 2020 09:04:58 +0800 (CST)
+Received: from [127.0.0.1] (10.74.149.191) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 09:04:48 +0800
+Subject: Re: [PATCH net-next 01/10] net: hns3: split out
+ hclge_fd_check_ether_tuple()
+To:     David Miller <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>, <shenjian15@huawei.com>
+References: <1587192429-11463-1-git-send-email-tanhuazhong@huawei.com>
+ <1587192429-11463-2-git-send-email-tanhuazhong@huawei.com>
+ <20200418.201746.783676213458110248.davem@davemloft.net>
+From:   tanhuazhong <tanhuazhong@huawei.com>
+Message-ID: <d6cdcc43-94a9-318c-fec1-b26b0eb70015@huawei.com>
+Date:   Mon, 20 Apr 2020 09:04:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
+MIME-Version: 1.0
+In-Reply-To: <20200418.201746.783676213458110248.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.149.191]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In previous patch, we have created a 'struct callchain_streams'
-array and each array entry contains per-event callchain streams.
 
-This patch returns the pointer of per-event callchain streams
-according to the evsel_idx.
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/callchain.c | 12 ++++++++++++
- tools/perf/util/callchain.h |  4 ++++
- 2 files changed, 16 insertions(+)
+On 2020/4/19 11:17, David Miller wrote:
+> From: Huazhong Tan <tanhuazhong@huawei.com>
+> Date: Sat, 18 Apr 2020 14:47:00 +0800
+> 
+>> +static int hclge_fd_check_spec(struct hclge_dev *hdev,
+>> +			       struct ethtool_rx_flow_spec *fs,
+>> +			       u32 *unused_tuple)
+>> +{
+>> +	int ret = 0;
+> 
+> There is no code path that uses 'ret' without it first being
+> assigned.  If I let this code in, then someone is going to
+> submit a fixup patch removing the initialization.
+> 
 
-diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-index 0c028caaeb19..bf66f33debd4 100644
---- a/tools/perf/util/callchain.c
-+++ b/tools/perf/util/callchain.c
-@@ -1721,3 +1721,15 @@ struct callchain_streams *callchain_evsel_streams_create(struct evlist *evlist,
- 	*nr_evsel_streams = nr_evsel;
- 	return callchain_streams;
- }
-+
-+struct callchain_streams *callchain_evsel_streams_get(struct callchain_streams *cs,
-+						      int nr_streams_max,
-+						      int evsel_idx)
-+{
-+	for (int i = 0; i < nr_streams_max; i++) {
-+		if (cs[i].evsel_idx == evsel_idx)
-+			return &cs[i];
-+	}
-+
-+	return NULL;
-+}
-diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
-index 6a93ad84d395..6ff9d86d74d3 100644
---- a/tools/perf/util/callchain.h
-+++ b/tools/perf/util/callchain.h
-@@ -313,4 +313,8 @@ struct callchain_streams *callchain_evsel_streams_create(struct evlist *evlist,
- 							 int nr_streams_max,
- 							 int *nr_evsel_streams);
- 
-+struct callchain_streams *callchain_evsel_streams_get(struct callchain_streams *cs,
-+						      int nr_streams_max,
-+						      int evsel_idx);
-+
- #endif	/* __PERF_CALLCHAIN_H */
--- 
-2.17.1
+Yes, will modify it.
+Thanks.
+
+> .
+> 
 
