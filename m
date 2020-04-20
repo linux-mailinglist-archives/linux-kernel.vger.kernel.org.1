@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BCF1B19AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F961B19B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgDTWlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgDTWlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:41:42 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7199AC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 15:41:42 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id e6so504462pjt.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 15:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AOx/Nk4FquXJyWXQfptpC4DSa3mcXsVlsvT6l/XeQck=;
-        b=jHw+hnRA6zoSySOMYOCCKdmQTQ1cfELgXOG3Ih3ugNGr6GP3hDbhtn0NUs1uN7CGYx
-         ZFs4j8Mc/Y/pPEdRTARWyj+usqUYGY++8v8et5dLO0wsnPoCjEk6nadlBBCbO8ENnU1i
-         b8lbCArlNcDy0C9Z1f1lknHGNDWrdN497MMzM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AOx/Nk4FquXJyWXQfptpC4DSa3mcXsVlsvT6l/XeQck=;
-        b=Pi7EwVlQPgvY/UwQRBa2T5DuLbBexRIfuHeCLOnw+R8Bg0ojf+Daq/suXHvK7Rrxpp
-         BdSnthilv7DyxO6IkAxobKCWAeX1bU9nIKYSgpvyVch/iDkhwW29a/aT4Mdfrko81sSO
-         g61Jt5kZxgAgmlK8393I5G2HtVMJILbkGk0dtCgxIyoFRLMsPjd3eS1AFC27xaEauppr
-         1FPTZdHf0U5I4MP+KZWp5n/pED+hP1n/pQj/D4E675cdQsqO07O+jJfFdf5DCk5buq3l
-         CGay9ic/iWNufjCB7/IVjz40KW9dYtBL+HtU16OGRpWBsFfSnEO7lNYhM0BNpRKnoWnR
-         jTSA==
-X-Gm-Message-State: AGi0PuZFduv+J7kCLwUa66T9k0coDmbyF5x7e/E34qiHHYv6qzPhcrVJ
-        ZmerXVDKTpNSBWVWXRLo5VMhXA==
-X-Google-Smtp-Source: APiQypL5Z6q8UaSwVwqhWKDtZz7B9BBMwHt2OfgW1N+IC7mdxg5XMaIXwNjTPPsuJbbTL58HeQiluA==
-X-Received: by 2002:a17:90a:25cb:: with SMTP id k69mr1861715pje.93.1587422502023;
-        Mon, 20 Apr 2020 15:41:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j7sm442489pjy.9.2020.04.20.15.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 15:41:41 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 15:41:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     glider@google.com, adobriyan@gmail.com,
-        linux-kernel@vger.kernel.org, sunhaoyl@outlook.com
-Subject: Re: [PATCH] fs/binfmt_elf.c: allocate initialized memory in
- fill_thread_core_info()
-Message-ID: <202004201540.01C8F82B@keescook>
-References: <20200419100848.63472-1-glider@google.com>
- <20200420153352.6682533e794f591dae7aafbc@linux-foundation.org>
+        id S1726597AbgDTWoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:44:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54312 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgDTWoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:44:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6F52CAC53;
+        Mon, 20 Apr 2020 22:43:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E6951DA72D; Tue, 21 Apr 2020 00:43:15 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 00:43:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+Message-ID: <20200420224315.GI18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xin Tan <tanxin.ctf@gmail.com>
+References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200420153352.6682533e794f591dae7aafbc@linux-foundation.org>
+In-Reply-To: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 03:33:52PM -0700, Andrew Morton wrote:
-> On Sun, 19 Apr 2020 12:08:48 +0200 glider@google.com wrote:
+On Mon, Apr 20, 2020 at 01:38:40PM +0800, Xiyu Yang wrote:
+> btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
+> returns a local reference of the blcok group that contains the given
+> bytenr to "block_group" with increased refcount.
 > 
-> > KMSAN reported uninitialized data being written to disk when dumping
-> > core. As a result, several kilobytes of kmalloc memory may be written to
-> > the core file and then read by a non-privileged user.
-
-Ewww. That's been there for 12 years. Did something change in
-regset_size() or regset->get()? Do you know what leaves the hole?
-
-> > 
-> > ...
-> >
-> > --- a/fs/binfmt_elf.c
-> > +++ b/fs/binfmt_elf.c
-> > @@ -1733,7 +1733,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
-> >  		    (!regset->active || regset->active(t->task, regset) > 0)) {
-> >  			int ret;
-> >  			size_t size = regset_size(t->task, regset);
-> > -			void *data = kmalloc(size, GFP_KERNEL);
-> > +			void *data = kzalloc(size, GFP_KERNEL);
-> >  			if (unlikely(!data))
-> >  				return 0;
-> >  			ret = regset->get(t->task, regset,
+> When btrfs_remove_block_group() returns, "block_group" becomes invalid,
+> so the refcount should be decreased to keep refcount balanced.
 > 
-> This seems to be a quite easy way of exposing quite a large amount of
-> kernel memory contents, so I think I'll add a cc:stable to this patch?
+> The reference counting issue happens in several exception handling paths
+> of btrfs_remove_block_group(). When those error scenarios occur such as
+> btrfs_alloc_path() returns NULL, the function forgets to decrease its
+> refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+> leak.
+> 
+> Fix this issue by jumping to "out_put_group" label and calling
+> btrfs_put_block_group() when those error scenarios occur.
+> 
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Yes please.
+Thanks for the fix. May I ask if this was found by code inspection or by
+some analysis tool?
 
-Acked-by: Kees Cook <keescook@chromium.org>
+> @@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+>  		btrfs_delayed_refs_rsv_release(fs_info, 1);
+>  	btrfs_free_path(path);
+>  	return ret;
+> +out_put_group:
+> +	btrfs_put_block_group(block_group);
+> +	goto out;
 
--Kees
+As Filipe noted, the trailing gotos are not a great pattern, what we'd
+like to do is a more linear sequence where the resource
+allocation/freeing nesting is obvious, like:
 
--- 
-Kees Cook
+
+	x = allocate(X);
+	if (!x)
+		goto out;
+	...
+	y = allocate(Y);
+	if (!y)
+		goto out_free_x;
+	z = allocate(Z);
+	if (!z)
+		goto out_free_y;
+	...
+	free(z);
+out_free_y:
+	free(y);
+out_free_x:
+	free(x);
+out:
+	return;
+
+
+(where allocate/free can be refcount inc/dec and similar). Sometimes
+it's not that straightforward and the freeing block needs conditionals,
+but from code reading perspective this is still better than potentially
+wild gotos.
