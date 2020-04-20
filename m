@@ -2,188 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E021B18B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00991B188D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 23:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgDTVnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 17:43:46 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51346 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgDTVno (ORCPT
+        id S1726828AbgDTVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 17:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726021AbgDTVkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 17:43:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KLgUL9050259;
-        Mon, 20 Apr 2020 21:42:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=hzoE0Q+18wJs1W+mVb3z7CiUNSgD6tC6T1Mn0/ek+wo=;
- b=uEPs/byWmtoiHC1nzj/OHwsHfQ+pPoDJrbDp3lBBPD0KRbAA6SwAvZ1ud2YwFnb2Mzu+
- w2CK8iPEc1BvfdfVAl5Fcto/JbU4c652GlgOsBhobCaLtohtsTqIGr3+PVqtKslBkoNW
- n+JOBt2k3+46e5Q1gU3tB8q3bmCebFihkB9ixnCVXX3kvxl+TyYWXFE+XKWZiRXHWZAq
- 7Fs4OQLL9/BFQ7CHOVVxXiZBK2ZBMKSV1hJLPbIbNdPX8YOZGHkqGsU6WzpWBzNF7AUU
- f0tSUQ+nvoF8JdFnaqHsGTH5mXUTwYGBPwktzP0qUTamVzUlKbt9rTV1prDiWrL1czwl Ow== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30ft6n1quc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Apr 2020 21:42:30 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KLbbb8169248;
-        Mon, 20 Apr 2020 21:40:27 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30gb3r4xy6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Apr 2020 21:40:27 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03KLe8UK019244;
-        Mon, 20 Apr 2020 21:40:08 GMT
-Received: from [192.168.2.157] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 20 Apr 2020 14:40:08 -0700
-Subject: Re: [PATCH v3 0/4] Clean up hugetlb boot command line processing
-To:     Anders Roxell <anders.roxell@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Qian Cai <cai@lca.pw>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S.Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Longpeng <longpeng2@huawei.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200417185049.275845-1-mike.kravetz@oracle.com>
- <5E312000-05D8-4C5D-A7C0-DDDE1842CB0E@lca.pw>
- <4c36c6ce-3774-78fa-abc4-b7346bf24348@oracle.com>
- <CADYN=9+=tCDmddTYGY44onvrzbg7yrbacMDSxd4hhD+=b=Yeiw@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <86333853-0648-393f-db96-d581ee114d2b@oracle.com>
-Date:   Mon, 20 Apr 2020 14:40:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 17:40:49 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAD8C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:40:48 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id t63so1226958wmt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 14:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4Gk/VYoQhPhQ7TbUJt9ppu0wX7IwMr6mSq4U87B4Pb4=;
+        b=d631R2gwMehAjcbsqcBoh4S2uRZcvSYuoWemely5PVflzq3Ass3LCUsCfgkdWtgc9F
+         TU/kozgTBVtlrpNUHjbEOMTrNAys+iW5pwg54cxSGmSkx/hQoOTACufZ8014modkhsZE
+         SXC0MGzMeMwozpMkt0xhoyZg1FPP+/p8xWJpo6ypBnSUFdq3eOLAVzqFeHBi/RJetGwZ
+         vCwyNvDg/FV4RHIrXnfaI06i5hbbyjuKfUKtND4vvWgvqIBd8sl4yQM1SC/T6rjpPUDn
+         GCaa3YJg5naB5dXMMlfzIsuxz3oBLhV45iKht+np77NGxU/ZR1zIqJ1CdkwI8C4BgCCn
+         M9IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4Gk/VYoQhPhQ7TbUJt9ppu0wX7IwMr6mSq4U87B4Pb4=;
+        b=GNQZ3Ti+lKFewy5cWLDtOjzdeOZUdmMyHK1/jNvy4EfzY5vueQdEvaroz6YIOJ6USn
+         SZUGSJq723XxACZYI44laOlp7ZC/oFOPB3qbQ4UMcBQ4Zvx1FJBHG3Ah6TR6yK2xYG8S
+         +WVk9JNK45vVR3tB3dqzkstiNdz15S8nxOCQmc5UIibDWrnLg9+f5S68CUpPpS5g8dHD
+         zlzu4x3i2uAH9gHDfECqeP4J7XFPcxHwbrMYUlPs7VDA5EPM8tT2i/3sb8dVRm1rj/YL
+         JJcmURBpl91A1TPXlxPmVwDW9d33dhIfMAx8YNMJNZylYS2YLX8+Fo6HQaXBKA71Prqv
+         rbag==
+X-Gm-Message-State: AGi0PuZ8kHDwoLzEd63rW7z/dU5V1FiOqy+9jRqv1nHgOn5XH+mtKkwj
+        Fd7kIvyRExzw2qhIJF83gd4=
+X-Google-Smtp-Source: APiQypLvpyyDBqeAgz8buD5OJjsPdNQop2mMLHkzAHCjiqgN9PjtiPL4xXegCiReIbsQ8ECaZ/lF/A==
+X-Received: by 2002:a7b:cf27:: with SMTP id m7mr1466022wmg.183.1587418847498;
+        Mon, 20 Apr 2020 14:40:47 -0700 (PDT)
+Received: from localhost.localdomain ([91.221.170.230])
+        by smtp.googlemail.com with ESMTPSA id q17sm755380wmj.45.2020.04.20.14.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 14:40:46 -0700 (PDT)
+From:   Gregor Pintar <grpintar@gmail.com>
+To:     tiwai@suse.com, perex@perex.cz, alexander@tsoy.me
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        grpintar@gmail.com
+Subject: [PATCH v2] ALSA: usb-audio: Add quirk for Focusrite Scarlett 2i2
+Date:   Mon, 20 Apr 2020 23:40:30 +0200
+Message-Id: <20200420214030.2361-1-grpintar@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1c4b8a362761421eba0ded60bb4f0e11b7e42f3b.camel@tsoy.me>
+References: <1c4b8a362761421eba0ded60bb4f0e11b7e42f3b.camel@tsoy.me>
 MIME-Version: 1.0
-In-Reply-To: <CADYN=9+=tCDmddTYGY44onvrzbg7yrbacMDSxd4hhD+=b=Yeiw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 suspectscore=27 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004200171
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=27 bulkscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004200172
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 1:29 PM, Anders Roxell wrote:
-> On Mon, 20 Apr 2020 at 20:23, Mike Kravetz <mike.kravetz@oracle.com> wrote:
->> On 4/20/20 8:34 AM, Qian Cai wrote:
->>>
->>> Reverted this series fixed many undefined behaviors on arm64 with the config,
->> While rearranging the code (patch 3 in series), I made the incorrect
->> assumption that CONT_XXX_SIZE == (1UL << CONT_XXX_SHIFT).  However,
->> this is not the case.  Does the following patch fix these issues?
->>
->> From b75cb4a0852e208bee8c4eb347dc076fcaa88859 Mon Sep 17 00:00:00 2001
->> From: Mike Kravetz <mike.kravetz@oracle.com>
->> Date: Mon, 20 Apr 2020 10:41:18 -0700
->> Subject: [PATCH] arm64/hugetlb: fix hugetlb initialization
->>
->> When calling hugetlb_add_hstate() to initialize a new hugetlb size,
->> be sure to use correct huge pages size order.
->>
->> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->> ---
->>  arch/arm64/mm/hugetlbpage.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
->> index 9ca840527296..a02411a1f19a 100644
->> --- a/arch/arm64/mm/hugetlbpage.c
->> +++ b/arch/arm64/mm/hugetlbpage.c
->> @@ -453,11 +453,11 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
->>  static int __init hugetlbpage_init(void)
->>  {
->>  #ifdef CONFIG_ARM64_4K_PAGES
->> -       hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
->> +       hugetlb_add_hstate(ilog2(PUD_SIZE) - PAGE_SHIFT);
->>  #endif
->> -       hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
->> -       hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
->> -       hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
->> +       hugetlb_add_hstate(ilog2(CONT_PMD_SIZE) - PAGE_SHIFT);
->> +       hugetlb_add_hstate(ilog2(PMD_SIZE) - PAGE_SHIFT);
->> +       hugetlb_add_hstate(ilog2(CONT_PTE_SIZE) - PAGE_SHIFT);
->>
->>         return 0;
->>  }
-> 
-> I build this for an arm64 kernel and ran it in qemu and it worked.
+Force it to use asynchronous playback.
 
-Thanks for testing Anders!
+Same quirk has already been added for Focusrite Scarlett Solo (2nd gen)
+with a commit 46f5710f0b88 ("ALSA: usb-audio: Add quirk for Focusrite
+Scarlett Solo").
 
-Will, here is an updated version of the patch based on your suggestion.
-I added the () for emphasis but that may just be noise for some.  Also,
-the naming differences and values for CONT_PTE may make some people
-look twice.  Not sure if being consistent here helps?
+This also seems to prevent regular clicks when playing at 44100Hz
+on Scarlett 2i2 (2nd gen). I did not notice any side effects.
 
-I have only built this.  No testing.
+Moved both quirks to snd_usb_audioformat_attributes_quirk() as suggested.
 
-From daf833ab6b806ecc0816d84d45dcbacc052a7eec Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Mon, 20 Apr 2020 13:56:15 -0700
-Subject: [PATCH] arm64/hugetlb: fix hugetlb initialization
-
-When calling hugetlb_add_hstate() to initialize a new hugetlb size,
-be sure to use correct huge pages size order.
-
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Gregor Pintar <grpintar@gmail.com>
 ---
- arch/arm64/mm/hugetlbpage.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/quirks-table.h | 84 ----------------------------------------
+ sound/usb/quirks.c       | 13 +++++++
+ 2 files changed, 13 insertions(+), 84 deletions(-)
 
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 9ca840527296..bed6dc7c4276 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -455,9 +455,9 @@ static int __init hugetlbpage_init(void)
- #ifdef CONFIG_ARM64_4K_PAGES
- 	hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
- #endif
--	hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
-+	hugetlb_add_hstate((CONT_PMD_SHIFT + PMD_SHIFT) - PAGE_SHIFT);
- 	hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
--	hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
-+	hugetlb_add_hstate((CONT_PTE_SHIFT + PAGE_SHIFT) - PAGE_SHIFT);
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index e009d584e..7e06ab108 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2756,90 +2756,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.type = QUIRK_MIDI_NOVATION
+ 	}
+ },
+-{
+-	/*
+-	 * Focusrite Scarlett Solo 2nd generation
+-	 * Reports that playback should use Synch: Synchronous
+-	 * while still providing a feedback endpoint. Synchronous causes
+-	 * snapping on some sample rates.
+-	 * Force it to use Synch: Asynchronous.
+-	 */
+-	USB_DEVICE(0x1235, 0x8205),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+-		.ifnum = QUIRK_ANY_INTERFACE,
+-		.type = QUIRK_COMPOSITE,
+-		.data = (const struct snd_usb_audio_quirk[]) {
+-			{
+-				.ifnum = 1,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+-					.channels = 2,
+-					.iface = 1,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x01,
+-					.ep_attr = USB_ENDPOINT_XFER_ISOC |
+-						   USB_ENDPOINT_SYNC_ASYNC,
+-					.protocol = UAC_VERSION_2,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000 |
+-						 SNDRV_PCM_RATE_88200 |
+-						 SNDRV_PCM_RATE_96000 |
+-						 SNDRV_PCM_RATE_176400 |
+-						 SNDRV_PCM_RATE_192000,
+-					.rate_min = 44100,
+-					.rate_max = 192000,
+-					.nr_rates = 6,
+-					.rate_table = (unsigned int[]) {
+-						44100, 48000, 88200,
+-						96000, 176400, 192000
+-					},
+-					.clock = 41
+-				}
+-			},
+-			{
+-				.ifnum = 2,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+-					.channels = 2,
+-					.iface = 2,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x82,
+-					.ep_attr = USB_ENDPOINT_XFER_ISOC |
+-						   USB_ENDPOINT_SYNC_ASYNC |
+-						   USB_ENDPOINT_USAGE_IMPLICIT_FB,
+-					.protocol = UAC_VERSION_2,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000 |
+-						 SNDRV_PCM_RATE_88200 |
+-						 SNDRV_PCM_RATE_96000 |
+-						 SNDRV_PCM_RATE_176400 |
+-						 SNDRV_PCM_RATE_192000,
+-					.rate_min = 44100,
+-					.rate_max = 192000,
+-					.nr_rates = 6,
+-					.rate_table = (unsigned int[]) {
+-						44100, 48000, 88200,
+-						96000, 176400, 192000
+-					},
+-					.clock = 41
+-				}
+-			},
+-			{
+-				.ifnum = 3,
+-				.type = QUIRK_IGNORE_INTERFACE
+-			},
+-			{
+-				.ifnum = -1
+-			}
+-		}
+-	}
+-},
  
- 	return 0;
+ /* Access Music devices */
+ {
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index a8ece1701..6c2dfd3bf 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1806,6 +1806,19 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		 */
+ 		fp->attributes &= ~UAC_EP_CS_ATTR_FILL_MAX;
+ 		break;
++	case USB_ID(0x1235, 0x8202):  /* Focusrite Scarlett 2i2 2nd gen */
++	case USB_ID(0x1235, 0x8205):  /* Focusrite Scarlett Solo 2nd gen */
++		/*
++		 * Reports that playback should use Synch: Synchronous
++		 * while still providing a feedback endpoint.
++		 * Synchronous causes snapping on some sample rates.
++		 * Force it to use Synch: Asynchronous.
++		 */
++		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			fp->ep_attr &= ~USB_ENDPOINT_SYNCTYPE;
++			fp->ep_attr |= USB_ENDPOINT_SYNC_ASYNC;
++		}
++		break;
+ 	}
  }
+ 
 -- 
-2.25.2
+2.20.1
 
