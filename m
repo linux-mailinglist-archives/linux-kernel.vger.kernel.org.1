@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F781B086E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABD21B0873
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 13:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgDTL4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 07:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40536 "EHLO mail.kernel.org"
+        id S1726583AbgDTL4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 07:56:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727013AbgDTL4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:56:13 -0400
+        id S1727023AbgDTL4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 07:56:16 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D69C922209;
-        Mon, 20 Apr 2020 11:56:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3DD82223D;
+        Mon, 20 Apr 2020 11:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587383772;
-        bh=u7yG1A4dyYz+LQCEOwvwrhPfBkWm6kF3HaBT6Ua4scA=;
+        s=default; t=1587383775;
+        bh=L4fCkw4wcUNDKM1z6zcR2gZPg/nQnBY5Exx8Dq3WD5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xydOqEqWcwRFdcqEbwsPF4nM8ONcg+4vHpV4H5iW/I6b47w1rOe9OZgnotsi1EFR3
-         7wMK+AwYSJ7c8EO9jSjb+e1IBsdITCWp2IpR81Rc1QLmibsVfd0mSY0tdREHqKh0be
-         5RRpYBr5zUY7fuaixZkUFp5ZieV3S3jD8Vw4uqV8=
+        b=M7t/Qlawv7s6t0QzwrWtdeOdbHM7LXBvkHfrCdfeZty9S/IDb5INuw2Dbb5BGz2ju
+         ex093KLmWnymhmo1R7jZ5UpUx6LoAphfNb6BFM4mfs8FwH9W2swV+n82lpgODh54vF
+         H/xDSk6wowx2lNgoo2L8qOpARnlmRfoyvCfQ0wIY=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -32,13 +32,14 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 37/60] perf evsel: Move and globalize perf_evsel__find_pmu() and perf_evsel__is_aux_event()
-Date:   Mon, 20 Apr 2020 08:52:53 -0300
-Message-Id: <20200420115316.18781-38-acme@kernel.org>
+Subject: [PATCH 38/60] perf evlist: Move leader-sampling configuration
+Date:   Mon, 20 Apr 2020 08:52:54 -0300
+Message-Id: <20200420115316.18781-39-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200420115316.18781-1-acme@kernel.org>
 References: <20200420115316.18781-1-acme@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -47,103 +48,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Adrian Hunter <adrian.hunter@intel.com>
 
-Move and globalize 2 functions from the auxtrace specific sources so
-that they can be reused.
+Move leader-sampling configuration in preparation for adding support for
+leader sampling with AUX area events.
+
+Committer notes:
+
+It only makes sense when configuring an evsel that is part of an evlist,
+so the only case where it is called outside perf_evlist__config(), in
+some 'perf test' entry, is safe, and even there we should just use
+perf_evlist__config(), but since in that case we have just one evsel in
+the evlist, it is equivalent.
+
+Also fixed up this problem:
+
+  util/record.c: In function ‘perf_evlist__config’:
+  util/record.c:223:3: error: too many arguments to function ‘perf_evsel__config_leader_sampling’
+    223 |   perf_evsel__config_leader_sampling(evsel, evlist);
+        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  util/record.c:170:13: note: declared here
+    170 | static void perf_evsel__config_leader_sampling(struct evsel *evsel)
+        |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: http://lore.kernel.org/lkml/20200401101613.6201-13-adrian.hunter@intel.com
-[ Move to pmu.c, as moving to evsel.h breaks the python binding ]
+Link: http://lore.kernel.org/lkml/20200401101613.6201-14-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/auxtrace.c | 19 -------------------
- tools/perf/util/evsel.h    |  3 +++
- tools/perf/util/pmu.c      | 20 ++++++++++++++++++++
- 3 files changed, 23 insertions(+), 19 deletions(-)
+ tools/perf/util/evsel.c  | 19 -------------------
+ tools/perf/util/record.c | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 19 deletions(-)
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 809a09e75c55..33ad33378a90 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -58,25 +58,6 @@
- #include "symbol/kallsyms.h"
- #include <internal/lib.h>
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index f320adaf1326..8300e8c7aea8 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1002,25 +1002,6 @@ void perf_evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 		}
+ 	}
  
--static struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
--{
--	struct perf_pmu *pmu = NULL;
+-	/*
+-	 * Disable sampling for all group members other
+-	 * than leader in case leader 'leads' the sampling.
+-	 */
+-	if ((leader != evsel) && leader->sample_read) {
+-		attr->freq           = 0;
+-		attr->sample_freq    = 0;
+-		attr->sample_period  = 0;
+-		attr->write_backward = 0;
 -
--	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
--		if (pmu->type == evsel->core.attr.type)
--			break;
+-		/*
+-		 * We don't get sample for slave events, we make them
+-		 * when delivering group leader sample. Set the slave
+-		 * event to follow the master sample_type to ease up
+-		 * report.
+-		 */
+-		attr->sample_type = leader->core.attr.sample_type;
 -	}
 -
--	return pmu;
--}
--
--static bool perf_evsel__is_aux_event(struct evsel *evsel)
--{
--	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
--
--	return pmu && pmu->auxtrace;
--}
--
- /*
-  * Make a group from 'leader' to 'last', requiring that the events were not
-  * already grouped to a different leader.
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index e64ed4202cab..a463bc65b001 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -158,6 +158,9 @@ int perf_evsel__object_config(size_t object_size,
- 			      int (*init)(struct evsel *evsel),
- 			      void (*fini)(struct evsel *evsel));
+ 	if (opts->no_samples)
+ 		attr->sample_freq = 0;
  
-+struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel);
-+bool perf_evsel__is_aux_event(struct evsel *evsel);
-+
- struct evsel *perf_evsel__new_idx(struct perf_event_attr *attr, int idx);
- 
- static inline struct evsel *evsel__new(struct perf_event_attr *attr)
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index ef6a63f3d386..bc912a84b5e9 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -18,6 +18,7 @@
- #include <regex.h>
- #include <perf/cpumap.h>
- #include "debug.h"
-+#include "evsel.h"
- #include "pmu.h"
- #include "parse-events.h"
- #include "header.h"
-@@ -884,6 +885,25 @@ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
- 	return NULL;
+diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+index 7def66168503..8870ae451cac 100644
+--- a/tools/perf/util/record.c
++++ b/tools/perf/util/record.c
+@@ -167,6 +167,31 @@ bool perf_can_aux_sample(void)
+ 	return true;
  }
  
-+struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
++static void perf_evsel__config_leader_sampling(struct evsel *evsel)
 +{
-+	struct perf_pmu *pmu = NULL;
++	struct perf_event_attr *attr = &evsel->core.attr;
++	struct evsel *leader = evsel->leader;
 +
-+	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-+		if (pmu->type == evsel->core.attr.type)
-+			break;
++	/*
++	 * Disable sampling for all group members other
++	 * than leader in case leader 'leads' the sampling.
++	 */
++	if (leader != evsel && leader->sample_read) {
++		attr->freq           = 0;
++		attr->sample_freq    = 0;
++		attr->sample_period  = 0;
++		attr->write_backward = 0;
++
++		/*
++		 * We don't get sample for slave events, we make them
++		 * when delivering group leader sample. Set the slave
++		 * event to follow the master sample_type to ease up
++		 * report.
++		 */
++		attr->sample_type = leader->core.attr.sample_type;
 +	}
-+
-+	return pmu;
 +}
 +
-+bool perf_evsel__is_aux_event(struct evsel *evsel)
-+{
-+	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
-+
-+	return pmu && pmu->auxtrace;
-+}
-+
- struct perf_pmu *perf_pmu__find(const char *name)
+ void perf_evlist__config(struct evlist *evlist, struct record_opts *opts,
+ 			 struct callchain_param *callchain)
  {
- 	struct perf_pmu *pmu;
+@@ -193,6 +218,10 @@ void perf_evlist__config(struct evlist *evlist, struct record_opts *opts,
+ 			evsel->core.attr.comm_exec = 1;
+ 	}
+ 
++	/* Configure leader sampling here now that the sample type is known */
++	evlist__for_each_entry(evlist, evsel)
++		perf_evsel__config_leader_sampling(evsel);
++
+ 	if (opts->full_auxtrace) {
+ 		/*
+ 		 * Need to be able to synthesize and parse selected events with
 -- 
 2.21.1
 
