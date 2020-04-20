@@ -2,51 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD2F1B0266
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDA81B0276
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgDTHMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:12:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgDTHMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:12:17 -0400
-Received: from localhost (unknown [171.61.106.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8E16206E9;
-        Mon, 20 Apr 2020 07:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587366736;
-        bh=xmp2pU3RNE4pr1Ih5vZDQepEAmdemu2mXawUuujDOY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DZ0NmxhVZhMWlJBq51+bYc9KbAiIhoWZud5Xop9HpuJLReMuFy+FDfO0w54j9he2D
-         g80QpRhottoQtlpQ9EOdlte9Xu5yvdHdeAFTOUx33h7RRfFIP6ppq+G3qRBt4XtFyQ
-         LALOpWE40Dm9wCvR/rkv2WTPYcnaZzID3sGhvWFQ=
-Date:   Mon, 20 Apr 2020 12:42:12 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] soundwire: intel: Make sdw_intel_init static
-Message-ID: <20200420071212.GV72691@vkoul-mobl>
-References: <20200410115708.27708-1-yuehaibing@huawei.com>
+        id S1726245AbgDTHNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725815AbgDTHNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 03:13:45 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7941C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:13:42 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id h2so9742168wmb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YR76M7+QfRjvw5EtwYjnb3So/qNzKUFPYqnKSENL06s=;
+        b=j+oEqsfFSEehYdDaMCVRO5/BEh7yOsSRL4WCMgYNU4ByUFUamd/zsXe0tGibrfu0YH
+         K5w3ucNoA+y/Yq0Ndpa0YlTi62oODtwd9Jn8ew5HDISSFTANK3RTO6YgT6XCEjQ1ixNi
+         lc6VJH/qJiVZk75MbmHTBv/kiswML0390oa7SG3EX6mxjQY7ZO6HL8fXWIyG10fM/xQU
+         /E1DZgcGuK8HGwaeusM6FB+el8IttTwDpOApx+r8QzzOZOM1fJ1httF1o8g2JDuacN+o
+         W3Spv6i1aAPIMw5lzkJMUJhKvN+svV+qBjWRXsiezEOhy7ySDLL0BRS5OuFgEfn8ChhH
+         zSaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YR76M7+QfRjvw5EtwYjnb3So/qNzKUFPYqnKSENL06s=;
+        b=c2bKUO7tJ2zeFPiuioozaKK70AKiWx9FZReKThHa3qs5Ymvq3xM8nL6dY4PGBGXBDF
+         dGNk46yG6eXKWY6VWm6DCAsqymTtItfIyATJgi0vuoy0jovgya5TeOi0VY1qSX2h7BHG
+         cZYpRi+tB5yv5RNYFU5Lx7Mam7QB4rYBu8ZXdBEfzl59hlkusQfr00vJ0aRag6o59GKj
+         X+Eei2nN0/3L0rVaOfVFu1kzmH4i0xGEzH86FON1JahiB0mJwVP22QQAj8K2rqlq/Kd3
+         mjbT+rflEtFY8GBierOhoEIgECLK+YV3TZDZNhT8mN7vDBzGRJUCXHVYA/VvOmJTWDpl
+         DeRg==
+X-Gm-Message-State: AGi0Pua5OF5OPJ2t9eBdSd1VwaJV+jZSQwC/EFPbBu07c+IekO6v6PlX
+        PTxDroSaLW5DfcNG6sWn3OqIih6J1wk=
+X-Google-Smtp-Source: APiQypKpGsqOSTlQdF58ZanLLw569+NgUTeZDOfWsHb1HlqvPP5ipAf6ybVxjpNRRFSHD1D0SCM2kQ==
+X-Received: by 2002:a1c:61c2:: with SMTP id v185mr1356067wmb.92.1587366821384;
+        Mon, 20 Apr 2020 00:13:41 -0700 (PDT)
+Received: from dell ([95.149.164.107])
+        by smtp.gmail.com with ESMTPSA id e15sm41773193wrt.16.2020.04.20.00.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 00:13:40 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 08:13:39 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: asic3: Add error checking return in
+ asic3_mfd_probe()
+Message-ID: <20200420071339.GG3737@dell>
+References: <b9626e96-4bdb-e7e1-51e7-a99210de4c32@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200410115708.27708-1-yuehaibing@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b9626e96-4bdb-e7e1-51e7-a99210de4c32@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-04-20, 19:57, YueHaibing wrote:
-> Fix sparse warning:
-> 
-> drivers/soundwire/intel_init.c:193:6: warning:
->  symbol 'sdw_intel_init' was not declared. Should it be static?
+On Sun, 19 Apr 2020, Markus Elfring wrote:
 
-Applied, thanks
+> > In the function asic3_mfd_probe(), when get resource or irq
+> > failed, the value returned just detected and debug error message,
+> > but there were no error checking return. So add the right error
+> > checking return.
+> 
+> I suggest to improve the commit message.
+> Would you like to adjust the patch subject?
+> 
+> 
+> > And remove the redundant 'ret = 0'.
+> 
+> I propose to reconsider this interpretation of the source code here.
+> How do you think about to move the mentioned statement into an else branch
+> at the end?
+
+Could you please fix your mailer.
+
+If you do not, your replies will be lost/discounted!
 
 -- 
-~Vinod
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
