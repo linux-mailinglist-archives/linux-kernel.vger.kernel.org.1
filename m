@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540621B0B09
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDA11B09C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgDTMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41840 "EHLO mail.kernel.org"
+        id S1728182AbgDTMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:42:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728924AbgDTMq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:46:26 -0400
+        id S1728165AbgDTMmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:42:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AF6020747;
-        Mon, 20 Apr 2020 12:46:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CCA120724;
+        Mon, 20 Apr 2020 12:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386785;
-        bh=YMFdLjTiqvREH9qsLeoZ6Ek6B94lsHuwlxz7QT5Acaw=;
+        s=default; t=1587386531;
+        bh=2Ie6yKzF7v/mul/AuyrteBRsfgDx4BWHEpn8CwEjUOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUPaaQgLDn7d3L6Pg1nATn5IafHpqpp79Ar++nl/x3KWWvZfIvpuPrhn3UDPd0opd
-         ArIU1VfKJac8rUN8HkEYcktCDeJ3njEk3teyRdnyU8IIw7NURAkGT0p33J1mHlqc1K
-         U8BITq+RfNB5T2nDf3+y1p6h2Ep88eNZI7eG9qNw=
+        b=QgyMpaPmGOFwVTSHRf4aPYjCyA/HZqI3EN1xXeaAbNjqpBosyDkrmQV7PG7EJ5DrY
+         fMHj4g5cBmtg/QHkuKzn5sL2fFonlHcu3RKNmwLsB53HPtW86CJx5+h1/UGvyhrC0s
+         5Q8PdpSOO/2E3r+uL87BmHlHMPKBu04Zo4tcg47c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH 5.4 25/60] pwm: pca9685: Fix PWM/GPIO inter-operation
-Date:   Mon, 20 Apr 2020 14:39:03 +0200
-Message-Id: <20200420121508.498494051@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH 5.5 60/65] irqchip/ti-sci-inta: Fix processing of masked irqs
+Date:   Mon, 20 Apr 2020 14:39:04 +0200
+Message-Id: <20200420121519.534397137@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,201 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <TheSven73@gmail.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit 9cc5f232a4b6a0ef6e9b57876d61b88f61bdd7c2 upstream.
+commit 3688b0db5c331f4ec3fa5eb9f670a4b04f530700 upstream.
 
-This driver allows pwms to be requested as gpios via gpiolib. Obviously,
-it should not be allowed to request a GPIO when its corresponding PWM is
-already requested (and vice versa). So it requires some exclusion code.
+The ti_sci_inta_irq_handler() does not take into account INTA IRQs state
+(masked/unmasked) as it uses INTA_STATUS_CLEAR_j register to get INTA IRQs
+status, which provides raw status value.
+This causes hard IRQ handlers to be called or threaded handlers to be
+scheduled many times even if corresponding INTA IRQ is masked.
+Above, first of all, affects the LEVEL interrupts processing and causes
+unexpected behavior up the system stack or crash.
 
-Given that the PWMm and GPIO cores are not synchronized with respect to
-each other, this exclusion code will also require proper
-synchronization.
+Fix it by using the Interrupt Masked Status INTA_STATUSM_j register which
+provides masked INTA IRQs status.
 
-Such a mechanism was in place, but was inadvertently removed by Uwe's
-clean-up in commit e926b12c611c ("pwm: Clear chip_data in pwm_put()").
-
-Upon revisiting the synchronization mechanism, we found that
-theoretically, it could allow two threads to successfully request
-conflicting PWMs/GPIOs.
-
-Replace with a bitmap which tracks PWMs in-use, plus a mutex. As long as
-PWM and GPIO's respective request/free functions modify the in-use
-bitmap while holding the mutex, proper synchronization will be
-guaranteed.
-
-Reported-by: YueHaibing <yuehaibing@huawei.com>
-Fixes: e926b12c611c ("pwm: Clear chip_data in pwm_put()")
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: YueHaibing <yuehaibing@huawei.com>
-Link: https://lkml.org/lkml/2019/5/31/963
-Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-[cg: Tested on an i.MX6Q board with two NXP PCA9685 chips]
-Tested-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Reviewed-by: Sven Van Asbroeck <TheSven73@gmail.com> # cg's rebase
-Link: https://lore.kernel.org/lkml/20200330160238.GD2817345@ulmo/
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: 9f1463b86c13 ("irqchip/ti-sci-inta: Add support for Interrupt Aggregator driver")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+Link: https://lore.kernel.org/r/20200408191532.31252-1-grygorii.strashko@ti.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pwm/pwm-pca9685.c |   85 +++++++++++++++++++++++++---------------------
- 1 file changed, 48 insertions(+), 37 deletions(-)
+ drivers/irqchip/irq-ti-sci-inta.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -20,6 +20,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/pm_runtime.h>
-+#include <linux/bitmap.h>
+--- a/drivers/irqchip/irq-ti-sci-inta.c
++++ b/drivers/irqchip/irq-ti-sci-inta.c
+@@ -37,6 +37,7 @@
+ #define VINT_ENABLE_SET_OFFSET	0x0
+ #define VINT_ENABLE_CLR_OFFSET	0x8
+ #define VINT_STATUS_OFFSET	0x18
++#define VINT_STATUS_MASKED_OFFSET	0x20
  
- /*
-  * Because the PCA9685 has only one prescaler per chip, changing the period of
-@@ -74,6 +75,7 @@ struct pca9685 {
- #if IS_ENABLED(CONFIG_GPIOLIB)
- 	struct mutex lock;
- 	struct gpio_chip gpio;
-+	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
- #endif
- };
+ /**
+  * struct ti_sci_inta_event_desc - Description of an event coming to
+@@ -116,7 +117,7 @@ static void ti_sci_inta_irq_handler(stru
+ 	chained_irq_enter(irq_desc_get_chip(desc), desc);
  
-@@ -83,51 +85,51 @@ static inline struct pca9685 *to_pca(str
- }
+ 	val = readq_relaxed(inta->base + vint_desc->vint_id * 0x1000 +
+-			    VINT_STATUS_OFFSET);
++			    VINT_STATUS_MASKED_OFFSET);
  
- #if IS_ENABLED(CONFIG_GPIOLIB)
--static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
-+static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, int pwm_idx)
- {
--	struct pca9685 *pca = gpiochip_get_data(gpio);
--	struct pwm_device *pwm;
-+	bool is_inuse;
- 
- 	mutex_lock(&pca->lock);
--
--	pwm = &pca->chip.pwms[offset];
--
--	if (pwm->flags & (PWMF_REQUESTED | PWMF_EXPORTED)) {
--		mutex_unlock(&pca->lock);
--		return -EBUSY;
-+	if (pwm_idx >= PCA9685_MAXCHAN) {
-+		/*
-+		 * "all LEDs" channel:
-+		 * pretend already in use if any of the PWMs are requested
-+		 */
-+		if (!bitmap_empty(pca->pwms_inuse, PCA9685_MAXCHAN)) {
-+			is_inuse = true;
-+			goto out;
-+		}
-+	} else {
-+		/*
-+		 * regular channel:
-+		 * pretend already in use if the "all LEDs" channel is requested
-+		 */
-+		if (test_bit(PCA9685_MAXCHAN, pca->pwms_inuse)) {
-+			is_inuse = true;
-+			goto out;
-+		}
- 	}
--
--	pwm_set_chip_data(pwm, (void *)1);
--
-+	is_inuse = test_and_set_bit(pwm_idx, pca->pwms_inuse);
-+out:
- 	mutex_unlock(&pca->lock);
--	pm_runtime_get_sync(pca->chip.dev);
--	return 0;
-+	return is_inuse;
- }
- 
--static bool pca9685_pwm_is_gpio(struct pca9685 *pca, struct pwm_device *pwm)
-+static void pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
- {
--	bool is_gpio = false;
--
- 	mutex_lock(&pca->lock);
-+	clear_bit(pwm_idx, pca->pwms_inuse);
-+	mutex_unlock(&pca->lock);
-+}
- 
--	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
--		unsigned int i;
--
--		/*
--		 * Check if any of the GPIOs are requested and in that case
--		 * prevent using the "all LEDs" channel.
--		 */
--		for (i = 0; i < pca->gpio.ngpio; i++)
--			if (gpiochip_is_requested(&pca->gpio, i)) {
--				is_gpio = true;
--				break;
--			}
--	} else if (pwm_get_chip_data(pwm)) {
--		is_gpio = true;
--	}
-+static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
-+{
-+	struct pca9685 *pca = gpiochip_get_data(gpio);
- 
--	mutex_unlock(&pca->lock);
--	return is_gpio;
-+	if (pca9685_pwm_test_and_set_inuse(pca, offset))
-+		return -EBUSY;
-+	pm_runtime_get_sync(pca->chip.dev);
-+	return 0;
- }
- 
- static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned int offset)
-@@ -162,6 +164,7 @@ static void pca9685_pwm_gpio_free(struct
- 
- 	pca9685_pwm_gpio_set(gpio, offset, 0);
- 	pm_runtime_put(pca->chip.dev);
-+	pca9685_pwm_clear_inuse(pca, offset);
- }
- 
- static int pca9685_pwm_gpio_get_direction(struct gpio_chip *chip,
-@@ -213,12 +216,17 @@ static int pca9685_pwm_gpio_probe(struct
- 	return devm_gpiochip_add_data(dev, &pca->gpio, pca);
- }
- #else
--static inline bool pca9685_pwm_is_gpio(struct pca9685 *pca,
--				       struct pwm_device *pwm)
-+static inline bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca,
-+						  int pwm_idx)
- {
- 	return false;
- }
- 
-+static inline void
-+pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
-+{
-+}
-+
- static inline int pca9685_pwm_gpio_probe(struct pca9685 *pca)
- {
- 	return 0;
-@@ -402,7 +410,7 @@ static int pca9685_pwm_request(struct pw
- {
- 	struct pca9685 *pca = to_pca(chip);
- 
--	if (pca9685_pwm_is_gpio(pca, pwm))
-+	if (pca9685_pwm_test_and_set_inuse(pca, pwm->hwpwm))
- 		return -EBUSY;
- 	pm_runtime_get_sync(chip->dev);
- 
-@@ -411,8 +419,11 @@ static int pca9685_pwm_request(struct pw
- 
- static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
- {
-+	struct pca9685 *pca = to_pca(chip);
-+
- 	pca9685_pwm_disable(chip, pwm);
- 	pm_runtime_put(chip->dev);
-+	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
- }
- 
- static const struct pwm_ops pca9685_pwm_ops = {
+ 	for_each_set_bit(bit, &val, MAX_EVENTS_PER_VINT) {
+ 		virq = irq_find_mapping(domain, vint_desc->events[bit].hwirq);
 
 
