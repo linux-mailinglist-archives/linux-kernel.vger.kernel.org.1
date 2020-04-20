@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4091B0D5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1871B0DDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgDTNuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:50:00 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:35530 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgDTNuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:50:00 -0400
-Received: by mail-pg1-f195.google.com with SMTP id t11so5084095pgg.2;
-        Mon, 20 Apr 2020 06:49:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dqyDrH9kmK2QYyWvzW477WYOv3bhBEOkoTNugmt8Z9A=;
-        b=COpyHZBQ5clBBd3OLT1zfnIv/+wy9OzvWCmyXh9MQVNqXPw6OGYiP9Kd/SXWUBLHdD
-         AGsjfX56FCQfTZjl5ZdTTN0o+2a64LgTWIGfyhRbKKrLMvIXIwM2yLvbsFzKqFtdkzJF
-         zyfk2JPRMD1xaFE9OOxvq01G63ugv53Df7O+sC0FZH7xaVfCLWfK68OFAq+qA6MzaoWf
-         OIWk1tfO/ltLgYpOfDmPF8b/8no2VSgtRolCB+8QAYVo+ETGE5ldxwIQATFz6aETCFTh
-         l+s6Xpqr7nNxoLWxvMDGiT9oeg3V1bsgypkW7AiUvwVumgY9vp6M5CYwRtQ6cgoYABmd
-         aoGQ==
-X-Gm-Message-State: AGi0PubI2O4HUq+FD1pQRGsj9b/lRl/4Ijmw32GFVuX+jtiCfmpO9BN8
-        uZY8FANwDegmCHLn+rhrolI=
-X-Google-Smtp-Source: APiQypJ1hvdBWQ805lF9hZGCScgsHPzgj67vtc33+YpTsUjOhC6W/SrIjdaDC5JoovDrZWpBc0o3Rg==
-X-Received: by 2002:a62:1d48:: with SMTP id d69mr6461327pfd.102.1587390599504;
-        Mon, 20 Apr 2020 06:49:59 -0700 (PDT)
-Received: from [100.124.9.192] ([104.129.199.3])
-        by smtp.gmail.com with ESMTPSA id e22sm1248730pgh.14.2020.04.20.06.49.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2020 06:49:58 -0700 (PDT)
-Subject: Re: [PATCH 2/4] loop: Factor out configuring loop from status.
-To:     Martijn Coenen <maco@android.com>, axboe@kernel.dk, hch@lst.de,
-        ming.lei@redhat.com
-Cc:     narayan@google.com, zezeozue@google.com, kernel-team@android.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@google.com, Chaitanya.Kulkarni@wdc.com
-References: <20200420080409.111693-1-maco@android.com>
- <20200420080409.111693-3-maco@android.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <888a008e-bfa0-6323-413b-5c4bf2485726@acm.org>
-Date:   Mon, 20 Apr 2020 06:49:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729669AbgDTOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:04:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50462 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728451AbgDTOEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:04:52 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 35A7ACC59F4CA25CBBD4;
+        Mon, 20 Apr 2020 22:04:43 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 22:04:36 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
+        <ck.hu@mediatek.com>, <enric.balletbo@collabora.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] drm/mediatek: Fix Kconfig warning
+Date:   Mon, 20 Apr 2020 21:50:45 +0800
+Message-ID: <20200420135045.27984-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200420080409.111693-3-maco@android.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 1:04 AM, Martijn Coenen wrote:
->   static int
-> -loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
-> +loop_set_from_status(struct loop_device *lo, const struct loop_info64 *info)
->   {
+WARNING: unmet direct dependencies detected for MTK_MMSYS
+  Depends on [n]: (ARCH_MEDIATEK [=y] || COMPILE_TEST [=n]) && COMMON_CLK_MT8173_MMSYS [=n]
+  Selected by [y]:
+  - DRM_MEDIATEK [=y] && HAS_IOMEM [=y] && DRM [=y] && (ARCH_MEDIATEK [=y] || ARM && COMPILE_TEST [=n]) && COMMON_CLK [=y] && HAVE_ARM_SMCCC [=y] && OF [=y]
 
-An additional question: since this function sets the status of 'lo' 
-based on the information in 'info', would "loop_set_status" or 
-"loop_set_status_from_info" be a better name for this function?
+Add missing dependcy COMMON_CLK_MT8173_MMSYS to fix this.
 
-Thanks,
+Fixes: 2c758e301ed9 ("soc / drm: mediatek: Move routing control to mmsys device")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/gpu/drm/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Bart.
+diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediatek/Kconfig
+index c420f5a3d33b..4d9b5540de68 100644
+--- a/drivers/gpu/drm/mediatek/Kconfig
++++ b/drivers/gpu/drm/mediatek/Kconfig
+@@ -6,6 +6,7 @@ config DRM_MEDIATEK
+ 	depends on COMMON_CLK
+ 	depends on HAVE_ARM_SMCCC
+ 	depends on OF
++	depends on COMMON_CLK_MT8173_MMSYS
+ 	select DRM_GEM_CMA_HELPER
+ 	select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+-- 
+2.17.1
+
+
