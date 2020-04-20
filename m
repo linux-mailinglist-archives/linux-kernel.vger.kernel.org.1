@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD931B0A1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30EA1B09A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgDTMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38826 "EHLO mail.kernel.org"
+        id S1727892AbgDTMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728617AbgDTMot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:44:49 -0400
+        id S1727877AbgDTMkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:40:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3C2F206E9;
-        Mon, 20 Apr 2020 12:44:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 242A12070B;
+        Mon, 20 Apr 2020 12:40:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386689;
-        bh=D9Zh8lCgpiqB7HX8/NwmWCHrVq/g2Z7HfkRe/5ncGN8=;
+        s=default; t=1587386454;
+        bh=7CwSGAnApzkj0TifNjJBsWcj8qqd9Xu9EoZHAW2GmvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4EnWbvkq2Uboj8MqbDt9j6SojJp4wFArJjBohNHDA6s3QoEXRRylJyA5FXL26UWX
-         QAjoFe4DwyalbNXw7CG+ySo4r0M0BjV/I1DRaEHNURkV5IsdaOubEJ3nEEkq52uKQT
-         Xn2AK6nPrJRNnwpbwrCaCAIQDWfk9ChebjY9Dyzo=
+        b=b81Qhn0gWgyfLN7+IATWc1tJxsNMHV6vUHhWJncWXQKj/gmCQ6d1TUj0XYMhWK4vM
+         bp7qq41BSBYK7U4H0sFgxQkvRJazhBIAG+FHcKQYm84pxBMoHE6lqL0tjUHLmXTBD0
+         udJ6NeZIpshCXe+jL27bqCGNmXOGZpXaoI/Ey124=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Stallard <code@timstallard.me.uk>,
+        stable@vger.kernel.org, Bruno Meneguele <bmeneg@redhat.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 18/71] net: icmp6: do not select saddr from iif when route has prefsrc set
-Date:   Mon, 20 Apr 2020 14:38:32 +0200
-Message-Id: <20200420121512.086635523@linuxfoundation.org>
+Subject: [PATCH 5.5 29/65] net/bpfilter: remove superfluous testing message
+Date:   Mon, 20 Apr 2020 14:38:33 +0200
+Message-Id: <20200420121512.524078157@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,101 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Stallard <code@timstallard.me.uk>
+From: Bruno Meneguele <bmeneg@redhat.com>
 
-[ Upstream commit b93cfb9cd3af3adc9ba4854f178d5300f7544d3e ]
+commit 41c55ea6c2a7ca4c663eeec05bdf54f4e2419699 upstream.
 
-Since commit fac6fce9bdb5 ("net: icmp6: provide input address for
-traceroute6") ICMPv6 errors have source addresses from the ingress
-interface. However, this overrides when source address selection is
-influenced by setting preferred source addresses on routes.
+A testing message was brought by 13d0f7b814d9 ("net/bpfilter: fix dprintf
+usage for /dev/kmsg") but should've been deleted before patch submission.
+Although it doesn't cause any harm to the code or functionality itself, it's
+totally unpleasant to have it displayed on every loop iteration with no real
+use case. Thus remove it unconditionally.
 
-This can result in ICMP errors being lost to upstream BCP38 filters
-when the wrong source addresses are used, breaking path MTU discovery
-and traceroute.
-
-This patch sets the modified source address selection to only take place
-when the route used has no prefsrc set.
-
-It can be tested with:
-
-ip link add v1 type veth peer name v2
-ip netns add test
-ip netns exec test ip link set lo up
-ip link set v2 netns test
-ip link set v1 up
-ip netns exec test ip link set v2 up
-ip addr add 2001:db8::1/64 dev v1 nodad
-ip addr add 2001:db8::3 dev v1 nodad
-ip netns exec test ip addr add 2001:db8::2/64 dev v2 nodad
-ip netns exec test ip route add unreachable 2001:db8:1::1
-ip netns exec test ip addr add 2001:db8:100::1 dev lo
-ip netns exec test ip route add 2001:db8::1 dev v2 src 2001:db8:100::1
-ip route add 2001:db8:1000::1 via 2001:db8::2
-traceroute6 -s 2001:db8::1 2001:db8:1000::1
-traceroute6 -s 2001:db8::3 2001:db8:1000::1
-ip netns delete test
-
-Output before:
-$ traceroute6 -s 2001:db8::1 2001:db8:1000::1
-traceroute to 2001:db8:1000::1 (2001:db8:1000::1), 30 hops max, 80 byte packets
- 1  2001:db8::2 (2001:db8::2)  0.843 ms !N  0.396 ms !N  0.257 ms !N
-$ traceroute6 -s 2001:db8::3 2001:db8:1000::1
-traceroute to 2001:db8:1000::1 (2001:db8:1000::1), 30 hops max, 80 byte packets
- 1  2001:db8::2 (2001:db8::2)  0.772 ms !N  0.257 ms !N  0.357 ms !N
-
-After:
-$ traceroute6 -s 2001:db8::1 2001:db8:1000::1
-traceroute to 2001:db8:1000::1 (2001:db8:1000::1), 30 hops max, 80 byte packets
- 1  2001:db8:100::1 (2001:db8:100::1)  8.885 ms !N  0.310 ms !N  0.174 ms !N
-$ traceroute6 -s 2001:db8::3 2001:db8:1000::1
-traceroute to 2001:db8:1000::1 (2001:db8:1000::1), 30 hops max, 80 byte packets
- 1  2001:db8::2 (2001:db8::2)  1.403 ms !N  0.205 ms !N  0.313 ms !N
-
-Fixes: fac6fce9bdb5 ("net: icmp6: provide input address for traceroute6")
-Signed-off-by: Tim Stallard <code@timstallard.me.uk>
+Fixes: 13d0f7b814d9 ("net/bpfilter: fix dprintf usage for /dev/kmsg")
+Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv6/icmp.c |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
 
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -229,6 +229,25 @@ static bool icmpv6_xrlim_allow(struct so
- 	return res;
- }
+---
+ net/bpfilter/main.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/net/bpfilter/main.c
++++ b/net/bpfilter/main.c
+@@ -35,7 +35,6 @@ static void loop(void)
+ 		struct mbox_reply reply;
+ 		int n;
  
-+static bool icmpv6_rt_has_prefsrc(struct sock *sk, u8 type,
-+				  struct flowi6 *fl6)
-+{
-+	struct net *net = sock_net(sk);
-+	struct dst_entry *dst;
-+	bool res = false;
-+
-+	dst = ip6_route_output(net, sk, fl6);
-+	if (!dst->error) {
-+		struct rt6_info *rt = (struct rt6_info *)dst;
-+		struct in6_addr prefsrc;
-+
-+		rt6_get_prefsrc(rt, &prefsrc);
-+		res = !ipv6_addr_any(&prefsrc);
-+	}
-+	dst_release(dst);
-+	return res;
-+}
-+
- /*
-  *	an inline helper for the "simple" if statement below
-  *	checks if parameter problem report is caused by an
-@@ -527,7 +546,7 @@ static void icmp6_send(struct sk_buff *s
- 		saddr = force_saddr;
- 	if (saddr) {
- 		fl6.saddr = *saddr;
--	} else {
-+	} else if (!icmpv6_rt_has_prefsrc(sk, type, &fl6)) {
- 		/* select a more meaningful saddr from input if */
- 		struct net_device *in_netdev;
- 
+-		fprintf(debug_f, "testing the buffer\n");
+ 		n = read(0, &req, sizeof(req));
+ 		if (n != sizeof(req)) {
+ 			fprintf(debug_f, "invalid request %d\n", n);
 
 
