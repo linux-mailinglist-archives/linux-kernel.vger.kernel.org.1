@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0FA1B0572
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1911B0578
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 11:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgDTJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 05:19:15 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:54126 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725865AbgDTJTP (ORCPT
+        id S1726063AbgDTJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 05:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725773AbgDTJUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:19:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587374354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hWEIBWdM9RbTpT6ETPi30Ao+bxLzhh45AcEer5KPA+s=;
-        b=JoUeLSOA0KLi3MmQQolje9VNGerTxaLkYACdXka34gafhi4WcHa45letxsfg4ZUWhV8A1j
-        zY5dyhxZxsVt7iSz/AWT2XojN4XuH5sW1naF4ycpycahyDinD3mE9D3p3f1knhHBYP/xzC
-        0NqctZ3I9OIyFouzQgSxMvh1qPP6Inw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-5pZm9p14NXm3ZDrx20VIhw-1; Mon, 20 Apr 2020 05:19:12 -0400
-X-MC-Unique: 5pZm9p14NXm3ZDrx20VIhw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C093C8018A8;
-        Mon, 20 Apr 2020 09:19:10 +0000 (UTC)
-Received: from krava (ovpn-115-153.ams2.redhat.com [10.36.115.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9D8792FA1;
-        Mon, 20 Apr 2020 09:19:08 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 11:19:06 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf stat: Improve runtime stat for interval mode
-Message-ID: <20200420091906.GG718574@krava>
-References: <20200417005154.9024-1-yao.jin@linux.intel.com>
+        Mon, 20 Apr 2020 05:20:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82957C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 02:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xsDgFULRevrMl2sYWxpKGSHmJwAeC5VY0bWDB58Zd2A=; b=MZrLkzLPpycDjQP6LwIrPimNRM
+        5L8jsbG/Mo/aSiWJWStljnn2qE06Q5cgrHi6ryTY8LuSjSGBRtHSIb1gGf65z0dZMwQ9Uv5JIGL1f
+        qK1I5blOxqykYjfzrJ7UrzcbYZAKhmeVw1JVt6216hkQUsgTdb0VZOj09iowMR5fcBkIHLWcbsqDM
+        JpsNoZWlI2Lv5MZ/y2+nFKkCimMZBfhbS4wpZEQz0NXYH/EMT1itRPifzI9AKIGAMmwx+TlF1emPf
+        Vb3SiXzESC0epAhuWHEhlvZpLuLu96rcdyY1lpgcsrebCcnz+ohepTncH84NZEtpJchv6CHhfUmDb
+        BwvjitWw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQSbd-0007ea-N1; Mon, 20 Apr 2020 09:20:45 +0000
+Date:   Mon, 20 Apr 2020 02:20:45 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [patch 00/15] x86/tlb: Unexport per-CPU tlbstate
+Message-ID: <20200420092045.GC24518@infradead.org>
+References: <20200419203137.214111265@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417005154.9024-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200419203137.214111265@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 08:51:54AM +0800, Jin Yao wrote:
+Just looking over some exports at the end of the series (and thus
+ignoring bisection issues):
 
-SNIP
+ - Is there any good reason to keep __flush_tlb_all inline vs moving it
+   out of line and kill the flush_tlb_local and flush_tlb_global exports.
+   Also there is just a single modular users in SVM, I wonder if there is
+   any way to get rid of that one as well.
 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index ec053dc1e35c..d5c326ff46d0 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -359,6 +359,7 @@ static void process_interval(void)
->  	clock_gettime(CLOCK_MONOTONIC, &ts);
->  	diff_timespec(&rs, &ts, &ref_time);
->  
-> +	perf_stat__reset_rt_stat();
-
-could you use just existing:
-
-	perf_stat__reset_shadow_per_stat(&rt_stat)
-
-or perhaps event perf_stat__reset_shadow_stats, given
-that we init walltime_nsecs_stats just few lines below
-
-jirka
-
->  	read_counters(&rs);
->  
->  	if (STAT_RECORD) {
-
-SNIP
-
+Also I think cpu_tlbstate itself could be marked static in tlb.c with
+a few more changes, I wonder if would be worth it?
