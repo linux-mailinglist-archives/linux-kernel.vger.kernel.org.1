@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9A31B0A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16371B0AFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgDTMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45058 "EHLO mail.kernel.org"
+        id S1729446AbgDTMwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:52:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729246AbgDTMs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:48:27 -0400
+        id S1729002AbgDTMrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25FA92072B;
-        Mon, 20 Apr 2020 12:48:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2407D206D4;
+        Mon, 20 Apr 2020 12:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386906;
-        bh=cGSnqVk3XEiivt42E5/JP8PziBdXoNJf7P8/UlVSRX8=;
+        s=default; t=1587386821;
+        bh=tcAAzz3EXEsisJM9NOt1ZeTYwQanWfluG2iG9Gwhh/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OiZe7byB0hu95WBg1OY03bkT0TwftMNBSUFq4C/XcjFMkUHcQh0zpF6yIDgX/UDt/
-         D/QrDoiY94E8BeaA3R5JifKAW+uog3fRvca3jspI2mfNvew613Eeq+Rrcx1UiHU8cE
-         O/xkuXPlmRch4roxr4OR0sF+YD9ooewHHl0SMquY=
+        b=cqG8c98KQ6mWAvkmVR8/2NZbtDAdwzxS3KWDgdeQy+DWkcq6c0KNXtA5DaYI5IG3N
+         wAVoS9DdVQzA5yfAAVM4pEWwlKzEWfeqiXyD3VKZC2ogbFZl+d7NPd/vekSzL47vHe
+         pEX9lUxNyrxrPA3eCfVBf01jVyATnoJCG921ihGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Yakunin <zeil@yandex-team.ru>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 06/40] net: revert default NAPI poll timeout to 2 jiffies
-Date:   Mon, 20 Apr 2020 14:39:16 +0200
-Message-Id: <20200420121452.817040909@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 39/60] ALSA: usb-audio: Dont create jack controls for PCM terminals
+Date:   Mon, 20 Apr 2020 14:39:17 +0200
+Message-Id: <20200420121511.504341945@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-References: <20200420121444.178150063@linuxfoundation.org>
+In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
+References: <20200420121500.490651540@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit a4837980fd9fa4c70a821d11831698901baef56b ]
+commit 7dc3c5a0172e6c0449502103356c3628d05bc0e0 upstream.
 
-For HZ < 1000 timeout 2000us rounds up to 1 jiffy but expires randomly
-because next timer interrupt could come shortly after starting softirq.
+Some funky firmwares set the connector flag even on PCM terminals
+although it doesn't make sense (and even actually the firmware doesn't
+react properly!).  Let's skip creation of jack controls in such a
+case.
 
-For commonly used CONFIG_HZ=1000 nothing changes.
-
-Fixes: 7acf8a1e8a28 ("Replace 2 jiffies with sysctl netdev_budget_usecs to enable softirq tuning")
-Reported-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200412081331.4742-4-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/core/dev.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3934,7 +3934,8 @@ EXPORT_SYMBOL(netdev_max_backlog);
+---
+ sound/usb/mixer.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2088,7 +2088,8 @@ static int parse_audio_input_terminal(st
+ 	check_input_term(state, term_id, &iterm);
  
- int netdev_tstamp_prequeue __read_mostly = 1;
- int netdev_budget __read_mostly = 300;
--unsigned int __read_mostly netdev_budget_usecs = 2000;
-+/* Must be at least 2 jiffes to guarantee 1 jiffy timeout */
-+unsigned int __read_mostly netdev_budget_usecs = 2 * USEC_PER_SEC / HZ;
- int weight_p __read_mostly = 64;           /* old backlog weight */
- int dev_weight_rx_bias __read_mostly = 1;  /* bias for backlog weight */
- int dev_weight_tx_bias __read_mostly = 1;  /* bias for output_queue quota */
+ 	/* Check for jack detection. */
+-	if (uac_v2v3_control_is_readable(bmctls, control))
++	if ((iterm.type & 0xff00) != 0x0100 &&
++	    uac_v2v3_control_is_readable(bmctls, control))
+ 		build_connector_control(state->mixer, &iterm, true);
+ 
+ 	return 0;
+@@ -3128,7 +3129,8 @@ static int snd_usb_mixer_controls(struct
+ 			if (err < 0 && err != -EINVAL)
+ 				return err;
+ 
+-			if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
++			if ((state.oterm.type & 0xff00) != 0x0100 &&
++			    uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
+ 							 UAC2_TE_CONNECTOR)) {
+ 				build_connector_control(state.mixer, &state.oterm,
+ 							false);
+@@ -3153,7 +3155,8 @@ static int snd_usb_mixer_controls(struct
+ 			if (err < 0 && err != -EINVAL)
+ 				return err;
+ 
+-			if (uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
++			if ((state.oterm.type & 0xff00) != 0x0100 &&
++			    uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
+ 							 UAC3_TE_INSERTION)) {
+ 				build_connector_control(state.mixer, &state.oterm,
+ 							false);
 
 
