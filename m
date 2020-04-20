@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344A21B130D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7367D1B1311
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 19:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgDTRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 13:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
+        id S1726957AbgDTRb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 13:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725784AbgDTRbR (ORCPT
+        by vger.kernel.org with ESMTP id S1726067AbgDTRbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:31:17 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CB5C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:31:17 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u6so10930457ljl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 10:31:17 -0700 (PDT)
+        Mon, 20 Apr 2020 13:31:24 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C84C061A0C;
+        Mon, 20 Apr 2020 10:31:23 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id u12so3959640uau.10;
+        Mon, 20 Apr 2020 10:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NIryELAm6gImzJkGH6fQiYjp+mAEletB7eZIJsyqgWk=;
-        b=krnMdGb/MWv2/hJFB2GXAivA1eafT/qLbqvbghWtyv7B4Zpq/GcxvHi6mOd+6FBM6C
-         IY5BdQiWf7sdkhevezJPXXQjRugRZy0mDc6xcxmSPQsM2u3cbnw+z69yM3DOOQGwzCJu
-         SSNbDvdaUQAGzazYsVocKKQJWyDeffZwnGaAUWk6PRvukjItFTuj4aVvsEWCSI685UF8
-         IJ503RbuLWh37H/qn5eVIFJK+0vQ6eNWomJ//9XsZC1rCpLVbE6i16bTzPysDUuOzYf3
-         K5lPzAN6eO9nger9P74Ws7hlToyCxgIMqr1EYuvkgky1tvewNclC/FXB24Fofob0rrID
-         IdBA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=iVY0Hpczvi7L5kCeZ6+GsOel+foAxGUdGDubvBbDcLM=;
+        b=mnzjP+p9p62Tt54In3kvaFAsTqnLkSsb5asmMvniKCgik1yjX1iITdNKYt2Qm+oRzJ
+         jsXH/q59g0GI7zHllzSqUzT03sasDSEXNQoGbIaIT6eK6wEEv4r6t1eDwsDRAeOhcnNj
+         JwfkB+U/0S/XAn37mHtcuZb/fvyVBETYBphzLmV5sK9vTdG1VCRvbwV3eeO/8cg0EXNo
+         HK/5ZepmYFiyakWP5dh4ME64kCyKg4zn+BocuG5z/uG/Z3S9u/TLatGIzckMDc0dw3VG
+         98dPTPxeqfKPc5IiH1tfa3TR3kOc5vYvMctJXysAW8AtJx2SvmcZhzLHuXRMa1lmN0w8
+         HhNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NIryELAm6gImzJkGH6fQiYjp+mAEletB7eZIJsyqgWk=;
-        b=fl8GC4FmwJBc0rAuuoWyqaHTh68mk1nnnJCT9j3Hk2ub+OxAy0MGWys/FILJknkFL9
-         eCXGTaWORIoTj5a1sfBNc0TBuJwp3OITtYgkBi91/PgCcg10XeXSCR4F2r+VaLBhw1UG
-         MjpLKQaWyu5ake60LQH61c0t9uUByiTHymStUU1Cb0fXNMhBmzuMOETxZEJL+GiOyh9S
-         /+XxKk44Ys5aGShlFzAALcoxbfxXc2mlCc+cJ+e/yJ+7sSNWc3uK0R3GDFmFK5FuB+b9
-         pw3tRqJdwTNvyDNGf7vD61XJEDoAhvCu/VmBoaBCqgfgiKzyKRy0+mnJlR701GBNsCRx
-         zVkA==
-X-Gm-Message-State: AGi0PubkQh1jLCHxl1wQHY0UZymn5E726E657i2pvGcfEJbYbmtAoKO+
-        YVoY+jO5ha6y4MbvcmeA1mrqSVoarCD/Au71QPxmIQ==
-X-Google-Smtp-Source: APiQypJPD4m+tp3Womo4xhkAYM19+Ic04WM4krQ4hxUkoUaj9x6ghuqC4Zj9qVE2fQ/7SPMQH92K3u/JyQ21IzldG4k=
-X-Received: by 2002:a2e:9496:: with SMTP id c22mr9468296ljh.165.1587403875593;
- Mon, 20 Apr 2020 10:31:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=iVY0Hpczvi7L5kCeZ6+GsOel+foAxGUdGDubvBbDcLM=;
+        b=oJCLipl46E46Ib8hUA7Vt0Svl3BvAkYN5HmBMdG8qMzX5N4CvVpoji18nhrMR5E9ai
+         0L46B79YZOur0WjMtPnZRuns4PlbFT3ECjtw3k/hfQAccVLyxW+R8bRFQnq6gaG7obNe
+         h1Abq1JHxxLNTWBD0ckqjGWTvc2FkB1ZizsJw7apTbdqE6f0UndfXKuLZy/jMjUeidj9
+         oMIRixV8l16rGsFuIbpLE8rKo0Mk/wiyeEvrKYk4FexaD7o2uN+quKXiZjIClIppmfKf
+         vZKQl/Gmr2W/1k5YXZ27oO1scmF0/tNCjRTKqs3eYXhyDtBNL/kNcQ+GIIf5C3cSLn50
+         UC0g==
+X-Gm-Message-State: AGi0PuZ6i7aPwfX8CGApVa2bBOwBUJl2XRdD7/jDvtjY5lbDB8XTm9dr
+        wJ0loNFMcgEBQBoPxtYO/FiP7pEid+z19XGLxHg=
+X-Google-Smtp-Source: APiQypL7+rXbzmdtDdBy5m419OAA82863CHZRkkuwAJ3GNdtPTpcRgl6s5lOBursmCBzXmMfTpd2F/AnsCiLZeFTjqk=
+X-Received: by 2002:ab0:b88:: with SMTP id c8mr7756282uak.0.1587403882279;
+ Mon, 20 Apr 2020 10:31:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200420121508.491252919@linuxfoundation.org>
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 20 Apr 2020 23:01:04 +0530
-Message-ID: <CA+G9fYscmrzf27SWRSxS5v-oYvJcRaqQw1rmDj-27kqBJXjRcQ@mail.gmail.com>
-Subject: Re: [PATCH 5.6 00/71] 5.6.6-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
+References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 20 Apr 2020 18:31:11 +0100
+Message-ID: <CAL3q7H4wE48Uqu6xLA-FYGy9qxov+26wnpXsjG=Ragi1UJx21Q@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,110 +65,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 at 18:13, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Apr 20, 2020 at 6:48 AM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
 >
-> This is the start of the stable review cycle for the 5.6.6 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
+> returns a local reference of the blcok group that contains the given
+> bytenr to "block_group" with increased refcount.
 >
-> Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
-> Anything received after that time might be too late.
+> When btrfs_remove_block_group() returns, "block_group" becomes invalid,
+> so the refcount should be decreased to keep refcount balanced.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.6.6-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.6.y
-> and the diffstat can be found below.
+> The reference counting issue happens in several exception handling paths
+> of btrfs_remove_block_group(). When those error scenarios occur such as
+> btrfs_alloc_path() returns NULL, the function forgets to decrease its
+> refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+> leak.
 >
-> thanks,
+> Fix this issue by jumping to "out_put_group" label and calling
+> btrfs_put_block_group() when those error scenarios occur.
 >
-> greg k-h
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Seems correct to me.
+I would change the subject to something more clear like: "btrfs: fix
+block group leak after failure to remove it"
 
-Summary
-------------------------------------------------------------------------
+One more suggestion below.
 
-kernel: 5.6.6-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.6.y
-git commit: 906ecc0031ed5fb7b4dfddb2c990f975e114829d
-git describe: v5.6.5-72-g906ecc0031ed
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.6-oe/bui=
-ld/v5.6.5-72-g906ecc0031ed
+> ---
+>  fs/btrfs/block-group.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 404e050ce8ee..d9f432bd3329 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -916,7 +916,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handl=
+e *trans,
+>         path =3D btrfs_alloc_path();
+>         if (!path) {
+>                 ret =3D -ENOMEM;
+> -               goto out;
+> +               goto out_put_group;
+>         }
+>
+>         /*
+> @@ -954,7 +954,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handl=
+e *trans,
+>                 ret =3D btrfs_orphan_add(trans, BTRFS_I(inode));
+>                 if (ret) {
+>                         btrfs_add_delayed_iput(inode);
+> -                       goto out;
+> +                       goto out_put_group;
+>                 }
+>                 clear_nlink(inode);
+>                 /* One for the block groups ref */
+> @@ -977,13 +977,13 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
+dle *trans,
+>
+>         ret =3D btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
+>         if (ret < 0)
+> -               goto out;
+> +               goto out_put_group;
+>         if (ret > 0)
+>                 btrfs_release_path(path);
+>         if (ret =3D=3D 0) {
+>                 ret =3D btrfs_del_item(trans, tree_root, path);
+>                 if (ret)
+> -                       goto out;
+> +                       goto out_put_group;
+>                 btrfs_release_path(path);
+>         }
+>
+> @@ -1102,7 +1102,7 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
+dle *trans,
+>
+>         ret =3D remove_block_group_free_space(trans, block_group);
+>         if (ret)
+> -               goto out;
+> +               goto out_put_group;
+>
+>         btrfs_put_block_group(block_group);
+>         btrfs_put_block_group(block_group);
+> @@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
+dle *trans,
+>                 btrfs_delayed_refs_rsv_release(fs_info, 1);
+>         btrfs_free_path(path);
+>         return ret;
+> +out_put_group:
+> +       btrfs_put_block_group(block_group);
+> +       goto out;
 
+Instead of this double goto, which tends to be error prone and harder to fo=
+llow,
+I suggest placing a call to btrfs_put_block_group() right after the
+'out' label, with a comment
+above it saying something like "once for the lookup reference" and
+removing one of the btrfs_put_block_group()
+calls right after calling remove_block_group_free_space(), and leaving
+a comment above the other one saying "once for the block groups
+rbtree".
 
-No regressions (compared to build v5.6.5)
+Thanks.
 
-No fixes (compared to build v5.6.5)
+>  }
+>
+>  struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+> --
+> 2.7.4
+>
 
-
-Ran 32044 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-commands-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-sched-tests
-* v4l2-compliance
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* kvm-unit-tests
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* spectre-meltdown-checker-test
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
