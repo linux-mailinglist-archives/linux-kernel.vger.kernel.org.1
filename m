@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1AC1B14AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654591B1426
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 20:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgDTSfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 14:35:53 -0400
-Received: from gateway30.websitewelcome.com ([192.185.179.30]:18584 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726748AbgDTSfw (ORCPT
+        id S1726911AbgDTSQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 14:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgDTSQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:35:52 -0400
-X-Greylist: delayed 1340 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 14:35:51 EDT
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 2BA23FB19
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 13:11:14 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Qat0jHlUZ8vkBQat0j2vl3; Mon, 20 Apr 2020 13:11:14 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=QysfSEmfjvc2aofhQAcayweo9a6xq9UHNFO1SqeJISw=; b=VzbzgrbPvFtjG8RmKRtnuxCypc
-        JtNnxA7GMBCI7gIuZVcHGcHfm2EC2lYOqfW5ZU/cS6QsQRAeXSaVcLC7BnRbzDmdGbjFk48OAsxtF
-        EBLPmqHvtP9K95wBYmqaqhAvH66V+LQrAKS32So3CGEk9r8xh6xrei6Bmb1KFsAZgL0DAIoZErF9W
-        nSex/tpLFYU+XhEu0L5n31bQpZsMDqfXbtOF/TGM3zoxc17PKdECiTL0qPksm5LSR1aKbjuwP0b12
-        bSXqJ/KYnR1Ck7LjnvRgpGLmlr27237coBAZMCqhO98VVEB7erbHkm6qf4BbYxWxi0SAJd5bjqd8Q
-        0ccYIBIQ==;
-Received: from [201.166.169.58] (port=7841 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jQasz-0044lv-Mj; Mon, 20 Apr 2020 13:11:13 -0500
-Subject: Re: [PATCH 2/2][next] m68k: amiga: config: Mark expected switch
- fall-through
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1585264062.git.gustavo@embeddedor.com>
- <14ff577604d25243c8a897f851b436ba87ae87cb.1585264062.git.gustavo@embeddedor.com>
- <CAMuHMdW4f-sPPY9sOU-xdVJ-0zsix4wcMTxUz48GopqnWDVTAg@mail.gmail.com>
- <50f85dd2-8250-1ca8-e2dd-4bba93a62736@embeddedor.com>
- <CAMuHMdVaAV+bfEivzEpJh8SysVr7jziyBPknCUc1=DtOwu7ZrA@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <5cc16662-c4ef-496f-54df-3c5b65486895@embeddedor.com>
-Date:   Mon, 20 Apr 2020 13:15:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVaAV+bfEivzEpJh8SysVr7jziyBPknCUc1=DtOwu7ZrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.166.169.58
-X-Source-L: No
-X-Exim-ID: 1jQasz-0044lv-Mj
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.166.169.58]:7841
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        Mon, 20 Apr 2020 14:16:16 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9671FC061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:16:16 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y25so5335737pfn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 11:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=QUQCSO3sl8PGNrXa4jdtXmAY28M49Ft4G5H9JTodPcw=;
+        b=CYie8fSQkf91EabFDU6MKKRA6RXg/CIZ6raAEDtACsf+pAkhaGG3bA/B7ftMPTNAzv
+         PcogpFXonbLQ+YmmSUkglNSbsfn7wqDj82SDGr5L8FhFSAg0MYrfkfx9CStopUgtgm5q
+         3L/ERws+4oT7z6ZdWKWaWCMBSf8jT3UD1zJOpHfQzDqy4j9DQ2QkluudG3Vl6MAi1Cnc
+         GMciq0L9RcR+K3OlOGAp5F4E4W3lubJ0/CJtYOScGbaomeCpHasbIajOwgHvgt13m71K
+         l5K/vBMgIGr9lwThmMxps+a+zMnWb1rKMDbiFJPqMMvoUkgVfLGC/xMdRcGmyPWoYJTD
+         fsIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QUQCSO3sl8PGNrXa4jdtXmAY28M49Ft4G5H9JTodPcw=;
+        b=Y4uSMutqkaKWO0G/hmrJn4kdEyjJYbtxNOO8k5YM/UkiwIJDqlfk8gIxssdzYpVimo
+         LtrdJFWMnrUMnBCySjv3uArL5jiJZMSAgPIJyUM7ybCFWgfGHapkJjlKHUJhqf2aicCg
+         cjkt+FZLGExguQ35eGTSg1LKvmL0pWp+434/eHBrHSDBVhKl5iOj6caFIHTTzHhdLAjg
+         6YTtMpzA2kPRoI7JmNLAKSv13TLWIn0GWfRlslpbNzyc6DeaSjZD3ot0B8qG2xIOSPyE
+         znFqUmJMXoEJfhhKQ9jGkVfe6om+dJxBg9XLE9JawHo1hqmBSe+w1tA3K3faX9FL7vrj
+         GlZg==
+X-Gm-Message-State: AGi0PuYSQz0UDmFnFZ9EupVPhcDRx26wfdqG3VOOwOIftEMesye2mtZC
+        7VNfhRzKB/MNaYvnIoosSlvUvw==
+X-Google-Smtp-Source: APiQypKSr8NJ930Ww3r7NLKtsxj6P8B/4DFGcMVHASsZ+V6AMZEEIBGEr2AQ/j4RGvOMFYpgpdxfNg==
+X-Received: by 2002:a62:874e:: with SMTP id i75mr9560713pfe.248.1587406575986;
+        Mon, 20 Apr 2020 11:16:15 -0700 (PDT)
+Received: from nuc7.sifive.com (c-24-5-48-146.hsd1.ca.comcast.net. [24.5.48.146])
+        by smtp.gmail.com with ESMTPSA id t6sm150753pfh.98.2020.04.20.11.16.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 Apr 2020 11:16:14 -0700 (PDT)
+From:   Alan Mikhak <alan.mikhak@sifive.com>
+X-Google-Original-From: Alan Mikhak < alan.mikhak@sifive.com >
+To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        dan.j.williams@intel.com, vkoul@kernel.org, kishon@ti.com,
+        maz@kernel.org, paul.walmsley@sifive.com
+Cc:     Alan Mikhak <alan.mikhak@sifive.com>
+Subject: [PATCH] dmaengine: dw-edma: Check MSI descriptor before copying
+Date:   Mon, 20 Apr 2020 11:16:08 -0700
+Message-Id: <1587406568-26592-1-git-send-email-alan.mikhak@sifive.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Alan Mikhak <alan.mikhak@sifive.com>
 
+Modify dw_edma_irq_request() to check if a struct msi_desc entry exists
+before copying the contents of its struct msi_msg pointer.
 
-On 4/20/20 12:48, Geert Uytterhoeven wrote:
+Without this sanity check, __get_cached_msi_msg() crashes when invoked by
+dw_edma_irq_request() running on a Linux-based PCIe endpoint device. MSI
+interrupt are not received by PCIe endpoint devices. If irq_get_msi_desc()
+returns null, then there is no cached struct msi_msg to be copied.
 
->>
->> I wonder if you received the first patch of the series.
-> 
-> No I haven't, and lore also only has the cover latter and patch 2/2:
-> https://lore.kernel.org/linux-m68k/cover.1585264062.git.gustavo@embeddedor.com/
-> 
-> Can you please resend? Thanks!
-> 
+This patch depends on the following patch:
+[PATCH v2] dmaengine: dw-edma: Decouple dw-edma-core.c from struct pci_dev
+https://patchwork.kernel.org/patch/11491757/
 
-Done. :)
-https://lore.kernel.org/linux-m68k/20200420181401.GA32172@embeddedor/
+Signed-off-by: Alan Mikhak <alan.mikhak@sifive.com>
+---
+ drivers/dma/dw-edma/dw-edma-core.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-Thanks!
---
-Gustavo
+diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+index db401eb11322..a5d15f6ed5eb 100644
+--- a/drivers/dma/dw-edma/dw-edma-core.c
++++ b/drivers/dma/dw-edma/dw-edma-core.c
+@@ -773,6 +773,7 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+ 	u32 rd_mask = 1;
+ 	int i, err = 0;
+ 	u32 ch_cnt;
++	int irq;
+ 
+ 	ch_cnt = dw->wr_ch_cnt + dw->rd_ch_cnt;
+ 
+@@ -781,16 +782,16 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+ 
+ 	if (dw->nr_irqs == 1) {
+ 		/* Common IRQ shared among all channels */
+-		err = request_irq(dw->ops->irq_vector(dev, 0),
+-				  dw_edma_interrupt_common,
++		irq = dw->ops->irq_vector(dev, 0);
++		err = request_irq(irq, dw_edma_interrupt_common,
+ 				  IRQF_SHARED, dw->name, &dw->irq[0]);
+ 		if (err) {
+ 			dw->nr_irqs = 0;
+ 			return err;
+ 		}
+ 
+-		get_cached_msi_msg(dw->ops->irq_vector(dev, 0),
+-				   &dw->irq[0].msi);
++		if (irq_get_msi_desc(irq))
++			get_cached_msi_msg(irq, &dw->irq[0].msi);
+ 	} else {
+ 		/* Distribute IRQs equally among all channels */
+ 		int tmp = dw->nr_irqs;
+@@ -804,7 +805,8 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+ 		dw_edma_add_irq_mask(&rd_mask, *rd_alloc, dw->rd_ch_cnt);
+ 
+ 		for (i = 0; i < (*wr_alloc + *rd_alloc); i++) {
+-			err = request_irq(dw->ops->irq_vector(dev, i),
++			irq = dw->ops->irq_vector(dev, i);
++			err = request_irq(irq,
+ 					  i < *wr_alloc ?
+ 						dw_edma_interrupt_write :
+ 						dw_edma_interrupt_read,
+@@ -815,8 +817,8 @@ static int dw_edma_irq_request(struct dw_edma_chip *chip,
+ 				return err;
+ 			}
+ 
+-			get_cached_msi_msg(dw->ops->irq_vector(dev, i),
+-					   &dw->irq[i].msi);
++			if (irq_get_msi_desc(irq))
++				get_cached_msi_msg(irq, &dw->irq[i].msi);
+ 		}
+ 
+ 		dw->nr_irqs = i;
+-- 
+2.7.4
+
