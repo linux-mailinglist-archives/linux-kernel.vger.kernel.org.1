@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA361B0695
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6021B069B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 12:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgDTK2x convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Apr 2020 06:28:53 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16088 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725865AbgDTK2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 06:28:53 -0400
-IronPort-SDR: CENwxbK1p15MvzzwW5dGlkvuJbjZ00UQ6Usu0qap1q1hDSY1AV60SHo647FSwCPYUPEnDiNhpM
- 9MirdJQQAY2Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 03:28:53 -0700
-IronPort-SDR: nBw9rc0cJTSj1Prd6W+PnY6lodt0rR2nfxouUPx6OV+8KPmiFVeHwvzUZutezUrxz5yGCZ9ICH
- +B7+OdhoT1zQ==
-X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; 
-   d="scan'208";a="429073035"
-Received: from iastakh-mobl.ccr.corp.intel.com (HELO localhost) ([10.252.63.229])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 03:28:49 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org
-Cc:     Adam Jackson <ajax@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Lee Shawn C <shawn.c.lee@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915/dpcd_bl: Unbreak enable_dpcd_backlight modparam
-In-Reply-To: <20200413214407.1851002-1-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200413214407.1851002-1-lyude@redhat.com>
-Date:   Mon, 20 Apr 2020 13:28:46 +0300
-Message-ID: <87sggy1me9.fsf@intel.com>
+        id S1726361AbgDTK3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 06:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725865AbgDTK3E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 06:29:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B85CC061A0C;
+        Mon, 20 Apr 2020 03:29:04 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9AA0B2A0057;
+        Mon, 20 Apr 2020 11:29:02 +0100 (BST)
+Date:   Mon, 20 Apr 2020 12:28:59 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        masonccyang@mxic.com.tw, piotrs@cadence.com,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        "hauke.mehrtens" <hauke.mehrtens@intel.com>, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200420122859.2a210268@collabora.com>
+In-Reply-To: <CAHp75Vfp_WYNR8kHVsSVumGzuVbGEGpAjfXVvJAV7t6zXXY+HA@mail.gmail.com>
+References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200418105533.477ce529@collabora.com>
+        <20200419222040.GJ185537@smile.fi.intel.com>
+        <20200420111754.5863324b@collabora.com>
+        <CAHp75VeOH+DC362tsEo13gr9fJpeCHXok=7O19B3njbxCOzd2A@mail.gmail.com>
+        <20200420115256.3a0ff647@collabora.com>
+        <CAHp75Vfp_WYNR8kHVsSVumGzuVbGEGpAjfXVvJAV7t6zXXY+HA@mail.gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Apr 2020, Lyude Paul <lyude@redhat.com> wrote:
-> Looks like I accidentally made it so you couldn't force DPCD backlight
-> support on, whoops. Fix that.
+On Mon, 20 Apr 2020 13:14:42 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Thanks, pushed.
+> On Mon, Apr 20, 2020 at 12:53 PM Boris Brezillon
+> <boris.brezillon@collabora.com> wrote:
+> > On Mon, 20 Apr 2020 12:44:51 +0300
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> >  
+> > > On Mon, Apr 20, 2020 at 12:21 PM Boris Brezillon
+> > > <boris.brezillon@collabora.com> wrote:  
+> > > > On Mon, 20 Apr 2020 01:20:40 +0300
+> > > > Andy Shevchenko <andriy.shevchenko@intel.com> wrote:  
+> > > > > On Sat, Apr 18, 2020 at 10:55:33AM +0200, Boris Brezillon wrote:  
+> > > > > > On Fri, 17 Apr 2020 16:21:47 +0800
+> > > > > > "Ramuthevar,Vadivel MuruganX"
+> > > > > > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> > > > > >  
+> > > > > > > From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>  
+> > > > >  
+> > > > > > > +static const struct of_device_id lgm_nand_match[] = {
+> > > > > > > + { .compatible = "intel,lgm-nand", },
+> > > > > > > + {}
+> > > > > > > +};
+> > > > > > > +MODULE_DEVICE_TABLE(of, lgm_nand_match);  
+> > > > > >
+> > > > > > You probably have a missing "depends on OF" in your Kconfig.  
+> > > > >
+> > > > > Since it's using device property API, dependency is not needed.
+> > > > >  
+> > > >
+> > > > There's no compile-time dependency, but this driver will be pretty
+> > > > useless if all its users have the NAND controller node defined in their
+> > > > DT and CONFIG_OF is not enabled.  
+> > >
+> > > No, it's not.
+> > > See [1] for the details how ACPI may utilize this table.
+> > >
+> > > [1]: https://www.kernel.org/doc/html/latest/firmware-guide/acpi/enumeration.html#device-tree-namespace-link-device-id  
+> >
+> > Except the NAND framework does use the OF lib when parsing common DT
+> > properties (like nand-ecc-mode, etc), so it does depend on OF if you
+> > want those props to be parsed, which, according to the DT binding patch,
+> > is the case.  
+> 
+> I see, so, NAND framework can be transformed at some point. In any
+> case, from driver perspective it's OF independent.
+> 
 
-BR,
-Jani.
-
-
-
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 17f5d57915be ("drm/i915: Force DPCD backlight mode on X1 Extreme 2nd Gen 4K AMOLED panel")
-> Cc: Adam Jackson <ajax@redhat.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: "Ville Syrjälä" <ville.syrjala@linux.intel.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 4b916468540f..0722540d64ad 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -358,6 +358,7 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
->  	 */
->  	if (i915->vbt.backlight.type !=
->  	    INTEL_BACKLIGHT_VESA_EDP_AUX_INTERFACE &&
-> +	    i915_modparams.enable_dpcd_backlight != 1 &&
->  	    !drm_dp_has_quirk(&intel_dp->desc, intel_dp->edid_quirks,
->  			      DP_QUIRK_FORCE_DPCD_BACKLIGHT)) {
->  		drm_info(&i915->drm,
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Well, it uses it only if the driver passes an OF node which this driver
+does (see the nand_set_flash_node() call), so no, it's really a driver
+dependency.
