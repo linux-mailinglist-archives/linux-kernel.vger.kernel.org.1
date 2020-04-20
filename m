@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F961B0106
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01C81B010D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 07:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgDTFhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 01:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgDTFhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 01:37:18 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CF3C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:37:18 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id w20so9619484iob.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Apr 2020 22:37:18 -0700 (PDT)
+        id S1726200AbgDTFiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 01:38:23 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:52511 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726006AbgDTFiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:38:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=9Tw62Y4p0nzfrBhS9UMCOEZX7jz4ocmUX4ipr3yFe7w=;
-        b=N6aPhhLt/HBO8tcdYPxkRddKXhbCChxoDVbn19qZxsM/nhF05YBmmkGUEaKF9VPw55
-         IO164WYn+6eA3DuEPr3/PDU4FegWxQaXh3rLu1mDROS7WC9dv3MrVsNyDNsXqR8d3Ixg
-         VVkfOUP8Ptwc7IoDka8atMuvBfvJsKmKm5SAFESLQ/o6ywZ69xGXMZMGBXputqfLs4n5
-         IuC6MvWIoOEJOkLillTwT9yz2ASQKxik2gh8YQlEeZTuyy3Vbk/qMyN/DsnFNxmNAuwT
-         bs6W5NQ+ePA4AC4p3XgU9R+ec039Zu2SwUlIoB1UbP+vhfVxxa1OU2rS2932LiR632Ek
-         TCFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=9Tw62Y4p0nzfrBhS9UMCOEZX7jz4ocmUX4ipr3yFe7w=;
-        b=RXL7/BBGIpkVaT8MAv/OKk6WflrWB1E3qDAlICNXpkLVB8EEtPji14nE6TTeEScKE1
-         avrbBOoNZH671Xd1OrMiqHw3kSX/buKOSP3plG3XA83JFexYbo/hsfz1v7x4d10LiXTE
-         BE+XM2dx3M1BEUMwEZdJ0wAkDy8JUgoW1IZMOIkP7PjHbDSemuUiRlygTCP5bycmIxth
-         feTcmmke6WHra1MYrWUW+kPIoadDjopESggEyz5Sb7/O0oX3gHvghGmSzUSfovjL8M2x
-         j5d0hcPCPHpPOdUaZDRW6h5nUmB++MwAUy2ybSwF5bpvjCZVyySdqRn7TMO/ckuwdMKH
-         hGWw==
-X-Gm-Message-State: AGi0PuZCRm+Iaoqew1Hb57ibBxYXUKC+28389LWPybJDYrv0nP/ARHiw
-        7q+A78SXWr0lW6tF9PXO5h+ejMOC4C+7DTXJnJg=
-X-Google-Smtp-Source: APiQypK4+4QjCFCymLkzLqGdjy6lnx0SK3FaqbbG3BHjq+3ztJLhTiiJO3hN+lq1ZSSngVkjNBbhO5dRIpddg4F0DjI=
-X-Received: by 2002:a02:40c9:: with SMTP id n192mr14071875jaa.91.1587361037611;
- Sun, 19 Apr 2020 22:37:17 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ac0:a58b:0:0:0:0:0 with HTTP; Sun, 19 Apr 2020 22:37:16
- -0700 (PDT)
-In-Reply-To: <CAOzgRdZyueBhX+jzpgSgdyeto830O444SwmxaLEAQzSsEaGczg@mail.gmail.com>
-References: <CAOzgRdbWsKY7mXgiTx3um_gdJvgPN1O2p1vxmWv9eApQAy9UzQ@mail.gmail.com>
- <CAOzgRdYkJMiQM9M-UHv5Z-6CLzaV0P8YTK5Ft-CmT5-JqCnYSA@mail.gmail.com>
- <20200409073807.GA2483@worktop.programming.kicks-ass.net> <CAOzgRdZyueBhX+jzpgSgdyeto830O444SwmxaLEAQzSsEaGczg@mail.gmail.com>
-From:   youling 257 <youling257@gmail.com>
-Date:   Mon, 20 Apr 2020 13:37:16 +0800
-Message-ID: <CAOzgRdaoGB0HUU8QEQAUwjPTMzw=9W51WnoeZ-hX67xCRey5pQ@mail.gmail.com>
-Subject: Re: Merge branch 'core-objtool-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     viro@zeniv.linux.org.uk, jpoimboe@redhat.com,
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=kUCGUPR2szUSoGME4rVvT/WsGE7O02byhpRwaI4bLIc=; b=w
+        Qh9JKDFyEEhmQgJvt5V8IbYGb7H3dmrUJqGNKaDZ6x/DSNc6+GpYwWY99MBsmmL2
+        u8XmJ4P4qBbeeOkgHaH6f1kAqp/Rq3ow0psY9cY849WS7PfuQ1CwREXNhKVUzESk
+        cQ+VxnESOallUcCKVMgiK64Rhv2d/7qUjOCcOcfNrs=
+Received: from localhost.localdomain (unknown [61.129.42.58])
+        by app1 (Coremail) with SMTP id XAUFCgCHH3cyNZ1e8HEWAA--.213S3;
+        Mon, 20 Apr 2020 13:37:55 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] batman-adv: Fix refcnt leak in batadv_v_ogm_process
+Date:   Mon, 20 Apr 2020 13:37:20 +0800
+Message-Id: <1587361040-83099-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XAUFCgCHH3cyNZ1e8HEWAA--.213S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4UWry5uFW5Kry8tr1fWFg_yoW8Xr48pr
+        4rKryYkrs5K3WUWa9Yy3ySyF48AFs7Xr17GayYyF15ArZFq3sak3yFgryY9Fy8ZFZak3yk
+        XF1vgFW3ZFyDGFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUXTmhUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux 5.7-rc2, Revert "objtool: Optimize find_rela_by_dest_range()"
-Revert "objtool: Optimize read_sections()", can build 64bit kernel on
-32bit userspace.
+batadv_v_ogm_process() invokes batadv_hardif_neigh_get(), which returns
+a reference of the neighbor object to "hardif_neigh" with increased
+refcount.
+
+When batadv_v_ogm_process() returns, "hardif_neigh" becomes invalid, so
+the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling paths of
+batadv_v_ogm_process(). When batadv_v_ogm_orig_get() fails to get the
+orig node and returns NULL, the refcnt increased by
+batadv_hardif_neigh_get() is not decreased, causing a refcnt leak.
+
+Fix this issue by jumping to "out" label when batadv_v_ogm_orig_get()
+fails to get the orig node.
+
+Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ net/batman-adv/bat_v_ogm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
+index 969466218999..80b87b1f4e3a 100644
+--- a/net/batman-adv/bat_v_ogm.c
++++ b/net/batman-adv/bat_v_ogm.c
+@@ -893,7 +893,7 @@ static void batadv_v_ogm_process(const struct sk_buff *skb, int ogm_offset,
+ 
+ 	orig_node = batadv_v_ogm_orig_get(bat_priv, ogm_packet->orig);
+ 	if (!orig_node)
+-		return;
++		goto out;
+ 
+ 	neigh_node = batadv_neigh_node_get_or_create(orig_node, if_incoming,
+ 						     ethhdr->h_source);
+-- 
+2.7.4
+
