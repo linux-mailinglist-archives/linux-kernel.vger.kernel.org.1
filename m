@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308001B0AF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A4E1B0A69
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgDTMwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
+        id S1729158AbgDTMry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:47:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729128AbgDTMrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:47:43 -0400
+        id S1729135AbgDTMrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:47:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 699F4206DD;
-        Mon, 20 Apr 2020 12:47:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D74A22072B;
+        Mon, 20 Apr 2020 12:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386862;
-        bh=Hbe7QW9W/V7h7WcXvDZaceOhOyxayfXkhvMBlyiy8+s=;
+        s=default; t=1587386865;
+        bh=ggUrhodgSWBeiPmP6q/6qSOCtdu6LrCo7APzdCAwEWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u17q0UO9Oend+vW0ifYNZEnhAOGxYhg8X2pYwcVLmDdeEYBkN16btr1R4NPhIb4s0
-         fLijhm+bIhKVTOURLaMaTKNzs3GpcEbNbm7Cci6nRRHJhYz0RfeHzHIALYyt4vI7Rk
-         RksveEwPZ6PJHJTHYsoxAdI9q0OYuitOpQ9DWnuI=
+        b=DxWDksbxDm++YJrsEddV6HYmIdXkOIiWps+BxX5WhANVAufUJgtbPSiSi6Y5LQRKo
+         biDEoJ8qbTJjBv4oUxa3C3uJIX5MmrI+Kh8lh5ygud48Fm4VFyOvdKpd/QkzeXBy/r
+         HN+qkNuQMxxItKQ0Jpae5q+DmEorG8ujDa3glhNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rahul Kundu <rahul.kundu@chelsio.com>,
+        stable@vger.kernel.org, Matt Coleman <mcoleman@datto.com>,
+        Rahul Kundu <rahul.kundu@chelsio.com>,
         Maurizio Lombardi <mlombard@redhat.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 58/60] scsi: target: remove boilerplate code
-Date:   Mon, 20 Apr 2020 14:39:36 +0200
-Message-Id: <20200420121515.859192997@linuxfoundation.org>
+Subject: [PATCH 5.4 59/60] scsi: target: fix hang when multiple threads try to destroy the same iscsi session
+Date:   Mon, 20 Apr 2020 14:39:37 +0200
+Message-Id: <20200420121516.096028271@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
 References: <20200420121500.490651540@linuxfoundation.org>
@@ -47,97 +48,253 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit e49a7d994379278d3353d7ffc7994672752fb0ad ]
+[ Upstream commit 57c46e9f33da530a2485fa01aa27b6d18c28c796 ]
 
-iscsit_free_session() is equivalent to iscsit_stop_session() followed by a
-call to iscsit_close_session().
+A number of hangs have been reported against the target driver; they are
+due to the fact that multiple threads may try to destroy the iscsi session
+at the same time. This may be reproduced for example when a "targetcli
+iscsi/iqn.../tpg1 disable" command is executed while a logout operation is
+underway.
 
-Link: https://lore.kernel.org/r/20200313170656.9716-2-mlombard@redhat.com
+When this happens, two or more threads may end up sleeping and waiting for
+iscsit_close_connection() to execute "complete(session_wait_comp)".  Only
+one of the threads will wake up and proceed to destroy the session
+structure, the remaining threads will hang forever.
+
+Note that if the blocked threads are somehow forced to wake up with
+complete_all(), they will try to free the same iscsi session structure
+destroyed by the first thread, causing double frees, memory corruptions
+etc...
+
+With this patch, the threads that want to destroy the iscsi session will
+increase the session refcount and will set the "session_close" flag to 1;
+then they wait for the driver to close the remaining active connections.
+When the last connection is closed, iscsit_close_connection() will wake up
+all the threads and will wait for the session's refcount to reach zero;
+when this happens, iscsit_close_connection() will destroy the session
+structure because no one is referencing it anymore.
+
+ INFO: task targetcli:5971 blocked for more than 120 seconds.
+       Tainted: P           OE    4.15.0-72-generic #81~16.04.1
+ "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+ targetcli       D    0  5971      1 0x00000080
+ Call Trace:
+  __schedule+0x3d6/0x8b0
+  ? vprintk_func+0x44/0xe0
+  schedule+0x36/0x80
+  schedule_timeout+0x1db/0x370
+  ? __dynamic_pr_debug+0x8a/0xb0
+  wait_for_completion+0xb4/0x140
+  ? wake_up_q+0x70/0x70
+  iscsit_free_session+0x13d/0x1a0 [iscsi_target_mod]
+  iscsit_release_sessions_for_tpg+0x16b/0x1e0 [iscsi_target_mod]
+  iscsit_tpg_disable_portal_group+0xca/0x1c0 [iscsi_target_mod]
+  lio_target_tpg_enable_store+0x66/0xe0 [iscsi_target_mod]
+  configfs_write_file+0xb9/0x120
+  __vfs_write+0x1b/0x40
+  vfs_write+0xb8/0x1b0
+  SyS_write+0x5c/0xe0
+  do_syscall_64+0x73/0x130
+  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+
+Link: https://lore.kernel.org/r/20200313170656.9716-3-mlombard@redhat.com
+Reported-by: Matt Coleman <mcoleman@datto.com>
+Tested-by: Matt Coleman <mcoleman@datto.com>
 Tested-by: Rahul Kundu <rahul.kundu@chelsio.com>
 Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/iscsi/iscsi_target.c | 46 ++---------------------------
- drivers/target/iscsi/iscsi_target.h |  1 -
- 2 files changed, 2 insertions(+), 45 deletions(-)
+ drivers/target/iscsi/iscsi_target.c          | 35 ++++++++++++--------
+ drivers/target/iscsi/iscsi_target_configfs.c |  5 ++-
+ drivers/target/iscsi/iscsi_target_login.c    |  5 +--
+ include/target/iscsi/iscsi_target_core.h     |  2 +-
+ 4 files changed, 30 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-index d19e051f2bc23..dda735cfb1568 100644
+index dda735cfb1568..d1ce94c608a9f 100644
 --- a/drivers/target/iscsi/iscsi_target.c
 +++ b/drivers/target/iscsi/iscsi_target.c
-@@ -4569,49 +4569,6 @@ void iscsit_fail_session(struct iscsi_session *sess)
- 	sess->session_state = TARG_SESS_STATE_FAILED;
+@@ -4303,30 +4303,37 @@ int iscsit_close_connection(
+ 	if (!atomic_read(&sess->session_reinstatement) &&
+ 	     atomic_read(&sess->session_fall_back_to_erl0)) {
+ 		spin_unlock_bh(&sess->conn_lock);
++		complete_all(&sess->session_wait_comp);
+ 		iscsit_close_session(sess);
+ 
+ 		return 0;
+ 	} else if (atomic_read(&sess->session_logout)) {
+ 		pr_debug("Moving to TARG_SESS_STATE_FREE.\n");
+ 		sess->session_state = TARG_SESS_STATE_FREE;
+-		spin_unlock_bh(&sess->conn_lock);
+ 
+-		if (atomic_read(&sess->sleep_on_sess_wait_comp))
+-			complete(&sess->session_wait_comp);
++		if (atomic_read(&sess->session_close)) {
++			spin_unlock_bh(&sess->conn_lock);
++			complete_all(&sess->session_wait_comp);
++			iscsit_close_session(sess);
++		} else {
++			spin_unlock_bh(&sess->conn_lock);
++		}
+ 
+ 		return 0;
+ 	} else {
+ 		pr_debug("Moving to TARG_SESS_STATE_FAILED.\n");
+ 		sess->session_state = TARG_SESS_STATE_FAILED;
+ 
+-		if (!atomic_read(&sess->session_continuation)) {
+-			spin_unlock_bh(&sess->conn_lock);
++		if (!atomic_read(&sess->session_continuation))
+ 			iscsit_start_time2retain_handler(sess);
+-		} else
+-			spin_unlock_bh(&sess->conn_lock);
+ 
+-		if (atomic_read(&sess->sleep_on_sess_wait_comp))
+-			complete(&sess->session_wait_comp);
++		if (atomic_read(&sess->session_close)) {
++			spin_unlock_bh(&sess->conn_lock);
++			complete_all(&sess->session_wait_comp);
++			iscsit_close_session(sess);
++		} else {
++			spin_unlock_bh(&sess->conn_lock);
++		}
+ 
+ 		return 0;
+ 	}
+@@ -4432,9 +4439,9 @@ static void iscsit_logout_post_handler_closesession(
+ 	complete(&conn->conn_logout_comp);
+ 
+ 	iscsit_dec_conn_usage_count(conn);
++	atomic_set(&sess->session_close, 1);
+ 	iscsit_stop_session(sess, sleep, sleep);
+ 	iscsit_dec_session_usage_count(sess);
+-	iscsit_close_session(sess);
  }
  
--int iscsit_free_session(struct iscsi_session *sess)
--{
--	u16 conn_count = atomic_read(&sess->nconn);
--	struct iscsi_conn *conn, *conn_tmp = NULL;
--	int is_last;
--
--	spin_lock_bh(&sess->conn_lock);
--	atomic_set(&sess->sleep_on_sess_wait_comp, 1);
--
--	list_for_each_entry_safe(conn, conn_tmp, &sess->sess_conn_list,
--			conn_list) {
--		if (conn_count == 0)
--			break;
--
--		if (list_is_last(&conn->conn_list, &sess->sess_conn_list)) {
--			is_last = 1;
--		} else {
--			iscsit_inc_conn_usage_count(conn_tmp);
--			is_last = 0;
--		}
--		iscsit_inc_conn_usage_count(conn);
--
--		spin_unlock_bh(&sess->conn_lock);
--		iscsit_cause_connection_reinstatement(conn, 1);
--		spin_lock_bh(&sess->conn_lock);
--
--		iscsit_dec_conn_usage_count(conn);
--		if (is_last == 0)
--			iscsit_dec_conn_usage_count(conn_tmp);
--
--		conn_count--;
--	}
--
--	if (atomic_read(&sess->nconn)) {
--		spin_unlock_bh(&sess->conn_lock);
--		wait_for_completion(&sess->session_wait_comp);
--	} else
--		spin_unlock_bh(&sess->conn_lock);
--
--	iscsit_close_session(sess);
--	return 0;
--}
--
- void iscsit_stop_session(
- 	struct iscsi_session *sess,
- 	int session_sleep,
-@@ -4696,7 +4653,8 @@ int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *tpg, int force)
+ static void iscsit_logout_post_handler_samecid(
+@@ -4579,8 +4586,6 @@ void iscsit_stop_session(
+ 	int is_last;
+ 
+ 	spin_lock_bh(&sess->conn_lock);
+-	if (session_sleep)
+-		atomic_set(&sess->sleep_on_sess_wait_comp, 1);
+ 
+ 	if (connection_sleep) {
+ 		list_for_each_entry_safe(conn, conn_tmp, &sess->sess_conn_list,
+@@ -4638,12 +4643,15 @@ int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *tpg, int force)
+ 		spin_lock(&sess->conn_lock);
+ 		if (atomic_read(&sess->session_fall_back_to_erl0) ||
+ 		    atomic_read(&sess->session_logout) ||
++		    atomic_read(&sess->session_close) ||
+ 		    (sess->time2retain_timer_flags & ISCSI_TF_EXPIRED)) {
+ 			spin_unlock(&sess->conn_lock);
+ 			continue;
+ 		}
++		iscsit_inc_session_usage_count(sess);
+ 		atomic_set(&sess->session_reinstatement, 1);
+ 		atomic_set(&sess->session_fall_back_to_erl0, 1);
++		atomic_set(&sess->session_close, 1);
+ 		spin_unlock(&sess->conn_lock);
+ 
+ 		list_move_tail(&se_sess->sess_list, &free_list);
+@@ -4653,8 +4661,9 @@ int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *tpg, int force)
  	list_for_each_entry_safe(se_sess, se_sess_tmp, &free_list, sess_list) {
  		sess = (struct iscsi_session *)se_sess->fabric_sess_ptr;
  
--		iscsit_free_session(sess);
-+		iscsit_stop_session(sess, 1, 1);
-+		iscsit_close_session(sess);
++		list_del_init(&se_sess->sess_list);
+ 		iscsit_stop_session(sess, 1, 1);
+-		iscsit_close_session(sess);
++		iscsit_dec_session_usage_count(sess);
  		session_count++;
  	}
  
-diff --git a/drivers/target/iscsi/iscsi_target.h b/drivers/target/iscsi/iscsi_target.h
-index c95f56a3ce31b..7409ce2a66078 100644
---- a/drivers/target/iscsi/iscsi_target.h
-+++ b/drivers/target/iscsi/iscsi_target.h
-@@ -43,7 +43,6 @@ extern int iscsi_target_rx_thread(void *);
- extern int iscsit_close_connection(struct iscsi_conn *);
- extern int iscsit_close_session(struct iscsi_session *);
- extern void iscsit_fail_session(struct iscsi_session *);
--extern int iscsit_free_session(struct iscsi_session *);
- extern void iscsit_stop_session(struct iscsi_session *, int, int);
- extern int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *, int);
+diff --git a/drivers/target/iscsi/iscsi_target_configfs.c b/drivers/target/iscsi/iscsi_target_configfs.c
+index 42b369fc415e0..0fa1d57b26fa8 100644
+--- a/drivers/target/iscsi/iscsi_target_configfs.c
++++ b/drivers/target/iscsi/iscsi_target_configfs.c
+@@ -1476,20 +1476,23 @@ static void lio_tpg_close_session(struct se_session *se_sess)
+ 	spin_lock(&sess->conn_lock);
+ 	if (atomic_read(&sess->session_fall_back_to_erl0) ||
+ 	    atomic_read(&sess->session_logout) ||
++	    atomic_read(&sess->session_close) ||
+ 	    (sess->time2retain_timer_flags & ISCSI_TF_EXPIRED)) {
+ 		spin_unlock(&sess->conn_lock);
+ 		spin_unlock_bh(&se_tpg->session_lock);
+ 		return;
+ 	}
++	iscsit_inc_session_usage_count(sess);
+ 	atomic_set(&sess->session_reinstatement, 1);
+ 	atomic_set(&sess->session_fall_back_to_erl0, 1);
++	atomic_set(&sess->session_close, 1);
+ 	spin_unlock(&sess->conn_lock);
  
+ 	iscsit_stop_time2retain_timer(sess);
+ 	spin_unlock_bh(&se_tpg->session_lock);
+ 
+ 	iscsit_stop_session(sess, 1, 1);
+-	iscsit_close_session(sess);
++	iscsit_dec_session_usage_count(sess);
+ }
+ 
+ static u32 lio_tpg_get_inst_index(struct se_portal_group *se_tpg)
+diff --git a/drivers/target/iscsi/iscsi_target_login.c b/drivers/target/iscsi/iscsi_target_login.c
+index f53330813207f..731ee67fe914b 100644
+--- a/drivers/target/iscsi/iscsi_target_login.c
++++ b/drivers/target/iscsi/iscsi_target_login.c
+@@ -156,6 +156,7 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
+ 		spin_lock(&sess_p->conn_lock);
+ 		if (atomic_read(&sess_p->session_fall_back_to_erl0) ||
+ 		    atomic_read(&sess_p->session_logout) ||
++		    atomic_read(&sess_p->session_close) ||
+ 		    (sess_p->time2retain_timer_flags & ISCSI_TF_EXPIRED)) {
+ 			spin_unlock(&sess_p->conn_lock);
+ 			continue;
+@@ -166,6 +167,7 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
+ 		   (sess_p->sess_ops->SessionType == sessiontype))) {
+ 			atomic_set(&sess_p->session_reinstatement, 1);
+ 			atomic_set(&sess_p->session_fall_back_to_erl0, 1);
++			atomic_set(&sess_p->session_close, 1);
+ 			spin_unlock(&sess_p->conn_lock);
+ 			iscsit_inc_session_usage_count(sess_p);
+ 			iscsit_stop_time2retain_timer(sess_p);
+@@ -190,7 +192,6 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
+ 	if (sess->session_state == TARG_SESS_STATE_FAILED) {
+ 		spin_unlock_bh(&sess->conn_lock);
+ 		iscsit_dec_session_usage_count(sess);
+-		iscsit_close_session(sess);
+ 		return 0;
+ 	}
+ 	spin_unlock_bh(&sess->conn_lock);
+@@ -198,7 +199,6 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
+ 	iscsit_stop_session(sess, 1, 1);
+ 	iscsit_dec_session_usage_count(sess);
+ 
+-	iscsit_close_session(sess);
+ 	return 0;
+ }
+ 
+@@ -486,6 +486,7 @@ static int iscsi_login_non_zero_tsih_s2(
+ 		sess_p = (struct iscsi_session *)se_sess->fabric_sess_ptr;
+ 		if (atomic_read(&sess_p->session_fall_back_to_erl0) ||
+ 		    atomic_read(&sess_p->session_logout) ||
++		    atomic_read(&sess_p->session_close) ||
+ 		   (sess_p->time2retain_timer_flags & ISCSI_TF_EXPIRED))
+ 			continue;
+ 		if (!memcmp(sess_p->isid, pdu->isid, 6) &&
+diff --git a/include/target/iscsi/iscsi_target_core.h b/include/target/iscsi/iscsi_target_core.h
+index a49d37140a644..591cd9e4692c1 100644
+--- a/include/target/iscsi/iscsi_target_core.h
++++ b/include/target/iscsi/iscsi_target_core.h
+@@ -676,7 +676,7 @@ struct iscsi_session {
+ 	atomic_t		session_logout;
+ 	atomic_t		session_reinstatement;
+ 	atomic_t		session_stop_active;
+-	atomic_t		sleep_on_sess_wait_comp;
++	atomic_t		session_close;
+ 	/* connection list */
+ 	struct list_head	sess_conn_list;
+ 	struct list_head	cr_active_list;
 -- 
 2.20.1
 
