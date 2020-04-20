@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36811B0CCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7381B0CD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728240AbgDTNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        id S1728262AbgDTNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:37:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgDTNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:37:08 -0400
+        id S1725550AbgDTNhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 09:37:15 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 834CE2070B;
-        Mon, 20 Apr 2020 13:37:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC4CA20735;
+        Mon, 20 Apr 2020 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587389828;
-        bh=8pBXPljPGGgD7G9G7WPPoDba5tlB3IeSIJiJ8A4QQrc=;
+        s=default; t=1587389835;
+        bh=LabIAdcjRXkFzanlO5dwkADJ/hSPssTCX7vloN7yEXM=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=fQryNMJoGFgeXErMNgMY3bHlPoXglQjc2CEsWr7H1VQ2pmV4VpLKGwhw4nrPZ68Iq
-         vRM4k1TxElw7ope8fFA4M+irqxoIQLXv44ARYr9OK6XW9cCZv9ORk/e08KpQHWjVqE
-         XmkCMEiNWCjSdU8GBc9tX+W+FA7VCAPoHv1Y2d2A=
-Date:   Mon, 20 Apr 2020 14:37:05 +0100
+        b=iM1yKWrCDAx0nbJXQwLmEZfNlQFjZX7GQvb2CK2OLYBlINsvcNS34icauslzLlciW
+         DsUmahSAchoUj66nhcnfnY9RB74I8l1SsDSgdmuUnx2syEbAj0IxSEmXBr/SAtAEak
+         E7XF2p1uniIGZMiKKiNRrkQ925kj6RtAy3Qcb/rw=
+Date:   Mon, 20 Apr 2020 14:37:12 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Blankertz <matthias.blankertz@cetitec.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
-References: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
-Subject: Re: [PATCH 0/2] ASoC: rsnd: multi-SSI setup fixes
-Message-Id: <158738981359.28730.2521567380411409191.b4-ty@kernel.org>
+To:     pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+        ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com,
+        amadeuszx.slawinski@linux.intel.com, perex@perex.cz,
+        Jason Yan <yanaijie@huawei.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200420042858.19298-1-yanaijie@huawei.com>
+References: <20200420042858.19298-1-yanaijie@huawei.com>
+Subject: Re: [PATCH] ASoC: topology: remove unneeded semicolon
+Message-Id: <158738983288.28866.14153649784300796683.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 17:30:15 +0200, Matthias Blankertz wrote:
-> Fix rsnd_dai_call() operations being performed twice for the master SSI
-> in multi-SSI setups, and fix the rsnd_ssi_stop operation for multi-SSI
-> setups.
-> The only visible effect of these issues was some "status check failed"
-> spam when the rsnd_ssi_stop was called, but overall the code is cleaner
-> now, and some questionable writes to the SSICR register which did not
-> lead to any observable misbehaviour but were contrary to the datasheet
-> are fixed.
+On Mon, 20 Apr 2020 12:28:58 +0800, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> sound/soc/soc-topology.c:2344:2-3: Unneeded semicolon
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  sound/soc/soc-topology.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > [...]
 
 Applied to
 
-	broonie/sound.git for-5.7
+	broonie/sound.git for-5.8
 
 Thanks!
 
-[1/2] ASoC: rsnd: Don't treat master SSI in multi SSI setup as parent
-      commit: 0c258657ddfe81b4fc0183378d800c97ba0b7cdd
-[2/2] ASoC: rsnd: Fix "status check failed" spam for multi-SSI
-      commit: 54cb6221688660670a2e430892d7f4e6370263b8
+[1/1] ASoC: topology: Remove unneeded semicolon
+      commit: 980f91778a2f4dcca43d16b7a83feda8df5c96e7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
