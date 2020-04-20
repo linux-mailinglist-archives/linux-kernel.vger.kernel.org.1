@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C7B1B0E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979A61B0E65
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbgDTO1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:27:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726805AbgDTO1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:27:50 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65B4120B1F;
-        Mon, 20 Apr 2020 14:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587392870;
-        bh=bPab1cXXjTKCGuVPa8Wpl3AqXztqKcJ3d16mm/JZp5o=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=kyEso5E+3LJnfxMS4uFChrckuUkcqy5XEwf6azX4hEDUzA0EXVht9utTshsBId9hn
-         xdkC3feXceOdrz4N3WDbt3dvFL0GcBSMsofdSX/4/kkPdgek9rDQ84kmgDWDZAyC/v
-         j4tOxeX76NyXMALvzpEONuAPOlr24/Jr0jkg3VL8=
-Date:   Mon, 20 Apr 2020 15:27:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>, tiwai@suse.com,
-        lgirdwood@gmail.com, geert@linux-m68k.org, perex@perex.cz
-Cc:     ckeepax@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200420125343.20920-1-yuehaibing@huawei.com>
-References: <20200418090853.30340-1-yuehaibing@huawei.com> <20200420125343.20920-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH] ASoC: wm89xx: Add missing dependency
-Message-Id: <158739283776.7647.10304654124585055590.b4-ty@kernel.org>
+        id S1729588AbgDTOaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729002AbgDTOai (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:30:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1784BC061A0C;
+        Mon, 20 Apr 2020 07:30:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x25so11305677wmc.0;
+        Mon, 20 Apr 2020 07:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dI1Gh5Ia/IrSE8braqcvjE9iwr/Xeiid7dJ9xFJyCNc=;
+        b=s0y6D57U6WglS20eFoAv4FmLmev5Pg9B16Yk09l/PNX24/97t7ckTkGfYzvlkZw0on
+         YWCUPILmyo+8FpjJxBZzcc+NUZTnFw1aimtyVysHJ+DYOSk/LPP6rsCCD8+bzuAxqk8Z
+         X13V6yNBTptXhlrFhUxIRYyVzRhogVBjBlcHN2AcaRrWxxGAc0WrJ+CO/ACe7Aa9GlX7
+         Fo24zIIdl4k2938F/y1TY9MhT9hU+6VX/MVUxNsby+dE8LyFzKRWDssqYGqDWoOyj1jV
+         SuYn/vAmMHeCtwC5cxI5E7Hz5Lr6TAj3Aj79HmNZpS4fyJOQzDbTef0sKK3lPDhRKPh+
+         T8SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dI1Gh5Ia/IrSE8braqcvjE9iwr/Xeiid7dJ9xFJyCNc=;
+        b=PmRQPW6uXuYCdVTjtpNTBcQr7+o8rH/7v9lmtHJeI821rIg2yP7Mhna6pU20HquPZH
+         fNKBPD4+CRLoNfQ0q8ML16aIKhRYb+JIVNF2Y8b7/P1T3SoUKQ3Tz2GbhoMGvH7b/QLA
+         ODtXBw+VWma2p77YBImxgcx/YzjCw+2KrrNcvVf8k/BKxuBY2ZXoeqFAeCvmJTep4gUY
+         v7RD7cW+eJXxq57UJKH5CwUPrJAQlaR0UCKAvQeNh0PVVSneA7AhmdlX2goyXiR2XEuh
+         Q5fYwOoSHMscaFDGAXaS5NOjYU6xLkk6+U4Erc/AbcADDAw+cWSxG8RdDYgHyLL1I+NX
+         Dtcw==
+X-Gm-Message-State: AGi0Pub0dCIEG0oC+RwLTeRjqe/rznlx4/RwPjuyX40w/L4HZBH7e1Zs
+        KBj2FBiHVgw5cIRvMAGRq9M=
+X-Google-Smtp-Source: APiQypIJnP/ANrM/0Xq5qXboBFie6OC/sX9QxmPufyHRw6vMmOHVbp/Ybowp2RM8T3Rv0+n8ep75gA==
+X-Received: by 2002:a05:600c:1:: with SMTP id g1mr13041186wmc.142.1587393036662;
+        Mon, 20 Apr 2020 07:30:36 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:554b:e8c8:c8c2:f119])
+        by smtp.gmail.com with ESMTPSA id v1sm1510452wrv.19.2020.04.20.07.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 07:30:35 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH] arm64: dts: allwinner: h6: fix cooling-cell property
+Date:   Mon, 20 Apr 2020 16:30:16 +0200
+Message-Id: <20200420143016.16835-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 20:53:43 +0800, YueHaibing wrote:
-> sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
-> wm8900.c:(.text+0xa36): undefined reference to `__devm_regmap_init_i2c'
-> sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
-> wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-> sound/soc/codecs/wm8900.o: In function `wm8900_exit':
-> wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-> sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
-> wm8988.c:(.text+0x857): undefined reference to `__devm_regmap_init_i2c'
-> sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
-> wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-> sound/soc/codecs/wm8988.o: In function `wm8988_exit':
-> wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-> sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
-> wm8995.c:(.text+0x1c4f): undefined reference to `__devm_regmap_init_i2c'
-> sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
-> wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-> sound/soc/codecs/wm8995.o: In function `wm8995_exit':
-> wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-> 
-> [...]
+We define cooling-cells property for CPUs only for board including
+the sun50i-h6-cpu-opp.dtsi. As not all boards have the CPU OPP
+dtsi file included this create a warning because the cooling-maps
+is defined but not the cooling-cells property in CPU nodes.
 
-Applied to
+Move the cooling-cells to the sun50i-h6.dtsi instead of the
+sun50i-h6-cpu-opp.dtsi
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi | 4 ----
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi         | 4 ++++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi
+index 9ebd97b04b1a..dcb789519797 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi
+@@ -102,20 +102,16 @@
+ 
+ &cpu0 {
+ 	operating-points-v2 = <&cpu_opp_table>;
+-	#cooling-cells = <2>;
+ };
+ 
+ &cpu1 {
+ 	operating-points-v2 = <&cpu_opp_table>;
+-	#cooling-cells = <2>;
+ };
+ 
+ &cpu2 {
+ 	operating-points-v2 = <&cpu_opp_table>;
+-	#cooling-cells = <2>;
+ };
+ 
+ &cpu3 {
+ 	operating-points-v2 = <&cpu_opp_table>;
+-	#cooling-cells = <2>;
+ };
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 83e32f9c4977..2e31632c6ca8 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -27,6 +27,7 @@
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+@@ -36,6 +37,7 @@
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+@@ -45,6 +47,7 @@
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
++			#cooling-cells = <2>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+@@ -54,6 +57,7 @@
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ 
+-- 
+2.20.1
 
-[1/1] ASoC: wm89xx: Add missing dependency
-      commit: 9bff3d3024e51122c0c09634056debcd6c7359ec
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
