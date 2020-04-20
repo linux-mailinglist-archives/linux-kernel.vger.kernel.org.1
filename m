@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135B71B09AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5E71B09F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgDTMlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        id S1728405AbgDTMnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:43:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727962AbgDTMlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:41:12 -0400
+        id S1728395AbgDTMn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:43:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86B412070B;
-        Mon, 20 Apr 2020 12:41:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FA3220735;
+        Mon, 20 Apr 2020 12:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386472;
-        bh=7+5pEKWARNc84ZkGGLnLU/rBEp2gTmMmQzl/RUdX5DU=;
+        s=default; t=1587386608;
+        bh=61WFqwITioEntxRH6QDaMEwXKdxo0S5pX28b3CWeGdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kElVvrx0LaR5a3wrP2MqsFpsfSUazkHRA+DIDWqBKXGE6Q4EiBabe987h+5BkyBfW
-         kL9MjUGtMXZvvKA0n/bA5nMI3TU8ShDHCTk8zO5+Wb8xHtuHcFP3X2GCE0kDu0Dnce
-         Cd1ITPb52Bt4Ui5SRgW6aw7PPLyKaYGqC+Nju5zk=
+        b=hbB2B8kcJbd8HxzRnWiUV9qm2/nvEBBUcuPTl62TUGGXgluE2kUQqMx14oaXIqfdC
+         HzKqNe9pC8emftAHBONmW2ki+pR6nqXJZsu1IwzPZimMtCB1GxsHr8Cw6HGLiT8Lzh
+         wbyDm2KROrxPQSenDrTJIACmJYDJhu4fAwXuL7hk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.5 35/65] ARM: dts: imx7-colibri: fix muxing of usbc_det pin
-Date:   Mon, 20 Apr 2020 14:38:39 +0200
-Message-Id: <20200420121513.884223890@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.6 26/71] jbd2: improve comments about freeing data buffers whose page mapping is NULL
+Date:   Mon, 20 Apr 2020 14:38:40 +0200
+Message-Id: <20200420121513.759932086@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
-References: <20200420121505.909671922@linuxfoundation.org>
+In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
+References: <20200420121508.491252919@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-commit 7007f2eca0f258710899ca486da00546d03db0ed upstream.
+commit 780f66e59231fcf882f36c63f287252ee47cc75a upstream.
 
-USB_C_DET pin shouldn't be in ethernet group.
+Improve comments in jbd2_journal_commit_transaction() to describe why
+we don't need to clear the buffer_mapped bit for freeing file mapping
+buffers whose page mapping is NULL.
 
-Creating a separate group allows one to use this pin
-as an USB ID pin.
-
-Fixes: b326629f25b7 ("ARM: dts: imx7: add Toradex Colibri iMX7S/iMX7D suppor")
-Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Link: https://lore.kernel.org/r/20200217112706.20085-1-yi.zhang@huawei.com
+Fixes: c96dceeabf76 ("jbd2: do not clear the BH_Mapped flag when forgetting a metadata buffer")
+Suggested-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx7-colibri.dtsi |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/jbd2/commit.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/arch/arm/boot/dts/imx7-colibri.dtsi
-+++ b/arch/arm/boot/dts/imx7-colibri.dtsi
-@@ -345,7 +345,7 @@
- &iomuxc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_gpio1 &pinctrl_gpio2 &pinctrl_gpio3 &pinctrl_gpio4
--		     &pinctrl_gpio7>;
-+		     &pinctrl_gpio7 &pinctrl_usbc_det>;
- 
- 	pinctrl_gpio1: gpio1-grp {
- 		fsl,pins = <
-@@ -450,7 +450,6 @@
- 
- 	pinctrl_enet1: enet1grp {
- 		fsl,pins = <
--			MX7D_PAD_ENET1_CRS__GPIO7_IO14			0x14
- 			MX7D_PAD_ENET1_RGMII_RX_CTL__ENET1_RGMII_RX_CTL	0x73
- 			MX7D_PAD_ENET1_RGMII_RD0__ENET1_RGMII_RD0	0x73
- 			MX7D_PAD_ENET1_RGMII_RD1__ENET1_RGMII_RD1	0x73
-@@ -648,6 +647,12 @@
- 		>;
- 	};
- 
-+	pinctrl_usbc_det: gpio-usbc-det {
-+		fsl,pins = <
-+			MX7D_PAD_ENET1_CRS__GPIO7_IO14	0x14
-+		>;
-+	};
-+
- 	pinctrl_usbh_reg: gpio-usbh-vbus {
- 		fsl,pins = <
- 			MX7D_PAD_UART3_CTS_B__GPIO4_IO7	0x14 /* SODIMM 129 USBH PEN */
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -997,9 +997,10 @@ restart_loop:
+ 			 * journalled data) we need to unmap buffer and clear
+ 			 * more bits. We also need to be careful about the check
+ 			 * because the data page mapping can get cleared under
+-			 * out hands, which alse need not to clear more bits
+-			 * because the page and buffers will be freed and can
+-			 * never be reused once we are done with them.
++			 * our hands. Note that if mapping == NULL, we don't
++			 * need to make buffer unmapped because the page is
++			 * already detached from the mapping and buffers cannot
++			 * get reused.
+ 			 */
+ 			mapping = READ_ONCE(bh->b_page->mapping);
+ 			if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
 
 
