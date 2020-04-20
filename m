@@ -2,213 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2BF1B0E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05E21B0EA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 16:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729968AbgDTOiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 10:38:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726679AbgDTOiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:38:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3655AABD7;
-        Mon, 20 Apr 2020 14:38:18 +0000 (UTC)
-Subject: Re: [patch 05/15] x86/tlb: Move __flush_tlb() out of line
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-References: <20200419203137.214111265@linutronix.de>
- <20200419203336.134117165@linutronix.de>
- <5857df01-abeb-c6cd-8e92-64eb365dc835@amd.com>
- <fab4e80a-3df2-a177-c5fe-1ab995953727@suse.com>
- <852c1af7-bc1c-a86c-d390-7547563bdde4@amd.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <76124c5d-d5ab-6ad0-b24b-4127894107e5@suse.com>
-Date:   Mon, 20 Apr 2020 16:38:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1730038AbgDTOix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 10:38:53 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:56123 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730030AbgDTOiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:38:51 -0400
+Received: from mail-qv1-f43.google.com ([209.85.219.43]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M5g68-1jKTp51flS-007GCE; Mon, 20 Apr 2020 16:38:49 +0200
+Received: by mail-qv1-f43.google.com with SMTP id p13so4739694qvt.12;
+        Mon, 20 Apr 2020 07:38:49 -0700 (PDT)
+X-Gm-Message-State: AGi0PubeLOHIFr+q6MdDkl4lsROusM2wrT+4cZYEpYJ85VuMcyrmcMDT
+        KklW3S3g2K8LdxeYbmezCkcjKspwlF+fcXrjwwI=
+X-Google-Smtp-Source: APiQypI3lMjarwBrOvk5z/7dRwm3+aExp21uRLy8rLXkUHXJMJ56+Iub039Oa9WO9CTS7wUa1aJc481OluDjX+031BM=
+X-Received: by 2002:a0c:eb11:: with SMTP id j17mr15247436qvp.197.1587393528146;
+ Mon, 20 Apr 2020 07:38:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <852c1af7-bc1c-a86c-d390-7547563bdde4@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200416085627.1882-1-clay@daemons.net> <6fef3a00-6c18-b775-d1b4-dfd692261bd3@ti.com>
+ <20200420093610.GA28162@arctic-shiba-lx>
+In-Reply-To: <20200420093610.GA28162@arctic-shiba-lx>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 20 Apr 2020 16:38:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a36ZxNJxUS4UzrwJiMx8UrgYPkcv4X6yYw7EC4jRBbbGQ@mail.gmail.com>
+Message-ID: <CAK8P3a36ZxNJxUS4UzrwJiMx8UrgYPkcv4X6yYw7EC4jRBbbGQ@mail.gmail.com>
+Subject: Re: [PATCH] net: cpts: Condition WARN_ON on PTP_1588_CLOCK
+To:     Clay McClure <clay@daemons.net>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Lmfro+z52/v9+PRc0aC+yIa6QG4vLVKhVAGm/vpSmVpGr58hA8V
+ NTX2p+r9e5q/P34ZBCXfCsacArwKIQjfaANvptrHm7Z4a26Gsae+G3uSFLQlRnnpf5dvbim
+ SIRd6bsCWFA1TvTksc9ps2YAcje4zwfvbCzY3UzGDbDG5XvFidAFJ1jxsFPrOFfxBVasdKi
+ x42089Ni2C2x5j/X7R9bA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w2gl9SsonXU=:hNvQCu59NPRR1VA4T2tUWe
+ nIYuK5PQIUEoh3vp9EhTJeR0bQy1iHFhnt2CcDjl1bst5f77ker+ryoBJR6UP9f3lfYwOFCXL
+ aIXjpZHcvl/rPHswaqc8DLUuwZ6iMk64oH7mWiR3eJN6Pxw2DzyTq+ZS1J/oorSTsrLgjA+3U
+ aqgauk07rMq6ei5eevYTasZIrW56vXFLOmtoU1rPgIAoQRJ2z4OIKsqcQUzpm2USlUwtleuN7
+ t2YDlKO4s5Txy0PYDaJGT3HKyMiBax8oiaGVB4ljPKjsjK7fisV6rNc1+SprfL3QDI+wXpJFF
+ z4zLSZ4Uuf3gXz13Xf7owHlu13f3AXneTJO9bhzkD1gE0SoiOgf+AKqBGrjdJKsv40h4mzxGZ
+ H5oOZaHGxy7oT8HsnyPcSYgXmxvah8OdrI2Y35HtrTRqURi+aEUwRzbD+t61HgdUl+E7MjsVk
+ G9GxeB1Cc+evXpNISQWJolDffwXXwcIlwZukN4CAtchLxKIYt7jrFwUFpHBzl9Wj2l4P+87gq
+ VFtQjOfaddxBCCfW3yL5Hcs9ioqK83MmQ+udp08qPLGxRzwBswiP2IfZmuwlFS0LOhB6RvfL0
+ yIWaE82l8W23TlUw1gVzcjsRqCVUMxZJ6xm9MoOK/EBK66tRGD2CD7+1/J23a9jDXMH92VqJ+
+ rYVT98KFfH6p0pgFbgqWJCQt3xRePBx8rGUGUFI2HYVPRqgXPrNKfM6CMyNpH+iq6stGsexUs
+ PxjsVf1EgfBrqPBuZhFfJAzs5O+2plhi2G+eUBPcCbTYn6L15r7ZHUkdNlZTo1jqvtiAA6xNq
+ IQJi8g0XEZ6L7FLNyhNuZZfdsQSz7nRAbJxz/hnGPut84/fyUo=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.04.20 16:26, Tom Lendacky wrote:
-> On 4/20/20 9:03 AM, Jürgen Groß wrote:
->> On 20.04.20 15:48, Tom Lendacky wrote:
->>> On 4/19/20 3:31 PM, Thomas Gleixner wrote:
->>>> cpu_tlbstate is exported because various TLB related functions need 
->>>> access
->>>> to it, but cpu_tlbstate is sensitive information which should only be
->>>> accessed by well contained kernel functions and not be directly 
->>>> exposed to
->>>> modules.
->>>>
->>>> The various TLB flush functions need access to cpu_tlbstate. As a first
->>>> step move __flush_tlb() out of line and hide the native function. The
->>>> latter can be static when CONFIG_PARAVIRT is disabled.
->>>>
->>>> Consolidate the name space while at it and remove the pointless extra
->>>> wrapper in the paravirt code.
->>>>
->>>> No functional change.
->>>>
->>>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->>>> Cc: Thomas Lendacky <Thomas.Lendacky@amd.com>
->>>> Cc: Juergen Gross <jgross@suse.com>
->>>> ---
->>>>   arch/x86/include/asm/paravirt.h    |    4 +++-
->>>>   arch/x86/include/asm/tlbflush.h    |   29 
->>>> +++++------------------------
->>>>   arch/x86/kernel/cpu/mtrr/generic.c |    4 ++--
->>>>   arch/x86/kernel/paravirt.c         |    7 +------
->>>>   arch/x86/mm/mem_encrypt.c          |    2 +-
->>>>   arch/x86/mm/tlb.c                  |   33 
->>>> ++++++++++++++++++++++++++++++++-
->>>>   arch/x86/platform/uv/tlb_uv.c      |    2 +-
->>>>   7 files changed, 45 insertions(+), 36 deletions(-)
->>>>
->>>> --- a/arch/x86/include/asm/paravirt.h
->>>> +++ b/arch/x86/include/asm/paravirt.h
->>>> @@ -47,7 +47,9 @@ static inline void slow_down_io(void)
->>>>   #endif
->>>>   }
->>>> -static inline void __flush_tlb(void)
->>>> +void native_flush_tlb_local(void);
->>>> +
->>>> +static inline void __flush_tlb_local(void)
->>>>   {
->>>>       PVOP_VCALL0(mmu.flush_tlb_user);
->>>>   }
->>>> --- a/arch/x86/include/asm/tlbflush.h
->>>> +++ b/arch/x86/include/asm/tlbflush.h
->>>> @@ -140,12 +140,13 @@ static inline unsigned long build_cr3_no
->>>>       return __sme_pa(pgd) | kern_pcid(asid) | CR3_NOFLUSH;
->>>>   }
->>>> +void flush_tlb_local(void);
->>>> +
->>>>   #ifdef CONFIG_PARAVIRT
->>>>   #include <asm/paravirt.h>
->>>>   #else
->>>> -#define __flush_tlb() __native_flush_tlb()
->>>> -#define __flush_tlb_global() __native_flush_tlb_global()
->>>> -#define __flush_tlb_one_user(addr) __native_flush_tlb_one_user(addr)
->>>> +#define __flush_tlb_global()        __native_flush_tlb_global()
->>>> +#define __flush_tlb_one_user(addr)    
->>>> __native_flush_tlb_one_user(addr)
->>>>   #endif
->>>>   struct tlb_context {
->>>> @@ -371,24 +372,6 @@ static inline void invalidate_user_asid(
->>>>   }
->>>>   /*
->>>> - * flush the entire current user mapping
->>>> - */
->>>> -static inline void __native_flush_tlb(void)
->>>> -{
->>>> -    /*
->>>> -     * Preemption or interrupts must be disabled to protect the access
->>>> -     * to the per CPU variable and to prevent being preempted between
->>>> -     * read_cr3() and write_cr3().
->>>> -     */
->>>> -    WARN_ON_ONCE(preemptible());
->>>> -
->>>> -    invalidate_user_asid(this_cpu_read(cpu_tlbstate.loaded_mm_asid));
->>>> -
->>>> -    /* If current->mm == NULL then the read_cr3() "borrows" an mm */
->>>> -    native_write_cr3(__native_read_cr3());
->>>> -}
->>>> -
->>>> -/*
->>>>    * flush everything
->>>>    */
->>>>   static inline void __native_flush_tlb_global(void)
->>>> @@ -461,7 +444,7 @@ static inline void __flush_tlb_all(void)
->>>>           /*
->>>>            * !PGE -> !PCID (setup_pcid()), thus every flush is total.
->>>>            */
->>>> -        __flush_tlb();
->>>> +        flush_tlb_local();
->>>>       }
->>>>   }
->>>> @@ -537,8 +520,6 @@ struct flush_tlb_info {
->>>>       bool            freed_tables;
->>>>   };
->>>> -#define local_flush_tlb() __flush_tlb()
->>>> -
->>>>   #define flush_tlb_mm(mm)                        \
->>>>           flush_tlb_mm_range(mm, 0UL, TLB_FLUSH_ALL, 0UL, true)
->>>> --- a/arch/x86/kernel/cpu/mtrr/generic.c
->>>> +++ b/arch/x86/kernel/cpu/mtrr/generic.c
->>>> @@ -761,7 +761,7 @@ static void prepare_set(void) __acquires
->>>>       /* Flush all TLBs via a mov %cr3, %reg; mov %reg, %cr3 */
->>>>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
->>>> -    __flush_tlb();
->>>> +    flush_tlb_local();
->>>>       /* Save MTRR state */
->>>>       rdmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
->>>> @@ -778,7 +778,7 @@ static void post_set(void) __releases(se
->>>>   {
->>>>       /* Flush TLBs (no need to flush caches - they are disabled) */
->>>>       count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
->>>> -    __flush_tlb();
->>>> +    flush_tlb_local();
->>>>       /* Intel (P6) standard MTRRs */
->>>>       mtrr_wrmsr(MSR_MTRRdefType, deftype_lo, deftype_hi);
->>>> --- a/arch/x86/kernel/paravirt.c
->>>> +++ b/arch/x86/kernel/paravirt.c
->>>> @@ -160,11 +160,6 @@ unsigned paravirt_patch_insns(void *insn
->>>>       return insn_len;
->>>>   }
->>>> -static void native_flush_tlb(void)
->>>> -{
->>>> -    __native_flush_tlb();
->>>> -}
->>>> -
->>>>   /*
->>>>    * Global pages have to be flushed a bit differently. Not a real
->>>>    * performance problem because this does not happen often.
->>>> @@ -359,7 +354,7 @@ struct paravirt_patch_template pv_ops =
->>>>   #endif /* CONFIG_PARAVIRT_XXL */
->>>>       /* Mmu ops. */
->>>> -    .mmu.flush_tlb_user    = native_flush_tlb,
->>>> +    .mmu.flush_tlb_user    = native_flush_tlb_local,
->>>>       .mmu.flush_tlb_kernel    = native_flush_tlb_global,
->>>>       .mmu.flush_tlb_one_user    = native_flush_tlb_one_user,
->>>>       .mmu.flush_tlb_others    = native_flush_tlb_others,
->>>> --- a/arch/x86/mm/mem_encrypt.c
->>>> +++ b/arch/x86/mm/mem_encrypt.c
->>>> @@ -134,7 +134,7 @@ static void __init __sme_early_map_unmap
->>>>           size = (size <= PMD_SIZE) ? 0 : size - PMD_SIZE;
->>>>       } while (size);
->>>> -    __native_flush_tlb();
->>>> +    flush_tlb_local();
->>>
->>> This invoked __native_flush_tlb() because of how early it is called 
->>> and the paravirt ops support isn't set up yet, resulting in a crash 
->>> if not invoking the native version directly. So this needs a "native" 
->>> version of the tlb flush to invoke.
->>
->> I don't think this is still true. With my rework of pvops to have all
->> functions in one struct which is initialized statically initially
->> everything should work from the time the kernel is mapped.
->>
->> In case it doesn't there is something very wrong IMO.
-> 
-> The memory encryption support was implemented in 4.14, so it's quite 
-> possible that this isn't an issue now. I'll test out the patch and 
-> verify it. What release did your pvops rework land in?
+On Mon, Apr 20, 2020 at 11:38 AM Clay McClure <clay@daemons.net> wrote:
+> On Thu, Apr 16, 2020 at 02:11:45PM +0300, Grygorii Strashko wrote:
+>
+> > > CPTS_MOD merely implies PTP_1588_CLOCK; it is possible to build cpts
+> > > without PTP clock support. In that case, ptp_clock_register() returns
+> > > NULL and we should not WARN_ON(cpts->clock) when downing the interface.
+> > > The ptp_*() functions are stubbed without PTP_1588_CLOCK, so it's safe
+> > > to pass them a null pointer.
+> >
+> > Could you explain the purpose of the exercise (Enabling CPTS with
+> > PTP_1588_CLOCK disabled), pls?
+>
+> Hardware timestamping with a free-running PHC _almost_ works without
+> PTP_1588_CLOCK, but since PHC rollover is handled by the PTP kworker
+> in this driver the timestamps end up not being monotonic.
+>
+> And of course the moment you want to syntonize/synchronize the PHC with
+> another clock (say, CLOCK_REALTIME), you'll need a PTP clock device. So
+> you're right, there's not much point in building CPTS_MOD without
+> PTP_1588_CLOCK.
+>
+> Given that, I wonder why all the Ethernet drivers seem to just `imply`
+> PTP_1588_CLOCK, rather than `depends on` it?
 
-4.20.
+I suspect we should move all of them back. This was an early user
+of 'imply', but the meaning of that keyword has now changed
+in the latest Kconfig.
 
+> diff --git a/drivers/net/ethernet/ti/cpts.c b/drivers/net/ethernet/ti/cpts.c
+> index 10ad706dda53..70b15039cd37 100644
+> --- a/drivers/net/ethernet/ti/cpts.c
+> +++ b/drivers/net/ethernet/ti/cpts.c
+> @@ -462,8 +462,8 @@ int cpts_register(struct cpts *cpts)
+>         timecounter_init(&cpts->tc, &cpts->cc, ktime_get_real_ns());
+>
+>         cpts->clock = ptp_clock_register(&cpts->info, cpts->dev);
+> -       if (IS_ERR(cpts->clock)) {
+> -               err = PTR_ERR(cpts->clock);
+> +       if (IS_ERR_OR_NULL(cpts->clock)) {
+> +               err = cpts->clock ? PTR_ERR(cpts->clock) : -EOPNOTSUPP;
+>                 cpts->clock = NULL;
+>                 goto err_ptp;
 
-Juergen
+Something else is wrong if you need IS_ERR_OR_NULL(). Any
+kernel interface should either return an negative error code when
+something goes wrong, or should return NULL for all errors, but
+not mix the two.
 
+        Arnd
