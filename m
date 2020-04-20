@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B5D1B16F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6011B1701
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgDTU0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:26:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26332 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726903AbgDTU03 (ORCPT
+        id S1728273AbgDTU0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726878AbgDTU02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:26:29 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03KJXW1e086561;
-        Mon, 20 Apr 2020 16:26:23 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30gmuxutrw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Apr 2020 16:26:23 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03KKPivD003771;
-        Mon, 20 Apr 2020 20:26:22 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04wdc.us.ibm.com with ESMTP id 30fs663m9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Apr 2020 20:26:22 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03KKQLdU31719708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Apr 2020 20:26:21 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4E18AE060;
-        Mon, 20 Apr 2020 20:26:21 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBA87AE05F;
-        Mon, 20 Apr 2020 20:26:20 +0000 (GMT)
-Received: from ghost4.ibm.com (unknown [9.163.56.120])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Apr 2020 20:26:20 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-aspeed@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com
-Subject: [PATCH v10 7/7] ARM: dts: Aspeed: AST2600: Add missing SCU interrupt controller include
-Date:   Mon, 20 Apr 2020 15:26:11 -0500
-Message-Id: <20200420202611.17776-8-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200420202611.17776-1-eajames@linux.ibm.com>
-References: <20200420202611.17776-1-eajames@linux.ibm.com>
+        Mon, 20 Apr 2020 16:26:28 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98038C061A0C;
+        Mon, 20 Apr 2020 13:26:28 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id v8so886081wma.0;
+        Mon, 20 Apr 2020 13:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6W8grtyB7pbKtLO6nZYSpUXrUqbnBG7Y9G7Qj2TNYYc=;
+        b=p6knrLkBXwqGxq6+Y8qDIGzAfcrs/wLEqwashKOOkURN4yTA94z5zf6FYUXgFl5l+A
+         sUZmWPty1XgIIpLJ3hTZO4gKR/faEocL0UrIS0nof9RS8Twbj238UkMEtj94Kz5OlpUd
+         8hQELeyceiME/J/rZZVVMoRms2EpF/5fJzag0sVaY5uAMl/5yXip4SfSyG3lZMWSEjeM
+         k14iXl5I9MZDAQS/v/frX36Orkn+PTNpt0fHnjzmF1buhsAhSk+K0WNkYkNAsy4sfAEL
+         awitjW9GwcEYdzsGz3nqeD8ILj01JO0ixWHC5/iW+BObvDHrDvKpuPvCv4X+F1l5TCIY
+         yh+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6W8grtyB7pbKtLO6nZYSpUXrUqbnBG7Y9G7Qj2TNYYc=;
+        b=CME10pCQEBoI1RMvw5ps/2HHknQywcxYM6VWmPsLyYjH50O2tFRMfWcwcoJVjgDlCn
+         t2qu3pLPYAOnWARhjB855ms6u34kFggkgFPDTenmBC5tQMuuIyFnWRpN95R6Hnbc80Z3
+         5wbeCNXJ6kgj5vvH6P9/Hxzfpf7sjJ1WI+y9aesShfb1+/ykOaGCjybCl+VyRYCC/0oB
+         MnYEVD8ewDBnRdQco5b21nEucMcvk5uk2sENhzOKiaPP/9UUZlzBXc+SY4bKNvTfT1MZ
+         WUb1tI0kh9Ose1t42X62LOA7TJ3OCZ4NI7vCM0ogwn3F5GefkDOdn8aL5HnCAvapBpUs
+         xWOQ==
+X-Gm-Message-State: AGi0PuYC6FooMiZjCjTCyUglHxtupi0j9rLPah4RN2gCghMQq0gy4Ga5
+        kTXR+2aq+7jUvLH4jjHiNh0=
+X-Google-Smtp-Source: APiQypLqmxKs/1t8ZCj39OTBsU0FhGL3s33M63qCSyOMn2SmgJ0ImXAQAFlCOH5BiI32aIJv+k0WsA==
+X-Received: by 2002:a1c:148:: with SMTP id 69mr1161252wmb.181.1587414387225;
+        Mon, 20 Apr 2020 13:26:27 -0700 (PDT)
+Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id l19sm657846wmj.14.2020.04.20.13.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 13:26:26 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     robh+dt@kernel.org, khilman@baylibre.com, narmstrong@baylibre.com,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 4/4] soc: amlogic: meson-ee-pwrc: add support for the Meson GX SoCs
+Date:   Mon, 20 Apr 2020 22:26:12 +0200
+Message-Id: <20200420202612.369370-5-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200420202612.369370-1-martin.blumenstingl@googlemail.com>
+References: <20200420202612.369370-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-20_07:2020-04-20,2020-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
- suspectscore=1 phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=735
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004200155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The XDMA node references the SCU interrupt controller interrupts which
-should be included.
+Add support for the Meson GX SoCs to the meson-ee-pwrc driver.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
+The power domains on the GX SoCs are very similar to G12A. The only
+known differences so far are:
+- The GX SoCs do not have the HHI_VPU_MEM_PD_REG2 register (for the
+  VPU power-domain)
+- The GX SoCs have an additional reset line called "dvin"
+
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- arch/arm/boot/dts/aspeed-g6.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soc/amlogic/meson-ee-pwrc.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 19f3287b7320..6cd772009313 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -2,6 +2,7 @@
- // Copyright 2019 IBM Corp.
+diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+index b30868da456a..a90572cb9c82 100644
+--- a/drivers/soc/amlogic/meson-ee-pwrc.c
++++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+@@ -16,6 +16,7 @@
+ #include <linux/clk.h>
+ #include <dt-bindings/power/meson8-power.h>
+ #include <dt-bindings/power/meson-g12a-power.h>
++#include <dt-bindings/power/meson-gxbb-power.h>
+ #include <dt-bindings/power/meson-sm1-power.h>
  
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
- #include <dt-bindings/clock/ast2600-clock.h>
+ /* AO Offsets */
+@@ -73,7 +74,7 @@ struct meson_ee_pwrc_domain_data {
  
- / {
+ /* TOP Power Domains */
+ 
+-static struct meson_ee_pwrc_top_domain g12a_pwrc_vpu = {
++static struct meson_ee_pwrc_top_domain gxbb_pwrc_vpu = {
+ 	.sleep_reg = AO_RTI_GEN_PWR_SLEEP0,
+ 	.sleep_mask = BIT(8),
+ 	.iso_reg = AO_RTI_GEN_PWR_SLEEP0,
+@@ -138,6 +139,12 @@ static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_vpu[] = {
+ 	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
+ };
+ 
++static struct meson_ee_pwrc_mem_domain gxbb_pwrc_mem_vpu[] = {
++	VPU_MEMPD(HHI_VPU_MEM_PD_REG0),
++	VPU_MEMPD(HHI_VPU_MEM_PD_REG1),
++	VPU_HHI_MEMPD(HHI_MEM_PD_REG0),
++};
++
+ static struct meson_ee_pwrc_mem_domain meson8_pwrc_mem_eth[] = {
+ 	{ HHI_MEM_PD_REG0, GENMASK(3, 2) },
+ };
+@@ -223,11 +230,17 @@ static struct meson_ee_pwrc_mem_domain sm1_pwrc_mem_audio[] = {
+ static bool pwrc_ee_get_power(struct meson_ee_pwrc_domain *pwrc_domain);
+ 
+ static struct meson_ee_pwrc_domain_desc g12a_pwrc_domains[] = {
+-	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &g12a_pwrc_vpu, g12a_pwrc_mem_vpu,
++	[PWRC_G12A_VPU_ID]  = VPU_PD("VPU", &gxbb_pwrc_vpu, g12a_pwrc_mem_vpu,
+ 				     pwrc_ee_get_power, 11, 2),
+ 	[PWRC_G12A_ETH_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
+ };
+ 
++static struct meson_ee_pwrc_domain_desc gxbb_pwrc_domains[] = {
++	[PWRC_GXBB_VPU_ID]  = VPU_PD("VPU", &gxbb_pwrc_vpu, gxbb_pwrc_mem_vpu,
++				     pwrc_ee_get_power, 12, 2),
++	[PWRC_GXBB_ETHERNET_MEM_ID] = MEM_PD("ETH", meson8_pwrc_mem_eth),
++};
++
+ static struct meson_ee_pwrc_domain_desc meson8_pwrc_domains[] = {
+ 	[PWRC_MESON8_VPU_ID]  = VPU_PD("VPU", &meson8_pwrc_vpu,
+ 				       meson8_pwrc_mem_vpu, pwrc_ee_get_power,
+@@ -514,6 +527,11 @@ static struct meson_ee_pwrc_domain_data meson_ee_g12a_pwrc_data = {
+ 	.domains = g12a_pwrc_domains,
+ };
+ 
++static struct meson_ee_pwrc_domain_data meson_ee_gxbb_pwrc_data = {
++	.count = ARRAY_SIZE(gxbb_pwrc_domains),
++	.domains = gxbb_pwrc_domains,
++};
++
+ static struct meson_ee_pwrc_domain_data meson_ee_m8_pwrc_data = {
+ 	.count = ARRAY_SIZE(meson8_pwrc_domains),
+ 	.domains = meson8_pwrc_domains,
+@@ -542,6 +560,10 @@ static const struct of_device_id meson_ee_pwrc_match_table[] = {
+ 		.compatible = "amlogic,meson8m2-pwrc",
+ 		.data = &meson_ee_m8b_pwrc_data,
+ 	},
++	{
++		.compatible = "amlogic,meson-gxbb-pwrc",
++		.data = &meson_ee_gxbb_pwrc_data,
++	},
+ 	{
+ 		.compatible = "amlogic,meson-g12a-pwrc",
+ 		.data = &meson_ee_g12a_pwrc_data,
 -- 
-2.24.0
+2.26.1
 
