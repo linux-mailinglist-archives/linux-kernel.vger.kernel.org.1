@@ -2,131 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB151B1A05
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 01:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427141B1A0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 01:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgDTXQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 19:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S1726562AbgDTXTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 19:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727787AbgDTXQI (ORCPT
+        by vger.kernel.org with ESMTP id S1726055AbgDTXTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 19:16:08 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15320C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:08 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ng8so566872pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:16:08 -0700 (PDT)
+        Mon, 20 Apr 2020 19:19:52 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E498C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:19:52 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id n2so6362181ybg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 16:19:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IpsOJZL+ZU4RTGqMsf0NvSnMAMglq/aHlmJWyZVItPk=;
-        b=FK5ufNXVpujVoE0t/Y/YeaigrOO4bjzfV53ejd/HM0R8r256r6kgoz3efJ3iulaXFe
-         h12IwO+wVWpj2nTXVT0Z/Fr8Ia2SsPD9iffjIVsMOmlpPiWb93gEVminTjLby3cBV+vR
-         hiUZnzk+/Wj/aTH8HYyrFDcbwo2lO7F4k4QH/a+SeazDRCH6G4vgsqzN++LfXqRn1AWN
-         XpLqL/OVRIidsO7fVO5XCyXVvZysmiNrnl/D1AWIYpAd95ftDTnu2vOTsg5Unzi98aNY
-         GFq80muzU/AW8pnqoC/sDtWgUMWem0TPHHfcbNVRbe0XkMiZG8R2KsQcXNHReODgGCtU
-         g0/g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ya7uPvz33k/Th0rFLYZRsOz9/2PUgpVSR6JbNYzn6GM=;
+        b=ej6B8RV6ya2ZJBQQJntXMJUFXJE8+aV+G1o5ioTh/RHRkcfhHTwsaW+D4xfUqHodYk
+         /auAau/cK5vj3MnL2O2LBcq6AfpOIhimpAJjXIMm/qeR20gFcmHKJ9hZqQ8Dz3lFr2b4
+         Hjl4fThhii55qtQuEVj15ofas/xStHKxjXImBXkpZpmszWhI2H4of/0fwLXosY4mw7RR
+         Ro6HXYradnxMnuDMfAoobzenOcHA5JrZSsxvchk5tgXFFymCbtHuq5Nqyw2LNRZIO1mL
+         pSDYATkJLdXZ5zi2mT4H0tRIya6CTgg9Ao7Ym55+TGWrT8b2gt9cAsytpM/WEroXsRBO
+         Mosw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IpsOJZL+ZU4RTGqMsf0NvSnMAMglq/aHlmJWyZVItPk=;
-        b=hcE3OCoxxg6BXhzj5i7r6o6L4lecw7i+X8c/+nBJxQA8iRJLV7c824lUsNCdMGtOif
-         IzB0ErG50AB5rGwkvsApmwBRU5VE7txZa4LW6KhbdN1ULIZYsF+LZG+3iNudtj83yCxh
-         o9/0d6JA2hUeh8pNhRasyUIcH7KpoCLzuhRHybjLXEJ0TkAqFzaYVBaKXzFJqIAB8gCd
-         dgA5N/duk3Ge20NbOfrHOJFjVNNRVGKYw3ghOCQaFh5j3ViUGl0gZ1Qt/e5TgMa5majY
-         3s8axtvLz5INN9pLzgu07Tfvmzsl/dNIWaf8k34acDSmCn/Se39BXKMPHKWwr1hy7tB8
-         wLyw==
-X-Gm-Message-State: AGi0PuZMSSau7JReX5pkWefHcXt9IVfY2NWVd0bPFejVY2GmAHfgNeHv
-        BXIjVmhvbFr2FdD98wFRi3Z97g==
-X-Google-Smtp-Source: APiQypJdQApqSjhbDtcAZmALy8nxBP+m5Mq2RV1NphXt2SqGc3jSLBDsS/GWxBgJ99jQ4RpPdzal6g==
-X-Received: by 2002:a17:90a:e7cf:: with SMTP id kb15mr2128820pjb.146.1587424567620;
-        Mon, 20 Apr 2020 16:16:07 -0700 (PDT)
-Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id l15sm435354pgk.59.2020.04.20.16.16.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 16:16:07 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     bjorn.andersson@linaro.org, ohad@wizery.com
-Cc:     elder@linaro.org, s-anna@ti.com, Markus.Elfring@web.de,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] remoteproc: Get rid of tedious error path
-Date:   Mon, 20 Apr 2020 17:16:01 -0600
-Message-Id: <20200420231601.16781-5-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200420231601.16781-1-mathieu.poirier@linaro.org>
-References: <20200420231601.16781-1-mathieu.poirier@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ya7uPvz33k/Th0rFLYZRsOz9/2PUgpVSR6JbNYzn6GM=;
+        b=Ktxy/oWoJ7SBeBv2hcpyrx1k7OoKgXp0AIfxJ+EV2RtjvXf4JdG1LigTVCcZDBz2bJ
+         TJvvjn5qZVTFqXl+lEYK0sRXWLEQWf8fmJpFugseaabESdcB+3vGTPLZhoz6WhkAR4Yy
+         VzBcaic3NTaSBIDdYgz3QTZH0AECzMFx9Egd2T/sEJDHUlfEDcmm9GnV9aCGaUym4pXb
+         4xs4Cqe1jjUzqD112obHRpKzdGlnginM75aTivpCxM1hJHoanQYOw28I/Rbb3prYGYYX
+         IhE2JbRWcQdwEnE6Fmm6gZ7mQ49Hb+1lJocu66P/SuopbZeGjAg6PTnHxmswYSUXvBmt
+         kEgg==
+X-Gm-Message-State: AGi0PuZBH+x9MKz8oYzWmLKH57jUDhHKC3rN8Q2GMYSM/l+9xC3JxcEE
+        9J/zMPINpGxaFcsTeFp4CuRIG2k4MKIJCcicWf4=
+X-Google-Smtp-Source: APiQypKza0fwVPVxFR5MdqPuNVTaaebdpuiZ+G8iyVCfL23ES5mQHCTrrzb0ymiDhrHAq6J+sngc7XaB/esudjqPt9M=
+X-Received: by 2002:a25:12c1:: with SMTP id 184mr13309861ybs.162.1587424791265;
+ Mon, 20 Apr 2020 16:19:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200417194145.36350-1-lyude@redhat.com>
+In-Reply-To: <20200417194145.36350-1-lyude@redhat.com>
+From:   Ben Skeggs <skeggsb@gmail.com>
+Date:   Tue, 21 Apr 2020 09:19:40 +1000
+Message-ID: <CACAvsv7i+f1EnOB6HngisnexVc2jVVyJqfQk4kRk63uxuTG18w@mail.gmail.com>
+Subject: Re: [RFC v3 00/11] drm/nouveau: Introduce CRC support for gf119+
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Peteris Rudzusiks <peteris.rudzusiks@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get rid of tedious error management by moving firmware and operation
-allocation after calling device_initialize().  That way we take advantage
-of the automatic call to rproc_type_release() to cleanup after ourselves
-when put_device() is called.
+On Sat, 18 Apr 2020 at 05:42, Lyude Paul <lyude@redhat.com> wrote:
+>
+> Nvidia released some documentation on how CRC support works on their
+> GPUs, hooray!
+>
+> So: this patch series implements said CRC support in nouveau, along with
+> adding some special debugfs interfaces for some relevant igt-gpu-tools
+> tests that we'll be sending in just a short bit.
+>
+> This additionally adds a feature that Ville Syrj=C3=A4l=C3=A4 came up wit=
+h: vblank
+> works. Basically, this is just a generic DRM interface that allows for
+> scheduling high-priority workers that start on a given vblank interrupt.
+> Note that while we're currently only using this in nouveau, Intel has
+> plans to use this for i915 as well (hence why they came up with it!).
+>
+> And finally: in order to implement the last feature, we expose some new
+> functions in the kernel's kthread_worker infrastructure so that we can
+> de-complicate our implementation of this.
+>
+> Anyway-welcome to the future! :)
+The Nouveau bits look alright to me, I'll take them once the patches
+it depends on have been acked.
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Alex Elder <elder@linaro.org>
-Acked-by: Suman Anna <s-anna@ti.com>
----
- drivers/remoteproc/remoteproc_core.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+Ben.
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 15318507aedb..6fca4e2c0dd7 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2084,12 +2084,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	if (!rproc)
- 		return NULL;
- 
--	if (rproc_alloc_firmware(rproc, name, firmware))
--		goto free_rproc;
--
--	if (rproc_alloc_ops(rproc, ops))
--		goto free_firmware;
--
- 	rproc->name = name;
- 	rproc->priv = &rproc[1];
- 	rproc->auto_boot = true;
-@@ -2103,12 +2097,17 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	rproc->dev.driver_data = rproc;
- 	idr_init(&rproc->notifyids);
- 
-+	if (rproc_alloc_firmware(rproc, name, firmware))
-+		goto put_device;
-+
-+	if (rproc_alloc_ops(rproc, ops))
-+		goto put_device;
-+
- 	/* Assign a unique device index and name */
- 	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
- 	if (rproc->index < 0) {
- 		dev_err(dev, "ida_simple_get failed: %d\n", rproc->index);
--		put_device(&rproc->dev);
--		return NULL;
-+		goto put_device;
- 	}
- 
- 	dev_set_name(&rproc->dev, "remoteproc%d", rproc->index);
-@@ -2130,10 +2129,8 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 
- 	return rproc;
- 
--free_firmware:
--	kfree_const(rproc->firmware);
--free_rproc:
--	kfree(rproc);
-+put_device:
-+	put_device(&rproc->dev);
- 	return NULL;
- }
- EXPORT_SYMBOL(rproc_alloc);
--- 
-2.20.1
-
+>
+> Major changes since v2:
+> * Use kthread_worker instead of kthreadd for vblank workers
+> * Don't check debugfs return values
+>
+> Lyude Paul (11):
+>   drm/vblank: Register drmm cleanup action once per drm_vblank_crtc
+>   kthread: Introduce __kthread_queue_work()
+>   drm/vblank: Add vblank works
+>   drm/nouveau/kms/nv50-: Unroll error cleanup in nv50_head_create()
+>   drm/nouveau/kms/nv140-: Don't modify depth in state during atomic
+>     commit
+>   drm/nouveau/kms/nv50-: Fix disabling dithering
+>   drm/nouveau/kms/nv50-: s/harm/armh/g
+>   drm/nouveau/kms/nv140-: Track wndw mappings in nv50_head_atom
+>   drm/nouveau/kms/nv50-: Expose nv50_outp_atom in disp.h
+>   drm/nouveau/kms/nv50-: Move hard-coded object handles into header
+>   drm/nouveau/kms/nvd9-: Add CRC support
+>
+>  drivers/gpu/drm/drm_vblank.c                | 314 ++++++++-
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c     |  25 +-
+>  drivers/gpu/drm/nouveau/dispnv50/Kbuild     |   4 +
+>  drivers/gpu/drm/nouveau/dispnv50/atom.h     |  21 +
+>  drivers/gpu/drm/nouveau/dispnv50/core.h     |   4 +
+>  drivers/gpu/drm/nouveau/dispnv50/core907d.c |   3 +
+>  drivers/gpu/drm/nouveau/dispnv50/core917d.c |   3 +
+>  drivers/gpu/drm/nouveau/dispnv50/corec37d.c |   3 +
+>  drivers/gpu/drm/nouveau/dispnv50/corec57d.c |   3 +
+>  drivers/gpu/drm/nouveau/dispnv50/crc.c      | 715 ++++++++++++++++++++
+>  drivers/gpu/drm/nouveau/dispnv50/crc.h      | 125 ++++
+>  drivers/gpu/drm/nouveau/dispnv50/crc907d.c  | 139 ++++
+>  drivers/gpu/drm/nouveau/dispnv50/crcc37d.c  | 153 +++++
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c     |  65 +-
+>  drivers/gpu/drm/nouveau/dispnv50/disp.h     |  24 +
+>  drivers/gpu/drm/nouveau/dispnv50/handles.h  |  16 +
+>  drivers/gpu/drm/nouveau/dispnv50/head.c     | 142 +++-
+>  drivers/gpu/drm/nouveau/dispnv50/head.h     |  13 +-
+>  drivers/gpu/drm/nouveau/dispnv50/head907d.c |  14 +-
+>  drivers/gpu/drm/nouveau/dispnv50/headc37d.c |  27 +-
+>  drivers/gpu/drm/nouveau/dispnv50/headc57d.c |  20 +-
+>  drivers/gpu/drm/nouveau/dispnv50/wndw.c     |  15 +-
+>  drivers/gpu/drm/nouveau/nouveau_display.c   |  60 +-
+>  include/drm/drm_vblank.h                    |  31 +
+>  include/linux/kthread.h                     |   3 +
+>  kernel/kthread.c                            |  34 +-
+>  26 files changed, 1831 insertions(+), 145 deletions(-)
+>  create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.c
+>  create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.h
+>  create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc907d.c
+>  create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crcc37d.c
+>  create mode 100644 drivers/gpu/drm/nouveau/dispnv50/handles.h
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
