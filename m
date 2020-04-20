@@ -2,186 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789B31B0F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49191B0F54
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgDTPM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 11:12:28 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:24412 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730266AbgDTPMZ (ORCPT
+        id S1729299AbgDTPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 11:10:15 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56321 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726905AbgDTPKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:12:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1587395544; x=1618931544;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=ftp7xSwi7rxzsVo0k0Kw+rDFAUz/DiSW/6uUfIvkmrM=;
-  b=a+MI3BLt+4aD1ZfwbyTLnlwRYNMHiKdQg+d972QUC3dI1tOx/mvlbmc+
-   PXsVZd/0AL4XOM0QtV/VRGgrKxvZCZ32nQgCJgWaOmtzgsYgVMtt4RmOA
-   jOZhkD1MraewOtMedzFG9gPA3ptfs+WgeT3UG/a0US05DjmhrmDR2M+Jz
-   Jnjn+keNhv8HpkGCVJTqDBq6gCaJk5HfeuH4WVtqUCsSI5snv7r7/8vcX
-   vDaQvRtUk8bEsVKNYTHFY1COB/Ist4OkD8kZalr1ckLxHzRhP/NiugYLK
-   Gxhz3NuoS1HdjHPWTCssVmV7vTDILsxY48kJypg1U4+67h+HPTSR46q6O
-   g==;
-IronPort-SDR: uEAoTSkFU6kmXKmm06xIfurVoJPXDrvTgWOHzJFTa1YtBq1vfEe1yki5MVDtR0gT5nbevzZPqb
- Ca47M3UTTk8xvszhA36upuVHzB3h9kPZ2etDhRZDHXWKDDZVVHe3jDdU1m3rQiybZuhTUFEFJA
- xjIBlVDwPhsoCR3MtJNUzM46hxrpP/KS+ZdV2EPecJDNSJhDoRNNCaSqaoEtnPwCWxAurzuuOu
- CoSfPIgX8ZKSRC1Fqx90Uq/lURKVWWXG+wnydyFFMY0/77IKcLA9BkvMx5QR111LQyur0jrnr1
- 9cA=
-X-IronPort-AV: E=Sophos;i="5.72,406,1580799600"; 
-   d="scan'208";a="9780084"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Apr 2020 08:12:23 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 20 Apr 2020 08:11:54 -0700
-Received: from soft-dev3.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Mon, 20 Apr 2020 08:11:51 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <davem@davemloft.net>,
-        <jiri@resnulli.us>, <ivecera@redhat.com>, <kuba@kernel.org>,
-        <roopa@cumulusnetworks.com>, <olteanv@gmail.com>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next 13/13] net: bridge: Add checks for enabling the STP.
-Date:   Mon, 20 Apr 2020 17:09:47 +0200
-Message-ID: <20200420150947.30974-14-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200420150947.30974-1-horatiu.vultur@microchip.com>
-References: <20200420150947.30974-1-horatiu.vultur@microchip.com>
+        Mon, 20 Apr 2020 11:10:15 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 94D031C0006;
+        Mon, 20 Apr 2020 15:10:10 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 17:10:10 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [linux-sunxi] [PATCH] media: cedrus: Implement runtime PM
+Message-ID: <20200420151010.GL125838@aptenodytes>
+References: <20200408010232.48432-1-samuel@sholland.org>
+ <9673642.nUPlyArG6x@jernej-laptop>
+ <244922ec-ed3a-eca7-6640-49de7ad9c605@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1hKfHPzOXWu1rh0v"
+Content-Disposition: inline
+In-Reply-To: <244922ec-ed3a-eca7-6640-49de7ad9c605@sholland.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not possible to have the MRP and STP running at the same time on the
-bridge, therefore add check when enabling the STP to check if MRP is already
-enabled. In that case return error.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_ioctl.c    |  3 +--
- net/bridge/br_netlink.c  |  4 +++-
- net/bridge/br_private.h  |  3 ++-
- net/bridge/br_stp.c      |  6 ++++++
- net/bridge/br_stp_if.c   | 11 ++++++++++-
- net/bridge/br_sysfs_br.c |  4 +---
- 6 files changed, 23 insertions(+), 8 deletions(-)
+--1hKfHPzOXWu1rh0v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
-index ae22d784b88a..5e71fc8b826f 100644
---- a/net/bridge/br_ioctl.c
-+++ b/net/bridge/br_ioctl.c
-@@ -242,8 +242,7 @@ static int old_dev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
- 		if (!ns_capable(dev_net(dev)->user_ns, CAP_NET_ADMIN))
- 			return -EPERM;
- 
--		br_stp_set_enabled(br, args[1]);
--		ret = 0;
-+		ret = br_stp_set_enabled(br, args[1], NULL);
- 		break;
- 
- 	case BRCTL_SET_BRIDGE_PRIORITY:
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 52f7bbd3f382..dfdf076616c6 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1112,7 +1112,9 @@ static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
- 	if (data[IFLA_BR_STP_STATE]) {
- 		u32 stp_enabled = nla_get_u32(data[IFLA_BR_STP_STATE]);
- 
--		br_stp_set_enabled(br, stp_enabled);
-+		err = br_stp_set_enabled(br, stp_enabled, extack);
-+		if (err)
-+			return err;
- 	}
- 
- 	if (data[IFLA_BR_PRIORITY]) {
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index bbc496fcb181..5c24ff92352c 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -1287,7 +1287,8 @@ int br_set_ageing_time(struct net_bridge *br, clock_t ageing_time);
- /* br_stp_if.c */
- void br_stp_enable_bridge(struct net_bridge *br);
- void br_stp_disable_bridge(struct net_bridge *br);
--void br_stp_set_enabled(struct net_bridge *br, unsigned long val);
-+int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
-+		       struct netlink_ext_ack *extack);
- void br_stp_enable_port(struct net_bridge_port *p);
- void br_stp_disable_port(struct net_bridge_port *p);
- bool br_stp_recalculate_bridge_id(struct net_bridge *br);
-diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
-index 1f14b8455345..3e88be7aa269 100644
---- a/net/bridge/br_stp.c
-+++ b/net/bridge/br_stp.c
-@@ -36,6 +36,12 @@ void br_set_state(struct net_bridge_port *p, unsigned int state)
- 	};
- 	int err;
- 
-+	/* Don't change the state of the ports if they are driven by a different
-+	 * protocol.
-+	 */
-+	if (p->flags & BR_MRP_AWARE)
-+		return;
-+
- 	p->state = state;
- 	err = switchdev_port_attr_set(p->dev, &attr);
- 	if (err && err != -EOPNOTSUPP)
-diff --git a/net/bridge/br_stp_if.c b/net/bridge/br_stp_if.c
-index d174d3a566aa..a42850b7eb9a 100644
---- a/net/bridge/br_stp_if.c
-+++ b/net/bridge/br_stp_if.c
-@@ -196,10 +196,17 @@ static void br_stp_stop(struct net_bridge *br)
- 	br->stp_enabled = BR_NO_STP;
- }
- 
--void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
-+int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
-+		       struct netlink_ext_ack *extack)
- {
- 	ASSERT_RTNL();
- 
-+	if (br_mrp_enabled(br)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "STP can't be enabled if MRP is already enabled\n");
-+		return -EINVAL;
-+	}
-+
- 	if (val) {
- 		if (br->stp_enabled == BR_NO_STP)
- 			br_stp_start(br);
-@@ -207,6 +214,8 @@ void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
- 		if (br->stp_enabled != BR_NO_STP)
- 			br_stp_stop(br);
- 	}
-+
-+	return 0;
- }
- 
- /* called under bridge lock */
-diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
-index 9ab0f00b1081..7db06e3f642a 100644
---- a/net/bridge/br_sysfs_br.c
-+++ b/net/bridge/br_sysfs_br.c
-@@ -126,9 +126,7 @@ static ssize_t stp_state_show(struct device *d,
- 
- static int set_stp_state(struct net_bridge *br, unsigned long val)
- {
--	br_stp_set_enabled(br, val);
--
--	return 0;
-+	return br_stp_set_enabled(br, val, NULL);
- }
- 
- static ssize_t stp_state_store(struct device *d,
--- 
-2.17.1
+Hi,
 
+On Sun 19 Apr 20, 15:28, Samuel Holland wrote:
+> On 4/8/20 11:01 AM, Jernej =C5=A0krabec wrote:
+> > Hi Samuel!
+> >=20
+> > Dne sreda, 08. april 2020 ob 03:02:32 CEST je Samuel Holland napisal(a):
+> >> This allows the VE clocks and PLL_VE to be disabled most of the time.
+> >>
+> >> Since the device is stateless, each frame gets a separate runtime PM
+> >> reference. Enable autosuspend so the PM callbacks are not run before a=
+nd
+> >> after every frame.
+> >>
+> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> >> ---
+> >>
+> >> I tested this with v4l2-request-test. I don't have the setup to do
+> >> anything more complicated at the moment.
+> >>
+> >> ---
+> >>  drivers/staging/media/sunxi/cedrus/cedrus.c   |   7 ++
+> >>  .../staging/media/sunxi/cedrus/cedrus_hw.c    | 115 ++++++++++++------
+> >>  .../staging/media/sunxi/cedrus/cedrus_hw.h    |   3 +
+> >>  3 files changed, 88 insertions(+), 37 deletions(-)
+>=20
+> [snip]
+>=20
+> > Reset above causes problem. When format is set in cedrus_s_fmt_vid_cap(=
+) a=20
+> > function is called, which sets few registers in HW. Of course, there is=
+ no=20
+> > guarantee that someone will start decoding immediately after capture fo=
+rmat is=20
+> > set. So, if the driver puts VPU to sleep in the mean time, reset will c=
+lear=20
+> > those registers and decoded video will be in different format than expe=
+cted. It=20
+> > could be even argued that registers should not be set in that function =
+and=20
+> > that this is design issue or bug in driver.
+>=20
+> You're right. I didn't see that cedrus_dst_format_set() was called outside
+> cedrus_engine_enable/disable().
+
+This might indeed be an issue with multiple decoding contexts in parallel, =
+with
+potentially different formats. For that reason, it looks like the right thi=
+ng to
+do would be to set the format at each decoding run based on the format set =
+in
+the context by s_fmt.
+
+> > Anyway, I made a runtime PM support long time ago, but never do anythin=
+g=20
+> > besides running few tests:
+> > https://github.com/jernejsk/linux-1/commit/
+> > d245b7fa2a26e519ff675a255c45230575a4a848
+> >=20
+> > It takes a bit different approach. Power is enabled in start streaming =
+and=20
+> > disabled in stop streaming. This is simpler approach and doesn't need=
+=20
+> > autosuspend functionality. I also moved call to a function which sets f=
+ormat=20
+> > in HW registers to start streaming handler, so it's guaranteed to be se=
+t at=20
+> > the beginning.
+>=20
+> Assuming cedrus_device_run() only gets called between streamon and stream=
+off
+> (which appears to be the case), this looks like a better design.
+
+Yes, this is defintiely ensured by the V4L2 framework. I agree that streamo=
+n/off
+are the correct sync points.
+
+> > Note that some registers are only set in start streaming handler. With =
+your=20
+> > approach, if first frame is submitted too late, asserting and de-assert=
+ing=20
+> > reset line could reset those registers.
+>=20
+> I only see registers being set in cedrus_start_streaming() after your pat=
+ch,
+> where you add a call to cedrus_dst_format_set(). I can't find any registe=
+rs
+> being written in any of the ->start() callbacks.
+>=20
+> I'll send a v2 which combines the two patches: yours which handles the ru=
+ntime
+> part better, and mine which handles the probe/remove part better with !CO=
+NFIG_PM.
+
+Thanks, that should do it!
+
+Cheers,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--1hKfHPzOXWu1rh0v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6du1IACgkQ3cLmz3+f
+v9FYIAf/RIkE0bJg+MZKJgy+uiwj7BSER1drSDwD9c70d1EXUoq1TFT0eBqtU81H
+wwM8uhND1u3KDdcNFcGy6OG7Q6CYPR9ne2E0ETFdyP0sJDsxjsTixZ3mLPtImLam
+tTC4jsUz2fTIH/LXI9tPR2XAEB6CFPX9KL2R+pC7T03g2Hje0WygVxRh+dPy2V/y
+w7rpGym9y8A9hZtaGMOREuuqkqsBHd3SpuB6xs/7yTIL9eXtcw4cpffi8GiQQ0s/
+SB/QdcOp3MeT87yg5QpbkpykqwrRkM9/dbP8aU0yRbqvVyvjKMbM+qKxb8CdH3b2
+H1+DLey3Po/R46r4AHmGMA2flB7c9Q==
+=VY9i
+-----END PGP SIGNATURE-----
+
+--1hKfHPzOXWu1rh0v--
