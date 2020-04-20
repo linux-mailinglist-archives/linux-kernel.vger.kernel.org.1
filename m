@@ -2,97 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ABD1B08D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD321B08E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgDTMIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S1726827AbgDTMJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726470AbgDTMIg (ORCPT
+        by vger.kernel.org with ESMTP id S1726585AbgDTMJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:08:36 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27012C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:08:35 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id o19so10192269qkk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XMk7CTaZQupJ1qH+A42fo8Q7jwUlR/A3P5M/Inq4ppo=;
-        b=Y3F+ytkU/iorMur9eP1V/WwWlRf6w2LDIQThM56VFqEIGA1Z+8v5XHiDX1utiOKkPu
-         JEPqWVb1OggOUh29xKBp6uSWVsFdBKT4XfG5MReDuug1qEZG2CyeJNjsfaKBoGtV2y3q
-         rtekxDrHNxVfpVjPp+K0nNSjzM3ko3jUh+rHaWN2j54kM4MO3N/A+r2hCV2glhfgRBk9
-         Q30XG6KdGQoJsFEhwJzA5hdgtSm4SzDnUrAxNcs7iYo4NAJtLWAIIC6x51Jek7FnXWox
-         BdJR442ewA6puqB5BPgfBvA1MpBE5YsU4tBHWqJuBW7ZXpAV4y2z2+yLMhy0H60aBORU
-         948Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XMk7CTaZQupJ1qH+A42fo8Q7jwUlR/A3P5M/Inq4ppo=;
-        b=HhcEMAqhtuLH2ZXyofH+vxFdIqxPueB/QGL6BQK8ZHWGjsm858Ey0QXlhup7hxjwuf
-         umC4wbVJT/WrZsgwacmQo1bKRiUQsm7R/lq3uTF6+Gv/s3chcvR4bGGvYtYJ1ON5qRpu
-         Gie77UbW678GfweUfMCR2Gwpp8qguxgH+Hfyw8sjCdd43cWgC8k0+B/kqPsMyx5PMHSp
-         pHDyG1PGJJ5pmp9qtI5OlerayDMyheqeq0zjHb06ft6ukPiSCOxnQK9OXO5AZf1R5hol
-         Vw761vSnHxxzEnJ1pf5xvcBR3cO4J8BxKvcJ+BWhYm5H0VX/cQI5lHn3nHLVqI1sZwQ2
-         m5PQ==
-X-Gm-Message-State: AGi0PuZDrTO/J0LI6pFfIKadw4a148eWRsqVHt3Q0LnXXmB5yfqkJ3hn
-        MFCsDYfuAsO1gmYGJ8BK6Q4MNJifCSAPoEB5dLU=
-X-Google-Smtp-Source: APiQypI6J5VEoSTWGI2sRGPdABYOr6V8S+alg4Au3Uwoj3fGGCkqA9FdFdTFivny9cNM+xVTszSQkpoAWULmxBnWkH8=
-X-Received: by 2002:a37:4d5:: with SMTP id 204mr16031596qke.176.1587384514373;
- Mon, 20 Apr 2020 05:08:34 -0700 (PDT)
+        Mon, 20 Apr 2020 08:09:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9E1C061A0C;
+        Mon, 20 Apr 2020 05:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R/w/fdWIc8B/K5nT4P8/UgmLyZd29J0YqIbnVwjY21s=; b=p+JxAa3U1CC19AXNdu/BH6UKzT
+        1q7bSOFDOCwo2MSYzmwDrR1nxzUJ5iaeaejdk8ebifXLpcWvIdj84wAekYtOu08W2zqTbLG5O0ycX
+        U7cxXLa9eJLcwQG+48ymcIeWndR1kYb87XpKV4dUHK1Bw44WQSItD4SmKo89ou6lE4CVTb5vcfRjj
+        vF1WtzxZRJyLQzPjGc00Ihbqfme0GHO3+ickvSm5IXmN7WccTA9LMCUpMeCIihzuhh3fIEnDByvk/
+        7oo8jr/DPu6lmDLfJkk2lVyqt0YaQJezJYsVwocQZKg6J1+sHf5Y4ewPqSViS7luzhz/HFm0H7gmz
+        MKNPdI6Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQVEl-0006YO-Da; Mon, 20 Apr 2020 12:09:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 840AE3010BC;
+        Mon, 20 Apr 2020 14:09:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 492392B8DAF90; Mon, 20 Apr 2020 14:09:16 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 14:09:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhenyu Ye <yezhenyu2@huawei.com>
+Cc:     mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org,
+        npiggin@gmail.com, arnd@arndb.de, rostedt@goodmis.org,
+        maz@kernel.org, suzuki.poulose@arm.com, tglx@linutronix.de,
+        yuzhao@google.com, Dave.Martin@arm.com, steven.price@arm.com,
+        broonie@kernel.org, guohanjun@huawei.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org,
+        xiexiangyou@huawei.com, prime.zeng@hisilicon.com,
+        zhangshaokun@hisilicon.com, kuhn.chenqun@huawei.com
+Subject: Re: [PATCH v1 5/6] mm: tlb: Provide flush_*_tlb_range wrappers
+Message-ID: <20200420120916.GE20696@hirez.programming.kicks-ass.net>
+References: <20200403090048.938-1-yezhenyu2@huawei.com>
+ <20200403090048.938-6-yezhenyu2@huawei.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:cf:0:0:0:0 with HTTP; Mon, 20 Apr 2020 05:08:33
- -0700 (PDT)
-Reply-To: mrs.suzanmark22@gmail.com
-From:   Mr David Nicholas <revpaulw3@gmail.com>
-Date:   Mon, 20 Apr 2020 13:08:33 +0100
-Message-ID: <CAG6efq743ZMhrmv8Gd_co_LCwyNS5jwinWgd3E6FBx_4TM6HJQ@mail.gmail.com>
-Subject: ATTN: My Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403090048.938-6-yezhenyu2@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATTN: My Dear
+On Fri, Apr 03, 2020 at 05:00:47PM +0800, Zhenyu Ye wrote:
+> This patch provides flush_{pte|pmd|pud|p4d}_tlb_range() in generic
+> code, which are expressed through the mmu_gather APIs.  These
+> interface set tlb->cleared_* and finally call tlb_flush(), so we
+> can do the tlb invalidation according to the information in
+> struct mmu_gather.
+> 
+> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+> ---
+>  include/asm-generic/pgtable.h | 12 +++++++--
+>  mm/pgtable-generic.c          | 50 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 60 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
+> index e2e2bef07dd2..2bedeee94131 100644
+> --- a/include/asm-generic/pgtable.h
+> +++ b/include/asm-generic/pgtable.h
+> @@ -1160,11 +1160,19 @@ static inline int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>   * invalidate the entire TLB which is not desitable.
+>   * e.g. see arch/arc: flush_pmd_tlb_range
+>   */
+> -#define flush_pmd_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
+> -#define flush_pud_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
+> +extern void flush_pte_tlb_range(struct vm_area_struct *vma,
+> +				unsigned long addr, unsigned long end);
+> +extern void flush_pmd_tlb_range(struct vm_area_struct *vma,
+> +				unsigned long addr, unsigned long end);
+> +extern void flush_pud_tlb_range(struct vm_area_struct *vma,
+> +				unsigned long addr, unsigned long end);
+> +extern void flush_p4d_tlb_range(struct vm_area_struct *vma,
+> +				unsigned long addr, unsigned long end);
+>  #else
+> +#define flush_pte_tlb_range(vma, addr, end)	BUILD_BUG()
+>  #define flush_pmd_tlb_range(vma, addr, end)	BUILD_BUG()
+>  #define flush_pud_tlb_range(vma, addr, end)	BUILD_BUG()
+> +#define flush_p4d_tlb_range(vma, addr, end)	BUILD_BUG()
+>  #endif
+>  #endif
 
-Good news,The BRITISH HIGH COMMISSION has actually verified and discovered
-that your payment has been unnecessarily Delayed by corrupt officials of the
-Company who are Trying to divert your fund of $4,700.000.00 Million
-into their private
-accounts. Therefore we have obtained an irrevocable payment guarantee on your
-Payment with the Bank to make your payment through our new ATM VISA CARD
-system which you can use to withdraw your money in any ATM MACHINE around your
-area.
+Ideally you'd make __HAVE_ARCH_FLUSH_PMD_TLB_RANGE go away. Power
+certainly doesnt need it with the below.
 
-So we are here by inviting you to our office to pick up your ATM VISA CARD but
-if you cannot be able to come down here in our office in person be inform that
-you are going to pay for shipping fee of your ATM visa CARD, so if you are
-unable to come down here then you are required to update us so that we will
-proceed with the necessary arrangement for the delivery of your ATM VISA CARD.
+> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+> index 3d7c01e76efc..0f5414a4a2ec 100644
+> --- a/mm/pgtable-generic.c
+> +++ b/mm/pgtable-generic.c
+> @@ -101,6 +101,56 @@ pte_t ptep_clear_flush(struct vm_area_struct *vma, unsigned long address,
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  
+> +#ifndef __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+> +void flush_pte_tlb_range(struct vm_area_struct *vma,
+> +			 unsigned long addr, unsigned long end)
+> +{
+> +	struct mmu_gather tlb;
+> +
+> +	tlb_gather_mmu(&tlb, vma->vm_mm, addr, end);
+> +	tlb_start_vma(&tlb, vma);
+> +	tlb_set_pte_range(&tlb, addr, end - addr);
+> +	tlb_end_vma(&tlb, vma);
+> +	tlb_finish_mmu(&tlb, addr, end);
+> +}
+> +
+> +void flush_pmd_tlb_range(struct vm_area_struct *vma,
+> +			 unsigned long addr, unsigned long end)
+> +{
+> +	struct mmu_gather tlb;
+> +
+> +	tlb_gather_mmu(&tlb, vma->vm_mm, addr, end);
+> +	tlb_start_vma(&tlb, vma);
+> +	tlb_set_pmd_range(&tlb, addr, end - addr);
+> +	tlb_end_vma(&tlb, vma);
+> +	tlb_finish_mmu(&tlb, addr, end);
+> +}
+> +
+> +void flush_pud_tlb_range(struct vm_area_struct *vma,
+> +			 unsigned long addr, unsigned long end)
+> +{
+> +	struct mmu_gather tlb;
+> +
+> +	tlb_gather_mmu(&tlb, vma->vm_mm, addr, end);
+> +	tlb_start_vma(&tlb, vma);
+> +	tlb_set_pud_range(&tlb, addr, end - addr);
+> +	tlb_end_vma(&tlb, vma);
+> +	tlb_finish_mmu(&tlb, addr, end);
+> +}
+> +
+> +void flush_p4d_tlb_range(struct vm_area_struct *vma,
+> +			 unsigned long addr, unsigned long end)
+> +{
+> +	struct mmu_gather tlb;
+> +
+> +	tlb_gather_mmu(&tlb, vma->vm_mm, addr, end);
+> +	tlb_start_vma(&tlb, vma);
+> +	tlb_set_p4d_range(&tlb, addr, end - addr);
+> +	tlb_end_vma(&tlb, vma);
+> +	tlb_finish_mmu(&tlb, addr, end);
+> +}
+> +#endif /* __HAVE_ARCH_FLUSH_PMD_TLB_RANGE */
 
-As of now be informed that all arrangement has been done and the ATM VISA CARD
-has be in your name, but to RE-ACTIVATE the ATM Card you have to forward your
-current information as requested below to the bank for the ATM Card re-
-activcation, then we will send you the ATM CARD for your immediate use.
+You're nowhere near lazy enough:
 
-Here are the information you have to forward to the bank:
-1. Your Full Names:______
-2. Postal Address:_______
-3. Direct Cell Numbers:_______
-4. Sex:_____
-5.Age:_____
-6. Occupation:________
-7.Nationality:________
-8.Whatsapp Number______
+#define FLUSH_Pxx_TLB_RANGE(_pxx) \
+void flush_##_pxx##_tlb_range(struct vm_area_struct *vma, \
+			      unsigned long addr, unsigned long end) \
+{ \
+	struct mmu_gather tlb; \
+	\
+	tlb_gather_mmu(&tlb, vma->vm_mm, addr, end); \
+	tlb_start_vma(&tlb, vma); \
+	tlb_flush_##_pxx##_range(&tlb, addr, end-addr); \
+	tlb_end_vma(&tlb, vma); \
+	tlb_finish_mmu(&tlb, addr, end); \
+}
 
-Therefore you are advised to contact Bank accountant Manager Mrs.Susan Mark
+FLUSH_Pxx_TLB_RANGE(pte)
+FLUSH_Pxx_TLB_RANGE(pmd)
+FLUSH_Pxx_TLB_RANGE(pud)
+FLUSH_Pxx_TLB_RANGE(p4d)
 
-CONTACT PERSON: Mrs.Susan Mark
-E-mail:( mrs.suzanmark22@gmail.com )
-
-Mr David Nicholas
