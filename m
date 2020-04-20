@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70721B094D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248051B094C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgDTM0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:26:35 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45176 "EHLO huawei.com"
+        id S1726762AbgDTM0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:26:33 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45142 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726470AbgDTM0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726372AbgDTM0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Apr 2020 08:26:31 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1776992AF7BEDEBF3F29;
+        by Forcepoint Email with ESMTP id 1234D41BD4D12F86F4A3;
         Mon, 20 Apr 2020 20:26:29 +0800 (CST)
 Received: from euler.huawei.com (10.175.104.193) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Wei Li <liwei391@huawei.com>
 To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
         <tiwai@suse.com>, <rdunlap@infradead.org>, <geert@linux-m68k.org>
 CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] ASoC: wm89xx: Fix build errors caused by I2C dependency
-Date:   Tue, 21 Apr 2020 04:24:09 +0800
-Message-ID: <20200420202410.47327-2-liwei391@huawei.com>
+Subject: [PATCH 2/2] ASoC: Fix wrong dependency of da7210 and wm8983
+Date:   Tue, 21 Apr 2020 04:24:10 +0800
+Message-ID: <20200420202410.47327-3-liwei391@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200420202410.47327-1-liwei391@huawei.com>
 References: <20200420202410.47327-1-liwei391@huawei.com>
@@ -36,65 +36,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I2C=m, SND_SOC_WM8900=y, SND_SOC_WM8988=y, SND_SOC_WM8995=y:
+As these two drivers support I2C and SPI, we should add the SND_SOC_I2C_AND_SPI
+dependency instead.
 
-sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
-wm8900.c:(.text+0xa16): undefined reference to `__devm_regmap_init_i2c'
-sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
-wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-sound/soc/codecs/wm8900.o: In function `wm8900_exit':
-wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
-wm8988.c:(.text+0x86b): undefined reference to `__devm_regmap_init_i2c'
-sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
-wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-sound/soc/codecs/wm8988.o: In function `wm8988_exit':
-wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
-wm8995.c:(.text+0x1b5b): undefined reference to `__devm_regmap_init_i2c'
-sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
-wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
-sound/soc/codecs/wm8995.o: In function `wm8995_exit':
-wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
-
-As these drivers support I2C and SPI, we add the SND_SOC_I2C_AND_SPI
-dependency to solve it.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: ea00d95200d02 ("ASoC: Use imply for SND_SOC_ALL_CODECS")
+Fixes: ce0c97f8a2936 ("ASoC: Fix SND_SOC_ALL_CODECS imply SPI fallout")
 Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
- sound/soc/codecs/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e6a0c5d05fa5..e60e0b6a689c 100644
+index e60e0b6a689c..d0fec1b90256 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -1525,6 +1525,7 @@ config SND_SOC_WM8804_SPI
+@@ -717,7 +717,7 @@ config SND_SOC_L3
  
- config SND_SOC_WM8900
+ config SND_SOC_DA7210
  	tristate
+-	depends on I2C
 +	depends on SND_SOC_I2C_AND_SPI
  
- config SND_SOC_WM8903
- 	tristate "Wolfson Microelectronics WM8903 CODEC"
-@@ -1576,6 +1577,7 @@ config SND_SOC_WM8985
+ config SND_SOC_DA7213
+ 	tristate "Dialog DA7213 CODEC"
+@@ -1569,7 +1569,7 @@ config SND_SOC_WM8978
  
- config SND_SOC_WM8988
+ config SND_SOC_WM8983
  	tristate
+-	depends on I2C
 +	depends on SND_SOC_I2C_AND_SPI
  
- config SND_SOC_WM8990
- 	tristate
-@@ -1594,6 +1596,7 @@ config SND_SOC_WM8994
- 
- config SND_SOC_WM8995
- 	tristate
-+	depends on SND_SOC_I2C_AND_SPI
- 
- config SND_SOC_WM8996
- 	tristate
+ config SND_SOC_WM8985
+ 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
 -- 
 2.17.1
 
