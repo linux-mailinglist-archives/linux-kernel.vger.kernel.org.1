@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE0E1B0398
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A805F1B03AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 10:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgDTIA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 04:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
+        id S1726487AbgDTICQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 04:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgDTIAZ (ORCPT
+        with ESMTP id S1726048AbgDTICP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:00:25 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BFDC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:00:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j1so5465678wrt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:00:25 -0700 (PDT)
+        Mon, 20 Apr 2020 04:02:15 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6F5C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:02:14 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id u12so3253854uau.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 01:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A+QeMSWD3PS086s3vwF3t/garbLCRMGAy7YurSuE4Kc=;
-        b=hTLGia7bam5LZwHsqquFh8AymM6Ls/yjxGtl/hrZDunqN4uGsKNHdZ6O51cqaTHlUN
-         BYNz1z1cbWKua9hrTYRPm3A7mut1msCAXNB703F1megHRsIopjDs2cIhcRhz6G++6Nr/
-         J/IsnRBoNr7IOPpveEfTAOfIv9Qjqc12xELoq+aRps4wHEWo7AztMRlvwLdpiJOUhyA8
-         XIEZS7Col4hxpVlQLXtIGF1+wOIAZRycl/EOYMVy4vzBIhb9F0mclmozxA1kwBtGGSA7
-         CDj5v1n9e0Hqf/zaUlZWJsjhws2pdwplXtM5OoDvB9PD3kLZBRaPgPQB6sViOtf9toXC
-         WYYA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XGNbQJnwncFtmSfnnq7BG7mTK5kM8GPjPL8s7er/Oug=;
+        b=FPbM6YGm0+2v+a7dfLD2r1xsPIdoZzsB3WLcQQpt+iiMZ0ZPr6E+Xmah4VeCnoBVwM
+         1XI9tGVqd+amR+wTuvVcSje66GPeBZyjeGx2riOIZ5WnA0cCWkSXlmOFJdYy3+7LumtF
+         LXINRU0UpApdf0FihchJuJxe9kxYFW70+mWB6Od3Fk7CyKmTnue8LmsJWXLJ87jKt7pH
+         zhpqlZ7rQaVen8QMRXBN5XO7XD2vZOggFT3VHz80jzrnbGum40+ZXcX+aR8JsRCbvWl/
+         NTVTFHylhWw+j9qoGVrOVHACsQIgRAs2mxa48rsE1VTGzlzxfi5LNYP/TNrD0oFSu+Mr
+         Qqng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A+QeMSWD3PS086s3vwF3t/garbLCRMGAy7YurSuE4Kc=;
-        b=P6bZJ+K0db9KzMMnu2IsWp072crj+mjytKMwXTU6EyKMg8KSBwtgMbjFzk95SfAgUq
-         KXSir4tcQPlzMQn/ANVFp+Mk9twbr5Dbq31BDV+xaGViTzKPJ3o+7dYzBKdEWP2Sjh6N
-         p3LeAw25zQMPImRYzHYvATTZn9+Nzcr4yWwurcLKRkgzZLZKclHXbXRSWu4iU17KxdHG
-         PzV8BNaNHDbKFKnkgGHbEQjScJSox03jImpqItQNC0fMq6ligdb51WxAp6qk/98jmBzg
-         yn+TbDoftUNk35n5m8cJLxpJjLz++sv5pHAh+O7y4PBsbgHoN5f4m01cNB/mEeoJMule
-         PSbg==
-X-Gm-Message-State: AGi0PuZGZZ3X2LNxLQU43/WMEkwP5d85rhVqgOvdEmXaoYszdmkcIEDc
-        mVDiTdlxh1mvruEwSS3kr1OFtw==
-X-Google-Smtp-Source: APiQypLDTl9EnBI31IMEjpSapxs/QYgBIADfuyt1egW7mLSxjpapQG5/JpIeV52Oh+uG14VKnbAC1g==
-X-Received: by 2002:a5d:4092:: with SMTP id o18mr9493720wrp.227.1587369624021;
-        Mon, 20 Apr 2020 01:00:24 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
-        by smtp.gmail.com with ESMTPSA id v10sm113256wrq.45.2020.04.20.01.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 01:00:23 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH] arm64: dts: meson-g12: remove spurious blank line
-Date:   Mon, 20 Apr 2020 10:00:18 +0200
-Message-Id: <20200420080018.11607-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XGNbQJnwncFtmSfnnq7BG7mTK5kM8GPjPL8s7er/Oug=;
+        b=j9dZodIaSfC7QyOTwzBWp75jnVKmV14GpN11MzKltRhct3ZvOMWBRyr8Nq6rbacxOV
+         sMKFlgH8w2YIu0446PxnfE5WC+Bz5fyo4ZuY/9LLjZwNoL4E2IvQIGABeLeNHis5dtYa
+         LRv9mlI0uWWjM/h4bHppYebMkxJsP8+biL/i1GdIr9noAyspIAeotCLtfiAKNVPZqkD1
+         bi6vkwuGMnEbQc64nXd98jlHdIQFGooSWTr1bBj4Ld8QRJOf+tWcu//GF1kDIBkHM7Nd
+         o+GZIBW7a6cuwqwybzUy1UfofvZE1n9bqkIUZQB9+VeHoYMxSllLvhfYoytGaXH3IkIn
+         6MOA==
+X-Gm-Message-State: AGi0PuY0xSVz4ENDbR36IR3hcU3hIGXm9Yct1EQgmDs1AOShOLeGNijo
+        6PK3HHLZHmLIuNYILEkAQCkz8/iCv35WcMvrlCe7wQ==
+X-Google-Smtp-Source: APiQypLaYCzytAomXpGw0KpBtvlb+IMYlHUaXnefkBr/mv0cHGOaEE/8DDORc8fTsMLcsoUj78yspHZlXLsrfKD9OfU=
+X-Received: by 2002:ab0:6588:: with SMTP id v8mr6202526uam.100.1587369734116;
+ Mon, 20 Apr 2020 01:02:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1587363626-20413-1-git-send-email-vbadigan@codeaurora.org>
+In-Reply-To: <1587363626-20413-1-git-send-email-vbadigan@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 20 Apr 2020 10:01:38 +0200
+Message-ID: <CAPDyKFoOq3djNJzEppPwSUUfKYh2vrkcr3LmDEbfwPRa=Asphg@mail.gmail.com>
+Subject: Re: [PATCH V2 0/3] Minor fixes to sdhci-msm
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove spurious blank line introduced in f12a463d2f43 but was not part
-of the original patch at [1].
+On Mon, 20 Apr 2020 at 08:20, Veerabhadrarao Badiganti
+<vbadigan@codeaurora.org> wrote:
+>
+> Enable a couple of CAPS that qcom sd host controller supports.
+> Set a quirk for enabling support for auto cmd12.
+> And enable adma length mismatch error interrupt.
+>
+> --
+> V1: https://lore.kernel.org/linux-arm-msm/1586706808-27337-1-git-send-email-vbadigan@codeaurora.org
+> Changes since V1:
+>         Squashed two caps related patches and appiled stable tag.
+>
+> Veerabhadrarao Badiganti (3):
+>   mmc: sdhci-msm: Enable host capabilities pertains to R1b response
+>   mmc: sdhci-msm: Set SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12 quirk
+>   mmc: sdhci-msm: Enable ADMA length mismatch error interrupt
+>
+>  drivers/mmc/host/sdhci-msm.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
 
-[1] http://lore.kernel.org/r/20200313090713.15147-3-narmstrong@baylibre.com
-
-Fixes: f12a463d2f43 ("arm64: dts: meson-g12: add the SPIFC nodes")
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-g12.dtsi | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-index 783e5a397f86..55d39020ec72 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-@@ -1,4 +1,3 @@
--
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- /*
-  * Copyright (c) 2019 BayLibre, SAS
--- 
-2.22.0
-
+First patch applied for fixes, the other two for next, thanks!
+Kind regards
+Uffe
