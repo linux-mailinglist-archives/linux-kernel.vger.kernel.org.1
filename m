@@ -2,96 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C277A1B0324
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32EE1B032C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 09:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgDTHfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 03:35:52 -0400
-Received: from sonic311-23.consmr.mail.ne1.yahoo.com ([66.163.188.204]:37589
-        "EHLO sonic311-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726025AbgDTHfv (ORCPT
+        id S1726136AbgDTHgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 03:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726006AbgDTHgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:35:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587368149; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Ps+ALXVhutmDhXtNcObwLhO3PW/T9rgTwS4W9/TwtezKw1CZdSdTX913drHcGCLopeX7pJmbWN+fsbXNIZ0S0CVJzF+nFNUPxNiZmiRr3lhegwcGPdM7BSLFPxlELLVkiVmK80Fs+TtLf9Kdit1YcDsLBUuIjPDYlQFsvnk+KrRjdwslLOYLM1j+ijv8xcI0u5X4zOLOkxkX5Rwkq/APSy2MS1LPpU3kds3WfPMhBWQDO8PTfHQM0m2+DsSPB/aqdiRPaPHl2iT/+kYG4Md46WMlxHwcbOhNwvm6QfNkoVaffX9WvRwKC6p6h4QDFqcgx2n2ERm+C1IZ1EqxG/+mPQ==
-X-YMail-OSG: mLAm1a0VM1lB9oNa9YxWudeumslq9JmzzzQKai8YOwrU7Uou6DxjHP.yMbQeIgh
- 6jyLirUs3ul7Br.NkQXboYOWF95jHCCbJGC_BlAcrAHKR9jB0o1wD9jB1roXxNeKT842V_c6zTOB
- .YEs_mn2duh9T6RXaYiQpclVl2H35JZGS45MYH7Vtw6vdilFbPcjApSRMhsNutxNmNyppos1u23W
- OFNlpFg4Dz0jGcpwSpAbjaLVaHWX8fDoVxUYzpBi79IBqPi2LjAvxg60WUQEOTYRHzsXSMi7kSsh
- i4BESLqStTqOfdCPCWxZ9c3TTQKvHMszagCV5_RamD2qnvpbx1nRVt8SxdRgyt7qM4l8DkAqGUJp
- hXlJw9LW7purnHHlJaIseahAbbEk6CUmb.uUEAEziF.sGU6l5.eKzfWa.3vvverBlYI680oFOsE1
- gsnEZUxDHym4rYTBNUzdDT5D.pgOaXTg2Z18wh7fY8gMj6I1PeRwi0wNIgDK8k4TsQfYfCLotjwj
- V4j1VZgeyFGwv1j3khMbtTsSlCQKIZ.FLvbJeyXonjwCJcgGobBAzEilGVS9ABEtZoCQuhKFbuhD
- SrXORn.Yb11nuqhYp4pNZ44fkr2y7rbZU_QgXNi4EJj4wl.5Gp40DPLdB83OP0YKA0i6SR0C1RD8
- EaBT7O22XgICGacdLGe9pSNCLgtbXBWpZQzbubCKTbd8bgKiKSYNEGxHNHgGRk_fN0OBpSlSCniX
- bmjedCEbfkT6u6oLs4IPG1oEIe0vJM_cq5d_avadQHz43u1UzikasVsc4ren7AkLSqUyJRThS6xx
- p2vpn5PfkDcwpHArxqdDAbTHR2zDyXU7JPZn441Xy3pofgJKryuZWIBHgbOcT6Xij8QgPEjmDjES
- ZeT13ntx.rtWRZ3iNbtGANQrD_q8RVUiSiF3BtKbm8HXytysULrWsfABTphHpvOxbYANiwlGLVeI
- 5bFIrPH5n6mK4XxqNrP7uw_OQ2CPuqA2g5bPpgxyOBmAZ6dYy25a8vVAvmCcrWbqwyJPYnWhQXrU
- 1uH8FOWH.ZpOsEOdBvmivT0B63VFpxEMzudvJ379fdwkqYImnc0.ERvKEXbR0vaut4Smr5KoP.5D
- yNhx_v6i77ru1gYvxPiGOK9awqF4.abTmrDN0VImML4yztNhGcF3gOKLZrOfRw5eam_e8KWlYrhe
- f81Xahwj_qI2ZxROrDCDDkqw0g9LnoAdeFdHS64i4cCwHVEAQ9Nkzt9KYve2AcQb21nHAremSZbE
- UWA7LDAbjU4MV4o9ClHXk.t.Lls9F5K8ezuXLSiJsjP4JHhOBdcVr1XhiBXsWRGB7dYZDTLfMDDg
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Mon, 20 Apr 2020 07:35:49 +0000
-Date:   Mon, 20 Apr 2020 07:35:47 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
-Reply-To: mrs.minaabrunel30@gmail.com
-Message-ID: <579318633.3318034.1587368147698@mail.yahoo.com>
-Subject: My Dear in the lord
+        Mon, 20 Apr 2020 03:36:43 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0B9C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:36:43 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y24so10150627wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 00:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Mb0X0VbhAnhVtMeOXLuQ8HsuJ6uYYtL6iIOac3n0PJU=;
+        b=st0iZapP+zDcsQ4UrQb7rcM/hsGHFlairhxjzCU+eWwjjuseXuqjJPI+WXPiBeW+Ul
+         493WUgOLbd3mEM16Cz06eaR8/6bMoVqw5mTtKi8z4TMnE1oxQVpLJVVt+gfkQ+awZtBz
+         Llr3jJX2BwEJq6rwnMOXeZHh0HD0SCgTsSVh4nnX6ZlTuAdVem4zbngqA18U1cPELUZ/
+         sp8zegHh6y8ehz3646WCK8B67qgzanSNH1hLnjoluhIns84gS4L6UP74qr+2o2ZskG3I
+         UFiPAJ0w6uzb0ZGGR3YkpjjQ3s73dRbet54XvXOraKAVsFDH372JkVtKLsg+g+bV0NQf
+         x8TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Mb0X0VbhAnhVtMeOXLuQ8HsuJ6uYYtL6iIOac3n0PJU=;
+        b=KGfrgRgV3Apr1/1Fvp8TltzPBUUdok+2pRZOC4G7o/jUfqy3v/SXiOYTBRm8nnUlHx
+         vBUwmivfagrle4AGvgMyItWVofRitH/eYUjtB4nqulp/aH6j6q6nXjy+n6qfAigQxyjF
+         roWX2/vYY27IOzQN28/nR8YYJbjmt9e/0Y2/w2i+gc9bsJ9wiis7JYu2ZBoY85efuapw
+         9yE/u8tEeLBY7fQxL5s+Ig14ScMN+Ycbc1roz2haj+AyLxdLeQjFhhzaSjDMEfQjvU8/
+         L5f5Lji5MSsQBup9URHBh8ehhHkGTo13vk2HW37UIsPyG0GBbdUpZ9Hdx0HBPhkljoPE
+         StvA==
+X-Gm-Message-State: AGi0PuZhEDsHPxJ5/qaAamIXRb/zbiC+L820FoWhuWH7BFR8pDmilXNb
+        sr2m9gi4jhI7HLuhXMNrkYN4Wg==
+X-Google-Smtp-Source: APiQypJ25Kjm3y9Zgopg3qXJE7CUHbyrlxsvNzWf6js5QWhmpv4/KdDycmxZJtwyZTMEA2yfKfjtHw==
+X-Received: by 2002:a1c:40c4:: with SMTP id n187mr15810229wma.28.1587368201801;
+        Mon, 20 Apr 2020 00:36:41 -0700 (PDT)
+Received: from dell ([95.149.164.107])
+        by smtp.gmail.com with ESMTPSA id w18sm19085wrn.55.2020.04.20.00.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 00:36:41 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 08:36:39 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ran Bi <ran.bi@mediatek.com>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Josef Friedl <josef.friedl@speed.at>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v12 5/6] rtc: mt6397: Add support for the MediaTek MT6358
+ RTC
+Message-ID: <20200420073639.GL3737@dell>
+References: <1586333531-21641-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1586333531-21641-6-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <20200416091438.GA2167633@dell>
+ <1587112169.12875.2.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <579318633.3318034.1587368147698.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1587112169.12875.2.camel@mhfsdcap03>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 17 Apr 2020, Ran Bi wrote:
 
+> On Thu, 2020-04-16 at 10:14 +0100, Lee Jones wrote:
+> > On Wed, 08 Apr 2020, Hsin-Hsiung Wang wrote:
+> > 
+> > > From: Ran Bi <ran.bi@mediatek.com>
+> > > 
+> > > This add support for the MediaTek MT6358 RTC. Driver using
+> > > compatible data to store different RTC_WRTGR address offset.
+> > > This replace RTC_WRTGR to RTC_WRTGR_MT6323 in mt6323-poweroff
+> > > driver which only needed by armv7 CPU without ATF.
+> > > 
+> > > Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > Reviewed-by: Yingjoe Chen <yingjoe.chen@mediatek.com>
+> > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > > Acked-by: Sebastian Reichel <sre@kernel.org>
+> > > Signed-off-by: Ran Bi <ran.bi@mediatek.com>
+> > > Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> > 
+> > Please place these in chronological order.  They should provide some
+> > history, rather than a unordered slab list of random sign-offs.
+> > 
+> 
+> I suppose that you mean the order should be like below, right?
+> Reviewed-by: Yingjoe Chen <yingjoe.chen@mediatek.com>
+> Acked-by: Sebastian Reichel <sre@kernel.org>
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> Signed-off-by: Ran Bi <ran.bi@mediatek.com>
 
-My Dear in the lord
+This would imply that it was reviewed before it was written, which
+would subsequently imply time-travel, so I suggest not.
 
+Author(s)
+Review(s)/Acks(s)/Tested(s) /* ideally in the order they were received */
+Sub-maintainer sign-off     /* if applicable */
+Maintainer sign-off
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
-e capital city of Italy in Southern Europe. The money was from the sale of =
-his company and death benefits payment and entitlements of my deceased husb=
-and by his company.
+> > > ---
+> > >  drivers/power/reset/mt6323-poweroff.c |  2 +-
+> > >  drivers/rtc/rtc-mt6397.c              | 18 +++++++++++++++---
+> > >  include/linux/mfd/mt6397/rtc.h        |  9 ++++++++-
+> > >  3 files changed, 24 insertions(+), 5 deletions(-)
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
