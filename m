@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978481B0B28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566CE1B0B7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgDTMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:53:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729647AbgDTMxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:53:54 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728893AbgDTM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:56:14 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41515 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726779AbgDTM4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:56:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587387367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aQuiO+56fM83jue+pc8NC1/acthLiygj2WkuZrb/ns0=;
+        b=UjHOBBPPEsCK/H1ldbtsoP5PjkYnZxG7c9L/PS2Fgc6ieJXmwG4Y4PKGW81rQAw7TanUq0
+        NKdxfWYjXjHMkDmL9Nv49j6m49rKdaJ1bB8La2WnzSWXDyoa5nUt7VqADOVULOobOusW0w
+        KYMeShv/mJvoqbRbJlKyFzD7+yw5Y/k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-RY_AvQcYMPu5lZgX1_CboA-1; Mon, 20 Apr 2020 08:56:05 -0400
+X-MC-Unique: RY_AvQcYMPu5lZgX1_CboA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EC8E206D5;
-        Mon, 20 Apr 2020 12:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587387234;
-        bh=caw1VnqJBp4MmqQVV2viMKeXieGpJDQ6lgh7Vj0LSgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TewWD3QBS7jjs40MyYGUTfuWbpyyyAVRhZmUOezodYD84VT5bL/uVC7hiLSLPFrOy
-         8SYQQVx52JndV9PSdr3WR5G/BqK/8pmOohSM6SZvLBLnvc0fdrDo8c2Y50gJxADm+T
-         Ur/N8PFT2lKlInjR8r7E/nc8gfXRc09SYxLFx57Q=
-Date:   Mon, 20 Apr 2020 13:53:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: sound: add Microsemi ZL38060 binding
-Message-ID: <20200420125348.GC10045@sirena.org.uk>
-References: <20200417221341.31428-1-TheSven73@gmail.com>
- <20200420121542.GB6507@sirena.org.uk>
- <CAGngYiWauBTnXDcP9UC1S7U5Ogy0B=bUZSdGs1Z9aKZ2+sB=Qw@mail.gmail.com>
- <20200420122534.GC6507@sirena.org.uk>
- <CAGngYiV9MxeLrERkgU2+rucCiJ5StCXN7GXxKLMfaJ-bqSpAAw@mail.gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 811081085983;
+        Mon, 20 Apr 2020 12:56:04 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 961835C1BB;
+        Mon, 20 Apr 2020 12:56:03 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id 11D06119; Mon, 20 Apr 2020 09:56:00 -0300 (BRT)
+Date:   Mon, 20 Apr 2020 09:55:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     jagdsh.linux@gmail.com
+Cc:     jolsa@kernel.org, ak@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] tools/lib/perf/: Remove duplicate headers
+Message-ID: <20200420125559.GA4471@redhat.com>
+References: <1587276836-17088-1-git-send-email-jagdsh.linux@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LwW0XdcUbUexiWVK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGngYiV9MxeLrERkgU2+rucCiJ5StCXN7GXxKLMfaJ-bqSpAAw@mail.gmail.com>
-X-Cookie: Hope is a waking dream.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1587276836-17088-1-git-send-email-jagdsh.linux@gmail.com>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Sun, Apr 19, 2020 at 11:43:56AM +0530, jagdsh.linux@gmail.com escreveu:
+> From: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+> 
+> Code cleanup: Remove duplicate headers which are included twice.
 
---LwW0XdcUbUexiWVK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-On Mon, Apr 20, 2020 at 08:50:45AM -0400, Sven Van Asbroeck wrote:
-> On Mon, Apr 20, 2020 at 8:25 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > I'd expect someone with knowledge of the hardware such as yourself.
->=20
-> I claim no expertise - I was just getting tired of dragging the
-> out-of-tree vendor
-> driver for this chip from kernel to kernel. AFAIK, most people using this=
- chip
-> have forked the vendor driver and adapted it to their specific needs.
+- Arnaldo
+ 
+> Signed-off-by: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+> ---
+>  tools/lib/perf/evlist.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> index 5b9f2ca..def5505 100644
+> --- a/tools/lib/perf/evlist.c
+> +++ b/tools/lib/perf/evlist.c
+> @@ -11,10 +11,8 @@
+>  #include <internal/mmap.h>
+>  #include <internal/cpumap.h>
+>  #include <internal/threadmap.h>
+> -#include <internal/xyarray.h>
+>  #include <internal/lib.h>
+>  #include <linux/zalloc.h>
+> -#include <sys/ioctl.h>
+>  #include <stdlib.h>
+>  #include <errno.h>
+>  #include <unistd.h>
+> -- 
+> 1.8.3.1
 
-> If my name has to be there, I'd be keen to hand it over once someone more
-> familiar with this chip comes along.
-
-I think by virtue of taking this step you have become the de facto
-upstream expert on this chip!  Like you say hopefully someone more
-familiar (ideally from Microsemi) will turn up.
-
---LwW0XdcUbUexiWVK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6dm1sACgkQJNaLcl1U
-h9C0kAf/VfluleklGZwAwINGUKEsAnNMMpgzkCeC04jQeANQold1WwieTBWwOlcm
-t9AoRee4bTR6kFSHkHmRfUMgC3GUl8Dy1St/+2r43UMUYbR4FP3WhrQrVNRRQUob
-AjFB/5ibXcAdnqL63YRzKl/NYT0Hpvz8m++w0++NZ0JXjvD8il1Z5kgV6HnHEZq8
-4zc9STyT0aZXjDCwBA82dGEXOEit8YOsUwEjTt9k/XzcC7EBZslzgBEMwNmnnCBJ
-PHrUFwhx4RJrynRLDDKX4j2RXbwhmiMp6CZAj0wMfNdZdFAFSVNr3ZFA/xIT0QJD
-H8Oo73IWb8FVBHM7hm/z2nGhCWl/wQ==
-=UrRl
------END PGP SIGNATURE-----
-
---LwW0XdcUbUexiWVK--
