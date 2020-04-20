@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16201B0AF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7F11B09D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgDTMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43174 "EHLO mail.kernel.org"
+        id S1728251AbgDTMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:42:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgDTMrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:47:16 -0400
+        id S1728225AbgDTMm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:42:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 878E92072B;
-        Mon, 20 Apr 2020 12:47:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08AEC20724;
+        Mon, 20 Apr 2020 12:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386836;
-        bh=qKGdh4Za47dTXjFZpK413jDKrBnm5xyHnkOpBgWgldg=;
+        s=default; t=1587386548;
+        bh=PRh9IJDdS+o73XwbAPa6itI1Z1L1fcKUk3RuRn007Zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtxmCcR5MCTXIq43fq1QpUfCxgHnk/K5Z0OY9R9m7Qt2Su6uDHObGXC/EJ/bbu709
-         m9dedQG+d5RGVnHsgS2RGAHjPg8xOjQOoKwJ/oZ43ejOgIuKaLq8PDjAvGUYEt8b3J
-         fELZYDvQS3pcnaEQrgvoRQHzJGi2kzHVknUT61Ls=
+        b=lXSW/gwlY6FTpnuphbNJRVuNdUygkLsMLnMwIqYm2Vi0vixIO8fTbkCYovqBxcRSZ
+         T6NknDscyCbLI1gAO5a471TIEFVSKGceuLcvxrAPLCmT2C3BFEV7vRytKH40kNab77
+         aS+SW5aRNwlT3j/tWyldva/uxGO702MPDmVhYzPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Atsushi Nemoto <atsushi.nemoto@sord.co.jp>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 07/60] net: phy: micrel: use genphy_read_status for KSZ9131
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.5 41/65] ALSA: usb-audio: Filter error from connector kctl ops, too
 Date:   Mon, 20 Apr 2020 14:38:45 +0200
-Message-Id: <20200420121503.007491690@linuxfoundation.org>
+Message-Id: <20200420121515.390565476@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 68dac3eb50be32957ae6e1e6da9281a3b7c6658b ]
+commit 48cc42973509afac24e83d6edc23901d102872d1 upstream.
 
-KSZ9131 will not work with some switches due to workaround for KSZ9031
-introduced in commit d2fd719bcb0e83cb39cfee22ee800f98a56eceb3
-("net/phy: micrel: Add workaround for bad autoneg").
-Use genphy_read_status instead of dedicated ksz9031_read_status.
+The ignore_ctl_error option should filter the error at kctl accesses,
+but there was an overlook: mixer_ctl_connector_get() returns an error
+from the request.
 
-Fixes: bff5b4b37372 ("net: phy: micrel: add Microchip KSZ9131 initial driver")
-Signed-off-by: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This patch covers the forgotten code path and apply filter_error()
+properly.  The locking error is still returned since this is a fatal
+error that has to be reported even with ignore_ctl_error option.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200412081331.4742-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/phy/micrel.c |    2 +-
+ sound/usb/mixer.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -1154,7 +1154,7 @@ static struct phy_driver ksphy_driver[]
- 	.driver_data	= &ksz9021_type,
- 	.probe		= kszphy_probe,
- 	.config_init	= ksz9131_config_init,
--	.read_status	= ksz9031_read_status,
-+	.read_status	= genphy_read_status,
- 	.ack_interrupt	= kszphy_ack_interrupt,
- 	.config_intr	= kszphy_config_intr,
- 	.get_sset_count = kszphy_get_sset_count,
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1446,7 +1446,7 @@ error:
+ 		usb_audio_err(chip,
+ 			"cannot get connectors status: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+ 			UAC_GET_CUR, validx, idx, cval->val_type);
+-		return ret;
++		return filter_error(cval, ret);
+ 	}
+ 
+ 	ucontrol->value.integer.value[0] = val;
 
 
