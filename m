@@ -2,217 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2431B170B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E1B1B16F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 22:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgDTU1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 16:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgDTU00 (ORCPT
+        id S1727902AbgDTU0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 16:26:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40750 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726880AbgDTU03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 16:26:26 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2615C061A0C;
-        Mon, 20 Apr 2020 13:26:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id h2so1013048wmb.4;
-        Mon, 20 Apr 2020 13:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rnh+McsJx0RoUC/D7GUKGKHfeXKqPCTz0PtdlxFfOB4=;
-        b=o/PiQFqksFUYRPMkKFrQgndQGSJI9ciJA357NNeXzTWM8lsoquahb/EEL97Vh+UH2x
-         5cTlZIirnZjKLz3ekAkfMfpXBcSccl4hMZbGcyuOlRAkl7ol9DzoVh9o9xxZJH31dxLo
-         va3bSTHUakRiApC/nkd6pEKKDqyMyuiXzWxa8p3d2X0YnUcqDzMktzcQGKC7KwSCqtPm
-         YhoqjUVq5fCPIIi91mYg72KS5bO407J8/xuqaZ95at7DXw1AEKvioh1gAc4PDviiA64y
-         yoqWw+IzQTJFdGQZDMwwYxxYMt21LsfhG+MXDpqeZySPu6Na75Frr7gR/8bRx5gVwYFd
-         vmAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rnh+McsJx0RoUC/D7GUKGKHfeXKqPCTz0PtdlxFfOB4=;
-        b=jjB1jfQTPdlTY89p1RL4B9UTiBzHl2KbsFLBZThEqCalbjYGW0P3aNxJtrqE+8uWtX
-         loy4nkJNnfx4/A2TIezmBxXs3RDAC6YS3kHXx/aseezg9u/qC6yfbushabkjHp+yFvKj
-         dM5x+yr7tqEVbQek/74tocUGkGPtlaYmWni8JfN+Z9KhchJlLONyQH/QfADAveI4ag7+
-         HJ5g4GuO3jtN7ZMr6BSZ+FQPjMslryT1FbWJGzCLL5FSTkBwcbwEsZpbBc51lEFWyRc3
-         CkctFUZ6Mwy6cFNcsFxqDrLKXTGM2GN/KzLgl9LB1JCLQ1eVdRYeYHlVOTz/HdSuXJ5U
-         w3/Q==
-X-Gm-Message-State: AGi0PuamwRZd3xkjkjp+SFPPpQIK8Xs2QEPvsAoWr5jLaJUDORGgQAGS
-        /StobkOTbnDO6c6pZf2iN4hE50ESrC0=
-X-Google-Smtp-Source: APiQypKZQvp7B+IRpQsVNj52BY2L/RrQ0bY8cTNf87BOA6UpV1lzLCYZmUrbDf4YEkV5+FW5fNomog==
-X-Received: by 2002:a05:600c:2316:: with SMTP id 22mr1141143wmo.164.1587414384242;
-        Mon, 20 Apr 2020 13:26:24 -0700 (PDT)
-Received: from localhost.localdomain (p200300F137142E00428D5CFFFEB99DB8.dip0.t-ipconnect.de. [2003:f1:3714:2e00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id l19sm657846wmj.14.2020.04.20.13.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 13:26:23 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     robh+dt@kernel.org, khilman@baylibre.com, narmstrong@baylibre.com,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 1/4] dt-bindings: power: meson-ee-pwrc: add support for Meson8/8b/8m2
-Date:   Mon, 20 Apr 2020 22:26:09 +0200
-Message-Id: <20200420202612.369370-2-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420202612.369370-1-martin.blumenstingl@googlemail.com>
-References: <20200420202612.369370-1-martin.blumenstingl@googlemail.com>
+        Mon, 20 Apr 2020 16:26:29 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03KK3X3k105290;
+        Mon, 20 Apr 2020 16:26:21 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gfeas254-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 16:26:21 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03KKPjcs010977;
+        Mon, 20 Apr 2020 20:26:20 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04dal.us.ibm.com with ESMTP id 30fs668gyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 20:26:20 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03KKQJSs19988888
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 20:26:19 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 595A5AE063;
+        Mon, 20 Apr 2020 20:26:19 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D4BEAE062;
+        Mon, 20 Apr 2020 20:26:18 +0000 (GMT)
+Received: from ghost4.ibm.com (unknown [9.163.56.120])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Apr 2020 20:26:18 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com
+Subject: [PATCH v10 5/7] ARM: dts: Aspeed: AST2600: Add XDMA PCI-E root control reset
+Date:   Mon, 20 Apr 2020 15:26:09 -0500
+Message-Id: <20200420202611.17776-6-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20200420202611.17776-1-eajames@linux.ibm.com>
+References: <20200420202611.17776-1-eajames@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_08:2020-04-20,2020-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=867
+ spamscore=0 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ suspectscore=1 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200157
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The power domains on the 32-bit Meson8/Meson8b/Meson8m2 SoCs are very
-similar to what G12A still uses. The (known) differences are:
-- Meson8 doesn't use any reset lines at all
-- Meson8b and Meson8m2 use the same reset lines, which are different
-  from what the 64-bit SoCs use
-- there is no "vapb" clock on the older SoCs
-- amlogic,ao-sysctrl cannot point to the whole AO sysctrl region but
-  only the power management related registers
+The AST2600 XDMA engine requires the PCI-E root control reset be cleared
+as well, so add a phandle to that syscon reset.
 
-Add a new compatible string and adjust clock and reset line expectations
-for each SoC.
-
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
 ---
- .../bindings/power/amlogic,meson-ee-pwrc.yaml | 74 +++++++++++++++----
- include/dt-bindings/power/meson8-power.h      | 13 ++++
- 2 files changed, 72 insertions(+), 15 deletions(-)
- create mode 100644 include/dt-bindings/power/meson8-power.h
+ arch/arm/boot/dts/aspeed-g6.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml b/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
-index 6c6079fe1351..2a1c933ae434 100644
---- a/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
-+++ b/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
-@@ -23,13 +23,19 @@ description: |+
- properties:
-   compatible:
-     enum:
-+      - amlogic,meson8-pwrc
-+      - amlogic,meson8b-pwrc
-+      - amlogic,meson8m2-pwrc
-       - amlogic,meson-g12a-pwrc
-       - amlogic,meson-sm1-pwrc
- 
-   clocks:
--    minItems: 2
-+    minItems: 1
-+    maxItems: 2
- 
-   clock-names:
-+    minItems: 1
-+    maxItems: 2
-     items:
-       - const: vpu
-       - const: vapb
-@@ -38,18 +44,7 @@ properties:
-     minItems: 11
- 
-   reset-names:
--    items:
--      - const: viu
--      - const: venc
--      - const: vcbus
--      - const: bt656
--      - const: rdma
--      - const: venci
--      - const: vencp
--      - const: vdac
--      - const: vdi6
--      - const: vencl
--      - const: vid_lock
-+    minItems: 11
- 
-   "#power-domain-cells":
-     const: 1
-@@ -59,12 +54,61 @@ properties:
-     allOf:
-       - $ref: /schemas/types.yaml#/definitions/phandle
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - amlogic,meson8b-pwrc
-+            - amlogic,meson8m2-pwrc
-+    then:
-+      properties:
-+        reset-names:
-+          items:
-+            - const: dblk
-+            - const: pic_dc
-+            - const: hdmi_apb
-+            - const: hdmi_system
-+            - const: venci
-+            - const: vencp
-+            - const: vdac
-+            - const: vencl
-+            - const: viu
-+            - const: venc
-+            - const: rdma
-+      required:
-+        - resets
-+        - reset-names
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - amlogic,meson-g12a-pwrc
-+            - amlogic,meson-sm1-pwrc
-+    then:
-+      properties:
-+        reset-names:
-+          items:
-+            - const: viu
-+            - const: venc
-+            - const: vcbus
-+            - const: bt656
-+            - const: rdma
-+            - const: venci
-+            - const: vencp
-+            - const: vdac
-+            - const: vdi6
-+            - const: vencl
-+            - const: vid_lock
-+      required:
-+        - resets
-+        - reset-names
-+
- required:
-   - compatible
-   - clocks
-   - clock-names
--  - resets
--  - reset-names
-   - "#power-domain-cells"
-   - amlogic,ao-sysctrl
- 
-diff --git a/include/dt-bindings/power/meson8-power.h b/include/dt-bindings/power/meson8-power.h
-new file mode 100644
-index 000000000000..dd8b2ddb82a7
---- /dev/null
-+++ b/include/dt-bindings/power/meson8-power.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: (GPL-2.0+ or MIT) */
-+/*
-+ * Copyright (c) 2019 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-+ */
-+
-+#ifndef _DT_BINDINGS_MESON8_POWER_H
-+#define _DT_BINDINGS_MESON8_POWER_H
-+
-+#define PWRC_MESON8_VPU_ID			0
-+#define PWRC_MESON8_ETHERNET_MEM_ID		1
-+#define PWRC_MESON8_AUDIO_DSP_MEM_ID		2
-+
-+#endif /* _DT_BINDINGS_MESON8_POWER_H */
+diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+index 1ffc15177b79..19f3287b7320 100644
+--- a/arch/arm/boot/dts/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+@@ -342,7 +342,8 @@ xdma: xdma@1e6e7000 {
+ 				compatible = "aspeed,ast2600-xdma";
+ 				reg = <0x1e6e7000 0x100>;
+ 				clocks = <&syscon ASPEED_CLK_GATE_BCLK>;
+-				resets = <&syscon ASPEED_RESET_DEV_XDMA>;
++				resets = <&syscon ASPEED_RESET_DEV_XDMA>, <&syscon ASPEED_RESET_RC_XDMA>;
++				reset-names = "device", "root-complex";
+ 				interrupts-extended = <&gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+ 						      <&scu_ic0 2>;
+ 				pcie-device = "bmc";
 -- 
-2.26.1
+2.24.0
 
