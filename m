@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5E71B09F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9221B09AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgDTMnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        id S1727995AbgDTMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728395AbgDTMn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:43:28 -0400
+        id S1727975AbgDTMlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:41:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FA3220735;
-        Mon, 20 Apr 2020 12:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2F242072B;
+        Mon, 20 Apr 2020 12:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386608;
-        bh=61WFqwITioEntxRH6QDaMEwXKdxo0S5pX28b3CWeGdc=;
+        s=default; t=1587386474;
+        bh=0EGY66fsxLPM8SesOHH0e4VqaPDSb1hdf79Q4j0V9AU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hbB2B8kcJbd8HxzRnWiUV9qm2/nvEBBUcuPTl62TUGGXgluE2kUQqMx14oaXIqfdC
-         HzKqNe9pC8emftAHBONmW2ki+pR6nqXJZsu1IwzPZimMtCB1GxsHr8Cw6HGLiT8Lzh
-         wbyDm2KROrxPQSenDrTJIACmJYDJhu4fAwXuL7hk=
+        b=f28uBNnZR+rAGpHKvvesjMCr3ge4gsiUqn6icwisphzDEEqEamWF0lUoOPY3R38pj
+         7wT7aIi2QQtdYXLpckLacySNyhCcMPvsFHCZ7/q2v7vkob5vfjMT2y+YwQDSTGsIIJ
+         aFTwp1WihxrL+UThpw28NvEezyl9LMiQIoMFgpT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.6 26/71] jbd2: improve comments about freeing data buffers whose page mapping is NULL
+        stable@vger.kernel.org, "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.5 36/65] arm64: dts: librem5-devkit: add a vbus supply to usb0
 Date:   Mon, 20 Apr 2020 14:38:40 +0200
-Message-Id: <20200420121513.759932086@linuxfoundation.org>
+Message-Id: <20200420121514.100912290@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121508.491252919@linuxfoundation.org>
-References: <20200420121508.491252919@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Angus Ainslie (Purism) <angus@akkea.ca>
 
-commit 780f66e59231fcf882f36c63f287252ee47cc75a upstream.
+commit dde061b865598ad91f50140760e1d224e5045db9 upstream.
 
-Improve comments in jbd2_journal_commit_transaction() to describe why
-we don't need to clear the buffer_mapped bit for freeing file mapping
-buffers whose page mapping is NULL.
+Without a VBUS supply the dwc3 driver won't go into otg mode.
 
-Link: https://lore.kernel.org/r/20200217112706.20085-1-yi.zhang@huawei.com
-Fixes: c96dceeabf76 ("jbd2: do not clear the BH_Mapped flag when forgetting a metadata buffer")
-Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: eb4ea0857c83 ("arm64: dts: fsl: librem5: Add a device tree for the Librem5 devkit")
+Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jbd2/commit.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -997,9 +997,10 @@ restart_loop:
- 			 * journalled data) we need to unmap buffer and clear
- 			 * more bits. We also need to be careful about the check
- 			 * because the data page mapping can get cleared under
--			 * out hands, which alse need not to clear more bits
--			 * because the page and buffers will be freed and can
--			 * never be reused once we are done with them.
-+			 * our hands. Note that if mapping == NULL, we don't
-+			 * need to make buffer unmapped because the page is
-+			 * already detached from the mapping and buffers cannot
-+			 * get reused.
- 			 */
- 			mapping = READ_ONCE(bh->b_page->mapping);
- 			if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+@@ -743,6 +743,7 @@
+ };
+ 
+ &usb3_phy0 {
++	vbus-supply = <&reg_5v_p>;
+ 	status = "okay";
+ };
+ 
 
 
