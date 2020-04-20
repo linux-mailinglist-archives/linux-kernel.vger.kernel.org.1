@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96E81B11A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92D81B11BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 18:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgDTQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 12:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgDTQeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:34:13 -0400
-Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2E2A20775;
-        Mon, 20 Apr 2020 16:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587400453;
-        bh=hXdqdvStMdt0tN5I2czOifevXXjFsXK/cpNbPz7EVHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0D8LAaLFzEt8AA3I7m6syrw55ULBFted7FhihglL6mxivC0E6Y5omZQfiE02trxNb
-         KZ2CU/KKWdsasYMmjJrHS+Co2gp9EIhPNVRkoHt9Lj4PPLsM6x+oDPGwCVq3SvEPp5
-         yuXpncSXdm8rPrPhDSFSv06SbCTPExMnOsdsq3b8=
-Date:   Mon, 20 Apr 2020 18:34:10 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Li RongQing <lirongqing@baidu.com>
-Cc:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        srikar@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/isolation: allow isolcpus and nohz_full for
- different cpus
-Message-ID: <20200420163409.GB10024@lenoir>
-References: <1587027078-16239-1-git-send-email-lirongqing@baidu.com>
+        id S1726715AbgDTQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 12:37:50 -0400
+Received: from mail.lintas.net.id ([103.242.106.93]:39568 "EHLO
+        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgDTQhr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 12:37:47 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 34BF7303CD17E;
+        Mon, 20 Apr 2020 23:37:16 +0700 (WIB)
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bUhVv5u6iI0Q; Mon, 20 Apr 2020 23:37:15 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 130E6303CD193;
+        Mon, 20 Apr 2020 23:37:15 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.lintas.net.id 130E6303CD193
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lintas.net.id;
+        s=F92A790A-805A-11EA-A140-F25EC2A2148A; t=1587400635;
+        bh=rr82TVra+sMRQ9UdeBnR0iZD1cjhMdXN6zpXN+MzqmE=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=tBhqQeAZnkj3jlRFr81sTOaN9i7JMaol/WfLMmR5QCYWyUwXSADrRhBvYIpTzWPvC
+         FfNu19Iql2ywv3OF7Z44aUzjtlaItAzxNBZdH9ARxr66Z8wwCNjASg2cG0Nh2ey8C6
+         msddY/DxdVa6g072TypTWruWT1m44LHIWfPx3gTnxDqhzEUTPCmWCBB83a/VT8ShmM
+         84GTsO2U1XC/Dawi0xfhaKpR16WQtnHqvNbMmRo37zBZlQ7JQ8iAuMIC1x1PkDo5Un
+         Tz2/gTTyuauFjoa66Tb+Pw0PkL4Hq/0oRAmmUJwnvtZXWXGO9Iaa0obXcqF2mOrDC1
+         ROz2+ceUVIFWQ==
+X-Virus-Scanned: amavisd-new at lintas.net.id
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zoxALW3N40sm; Mon, 20 Apr 2020 23:37:14 +0700 (WIB)
+Received: from [100.80.193.77] (unknown [106.202.92.112])
+        by mail.lintas.net.id (Postfix) with ESMTPSA id 75D60303CD17E;
+        Mon, 20 Apr 2020 23:37:05 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587027078-16239-1-git-send-email-lirongqing@baidu.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTkNJw5NO?=
+To:     Recipients <sosmed@lintas.net.id>
+From:   Sistemas administrador <sosmed@lintas.net.id>
+Date:   Mon, 20 Apr 2020 22:06:08 +0530
+Reply-To: mailsss@mail2world.com
+Message-Id: <20200420163705.75D60303CD17E@mail.lintas.net.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 04:51:18PM +0800, Li RongQing wrote:
-> when both isolcpus and nohz_full are set, their cpus must be
-> same now, in fact isolcpus and nohz_full are not related, and
-> different cpus are expected for some cases, for example, some
-> cores for polling threads wants to isolcpus, and some cores for
-> dedicated threads, only nohz_full is expected
-> 
-> so define two housekeeping mask to save these two configuration
-> separately and make cpus same only when both nohz_full and
-> isolcpus with nohz are passed into kernel
-> 
-> fix a build error when CONFIG_CPUMASK_OFFSTACK is not configured
-> reported by kbuild test robot <lkp@intel.com>
+ATENCI=D3N;
 
-What is the usecase when you want to affine managed interrupt?
-Do you only want to affine IRQ or do you also want to affine
-every unbound work, such as kthread, workqueues, timers, etc...?
+Su buz=F3n ha superado el l=EDmite de almacenamiento, que es de 5 GB defini=
+dos por el administrador, quien actualmente est=E1 ejecutando en 10.9GB, no=
+ puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a valida=
+r su buz=F3n de correo electr=F3nico. Para revalidar su buz=F3n de correo, =
+env=EDe la siguiente informaci=F3n a continuaci=F3n:
 
-In the end I would like to group the isolation features that only
-make sense together. So we could end up with three cpumasks, one
-for "domains", one for "nohz" and one for all "unbound" works.
+nombre:
+Nombre de usuario:
+contrase=F1a:
+Confirmar contrase=F1a:
+E-mail:
+tel=E9fono:
 
-In fact "domains" should even disappear and become "unbound" +
-"load_balance", as that's the desired outcome of having NULL domains.
+Si usted no puede revalidar su buz=F3n, el buz=F3n se deshabilitar=E1!
 
-I'm trying to prepare a suitable interface for all that in cpusets
-where we already have the load_balance part.
+Disculpa las molestias.
+C=F3digo de verificaci=F3n:666690opp4r56 es: 006524
+Correo Soporte T=E9cnico =A9 2020
 
-Thanks.
+=A1gracias
+Sistemas administrador
