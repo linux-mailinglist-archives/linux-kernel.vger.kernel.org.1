@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F3C1B198F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50771B1993
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 00:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgDTWct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 18:32:49 -0400
-Received: from ozlabs.org ([203.11.71.1]:56629 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgDTWcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:32:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 495hKT56G5z9sSG;
-        Tue, 21 Apr 2020 08:32:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587421965;
-        bh=O72eIpCf8zazYzgsrKNeUeXHmZLVFVsmnfoQj4nfRgk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=N5dxBH/KnfKMZFNwsa+mKD3p6OUnHJafx/Y+aLki50dFyZ0juEUlUINeliT3+oWr8
-         uo0aJhBCwqb49oqOYiszM19u99msYcUPkxVovCAH6zcE/x34iXfYEmMJeDMFSBDINb
-         pVj/HfqtNf+Bo9AJxSVFacv66jNrVqFvn2/qsMXahWiSK0eEvwqXN4eG0JvyJaGddk
-         AC3e6r9/e14woatkEiG17uSZDO4U/GFJW9TGIywxk2CaWzKeAXyFjnh7Zvoev/BDob
-         dzAvNZVN57YzgWgWP4IBxvTsnrKLUNQfUh/cbiiVuzRLVOnY/HnERJ7N6BJmytiM76
-         kmmFjkJFJgiCQ==
-Date:   Tue, 21 Apr 2020 08:32:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the kvm tree
-Message-ID: <20200421083238.7b2751fb@canb.auug.org.au>
+        id S1728161AbgDTWdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 18:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgDTWdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:33:37 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E76CC061A0C;
+        Mon, 20 Apr 2020 15:33:37 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r4so5807610pgg.4;
+        Mon, 20 Apr 2020 15:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wQEM9DWcyVuGSR7yq/Z954i7krAGNWwBbn5c8AlgXpE=;
+        b=uq1UtX4QuL5/kWF8QYjdfFO8Ui/Bpd1N/OQYaosFtl+eERSaDHbqouW0owYi+peb/E
+         NxHI0u8TlYQeWzQN/J9XOliKLN4jl9X4FYIpWrw9sybbKqU+iKbVlQJXlxYUSU3YkYUr
+         y2+B/HADZ4llIIMviTBzk+7Nv3uNDfGPWIDogukqV+wt1LvXtdiTQH0fX/+AkvQfCJaJ
+         31/n1bW7Nrnq//6K15IwQZ3LW5tQJqu4E4duwtzU8XzBgK32lyPZavyzB6MxBqz824sa
+         vQtKx46bCPrA6WsPzRdq9wTVJX6NGY1jZ6e5am8pN7yPB8p3Qa5fA3m5F/+4VKTsMOZQ
+         VrHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wQEM9DWcyVuGSR7yq/Z954i7krAGNWwBbn5c8AlgXpE=;
+        b=EEviEubb9t++YeW7i6hdbzJzwBFNrDBvt80/EkgSqD96ED51zh+YKtrhL3losMqfjO
+         lJxVh/rqSrP1iGvUaOgiP/nn2uBA48WyZSseumVyBslg/6WxKfXoqbLTiv//adp3H9Pa
+         LTgiMHOVywbMdGWgazpodUZVCS3HMYNESOU7WpbWhhcU16w9wcohDwE4PyLhMuPJMSi2
+         tG6q9cKa12n0WShKuA37LPW6u/9qEfPuIn+aUCMeV3XOPRs0b/ayBaS8e6eE8W9xvLoL
+         o04NQEYMIP572NaqGooTtdCrB4G0SpbWjcCOdpgBWFkFvdNAb/S+eNF1z1j4Y0QnPX8m
+         NR4w==
+X-Gm-Message-State: AGi0PuYBCwhRa5rqDXV6ZfKNYt3h85woEeqp45ZopMDM4REGmShHa5kr
+        HFOHm4+3tBEHSknRW72mhTKAHxuBZxwGjVlk7XWGURAYLcDdTg==
+X-Google-Smtp-Source: APiQypI6CwvEBvAfBXjMuiwiFJLQbo3/oNzWqVmgFdLUkN+AngNn81WtbZw7udc4CqufrnIUYILSwnvOS+1SDzcemtk=
+X-Received: by 2002:aa7:9097:: with SMTP id i23mr18460117pfa.170.1587422016694;
+ Mon, 20 Apr 2020 15:33:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Lc2QxRh9WBkdpZYm6DCtmPz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200420220421.171298-1-hdegoede@redhat.com>
+In-Reply-To: <20200420220421.171298-1-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Apr 2020 01:33:24 +0300
+Message-ID: <CAHp75VfC7-saRXnGDpee1dxAqDSDcveHMoC872WN9-SL4sDH4Q@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: surface3_power: i2c_acpi_new_device()
+ returns a PTR_ERR
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Lc2QxRh9WBkdpZYm6DCtmPz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 21, 2020 at 1:04 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> i2c_acpi_new_device() never returns NULL, it either returns an i2c_client
+> or a PTR_ERR. Adjust the mshw0011_probe() error handling to take this
+> into account.
+>
+> Note the goto out_err will cause i2c_unregister_device() to get called
+> even though the i2c_acpi_new_device() fails, this is ok as it accepts
+> a NULL pointer argument (and treats it as a no-op).
+>
 
-Hi all,
+Thanks, I guess it repeats [1].
 
-Commit
+[1]: http://git.infradead.org/linux-platform-drivers-x86.git/commitdiff/4dbccb873f2b35ad1b26419ff88c80509e2d4cbb
 
-  afc541d07f9d ("KVM: x86: make Hyper-V PV TLB flush use tlb_flush_guest()")
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/platform/x86/surface3_power.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/platform/x86/surface3_power.c b/drivers/platform/x86/surface3_power.c
+> index 946ac2dc08ae..32e6e86e27dd 100644
+> --- a/drivers/platform/x86/surface3_power.c
+> +++ b/drivers/platform/x86/surface3_power.c
+> @@ -522,8 +522,10 @@ static int mshw0011_probe(struct i2c_client *client)
+>         strlcpy(board_info.type, "MSHW0011-bat0", I2C_NAME_SIZE);
+>
+>         bat0 = i2c_acpi_new_device(dev, 1, &board_info);
+> -       if (!bat0)
+> -               return -ENOMEM;
+> +       if (IS_ERR(bat0)) {
+> +               error = PTR_ERR(bat0);
+> +               goto out_err;
+> +       }
+>
+>         data->bat0 = bat0;
+>         i2c_set_clientdata(bat0, data);
+> --
+> 2.26.0
+>
 
-is missing a Signed-off-by from its committer.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Lc2QxRh9WBkdpZYm6DCtmPz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6eIwcACgkQAVBC80lX
-0Gxvxwf+OoPoEMIgMkdqUtjMpxkAYEjo6EXoBx+KwQcKyRebsjTFIU7OlSlhh0Du
-CC2bceaJzr/ObFejiL5AwR2aafqFhj2RXLBrVI4TCQegBR2lQTkM25f8np2Z2iYo
-vGdjyRO5cZmGU2cMkM/8h3KuJ7eCL9v73FlZ2m7QyvLf98ic3Zc/Y/DJrXDbvXo4
-WkmXJ1lUGE1Yb6L4W4SFCUVkV081/tFq5QJZ1DUJmQ1vHpacePJncyHP5qhybb+8
-W1hQV3e/TdpZyJXQzz8pAXYjaX8prnnLQhr+vtn37XElYPXIfSfwTESZq4ex7WpN
-LAAVciQHB77WBpKwWG3j5HD8YcHiWg==
-=r0UA
------END PGP SIGNATURE-----
-
---Sig_/Lc2QxRh9WBkdpZYm6DCtmPz--
+-- 
+With Best Regards,
+Andy Shevchenko
