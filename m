@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A4A1B163A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9A91B164D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 21:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgDTTvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 15:51:21 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55849 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726141AbgDTTvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 15:51:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587412279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TWPS8Ag7vK66l0A1WZiPeQ8HRASExb1Zd/J41NjFSx4=;
-        b=bCQSCeE3kHWNQt8EjEIlXUABatiKDng0YkWPgQjhJCwbSbt7Is0qOK+UMgeye1lBghBeYu
-        fNhn+jMhwGTZqegR9qN8OVmz1LC3LQkMQv+tzXmoyvblYAhjuVfgEGTEx7TXuytF6VB6T/
-        hfpLGjyUZb05n6iCZ8ExwcNbmeDoIio=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-C1aiVMz-M62ucoynYrtO3A-1; Mon, 20 Apr 2020 15:51:17 -0400
-X-MC-Unique: C1aiVMz-M62ucoynYrtO3A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7F4E1922020;
-        Mon, 20 Apr 2020 19:51:16 +0000 (UTC)
-Received: from treble (ovpn-118-158.rdu2.redhat.com [10.10.118.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B98FB9A253;
-        Mon, 20 Apr 2020 19:51:13 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 14:51:11 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        id S1726974AbgDTTyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 15:54:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32990 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725897AbgDTTyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 15:54:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CE4BDAB5F;
+        Mon, 20 Apr 2020 19:54:38 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 12:51:12 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v2 2/9] livepatch: Apply vmlinux-specific KLP relocations
- early
-Message-ID: <20200420195111.ob7jnhs7wqp6d56g@treble>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
- <83eb0be61671eab05e2d7bcd0aa848f6e20087b0.1587131959.git.jpoimboe@redhat.com>
- <20200420175751.GA13807@redhat.com>
- <20200420182516.6awwwbvoen62gwbr@treble>
- <20200420190141.GB13807@redhat.com>
- <20200420191117.wrjauayeutkpvkwd@treble>
- <20200420194900.GC13807@redhat.com>
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: Re: [PATCH v4 02/10] MMU notifier: use the new mmap locking API
+Message-ID: <20200420195112.uy7xb4d4kltp6cnz@linux-p48b>
+Mail-Followup-To: Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+References: <20200415004353.130248-1-walken@google.com>
+ <20200415004353.130248-3-walken@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200420194900.GC13807@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200415004353.130248-3-walken@google.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 03:49:00PM -0400, Joe Lawrence wrote:
-> On Mon, Apr 20, 2020 at 02:11:17PM -0500, Josh Poimboeuf wrote:
-> > On Mon, Apr 20, 2020 at 03:01:41PM -0400, Joe Lawrence wrote:
-> > > > > ... apply_relocations() is also iterating over the section headers (the
-> > > > > diff context doesn't show it here, but i is an incrementing index over
-> > > > > sechdrs[]).
-> > > > > 
-> > > > > So if there is more than one KLP relocation section, we'll process them
-> > > > > multiple times.  At least the x86 relocation code will detect this and
-> > > > > fail the module load with an invalid relocation (existing value not
-> > > > > zero).
-> > > > 
-> > > > Ah, yes, good catch!
-> > > > 
-> > > 
-> > > The same test case passed with a small modification to push the foreach
-> > > KLP section part to a kernel/livepatch/core.c local function and
-> > > exposing the klp_resolve_symbols() + apply_relocate_add() for a given
-> > > section to kernel/module.c.  Something like following...
-> > 
-> > I came up with something very similar, though I named them
-> > klp_apply_object_relocs() and klp_apply_section_relocs() and changed the
-> > argument order a bit (module first).  Since it sounds like you have a
-> > test, could you try this one?
-> > 
-> 
-> LGTM.  I have a few klp-convert selftests that I've been slowly
-> tinkering on and they all load/run successfully with this version. :)
+On Tue, 14 Apr 2020, Michel Lespinasse wrote:
 
-Good to hear, thanks!  Hooray selftests :-)
+>This use is converted manually ahead of the next patch in the series,
+>as it requires including a new header which the automated conversion
+>would miss.
+>
+>Signed-off-by: Michel Lespinasse <walken@google.com>
+>Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 
--- 
-Josh
+Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
 
+>---
+> include/linux/mmu_notifier.h | 5 +++--
+> 1 file changed, 3 insertions(+), 2 deletions(-)
+>
+>diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+>index 736f6918335e..2f462710a1a4 100644
+>--- a/include/linux/mmu_notifier.h
+>+++ b/include/linux/mmu_notifier.h
+>@@ -5,6 +5,7 @@
+> #include <linux/list.h>
+> #include <linux/spinlock.h>
+> #include <linux/mm_types.h>
+>+#include <linux/mmap_lock.h>
+> #include <linux/srcu.h>
+> #include <linux/interval_tree.h>
+>
+>@@ -277,9 +278,9 @@ mmu_notifier_get(const struct mmu_notifier_ops *ops, struct mm_struct *mm)
+> {
+> 	struct mmu_notifier *ret;
+>
+>-	down_write(&mm->mmap_sem);
+>+	mmap_write_lock(mm);
+> 	ret = mmu_notifier_get_locked(ops, mm);
+>-	up_write(&mm->mmap_sem);
+>+	mmap_write_unlock(mm);
+> 	return ret;
+> }
+> void mmu_notifier_put(struct mmu_notifier *subscription);
+>-- 
+>2.26.0.110.g2183baf09c-goog
+>
