@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41AD1B0B3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67F1B09C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbgDTMyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:54:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41666 "EHLO mail.kernel.org"
+        id S1728158AbgDTMmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728909AbgDTMqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:46:21 -0400
+        id S1728139AbgDTMmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:42:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A99BF20736;
-        Mon, 20 Apr 2020 12:46:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 290A620736;
+        Mon, 20 Apr 2020 12:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587386780;
-        bh=y3pcqYQywdv657EcLBgi9iL8MyEr1EzQSc0kbGUvRAI=;
+        s=default; t=1587386523;
+        bh=bCIEyiPkV8o12eWrXDzdZoMDxhQhg7Z7FfRhpj/KWFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhE7aYwvsM1PRsFCQEd7xLAFQgz5vvy4wmgCAZ5qWdfrT2iLyd4/+GmxYYjf7ZZUP
-         NWOWxxQZcouiWJzraReCrdRVbr+mqyUqBKth6xjjZrmI6NLKJM0ru5T8tz2/lAOgE5
-         D5j63z0X9ToSLxStSMiFxUp2ygtwcWeXl12WB9RM=
+        b=uKE67qyj2WUQI7CS3NO3ozrp77WIhZYY6HlYT/WBFF5l9SATnls7qDS83GJBR72q/
+         ZKd3ZF6uE3f88420iYwQPiSlQivREXT3l64MRIPkVt724aA0TABwtFTgSiz+RdUIGB
+         Pmq6nnM2OfY3OB+METD9ACoaLJ/hiA3xwD2VLA6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.4 23/60] acpi/nfit: improve bounds checking for func
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>
+Subject: [PATCH 5.5 57/65] i2c: designware: platdrv: Remove DPM_FLAG_SMART_SUSPEND flag on BYT and CHT
 Date:   Mon, 20 Apr 2020 14:39:01 +0200
-Message-Id: <20200420121508.158062718@linuxfoundation.org>
+Message-Id: <20200420121519.014769166@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200420121500.490651540@linuxfoundation.org>
-References: <20200420121500.490651540@linuxfoundation.org>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+References: <20200420121505.909671922@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +46,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 01091c496f920e634ea84b689f480c39016752a8 upstream.
+commit d79294d0de12ddd1420110813626d691f440b86f upstream.
 
-The 'func' variable can come from the user in the __nd_ioctl().  If it's
-too high then the (1 << func) shift in acpi_nfit_clear_to_send() is
-undefined.  In acpi_nfit_ctl() we pass 'func' to test_bit(func, &dsm_mask)
-which could result in an out of bounds access.
+We already set DPM_FLAG_SMART_PREPARE, so we completely skip all
+callbacks (other then prepare) where possible, quoting from
+dw_i2c_plat_prepare():
 
-To fix these issues, I introduced the NVDIMM_CMD_MAX (31) define and
-updated nfit_dsm_revid() to use that define as well instead of magic
-numbers.
+        /*
+         * If the ACPI companion device object is present for this device, it
+         * may be accessed during suspend and resume of other devices via I2C
+         * operation regions, so tell the PM core and middle layers to avoid
+         * skipping system suspend/resume callbacks for it in that case.
+         */
+        return !has_acpi_companion(dev);
 
-Fixes: 11189c1089da ("acpi/nfit: Fix command-supported detection")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Link: https://lore.kernel.org/r/20200225161927.hvftuq7kjn547fyj@kili.mountain
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Also setting the DPM_FLAG_SMART_SUSPEND will cause acpi_subsys_suspend()
+to leave the controller runtime-suspended even if dw_i2c_plat_prepare()
+returned 0.
+
+Leaving the controller runtime-suspended normally, when the I2C controller
+is suspended during the suspend_late phase, is not an issue because
+the pm_runtime_get_sync() done by i2c_dw_xfer() will (runtime-)resume it.
+
+But for dw I2C controllers on Bay- and Cherry-Trail devices acpi_lpss.c
+leaves the controller alive until the suspend_noirq phase, because it may
+be used by the _PS3 ACPI methods of PCI devices and PCI devices are left
+powered on until the suspend_noirq phase.
+
+Between the suspend_late and resume_early phases runtime-pm is disabled.
+So for any ACPI I2C OPRegion accesses done after the suspend_late phase,
+the pm_runtime_get_sync() done by i2c_dw_xfer() is a no-op and the
+controller is left runtime-suspended.
+
+i2c_dw_xfer() has a check to catch this condition (rather then waiting
+for the I2C transfer to timeout because the controller is suspended).
+acpi_subsys_suspend() leaving the controller runtime-suspended in
+combination with an ACPI I2C OPRegion access done after the suspend_late
+phase triggers this check, leading to the following error being logged
+on a Bay Trail based Lenovo Thinkpad 8 tablet:
+
+[   93.275882] i2c_designware 80860F41:00: Transfer while suspended
+[   93.275993] WARNING: CPU: 0 PID: 412 at drivers/i2c/busses/i2c-designware-master.c:429 i2c_dw_xfer+0x239/0x280
+...
+[   93.276252] Workqueue: kacpi_notify acpi_os_execute_deferred
+[   93.276267] RIP: 0010:i2c_dw_xfer+0x239/0x280
+...
+[   93.276340] Call Trace:
+[   93.276366]  __i2c_transfer+0x121/0x520
+[   93.276379]  i2c_transfer+0x4c/0x100
+[   93.276392]  i2c_acpi_space_handler+0x219/0x510
+[   93.276408]  ? up+0x40/0x60
+[   93.276419]  ? i2c_acpi_notify+0x130/0x130
+[   93.276433]  acpi_ev_address_space_dispatch+0x1e1/0x252
+...
+
+So since on BYT and CHT platforms we want ACPI I2c OPRegion accesses
+to work until the suspend_noirq phase, we need the controller to be
+runtime-resumed during the suspend phase if it is runtime-suspended
+suspended at that time. This means that we must not set the
+DPM_FLAG_SMART_SUSPEND on these platforms.
+
+On BYT and CHT we already have a special ACCESS_NO_IRQ_SUSPEND flag
+to make sure the controller stays functional until the suspend_noirq
+phase. This commit makes the driver not set the DPM_FLAG_SMART_SUSPEND
+flag when that flag is set.
+
+Cc: stable@vger.kernel.org
+Fixes: b30f2f65568f ("i2c: designware: Set IRQF_NO_SUSPEND flag for all BYT and CHT controllers")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/nfit/core.c |   10 ++++++----
- drivers/acpi/nfit/nfit.h |    1 +
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-designware-platdrv.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -360,7 +360,7 @@ static union acpi_object *acpi_label_inf
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -370,10 +370,16 @@ static int dw_i2c_plat_probe(struct plat
+ 	adap->dev.of_node = pdev->dev.of_node;
+ 	adap->nr = -1;
  
- static u8 nfit_dsm_revid(unsigned family, unsigned func)
- {
--	static const u8 revid_table[NVDIMM_FAMILY_MAX+1][32] = {
-+	static const u8 revid_table[NVDIMM_FAMILY_MAX+1][NVDIMM_CMD_MAX+1] = {
- 		[NVDIMM_FAMILY_INTEL] = {
- 			[NVDIMM_INTEL_GET_MODES] = 2,
- 			[NVDIMM_INTEL_GET_FWINFO] = 2,
-@@ -386,7 +386,7 @@ static u8 nfit_dsm_revid(unsigned family
+-	dev_pm_set_driver_flags(&pdev->dev,
+-				DPM_FLAG_SMART_PREPARE |
+-				DPM_FLAG_SMART_SUSPEND |
+-				DPM_FLAG_LEAVE_SUSPENDED);
++	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
++		dev_pm_set_driver_flags(&pdev->dev,
++					DPM_FLAG_SMART_PREPARE |
++					DPM_FLAG_LEAVE_SUSPENDED);
++	} else {
++		dev_pm_set_driver_flags(&pdev->dev,
++					DPM_FLAG_SMART_PREPARE |
++					DPM_FLAG_SMART_SUSPEND |
++					DPM_FLAG_LEAVE_SUSPENDED);
++	}
  
- 	if (family > NVDIMM_FAMILY_MAX)
- 		return 0;
--	if (func > 31)
-+	if (func > NVDIMM_CMD_MAX)
- 		return 0;
- 	id = revid_table[family][func];
- 	if (id == 0)
-@@ -492,7 +492,8 @@ int acpi_nfit_ctl(struct nvdimm_bus_desc
- 	 * Check for a valid command.  For ND_CMD_CALL, we also have to
- 	 * make sure that the DSM function is supported.
- 	 */
--	if (cmd == ND_CMD_CALL && !test_bit(func, &dsm_mask))
-+	if (cmd == ND_CMD_CALL &&
-+	    (func > NVDIMM_CMD_MAX || !test_bit(func, &dsm_mask)))
- 		return -ENOTTY;
- 	else if (!test_bit(cmd, &cmd_mask))
- 		return -ENOTTY;
-@@ -3499,7 +3500,8 @@ static int acpi_nfit_clear_to_send(struc
- 	if (nvdimm && cmd == ND_CMD_CALL &&
- 			call_pkg->nd_family == NVDIMM_FAMILY_INTEL) {
- 		func = call_pkg->nd_command;
--		if ((1 << func) & NVDIMM_INTEL_SECURITY_CMDMASK)
-+		if (func > NVDIMM_CMD_MAX ||
-+		    (1 << func) & NVDIMM_INTEL_SECURITY_CMDMASK)
- 			return -EOPNOTSUPP;
- 	}
- 
---- a/drivers/acpi/nfit/nfit.h
-+++ b/drivers/acpi/nfit/nfit.h
-@@ -34,6 +34,7 @@
- 		| ACPI_NFIT_MEM_NOT_ARMED | ACPI_NFIT_MEM_MAP_FAILED)
- 
- #define NVDIMM_FAMILY_MAX NVDIMM_FAMILY_HYPERV
-+#define NVDIMM_CMD_MAX 31
- 
- #define NVDIMM_STANDARD_CMDMASK \
- (1 << ND_CMD_SMART | 1 << ND_CMD_SMART_THRESHOLD | 1 << ND_CMD_DIMM_FLAGS \
+ 	/* The code below assumes runtime PM to be disabled. */
+ 	WARN_ON(pm_runtime_enabled(&pdev->dev));
 
 
