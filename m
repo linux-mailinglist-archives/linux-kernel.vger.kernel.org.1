@@ -2,139 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295641B1018
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB071B1033
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 17:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgDTP3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 11:29:46 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:58587 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgDTP3p (ORCPT
+        id S1728203AbgDTPcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 11:32:18 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52116 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgDTPcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:29:45 -0400
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id B7571100016;
-        Mon, 20 Apr 2020 15:29:41 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 17:29:41 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] cedrus: Drop unneeded CONFIG_OF dependency
-Message-ID: <20200420152941.GA610656@aptenodytes>
-References: <20200402194653.13535-1-ezequiel@collabora.com>
- <20200403082206.GA626942@aptenodytes>
- <a36a825bc048821b4b7088feea71bd31e9e17211.camel@collabora.com>
+        Mon, 20 Apr 2020 11:32:18 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KFISef189074;
+        Mon, 20 Apr 2020 15:31:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Yql0IcIqHpszKXnVsmou87K4Wd/Z21X1vdlTa/+vIIg=;
+ b=qM3kAztqgggIdXYZZ3y6FSDE7zVrMXkTvBV89ziEWf8JxRePc7xXaCA8dppDwT/NsYEI
+ d/4cZpfhy61OCWjktB+cbZoDOwQSgwqhgvMz8Hvj5I8Nb4DN9DY9cKMLYZIvqjQIJ7Vr
+ 1fdUUj6zqDZpqWw5H4+DtBPXRNwaQISadno2k+OnRAj/IB51VjcRToMg8mMRwuzGgCyl
+ r0JltMu8IP9/4qHz7wMTaII36C/1L/8DFQ0/PyYPwam2v681r6oGhe/X7yCXnRzaZMBX
+ NedzQpkamt6fiBqO3kqfgz6gZi6pvkkk7ED+LsD+aGtRlqZFbKOmJS4d5q9f0TR2ah1u Gw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30grpgcdug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 15:31:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KFIPF2037527;
+        Mon, 20 Apr 2020 15:29:58 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30gbbavtuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Apr 2020 15:29:58 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03KFTvmn003913;
+        Mon, 20 Apr 2020 15:29:57 GMT
+Received: from dhcp-10-175-219-85.vpn.oracle.com (/10.175.219.85)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Apr 2020 08:29:56 -0700
+Date:   Mon, 20 Apr 2020 16:29:49 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type
+ printing
+In-Reply-To: <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
+Message-ID: <alpine.LRH.2.21.2004201623390.12711@localhost>
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com> <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Content-Disposition: inline
-In-Reply-To: <a36a825bc048821b4b7088feea71bd31e9e17211.camel@collabora.com>
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004200130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004200130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 18 Apr 2020, Alexei Starovoitov wrote:
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Ezequiel,
-
-On Fri 03 Apr 20, 09:21, Ezequiel Garcia wrote:
-> On Fri, 2020-04-03 at 10:22 +0200, Paul Kocialkowski wrote:
-> > Hi Ezequiel,
-> >=20
-> > On Thu 02 Apr 20, 16:46, Ezequiel Garcia wrote:
-> > > The driver is perfectly capable of being built without CONFIG_OF.
-> > > Remove this dependency, which is useful for compile-only tests.
-> >=20
-> > Thanks for the patch!
-> >=20
-> > Alas, the driver won't do anything useful without OF enabled, so it see=
-ms
-> > useful to keep that dependency.
->=20
-> I'm not convinced about this argument, I like to have
-> dependencies on things the driver needs to compile
-> (except the machine option, see below).
-
-Is there a general kernel-wide policy about that?
-
-I must admit that I never really understood if Kconfig depends are supposed=
- to
-strictly reflect build dependencies or dependencies that must reasonably be
-expected for the driver to be useful. The arch dependency (which is farily
-common) seems to suggest the latter.
-
-Maxime, any thought about that?
-
-> > I would suggest making this a: depends on OF || COMPILE_TEST
-> > instead. What do you think?
->=20
-> Although there are a handful, I don't see many drivers doing that.
-> To be honest, I don't like this much.
->=20
-> Also, if you want to make sure this driver can only be selected
-> where it makes sense, you consider having a ARCH_SUNXI || COMPILE_TEST.
-
-Fair enough, that would be the consistent choice with OF || COMPILE_TEST.
-
-> IMO, the dependency on OF should be dropped as well.
+> On Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire wrote:
+> > The printk family of functions support printing specific pointer types
+> > using %p format specifiers (MAC addresses, IP addresses, etc).  For
+> > full details see Documentation/core-api/printk-formats.rst.
+> > 
+> > This RFC patchset proposes introducing a "print typed pointer" format
+> > specifier "%pT<type>"; the type specified is then looked up in the BPF
+> > Type Format (BTF) information provided for vmlinux to support display.
+> 
+> This is great idea! Love it.
 >
-> Cheers,
-> Eze
->=20
-> > Cheers,
-> >=20
-> > Paul
-> >=20
-> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > > ---
-> > >  drivers/staging/media/sunxi/cedrus/Kconfig | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/staging/media/sunxi/cedrus/Kconfig b/drivers/sta=
-ging/media/sunxi/cedrus/Kconfig
-> > > index 17733e9a088f..59b8d1b29865 100644
-> > > --- a/drivers/staging/media/sunxi/cedrus/Kconfig
-> > > +++ b/drivers/staging/media/sunxi/cedrus/Kconfig
-> > > @@ -3,7 +3,6 @@ config VIDEO_SUNXI_CEDRUS
-> > >  	tristate "Allwinner Cedrus VPU driver"
-> > >  	depends on VIDEO_DEV && VIDEO_V4L2 && MEDIA_CONTROLLER
-> > >  	depends on HAS_DMA
-> > > -	depends on OF
-> > >  	depends on MEDIA_CONTROLLER_REQUEST_API
-> > >  	select SUNXI_SRAM
-> > >  	select VIDEOBUF2_DMA_CONTIG
-> > > --=20
-> > > 2.26.0.rc2
-> > >=20
->=20
->=20
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Thanks for taking a look!
+ 
+> > The above potential use cases hint at a potential reply to
+> > a reasonable objection that such typed display should be
+> > solved by tracing programs, where the in kernel tracing records
+> > data and the userspace program prints it out.  While this
+> > is certainly the recommended approach for most cases, I
+> > believe having an in-kernel mechanism would be valuable
+> > also.
+> 
+> yep. This is useful for general purpose printk.
+> The only piece that must be highlighted in the printk documentation
+> that unlike the rest of BPF there are zero safety guarantees here.
+> The programmer can pass wrong pointer to printk() and the kernel _will_ crash.
+> 
 
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
+Good point; I'll highlight the fact that we aren't
+executing in BPF context, no verifier etc.
 
------BEGIN PGP SIGNATURE-----
+> >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> > 
+> >   pr_info("%pTN<struct sk_buff>", skb);
+> 
+> why follow "TN" convention?
+> I think "%p<struct sk_buff>" is much more obvious, unambiguous, and
+> equally easy to parse.
+> 
 
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6dv+UACgkQ3cLmz3+f
-v9F/ZggAlAIvNxnteZI11ryM9PMa8354QX9Kdf3nGN/QAGCeK48282o2GYPmUmk+
-GHehBW01rTvo9bS/oa0ltcSO06xEvuwusxc3rNA8ldanB16wT/zK9/nPsVFtvd17
-/lhIvSMODSvBYD6HnFOeC058vCcGeFupgTHJyAfatcSYDeYc1ZomT3RMWkuIynMv
-10SqKNWVGH+4cyFw7/Yxth1cHtUNqNtdNwPhW9LBVLm5C3/Sz4SKggUoNhVcHsqA
-gSM4bRnpGudU2e/o++NKJuwxPZQmEjsh9epni8p98Gs6PXAQxvQSurzMY90fYHFT
-h2hgdOrKxzTyH9x3eoaHbxtywqWOxg==
-=KW81
------END PGP SIGNATURE-----
+That was my first choice, but the first character
+after the 'p' in the '%p' specifier signifies the
+pointer format specifier. If we use '<', and have
+'%p<', where do we put the modifiers? '%p<xYz struct foo>'
+seems clunky to me.
 
---AqsLC8rIMeq19msA--
+> > ...gives us:
+> > 
+> > {{{.next=00000000c7916e9c,.prev=00000000c7916e9c,{.dev=00000000c7916e9c|.dev_scratch=0}}|.rbnode={.__rb_parent_color=0,
+> 
+> This is unreadable.
+> I like the choice of C style output, but please format it similar to drgn. Like:
+> *(struct task_struct *)0xffff889ff8a08000 = {
+> 	.thread_info = (struct thread_info){
+> 		.flags = (unsigned long)0,
+> 		.status = (u32)0,
+> 	},
+> 	.state = (volatile long)1,
+> 	.stack = (void *)0xffffc9000c4dc000,
+> 	.usage = (refcount_t){
+> 		.refs = (atomic_t){
+> 			.counter = (int)2,
+> 		},
+> 	},
+> 	.flags = (unsigned int)4194560,
+> 	.ptrace = (unsigned int)0,
+> 
+> I like Arnaldo's idea as well, but I prefer zeros to be dropped by default.
+> Just like %d doesn't print leading zeros by default.
+> "%p0<struct sk_buff>" would print them.
+> 
+
+I'll try and match the above as closely as possible for v2
+while retaining the compact form for the verifier's use.
+
+> > The patches are marked RFC for several reasons
+> > 
+> > - There's already an RFC patchset in flight dealing with BTF dumping;
+> > 
+> > https://www.spinics.net/lists/netdev/msg644412.html
+> > 
+> >   The reason I'm posting this is the approach is a bit different 
+> >   and there may be ways of synthesizing the approaches.
+> 
+> I see no overlap between patch sets whatsoever.
+> Why do you think there is?
+>
+
+Because I hadn't read through Yonghong's patchset properly ;-)
+I see potential future overlap in having a dumper support a 
+"raw" mode using BTF-based display if needed, but no actual
+overlap in what's there (and here) today.
+ 
+> > - The mechanism of vmlinux BTF initialization is not fit for purpose
+> >   in a printk() setting as I understand it (it uses mutex locking
+> >   to prevent multiple initializations of the BTF info).  A simple
+> >   approach to support printk might be to simply initialize the
+> >   BTF vmlinux case early in boot; it only needs to happen once.
+> >   Any suggestions here would be great.
+> > - BTF-based rendering is more complex than other printk() format
+> >   specifier-driven methods; that said, because of its generality it
+> >   does provide significant value I think
+> > - More tests are needed.
+> 
+> yep. Please make sure to add one to selftest/bpf as well.
+> bpf maintainers don't run printk tests as part of workflow, so
+> future BTF changes will surely break it if there are no selftests/bpf.
+> 
+
+Absolutely.
+
+> Patch 2 isn't quite correct. Early parse of vmlinux BTF does not compute
+> resolved_ids to save kernel memory. The trade off is execution time vs kernel
+> memory. I believe that saving memory is more important here, since execution is
+> not in critical path. There is __get_type_size(). It should be used in later
+> patches instead of btf_type_id_size() that relies on pre-computed
+> resolved_sizes and resolved_ids.
+>
+
+Thanks for the info, will fix for v2!
+
+Alan 
