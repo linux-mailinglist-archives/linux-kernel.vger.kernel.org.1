@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBFB1B0CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36811B0CCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 15:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgDTNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 09:35:35 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10707 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgDTNfe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:35:34 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5e9da511745-d6a09; Mon, 20 Apr 2020 21:35:15 +0800 (CST)
-X-RM-TRANSID: 2eeb5e9da511745-d6a09
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.173.179])
-        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45e9da5102c1-7b0dc;
-        Mon, 20 Apr 2020 21:35:14 +0800 (CST)
-X-RM-TRANSID: 2ee45e9da5102c1-7b0dc
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     ssantosh@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] memory: emif: omit superfluous error message in emif_probe()
-Date:   Mon, 20 Apr 2020 21:37:04 +0800
-Message-Id: <20200420133704.18364-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728240AbgDTNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 09:37:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgDTNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 09:37:08 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 834CE2070B;
+        Mon, 20 Apr 2020 13:37:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587389828;
+        bh=8pBXPljPGGgD7G9G7WPPoDba5tlB3IeSIJiJ8A4QQrc=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=fQryNMJoGFgeXErMNgMY3bHlPoXglQjc2CEsWr7H1VQ2pmV4VpLKGwhw4nrPZ68Iq
+         vRM4k1TxElw7ope8fFA4M+irqxoIQLXv44ARYr9OK6XW9cCZv9ORk/e08KpQHWjVqE
+         XmkCMEiNWCjSdU8GBc9tX+W+FA7VCAPoHv1Y2d2A=
+Date:   Mon, 20 Apr 2020 14:37:05 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matthias Blankertz <matthias.blankertz@cetitec.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
+References: <20200417153017.1744454-1-matthias.blankertz@cetitec.com>
+Subject: Re: [PATCH 0/2] ASoC: rsnd: multi-SSI setup fixes
+Message-Id: <158738981359.28730.2521567380411409191.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function emif_probe(), when get irq failed,
-the function platform_get_irq() logs an error message,
-so remove redundant message here.
+On Fri, 17 Apr 2020 17:30:15 +0200, Matthias Blankertz wrote:
+> Fix rsnd_dai_call() operations being performed twice for the master SSI
+> in multi-SSI setups, and fix the rsnd_ssi_stop operation for multi-SSI
+> setups.
+> The only visible effect of these issues was some "status check failed"
+> spam when the rsnd_ssi_stop was called, but overall the code is cleaner
+> now, and some questionable writes to the SSICR register which did not
+> lead to any observable misbehaviour but were contrary to the datasheet
+> are fixed.
+> 
+> [...]
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/memory/emif.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Applied to
 
-diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
-index 9d9127bf2..3ac9f355d 100644
---- a/drivers/memory/emif.c
-+++ b/drivers/memory/emif.c
-@@ -1563,11 +1563,8 @@ static int __init_or_module emif_probe(struct platform_device *pdev)
- 		goto error;
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(emif->dev, "%s: error getting IRQ resource - %d\n",
--			__func__, irq);
-+	if (irq < 0)
- 		goto error;
--	}
- 
- 	emif_onetime_settings(emif);
- 	emif_debugfs_init(emif);
--- 
-2.20.1.windows.1
+	broonie/sound.git for-5.7
 
+Thanks!
 
+[1/2] ASoC: rsnd: Don't treat master SSI in multi SSI setup as parent
+      commit: 0c258657ddfe81b4fc0183378d800c97ba0b7cdd
+[2/2] ASoC: rsnd: Fix "status check failed" spam for multi-SSI
+      commit: 54cb6221688660670a2e430892d7f4e6370263b8
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
