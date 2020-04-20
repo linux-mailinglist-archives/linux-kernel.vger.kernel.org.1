@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EE01B0AFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2591B0B02
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Apr 2020 14:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgDTMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 08:52:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2416 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728937AbgDTMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:52:50 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 3E7B429041ABCD99F1AA;
-        Mon, 20 Apr 2020 20:52:46 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.154) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
- 20:52:41 +0800
-Subject: Re: [PATCH] ASoC: wm89xx: Fix build error without CONFIG_I2C
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20200418090853.30340-1-yuehaibing@huawei.com>
- <20200420102701.GB44490@ediswmail.ad.cirrus.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <geert@linux-m68k.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <f175d79f-ff45-18e5-f7e7-1b22a1495871@huawei.com>
-Date:   Mon, 20 Apr 2020 20:52:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        id S1729599AbgDTMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 08:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729588AbgDTMw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:52:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BAAC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:52:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id d17so11968932wrg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 05:52:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A9w9a9BtCPltYxmsYrcgvCRZHciAh4PTWSTVRz9kigo=;
+        b=b9aWT0PvNBisz/4PQKYiKEVpgRsAxhjfLt1qR2nrfXJi3AAsNyH9myAqavnV7G7Wh3
+         ElDYT+3Z6mcCFjzJTkesXuFmF6M4ZvyvqDG6Q16cY/iTg381FhpIurr+Vpt8g4fmjHgF
+         tLsG2LYWWzRO/EhwTxPLHSjZVHgzASUL7SBZaZtBRdFwdO3yL2HUwXIWoQWvvfg3NMWb
+         QInP5qHaC70IjauzS5k9eC6bVnx9AcrwXuwrWMv9E5W977ELACP09TRyluv/MZFu2EWf
+         TmcSmHM7Fd4Qyy4Gy/2sXTcK9Y0SPXZ9mXMf9wDgqO65R19TDZFHLQPi/HAb3e0DrdwS
+         3jdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9w9a9BtCPltYxmsYrcgvCRZHciAh4PTWSTVRz9kigo=;
+        b=WjNnD8TFQM+5dW+JEcCa3xpgp0q9vZkN0Nh+mUoxVemkwN+a9GrGeFXJRawC8ZY03q
+         6TDJHt7x3R3q4y9sh4sEgbzKve4YB16PfQAAtxXJdyBvJ1coNm6VuZVfd8Kig+myFik0
+         0LLB7JKRVfr/GbzRq5f+1+2Rb7DEqcLKb/kKs2ZpZOK14ffa2689WyKdGB2n2TwjQOzB
+         THcz0WjZBGbKlKajGzywGY+O0FSUKHj7RD5SHjF7Khe31Ulz3Wt0yxKzMJiSS2+TcNxO
+         0ifKuHEd7DixHKkhmfUgLvtZ4yt0414Bju2Oeg7D7PJA6k2JOF2aMy+GPcIGb35ONfqI
+         M6Hg==
+X-Gm-Message-State: AGi0PuZz6QdV8ROmLVw/899WzDPiUa2CeRxPFDyYIChmcjoSBzMSapP0
+        mLPBC7oUcTIQhV5gEHdAX2KK+soSC8N+aLF3988Alg==
+X-Google-Smtp-Source: APiQypKv8s+5s+Sevqx84IoEmsSamRLTByngbt6QvoW+EFkP1sdpYDQsDL0PBv9J6edYJSBFQPoebLmLgKY71poU3nw=
+X-Received: by 2002:a5d:4485:: with SMTP id j5mr17584675wrq.427.1587387177183;
+ Mon, 20 Apr 2020 05:52:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200420102701.GB44490@ediswmail.ad.cirrus.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+References: <1587303383-37819-1-git-send-email-ani@anisinha.ca> <20200420090913.GV2586@lahna.fi.intel.com>
+In-Reply-To: <20200420090913.GV2586@lahna.fi.intel.com>
+From:   Ani Sinha <ani@anisinha.ca>
+Date:   Mon, 20 Apr 2020 18:22:46 +0530
+Message-ID: <CAARzgwwk+=pRAfhg7bv8Zi8f91m5AMv8gVn9Rwxfgc7-RJ-dxg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: pciehp: Cleanup unused HP_SUPR_RM macro
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Ani Sinha <ani@anirban.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Frederick Lawler <fred@fredlawl.com>,
+        Denis Efremov <efremov@linux.com>,
+        Lukas Wunner <lukas@wunner.de>, linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/20 18:27, Charles Keepax wrote:
-> On Sat, Apr 18, 2020 at 05:08:53PM +0800, YueHaibing wrote:
->> sound/soc/codecs/wm8900.o: In function `wm8900_i2c_probe':
->> wm8900.c:(.text+0xa36): undefined reference to `__devm_regmap_init_i2c'
->> sound/soc/codecs/wm8900.o: In function `wm8900_modinit':
->> wm8900.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
->> sound/soc/codecs/wm8900.o: In function `wm8900_exit':
->> wm8900.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
->> sound/soc/codecs/wm8988.o: In function `wm8988_i2c_probe':
->> wm8988.c:(.text+0x857): undefined reference to `__devm_regmap_init_i2c'
->> sound/soc/codecs/wm8988.o: In function `wm8988_modinit':
->> wm8988.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
->> sound/soc/codecs/wm8988.o: In function `wm8988_exit':
->> wm8988.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
->> sound/soc/codecs/wm8995.o: In function `wm8995_i2c_probe':
->> wm8995.c:(.text+0x1c4f): undefined reference to `__devm_regmap_init_i2c'
->> sound/soc/codecs/wm8995.o: In function `wm8995_modinit':
->> wm8995.c:(.init.text+0xb): undefined reference to `i2c_register_driver'
->> sound/soc/codecs/wm8995.o: In function `wm8995_exit':
->> wm8995.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
->>
->> Add missing I2C dependency to fix this.
->>
-> 
-> This doesn't look like the right fix there, all these parts can
-> be used on SPI so should be usable without I2C build in.
+On Mon, Apr 20, 2020 at 2:39 PM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> On Sun, Apr 19, 2020 at 07:06:20PM +0530, Ani Sinha wrote:
+> > We do not use PCIE hotplug surprise (PCI_EXP_SLTCAP_HPS) bit anymore.
+> > Consequently HP_SUPR_RM() macro is not used in the kernel source anymore.
+> > Let's clean it up.
+> >
+> > Signed-off-by: Ani Sinha <ani@anisinha.ca>
+>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>
+> BTW, there seem to be other macros like EMI() that is not used anymore
+> so maybe worth removing them as well.
 
-Sorry, the patch title is wrong, the issue is CONFIG_I2C m but SND_SOC_WM8900 is y.
+Sent a patch.
 
-This should depends on SND_SOC_I2C_AND_SPI like others.
-
-> 
-> Thanks,
-> Charles
-> 
-> .
-> 
-
+>
+>
+> > ---
+> >  drivers/pci/hotplug/pciehp.h | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
+> > index ae44f46..5747967 100644
+> > --- a/drivers/pci/hotplug/pciehp.h
+> > +++ b/drivers/pci/hotplug/pciehp.h
+> > @@ -148,7 +148,6 @@ struct controller {
+> >  #define MRL_SENS(ctrl)               ((ctrl)->slot_cap & PCI_EXP_SLTCAP_MRLSP)
+> >  #define ATTN_LED(ctrl)               ((ctrl)->slot_cap & PCI_EXP_SLTCAP_AIP)
+> >  #define PWR_LED(ctrl)                ((ctrl)->slot_cap & PCI_EXP_SLTCAP_PIP)
+> > -#define HP_SUPR_RM(ctrl)     ((ctrl)->slot_cap & PCI_EXP_SLTCAP_HPS)
+> >  #define EMI(ctrl)            ((ctrl)->slot_cap & PCI_EXP_SLTCAP_EIP)
+> >  #define NO_CMD_CMPL(ctrl)    ((ctrl)->slot_cap & PCI_EXP_SLTCAP_NCCS)
+> >  #define PSN(ctrl)            (((ctrl)->slot_cap & PCI_EXP_SLTCAP_PSN) >> 19)
+> > --
+> > 2.7.4
