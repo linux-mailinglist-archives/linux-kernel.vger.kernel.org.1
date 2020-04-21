@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCBF1B296A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21D51B292C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgDUOZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:25:53 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:52444 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgDUOZx (ORCPT
+        id S1728717AbgDUOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726018AbgDUOPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:25:53 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LECPuf104152;
-        Tue, 21 Apr 2020 14:16:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=KH7JSrOcrG0YkK05NQHdKXeBwOzqSpU/M/EkFRPsDJU=;
- b=OFLiLckynNhGGR/eAiiEYrtmckqtERtrg3zbWlTXTubdUgYeX6D8zCfogsqLvU5hIMy1
- nLESg71meqYz9dk8pt5Qxsf7x3FWIDchid7Dtuu1yrZ98A4heR6OSFHEg5OV0XTDhEaY
- fKD+nKPUYNw093M51+HnMNsMQ49lg+6lVI2UAntsxguELIUpy20Ju5GDDeobCplLYtlD
- yGZwDSjp4c4r1lfz0Wix1mQzL901RpGgx0gwIfNaS0+2Arvnv6SoV1fh/Z2QVwXEw61S
- LyM+gtTLd5DFsWH6iHv/mYHG0a8GiWPzsSjhrhWXe9WVxZIO9EfGj/JpAySuPxAtmXb2 WA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 30fsgkw880-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Apr 2020 14:16:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LEBd5o143244;
-        Tue, 21 Apr 2020 14:14:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30gb3sa2jh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Apr 2020 14:14:39 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03LEEaDS007921;
-        Tue, 21 Apr 2020 14:14:36 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 Apr 2020 07:14:35 -0700
-Date:   Tue, 21 Apr 2020 17:14:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rjw@rjwysocki.net, bp@alien8.de,
-        james.morse@arm.com, helgaas@kernel.org, lenb@kernel.org,
-        tony.luck@intel.com, gregkh@linuxfoundation.org,
-        zhangliguang@linux.alibaba.com, tglx@linutronix.de,
-        linuxarm@huawei.com, jonathan.cameron@huawei.com,
-        tanxiaofei@huawei.com, yangyicong@hisilicon.com
-Subject: Re: [RESEND PATCH v7 4/6] ACPI / APEI: Add callback for ARM HW
- errors to the GHES notifier
-Message-ID: <20200421141426.GD2682@kadam>
-References: <ShijuJose>
- <20200421132136.1595-1-shiju.jose@huawei.com>
- <20200421132136.1595-5-shiju.jose@huawei.com>
+        Tue, 21 Apr 2020 10:15:15 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFDEC061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:15:15 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id u13so16657167wrp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:subject:in-reply-to:date:message-id
+         :mime-version;
+        bh=XMNV+Kczq0nA9dcErNoCOMd6R2vnUVAmmDTt4s05utw=;
+        b=ZV4DwxDzR7niBZe3R/Pmem48lFSMPZpe429hx55ySMuwjJ/ey0sP3KeD00iSoj/tfg
+         sSJLQURqzUNrI6jqva80Qy3uzTmatdC8IXuQC2NMjJKwMEFBAzkwl+hx2nmP5azkJQtW
+         AfEurxmKwaKwQlmFBbMB2D7VnKUkMGKCD86LyaePYqCDGmg9/Vjw2qN/8hS5Jcdp7VM7
+         ZmwwK8J+g4q19oRBd4r2/U9/jCQMirUE9fQiA7o4co/Hf7YS2PP84prIWzn0llzggAo2
+         2tCdb1rN1UzkxRZwmjKofnbss/oeWv4ECkojnusd1SYCUHRjpcpiBBW+AoB9vueCrd/O
+         E4uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=XMNV+Kczq0nA9dcErNoCOMd6R2vnUVAmmDTt4s05utw=;
+        b=MFR8xkRUsk/0s/PfZglS2P/k+tr8Ct5VPkeXCWMH+apMuBtYCAseQAIIQEk1PeWEiY
+         SRqRzfHw8FuiVowBgUgidbD1xBghcNxvDDEoPgnVdfU8mVoBgV336FF6YJ4fzLreEVh+
+         HO0bswgzvzeZUNxyInXskJX0sGVluwwlWrqvh5Dy+adaZBMLV4h8mnYEi5cqt/137K2O
+         aSBPpgJY3+GK86Z+/yqH/IOpsMEVNKlVmmTVH/Qe54UUcTBAgljYHvpIN6pCtchEZK/Z
+         3WkQJxQRgAqgRtmxFseieTBuJDnwyi67WP/7morFQC0tbCSdHf6JJJidVrLNoWhdH5el
+         0DJg==
+X-Gm-Message-State: AGi0PuanblNE1hGPQVh2D8VmgET50Pe2TicIoSaZ3sr5sywr2AYfu6iF
+        AlJfpyF9jb5Zm8R1o4yIkBuFoQ==
+X-Google-Smtp-Source: APiQypKB2/otB/702T2JCDtluRFeUpsSB5O2TeMlFoB2ZJbS1yFix9xgffVtwXjP2pc3SMR7wHpbJA==
+X-Received: by 2002:adf:eecc:: with SMTP id a12mr23824779wrp.112.1587478513735;
+        Tue, 21 Apr 2020 07:15:13 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id z76sm4221908wmc.9.2020.04.21.07.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 07:15:13 -0700 (PDT)
+References: <20200415095927.3780-1-christianshewitt@gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     chewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: meson-g12b-khadas-vim3: fix missing frddr_a node
+In-reply-to: <20200415095927.3780-1-christianshewitt@gmail.com>
+Date:   Tue, 21 Apr 2020 16:15:12 +0200
+Message-ID: <1jh7xdorgv.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421132136.1595-5-shiju.jose@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004210112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9597 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004210112
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 02:21:34PM +0100, Shiju Jose wrote:
->  static BLOCKING_NOTIFIER_HEAD(ghes_event_notify_list);
-> @@ -670,12 +692,7 @@ static void ghes_do_proc(struct ghes *ghes,
->  			pr_warn(GHES_PFX "ghes event queue full\n");
->  			break;
->  		}
-> -
-> -		if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> -
-> -			log_arm_hw_error(err);
-> -		} else {
-> +		{
->  			void *err = acpi_hest_get_payload(gdata);
 
-This is ugly.  Just move the "void *err;" declaration to the top of the
-function so we can delete this block.
+On Wed 15 Apr 2020 at 11:59, chewitt <christianshewitt@gmail.com> wrote:
 
+> From: Christian Hewitt <christianshewitt@gmail.com>
+>
+> The frddr_a node was accidently deleted when creating a common dtsi for the
+> Khadas VIM3/VIM3L boards, preventing audio from working on the VIM3.
+>
+> Fixes: 4f26cc1c96c9 ("arm64: dts: khadas-vim3: move common nodes into meson-khadas-vim3.dtsi")
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Tested-by: Jerome Brunet <jbrunet@baylibre.com>
+
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+> index c33e85fbdaba..c6c8caed8327 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+> @@ -154,6 +154,10 @@
+>  	clock-latency = <50000>;
+>  };
 >  
->  			log_non_standard_event(sec_type, fru_id, fru_text,
-> -- 
+> +&frddr_a {
+> +	status = "okay";
+> +};
+> +
+>  &frddr_b {
+>  	status = "okay";
+>  };
 
-regards,
-dan carpenter
