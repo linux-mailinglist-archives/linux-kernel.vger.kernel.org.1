@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D1B1B254F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14061B2569
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgDULsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDULsO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:48:14 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DF2C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:48:13 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id j3so13594352ljg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hr0urbAhdYYXsm2dSDM+ijiOf6geNis17wmxjM94cEM=;
-        b=XkEhAU5R5PYd4McD+1unOUpGqJ+vG8hqHZerVpdqaxtNv/lweY2dl7oRy19/HKkxBt
-         Sx3x5ca1ZStLuJy+AdQbI8yJ9B4iqaGI1ocVw0Bcpeq2QiHZZ51nGYIeNPHDUgYwHvN4
-         7D4gjQaQDPKW/NoJP3m/YyjSVuv/iV/QMLFN/MEcU3VKj+Budv9l9GZ4FuWv6ZYPlv99
-         PxLX/JENwG3COtZUNYNrQO8pQj2qEjjnSrJrTzrsCWddSkdKvU9JeE7O3QW2CoY1r4pp
-         wg6IjnuFPY74IfKjviVQ/splfUr6HVn+OvYVztelLIGqihWmWCwCCdlREIeWnlvi6Tjs
-         gI0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hr0urbAhdYYXsm2dSDM+ijiOf6geNis17wmxjM94cEM=;
-        b=jyhRaSCJ0g4mG/6fTSUxmlHjPR5jlv1BjnEC2dl2FcunGLUWOHY5qf1RjDpuxUG9R5
-         giWw6FJTrxozcOV78jLL1FC5cfvIU4nEG4Ezd4OCHBOzct/sWk3WVnc+gtSm50o2Wx1A
-         J2HPXvSxkTA338W9jAr5GQw6zAlBSwitQ4tNR1L8QgTdmS6pOlzayg7VhS+dHw18AWcj
-         4BxDblR5o6srtfVemENuKPPVrS3TsQp+jyPM7PX8D0lnz9IIVL6drR1u2S9DNmBv1JvZ
-         ZTFGFR7taBlUF5m5zOtpJarwOY3yGXBmLp7lhFLqQAETeTwS8lPBS44oammTYRCiUVCH
-         tRig==
-X-Gm-Message-State: AGi0PuaO9zkEPdE7qH1glpY72Oug+XA3DltmBZpbR5KSz4scPR71YxK+
-        2MBQI4kGjK2ynjteH735RTQ8mKQjQCqS7wtlRFeFJQ==
-X-Google-Smtp-Source: APiQypLcKHjcdphSZ9nRGKZ2ueyTjflZeCK32oJlzvi4dYlpx1i0PUweOppmGjOEfSA8LIjTtsPU7HYnWrcKMM0x2zI=
-X-Received: by 2002:a2e:585a:: with SMTP id x26mr14023189ljd.179.1587469691923;
- Tue, 21 Apr 2020 04:48:11 -0700 (PDT)
+        id S1728726AbgDUL4v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 07:56:51 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14306 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726403AbgDUL4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:56:50 -0400
+IronPort-SDR: z+CsqIZzFRQqE4/qgUnDcKoUaDmzQCGRPDobaunAQ2JQfnK8de4q8toiIvzWJwhUOL82Z0skz+
+ LjqAnxSNAiew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 04:56:50 -0700
+IronPort-SDR: ss5gZPH9RFXb/mbTaVOM9KDF+8qBwsRimZ4nsKZ+Y39bb7azaHnyps5sn0NKG2EhdwxYfnEFlp
+ Lfm+8sEUlcJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
+   d="scan'208";a="279611530"
+Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Apr 2020 04:56:50 -0700
+Received: from shsmsx106.ccr.corp.intel.com (10.239.4.159) by
+ FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 21 Apr 2020 04:56:50 -0700
+Received: from shsmsx101.ccr.corp.intel.com ([169.254.1.129]) by
+ SHSMSX106.ccr.corp.intel.com ([169.254.10.89]) with mapi id 14.03.0439.000;
+ Tue, 21 Apr 2020 19:48:09 +0800
+From:   "Ma, Jianpeng" <jianpeng.ma@intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [RESEND]block: remove unused header
+Thread-Topic: [RESEND]block: remove unused header
+Thread-Index: AdYX0rl3DxU1LQC5RfqOTHbWaoDw/w==
+Date:   Tue, 21 Apr 2020 11:48:08 +0000
+Message-ID: <6AA21C22F0A5DA478922644AD2EC308C73C54781@SHSMSX101.ccr.corp.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.239.127.40]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200420080409.111693-1-maco@android.com> <20200420080409.111693-2-maco@android.com>
- <b546eff4-616a-8488-fc11-9b7e23d44bcf@acm.org>
-In-Reply-To: <b546eff4-616a-8488-fc11-9b7e23d44bcf@acm.org>
-From:   Martijn Coenen <maco@android.com>
-Date:   Tue, 21 Apr 2020 13:48:01 +0200
-Message-ID: <CAB0TPYHXCRq-SVGsNBviyCAyP75oKam77W9vdsyri9fzA2tp+g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] loop: Refactor size calculation.
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Ming Lei <ming.lei@redhat.com>,
-        Narayan Kamath <narayan@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 3:22 PM Bart Van Assche <bvanassche@acm.org> wrote:
-> How about using the SECTOR_SHIFT constant instead of "9"?
+Dax related code already removed from this file.
 
-Ack, will do.
+Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
+---
+ fs/block_dev.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Please also change the "kill_bdev should have truncated all the pages"
-> comment into something like "return -EAGAIN if any pages have been
-> dirtied after kill_bdev() returned".
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 52b6f646cdbd..4163435dc231 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -19,7 +19,6 @@
+ #include <linux/module.h>
+ #include <linux/blkpg.h>
+ #include <linux/magic.h>
+-#include <linux/dax.h>
+ #include <linux/buffer_head.h>
+ #include <linux/swap.h>
+ #include <linux/pagevec.h>
+-- 
+2.17.1
 
-Sure - would you prefer this to be in a separate change?
-
-Thanks,
-Martijn
-
->
-> Thanks,
->
-> Bart.
+> -----Original Message-----
+> From: Christoph Hellwig <hch@infradead.org>
+> Sent: Tuesday, April 21, 2020 7:33 PM
+> To: Ma, Jianpeng <jianpeng.ma@intel.com>
+> Cc: axboe@kernel.dk; Williams, Dan J <dan.j.williams@intel.com>; linux-
+> kernel@vger.kernel.org
+> Subject: Re: block: remove unused header
+> 
+> On Tue, Apr 21, 2020 at 05:48:46AM +0000, Ma, Jianpeng wrote:
+> > >From 95218bc1d79f2bcbdd8819be26efa698868a34ca Mon Sep 17 00:00:00
+> 2001
+> > From: Jianpeng Ma <jianpeng.ma@intel.com>
+> > Date: Tue, 21 Apr 2020 01:15:24 -0400
+> > Subject: [PATCH] block: remove unused header.
+> >
+> > Dax related code already removed from this file.
+> >
+> > Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
+> 
+> Except for the mangled patch format this looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Can you resend it with proper patch headers?
