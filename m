@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D423B1B289B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CC71B28A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbgDUN5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDUN5g (ORCPT
+        id S1728945AbgDUN5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:57:54 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48456 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728824AbgDUN5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:57:36 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D31C061A10;
-        Tue, 21 Apr 2020 06:57:36 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id v10so2466443qvr.2;
-        Tue, 21 Apr 2020 06:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g8sI+x0ifL/wEFiFPpalnoznOyEqF0zjwgw2NNC+4mc=;
-        b=o5rA5yj7PKRli/WEwKCwKAqzHohjrHFYqnF5aOaJyw7loMnWOIWACm2qTaSQs7LUeI
-         5gJoRqg2exMdQBKvkbyb2/gjHBNwLUb1gI6cbPr9FPPCCZBV4xAiPE5fBow5c+GAaY8N
-         KJSh53mCr0DMHmQ0EnIfAumN9vKJBzmcGvG8pcrHUYcicJq5SqyOUCrF5pPcjmn4Lptl
-         MlEccAm4LT2dppQdo51o7NJm5XasujoL4CaGuCnwL5QWCFLeuhAtEpR4eMlTrkLSEuJI
-         LdoHtDXqd58r51j+H6Eq6OUEHMl4hy/V8Qicr4E+5BxnYC+0lzKwrpFU5f6+m+YSN+iA
-         QHcw==
+        Tue, 21 Apr 2020 09:57:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587477469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2wRD9FPTWKMzxCyWJGhqpm27rg8NjVNjjKx55UL7gOU=;
+        b=Nu3trMDKQtUIanQbH665T2r5W69cir4BYnqL/P1xC+skrm/gffIT4BhTOS6jPkTl5objGj
+        BHNhlR18NZV0trlNkBy9l6qhtEKxmvOFYCua/P+dXcGMiqOQ3PTfuhO0Has91F7QzXDDI+
+        14pV7PDCkEi+3gT39hdQsaQLePqKXnc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-K6S-CHKmOrq5ykjxFvIwvg-1; Tue, 21 Apr 2020 09:57:47 -0400
+X-MC-Unique: K6S-CHKmOrq5ykjxFvIwvg-1
+Received: by mail-wm1-f71.google.com with SMTP id n127so1408320wme.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:57:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g8sI+x0ifL/wEFiFPpalnoznOyEqF0zjwgw2NNC+4mc=;
-        b=SpQPxLZGNhdM1hM95OfWc5Rww2B5bBYaaYj1VSi9lck7j5OQKO2lWyWN84gql7PN7x
-         7/9BAfN0ieUIe75UeK6JXBPWAi8+j6VUo/bTd+Adg2o5rt2Y8tdfKFUuUZRZTwUsdriS
-         eUzfD8dzRSO8fYOGUtpGgHI2coyCJDksA/UosjmUc1VDT8FVHICJhAan5dZwzrjbbocJ
-         1TpfI3hNvJkOnGV30Zp1Tb+gwoc/XSemQNEO5sX+Hae1Hc/N/DgDHpav0idHczln2Njd
-         28ni7D1EcXhkNoqDirXabHhufSMdlCpWIyXfppPhShm9Q7wH+E/YHaX8MFCTzObtaErS
-         QqHQ==
-X-Gm-Message-State: AGi0PuZz7dFykI/6S+U11OtXPq9VJJQXdQ0b+WDf+SXzTAL5nR573Hq3
-        LNqQFA2zP42cUdhSce3ejq133S4h3lw=
-X-Google-Smtp-Source: APiQypK7FnDixMI3pzcl99s2hbVp+PWT8UxbdsNbkRGLe4Q3ASFN5r2ywfFxMVJjC/xKVGDD5F+B0w==
-X-Received: by 2002:a05:6214:28d:: with SMTP id l13mr19522391qvv.181.1587477455411;
-        Tue, 21 Apr 2020 06:57:35 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:6809])
-        by smtp.gmail.com with ESMTPSA id t67sm1785469qka.17.2020.04.21.06.57.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2wRD9FPTWKMzxCyWJGhqpm27rg8NjVNjjKx55UL7gOU=;
+        b=MT6Ft0Mpq9aXJ3A1WSRRKxfLAhSn6pzXMBf7M7y4BL/UpEpqdsM7x4OJ4Jzm4RPbyq
+         e0dirKkcBNwy77dO9/7ybcWi49GJMvpk5GOA+WcCx8Ed724wwfaXRa8nmnJKBeLpeCw0
+         bz8W2hSD1iJDl9csfjOF9PjZulKTOdHRwo63ExuzakbcCh+QFsaz5pknXc7IMpMFkXlI
+         AVGrLTLD6bXQwz+acbWoadkfd7r3RfFbZ7cCVVyYaqpxKURbI/1Jm+Cm415tKAeHrL6n
+         weNtc/e4TSwkylzTleBWsU8lK4KOtNs/VnG8O0wFXnlJjcVucKQ1B7oyZHLJIX2WuxBb
+         mp+w==
+X-Gm-Message-State: AGi0Puay70CwqZslXD/vZILj3dVqckmloUJyn4ymXH/2PBwpDGW5MJNF
+        D33OjJK9Q/YobM6MxuDMxJ0CVVn80vMoK+h6z2rfUPPZk1wvYkEi+HvmwexCzim1n7OTRKsdVMR
+        af/BWjrJHcj+335x0stqufh3p
+X-Received: by 2002:a7b:cb17:: with SMTP id u23mr4993985wmj.130.1587477466575;
+        Tue, 21 Apr 2020 06:57:46 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIdMbj9yLvuLA4LwwjCRX8ejEQ6n8RjZ/wI7HQOlXPSbSe/l8j+NErdfsIjBeaz5nCZl4whdg==
+X-Received: by 2002:a7b:cb17:: with SMTP id u23mr4993944wmj.130.1587477466378;
+        Tue, 21 Apr 2020 06:57:46 -0700 (PDT)
+Received: from localhost.localdomain.com ([194.230.155.194])
+        by smtp.gmail.com with ESMTPSA id f23sm3562989wml.4.2020.04.21.06.57.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 06:57:34 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 09:57:32 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 4/4] loop: Charge i/o to mem and blk cg
-Message-ID: <20200421135732.GB9623@dschatzberg-fedora-PC0Y6AEN>
-References: <20200420223936.6773-1-schatzberg.dan@gmail.com>
- <20200421033337.13208-1-hdanton@sina.com>
+        Tue, 21 Apr 2020 06:57:45 -0700 (PDT)
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Manoj N. Kumar" <manoj@linux.ibm.com>,
+        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+        Uma Krishnan <ukrishn@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-scsi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Subject: [PATCH v2 3/7] libfs: introduce new_inode_current_time
+Date:   Tue, 21 Apr 2020 15:57:37 +0200
+Message-Id: <20200421135741.30657-1-eesposit@redhat.com>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <20200421135119.30007-1-eesposit@redhat.com>
+References: <20200421135119.30007-1-eesposit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421033337.13208-1-hdanton@sina.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:33:37AM +0800, Hillf Danton wrote:
-> 
-> On Mon, 20 Apr 2020 18:39:32 -0400 Dan Schatzberg wrote:
-> > 
-> > @@ -964,13 +960,16 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
-> >  	worker = kzalloc(sizeof(struct loop_worker), GFP_NOWAIT | __GFP_NOWARN);
-> >  	/*
-> >  	 * In the event we cannot allocate a worker, just queue on the
-> > -	 * rootcg worker
-> > +	 * rootcg worker and issue the I/O as the rootcg
-> >  	 */
-> > -	if (!worker)
-> > +	if (!worker) {
-> > +		cmd->blkcg_css = NULL;
-> > +		cmd->memcg_css = NULL;
-> 
-> Dunno if 	css_put(cmd->memcg_css);
+It is a common special case for new_inode to initialize the
+time to the current time and the inode to get_next_ino().
+Introduce a core function that does it.
 
-Good catch. Need to drop the reference here.
+Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+---
+ fs/libfs.c         | 20 ++++++++++++++++++++
+ include/linux/fs.h |  1 +
+ 2 files changed, 21 insertions(+)
+
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 54e07ae986ca..3fa0cd27ab06 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -594,6 +594,26 @@ int simple_write_end(struct file *file, struct address_space *mapping,
+ }
+ EXPORT_SYMBOL(simple_write_end);
+ 
++/**
++ * new_inode_current_time - create new inode by initializing the
++ * time to the current time and the inode to get_next_ino()
++ * @sb: pointer to super block of the file system
++ *
++ * Returns an inode pointer on success, NULL on failure.
++ */
++struct inode *new_inode_current_time(struct super_block *sb)
++{
++	struct inode *inode = new_inode(sb);
++
++	if (inode) {
++		inode->i_ino = get_next_ino();
++		inode->i_atime = inode->i_mtime =
++			inode->i_ctime = current_time(inode);
++	}
++	return inode;
++}
++EXPORT_SYMBOL(new_inode_current_time);
++
+ /*
+  * the inodes created here are not hashed. If you use iunique to generate
+  * unique inode values later for this filesystem, then you must take care
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index a3691c132b3a..de2577df30ae 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3088,6 +3088,7 @@ extern void clear_inode(struct inode *);
+ extern void __destroy_inode(struct inode *);
+ extern struct inode *new_inode_pseudo(struct super_block *sb);
+ extern struct inode *new_inode(struct super_block *sb);
++extern struct inode *new_inode_current_time(struct super_block *sb);
+ extern void free_inode_nonrcu(struct inode *inode);
+ extern int should_remove_suid(struct dentry *);
+ extern int file_remove_privs(struct file *);
+-- 
+2.25.2
+
