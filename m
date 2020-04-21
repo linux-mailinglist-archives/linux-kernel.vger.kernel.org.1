@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351E11B1C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 04:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB001B1C1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 04:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgDUCnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 22:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S1726949AbgDUCqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 22:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725988AbgDUCm7 (ORCPT
+        by vger.kernel.org with ESMTP id S1725829AbgDUCqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 22:42:59 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD25C061A0E;
-        Mon, 20 Apr 2020 19:42:59 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id s202so10833202oih.3;
-        Mon, 20 Apr 2020 19:42:59 -0700 (PDT)
+        Mon, 20 Apr 2020 22:46:19 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78445C061A0E;
+        Mon, 20 Apr 2020 19:46:19 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 198so9845340lfo.7;
+        Mon, 20 Apr 2020 19:46:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=22HJzOmHnmam1tgxVzraGLccgsF7pCDzxppnKXmeCcc=;
-        b=jKmwOwQWKpYMPZofyZTuYn+7LdAMlYL6swWuBqaWWYS2ZHe065aplsFe1ypvqsjVg/
-         E79G3ZVOsXfSzITV1aNWOhL/+In9irYnxjpqJ4QUtvf3mMJCwB1hqygj3wSyZkyM9jtI
-         GL9bG947tM1umGFCgOdTRzHnZl2M1t1CwGB4ZyZeoh2ONAnlOTPW7w5sJ6dHdOC7LGy1
-         M70e4C+70oD1J2hsUkjImoXoNrDzlyd0lcd/IAMObQgb9rHaw0OegZzdtbtSdFUpJ67c
-         +xlz3pyhFZEtqYXqFur48USkQu5StZsixLj2jtbp5NqpaFCungz+3cEiNzynVfhMoG1i
-         WyQg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o5OcbUGHwiU1CmRyAs5hmz04gA+MaTAsH/b/sIzr7cU=;
+        b=KN56EWmXtN8o0IvMzCvJH3XSM9pOdbqZ5nAD9AoPLE+MXetTf0Rykt8SGBHkjtiMS9
+         lx6EJ2iYn+Pb7oDrdVUyQf7mjWvfGr6bjVmSI2zJUN4SnupxsawEOPpdj7GfJcQ+wLPk
+         rX95L534Ob9XyS3Wm8xeShzZ9JidZZjbOjujWoyKdJ2xgW1/EmsUsC0L1kS9IZNVOI3r
+         9wvLdfnenrs9mKqyvz1DX8++9R1cGxFuWwrrnCWOZ/6X9tCTnzD7c4Zpkh0ozM3vrIsD
+         niO5m1SZibfXVqrMMxg1a9P3xw00ZBqaXUquszXVRjEM29HVQudqy7jl+E2zhaPVv0W9
+         xvCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=22HJzOmHnmam1tgxVzraGLccgsF7pCDzxppnKXmeCcc=;
-        b=TvH+Cssds32hzl6A7L8Yh8+D5+9gcYCudhLr28WqlPGSoV4qrjfuAXL2bV2uyBzGoR
-         jsueqJj+/kA6ps65AQLMhqk5hx1VcYsd1KRVtWX0M35ipedYyLP7lfOBM+qIpf7H57Za
-         6vSPvpBh0R0Tq6PziI7mIRmYWHBvIUaqlMZ0K2+kyOPFrXzIKMRvNfBd7wqWq0w73Oka
-         VKMn+o5py3EtJVOG7T38HSa5pAfVWfPTThAUzJn+Crrnl/g0eB6ey/kajctTEossG2tB
-         gv9B947GnqOLiEJSWUChKb4ob7GM01+EbpqvbPLzdUg8GMNlqMPvomvc+k+objLXoG7u
-         vf7w==
-X-Gm-Message-State: AGi0PuZpNKmk+cZ/tWg/SbGx/dP3S3g5gKr+y1vR0/ukf6kUGqkEzqGN
-        n1jCyQKOe3fEIYnU8VyBvMQ=
-X-Google-Smtp-Source: APiQypJkewVCDBhIo/LPbuliAqXKDGfd5imYzqWqvA5pHn7Gaa4TcDgnRMZK41fAT8W64wzDCFRm+w==
-X-Received: by 2002:a05:6808:64a:: with SMTP id z10mr1702091oih.71.1587436978810;
-        Mon, 20 Apr 2020 19:42:58 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id b6sm425594otq.18.2020.04.20.19.42.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 Apr 2020 19:42:58 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 19:42:56 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dmitry Golovin <dima@golovin.in>
-Subject: Re: [PATCH v2 2/3] MIPS: VDSO: Move disabling the VDSO logic to
- Kconfig
-Message-ID: <20200421024256.GA42179@ubuntu-s3-xlarge-x86>
-References: <20200419180445.26722-1-natechancellor@gmail.com>
- <20200419202128.20571-1-natechancellor@gmail.com>
- <20200419202128.20571-2-natechancellor@gmail.com>
- <CA+icZUVaLW+38WEJhqnfO7B_unHvrbSr0moKnfJ6zXGGA06CWQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o5OcbUGHwiU1CmRyAs5hmz04gA+MaTAsH/b/sIzr7cU=;
+        b=YWtBOgANUjI/n8MbEFksXwCf7ffDM30zSotpjtgZee0VTj1htfiC/u6vk1GOmaWOU7
+         j0qITZf7J6/V/N0CRezWMbg3k2vEi8tsYT40KsnaWWAleOCcxxmjkKM7LHoRlt2p5FHd
+         1mq9Y7N0ilIRo3ey9AAlqiUALL+kXJnqmuaeOHHsZwdiAMFl8wbcb+dVAZz+9xH7oHU1
+         IH0PBdUWRVD/B+nxqyjPClyZTzhYWEMtCWT9hiSGPH5tCPXvXyj1MkvUBijNdVTVX0cF
+         E5dt2jeH+aVdzjv5zLNApnMdZx9RWFIpg5t16IiSOsDDS9LI3BtBRAsLdEQ7B/LjRHoc
+         8coA==
+X-Gm-Message-State: AGi0PuaJWoDkf5QU0IscHS7RF+2320m4NvJpvSCAzoASuSRBFUK+B8UE
+        IY7gbWnKcbJLSO/IHRSzXsJ/fW8ws7F0it/lo7U=
+X-Google-Smtp-Source: APiQypIqJWu9QiVesaaTnVGOdtYMSxVQY4sEJwiueOtyt8iKdNYmFMDvnjRUOFgNvj+br6RKUBHnoBWXACbWLX9LPe0=
+X-Received: by 2002:ac2:569b:: with SMTP id 27mr12499931lfr.134.1587437177744;
+ Mon, 20 Apr 2020 19:46:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUVaLW+38WEJhqnfO7B_unHvrbSr0moKnfJ6zXGGA06CWQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200418232655.23870-1-luke.r.nels@gmail.com>
+In-Reply-To: <20200418232655.23870-1-luke.r.nels@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 20 Apr 2020 19:46:05 -0700
+Message-ID: <CAADnVQL+--GLyaPdj2cRncQ9X-EAravt1_2fjfPhORWA-VUWuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf, x86: Fix encoding for lower 8-bit registers
+ in BPF_STX BPF_B
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 11:53:55AM +0200, Sedat Dilek wrote:
-> On Sun, Apr 19, 2020 at 10:21 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > After commit 9553d16fa671 ("init/kconfig: Add LD_VERSION Kconfig"), we
-> > have access to GNU ld's version at configuration time. As a result, we
-> > can make it clearer under what configuration circumstances the MIPS VDSO
-> > needs to be disabled.
-> >
-> > This is a prerequisite for getting rid of the MIPS VDSO binutils
-> > warning and linking the VDSO when LD is ld.lld. Wrapping the call to
-> > ld-ifversion with CONFIG_LD_IS_LLD does not work because the config
-> > values are wiped away during 'make clean'.
-> >
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >
-> > v1 -> v2:
-> >
-> > * New patch.
-> >
-> >  arch/mips/Kconfig         |  2 ++
-> >  arch/mips/vdso/Kconfig    | 18 ++++++++++++++++++
-> >  arch/mips/vdso/Makefile   | 30 ++----------------------------
-> >  arch/mips/vdso/vdso.lds.S |  2 +-
-> >  4 files changed, 23 insertions(+), 29 deletions(-)
-> >  create mode 100644 arch/mips/vdso/Kconfig
-> >
-> > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> > index 690718b3701a..45220e4b8a65 100644
-> > --- a/arch/mips/Kconfig
-> > +++ b/arch/mips/Kconfig
-> > @@ -3275,3 +3275,5 @@ endmenu
-> >  source "drivers/firmware/Kconfig"
-> >
-> >  source "arch/mips/kvm/Kconfig"
-> > +
-> > +source "arch/mips/vdso/Kconfig"
-> > diff --git a/arch/mips/vdso/Kconfig b/arch/mips/vdso/Kconfig
-> ...
-> > --- /dev/null
-> > +++ b/arch/mips/vdso/Kconfig
-> ...
-> > +config MIPS_DISABLE_VDSO
-> > +       def_bool CPU_MICROMIPS || (!CPU_MIPSR6 && !MIPS_LD_CAN_LINK_VDSO)
-> ...
-> > diff --git a/arch/mips/vdso/vdso.lds.S b/arch/mips/vdso/vdso.lds.S
-> ...
-> > --- a/arch/mips/vdso/vdso.lds.S
-> > +++ b/arch/mips/vdso/vdso.lds.S
-> ...
-> > -#ifndef DISABLE_MIPS_VDSO
-> > +#ifndef CONFIG_DISABLE_MIPS_VDSO
-> 
-> Should be s/CONFIG_DISABLE_MIPS_VDSO/CONFIG_MIPS_DISABLE_VDSO ?
-> 
-> - Sedat -
+On Sat, Apr 18, 2020 at 4:27 PM Luke Nelson <lukenels@cs.washington.edu> wrote:
+>
+> This patch fixes an encoding bug in emit_stx for BPF_B when the source
+> register is BPF_REG_FP.
+>
+> The current implementation for BPF_STX BPF_B in emit_stx saves one REX
+> byte when the operands can be encoded using Mod-R/M alone. The lower 8
+> bits of registers %rax, %rbx, %rcx, and %rdx can be accessed without using
+> a REX prefix via %al, %bl, %cl, and %dl, respectively. Other registers,
+> (e.g., %rsi, %rdi, %rbp, %rsp) require a REX prefix to use their 8-bit
+> equivalents (%sil, %dil, %bpl, %spl).
+>
+> The current code checks if the source for BPF_STX BPF_B is BPF_REG_1
+> or BPF_REG_2 (which map to %rdi and %rsi), in which case it emits the
+> required REX prefix. However, it misses the case when the source is
+> BPF_REG_FP (mapped to %rbp).
+>
+> The result is that BPF_STX BPF_B with BPF_REG_FP as the source operand
+> will read from register %ch instead of the correct %bpl. This patch fixes
+> the problem by fixing and refactoring the check on which registers need
+> the extra REX byte. Since no BPF registers map to %rsp, there is no need
+> to handle %spl.
+>
+> Fixes: 622582786c9e0 ("net: filter: x86: internal BPF JIT")
+> Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
 
-Ugh yes, thank you much for pointing it out.
-
-I'll send a v3 once I get further feedback on the series.
-
-Cheers!
-Nathan
+Applied. Thanks for the fix.
+It's questionable whether the verifier should have allowed such insn
+in the first place, but JIT fix is good regardless.
