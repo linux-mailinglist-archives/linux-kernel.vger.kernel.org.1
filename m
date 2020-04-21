@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6A91B1A82
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F321B1A97
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgDUALe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 20:11:34 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11245 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726659AbgDUAL2 (ORCPT
+        id S1726006AbgDUAPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 20:15:13 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53892 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgDUAPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 20:11:28 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9e39bd0001>; Mon, 20 Apr 2020 17:09:33 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 20 Apr 2020 17:11:28 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 20 Apr 2020 17:11:28 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
- 2020 00:11:28 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 21 Apr 2020 00:11:27 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.165.49]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e9e3a2e0000>; Mon, 20 Apr 2020 17:11:27 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <digetx@gmail.com>, <sboyd@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v8 9/9] arm64: tegra: Add Tegra VI CSI support in device tree
-Date:   Mon, 20 Apr 2020 17:11:14 -0700
-Message-ID: <1587427874-3291-10-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587427874-3291-1-git-send-email-skomatineni@nvidia.com>
-References: <1587427874-3291-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Mon, 20 Apr 2020 20:15:12 -0400
+Received: by mail-il1-f199.google.com with SMTP id 9so14548630ill.20
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 17:15:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=e7tbGnQOw9ScmhkM05mN4FRYPqxD9li27999npT/skU=;
+        b=M0HI2ydEMPqin+n5xl74Uz9T8aBXA2I8ejEHyYB5QZGgSisYE5aIrCbUEhn2Qw95uQ
+         BSV12slncUV2Avzt2HmEkBXolF5cL+FZKThOySWL4x9w1AwLBLp/nrWuYhTkgABQq2uC
+         hpJgwI2YMESHQ8zlkC41QXdMW056EIQE6n49muw5EMDbZpS66EcbYRK5pRZf7Qdb4Vmi
+         tw3/uidVJDSeSoQNimCrzSzhwNaavMq2KC55IIO23ldXB+0C07vDXB08JvEd33oP4HI/
+         7KTEo0bhlD0gO24sfJGW64MZiFnuUXO/9g35zXewHfC0NeRofuL6OaK3qmA1mIpRJUhh
+         GqsQ==
+X-Gm-Message-State: AGi0PuamJ2cr/AFNgIaFIe90iqiP0O+scS3TONl2Xs9fBYMD6WVwRgg9
+        GAzhiAhUtUiRNnRFfZlyF2GwR0YpH8RESRJ1VUEYAKiGfpYW
+X-Google-Smtp-Source: APiQypK2oxzMcVjMaAjUZbJ5UFJDdFif3UDI31S7agiTfM9mWKWx4JcocFJQv3QDpVm4tU98Irz77V3iVc9BvLbfoRX34BoYcQKZ
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587427773; bh=yB3b29VbNFtTvMcPZCMVxLppaVECoZp9WEY70dWiuUY=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=Z861qR1kCPrPTC77B0TQq0mcYt0ZOKeI5+4i+af+jrC0GXt10fnlIEZ17w2MtWG4v
-         RfWhkNsOgg4Y6h0ayBwHt+BWJ7s7yY+ggiIXfexzYHC4B2M1wte0f7GCL3ZJyYLoos
-         kNh9KxE8SHfRdRIzO1FYk1WyezRfmdxPqS92JHgT6oHBr1ATPCxdJqU2MwbXsIzNR6
-         FEB4bJsDGB1rCs03v6DHe94Lk2uZRG8paJOA6n4OPY6SeAodRTdzws3/q1gubyrSYt
-         IU7PuYnvBAqdRlWGslgaAKOVQU/nbl049S4g8iDJQn1p1xA/AOxRf4A/UbFXb1fQSU
-         EMtcuHemi2R3Q==
+X-Received: by 2002:a5e:c804:: with SMTP id y4mr18439396iol.58.1587428111906;
+ Mon, 20 Apr 2020 17:15:11 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 17:15:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b77ac905a3c1e81f@google.com>
+Subject: KASAN: out-of-bounds Write in nested_sync_vmcs12_to_shadow
+From:   syzbot <syzbot+6ad11779184a3afe9f7e@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra210 contains VI controller for video input capture from MIPI
-CSI camera sensors and also supports built-in test pattern generator.
+Hello,
 
-CSI ports can be one-to-one mapped to VI channels for capturing from
-an external sensor or from built-in test pattern generator.
+syzbot found the following crash on:
 
-This patch adds support for VI and CSI and enables them in Tegra210
-device tree.
+HEAD commit:    9786cab6 Merge tag 'selinux-pr-20200416' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1110c920100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
+dashboard link: https://syzkaller.appspot.com/bug?extid=6ad11779184a3afe9f7e
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141f46abe00000
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Bisection is inconclusive: the bug happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b44c73e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=11b44c73e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b44c73e00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+6ad11779184a3afe9f7e@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: out-of-bounds in copy_vmcs12_to_enlightened arch/x86/kvm/vmx/nested.c:1820 [inline]
+BUG: KASAN: out-of-bounds in nested_sync_vmcs12_to_shadow+0x49e3/0x4a60 arch/x86/kvm/vmx/nested.c:2000
+Write of size 2 at addr ffffc90004db72e8 by task syz-executor.4/8294
+
+CPU: 1 PID: 8294 Comm: syz-executor.4 Not tainted 5.7.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x315 mm/kasan/report.c:382
+ __kasan_report.cold+0x35/0x4d mm/kasan/report.c:511
+ kasan_report+0x33/0x50 mm/kasan/common.c:625
+ copy_vmcs12_to_enlightened arch/x86/kvm/vmx/nested.c:1820 [inline]
+ nested_sync_vmcs12_to_shadow+0x49e3/0x4a60 arch/x86/kvm/vmx/nested.c:2000
+ </IRQ>
+
+
+Memory state around the buggy address:
+ ffffc90004db7180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90004db7200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc90004db7280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                                             ^
+ ffffc90004db7300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90004db7380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
 ---
- arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 10 ++++++
- arch/arm64/boot/dts/nvidia/tegra210.dtsi       | 46 +++++++++++++++++++++++++-
- 2 files changed, 55 insertions(+), 1 deletion(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-index 313a4c2..b57d837 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-@@ -14,6 +14,16 @@
- 			status = "okay";
- 		};
- 
-+		vi@54080000 {
-+			status = "okay";
-+
-+			avdd-dsi-csi-supply = <&vdd_dsi_csi>;
-+
-+			csi@838 {
-+				status = "okay";
-+			};
-+		};
-+
- 		sor@54580000 {
- 			status = "okay";
- 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-index 5b1dfd8..cad42a7 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -137,9 +137,44 @@
- 
- 		vi@54080000 {
- 			compatible = "nvidia,tegra210-vi";
--			reg = <0x0 0x54080000 0x0 0x00040000>;
-+			reg = <0x0 0x54080000 0x0 0x700>;
- 			interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
- 			status = "disabled";
-+			assigned-clocks = <&tegra_car TEGRA210_CLK_VI>;
-+			assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_C4_OUT0>;
-+
-+			clocks = <&tegra_car TEGRA210_CLK_VI>;
-+			power-domains = <&pd_venc>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			ranges = <0x0 0x0 0x54080000 0x2000>;
-+
-+			csi@838 {
-+				compatible = "nvidia,tegra210-csi";
-+				reg = <0x838 0x1300>;
-+				status = "disabled";
-+				assigned-clocks = <&tegra_car TEGRA210_CLK_CILAB>,
-+						  <&tegra_car TEGRA210_CLK_CILCD>,
-+						  <&tegra_car TEGRA210_CLK_CILE>,
-+						  <&tegra_car TEGRA210_CLK_CSI_TPG>;
-+				assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_P>,
-+							 <&tegra_car TEGRA210_CLK_PLL_P>,
-+							 <&tegra_car TEGRA210_CLK_PLL_P>;
-+				assigned-clock-rates = <102000000>,
-+						       <102000000>,
-+						       <102000000>,
-+						       <972000000>;
-+
-+				clocks = <&tegra_car TEGRA210_CLK_CSI>,
-+					 <&tegra_car TEGRA210_CLK_CILAB>,
-+					 <&tegra_car TEGRA210_CLK_CILCD>,
-+					 <&tegra_car TEGRA210_CLK_CILE>,
-+					 <&tegra_car TEGRA210_CLK_CSI_TPG>;
-+				clock-names = "csi", "cilab", "cilcd", "cile", "csi_tpg";
-+				power-domains = <&pd_sor>;
-+			};
- 		};
- 
- 		tsec@54100000 {
-@@ -839,6 +874,15 @@
- 				reset-names = "vic";
- 				#power-domain-cells = <0>;
- 			};
-+
-+			pd_venc: venc {
-+				clocks = <&tegra_car TEGRA210_CLK_VI>,
-+					 <&tegra_car TEGRA210_CLK_CSI>;
-+				resets = <&mc TEGRA210_MC_RESET_VI>,
-+					 <&tegra_car TEGRA210_RST_VI>,
-+					 <&tegra_car TEGRA210_CLK_CSI>;
-+				#power-domain-cells = <0>;
-+			};
- 		};
- 
- 		sdmmc1_3v3: sdmmc1-3v3 {
--- 
-2.7.4
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
