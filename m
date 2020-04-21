@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE351B21D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5D71B21C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgDUIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:38:24 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:56430 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDUIiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:38:23 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1AA4497D;
-        Tue, 21 Apr 2020 10:38:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1587458300;
-        bh=M4JnM4GjvLEco6/O8nqZUJCQJ6W6eag7+dGlDjYn/+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vb+6+eIW8vz8kOW8VNVyZLYL9GXfkJerZLOL9xivPPgeaV/eHmTZ3y2DxatzPa36s
-         E3G2rc7AQ59LxL+wEWbP85vmDy/gP6EkkO3pzMUL/eU4tLikNh46cjN/TCaDOAVsXY
-         G4xmN1JnYeAucJwc0nXGZb/3gG8u8B0rD4tCp/oQ=
-Date:   Tue, 21 Apr 2020 11:38:07 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Vishal Sagar <vishal.sagar@xilinx.com>,
-        Hyun Kwon <hyunk@xilinx.com>, mchehab@kernel.org,
-        robh+dt@kernel.org, mark.rutland@arm.com,
-        Michal Simek <michals@xilinx.com>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, hans.verkuil@cisco.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dinesh Kumar <dineshk@xilinx.com>,
-        Sandip Kothari <sandipk@xilinx.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>
-Subject: Re: [PATCH v11 2/2] media: v4l: xilinx: Add Xilinx MIPI CSI-2 Rx
- Subsystem driver
-Message-ID: <20200421083807.GB5983@pendragon.ideasonboard.com>
-References: <20200409194424.45555-1-vishal.sagar@xilinx.com>
- <20200409194424.45555-3-vishal.sagar@xilinx.com>
- <20200419180222.GB8117@pendragon.ideasonboard.com>
- <860c27da-eba0-ddcb-719b-52b2725bd9bf@lucaceresoli.net>
- <20200420195714.GB8195@pendragon.ideasonboard.com>
- <0a3ea86b-cb4c-a1db-664e-cfa555d8ccf8@lucaceresoli.net>
+        id S1728096AbgDUIhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:37:45 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29758 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUIhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:37:45 -0400
+IronPort-SDR: r29xraq78hBiIhTHoza3FL1uTErqPK4A0EdPgKDte7i4WhRSgedea6wXNA2S5Sadw8TJ0ZURd0
+ XPCxg0WYpr5Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:37:44 -0700
+IronPort-SDR: CEHbwDgISfbBnr3/OcAdWR6P1aWQPaTA2mGHl9y6W7jCn4K1uZuWdDCyELQdmIw/me8+TRYmwq
+ EpTe7YWZRMBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
+   d="scan'208";a="456688398"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2020 01:37:42 -0700
+Date:   Tue, 21 Apr 2020 16:38:12 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH 2/2] sched: Extract the task putting code from
+ pick_next_task()
+Message-ID: <20200421083812.GE9721@chenyu-office.sh.intel.com>
+References: <cover.1587309963.git.yu.c.chen@intel.com>
+ <7c1eab789cb4b53ec5f54644c089ce27ea14088a.1587309963.git.yu.c.chen@intel.com>
+ <20200420183232.16b83374@gandalf.local.home>
+ <jhjwo69lqcm.mognet@arm.com>
+ <20200420231355.GU2483@worktop.programming.kicks-ass.net>
+ <20200420222319.34f9f646@oasis.local.home>
+ <CAKfTPtBG=Nu+76NywfD0rk-BmT=2egTd_9FaPU4oCP1D_eyuBQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a3ea86b-cb4c-a1db-664e-cfa555d8ccf8@lucaceresoli.net>
+In-Reply-To: <CAKfTPtBG=Nu+76NywfD0rk-BmT=2egTd_9FaPU4oCP1D_eyuBQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luca,
-
-On Tue, Apr 21, 2020 at 09:45:56AM +0200, Luca Ceresoli wrote:
-> On 20/04/20 21:57, Laurent Pinchart wrote:
-> > On Mon, Apr 20, 2020 at 09:24:25PM +0200, Luca Ceresoli wrote:
-> >> On 19/04/20 20:02, Laurent Pinchart wrote:
-> >> [...]
-> >>>> +static irqreturn_t xcsi2rxss_irq_handler(int irq, void *dev_id)
-> >>>> +{
-> >>>> +	struct xcsi2rxss_state *state = (struct xcsi2rxss_state *)dev_id;
-> >>>> +	struct xcsi2rxss_core *core = &state->core;
-> >>>> +	u32 status;
-> >>>> +
-> >>>> +	status = xcsi2rxss_read(core, XCSI_ISR_OFFSET) & XCSI_ISR_ALLINTR_MASK;
-> >>>> +	dev_dbg_ratelimited(core->dev, "interrupt status = 0x%08x\n", status);
-> >>>
-> >>> As this is expected to occur for every frame, I would drop the message,
-> >>> even if rate-limited.
-> >>>
-> >>>> +
-> >>>> +	if (!status)
-> >>>> +		return IRQ_NONE;
-> >>>> +
-> >>>> +	/* Received a short packet */
-> >>>> +	if (status & XCSI_ISR_SPFIFONE) {
-> >>>> +		dev_dbg_ratelimited(core->dev, "Short packet = 0x%08x\n",
-> >>>> +				    xcsi2rxss_read(core, XCSI_SPKTR_OFFSET));
-> >>>> +	}
-> >>>
-> >>> Same here, this will occur all the time, I'd remove this message. You
-> >>> need to read XCSI_SPKTR_OFFSET though, and you should do so in a loop
-> >>> until the XCSI_CSR_SPFIFONE in XCSI_CSR_OFFSET is cleared in case
-> >>> multiple short packets are received before the interrupt handler
-> >>> executes.
-> >>>
-> >>> I also wonder if it would make sense to extract the frame number from
-> >>> the FS short packet, and make it available through the subdev API. I
-> >>> think it should be reported through a V4L2_EVENT_FRAME_SYNC event. This
-> >>> can be implemented later.
-> >>>
-> >>>> +
-> >>>> +	/* Short packet FIFO overflow */
-> >>>> +	if (status & XCSI_ISR_SPFIFOF)
-> >>>> +		dev_dbg_ratelimited(core->dev, "Short packet FIFO overflowed\n");
-> >>>> +
-> >>>> +	/*
-> >>>> +	 * Stream line buffer full
-> >>>> +	 * This means there is a backpressure from downstream IP
-> >>>> +	 */
-> >>>> +	if (status & XCSI_ISR_SLBF) {
-> >>>> +		dev_alert_ratelimited(core->dev, "Stream Line Buffer Full!\n");
-> >>>> +		xcsi2rxss_stop_stream(state);
-> >>>> +		if (core->rst_gpio) {
-> >>>> +			gpiod_set_value(core->rst_gpio, 1);
-> >>>> +			/* minimum 40 dphy_clk_200M cycles */
-> >>>> +			ndelay(250);
-> >>>> +			gpiod_set_value(core->rst_gpio, 0);
-> >>>> +		}
-> >>>
-> >>> I don't think you should stop the core here. xcsi2rxss_stop_stream()
-> >>> calls the source .s_stream(0) operation, which usually involves I2C
-> >>> writes that will sleep.
-> >>>
-> >>> You should instead report an event to userspace (it looks like we have
-> >>> no error event defined in V4L2, one should be added), and rely on the
-> >>> normal stop procedure.
-> >>
-> >> FWIW, since a long time I've been using a modified version of this
-> >> routine, where after a Stream Line Buffer Full condition I just stop and
-> >> restart the csi2rx core and the stream continues after a minimal glitch.
-> >> Other subdev are unaware that anything has happened and keep on streaming.
-> >>
-> >> Not sure this is the correct thing to do, but it's working for me. Also
-> >> I proposed this topic in one of the previous iterations of this patch,
-> >> but the situation was different because the stream on/off was not
-> >> propagated back at that time.
-> > 
-> > Thanks for the feedback. How often does this occur in practice ?
+On Tue, Apr 21, 2020 at 09:42:26AM +0200, Vincent Guittot wrote:
+> On Tue, 21 Apr 2020 at 04:23, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Tue, 21 Apr 2020 01:13:55 +0200
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > > The 'finish' thing isn't too far from the truth; it's the last thing we
+> > > > need to do with the prev task (in terms of sched bookkeeping, I mean) -
+> > > > and in Chen's defence ISTR Peter suggested that name.
+> > > >
+> > > > Seeing as it's a "supercharged" put_prev_task(), I could live with the
+> > > > marginally shorter "put_prev_task_balance()".
+> > >
+> > > What Valentin said; it's the last put we do before picking a new task.
+> > > Also, I don't like long names. That said, I'm open to short and
+> > > appropriate suggestions.
+> >
+> > I wont bikeshed this too much.
+> >
+> > Is the "finish" more appropriate with the other use cases that are
+> > coming. I do like that "put_prev_task_balance()" too.
 > 
-> Quite often indeed in my case, as the MIPI stream comes from a remote
-> sensor via a video serdes chipset, and both the cable and the remote
-> sensor module are subject to heavy EMI. Depending on the setup I
-> observed SLBF happening up to 5~10 times per hour.
+> This name looks reasonnable
+>
+Okay, I'll change it to this name.
 
-Ouch, that is a lot ! Is that really caused by EMI though ? I thought
-SLBF was due to the downstream components applying backpressure.
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+Chenyu
+> >
+> > -- Steve
