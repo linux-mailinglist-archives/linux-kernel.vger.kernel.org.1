@@ -2,207 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A921B2CE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00081B2CD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgDUQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729092AbgDUQjU (ORCPT
+        id S1728524AbgDUQiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:38:50 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:39722 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725870AbgDUQit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:39:20 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81072C0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:19 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 188so4307953wmc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FwFO/u2aeUUzfosuhBTWahZc0BcOCP6Dfva7x951Kew=;
-        b=YsY5MtcynhLjmd4f5oPMFhzDUUL//yZqTVSXr/da17ytsjb18WOt73a2TR/vR9Xx7P
-         gppN9LpWP/YEV7OBFcP72H8yYBpKq7lI4GH3eM22Tvobvce4BUEIAbwVjrmDRHMkwMxt
-         X+TRM4z001H2b8vQaCwc1UeAtvot0XhM3DmrY7dGZv+jhxr1DvK329tt5RvM4tkHx+CZ
-         xXLa71dgImb57W+R1nncyaP/3JdyAH88ME/y/unJ4vMQPpO3PX/iTUdIgc2sOo58iO0Z
-         mDwgQEoZecgYjYm8SizcoapcKNC2MGwkE8QCGvZK79GBiFlU9LWQ0SHGdmt5QTBM6IAd
-         /6bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=FwFO/u2aeUUzfosuhBTWahZc0BcOCP6Dfva7x951Kew=;
-        b=QczjFXmgRt/fjggi6YFw9LNinfU3dRNkICBS5JiMjn5uPO4nc0cvgnOpzw3ij1SrZK
-         PAqm+buu/EPb7Vw91ve4uHIMXdLPDcC4d1mSZVfig7Vv3QZf3eyrLHKlmOuKRWu395Wo
-         LpdsYsfWRXavGNsZTZZ2dj6WY0SBbfc1MsNXtl3dm4m8yyz3yizOPAAyiPm40Hith4Ny
-         YgVGCFMmdIDilJaeIgDEl2C/5cqtkUkY/k3CnUStQMd/JwyquVBxeBcYCz29aACM2vLX
-         SUPrRhwnoMqVd1nLkcpY791e0t6Zdh+RBfwIJyrk5ijTUaBmrTB6HzeVEpiyFbsNmjSx
-         miZg==
-X-Gm-Message-State: AGi0PuYKJ/l2f4RVNWbkuTJ9jrWXZOfjWiGRU+HeQlE2KNU67lQiGlgU
-        1oDhyNElBUulEMRinLsq3x3Di315enXVPFmW
-X-Google-Smtp-Source: APiQypIxKMzeiiJWPN1V8wijRp5361DgD4XkoZLFBW75v7EUbfB74QMNUxM0q98bebRI/tDk5G6hzA==
-X-Received: by 2002:a1c:b38b:: with SMTP id c133mr5628173wmf.24.1587487157942;
-        Tue, 21 Apr 2020 09:39:17 -0700 (PDT)
-Received: from lmecxl0524.lme.st.com (2a01cb058702ff00947c0d9b78b8fa1e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:947c:d9b:78b8:fa1e])
-        by smtp.gmail.com with ESMTPSA id q143sm4389055wme.31.2020.04.21.09.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 09:39:17 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
-        michal.simek@xilinx.com, richard.gong@linux.intel.com,
-        lorenzo.pieralisi@arm.com, mark.rutland@arm.com,
-        jens.wiklander@linaro.org, tee-dev@lists.linaro.org,
-        sudeep.holla@arm.com,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [RFC PATCH v2 6/6] firmware: zynqmp: use SMCCC v1.0 helper functions
-Date:   Tue, 21 Apr 2020 18:38:11 +0200
-Message-Id: <20200421163811.22720-7-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200421163811.22720-1-etienne.carriere@linaro.org>
-References: <20200421163811.22720-1-etienne.carriere@linaro.org>
+        Tue, 21 Apr 2020 12:38:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587487128; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=ARqzDa0emM0SSGQygfh5tqB9cmkRZBpX2W+DDiBbY0s=; b=maIlgKSg3c0xvJwZyX22m72WKw4E3zuohRh9j3kHSU+ceKP1BvC8TW7k7syS11hPxbMG7bk0
+ r8SsUwFgWwTTtGz/CP3rsgkG7yE5W53K4CMi8q/gu8JkdjMUz03fHt0AL8jtsttnWisGwp5i
+ 9e9v83fDbZ7wFKiL43z4hAGJBX0=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9f2197.7ffb0bd1ace0-smtp-out-n05;
+ Tue, 21 Apr 2020 16:38:47 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 792B2C4478C; Tue, 21 Apr 2020 16:38:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61FAFC433CB;
+        Tue, 21 Apr 2020 16:38:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61FAFC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Tue, 21 Apr 2020 10:38:41 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [Freedreno] [PATCH 8/9] drm/msm/a6xx: enable GMU log
+Message-ID: <20200421163841.GC13825@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200420140313.7263-1-jonathan@marek.ca>
+ <20200420140313.7263-9-jonathan@marek.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420140313.7263-9-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change Xilinx Zynmp driver to use Arm SMCCC v1.0 helper functions.
+On Mon, Apr 20, 2020 at 10:03:12AM -0400, Jonathan Marek wrote:
+> This is required for a650 to work.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     | 16 ++++++++++++++++
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.h     |  1 +
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h |  4 ++++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index b583bf6e293b..1cdb7c832b87 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -198,6 +198,12 @@ static int a6xx_gmu_start(struct a6xx_gmu *gmu)
+>  	u32 val;
+>  
+>  	gmu_write(gmu, REG_A6XX_GMU_CM3_SYSRESET, 1);
+> +
+> +	/* Set the log wptr index
+> +	 * note: downstream saves the value in poweroff and restores it here
+> +	 */
+> +	gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_RESP, 0);
+> +
+>  	gmu_write(gmu, REG_A6XX_GMU_CM3_SYSRESET, 0);
+>  
+>  	ret = gmu_poll_timeout(gmu, REG_A6XX_GMU_CM3_FW_INIT_RESULT, val,
+> @@ -739,6 +745,9 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+>  
+>  	gmu_write(gmu, REG_A6XX_GMU_HFI_SFR_ADDR, chipid);
+>  
+> +	gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_MSG,
+> +		  gmu->log->iova | (gmu->log->size / SZ_4K - 1));
+> +
+>  	/* Set up the lowest idle level on the GMU */
+>  	a6xx_gmu_power_config(gmu);
+>  
+> @@ -1416,6 +1425,7 @@ void a6xx_gmu_remove(struct a6xx_gpu *a6xx_gpu)
+>  	a6xx_gmu_memory_free(gmu, gmu->dcache);
+>  	a6xx_gmu_memory_free(gmu, gmu->dummy);
+>  	a6xx_gmu_memory_free(gmu, gmu->debug);
+> +	a6xx_gmu_memory_free(gmu, gmu->log);
+>  	a6xx_gmu_memory_free(gmu, gmu->hfi);
+>  
+>  	iommu_detach_device(gmu->domain, gmu->dev);
+> @@ -1495,6 +1505,11 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>  	if (IS_ERR(gmu->hfi))
+>  		goto err_memory;
+>  
+> +	/* Allocate memory for the GMU log region */
+> +	gmu->log = a6xx_gmu_memory_alloc(gmu, SZ_4K, 0);
+> +	if (IS_ERR(gmu->log))
+> +		goto err_memory;
+> +
+>  	/* Map the GMU registers */
+>  	gmu->mmio = a6xx_gmu_get_mmio(pdev, "gmu");
+>  	if (IS_ERR(gmu->mmio))
+> @@ -1542,6 +1557,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>  	a6xx_gmu_memory_free(gmu, gmu->dcache);
+>  	a6xx_gmu_memory_free(gmu, gmu->dummy);
+>  	a6xx_gmu_memory_free(gmu, gmu->debug);
+> +	a6xx_gmu_memory_free(gmu, gmu->log);
+>  	a6xx_gmu_memory_free(gmu, gmu->hfi);
 
-Main functional change is that SMCCC conduit method for ZynqMP
-firmware must be consistent with conduit methods registered by
-PSCI device that is early probed in case the later is enabled.
+This is starting to feel like we could use some devres style garbage collection.
 
-Another functional change is an additional info level trace emitted
-by the device probe sequence: "probing for conduit method from DT.".
+>  
+>  	if (gmu->domain) {
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> index abd425ca6682..589b9b0c348e 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> @@ -59,6 +59,7 @@ struct a6xx_gmu {
+>  
+>  	struct a6xx_gmu_bo *hfi;
+>  	struct a6xx_gmu_bo *debug;
+> +	struct a6xx_gmu_bo *log;
+>  	struct a6xx_gmu_bo *icache;
+>  	struct a6xx_gmu_bo *dcache;
+>  	struct a6xx_gmu_bo *dummy;
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
+> index b4357ea550ec..176ae94d9fe6 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h
+> @@ -205,6 +205,10 @@ static inline uint32_t A6XX_GMU_GPU_NAP_CTRL_SID(uint32_t val)
+>  
+>  #define REG_A6XX_GPU_GMU_CX_GMU_CX_FAL_INTF			0x000050f0
+>  
+> +#define REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_MSG			0x00005100
+> +
+> +#define REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_RESP			0x00005101
+> +
+>  #define REG_A6XX_GMU_BOOT_KMD_LM_HANDSHAKE			0x000051f0
+>  
+>  #define REG_A6XX_GMU_LLM_GLM_SLEEP_CTRL				0x00005157
+> -- 
+> 2.26.1
+> 
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
 
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
----
- drivers/firmware/xilinx/zynqmp.c | 87 ++++----------------------------
- 1 file changed, 9 insertions(+), 78 deletions(-)
-
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 41b65164a367..f2172978ed4d 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -63,51 +63,11 @@ static int zynqmp_pm_ret_code(u32 ret_status)
- 	}
- }
- 
--static noinline int do_fw_call_fail(u64 arg0, u64 arg1, u64 arg2,
--				    u32 *ret_payload)
--{
--	return -ENODEV;
--}
--
--/*
-- * PM function call wrapper
-- * Invoke do_fw_call_smc or do_fw_call_hvc, depending on the configuration
-- */
--static int (*do_fw_call)(u64, u64, u64, u32 *ret_payload) = do_fw_call_fail;
--
--/**
-- * do_fw_call_smc() - Call system-level platform management layer (SMC)
-- * @arg0:		Argument 0 to SMC call
-- * @arg1:		Argument 1 to SMC call
-- * @arg2:		Argument 2 to SMC call
-- * @ret_payload:	Returned value array
-- *
-- * Invoke platform management function via SMC call (no hypervisor present).
-- *
-- * Return: Returns status, either success or error+reason
-- */
--static noinline int do_fw_call_smc(u64 arg0, u64 arg1, u64 arg2,
--				   u32 *ret_payload)
--{
--	struct arm_smccc_res res;
--
--	arm_smccc_smc(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res);
--
--	if (ret_payload) {
--		ret_payload[0] = lower_32_bits(res.a0);
--		ret_payload[1] = upper_32_bits(res.a0);
--		ret_payload[2] = lower_32_bits(res.a1);
--		ret_payload[3] = upper_32_bits(res.a1);
--	}
--
--	return zynqmp_pm_ret_code((enum pm_ret_status)res.a0);
--}
--
- /**
-- * do_fw_call_hvc() - Call system-level platform management layer (HVC)
-- * @arg0:		Argument 0 to HVC call
-- * @arg1:		Argument 1 to HVC call
-- * @arg2:		Argument 2 to HVC call
-+ * do_fw_call() - Call system-level platform management layer
-+ * @arg0:		Argument 0 to HVC/SMC call
-+ * @arg1:		Argument 1 to HVC/SMC call
-+ * @arg2:		Argument 2 to HVC/SMC call
-  * @ret_payload:	Returned value array
-  *
-  * Invoke platform management function via HVC
-@@ -116,12 +76,13 @@ static noinline int do_fw_call_smc(u64 arg0, u64 arg1, u64 arg2,
-  *
-  * Return: Returns status, either success or error+reason
-  */
--static noinline int do_fw_call_hvc(u64 arg0, u64 arg1, u64 arg2,
--				   u32 *ret_payload)
-+static noinline int do_fw_call(u64 arg0, u64 arg1, u64 arg2, u32 *ret_payload)
- {
- 	struct arm_smccc_res res;
- 
--	arm_smccc_hvc(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res);
-+	if (arm_smccc_1_0_invoke(arg0, arg1, arg2, 0, 0, 0, 0, 0, &res) ==
-+	    SMCCC_CONDUIT_NONE)
-+		return -ENODEV;
- 
- 	if (ret_payload) {
- 		ret_payload[0] = lower_32_bits(res.a0);
-@@ -287,36 +248,6 @@ static int zynqmp_pm_get_trustzone_version(u32 *version)
- 	return ret;
- }
- 
--/**
-- * get_set_conduit_method() - Choose SMC or HVC based communication
-- * @np:		Pointer to the device_node structure
-- *
-- * Use SMC or HVC-based functions to communicate with EL2/EL3.
-- *
-- * Return: Returns 0 on success or error code
-- */
--static int get_set_conduit_method(struct device_node *np)
--{
--	const char *method;
--
--	if (of_property_read_string(np, "method", &method)) {
--		pr_warn("%s missing \"method\" property\n", __func__);
--		return -ENXIO;
--	}
--
--	if (!strcmp("hvc", method)) {
--		do_fw_call = do_fw_call_hvc;
--	} else if (!strcmp("smc", method)) {
--		do_fw_call = do_fw_call_smc;
--	} else {
--		pr_warn("%s Invalid \"method\" property: %s\n",
--			__func__, method);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- /**
-  * zynqmp_pm_query_data() - Get query data from firmware
-  * @qdata:	Variable to the zynqmp_pm_query_data structure
-@@ -790,7 +721,7 @@ static int zynqmp_firmware_probe(struct platform_device *pdev)
- 	}
- 	of_node_put(np);
- 
--	ret = get_set_conduit_method(dev->of_node);
-+	ret = devm_arm_smccc_1_0_set_conduit(dev);
- 	if (ret)
- 		return ret;
- 
 -- 
-2.17.1
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
