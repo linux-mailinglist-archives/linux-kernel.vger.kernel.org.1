@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79A91B28BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FC61B28C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbgDUN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:58:08 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:38911 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729089AbgDUN6E (ORCPT
+        id S1729161AbgDUN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:58:25 -0400
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:60611 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728912AbgDUN6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:58:04 -0400
-Received: (qmail 21373 invoked by uid 500); 21 Apr 2020 09:58:02 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 21 Apr 2020 09:58:02 -0400
-Date:   Tue, 21 Apr 2020 09:58:02 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     NeilBrown <neilb@suse.de>
-cc:     Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        <linux-fsdevel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        <linux-nfs@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, <linux-nvdimm@lists.01.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        Zzy Wysm <zzy@zzywysm.com>
-Subject: Re: [PATCH 5/9] usb: fix empty-body warning in sysfs.c
-In-Reply-To: <87368xskga.fsf@notabene.neil.brown.name>
-Message-ID: <Pine.LNX.4.44L0.2004210956590.20254-100000@netrider.rowland.org>
+        Tue, 21 Apr 2020 09:58:22 -0400
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id AE924B4ED3;
+        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=H8yh9MEx3hZkv8zIqzP78ok50J4=; b=x/Xbfg
+        vZYvPS8Wqcq7omo/3Yq9OUmbsVLJHa2VNvxQEpouF+afBKVP/4FPIxxpHczJ9OBr
+        p5JCD6YdSsRu7JXgkD0IexgBvEpHL1tDQ4j++ESXOqHrF/QrylAJlUn11BfNxVAo
+        +6z+o19D6AXf3oiqvR26JXHX6i6C4vQlBxzCs=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id A4E23B4ED2;
+        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=S9IEMKuiDJF/j1aD5HeQF9LyanvsJexzTiSbI4WlfDA=; b=HEE7M2YMLncR0Cx0FbMI4zv+qdbUdh5RGzbVr/VnLmFuCcA8EaAt2iu3/wxVYe3x5iiRjNumaZvBT2DnobJkrSrUr08ZTTJfWEoY9E2Qahout6wsZey493C/2R+FjLDszFdsTzb5GgH+F/9kgc+C0d0NI193Ji9twflHDSMWuhc=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 8BB0AB4ECD;
+        Tue, 21 Apr 2020 09:58:15 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 9DA582DA0D15;
+        Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
+Date:   Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+In-Reply-To: <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
+Message-ID: <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr>
+References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com> <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr> <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
+ <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 25A4AB2E-83D8-11EA-AC8D-8D86F504CC47-78420484!pb-smtp21.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020, NeilBrown wrote:
+On Tue, 21 Apr 2020, Saeed Mahameed wrote:
 
-> On Sat, Apr 18 2020, Alan Stern wrote:
+> I wonder how many of those 8889 cases wanted a weak dependency but
+> couldn't figure out how to do it ? 
 > 
-> > On Sat, 18 Apr 2020, Matthew Wilcox wrote:
-> >
-> >> On Sat, Apr 18, 2020 at 11:41:07AM -0700, Randy Dunlap wrote:
-> >> > +++ linux-next-20200327/drivers/usb/core/sysfs.c
-> >> > @@ -1263,7 +1263,7 @@ void usb_create_sysfs_intf_files(struct
-> >> >  	if (!alt->string && !(udev->quirks & USB_QUIRK_CONFIG_INTF_STRINGS))
-> >> >  		alt->string = usb_cache_string(udev, alt->desc.iInterface);
-> >> >  	if (alt->string && device_create_file(&intf->dev, &dev_attr_interface))
-> >> > -		;	/* We don't actually care if the function fails. */
-> >> > +		do_empty(); /* We don't actually care if the function fails. */
-> >> >  	intf->sysfs_files_created = 1;
-> >> >  }
-> >> 
-> >> Why not just?
-> >> 
-> >> +	if (alt->string)
-> >> +		device_create_file(&intf->dev, &dev_attr_interface);
-> >
-> > This is another __must_check function call.
-> >
-> > The reason we don't care if the call fails is because the file
-> > being created holds the USB interface string descriptor, something
-> > which is purely informational and hardly ever gets set (and no doubt
-> > gets used even less often).
-> >
-> > Is this another situation where the comment should be expanded and the 
-> > code modified to include a useless test and cast-to-void?
-> >
-> > Or should device_create_file() not be __must_check after all?
+> Users of depends on FOO || !FOO
 > 
-> One approach to dealing with __must_check function that you don't want
-> to check is to cause failure to call
->    pr_debug("usb: interface descriptor file not created");
-> or similar.  It silences the compiler, serves as documentation, and
-> creates a message that is almost certainly never seen.
+> $ git ls-files | grep Kconfig | xargs grep -E \
+>   "depends\s+on\s+([A-Za-z0-9_]+)\s*\|\|\s*(\!\s*\1|\1\s*=\s*n)" \
+>  | wc -l
 > 
-> This is what I did in drivers/md/md.c...
+> 156
 > 
-> 	if (mddev->kobj.sd &&
-> 	    sysfs_create_group(&mddev->kobj, &md_bitmap_group))
-> 		pr_debug("pointless warning\n");
+> a new keyword is required :) .. 
 > 
-> (I give better warnings elsewhere - I must have run out of patience by
->  this point).
+> 
+> > In another mail I suggested
+> > 
+> > 	optionally depends on FOO
+> > 
+> > might be a better alternative than "uses".
+> > 
+> > 
+> 
+> how about just:
+>       optional FOO
+> 
+> It is clear and easy to document .. 
 
-That's a decent idea.  I'll do something along those lines.
+I don't dispute your argument for having a new keyword. But the most 
+difficult part as Arnd said is to find it. You cannot pretend that 
+"optional FOO" is clear when it actually imposes a restriction when 
+FOO=m. Try to justify to people why they cannot select y because of this 
+"optional" thing.
 
-Alan Stern
 
+Nicolas
