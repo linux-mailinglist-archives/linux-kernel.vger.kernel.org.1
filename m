@@ -2,200 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC831B2CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DAF1B2CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgDUQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:36:31 -0400
-Received: from mga07.intel.com ([134.134.136.100]:41402 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgDUQg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:36:29 -0400
-IronPort-SDR: 0fhwsZ9YdfBBEbdgeDtoZKKizCeaoggCkTOcNPAqApPzG3NKYYidjcy6WYIcv/YtTxeFz2iZfe
- QBaUU2tbwPlg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 09:36:28 -0700
-IronPort-SDR: cEihd1JnjhZNwQ5c8lFnQOjQJpP8TjKZ0BOUTpH6miKIloGmPNXWCMhSAv+c8TlodtvJifJszC
- WO9TJ9mm0cxQ==
-X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
-   d="scan'208";a="429584511"
-Received: from dalessan-mobl1.ir.intel.com ([10.252.22.134])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 09:36:26 -0700
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+        id S1729002AbgDUQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725930AbgDUQjN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 12:39:13 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9C0C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:11 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id h2so4277550wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=cpcsJig0GOzBqMohPbuz/pjFci1RE1DIPfHT1dd3q2E=;
+        b=VDVDjM1PKxq8hcUmDwxm3pYN3PdcUBrRnAInUPCwYUa1C3uuW4cd0r3m5tjGfLHW2s
+         REOsGcsned9GKRUYhoxUjNdl1HiXW8DTo98oRFQorITL1ewTUPqmyTQr+4Vb7K1GrFvf
+         ZCkVGbd1tsz31toNZMPSJDaHwXB/IX1qifusC5u+ju+sZ6e1qrwQER7uP6zQD/mQOtWI
+         tpD6rPTv4iHd9xdksU6+X+/czTM59nskYYYYLRuyuhJAAN418VnIMdunjQnFVPjJGHlG
+         +Mvb9dIIiiki0fbF6clxbRE6TAAzOD/KVgqpYWA8iVOpkLbk8RKUQl23mllUyMQOoMp4
+         DS1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cpcsJig0GOzBqMohPbuz/pjFci1RE1DIPfHT1dd3q2E=;
+        b=PoGrZ+zjz9dQBu3xSbfXdCREedfHC4HQP3ZlND3srRbJP3cFFYdHccD96tk5Yk9HL1
+         VZfEKWHP7cUehXJyOt6QZa0pzBz4oy3t6TtfNQOd8HqaATHxaHv6NTXlyx43xRFho2h1
+         uY3RBPcJunJcIb/AAL26i/EtzW8Uza3Z7pLjGb1Wz4ex3BfGMykhIAelZ9dBXGYShFuf
+         SOC1YHzJHbbX8RJTX1m4TVtQGlY/Eue9Un9uw5kALR3lZZD4kjOUP8DZ9PxK/xfr2UdC
+         R52GCsVeU+KzJWPddj3i1zjnxfXpfPUMYUBYiQEipQ52x2l4eRapx3fj9VwhClzVKCTS
+         YkUg==
+X-Gm-Message-State: AGi0PuYVTh0xgy+qpXt6mHCnm4zoP/eHKgmKw6R/U58ac0RQS07rQRuW
+        cRKyc4hFv+Zwhrnpxw/xoSyWw2coIFtRCN6k
+X-Google-Smtp-Source: APiQypLw4tm9UR1P5gxmtUBnKckudtQYp7IIUmpMLn5xxiMjaWWZ1WQX1BhGSbGdYMo6UYXnDfs1pw==
+X-Received: by 2002:a1c:bd8b:: with SMTP id n133mr6086580wmf.175.1587487150085;
+        Tue, 21 Apr 2020 09:39:10 -0700 (PDT)
+Received: from lmecxl0524.lme.st.com (2a01cb058702ff00947c0d9b78b8fa1e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:947c:d9b:78b8:fa1e])
+        by smtp.gmail.com with ESMTPSA id q143sm4389055wme.31.2020.04.21.09.39.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 09:39:09 -0700 (PDT)
+From:   Etienne Carriere <etienne.carriere@linaro.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Paul J Murphy <paul.j.murphy@intel.com>
-Subject: [PATCH 1/1] soc: keembay: Add Keem Bay IMR driver
-Date:   Tue, 21 Apr 2020 17:36:18 +0100
-Message-Id: <13ca92165fab2827b6d439661e75f5b91ef083c2.1587485099.git.daniele.alessandrelli@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <cover.1587485099.git.daniele.alessandrelli@intel.com>
-References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
+        michal.simek@xilinx.com, richard.gong@linux.intel.com,
+        lorenzo.pieralisi@arm.com, mark.rutland@arm.com,
+        jens.wiklander@linaro.org, tee-dev@lists.linaro.org,
+        sudeep.holla@arm.com,
+        Etienne Carriere <etienne.carriere@linaro.org>
+Subject: [RFC PATCH v2 0/6] firmware: conduit method helpers for SMCCC v1.0 calls
+Date:   Tue, 21 Apr 2020 18:38:05 +0200
+Message-Id: <20200421163811.22720-1-etienne.carriere@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+V2:
+ Fix several build issues reported by kbuild test robot:
+ - patch 1/6: fix erroneous ';' in inline functions;
+ - patch 5/6: fix bad function label used;
+ - patch 6/6: fix bad function label used.
+ Reported-by: kbuild test robot <lkp@intel.com>
+ Fix function stubs to return -ENXIO not -EINVAL when SMCCC is not supported.
+ Few rephrasing in commit message for all patches of the series.
+ Add an empty line between a trace and a return instruction in patch 1/6.
+ Add argument label in arm_smccc_1_0_set_conduit() prototype in patch 1/6.
+ Fix typo in inline description comments in patch 1/6.
 
-Keem Bay bootloader sets up a temporary Isolated Memory Region (IMR) to
-protect itself during pre-Linux boot.
+These changes propose helper functions and macros to consolidate choice of
+the conduit method among devices communicating with a secure world that
+complies with SMCCC v1.0 but not SMCCC v1.1 or later. The new helper
+functions mimic arm_smccc_1_1_*() function but for SMCCC v1.0 compliant
+firmwares.
 
-This temporary IMR remains active even when control is passed to the
-Linux Kernel. It is Kernel responsibility to remove such an IMR during
-initialization.
+This series of changes updates several firmware drivers that each define a
+conduit method whereas kernel drivers are expected to use the very same
+conduit. This series obviously does not enforce these drivers to apply the
+proposed changes but the interest of the first patch is this series is that
+at least the PSCI driver upgrades as it will allow new drivers to benefit
+from the early initialized PSCI conduit method.
 
-This driver adds such functionality.
+Etienne Carriere (6):
+  firmware: helper functions for SMCCC v1.0 invocation conduit
+  firmware: psci: set SMCCC v1.0 conduit and use helpers functions
+  tee: optee: use SMCCC v1.0 helper functions
+  firmware: arm_sdei: use SMCCC v1.0 helper functions
+  firmware: stratix10: use SMCCC v1.0 helper functions
+  firmware: zynqmp: use SMCCC v1.0 helper functions
 
-The driver is loaded during `early_init`, which should ensure that the
-IMR is removed before devices that may try to access the IMR are
-initialized.
+ drivers/firmware/Makefile            |   1 +
+ drivers/firmware/arm_sdei.c          |  79 +++++---------
+ drivers/firmware/arm_smccc_conduit.c | 148 +++++++++++++++++++++++++++
+ drivers/firmware/psci/psci.c         |  60 ++---------
+ drivers/firmware/stratix10-svc.c     |  97 ++----------------
+ drivers/firmware/xilinx/zynqmp.c     |  87 ++--------------
+ drivers/tee/optee/call.c             |  14 +--
+ drivers/tee/optee/core.c             |  85 ++++-----------
+ drivers/tee/optee/optee_private.h    |   4 +-
+ include/linux/arm-smccc.h            | 106 +++++++++++++++++++
+ include/linux/psci.h                 |   1 -
+ 11 files changed, 338 insertions(+), 344 deletions(-)
+ create mode 100644 drivers/firmware/arm_smccc_conduit.c
 
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
----
- MAINTAINERS                       |  5 ++++
- drivers/soc/Kconfig               |  1 +
- drivers/soc/Makefile              |  1 +
- drivers/soc/keembay/Kconfig       | 22 +++++++++++++++++
- drivers/soc/keembay/Makefile      |  5 ++++
- drivers/soc/keembay/keembay-imr.c | 40 +++++++++++++++++++++++++++++++
- 6 files changed, 74 insertions(+)
- create mode 100644 drivers/soc/keembay/Kconfig
- create mode 100644 drivers/soc/keembay/Makefile
- create mode 100644 drivers/soc/keembay/keembay-imr.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b816a453b10e..59f1923a0f25 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9194,6 +9194,11 @@ S:	Maintained
- W:	http://lse.sourceforge.net/kdump/
- F:	Documentation/admin-guide/kdump/
- 
-+KEEMBAY IMR
-+M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-+S:	Maintained
-+F:	drivers/soc/keembay/keembay-imr.c
-+
- KEENE FM RADIO TRANSMITTER DRIVER
- M:	Hans Verkuil <hverkuil@xs4all.nl>
- L:	linux-media@vger.kernel.org
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index 425ab6f7e375..eeeba3ef7338 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -9,6 +9,7 @@ source "drivers/soc/bcm/Kconfig"
- source "drivers/soc/fsl/Kconfig"
- source "drivers/soc/imx/Kconfig"
- source "drivers/soc/ixp4xx/Kconfig"
-+source "drivers/soc/keembay/Kconfig"
- source "drivers/soc/mediatek/Kconfig"
- source "drivers/soc/qcom/Kconfig"
- source "drivers/soc/renesas/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 36452bed86ef..65c981207283 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -13,6 +13,7 @@ obj-y				+= fsl/
- obj-$(CONFIG_ARCH_GEMINI)	+= gemini/
- obj-y				+= imx/
- obj-$(CONFIG_ARCH_IXP4XX)	+= ixp4xx/
-+obj-y				+= keembay/
- obj-$(CONFIG_SOC_XWAY)		+= lantiq/
- obj-y				+= mediatek/
- obj-y				+= amlogic/
-diff --git a/drivers/soc/keembay/Kconfig b/drivers/soc/keembay/Kconfig
-new file mode 100644
-index 000000000000..2161bce131b3
---- /dev/null
-+++ b/drivers/soc/keembay/Kconfig
-@@ -0,0 +1,22 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Keem Bay SoC drivers.
-+#
-+
-+menu "Keem Bay SoC drivers"
-+
-+config KEEMBAY_IMR
-+	bool "Clean-up Keem Bay bootloader IMR at boot"
-+	depends on ARM64
-+	help
-+	  This option makes the Kernel clean up the Isolated Memory Region
-+	  (IMR) set up by Keem Bay bootloader (U-boot) to protect itself during
-+	  early boot.
-+
-+	  The IMR number to be cleaned up is taken from the device tree
-+	  (property 'u-boot-imr' of the 'chosen' node).
-+
-+	  If you are compiling the Kernel for a Keem Bay SoC select Y,
-+	  otherwise select N.
-+
-+endmenu
-diff --git a/drivers/soc/keembay/Makefile b/drivers/soc/keembay/Makefile
-new file mode 100644
-index 000000000000..dacfdb9f5fc1
---- /dev/null
-+++ b/drivers/soc/keembay/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Makefile for Keem Bay SoC drivers.
-+#
-+obj-$(CONFIG_KEEMBAY_IMR) += keembay-imr.o
-diff --git a/drivers/soc/keembay/keembay-imr.c b/drivers/soc/keembay/keembay-imr.c
-new file mode 100644
-index 000000000000..eabbdd6e69a7
---- /dev/null
-+++ b/drivers/soc/keembay/keembay-imr.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2019-2020 Intel Corporation
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/init.h>
-+#include <linux/of.h>
-+#include <linux/printk.h>
-+#include <linux/types.h>
-+
-+/* Keem Bay SiP SVC for clearing an IMR. */
-+#define KMB_SIP_SVC_IMR_CLEAR	0x8200ff13
-+
-+static int __init clear_imr(u64 imr)
-+{
-+	struct arm_smccc_res res = { 0 };
-+
-+	arm_smccc_smc(KMB_SIP_SVC_IMR_CLEAR, imr, 0, 0, 0, 0, 0, 0, &res);
-+
-+	return res.a0;
-+}
-+
-+static int __init kmb_imr_init(void)
-+{
-+	u32 imr;
-+	int rc;
-+
-+	rc = of_property_read_u32(of_chosen, "u-boot-imr", &imr);
-+	if (rc) {
-+		pr_warn("Skipping IMR clean-up: No U-Boot IMR defined in device tree\n");
-+		return 0;
-+	}
-+	pr_info("Disabling Keem Bay U-boot IMR: %u\n", imr);
-+
-+	return clear_imr(imr);
-+}
-+early_initcall(kmb_imr_init);
 -- 
-2.21.1
+2.17.1
 
