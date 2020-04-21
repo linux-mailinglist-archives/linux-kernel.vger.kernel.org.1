@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D43C1B1CD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176891B1CD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgDUD2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 23:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgDUD2J (ORCPT
+        id S1728501AbgDUD2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 23:28:24 -0400
+Received: from sonic305-21.consmr.mail.sg3.yahoo.com ([106.10.241.84]:34217
+        "EHLO sonic305-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727915AbgDUD2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 23:28:09 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B68BC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 20:28:09 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a22so768661pjk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 20:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=UvuF2obS/vz7r5RB7yYAYMg8ibynstpwr3rLEw1flsc=;
-        b=y3NyXrgpMV0LtSEwCxBH1cIXrKNb1rgvPCI4mPP4YqbBHnLpEEhYotoKHRbsQbhEYw
-         GPxZy5OTbxg748olxqu8muf+44T8hwQqR7j/HfRBSb+3cg8H/LEgsaCmOIdSrj1gsZ0H
-         IymVjfA4IM4KEuec6mKqKUw6lc6I79Y8fFXn6uL5iUWpr8cteat2LuOdbrvlv5pLO91U
-         fJZINDQk5dmwusjgZqiX3VAJpGFd+5Wwjc8HyIFniFvaPex0NgXGUr3WSXWgbda9RagF
-         Zib682h8M7u4cIJiTCCGy7PBxh1Veg1o15Y4xNuBmk3wRPSsJdfyxRPKPTKgnYkFelDf
-         ZZXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UvuF2obS/vz7r5RB7yYAYMg8ibynstpwr3rLEw1flsc=;
-        b=rDHu17pSRLr9aW1BL7OaK/nfN0W6WP/GGlChhVWmc7TLTYNHm1iCeSFqFLTFLLP1Kf
-         fc4gbEVfECiuo3ysVaqMiJhiKSqkpDD90dIfuQOYJ+yIHE7DF+esq5wq63ZNp7MjMvzi
-         PlzXjLVRFGYKfM+ZZqJ3lkPfw+eGfTIsIIihT04XkdrcDEB0kCXx2cpnFKZbvTSZQwfl
-         NBbL4bB/w5BDwDILhfZsGO0Kk5BgwhnA2TtmZfedgG0fGZ8Kif2FQyQmWF4MwhriOi29
-         DI9A92o/Lcjx9yo1Hu7HlY/63RnuRDbNVGBBpWTdRCar1ITD6ufCuTpoe56axxviDkoo
-         p4/g==
-X-Gm-Message-State: AGi0PuZf2AA9xLv8NZ6TpiaZg606kSvTDpdQPxZVTHcDi1Q1US1RHoJp
-        AhYgAi2orbs+H0xivh98n88bDGfFOncpWQ==
-X-Google-Smtp-Source: APiQypI5WOqfV+BNdwG2elZiOjsNXt4z0SamM3dBgTM8llKL4HUvMwa58yu1y9cgwLhbQ9rAJkP5PQ==
-X-Received: by 2002:a17:902:6949:: with SMTP id k9mr7266625plt.211.1587439688499;
-        Mon, 20 Apr 2020 20:28:08 -0700 (PDT)
-Received: from localhost.localdomain ([115.96.129.58])
-        by smtp.gmail.com with ESMTPSA id i9sm944868pfk.199.2020.04.20.20.28.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Apr 2020 20:28:07 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ani Sinha <ani@anisinha.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Frederick Lawler <fred@fredlawl.com>,
-        Denis Efremov <efremov@linux.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: pciehp: Cleanup unused EMI() and HP_SUPR_RM() macros
-Date:   Tue, 21 Apr 2020 08:57:50 +0530
-Message-Id: <1587439673-39652-1-git-send-email-ani@anisinha.ca>
-X-Mailer: git-send-email 2.7.4
+        Mon, 20 Apr 2020 23:28:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587439699; bh=YdDyVS9QBRPCiN2YYZ/cryZSa6YEXSJJY6ujWZ06LZ8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=btXPIODC0wy4S/iYI97nXCOxDMcVvzNb/95+V4cuz8miSkcPUwpE6d3XdOXeZUIlf6BHnW843uFjORhcMilQ4e6uLNBYGSKWZw85h8HRyHnw2RmQzNVl9hW4rt4LgpDka+WiVGYcPFHwekg/vlu4y6YLTh9OyPxsjm/kFNzj2R3USrjlnSUVMGO9D5JpkKcRwcWdrhCXPW7RL45b2cI4oIx4QMdDXVtuoWrF8dk5Yzp0EccaPlmoqnT1GrQCahWGjlBJTKGTdknoF+w+r2pQ3CblSdMc+wUv/pySvTBqjszW2D3P12jmvNser+kAXKA7SYFcLTyekzejJDVH3nLDpg==
+X-YMail-OSG: aQ8qa8cVM1laJUVeLdDfhjSHpzmdx.lZ7orzKsffO7p2Jmii9SNzSNXvywMikSG
+ B8.zVCmQFnNijdQj8TON5mdB.mwqIVVAbvWJQarlfmUDThBrXSPISfs4sDqC7NUV2QaWF_MPhobH
+ 2zKuTM9fW.4tYPGO_mwZt.7znRRFvcWC1p95OHwSYypxxB0jjqML.ZMTmd0uBxjQKoQICtwyyIjQ
+ 07A.kRyEzx4rOPLgo7KPCMGu4CuPne_ANwNNgOYBXCyVu4M6kM.lTaxi0TlKLavCKHiZS2XFpc9i
+ FQhwC47fI0i9w1CXavRBuLmaNu49wPFY_.arHtyxigJIGTvC6Ug6qEg9rCz6CThmENvbUC3pbbIt
+ tqGnuaY0CzARt9Qh9bL0yhtzICEihlhpn2pR37389kRKTXF__rROBqd3OZQoE0YmHWYeWWnV3mYv
+ 7mH8fgtwoXfg32vgKLTLGG52D8iTGhGRBfw3kKcS_Uo9GBX7zOPcqs3enmwQ2LE1tw8PQEGbwKHZ
+ NCfmQgHXR0dMd.Mo1OjEchLYe0qT6SI6VF39LPcE4ZDAz4zqsHVK2Tdk7Yw_PDUS5wZVemBWkTAb
+ fbrf.p3TXFRQfyLPFieHkhRKFQEORtC7pHZdb1UA_ta3nRIboDDX.6ahdvJVV31IXQGpXCGGQ6V8
+ O2LVYPCpPhufZCwl8l.GQMFE8c4k3CsAR4xt5fX0COe0fo3idpC_JTqEzTzGXQo5J_nlNMp2y.wO
+ OW6rMbRDs1a2LrBJRX5_uzdf1N6gAKGG_WjKPoaXFCfrURC0o8v81Ba7NJqQv2lVbRFgzafeq6h6
+ R0NtMQcRrOplES5iB2GwBB_naH9aq1qpvyPHrdWQT2AIdULRkh3d7njyjpkJKClTJ1INKuFjA0Pw
+ wMpr50siU4G1vCRhstMf7aSS_HA7xLv7rfRvpOPy8EbquHCOA1yItzG7NP4_mr1nOp3GJjPnY6Bb
+ sBmUG2l12yAAZKTd8c.eDsJg6konu45XGh4WeAbyKnXHsYKm4IawmKPxE.eKwJH1VT4srnhns8H6
+ X7EqgEYCkLm3VofnBvlbsgDi4LEHyaQC9bAwMM3TJ7T3ngqIUFN2tof43M5okGWh7_HzOCYp9hKR
+ IeWlQPi7QETWzGoolERUoMT6E9G3xmDoStv1Tz6zdqW.unZbQlv2JB6AT2k0Ecb8JLTR3ROAxTWT
+ n646Ddc2u4t0ykrUFzTy1CWFf_QaxeHcFx1ryhr.xTueBG.1.xsBMdm8n.HFxbGwCurePmIarxAw
+ gWIRfeHK2HuQ8n.P2M24d39idsXwbLRvIHJ0Wh09QpABq2aYmDPBCQH0Qb1TMt4L9a1w51EvTXma
+ bvSRvjoAhuOZHY6JeHvDApsu6
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.sg3.yahoo.com with HTTP; Tue, 21 Apr 2020 03:28:19 +0000
+Date:   Tue, 21 Apr 2020 03:28:14 +0000 (UTC)
+From:   Mr Moussa Dauda <mrmoussadauda@gmail.com>
+Reply-To: mrmoussadaudaa@gmail.com
+Message-ID: <1137074648.65813.1587439694480@mail.yahoo.com>
+Subject: I await your urgent response immediately.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1137074648.65813.1587439694480.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15739 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do not use PCIE hotplug surprise (PCI_EXP_SLTCAP_HPS) bit anymore.
-Consequently HP_SUPR_RM() macro is no longer used. Let's clean it up.
-EMI() macro also seems to be unused. So removing it as well. Thanks
-Mika Westerberg <mika.westerberg@linux.intel.com> for
-pointing it out.
 
-Signed-off-by: Ani Sinha <ani@anisinha.ca>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- drivers/pci/hotplug/pciehp.h | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index ae44f46..4fd200d 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -148,8 +148,6 @@ struct controller {
- #define MRL_SENS(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_MRLSP)
- #define ATTN_LED(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_AIP)
- #define PWR_LED(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_PIP)
--#define HP_SUPR_RM(ctrl)	((ctrl)->slot_cap & PCI_EXP_SLTCAP_HPS)
--#define EMI(ctrl)		((ctrl)->slot_cap & PCI_EXP_SLTCAP_EIP)
- #define NO_CMD_CMPL(ctrl)	((ctrl)->slot_cap & PCI_EXP_SLTCAP_NCCS)
- #define PSN(ctrl)		(((ctrl)->slot_cap & PCI_EXP_SLTCAP_PSN) >> 19)
- 
--- 
-2.7.4
+Dear Good Friend,
 
+Good Day,
+
+I am Mr. Moussa Dauda, Director In charge of Auditing and accounting department of Bank Of Africa, BOA, I hope that you will not betray or expose this trust and confident that i am about to repose on you for the mutual benefit of our both families.
+
+I need your urgent assistance in transferring the sum of TEN MILLION FIVE HUNDRED THOUSAND UNITED STATES DOLLARS, U$10,500.000.00, immediately to your account anywhere you chose.
+
+This is a very highly secret, i will like you to please keep this proposal as a top secret or delete it if you are not interested, upon receipt of your reply, i will send to you more details about this business deal.
+
+I will also direct you on how this deal will be done without any problem; you must understand that this is 100% free from risk.
+
+Therefore my questions are:
+
+1. Can you handle this project?
+2. Can I give you this trust?
+If yes, get back to me immediately.
+
+Try and get back to me with this my private email address ( mrmoussadaudaa@gmail.com )
+
+I will be waiting to hear from you immediately.
+
+Regards
+Mr. Moussa Dauda.
