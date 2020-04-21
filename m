@@ -2,283 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFB51B2ED5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F311B2ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgDUSOH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 14:14:07 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58487 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729083AbgDUSOC (ORCPT
+        id S1728974AbgDUSNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbgDUSNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:14:02 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-wmhDccJUPpqzac3h8w80Gg-1; Tue, 21 Apr 2020 14:13:58 -0400
-X-MC-Unique: wmhDccJUPpqzac3h8w80Gg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92C92802568;
-        Tue, 21 Apr 2020 18:13:56 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.196.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 861FDB3A64;
-        Tue, 21 Apr 2020 18:13:53 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 3/3] perf stat: Add --metrics-file option
-Date:   Tue, 21 Apr 2020 20:13:36 +0200
-Message-Id: <20200421181337.988681-4-jolsa@kernel.org>
-In-Reply-To: <20200421181337.988681-1-jolsa@kernel.org>
-References: <20200421181337.988681-1-jolsa@kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+        Tue, 21 Apr 2020 14:13:48 -0400
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E651AC0610D5;
+        Tue, 21 Apr 2020 11:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587492826;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=k1WX4cUqtiApT75DRAINIjIc6nKu2ha9Txwb3LzKu4k=;
+        b=M2eFPR91fHIYUBEZaW2RUIQ1xy3IvUva7gc39isg9NcwT9CrPfpMV2m8wjCAV2+xyP
+        mlmMklGiMkqOgtUwSCQmYg9nZtO20wY9XeCEkC8w9k52sFdqt9dWxOo6QGrLEdL2OMg5
+        I8SBZtCxrnX/dR8Wnz1yfBIdHlH2+p20QY3qgLGG575MH0vQvcVjjz6twtF5PnXKFqiF
+        wiIn5OBgmjGmCGKpWDM5JzQovc+uY3oygswy9K4/hcIkaRIyigbd7kjDQSqjsbJuBGkh
+        7JeKB2t13TLyCRJ2p2TriT0fM+y+h90p3BlR7X5jHLXmADu2oWYArnNGv77ZjFoF+jUG
+        97yg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmAiw43oXkQ="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.5.0 DYNA|AUTH)
+        with ESMTPSA id g06d2dw3LIDdJlX
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 21 Apr 2020 20:13:39 +0200 (CEST)
+Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime autosuspend
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=utf-8
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20200421180220.GB37466@atomide.com>
+Date:   Tue, 21 Apr 2020 20:13:39 +0200
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <70F19A6E-7B36-4873-9364-F284A14EE3A0@goldelico.com>
+References: <7B8C7DD9-095B-48FC-9642-695D07B79E97@goldelico.com> <20200416184638.GI37466@atomide.com> <3197C3F0-DEB9-4221-AFBD-4F2A08C84C4C@goldelico.com> <20200417164340.3d9043d1@aktux> <6430AF54-849E-456B-8DB0-B4478BBDB78D@goldelico.com> <20200417150721.GL37466@atomide.com> <8E062482-5D5D-4837-9980-D6C708DD24D4@goldelico.com> <20200420150802.GR37466@atomide.com> <D1A77603-11FB-407F-B480-82C57E742C51@goldelico.com> <20200421085336.32cf8ffe@aktux> <20200421180220.GB37466@atomide.com>
+To:     Tony Lindgren <tony@atomide.com>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding --metrics-file option that allows to specify metrics
-in the file.
+Hi Tony,
 
-It's now possible to define metrics in file and use them like:
+> Am 21.04.2020 um 20:02 schrieb Tony Lindgren <tony@atomide.com>:
+>=20
+> * Andreas Kemnade <andreas@kemnade.info> [200421 06:54]:
+>> On Mon, 20 Apr 2020 23:11:18 +0200
+>> "H. Nikolaus Schaller" <hns@goldelico.com> wrote:
+>>> The only maybe important observation was when I disabled all
+>>> kernel modules except *hdq*.ko and *bq27*.ko. Then I did only
+>>> get an emergency shell so that it is quite similar to the
+>>> scenario Andreas has tested. With this setup it did work.
+>>>=20
+>> So I guess without idling uarts?
+>>=20
+>>> I then tried to reenable other kernel modules but the result
+>>> wasn't convincing that it gives a reliable result.
+>>>=20
+>>> So I have still no clear indication when the problem occurs and
+>>> when not.
+>>>=20
+>> Hmm, last summer I had problems even without that patch reading
+>> temperature while doing umts transfers. Maybe there are some
+>> connections,
+>> maybe not. For that scenario we might have emc issues, thermal =
+problems
+>> or a real kernel problem.
+>=20
+> I have confimed here that logicpd torpedo devkit with battery
+> works just fine while entering off mode during idle. I can see
+> the temperature just fine with:
+>=20
+> # cat /sys/class/power_supply/bq27000-battery/uevent
+> POWER_SUPPLY_NAME=3Dbq27000-battery
+> POWER_SUPPLY_STATUS=3DCharging
+> POWER_SUPPLY_PRESENT=3D1
+> POWER_SUPPLY_VOLTAGE_NOW=3D3829000
+> POWER_SUPPLY_CURRENT_NOW=3D-592084
+> POWER_SUPPLY_CAPACITY_LEVEL=3DNormal
+> POWER_SUPPLY_TEMP=3D306
+> POWER_SUPPLY_TECHNOLOGY=3DLi-ion
+> POWER_SUPPLY_CHARGE_FULL_DESIGN=3D2056320
+> POWER_SUPPLY_CYCLE_COUNT=3D0
+> POWER_SUPPLY_POWER_AVG=3D0
+> POWER_SUPPLY_MANUFACTURER=3DTexas Instruments
+>=20
+> This is 37xx though, maybe you have 35xx and there's some errata
+> that we're not handling?
 
-  $ cat metrics
-  # IPC
-  mine1 = instructions / cycles;
-  /* DECODED_ICACHE_UOPS% */
-  mine2 = 100 * (idq.dsb_uops / \ (idq.ms_uops + idq.mite_uops + idq.dsb_uops + lsd.uops));
+No, it is dm3730 on three different units I have tried.
 
-  $ sudo perf stat --metrics-file ./metrics -M mine1,mine2 --metric-only -a -I 1000
-  #           time       insn per cycle                mine1                mine2
-       1.000536263                0.71                   0.7                 41.4
-       2.002069025                0.31                   0.3                 14.1
-       3.003427684                0.27                   0.3                 14.8
-       4.004807132                0.25                   0.2                 12.1
-  ...
+> I'm only seeing "2.7. HDQTM/1-Wire=C2=AE Communication Constraints"
+> for external pull-up resitor in 34xx errata at [0].
+>=20
+> I wonder if wrong external pull could cause flakyeness after
+> enabling the hdq module?
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/Documentation/perf-stat.txt |  3 ++
- tools/perf/builtin-stat.c              |  7 ++-
- tools/perf/util/metricgroup.c          | 66 +++++++++++++++++++++++---
- tools/perf/util/metricgroup.h          |  3 +-
- tools/perf/util/stat.h                 |  1 +
- 5 files changed, 70 insertions(+), 10 deletions(-)
+I have checked and we have 10 kOhm pullup to 1.8 V and a 470 Ohm
+series resistor.
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 4d56586b2fb9..263b0d2bb835 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -264,6 +264,9 @@ For a group all metrics from the group are added.
- The events from the metrics are automatically measured.
- See perf list output for the possble metrics and metricgroups.
- 
-+--metrics-file file::
-+Read metrics definitions from file in addition to compiled in metrics.
-+
- -A::
- --no-aggr::
- Do not aggregate counts across all monitored CPUs.
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 9207b6c45475..81c2b2f8ec53 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -841,7 +841,8 @@ static int parse_metric_groups(const struct option *opt,
- 			       const char *str,
- 			       int unset __maybe_unused)
- {
--	return metricgroup__parse_groups(opt, str, &stat_config.metric_events);
-+	return metricgroup__parse_groups(opt, str, &stat_config.metric_events,
-+					 stat_config.metrics_file);
- }
- 
- static struct option stat_options[] = {
-@@ -926,6 +927,8 @@ static struct option stat_options[] = {
- 	OPT_CALLBACK('M', "metrics", &evsel_list, "metric/metric group list",
- 		     "monitor specified metrics or metric groups (separated by ,)",
- 		     parse_metric_groups),
-+	OPT_STRING(0, "metrics-file", &stat_config.metrics_file, "file path",
-+		   "file with metrics definitions"),
- 	OPT_BOOLEAN_FLAG(0, "all-kernel", &stat_config.all_kernel,
- 			 "Configure all used events to run in kernel space.",
- 			 PARSE_OPT_EXCLUSIVE),
-@@ -1443,7 +1446,7 @@ static int add_default_attributes(void)
- 			struct option opt = { .value = &evsel_list };
- 
- 			return metricgroup__parse_groups(&opt, "transaction",
--							 &stat_config.metric_events);
-+							 &stat_config.metric_events, NULL);
- 		}
- 
- 		if (pmu_have_event("cpu", "cycles-ct") &&
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 7ad81c8177ea..99e0ef725a6f 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -519,17 +519,17 @@ static int __metricgroup__add_metric(struct strbuf *events,
- }
- 
- static int metricgroup__add_metric(const char *metric, struct strbuf *events,
--				   struct list_head *group_list)
-+				   struct list_head *group_list,
-+				   struct expr_parse_ctx *ctx)
- {
- 	struct pmu_events_map *map = perf_pmu__find_map(NULL);
--	struct pmu_event *pe;
- 	int i, ret = -EINVAL;
- 
- 	if (!map)
- 		return 0;
- 
- 	for (i = 0; ; i++) {
--		pe = &map->table[i];
-+		struct pmu_event *pe = &map->table[i];
- 
- 		if (!pe->name && !pe->metric_group && !pe->metric_name)
- 			break;
-@@ -545,15 +545,56 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 				break;
- 		}
- 	}
-+
-+	if (!ctx->num_custom || ret == -ENOMEM)
-+		return ret;
-+
-+	for (i = 0; i < ctx->num_custom; i++) {
-+		struct pmu_event pe = { 0 };
-+
-+		if (!match_metric(ctx->custom[i].name, metric))
-+			continue;
-+
-+		pe.metric_name = strdup(ctx->custom[i].name);
-+		pe.metric_expr = strdup(ctx->custom[i].expr);
-+
-+		if (!pe.metric_name && !pe.metric_expr)
-+			return -ENOMEM;
-+
-+		ret = __metricgroup__add_metric(events, group_list, &pe);
-+		if (ret) {
-+			free((char *) pe.metric_name);
-+			free((char *) pe.metric_expr);
-+			break;
-+		}
-+	}
-+
- 	return ret;
- }
- 
- static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
--				        struct list_head *group_list)
-+					struct list_head *group_list,
-+					const char *metrics_file)
- {
-+	struct expr_parse_ctx ctx = { 0 };
- 	char *llist, *nlist, *p;
- 	int ret = -EINVAL;
- 
-+	if (metrics_file) {
-+		size_t size;
-+		char *buf;
-+
-+		if (filename__read_str(metrics_file, &buf, &size)) {
-+			pr_err("failed to read metrics file: %s\n", metrics_file);
-+			return -1;
-+		}
-+
-+		expr__ctx_init(&ctx);
-+		expr__parse_custom(&ctx, buf);
-+
-+		free(buf);
-+	}
-+
- 	nlist = strdup(list);
- 	if (!nlist)
- 		return -ENOMEM;
-@@ -563,7 +604,7 @@ static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
- 	strbuf_addf(events, "%s", "");
- 
- 	while ((p = strsep(&llist, ",")) != NULL) {
--		ret = metricgroup__add_metric(p, events, group_list);
-+		ret = metricgroup__add_metric(p, events, group_list, &ctx);
- 		if (ret == -EINVAL) {
- 			fprintf(stderr, "Cannot find metric or group `%s'\n",
- 					p);
-@@ -575,6 +616,15 @@ static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
- 	if (!ret)
- 		metricgroup___watchdog_constraint_hint(NULL, true);
- 
-+	if (metrics_file) {
-+		int i;
-+
-+		for (i = 0; i < ctx.num_custom; i++) {
-+			zfree(&ctx.custom[i].name);
-+			zfree(&ctx.custom[i].expr);
-+		}
-+	}
-+
- 	return ret;
- }
- 
-@@ -594,7 +644,8 @@ static void metricgroup__free_egroups(struct list_head *group_list)
- 
- int metricgroup__parse_groups(const struct option *opt,
- 			   const char *str,
--			   struct rblist *metric_events)
-+			   struct rblist *metric_events,
-+			   const char *metrics_file)
- {
- 	struct parse_events_error parse_error;
- 	struct evlist *perf_evlist = *(struct evlist **)opt->value;
-@@ -604,7 +655,8 @@ int metricgroup__parse_groups(const struct option *opt,
- 
- 	if (metric_events->nr_entries == 0)
- 		metricgroup__rblist_init(metric_events);
--	ret = metricgroup__add_metric_list(str, &extra_events, &group_list);
-+	ret = metricgroup__add_metric_list(str, &extra_events, &group_list,
-+					   metrics_file);
- 	if (ret)
- 		return ret;
- 	pr_debug("adding %s\n", extra_events.buf);
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 475c7f912864..bf6e4281915f 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -29,7 +29,8 @@ struct metric_event *metricgroup__lookup(struct rblist *metric_events,
- 					 bool create);
- int metricgroup__parse_groups(const struct option *opt,
- 			const char *str,
--			struct rblist *metric_events);
-+			struct rblist *metric_events,
-+			const char *metrics_file);
- 
- void metricgroup__print(bool metrics, bool groups, char *filter,
- 			bool raw, bool details);
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index b4fdfaa7f2c0..57c4c7695aaf 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -123,6 +123,7 @@ struct perf_stat_config {
- 	struct runtime_stat	*stats;
- 	int			 stats_num;
- 	const char		*csv_sep;
-+	const char		*metrics_file;
- 	struct stats		*walltime_nsecs_stats;
- 	struct rusage		 ru_data;
- 	struct perf_cpu_map		*aggr_map;
--- 
-2.25.3
+>=20
+> If nothing else helps, you could try to block idle for hdq
+> module, but I have a feeling that's a workaround for something
+> else.
+
+Well, what helps is reverting the patch and using the old driver
+(which did work for several years). So I would not assume that
+there is a hardware influence. It seems to be something the new
+driver is doing differently.
+
+I need more time to understand and trace this issue on what it
+depends... It may depend on the sequence some other modules are
+loaded and what the user-space (udevd) is doing in the meantime.
+
+>=20
+> Regards,
+>=20
+> Tony
+>=20
+> [0] =
+https://www.ti.com/pdfs/wtbu/SWPZ009A_OMAP4430_Errata_Public_vA.pdf
+>=20
+
+BR and thanks,
+Nikolaus
 
