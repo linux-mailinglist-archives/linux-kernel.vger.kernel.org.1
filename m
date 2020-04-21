@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31A11B22B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06E41B22BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgDUJ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        id S1728708AbgDUJ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728557AbgDUJ1M (ORCPT
+        by vger.kernel.org with ESMTP id S1728587AbgDUJ1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Apr 2020 05:27:12 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A414C061A41
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A803C0610D5
         for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:12 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jQpBC-00081A-WF; Tue, 21 Apr 2020 11:26:59 +0200
+        id 1jQpBE-00081k-DJ; Tue, 21 Apr 2020 11:27:00 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 548831002EE;
-        Tue, 21 Apr 2020 11:26:58 +0200 (CEST)
-Message-Id: <20200421092559.428213098@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 8C6BC1002EE;
+        Tue, 21 Apr 2020 11:26:59 +0200 (CEST)
+Message-Id: <20200421092559.535159540@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 21 Apr 2020 11:20:34 +0200
+Date:   Tue, 21 Apr 2020 11:20:35 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
         Kees Cook <keescook@chromium.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
         Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [patch V2 07/16] x86/tlb: Move __flush_tlb_one_user() out of line
+Subject: [patch V2 08/16] x86/tlb: Move __flush_tlb_one_kernel() out of line
 References: <20200421092027.591582014@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,8 +53,8 @@ to it, but cpu_tlbstate is sensitive information which should only be
 accessed by well contained kernel functions and not be directly exposed to
 modules.
 
-The various TLB flush functions need access to cpu_tlbstate. As third step
-move _flush_tlb_one_user() out of line and hide the native function. The
+The various TLB flush functions need access to cpu_tlbstate. As forth step
+move __flush_tlb_one_kernel() out of line and hide the native function. The
 latter can be static when CONFIG_PARAVIRT is disabled.
 
 Consolidate the name space while at it and remove the pointless extra
@@ -65,215 +65,193 @@ No functional change.
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Juergen Gross <jgross@suse.com>
 ---
-V2: Fixup TLB internal and UV callsite
----
- arch/x86/include/asm/paravirt.h |    1 
- arch/x86/include/asm/tlbflush.h |   53 +------------------------------------
- arch/x86/kernel/paravirt.c      |    5 ---
- arch/x86/mm/tlb.c               |   56 +++++++++++++++++++++++++++++++++++++++-
- arch/x86/platform/uv/tlb_uv.c   |    2 -
- 5 files changed, 59 insertions(+), 58 deletions(-)
+ arch/x86/include/asm/pgtable_32.h |    2 -
+ arch/x86/include/asm/tlbflush.h   |   41 --------------------------------------
+ arch/x86/mm/init_64.c             |    2 -
+ arch/x86/mm/ioremap.c             |    2 -
+ arch/x86/mm/kmmio.c               |    2 -
+ arch/x86/mm/pat/set_memory.c      |    2 -
+ arch/x86/mm/pgtable_32.c          |    2 -
+ arch/x86/mm/tlb.c                 |   34 ++++++++++++++++++++++++++++++-
+ 8 files changed, 40 insertions(+), 47 deletions(-)
 
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -49,6 +49,7 @@ static inline void slow_down_io(void)
+--- a/arch/x86/include/asm/pgtable_32.h
++++ b/arch/x86/include/asm/pgtable_32.h
+@@ -60,7 +60,7 @@ void sync_initial_page_table(void);
+ #define kpte_clear_flush(ptep, vaddr)		\
+ do {						\
+ 	pte_clear(&init_mm, (vaddr), (ptep));	\
+-	__flush_tlb_one_kernel((vaddr));		\
++	flush_tlb_one_kernel((vaddr));		\
+ } while (0)
  
- void native_flush_tlb_local(void);
- void native_flush_tlb_global(void);
-+void native_flush_tlb_one_user(unsigned long addr);
- 
- static inline void __flush_tlb_local(void)
- {
+ #endif /* !__ASSEMBLY__ */
 --- a/arch/x86/include/asm/tlbflush.h
 +++ b/arch/x86/include/asm/tlbflush.h
-@@ -142,11 +142,10 @@ static inline unsigned long build_cr3_no
- 
+@@ -143,6 +143,7 @@ static inline unsigned long build_cr3_no
  void flush_tlb_local(void);
  void flush_tlb_global(void);
-+void flush_tlb_one_user(unsigned long addr);
+ void flush_tlb_one_user(unsigned long addr);
++void flush_tlb_one_kernel(unsigned long addr);
  
  #ifdef CONFIG_PARAVIRT
  #include <asm/paravirt.h>
--#else
--#define __flush_tlb_one_user(addr)	__native_flush_tlb_one_user(addr)
- #endif
- 
- struct tlb_context {
-@@ -346,54 +345,6 @@ static inline void cr4_set_bits_and_upda
- extern void initialize_tlbstate_and_flush(void);
- 
- /*
-- * Given an ASID, flush the corresponding user ASID.  We can delay this
-- * until the next time we switch to it.
-- *
-- * See SWITCH_TO_USER_CR3.
-- */
--static inline void invalidate_user_asid(u16 asid)
--{
--	/* There is no user ASID if address space separation is off */
--	if (!IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
--		return;
--
--	/*
--	 * We only have a single ASID if PCID is off and the CR3
--	 * write will have flushed it.
--	 */
--	if (!cpu_feature_enabled(X86_FEATURE_PCID))
--		return;
--
--	if (!static_cpu_has(X86_FEATURE_PTI))
--		return;
--
--	__set_bit(kern_pcid(asid),
--		  (unsigned long *)this_cpu_ptr(&cpu_tlbstate.user_pcid_flush_mask));
--}
--
--/*
-- * flush one page in the user mapping
-- */
--static inline void __native_flush_tlb_one_user(unsigned long addr)
--{
--	u32 loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
--
--	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
--
--	if (!static_cpu_has(X86_FEATURE_PTI))
--		return;
--
--	/*
--	 * Some platforms #GP if we call invpcid(type=1/2) before CR4.PCIDE=1.
--	 * Just use invalidate_user_asid() in case we are called early.
--	 */
--	if (!this_cpu_has(X86_FEATURE_INVPCID_SINGLE))
--		invalidate_user_asid(loaded_mm_asid);
--	else
--		invpcid_flush_one(user_pcid(loaded_mm_asid), addr);
--}
--
--/*
-  * flush everything
-  */
- static inline void __flush_tlb_all(void)
-@@ -432,7 +383,7 @@ static inline void __flush_tlb_one_kerne
- 	 * kernel address space and for its usermode counterpart, but it does
- 	 * not flush it for other address spaces.
- 	 */
--	__flush_tlb_one_user(addr);
-+	flush_tlb_one_user(addr);
- 
- 	if (!static_cpu_has(X86_FEATURE_PTI))
- 		return;
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -160,11 +160,6 @@ unsigned paravirt_patch_insns(void *insn
- 	return insn_len;
+@@ -318,14 +319,6 @@ static inline void cr4_clear_bits(unsign
  }
  
--static void native_flush_tlb_one_user(unsigned long addr)
+ /*
+- * Mark all other ASIDs as invalid, preserves the current.
+- */
+-static inline void invalidate_other_asid(void)
 -{
--	__native_flush_tlb_one_user(addr);
+-	this_cpu_write(cpu_tlbstate.invalidate_other, true);
 -}
 -
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
+-/*
+  * Save some of cr4 feature set we're using (e.g.  Pentium 4MB
+  * enable and PPro Global page enable), so that any CPU's that boot
+  * up after us can get the correct flags.  This should only be used
+@@ -365,38 +358,6 @@ static inline void __flush_tlb_all(void)
+ 	}
+ }
  
+-/*
+- * flush one page in the kernel mapping
+- */
+-static inline void __flush_tlb_one_kernel(unsigned long addr)
+-{
+-	count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ONE);
+-
+-	/*
+-	 * If PTI is off, then __flush_tlb_one_user() is just INVLPG or its
+-	 * paravirt equivalent.  Even with PCID, this is sufficient: we only
+-	 * use PCID if we also use global PTEs for the kernel mapping, and
+-	 * INVLPG flushes global translations across all address spaces.
+-	 *
+-	 * If PTI is on, then the kernel is mapped with non-global PTEs, and
+-	 * __flush_tlb_one_user() will flush the given address for the current
+-	 * kernel address space and for its usermode counterpart, but it does
+-	 * not flush it for other address spaces.
+-	 */
+-	flush_tlb_one_user(addr);
+-
+-	if (!static_cpu_has(X86_FEATURE_PTI))
+-		return;
+-
+-	/*
+-	 * See above.  We need to propagate the flush to all other address
+-	 * spaces.  In principle, we only need to propagate it to kernelmode
+-	 * address spaces, but the extra bookkeeping we would need is not
+-	 * worth it.
+-	 */
+-	invalidate_other_asid();
+-}
+-
+ #define TLB_FLUSH_ALL	-1UL
+ 
+ /*
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -298,7 +298,7 @@ static void __set_pte_vaddr(pud_t *pud,
+ 	 * It's enough to flush this one mapping.
+ 	 * (PGE mappings get flushed as well)
+ 	 */
+-	__flush_tlb_one_kernel(vaddr);
++	flush_tlb_one_kernel(vaddr);
+ }
+ 
+ void set_pte_vaddr_p4d(p4d_t *p4d_page, unsigned long vaddr, pte_t new_pte)
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -889,5 +889,5 @@ void __init __early_set_fixmap(enum fixe
+ 		set_pte(pte, pfn_pte(phys >> PAGE_SHIFT, flags));
+ 	else
+ 		pte_clear(&init_mm, addr, pte);
+-	__flush_tlb_one_kernel(addr);
++	flush_tlb_one_kernel(addr);
+ }
+--- a/arch/x86/mm/kmmio.c
++++ b/arch/x86/mm/kmmio.c
+@@ -173,7 +173,7 @@ static int clear_page_presence(struct km
+ 		return -1;
+ 	}
+ 
+-	__flush_tlb_one_kernel(f->addr);
++	flush_tlb_one_kernel(f->addr);
+ 	return 0;
+ }
+ 
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -340,7 +340,7 @@ static void __cpa_flush_tlb(void *data)
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < cpa->numpages; i++)
+-		__flush_tlb_one_kernel(fix_addr(__cpa_addr(cpa, i)));
++		flush_tlb_one_kernel(fix_addr(__cpa_addr(cpa, i)));
+ }
+ 
+ static void cpa_flush(struct cpa_data *data, int cache)
+--- a/arch/x86/mm/pgtable_32.c
++++ b/arch/x86/mm/pgtable_32.c
+@@ -64,7 +64,7 @@ void set_pte_vaddr(unsigned long vaddr,
+ 	 * It's enough to flush this one mapping.
+ 	 * (PGE mappings get flushed as well)
+ 	 */
+-	__flush_tlb_one_kernel(vaddr);
++	flush_tlb_one_kernel(vaddr);
+ }
+ 
+ unsigned long __FIXADDR_TOP = 0xfffff000;
 --- a/arch/x86/mm/tlb.c
 +++ b/arch/x86/mm/tlb.c
-@@ -24,6 +24,7 @@
- # define STATIC_NOPV			static
- # define __flush_tlb_local		native_flush_tlb_local
- # define __flush_tlb_global		native_flush_tlb_global
-+# define __flush_tlb_one_user(addr)	native_flush_tlb_one_user(addr)
- #endif
+@@ -876,7 +876,7 @@ static void do_kernel_range_flush(void *
  
- /*
-@@ -118,6 +119,32 @@ static void choose_new_asid(struct mm_st
- 	*need_flush = true;
+ 	/* flush range by one by one 'invlpg' */
+ 	for (addr = f->start; addr < f->end; addr += PAGE_SIZE)
+-		__flush_tlb_one_kernel(addr);
++		flush_tlb_one_kernel(addr);
  }
  
-+/*
-+ * Given an ASID, flush the corresponding user ASID.  We can delay this
-+ * until the next time we switch to it.
-+ *
-+ * See SWITCH_TO_USER_CR3.
-+ */
-+static inline void invalidate_user_asid(u16 asid)
-+{
-+	/* There is no user ASID if address space separation is off */
-+	if (!IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
-+		return;
-+
-+	/*
-+	 * We only have a single ASID if PCID is off and the CR3
-+	 * write will have flushed it.
-+	 */
-+	if (!cpu_feature_enabled(X86_FEATURE_PCID))
-+		return;
-+
-+	if (!static_cpu_has(X86_FEATURE_PTI))
-+		return;
-+
-+	__set_bit(kern_pcid(asid),
-+		  (unsigned long *)this_cpu_ptr(&cpu_tlbstate.user_pcid_flush_mask));
-+}
-+
- static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, bool need_flush)
- {
- 	unsigned long new_mm_cr3;
-@@ -645,7 +672,7 @@ static void flush_tlb_func_common(const
- 		unsigned long addr = f->start;
- 
- 		while (addr < f->end) {
--			__flush_tlb_one_user(addr);
-+			flush_tlb_one_user(addr);
- 			addr += 1UL << f->stride_shift;
- 		}
- 		if (local)
-@@ -892,6 +919,33 @@ unsigned long __get_current_cr3_fast(voi
+ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+@@ -919,6 +919,38 @@ unsigned long __get_current_cr3_fast(voi
  EXPORT_SYMBOL_GPL(__get_current_cr3_fast);
  
  /*
-+ * Flush one page in the user mapping
++ * Flush one page in the kernel mapping
 + */
-+STATIC_NOPV void native_flush_tlb_one_user(unsigned long addr)
++void flush_tlb_one_kernel(unsigned long addr)
 +{
-+	u32 loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
++	count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ONE);
 +
-+	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
++	/*
++	 * If PTI is off, then __flush_tlb_one_user() is just INVLPG or its
++	 * paravirt equivalent.  Even with PCID, this is sufficient: we only
++	 * use PCID if we also use global PTEs for the kernel mapping, and
++	 * INVLPG flushes global translations across all address spaces.
++	 *
++	 * If PTI is on, then the kernel is mapped with non-global PTEs, and
++	 * __flush_tlb_one_user() will flush the given address for the current
++	 * kernel address space and for its usermode counterpart, but it does
++	 * not flush it for other address spaces.
++	 */
++	flush_tlb_one_user(addr);
 +
 +	if (!static_cpu_has(X86_FEATURE_PTI))
 +		return;
 +
 +	/*
-+	 * Some platforms #GP if we call invpcid(type=1/2) before CR4.PCIDE=1.
-+	 * Just use invalidate_user_asid() in case we are called early.
++	 * See above.  We need to propagate the flush to all other address
++	 * spaces.  In principle, we only need to propagate it to kernelmode
++	 * address spaces, but the extra bookkeeping we would need is not
++	 * worth it.
 +	 */
-+	if (!this_cpu_has(X86_FEATURE_INVPCID_SINGLE))
-+		invalidate_user_asid(loaded_mm_asid);
-+	else
-+		invpcid_flush_one(user_pcid(loaded_mm_asid), addr);
-+}
-+
-+void flush_tlb_one_user(unsigned long addr)
-+{
-+	__flush_tlb_one_user(addr);
++	this_cpu_write(cpu_tlbstate.invalidate_other, true);
 +}
 +
 +/*
-  * Flush everything
+  * Flush one page in the user mapping
   */
- STATIC_NOPV void native_flush_tlb_global(void)
---- a/arch/x86/platform/uv/tlb_uv.c
-+++ b/arch/x86/platform/uv/tlb_uv.c
-@@ -296,7 +296,7 @@ static void bau_process_message(struct m
- 		flush_tlb_local();
- 		stat->d_alltlb++;
- 	} else {
--		__flush_tlb_one_user(msg->address);
-+		flush_tlb_one_user(msg->address);
- 		stat->d_onetlb++;
- 	}
- 	stat->d_requestee++;
+ STATIC_NOPV void native_flush_tlb_one_user(unsigned long addr)
 
