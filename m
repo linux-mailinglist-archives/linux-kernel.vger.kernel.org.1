@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA841B22E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A5A1B22E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgDUJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:34:59 -0400
-Received: from mout.web.de ([212.227.17.12]:53711 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgDUJe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:34:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587461686;
-        bh=Y9htZmZvjU829LzF/gQDRezZV/bjAVzm4sRlk87odHU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=JB8SEqxn3qGKwpJtqByb9blL4rtKdU6K2TLhRN2kN0VUs2PMVgB8s/hBdz+1L/HcW
-         gUJHACCsJIom3u4mNumCvtiBs1AxVwhxqod5i3rFws7CRm1whfdWLfuUnzrdLuRo0R
-         rWFFpDB1GHlim8NzqKTVkON1UP8sBdViML/RgyBA=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([2.243.91.59]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MQ6LH-1jM8Kj238d-005I7R; Tue, 21
- Apr 2020 11:34:46 +0200
-Subject: Re: [V3] amdgpu: remove unnecessary condition check
-To:     =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Chunming Zhou <David1.Zhou@amd.com>,
-        =?UTF-8?Q?Felix_K=c3=bchling?= <Felix.Kuehling@amd.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-References: <AIsA-wCZCFCxiq0WKb3WjKr*.3.1587458683834.Hmail.bernard@vivo.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <63c80c16-cb28-4b18-e191-90e4a2c4192e@web.de>
-Date:   Tue, 21 Apr 2020 11:34:45 +0200
+        id S1728562AbgDUJfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:35:47 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:33840 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgDUJfr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 05:35:47 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEPN092019;
+        Tue, 21 Apr 2020 04:35:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1587461714;
+        bh=EeE21hMUOfk3pC387RpavuP6TsxGuhOnVMwPs3H4nSk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kn5JrMwuqadtuMZU6zKFo3/VxCueg+wAfvntp8l6BnvP9ar/ktulDIftrzkIkqRqV
+         gIbAhBJyXPaW0lUfjTB40Ix8pZSp3Bal/Alm632UcAe5MjIEMoR8eR5JA1gjitddGH
+         OYYDaJLcYt9FTvM/143EFgw3l29320GK002ShqRM=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9ZEsK034008;
+        Tue, 21 Apr 2020 04:35:14 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 21
+ Apr 2020 04:35:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 21 Apr 2020 04:35:14 -0500
+Received: from [10.250.234.195] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03L9Z9Qf105015;
+        Tue, 21 Apr 2020 04:35:10 -0500
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Mason Yang <masonccyang@mxic.com.tw>
+CC:     <broonie@kernel.org>, <tudor.ambarus@microchip.com>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <juliensu@mxic.com.tw>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+        Pratyush Yadav <p.yadav@ti.com>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+ <20200421092328.129308f6@collabora.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <56365995-fe30-534f-9dbc-7307d9b9f846@ti.com>
+Date:   Tue, 21 Apr 2020 15:05:08 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <AIsA-wCZCFCxiq0WKb3WjKr*.3.1587458683834.Hmail.bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200421092328.129308f6@collabora.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-Provags-ID: V03:K1:b15Lo3qUagUK+OaRj9z0KcOF0eoEbMYLwxIbmlbS6on3lzObO81
- HuvKelZ3LRt0DKx34H0/YnmRM9ZckmdBP80J0I+3RFRXOTwPSLf6Qv5YyicLxjRipVPPEMF
- zlHd7PTS7DBUinM3ppXIjTSVcAf95FsxqBkcsataChVectvxPLGkq65kZZQHK5wf76j+rkd
- Pvx4UfHvxMbTduUZeRWrQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QtmNn0nvB2g=:ZG6G0rh6H1smGiPpJrKGXl
- CXZA3jXxeidaEJ4SyhByRJUUhvRvPd4qb6LuDtcyeQdT/MwwaWXhAiSrpFIPYaoYT4zLTDxk7
- MhPHvoAoTIQ2wnOCU+MEpBz0YeWVS+13Zf45oI6lchxadhbD0heVPCoDf73/zt0dDv01/tnpr
- IUGQKTUAp/NkSIjrR3DDpLFhvQoakOaZQZpAjHaOxTFI5ZiwQOmVHWxZpsow9xE+xXH+Z/haF
- 6ty+x3kj5X11mVTfmJ/Pp0lABLQiRepwVm025bMSwFIoMgxxbT40DnT/ex4tvQ484Ur9asz6G
- DrvrUted53iFLR/JwQp0Cme2r7DG9H8JpDMsvR1pXzPJh3ctcMXBsJv8QontgV3Q3fxcEWne9
- 9tE/sOYPz5BX1K7XCKUStQZ2+rxYbn0iXKgmjcF/XRgHqftMZGWgxIFm+zvFhPhiGf/g0mZ1L
- a1fNoSZbAsmAQPBh+OBEJA7uAxscjmEshqbB4LhxryQh0es8DJo44+yeBqnfjw2dns6hNQkdD
- oJMNgiclFkCRTtm56qFuGKeOMNVXU0O6yv8NIj/l2GYvvKrBekAiUDDdpoWg3hDu4xS0iLLrL
- 9ziyZsoLurOyCswV+WdQ46nmmltnuOXWeiqSjHhoWismrrdpLXrOE0JKOSxyFzGyC9ilnxAo3
- YhcjRdsYQzimeb3Jn2iHlfver8qQXL2eipRPowJILnVxJ2T98foSSa0Buou+UxXrFxI/G/N6z
- gO3JcuHWkhPpWto+o+L8JrTiPLA+uyUljKa7+6GnO57OIJdZLLOTBuR629lPAVWuHHXJl5dvZ
- gsmteWDDeMMz3uT6XgMPWf6+8mIFtCLi2CE7SMrBSHudx9rKQsjkfW/rqAK2pksNHz4bx+TA6
- POB4iPGRgDKoMtVtS4xgJgPlhEdFBlsGEkOvo+UKpxFOYLlZKPvSrhOZ57REu9wmRZ8yCT5Oc
- pfmdWb4LkLvrO7mbEOxDgoAnFb220pZ1CXf2WgbpwTagVjtjn8Xan5Tp+ux0AZkfcM7y8bqoB
- f452d8Kx1Olsl7N1E8rAggR78wzBiuEHGlZfemONtazXCdFPwS5gSH3k+nttGudVWVwDE6lrY
- dt8159hp0feikGg7gmcXDXAaTGttuDg+tB8dXz8qbMZLYlRkAKMqW/wBEN6jjfe/gU/XAweuS
- oANXIB/kl6WtHdcQ3WILiHHg0lz83rzKqHVVjmFuBECN+A+uB/BDmApxcHaQPULMZTCPKfrl+
- dMNnSg5YDgS76wMEe
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> But i have to say there are so many code not follow the kernel code-style in amdgpu module.
-> And also the ./scripts/checkpatch.pl did not throw any warning or error.
 
-Will such information become more interesting for further evolution
-in the affected software areas?
 
-Regards,
-Markus
+On 21/04/20 12:53 pm, Boris Brezillon wrote:
+> +Pratyush who's working on a similar patchet [1].
+> 
+> Hello Mason,
+> 
+> On Tue, 21 Apr 2020 14:39:42 +0800
+> Mason Yang <masonccyang@mxic.com.tw> wrote:
+> 
+>> Hello,
+>>
+>> This is repost of patchset from Boris Brezillon's
+>> [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> 
+> I only quickly went through the patches you sent and saying it's a
+> repost of the RFC is a bit of a lie. You completely ignored the state
+> tracking I was trying to do to avoid leaving the flash in 8D mode when
+> suspending/resetting the board, and I think that part is crucial. If I
+> remember correctly, we already had this discussion so I must say I'm a
+> bit disappointed.
+> 
+> Can you sync with Pratyush? I think his series [1] is better in that it
+> tries to restore the flash in single-SPI mode before suspend (it's
+> missing the shutdown case, but that can be easily added I think). Of
+> course that'd be even better to have proper state tracking at the SPI
+> NOR level.
+> 
+
+[1] does soft reset on shutdown which should put it to reset default
+state of 1S-1S-1S mode (if thats the POR default)
+
+But, there is still one open question now that we are considering
+supporting stateful modes:
+
+What to do with flashes that power up in 8D mode either due to factory
+defaults or if 8D mode NV bit is set? Do we say SPI NOR framework won't
+support such flashes?
+Auto discovery of such flashes is quite difficult as different flashes
+use different protocols for RDID cmd in 8D mode (address phase may or
+may not be present, dummy cycles vary etc) is almost impossible w/o any
+hint passed to the driver?
+
+
+> Regards,
+> 
+> Boris
+> 
+> [1]https://lkml.org/lkml/2020/3/13/659
+> 
