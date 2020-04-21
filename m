@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E141B2D7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7231B2D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgDUQ4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:56:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57288 "EHLO mail.kernel.org"
+        id S1729662AbgDUQ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729057AbgDUQyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729003AbgDUQyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Apr 2020 12:54:46 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E55720774;
+        by mail.kernel.org (Postfix) with ESMTPSA id 44CC12076E;
         Tue, 21 Apr 2020 16:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587488084;
-        bh=xhaZXir06iAtnnI5oD2YIdQ7HPySr1ED65+aM8CiVTc=;
+        bh=ZMjic/kHoTu9aQuYEPSO0wAqwNOZUSDBn1RybeMf048=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2UJGmMGR3wssmVAPwL/ck+aI5KrCT+w1LqlDNoBXSZlxyW2HxOS6FqwUcdf/YjKt/
-         M4ix7oNEuiuaFCmCUU8Kr3KPFVv22V1rrLqkssgAZMz/lI5flCPv9R7h1PfYKN0xZw
-         df2Ks8HhORGf31mEs34RTTVKTfylMlnX37f8UJFE=
+        b=Y5bR3LMiOAcD1WrP8uT5evU7aboDnxD22jeCIYBY6c+73QQpd/3Gw6fWsAGC5vl3S
+         iFn0XpD61TM7ytaYLLfusRkpk2qxEFy7ZMxlDxt8Q4JsmE9et82G8Ho4YoKZKbGGZF
+         B5tmLNHBpoZo28jA27qw/9nftbhemd6MUliDO39I=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jQwAU-00CmER-Gq; Tue, 21 Apr 2020 18:54:42 +0200
+        id 1jQwAU-00CmEW-Hq; Tue, 21 Apr 2020 18:54:42 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 14/29] docs: filesystems: convert files.txt to ReST
-Date:   Tue, 21 Apr 2020 18:54:25 +0200
-Message-Id: <c366b49269c97c7ecc11722b15348fdf35f2a652.1587487612.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 15/29] docs: filesystems: convert fuse-io.txt to ReST
+Date:   Tue, 21 Apr 2020 18:54:26 +0200
+Message-Id: <b32ab688aa4f3392939f5d24666ea96ed2bf456c.1587487612.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1587487612.git.mchehab+huawei@kernel.org>
 References: <cover.1587487612.git.mchehab+huawei@kernel.org>
@@ -44,85 +44,45 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 - Add a SPDX header;
-- Adjust document title;
-- Some whitespace fixes and new line breaks;
-- Mark literal blocks as such;
+- Add a document title;
 - Add it to filesystems/index.rst.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../filesystems/{files.txt => files.rst}          | 15 ++++++++++-----
- Documentation/filesystems/index.rst               |  1 +
- 2 files changed, 11 insertions(+), 5 deletions(-)
- rename Documentation/filesystems/{files.txt => files.rst} (95%)
+ Documentation/filesystems/{fuse-io.txt => fuse-io.rst} | 6 ++++++
+ Documentation/filesystems/index.rst                    | 1 +
+ 2 files changed, 7 insertions(+)
+ rename Documentation/filesystems/{fuse-io.txt => fuse-io.rst} (95%)
 
-diff --git a/Documentation/filesystems/files.txt b/Documentation/filesystems/files.rst
+diff --git a/Documentation/filesystems/fuse-io.txt b/Documentation/filesystems/fuse-io.rst
 similarity index 95%
-rename from Documentation/filesystems/files.txt
-rename to Documentation/filesystems/files.rst
-index 46dfc6b038c3..cbf8e57376bf 100644
---- a/Documentation/filesystems/files.txt
-+++ b/Documentation/filesystems/files.rst
-@@ -1,5 +1,8 @@
+rename from Documentation/filesystems/fuse-io.txt
+rename to Documentation/filesystems/fuse-io.rst
+index 07b8f73f100f..255a368fe534 100644
+--- a/Documentation/filesystems/fuse-io.txt
++++ b/Documentation/filesystems/fuse-io.rst
+@@ -1,3 +1,9 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+===================================
- File management in the Linux kernel
-------------------------------------
-+===================================
- 
- This document describes how locking for files (struct file)
- and file descriptor table (struct files) works.
-@@ -34,7 +37,7 @@ appear atomic. Here are the locking rules for
- the fdtable structure -
- 
- 1. All references to the fdtable must be done through
--   the files_fdtable() macro :
-+   the files_fdtable() macro::
- 
- 	struct fdtable *fdt;
- 
-@@ -61,7 +64,8 @@ the fdtable structure -
- 4. To look up the file structure given an fd, a reader
-    must use either fcheck() or fcheck_files() APIs. These
-    take care of barrier requirements due to lock-free lookup.
--   An example :
++==============
++Fuse I/O Modes
++==============
 +
-+   An example::
+ Fuse supports the following I/O modes:
  
- 	struct file *file;
- 
-@@ -77,7 +81,7 @@ the fdtable structure -
-    of the fd (fget()/fget_light()) are lock-free, it is possible
-    that look-up may race with the last put() operation on the
-    file structure. This is avoided using atomic_long_inc_not_zero()
--   on ->f_count :
-+   on ->f_count::
- 
- 	rcu_read_lock();
- 	file = fcheck_files(files, fd);
-@@ -106,7 +110,8 @@ the fdtable structure -
-    holding files->file_lock. If ->file_lock is dropped, then
-    another thread expand the files thereby creating a new
-    fdtable and making the earlier fdtable pointer stale.
--   For example :
-+
-+   For example::
- 
- 	spin_lock(&files->file_lock);
- 	fd = locate_fd(files, file, start);
+ - direct-io
 diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 30925e73666c..a996d880025e 100644
+index a996d880025e..844e8065ac82 100644
 --- a/Documentation/filesystems/index.rst
 +++ b/Documentation/filesystems/index.rst
-@@ -27,6 +27,7 @@ algorithms work.
-    devpts
-    dnotify
-    fiemap
-+   files
- 
-    automount-support
- 
+@@ -85,6 +85,7 @@ Documentation for filesystem implementations.
+    hfsplus
+    hpfs
+    fuse
++   fuse-io
+    inotify
+    isofs
+    nilfs2
 -- 
 2.25.2
 
