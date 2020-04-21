@@ -2,145 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6026C1B1FF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D361B201C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgDUHhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725992AbgDUHhW (ORCPT
+        id S1728190AbgDUHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:42:05 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:31854 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725992AbgDUHmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:37:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E8BC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:37:22 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jQnT0-00017T-JC; Tue, 21 Apr 2020 09:37:14 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jQnSz-00045M-IL; Tue, 21 Apr 2020 09:37:13 +0200
-Date:   Tue, 21 Apr 2020 09:37:13 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v3 2/5] ARM: dts: add Protonic PRTI6Q board
-Message-ID: <20200421073713.hnv3poogl65ln77w@pengutronix.de>
-References: <20200324110432.25062-1-o.rempel@pengutronix.de>
- <20200324110432.25062-3-o.rempel@pengutronix.de>
- <20200421040747.GE8571@dragon>
+        Tue, 21 Apr 2020 03:42:05 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 03L7dstT022941;
+        Tue, 21 Apr 2020 16:39:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 03L7dstT022941
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587454796;
+        bh=Zv91K2NSW1zIQUpi6lT8xcoiatIzC59/CNYR7v9KfnQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Wym/VORynZ20qd8805OsjPiCKCp2lfUp/3sN0Q4KmKUws9o7Yl4rm+TpMd/7+dRRn
+         v2rugZ3q0v2SLwUYMBhH41UDZdMqpf1815hSaHzp5bWRkvanoA5O7GeFVg8BPuqWiB
+         CDd0uvDaJOihngQDK2hcA5W9DRHYtW7lkY9LtYSIrReTryePAKAFXdDlAjSdnoenhJ
+         Gqvxf8fwlOyJywJxrqqvCbFVkcLzsxaxLJmupiQWS0gncVYDsBxwhgZYM/Z/OVHEmx
+         MlIgCvtCjSP6mg4EkrgzfUHs32pWpHmjhi18gvPEQ55RvUwcrlxBBiGXHsR8daN6C3
+         +2OlWPwvcDQLQ==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: [PATCH 1/2] x86: check CONFIG options instead of __arch_um__
+Date:   Tue, 21 Apr 2020 16:39:46 +0900
+Message-Id: <20200421073947.586662-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4cydpp6pjv3rbmqg"
-Content-Disposition: inline
-In-Reply-To: <20200421040747.GE8571@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:23:29 up 157 days, 22:42, 166 users,  load average: 0.07, 0.07,
- 0.08
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If the intention is to check i386/x86_64 excluding UML, we can use
+CONFIG options instead.
 
---4cydpp6pjv3rbmqg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There are only some users of __arch_um__. This commit replaces them,
+then removes the __arch_um__ definition.
 
-Hi Shawn,
+The original reason for checking __i386__ / __x86_64__ was perhaps
+because lib/raid6/algos.c is built not only for the kernel but also
+for the user-space test program.
 
-Thank you for the review. You was reviewing v3, the last version is v5.
-Never the less, part of comments still apply. I'll fix them.
+However, lib/raid6/test/Makefile passes -DCONFIG_X86, -DCONFIG_X86_32,
+and -DCONFIG_X86_64 for this case. So, I do not see a good reason to
+not use CONFIG options here.
 
+What is confusing is, CONFIG_X86_{32,64} is defined not only in
+arch/x86/Kconfig, but also in arch/x86/um/Kconfig. To exlucde UML,
+we need to check CONFIG_X86 too.
 
-On Tue, Apr 21, 2020 at 12:07:49PM +0800, Shawn Guo wrote:
-> On Tue, Mar 24, 2020 at 12:04:29PM +0100, Oleksij Rempel wrote:
-> > Protonic PRTI6Q is a development board and a base class for different
-> > specific customer application boards based on the i.MX6 family of SoCs,
-> > developed by Protonic Holland.
-> >=20
-> > Signed-off-by: David Jander <david@protonic.nl>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+---
 
-> > +&usdhc2 {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&pinctrl_usdhc2>;
-> > +	non-removable;
-> > +	vmmc-supply =3D <&reg_wifi>;
-> > +	cap-power-off-card;
-> > +	keep-power-in-suspend;
-> > +	status =3D "okay";
-> > +
-> > +	wifi {
-> > +		compatible =3D "ti,wl1271";
-> > +		pinctrl-names =3D "default";
-> > +		pinctrl-0 =3D <&pinctrl_wifi>;
-> > +		irq-gpio =3D <&gpio1 30 GPIO_ACTIVE_HIGH>;
->=20
-> I failed to find this in "ti,wl1271" bindings.
+ arch/um/Makefile  | 2 +-
+ kernel/signal.c   | 2 +-
+ lib/raid6/algos.c | 6 ++++--
+ lib/raid6/x86.h   | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
-Indeed. But it is required by the code:
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index d2daa206872d..064fbed7a4e9 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -62,7 +62,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
+ #
+ # These apply to USER_CFLAGS to.
+ 
+-KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
++KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) \
+ 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+ 	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
+ 	-Din6addr_loopback=kernel_in6addr_loopback \
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 713104884414..1af3ad707b02 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1246,7 +1246,7 @@ static void print_fatal_signal(int signr)
+ 	struct pt_regs *regs = signal_pt_regs();
+ 	pr_info("potentially unexpected fatal signal %d.\n", signr);
+ 
+-#if defined(__i386__) && !defined(__arch_um__)
++#if defined(CONFIG_X86) && defined(CONFIG_X86_32)
+ 	pr_info("code at %08lx: ", regs->ip);
+ 	{
+ 		int i;
+diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
+index 6d5e5000fdd7..978fa19efbbf 100644
+--- a/lib/raid6/algos.c
++++ b/lib/raid6/algos.c
+@@ -29,7 +29,8 @@ struct raid6_calls raid6_call;
+ EXPORT_SYMBOL_GPL(raid6_call);
+ 
+ const struct raid6_calls * const raid6_algos[] = {
+-#if defined(__i386__) && !defined(__arch_um__)
++#ifdef CONFIG_X86
++#if defined(CONFIG_X86_32)
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x2,
+ 	&raid6_avx512x1,
+@@ -43,7 +44,7 @@ const struct raid6_calls * const raid6_algos[] = {
+ 	&raid6_mmxx2,
+ 	&raid6_mmxx1,
+ #endif
+-#if defined(__x86_64__) && !defined(__arch_um__)
++#if defined(CONFIG_X86_64)
+ #ifdef CONFIG_AS_AVX512
+ 	&raid6_avx512x4,
+ 	&raid6_avx512x2,
+@@ -56,6 +57,7 @@ const struct raid6_calls * const raid6_algos[] = {
+ 	&raid6_sse2x2,
+ 	&raid6_sse2x1,
+ #endif
++#endif /* CONFIG_X86 */
+ #ifdef CONFIG_ALTIVEC
+ 	&raid6_vpermxor8,
+ 	&raid6_vpermxor4,
+diff --git a/lib/raid6/x86.h b/lib/raid6/x86.h
+index 9a6ff37115e7..0436b32f7709 100644
+--- a/lib/raid6/x86.h
++++ b/lib/raid6/x86.h
+@@ -14,7 +14,7 @@
+ #ifndef LINUX_RAID_RAID6X86_H
+ #define LINUX_RAID_RAID6X86_H
+ 
+-#if (defined(__i386__) || defined(__x86_64__)) && !defined(__arch_um__)
++#ifdef CONFIG_X86
+ 
+ #ifdef __KERNEL__ /* Real code */
+ 
+-- 
+2.25.1
 
-drivers/net/wireless/ti/wlcore/sdio.c:
-static int wlcore_probe_of(struct device *dev, int *irq, int *wakeirq,
-			   struct wlcore_platdev_data *pdev_data)
-{
-=2E...
-	*irq =3D irq_of_parse_and_map(np, 0);
-	if (!*irq) {
-		dev_err(dev, "No irq in platform data\n");
-		return -EINVAL;
-	}
-
-I'll send a patch to fix it.
-
-Regards,
-Oleksij
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---4cydpp6pjv3rbmqg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6eoqMACgkQ4omh9DUa
-UbMcrxAApMsUmQ33pQEOrk9ulSJkkSg8xm+CMZKkas4aamjE0q+LOe97WArayMXB
-db1ttp4L3b12I6qhcnDrgfhw+ZUduM+PU4ZD3MOi+F9Fy6nwkxJW2HQ3z/q1M6JN
-Fy9UJtSTZ5dY74xtlL9mqZ/ifulWCuuxJxXjKkghe8lUcV2Nerf/X0+A72wHVep6
-2bydbKk7Uu8ioBCLuHMOf1jXHNx2GhEmCc66B2VfpLcsitjy3l40+aEBW4JdBY+f
-STmD6DW9VekFJxOnu1Z/IbFuIIIL+mjKUvAwb6sqXjmnr0DVq/XXN/FQ8fgHZRnq
-AHHqhr3jOOqtHc/VHb2jFGgKAmGMYHdUbotlj/0gWy9Uxw0ZGV6tljL8imJ38/CJ
-dbduR7qjQf3W5+XgouJTb2lq3DIzcQ6Fw5U2iIkdtHxNneigP0WVEA1sBL/ksgos
-d2Lx6FRYF5gHbYerSiPGZH8f2tWHtsV6smAjHjXUF8sGxdLsUzmQDefL1iYOQNeJ
-7N6nVssD+AWjJ0TzdEuorvTepcbKYfsjQlOrX9sMr7pwqAKIRgbd6nESrRgLIHbM
-Yumu4MedWmr98zj9eXckVw8Ezedt/fMR3rXNI8OpM1f9G8qFSpU+zDI0cUIMc/He
-5tVW6uxytjLe6//+mBrk1cKqHph4oiaOsPvARZ/NzBjEeqP9MXo=
-=CZn8
------END PGP SIGNATURE-----
-
---4cydpp6pjv3rbmqg--
