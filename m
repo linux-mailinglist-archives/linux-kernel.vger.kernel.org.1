@@ -2,70 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0492D1B28FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BFA1B290F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgDUOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726691AbgDUOGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:06:01 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8737BC061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:06:01 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id m8so14127796lji.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sBPnwvz1dgPpqRWkEF4YZQqH3jyiriQq0zM4QgIv1m4=;
-        b=KP+e77dziNK+5NMAK/9wvGgczEsi+vVbqsfteCha6ZsIU6rFneO1g3torXhN5Y8H4M
-         C62pfwPr1XIq+BtOSIp1FTGMsC2mBIA69N02CFGRBFJ18xx+C7wGctDUDd1HHr49dhDO
-         UCWBJGOPj27nGZUBT6XPq56UZqVdvNmSrjMillhLzBH06U7CWNT2AbKjagZm7SX7wSAu
-         8BKdDrHD8svhlgiwaQqp61WAignWIR20WHxlVWiAdXMOkNEfzUT2FIrJHIHaMNzUMuOx
-         mGWZoF2+872udCVUOdTJY8j4wq1FJ2LIdIY/TcPuFdD9fNMiHHxIUO+Fi9gbZNhU8dGV
-         M0fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=sBPnwvz1dgPpqRWkEF4YZQqH3jyiriQq0zM4QgIv1m4=;
-        b=tk38GmPvwV9WzkYE1hfM3bQv8Mq/AlmDg2SmVdS8cQ111u8IaysjXnvK6zCM17qdy7
-         byM5M78fE0w0b5YM6pliHTv2R6gYjSZcGgJcDv5nxCo0atRfZbW5XwhbeLc/iQFqUco7
-         0aECuKwOKYUUZ1Q1gTF6Vw6ZZyk6QkYRRWSSZ1xrh5u4/3RJKWmLHm/TIqMtSIDqbSMp
-         qT7B4N6WOkR+Db7L9ONN+ZEYzeW5G7arqNioilKhFKJPGbX2waEJioaTLMnvDog0CVjp
-         UrdWS50jy3ys7KzMNWVMl7MyrG4LZ7eer9C+4Gw4JPUM9E82fazkqPKYEBmHF7bk/3fh
-         rXSw==
-X-Gm-Message-State: AGi0PuYiJ/KCRvQsF3wkAAH7ErirznKptj5OSjtExLC5lvMi2UJ748KU
-        NlWCNaw9I3WtqZA4E4ueAI7KPthmra0Q5qPqpkY=
-X-Google-Smtp-Source: APiQypJfEK/Ainv+3mbGygFg3wMVdtI3Ezi60pwAo6nlMKykfNP9N//j/vTMIte8rz8tzkzp4Dfiev4ZR5h9sPYpmas=
-X-Received: by 2002:a05:651c:112c:: with SMTP id e12mr13449479ljo.127.1587477960078;
- Tue, 21 Apr 2020 07:06:00 -0700 (PDT)
+        id S1728621AbgDUOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:09:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728316AbgDUOJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:09:38 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC31C20679;
+        Tue, 21 Apr 2020 14:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587478177;
+        bh=47dRdhfCGfscyToO3yQIR/h3qAEu9MIShpFMyDMcDmI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yFw/bG6wzQTTx41T7fqFE/rQqJQh+ZXKvwN8atl/NcYeL9chbqyoSJAH8F38mH+gq
+         F7I99+ZbrVRFK+sSpqtfFJ9fRG8x1ZP61XCwnFYL50Sk3k2u7Yfn6VShMA08vaTpDZ
+         190GqcI/SyUD/BjsR16rZ4j5fqpbKO51eqOzt3mk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jQtah-005Cye-Tb; Tue, 21 Apr 2020 15:09:36 +0100
 MIME-Version: 1.0
-Received: by 2002:a19:c611:0:0:0:0:0 with HTTP; Tue, 21 Apr 2020 07:05:59
- -0700 (PDT)
-Reply-To: manuelfranco724@aol.com
-From:   Manuel Franco <carlafunding@gmail.com>
-Date:   Tue, 21 Apr 2020 07:05:59 -0700
-Message-ID: <CAMcw7+ag0cS1fEFAzxPzHssoVfS_QTLyg1g1H9ungFiPYxXCbg@mail.gmail.com>
-Subject: =?UTF-8?Q?Gute_Neuigkeiten_f=C3=BCr_dich=2E?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 21 Apr 2020 15:09:35 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yury Norov <yury.norov@gmail.com>,
+        Paul Turner <pjt@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Josh Don <joshdon@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 0/4] sched/rt: Distribute tasks in find_lowest_rq()
+In-Reply-To: <jhjv9ltkmel.mognet@arm.com>
+References: <20200414150556.10920-1-qais.yousef@arm.com>
+ <jhjh7xlvqqe.mognet@arm.com>
+ <20200421121305.ziu3dfqwo7cw6ymu@e107158-lin.cambridge.arm.com>
+ <jhjv9ltkmel.mognet@arm.com>
+Message-ID: <dda160a8d78b44dbc310759502a49afc@kernel.org>
+X-Sender: maz@kernel.org
+User-Agent: Roundcube Webmail/1.3.10
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, qais.yousef@arm.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, akpm@linux-foundation.org, tglx@linutronix.de, yury.norov@gmail.com, pjt@google.com, adobriyan@gmail.com, joshdon@google.com, pkondeti@codeaurora.org, linux-kernel@vger.kernel.org, rjw@rjwysocki.net
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-25.000 Euro wurden Ihnen von Manuel Franco gespendet. I Manuel Franco
-ist Gewinner des Powerball-Jackpots in H=C3=B6he von 768 Millionen
-US-Dollar. Ich spende (25.000,00 =E2=82=AC) an Sie aufgrund von COVID-19.
-Sicherstellen, dass jeder die Pflege erh=C3=A4lt, die er ben=C3=B6tigt. Ich=
- gebe
-den gleichen Betrag an verschiedene Personen in allen Grafschaften
-aus. Ich bete, wir alle schaffen es aus diesem COVID-19 heraus. E-Mail
-f=C3=BCr weitere Details: manuelfranco724@aol.com
+On 2020-04-21 14:18, Valentin Schneider wrote:
+> On 21/04/20 13:13, Qais Yousef wrote:
+
+[...]
+
+>> I CCed Marc who's the maintainer of this file who can clarify better 
+>> if this
+>> really breaks anything.
+>> 
+>> If any interrupt expects to be affined to a specific CPU then this 
+>> must be
+>> described in DT/driver. I think the GIC controller is free to 
+>> distribute them
+>> to any cpu otherwise if !force. Which is usually done by irq_balancer 
+>> anyway
+>> in userspace, IIUC.
+>> 
+>> I don't see how cpumask_any_and() break anything here too. I actually 
+>> think it
+>> improves on things by better distribute the irqs on the system by 
+>> default.
+
+That's a pretty bold statement. Unfortunately, it isn't universally 
+true.
+Some workload will be very happy with interrupts spread all over the 
+map,
+and some others will suffer from it because, well, it interrupts 
+userspace.
+
+> As you say, if someone wants smarter IRQ affinity they can do 
+> irq_balancer
+> and whatnot. The default kernel policy for now has been to shove 
+> everything
+> on the lowest-numbered CPU, and I see no valid reason to change that.
+
+Exactly. I would like to keep the kernel policy as simple as possible 
+for
+non-managed interrupts (managed interrupts are another kettle of fish 
+entirely).
+Userpace is in control to place things "intelligently", so let's not try 
+and
+make the kernel smarter than it strictly needs to be.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
