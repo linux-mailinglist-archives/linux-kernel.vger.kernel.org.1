@@ -2,82 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616DC1B1CD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B81B1B1CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgDUD3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 23:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727848AbgDUD3J (ORCPT
+        id S1728103AbgDUDem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 23:34:42 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:10948 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgDUDel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 23:29:09 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D07C061A0E;
-        Mon, 20 Apr 2020 20:29:08 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u6so12432916ljl.6;
-        Mon, 20 Apr 2020 20:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BMJTUlThbttHy1s8zUh/yLSGgtDbp++0rIV/2h/ppXc=;
-        b=IOrDORJpETL24Q4qgjrdtATYPbplnCCaARvV4mTK2xNPrsPKma/RZf105SSk3pjbON
-         HGAkpXiqwBzsmocWSaLCmmkd8WbS151+iq8eztxudkaeRBjnaDozYloik/+xSRKLDqi1
-         f4M+XQhoew64tkF3TU67MpAZTMf7vds3uDZndxpzDKtzl1sy+vCeexYNWZ25s2aJIbq3
-         4eenqUzgtrP+74IVktA2f9de0IcLFmTAkx8fxxSkd91Y9mFSPNJv352ECVF0QcLdm9bH
-         3qD6uhmRSG2RQEv5WoUmwgKC770val/UE9F1ttXjSmm+Pomi698hAVqzA89v92KIuwS9
-         iQ2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BMJTUlThbttHy1s8zUh/yLSGgtDbp++0rIV/2h/ppXc=;
-        b=jAHzw5H27VeisdEPQ6UUfPV51kU5bu3PYvLRBWkFOOJcadImLHPLtgZsx3m8HkgO1R
-         UH39DDTnqHJRSXMzZd+YCcO9US09CiXDJcmCEfJniVuq2lSIvRl54E/gEuDOMOMShGcn
-         eu34iHpKZjuQYSbbfnO7k9xJ7VStDsdIRfEcwRL+U3ZJFsxvV7nlxdvlDfRYD45GZeul
-         ts1WSBl0nHFDHZfmDEtqtKy43zPKACf5IYEYiyD+ugTanR4QfnZNPzX6EykMLOQU5vPd
-         wybMI6riCrzeUMqh7gjjnjfhUhQjHgyK97bMEiGeyqgMdcjXoefrLied3cjrUR1pHk/f
-         EQAA==
-X-Gm-Message-State: AGi0PuYXL/xW3cZ2Z98GWqDo9U1MP2tpmBp7nJru7+z8EPGbe6P3M98W
-        O9QdKEDDfHuCFcBtp3ZTzU2ju+n1lH/DGKvp0AE=
-X-Google-Smtp-Source: APiQypKCG5z3X8zmL26CpfcUXIEHpjh1hK9hE7uztfrp9w/P1N3NK5PCO8bHnVVhNO4IlT8umqToYEVAZjVTSaei/3w=
-X-Received: by 2002:a2e:a169:: with SMTP id u9mr3804245ljl.144.1587439746689;
- Mon, 20 Apr 2020 20:29:06 -0700 (PDT)
+        Mon, 20 Apr 2020 23:34:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1587440080; x=1618976080;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GjTTpLTWGYCXUfvIMno62LIuH07aVZwFi+V4pOUKReY=;
+  b=KlMSVnww91RsPRjUUOOCA5h2LHw8X6zNMP9oo0tyL9r3LLPuUwv8CBDz
+   F4hipMV+Yx3vX/7Irt2pm4gZ7fLVjAZ2XJ521oCTqBoEFHWCLp2yoLE3p
+   ojFF/drVZX9Md+HARFy0YGgBeG4Kmn8PWhu6T9aWbkP90QiJJjkUU8Zdz
+   kl0emXrCFdUhThyD77cLme+U4LEaBLuhcaaMpIUgKuQ4S8F9+IYXPnpb3
+   Xizuubqj0YUkrvtq+Vj5hkpDfIkGuxy2eDgPFzsMBQHJG7eWyJ7oxcFuZ
+   QnhfgBcy+83lwJlcanhQLMcvufiRFhVVQyfmRp3oJQqVQBZTVLVPFkrxF
+   A==;
+IronPort-SDR: iTG+wf/3z3H0v3UTmwcvRYsBMNwDqM8mQOKkioChuqlu5/sM8+5IWSDnVVX2u2swdWHpLsA8XY
+ fXbPOh4Z4OLOw3S962PU7kKtYFbnx3Y9yxQhmqjCUpeb0ddwiRmBOSHuX2u1U4v7xWeLcvfWqY
+ L1ToCPnbe0Eyz0wvCW2HOu0q8sWtVgQ5WgRkzsqDKP6agFm7a4EzDI7DHBGX9yR+KjkbZSxFes
+ h75zLgBvMFuGXdn6z75uls3opHKpaTby6DMmpnGX8c3hX2xFTEu5BAVTolm7L/1Dv1RAmxOBiY
+ Me8=
+X-IronPort-AV: E=Sophos;i="5.72,408,1580745600"; 
+   d="scan'208";a="135760535"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Apr 2020 11:34:40 +0800
+IronPort-SDR: ZSjOJ4JHOOkaZ6kLZy3/724Ju1D0AWE+dbZ0xeOq1vgeBnRQpBbgDqJ3/8oRphVlmPgXttzR38
+ t8wZ3cEzyFerAVBbQ+WePFqycg8tmmmX0=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 20:25:32 -0700
+IronPort-SDR: lO7btBcWjrqFJtn8pnNC/QtT/FXAyKDOK8vNC0ORN4WSfJuUKDUKxwBo4E+EPTJqyazL7MQOIh
+ v3q9juxzrKMg==
+WDCIronportException: Internal
+Received: from hqe220030.ad.shared (HELO jedi-01.hgst.com) ([10.86.56.34])
+  by uls-op-cesaip01.wdc.com with ESMTP; 20 Apr 2020 20:34:41 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [v4 PATCH 0/3] Add UEFI support for RISC-V 
+Date:   Mon, 20 Apr 2020 20:33:33 -0700
+Message-Id: <20200421033336.9663-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <1587274757-14101-1-git-send-email-jagdsh.linux@gmail.com>
-In-Reply-To: <1587274757-14101-1-git-send-email-jagdsh.linux@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 20 Apr 2020 20:28:55 -0700
-Message-ID: <CAADnVQ+vFZpxvHryuofTou18LETweu4cPWX6b4skqZmU7_DDfA@mail.gmail.com>
-Subject: Re: [PATCH] tools/bpf/bpftool: Remove duplicate headers
-To:     jagdsh.linux@gmail.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Paul Chaignon <paul.chaignon@orange.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 10:40 PM <jagdsh.linux@gmail.com> wrote:
->
-> From: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
->
-> Code cleanup: Remove duplicate headers which are included twice.
->
-> Signed-off-by: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+This series adds UEFI support for RISC-V. Currently, only boot time
+services have been added. Runtime services will be added in a separate
+series. This series depends on some core EFI patches
+present in current in efi-next and following other patches.
 
-Applied. Thanks
+U-Boot: Adds the boot hartid under chosen node.
+https://lists.denx.de/pipermail/u-boot/2020-April/405726.html
+
+Linux kernel: 5.7-rc1
+
+OpenSBI: master
+
+Patch 1 just moves arm-stub code to a generic code so that it can be used
+across different architecture.
+
+Patch 3 adds fixmap bindings so that CONFIG_EFI can be compiled and we do not
+have create separate config to enable boot time services. 
+As runtime services are not enabled at this time, full generic early ioremap
+support is also not added in this series.
+
+Patch 4 and 5 adds the PE/COFF header and EFI stub code support for RISC-V
+respectively.
+
+The patches can also be found in following git repo.
+
+https://github.com/atishp04/linux/tree/wip_uefi_riscv_v4
+
+The patches have been verified on Qemu using bootefi command in U-Boot.
+
+Changes from v3->v4:
+1. Rebased on top of efi-next.
+2. Dropped patch 1 & 2 from this series as it is already queued in efi-next.
+Changes from v2->v3:
+3. Improved handle_kernel_image() for RISC-V.
+
+Changes from v1->v2:
+1. Rebased on 5.7-rc1.
+2. Fixed minor typos and removed redundant macros/comments.
+
+Changes from previous version:
+1. Renamed to the generic efi stub macro.
+2. Address all redundant comments.
+3. Supported EFI kernel image with normal booti command.
+4. Removed runtime service related macro defines.
+
+Atish Patra (3):
+RISC-V: Define fixmap bindings for generic early ioremap support
+RISC-V: Add PE/COFF header for EFI stub
+RISC-V: Add EFI stub support.
+
+arch/riscv/Kconfig                        |  21 +++++
+arch/riscv/Makefile                       |   1 +
+arch/riscv/configs/defconfig              |   1 +
+arch/riscv/include/asm/Kbuild             |   1 +
+arch/riscv/include/asm/efi.h              |  44 +++++++++
+arch/riscv/include/asm/fixmap.h           |  18 ++++
+arch/riscv/include/asm/io.h               |   1 +
+arch/riscv/include/asm/sections.h         |  13 +++
+arch/riscv/kernel/Makefile                |   4 +
+arch/riscv/kernel/efi-header.S            |  99 ++++++++++++++++++++
+arch/riscv/kernel/head.S                  |  16 ++++
+arch/riscv/kernel/image-vars.h            |  53 +++++++++++
+arch/riscv/kernel/vmlinux.lds.S           |  20 +++-
+drivers/firmware/efi/Kconfig              |   2 +-
+drivers/firmware/efi/libstub/Makefile     |  10 ++
+drivers/firmware/efi/libstub/riscv-stub.c | 106 ++++++++++++++++++++++
+16 files changed, 407 insertions(+), 3 deletions(-)
+create mode 100644 arch/riscv/include/asm/efi.h
+create mode 100644 arch/riscv/include/asm/sections.h
+create mode 100644 arch/riscv/kernel/efi-header.S
+create mode 100644 arch/riscv/kernel/image-vars.h
+create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
+
+--
+2.24.0
+
