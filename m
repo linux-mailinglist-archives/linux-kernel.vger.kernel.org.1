@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107F91B2BE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E342A1B2BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDUQGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgDUQGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:06:24 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727801AbgDUQHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:07:06 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:27040 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725994AbgDUQHF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 12:07:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587485222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=o5FOkANuc3nLYhQjPcsDscbLbZtxZk5DwaFRxRr4r+g=;
+        b=DPEtup4T0UHRXsXgnRYBp9lqPZgySbAOIL+nSoo5gDGTcnYrfyufwnuWum42lh/53NlvS+
+        PeW+yXFLLkBHwqRi5itxMSOxxX5GbDeXVW/wHN7YcGHR7plvO57Y07UmALnUEtSJT7Tdpr
+        LqJUOL5k1WLtk8LLTSlNOkwaHXKtZAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-qIM84Du8Oc-OIl56oNYQQQ-1; Tue, 21 Apr 2020 12:06:53 -0400
+X-MC-Unique: qIM84Du8Oc-OIl56oNYQQQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4696206A1;
-        Tue, 21 Apr 2020 16:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587485184;
-        bh=0CHCOM6VoDYf8itPO9myhF0Bjpv6UOv44mn8HVZm2Ko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rbXhui4QhT0TX3rw5thRe6Un4DWFjqiAi5KDSKShc3KZuXwHiOoSU3FnhfBR4hGTT
-         xa4NTM6bOF/B6iJAV9XcCSZlh8UcfRyp+su+JfxyJbRaXDMiG0+pVyI8uB6Z3YxT/j
-         VeOIotD5wJmrXM2ONW9l6a4BtoZ4KQto6Lpl5Wv8=
-Date:   Tue, 21 Apr 2020 12:06:22 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Metzger, Markus T" <markus.t.metzger@intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simark@simark.ca>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 00/17] Enable FSGSBASE instructions
-Message-ID: <20200421160622.GJ1809@sasha-vm>
-References: <CALCETrXc=-k3fQyxjBok0npjTMr6-Ho7+pkvzDUdG=b52Qz=9g@mail.gmail.com>
- <A78C989F6D9628469189715575E55B236B508C1A@IRSMSX104.ger.corp.intel.com>
- <CALCETrWb9jvwOPuupet4n5=JytbS-x37bnn=THniv_d8cNvf_Q@mail.gmail.com>
- <29FD6626-4347-4B79-A027-52E44C7FDE55@intel.com>
- <20200413200336.GA11216@sasha-vm>
- <20200414003205.GF397326@tassilo.jf.intel.com>
- <20200417133021.GT1068@sasha-vm>
- <CALCETrW6LLmFR5Y6tmH=nPThCHefysf_nNwxHOFp4tAY4Spunw@mail.gmail.com>
- <20200420141320.GC608746@tassilo.jf.intel.com>
- <87y2qqaxkp.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87y2qqaxkp.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E32361922021;
+        Tue, 21 Apr 2020 16:06:52 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 71B9676E74;
+        Tue, 21 Apr 2020 16:06:52 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for Linux 5.7-rc3
+Date:   Tue, 21 Apr 2020 12:06:51 -0400
+Message-Id: <20200421160651.19274-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 07:14:46PM +0200, Thomas Gleixner wrote:
->Andi Kleen <ak@linux.intel.com> writes:
->>> the *gdb developers* don't care.  But gdb isn't exactly a good example
->>> of a piece of software that tries to work correctly when dealing with
->>> unusual software.  Maybe other things like rr will care more.  It
->>
->> rr is used to replay modern software, and modern software
->> doesn't care about selectors, thus rr doesn't care either.
->>
->> Please stop the FUD.
->
->There is absolutely no FUD. Being careful about not breaking existing
->user space is a legitimate request.
->
->It's up to those who change the ABI to prove that it does not matter and
->not up to the maintainers to figure it out.
+Linus,
 
-I think that this is a difficult ask; "prove that god doesn't exist".
+The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
 
-Andi's point is that there is no known user it breaks, and the Intel
-folks did some digging into potential users who might be affected by
-this, including 'rr' brought up by Andy, and concluded that there won't
-be breakage as a result of this patchset:
+  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
 
-	https://mail.mozilla.org/pipermail/rr-dev/2018-March/000616.html
+are available in the Git repository at:
 
-Sure, if you poke at it you could see a behavior change, but is there
-an actual user that will be affected by it? I suspect not.
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
->This sits in limbo for months now just because Intel doesn't get it's
->homework done.
->
->Stop making false accusations and provide factual information instead.
+for you to fetch changes up to 00a6a5ef39e7db3648b35c86361058854db84c83:
 
-If there's no known user that will be broken here, can we consider
-merging this to be disabled by default and let distros try it out? This
-will let us find these users while providing an easy way to work around
-the problem.
+  Merge tag 'kvm-ppc-fixes-5.7-1' of git://git.kernel.org/pub/scm/linux/kernel/git/paulus/powerpc into kvm-master (2020-04-21 09:39:55 -0400)
 
--- 
-Thanks,
-Sasha
+----------------------------------------------------------------
+Bugfixes, and a few cleanups to the newly-introduced assembly language
+vmentry code for AMD.
+
+----------------------------------------------------------------
+Borislav Petkov (1):
+      KVM: SVM: Fix build error due to missing release_pages() include
+
+Claudio Imbrenda (1):
+      MAINTAINERS: add a reviewer for KVM/s390
+
+Eric Farman (1):
+      KVM: s390: Fix PV check in deliverable_irqs()
+
+Josh Poimboeuf (1):
+      kvm: Disable objtool frame pointer checking for vmenter.S
+
+Oliver Upton (2):
+      kvm: nVMX: reflect MTF VM-exits if injected by L1
+      kvm: nVMX: match comment with return type for nested_vmx_exit_reflected
+
+Paolo Bonzini (4):
+      KVM: SVM: fix compilation with modular PSP and non-modular KVM
+      KVM: SVM: move more vmentry code to assembly
+      Merge tag 'kvm-s390-master-5.7-2' of git://git.kernel.org/.../kvms390/linux into kvm-master
+      Merge tag 'kvm-ppc-fixes-5.7-1' of git://git.kernel.org/.../paulus/powerpc into kvm-master
+
+Paul Mackerras (1):
+      KVM: PPC: Book3S HV: Handle non-present PTEs in page fault functions
+
+Sean Christopherson (2):
+      KVM: Check validity of resolved slot when searching memslots
+      KVM: s390: Return last valid slot if approx index is out-of-bounds
+
+Steve Rutherford (1):
+      KVM: Remove CREATE_IRQCHIP/SET_PIT2 race
+
+Uros Bizjak (4):
+      KVM: VMX: Enable machine check support for 32bit targets
+      KVM: SVM: Do not mark svm_vcpu_run with STACK_FRAME_NON_STANDARD
+      KVM: SVM: Do not setup frame pointer in __svm_vcpu_run
+      KVM: SVM: Fix __svm_vcpu_run declaration.
+
+Venkatesh Srinivas (1):
+      kvm: Handle reads of SandyBridge RAPL PMU MSRs rather than injecting #GP
+
+ MAINTAINERS                            |  1 +
+ arch/powerpc/kvm/book3s_64_mmu_hv.c    |  9 +++++----
+ arch/powerpc/kvm/book3s_64_mmu_radix.c |  9 +++++----
+ arch/s390/kvm/interrupt.c              |  2 +-
+ arch/s390/kvm/kvm-s390.c               |  3 +++
+ arch/x86/include/asm/nospec-branch.h   | 21 ---------------------
+ arch/x86/kvm/Makefile                  |  4 ++++
+ arch/x86/kvm/svm/sev.c                 |  6 +++++-
+ arch/x86/kvm/svm/svm.c                 | 10 +---------
+ arch/x86/kvm/svm/vmenter.S             | 10 +++++++++-
+ arch/x86/kvm/vmx/nested.c              | 21 +++++++++++++++++++--
+ arch/x86/kvm/vmx/vmx.c                 |  2 +-
+ arch/x86/kvm/x86.c                     | 21 +++++++++++++++++++--
+ include/linux/kvm_host.h               |  2 +-
+ 14 files changed, 74 insertions(+), 47 deletions(-)
+
