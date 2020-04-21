@@ -2,60 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095091B24EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E1F1B24F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgDULVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S1728795AbgDULVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgDULVg (ORCPT
+        with ESMTP id S1728778AbgDULVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:21:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727ACC061A0F;
-        Tue, 21 Apr 2020 04:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O7EX3G4leSXAdSVi0QkilAVF09SQ9P0JWv1IzyQNsJU=; b=h5gDfCj49aoEbBu9ZJ4lHd65T6
-        FDv1uS15ExHUVIk3Jay9BrCDj2SEnyddluEqxNi5OwblnYm30D4L0Yj5uePgy8aU7Gx8YZaOMt1qW
-        g2N8zv4mQ/pCQNl6PiWZstcmHKj1MQkMx/wz+oX+LAKPqwQtSyqrMkhfcLRhGkN6obUFrypEyWJnU
-        Fkbyy4VlDJG4ZvKdK5s4Pn/fgHatNqe9HCElT3XVQ95jZI/vwXMGejInOyypkojFW1k7L+lZZFoER
-        s0F9VBqoFzQK1W+CGLsCW456z0hrfpcWkioBT0ef+RfTF+dKSKtIP7rQwXQ/MY+q2Zqetin/KcDbQ
-        4xjaWiuw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jQqy2-0006DO-NW; Tue, 21 Apr 2020 11:21:30 +0000
-Date:   Tue, 21 Apr 2020 04:21:30 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/9] Revert "drm/msm/a6xx: Use the DMA API for GMU memory
- objects"
-Message-ID: <20200421112130.GA29925@infradead.org>
-References: <20200420140313.7263-1-jonathan@marek.ca>
- <20200420140313.7263-3-jonathan@marek.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420140313.7263-3-jonathan@marek.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        Tue, 21 Apr 2020 07:21:51 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84FFC061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:21:50 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id q31so6300726qvf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=kNM2KRkAMSsc+pYLKtlKu09j47YU3pGF6ToSVV1GC2A=;
+        b=j/6HQPLHk6ynL/FoB4R7yMl5t9W90U39EGGlAjJdv3xTVLAGO1U3fwtR876zviUMgS
+         8h19VkOF136hk6Kyq+tM4kn+M4lYQ5SozOlH39NpV9v5nmttnocXoC+YaoiEJE5/p02I
+         1iSnlkan6Hr5DiOqZoHCgxS5KWE0xbJ6uSN73gAhfr7MuJBmDX8J4oldsj9jWdCiK/BQ
+         BITOyFoOFwJuRR9ZpmxV7fI7yEIX2/C19JDFdOKYGaCavcKouLbSOWDD0gJq4NShxH3I
+         YSzGbmqOUGUhXfIowlrMH/xBmwuVg3pcvOEKpTteoYRaw5IPqLzES5e2e7ptjMBWlOFB
+         Gltw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=kNM2KRkAMSsc+pYLKtlKu09j47YU3pGF6ToSVV1GC2A=;
+        b=JlSRx63tMRJ5RSQonSla8SGTi1lTW1lCH7CmQltG5F9KG5UYJro+70uhSSqnibratQ
+         iyjaYAO2U47JAtBEjBAkPRMWIh1Y5BFQ9ZN1GxrmNCWRogLAEOa9/uSvvv6Nu4D7PLA+
+         pXyPeRsYXT+8qorS9LD0k/xeW1kZUWdgMwDrktMhYyciwt7c/d9ql5CNDrGhwFFCmyJn
+         XbwFlDcWBnKlzW1ig+XAbguvxk0nhMtz8wAoMaS44zoYt/x50D31AtILIbAOk28zTQ+k
+         RDl+aTNCQOxzYdWqqxpL1iQsRw7RGeNmLeTLCp9j3Hd1EtEaCzS7XZsloFyuCfE5L1bP
+         8pKQ==
+X-Gm-Message-State: AGi0Pubh/HU1+M9XrxtTgU7fX3aSnB4Dkwv7wubenkO1Eilz0f4BhqV+
+        9IZmtdt7qqCK6u2b10UexFTq4A==
+X-Google-Smtp-Source: APiQypIz8KpdLC2geW/BC+9l/tMpLTLdQdGdy4IFB0lhF2Q+hFfDhzRYrnPW8u4g9GZV1E2ef7eESg==
+X-Received: by 2002:a0c:b501:: with SMTP id d1mr31042qve.63.1587468110010;
+        Tue, 21 Apr 2020 04:21:50 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id i56sm1625973qte.6.2020.04.21.04.21.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 04:21:49 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: linux-next test error: WARNING: suspicious RCU usage in ipmr_device_event
+Date:   Tue, 21 Apr 2020 07:21:48 -0400
+Message-Id: <36C7F018-510E-4555-BC6B-42DEB0468CBA@lca.pw>
+References: <CACT4Y+ZuGaeyyVsCkqJRo4+0hoMP8Eq_JTuU0L-NFqTrQP_czA@mail.gmail.com>
+Cc:     syzbot <syzbot+21f82f61c24a7295edf5@syzkaller.appspotmail.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+In-Reply-To: <CACT4Y+ZuGaeyyVsCkqJRo4+0hoMP8Eq_JTuU0L-NFqTrQP_czA@mail.gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+X-Mailer: iPhone Mail (17D50)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using VM_IOREMAP outside of ioremap implementations is completely
-bogus.  Don't go there, especialy with such a horribly bad commit log.
+
+
+> On Apr 21, 2020, at 6:51 AM, Dmitry Vyukov <dvyukov@google.com> wrote:
+>=20
+> +linux-next, Stephen for a new linux-next breakage
+
+I don=E2=80=99t know why you keep sending the same thing over and over again=
+ where I replied you just two days ago for the same thing.=
