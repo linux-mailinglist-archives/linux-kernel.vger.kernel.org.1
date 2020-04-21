@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BEA1B2F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDBC1B2F5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgDUSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgDUSmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:42:09 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AE90206D9;
-        Tue, 21 Apr 2020 18:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587494528;
-        bh=W5iqH8D4ozFwKcYfj6Xz7G3N7rFf+lJ6e2XoJilKYKE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uxrTDI7aOq3eN/0af17tTwnT++GuqYFU6PmgagzU7Wvb4b+7GSJ0ROLxU/L51S3Um
-         q53KgHl1Sz03V2jaF2aBzwDKL2by4PkWqLEmTBdoaGHnvXa4FpAcNAq6CXgQSsoLFZ
-         yg9x4uhtUuqn9kqclJDz66KCn2e3kmHC8ordGPSU=
-Date:   Tue, 21 Apr 2020 20:42:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuah <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 5.6 00/71] 5.6.6-rc1 review
-Message-ID: <20200421184206.GA1417862@kroah.com>
-References: <20200420121508.491252919@linuxfoundation.org>
- <b2fe599c-4cd6-1302-99ad-336fdaf67912@kernel.org>
+        id S1729604AbgDUSnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729562AbgDUSnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 14:43:17 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14FAC0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:43:16 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n6so11724691ljg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P3kAvJO++eguajRXsG/n5n7oYF1JgCMF+hUCYrN1/xg=;
+        b=OrV75sJ7JQKXSTP33LjV3QbwQ+1OpDpShCbzluaAml47IaJlXUCvCFVNh0dT2ICaOR
+         tP0ellSgXMcc5k5ikER9Nrb93hnp/fuQwpjpJAgKovwu7iy+//ZOUhUHick8HqdJW50T
+         eqBCUYMnjMNZdxRwIOyjYkSeElTNWpr5H0uG0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P3kAvJO++eguajRXsG/n5n7oYF1JgCMF+hUCYrN1/xg=;
+        b=rCPZGTFQYZbpkHnInoZFjZShuqasnElLDH9v4NHXV/MS7xoZ68sXS+vrVCn7iK13fH
+         QzBAgU22eSjtgH+IveL7HFCjM4+quEhBLzHjpYacR6DEmECHppSzBUPXABR9IU2IzDkl
+         XWNUMmt/WdyBiXDePHs2JjYEDmSuc4NVzaJ9K3Oc1SY7gIkwQxgiCvVgKe6w+Md8wDTK
+         GXsrEOZu4MXqyPECuvlHm75yPuksoxxwEejzFKfxJ5tve6FMRSVZp3N2mzumf/jPCG92
+         GINTwR65vVETlKcqGoC9CTP3LqcS8uJw1UfZVJ1K0HL+mwVxwL9EZ5J5Lib6ucBHuVLg
+         cKYw==
+X-Gm-Message-State: AGi0PuYdOiYsBhtAh9N/fzVTyV0K8iPlfi+gB96dYd+eBqa0Qn10k9XM
+        5DbvPxW4IstdnMLy/73+astysjugjB4=
+X-Google-Smtp-Source: APiQypJvDlQtIDd+4OKeZFCXS07TkV2wZ3dLXGfmf9NrT/asxq0feSfzbMIFvdbdGRhunEsu8p6FKg==
+X-Received: by 2002:a2e:87d3:: with SMTP id v19mr4771724ljj.176.1587494594193;
+        Tue, 21 Apr 2020 11:43:14 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id w19sm2759113ljo.54.2020.04.21.11.43.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 11:43:13 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id t11so11942997lfe.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:43:12 -0700 (PDT)
+X-Received: by 2002:a19:9109:: with SMTP id t9mr14821322lfd.10.1587494592604;
+ Tue, 21 Apr 2020 11:43:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2fe599c-4cd6-1302-99ad-336fdaf67912@kernel.org>
+References: <20200421151537.19241-1-will@kernel.org>
+In-Reply-To: <20200421151537.19241-1-will@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 21 Apr 2020 11:42:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjjz927czq5zKkV1TUvajbWZGsPeFBSgnQftLNWmCcoSg@mail.gmail.com>
+Message-ID: <CAHk-=wjjz927czq5zKkV1TUvajbWZGsPeFBSgnQftLNWmCcoSg@mail.gmail.com>
+Subject: Re: [PATCH v4 00/11] Rework READ_ONCE() to improve codegen
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:49:59AM -0600, shuah wrote:
-> On 4/20/20 6:38 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.6.6 release.
-> > There are 71 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.6-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Compiled and booted on my test system. No dmesg regressions.
-> Reboot/poweroff worked with no hangs.
+On Tue, Apr 21, 2020 at 8:15 AM Will Deacon <will@kernel.org> wrote:
+>
+> It's me again. This is version four of the READ_ONCE() codegen improvement
+> patches [...]
 
-Yeah, glad that issue is now resolved.  THanks for testing and letting
-me know.
+Let's just plan on biting the bullet and do this for 5.8. I'm assuming
+that I'll juet get a pull request from you?
 
-greg k-h
+> (I'm interpreting the silence as monumental joy)
+
+By now I think we can take that for granted.
+
+Because "monumental joy" is certainly exactly what I felt re-reading
+that "unqualified scalar type" macro.
+
+Or maybe it was just my breakfast trying to say "Hi!".
+
+                 Linus
