@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251281B25A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62B11B2581
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgDUMK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 08:10:56 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:57792 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbgDUMK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:10:56 -0400
-X-Greylist: delayed 432 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 08:10:54 EDT
+        id S1728630AbgDUMEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726691AbgDUMEI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:04:08 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1F6C061A10;
+        Tue, 21 Apr 2020 05:04:07 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n6so10327417ljg.12;
+        Tue, 21 Apr 2020 05:04:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1056; q=dns/txt; s=axis-central1;
-  t=1587471054; x=1619007054;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=e5l7Ey7eBk6W1PjZ+8XYrNk38uNUci4BU1Rlr0SxkAU=;
-  b=PDAIgt2iNuzm1dBV1HwBpgbinmHHij+br805kbW5aQuCacjaaIuIRtki
-   9s13zOx/WcqKrP/pE7Eb+tZ1CHjtT9yy1LgrrvsYZJwfLkFtg0R2DJl0k
-   E9cfma5NV1/MsmiJkCVyZWDbDxG6sMpcSejdFW7oZSTf8Mbk3nrPo8f82
-   Nqswau/s3H1w0x+A5b/UP6MC/PYdkVP9VYeQiM5dRNC/trV5L1UbaanBt
-   13+4zczOc0JDM3lgL89sRBguhaDNW8f18T4FjJN17rFZk0WQK6FZPHfZV
-   TZjwweUo9TFS/9XZKd1i5VPMDPUanmlC7oPkajQNDdMWghZo0sm6gAg3r
-   A==;
-IronPort-SDR: slkoKAD4j0YkY2zI+xu9W07GCchlGtfS7tGbFv/xAo8lxJWdBLtassZJcREGjd8nzt58hAXoxF
- 2iLU1UWZSP7S8sbzH2A8LL4LnlIXEdcvjdKfbELCkpiWmz5WjY/uiDC2TQ5jL+FQdDKkJhX/wc
- ZZln1Lc2AMIg3UBGgLYwUphqWUibnOiwp3qUyxiLMpB5wZ6e2JEWJLcx7QR5aYOtsOuixVK+TD
- mYikWO76OVe3Oi3ysdUDaDTcjLMqhU9KmpM5CuEVpYZ/tQAOqtj97W5LpnvGc5asGhXHFpZStX
- 7x8=
-X-IronPort-AV: E=Sophos;i="5.72,410,1580770800"; 
-   d="scan'208";a="7641338"
-Subject: Re: [PATCH 1/2] i2c: slave-eeprom: initialize empty eeprom properly
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Patrick Williams <patrick@stwcx.xyz>
-CC:     =?UTF-8?B?QmrDtnJuIEFyZMO2?= <bjornar@axis.com>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20191001164009.21610-1-alpawi@amazon.com>
- <150599be-9125-4ab9-e2a6-e792b41910e6@axis.com>
- <20200420164349.GD3721@ninjato>
- <20200420203146.GC95151@heinlein.lan.stwcx.xyz>
- <20200420205325.GA1693@ninjato>
-From:   Bjorn Ardo <bjorn.ardo@axis.com>
-Message-ID: <adb03545-88db-689c-dbf7-9f746236adb4@axis.com>
-Date:   Tue, 21 Apr 2020 14:03:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tJsRBBfwvyySoCiHEGj9Gv9Mk2bvYvkWIPinytPXa3Y=;
+        b=WlUJRnWbR+q2LFhRFuyhK7j7dqEZmdCCYRe5yPYPArU2SeYgB0nu6FICi3B0IjbHTE
+         im5NS4z2Y5neElktEpaeT48d6SxzUt5AswpZh3XuNLp4Pv61t1vzRL1KBKBO4cWPihH/
+         OtI/66WFxpXnjI4FQTxZwBkT20H8Yz5ijGhLbETmKlyOZATyLeJeL/nzY0t1ZYQiNYpu
+         UBrsa0sTT4EX+Xy57Ni6N2iqyYmiTRJpIvddyolCnkqfLLyjyGp2/oTfEGhp+zzPLAgB
+         rEamVAOkomUW8mGLi4jzAg/vLIo5i2lNPP1pAH99n9fXGBSN27la6WCfOZqi2/M+GqlC
+         +fuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tJsRBBfwvyySoCiHEGj9Gv9Mk2bvYvkWIPinytPXa3Y=;
+        b=UWt5rVTppbGQ5CHDxHOMgTU/0aGtjNOPoqnVkI9llbiBpDG8q80S0hoXWpKqQKmB9G
+         164QEY6QtcKxA6KND5aArbFn/rHXaBrvvTgcaSTGBbzQR1kBZtsf0XNq0fVLTmJC3FOG
+         fCzmdTyuzMYzzfPNvJrRitN94jhTIDzGlKkw1mSAuaZZTNe+hA1j5cmGQ5aHVBrrTCFO
+         95YAVOz54PKKLSBpPNsNHJDA50v2c2PuOC1y1JL1KCCaU5ac4vxREdRFyZP9BfTphrbo
+         BISsZRN32La1RpL9SUTgF9hk/0ojXUKY9JxW90jwOjXY/sERSXBnQqrTq6rm3WQJUOtH
+         JwZA==
+X-Gm-Message-State: AGi0Pub6OppEPZzPU+QNWgq4F0jTDl7MQammC3wsMfOuHshjzKK4yGUT
+        uM2xSlq1RQ6fimDUXUkhaGk=
+X-Google-Smtp-Source: APiQypIl6ZzqFTYuqcgjHoyu2LEXlTRD8H2bBnEdjaLWMTBnQbOVFWNLlY49ht8BNLsYC1wSyNOmMQ==
+X-Received: by 2002:a05:651c:2011:: with SMTP id s17mr11097051ljo.242.1587470646215;
+        Tue, 21 Apr 2020 05:04:06 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id m13sm2006576lfk.12.2020.04.21.05.04.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 05:04:05 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 21 Apr 2020 14:03:58 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 5/6] rcu: rename kfree_call_rcu()/__kfree_rcu()
+Message-ID: <20200421120358.GA5117@pc636>
+References: <20200315181840.6966-1-urezki@gmail.com>
+ <20200315181840.6966-6-urezki@gmail.com>
+ <20200316152541.GD190951@google.com>
+ <20200316190144.GB10577@pc636>
+ <20200420201527.679247f6fa76cba4331f3cd3@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20200420205325.GA1693@ninjato>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX02.axis.com (10.0.5.16)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420201527.679247f6fa76cba4331f3cd3@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 10:53 PM, Wolfram Sang wrote:
+Hello, Andrew.
 
-> On Mon, Apr 20, 2020 at 03:31:46PM -0500, Patrick Williams wrote:
->> On Mon, Apr 20, 2020 at 06:43:49PM +0200, Wolfram Sang wrote:
->>> On Wed, Oct 02, 2019 at 08:20:53AM +0200, Bjorn Ardo wrote:
->>>> Hi,
->>>>
->>>>
->>>> I sent in another patch earlier that added support for specifying a file in
->>>> devicetree to initilize the eeprom from, corresponding to the case of
->>>> pre-flashed eeprom. Maybe these two patches should be merged so this
->>>> initialization is only done if no file is specified?
->>> Yes, I agree.
->>>
->> It looks like Bjorn's referenced patches are still unmerged also?
-> Yes, it might be easiest if he merges your patch (with attribution) into
-> the else branch of his fw-load patch.
+> > > I based the kfree_rcu shrinker patches on an 'rcu/kfree' branch in my git
+> > > tree: https://github.com/joelagnel/linux-kernel/tree/rcu/kfree
+> > > 
+> > > For now I manually applied 5/6. All others applied cleanly.
+> > > 
+> > > Updated the tree as I continue to review your patches.
+> > >
+> 
+> I'm not sure what's happening here - these patches aren't yet in
+> linux-next.
+> 
+Please have a look here, i explained in detail in my cover latter
+what we would like to achieve: https://lkml.org/lkml/2020/3/23/242
+
+> A couple of thoughts:
+> 
+> - Please cc linux-mm@kvack.org on this patchset and anything else
+>   which impacts MM.
+> 
+OK. I thought that is related to RCU, therefore i did not want to
+spam, but i included you :) Next time we will keep linux-mm@kvack.org
+in a loop. Sorry for that.
+
 >
+> - It's a bit strange to create new infrastructure which has but a
+>   single call site.  Please tell us much more about "there was also
+>   request/interest so there will be new comers" to set minds at ease. 
+> 
+>   Who/where are these possible new callsites and when can we expect to
+>   see that code?
+> 
+https://lkml.org/lkml/2020/3/23/242 here i wrote motivation. Please
+check it. If you have some questions please ask.
 
-OK, so to summarize, I should update my patch to use 
-device_property_read_string() instead and also init the memory to 0XFF 
-if no file is present. And change name of the function to 
-i2c_slave_init_eeprom_data.
-
-
-I will look into that and let you know once I'm done.
-
-
-/BA
-
+--
+Vlad Rezki
