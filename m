@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89DC1B2253
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4221B225C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgDUJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:07:28 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34601 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgDUJH1 (ORCPT
+        id S1728286AbgDUJJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:09:20 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:20380 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbgDUJJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:07:27 -0400
-Received: by mail-wr1-f65.google.com with SMTP id j1so10137497wrt.1;
-        Tue, 21 Apr 2020 02:07:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e9M3SgY+JXKYkmqckqVYeqrbYWYRHeQQ32itAPSHGxA=;
-        b=KD+O9gPftH4hZsjHZpU5YQq2CVnqp2cb/RyeW7P06uoHwJiK6IBX+GDcP2MKiInDiK
-         BcgjIUWvdzjCRtI14thIzEM2aInA6xH2P338rfwSC0JfRVkgKnYo2nkvpL8DTKaZVzxe
-         5oCIY2Q230T9yEzbmFtiLSUORuFtv62ovJd4yotqLympaClpcIsR084yMpMMLjQ+BP0t
-         w5VEL1wYYjon6oLjxYLo/OYtIhgQ3xb2Vx4gy22c5TlV3ekdth4KQV0KBm0IcTAfzPSH
-         x0/5hje9oFVYW6SduNGe2pTOwvjpfmpVNe4wy1Ysk2S8UZtH89A0iVZArhCgG9JzCfJx
-         jEDQ==
-X-Gm-Message-State: AGi0PuZ6E7vPYKdbf2wSAnZBvx2QvUZqM/fVVLz+eINiwh91hYw+UY1S
-        JtW3cy4ToE7QlCF24cniVqg=
-X-Google-Smtp-Source: APiQypKoPztP+dsq7B7A/Dk7MfawvyuXGNJNQfCISOZ0yeL6dYxTT2lfazmmFGdciTV/sM9J2xZlFw==
-X-Received: by 2002:adf:8149:: with SMTP id 67mr25866316wrm.60.1587460046053;
-        Tue, 21 Apr 2020 02:07:26 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id z8sm2948821wrr.40.2020.04.21.02.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 02:07:25 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 10:07:23 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     bp@alien8.de, haiyangz@microsoft.com, hpa@zytor.com,
-        kys@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        sthemmin@microsoft.com, tglx@linutronix.de, x86@kernel.org,
-        mikelley@microsoft.com, vkuznets@redhat.com, wei.liu@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/hyperv: Suspend/resume the VP assist page for
- hibernation
-Message-ID: <20200421090723.wfv24b54uvft5d4m@debian>
-References: <1587437171-2472-1-git-send-email-decui@microsoft.com>
+        Tue, 21 Apr 2020 05:09:20 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 6EF60282399;
+        Tue, 21 Apr 2020 17:08:44 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AIgApgB6CE0xGrhst8pSe4p3.3.1587460124439.Hmail.bernard@vivo.com>
+To:     Markus.Elfring@web.de
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: =?UTF-8?B?W2FkZCBNYXJrdXMuRWxmcmluZyBpbiBtYWlsIGxpc3RdUmU6W1BBVENIIHYyXSBhbWRncHU6IGZpeGVzIGVycm9yIGJyYW5jaCBub3QgcmV0dXJuIGVycm5vIGlzc3Vl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.122
+In-Reply-To: <1587434874-123252-1-git-send-email-bernard@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587437171-2472-1-git-send-email-decui@microsoft.com>
-User-Agent: NeoMutt/20180716
+Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 21 Apr 2020 17:08:44 +0800 (GMT+08:00)
+From:   =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
+Date:   Tue, 21 Apr 2020 17:08:44 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VKS0pCQkJMTkJNTE9LTFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSEhKSE1LTE1JN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Mhw6Cxw5TTg#SwM8CRMID0MLKB5PC0hVSFVKTkNMT01LSklPTk1KVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBTE9PSDcG
+X-HM-Tid: 0a719bff2f2e9395kuws6ef60282399
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 07:46:11PM -0700, Dexuan Cui wrote:
-> Unlike the other CPUs, CPU0 is never offlined during hibernation, so in the
-> resume path, the "new" kernel's VP assist page is not suspended (i.e. not
-> disabled), and later when we jump to the "old" kernel, the page is not
-> properly re-enabled for CPU0 with the allocated page from the old kernel.
-> 
-> So far, the VP assist page is used by hv_apic_eoi_write(), and is also
-> used in the case of nested virtualization (running KVM atop Hyper-V).
-> 
-> For hv_apic_eoi_write(), when the page is not properly re-enabled,
-> hvp->apic_assist is always 0, so the HV_X64_MSR_EOI MSR is always written.
-> This is not ideal with respect to performance, but Hyper-V can still
-> correctly handle this according to the Hyper-V spec; nevertheless, Linux
-> still must update the Hyper-V hypervisor with the correct VP assist page
-> to prevent Hyper-V from writing to the stale page, which causes guest
-> memory corruption and consequently may have caused the hangs and triple
-> faults seen during non-boot CPUs resume.
-> 
-> Fix the issue by calling hv_cpu_die()/hv_cpu_init() in the syscore ops.
-> Without the fix, hibernation can fail at a rate of 1/300 ~ 1/500.
-> With the fix, hibernation can pass a long-haul test of 2000 runs.
-> 
-> In the case of nested virtualization, disabling/reenabling the assist
-> page upon hibernation may be unsafe if there are active L2 guests.
-> It looks KVM should be enhanced to abort the hibernation request if
-> there is any active L2 guest.
-> 
-> Fixes: 05bd330a7fd8 ("x86/hyperv: Suspend/resume the hypercall page for hibernation")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-
-Applied to hyperv-fixes. Thanks.
+CgpGcm9tOiBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+CkRhdGU6IDIwMjAtMDQtMjEg
+MTA6MDc6NTAKVG86ICBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+LCJD
+aHJpc3RpYW4gS8O2bmlnIiA8Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPiwiRGF2aWQgKENodW5N
+aW5nKSBaaG91IiA8RGF2aWQxLlpob3VAYW1kLmNvbT4sRGF2aWQgQWlybGllIDxhaXJsaWVkQGxp
+bnV4LmllPixEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+LEx5dWRlIFBhdWwgPGx5dWRl
+QHJlZGhhdC5jb20+LFNhbSBSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9yZz4sQmVybmFyZCBaaGFv
+IDxiZXJuYXJkQHZpdm8uY29tPiwiSm9zw6kgUm9iZXJ0byBkZSBTb3V6YSIgPGpvc2Uuc291emFA
+aW50ZWwuY29tPixBbmRyemVqIFBpZXRyYXNpZXdpY3ogPGFuZHJ6ZWoucEBjb2xsYWJvcmEuY29t
+PixhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZyxkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnLGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKQ2M6ICBvcGVuc291cmNlLmtlcm5l
+bEB2aXZvLmNvbQpTdWJqZWN0OiBbUEFUQ0ggdjJdIGFtZGdwdTogZml4ZXMgZXJyb3IgYnJhbmNo
+IG5vdCByZXR1cm4gZXJybm8gaXNzdWU+VGhlICJpZighZW5jb2RlcikiIGJyYW5jaCByZXR1cm4g
+dGhlIHNhbWUgdmFsdWUgMCBvZiB0aGUgc3VjY2Vzcwo+YnJhbmNoLCBtYXliZSByZXR1cm4gLUVJ
+TlZBTCBpcyBtb3JlIGJldHRlci4KPgo+U2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxiZXJu
+YXJkQHZpdm8uY29tPgo+Cj4tLS0KPkNoYW5nZXMgc2luY2UgVjE6Cj4qIGNvbW1pdCBtZXNzYWdl
+IGltcHJvdmUKPi0tLQo+IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9jb25uZWN0
+b3JzLmMgfCAxNCArKysrKysrLS0tLS0tLQo+IDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMo
+KyksIDcgZGVsZXRpb25zKC0pCj4KPmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
+ZGdwdS9hbWRncHVfY29ubmVjdG9ycy5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1k
+Z3B1X2Nvbm5lY3RvcnMuYwo+aW5kZXggZjM1NWQ5YS4uMWY4YzZiNCAxMDA2NDQKPi0tLSBhL2Ry
+aXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9jb25uZWN0b3JzLmMKPisrKyBiL2RyaXZl
+cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9jb25uZWN0b3JzLmMKPkBAIC00NzQsMTIgKzQ3
+NCwxMiBAQCBzdGF0aWMgaW50IGFtZGdwdV9jb25uZWN0b3Jfc2V0X3Byb3BlcnR5KHN0cnVjdCBk
+cm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4gCQkvKiBuZWVkIHRvIGZpbmQgZGlnaXRhbCBlbmNv
+ZGVyIG9uIGNvbm5lY3RvciAqLwo+IAkJZW5jb2RlciA9IGFtZGdwdV9jb25uZWN0b3JfZmluZF9l
+bmNvZGVyKGNvbm5lY3RvciwgRFJNX01PREVfRU5DT0RFUl9UTURTKTsKPiAJCWlmICghZW5jb2Rl
+cikKPi0JCQlyZXR1cm4gMDsKPisJCQlyZXR1cm4gLUVJTlZBTDsKPiAKPiAJCWFtZGdwdV9lbmNv
+ZGVyID0gdG9fYW1kZ3B1X2VuY29kZXIoZW5jb2Rlcik7Cj4gCj4gCQlpZiAoIWFtZGdwdV9lbmNv
+ZGVyLT5lbmNfcHJpdikKPi0JCQlyZXR1cm4gMDsKPisJCQlyZXR1cm4gLUVJTlZBTDsKPiAKPiAJ
+CWRpZyA9IGFtZGdwdV9lbmNvZGVyLT5lbmNfcHJpdjsKPiAJCW5ld19jb2hlcmVudF9tb2RlID0g
+dmFsID8gdHJ1ZSA6IGZhbHNlOwo+QEAgLTQ5NCw3ICs0OTQsNyBAQCBzdGF0aWMgaW50IGFtZGdw
+dV9jb25uZWN0b3Jfc2V0X3Byb3BlcnR5KHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3Is
+Cj4gCQkvKiBuZWVkIHRvIGZpbmQgZGlnaXRhbCBlbmNvZGVyIG9uIGNvbm5lY3RvciAqLwo+IAkJ
+ZW5jb2RlciA9IGFtZGdwdV9jb25uZWN0b3JfZmluZF9lbmNvZGVyKGNvbm5lY3RvciwgRFJNX01P
+REVfRU5DT0RFUl9UTURTKTsKPiAJCWlmICghZW5jb2RlcikKPi0JCQlyZXR1cm4gMDsKPisJCQly
+ZXR1cm4gLUVJTlZBTDsKPiAKPiAJCWFtZGdwdV9lbmNvZGVyID0gdG9fYW1kZ3B1X2VuY29kZXIo
+ZW5jb2Rlcik7Cj4gCj5AQCAtNTA5LDcgKzUwOSw3IEBAIHN0YXRpYyBpbnQgYW1kZ3B1X2Nvbm5l
+Y3Rvcl9zZXRfcHJvcGVydHkoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiAJCS8q
+IG5lZWQgdG8gZmluZCBkaWdpdGFsIGVuY29kZXIgb24gY29ubmVjdG9yICovCj4gCQllbmNvZGVy
+ID0gYW1kZ3B1X2Nvbm5lY3Rvcl9maW5kX2VuY29kZXIoY29ubmVjdG9yLCBEUk1fTU9ERV9FTkNP
+REVSX1RNRFMpOwo+IAkJaWYgKCFlbmNvZGVyKQo+LQkJCXJldHVybiAwOwo+KwkJCXJldHVybiAt
+RUlOVkFMOwo+IAo+IAkJYW1kZ3B1X2VuY29kZXIgPSB0b19hbWRncHVfZW5jb2RlcihlbmNvZGVy
+KTsKPiAKPkBAIC01MjMsNyArNTIzLDcgQEAgc3RhdGljIGludCBhbWRncHVfY29ubmVjdG9yX3Nl
+dF9wcm9wZXJ0eShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+IAkJLyogbmVlZCB0
+byBmaW5kIGRpZ2l0YWwgZW5jb2RlciBvbiBjb25uZWN0b3IgKi8KPiAJCWVuY29kZXIgPSBhbWRn
+cHVfY29ubmVjdG9yX2ZpbmRfZW5jb2Rlcihjb25uZWN0b3IsIERSTV9NT0RFX0VOQ09ERVJfVE1E
+Uyk7Cj4gCQlpZiAoIWVuY29kZXIpCj4tCQkJcmV0dXJuIDA7Cj4rCQkJcmV0dXJuIC1FSU5WQUw7
+Cj4gCj4gCQlhbWRncHVfZW5jb2RlciA9IHRvX2FtZGdwdV9lbmNvZGVyKGVuY29kZXIpOwo+IAo+
+QEAgLTUzNyw3ICs1MzcsNyBAQCBzdGF0aWMgaW50IGFtZGdwdV9jb25uZWN0b3Jfc2V0X3Byb3Bl
+cnR5KHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4gCQkvKiBuZWVkIHRvIGZpbmQg
+ZGlnaXRhbCBlbmNvZGVyIG9uIGNvbm5lY3RvciAqLwo+IAkJZW5jb2RlciA9IGFtZGdwdV9jb25u
+ZWN0b3JfZmluZF9lbmNvZGVyKGNvbm5lY3RvciwgRFJNX01PREVfRU5DT0RFUl9UTURTKTsKPiAJ
+CWlmICghZW5jb2RlcikKPi0JCQlyZXR1cm4gMDsKPisJCQlyZXR1cm4gLUVJTlZBTDsKPiAKPiAJ
+CWFtZGdwdV9lbmNvZGVyID0gdG9fYW1kZ3B1X2VuY29kZXIoZW5jb2Rlcik7Cj4gCj5AQCAtNTUx
+LDcgKzU1MSw3IEBAIHN0YXRpYyBpbnQgYW1kZ3B1X2Nvbm5lY3Rvcl9zZXRfcHJvcGVydHkoc3Ry
+dWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiAJCS8qIG5lZWQgdG8gZmluZCBkaWdpdGFs
+IGVuY29kZXIgb24gY29ubmVjdG9yICovCj4gCQllbmNvZGVyID0gYW1kZ3B1X2Nvbm5lY3Rvcl9m
+aW5kX2VuY29kZXIoY29ubmVjdG9yLCBEUk1fTU9ERV9FTkNPREVSX1RNRFMpOwo+IAkJaWYgKCFl
+bmNvZGVyKQo+LQkJCXJldHVybiAwOwo+KwkJCXJldHVybiAtRUlOVkFMOwo+IAo+IAkJYW1kZ3B1
+X2VuY29kZXIgPSB0b19hbWRncHVfZW5jb2RlcihlbmNvZGVyKTsKPiAKPi0tIAo+Mi43LjQKCj4K
+CmFkZCBNYXJrdXMuRWxmcmluZyBpbiBtYWlsIGxpc3QgClJlZ2FyZHMsCkJlcm5hcmQNCg0K
