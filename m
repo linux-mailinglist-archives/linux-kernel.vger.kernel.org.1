@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FC61B28C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB75B1B2908
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgDUN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:58:25 -0400
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:60611 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728912AbgDUN6W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:58:22 -0400
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id AE924B4ED3;
-        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=H8yh9MEx3hZkv8zIqzP78ok50J4=; b=x/Xbfg
-        vZYvPS8Wqcq7omo/3Yq9OUmbsVLJHa2VNvxQEpouF+afBKVP/4FPIxxpHczJ9OBr
-        p5JCD6YdSsRu7JXgkD0IexgBvEpHL1tDQ4j++ESXOqHrF/QrylAJlUn11BfNxVAo
-        +6z+o19D6AXf3oiqvR26JXHX6i6C4vQlBxzCs=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id A4E23B4ED2;
-        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=S9IEMKuiDJF/j1aD5HeQF9LyanvsJexzTiSbI4WlfDA=; b=HEE7M2YMLncR0Cx0FbMI4zv+qdbUdh5RGzbVr/VnLmFuCcA8EaAt2iu3/wxVYe3x5iiRjNumaZvBT2DnobJkrSrUr08ZTTJfWEoY9E2Qahout6wsZey493C/2R+FjLDszFdsTzb5GgH+F/9kgc+C0d0NI193Ji9twflHDSMWuhc=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 8BB0AB4ECD;
-        Tue, 21 Apr 2020 09:58:15 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 9DA582DA0D15;
-        Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
-Date:   Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-In-Reply-To: <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
-Message-ID: <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr>
-References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com> <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr> <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
- <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 25A4AB2E-83D8-11EA-AC8D-8D86F504CC47-78420484!pb-smtp21.pobox.com
+        id S1728912AbgDUOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:07:38 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48446 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728621AbgDUOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:07:37 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F29C120019A;
+        Tue, 21 Apr 2020 16:07:32 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ACAB6200CE3;
+        Tue, 21 Apr 2020 16:07:27 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 12514402E8;
+        Tue, 21 Apr 2020 22:07:21 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3] dt-bindings: thermal: Convert i.MX8MM to json-schema
+Date:   Tue, 21 Apr 2020 21:59:04 +0800
+Message-Id: <1587477544-20052-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020, Saeed Mahameed wrote:
+Convert the i.MX8MM thermal binding to DT schema format using json-schema
 
-> I wonder how many of those 8889 cases wanted a weak dependency but
-> couldn't figure out how to do it ? 
-> 
-> Users of depends on FOO || !FOO
-> 
-> $ git ls-files | grep Kconfig | xargs grep -E \
->   "depends\s+on\s+([A-Za-z0-9_]+)\s*\|\|\s*(\!\s*\1|\1\s*=\s*n)" \
->  | wc -l
-> 
-> 156
-> 
-> a new keyword is required :) .. 
-> 
-> 
-> > In another mail I suggested
-> > 
-> > 	optionally depends on FOO
-> > 
-> > might be a better alternative than "uses".
-> > 
-> > 
-> 
-> how about just:
->       optional FOO
-> 
-> It is clear and easy to document .. 
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- drop unnecessary description for reg/clocks;
+	- improve compatible;
+	- use thermal-sensor as node name.
+---
+ .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
+ .../bindings/thermal/imx8mm-thermal.yaml           | 58 ++++++++++++++++++++++
+ 2 files changed, 58 insertions(+), 15 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+ create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
 
-I don't dispute your argument for having a new keyword. But the most 
-difficult part as Arnd said is to find it. You cannot pretend that 
-"optional FOO" is clear when it actually imposes a restriction when 
-FOO=m. Try to justify to people why they cannot select y because of this 
-"optional" thing.
+diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+deleted file mode 100644
+index 3629d3c..0000000
+--- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
+-
+-Required properties:
+-- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
+-- reg : Address range of TMU registers.
+-- clocks : TMU's clock source.
+-- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
+-
+-Example:
+-tmu: tmu@30260000 {
+-	compatible = "fsl,imx8mm-tmu";
+-	reg = <0x30260000 0x10000>;
+-	clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
+-	#thermal-sensor-cells = <0>;
+-};
+diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+new file mode 100644
+index 0000000..3885287
+--- /dev/null
++++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX8M Mini Thermal Binding
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++description: |
++  i.MX8MM has TMU IP to allow temperature measurement, there are
++  currently two distinct major versions of the IP that is supported
++  by a single driver. The IP versions are named v1 and v2, v1 is
++  for i.MX8MM which has ONLY 1 sensor, v2 is for i.MX8MP which has
++  2 sensors.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx8mm-tmu
++      - fsl,imx8mp-tmu
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  "#thermal-sensor-cells":
++    description: |
++      Number of cells required to uniquely identify the thermal
++      sensors, 0 for ONLY one sensor and 1 for multiple sensors.
++    enum:
++      - 0
++      - 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#thermal-sensor-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mm-clock.h>
++
++    thermal-sensor@30260000 {
++         compatible = "fsl,imx8mm-tmu";
++         reg = <0x30260000 0x10000>;
++         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
++         #thermal-sensor-cells = <0>;
++    };
++
++...
+-- 
+2.7.4
 
-
-Nicolas
