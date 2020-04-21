@@ -2,53 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313961B2456
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25AA1B2452
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgDUKuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 06:50:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53427 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgDUKuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 06:50:52 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jQqU1-0003mW-0u; Tue, 21 Apr 2020 10:50:29 +0000
-Date:   Tue, 21 Apr 2020 12:50:28 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Christof Meerwald <cmeerw@cmeerw.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remove the no longer needed pid_alive() check in
- __task_pid_nr_ns()
-Message-ID: <20200421105028.fihn4kczt6pqzfdr@wittgenstein>
-References: <20200419201336.GI22017@edge.cmeerw.net>
- <87sggyytnh.fsf@x220.int.ebiederm.org>
- <20200421090426.GA6787@redhat.com>
- <20200421101904.GA9358@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200421101904.GA9358@redhat.com>
+        id S1728551AbgDUKuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 06:50:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:22649 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 06:50:08 -0400
+IronPort-SDR: M8ZTgGBgXTFksXJ5Ea/enRGo4QNXyQHcv7+aWlOoYnzGpmU8OXoQ7yxfQxWW08ZUaHBrlqgR1d
+ 52RMrSCAmK0w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 03:50:08 -0700
+IronPort-SDR: EpLoADLNLOZJ34MWRJ0XztU/gOyHxH7gYbBvA5VTY4oREl1mxYoiWzawQA9lv8QxEAZIROBSNE
+ C5HNJSP7Zsqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
+   d="scan'208";a="247146022"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Apr 2020 03:50:05 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Ben Segall <bsegall@google.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH 1/2][v3] sched: Make newidle_balance() static again
+Date:   Tue, 21 Apr 2020 18:50:34 +0800
+Message-Id: <83cd3030b031ca5d646cd5e225be10e7a0fdd8f5.1587464698.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1587464698.git.yu.c.chen@intel.com>
+References: <cover.1587464698.git.yu.c.chen@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 12:19:04PM +0200, Oleg Nesterov wrote:
-> Starting from 2c4704756cab ("pids: Move the pgrp and session pid pointers
-> from task_struct to signal_struct") __task_pid_nr_ns() doesn't dereference
-> task->group_leader, we can remove the pid_alive() check.
-> 
-> pid_nr_ns() has to check pid != NULL anyway, pid_alive() just adds the
-> unnecessary confusion.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
+After Commit 6e2df0581f56 ("sched: Fix pick_next_task() vs 'change'
+pattern race"), there is no need to expose newidle_balance() as it
+is only used within fair.c file. Change this function back to static again.
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+No functional change.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+v2: Rename the remaining idle_balance() to newidle_balance()
+    to fix an compile error when CONFIG_SMP is not set.
+v3: Unchanged.
+---
+ kernel/sched/fair.c  | 6 ++++--
+ kernel/sched/sched.h | 4 ----
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 02f323b85b6d..cca5c9b7b5ae 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3873,6 +3873,8 @@ static inline unsigned long cfs_rq_load_avg(struct cfs_rq *cfs_rq)
+ 	return cfs_rq->avg.load_avg;
+ }
+ 
++static int newidle_balance(struct rq *this_rq, struct rq_flags *rf);
++
+ static inline unsigned long task_util(struct task_struct *p)
+ {
+ 	return READ_ONCE(p->se.avg.util_avg);
+@@ -4054,7 +4056,7 @@ attach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se) {}
+ static inline void
+ detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se) {}
+ 
+-static inline int idle_balance(struct rq *rq, struct rq_flags *rf)
++static inline int newidle_balance(struct rq *rq, struct rq_flags *rf)
+ {
+ 	return 0;
+ }
+@@ -10425,7 +10427,7 @@ static inline void nohz_newidle_balance(struct rq *this_rq) { }
+  *     0 - failed, no new tasks
+  *   > 0 - success, new (fair) tasks present
+  */
+-int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
++static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ {
+ 	unsigned long next_balance = jiffies + HZ;
+ 	int this_cpu = this_rq->cpu;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index db3a57675ccf..be83f88495fb 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1504,14 +1504,10 @@ static inline void unregister_sched_domain_sysctl(void)
+ }
+ #endif
+ 
+-extern int newidle_balance(struct rq *this_rq, struct rq_flags *rf);
+-
+ #else
+ 
+ static inline void sched_ttwu_pending(void) { }
+ 
+-static inline int newidle_balance(struct rq *this_rq, struct rq_flags *rf) { return 0; }
+-
+ #endif /* CONFIG_SMP */
+ 
+ #include "stats.h"
+-- 
+2.17.1
+
