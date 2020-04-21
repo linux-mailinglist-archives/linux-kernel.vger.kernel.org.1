@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC5F1B31BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764041B31C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgDUVP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:15:56 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56627 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgDUVPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:15:55 -0400
-IronPort-SDR: l7zdTU6JI+5/skH8yRDJzyY1J6A6LaXGnb45/grQ2PCETZVAG0vXbPH19JRZp03wp1TS3rTCYG
- LbIsR2ayMFfQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:15:54 -0700
-IronPort-SDR: ddiadRnywX6gsEymptcBeSspi/JXDa1bXSdHzolWtcLj8QO+Av62LEnLmlRduCvJ9U3MTu+X1n
- pVrCRowtckyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="247279829"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Apr 2020 14:15:53 -0700
-Date:   Tue, 21 Apr 2020 14:15:53 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V9 09/11] fs: Introduce DCACHE_DONTCACHE
-Message-ID: <20200421211553.GC3372712@iweiny-DESK2.sc.intel.com>
-References: <20200421191754.3372370-1-ira.weiny@intel.com>
- <20200421191754.3372370-10-ira.weiny@intel.com>
- <20200421202519.GC6742@magnolia>
+        id S1726504AbgDUVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726151AbgDUVRO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 17:17:14 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BF0C0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:17:14 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id f8so12293487lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b5pLl+D5tNip97GFPQ+tLS3+5WUwZ1zuA/I0ykv4UqE=;
+        b=GJM81lIK3eo2XovGG5vBhA2ndv5S6gnrXVRfHf4R3TiUc6Xb+F0svBJRHZsPsTf6pt
+         pLeWZrS3E/cSwGAou5y0Obvsp5+HTLH6XKr0OaRHcyBdU2Fu9AWeM9V+HkvG7SpPKOjc
+         GbzjIUODzR4GrMODTgAQo56kyr4aXnNKLO40I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b5pLl+D5tNip97GFPQ+tLS3+5WUwZ1zuA/I0ykv4UqE=;
+        b=OCVbhSAfxNjQGO0aNOhtaQJY84l+Kyteriap5NcxtSoiIJ2bXygusPiB5NLuFD2QKk
+         MvVJdk8gYcHs+0xhLlaqi9yQIU6h7IcdCkUqR08tE0ev7Cq2sRVLI6hJRnLErryhRP0S
+         mQ2dumqA8ZMYVKYrrzgvgLmEodBHE8Q2pIM+0sY7wvlrezrFkfBWMdbUtL1n19lcgybs
+         H4pGw3eLWNdDxyskWP5DuJtAKOv6PWWkxEhd8kkfUswH7hdUtzcao+HY/iLb47pt5L25
+         s+qQ3g4sBXBiQPWoKEExbaV4u5IpXJ0II+GkkZh91p+hhg4MeFrA0Ke1vNKniTo6uu5t
+         zmmw==
+X-Gm-Message-State: AGi0PubyB0AG2f+wo60UJ+5Dy5KDqco0/3qtOz6prDJ35v6tRa3Ev56k
+        sGTLB9WMkYSCsy2AosFjpE3LHeg8T2M=
+X-Google-Smtp-Source: APiQypKxvB9U1lkwBawN72OpDFO5sDRnf4kNYSAPhHXR3GM4cTLpsj2W/aNM7dxrI53qyC6jCL/XNA==
+X-Received: by 2002:ac2:4551:: with SMTP id j17mr14837831lfm.147.1587503832347;
+        Tue, 21 Apr 2020 14:17:12 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id j14sm3051252lfm.73.2020.04.21.14.17.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 14:17:11 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id j14so12293073lfg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:17:11 -0700 (PDT)
+X-Received: by 2002:a05:6512:405:: with SMTP id u5mr14628462lfk.192.1587503831120;
+ Tue, 21 Apr 2020 14:17:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421202519.GC6742@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200420190916.GA11695@gmail.com> <CAHk-=wiejBvKnrDysDva=DNFgyX02TZred_JMjzUnjFgVOUtOg@mail.gmail.com>
+ <CAP-5=fVhWREzzjnXH4j+dcnP-GbSMnT_07qVrZM8huAhx6wtVw@mail.gmail.com>
+In-Reply-To: <CAP-5=fVhWREzzjnXH4j+dcnP-GbSMnT_07qVrZM8huAhx6wtVw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 21 Apr 2020 14:16:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wifecOQcL6vbL0uOY68jH4i3nBCksmc+As9hrUm_hjw1Q@mail.gmail.com>
+Message-ID: <CAHk-=wifecOQcL6vbL0uOY68jH4i3nBCksmc+As9hrUm_hjw1Q@mail.gmail.com>
+Subject: Re: [GIT PULL] clang-format for v5.7-rc3
+To:     Ian Rogers <irogers@google.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 01:25:19PM -0700, Darrick J. Wong wrote:
-> On Tue, Apr 21, 2020 at 12:17:51PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > DCACHE_DONTCACHE indicates a dentry should not be cached on final
-> > dput().
-> > 
-> > Also add a helper function to mark DCACHE_DONTCACHE on all dentries
-> > pointing to a specific inode when that inode is being set I_DONTCACHE.
-> > 
-> > This facilitates dropping dentry references to inodes sooner which
-> > require eviction to swap S_DAX mode.
-> > 
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
+On Tue, Apr 21, 2020 at 2:03 PM Ian Rogers <irogers@google.com> wrote:
+>
+> We (Google, Stephane Eranian, ..) have a tool that converts Intel's
+> topdown metrics:
+> https://download.01.org/perfmon/TMA_Metrics.xlsx
+> into the json format used for metrics in perf. It is written in C++
+> and we are planning to upstream it.
 
-[snip]
+Oh, ok.
 
-> > diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> > index de76f7f60695..3c8f44477804 100644
-> > --- a/fs/xfs/xfs_icache.c
-> > +++ b/fs/xfs/xfs_icache.c
-> > @@ -559,7 +559,7 @@ xfs_iget_cache_miss(
-> >  	 */
-> >  	iflags = XFS_INEW;
-> >  	if (flags & XFS_IGET_DONTCACHE)
-> > -		VFS_I(ip)->i_state |= I_DONTCACHE;
-> > +		mark_inode_dontcache(VFS_I(ip));
-> >  	ip->i_udquot = NULL;
-> >  	ip->i_gdquot = NULL;
-> >  	ip->i_pdquot = NULL;
-> > diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> > index c1488cc84fd9..56b1482d9223 100644
-> > --- a/include/linux/dcache.h
-> > +++ b/include/linux/dcache.h
-> > @@ -177,6 +177,8 @@ struct dentry_operations {
-> >  
-> >  #define DCACHE_REFERENCED		0x00000040 /* Recently used, don't discard. */
-> >  
-> > +#define DCACHE_DONTCACHE		0x00000080 /* don't cache on final dput() */
-> 
-> "Purge from memory on final dput()"?
+> There's a little more motivation in the commit message too.
 
-Sounds good to me,
-Ira
+Well, not really. I _did_ check the commit message. It says nothing
+very useful at all, in that the kernel doesn't use C++ (aside from a
+couple of clang tests), so the commit message didn't at all clarify
+why we should care about C++ namespace rules..
 
-> 
-> --D
-> 
+              Linus
