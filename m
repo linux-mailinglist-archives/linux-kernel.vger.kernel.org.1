@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6381B2515
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D889C1B2536
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgDUL2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:28:40 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:34650 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDUL2j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:28:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587468518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fi9gazHfvgbNH4vVnBQ4u/0lTDUCnMDsJilS89wFh+E=;
-        b=hIFpCxzSXNHuWZnaRby4PCOj3cmbz64Xuw9hGnt1b2OfgLykjYw03goNnfmcKWP68Oz6Pc
-        Mfl8HKgFCw3g6dqJODiJ+31ugxcowbfH/j1gO2eDmgF2mWhUsLDLoSCd9bgTqWUPDB8zDB
-        b+JDlmv3cA3xOanteLw64jEQyeAsJag=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-plzc8nxCN7yl48DFpeXF-w-1; Tue, 21 Apr 2020 07:28:35 -0400
-X-MC-Unique: plzc8nxCN7yl48DFpeXF-w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C71D61B18BC0;
-        Tue, 21 Apr 2020 11:28:33 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.130])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7EB6219C58;
-        Tue, 21 Apr 2020 11:28:32 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 21 Apr 2020 13:28:33 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 13:28:31 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Christof Meerwald <cmeerw@cmeerw.org>
-Subject: Re: [PATCH] signal: Avoid corrupting si_pid and si_uid in
- do_notify_parent
-Message-ID: <20200421112831.GD6787@redhat.com>
-References: <20200419201336.GI22017@edge.cmeerw.net>
- <87sggyytnh.fsf@x220.int.ebiederm.org>
- <20200421083031.5wapruzncjkagvhf@wittgenstein>
- <20200421092846.GB6787@redhat.com>
- <20200421102104.6pt34jknxmtu5ygm@wittgenstein>
- <20200421111139.GC6787@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421111139.GC6787@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728690AbgDULhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:37:21 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48992 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728316AbgDULhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:37:20 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D59020044D;
+        Tue, 21 Apr 2020 13:37:18 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 48960200C61;
+        Tue, 21 Apr 2020 13:37:13 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9BD60402A8;
+        Tue, 21 Apr 2020 19:37:06 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, kstewart@linuxfoundation.org, allison@lohutok.net,
+        shengjiu.wang@nxp.com, tglx@linutronix.de, info@metux.net,
+        ckeepax@opensource.wolfsonmicro.com, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: wm8960: Fix wrong clock after suspend & resume
+Date:   Tue, 21 Apr 2020 19:28:45 +0800
+Message-Id: <1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/21, Oleg Nesterov wrote:
->
-> The corner case is release_task() when the last exiting sub-thread sends
-> a signal on behalf of its ->group_leader, and at this point all the tsk's
-> pid pointers are NULL, that is why "force" can be falsely "true".
+After suspend & resume, wm8960_hw_params may be called when
+bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
+is not called. But if sample rate is changed at that time, then
+the output clock rate will be not correct.
 
-Or do_notify_parent() can be called by debugger from the parent namespace,
-in this case "force" can be falsely "true" too.
+So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
+is not necessary and it causes above issue.
 
-Oleg.
+Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/wm8960.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 55112c1bba5e..6cf0f6612bda 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -860,8 +860,7 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	wm8960->is_stream_in_use[tx] = true;
+ 
+-	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_ON &&
+-	    !wm8960->is_stream_in_use[!tx])
++	if (!wm8960->is_stream_in_use[!tx])
+ 		return wm8960_configure_clocking(component);
+ 
+ 	return 0;
+-- 
+2.21.0
 
