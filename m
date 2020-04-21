@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A2C1B2898
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DEC1B289E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgDUNzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S1728817AbgDUN5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726691AbgDUNzh (ORCPT
+        by vger.kernel.org with ESMTP id S1726018AbgDUN5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:55:37 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B449C061A10;
-        Tue, 21 Apr 2020 06:55:37 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id v7so14556472qkc.0;
-        Tue, 21 Apr 2020 06:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JdVf9BN3VBYjlAhO1URHy0+Z7z5xubg6gKNXsMj3SD4=;
-        b=Oa3l8piBEzFzpUodpAlB8sX2rIFN5rCXcXoK/64lBT5B4WYoVSwHlYi34Q5qywt28H
-         cfvMFt9WTY5nAH/3jZaU6gCro5xLxShm8sZTIbJ663fFyYihQBaJ2+KIrIjmiuNvsaZH
-         xLXvGjPvLO80jKeV+hYT8pMCUHQ1ECHN+VH4USRvsCwp7x5nC+1YpdZsFWdg6nteG+wS
-         TPWaFEd1X/gT+pZzFfJPhG/793rk8haj9S21poT71hz4YSMj3z9lCUchhCA0+yE2LAyu
-         +JBhENAXBxxMFHMnxjf4MuOG9FD3Womgna2yC/rHmrY24iXI1lb/8e3XQHAhRKi83BwG
-         D9Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JdVf9BN3VBYjlAhO1URHy0+Z7z5xubg6gKNXsMj3SD4=;
-        b=rPN8vrYPtvaG1PZdBEU07g5ErXvFtkil8SOKvvtKPSW877h/TwNSMqIupkBsgzOmtf
-         /5j1ZujVG3ZUlQrH3YkO9TArb62Am5/lL3R1Bj+vBBNBYDDyrCc5v7ZcouO4hwkoMqC2
-         wczaEbSzdBM4HsN25t6RAiFbEYRAz4QttIiMbsQCwSBgbwOkzwh/WuTmO2yCL16oRxBj
-         hYH3b1ZntMUhTlTebXXu6WzRhGb8p1bf1DSQ7Hki/iU/iGpq8i764PAO98tHVp5V2cNn
-         J55ttZ7pY2xFJhsInl8K3X+1lZQBUNi4JAqQ8xQO+ul4LnA6CMuxbo+klA1ReQT4OXuv
-         u0Ew==
-X-Gm-Message-State: AGi0Pua1MRRxLJjqvyNCKM5Q7y4pljWxlR1w60PXzoeAGY4sn+F+CRNB
-        sC1he2TY7hqE5RUU4oCNTGg=
-X-Google-Smtp-Source: APiQypInKCW27Sksr2RruGrr84Fcf0glvObAa7VP5aoCxArIj1/PHlvxTm9HsNw6U4bBzMxqrk+G7w==
-X-Received: by 2002:a37:b93:: with SMTP id 141mr21368378qkl.192.1587477336425;
-        Tue, 21 Apr 2020 06:55:36 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:6809])
-        by smtp.gmail.com with ESMTPSA id g6sm1774808qtc.52.2020.04.21.06.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 06:55:35 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 09:55:33 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/4] loop: Use worker per cgroup instead of kworker
-Message-ID: <20200421135533.GA9623@dschatzberg-fedora-PC0Y6AEN>
-References: <20200420223936.6773-1-schatzberg.dan@gmail.com>
- <20200421024845.6948-1-hdanton@sina.com>
+        Tue, 21 Apr 2020 09:57:38 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17A6C061A10;
+        Tue, 21 Apr 2020 06:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pp2bG4fEbryHc3bEtGL1LFuRU1cWx4G4+7sc9Othu1I=; b=HTj4tJC67EYOgK0QECIFmCjDq2
+        21F8Clxqw+0cNAw8vb5Ch1Z60ErYNeLv3JvecCZTWpnd/y0UHVf2/x3sptdRiRDuLIPfYArRTq0Rh
+        UTxf5Y9PYN16bjwvebhPSiX36ouWYtDHwYsqcf1YINvEOjhA9GWtEM35IhAus34CYcKHAYy/Z3Srw
+        KTeYWcD8/3tarYix+ekD/Hpx9XbhrqyKDv33lxxl/w/IXk3tjcf7bH/4y6V5NMLLi3+0AQUfmWE5j
+        j43DhsWBA67Taj6/B6+RRXxpok6kqcfE2j73Q5djFQJ/XaWu3UOjgIYazNBPQGQ1szPRYOyyO0iJm
+        p6eMMAWQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQtOA-0000CI-6H; Tue, 21 Apr 2020 13:56:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B31F5300739;
+        Tue, 21 Apr 2020 15:56:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9906D2BAC7931; Tue, 21 Apr 2020 15:56:35 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 15:56:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
+        Steven Rostedt <rostedt@goodmis.org>, bsegall@google.com,
+        mgorman@suse.de, paulmck@kernel.org, tglx@linutronix.de,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@HansenPartnership.com>, deller@gmx.de,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2] sched/core: fix illegal RCU from offline CPUs
+Message-ID: <20200421135635.GT20730@hirez.programming.kicks-ass.net>
+References: <20200401214033.8448-1-cai@lca.pw>
+ <87369mt9kf.fsf@mpe.ellerman.id.au>
+ <BBA124FA-7924-4782-AC9D-7B1B98BE817F@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200421024845.6948-1-hdanton@sina.com>
+In-Reply-To: <BBA124FA-7924-4782-AC9D-7B1B98BE817F@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:48:45AM +0800, Hillf Danton wrote:
-> 
-> On Mon, 20 Apr 2020 18:39:29 -0400 Dan Schatzberg wrote:
-> > 
-> > @@ -1140,8 +1215,17 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
-> >  	blk_mq_freeze_queue(lo->lo_queue);
-> >  
-> >  	spin_lock_irq(&lo->lo_lock);
-> > +	destroy_workqueue(lo->workqueue);
-> 
-> Destruct it out of atomic context.
+On Fri, Apr 17, 2020 at 09:26:56AM -0400, Qian Cai wrote:
 
-I may as well do this, but it doesn't matter, does it? The
-blk_mq_freeze_queue above should drain all I/O so the workqueue will
-be idle.
+> > Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> 
+> Peter, can you take a look at this patch when you have a chance?
+
+Sorry, -ETOOMUCHEMAIL, got it now, thanks!
