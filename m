@@ -2,72 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227D21B2112
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848D91B211E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgDUIGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgDUIGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:06:30 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90F0C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 01:06:29 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g12so2562364wmh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 01:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UFrL7qqq+/w5oEV7z5+bEMvnta8f1PTq2HfSAlQHjL8=;
-        b=VtkzU6Cwz50WlMChHtbCZ4913bjrfUyUNjnE3yWh6V5TSBKuzZljSFJkk3RxkYxQVc
-         YvrDyf9rYaNG3nlR66jq4plgguH+c2MJzLfFIIjOJGP2H3Knj+QGWzfZ1mvWRVdwLGrQ
-         yiKEvmDD8Oxuucw9gMD7Dwj7z567DNF9eONzR99XYIic7TsjdpOaLYQ42H+bPu2rJzqn
-         bzXa1/OFMzjH9YGZ01EXsYLN9YL6MuQx++VDMTjrve039LgcYORJHI5TPa4+CABwQzk+
-         oQ3FT7HVSu5BAI9EHtmBaFE8QCGwiQaY+yQYgVmC7mXf6bMWkXGMIJNvRUz39pntMdNE
-         TWjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UFrL7qqq+/w5oEV7z5+bEMvnta8f1PTq2HfSAlQHjL8=;
-        b=jjmgXVmPASSeJj3e30PI0UvihQVbIhtVnBtZwxHycQhsc1+CHpmjRUwKa2Yrn2nUt6
-         BeAHzGm7Gbyf5HPirklNmleb28bCjYBRMreU2YNGBeEGFAXvdRc83d8/6i/ulNAYKMFl
-         xMAZMA8qwbHQw8XlSnZ5w1wFJGRi0CBCP/lphISsBCpLxXdyjs8Nr/TUx4MzB73gdc9t
-         pCbmBBVX9HVKG0GVqaj49nV1nQmdvjRFUslIhXMpmyQvW+HvFim+xuUhKaAJIowjjrrm
-         t8cf7eOvgNGj3sKcM0dcynhqFVpbBggx8fHXAKKWvuxFTMLFQO0Asv4P1855XBsHsI0q
-         yWrg==
-X-Gm-Message-State: AGi0PuaUF4HPGyTMt/8U0pS+XHby/xt3uQnfj7iPOtOOklopU/xzZh1u
-        jmOgWY5uxw7YwNgIK8NBIQ5z1mhCuIXXatSM+5bj3Q==
-X-Google-Smtp-Source: APiQypIGD5hXn6Rf7B+EmEstKtX9N3KIuecs4//Vu9gR3U1CA0Tmqm0NvBrWK3DB/wLL8CFed6YY5TLu96jSW0TrlQc=
-X-Received: by 2002:a1c:f312:: with SMTP id q18mr3522898wmq.175.1587456388218;
- Tue, 21 Apr 2020 01:06:28 -0700 (PDT)
+        id S1728254AbgDUIJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:09:43 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56568 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727889AbgDUIJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:09:42 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4E462C5A192B1903B93A;
+        Tue, 21 Apr 2020 16:09:35 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 21 Apr 2020 16:09:27 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <gregkh@linuxfoundation.org>, <info@metux.net>,
+        <allison@lohutok.net>, <james.morse@arm.com>, <tglx@linutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH] arm32: fix flushcache syscall with device address
+Date:   Tue, 21 Apr 2020 16:08:34 +0800
+Message-ID: <1587456514-61156-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20200419100848.63472-1-glider@google.com> <20200420153352.6682533e794f591dae7aafbc@linux-foundation.org>
- <202004201540.01C8F82B@keescook>
-In-Reply-To: <202004201540.01C8F82B@keescook>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 21 Apr 2020 10:06:16 +0200
-Message-ID: <CAG_fn=XBn-kKWdoPFhnfOGTXBaMfeziPQJCrgE7KvteSwYLmnA@mail.gmail.com>
-Subject: Re: [PATCH] fs/binfmt_elf.c: allocate initialized memory in fill_thread_core_info()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, sunhaoyl@outlook.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Ewww. That's been there for 12 years. Did something change in
-> regset_size() or regset->get()? Do you know what leaves the hole?
+An issue has been observed on our Kungpeng916 systems when using a PCI
+express GPU. This occurs when a 32 bit application running on a 64 bit
+kernel issues a cache flush operation to a memory address that is in
+a PCI BAR of the GPU.The results in an illegal operation and
+subsequent crash.
 
-I don't think anything changed on the kernel side recently.
-But I've made some changes to DMA handling recently, which made uninit
-writes to the disk discoverable.
-We don't use core dumping on syzbot (because the auto-generated
-programs crash all the time), so it could be a very old bug that was
-triggered in a non-standard setup.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Signed-off-by: Lixin Chen <chenlixin1@huawei.com>
+Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
+---
+ arch/arm64/kernel/sys_compat.c | 69 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+
+diff --git a/arch/arm64/kernel/sys_compat.c b/arch/arm64/kernel/sys_compat.c
+index 3c18c24..6c07944 100644
+--- a/arch/arm64/kernel/sys_compat.c
++++ b/arch/arm64/kernel/sys_compat.c
+@@ -15,12 +15,74 @@
+ #include <linux/slab.h>
+ #include <linux/syscalls.h>
+ #include <linux/uaccess.h>
++#include <linux/hugetlb.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/system_misc.h>
+ #include <asm/tlbflush.h>
+ #include <asm/unistd.h>
+ 
++static long __check_pt_cacheable(unsigned long vaddr)
++{
++	struct mm_struct *mm = current->mm;
++	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
++	pudval_t pudval;
++	pmd_t *pmd;
++	pmdval_t pmdval;
++	pte_t *pte;
++	pteval_t pteval;
++	pgprot_t pgprot;
++
++	spin_lock(&mm->page_table_lock);
++	pgd = pgd_offset(mm, vaddr);
++	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
++		goto no_page;
++
++	p4d = p4d_offset(pgd, vaddr);
++	if (p4d_none(*p4d) || unlikely(p4d_bad(*p4d)))
++		goto no_page;
++
++	pud = pud_offset(p4d, vaddr);
++	if (pud_none(*pud) || unlikely(pud_bad(*pud)))
++		goto no_page;
++	if (pud_huge(*pud)) {
++		pudval = pud_val(*pud);
++		pgprot = __pgprot(pudval);
++		goto out;
++	}
++
++	pmd = pmd_offset(pud, vaddr);
++	if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd)))
++		goto no_page;
++	if (pmd_huge(*pmd)) {
++		pmdval = pmd_val(*pmd);
++		pgprot = __pgprot(pmdval);
++		goto out;
++	}
++
++	pte = pte_offset_map(pmd, vaddr);
++	if (!pte_present(*pte) || pte_none(*pte))
++		goto no_page;
++	pteval = pte_val(*pte);
++	pgprot = __pgprot(pteval);
++
++out:
++	pgprot.pgprot &= PTE_ATTRINDX_MASK;
++	if (pgprot.pgprot != PTE_ATTRINDX(MT_NORMAL)) {
++		pr_debug("non-cache page pgprot value=0x%llx.\n",
++			pgprot.pgprot);
++		goto no_page;
++	}
++	spin_unlock(&mm->page_table_lock);
++	return 1;
++
++no_page:
++	spin_unlock(&mm->page_table_lock);
++	return 0;
++}
++
+ static long
+ __do_compat_cache_op(unsigned long start, unsigned long end)
+ {
+@@ -32,6 +94,13 @@ __do_compat_cache_op(unsigned long start, unsigned long end)
+ 		if (fatal_signal_pending(current))
+ 			return 0;
+ 
++		 /* do not flush page table is non-cacheable */
++		if (!__check_pt_cacheable(start)) {
++			cond_resched();
++			start += chunk;
++			continue;
++		}
++
+ 		if (cpus_have_const_cap(ARM64_WORKAROUND_1542419)) {
+ 			/*
+ 			 * The workaround requires an inner-shareable tlbi.
+-- 
+2.7.4
+
