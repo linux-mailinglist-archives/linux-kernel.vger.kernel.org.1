@@ -2,134 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E3F1B1C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFCC1B1CBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 05:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgDUDXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 23:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728117AbgDUDXd (ORCPT
+        id S1728449AbgDUDZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 23:25:22 -0400
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:63335 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727873AbgDUDZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 23:23:33 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5BAC061A0E;
-        Mon, 20 Apr 2020 20:23:33 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w65so5967225pfc.12;
-        Mon, 20 Apr 2020 20:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hAkHMsgW8GMOATHz1y5uXLHZRbJthuEQUyFwW1zRZQM=;
-        b=VPXUahDC4egr5T5AOQWCcO4zp+GKmqPNumciQBEnRpnZbz9csSEtIbonJvKgNgbNAC
-         /26RtixkoiejDvxn5y5XE+0PoTMvwCzM+pmbIPBX50MKcxzCkABeQbwMpmTIqU5HdcMI
-         tGF2eAq/W2XwbV3etne63aQT4EtjHtPRs+22FyNTB7VBrcIHyAK2U9Fx21ZnojRvl8et
-         0x5FPnq2+1qBC3V8vqgaWUnuT2x3opB1vKKq2uUJAJnUeNWlbi3+BwSyf0NZoPCDV6/P
-         dlilEaFTlMgUR+gMg5gpvz/Jqpc5xCy5e6SvWDnWH9oPCP15vUTRrZdhHq3fBdyX7Ljp
-         noNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hAkHMsgW8GMOATHz1y5uXLHZRbJthuEQUyFwW1zRZQM=;
-        b=FVcikftf/MX7uL23/gVC84jd2B31pQO/CfW3JLgHFeTeqrnVqutbBZ6vicB3jqaq2j
-         R6MqDuAxiGVQzlAPsVztC+48UqIeBPS5DDJVc3bOxsNyp4GMBUZXyY4BYmgwJ5lX4Kvv
-         5v2WbF6wjmhuqdok0KF4j2EOG4gAjTn/XPpAnSXzhMVU9T0M8gyyf36IlG+8iYC5+eib
-         YlworEJLL09eABM1wmonlTqAeMMNtGS5WN4pJaa1Bgpb1b3A0abtvbyXbmawF85tPvBo
-         73QPc0wlTCqonMh53Hix5y2+ajHHUAGLxFoZz3DIfSYPAx5S2XYGUIdFH2hZtBl5j7d4
-         y9Sg==
-X-Gm-Message-State: AGi0PuaRApg566bADF7IU8WX/y4Es+Mz2Mj0HACHtjGjdThQ1a2TrNod
-        jdf4jVll258Fa/aiFurA800=
-X-Google-Smtp-Source: APiQypLhKGgG/jGFDVrWB+3ZbTxFK/mnqBBi4Q7+MoUlz67fb9NBBXaTrapsFcW+jfbqx8p5W2arGw==
-X-Received: by 2002:a63:6d4a:: with SMTP id i71mr19464270pgc.445.1587439412118;
-        Mon, 20 Apr 2020 20:23:32 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f163])
-        by smtp.gmail.com with ESMTPSA id i4sm866747pjg.4.2020.04.20.20.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 20:23:31 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 20:23:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Mao Wenan <maowenan@huawei.com>, "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2] bpf: remove set but not used variable
- 'dst_known'
-Message-ID: <20200421032328.fglmpdmnwnjts375@ast-mbp.dhcp.thefacebook.com>
-References: <8855e82a-88d0-8d1e-e5e0-47e781f9653c@huawei.com>
- <20200418013735.67882-1-maowenan@huawei.com>
- <C7067847-8EDB-49B5-8DDF-C8504BB82962@fb.com>
+        Mon, 20 Apr 2020 23:25:22 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.122])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id D7A90665164;
+        Tue, 21 Apr 2020 11:25:07 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH V2] kmalloc_index optimization(code size & runtime stable)
+Date:   Mon, 20 Apr 2020 20:25:01 -0700
+Message-Id: <20200421032501.127370-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.26.2
+Reply-To: 1587089010-110083-1-git-send-email-bernard@vivo.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <C7067847-8EDB-49B5-8DDF-C8504BB82962@fb.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VPSEhCQkJOSENPSUpNSFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oj46HQw*HjgyKAMZEDMfIxo#
+        LRIKCUNVSlVKTkNMT0hCTkpKSkNKVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSUlZV1kIAVlBTUlOSDcG
+X-HM-Tid: 0a719ac49a499373kuwsd7a90665164
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 06:13:48AM +0000, Song Liu wrote:
-> 
-> 
-> > On Apr 17, 2020, at 6:37 PM, Mao Wenan <maowenan@huawei.com> wrote:
-> > 
-> > Fixes gcc '-Wunused-but-set-variable' warning:
-> > 
-> > kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
-> > set but not used [-Wunused-but-set-variable], delete this
-> > variable.
-> > 
-> > Signed-off-by: Mao Wenan <maowenan@huawei.com>
-> 
-> Acked-by: Song Liu <songliubraving@fb.com>
-> 
-> With one nit below. 
-> 
-> > ---
-> > v2: remove fixes tag in commit log. 
-> > kernel/bpf/verifier.c | 4 +---
-> > 1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 04c6630cc18f..c9f50969a689 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5600,7 +5600,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > {
-> > 	struct bpf_reg_state *regs = cur_regs(env);
-> > 	u8 opcode = BPF_OP(insn->code);
-> > -	bool src_known, dst_known;
-> > +	bool src_known;
-> 
-> This is not a hard rule, but we prefer to keep variable definition in 
-> "reverse Christmas tree" order. Since we are on this function, let's 
-> reorder these definitions to something like:
-> 
->         u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
->         struct bpf_reg_state *regs = cur_regs(env);
->         u8 opcode = BPF_OP(insn->code);
->         u32 dst = insn->dst_reg;
->         s64 smin_val, smax_val;
->         u64 umin_val, umax_val;
->         bool src_known;
->         int ret;
+kmalloc_index inline function code size optimization and runtime
+performance stability optimization. After optimization, the function
+kmalloc_index is more stable, the size will never affecte the function`s
+execution efficiency.
+And follow test data shows that the performance of new optimization
+exceeds the original algorithm when applying for more than 512 Bytes
+(include 512B).And new optimization runtime is more stable than before.
+Test platform:install vmware ubuntu 16.04, ram 2G, cpu 1, i5-8500 3.00GHz
+Compiler: gcc -O2 optimization, gcc version 5.4.0.
+Just test diff code part.
+Follow is detailed test data:
+            size        time/Per 100 million times
+                        old fun		new fun with optimise
+		8	203777		241934
+		16	245611		409278
+		32	236384		408419
+		64	275499		447732
+		128	354909		416439
+		256	360472		406598
+		512	431072		409168
+		1024	463822		407401
+        2 * 1024	548519		407710
+        4 * 1024	623378		422326
+        8 * 1024	655932		407457
+       16 * 1024	744673		417574
+       32 * 1024	824889		415316
+       64 * 1024	854374		408577
+      128 * 1024	968079		433582
+      256 * 1024	985527		412080
+      512 * 1024	1196877		448199
+     1024 * 1024	1310315		448969
+2  * 1024 * 1024	1367441		513117
+4  * 1024 * 1024	1264623		415019
+8  * 1024 * 1024	1255727		417197
+16 * 1024 * 1024	1401431		411087
+32 * 1024 * 1024	1440415		416616
+64 * 1024 * 1024	1428122		417459
 
-I don't want folks to keep re-sorting variables and making patches difficult
-to backport, do git blame, causing bpf vs bpf-next conflicts, etc.
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-reverse xmas tree is not mandatory. It's a style preference.
-I personally do it for new code, but very rarely for fixes.
-And certainly not for this kind of cleanup.
+Changes since V1:
+*i am not sure wht kbuild being triggered?
+*fix kbuild compiler error
 
-Applied. Thanks
+Link for V1:
+*https://lore.kernel.org/patchwork/patch/1226159/
+---
+ include/linux/slab.h | 62 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 38 insertions(+), 24 deletions(-)
+
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 6d454886bcaf..b09785a79465 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -301,6 +301,23 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
+ #define SLAB_OBJ_MIN_SIZE      (KMALLOC_MIN_SIZE < 16 ? \
+                                (KMALLOC_MIN_SIZE) : 16)
+ 
++#ifndef CONFIG_SLOB
++/*
++ * This used to show the relation between size`s last (most-significant)
++ * bit set & index of kmalloc_info[]
++ * If size%2 ==0, then fls - 1, else fls(round up)
++ * size  8(b 1000)-(b 1xxx)-16(b 10000)-(b 1xxxx)-32(b 100000)-(b 1xxxxx)
++ *       |            |          |           |            |           |
++ * index 3            4          4           5            5           6
++ *       64(b 1000000)-(b 1xxxxxx)-128(b 10000000)-(b 1xxxxxxx)-256....
++ *          |           |              |            |            |
++ *          6           7              7            8            8...
++ */
++#define KMALLOC_SIZE_POW_2_SHIFT_BIT (2)
++#define KMALLOC_SIZE_POW_2_INDEX_BIT (1)
++#endif
++
++
+ /*
+  * Whenever changing this, take care of that kmalloc_type() and
+  * create_kmalloc_caches() still work as intended.
+@@ -348,6 +365,7 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+  */
+ static __always_inline unsigned int kmalloc_index(size_t size)
+ {
++	unsigned char high_bit = 0;
+ 	if (!size)
+ 		return 0;
+ 
+@@ -358,30 +376,26 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+ 		return 1;
+ 	if (KMALLOC_MIN_SIZE <= 64 && size > 128 && size <= 192)
+ 		return 2;
+-	if (size <=          8) return 3;
+-	if (size <=         16) return 4;
+-	if (size <=         32) return 5;
+-	if (size <=         64) return 6;
+-	if (size <=        128) return 7;
+-	if (size <=        256) return 8;
+-	if (size <=        512) return 9;
+-	if (size <=       1024) return 10;
+-	if (size <=   2 * 1024) return 11;
+-	if (size <=   4 * 1024) return 12;
+-	if (size <=   8 * 1024) return 13;
+-	if (size <=  16 * 1024) return 14;
+-	if (size <=  32 * 1024) return 15;
+-	if (size <=  64 * 1024) return 16;
+-	if (size <= 128 * 1024) return 17;
+-	if (size <= 256 * 1024) return 18;
+-	if (size <= 512 * 1024) return 19;
+-	if (size <= 1024 * 1024) return 20;
+-	if (size <=  2 * 1024 * 1024) return 21;
+-	if (size <=  4 * 1024 * 1024) return 22;
+-	if (size <=  8 * 1024 * 1024) return 23;
+-	if (size <=  16 * 1024 * 1024) return 24;
+-	if (size <=  32 * 1024 * 1024) return 25;
+-	if (size <=  64 * 1024 * 1024) return 26;
++	if (size <= 8)
++		return 3;
++
++	/* size over KMALLOC_MAX_SIZE should trigger BUG */
++	if (size <= KMALLOC_MAX_SIZE) {
++		/*
++		 * kmalloc_info[index]
++		 * size  8----16----32----64----128---256---512---1024---2048.
++		 *       |  |  |  |  |  |  |  |  |  |  |  |  |  |   |  |   |
++		 * index 3  4  4  5  5  6  6  7  7  8  8  9  9  10  10 11  11
++		 */
++
++		high_bit = fls((int)size);
++
++		if (size == (2 << (high_bit - KMALLOC_SIZE_POW_2_SHIFT_BIT)))
++			return (high_bit - KMALLOC_SIZE_POW_2_INDEX_BIT);
++
++		return high_bit;
++	}
++
+ 	BUG();
+ 
+ 	/* Will never be reached. Needed because the compiler may complain */
+-- 
+2.26.2
+
