@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1EA1B22B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1757E1B22BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgDUJ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
+        id S1728683AbgDUJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728607AbgDUJ1P (ORCPT
+        by vger.kernel.org with ESMTP id S1728606AbgDUJ1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Apr 2020 05:27:15 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A323DC061A41
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D30C061A10
         for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:15 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jQpBG-00082e-IR; Tue, 21 Apr 2020 11:27:02 +0200
+        id 1jQpBH-00083K-Pg; Tue, 21 Apr 2020 11:27:03 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 091101002EE;
-        Tue, 21 Apr 2020 11:27:02 +0200 (CEST)
-Message-Id: <20200421092559.740388137@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 42CC81002EE;
+        Tue, 21 Apr 2020 11:27:03 +0200 (CEST)
+Message-Id: <20200421092559.849801011@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 21 Apr 2020 11:20:37 +0200
+Date:   Tue, 21 Apr 2020 11:20:38 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
@@ -35,7 +35,7 @@ Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
         Thomas Lendacky <Thomas.Lendacky@amd.com>,
         Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [patch V2 10/16] x86/tlb: Move __flush_tlb_all() out of line
+Subject: [patch V2 11/16] x86/tlb: Move paravirt_tlb_remove_table() to the usage site
 References: <20200421092027.591582014@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,104 +48,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduces the number of required exports to one and makes flush_tlb_global()
-static to the TLB code.
+Move it where the only user is.
 
-flush_tlb_local() cannot be confined to the tlb code as the mtrr handling
-requires a PGE-less flush.
-
-Suggested-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-V2: New patch
----
- arch/x86/include/asm/tlbflush.h |   23 +----------------------
- arch/x86/mm/tlb.c               |   29 ++++++++++++++++++++++-------
- 2 files changed, 23 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/tlbflush.h |    5 -----
+ arch/x86/mm/pgtable.c           |    8 ++++++++
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
 --- a/arch/x86/include/asm/tlbflush.h
 +++ b/arch/x86/include/asm/tlbflush.h
-@@ -142,8 +142,8 @@ static inline unsigned long build_cr3_no
+@@ -442,9 +442,4 @@ static inline void arch_tlbbatch_add_mm(
  
- struct flush_tlb_info;
+ extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
  
-+void __flush_tlb_all(void);
- void flush_tlb_local(void);
--void flush_tlb_global(void);
- void flush_tlb_one_user(unsigned long addr);
- void flush_tlb_one_kernel(unsigned long addr);
- void flush_tlb_others(const struct cpumask *cpumask,
-@@ -341,27 +341,6 @@ static inline void cr4_set_bits_and_upda
- 
- extern void initialize_tlbstate_and_flush(void);
- 
--/*
-- * flush everything
-- */
--static inline void __flush_tlb_all(void)
--{
--	/*
--	 * This is to catch users with enabled preemption and the PGE feature
--	 * and don't trigger the warning in __native_flush_tlb().
--	 */
--	VM_WARN_ON_ONCE(preemptible());
+-#ifndef CONFIG_PARAVIRT
+-#define paravirt_tlb_remove_table(tlb, page) \
+-	tlb_remove_page(tlb, (void *)(page))
+-#endif
 -
--	if (boot_cpu_has(X86_FEATURE_PGE)) {
--		flush_tlb_global();
--	} else {
--		/*
--		 * !PGE -> !PCID (setup_pcid()), thus every flush is total.
--		 */
--		flush_tlb_local();
--	}
--}
--
- #define TLB_FLUSH_ALL	-1UL
+ #endif /* _ASM_X86_TLBFLUSH_H */
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -19,6 +19,14 @@ EXPORT_SYMBOL(physical_mask);
+ #define PGTABLE_HIGHMEM 0
+ #endif
  
- /*
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -1018,12 +1018,6 @@ STATIC_NOPV void native_flush_tlb_global
- 	raw_local_irq_restore(flags);
- }
- 
--void flush_tlb_global(void)
--{
--	__flush_tlb_global();
--}
--EXPORT_SYMBOL_GPL(flush_tlb_global);
--
- /*
-  * Flush the entire current user mapping
-  */
-@@ -1046,7 +1040,28 @@ void flush_tlb_local(void)
- {
- 	__flush_tlb_local();
- }
--EXPORT_SYMBOL_GPL(flush_tlb_local);
-+
-+/*
-+ * Flush everything
-+ */
-+void __flush_tlb_all(void)
++#ifndef CONFIG_PARAVIRT
++static inline
++void paravirt_tlb_remove_table(struct mmu_gather *tlb, void *table)
 +{
-+	/*
-+	 * This is to catch users with enabled preemption and the PGE feature
-+	 * and don't trigger the warning in __native_flush_tlb().
-+	 */
-+	VM_WARN_ON_ONCE(preemptible());
-+
-+	if (boot_cpu_has(X86_FEATURE_PGE)) {
-+		__flush_tlb_global();
-+	} else {
-+		/*
-+		 * !PGE -> !PCID (setup_pcid()), thus every flush is total.
-+		 */
-+		flush_tlb_local();
-+	}
++	tlb_remove_page(tlb, table);
 +}
-+EXPORT_SYMBOL_GPL(__flush_tlb_all);
++#endif
++
+ gfp_t __userpte_alloc_gfp = GFP_PGTABLE_USER | PGTABLE_HIGHMEM;
  
- /*
-  * arch_tlbbatch_flush() performs a full TLB flush regardless of the active mm.
+ pgtable_t pte_alloc_one(struct mm_struct *mm)
 
