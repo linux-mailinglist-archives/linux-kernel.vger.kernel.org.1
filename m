@@ -2,148 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F071B2CC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A271B2CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgDUQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:34:46 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:45623 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725990AbgDUQep (ORCPT
+        id S1728597AbgDUQhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:37:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42024 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgDUQhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:34:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587486884; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=z4m4GVLgDXCcfjWyV/ReLcM4EsDo1v6yZUlQduMxtdM=; b=Psghxta/hKx8VA3Uk1odkJpmNC1fTOgrk8pAXpsOkFTq9/+BhkGnP2ib0G5y0QdZR4GpO+IB
- BQeYbZ4VV5aGmf87rSUgqclVCGM3Vlc7vnhylUOSVqcYgbC75xOWsMgmfasr/20tkiDc2FtQ
- 2FcPq3rUvwYb1RMPm7OEtwG4kV0=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9f209a.7f39881cdf48-smtp-out-n01;
- Tue, 21 Apr 2020 16:34:34 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 90CDBC433D2; Tue, 21 Apr 2020 16:34:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFE0EC433CB;
-        Tue, 21 Apr 2020 16:34:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DFE0EC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 21 Apr 2020 10:34:29 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/9] drm/msm/a6xx: gmu_pdc register values for A640 and
- A650
-Message-ID: <20200421163428.GB13825@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200420140313.7263-1-jonathan@marek.ca>
- <20200420140313.7263-8-jonathan@marek.ca>
+        Tue, 21 Apr 2020 12:37:12 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LGYLjh065604;
+        Tue, 21 Apr 2020 16:37:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=sKlZEENumxidy8zW0gTcKPlHQj/gVbQX4p/wtrhNzKM=;
+ b=TDWQTy1BSNU5OzuTPNDh3xuaHFDSwrCafaM8HhwNOqHMe0GD7zQ/IMT7h1dr232yO0zP
+ R/jnTKrRUcv43uvf97yd82N2uAd2kHad9XZWhp+U28Nj3fD1CP3mAFv4TjIa1UUFAyJE
+ 7fMiODhz7G4r7zs/7c57XXfffTKLmANlrHpR2Yag5x5IRW2hVld4YstPHUTpjkSOsIWD
+ nPPjzKwrK14UEkzsp7w2yEm5CAqeRoa2Fva2kFddzMjObUCgGkFvfrDYg5vOle79643e
+ rFOlwe2SUHMaWO/TDF9bZCDMqGWI78GcI2xwD/6Tv9I7ivOsqJlCgv8ynaPCzBlCo6nx mQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30grpgjhtq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 16:37:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LGWFW2031201;
+        Tue, 21 Apr 2020 16:35:04 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30gb1gfevs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 16:35:04 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03LGZ1tI024746;
+        Tue, 21 Apr 2020 16:35:01 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Apr 2020 09:35:00 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] padata: add separate cpuhp node for CPUHP_PADATA_DEAD
+Date:   Tue, 21 Apr 2020 12:34:55 -0400
+Message-Id: <20200421163455.2177998-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420140313.7263-8-jonathan@marek.ca>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=2 spamscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004210127
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=2 bulkscore=0 clxscore=1011
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004210127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 10:03:11AM -0400, Jonathan Marek wrote:
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Removing the pcrypt module triggers this:
 
-I was wondering where this was.  I don't think there is any reason to not squash
-this into the previous patch since the GMU won't be operational without it.
+  general protection fault, probably for non-canonical
+    address 0xdead000000000122
+  CPU: 5 PID: 264 Comm: modprobe Not tainted 5.6.0+ #2
+  Hardware name: QEMU Standard PC
+  RIP: 0010:__cpuhp_state_remove_instance+0xcc/0x120
+  Call Trace:
+   padata_sysfs_release+0x74/0xce
+   kobject_put+0x81/0xd0
+   padata_free+0x12/0x20
+   pcrypt_exit+0x43/0x8ee [pcrypt]
 
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index 3e51939eb867..b583bf6e293b 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -469,10 +469,18 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->  	struct platform_device *pdev = to_platform_device(gmu->dev);
->  	void __iomem *pdcptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc");
->  	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
-> +	uint32_t pdc_address_offset;
->  
->  	if (!pdcptr || !seqptr)
->  		goto err;
->  
-> +	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-> +		pdc_address_offset = 0x30090;
-> +	else if (adreno_is_a650(adreno_gpu))
-> +		pdc_address_offset = 0x300a0;
-> +	else
-> +		pdc_address_offset = 0x30080;
-> +
+padata instances wrongly use the same hlist node for the online and dead
+states, so __padata_free()'s second cpuhp remove call chokes on the node
+that the first poisoned.
 
->  	/* Disable SDE clock gating */
->  	gmu_write_rscc(gmu, REG_A6XX_GPU_RSCC_RSC_STATUS0_DRV0, BIT(24));
->  
-> @@ -523,10 +531,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_DATA + 4, 0x0);
->  
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_MSGID + 8, 0x10108);
-> -	if (adreno_is_a618(adreno_gpu))
-> -		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_ADDR + 8, 0x30090);
-> -	else
-> -		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_ADDR + 8, 0x30080);
-> +	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_ADDR + 8, pdc_address_offset);
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS1_CMD0_DATA + 8, 0x0);
->  
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD_ENABLE_BANK, 7);
-> @@ -538,17 +543,12 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->  
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_MSGID + 4, 0x10108);
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_ADDR + 4, 0x30000);
-> -	if (adreno_is_a618(adreno_gpu))
-> +	if (adreno_is_a618(adreno_gpu) || adreno_is_a650(adreno_gpu))
->  		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_DATA + 4, 0x2);
->  	else
->  		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_DATA + 4, 0x3);
-> -
-> -
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_MSGID + 8, 0x10108);
-> -	if (adreno_is_a618(adreno_gpu))
-> -		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_ADDR + 8, 0x30090);
-> -	else
-> -		pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_ADDR + 8, 0x30080);
-> +	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_ADDR + 8, pdc_address_offset);
->  	pdc_write(pdcptr, REG_A6XX_PDC_GPU_TCS3_CMD0_DATA + 8, 0x3);
->  
->  	/* Setup GPU PDC */
-> -- 
-> 2.26.1
-> 
+cpuhp multi-instance callbacks only walk forward in cpuhp_step->list and
+the same node is linked in both the online and dead lists, so the list
+corruption that results from padata_alloc() adding the node to a second
+list without removing it from the first doesn't cause problems as long
+as no instances are freed.
 
+Avoid the issue by giving each state its own node.
+
+Fixes: 894c9ef9780c ("padata: validate cpumask without removed CPU during offline")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org # v5.4+
+---
+ include/linux/padata.h |  6 ++++--
+ kernel/padata.c        | 14 ++++++++------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/padata.h b/include/linux/padata.h
+index a0d8b41850b2..693cae9bfe66 100644
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -139,7 +139,8 @@ struct padata_shell {
+ /**
+  * struct padata_instance - The overall control structure.
+  *
+- * @node: Used by CPU hotplug.
++ * @cpu_online_node: Linkage for CPU online callback.
++ * @cpu_dead_node: Linkage for CPU offline callback.
+  * @parallel_wq: The workqueue used for parallel work.
+  * @serial_wq: The workqueue used for serial work.
+  * @pslist: List of padata_shell objects attached to this instance.
+@@ -150,7 +151,8 @@ struct padata_shell {
+  * @flags: padata flags.
+  */
+ struct padata_instance {
+-	struct hlist_node		 node;
++	struct hlist_node		cpu_online_node;
++	struct hlist_node		cpu_dead_node;
+ 	struct workqueue_struct		*parallel_wq;
+ 	struct workqueue_struct		*serial_wq;
+ 	struct list_head		pslist;
+diff --git a/kernel/padata.c b/kernel/padata.c
+index a6afa12fb75e..aae789896616 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -703,7 +703,7 @@ static int padata_cpu_online(unsigned int cpu, struct hlist_node *node)
+ 	struct padata_instance *pinst;
+ 	int ret;
+ 
+-	pinst = hlist_entry_safe(node, struct padata_instance, node);
++	pinst = hlist_entry_safe(node, struct padata_instance, cpu_online_node);
+ 	if (!pinst_has_cpu(pinst, cpu))
+ 		return 0;
+ 
+@@ -718,7 +718,7 @@ static int padata_cpu_dead(unsigned int cpu, struct hlist_node *node)
+ 	struct padata_instance *pinst;
+ 	int ret;
+ 
+-	pinst = hlist_entry_safe(node, struct padata_instance, node);
++	pinst = hlist_entry_safe(node, struct padata_instance, cpu_dead_node);
+ 	if (!pinst_has_cpu(pinst, cpu))
+ 		return 0;
+ 
+@@ -734,8 +734,9 @@ static enum cpuhp_state hp_online;
+ static void __padata_free(struct padata_instance *pinst)
+ {
+ #ifdef CONFIG_HOTPLUG_CPU
+-	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD, &pinst->node);
+-	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->node);
++	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD,
++					    &pinst->cpu_dead_node);
++	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->cpu_online_node);
+ #endif
+ 
+ 	WARN_ON(!list_empty(&pinst->pslist));
+@@ -939,9 +940,10 @@ static struct padata_instance *padata_alloc(const char *name,
+ 	mutex_init(&pinst->lock);
+ 
+ #ifdef CONFIG_HOTPLUG_CPU
+-	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online, &pinst->node);
++	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online,
++						    &pinst->cpu_online_node);
+ 	cpuhp_state_add_instance_nocalls_cpuslocked(CPUHP_PADATA_DEAD,
+-						    &pinst->node);
++						    &pinst->cpu_dead_node);
+ #endif
+ 
+ 	put_online_cpus();
+
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.26.0
+
