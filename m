@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626871B2EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927021B2ED3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgDUSKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:10:46 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:44053 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725870AbgDUSKq (ORCPT
+        id S1729306AbgDUSN6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 14:13:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53048 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729083AbgDUSN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:10:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587492645; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=H8EubTh7i79BjoFT6UN3le3v6KCqE0B7/X8zxpL77s8=; b=u6FSFf5yDld8D4LAFE5vDXhFdVL/HUbLVG4XE0eyuUi9Cdu598yTlOai1wCT8q/jvUuaBCCX
- Uwr2bNPF+KUiYKuhsk/qMvepVXxeW6X42DowvXx8cmU4C2lr6RqryutZP3YPTtvgmgHmDUvs
- fmBxH5R+1CECfvXlrCcdMkXS/0s=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9f3712.7fc3727ea420-smtp-out-n03;
- Tue, 21 Apr 2020 18:10:26 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48218C433F2; Tue, 21 Apr 2020 18:10:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Tue, 21 Apr 2020 14:13:56 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-8jo4PPKNN6GUc1SdNnEATA-1; Tue, 21 Apr 2020 14:13:47 -0400
+X-MC-Unique: 8jo4PPKNN6GUc1SdNnEATA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4EDAFC433BA;
-        Tue, 21 Apr 2020 18:10:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4EDAFC433BA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v3 2/2] remoteproc: core: Register the character device interface
-Date:   Tue, 21 Apr 2020 11:10:18 -0700
-Message-Id: <1587492618-15896-3-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1587492618-15896-1-git-send-email-rishabhb@codeaurora.org>
-References: <1587492618-15896-1-git-send-email-rishabhb@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7ED8107ACC4;
+        Tue, 21 Apr 2020 18:13:43 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.196.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8EC6FB3A76;
+        Tue, 21 Apr 2020 18:13:38 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Joe Mario <jmario@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCHv2 0/3] perf tools: Add support for user defined metric
+Date:   Tue, 21 Apr 2020 20:13:33 +0200
+Message-Id: <20200421181337.988681-1-jolsa@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the character device during rproc_add. This would create
-a character device node at /dev/remoteproc<index>. Userspace
-applications can interact with the remote processor using this
-interface.
+hi,
+Joe asked for possibility to add user defined metrics. Given that
+we already have metrics support, I added --metrics-file option that
+allows to specify custom metrics.
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+  $ cat metrics
+  # IPC
+  mine1 = instructions / cycles;
+  /* DECODED_ICACHE_UOPS% */
+  mine2 = 100 * (idq.dsb_uops / \ (idq.ms_uops + idq.mite_uops + idq.dsb_uops + lsd.uops));
+
+  $ sudo perf stat --metrics-file ./metrics -M mine1,mine2 --metric-only -a -I 1000
+  #           time       insn per cycle                mine1                mine2
+       1.000536263                0.71                   0.7                 41.4
+       2.002069025                0.31                   0.3                 14.1
+       3.003427684                0.27                   0.3                 14.8
+       4.004807132                0.25                   0.2                 12.1
+  ...
+
+v2 changes:
+  - add new --metrics-file option
+  - rebased on current perf/core expression bison/flex enhancements
+
+Also available in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/metric
+
+thanks,
+jirka
+
+
 ---
- drivers/remoteproc/remoteproc_core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Jiri Olsa (3):
+      perf expr: Add parsing support for multiple expressions
+      perf expr: Allow comments in custom metric file
+      perf stat: Add --metrics-file option
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 097f33e..76ba171 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1916,6 +1916,13 @@ int rproc_add(struct rproc *rproc)
- 	/* create debugfs entries */
- 	rproc_create_debug_dir(rproc);
- 
-+	/* add char device for this remoteproc */
-+	ret = rproc_char_device_add(rproc);
-+	if (ret) {
-+		dev_err(dev, "Failed to add char dev for %s\n", rproc->name);
-+		return ret;
-+	}
-+
- 	/* if rproc is marked always-on, request it to boot */
- 	if (rproc->auto_boot) {
- 		ret = rproc_trigger_auto_boot(rproc);
-@@ -2137,6 +2144,7 @@ int rproc_del(struct rproc *rproc)
- 	mutex_unlock(&rproc->lock);
- 
- 	rproc_delete_debug_dir(rproc);
-+	rproc_char_device_remove(rproc);
- 
- 	/* the rproc is downref'ed as soon as it's removed from the klist */
- 	mutex_lock(&rproc_list_mutex);
-@@ -2220,6 +2228,7 @@ static int __init remoteproc_init(void)
- {
- 	rproc_init_sysfs();
- 	rproc_init_debugfs();
-+	rproc_init_cdev();
- 
- 	return 0;
- }
-@@ -2231,6 +2240,7 @@ static void __exit remoteproc_exit(void)
- 
- 	rproc_exit_debugfs();
- 	rproc_exit_sysfs();
-+	rproc_exit_cdev();
- }
- module_exit(remoteproc_exit);
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+ tools/perf/Documentation/perf-stat.txt |  3 +++
+ tools/perf/builtin-stat.c              |  7 +++++--
+ tools/perf/tests/expr.c                | 13 +++++++++++++
+ tools/perf/util/expr.c                 |  6 ++++++
+ tools/perf/util/expr.h                 | 19 +++++++++++++++++--
+ tools/perf/util/expr.l                 | 24 ++++++++++++++++++++++++
+ tools/perf/util/expr.y                 | 13 ++++++++++++-
+ tools/perf/util/metricgroup.c          | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ tools/perf/util/metricgroup.h          |  3 ++-
+ tools/perf/util/stat.h                 |  1 +
+ 10 files changed, 142 insertions(+), 13 deletions(-)
+
