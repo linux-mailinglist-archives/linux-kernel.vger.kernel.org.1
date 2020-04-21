@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A431B29C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D611B29F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbgDUOb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:31:26 -0400
-Received: from mail-am6eur05on2051.outbound.protection.outlook.com ([40.107.22.51]:25440
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S1729372AbgDUOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:33:30 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33942 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729206AbgDUObX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:31:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jTz2YPm6VYDbR/HdLyGcoWC7R3fn6whXZMZ+q1bVVbt8IwCCYdtryvGxndncQb+8ElpulF6M7zyDlQ3PUzWOb69gxGQgkxZlYqAjg6/mTIbQcj70OjgD1CHmMrQjL6Nssi1CgstIy5/qCxf1OR4+x9274YrArxaMh01V+l4xuVIcZAf80BOb7cLjYHOrR5J/fFycy3Moi2BIqr3nMxrCQZ/tUF0BELhk5MJoGVeV/dC/17SyWzQffvB3fX+1pYcFX7gsOYqWV1OH+vjomJ4KA7BZAP5flf82ygI2o/dajX5auKgL3PtOhz2PT3OUVrzLqKF/swRWaHdiBWTXpz/uBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EU13+WUaDHSv9p7Nw+Nxw0lh+DgYNdcrNFHJ/qMmWhw=;
- b=I55nzw2KNrcyUB7iPYJtlmvFWXec0I9Vz+BCc83lydlr9Va/kv1TvZpxd3zIvNiCjW+Y99oEBB5jdj/m/WPcbnUjhyhvhc08YPv0fMhQBYgraxtjmZGMdl+IBvE9wAktSBQr3wCSJnQykcFT2GSagCuHdHbIaCwoYKYo6qzOdUJFUmcsphtnmKJNimmSRyN3WgnZl0P0626boil1vSQa+XwxPIBT8KPnU5Ym4GlMdC9qrlg6Ua1Y8SXL40VdWEG0NeaCiePjXatiu4jWQglcSbA4CRxSC5m4KLFR+cmdrnFPNWNibLfsxVQsqubqMMPTl1MLWSkqXXAFujahv4mZvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EU13+WUaDHSv9p7Nw+Nxw0lh+DgYNdcrNFHJ/qMmWhw=;
- b=iLB7Qk01aqjSR8LdgnBCj7kFvQX7LwzBCaSQlLsIDe1tFr09UyPWIaHL6pa3H+UYLaoF7cXVzARje2GTmTABVM59V9m6mbE0mWYAtEd7zl6HgCi3CObot6UR+FN51PEaaOHPX3C7MeU7+XLdVV8TO3pS+szQ98OQjHuZSPMBwJQ=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3691.eurprd04.prod.outlook.com (2603:10a6:8:5::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
- 2020 14:31:17 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::3143:c46:62e4:8a8b]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::3143:c46:62e4:8a8b%7]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
- 14:31:17 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "amit.kucheria@verdurent.com" <amit.kucheria@verdurent.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V2] dt-bindings: thermal: Convert i.MX to json-schema
-Thread-Topic: [PATCH V2] dt-bindings: thermal: Convert i.MX to json-schema
-Thread-Index: AQHWDtWuHhuFKGSv1ECuhQdSmjVzK6iCZy4AgAFNxdA=
-Date:   Tue, 21 Apr 2020 14:31:17 +0000
-Message-ID: <DB3PR0402MB3916B60832507A72F39750EAF5D50@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1586480844-19227-1-git-send-email-Anson.Huang@nxp.com>
- <20200420183512.GA5483@bogus>
-In-Reply-To: <20200420183512.GA5483@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=anson.huang@nxp.com; 
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 75e0848e-9930-4c6d-339d-08d7e600a749
-x-ms-traffictypediagnostic: DB3PR0402MB3691:|DB3PR0402MB3691:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB36912FDBFFC18F7789BFC55BF5D50@DB3PR0402MB3691.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1850;
-x-forefront-prvs: 038002787A
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(366004)(186003)(9686003)(6506007)(86362001)(54906003)(7416002)(8676002)(4326008)(81156014)(26005)(71200400001)(7696005)(55016002)(64756008)(66476007)(66946007)(66446008)(66556008)(33656002)(52536014)(8936002)(76116006)(44832011)(6916009)(2906002)(498600001)(5660300002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eNx4v3QJzjTy8OndEy1RfW1XVrhEnqaRKW9vNETLm80zgl8e2t1Fk/b2eOFJATClWyBKf4Z5V7GuJFTpMoFAdTrluqWNh+h8CagKor9bXgSm5FbLKwNOaspwK+jB4Iggu6IvLonp+x3+mgx7tJpYUom+znzK1B4UA+8yLIxsvzz7dZk747qVmkq/nWONqLC5kAMaYq+g1QKguZbbHdZo50PJDVXuPhQsPV/YAsE4t+fntxR3rZHpHT/8CZfGs4ld84Pp7ZY1NkMMdBM0YACkJjGr4mZusq9N4PLd2aoz1QDdx/hns4kVJKHS/xRkgXA0zMDalikPhclMKl+5bAR77zzmtWpcqsfODCnUbUcRLPP00cyFKjzd8VMJk8eNoCz8gjnuo6ABJROB88dUrCzs2KPW7MH4VNw5hmGxJMG91AvKkzgWuEodVOeJ7I39aFXe
-x-ms-exchange-antispam-messagedata: 69Azka5k0n2Z7/ScLT4sKSg6/89XFnXYjriTCSnKXfeEaQucdOdS1OUq3ai2dGSK728McBV9G+ZO8mCrRAFt8+EYjx13L6JRO6ullyXYwuRjAV1ninpaZ0PImVE4mfK++m8cPwUcJaPdRNC2u2rGwIrsHMjKPxN9h3P1xah2d4LjGxDkwhEnFTD2Hjh3vcMiP8Zr/DyEdJzEdH3inHaZwSbDN5pAYe9bnVzml16pJHq5V7dTTNE1zS7LoXaBtrHEJmICO8jzyvWc/pNiVdRrdbfQu10Qs0s2FrdOBLUVyAsAP1eBZAcfay/mofDvj83PHbpslxAlK70LanR44VyGdStDCkz8KCT/uuVHbvIPSyr8m7XZIxRomDCFwXWFKEAHuepEzkii65FiF8rA+YnA7nyM7VFZNi1djpjXdUNhotj9Z6Qy8WYX5smh6OugdEfD0fYY9dHpB0844wgMNqgYpSAMsP7lhQtHEuqAq52BGBKaZ+9jg/S9Q/BTs/3HsuYM6WOdfgG+HJ3517bQfDVSAqWnJd+adgM19nMM1kgfe3oeqfcmuDmPTcRBF93bGEsjyuxuh7O8xPyEThNpbQnQ0+c67LqAGNOz32yf+IUr5jQTT+LeT9Xda37rvFRcFFbMvybjdjQlUWsS8dWhKP5Puzm/A2h6FoekYK3YkFtxawU0nqZwGLfaxnDkEeE5LaiX+nBIZFW4Mm2ZJwCNxl4ntjrhLVrb9Tnbkm2BJ3p/iYl5pi3VcA1KyJhhrKfXLuAPVDWXChwoS8/WnB4/wFPTlnez8rASQamMUQF8R6dQ6mk=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729174AbgDUOd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:33:28 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 36298267342B093BC7CE;
+        Tue, 21 Apr 2020 22:33:21 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 21 Apr 2020
+ 22:33:11 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <steffen.klassert@secunet.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lucien.xin@gmail.com>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] xfrm: policy: Only use mark as policy lookup key
+Date:   Tue, 21 Apr 2020 22:31:49 +0800
+Message-ID: <20200421143149.45108-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75e0848e-9930-4c6d-339d-08d7e600a749
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2020 14:31:17.5716
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lgm0UrLLbkXpnleBqWuTzfo5VXLHwSzEtVhoGPI+YuAviOI8OsZ/bwn3chNaEyLViIIGfHG2mvdJyfr4cxVczQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3691
+Content-Type: text/plain
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rob
+While update xfrm policy as follow:
 
+ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+ priority 1 mark 0 mask 0x10
+ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+ priority 2 mark 0 mask 0x00
+ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+ priority 2 mark 0 mask 0x10
 
-> Subject: Re: [PATCH V2] dt-bindings: thermal: Convert i.MX to json-schema
->=20
-> On Fri, Apr 10, 2020 at 09:07:24AM +0800, Anson Huang wrote:
-> > Convert the i.MX thermal binding to DT schema format using json-schema
-> >
-> > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> > ---
-> > Changes since V1:
-> > 	- make clock property optional.
-> > ---
-> >  .../devicetree/bindings/thermal/imx-thermal.txt    | 61 --------------
-> >  .../devicetree/bindings/thermal/imx-thermal.yaml   | 96
-> ++++++++++++++++++++++
-> >  2 files changed, 96 insertions(+), 61 deletions(-)  delete mode
-> > 100644 Documentation/devicetree/bindings/thermal/imx-thermal.txt
-> >  create mode 100644
-> > Documentation/devicetree/bindings/thermal/imx-thermal.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/thermal/imx-thermal.txt
-> > b/Documentation/devicetree/bindings/thermal/imx-thermal.txt
-> > deleted file mode 100644
-> > index 823e417..0000000
-> > +
-> > +title: NXP i.MX Thermal Binding
-> > +
-> > +maintainers:
-> > +  - Anson Huang <Anson.Huang@nxp.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - enum:
-> > +              - fsl,imx6q-tempmon
-> > +              - fsl,imx6sx-tempmon
-> > +              - fsl,imx7d-tempmon
-> > +
-> > +  interrupts:
-> > +    description: |
-> > +      The interrupt output of the controller, the IRQ will be triggere=
-d
-> > +      when temperature is higher than high threshold.
-> > +    maxItems: 1
-> > +
-> > +  nvmem-cells:
-> > +    description: |
-> > +      Phandle to the calibration cells provided by ocotp for calibrati=
-on
-> > +      data and temperature grade.
-> > +    maxItems: 2
-> > +
-> > +  nvmem-cell-names:
-> > +    maxItems: 2
-> > +    items:
-> > +      - const: calib
-> > +      - const: temp_grade
-> > +
-> > +  fsl,tempmon:
-> > +    $ref: '/schemas/types.yaml#/definitions/phandle'
-> > +    description: |
-> > +      Phandle pointer to system controller that contains TEMPMON
-> control
-> > +      registers, e.g. ANATOP on imx6q.
->=20
-> Really, this should have been a child of the system controller. Not too l=
-ate to
-> do that, but you'd need to keep this for compatibility.
+We get this warning:
 
-Sorry, I don't quite get your point, can you provide more details or exampl=
-e, thanks.
+WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
+Call Trace:
+RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
+ xfrm_policy_inexact_insert+0x70/0x330
+ xfrm_policy_insert+0x1df/0x250
+ xfrm_add_policy+0xcc/0x190 [xfrm_user]
+ xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
+ netlink_rcv_skb+0x4c/0x120
+ xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
+ netlink_unicast+0x1b3/0x270
+ netlink_sendmsg+0x350/0x470
+ sock_sendmsg+0x4f/0x60
 
-Anson
+Policy C and policy A has the same mark.v and mark.m, so policy A is
+matched in first round lookup while updating C. However policy C and
+policy B has same mark and priority, which also leads to matched. So
+the WARN_ON is triggered.
+
+xfrm policy lookup should only be matched when the found policy has the
+same lookup keys (mark.v & mark.m) no matter priority.
+
+Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/xfrm/xfrm_policy.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index 297b2fd..67d0469 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
+ static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+ 				   struct xfrm_policy *pol)
+ {
+-	u32 mark = policy->mark.v & policy->mark.m;
+-
+-	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+-		return true;
+-
+-	if ((mark & pol->mark.m) == pol->mark.v &&
+-	    policy->priority == pol->priority)
++	if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m))
+ 		return true;
+ 
+ 	return false;
+@@ -1628,7 +1622,7 @@ int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl)
+ 	hlist_for_each_entry(pol, chain, bydst) {
+ 		if (pol->type == type &&
+ 		    pol->if_id == if_id &&
+-		    (mark & pol->mark.m) == pol->mark.v &&
++		    mark == (pol->mark.m & pol->mark.v) &&
+ 		    !selector_cmp(sel, &pol->selector) &&
+ 		    xfrm_sec_ctx_match(ctx, pol->security))
+ 			return pol;
+@@ -1726,7 +1720,7 @@ struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id,
+ 	hlist_for_each_entry(pol, chain, byidx) {
+ 		if (pol->type == type && pol->index == id &&
+ 		    pol->if_id == if_id &&
+-		    (mark & pol->mark.m) == pol->mark.v) {
++		    mark == (pol->mark.m & pol->mark.v)) {
+ 			xfrm_pol_hold(pol);
+ 			if (delete) {
+ 				*err = security_xfrm_policy_delete(
+@@ -1898,7 +1892,7 @@ static int xfrm_policy_match(const struct xfrm_policy *pol,
+ 
+ 	if (pol->family != family ||
+ 	    pol->if_id != if_id ||
+-	    (fl->flowi_mark & pol->mark.m) != pol->mark.v ||
++	    fl->flowi_mark != (pol->mark.m & pol->mark.v) ||
+ 	    pol->type != type)
+ 		return ret;
+ 
+@@ -2177,7 +2171,7 @@ static struct xfrm_policy *xfrm_sk_policy_lookup(const struct sock *sk, int dir,
+ 
+ 		match = xfrm_selector_match(&pol->selector, fl, family);
+ 		if (match) {
+-			if ((sk->sk_mark & pol->mark.m) != pol->mark.v ||
++			if (sk->sk_mark != (pol->mark.m & pol->mark.v) ||
+ 			    pol->if_id != if_id) {
+ 				pol = NULL;
+ 				goto out;
+-- 
+1.8.3.1
+
 
