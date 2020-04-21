@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A941B2796
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA83D1B2794
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbgDUNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:22:57 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57903 "EHLO
+        id S1728896AbgDUNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:22:49 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57891 "EHLO
         www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgDUNWu (ORCPT
+        with ESMTP id S1728651AbgDUNWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:22:50 -0400
+        Tue, 21 Apr 2020 09:22:49 -0400
 Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03LDLBNY043494;
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03LDLBYp043501;
         Tue, 21 Apr 2020 22:21:11 +0900 (JST)
         (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from www262.sakura.ne.jp (202.181.97.72)
@@ -22,7 +22,7 @@ Received: from www262.sakura.ne.jp (202.181.97.72)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
 Received: from ccsecurity.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
         (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03LDL6O7043463
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03LDL6O8043463
         (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
         Tue, 21 Apr 2020 22:21:11 +0900 (JST)
         (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
@@ -42,97 +42,83 @@ Cc:     Matthew Garrett <mjg59@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>, syzkaller@googlegroups.com,
         Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v4 1/3] Add kernel config option for twisting kernel behavior.
-Date:   Tue, 21 Apr 2020 22:19:49 +0900
-Message-Id: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v4 2/3] twist: Allow disabling k_spec() function in drivers/tty/vt/keyboard.c
+Date:   Tue, 21 Apr 2020 22:19:50 +0900
+Message-Id: <20200421131951.4948-2-penguin-kernel@I-love.SAKURA.ne.jp>
 X-Mailer: git-send-email 2.18.2
+In-Reply-To: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
+References: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing kernel config options are defined based on "whether you want to
-enable this module/feature or not". And such granularity is sometimes
-too rough-grained for fuzzing tools which try to find bugs inside each
-module/feature.
+syzbot is reporting unexpected kernel reboots [1]. This seems to be
+caused by triggering Ctrl-Alt-Del event via k_spec() function in
+drivers/tty/vt/keyboard.c file, for the console output includes normal
+restart sequence.
 
-While syzkaller (one of fuzzing tools) is finding many bugs, sometimes
-syzkaller examines stupid operations. Some examples of such operations
-are: changing console loglevel which in turn makes it impossible to get
-kernel messages when a crash happens, freezing filesystems which in turn
-causes khungtaskd to needlessly complain, programmatically sending
-Ctrl-Alt-Del which in turn causes the system to needlessly reboot.
-Currently we prevent syzkaller from examining stupid operations by
-blacklisting syscall arguments and/or disabling whole functionality
-using existing kernel config options. But such approach is difficult to
-maintain and needlessly prevents fuzzers from testing kernel code. [1]
+  [   97.727327][    T1] systemd-shutdown[1]: Unmounting file systems.
+  [   97.734278][    T1] systemd-shutdown[1]: Remounting '/' read-only with options ''.
+  [   97.747758][   T21] usb 2-1: device descriptor read/8, error -71
+  [   97.747850][ T3116] usb 1-1: device descriptor read/8, error -71
+  [   97.764818][    T1] EXT4-fs (sda1): re-mounted. Opts: 
+  [   97.777551][    T1] systemd-shutdown[1]: Remounting '/' read-only with options ''.
+  [   97.785448][    T1] EXT4-fs (sda1): re-mounted. Opts: 
+  [   97.790920][    T1] systemd-shutdown[1]: All filesystems unmounted.
+  [   97.797352][    T1] systemd-shutdown[1]: Deactivating swaps.
+  [   97.803451][    T1] systemd-shutdown[1]: All swaps deactivated.
+  [   97.809626][    T1] systemd-shutdown[1]: Detaching loop devices.
+  [   97.890294][    T1] systemd-shutdown[1]: All loop devices detached.
+  [   98.967832][ T3116] usb 1-1: device descriptor read/8, error -71
+  [  100.108406][    T1] sd 0:0:1:0: [sda] Synchronizing SCSI cache
+  [  100.116036][    T1] reboot: Restarting system
+  [  100.120636][    T1] reboot: machine restart
+  SeaBIOS (version 1.8.2-20200402_173431-google)
+  Total RAM Size = 0x00000001e0000000 = 7680 MiB
+  CPUs found: 2     Max CPUs supported: 2
+  Comparing RSDP and RSDP
 
-We want fuzzers to test as much coverage as possible while we want
-fuzzers not to try stupid operations. To achieve this goal, we want
-cooperation from kernel side, and build-time branching (i.e. kernel
-config options) will be the simplest and the most reliable.
+Therefore, allow disabling only k_spec() function in order to allow
+fuzzers to examine the remaining part in that file.
 
-Therefore, this patch introduces a kernel config option which allows
-selecting fine-grained kernel config options for twisting kernel's
-behavior. Each fine-grained kernel config option will be added by future
-patches. For ease of management, grouping kernel config options for
-allowing e.g. syzkaller to select all fine-grained kernel config options
-which e.g. syzkaller wants would be added by future patches.
-
-[1] https://lkml.kernel.org/r/CACT4Y+a6KExbggs4mg8pvoD554PcDqQNW4sM15X-tc=YONCzYw@mail.gmail.com
+[1] https://syzkaller.appspot.com/bug?id=321861b1588b44d064b779b92293c5d55cfe8430
 
 Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
- lib/Kconfig.debug |  2 ++
- lib/Kconfig.twist | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
- create mode 100644 lib/Kconfig.twist
+ drivers/tty/vt/keyboard.c | 2 ++
+ lib/Kconfig.twist         | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-Changes since v3 ( https://lkml.kernel.org/r/20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp ):
-  Use "twist" instead of "tweak".
-  Add an instance of fine-grained kernel config option as patch 2 of 3.
-  Add a grouping kernel config option for syzkaller as patch 3 of 3.
-
-Changes since v2 ( https://lkml.kernel.org/r/20200307135822.3894-1-penguin-kernel@I-love.SAKURA.ne.jp ):
-  Reduce the role of this kernel config option from "enable everything
-  which would be useful for fuzz testing" to "simply serve as a gate for
-  hiding individual kernel config option", for we should use individual
-  kernel config option for tweaking individual kernel behavior.
-
-Changes since v1 ( https://lkml.kernel.org/r/20191216095955.9886-1-penguin-kernel@I-love.SAKURA.ne.jp ):
-  Drop users of this kernel config option.
-  Update patch description.
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 21d9c5f6e7ec..e6162595ef9d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2225,4 +2225,6 @@ config HYPERV_TESTING
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 15d33fa0c925..f08855c4c5ba 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -633,6 +633,8 @@ static void k_spec(struct vc_data *vc, unsigned char value, char up_flag)
+ 	     kbd->kbdmode == VC_OFF) &&
+ 	     value != KVAL(K_SAK))
+ 		return;		/* SAK is allowed even in raw mode */
++	if (IS_ENABLED(CONFIG_TWIST_DISABLE_KBD_K_SPEC_HANDLER))
++		return;
+ 	fn_handler[value](vc);
+ }
  
- endmenu # "Kernel Testing and Coverage"
- 
-+source "lib/Kconfig.twist"
-+
- endmenu # Kernel hacking
 diff --git a/lib/Kconfig.twist b/lib/Kconfig.twist
-new file mode 100644
-index 000000000000..a5ce0db67f28
---- /dev/null
+index a5ce0db67f28..a1d038bcc2a5 100644
+--- a/lib/Kconfig.twist
 +++ b/lib/Kconfig.twist
-@@ -0,0 +1,13 @@
-+menuconfig TWIST_KERNEL_BEHAVIOR
-+	bool "Twist kernel behavior"
-+	help
-+	  Saying Y here allows modifying kernel behavior via kernel
-+	  config options which will become visible by selecting this
-+	  config option. Since these kernel config options are intended
-+	  for helping e.g. fuzz testing, behavior twisted by this kernel
-+	  option might be unstable. Userspace applications should not
-+	  count on this option being selected.
+@@ -10,4 +10,11 @@ menuconfig TWIST_KERNEL_BEHAVIOR
+ 
+ if TWIST_KERNEL_BEHAVIOR
+ 
++config TWIST_DISABLE_KBD_K_SPEC_HANDLER
++       bool "Disable k_spec() function in drivers/tty/vt/keyboard.c"
++       help
++	 k_spec() function allows triggering e.g. Ctrl-Alt-Del event.
++	 Such event is annoying for fuzz testing which wants to test
++	 kernel code without rebooting the system.
 +
-+if TWIST_KERNEL_BEHAVIOR
-+
-+endif # TWIST_KERNEL_BEHAVIOR
+ endif # TWIST_KERNEL_BEHAVIOR
 -- 
 2.18.2
 
