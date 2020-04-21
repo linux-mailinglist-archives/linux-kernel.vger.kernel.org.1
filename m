@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569201B2E78
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3311B2E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgDURkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:40:20 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:57271 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgDURkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:40:19 -0400
-Received: from hanvin-mobl2.amr.corp.intel.com (jfdmzpr05-ext.jf.intel.com [134.134.139.74])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 03LHd4SZ1367462
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 21 Apr 2020 10:39:05 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 03LHd4SZ1367462
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020032201; t=1587490748;
-        bh=2eEU+EJFQOujIVEE8U93Ltuhe2VZbe2J6MQcshNq8Gc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FRu+zW3aT1xB/O9RhVPpuaCU1a00em4UZGRUXlpI8adUD4oxWt3N3O4gQSAs8ktqX
-         GMSwtqLpOpUyQd7tnA4svUvQNn++7WjDPRDzbPX0iCvp1MTB07sv/vM7ljC7UfIo+5
-         ixGBAYj0t1brz5FO9eL9cICHKXvbiywjDXllHcD+y7iEsxcD73eNW5XpUlysWujhUY
-         thY8dgONC2pH3wDnNTFlBxeSzrJaLF/PbAOpKrNJleFbRpMX+XzWnTRwwaCqy7a0KX
-         UwUd3BqQ8mAWhzckyRBmQJKdsx/8PLZZ/OOaTE2xN0bRv/YbVdsKDZZuZqPg4z0lZ8
-         4tr7BuUBIzp8Q==
-Subject: Re: [PATCH bpf 1/2] bpf, x32: Fix invalid instruction in BPF_LDX
- zero-extension
-To:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Wang YanQing <udknight@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200421171552.28393-1-luke.r.nels@gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <6f1130b3-eaea-cc5e-716f-5d6be77101b9@zytor.com>
-Date:   Tue, 21 Apr 2020 10:39:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728422AbgDURjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgDURjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:39:19 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DCF0206D9;
+        Tue, 21 Apr 2020 17:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587490759;
+        bh=QF1+05dk/slmItoQhAvNaKvLSLjdXYQ42BslCBBfirY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=yI1sPGI106lApWhdhZXySBdWafeZKfms2kGThJMkQzjiNdywnl8M6olzmztK5VfL6
+         h+1tNxsXBIqAwaz/vfq5KHd5XD6hULgoHgC7RoePCFSnaSrh/01ux7SlMLN0AQnsks
+         LP8W/81QgnGeYyFmaQz/TCE3UqeY6Dq/m7Cc6qqk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 108493523441; Tue, 21 Apr 2020 10:39:19 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 10:39:19 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, mingo@kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        joel@joelfernandes.org
+Subject: Re: [PATCH] sched/fair: Fix call walk_tg_tree_from() without hold
+ rcu_lock
+Message-ID: <20200421173919.GQ17661@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200406121008.62903-1-songmuchun@bytedance.com>
+ <20200421135258.GS20730@hirez.programming.kicks-ass.net>
+ <20200421154312.GO17661@paulmck-ThinkPad-P72>
+ <20200421162452.GV20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200421171552.28393-1-luke.r.nels@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421162452.GV20730@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-21 10:15, Luke Nelson wrote:
-> The current JIT uses the following sequence to zero-extend into the
-> upper 32 bits of the destination register for BPF_LDX BPF_{B,H,W},
-> when the destination register is not on the stack:
+On Tue, Apr 21, 2020 at 06:24:52PM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 21, 2020 at 08:43:12AM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 21, 2020 at 03:52:58PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Apr 06, 2020 at 08:10:08PM +0800, Muchun Song wrote:
+> > > > The walk_tg_tree_from() caller must hold rcu_lock,
+> > > 
+> > > Not quite; with the RCU unification done 'recently' having preemption
+> > > disabled is sufficient. AFAICT preemption is disabled.
+> > > 
+> > > In fact; and I mentioned this to someone the other day, perhaps Joel; we
+> > > can go and delete a whole bunch of rcu_read_lock() from the scheduler --
+> > > basically undo all the work we did after RCU was split many years ago.
+> > 
+> > "If only I knew then what I know now..."
+> > 
+> > Then again, I suspect that we all have ample opportunity to use that
+> > particular old phrase.  ;-)
 > 
->   EMIT3(0xC7, add_1reg(0xC0, dst_hi), 0);
-> 
-> However, this is not a valid instruction on x86.
-> 
-> This patch fixes the problem by instead emitting "xor dst_hi,dst_hi"
-> to clear the upper 32 bits.
+> Quite so; I'm just fearing that rcu-lockdep annotation stuff. IIRC that
+> doesn't (nor can it, in general) consider the implicit preempt-disable
+> from locks and such for !PREEMPT builds.
 
-x32 is not x86-32.  In Linux we generally call the latter "i386".
+Heh!  Now that might be me using that phrase again some time in the
+future rather than you using it.  ;-)
 
-C7 /0 imm32 is a valid instruction on i386. However, it is also
-inefficient when the destination is a register, because B8+r imm32 is
-equivalent, and when the value is zero, XOR is indeed more efficient.
+But what exactly are you looking for?  After all, in !PREEMPT builds,
+preemption is always disabled.  It should not be too hard to make
+something that looked at the state provided by DEBUG_ATOMIC_SLEEP when
+selected, for example.  Alternatively, there is always the option
+of doing the testing in CONFIG_PREEMPT=y kernels.
 
-The real error is using EMIT3() instead of EMIT2_off32(), but XOR is
-more efficient. However, let's make the bug statement *correct*, or it
-is going to confuse the Hades out of people in the future.
+But again, what exactly are you looking for?
 
-	-hpa
+							Thanx, Paul
