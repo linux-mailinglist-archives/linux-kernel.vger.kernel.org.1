@@ -2,126 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D482C1B2B3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630941B2B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgDUPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:35:22 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:46924 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgDUPfV (ORCPT
+        id S1726644AbgDUPhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725902AbgDUPhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:35:21 -0400
-Received: by mail-il1-f198.google.com with SMTP id g17so14846915iln.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:35:18 -0700 (PDT)
+        Tue, 21 Apr 2020 11:37:19 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6448C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:37:17 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id e6so1488118pjt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dvnUaepumbrX3tLwN7T+aV2zw9enslYEEKwoxp15Rbw=;
+        b=VlF7JCo+pg6lkixAwHZhO5mSofYdutUMyuY/di4EA8M5drWY39LWPg7IPRo9iJZlYK
+         xgCyAk2Rx6whnclxT4H6sXumN+FC6f4K1wejPs3i09hvt/pEBdC62m776LpdeWo148AC
+         fZZKdgxoRyVZSBCKbfKIISoPMUsAzrUtCJfu4dR5/6m/mUTyQZvExCFMJlA1XhxKnFVB
+         Rj9TZDid75U7muZmyaklevkrx7RjBlFKUSRt32U9IblhutLCLHwqpfdfBlPNYeLFiteO
+         w6UEh/ny6Su1USgPxrynJ4CcYNLitw4zJP6OG2pMNyL9lC18UHm+QMft87+gsX/8u8ID
+         Kl6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6TusJOBvP6hD2r5soFkPAtdu3XdSa2vDgc3SfxPy5ss=;
-        b=UvOKdSF28rIDdF5ZDVrUozs7gy1uz/Hi+xR+N9/S76AWMtX4JXUMl/iSxCdzdLBnIP
-         AZKr80D+lizYt88hLv4U8jT7QDkfFx/FMynxPq2Z5TDoIyJkiAhx18rS40/LtvFQ3Yur
-         x40E7PgyJrPWaHNhi6pETqJKFsV6hoOf3cpNYnrxmo+wtOAe/eTlmxaW/S2E8Z5l2DZr
-         xL0x5MNXjTEx2u/SnpiOBL9ZLPfGXoDlQ4L3rZ+q50vt+PXyza/VonphQn2IJUrGvnXs
-         8J2qjy5IUHuI26bgNYJ42+ux7HK/ult9ZfafJZtM2ckeq0ANvN9YWK17lUcCyKvT/xio
-         jmNQ==
-X-Gm-Message-State: AGi0PuZ5ZYWTlu9q7Flh/fEKvGwjWqi9QBcoc8ZN4hZ2du2xRp3bvAlQ
-        PDfokXNnRQQEyWLnvQsbwiNY2171rCwxaIvXGpjkuEEhh3n/
-X-Google-Smtp-Source: APiQypLBUoxSlbmqIf/wQqiEpVc0wJWHWVe7AJASYdY7aGRe3L5wzMLLoRxT1CNOhqkR7SbhlczNTITyKyK14vmRQdEatDyRIG3/
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dvnUaepumbrX3tLwN7T+aV2zw9enslYEEKwoxp15Rbw=;
+        b=OBKqprTIj8cZ33TzRuu1kXTF6UcNd00rypxAeeT/GsdWvgAHkTJQoV47yV04j5BGiW
+         9M0VF47wJ4G+wSpmueaR+9z+dVLDSx6PHLqGCXNDdqEJI/HGj7bYoDp0nRhtSH+LYiDl
+         6J6IwqA9hWsmCOyHo0WJ9xBKHiO8Vic+loja652VZYsgR8tR9CbymUVKbAicuyAXnHEA
+         LCZydZqNuRLHLbqRHvjocDeVwAcWN8/VJ0OiNGBZCb4RT3uMW1YJsKs7w8kLxRc/Wcas
+         zjdMkE6FvR7iBFfKkbYcX6AQvja40Cx/E2DdHfNCkMS+y3HmeQrRqn9XVPKtAd6MqjQc
+         BVTQ==
+X-Gm-Message-State: AGi0Pua7O5xPXr2c2mQasExseb9UbkebNMEzcrk5hPo5IVV4voYrCwWK
+        OOdZYDCNl1SRtrRnoVyuE7iwvfmsrbrLwBfD4dgUfQ==
+X-Google-Smtp-Source: APiQypL8NV5Stv4Tp37UrS0JSiyBP9L8NiZecBSv44W/NoAc9RSdkqgH+eSR15LF7zdwxQ/miIxk5rf4tZ3eABPM15U=
+X-Received: by 2002:a17:90a:26a2:: with SMTP id m31mr6207645pje.128.1587483436814;
+ Tue, 21 Apr 2020 08:37:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:8666:: with SMTP id e93mr21469444jai.0.1587483318621;
- Tue, 21 Apr 2020 08:35:18 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 08:35:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b22f405a3cec353@google.com>
-Subject: general protection fault in release_nodes
-From:   syzbot <syzbot+14b86b62abea65294f35@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+References: <20200418031833.234942-1-davidgow@google.com> <20200418031833.234942-5-davidgow@google.com>
+In-Reply-To: <20200418031833.234942-5-davidgow@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 21 Apr 2020 17:37:05 +0200
+Message-ID: <CAAeHK+yQqyw4GNTkk8eQMFU5baCmVQyQTrvSAk+zBNHDaJKwvQ@mail.gmail.com>
+Subject: Re: [PATCH v6 4/5] KASAN: Testing Documentation
+To:     David Gow <davidgow@google.com>
+Cc:     Patricia Alfonso <trishalfonso@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Apr 18, 2020 at 5:18 AM 'David Gow' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> From: Patricia Alfonso <trishalfonso@google.com>
+>
+> Include documentation on how to test KASAN using CONFIG_TEST_KASAN and
+> CONFIG_TEST_KASAN_USER.
 
-syzbot found the following crash on:
+Hi David,
 
-HEAD commit:    0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d56d5fe00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
-dashboard link: https://syzkaller.appspot.com/bug?extid=14b86b62abea65294f35
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Please update commit message too.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Thanks!
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+14b86b62abea65294f35@syzkaller.appspotmail.com
+>
+> Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  Documentation/dev-tools/kasan.rst | 70 +++++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index c652d740735d..74fa6aa0f0df 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -281,3 +281,73 @@ unmapped. This will require changes in arch-specific code.
+>
+>  This allows ``VMAP_STACK`` support on x86, and can simplify support of
+>  architectures that do not have a fixed module region.
+> +
+> +CONFIG_TEST_KASAN_KUNIT & CONFIG_TEST_KASAN_MODULE
+> +--------------------------------------------------
+> +
+> +``CONFIG_TEST_KASAN_KUNIT`` utilizes the KUnit Test Framework for testing.
+> +This means each test focuses on a small unit of functionality and
+> +there are a few ways these tests can be run.
+> +
+> +Each test will print the KASAN report if an error is detected and then
+> +print the number of the test and the status of the test:
+> +
+> +pass::
+> +
+> +        ok 28 - kmalloc_double_kzfree
+> +or, if kmalloc failed::
+> +
+> +        # kmalloc_large_oob_right: ASSERTION FAILED at lib/test_kasan.c:163
+> +        Expected ptr is not null, but is
+> +        not ok 4 - kmalloc_large_oob_right
+> +or, if a KASAN report was expected, but not found::
+> +
+> +        # kmalloc_double_kzfree: EXPECTATION FAILED at lib/test_kasan.c:629
+> +        Expected kasan_data->report_expected == kasan_data->report_found, but
+> +        kasan_data->report_expected == 1
+> +        kasan_data->report_found == 0
+> +        not ok 28 - kmalloc_double_kzfree
+> +
+> +All test statuses are tracked as they run and an overall status will
+> +be printed at the end::
+> +
+> +        ok 1 - kasan_kunit_test
+> +
+> +or::
+> +
+> +        not ok 1 - kasan_kunit_test
+> +
+> +(1) Loadable Module
+> +~~~~~~~~~~~~~~~~~~~~
+> +
+> +With ``CONFIG_KUNIT`` enabled, ``CONFIG_TEST_KASAN_KUNIT`` can be built as
+> +a loadable module and run on any architecture that supports KASAN
+> +using something like insmod or modprobe.
+> +
+> +(2) Built-In
+> +~~~~~~~~~~~~~
+> +
+> +With ``CONFIG_KUNIT`` built-in, ``CONFIG_TEST_KASAN_KUNIT`` can be built-in
+> +on any architecure that supports KASAN. These and any other KUnit
+> +tests enabled will run and print the results at boot as a late-init
+> +call.
+> +
+> +(3) Using kunit_tool
+> +~~~~~~~~~~~~~~~~~~~~~
+> +
+> +With ``CONFIG_KUNIT`` and ``CONFIG_TEST_KASAN`` built-in, we can also
 
-usb 5-1: ath9k_htc: USB layer deinitialized
-general protection fault, probably for non-canonical address 0xdffffc00a0000000: 0000 [#1] SMP KASAN
-KASAN: probably user-memory-access in range [0x0000000500000000-0x0000000500000007]
-CPU: 0 PID: 3105 Comm: kworker/0:4 Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:remove_nodes drivers/base/devres.c:437 [inline]
-RIP: 0010:release_nodes+0x1e2/0x910 drivers/base/devres.c:498
-Code: 1f e8 e2 26 c4 fe 83 44 24 14 01 e8 d8 26 c4 fe 4c 39 6c 24 08 0f 84 a8 00 00 00 4c 89 eb e8 c5 26 c4 fe 48 89 d8 48 c1 e8 03 <80> 3c 28 00 0f 85 29 05 00 00 48 8d 7b 10 4c 8b 2b 48 89 f8 48 c1
-RSP: 0018:ffff8881d99af920 EFLAGS: 00010006
-RAX: 00000000a0000000 RBX: 0000000500000000 RCX: ffffc9000eb33000
-RDX: 000000000000efcd RSI: ffffffff827b315b RDI: ffff8881c7125010
-RBP: dffffc0000000000 R08: 0000000000000004 R09: ffffed103b335f2d
-R10: ffffed103b335f2c R11: 0000000000000003 R12: 0000000500000000
-R13: ffffffff87430cc0 R14: ffff8881d8e0dca8 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb1e2e2d710 CR3: 00000001d2102000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- devres_release_all+0x74/0xc3 drivers/base/devres.c:529
- device_release+0x39/0x200 drivers/base/core.c:1364
- kobject_cleanup lib/kobject.c:693 [inline]
- kobject_release lib/kobject.c:722 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x256/0x550 lib/kobject.c:739
- put_device drivers/base/core.c:2599 [inline]
- device_unregister+0x34/0xc0 drivers/base/core.c:2710
- usb_remove_ep_devs+0x3e/0x80 drivers/usb/core/endpoint.c:215
- usb_disconnect+0x4bb/0x900 drivers/usb/core/hub.c:2230
- hub_port_connect drivers/usb/core/hub.c:5046 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5335 [inline]
- port_event drivers/usb/core/hub.c:5481 [inline]
- hub_event+0x1a1d/0x4300 drivers/usb/core/hub.c:5563
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Modules linked in:
----[ end trace c49c493fba95a78f ]---
-RIP: 0010:remove_nodes drivers/base/devres.c:437 [inline]
-RIP: 0010:release_nodes+0x1e2/0x910 drivers/base/devres.c:498
-Code: 1f e8 e2 26 c4 fe 83 44 24 14 01 e8 d8 26 c4 fe 4c 39 6c 24 08 0f 84 a8 00 00 00 4c 89 eb e8 c5 26 c4 fe 48 89 d8 48 c1 e8 03 <80> 3c 28 00 0f 85 29 05 00 00 48 8d 7b 10 4c 8b 2b 48 89 f8 48 c1
-RSP: 0018:ffff8881d99af920 EFLAGS: 00010006
-RAX: 00000000a0000000 RBX: 0000000500000000 RCX: ffffc9000eb33000
-RDX: 000000000000efcd RSI: ffffffff827b315b RDI: ffff8881c7125010
-RBP: dffffc0000000000 R08: 0000000000000004 R09: ffffed103b335f2d
-R10: ffffed103b335f2c R11: 0000000000000003 R12: 0000000500000000
-R13: ffffffff87430cc0 R14: ffff8881d8e0dca8 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff8881db200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb1e2e2d710 CR3: 00000001d2102000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+CONFIG_TEST_KASAN_KUNIT here
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +use kunit_tool to see the results of these along with other KUnit
+> +tests in a more readable way. This will not print the KASAN reports
+> +of tests that passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_ for more up-to-date
+> +information on kunit_tool.
+> +
+> +.. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
+> +
+> +``CONFIG_TEST_KASAN_MODULE`` is a set of KASAN tests that could not be
+> +converted to KUnit. These tests can be run only as a module with
+> +``CONFIG_TEST_KASAN_MODULE`` built as a loadable module and
+> +``CONFIG_KASAN`` built-in. The type of error expected and the
+> +function being run is printed before the expression expected to give
+> +an error. Then the error is printed, if found, and that test
+> +should be interpretted to pass only if the error was the one expected
+> +by the test.
+> --
+> 2.26.1.301.g55bc3eb7cb9-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200418031833.234942-5-davidgow%40google.com.
