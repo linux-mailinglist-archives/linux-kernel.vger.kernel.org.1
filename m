@@ -2,135 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D611B29F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9E21B29D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgDUOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:33:30 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33942 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729174AbgDUOd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:33:28 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 36298267342B093BC7CE;
-        Tue, 21 Apr 2020 22:33:21 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 21 Apr 2020
- 22:33:11 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <steffen.klassert@secunet.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lucien.xin@gmail.com>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] xfrm: policy: Only use mark as policy lookup key
-Date:   Tue, 21 Apr 2020 22:31:49 +0800
-Message-ID: <20200421143149.45108-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1729085AbgDUOcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:32:46 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:47376 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728819AbgDUOcp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:32:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587479565; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=1Oeoo/cM1X75NsGv7SmWr0CfrczaffnNNsKkmbOOmj8=; b=j67Welv461ZewE4I3QHZTVFbARHfEgzrxQGOzmN3jmePKFufVcn+g/0Aav+ke6hasUsSral8
+ C8CZNOO33G35UyEUt2GmbZHKJCJdeBZ0fiDThrF3LrckTsWEAZyOaVjNPNtrcg+tOKegCMyX
+ TMXiY33gagMaucr+vZhAyw44tQU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9f040c.7f147a95cc00-smtp-out-n04;
+ Tue, 21 Apr 2020 14:32:44 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF4CCC433CB; Tue, 21 Apr 2020 14:32:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFBFDC433D2;
+        Tue, 21 Apr 2020 14:32:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CFBFDC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com, mka@chromium.org,
+        dianders@chromium.org, devicetree@vger.kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 0/7] Add PAS and MSA based Modem support
+Date:   Tue, 21 Apr 2020 20:02:21 +0530
+Message-Id: <20200421143228.8981-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While update xfrm policy as follow:
+Add PAS based modem support on SC7180 SoCs and update the device node to
+support MSA based modem boot.
 
-ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
- priority 1 mark 0 mask 0x10
-ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
- priority 2 mark 0 mask 0x00
-ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
- priority 2 mark 0 mask 0x10
+V2:
+ * use memory-region to reference mba/mpss regions [Bjorn]
+ * move peripheral memory regions to the board dts [Bjorn]
+ * overload the base remoteproc_mpss node wherever possible [Bjorn]
+ * Pick up Bjorn's R-b
 
-We get this warning:
+Patch [1,2] - Add PAS based modem support
+Patch [3,4] - use memory-region to reference mba/mpss regions
+Patch [5] - Update reserved memory map
+Patch [6,7] - Add PAS/MSA modem nodes
 
-WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
-Call Trace:
-RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
- xfrm_policy_inexact_insert+0x70/0x330
- xfrm_policy_insert+0x1df/0x250
- xfrm_add_policy+0xcc/0x190 [xfrm_user]
- xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
- netlink_rcv_skb+0x4c/0x120
- xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
- netlink_unicast+0x1b3/0x270
- netlink_sendmsg+0x350/0x470
- sock_sendmsg+0x4f/0x60
+Sibi Sankar (7):
+  dt-bindings: remoteproc: qcom: Add SC7180 MPSS support
+  remoteproc: qcom: pas: Add SC7180 Modem support
+  dt-bindings: remoteproc: qcom: Use memory-region to reference memory
+  remoteproc: qcom_q6v5_mss: Extract mba/mpss from memory-region
+  arm64: dts: qcom: sc7180: Update reserved memory map
+  arm64: dts: qcom: sc7180: Add Q6V5 MSS node
+  arm64: dts: qcom: sc7180: Update Q6V5 MSS node
 
-Policy C and policy A has the same mark.v and mark.m, so policy A is
-matched in first round lookup while updating C. However policy C and
-policy B has same mark and priority, which also leads to matched. So
-the WARN_ON is triggered.
+ .../bindings/remoteproc/qcom,adsp.txt         |  3 +
+ .../bindings/remoteproc/qcom,q6v5.txt         |  8 ++
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts       | 60 +++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          | 89 ++++++++++++++++++-
+ drivers/remoteproc/qcom_q6v5_mss.c            | 21 ++++-
+ drivers/remoteproc/qcom_q6v5_pas.c            |  1 +
+ 6 files changed, 177 insertions(+), 5 deletions(-)
 
-xfrm policy lookup should only be matched when the found policy has the
-same lookup keys (mark.v & mark.m) no matter priority.
-
-Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/xfrm/xfrm_policy.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index 297b2fd..67d0469 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
- static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
- 				   struct xfrm_policy *pol)
- {
--	u32 mark = policy->mark.v & policy->mark.m;
--
--	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
--		return true;
--
--	if ((mark & pol->mark.m) == pol->mark.v &&
--	    policy->priority == pol->priority)
-+	if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m))
- 		return true;
- 
- 	return false;
-@@ -1628,7 +1622,7 @@ int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl)
- 	hlist_for_each_entry(pol, chain, bydst) {
- 		if (pol->type == type &&
- 		    pol->if_id == if_id &&
--		    (mark & pol->mark.m) == pol->mark.v &&
-+		    mark == (pol->mark.m & pol->mark.v) &&
- 		    !selector_cmp(sel, &pol->selector) &&
- 		    xfrm_sec_ctx_match(ctx, pol->security))
- 			return pol;
-@@ -1726,7 +1720,7 @@ struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id,
- 	hlist_for_each_entry(pol, chain, byidx) {
- 		if (pol->type == type && pol->index == id &&
- 		    pol->if_id == if_id &&
--		    (mark & pol->mark.m) == pol->mark.v) {
-+		    mark == (pol->mark.m & pol->mark.v)) {
- 			xfrm_pol_hold(pol);
- 			if (delete) {
- 				*err = security_xfrm_policy_delete(
-@@ -1898,7 +1892,7 @@ static int xfrm_policy_match(const struct xfrm_policy *pol,
- 
- 	if (pol->family != family ||
- 	    pol->if_id != if_id ||
--	    (fl->flowi_mark & pol->mark.m) != pol->mark.v ||
-+	    fl->flowi_mark != (pol->mark.m & pol->mark.v) ||
- 	    pol->type != type)
- 		return ret;
- 
-@@ -2177,7 +2171,7 @@ static struct xfrm_policy *xfrm_sk_policy_lookup(const struct sock *sk, int dir,
- 
- 		match = xfrm_selector_match(&pol->selector, fl, family);
- 		if (match) {
--			if ((sk->sk_mark & pol->mark.m) != pol->mark.v ||
-+			if (sk->sk_mark != (pol->mark.m & pol->mark.v) ||
- 			    pol->if_id != if_id) {
- 				pol = NULL;
- 				goto out;
 -- 
-1.8.3.1
-
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
