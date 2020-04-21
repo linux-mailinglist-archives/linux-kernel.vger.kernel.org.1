@@ -2,83 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3C11B2791
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691A51B27A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgDUNWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:22:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgDUNWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:22:34 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F14620753;
-        Tue, 21 Apr 2020 13:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587475353;
-        bh=A5iNwUnYfVcplxMAFs2F56euY/pwlC7lC0GbKQZVvGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pp5NWDguCXrpaftsHaRgdBBYUC8Bs91EQS8DkM+9b+ldZybRMm3xHxA5DyoKb/hCl
-         P2RYil9mCB9yc66DSt8bRwxHF7mdr67NeNhzhtd45FcbNFk7Zrrep+HVRNdvSLEUsO
-         Lv2MZJBmW6fdHMbqbYQqGM/f8wX2gpemjRMXRxA0=
-Date:   Tue, 21 Apr 2020 15:22:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.6 00/71] 5.6.6-rc1 review
-Message-ID: <20200421132231.GB794782@kroah.com>
-References: <20200420121508.491252919@linuxfoundation.org>
- <59a68f6a-d37d-6a74-14e4-648861637185@nvidia.com>
+        id S1729019AbgDUNXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:23:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29604 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728479AbgDUNXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:23:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587475413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ytKxWQADMe1hxsp4ibPZrOFawU10CTLZrsg1UsU9JN0=;
+        b=RyjNmVfj6ci8EF4vJjWb8BJF05EPTfKkCLzJJAZcf99lb4/B0apcSPBXdTgBPgLXzbXp1K
+        LDlKGZd5x+juirC9eFI0Y80f+18eKHxUwdKGKQMt/CMS02tPxZYQIglR9ZJRMXpENfKB99
+        CJ22nZNgjYa9ioCEjglxSRMeZS9jwGU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-9zWUdhfNMGyKgbOUH8wTXw-1; Tue, 21 Apr 2020 09:23:26 -0400
+X-MC-Unique: 9zWUdhfNMGyKgbOUH8wTXw-1
+Received: by mail-wm1-f69.google.com with SMTP id 71so1355903wmb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:23:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ytKxWQADMe1hxsp4ibPZrOFawU10CTLZrsg1UsU9JN0=;
+        b=GzAbeGTA2StCVr7SBHTAjOJHcBcjavvUsr60dhOWB1H8AoYHIkatI5xGSUk6/EBaK7
+         Bn3nrjvmCtMoQcjyUn8VGmf/GNxBDHS3jTaRA5RUJk9ywKkSrcDEIM4kttA3xtxugYw/
+         A9hFqkQC4UJpBm9jJfSNEM+8A1dQhSdQ393TAJL3DyxtLUiwegqVW6rt/Slp2OqBO+4J
+         9C2koqMrNRRxW4pi7kUx9gznlHmdPGyYpAZgjJnYD15qzQRYTSE/z3KwKt4d63Ks9+ei
+         /9vZTburCJvj6mQg9aVgmSOkXNXn3Et3al/QCPTwHi0sFJ/oB2AFSBCgTVNSbB7KrPfQ
+         /NoQ==
+X-Gm-Message-State: AGi0PubNFuIwjZYqjD+vwIfy16g2cCP7zZPQgcncznMMye0KPXauyGrH
+        K46TW2qX2zv31xeh8I5s58Kg/jgOxlOd3DvQHDQUSMcUwgYC+ZH/Q0gHTm/ekChto8WYShQof7P
+        v5Un7quTUTA5KUuzTpPYlQX2r
+X-Received: by 2002:a5d:4283:: with SMTP id k3mr22796310wrq.238.1587475401067;
+        Tue, 21 Apr 2020 06:23:21 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIMNn2YfNcf4IPaf9IVmkV32oOcmuFaDha8DPqw36FZ9/e+P6Z7Ojyc8EbM6VEDrhDoQCcs1Q==
+X-Received: by 2002:a5d:4283:: with SMTP id k3mr22796294wrq.238.1587475400901;
+        Tue, 21 Apr 2020 06:23:20 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id 185sm3947160wmc.32.2020.04.21.06.23.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 06:23:20 -0700 (PDT)
+Subject: Re: [PATCH v2] tpm/tpm_tis: Free IRQ if probing fails
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-integrity@vger.kernel.org
+Cc:     stable@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200416160751.180791-1-jarkko.sakkinen@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <fa25cd78-2535-d26d-dd66-d64111af857a@redhat.com>
+Date:   Tue, 21 Apr 2020 15:23:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59a68f6a-d37d-6a74-14e4-648861637185@nvidia.com>
+In-Reply-To: <20200416160751.180791-1-jarkko.sakkinen@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:55:36AM +0100, Jon Hunter wrote:
+Hi,
+
+On 4/16/20 6:07 PM, Jarkko Sakkinen wrote:
+> Call disable_interrupts() if we have to revert to polling in order not to
+> unnecessarily reserve the IRQ for the life-cycle of the driver.
 > 
-> On 20/04/2020 13:38, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.6.6 release.
-> > There are 71 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.6-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+> Cc: stable@vger.kernel.org # 4.5.x
+> Reported-by: Hans de Goede <hdegoede@redhat.com>
+> Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+
+I can confirm that this fixes the "irq 31 nobody cared" oops for me:
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>   drivers/char/tpm/tpm_tis_core.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> All tests are passing for Tegra ...
-> 
-> Test results for stable-v5.6:
->     13 builds:	13 pass, 0 fail
->     24 boots:	24 pass, 0 fail
->     40 tests:	40 pass, 0 fail
-> 
-> Linux version:	5.6.6-rc1-g906ecc0031ed
-> Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
->                 tegra194-p2972-0000, tegra20-ventana,
->                 tegra210-p2371-2180, tegra210-p3450-0000,
->                 tegra30-cardhu-a04
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> index 27c6ca031e23..2435216bd10a 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -433,6 +433,9 @@ static void disable_interrupts(struct tpm_chip *chip)
+>   	u32 intmask;
+>   	int rc;
+>   
+> +	if (priv->irq == 0)
+> +		return;
+> +
+>   	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+>   	if (rc < 0)
+>   		intmask = 0;
+> @@ -1062,9 +1065,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>   		if (irq) {
+>   			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
+>   						 irq);
+> -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
+> +			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
+>   				dev_err(&chip->dev, FW_BUG
+>   					"TPM interrupt not working, polling instead\n");
+> +
+> +				disable_interrupts(chip);
+> +			}
+>   		} else {
+>   			tpm_tis_probe_irq(chip, intmask);
+>   		}
 > 
 
-Thanks for testing all of these and letting me know.
-
-greg k-h
