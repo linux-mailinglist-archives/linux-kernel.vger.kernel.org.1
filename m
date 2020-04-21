@@ -2,481 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C361B264F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411651B1DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 06:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgDUMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 08:40:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2858 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728739AbgDUMkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:40:23 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 85138EF45664BCBBEE83;
-        Tue, 21 Apr 2020 20:39:59 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 21 Apr 2020 20:39:53 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next 3/3] hinic: add net_device_ops associated with vf
-Date:   Tue, 21 Apr 2020 04:56:35 +0000
-Message-ID: <20200421045635.8128-4-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200421045635.8128-1-luobin9@huawei.com>
-References: <20200421045635.8128-1-luobin9@huawei.com>
+        id S1726519AbgDUE47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 00:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725992AbgDUE47 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 00:56:59 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF92EC061A0F;
+        Mon, 20 Apr 2020 21:56:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id n24so4803273plp.13;
+        Mon, 20 Apr 2020 21:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/kZQBZrT7d+NZ7hXhFjqvc0yPUpSInT9Q68O6DIDCdE=;
+        b=I0wA5N5rgHL+QS3JC/e8E9bDZFN/3qd4hMle1jsvTBxkIiwSzozu+78n6FTeGXtrhB
+         lC3DadWUjWrFS9w3p7+30CmgG7oDR5d8f8CS/hOcTVG2Ghn8geYcKtimk121BI3u2/vk
+         LGy6PICsN7xHo/6dad9UdPt7TePMAUQsXtpcZJqwJHZn0RUEiHeCL4YXzgJv7G5dMWPD
+         Mw2lUMo3B7LEBONMW8nzbX2e1MABimYIHJAOGIaB9lCelMLCIjtBeybOWbsDnSZxTQSj
+         wqhYir3DDRK3AkRKlGxbViNhs+qaKGbKzpU77R6LmUjCkM4YgF2K54F9BTXsfuy/J/J7
+         jn9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/kZQBZrT7d+NZ7hXhFjqvc0yPUpSInT9Q68O6DIDCdE=;
+        b=XRN7KVO79J/dnJj8Uz6EMXw+MZy9+dwQpaq/KBxLFwFx4ML+MmV07RE/G0ZSACeS/a
+         BBuAf96ogBHpPaiDoO/jhlIdsRWJLP9edl8IeEb8CteCjjPuWUWQcEUYPmGDK8oOoEEW
+         gh/uFKK7fLT8J08/sobibdwOQvI+l6wFpCiMlCJvbgahKChVROX9w7iuItru6gwpZUHx
+         uQ6GcNjLa1W3PDdWRThbp4osOyo7vfhKvAnsYxrRYRg0RTzTl8AaBiE4sdgc44pL0C7a
+         NosV9YGbfuH4CZPVpupImCHGV7WUOjYBSBobj3cZeppoCnr/C5g2PLkHy2YX/w2sv4iY
+         N3xQ==
+X-Gm-Message-State: AGi0PubhXioPriCleZdlCPsQmv69QJpy0nAqXKYpOjuF3wYM2dALBQ5w
+        wvBKcvtv2f4ImT96MLlLUXAerzZjrEGKtg==
+X-Google-Smtp-Source: APiQypJ8l1ZFE+2LscthXeCV9bRn2vId8DTmm8NGy5NgWvtedGfnryVUDbV7XfSU7mmHY5HKj81ZIA==
+X-Received: by 2002:a17:90a:2347:: with SMTP id f65mr3219502pje.165.1587445017642;
+        Mon, 20 Apr 2020 21:56:57 -0700 (PDT)
+Received: from ?IPv6:2604:4080:1012:8d30:9eb6:d0ff:fe8b:175f? ([2604:4080:1012:8d30:9eb6:d0ff:fe8b:175f])
+        by smtp.gmail.com with ESMTPSA id h9sm1163323pfo.129.2020.04.20.21.56.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Apr 2020 21:56:57 -0700 (PDT)
+Subject: Re: [PATCH] Input: xpad - Update xboxone fw2015 init packet
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        LuK1337 <priv.luk@gmail.com>, Mark Furneaux <mark@furneaux.ca>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200419041651.GD166864@dtor-ws>
+ <20200419074624.9955-1-priv.luk@gmail.com> <20200419180136.GK166864@dtor-ws>
+From:   Cameron Gutman <aicommander@gmail.com>
+Message-ID: <436c79ed-ca21-c075-e2da-0934da5000a2@gmail.com>
+Date:   Mon, 20 Apr 2020 21:56:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200419180136.GK166864@dtor-ws>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adds ndo_set_vf_mac/ndo_set_vf_vlan/ndo_get_vf_config and
-ndo_set_vf_trust to configure netdev of virtual function
+On 4/19/20 11:01 AM, Dmitry Torokhov wrote:
+> On Sun, Apr 19, 2020 at 09:46:23AM +0200, LuK1337 wrote:
+>> From: Łukasz Patron <priv.luk@gmail.com>
+>>
+>> Appending { 0x05, 0x20, 0x02, 0x0f, 0x06 } to
+>> xboxone_fw2015_init fixes an issue where the
+>> controller is somewhat stuck in bluetooth
+>> mode until you plug it into Windows PC.
+>>
+>> Signed-off-by: Łukasz Patron <priv.luk@gmail.com>
+> 
+> Thank you Łukasz. Could you please tell me what device(s) have you
+> observed the issue with? I am a bit worried if this may interfere with
+> other devices that currently work fine with the driver. Cameron, Mark,
+> do you have any concerns here?
+> 
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- .../net/ethernet/huawei/hinic/hinic_main.c    |  28 +-
- .../net/ethernet/huawei/hinic/hinic_sriov.c   | 318 ++++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_sriov.h   |  23 ++
- 3 files changed, 368 insertions(+), 1 deletion(-)
+Yes, I gave it a try here, and it looks like there's definitely some
+breakages for non-updated controllers. It breaks the Covert Forces
+edition Xbox One controller (0x045e, 0x02dd) and also another non-upgraded
+Xbox One S controller of the same model as the affected controller
+(0x045e, 0x02ea, firmware 3.1.1221.0).
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index 35c195e2cbc6..3b0a5e0751c2 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -845,6 +845,29 @@ static const struct net_device_ops hinic_netdev_ops = {
- 	.ndo_get_stats64 = hinic_get_stats64,
- 	.ndo_fix_features = hinic_fix_features,
- 	.ndo_set_features = hinic_set_features,
-+#ifdef IFLA_VF_MAX
-+	.ndo_set_vf_mac	= hinic_ndo_set_vf_mac,
-+	.ndo_set_vf_vlan = hinic_ndo_set_vf_vlan,
-+	.ndo_get_vf_config = hinic_ndo_get_vf_config,
-+	.ndo_set_vf_trust = hinic_ndo_set_vf_trust,
-+#endif
-+
-+};
-+
-+static const struct net_device_ops hinicvf_netdev_ops = {
-+	.ndo_open = hinic_open,
-+	.ndo_stop = hinic_close,
-+	.ndo_change_mtu = hinic_change_mtu,
-+	.ndo_set_mac_address = hinic_set_mac_addr,
-+	.ndo_validate_addr = eth_validate_addr,
-+	.ndo_vlan_rx_add_vid = hinic_vlan_rx_add_vid,
-+	.ndo_vlan_rx_kill_vid = hinic_vlan_rx_kill_vid,
-+	.ndo_set_rx_mode = hinic_set_rx_mode,
-+	.ndo_start_xmit = hinic_xmit_frame,
-+	.ndo_tx_timeout = hinic_tx_timeout,
-+	.ndo_get_stats64 = hinic_get_stats64,
-+	.ndo_fix_features = hinic_fix_features,
-+	.ndo_set_features = hinic_set_features,
- };
- 
- static void netdev_features_init(struct net_device *netdev)
-@@ -982,7 +1005,10 @@ static int nic_dev_init(struct pci_dev *pdev)
- 
- 	hinic_set_ethtool_ops(netdev);
- 
--	netdev->netdev_ops = &hinic_netdev_ops;
-+	if (!HINIC_IS_VF(hwdev->hwif))
-+		netdev->netdev_ops = &hinic_netdev_ops;
-+	else
-+		netdev->netdev_ops = &hinicvf_netdev_ops;
- 
- 	netdev->max_mtu = ETH_MAX_MTU;
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index 978da02334eb..c0255cc46c1c 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -359,6 +359,168 @@ struct hinic_sriov_info *hinic_get_sriov_info_by_pcidev(struct pci_dev *pdev)
- 	return &nic_dev->sriov_info;
- }
- 
-+static int hinic_check_mac_info(u8 status, u16 vlan_id)
-+{
-+	if ((status && status != HINIC_MGMT_STATUS_EXIST &&
-+	     status != HINIC_PF_SET_VF_ALREADY) ||
-+	    (vlan_id & CHECK_IPSU_15BIT &&
-+	     status == HINIC_MGMT_STATUS_EXIST))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+#define HINIC_VLAN_ID_MASK	0x7FFF
-+
-+int hinic_update_mac(struct hinic_hwdev *hwdev, u8 *old_mac, u8 *new_mac,
-+		     u16 vlan_id, u16 func_id)
-+{
-+	struct hinic_port_mac_update mac_info = {0};
-+	u16 out_size = sizeof(mac_info);
-+	int err;
-+
-+	if (!hwdev || !old_mac || !new_mac)
-+		return -EINVAL;
-+
-+	if ((vlan_id & HINIC_VLAN_ID_MASK) >= VLAN_N_VID) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Invalid VLAN number: %d\n",
-+			(vlan_id & HINIC_VLAN_ID_MASK));
-+		return -EINVAL;
-+	}
-+
-+	mac_info.func_id = func_id;
-+	mac_info.vlan_id = vlan_id;
-+	memcpy(mac_info.old_mac, old_mac, ETH_ALEN);
-+	memcpy(mac_info.new_mac, new_mac, ETH_ALEN);
-+
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_UPDATE_MAC, &mac_info,
-+				 sizeof(mac_info), &mac_info, &out_size);
-+
-+	if (err || !out_size ||
-+	    hinic_check_mac_info(mac_info.status, mac_info.vlan_id)) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"Failed to update MAC, err: %d, status: 0x%x, out size: 0x%x\n",
-+			err, mac_info.status, out_size);
-+		return -EINVAL;
-+	}
-+
-+	if (mac_info.status == HINIC_PF_SET_VF_ALREADY) {
-+		dev_warn(&hwdev->hwif->pdev->dev,
-+			 "PF has already set VF MAC. Ignore update operation\n");
-+		return HINIC_PF_SET_VF_ALREADY;
-+	}
-+
-+	if (mac_info.status == HINIC_MGMT_STATUS_EXIST)
-+		dev_warn(&hwdev->hwif->pdev->dev, "MAC is repeated. Ignore update operation\n");
-+
-+	return 0;
-+}
-+
-+void hinic_get_vf_config(struct hinic_hwdev *hwdev, u16 vf_id,
-+			 struct ifla_vf_info *ivi)
-+{
-+	struct vf_data_storage *vfinfo;
-+
-+	vfinfo = hwdev->func_to_io.vf_infos + HW_VF_ID_TO_OS(vf_id);
-+
-+	ivi->vf = HW_VF_ID_TO_OS(vf_id);
-+	memcpy(ivi->mac, vfinfo->vf_mac_addr, ETH_ALEN);
-+	ivi->vlan = vfinfo->pf_vlan;
-+	ivi->qos = vfinfo->pf_qos;
-+	ivi->spoofchk = vfinfo->spoofchk;
-+	ivi->trusted = vfinfo->trust;
-+	ivi->max_tx_rate = vfinfo->max_rate;
-+	ivi->min_tx_rate = vfinfo->min_rate;
-+
-+	if (!vfinfo->link_forced)
-+		ivi->linkstate = IFLA_VF_LINK_STATE_AUTO;
-+	else if (vfinfo->link_up)
-+		ivi->linkstate = IFLA_VF_LINK_STATE_ENABLE;
-+	else
-+		ivi->linkstate = IFLA_VF_LINK_STATE_DISABLE;
-+}
-+
-+int hinic_ndo_get_vf_config(struct net_device *netdev,
-+			    int vf, struct ifla_vf_info *ivi)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+
-+	sriov_info = &nic_dev->sriov_info;
-+	if (vf >= sriov_info->num_vfs)
-+		return -EINVAL;
-+
-+	hinic_get_vf_config(sriov_info->hwdev, OS_VF_ID_TO_HW(vf), ivi);
-+
-+	return 0;
-+}
-+
-+int hinic_set_vf_mac(struct hinic_hwdev *hwdev, int vf, unsigned char *mac_addr)
-+{
-+	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-+	struct vf_data_storage *vf_info;
-+	u16 func_id;
-+	int err;
-+
-+	vf_info = nic_io->vf_infos + HW_VF_ID_TO_OS(vf);
-+
-+	/* duplicate request, so just return success */
-+	if (vf_info->pf_set_mac &&
-+	    !memcmp(vf_info->vf_mac_addr, mac_addr, ETH_ALEN))
-+		return 0;
-+
-+	vf_info->pf_set_mac = true;
-+
-+	func_id = hinic_glb_pf_vf_offset(hwdev->hwif) + vf;
-+	err = hinic_update_mac(hwdev, vf_info->vf_mac_addr,
-+			       mac_addr, 0, func_id);
-+	if (err) {
-+		vf_info->pf_set_mac = false;
-+		return err;
-+	}
-+
-+	memcpy(vf_info->vf_mac_addr, mac_addr, ETH_ALEN);
-+
-+	return 0;
-+}
-+
-+int hinic_ndo_set_vf_mac(struct net_device *netdev, int vf, u8 *mac)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+	int err;
-+
-+	sriov_info = &nic_dev->sriov_info;
-+	if (!is_valid_ether_addr(mac) || vf >= sriov_info->num_vfs)
-+		return -EINVAL;
-+
-+	err = hinic_set_vf_mac(sriov_info->hwdev, OS_VF_ID_TO_HW(vf), mac);
-+	if (err)
-+		return err;
-+
-+	netif_info(nic_dev, drv, netdev, "Setting MAC %pM on VF %d\n", mac, vf);
-+	netif_info(nic_dev, drv, netdev, "Reload the VF driver to make this change effective.");
-+
-+	return 0;
-+}
-+
-+int hinic_add_vf_vlan(struct hinic_hwdev *hwdev, int vf_id, u16 vlan, u8 qos)
-+{
-+	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-+	int err;
-+
-+	err = hinic_set_vf_vlan(hwdev, true, vlan, qos, vf_id);
-+	if (err)
-+		return err;
-+
-+	nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].pf_vlan = vlan;
-+	nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].pf_qos = qos;
-+
-+	dev_info(&hwdev->hwif->pdev->dev, "Setting VLAN %d, QOS 0x%x on VF %d\n",
-+		 vlan, qos, HW_VF_ID_TO_OS(vf_id));
-+	return 0;
-+}
-+
- int hinic_kill_vf_vlan(struct hinic_hwdev *hwdev, int vf_id)
- {
- 	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-@@ -381,6 +543,159 @@ int hinic_kill_vf_vlan(struct hinic_hwdev *hwdev, int vf_id)
- 	return 0;
- }
- 
-+int hinic_update_mac_vlan(struct hinic_dev *nic_dev, u16 old_vlan, u16 new_vlan,
-+			  int vf_id)
-+{
-+	struct vf_data_storage *vf_info;
-+	u16 vlan_id;
-+	int err;
-+
-+	if (!nic_dev || old_vlan >= VLAN_N_VID || new_vlan >= VLAN_N_VID)
-+		return -EINVAL;
-+
-+	vf_info = nic_dev->hwdev->func_to_io.vf_infos + HW_VF_ID_TO_OS(vf_id);
-+	if (!vf_info->pf_set_mac)
-+		return 0;
-+
-+	vlan_id = old_vlan;
-+	if (vlan_id)
-+		vlan_id |= HINIC_ADD_VLAN_IN_MAC;
-+
-+	err = hinic_port_del_mac(nic_dev, vf_info->vf_mac_addr, vlan_id);
-+	if (err) {
-+		dev_err(&nic_dev->hwdev->hwif->pdev->dev, "Failed to delete VF %d MAC %pM vlan %d\n",
-+			HW_VF_ID_TO_OS(vf_id), vf_info->vf_mac_addr, old_vlan);
-+		return err;
-+	}
-+
-+	vlan_id = new_vlan;
-+	if (vlan_id)
-+		vlan_id |= HINIC_ADD_VLAN_IN_MAC;
-+
-+	err = hinic_port_add_mac(nic_dev, vf_info->vf_mac_addr, vlan_id);
-+	if (err) {
-+		dev_err(&nic_dev->hwdev->hwif->pdev->dev, "Failed to add VF %d MAC %pM vlan %d\n",
-+			HW_VF_ID_TO_OS(vf_id), vf_info->vf_mac_addr, new_vlan);
-+		goto out;
-+	}
-+
-+	return 0;
-+
-+out:
-+	vlan_id = old_vlan;
-+	if (vlan_id)
-+		vlan_id |= HINIC_ADD_VLAN_IN_MAC;
-+	hinic_port_add_mac(nic_dev, vf_info->vf_mac_addr, vlan_id);
-+
-+	return err;
-+}
-+
-+static int set_hw_vf_vlan(struct hinic_dev *nic_dev,
-+			  u16 cur_vlanprio, int vf, u16 vlan, u8 qos)
-+{
-+	u16 old_vlan = cur_vlanprio & VLAN_VID_MASK;
-+	int err = 0;
-+
-+	if (vlan || qos) {
-+		if (cur_vlanprio) {
-+			err = hinic_kill_vf_vlan(nic_dev->hwdev,
-+						 OS_VF_ID_TO_HW(vf));
-+			if (err) {
-+				dev_err(&nic_dev->sriov_info.pdev->dev, "Failed to delete vf %d old vlan %d\n",
-+					vf, old_vlan);
-+				goto out;
-+			}
-+		}
-+		err = hinic_add_vf_vlan(nic_dev->hwdev,
-+					OS_VF_ID_TO_HW(vf), vlan, qos);
-+		if (err) {
-+			dev_err(&nic_dev->sriov_info.pdev->dev, "Failed to add vf %d new vlan %d\n",
-+				vf, vlan);
-+			goto out;
-+		}
-+	} else {
-+		err = hinic_kill_vf_vlan(nic_dev->hwdev, OS_VF_ID_TO_HW(vf));
-+		if (err) {
-+			dev_err(&nic_dev->sriov_info.pdev->dev, "Failed to delete vf %d vlan %d\n",
-+				vf, old_vlan);
-+			goto out;
-+		}
-+	}
-+
-+	err = hinic_update_mac_vlan(nic_dev, old_vlan, vlan,
-+				    OS_VF_ID_TO_HW(vf));
-+
-+out:
-+	return err;
-+}
-+
-+int hinic_ndo_set_vf_vlan(struct net_device *netdev, int vf, u16 vlan, u8 qos,
-+			  __be16 vlan_proto)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+	u16 vlanprio, cur_vlanprio;
-+
-+	sriov_info = &nic_dev->sriov_info;
-+	if (vf >= sriov_info->num_vfs || vlan > 4095 || qos > 7)
-+		return -EINVAL;
-+	if (vlan_proto != htons(ETH_P_8021Q))
-+		return -EPROTONOSUPPORT;
-+	vlanprio = vlan | qos << HINIC_VLAN_PRIORITY_SHIFT;
-+	cur_vlanprio = hinic_vf_info_vlanprio(nic_dev->hwdev,
-+					      OS_VF_ID_TO_HW(vf));
-+	/* duplicate request, so just return success */
-+	if (vlanprio == cur_vlanprio)
-+		return 0;
-+
-+	return set_hw_vf_vlan(nic_dev, cur_vlanprio, vf, vlan, qos);
-+}
-+
-+int hinic_set_vf_trust(struct hinic_hwdev *hwdev, u16 vf_id, bool trust)
-+{
-+	struct vf_data_storage *vf_infos;
-+	struct hinic_func_to_io *nic_io;
-+
-+	if (!hwdev)
-+		return -EINVAL;
-+
-+	nic_io = &hwdev->func_to_io;
-+	vf_infos = nic_io->vf_infos;
-+	vf_infos[vf_id].trust = trust;
-+
-+	return 0;
-+}
-+
-+int hinic_ndo_set_vf_trust(struct net_device *netdev, int vf, bool setting)
-+{
-+	struct hinic_dev *adapter = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+	struct hinic_func_to_io *nic_io;
-+	bool cur_trust;
-+	int err;
-+
-+	sriov_info = &adapter->sriov_info;
-+	nic_io = &adapter->hwdev->func_to_io;
-+
-+	if (vf >= sriov_info->num_vfs)
-+		return -EINVAL;
-+
-+	cur_trust = nic_io->vf_infos[vf].trust;
-+	/* same request, so just return success */
-+	if ((setting && cur_trust) || (!setting && !cur_trust))
-+		return 0;
-+
-+	err = hinic_set_vf_trust(adapter->hwdev, vf, setting);
-+	if (!err)
-+		dev_info(&sriov_info->pdev->dev, "Set VF %d trusted %s succeed\n",
-+			 vf, setting ? "on" : "off");
-+	else
-+		dev_err(&sriov_info->pdev->dev, "Failed set VF %d trusted %s\n",
-+			vf, setting ? "on" : "off");
-+
-+	return err;
-+}
-+
- /* pf receive message from vf */
- int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 			u16 in_size, void *buf_out, u16 *out_size)
-@@ -484,6 +799,9 @@ void hinic_clear_vf_infos(struct hinic_dev *nic_dev, u16 vf_id)
- 	if (hinic_vf_info_vlanprio(nic_dev->hwdev, vf_id))
- 		hinic_kill_vf_vlan(nic_dev->hwdev, vf_id);
- 
-+	if (vf_infos->trust)
-+		hinic_set_vf_trust(nic_dev->hwdev, vf_id, false);
-+
- 	memset(vf_infos, 0, sizeof(*vf_infos));
- 	/* set vf_infos to default */
- 	hinic_init_vf_infos(&nic_dev->hwdev->func_to_io, HW_VF_ID_TO_OS(vf_id));
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.h b/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-index 4889eabe7b7c..64affc7474b5 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-@@ -52,6 +52,19 @@ struct hinic_register_vf {
- 	u8	rsvd0[6];
- };
- 
-+struct hinic_port_mac_update {
-+	u8	status;
-+	u8	version;
-+	u8	rsvd0[6];
-+
-+	u16	func_id;
-+	u16	vlan_id;
-+	u16	rsvd1;
-+	u8	old_mac[ETH_ALEN];
-+	u16	rsvd2;
-+	u8	new_mac[ETH_ALEN];
-+};
-+
- struct hinic_vf_vlan_config {
- 	u8 status;
- 	u8 version;
-@@ -63,6 +76,16 @@ struct hinic_vf_vlan_config {
- 	u8  rsvd1[7];
- };
- 
-+int hinic_ndo_set_vf_mac(struct net_device *netdev, int vf, u8 *mac);
-+
-+int hinic_ndo_set_vf_vlan(struct net_device *netdev, int vf, u16 vlan, u8 qos,
-+			  __be16 vlan_proto);
-+
-+int hinic_ndo_get_vf_config(struct net_device *netdev,
-+			    int vf, struct ifla_vf_info *ivi);
-+
-+int hinic_ndo_set_vf_trust(struct net_device *netdev, int vf, bool setting);
-+
- void hinic_notify_all_vfs_link_changed(struct hinic_hwdev *hwdev,
- 				       u8 link_status);
- 
--- 
-2.17.1
+On the plus side, it _does_ seem to fix the issue.
 
+>> ---
+>>  drivers/input/joystick/xpad.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+>> index 6b40a1c68f9f..894fa81f717a 100644
+>> --- a/drivers/input/joystick/xpad.c
+>> +++ b/drivers/input/joystick/xpad.c
+>> @@ -455,7 +455,8 @@ struct xboxone_init_packet {
+>>   * or later firmware installed (or present from the factory).
+>>   */
+>>  static const u8 xboxone_fw2015_init[] = {
+>> -	0x05, 0x20, 0x00, 0x01, 0x00
+>> +	0x05, 0x20, 0x00, 0x01, 0x00,
+>> +	0x05, 0x20, 0x02, 0x0f, 0x06
+>>  };
+
+One thing that strikes me as odd about this init packet is that it looks
+like 2 packets strung together. Most of the other init packets have 0x20
+as their second byte, and there's even something resembling a sequence
+number in the third byte (0x02). Maybe these are supposed to be separate
+init packets?
+
+Hopefully we can find some init sequence that at least the One S controller
+can tolerate on all known firmware versions. If not, the firmware rev is
+available to us in bcdDevice, but I'd only like to use an explicit version
+check as a last resort.
+
+>>  /*
+>> -- 
+>> 2.26.0
+>>
+> 
+> Thanks.
+> 
+
+Regards,
+Cameron
