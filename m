@@ -2,134 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400351B2005
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2801B2014
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgDUHkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:40:23 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38100 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726628AbgDUHkW (ORCPT
+        id S1728009AbgDUHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725992AbgDUHlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:40:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587454821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+us8s3+TLsdGNnZMoTiZF6Ytfj6NBMCN4gguLEIxdtQ=;
-        b=aFGdBAseniVBn7J4fh9urCMjNgN5Bs3Y7HuxqEWLyK7fO2Z3y8Wrl5Q4rSKPYzIbGs8qRA
-        5xtYefpZuBwA6eItS0duJFgTs5dOBIcRqD/Y/upgFUL8EcQ4O8PFixUzRXx+YqgkCmKhxv
-        htfcH/3fUhVs+Tgn2X9K0ENdigZM+hs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-cl6xhkBJPzq05fL8WtJL5g-1; Tue, 21 Apr 2020 03:40:10 -0400
-X-MC-Unique: cl6xhkBJPzq05fL8WtJL5g-1
-Received: by mail-wr1-f70.google.com with SMTP id a3so7116137wro.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:40:10 -0700 (PDT)
+        Tue, 21 Apr 2020 03:41:12 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00635C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:41:11 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 18so2605342pfx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=EsNcm2QyXE0JffGh+pkvc6bbJEwtWjuB0Wr2Sf2lXbY=;
+        b=FpgGVn8b4GSV6n81bPJiJsBMDGJ9ltWjFEH7eGZkueRrdU/uIYWjlAa5QmDN9UcJAc
+         x6hXCcj7vHjmEC4Fhh/oBMIv5Uo7SQ9l8ssUV6SVOGCYO/x6+IZqrs3eL18syMLVFuXX
+         Vl48vUEOusANomqKpVSls6ToJXVO3h7cqH7soGrqEZXMkXNKLRCbuNKPvP1mF7iCcEjt
+         TPM/+XVHtAoqEY+9bUX580gZoVXx+P0A2yoylCJ2r7heBeXvr7OJDzRZ+cRNlIXUyJU/
+         NG5BpFSmYQLub0Y1koIYC3Cnzj/C97D8c/cSAj3V5uVOBVqziSEx+jjB0h/8UOC4IHIJ
+         ci2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+us8s3+TLsdGNnZMoTiZF6Ytfj6NBMCN4gguLEIxdtQ=;
-        b=XrmVQ6Y338taFmXsTlOfmyjxMk09cIaaCY+m+omllkqHw+vnMjwbIY34qk3RKIgIB0
-         6/+2/AhmMwrao/vK9v1yS6BVIclgrp9+X1YqYXGDGkVWO9OJtmY1p5/r2+Arkin9coxV
-         B4gybiysrKJZnotLVrqtCYMEQYXsn6mSq4OB+FMcREnk5qiHn+dn81hKpcB/9MEQ33PS
-         M5pbOLnSOfJ8okeJztj1qze8dqxfRjUGUNToIKt7DcSAKUVqLY/ysrWuphZSZ5F8c5ko
-         8YbzUEpXH0Nmmtu8rPKUK1LaZrGu2Z2eON6ELXh8d1RbXg+lsF5ZOCyGttOoVEn50dVE
-         dDhg==
-X-Gm-Message-State: AGi0PuZn7Jq30gfMScxXlUlmeEdiG9XcXiWhKrtWAquo+ldnO+LRYidd
-        tfPhl87AtrkqU3uCPI8Xx8sLKd+g1AKJey9JvOPIIAAMSU99Be8nP/k4q2eHPR5W9ai9O976Urv
-        0DTy5rDzEk9TQdscPGxtsCSl6
-X-Received: by 2002:a5d:4b90:: with SMTP id b16mr24211693wrt.16.1587454809426;
-        Tue, 21 Apr 2020 00:40:09 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIscKJFG2sAbiYiJ0K2c8RaMl7hB9OOkoo2bRUwbF9yAD4GP4X7AKWvXg51YPHtGx3nroITVg==
-X-Received: by 2002:a5d:4b90:: with SMTP id b16mr24211675wrt.16.1587454809210;
-        Tue, 21 Apr 2020 00:40:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id t2sm2442383wmt.15.2020.04.21.00.40.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2020 00:40:08 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: surface3_power: i2c_acpi_new_device()
- returns a PTR_ERR
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200420220421.171298-1-hdegoede@redhat.com>
- <CAHp75VfC7-saRXnGDpee1dxAqDSDcveHMoC872WN9-SL4sDH4Q@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b01d598f-f3ae-b092-3be8-07e178370289@redhat.com>
-Date:   Tue, 21 Apr 2020 09:40:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VfC7-saRXnGDpee1dxAqDSDcveHMoC872WN9-SL4sDH4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EsNcm2QyXE0JffGh+pkvc6bbJEwtWjuB0Wr2Sf2lXbY=;
+        b=L0V6KKIZEvVe2OIN6hGChCRZTIXg96LhpsZ21GABOvJSEEzNadK/8XzJ6nKBepgsus
+         nVtCcNei7CntYANIy/0CSN9cgWv3hWOcAdVqJOq0r4v/uFr6hdaXnaA2i8zJq+HkARyi
+         FGie7DKUorL51bLTKbP4Yosvd+VsKVYH+1ccchmXq8pcJKXpbImP6mX/DdIUXADclaAO
+         rMQODeB7rkkeioSf7nfoh2gpbHm2uUlcfm2ZbH6s3Z7edsbYrph8qK9gALpIdGHXHZdQ
+         smLbDki9BLK+Ud3Ayxzot6X2CY5DmZGGE1R1Vvd3Qi0X2Iydn9LhJ13/pfY1ckL3WUqL
+         V6LA==
+X-Gm-Message-State: AGi0PuZHrEUGLffnVUkH9IcQ7OrNj7Szpdp3d9fUjDnJIcAfBfe+Z+V5
+        c4J9FwT5k9iXEi/69/VLGxV+
+X-Google-Smtp-Source: APiQypKK7ZAxY6aQjP4/84tAUiZ60907CjmPq272+8pgw2xIDqFByoZSgiGyEnqElyLcf/TcF762lA==
+X-Received: by 2002:aa7:919a:: with SMTP id x26mr20333990pfa.39.1587454871426;
+        Tue, 21 Apr 2020 00:41:11 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:6289:7463:c15b:2de1:b77e:d971])
+        by smtp.gmail.com with ESMTPSA id i15sm1574564pfo.195.2020.04.21.00.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 00:41:10 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] net: qrtr: Add tracepoint support
+Date:   Tue, 21 Apr 2020 13:10:54 +0530
+Message-Id: <20200421074054.23613-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add tracepoint support for QRTR with NS as the first candidate. Later on
+this can be extended to core QRTR and transport drivers.
 
-On 4/21/20 12:33 AM, Andy Shevchenko wrote:
-> On Tue, Apr 21, 2020 at 1:04 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> i2c_acpi_new_device() never returns NULL, it either returns an i2c_client
->> or a PTR_ERR. Adjust the mshw0011_probe() error handling to take this
->> into account.
->>
->> Note the goto out_err will cause i2c_unregister_device() to get called
->> even though the i2c_acpi_new_device() fails, this is ok as it accepts
->> a NULL pointer argument (and treats it as a no-op).
->>
-> 
-> Thanks, I guess it repeats [1].
-> 
-> [1]: http://git.infradead.org/linux-platform-drivers-x86.git/commitdiff/4dbccb873f2b35ad1b26419ff88c80509e2d4cbb
+The trace_printk() used in NS has been replaced by tracepoints.
 
-I guess it does and Dan's solution for the error handling is
-claner then mine, a direct return indeed is the proper thing
-to do here.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ include/trace/events/qrtr.h | 115 ++++++++++++++++++++++++++++++++++++
+ net/qrtr/ns.c               |  20 ++++---
+ 2 files changed, 126 insertions(+), 9 deletions(-)
+ create mode 100644 include/trace/events/qrtr.h
 
-Regards,
-
-Hans
-
-
-
-> 
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>   drivers/platform/x86/surface3_power.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/platform/x86/surface3_power.c b/drivers/platform/x86/surface3_power.c
->> index 946ac2dc08ae..32e6e86e27dd 100644
->> --- a/drivers/platform/x86/surface3_power.c
->> +++ b/drivers/platform/x86/surface3_power.c
->> @@ -522,8 +522,10 @@ static int mshw0011_probe(struct i2c_client *client)
->>          strlcpy(board_info.type, "MSHW0011-bat0", I2C_NAME_SIZE);
->>
->>          bat0 = i2c_acpi_new_device(dev, 1, &board_info);
->> -       if (!bat0)
->> -               return -ENOMEM;
->> +       if (IS_ERR(bat0)) {
->> +               error = PTR_ERR(bat0);
->> +               goto out_err;
->> +       }
->>
->>          data->bat0 = bat0;
->>          i2c_set_clientdata(bat0, data);
->> --
->> 2.26.0
->>
-> 
-> 
+diff --git a/include/trace/events/qrtr.h b/include/trace/events/qrtr.h
+new file mode 100644
+index 000000000000..b1de14c3bb93
+--- /dev/null
++++ b/include/trace/events/qrtr.h
+@@ -0,0 +1,115 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM qrtr
++
++#if !defined(_TRACE_QRTR_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_QRTR_H
++
++#include <linux/qrtr.h>
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(qrtr_ns_service_announce_new,
++
++	TP_PROTO(__le32 service, __le32 instance, __le32 node, __le32 port),
++
++	TP_ARGS(service, instance, node, port),
++
++	TP_STRUCT__entry(
++		__field(__le32, service)
++		__field(__le32, instance)
++		__field(__le32, node)
++		__field(__le32, port)
++	),
++
++	TP_fast_assign(
++		__entry->service = service;
++		__entry->instance = instance;
++		__entry->node = node;
++		__entry->port = port;
++	),
++
++	TP_printk("advertising new server [%d:%x]@[%d:%d]",
++		  __entry->service, __entry->instance, __entry->node,
++		  __entry->port
++	)
++);
++
++TRACE_EVENT(qrtr_ns_service_announce_del,
++
++	TP_PROTO(__le32 service, __le32 instance, __le32 node, __le32 port),
++
++	TP_ARGS(service, instance, node, port),
++
++	TP_STRUCT__entry(
++		__field(__le32, service)
++		__field(__le32, instance)
++		__field(__le32, node)
++		__field(__le32, port)
++	),
++
++	TP_fast_assign(
++		__entry->service = service;
++		__entry->instance = instance;
++		__entry->node = node;
++		__entry->port = port;
++	),
++
++	TP_printk("advertising removal of server [%d:%x]@[%d:%d]",
++		  __entry->service, __entry->instance, __entry->node,
++		  __entry->port
++	)
++);
++
++TRACE_EVENT(qrtr_ns_server_add,
++
++	TP_PROTO(__le32 service, __le32 instance, __le32 node, __le32 port),
++
++	TP_ARGS(service, instance, node, port),
++
++	TP_STRUCT__entry(
++		__field(__le32, service)
++		__field(__le32, instance)
++		__field(__le32, node)
++		__field(__le32, port)
++	),
++
++	TP_fast_assign(
++		__entry->service = service;
++		__entry->instance = instance;
++		__entry->node = node;
++		__entry->port = port;
++	),
++
++	TP_printk("add server [%d:%x]@[%d:%d]",
++		  __entry->service, __entry->instance, __entry->node,
++		  __entry->port
++	)
++);
++
++TRACE_EVENT(qrtr_ns_message,
++
++	TP_PROTO(const char * const ctrl_pkt_str, __u32 sq_node, __u32 sq_port),
++
++	TP_ARGS(ctrl_pkt_str, sq_node, sq_port),
++
++	TP_STRUCT__entry(
++		__string(ctrl_pkt_str, ctrl_pkt_str)
++		__field(__u32, sq_node)
++		__field(__u32, sq_port)
++	),
++
++	TP_fast_assign(
++		__assign_str(ctrl_pkt_str, ctrl_pkt_str);
++		__entry->sq_node = sq_node;
++		__entry->sq_port = sq_port;
++	),
++
++	TP_printk("%s from %d:%d",
++		  __get_str(ctrl_pkt_str), __entry->sq_node, __entry->sq_port
++	)
++);
++
++#endif /* _TRACE_QRTR_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index a703d4fbdedf..4b0cffdcfed1 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -12,6 +12,9 @@
+ 
+ #include "qrtr.h"
+ 
++#define CREATE_TRACE_POINTS
++#include <trace/events/qrtr.h>
++
+ static RADIX_TREE(nodes, GFP_KERNEL);
+ 
+ static struct {
+@@ -105,8 +108,8 @@ static int service_announce_new(struct sockaddr_qrtr *dest,
+ 	struct msghdr msg = { };
+ 	struct kvec iv;
+ 
+-	trace_printk("advertising new server [%d:%x]@[%d:%d]\n",
+-		     srv->service, srv->instance, srv->node, srv->port);
++	trace_qrtr_ns_service_announce_new(srv->service, srv->instance,
++					   srv->node, srv->port);
+ 
+ 	iv.iov_base = &pkt;
+ 	iv.iov_len = sizeof(pkt);
+@@ -132,8 +135,8 @@ static int service_announce_del(struct sockaddr_qrtr *dest,
+ 	struct kvec iv;
+ 	int ret;
+ 
+-	trace_printk("advertising removal of server [%d:%x]@[%d:%d]\n",
+-		     srv->service, srv->instance, srv->node, srv->port);
++	trace_qrtr_ns_service_announce_del(srv->service, srv->instance,
++					   srv->node, srv->port);
+ 
+ 	iv.iov_base = &pkt;
+ 	iv.iov_len = sizeof(pkt);
+@@ -244,8 +247,8 @@ static struct qrtr_server *server_add(unsigned int service,
+ 
+ 	radix_tree_insert(&node->servers, port, srv);
+ 
+-	trace_printk("add server [%d:%x]@[%d:%d]\n", srv->service,
+-		     srv->instance, srv->node, srv->port);
++	trace_qrtr_ns_server_add(srv->service, srv->instance,
++				 srv->node, srv->port);
+ 
+ 	return srv;
+ 
+@@ -633,9 +636,8 @@ static void qrtr_ns_worker(struct work_struct *work)
+ 		cmd = le32_to_cpu(pkt->cmd);
+ 		if (cmd < ARRAY_SIZE(qrtr_ctrl_pkt_strings) &&
+ 		    qrtr_ctrl_pkt_strings[cmd])
+-			trace_printk("%s from %d:%d\n",
+-				     qrtr_ctrl_pkt_strings[cmd], sq.sq_node,
+-				     sq.sq_port);
++			trace_qrtr_ns_message(qrtr_ctrl_pkt_strings[cmd],
++					      sq.sq_node, sq.sq_port);
+ 
+ 		ret = 0;
+ 		switch (cmd) {
+-- 
+2.17.1
 
