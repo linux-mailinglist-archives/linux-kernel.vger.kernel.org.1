@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181361B32B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37161B32B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgDUWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 18:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        id S1726335AbgDUWor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 18:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725850AbgDUWl4 (ORCPT
+        by vger.kernel.org with ESMTP id S1725850AbgDUWor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 18:41:56 -0400
+        Tue, 21 Apr 2020 18:44:47 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B80C0610D5;
-        Tue, 21 Apr 2020 15:41:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4AC0610D5;
+        Tue, 21 Apr 2020 15:44:47 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id BCEF3128E6F27;
-        Tue, 21 Apr 2020 15:41:54 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 15:41:53 -0700 (PDT)
-Message-Id: <20200421.154153.172396683183248740.davem@davemloft.net>
-To:     vee.khee.wong@intel.com
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boon.leong.ong@intel.com, weifeng.voon@intel.com
-Subject: Re: [PATCH net-next 1/1] net: stmmac: Add support for VLAN
- promiscuous mode
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B3557128E927C;
+        Tue, 21 Apr 2020 15:44:46 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 15:44:46 -0700 (PDT)
+Message-Id: <20200421.154446.751452614071821376.davem@davemloft.net>
+To:     jslaby@suse.cz
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zeil@yandex-team.ru,
+        khlebnikov@yandex-team.ru
+Subject: Re: [PATCH] cgroup, netclassid: remove double cond_resched
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200420033359.11610-1-vee.khee.wong@intel.com>
-References: <20200420033359.11610-1-vee.khee.wong@intel.com>
+In-Reply-To: <20200420070424.5694-1-jslaby@suse.cz>
+References: <20200420070424.5694-1-jslaby@suse.cz>
 X-Mailer: Mew version 6.8 on Emacs 26.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Apr 2020 15:41:55 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Apr 2020 15:44:47 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@intel.com>
-Date: Mon, 20 Apr 2020 11:33:59 +0800
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Mon, 20 Apr 2020 09:04:24 +0200
 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index e6898fd5223f..80250c7be783 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -4877,7 +4877,6 @@ int stmmac_dvr_probe(struct device *device,
->  		}
->  	}
->  
-> -	ndev->features |= ndev->hw_features | NETIF_F_HIGHDMA;
->  	ndev->watchdog_timeo = msecs_to_jiffies(watchdog);
->  #ifdef STMMAC_VLAN_TAG_USED
->  	/* Both mac100 and gmac support receive VLAN tag detection */
-> @@ -4892,6 +4891,7 @@ int stmmac_dvr_probe(struct device *device,
->  			ndev->features |= NETIF_F_HW_VLAN_STAG_TX;
->  	}
->  #endif
-> +	ndev->features |= ndev->hw_features | NETIF_F_HIGHDMA;
->  	priv->msg_enable = netif_msg_init(debug, default_msg_level);
+> Commit 018d26fcd12a ("cgroup, netclassid: periodically release file_lock
+> on classid") added a second cond_resched to write_classid indirectly by
+> update_classid_task. Remove the one in write_classid.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 
-This change has no effect, because hw_features does not change across
-this code block you are moving the line across.
-
-So please remove this part of the patch it is pointless and makes your
-change harder to review.
-
+Applied, thanks Jiri.
