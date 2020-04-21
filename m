@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A9A1B308F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F21B3092
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgDUTkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39134 "EHLO mail.kernel.org"
+        id S1726414AbgDUTkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgDUTkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:40:20 -0400
-Subject: Re: [GIT PULL] clang-format for v5.7-rc3
+        id S1726378AbgDUTkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 15:40:21 -0400
+Subject: Re: [GIT PULL v2] vhost: cleanups and fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587498020;
-        bh=dhpbCkrLy7p5CAz05wbgfDX4RpRhkt6f9Kq1JAYI4vA=;
+        bh=EdT/q7UFfZCJ31DJSxP12Wv8fYBVt6LXEKfaUOq3cKk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gVPo6iq26J/jcloFwBYzfOEb5ThvafgR2hKAKczhArhJZre3cuzBWNNHd50C5YP10
-         5512huLVEOgMmN9FD0E0Q2R+osbeSUOkPJOQKbhmTlfeq/EoJgcqso7wQdQjaT82HU
-         JBT7s20rTseEw84Cf4lPYmFqb2UCxS6GZJNFugys=
+        b=ksZauvLKnCWKE88mDN9PHb1ELnMSZjfAyUeR5AXARuo99zjbilN/ya1702AYdcM1l
+         WFr/a4K6IQ49UcRqh/Y+GLb/yRqOITIctLlddEepYymYB8mQCCjoeW4qspaTJIsd8e
+         6Q0kIG/VXukPYsyypOicpW6i97bM40fb+8l3dREU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200420190916.GA11695@gmail.com>
-References: <20200420190916.GA11695@gmail.com>
+In-Reply-To: <20200420160001-mutt-send-email-mst@kernel.org>
+References: <20200420160001-mutt-send-email-mst@kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200420190916.GA11695@gmail.com>
-X-PR-Tracked-Remote: https://github.com/ojeda/linux.git
- tags/clang-format-for-linus-v5.7-rc3
-X-PR-Tracked-Commit-Id: 5d65a0218fee471e2cd512a8139ec857183b4721
+X-PR-Tracked-Message-Id: <20200420160001-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: d085eb8ce727e581abf8145244eaa3339021be2f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 20f16489093e90640a6a698d636f654a792806bd
-Message-Id: <158749802033.25518.734411973050561323.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 189522da8b3a796d56d802e067d591d2ffff7f40
+Message-Id: <158749802063.25518.14503910452719540577.pr-tracker-bot@kernel.org>
 Date:   Tue, 21 Apr 2020 19:40:20 +0000
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Rogers <irogers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alexander.h.duyck@linux.intel.com, arnd@arndb.de,
+        bjorn.andersson@linaro.org, eli@mellanox.com, eperezma@redhat.com,
+        gustavo@embeddedor.com, hulkci@huawei.com, jasowang@redhat.com,
+        mst@redhat.com, sfr@canb.auug.org.au, yanaijie@huawei.com,
+        yuehaibing@huawei.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 20 Apr 2020 21:09:16 +0200:
+The pull request you sent on Mon, 20 Apr 2020 16:00:01 -0400:
 
-> https://github.com/ojeda/linux.git tags/clang-format-for-linus-v5.7-rc3
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/20f16489093e90640a6a698d636f654a792806bd
+https://git.kernel.org/torvalds/c/189522da8b3a796d56d802e067d591d2ffff7f40
 
 Thank you!
 
