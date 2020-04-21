@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234D31B2CEC
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9DE1B2CED
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 18:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgDUQjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 12:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S1729291AbgDUQju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 12:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729246AbgDUQjp (ORCPT
+        by vger.kernel.org with ESMTP id S1726378AbgDUQjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:39:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A481EC061BD3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id u13so17202201wrp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:44 -0700 (PDT)
+        Tue, 21 Apr 2020 12:39:46 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B262C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:45 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id x18so17228648wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 09:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Jpek3q2loqJyecaKq8eFZOLHe2Q7PPqEkKIKbdnjsuc=;
-        b=syXioSJXMr4c9pygdNpcUDoH20cDfYzVNEWQcBHBbPsiFIpKXIkAlDIGG3enBDdfn+
-         7VrL6RPKhLMMyFHRQv54Sxk2p/AcaijAKWvoKvOKVgBSZ0vdtGwXGEDVYqC1FRsq/9rv
-         CpyV36l5a3YMzK2X9kUOOaD9BE0WXjLs7hkNax84I6TrJ8NcTGv1ed+YnZ2d7HB20Tgh
-         Zb+hsZmN+ufYGqAbV81sVyN67XRjd77C8czj3E7Cn0LftQDT+XXE4xYaAdl5KEnzYdTA
-         txRuWeEhMlBrcE3NjgccoMn9JVojH63mwB7j/aT/DGdMclxEP2WZBkZNZjd6gOSiqUCA
-         5VdQ==
+        bh=xKmLK36D5ePOofNh2z9LJJY0hW0yXIObsbFpgPZ4stA=;
+        b=scFSd6kR22NbefgQCOOBhngvbiZ0c31M3dTEIx5F3Sk7pmhEHNgXb0e4EY/+qdEVZb
+         LSd4lsTRzs61FMxbJXUeLO8lrgMcTLBhS4S3shrg4R3iX8mK2WsW8kWw4CAjaVV0pu+g
+         JBP9z2wAGV1MAp3XFBoFkqadch7J5IaEGeMRp3yKO4kSElsCV/RmnWrlFYvZS5YYCRzZ
+         RMYFL1qkQfaz0kR+F1qVI7G2Ehxh02OSL1puncdK6tYCctggrG5oQXU32trYEwrFmOd+
+         95hFn2JTWb2LbGvo/STySUHpMhGmer+53SB2HYv9toAW/M7+wRAJuSelYriub74Iw/G7
+         m2ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Jpek3q2loqJyecaKq8eFZOLHe2Q7PPqEkKIKbdnjsuc=;
-        b=KOfIV3P1L/x7wAQ+fFsF27A6DyaIlEPvHBN2e1dRLVwqgP7WW5IyTtfSfNn2Y+hbok
-         h7X+XK3DfruNyWL+u2czLBovgpFAtA8tLXpm5C7Qr+XehxIHhWh6tQcNt1qNtWz56L7x
-         U8iJTKCUFIZwHb4/PMAvvSdN23Q0eUOYadJKslvi7oRB4r7Gpfsf2Ubk0tPI0JqAv/dC
-         ppJoeQM4fyukkTxs2DA9Mpz8C3sBtJM/vLydsyGTENHiZ0K7boIMCpyPwurDvpOMNvDC
-         JG2HHxQWlMV5gDH/6ks48C6YGYDDiRJFr5NF147SDyjkmfDQZV5HkIiYzXeqPMaEV2/4
-         A07A==
-X-Gm-Message-State: AGi0PuZ9wd/oyZl1Vd2rbz7z0waLKINjS9PlgIlty6ziIaYRsPkRc9tv
-        iogvxOe55gYm34TuW7qnKXw6ybHHrDk=
-X-Google-Smtp-Source: APiQypL2NjtboQWhtG5PhzxZLO8YuWESCro1o+9YaZTPQGbfw0/sKj8ABVJHP5tMcwb+y/vdXnhDWA==
-X-Received: by 2002:a5d:68ca:: with SMTP id p10mr25089530wrw.154.1587487183317;
-        Tue, 21 Apr 2020 09:39:43 -0700 (PDT)
+        bh=xKmLK36D5ePOofNh2z9LJJY0hW0yXIObsbFpgPZ4stA=;
+        b=fAgbxhdV2roCDzsXec/MN0IcODEtnEkqV0IlzrerQAHPxrI63e1YuYlLWhl/n42/bL
+         IJM9Uxk3GtWtyHhzjlyqUlK7Nn6imN3k1bE+kLgzUd5nhaVNnuV+MkwJExDE6zLMJh18
+         JdEswIy5O7EzVlv1UMedGJHG0uTQfjeC+1WQy/oEE8I3K7WgVscJcuqnrZTkS11RPknR
+         x2fcm5/1PbT1Z9yqn5zxIK7qOMCe7j+UXcaf3Gm2YfOmgb5oGpjNu6iclegXh2xY3Ngo
+         /sekukimVe4T+RxlmnEhU3/B79Im5jUYPsNwBnOk8bmP752T1HJ5f/EGZc0AhI/lCpo6
+         dTuA==
+X-Gm-Message-State: AGi0Pubs0Y22BHf7fL8fMZBZsUVuDMNFujhr5Vu0u9AU5wb7kv5Z9fn0
+        ejqJijcp2/A5uhr9+y3BmY+98w==
+X-Google-Smtp-Source: APiQypKHfmUFprFdhBnn15JljJ7ABZ+0AZ4k8oC4dbcrvuMDjJGGxwmN08jYLL77CoC8E5twQzp7fQ==
+X-Received: by 2002:adf:84c1:: with SMTP id 59mr25438014wrg.350.1587487184369;
+        Tue, 21 Apr 2020 09:39:44 -0700 (PDT)
 Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.googlemail.com with ESMTPSA id 33sm4578513wrp.5.2020.04.21.09.39.42
+        by smtp.googlemail.com with ESMTPSA id 33sm4578513wrp.5.2020.04.21.09.39.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 09:39:42 -0700 (PDT)
+        Tue, 21 Apr 2020 09:39:43 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Kevin Hilman <khilman@baylibre.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] arm64: dts: meson: p230-q200: add initial audio playback support
-Date:   Tue, 21 Apr 2020 18:39:32 +0200
-Message-Id: <20200421163935.775935-4-jbrunet@baylibre.com>
+Subject: [PATCH 4/6] arm64: dts: meson: libretech-cc: add initial audio playback support
+Date:   Tue, 21 Apr 2020 18:39:33 +0200
+Message-Id: <20200421163935.775935-5-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200421163935.775935-1-jbrunet@baylibre.com>
 References: <20200421163935.775935-1-jbrunet@baylibre.com>
@@ -67,48 +67,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic audio support on the p230/q200 reference design.
-This initial support is limited to HDMI i2s and SPDIF (LPCM).
+Add initial audio support limited to HDMI i2s.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../boot/dts/amlogic/meson-gx-p23x-q20x.dtsi  | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ .../amlogic/meson-gxl-s905x-libretech-cc.dts  | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-index 12d5e333e5f2..99c1f7f9d37e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-@@ -8,12 +8,21 @@
-  * the pin-compatible S912 (GXM) or S905D (GXL) SoCs.
-  */
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
+index e8348b2728db..4c9dded836e2 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
+@@ -8,6 +8,7 @@
+ /dts-v1/;
  
+ #include <dt-bindings/input/input.h>
 +#include <dt-bindings/sound/meson-aiu.h>
-+
- / {
- 	aliases {
- 		serial0 = &uart_AO;
- 		ethernet0 = &ethmac;
- 	};
  
-+	spdif_dit: audio-codec-0 {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+		status = "okay";
-+		sound-name-prefix = "DIT";
-+	};
-+
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-@@ -102,6 +111,60 @@ hdmi_connector_in: endpoint {
- 			};
- 		};
+ #include "meson-gxl-s905x.dtsi"
+ 
+@@ -124,6 +125,45 @@ vddio_boot: regulator-vddio_boot {
+ 		regulator-max-microvolt = <1800000>;
+ 		vin-supply = <&vcc_3v3>;
  	};
 +
 +	sound {
 +		compatible = "amlogic,gx-sound-card";
-+		model = "GX-P230-Q200";
++		model = "GXL-LIBRETECH-S905X-CC";
 +		assigned-clocks = <&clkc CLKID_MPLL0>,
 +				  <&clkc CLKID_MPLL1>,
 +				  <&clkc CLKID_MPLL2>;
@@ -123,10 +108,6 @@ index 12d5e333e5f2..99c1f7f9d37e 100644
 +		};
 +
 +		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-+		};
-+
-+		dai-link-2 {
 +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
 +			dai-format = "i2s";
 +			mclk-fs = <256>;
@@ -136,15 +117,7 @@ index 12d5e333e5f2..99c1f7f9d37e 100644
 +			};
 +		};
 +
-+		dai-link-3 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
-+
-+			codec-0 {
-+				sound-dai = <&spdif_dit>;
-+			};
-+		};
-+
-+		dai-link-4 {
++		dai-link-2 {
 +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
 +
 +			codec-0 {
@@ -156,9 +129,6 @@ index 12d5e333e5f2..99c1f7f9d37e 100644
 +
 +&aiu {
 +	status = "okay";
-+	pinctrl-0 = <&spdif_out_h_pins>;
-+	pinctrl-names = "default";
-+
  };
  
  &cec_AO {
