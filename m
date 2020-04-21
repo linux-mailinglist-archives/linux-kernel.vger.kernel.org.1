@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2991B305D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1701B3061
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgDUTbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgDUTbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:31:33 -0400
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 781A72074B;
-        Tue, 21 Apr 2020 19:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587497492;
-        bh=FbedF9MkS5eUgPiKSYbu2gEhsu/YFqRKU2igx1LyO0A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=heh7HSg0OO64M2XG26/1/H7Oyc2lGiZMLU3ctWLMjlBATqKdQ+oKtEuw79g7TPuuX
-         ni5S9ABu+Pcl8TRa74jXlwPCWOhIgEhkx/VuVt+4Rer7X20zdyhMZDtndDzN0qPA7G
-         gkzwg90dVHF6QaHFW5p9G5n/JVJSu7bj1uoGr+KA=
-Received: by mail-qk1-f173.google.com with SMTP id x66so15764017qkd.9;
-        Tue, 21 Apr 2020 12:31:32 -0700 (PDT)
-X-Gm-Message-State: AGi0Pua9gKhpMXo5Jo534kblIwhb2uYQAc48cy+ZB9ocLzYR4K0j2q1M
-        ERHtSprdzr4hJC9yqKduqezcghDoqBP63sIonA==
-X-Google-Smtp-Source: APiQypK+SNrDy3Sm4PczTJQzUksQronXA87RGw2UOqjJ46tD8crLtew/o7kmZa8CWFruSj8e2XxBtDl12SpaD3UpgRg=
-X-Received: by 2002:a37:61cd:: with SMTP id v196mr22897372qkb.393.1587497491552;
- Tue, 21 Apr 2020 12:31:31 -0700 (PDT)
+        id S1726363AbgDUTb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725987AbgDUTb5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 15:31:57 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E9DC03C1A6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 12:31:57 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id nu11so1841950pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 12:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=NZNBzPPg39ZyrA+9K1+5SfyJG/p/D3ab1EaiN8kOOpQ=;
+        b=D5E4GkQI8kMxBOpuDMOjkCGLYjzhv9SzQx5s04xfcN97rcZAXp10VOjQbSAr2Va2Ep
+         xOLMpcHjY6zHeW3ZNP3LQzJ0SI8bn5J7t4sslKU5XoQ8Hh7f/hmV2OTnxPoAF8Ci6nyN
+         khM6ZLtn45Nblr0G9fbnMUFmCSjbE687sAfFlBF1OaQI60mi6gjnomTCbesFpqhm3BVV
+         RD+IOKedrI/zH7nugKGj5JxvNaJpwHc7iAPT/cZDE2h8z/lyWZ5haQUSHayyaaVJjnis
+         3vFRPZc89wAtD42w3NPuMAAgRbODqu8Ixx1ApaoC8jSjx15fAdrO1g+HM4T+YSNo5KeE
+         imow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=NZNBzPPg39ZyrA+9K1+5SfyJG/p/D3ab1EaiN8kOOpQ=;
+        b=QmG7nGKpi91be4YrszETDbDO0yy6sMnNWy8tTgIhDArN5szUopUbB1vWyPLFKKyiT8
+         pvSWbI43f921L1VQKORVD0OA09RFk3iOtuWcye+jgAGzNdelwSZHXs1q9DMBnH8PKqDE
+         3ng1FzCwQLqzF8nherTw/aUGTMAo4an6lzBXHyqqpJjGM0261+tL5mrhSILl3yigr50s
+         V06sWK9cX04StfJ0bafszEQl/FhOL5dukS72OPuw7nS88DP9gQlZ/GTxjxGFxDzVMhBl
+         kIa3I82Dq+kVz8+DQgrI006j3LYHJfybDod8niOkmqYIhJpfDZcZ+xsYQhQEg9osGixq
+         iE2w==
+X-Gm-Message-State: AGi0PuZQUCgJ7VsNSAzN5nPUtH5XNEowsHjWOWMOFYm28crgVMwmEv6L
+        sgnUI0goSpXU8Urzy/rENZqorQ==
+X-Google-Smtp-Source: APiQypJFBgqr1TsKQVWWIkIK19DIg+mC/W2jjmH2JPSKGjxUsdqPajleKdFLi5uyE7M2nN3ydVuYqg==
+X-Received: by 2002:a17:902:c193:: with SMTP id d19mr21224614pld.184.1587497516540;
+        Tue, 21 Apr 2020 12:31:56 -0700 (PDT)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id y25sm2998977pgc.36.2020.04.21.12.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 12:31:55 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 12:31:54 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 2/5] mm: remove watermark_boost_factor_sysctl_handler
+In-Reply-To: <20200421171539.288622-3-hch@lst.de>
+Message-ID: <alpine.DEB.2.22.394.2004211231410.54578@chino.kir.corp.google.com>
+References: <20200421171539.288622-1-hch@lst.de> <20200421171539.288622-3-hch@lst.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20200229003731.2728-1-robh@kernel.org> <20200421100749.GA5429@pendragon.ideasonboard.com>
- <CAK7LNARvPytUQoncngLe=s-TzQByQCXd64H99UgrW40=X34JyQ@mail.gmail.com>
- <20200421110537.GC5983@pendragon.ideasonboard.com> <CAK7LNAQtfyqfbQx2ivg=sVdhxDH9ShVBa+bL-4sC7MU1N=y+cw@mail.gmail.com>
- <20200421134654.GD5983@pendragon.ideasonboard.com> <CAL_JsqJQpwN4tH0KWOB1s6NWf3sRqqGRsRiKazi=CJGCwb2T+Q@mail.gmail.com>
- <CAK7LNASe9ahgo04=cAuXcsaoffb9CtnUCYOObJd5=Awaak+YZw@mail.gmail.com>
-In-Reply-To: <CAK7LNASe9ahgo04=cAuXcsaoffb9CtnUCYOObJd5=Awaak+YZw@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 21 Apr 2020 14:31:19 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKV4UQeSX1ArJb4es1_kkMp1kbkd2kd17qVc=Oy988F7Q@mail.gmail.com>
-Message-ID: <CAL_JsqKV4UQeSX1ArJb4es1_kkMp1kbkd2kd17qVc=Oy988F7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] kbuild: Always validate DT binding examples
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:57 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Hi Rob,
->
->
-> On Tue, Apr 21, 2020 at 11:01 PM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > It seems to only fail with out of tree builds (O=...). I expect that
-> > > failures will become more common the more YAML bindings we have, even
-> > > without long directory names.
-> >
-> > dt-mk-schema can take and recurse a single directory already, so does
-> > this fix it for you:
-> >
-> > @@ -22,7 +22,7 @@ $(obj)/%.example.dts: $(src)/%.yaml
-> > check_dtschema_version FORCE
-> >  DT_TMP_SCHEMA := $(obj)/processed-schema-examples.yaml
-> >
-> >  quiet_cmd_mk_schema = SCHEMA  $@
-> > -      cmd_mk_schema = $(DT_MK_SCHEMA) $(DT_MK_SCHEMA_FLAGS) -o $@
-> > $(real-prereqs)
-> > +      cmd_mk_schema = $(DT_MK_SCHEMA) $(DT_MK_SCHEMA_FLAGS) -o $@
-> > $(srctree)/$(src)
->
->
-> I am just curious.
->
-> How come the tool excludes 'processed-schema*' and '*.example.dt.yaml'
-> from $(srctree)/$(src) ?
+On Tue, 21 Apr 2020, Christoph Hellwig wrote:
 
-Uggg, it wouldn't. Can't everyone build out of tree. ;) I guess the options are:
+> watermark_boost_factor_sysctl_handler is just a pointless wrapper for
+> proc_dointvec_minmax, so remove it and use proc_dointvec_minmax
+> directly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-- Call dt-mk-schema on each file individually appending the result
-- Make dt-mk-schema take stdin or a file with a list of files as
-Masahiro suggested
-
-I'd like to avoid a dt-mk-schema change so I'll try to make the former
-work. It's only been a day since adding a minimum version. :(
-
-Rob
+Acked-by: David Rientjes <rientjes@google.com>
