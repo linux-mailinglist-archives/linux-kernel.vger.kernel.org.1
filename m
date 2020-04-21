@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50F1B2181
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9A91B2193
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbgDUIXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:23:48 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46132 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUIXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:23:48 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jQoC0-0001S4-JW; Tue, 21 Apr 2020 10:23:44 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Johan Jonker <jbx6244@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH 1/3] arm64: dts: rockchip: add bus-width properties to mmc nodes for rk3328.dtsi
-Date:   Tue, 21 Apr 2020 10:23:43 +0200
-Message-ID: <2710874.PL6qFFFsBp@diego>
-In-Reply-To: <CAGb2v67N6t+C8dVKdjuOv1NzD9=3-n0GZQkshy1Pm6PFPJ87dQ@mail.gmail.com>
-References: <20200416181944.5879-1-jbx6244@gmail.com> <CAGb2v67N6t+C8dVKdjuOv1NzD9=3-n0GZQkshy1Pm6PFPJ87dQ@mail.gmail.com>
+        id S1728248AbgDUI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:29:32 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40828 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726018AbgDUI3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:29:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TwDHj5a_1587457757;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwDHj5a_1587457757)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Apr 2020 16:29:17 +0800
+Subject: Re: [PATCH 01/18] mm: fix NUMA node file count error in
+ replace_page_cache()
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <js1304@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200420221126.341272-1-hannes@cmpxchg.org>
+ <20200420221126.341272-2-hannes@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <c5c379d5-d580-58ec-c9d1-f05d6cdc57b4@linux.alibaba.com>
+Date:   Tue, 21 Apr 2020 16:28:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200420221126.341272-2-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ChenYu,
 
-Am Dienstag, 21. April 2020, 05:48:52 CEST schrieb Chen-Yu Tsai:
-> On Fri, Apr 17, 2020 at 2:19 AM Johan Jonker <jbx6244@gmail.com> wrote:
-> >
-> > 'bus-width' and pinctrl containing the bus-pins
-> > should be in the same file, so add them to
-> > all mmc nodes in 'rk3328.dtsi'.
+
+ÔÚ 2020/4/21 ÉÏÎç6:11, Johannes Weiner Ð´µÀ:
+> When replacing one page with another one in the cache, we have to
+> decrease the file count of the old page's NUMA node and increase the
+> one of the new NUMA node, otherwise the old node leaks the count and
+> the new node eventually underflows its counter.
 > 
-> Nope. First of all, pinctrl usage is with pinctrl-N properties, not the
-> pinctrl device, and there are no defaults set for any of the mmc nodes.
-> Second, these are board design specific. For example, boards are free to
-> use just 4 bits for the eMMC if they so desire. So this should be in each
-> board dts file. If a board is missing this property, fix the board.
+> Fixes: 74d609585d8b ("page cache: Add and replace pages using the XArray")
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-you are correct that the pinctrl entries are missing from the patches,
-bus-width and pinctrl should be defined in the same file each time,
-but for the whole idea I tend to disagree. 
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-So far every board with a Rockchip socs follows Rockchip's reference design
-for a lot of parts - for example I only see sdmmc nodes with bus-width=4
-etc.
-
-So the basic idea is to have default pinctrl settings for the settings
-everybody uses predefined ... if a board comes along that needs different
-settings it is free to redefine that.
-
-
-Heiko
-
-
+> ---
+>  mm/filemap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> This applies to all three patches in the series.
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 23a051a7ef0f..49e3b5da0216 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -808,11 +808,11 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
+>  	old->mapping = NULL;
+>  	/* hugetlb pages do not participate in page cache accounting. */
+>  	if (!PageHuge(old))
+> -		__dec_node_page_state(new, NR_FILE_PAGES);
+> +		__dec_node_page_state(old, NR_FILE_PAGES);
+>  	if (!PageHuge(new))
+>  		__inc_node_page_state(new, NR_FILE_PAGES);
+>  	if (PageSwapBacked(old))
+> -		__dec_node_page_state(new, NR_SHMEM);
+> +		__dec_node_page_state(old, NR_SHMEM);
+>  	if (PageSwapBacked(new))
+>  		__inc_node_page_state(new, NR_SHMEM);
+>  	xas_unlock_irqrestore(&xas, flags);
 > 
-> ChenYu
-> 
-> > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk3328.dtsi | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> > index 175060695..db2c3085e 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> > @@ -861,6 +861,7 @@
-> >                 clocks = <&cru HCLK_SDMMC>, <&cru SCLK_SDMMC>,
-> >                          <&cru SCLK_SDMMC_DRV>, <&cru SCLK_SDMMC_SAMPLE>;
-> >                 clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> > +               bus-width = <4>;
-> >                 fifo-depth = <0x100>;
-> >                 max-frequency = <150000000>;
-> >                 status = "disabled";
-> > @@ -873,6 +874,7 @@
-> >                 clocks = <&cru HCLK_SDIO>, <&cru SCLK_SDIO>,
-> >                          <&cru SCLK_SDIO_DRV>, <&cru SCLK_SDIO_SAMPLE>;
-> >                 clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> > +               bus-width = <4>;
-> >                 fifo-depth = <0x100>;
-> >                 max-frequency = <150000000>;
-> >                 status = "disabled";
-> > @@ -885,6 +887,7 @@
-> >                 clocks = <&cru HCLK_EMMC>, <&cru SCLK_EMMC>,
-> >                          <&cru SCLK_EMMC_DRV>, <&cru SCLK_EMMC_SAMPLE>;
-> >                 clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-> > +               bus-width = <8>;
-> >                 fifo-depth = <0x100>;
-> >                 max-frequency = <150000000>;
-> >                 status = "disabled";
-> > --
-> > 2.11.0
-> >
-> >
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
-
-
-
