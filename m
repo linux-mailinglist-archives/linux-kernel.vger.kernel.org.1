@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E4A1B2F37
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA51B2F3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgDUSgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:36:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59291 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725930AbgDUSgj (ORCPT
+        id S1729400AbgDUSh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728419AbgDUSh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:36:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587494198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N+egMlziICIn0HZu55lHO2iyEJMLClNgk/sWJCpumsI=;
-        b=fR+VW0xXZV4EeMGa3ewMTB+q8eq9ynt6s0J4FfJl8JXAf4jksSb0N/uP1jQxxDVKpIILsY
-        AP+2F0R/Rr3N8drHeZKO/j349USJAr954kXotP58en0zA/Hl/Da2R5HRyekrJm4ynxtWcv
-        dlNJqCA1m/LIbwZMYzmz55bgmYaIBJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-xKU0VjHEOtivNHFtjVy3Tw-1; Tue, 21 Apr 2020 14:36:36 -0400
-X-MC-Unique: xKU0VjHEOtivNHFtjVy3Tw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A827A107ACC7;
-        Tue, 21 Apr 2020 18:36:33 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-114-241.rdu2.redhat.com [10.10.114.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 768595DA7C;
-        Tue, 21 Apr 2020 18:36:29 +0000 (UTC)
-Subject: Re: [PATCH] blk-iocost: Fix systemtap error on iocost_ioc_vrate_adj
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
-        Tejun Heo <tj@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-References: <20200421130755.18370-1-longman@redhat.com>
- <20200421105948.4f5a36f5@gandalf.local.home>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <22ccb042-7d6f-3717-4024-9ec094b2f363@redhat.com>
-Date:   Tue, 21 Apr 2020 14:36:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 21 Apr 2020 14:37:26 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DACC0610D5;
+        Tue, 21 Apr 2020 11:37:26 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jQxlq-0000Wo-7b; Tue, 21 Apr 2020 20:37:22 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B14801C0315;
+        Tue, 21 Apr 2020 20:37:21 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 18:37:21 -0000
+From:   "tip-bot2 for Dmitry Safonov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/vdso] x86/vdso/Makefile: Add vobjs32
+Cc:     Andrei Vagin <avagin@openvz.org>, Dmitry Safonov <dima@arista.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200420183256.660371-5-dima@arista.com>
+References: <20200420183256.660371-5-dima@arista.com>
 MIME-Version: 1.0
-In-Reply-To: <20200421105948.4f5a36f5@gandalf.local.home>
-Content-Type: text/plain; charset=windows-1252
+Message-ID: <158749424129.28353.14783565552513059887.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/20 10:59 AM, Steven Rostedt wrote:
-> On Tue, 21 Apr 2020 09:07:55 -0400
-> Waiman Long <longman@redhat.com> wrote:
->
->> diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
->> index 7ecaa65b7106..c2f580fd371b 100644
->> --- a/include/trace/events/iocost.h
->> +++ b/include/trace/events/iocost.h
->> @@ -130,7 +130,7 @@ DEFINE_EVENT(iocg_inuse_update, iocost_inuse_reset,
->>  
->>  TRACE_EVENT(iocost_ioc_vrate_adj,
->>  
->> -	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 (*missed_ppm)[2],
->> +	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 *missed_ppm,
->>  		u32 rq_wait_pct, int nr_lagging, int nr_shortages,
->>  		int nr_surpluses),
->>  
->> @@ -155,8 +155,8 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
->>  		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);;
->>  		__entry->new_vrate = new_vrate;
->>  		__entry->busy_level = ioc->busy_level;
->> -		__entry->read_missed_ppm = (*missed_ppm)[READ];
->> -		__entry->write_missed_ppm = (*missed_ppm)[WRITE];
->> +		__entry->read_missed_ppm = missed_ppm[READ];
->> +		__entry->write_missed_ppm = missed_ppm[WRITE];
->>  		__entry->rq_wait_pct = rq_wait_pct;
->>  		__entry->nr_lagging = nr_lagging;
->>  		__entry->nr_shortages = nr_shortages;
-> Regardless if this helps systemtap or not, I like the patch because the
-> current code is rather ugly, and this patch makes it more readable.
->
-> Suggestion: change the topic to remove systemtap, as that's not going to be
-> the true reason for acceptance of this patch. It should just be about
-> cleaning up the trace event itself.
->
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-> -- Steve
->
-OK, will send a v2 patch to update the commit log. Thanks for the review.
+The following commit has been merged into the x86/vdso branch of tip:
 
-Cheers,
-Longman
+Commit-ID:     cd2f45b7514cdddabbf3f81a98a20ae02f99efa1
+Gitweb:        https://git.kernel.org/tip/cd2f45b7514cdddabbf3f81a98a20ae02f99efa1
+Author:        Dmitry Safonov <dima@arista.com>
+AuthorDate:    Mon, 20 Apr 2020 19:32:56 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 21 Apr 2020 20:33:17 +02:00
 
+x86/vdso/Makefile: Add vobjs32
+
+Treat ia32/i386 objects in array the same as 64-bit vdso objects.
+
+Co-developed-by: Andrei Vagin <avagin@openvz.org>
+Signed-off-by: Andrei Vagin <avagin@openvz.org>
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20200420183256.660371-5-dima@arista.com
+
+---
+ arch/x86/entry/vdso/Makefile | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 433a125..54e03ab 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -24,6 +24,8 @@ VDSO32-$(CONFIG_IA32_EMULATION)	:= y
+ 
+ # files to link into the vdso
+ vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
++vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
++vobjs32-y += vdso32/vclock_gettime.o
+ 
+ # files to link into kernel
+ obj-y				+= vma.o
+@@ -37,10 +39,12 @@ vdso_img-$(VDSO32-y)		+= 32
+ obj-$(VDSO32-y)			+= vdso32-setup.o
+ 
+ vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
++vobjs32 := $(foreach F,$(vobjs32-y),$(obj)/$F)
+ 
+ $(obj)/vdso.o: $(obj)/vdso.so
+ 
+ targets += vdso.lds $(vobjs-y)
++targets += vdso32/vdso32.lds $(vobjs32-y)
+ 
+ # Build the vDSO image C files and link them in.
+ vdso_img_objs := $(vdso_img-y:%=vdso-image-%.o)
+@@ -130,10 +134,6 @@ $(obj)/vdsox32.so.dbg: $(obj)/vdsox32.lds $(vobjx32s) FORCE
+ CPPFLAGS_vdso32/vdso32.lds = $(CPPFLAGS_vdso.lds)
+ VDSO_LDFLAGS_vdso32.lds = -m elf_i386 -soname linux-gate.so.1
+ 
+-targets += vdso32/vdso32.lds
+-targets += vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
+-targets += vdso32/vclock_gettime.o
+-
+ KBUILD_AFLAGS_32 := $(filter-out -m64,$(KBUILD_AFLAGS)) -DBUILD_VDSO
+ $(obj)/vdso32.so.dbg: KBUILD_AFLAGS = $(KBUILD_AFLAGS_32)
+ $(obj)/vdso32.so.dbg: asflags-$(CONFIG_X86_64) += -m32
+@@ -158,12 +158,7 @@ endif
+ 
+ $(obj)/vdso32.so.dbg: KBUILD_CFLAGS = $(KBUILD_CFLAGS_32)
+ 
+-$(obj)/vdso32.so.dbg: FORCE \
+-		      $(obj)/vdso32/vdso32.lds \
+-		      $(obj)/vdso32/vclock_gettime.o \
+-		      $(obj)/vdso32/note.o \
+-		      $(obj)/vdso32/system_call.o \
+-		      $(obj)/vdso32/sigreturn.o
++$(obj)/vdso32.so.dbg: $(obj)/vdso32/vdso32.lds $(vobjs32) FORCE
+ 	$(call if_changed,vdso_and_check)
+ 
+ #
