@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D761B2E06
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6FD1B2E0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgDURQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgDURQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:16:01 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC37C2070B;
-        Tue, 21 Apr 2020 17:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587489361;
-        bh=vDzVgMJnbG1fs/XIUuFyDIIrwEN+7nL3b23WtKtmo7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BX+G4c+j75vOGjtLYL+EaCsk7FHXbwmN+VNWcYQ7zJzQxNu7cuGX1bdVKUTDRgnH4
-         zDVkl0K0uE90TuZL5jE3vKwbH9QNFOnIm9qlgO+h9IGdwnua/Nxzuojtcj+4PIBgPp
-         Dbf9HHI6Eaeum62BeGfhBzaPAG0SaUpbz8MpvnKs=
-Date:   Tue, 21 Apr 2020 18:15:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [Patch v3 1/9] spi: bcm-qspi: Handle clock probe deferral
-Message-ID: <20200421171558.GE4540@sirena.org.uk>
-References: <20200420190853.45614-1-kdasu.kdev@gmail.com>
- <20200420190853.45614-2-kdasu.kdev@gmail.com>
- <158748156553.18089.8164001089518853868.b4-ty@kernel.org>
- <2d810e4f-5f05-4257-59a8-882ae790ecd1@gmail.com>
+        id S1729455AbgDURQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729437AbgDURQO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:16:14 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDBFC061A41;
+        Tue, 21 Apr 2020 10:16:13 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nu11so1637845pjb.1;
+        Tue, 21 Apr 2020 10:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SuckAMHK0J9TxQjKnzD2CE098tmVLnHq2SeW0xvPDps=;
+        b=cMMkRxQ86GGlqNkJGvwQoeUvGlDud6Uro3gXunD/gzd9NLLvSi2bb53jKBZvZBny/G
+         C+/pdqoL3eXoxp4VXCIWbjivQct4e76nTJkpQTiKLo/21f6/a04orlW+5dBfQIg99DGW
+         bz0wZs0rQHSgVwEWp7RY6t6uxClwfK8lwoGkX/Xik0Q+AE3Uldi/aZkhJRqdwz3uRSJv
+         lbsDr4kdMsbqsEVrdjsZ3d+oXFVQdpvt8elBeSq82VHg8ne/GfA5YAJ2OdhQRw/OM7P1
+         1PSiigkkgxGR1INAezSEOscuHTw6kBYbFibicTzh3fYX0kEEYf4ehOsEXucrU+C/GfLf
+         FDFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SuckAMHK0J9TxQjKnzD2CE098tmVLnHq2SeW0xvPDps=;
+        b=liexCCUIuPeh5uFXSQP/N11DzWxvnY5E//y4XMeJSjJ1i6jKGS+3wLBtNVUJiX67Ct
+         M8a+MX6VHcwxRfUUp3dQuvc/Ekt7zSa2lR/WOBABh03u8hOPFBp0Mcnm01oD/XMdfCzZ
+         4fRzfkGjHnG2Qkawp+Zy/5fXufzjcK3MrJygdefZAisZjnTfeNSiO+2DsvPQO0dIbDVS
+         /xazlHFP8nvyct8Vd0zHYJwdc3K9re1IAA2gKm9rfFQi1dVmwS9VjXxT0lcOwN5D0syl
+         Ufq2xIhbK81kQwS1OzQhSU7rgwMGY4JlH+gOmBPk6a21oi9wJRU5zjZba28i9DUQSdIM
+         x6EQ==
+X-Gm-Message-State: AGi0PuYtz5PS8u3TKdnGbCkiPjSnVU8OJzrUcOezKt9QAKoWA6Nof9Jw
+        8ZLXo1pMpTvL68hHCX5vRJs=
+X-Google-Smtp-Source: APiQypIFAPwJpPEVEHOCEKVvNouwB6PiSYEfQcX5nw02w8SVidnCIWD7Km2Q1I3UFRGQQGJ1VYqjdw==
+X-Received: by 2002:a17:902:7489:: with SMTP id h9mr20122939pll.212.1587489373350;
+        Tue, 21 Apr 2020 10:16:13 -0700 (PDT)
+Received: from [10.230.188.26] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q2sm2972804pfl.174.2020.04.21.10.16.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 10:16:12 -0700 (PDT)
+Subject: Re: [PATCH v2 4/7] net: macb: fix macb_suspend() by removing call to
+ netif_carrier_off()
+To:     nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        harini.katakam@xilinx.com
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        sergio.prado@e-labworks.com, antoine.tenart@bootlin.com,
+        linux@armlinux.org.uk, andrew@lunn.ch, michal.simek@xilinx.com
+References: <cover.1587463802.git.nicolas.ferre@microchip.com>
+ <da134cb7ffbdfcad1f8e7f2348b66c31f3a35680.1587463802.git.nicolas.ferre@microchip.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d74ac8a0-8990-be30-0fb5-d6a1f0b043a0@gmail.com>
+Date:   Tue, 21 Apr 2020 10:16:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u5E4XgoOPWr4PD9E"
-Content-Disposition: inline
-In-Reply-To: <2d810e4f-5f05-4257-59a8-882ae790ecd1@gmail.com>
-X-Cookie: Non-sequiturs make me eat lampshades.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <da134cb7ffbdfcad1f8e7f2348b66c31f3a35680.1587463802.git.nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---u5E4XgoOPWr4PD9E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 21, 2020 at 10:11:52AM -0700, Florian Fainelli wrote:
+On 4/21/2020 3:41 AM, nicolas.ferre@microchip.com wrote:
+> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+> 
+> As we now use the phylink call to phylink_stop() in the non-WoL path,
+> there is no need for this call to netif_carrier_off() anymore. It can
+> disturb the underlying phylink FSM.
+> 
+> Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+> Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Cc: Harini Katakam <harini.katakam@xilinx.com>
+> Cc: Antoine Tenart <antoine.tenart@bootlin.com>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> > Applied to
-
-> >     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.7
-
-> It would be nice if the URL could be clickable, e.g.:
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/?h=for-5.7
-
-That then doesn't work with git itself unfortunately, someone's got to
-loose out :/
-
---u5E4XgoOPWr4PD9E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6fKk0ACgkQJNaLcl1U
-h9Cebgf+JgKrBse64QXap8uRDtDUn7gakR6XZU0cC6Qaxn3TsCwpaow/VgocC3Wz
-rhVDWwTAGjZ2QG8VbV/uprXbg/uU7VAlpsAv1a9UaiR6beaRlyYOjI8VyjkWkLzm
-mD5x6Yf7UKQRMC/Szjn2KPEW6hhfSZrtTtlKd8+BQGxTbq6tat+OKDKIUE1Q3Qln
-k+I5HHRgNLhrLtMluFkRVaDhx5m+mA8keIjg8iPAj3xJU1Mm2Nzz3Lnha97ekjx5
-6RaVPtAKE+D2b7Om5YM0AgTPZHPlxNO/AwjSBAxAhLUIUz1pl5IT7hibYAQQDLR2
-W+oNGlumpwZqfOV049aMB4g41rBrEQ==
-=1WXq
------END PGP SIGNATURE-----
-
---u5E4XgoOPWr4PD9E--
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
