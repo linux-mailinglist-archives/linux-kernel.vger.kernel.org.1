@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EA61B24C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E9B1B24D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgDULRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:17:09 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2072 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728663AbgDULRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:17:06 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id A887EBF23DF29DC07A5F;
-        Tue, 21 Apr 2020 12:17:04 +0100 (IST)
-Received: from localhost (10.47.92.218) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 21 Apr
- 2020 12:17:04 +0100
-Date:   Tue, 21 Apr 2020 12:16:51 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     Tian Tao <tiantao6@hisilicon.com>, <catalin.marinas@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <james.morse@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
-        <info@metux.net>, <allison@lohutok.net>
-Subject: Re: [PATCH] arm32: fix flushcache syscall with device address
-Message-ID: <20200421121651.000009f0@Huawei.com>
-In-Reply-To: <20200421081239.GA15439@willie-the-truck>
-References: <1587456514-61156-1-git-send-email-tiantao6@hisilicon.com>
-        <20200421081239.GA15439@willie-the-truck>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728723AbgDULR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:17:28 -0400
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:11456 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728337AbgDULR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:17:27 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.122])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 78102664787;
+        Tue, 21 Apr 2020 19:17:24 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tom St Denis <tom.stdenis@amd.com>,
+        Ori Messinger <Ori.Messinger@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Bernard Zhao <bernard@vivo.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] amdgpu: fixes memleak issue when init failed
+Date:   Tue, 21 Apr 2020 04:17:13 -0700
+Message-Id: <20200421111715.1231-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.92.218]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VJTklCQkJMQ0lOTUlJTVlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pio6HAw5KDg1PAMQTE43MSFK
+        SSIaCgJVSlVKTkNMT01MQ09PQ0tOVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSUlZV1kIAVlBSE1ISzcG
+X-HM-Tid: 0a719c74fc629373kuws78102664787
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020 09:12:39 +0100
-Will Deacon <will@kernel.org> wrote:
+VRAM manager and DRM MM when init failed, there is no operaction
+to free kzalloc memory & remove device file.
+This will lead to memleak & cause stability issue.
 
-> On Tue, Apr 21, 2020 at 04:08:34PM +0800, Tian Tao wrote:
-> > An issue has been observed on our Kungpeng916 systems when using a PCI
-> > express GPU. This occurs when a 32 bit application running on a 64 bit
-> > kernel issues a cache flush operation to a memory address that is in
-> > a PCI BAR of the GPU.The results in an illegal operation and
-> > subsequent crash.  
-> 
-> A kernel crash? If so, please can you include the log here?
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 24 ++++++++++++++++----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-Deploying my finest copy typing from the image Tian Tao sent out
-
-      KERNEL: /root/vmlinux-4.19.36-3patch-00228-debuginfo
-    DUMPFILE: vmcore [PARTIAL DUMP]
-        CPUS: 64
-        DATE: Fri Mar 20 06:59:56 2020
-      UPTIME: 07:01:01
-LOAD AVERAGE: 33.76, 35.45, 35.79
-       TASKS: 59447
-    NODENAME: cpus-new-ondemand-0509
-     RELEASE: 4.19.36-3patch-0228
-     VERSION: #4 SMP Fri Feb 28 15:18:51 UTC 2020
-     MACHINE: aarch64 (unknown MHz)
-      MEMORY: 255.7 GB
-       PANIC: "kernel panic - not syncing: Asynchronous SError Interrupt"
-         PID: 175108
-     COMMAND: "UnityMain"
-        TASK: ffff80a96999dd00 [THREAD_INFO: ffff80a96999dd00]
-         CPU: 62
-       STATE: TASK_RUNNING (PANIC)
-
-crash> bt
-PID: 175108 TASK: ffff80a96999dd00 CPU: 62 COMMAND: "UnityMain"
-  #0 [ffff000194e1b920] machine_kexec at ffff0000080a265c
-  #1 [ffff000194e1b980] __crash_kexec at ffff0000081b3ba8
-  #2 [ffff000194e1bb10] panic at ffff0000080ecc98
-  #3 [ffff000194e1bbf0] nmi_panic at ffff0000080ec7f4
-  #4 [ffff000194e1bc10] arm64_serror_panic at fff00000809019c
-  #5 [ffff000194e1bc30] do_serror at ffff00000809039c
-  #6 [ffff000194e1bd90] el1_error at ffff000008083e50
-  #7 [ffff000194e1bda0] __flush_icache_range at ffff0000080a9ec4
-  #8 [ffff000194e1be60] el0_svc_common at fff0000080977d8
-  #9 [ffff000194e1bea0] el0_svc_compat_handler at ffff0000080979b4
- #10 [ffff000194e1bff0] el0_svc_compat at ffff0000008083874
-
-     PC: c90fe7f8  LR: c90ff09c  SP: d2afa8e0  PSTATE: 800b0010
-    X12: c56e96e4 X11: d2afaa48 X10: d0ff1000  X9: d2afab68
-     x8: 000000d6  X7: 000f0002  X6: d3c61840  X5: d3c61001
-     X4: d3c03000  X3: 0004d54a  x2: 00000000  x1: d3c61040
-     X0: d3c61000
-
-
-New advanced test for Mavis Beacon teaches typing.
-
-In summary this is all we have to hand...
-
-> 
-> Will
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+index 82a3299e53c0..4c5fb153e6b4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+@@ -175,30 +175,44 @@ static int amdgpu_vram_mgr_init(struct ttm_mem_type_manager *man,
+ 	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_total);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to create device file mem_info_vram_total\n");
+-		return ret;
++		goto VRAM_TOTAL_FAIL;
+ 	}
+ 	ret = device_create_file(adev->dev, &dev_attr_mem_info_vis_vram_total);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to create device file mem_info_vis_vram_total\n");
+-		return ret;
++		goto VIS_VRAM_TOTA_FAIL;
+ 	}
+ 	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_used);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to create device file mem_info_vram_used\n");
+-		return ret;
++		goto VRAM_USED_FAIL;
+ 	}
+ 	ret = device_create_file(adev->dev, &dev_attr_mem_info_vis_vram_used);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to create device file mem_info_vis_vram_used\n");
+-		return ret;
++		goto VIS_VRAM_USED_FAIL;
+ 	}
+ 	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_vendor);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to create device file mem_info_vram_vendor\n");
+-		return ret;
++		goto VRAM_VERDOR_FAIL;
+ 	}
+ 
+ 	return 0;
++
++VRAM_VERDOR_FAIL:
++	device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_used);
++VIS_VRAM_USED_FAIL:
++	device_remove_file(adev->dev, &dev_attr_mem_info_vram_used);
++RVAM_USED_FAIL:
++	device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_total);
++VIS_VRAM_TOTA_FAIL:
++	device_remove_file(adev->dev, &dev_attr_mem_info_vram_total);
++VRAM_TOTAL_FAIL:
++	kfree(mgr);
++	man->priv = NULL;
++
++	return ret;
+ }
+ 
+ /**
+-- 
+2.26.2
 
