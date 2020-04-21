@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC9E1B271F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4DE1B2726
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgDUNHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:07:07 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43845 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726628AbgDUNHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:07:07 -0400
-IronPort-SDR: 2twUAlpQJI1tm0a5GnYzRziT5RSA5vxgKSaLk1TujSC0zTeI2EQ15ucPZ83/swjgGjWKYoYOwA
- QkSpukuw2ojA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 06:07:03 -0700
-IronPort-SDR: zFkVyC6mhHM0WZz4UZ6Z21PYYWCWic5iCbW1pt7UsKjoBAVw7Usu3KxbuW4uCum52yPBZ4MY1e
- /3TQ405MYqrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
-   d="scan'208";a="279631889"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Apr 2020 06:07:01 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jQscB-002F84-V1; Tue, 21 Apr 2020 16:07:03 +0300
-Date:   Tue, 21 Apr 2020 16:07:03 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 0/3] lib/vsprintf: Introduce %ptT for time64_t
-Message-ID: <20200421130703.GL185537@smile.fi.intel.com>
-References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
- <20200415132011.624f35f6@gandalf.local.home>
- <20200416023425.GB30641@jagdpanzerIV.localdomain>
- <c8c8f37f20625922eb114574c544ebb6332ac025.camel@perches.com>
+        id S1728921AbgDUNIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:08:36 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26250 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728337AbgDUNIg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:08:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587474515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AzZVGZRFYWkvvcngnwD9TafpdOgkW+w4tQcfoAHS564=;
+        b=GGewKZSNG8k8W1UOzWjFh8SflS7U6gNmmj/XMW7hFQwI8HydpPeUlv8mvDQqH5e/8ynDcM
+        LxEQKVWay5R1+2OpTm52bzBlumnY4Z0J7J0el3+/9jt/2GPBiQ1cw0brTcHg2CFgq/YcM3
+        2UEdWk0tURSxnRjujJyLOvG4Soh4+1w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-Z-WAIQBnM6m646W-EYPzhA-1; Tue, 21 Apr 2020 09:08:33 -0400
+X-MC-Unique: Z-WAIQBnM6m646W-EYPzhA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36E9518C8C0C;
+        Tue, 21 Apr 2020 13:08:31 +0000 (UTC)
+Received: from llong.com (ovpn-114-241.rdu2.redhat.com [10.10.114.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B0B31001B0B;
+        Tue, 21 Apr 2020 13:08:24 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] blk-iocost: Fix systemtap error on iocost_ioc_vrate_adj
+Date:   Tue, 21 Apr 2020 09:07:55 -0400
+Message-Id: <20200421130755.18370-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8c8f37f20625922eb114574c544ebb6332ac025.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 07:46:27PM -0700, Joe Perches wrote:
-> On Thu, 2020-04-16 at 11:34 +0900, Sergey Senozhatsky wrote:
-> > On (20/04/15 13:20), Steven Rostedt wrote:
-> > > On Wed, 15 Apr 2020 20:00:43 +0300
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > 
-> > > > It is a logical continuation of previously applied %ptR for struct rtc_time.
-> > > > We have few users of time64_t that would like to print it.
-> > > > 
-> > > > Andrew, since Petr can't pay attention on this perhaps it can be passed thru
-> > > > your tree?
-> > > > 
-> > > > Sergey, Steven, what do you think?
-> > > 
-> > > I'm fine with these changes. Sergey, what do you think?
-> > 
-> > I'm not against it in general, I'm slightly concerned if "two users"
-> > is enough of a justification for new vsprintf() specifier.
-> 
-> Me too as separate functions could be used here.
+Systemtap 4.2 is unable to correctly interpret the "u32 (*missed_ppm)[2]"
+argument of the iocost_ioc_vrate_adj trace entry defined in
+include/trace/events/iocost.h leading to the following error:
 
-If we drop T in favour of ' ' (space) as delimiter, we will immediately get 5
-or 6 users (I didn't check for new ones during last couple of years though).
+  /tmp/stapAcz0G0/stap_c89c58b83cea1724e26395efa9ed4939_6321_aux_6.c:78:8=
+:
+  error: expected =E2=80=98;=E2=80=99, =E2=80=98,=E2=80=99 or =E2=80=98)=E2=
+=80=99 before =E2=80=98*=E2=80=99 token
+   , u32[]* __tracepoint_arg_missed_ppm
 
--- 
-With Best Regards,
-Andy Shevchenko
+That argument type is indeed rather complex and hard to read. Looking
+at block/blk-iocost.c. It is just a 2-entry u32 array. By simplifying
+the argument to a simple "u32 *missed_ppm" and adjusting the trace
+entry accordingly, the compilation error was gone.
 
+Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ block/blk-iocost.c            | 4 ++--
+ include/trace/events/iocost.h | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index db35ee682294..3ab0c1c704b6 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1591,7 +1591,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 				      vrate_min, vrate_max);
+ 		}
+=20
+-		trace_iocost_ioc_vrate_adj(ioc, vrate, &missed_ppm, rq_wait_pct,
++		trace_iocost_ioc_vrate_adj(ioc, vrate, missed_ppm, rq_wait_pct,
+ 					   nr_lagging, nr_shortages,
+ 					   nr_surpluses);
+=20
+@@ -1600,7 +1600,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 			ioc->period_us * vrate * INUSE_MARGIN_PCT, 100);
+ 	} else if (ioc->busy_level !=3D prev_busy_level || nr_lagging) {
+ 		trace_iocost_ioc_vrate_adj(ioc, atomic64_read(&ioc->vtime_rate),
+-					   &missed_ppm, rq_wait_pct, nr_lagging,
++					   missed_ppm, rq_wait_pct, nr_lagging,
+ 					   nr_shortages, nr_surpluses);
+ 	}
+=20
+diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.=
+h
+index 7ecaa65b7106..c2f580fd371b 100644
+--- a/include/trace/events/iocost.h
++++ b/include/trace/events/iocost.h
+@@ -130,7 +130,7 @@ DEFINE_EVENT(iocg_inuse_update, iocost_inuse_reset,
+=20
+ TRACE_EVENT(iocost_ioc_vrate_adj,
+=20
+-	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 (*missed_ppm)[2],
++	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 *missed_ppm,
+ 		u32 rq_wait_pct, int nr_lagging, int nr_shortages,
+ 		int nr_surpluses),
+=20
+@@ -155,8 +155,8 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
+ 		__entry->old_vrate =3D atomic64_read(&ioc->vtime_rate);;
+ 		__entry->new_vrate =3D new_vrate;
+ 		__entry->busy_level =3D ioc->busy_level;
+-		__entry->read_missed_ppm =3D (*missed_ppm)[READ];
+-		__entry->write_missed_ppm =3D (*missed_ppm)[WRITE];
++		__entry->read_missed_ppm =3D missed_ppm[READ];
++		__entry->write_missed_ppm =3D missed_ppm[WRITE];
+ 		__entry->rq_wait_pct =3D rq_wait_pct;
+ 		__entry->nr_lagging =3D nr_lagging;
+ 		__entry->nr_shortages =3D nr_shortages;
+--=20
+2.18.1
 
