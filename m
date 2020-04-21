@@ -2,210 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B8A1B22B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54E61B2290
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgDUJ10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728632AbgDUJ1V (ORCPT
+        id S1726935AbgDUJWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:22:11 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46602 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725920AbgDUJWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:27:21 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47024C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:21 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jQpBO-00086I-9N; Tue, 21 Apr 2020 11:27:10 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 671341002EE;
-        Tue, 21 Apr 2020 11:27:09 +0200 (CEST)
-Message-Id: <20200421092600.328438734@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Tue, 21 Apr 2020 11:20:43 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Kees Cook <keescook@chromium.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [patch V2 16/16] x86/tlb: Restrict access to tlbstate
-References: <20200421092027.591582014@linutronix.de>
+        Tue, 21 Apr 2020 05:22:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TwDn7z8_1587460926;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwDn7z8_1587460926)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Apr 2020 17:22:07 +0800
+Subject: Re: [PATCH 18/18] mm: memcontrol: update page->mem_cgroup stability
+ rules
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <js1304@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200420221126.341272-1-hannes@cmpxchg.org>
+ <20200420221126.341272-19-hannes@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <1f905391-5676-2db6-efb9-74ade130740e@linux.alibaba.com>
+Date:   Tue, 21 Apr 2020 17:20:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+In-Reply-To: <20200420221126.341272-19-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hide tlbstate, flush_tlb_info and related helpers when tlbflush.h is
-included from a module. Modules have absolutely no business with these
-internals.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/tlbflush.h |   96 ++++++++++++++++++++--------------------
- arch/x86/mm/init.c              |    1 
- 2 files changed, 49 insertions(+), 48 deletions(-)
 
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -13,19 +13,46 @@
- #include <asm/pti.h>
- #include <asm/processor-flags.h>
- 
--struct flush_tlb_info;
--
- void __flush_tlb_all(void);
--void flush_tlb_local(void);
--void flush_tlb_one_user(unsigned long addr);
--void flush_tlb_one_kernel(unsigned long addr);
--void flush_tlb_others(const struct cpumask *cpumask,
--		      const struct flush_tlb_info *info);
- 
--#ifdef CONFIG_PARAVIRT
--#include <asm/paravirt.h>
--#endif
-+#define TLB_FLUSH_ALL	-1UL
-+
-+void cr4_update_irqsoff(unsigned long set, unsigned long clear);
-+unsigned long cr4_read_shadow(void);
-+
-+/* Set in this cpu's CR4. */
-+static inline void cr4_set_bits_irqsoff(unsigned long mask)
-+{
-+	cr4_update_irqsoff(mask, 0);
-+}
- 
-+/* Clear in this cpu's CR4. */
-+static inline void cr4_clear_bits_irqsoff(unsigned long mask)
-+{
-+	cr4_update_irqsoff(0, mask);
-+}
-+
-+/* Set in this cpu's CR4. */
-+static inline void cr4_set_bits(unsigned long mask)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	cr4_set_bits_irqsoff(mask);
-+	local_irq_restore(flags);
-+}
-+
-+/* Clear in this cpu's CR4. */
-+static inline void cr4_clear_bits(unsigned long mask)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	cr4_clear_bits_irqsoff(mask);
-+	local_irq_restore(flags);
-+}
-+
-+#ifndef MODULE
- /*
-  * 6 because 6 should be plenty and struct tlb_state will fit in two cache
-  * lines.
-@@ -129,54 +156,17 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct tl
- bool nmi_uaccess_okay(void);
- #define nmi_uaccess_okay nmi_uaccess_okay
- 
--void cr4_update_irqsoff(unsigned long set, unsigned long clear);
--unsigned long cr4_read_shadow(void);
--
- /* Initialize cr4 shadow for this CPU. */
- static inline void cr4_init_shadow(void)
- {
- 	this_cpu_write(cpu_tlbstate.cr4, __read_cr4());
- }
- 
--/* Set in this cpu's CR4. */
--static inline void cr4_set_bits_irqsoff(unsigned long mask)
--{
--	cr4_update_irqsoff(mask, 0);
--}
--
--/* Clear in this cpu's CR4. */
--static inline void cr4_clear_bits_irqsoff(unsigned long mask)
--{
--	cr4_update_irqsoff(0, mask);
--}
--
--/* Set in this cpu's CR4. */
--static inline void cr4_set_bits(unsigned long mask)
--{
--	unsigned long flags;
--
--	local_irq_save(flags);
--	cr4_set_bits_irqsoff(mask);
--	local_irq_restore(flags);
--}
--
--/* Clear in this cpu's CR4. */
--static inline void cr4_clear_bits(unsigned long mask)
--{
--	unsigned long flags;
--
--	local_irq_save(flags);
--	cr4_clear_bits_irqsoff(mask);
--	local_irq_restore(flags);
--}
--
- extern unsigned long mmu_cr4_features;
- extern u32 *trampoline_cr4_features;
- 
- extern void initialize_tlbstate_and_flush(void);
- 
--#define TLB_FLUSH_ALL	-1UL
--
- /*
-  * TLB flushing:
-  *
-@@ -215,6 +205,16 @@ struct flush_tlb_info {
- 	bool			freed_tables;
- };
- 
-+void flush_tlb_local(void);
-+void flush_tlb_one_user(unsigned long addr);
-+void flush_tlb_one_kernel(unsigned long addr);
-+void flush_tlb_others(const struct cpumask *cpumask,
-+		      const struct flush_tlb_info *info);
-+
-+#ifdef CONFIG_PARAVIRT
-+#include <asm/paravirt.h>
-+#endif
-+
- #define flush_tlb_mm(mm)						\
- 		flush_tlb_mm_range(mm, 0UL, TLB_FLUSH_ALL, 0UL, true)
- 
-@@ -255,4 +255,6 @@ static inline void arch_tlbbatch_add_mm(
- 
- extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
- 
-+#endif /* !MODULE */
-+
- #endif /* _ASM_X86_TLBFLUSH_H */
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -970,7 +970,6 @@ void __init zone_sizes_init(void)
- 	.next_asid = 1,
- 	.cr4 = ~0UL,	/* fail hard if we screw up cr4 shadow initialization */
- };
--EXPORT_PER_CPU_SYMBOL(cpu_tlbstate);
- 
- void update_cache_mode_entry(unsigned entry, enum page_cache_mode cache)
- {
+ÔÚ 2020/4/21 ÉÏÎç6:11, Johannes Weiner Ð´µÀ:
+> The previous patches have simplified the access rules around
+> page->mem_cgroup somewhat:
+> 
+> 1. We never change page->mem_cgroup while the page is isolated by
+>    somebody else. This was by far the biggest exception to our rules
+>    and it didn't stop at lock_page() or lock_page_memcg().
+> 
+> 2. We charge pages before they get put into page tables now, so the
+>    somewhat fishy rule about "can be in page table as long as it's
+>    still locked" is now gone and boiled down to having an exclusive
+>    reference to the page.
+> 
+> Document the new rules. Any of the following will stabilize the
+> page->mem_cgroup association:
+> 
+> - the page lock
+> - LRU isolation
+> - lock_page_memcg()
+> - exclusive access to the page
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+
+> ---
+>  mm/memcontrol.c | 21 +++++++--------------
+>  1 file changed, 7 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a8cce52b6b4d..7b63260c9b57 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1201,9 +1201,8 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+>   * @page: the page
+>   * @pgdat: pgdat of the page
+>   *
+> - * This function is only safe when following the LRU page isolation
+> - * and putback protocol: the LRU lock must be held, and the page must
+> - * either be PageLRU() or the caller must have isolated/allocated it.
+> + * This function relies on page->mem_cgroup being stable - see the
+> + * access rules in commit_charge().
+>   */
+>  struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+>  {
+> @@ -2605,18 +2604,12 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+>  {
+>  	VM_BUG_ON_PAGE(page->mem_cgroup, page);
+>  	/*
+> -	 * Nobody should be changing or seriously looking at
+> -	 * page->mem_cgroup at this point:
+> -	 *
+> -	 * - the page is uncharged
+> -	 *
+> -	 * - the page is off-LRU
+> -	 *
+> -	 * - an anonymous fault has exclusive page access, except for
+> -	 *   a locked page table
+> +	 * Any of the following ensures page->mem_cgroup stability:
+>  	 *
+> -	 * - a page cache insertion, a swapin fault, or a migration
+> -	 *   have the page locked
+> +	 * - the page lock
+> +	 * - LRU isolation
+> +	 * - lock_page_memcg()
+> +	 * - exclusive reference
+>  	 */
+>  	page->mem_cgroup = memcg;
+>  }
+> 
