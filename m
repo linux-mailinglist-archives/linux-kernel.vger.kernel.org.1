@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91B1B2F20
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16F21B2F25
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgDUSbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        id S1729371AbgDUSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgDUSbC (ORCPT
+        with ESMTP id S1726628AbgDUSbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:31:02 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA0BC0610D6;
-        Tue, 21 Apr 2020 11:31:02 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jQxff-0000RR-5J; Tue, 21 Apr 2020 20:30:59 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 65F3C1C0315;
-        Tue, 21 Apr 2020 20:30:58 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 18:30:58 -0000
-From:   "tip-bot2 for Masahiro Yamada" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] x86/boot/build: Add phony targets in
- arch/x86/boot/Makefile to PHONY
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200215063852.8298-2-masahiroy@kernel.org>
-References: <20200215063852.8298-2-masahiroy@kernel.org>
+        Tue, 21 Apr 2020 14:31:24 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4ADC0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:31:23 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 92so1994692qtg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OBz/0wOnTCCmpPszYn+oabaHyLl3HDHXxMJEJ6NS0jU=;
+        b=KGOT3oqQ5JlJ1sZn6S5eaH2oN6QjpS5OkaorHZopxJxonMX76fIxNc63JIKVGjUuWs
+         lnm3Ggg8i3ckuAWVuj8uDaR0AKWJW3To97ZwKuePpux5ARXxNktDJDIeAo11yxZgeGRi
+         dplYCsh2B8OQ8TH3dQCIjKvoQ3CqDsX7JzfzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OBz/0wOnTCCmpPszYn+oabaHyLl3HDHXxMJEJ6NS0jU=;
+        b=DvzBlabBRcs9jkWZlqYLzh8vYFfxlRiy3m2CZqjLNqn3wzOTJoqcCHD1e+Kz+TaW43
+         gfKsMysEOZYY/v0iYQ69e/VToWI8bGzBIPHdtmQ4Si5bzkPWnNqXaszXM5qQcg72lxga
+         RHBlO3dmPviZ3CjN2TRq46ZjndLD05V+lgZQ98StwZPmJQBH4SVmWjboYsMM5ENVAxVv
+         H/b29/XVwvqOELj779G5NzQz9fwyuTBYUV0it8ebxlPDii4i22kOsobvB61fE/VvmVTu
+         KcLqcRTHLtdile6GnVMSuzksQTDGV+bioZJfpML+I7aa9syLw/l6hPzywROjGcCFoZuu
+         5Pvw==
+X-Gm-Message-State: AGi0PuZ6OmSctw7QI3XYaHwTq62RGUQ2z05QzpGCFMdrkycVRf9kcaKK
+        RpOEzt+H45mFaYgp37F7QMG3GQ==
+X-Google-Smtp-Source: APiQypId/nvmXqxnXkiHDNZP5gIEIHkE6obQx5jymRKmOarSYMwD/jhz7GKazPIlCz5G2Q20+/4rUg==
+X-Received: by 2002:ac8:bca:: with SMTP id p10mr20913254qti.243.1587493883049;
+        Tue, 21 Apr 2020 11:31:23 -0700 (PDT)
+Received: from chatter.i7.local (107-179-243-71.cpe.teksavvy.com. [107.179.243.71])
+        by smtp.gmail.com with ESMTPSA id x24sm2308038qth.80.2020.04.21.11.31.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 11:31:22 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 14:31:20 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [Patch v3 1/9] spi: bcm-qspi: Handle clock probe deferral
+Message-ID: <20200421183120.av3yqoaulhyglppy@chatter.i7.local>
+References: <20200420190853.45614-1-kdasu.kdev@gmail.com>
+ <20200420190853.45614-2-kdasu.kdev@gmail.com>
+ <158748156553.18089.8164001089518853868.b4-ty@kernel.org>
+ <2d810e4f-5f05-4257-59a8-882ae790ecd1@gmail.com>
+ <20200421171558.GE4540@sirena.org.uk>
+ <0d91f426-e767-2e69-bcb7-ddc4d7611861@gmail.com>
+ <20200421172005.GG4540@sirena.org.uk>
 MIME-Version: 1.0
-Message-ID: <158749385800.28353.13640320845323735874.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200421172005.GG4540@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/build branch of tip:
+On Tue, Apr 21, 2020 at 06:20:05PM +0100, Mark Brown wrote:
+> > Could you provide both links with a market at the front, e.g.:
+> 
+> > Git URL: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
+> > for-5.7
+> > CGIT URL: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/?h=for-5.7
+> 
+> Ask Konstantin to implement it (I'm using b4 ty now) and I might!
 
-Commit-ID:     675a59b7dec6e03c5fb060f18fc25b2e56be3c7a
-Gitweb:        https://git.kernel.org/tip/675a59b7dec6e03c5fb060f18fc25b2e56be3c7a
-Author:        Masahiro Yamada <masahiroy@kernel.org>
-AuthorDate:    Sat, 15 Feb 2020 15:38:52 +09:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 21 Apr 2020 18:30:58 +02:00
+You can do this already in the template, if your treename is set to the 
+https URL.
 
-x86/boot/build: Add phony targets in arch/x86/boot/Makefile to PHONY
+----
+Applied to
 
-These targets are correctly added to PHONY in arch/x86/Makefile, but
-not in arch/x86/boot/Makefile. Thus, with a file 'install' in the top
-directory, 'make install' does nothing:
+Git:   ${treename} ${branch}
+Link:  ${treename}/log/?h=${branch}
+----
 
-  $ touch install
-  $ make install
-  make[1]: 'install' is up to date.
-
-Add them to the PHONY targets in the boot Makefile too.
-
- [ bp: Massage. ]
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200215063852.8298-2-masahiroy@kernel.org
----
- arch/x86/boot/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-index f1bf4a7..4c53556 100644
---- a/arch/x86/boot/Makefile
-+++ b/arch/x86/boot/Makefile
-@@ -128,6 +128,8 @@ quiet_cmd_genimage = GENIMAGE $3
- cmd_genimage = sh $(srctree)/$(src)/genimage.sh $2 $3 $(obj)/bzImage \
- 			$(obj)/mtools.conf '$(image_cmdline)' $(FDINITRD)
- 
-+PHONY += bzdisk fdimage fdimage144 fdimage288 isoimage bzlilo install
-+
- # This requires write access to /dev/fd0
- bzdisk: $(obj)/bzImage $(obj)/mtools.conf
- 	$(call cmd,genimage,bzdisk,/dev/fd0)
+-K
