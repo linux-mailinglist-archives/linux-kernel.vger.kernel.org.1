@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C00D1B32D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7481B32DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgDUWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 18:54:43 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:22874 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726405AbgDUWyk (ORCPT
+        id S1726456AbgDUWzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 18:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725850AbgDUWy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 18:54:40 -0400
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Apr 2020 15:54:40 -0700
-Received: from asutoshd-linux1.qualcomm.com ([10.46.160.39])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 21 Apr 2020 15:54:40 -0700
-Received: by asutoshd-linux1.qualcomm.com (Postfix, from userid 92687)
-        id 190EB20A3C; Tue, 21 Apr 2020 15:54:40 -0700 (PDT)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        Avri.Altman@wdc.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/3] ufs-qcom: scsi: configure write booster type
-Date:   Tue, 21 Apr 2020 15:54:18 -0700
-Message-Id: <90ee50d5123e7ef4f04fba2ba281bb2e2e9ce1e5.1587509578.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1586374414.git.asutoshd@codeaurora.org>
-References: <cover.1586374414.git.asutoshd@codeaurora.org>
-In-Reply-To: <6519cd576299d5881129b0e48870a53a0afc7835.1587509578.git.asutoshd@codeaurora.org>
-References: <6519cd576299d5881129b0e48870a53a0afc7835.1587509578.git.asutoshd@codeaurora.org>
+        Tue, 21 Apr 2020 18:54:59 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836B9C0610D5;
+        Tue, 21 Apr 2020 15:54:59 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id EE2AF128E92AF;
+        Tue, 21 Apr 2020 15:54:58 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 15:54:58 -0700 (PDT)
+Message-Id: <20200421.155458.2145871366975263658.davem@davemloft.net>
+To:     weifeng.voon@intel.com
+Cc:     mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joabreu@synopsys.com,
+        peppe.cavallaro@st.com, andrew@lunn.ch, alexandre.torgue@st.com,
+        boon.leong.ong@intel.com
+Subject: Re: [net-next,v1, 1/1] net: stmmac: Enable SERDES power up/down
+ sequence
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200420154252.8000-2-weifeng.voon@intel.com>
+References: <20200420154252.8000-1-weifeng.voon@intel.com>
+        <20200420154252.8000-2-weifeng.voon@intel.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 Apr 2020 15:54:59 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure the WriteBooster type to preserve user-space mode.
-This would ensure that no user-space capacity is reduced
-when write booster is enabled.
-Enable WB for Qualcomm platform.
+From: Voon Weifeng <weifeng.voon@intel.com>
+Date: Mon, 20 Apr 2020 23:42:52 +0800
 
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+> This patch is to enable Intel SERDES power up/down sequence. The SERDES
+> converts 8/10 bits data to SGMII signal. Below is an example of
+> HW configuration for SGMII mode. The SERDES is located in the PHY IF
+> in the diagram below.
+> 
+> <-----------------GBE Controller---------->|<--External PHY chip-->
+> +----------+         +----+            +---+           +----------+
+> |   EQoS   | <-GMII->| DW | < ------ > |PHY| <-SGMII-> | External |
+> |   MAC    |         |xPCS|            |IF |           | PHY      |
+> +----------+         +----+            +---+           +----------+
+>        ^               ^                 ^                ^
+>        |               |                 |                |
+>        +---------------------MDIO-------------------------+
+> 
+> PHY IF configuration and status registers are accessible through
+> mdio address 0x15 which is defined as mdio_adhoc_addr. During D0,
+> The driver will need to power up PHY IF by changing the power state
+> to P0. Likewise, for D3, the driver sets PHY IF power state to P3.
+> 
+> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 19aa5c4..6e4000d 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1071,6 +1071,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
- 	hba->caps |= UFSHCD_CAP_CLK_GATING | UFSHCD_CAP_HIBERN8_WITH_CLK_GATING;
- 	hba->caps |= UFSHCD_CAP_CLK_SCALING;
- 	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
-+	hba->caps |= UFSHCD_CAP_WB_EN;
- 
- 	if (host->hw_ver.major >= 0x2) {
- 		host->caps = UFS_QCOM_CAP_QUNIPRO |
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Applied, thanks.
