@@ -2,141 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298FD1B2753
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70211B275C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728976AbgDUNPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:15:23 -0400
-Received: from mail-bn8nam12on2075.outbound.protection.outlook.com ([40.107.237.75]:63585
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728864AbgDUNPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:15:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a3yenT52Zp9soF035NXfsVtw9WJz1hUCDn9xdApBOIEF8S1tJ1JltXrtZI0i71s6HhQO2em3WmEv2enQPNdF3wsYvOwEOrjDPCNIUS3AtHjnOkbuq7tlr+lWFAttx/kVVk7w3BbdTG9/Cu+PdfIZK5pWAaJDGf1AoS4XCJ3G1VjMSdLw9Entx6NzhovDWKjPPQ6iF4B44RXMy0Sf3tEBgJgPN4f/YwUQK/Egz+li91Y6RJXMs2PH0l2LljYXJsfPoC5YzVbbmV/NIVwUpaPO37P7CZ7E1wZt8l7anARboL++9wweD9c/cG0RriKmal2ifLQSmSh/m6IerKD4qFFVwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1a8iec2p6hvtnn4WIpgz98E8hxI4ZRKagsE23dA11ro=;
- b=fYAeiI6umzZYBPQqjEmH32Ck/rTST0+L0ksb554Awh/44q3VeXAU4E+pEbnWKC688tDidL1h2CP3H+1lu6MTjO8+tIsbJhW3Pdw+omMf2hHoOL6vGb0vf35wnfHa0Pj6/cSypDlmx+PjlYHz/sG/FfCPwRspFHYif2xmVZ39Sxa9fPoFcB9aKFwWgtzdSuKZWBp1sHrzNyghdu+YzRg7ADjH9P7NqD0OZAMqUxL3LRYi9yJnIumBWBDMXXoZclOy48Jgj6ZzseejaLpEss0tiRe6TzrYXBdBqIGc+Q+5fw7px8nom5erViaJe3IT1R9kXcWT37bmVCdlHdM3AWbvSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1a8iec2p6hvtnn4WIpgz98E8hxI4ZRKagsE23dA11ro=;
- b=SVdRKmSXTmniFqve0iA5QBoA0ync926oLyuevmeQk4akD5GdkT9dnlxfgeALDE35E/hZ/r7e67gVyvAnr9C2lrIVJaeKOork7RpSvxQ2hc4IxN9NEMaDQVnrb8MVQCR9y1+sY8pVwX/bdN1w+oYIIpciv2P2Y05Ixsxp1oyqeyU=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Thomas.Lendacky@amd.com; 
-Received: from DM6PR12MB3163.namprd12.prod.outlook.com (2603:10b6:5:15e::26)
- by DM6PR12MB3482.namprd12.prod.outlook.com (2603:10b6:5:3d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
- 2020 13:15:19 +0000
-Received: from DM6PR12MB3163.namprd12.prod.outlook.com
- ([fe80::9ae:cb95:c925:d5bf]) by DM6PR12MB3163.namprd12.prod.outlook.com
- ([fe80::9ae:cb95:c925:d5bf%4]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
- 13:15:19 +0000
-Subject: Re: [PATCH] crypto: ccp: Add support for SEV-ES to the PSP driver
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <134926f3bcd38e51d5d0b0919afc7a16311d9c0f.1587412498.git.thomas.lendacky@amd.com>
- <20200421123311.GJ21900@8bytes.org>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <c609bc22-735a-0db9-3367-0713898707ab@amd.com>
-Date:   Tue, 21 Apr 2020 08:15:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-In-Reply-To: <20200421123311.GJ21900@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN2PR01CA0015.prod.exchangelabs.com (2603:10b6:804:2::25)
- To DM6PR12MB3163.namprd12.prod.outlook.com (2603:10b6:5:15e::26)
+        id S1728988AbgDUNQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:16:44 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:39440 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728337AbgDUNQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:16:43 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03LDBHuf013669;
+        Tue, 21 Apr 2020 08:15:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=eQSksNnr16lv473MUndY75YiFvq7xp0brkXvXdv6kL0=;
+ b=bsL2mm9fuCYb7w8ukaP/lJEpAicOMG/62nKFIXRJiItvsAejwDb8ZUTrqs2rTRwRVjvr
+ YYYCt0axmdKqoCNMXAUWRJLwu4pgxTDvPFpglkIicGdxh3YxiUwUCWQDorQHEXAClom8
+ 1fxHf9dIRm2ZZaJiqm/MQjnYejeUfPHE7LxZgfqiR6rb8E5XD4cxYskY90E9718xCVNk
+ 77dwr67UykuFNckrXG1h/z648JM9on0+FHVpcJDuodIMEdEvXEnu3DnRMysd6F1yFQlf
+ Ed6s3Ht/cCbQ5Vc8rqZOKsq1y5QMS1na3BAOjLb5aE/toR8hP2KNk/jsNDKd4+/lOJaU 6g== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 30fwyqmxnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 21 Apr 2020 08:15:46 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Tue, 21 Apr
+ 2020 14:15:43 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via Frontend
+ Transport; Tue, 21 Apr 2020 14:15:43 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6756D2AB;
+        Tue, 21 Apr 2020 13:15:43 +0000 (UTC)
+Date:   Tue, 21 Apr 2020 13:15:43 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <kstewart@linuxfoundation.org>,
+        <allison@lohutok.net>, <tglx@linutronix.de>, <info@metux.net>,
+        <ckeepax@opensource.wolfsonmicro.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: wm8960: Fix wrong clock after suspend & resume
+Message-ID: <20200421131543.GG44490@ediswmail.ad.cirrus.com>
+References: <1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SN2PR01CA0015.prod.exchangelabs.com (2603:10b6:804:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29 via Frontend Transport; Tue, 21 Apr 2020 13:15:18 +0000
-X-Originating-IP: [67.79.209.213]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cf6959c8-2d5e-4c25-b37f-08d7e5f60a04
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3482:|DM6PR12MB3482:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB34826EE296627C183AC0A8B5ECD50@DM6PR12MB3482.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 038002787A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(316002)(6506007)(53546011)(81156014)(6512007)(8936002)(36756003)(6486002)(8676002)(5660300002)(956004)(2616005)(6916009)(31686004)(26005)(4326008)(478600001)(186003)(16526019)(54906003)(66556008)(31696002)(52116002)(2906002)(86362001)(66946007)(66476007);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yg1EQ0YwV2hsDYbN6UQLcnqlAGrlNjqszscXONbl2JrIb3cbz+a4CJQz7usC7UfOmH1MbeWHKSFZQOhcJu51iycEW2gZ1nYvBC//i5k6+UOJNanhhn0tSuEoBWKYWAuoUXwyjAKCcvB16TWpohno1zMpeaAId3UQ/hoBaLiItYqgMwde9tRd7r6GZPvysfLz8nKE2/e3pM5z33Izkv657bTyY12cxx4r//1YyzK4M/Aeo/X43G8HU+oZUXqZOBEQo5MZexHtDGpjWFGU3MyiZ7dwS86Cye8RZzWDtny0igntwqL/glIkW/MuvZqbICFogQvvsAeGhwi5yoSijq2aIGQB/fKrN/ShXp7/7ABFFIhmLvMUDDAvkAT1NqOhhdFy6PoaE0WEH4OjxlWxTk4zVhj4vOwHqhwSJ/9yCTD9iRJt99pojINUG3hSAlzhNhuX
-X-MS-Exchange-AntiSpam-MessageData: VvEyRc7cidEo3tnuet+DKyxXtsRqdatmBDxVIxdf5hNAaiXd4lasPW12AInEVth+0SZGp+5mHMB+MEzJIfmXDx1jsWeTVGI4oETQNcXsQQcC6kRnL3d5FwlJQ2slS/mtbJ7WqV5f+rG8uo/r4v6K2A==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf6959c8-2d5e-4c25-b37f-08d7e5f60a04
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2020 13:15:19.2028
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ualcNeEBUrbPrv0ldIys0VRBHQN6GvWfD2BeYqxrPVf0RP7MVQt5AAr4OZEKJEirvf+Nc4Cr6mPesCrwort9aA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3482
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ spamscore=0 mlxscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
+ clxscore=1011 phishscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004210105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/20 7:33 AM, Joerg Roedel wrote:
-> Hi Tom,
+On Tue, Apr 21, 2020 at 07:28:45PM +0800, Shengjiu Wang wrote:
+> After suspend & resume, wm8960_hw_params may be called when
+> bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
+> is not called. But if sample rate is changed at that time, then
+> the output clock rate will be not correct.
 > 
-> On Mon, Apr 20, 2020 at 02:54:58PM -0500, Tom Lendacky wrote:
->>   static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
->>   {
->>   	struct sev_device *sev = psp_master->sev_data;
->> @@ -214,6 +226,21 @@ static int __sev_platform_init_locked(int *error)
->>   	if (sev->state == SEV_STATE_INIT)
->>   		return 0;
->>   
->> +	if (sev_es_tmr) {
->> +		u64 tmr_pa;
->> +
->> +		/*
->> +		 * Do not include the encryption mask on the physical
->> +		 * address of the TMR (firmware should clear it anyway).
->> +		 */
->> +		tmr_pa = __pa(sev_es_tmr);
->> +		tmr_pa = ALIGN(tmr_pa, SEV_ES_TMR_ALIGN);
+> So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
+> is not necessary and it causes above issue.
 > 
-> No need to manually align the region, see below.
-> 
->> +	/* Obtain the TMR memory area for SEV-ES use */
->> +	tmr_page = alloc_pages(GFP_KERNEL, get_order(SEV_ES_TMR_LEN));
->> +	if (tmr_page) {
->> +		sev_es_tmr = page_address(tmr_page);
->> +	} else {
->> +		sev_es_tmr = NULL;
->> +		dev_warn(sev->dev,
->> +			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
->> +	}
-> 
-> This allocates a 2M region where 1M is needed. The page allocator gives
-> you naturally aligned region for any allocation order, so when you
-> allocate 1M, it will automatically be 1M aligned.
+> Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
 
-Ah, I did not realize that. I'll update the patch to allocate just 1M then.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Tom
-
-> 
-> Other than that this patch looks good to me.
-> 
-> Regards,
-> 
-> 	Joerg
-> 
+Charles
