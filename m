@@ -2,195 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AC01B2DBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EAF1B2DAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgDUREq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:04:46 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:28040 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728956AbgDUREn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:04:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587488682; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bb23re+70wL0pEeBHYk9nDh+mZGDDFOcSabU2dgzaNk=;
- b=D/RhnPvhK1iNmEDCNeMNTymVeGUd16WvTYkpEFatkYU0Tgl+CJH7Ody94jY6r3QbmMQ0ngXD
- LEbPDhsgmROI0Gu4Hqm0USZS8Hij+Tax3WKp1l2vDjqrjR+LMXYU4J8cSayRq5vyM6VRpXCw
- qswQHuzwUmHnXi+Euqb73EZjVEk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9f2763.7f500d6ed730-smtp-out-n02;
- Tue, 21 Apr 2020 17:03:31 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1210AC433BA; Tue, 21 Apr 2020 17:03:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1728287AbgDURET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726741AbgDUREO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:04:14 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E281C433D2;
-        Tue, 21 Apr 2020 17:03:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED9F22071C;
+        Tue, 21 Apr 2020 17:04:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587488654;
+        bh=TKwQ9ykgax7V0in9J67Gf5It6T8tA6kFCL0qRblfIrI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LafIXWddU/e0Xydt4GgYYdU5GaDFxqylQCmJxnpFAsQ2UlzspnKjfAIwz2UuDLwVR
+         gVRmCny6BzaRVHvJXgLBylroC8orFZoRb4sX4+u8lcB7JlovofGV6Wl8JEqDnyKk4s
+         6Hxr9plhj/JBx6aui9oOtVZHaggRYuIbiXDgG/rM=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jQwJg-00CmLT-1Q; Tue, 21 Apr 2020 19:04:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Joe Stringer <joe@wand.net.nz>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>, rcu@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        zhanglin <zhang.lin16@zte.com.cn>, netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 00/10] Manually convert RCU text files to ReST format
+Date:   Tue, 21 Apr 2020 19:04:01 +0200
+Message-Id: <cover.1587488137.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Apr 2020 22:33:30 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, evgreen@chromium.org,
-        ohad@wizery.com, mka@chromium.org, dianders@chromium.org,
-        devicetree@vger.kernel.org, linux-remoteproc-owner@vger.kernel.org
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: sc7180: Update Q6V5 MSS node
-In-Reply-To: <20200420055005.GI1516868@builder.lan>
-References: <20200417142605.28885-1-sibis@codeaurora.org>
- <20200417142605.28885-6-sibis@codeaurora.org>
- <20200420055005.GI1516868@builder.lan>
-Message-ID: <e47383f6e4467610fc4623dc1f77dcd6@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Bjorn,
+This patch series convert RCU patches to ReST.
 
-Thanks for reviewing the series!
-Addressed all the review comments
-in v3.
+One interesting point to be noticed hereis that the RTFP.txt file contain a 
+broken TeX bib file. I suspect that someone added some new articles
+directly there without trying to use LaTeX to check if the addition is
+valid. Or maybe it is just due to some version differences from the time
+such references were added.
 
-On 2020-04-20 11:20, Bjorn Andersson wrote:
-> On Fri 17 Apr 07:26 PDT 2020, Sibi Sankar wrote:
-> 
->> Add TCSR node and update MSS node to support MSA based Modem boot on
->> SC7180 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->> 
->> Depends on the following bindings:
->> iommus: https://patchwork.kernel.org/patch/11443101/
->> spare-regs: https://patchwork.kernel.org/patch/11491425/
->> 
->>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 42 
->> +++++++++++++++++++++++++
->>  arch/arm64/boot/dts/qcom/sc7180.dtsi    |  5 +++
->>  2 files changed, 47 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
->> index e613d70cc0198..6f472872be1a3 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
->> @@ -319,6 +319,48 @@ &qupv3_id_1 {
->>  	status = "okay";
->>  };
->> 
->> +&remoteproc_mpss {
->> +	compatible = "qcom,sc7180-mss-pil";
->> +	reg = <0 0x04080000 0 0x410>, <0 0x04180000 0 0x48>;
-> 
-> I think we should overspecify the properties in the platform dtsi,
-> whenever possible - it shouldn't be a problem that the pas driver
-> doesn't use all the properties provided by the binding.
-> 
-> As such I think you should move the reg, clocks, resets, halt regs and
-> power-domains to the platform.
-> 
->> +	reg-names = "qdsp6", "rmb";
->> +
->> +	clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
->> +		 <&gcc GCC_MSS_Q6_MEMNOC_AXI_CLK>,
->> +		 <&gcc GCC_MSS_NAV_AXI_CLK>,
->> +		 <&gcc GCC_MSS_SNOC_AXI_CLK>,
->> +		 <&gcc GCC_MSS_MFAB_AXIS_CLK>,
->> +		 <&rpmhcc RPMH_CXO_CLK>;
->> +	clock-names = "iface", "bus", "nav", "snoc_axi",
->> +		      "mnoc_axi", "xo";
->> +
->> +	iommus = <&apps_smmu 0x460 0x1>, <&apps_smmu 0x444 0x2>;
->> +
->> +	resets = <&aoss_reset AOSS_CC_MSS_RESTART>,
->> +		 <&pdc_reset PDC_MODEM_SYNC_RESET>;
->> +	reset-names = "mss_restart", "pdc_reset";
->> +
->> +	qcom,halt-regs = <&tcsr_mutex_regs 0x23000 0x25000 0x24000>;
->> +	qcom,spare-regs = <&tcsr_regs 0xb3e4>;
->> +
->> +	power-domains = <&aoss_qmp AOSS_QMP_LS_MODEM>,
->> +			<&rpmhpd SC7180_CX>,
->> +			<&rpmhpd SC7180_MX>,
->> +			<&rpmhpd SC7180_MSS>;
->> +	power-domain-names = "load_state", "cx", "mx", "mss";
->> +
->> +	/delete-property/memory-region;
->> +
->> +	status = "okay";
->> +
->> +	mba {
->> +		memory-region = <&mba_mem>;
-> 
-> When I wrote this I was under the impression that memory-region wasn't
-> allowed to take an array of regions, perhaps we can make the mss 
-> binding
-> and driver support a multi-cell memory-region in the of_node directly
-> and drop these sub children.
-> 
-> Then it would be a cleaner update of the pas' memory-region.
-> 
-> But I'm fine with us putting this part on the todo list for the time
-> being...
+During the RTFP.txt conversion, I fixed the bibtex problems in order for it
+to be properly parsed by LaTeX, and used the fixed file to produce a list of
+the actually used references inside the RTFP.txt file., manually adding them
+to the converted RTFP.rst. 
 
-I've switched to using memory-region
-in v3. I'll plan to convert the doc
-to yaml after the remaining bindings
-changes land.
+As not all references were mentioned there, I opted to preserve the 
+converted RTFP.bib, as it could be useful for someone doing any 
+research around RCU.
 
-> 
-> Regards,
-> Bjorn
-> 
->> +	};
->> +
->> +	mpss {
->> +		memory-region = <&mpss_mem>;
->> +	};
->> +};
->> +
->>  &uart3 {
->>  	status = "okay";
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index e319762a0bffc..c49801ddb9d70 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> @@ -981,6 +981,11 @@ tcsr_mutex_regs: syscon@1f40000 {
->>  			reg = <0 0x01f40000 0 0x40000>;
->>  		};
->> 
->> +		tcsr_regs: syscon@1fc0000 {
->> +			compatible = "syscon";
->> +			reg = <0 0x01fc0000 0 0x40000>;
->> +		};
->> +
->>  		tlmm: pinctrl@3500000 {
->>  			compatible = "qcom,sc7180-pinctrl";
->>  			reg = <0 0x03500000 0 0x300000>,
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
+The results of those changes (together with other changes from my pending
+doc patches) are available at:
+
+   https://www.infradead.org/~mchehab/kernel_docs/RCU/index.html
+
+And the series is on my git tree:
+
+  https://git.linuxtv.org/mchehab/experimental.git/log/?h=rcu-docs
+
+Mauro Carvalho Chehab (10):
+  docs: RCU: convert checklist.txt to ReST
+  docs: RCU: convert lockdep-splat.txt to ReST
+  docs: RCU: convert lockdep.txt to ReST
+  docs: RCU: convert rculist_nulls.txt to ReST
+  docs: RCU: convert torture.txt to ReST
+  docs: RCU: convert rcuref.txt to ReST
+  docs: RCU: RTFP: fix bibtex entries
+  docs: RCU: convert RTFP.txt to ReST
+  docs: RCU: stallwarn.txt: convert it to ReST
+  docs: RCU: rculist_nulls.rst: don't duplicate chapter names
+
+ Documentation/RCU/{RTFP.txt => RTFP.bib}      | 323 ++--------
+ Documentation/RCU/RTFP.rst                    | 593 ++++++++++++++++++
+ .../RCU/{checklist.txt => checklist.rst}      |  17 +-
+ Documentation/RCU/index.rst                   |  11 +
+ .../{lockdep-splat.txt => lockdep-splat.rst}  |  99 +--
+ .../RCU/{lockdep.txt => lockdep.rst}          |  12 +-
+ Documentation/RCU/rcu.rst                     |   4 +-
+ Documentation/RCU/rculist_nulls.rst           | 200 ++++++
+ Documentation/RCU/rculist_nulls.txt           | 172 -----
+ Documentation/RCU/{rcuref.txt => rcuref.rst}  | 193 +++---
+ .../RCU/{stallwarn.txt => stallwarn.rst}      |  55 +-
+ .../RCU/{torture.txt => torture.rst}          | 115 ++--
+ Documentation/locking/locktorture.rst         |   2 +-
+ MAINTAINERS                                   |   4 +-
+ include/linux/rculist_nulls.h                 |   2 +-
+ kernel/rcu/rcutorture.c                       |   2 +-
+ kernel/rcu/tree_stall.h                       |   4 +-
+ net/core/sock.c                               |   4 +-
+ 18 files changed, 1139 insertions(+), 673 deletions(-)
+ rename Documentation/RCU/{RTFP.txt => RTFP.bib} (82%)
+ create mode 100644 Documentation/RCU/RTFP.rst
+ rename Documentation/RCU/{checklist.txt => checklist.rst} (98%)
+ rename Documentation/RCU/{lockdep-splat.txt => lockdep-splat.rst} (54%)
+ rename Documentation/RCU/{lockdep.txt => lockdep.rst} (96%)
+ create mode 100644 Documentation/RCU/rculist_nulls.rst
+ delete mode 100644 Documentation/RCU/rculist_nulls.txt
+ rename Documentation/RCU/{rcuref.txt => rcuref.rst} (50%)
+ rename Documentation/RCU/{stallwarn.txt => stallwarn.rst} (90%)
+ rename Documentation/RCU/{torture.txt => torture.rst} (76%)
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+2.25.2
+
+
