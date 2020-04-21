@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFF91B2725
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8711B2728
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgDUNIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:08:19 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11152 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgDUNIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:08:17 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9eefce0000>; Tue, 21 Apr 2020 06:06:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 21 Apr 2020 06:08:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 21 Apr 2020 06:08:17 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
- 2020 13:08:17 +0000
-Received: from [10.26.73.24] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
- 2020 13:08:14 +0000
-Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
- for a long time
-To:     Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "Laxman Dewangan" <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        "Vidya Sagar" <vidyas@nvidia.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200324191217.1829-1-digetx@gmail.com>
- <20200324191217.1829-2-digetx@gmail.com>
- <1e259e22-c300-663a-e537-18d854e0f478@nvidia.com>
- <f59ba318-8e99-c486-fa4d-1ee28a7b203d@gmail.com>
- <b01cec76-bb39-9fb5-8f6e-4023c075e6b3@gmail.com>
- <8cd085e1-f9fd-6ec0-9f7a-d5463f176a63@nvidia.com>
- <2e99c2f0-4bba-2ea6-dada-3190c0303dcf@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <1a5e5455-597f-7724-f992-32a2492c1e24@nvidia.com>
-Date:   Tue, 21 Apr 2020 14:08:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728933AbgDUNIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:08:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:37845 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728337AbgDUNIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:08:46 -0400
+IronPort-SDR: nJ5163S7MrKhoCO+Lvs7Hf8dsdL9PU5lD1LVodW8C3/zQdsKWrrAJWFeciIvAWfILaKXqqAvPD
+ iNLVhlYN3ytg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 06:08:46 -0700
+IronPort-SDR: T8IlvodrNAxmEYLLQ/nHkoijm/eF3BnuAZKqEckAVRtbKnoV8eIow+CmoXICZYexkqCSQTvgtZ
+ Bq/Ymh5j/7Pw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
+   d="scan'208";a="402181930"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004.jf.intel.com with ESMTP; 21 Apr 2020 06:08:44 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jQsdq-002F9S-B0; Tue, 21 Apr 2020 16:08:46 +0300
+Date:   Tue, 21 Apr 2020 16:08:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v3 1/3] lib/vsprintf: Print time64_t in human readable
+ format
+Message-ID: <20200421130846.GM185537@smile.fi.intel.com>
+References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
+ <20200415170046.33374-2-andriy.shevchenko@linux.intel.com>
+ <20200416023219.GA30641@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <2e99c2f0-4bba-2ea6-dada-3190c0303dcf@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587474382; bh=D09X4SPYe0zdr2xm0SGQdHD9ENL+ieH7CrlfNJV50pE=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=FG/VKS2gUyE9ggx8W/KlCgX7++6hiwZTb7M8JtJ9L7mNa60sGl/JjFNhsGi5fPbYS
-         Z3JqK+0jmSYGX2x23lwm6SleC/53OyrLNcctWxXF2cRREMOawYPvar9IVGSIuktBpq
-         wV4dS1xTUw+8cUcP+QRfHftomffoSHFsfPerfm+Zt00bogKk5J5uag6aYpzh4HcqOW
-         rMcGMwj6LVURMpi9IqNkixSaQkrZeW1ChdIS5BNH/Jz9b6p+5zk1GNw5Pw1Y8FrTY1
-         x0tRX184R1VyPmTWQt+ps+L2vmg5/97hJ06u0PuV6iyAfHyQa3c/2QI2zisv9wfyA8
-         kNueyuTCcJVtw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416023219.GA30641@jagdpanzerIV.localdomain>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21/04/2020 13:39, Manikanta Maddireddy wrote:
-
-...
-
->> I am adding Manikanta to get some feedback on why we moved the PCI
->> suspend to the NOIRQ phase because it is not clear to me if we need to
->> do this here.
->>
->> Manikanta, can you comment on whether we really need to suspend Tegra
->> PCI during the noirq phase?
+On Thu, Apr 16, 2020 at 11:32:19AM +0900, Sergey Senozhatsky wrote:
+> On (20/04/15 20:00), Andy Shevchenko wrote:
+> [..]
+> >  #include <linux/of.h>
+> >  #include <net/addrconf.h>
+> > @@ -1819,6 +1820,29 @@ char *rtc_str(char *buf, char *end, const struct rtc_time *tm,
+> >  	return buf;
+> >  }
+> >  
+> > +static noinline_for_stack
+> > +char *time64_str(char *buf, char *end, const time64_t time,
+> > +		 struct printf_spec spec, const char *fmt)
+> > +{
+> > +	struct rtc_time rtc_time;
+> > +	struct tm tm;
+> > +
+> > +	time64_to_tm(time, 0, &tm);
+> > +
+> > +	rtc_time.tm_sec = tm.tm_sec;
+> > +	rtc_time.tm_min = tm.tm_min;
+> > +	rtc_time.tm_hour = tm.tm_hour;
+> > +	rtc_time.tm_mday = tm.tm_mday;
+> > +	rtc_time.tm_mon = tm.tm_mon;
+> > +	rtc_time.tm_year = tm.tm_year;
+> > +	rtc_time.tm_wday = tm.tm_wday;
+> > +	rtc_time.tm_yday = tm.tm_yday;
+> > +
+> > +	rtc_time.tm_isdst = 0;
 > 
-> PCIe subsystem driver implemented noirq PM callbacks, it will save & restore
-> endpoint config space in these PM callbacks. PCIe controller should be
-> available during this time, so noirq PM callbacks are implemented in Tegra
-> PCIe driver.
-> 
-> file: drivers/pci/pci-driver.c
-> static const struct dev_pm_ops pci_dev_pm_ops = {
-> 	...
->         .suspend_noirq = pci_pm_suspend_noirq,
->         .resume_noirq = pci_pm_resume_noirq,
->         ...
-> };
+> Here you convert time64_t (signed, we also have unsigned version - timeu64_t)
+> to tm first and then convert tm to rtc_time. Will rtc_time64_to_tm() do the
+> trick?
 
-Thanks, however, it is still not clear why this needs to be done during
-this phase. When you say PCIe subsystem driver, specifically which
-driver are you referring too? Are you referring to the
-pci_pm_suspend_noirq() in the drivers/pci/pci-driver.c driver? If so,
-just out of curiosity why does this need to be handled in the noirq phase?
-
-Thanks
-Jon
+You missed v2 round. The RTC is configuration dependent and Alexandre in favour
+of removing those from RTC completely by replacing with always enabled
+time64_to_tm().
 
 -- 
-nvpublic
+With Best Regards,
+Andy Shevchenko
+
+
