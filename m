@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6661B3054
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC211B30F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 22:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgDUT2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725963AbgDUT2e (ORCPT
+        id S1726355AbgDUUIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 16:08:38 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55392 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgDUUIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:28:34 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4783DC0610D5;
-        Tue, 21 Apr 2020 12:28:33 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t40so1831543pjb.3;
-        Tue, 21 Apr 2020 12:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ylAfLFxsriqqePphFNepgAUrNjlPLS6CtzpqdHOIzFc=;
-        b=kha6OSbMInYcR9hm2zEI4iW2rTk379V3SLY+qdnGPuuh7YiO6Ds8IwXpMj3ruCruxX
-         TUkUFOV5mrR9VhYMh7d9p8FH/FxmnIEO1+PU4ALzbok/93K4jYK96C2QMa1FHW7AF+Wl
-         G5iFQS858+MqaCdBCOyvgxb8fpixLU5ncqS9iM9nuOwB45vU/YUMvrQNKxg3RTHaoMCR
-         4ykMNSyaugFvsHcXnS55Ny+qpuKgFwuTWMirAzQgie0P7ViKveBfLCgwbdHO3Pks53Je
-         i9u3Mf+hWK7a6xLXsUxTpwvm9qFrb48Dlp55wmdYyAfLAX1PL+IgjG/6quSwfUJJDNwh
-         B1Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ylAfLFxsriqqePphFNepgAUrNjlPLS6CtzpqdHOIzFc=;
-        b=nnBgGgXNfLVWt0j4zJo7+UabSU0FzX5Md69b6Cd443LjT97peiqaleeY4MXftPodGP
-         l9fsL5TlK+8COndHoaeRdold8PebqSnPKJOAYe5DCYSB1GX0V45nkEUAxZcL8+73Dcgl
-         xBiH+hFGGpiBewRgKUCN7grtHjsXdCkKYp6xbHBANFQacd2Vk/BepEQlxgKUS8HdbWMq
-         K5b7hUD9pR45V/4NMmuLMBklm/w/TH/3N4kKoqk0ExXq1tog2QzOkK0m7bieBgZruJa6
-         loLYIPajR95dmNOgmHEglsZYXHT8k7FBs/TrnGgwU5ekjZ0X6kZad6Y6fe987+P3FqKy
-         AN8g==
-X-Gm-Message-State: AGi0PuYqHjWhvXsufp+lZGj8a+RonBgZtwB2DUbXw37kLffjmPHXjf+Q
-        Hzd4w1atY2nqzn0Z0HGrmt8=
-X-Google-Smtp-Source: APiQypKa7+JJBgKWMKENf1y38p33ouL8FwaQ2E3Ko3mn7fuLxfJvmhBJyaH9VbcgEiIgNxIey9DUxA==
-X-Received: by 2002:a17:90a:d0c5:: with SMTP id y5mr7257509pjw.67.1587497312525;
-        Tue, 21 Apr 2020 12:28:32 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id o63sm3326604pjb.40.2020.04.21.12.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 12:28:31 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 12:28:29 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Brendan Shanks <bshanks@codeweavers.com>
-Cc:     linux-input@vger.kernel.org, rydberg@bitmath.org,
-        linux-kernel@vger.kernel.org,
-        Mathieu Maret <mathieu.maret@gmail.com>,
-        mmaret@pixium-vision.com
-Subject: Re: BUG: ff_effects lost after a fork
-Message-ID: <20200421192829.GB125362@dtor-ws>
-References: <20191127101008.GA327265@nuka.localdomain>
- <5404D7D5-47EF-4399-B0D9-B3C68A3D5895@codeweavers.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5404D7D5-47EF-4399-B0D9-B3C68A3D5895@codeweavers.com>
+        Tue, 21 Apr 2020 16:08:37 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LK2bFe134049;
+        Tue, 21 Apr 2020 20:08:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=X+//GjRlupUmIYIFzP0Ctl779RKP1FxieoOD/8PQKf8=;
+ b=NFQwfC7R605RcIgKo5Bh4sZ43bethE5EefhF9TffLBQgJfOqa4IJ6QtNFnyOIofTqFeF
+ QqLgeMAV+Hbz3nElDNa5aropDYZnBfxXIarOP1OA7o0jMjnDjorcSnC0/ytIVSjhtc/T
+ C6C9YApg1Xq7QhZZCqoEU8KWvabxnkKFo13OixJyPMTDh1dgVw79bB4zT9kAbVSN8SW6
+ se3r8m47IdbxR1FWo6+j1GB2aT00imuiA2jUi79nUTItAhJ0akBRIjXlqpe1yzJRjUB3
+ bWnRqD4tGr/OtMmdLkMbbCjNymlIlxZX443+BmSxefAfFaHaEgtFKThkb+Dz7WmPDXyA Ug== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30fsgky4a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 20:08:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LK2Vee128225;
+        Tue, 21 Apr 2020 20:08:21 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30gbber9dh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 20:08:21 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03LK8JCT006680;
+        Tue, 21 Apr 2020 20:08:19 GMT
+Received: from mihai.localdomain (/10.153.73.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Apr 2020 13:08:19 -0700
+From:   Mihai Carabas <mihai.carabas@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2] x86: microcode: fix return value for microcode late loading
+Date:   Tue, 21 Apr 2020 22:28:38 +0300
+Message-Id: <1587497318-4438-1-git-send-email-mihai.carabas@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1586858135-29337-1-git-send-email-mihai.carabas@oracle.com>
+References: <1586858135-29337-1-git-send-email-mihai.carabas@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=1 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004210150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 bulkscore=0 phishscore=0 suspectscore=1 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004210150
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:53:19AM -0700, Brendan Shanks wrote:
-> 
-> > On Nov 27, 2019, at 2:10 AM, Mathieu Maret <mathieu.maret@gmail.com>
-> > wrote:
-> > 
-> > Hi,
-> > 
-> > I'm using evdev for vibrator interface.  I can register ff_effect
-> > and play them.  But, if I do any kind of fork, all the effects are
-> > flush and cannot be used.
-> > 
-> > You can find, below, an example of such a program.  From some trace
-> > have put in the kernel, it's seems that at the end of the system()
-> > call, evdev_flush get called.
-> > 
-> > evdev_flush() will call flush_effects() that will remove all the
-> > registered effects.
-> > 
-> > I've only one device with vibrator and it's a imx6 4.1.15 kernel.
-> > But code looks the same that in linus master that why I'm posting it
-> > here. I hope that it will not waste people time
-> > 
-> 
-> Hi everyone,
-> 
-> I’m also hitting this bug with games that use force-feedback steering
-> wheels under Wine/Proton. It typically shows up as EVIOCSFF ioctls
-> failing with EINVAL, since all the effects were unexpectedly flushed.
-> 
-> The problem is that input_ff_flush() is called whenever a file
-> descriptor is closed, but there can be multiple descriptors open to
-> the same file description (through fork(), dup(), etc).
-> input_ff_flush() removes all effects added by that file description,
-> which the users of the other descriptors certainly don't expect.
-> 
-> As for the fix, maybe fd_ops->flush() shouldn’t be implemented at all?
-> In the current design, effects “belong” to a file description (a
-> struct file *), not a descriptor. This seems sensible to me: a process
-> could open a device, upload an effect, then fork(), and it makes sense
-> that the child would have full control of the effects created by the
-> parent. It seems to me like nothing should be done when a descriptor
-> is closed, and input_ff_flush() should be called only when the whole
-> struct file is released.
-> 
+The return value from stop_machine might not be consistent.
 
-Yes, I agree, we should drop setting fops->flush and move the code into
-evdev_release(). This will ensure that the effects are stopped and
-erased once file is closed, but will allow passing the descriptors
-around.
+stop_machine_cpuslocked returns:
+- zero if all functions have returned 0
+- a non-zero value if at least one of the functions returned
+a non-zero value
 
-Can I get a real patch for this please?
+There is no way to know if it is negative or positive. So make
+__reload_late return 0 on success, or negative otherwise.
 
-Thanks.
+Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+---
+Changes in v2:
+- do not print anything on UCODE_NFOUND as microcode not found
+is not an error
 
+ arch/x86/kernel/cpu/microcode/core.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
+index 7019d4b..a2ae3da 100644
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -545,8 +545,7 @@ static int __wait_for_cpus(atomic_t *t, long long timeout)
+ /*
+  * Returns:
+  * < 0 - on error
+- *   0 - no update done
+- *   1 - microcode was updated
++ *   0 - success (no update done or microcode was updated)
+  */
+ static int __reload_late(void *info)
+ {
+@@ -576,8 +575,8 @@ static int __reload_late(void *info)
+ 	if (err > UCODE_NFOUND) {
+ 		pr_warn("Error reloading microcode on CPU %d\n", cpu);
+ 		ret = -1;
+-	} else if (err == UCODE_UPDATED || err == UCODE_OK) {
+-		ret = 1;
++	} else if (err == UCODE_NFOUND) {
++		ret = -1;
+ 	}
+ 
+ wait_for_siblings:
+@@ -608,7 +607,7 @@ static int microcode_reload_late(void)
+ 	atomic_set(&late_cpus_out, 0);
+ 
+ 	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
+-	if (ret > 0)
++	if (ret == 0)
+ 		microcode_check();
+ 
+ 	pr_info("Reload completed, microcode revision: 0x%x\n", boot_cpu_data.microcode);
+@@ -649,7 +648,7 @@ static ssize_t reload_store(struct device *dev,
+ put:
+ 	put_online_cpus();
+ 
+-	if (ret >= 0)
++	if (ret == 0)
+ 		ret = size;
+ 
+ 	return ret;
 -- 
-Dmitry
+1.8.3.1
+
