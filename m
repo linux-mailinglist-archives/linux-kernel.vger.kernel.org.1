@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BEE1B2B61
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685AD1B2B6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgDUPlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S1725902AbgDUPm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725613AbgDUPlt (ORCPT
+        by vger.kernel.org with ESMTP id S1725960AbgDUPm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:41:49 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57616C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:41:49 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l11so11518218lfc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=hH2NKSLss8DXe5MXmlZO9yHHYj4wSvrBrELIXjwQLIKirlTSutGHEIKamrEX2l6u+U
-         hzrnyL3iwcOsuKs2xncZupBxAc07sTzvdyg9LmgGqzfg2OAISO7oDQzREkea6srz6h5a
-         raqglolu63E2vOreQDyuJgGAuge3nO6SJ1q8G90x1dvjHseLBPrHni1jATUb+BoSZOTO
-         2hV31WhEPAzNUJb5U47mC3dftwUzG2u0FHUVwtwFQ8bk09tZSzk2hxz8rGLqJQwDV+lb
-         vypMsu/T8lBf+LwE2CnJDZMydxOLdOmXMtLl36JOiO2KWTRG9A1YKgaKE7zc1FETmdFd
-         Ej6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=XoW9EaOZXQidIbryzhk9kn38D/kvsVDap0fQFG10Xd4aBXO66fuBHhKducFndIY+sA
-         YzDCTgEj0YyBkXCSc55cOKv53TwSUzs0YzMPy1ZSaDRSE5xPDcg2BNHTNLQV7CIlDSiM
-         9zU6F5oQdLkLKbDdKUh+f4sAItevTEnoyqc1Y6LBccp9e16/eYyXNf4PJUDVjy6LKT/w
-         0xFE30TUKsvfATzNQ8c6JsE412pGLtLNQB9dm/znStRkFpTQr68Rc86dYLDKauiw8ukj
-         fDo+TCEpf0pJgZB9jRiB+qSEgiy75yNLKgymsF18RLAQNR8np48wMtgUPa/7oRVD9dAC
-         gXGQ==
-X-Gm-Message-State: AGi0PuaDDn+jLEBqVafd6A/Wri95KHxREaw/itiBOWSenroGdOZkKwSh
-        bZsQcvvSwojQaHTagiSs88eK+jrc9a9n7dauJbU=
-X-Google-Smtp-Source: APiQypLGC4ADegKA+5lOXxz1xjqyNs3Rn3HcyHzbIRVJSdWB3324sLcbp1JbUkCBWu5Ve5YrL/TUiOBw6C+SqIfXXQs=
-X-Received: by 2002:ac2:498d:: with SMTP id f13mr14203861lfl.75.1587483707369;
- Tue, 21 Apr 2020 08:41:47 -0700 (PDT)
+        Tue, 21 Apr 2020 11:42:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CBCC0610D5;
+        Tue, 21 Apr 2020 08:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=f152nRjSYvV+eMw/fALng3AkfZikt7gm61bUg8UTS34=; b=JFPUu4yw/6UB9q3h6V32zVamm5
+        zxymF4hEUx8UfY35t7SoEpJd4Ibzompx56UBcITTY/q5eRpHnl0vt2WqsCvWZHhN1DHdBJviyLnnL
+        KP7U4UV+Kyzkq4G0sjYIkVPiHRVahwxtuoVyAZIU/5sqqIc2ybKFIHWyR3pdVwGP7j8iEaOCk+vrN
+        ZGD7aGnUK3+ax+b6rnWJjWT7yo1tLvGeWKnn73pNavAvLDzCjGz6TM59btGjzhWX6h/WOFkidPc/a
+        Qpqt6QXhD9sQk4kPQcoPLKTbkYvcYSyqH1zCTMWkpKVbjXjrmx0qIhA00BiCi+KwFKX9pIerLoMFx
+        IeQ/aqUg==;
+Received: from [2001:4bb8:191:e12c:c70:4a89:bc61:3] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQv2E-0007pX-Uc; Tue, 21 Apr 2020 15:42:07 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: remove set_fs calls from the exec and coredump code v3
+Date:   Tue, 21 Apr 2020 17:41:57 +0200
+Message-Id: <20200421154204.252921-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Received: by 2002:a19:4b15:0:0:0:0:0 with HTTP; Tue, 21 Apr 2020 08:41:46
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Shayma <shaymamarwan09@gmail.com>
-Date:   Tue, 21 Apr 2020 15:41:46 +0000
-Message-ID: <CAMz+VjR0e36Xy=VuORH8+_AexKm-etuh9Fipxh5=CqHv73xZTw@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+Hi all,
+
+this series gets rid of playing with the address limit in the exec and
+coredump code.  Most of this was fairly trivial, the biggest changes are
+those to the spufs coredump code.
+
+Changes since v2:
+ - don't cleanup the compat siginfo calling conventions, use the patch
+   variant from Eric with slight coding style fixes instead.
+
+Changes since v1:
+ - properly spell NUL
+ - properly handle the compat siginfo case in ELF coredumps
+
