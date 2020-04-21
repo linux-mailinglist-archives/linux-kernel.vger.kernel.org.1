@@ -2,149 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6621B2729
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A621B2737
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgDUNJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728739AbgDUNJB (ORCPT
+        id S1728991AbgDUNJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:09:53 -0400
+Received: from enterprise01.smtp.diehl.com ([193.201.238.219]:14101 "EHLO
+        enterprise01.smtp.diehl.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728878AbgDUNJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:09:01 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB5BC061A10;
-        Tue, 21 Apr 2020 06:09:00 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so11079205lfc.0;
-        Tue, 21 Apr 2020 06:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ae3UnuFpJ8+A0PbXgsT3rOwWvqv/eSO4G3CZAuRBTig=;
-        b=ilnKy7G9PjI815DS9hT3SBdLYkWF5UDM4G+QulvHe+eswRuw7R/zeuyOBOTbwtBzkb
-         pjznuM9Q7RZmDsURDJ1HVBRYDWUE0GHot529qQpaBGOsUrg3xThRG+bGeK/Dtf4ZK3f5
-         f1ldeB+SqDacSXQ+nJ/Inh03pwBXbwFQsx2Htixut6/wf772OihXGXJ+ka4W2bnf/LPO
-         qY4Q9HyBvVvGLhmBxD31MabT+EbEF3K5o7mGVH+6A0zyE4TnJn3coSWwo6zYz45LXVjl
-         Dn4BM4RHu8k11c7i0R4DpvZs9Ju4wrGuK8cqmm+0LbPuyRDs2F1s0q8NeKJEz0oaWK7i
-         NhoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ae3UnuFpJ8+A0PbXgsT3rOwWvqv/eSO4G3CZAuRBTig=;
-        b=DMr0swKV8gJa1kpt7LtRnStH5stcDtK0Xi01ouCE4V+RA7+j0Z0BuD95pHZuaxGaFE
-         +hXEN11mKfAaLfgYAykmeNRVmlFNGvTHGQ6FwC/wMDvPmAmljpveYulkwtS7pV7K6c8Y
-         lbzibwXzr1wPRRRi42gmH3amZdsxd19/X/0ZtgapVJ0thyaTcsJidn9F7w0Y6+CdDjT5
-         qfWuM3BYyjl6svC3MUzQsmKb8/aTeGU0Cdh8QU05GEziLqPJ1ANRXxkQAlZ14WSfRpS5
-         VvnKKyfEYmA2vf6Wk2KtiXW1IZPM4GSACmwXgJj5O/UD8hJalTagAaeBYLD2bQc/Xb7U
-         x6NA==
-X-Gm-Message-State: AGi0PuZrb1LiRRbDsr7Lhrd6Ib0m3zsWXD7yKYRoVE/iOLIfh6Fs1n/y
-        EMxiuY9k46OCep3QuGPc87E=
-X-Google-Smtp-Source: APiQypLObkaoviPeUqqOpTMNmwXnp2oB4VmD0S1mnIjPBbbFpdbIaXGWNgBJhr3Rgml+5T6263BDlw==
-X-Received: by 2002:a19:cb41:: with SMTP id b62mr13882680lfg.21.1587474538470;
-        Tue, 21 Apr 2020 06:08:58 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id b73sm2136210lfg.86.2020.04.21.06.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 06:08:57 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 21 Apr 2020 15:08:51 +0200
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, urezki@gmail.com
-Subject: Re: [PATCH rcu/dev -fixes 4/4] rcu/tree: Use consistent style for
- comments
-Message-ID: <20200421130851.GA5695@pc636>
-References: <20200420153837.194532-1-joel@joelfernandes.org>
- <20200420153837.194532-5-joel@joelfernandes.org>
+        Tue, 21 Apr 2020 09:09:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=diehl.com; i=@diehl.com; q=dns/txt; s=default;
+  t=1587474585; x=1619010585;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AHfHaIhBE3pINRzw08uLgGJsllJoDvSSX2nJpBKqOCg=;
+  b=VpXGl8ZjjT3+1JnBfUbT4125DuFJnsng2bWBwFllU35DNyS89OGNjZVx
+   pdE7go8e8juOHa41WyP2kDfirMKg61Egk1kFMoCVqH5/1pXlf0dbmPq50
+   IdMrxCYRlXiwa/QHvCG6A7JvdRO40lE6kGZYI2FxAQwvsYsB8dpWGFvDq
+   2drwl748vLu6m3CQ5kzDewNRNZvTuDTFRoEbbc9X8T9e6rW4h7fSyIzOx
+   GbnxtM+GNPILeKhYvnExJ8xngTmEUHRJMvGnN5uLmYhxCncCnsvRPwnCI
+   AacrZQRC7dp/fw0R0Kt4lcd5DMREQqormmv/6HFU455p++nFs+rH+r1AD
+   w==;
+IronPort-SDR: m/D2+G8uvw09Crqdaipyxtnyk3cd6wYxLNTbR7Tp5IraqfRuQ8jUtH77MX0otl6HG8x6lCM7ss
+ npdiExKoX2rg==
+From:   Denis Osterland-Heim <denis.osterland@diehl.com>
+To:     "dmurphy@ti.com" <dmurphy@ti.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "jacek.anaszewski@gmail.com" <jacek.anaszewski@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Denis Osterland-Heim" <denis.osterland@diehl.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: [PATCH v5 2/3] leds: pwm: add support for default-state device
+ property
+Thread-Topic: [PATCH v5 2/3] leds: pwm: add support for default-state device
+ property
+Thread-Index: AQHWF94OqlLslpUgKkSqRQxJq3wL1Q==
+Date:   Tue, 21 Apr 2020 13:09:14 +0000
+Message-ID: <20200421130644.16059-3-Denis.Osterland@diehl.com>
+References: <20200421130644.16059-1-Denis.Osterland@diehl.com>
+In-Reply-To: <20200421130644.16059-1-Denis.Osterland@diehl.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+x-ms-exchange-messagesentrepresentingtype: 1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420153837.194532-5-joel@joelfernandes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TrailerSkip: 1
+X-GBS-PROC: byQFdw3ukCM+zy1/poiPc5jn58Xuz5PjrByvaI+9Wpm8OchGK4Zr2IYZ9xDMTQFo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 11:38:37AM -0400, Joel Fernandes (Google) wrote:
-> Simple clean up of comments in kfree_rcu() code to keep it consistent
-> with majority of commenting styles.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index f6eb3aee0935e..0512e0f9e2f31 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3043,15 +3043,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
->  static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
->  					  unsigned long flags)
->  {
-> -	// Attempt to start a new batch.
-> +	/* Attempt to start a new batch. */
->  	krcp->monitor_todo = false;
->  	if (queue_kfree_rcu_work(krcp)) {
-> -		// Success! Our job is done here.
-> +		/* Success! Our job is done here. */
->  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
->  		return;
->  	}
->  
-> -	// Previous RCU batch still in progress, try again later.
-> +	/* Previous RCU batch still in progress, try again later. */
->  	krcp->monitor_todo = true;
->  	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
->  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> @@ -3152,14 +3152,14 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	unsigned long flags;
->  	struct kfree_rcu_cpu *krcp;
->  
-> -	local_irq_save(flags);	// For safely calling this_cpu_ptr().
-> +	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
->  	krcp = this_cpu_ptr(&krc);
->  	if (krcp->initialized)
->  		raw_spin_lock(&krcp->lock);
->  
-> -	// Queue the object but don't yet schedule the batch.
-> +	/* Queue the object but don't yet schedule the batch. */
->  	if (debug_rcu_head_queue(head)) {
-> -		// Probable double kfree_rcu(), just leak.
-> +		/* Probable double kfree_rcu(), just leak. */
->  		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
->  			  __func__, head);
->  		goto unlock_return;
-> @@ -3177,7 +3177,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  
->  	WRITE_ONCE(krcp->count, krcp->count + 1);
->  
-> -	// Set timer to drain after KFREE_DRAIN_JIFFIES.
-> +	/* Set timer to drain after KFREE_DRAIN_JIFFIES. */
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
->  	    !krcp->monitor_todo) {
->  		krcp->monitor_todo = true;
-> @@ -3723,7 +3723,7 @@ int rcutree_offline_cpu(unsigned int cpu)
->  
->  	rcutree_affinity_setting(cpu, cpu);
->  
-> -	// nohz_full CPUs need the tick for stop-machine to work quickly
-> +	/* nohz_full CPUs need the tick for stop-machine to work quickly */
->  	tick_dep_set(TICK_DEP_BIT_RCU);
->  	return 0;
->  }
-> -- 
-> 2.26.1.301.g55bc3eb7cb9-goog
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+This patch adds support for =22default-state=22 devicetree property, whic=
+h
+allows to defer pwm init to first use of led.
 
---
-Vlad Rezki
+This allows to configure the PWM early in bootloader to let the LED
+blink until an application in Linux userspace sets something different.
+
+Signed-off-by: Denis Osterland-Heim <Denis.Osterland@diehl.com>
+---
+ drivers/leds/leds-pwm.c | 54 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
+index ef7b91bd2064..7b199c151768 100644
+--- a/drivers/leds/leds-pwm.c
++++ b/drivers/leds/leds-pwm.c
+@@ -18,10 +18,15 @@
+ #include <linux/pwm.h>
+ #include <linux/slab.h>
+=20
++#define LEDS_PWM_DEFSTATE_OFF	0
++#define LEDS_PWM_DEFSTATE_ON	1
++#define LEDS_PWM_DEFSTATE_KEEP	2
++
+ struct led_pwm {
+ 	const char	*name;
+ 	const char	*default_trigger;
+ 	u8		active_low;
++	u8		default_state;
+ 	unsigned int	max_brightness;
+ };
+=20
+@@ -88,7 +93,30 @@ static int led_pwm_add(struct device *dev, struct led_=
+pwm_priv *priv,
+=20
+ 	led_data->cdev.brightness_set_blocking =3D led_pwm_set;
+=20
+-	pwm_init_state(led_data->pwm, &led_data->pwmstate);
++	/* init PWM state */
++	if (led->default_state =3D=3D LEDS_PWM_DEFSTATE_KEEP) {
++		pwm_get_state(led_data->pwm, &led_data->pwmstate);
++		if (!led_data->pwmstate.period) {
++			led->default_state =3D LEDS_PWM_DEFSTATE_OFF;
++			dev_warn(dev,
++				=22failed to read period for %s, default to off=22,
++				led->name);
++		}
++	}
++	if (led->default_state !=3D LEDS_PWM_DEFSTATE_KEEP)
++		pwm_init_state(led_data->pwm, &led_data->pwmstate);
++
++	/* set brightness */
++	if (led->default_state =3D=3D LEDS_PWM_DEFSTATE_ON)
++		led_data->cdev.brightness =3D led->max_brightness;
++	else if (led->default_state =3D=3D LEDS_PWM_DEFSTATE_KEEP) {
++		uint64_t brightness;
++
++		brightness =3D led->max_brightness;
++		brightness *=3D led_data->pwmstate.duty_cycle;
++		do_div(brightness, led_data->pwmstate.period);
++		led_data->cdev.brightness =3D brightness;
++	}
+=20
+ 	ret =3D devm_led_classdev_register(dev, &led_data->cdev);
+ 	if (ret) {
+@@ -97,11 +125,13 @@ static int led_pwm_add(struct device *dev, struct le=
+d_pwm_priv *priv,
+ 		return ret;
+ 	}
+=20
+-	ret =3D led_pwm_set(&led_data->cdev, led_data->cdev.brightness);
+-	if (ret) {
+-		dev_err(dev, =22failed to set led PWM value for %s: %d=22,
+-			led->name, ret);
+-		return ret;
++	if (led->default_state !=3D LEDS_PWM_DEFSTATE_KEEP) {
++		ret =3D led_pwm_set(&led_data->cdev, led_data->cdev.brightness);
++		if (ret) {
++			dev_err(dev, =22failed to set led PWM value for %s: %d=22,
++				led->name, ret);
++			return ret;
++		}
+ 	}
+=20
+ 	priv->num_leds++;
+@@ -117,6 +147,8 @@ static int led_pwm_create_fwnode(struct device *dev, =
+struct led_pwm_priv *priv)
+ 	memset(&led, 0, sizeof(led));
+=20
+ 	device_for_each_child_node(dev, fwnode) {
++		const char *state =3D NULL;
++
+ 		ret =3D fwnode_property_read_string(fwnode, =22label=22, &led.name);
+ 		if (ret && is_of_node(fwnode))
+ 			led.name =3D to_of_node(fwnode)->name;
+@@ -134,6 +166,16 @@ static int led_pwm_create_fwnode(struct device *dev,=
+ struct led_pwm_priv *priv)
+ 		fwnode_property_read_u32(fwnode, =22max-brightness=22,
+ 					 &led.max_brightness);
+=20
++		if (!fwnode_property_read_string(fwnode, =22default-state=22,
++						 &state)) {
++			if (!strcmp(state, =22keep=22))
++				led.default_state =3D LEDS_PWM_DEFSTATE_KEEP;
++			else if (!strcmp(state, =22on=22))
++				led.default_state =3D LEDS_PWM_DEFSTATE_ON;
++			else
++				led.default_state =3D LEDS_PWM_DEFSTATE_OFF;
++		}
++
+ 		ret =3D led_pwm_add(dev, priv, &led, fwnode);
+ 		if (ret) {
+ 			fwnode_handle_put(fwnode);
+--=20
+2.26.2
+
+
+
+Diehl Connectivity Solutions GmbH
+Gesch=E4ftsf=FChrung: Horst Leonberger
+Sitz der Gesellschaft: N=FCrnberg - Registergericht: Amtsgericht
+N=FCrnberg: HRB 32315
+_________________________________________________________________________=
+__________________________
+
+Der Inhalt der vorstehenden E-Mail ist nicht rechtlich bindend. Diese E-M=
+ail enthaelt vertrauliche und/oder rechtlich geschuetzte Informationen.
+Informieren Sie uns bitte, wenn Sie diese E-Mail faelschlicherweise erhal=
+ten haben. Bitte loeschen Sie in diesem Fall die Nachricht.
+Jede unerlaubte Form der Reproduktion, Bekanntgabe, Aenderung, Verteilung=
+ und/oder Publikation dieser E-Mail ist strengstens untersagt.
+- Informationen zum Datenschutz, insbesondere zu Ihren Rechten, erhalten =
+Sie unter https://www.diehl.com/group/de/transparenz-und-informationspfli=
+chten/
+
+The contents of the above mentioned e-mail is not legally binding. This e=
+-mail contains confidential and/or legally protected information. Please =
+inform us if you have received this e-mail by
+mistake and delete it in such a case. Each unauthorized reproduction, dis=
+closure, alteration, distribution and/or publication of this e-mail is st=
+rictly prohibited.=20
+- For general information on data protection and your respective rights p=
+lease visit https://www.diehl.com/group/en/transparency-and-information-o=
+bligations/
