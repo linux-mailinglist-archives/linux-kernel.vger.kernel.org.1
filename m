@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0BA1B1FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EF71B1FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgDUHZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:25:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:64247 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUHZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:25:05 -0400
-IronPort-SDR: /X/Aft6/SpRoQTuL0N4mwTkvnzyJrK/TG6Fnk6Vzz1mL+VTQv0k3CzUpGVGigctTFWoTnYZdMM
- S3/QhO2ezGEQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 00:25:05 -0700
-IronPort-SDR: KzWZwGfjjFV+H5dJytaFfyp3whYIeEPMl40J7HFmm9gR0oP/nuv3lEMDb9a3jsnhocicrDT2P8
- TqFMHfyQC8ng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
-   d="scan'208";a="456001158"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Apr 2020 00:25:05 -0700
-Received: from fmsmsx162.amr.corp.intel.com (10.18.125.71) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Apr 2020 00:25:04 -0700
-Received: from shsmsx103.ccr.corp.intel.com (10.239.4.69) by
- fmsmsx162.amr.corp.intel.com (10.18.125.71) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Apr 2020 00:25:04 -0700
-Received: from shsmsx102.ccr.corp.intel.com ([169.254.2.138]) by
- SHSMSX103.ccr.corp.intel.com ([169.254.4.146]) with mapi id 14.03.0439.000;
- Tue, 21 Apr 2020 15:25:02 +0800
-From:   "Xia, Hui" <hui.xia@intel.com>
-To:     "Li, Philip" <philip.li@intel.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     lkp <lkp@intel.com>, Jonathan Cameron <jic23@kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/3] iio: adc: ti-ads8344: properly byte swap value
-Thread-Topic: [PATCH 1/3] iio: adc: ti-ads8344: properly byte swap value
-Thread-Index: AQHWFDDmE8xKP+EJp0SuTzhbL03ZEah/O+MAgAPxjzA=
-Date:   Tue, 21 Apr 2020 07:25:01 +0000
-Message-ID: <2A5F4C9150EECB4DAA6291810D6D61B9745DE89F@shsmsx102.ccr.corp.intel.com>
-References: <20200415212257.161238-2-alexandre.belloni@bootlin.com>
- <202004161449.NY5hL54S%lkp@intel.com> <20200416205023.GA437042@piout.net>
- <20200419024948.GK21730@intel.com>
-In-Reply-To: <20200419024948.GK21730@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728098AbgDUHbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:31:11 -0400
+Received: from sonic309-49.consmr.mail.ne1.yahoo.com ([66.163.184.175]:37209
+        "EHLO sonic309-49.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727042AbgDUHbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:31:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1587454261; bh=8SaBe657SUqzMIHOQXCqE8E7juFfQ/VceplMPZo+D8w=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=KpaZLk24UVqPwIBYC2dgf14lue+EQnfVzZFTJmxMC6TsT7WKiMhtq08Fetju5nTIV7GNbh+7nSybfvPnBgN8i47khQXY2HmIZwMOVXi4SCV3ErhFWLgDWLc2qBmEGV/6gKpYAGFLOSpKngk5Fx2V55XG7FOC/CX3KhYAWpkwIEl+fBOolBaLqdW199swuNwiic9emeccaeytk3kqWy82b4F21pRQo4rUC1hG14VNbemWbF7qNmIuidaA/IETfF1jZ+UTturFaZOLzhTfNo+5e2YDhl/8PsxH+52Lu72oiczyuSUxS+PZ3ZjnFSgA0E0917mBCFV3SeEDzDu6/f1cVQ==
+X-YMail-OSG: ZLEfS2sVM1lk0I6iQYW5PaC27I6c61k7i1jV62cC4k.LmLL85pmV5Bd1SzzocJs
+ sRfj94Pu4n3wFv1H_bhWjKvopCKSTupX0RCYaDhBaUw4l2N0pSafWoYv1p7Gw8PadYcrpqeTJkmo
+ x.vFg3ICrxKeHJe5A2VjBgVUEF_eugMhyT2Kzqr946MYTvBF0X25MXIHn.W6.2gGmuFxfVNfaJbk
+ wf1cvUYnRTlz9VbmQ8jqsBWcWWybpFhhWarQb6ys_3OK4WNIHvOc4acXtDGYtFUo9mGbPDdixfii
+ .HyxC5mNMUnl7mF5dDGXJk.NzpSa9FZzkes7m9A7H764xLIzf5hXzgHq73Dw8qQTc6ZysClNsbE7
+ Cqg9zJzR_MaVhtU0.wAbKgwJzQHR1iJ55jaOcg0byMOZ0uoQBJAH6TuYXoONFmR8od58M32mpPWr
+ kURn0vEpDgo6ziJSLwNCffWjfg29YmK5biUHIxwVkaZMtJMwypJqiKONdSszFXqeKZfkZ43yMVzk
+ NPsOGpF.B8McUrusJ8bU8V5_Pw64P2MzyRG_xOqHU4PEVJ8QcHSUKutvC17bM3hlbXN2URZlENMd
+ d8Vf1DHE0kXtkkPZ4VOiSoIDBZgLuWkasmiahU4upu6la7rTzo9lzmbxZtBgCASkn1ZknrsBuanq
+ s4gwFJJjx5JRJ0M1OfPm.ljypeTz2C8k.2sDFGlFcZsVpIqoi40CLTwWZeDTLPR4EziHpb3AWhiQ
+ Wny4DBpwdRD7gPOjsiGO6w9OZAtrGiJd3daH7ELv6V9EsinNln6wYjpf.P03ZtSSeGVjLpj3gwC5
+ 4ZQ6xDPuavzeSH5cPOYSWdDTfO.IUhjmAJhRjKlmSu6B5Wa6rtLrtlScqypRMQAKGuAV8YduU5KI
+ 8eYtkpmUVzCmZgEhtfKGxS2GYC7jxikiAGdV2ElykH1jwQOXG9_6MJeHgM_S7wG.sIVzW5BvY46S
+ U3gM0PK5AVuKU8r8W4jpC5_MOIUbRM1UFWE9AR4pGtumwfhniOhER3TyiCVZI2xKHrkD432P83Gd
+ mZN3fPspYLogkNTC4Pp5BnehwQnuS7.Q1LEDG7K4yXIHWEWw5JIZ46YoZm5pXFYVnPVa0w84MN_.
+ 8ErDK4fqws8tDW_ASdgJBiWOupx35rpfu.rPF2224lydresvTjLnTIf8lFnhXN7BgaLoaBZcuELo
+ 7d7.6T.VinNDGuXqbdmE_ducuAYaeJ7cmmW3_ZpH5nIJXxXTPL1SLIUhl1cz6mcX_baEL4kuRe7G
+ QBHv3bahyaZqtCrIWnR0n7wmtRNy2FEYSnHq3oUlt19LRQgWfoZcQe_GuDMFKfNB5Pxuoy3b4KVt
+ CFMHhQXta0y6ZgvoOw5i9EEPCWKsh5_gwAwF5XcK3wkcG3LGE6p37DRvSe3ZA6rk.EbJd2mEQghM
+ kIyy4lSay2M49R9IvFN5a5UPkXOLi14eHbk.8BNbLJhtErNaT725b8ay_JaMv_czB0ue.SfOtgpY
+ XWyRQdpzwRYjzGhxb6.MNFQCTSQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Apr 2020 07:31:01 +0000
+Received: by smtp407.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 98aed6c61d98e300b5dca39559149029;
+          Tue, 21 Apr 2020 07:28:59 +0000 (UTC)
+Date:   Tue, 21 Apr 2020 15:28:51 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org,
+        Gao Xiang <gaoxiang25@huawei.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v11 19/25] erofs: Convert compressed files from readpages
+ to readahead
+Message-ID: <20200421072839.GA13867@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200414150233.24495-1-willy@infradead.org>
+ <20200414150233.24495-20-willy@infradead.org>
+ <20200420224210.dff005bc62957a4d81d58226@linux-foundation.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420224210.dff005bc62957a4d81d58226@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.15739 hermes Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IExpLCBQaGlsaXAgPHBoaWxp
-cC5saUBpbnRlbC5jb20+DQo+U2VudDogMjAyMOW5tDTmnIgxOeaXpSAxMDo1MA0KPlRvOiBBbGV4
-YW5kcmUgQmVsbG9uaSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQo+Q2M6IGxrcCA8
-bGtwQGludGVsLmNvbT47IEpvbmF0aGFuIENhbWVyb24gPGppYzIzQGtlcm5lbC5vcmc+OyBrYnVp
-bGQtDQo+YWxsQGxpc3RzLjAxLm9yZzsgSGFydG11dCBLbmFhY2sgPGtuYWFjay5oQGdteC5kZT47
-IExhcnMtUGV0ZXIgQ2xhdXNlbg0KPjxsYXJzQG1ldGFmb28uZGU+OyBQZXRlciBNZWVyd2FsZC1T
-dGFkbGVyIDxwbWVlcndAcG1lZXJ3Lm5ldD47IEdyZWdvcnkNCj5DTEVNRU5UIDxncmVnb3J5LmNs
-ZW1lbnRAYm9vdGxpbi5jb20+OyBsaW51eC1paW9Admdlci5rZXJuZWwub3JnOyBsaW51eC0NCj5r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+U3ViamVjdDogUmU6IFtQQVRDSCAxLzNdIGlpbzogYWRj
-OiB0aS1hZHM4MzQ0OiBwcm9wZXJseSBieXRlIHN3YXAgdmFsdWUNCj4NCj5PbiBUaHUsIEFwciAx
-NiwgMjAyMCBhdCAxMDo1MDoyM1BNICswMjAwLCBBbGV4YW5kcmUgQmVsbG9uaSB3cm90ZToNCj4+
-IEhpLA0KPj4NCj4+IE9uIDE2LzA0LzIwMjAgMTQ6MjI6MDMrMDgwMCwga2J1aWxkIHRlc3Qgcm9i
-b3Qgd3JvdGU6DQo+PiA+IEhpIEFsZXhhbmRyZSwNCj4+ID4NCj4+ID4gSSBsb3ZlIHlvdXIgcGF0
-Y2ghIFlldCBzb21ldGhpbmcgdG8gaW1wcm92ZToNCj4+ID4NCj4+ID4gW2F1dG8gYnVpbGQgdGVz
-dCBFUlJPUiBvbiBpaW8vdG9ncmVnXSBbYWxzbyBidWlsZCB0ZXN0IEVSUk9SIG9uDQo+PiA+IHY1
-LjctcmMxIG5leHQtMjAyMDA0MTVdIFtpZiB5b3VyIHBhdGNoIGlzIGFwcGxpZWQgdG8gdGhlIHdy
-b25nIGdpdA0KPj4gPiB0cmVlLCBwbGVhc2UgZHJvcCB1cyBhIG5vdGUgdG8gaGVscCBpbXByb3Zl
-IHRoZSBzeXN0ZW0uIEJUVywgd2UgYWxzbw0KPj4gPiBzdWdnZXN0IHRvIHVzZSAnLS1iYXNlJyBv
-cHRpb24gdG8gc3BlY2lmeSB0aGUgYmFzZSB0cmVlIGluIGdpdA0KPj4gPiBmb3JtYXQtcGF0Y2gs
-IHBsZWFzZSBzZWUgaHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzM3NDA2OTgyXQ0KPj4gPg0K
-Pj4gPiB1cmw6ICAgIGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4L2NvbW1pdHMvQWxl
-eGFuZHJlLUJlbGxvbmkvaWlvLWFkYy10aS0NCj5hZHM4MzQ0LWltcHJvdmUtdGhlLWRyaXZlci8y
-MDIwMDQxNi0wNzMzNTcNCj4+ID4gYmFzZTogICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
-Y20vbGludXgva2VybmVsL2dpdC9qaWMyMy9paW8uZ2l0IHRvZ3JlZw0KPj4gPiBjb25maWc6IGM2
-eC1hbGx5ZXNjb25maWcgKGF0dGFjaGVkIGFzIC5jb25maWcpDQo+PiA+IGNvbXBpbGVyOiBjNngt
-ZWxmLWdjYyAoR0NDKSA5LjMuMA0KPj4gPiByZXByb2R1Y2U6DQo+PiA+ICAgICAgICAgd2dldCBo
-dHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vaW50ZWwvbGtwLQ0KPnRlc3RzL21hc3Rl
-ci9zYmluL21ha2UuY3Jvc3MgLU8gfi9iaW4vbWFrZS5jcm9zcw0KPj4gPiAgICAgICAgIGNobW9k
-ICt4IH4vYmluL21ha2UuY3Jvc3MNCj4+ID4gICAgICAgICAjIHNhdmUgdGhlIGF0dGFjaGVkIC5j
-b25maWcgdG8gbGludXggYnVpbGQgdHJlZQ0KPj4gPiAgICAgICAgIENPTVBJTEVSX0lOU1RBTExf
-UEFUSD0kSE9NRS8wZGF5IEdDQ19WRVJTSU9OPTkuMy4wDQo+PiA+IG1ha2UuY3Jvc3MgQVJDSD1j
-NngNCj4+ID4NCj4+DQo+PiBJIHNwZW50IHNvbWUgdGltZSB0byByZXByb2R1Y2UgYW5kIHRoaXMg
-aXMgYWN0dWFsbHkgbm90IHRoYXQgdHJpdmlhbA0KPj4gYmVjYXVzZSB5b3VyIHRvb2xjaGFpbnMg
-YXJlIGxpbmtlZCB3aXRoIGxpYmlzbDIyIGFuZCBtb3N0DQo+PiBkaXN0cmlidXRpb25zIHN0aWxs
-IHNoaXAgYW4gb2xkZXIgdmVyc2lvbi4gTWF5YmUgeW91IGNhbiBkbyBzb21ldGhpbmcgYWJvdXQg
-dGhhdD8NCj5UaGFua3MgZm9yIHRoZSBmZWVkYmFjaywgd2Ugd2lsbCByZXNvbHZlIHRoaXMgdG8g
-dXNlIG9sZCB2ZXJzaW9uIGluIGVhcmxpZXN0IHRpbWUuDQpUaGUgY3Jvc3MgdG9vbGNoYWlucyBo
-YXMgYmVlbiB1cGRhdGVkIHRvIGxpbmsgd2l0aCBsaWJpc2wxOSB0aGUgc3RhYmxlIHZlcnNpb24u
-IFBsZWFzZSByZW1vdmUgdGhlIG9sZCB0b29sY2hhaW4gYW5kIG1ha2UuY3Jvc3MgYWdhaW4uDQpG
-ZWVsIGZyZWUgdG8gbGV0IHVzIGtub3cgaWYgc3RpbGwgaGF2ZSBwcm9ibGVtLiBUaGFua3MuDQoN
-Cj4NCj4+DQo+PiA+IElmIHlvdSBmaXggdGhlIGlzc3VlLCBraW5kbHkgYWRkIGZvbGxvd2luZyB0
-YWcgYXMgYXBwcm9wcmlhdGUNCj4+ID4gUmVwb3J0ZWQtYnk6IGtidWlsZCB0ZXN0IHJvYm90IDxs
-a3BAaW50ZWwuY29tPg0KPj4gPg0KPj4gPiBBbGwgZXJyb3JzIChuZXcgb25lcyBwcmVmaXhlZCBi
-eSA+Pik6DQo+PiA+DQo+PiA+DQo+PiA+IHZpbSArLzMwMiArOTYgZHJpdmVycy9paW8vYWRjL3Rp
-LWFkczgzNDQuYw0KPj4gPg0KPj4gPiAgICAgNzINCj4+ID4gICAgIDczCXN0YXRpYyBpbnQgYWRz
-ODM0NF9hZGNfY29udmVyc2lvbihzdHJ1Y3QgYWRzODM0NCAqYWRjLCBpbnQNCj5jaGFubmVsLA0K
-Pj4gPiAgICAgNzQJCQkJCSAgYm9vbCBkaWZmZXJlbnRpYWwpDQo+PiA+ICAgICA3NQl7DQo+PiA+
-ICAgICA3NgkJc3RydWN0IHNwaV9kZXZpY2UgKnNwaSA9IGFkYy0+c3BpOw0KPj4gPiAgICAgNzcJ
-CWludCByZXQ7DQo+PiA+ICAgICA3OAkJdTggYnVmWzNdOw0KPj4gPiAgICAgNzkNCj4+ID4gICAg
-IDgwCQlhZGMtPnR4X2J1ZiA9IEFEUzgzNDRfU1RBUlQ7DQo+PiA+ICAgICA4MQkJaWYgKCFkaWZm
-ZXJlbnRpYWwpDQo+PiA+ICAgICA4MgkJCWFkYy0+dHhfYnVmIHw9IEFEUzgzNDRfU0lOR0xFX0VO
-RDsNCj4+ID4gICAgIDgzCQlhZGMtPnR4X2J1ZiB8PSBBRFM4MzQ0X0NIQU5ORUwoY2hhbm5lbCk7
-DQo+PiA+ICAgICA4NAkJYWRjLT50eF9idWYgfD0gQURTODM0NF9DTE9DS19JTlRFUk5BTDsNCj4+
-ID4gICAgIDg1DQo+PiA+ICAgICA4NgkJcmV0ID0gc3BpX3dyaXRlKHNwaSwgJmFkYy0+dHhfYnVm
-LCAxKTsNCj4+ID4gICAgIDg3CQlpZiAocmV0KQ0KPj4gPiAgICAgODgJCQlyZXR1cm4gcmV0Ow0K
-Pj4gPiAgICAgODkNCj4+ID4gICAgIDkwCQl1ZGVsYXkoOSk7DQo+PiA+ICAgICA5MQ0KPj4gPiAg
-ICAgOTIJCXJldCA9IHNwaV9yZWFkKHNwaSwgYnVmLCBzaXplb2YoYnVmKSk7DQo+PiA+ICAgICA5
-MwkJaWYgKHJldCkNCj4+ID4gICAgIDk0CQkJcmV0dXJuIHJldDsNCj4+ID4gICAgIDk1DQo+PiA+
-ICAgPiA5NgkJcmV0dXJuIGJ1ZlswXSA8PCA5IHwgYnVmWzFdIDw8IDEgfMKgYnVmWzJdID4+IDc7
-DQo+PiA+ICAgICA5Nwl9DQo+PiA+ICAgICA5OA0KPj4gPg0KPj4NCj4+IEkgdGFrZSBpdCB0aGlz
-IGlzIGEgZmFsc2UgcG9zaXRpdmUgYXMgSSBkb24ndCBnZXQgYW55IGVycm9ycyB3aGVuDQo+PiBi
-dWlsZGluZyB0aGlzIGRyaXZlciB3aXRoIHRoZSBwcm92aWRlZCB0b29sY2hhaW4uIEhvd2V2ZXIs
-IEkgc2VlIGEgZmV3DQo+PiAiaW50ZXJuYWwgY29tcGlsZXIgZXJyb3I6IGluIHByaW9yaXR5LCBh
-dCBoYWlmYS1zY2hlZC5jOjE1OTkiDQo+Pg0KPj4gLS0NCj4+IEFsZXhhbmRyZSBCZWxsb25pLCBC
-b290bGluDQo+PiBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsIGVuZ2luZWVyaW5nDQo+PiBodHRw
-czovL2Jvb3RsaW4uY29tDQo+Pg0K
+Hi Andrew,
+
+On Mon, Apr 20, 2020 at 10:42:10PM -0700, Andrew Morton wrote:
+> On Tue, 14 Apr 2020 08:02:27 -0700 Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > 
+> > Use the new readahead operation in erofs.
+> > 
+> 
+> Well this is exciting.
+> 
+> fs/erofs/data.c: In function erofs_raw_access_readahead:
+> fs/erofs/data.c:149:18: warning: last_block may be used uninitialized in this function [-Wmaybe-uninitialized]
+> 	*last_block + 1 != current_block) {
+> 
+> It seems to be a preexisting bug, which your patch prompted gcc-7.2.0
+> to notice.
+> 
+> erofs_read_raw_page() goes in and uses *last_block, but neither of its
+> callers has initialized it.  Could the erofs maintainers please take a
+> look?
+
+simply because last_block doesn't need to be initialized at first,
+because bio == NULL in the begining anyway. I believe this is a gcc
+false warning because some gcc versions raised some before (many gccs
+don't, including my current gcc (Debian 8.3.0-6) 8.3.0).
+
+in detail,
+
+146         /* note that for readpage case, bio also equals to NULL */
+147         if (bio &&
+148             /* not continuous */
+149             *last_block + 1 != current_block) {
+150 submit_bio_retry:
+151                 submit_bio(bio);
+152                 bio = NULL;
+153         }
+
+bio will be NULL and will bypass the next condition at first.
+after that,
+
+155         if (!bio) {
+
+...
+
+221                 bio = bio_alloc(GFP_NOIO, nblocks);
+
+...
+
+}
+
+...
+
+230         err = bio_add_page(bio, page, PAGE_SIZE, 0);
+231         /* out of the extent or bio is full */
+232         if (err < PAGE_SIZE)
+233                 goto submit_bio_retry;
+234
+235         *last_block = current_block;
+
+so bio != NULL, and last_block will be assigned then as well.
+
+Thanks,
+Gao Xiang
+
+
