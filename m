@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1757E1B22BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEED1B22B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgDUJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728695AbgDUJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 21 Apr 2020 05:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728606AbgDUJ1P (ORCPT
+        by vger.kernel.org with ESMTP id S1728612AbgDUJ1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:27:15 -0400
+        Tue, 21 Apr 2020 05:27:16 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D30C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6341EC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:16 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jQpBH-00083K-Pg; Tue, 21 Apr 2020 11:27:03 +0200
+        id 1jQpBI-00083z-U9; Tue, 21 Apr 2020 11:27:05 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 42CC81002EE;
-        Tue, 21 Apr 2020 11:27:03 +0200 (CEST)
-Message-Id: <20200421092559.849801011@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 7A9531002EE;
+        Tue, 21 Apr 2020 11:27:04 +0200 (CEST)
+Message-Id: <20200421092559.940978251@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 21 Apr 2020 11:20:38 +0200
+Date:   Tue, 21 Apr 2020 11:20:39 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
@@ -35,7 +35,8 @@ Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
         Thomas Lendacky <Thomas.Lendacky@amd.com>,
         Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [patch V2 11/16] x86/tlb: Move paravirt_tlb_remove_table() to the usage site
+Subject: [patch V2 12/16] x86/tlb: Move cr4_set_bits_and_update_boot() to the
+ usage site
 References: <20200421092027.591582014@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,43 +49,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move it where the only user is.
+No point in having this exposed.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/tlbflush.h |    5 -----
- arch/x86/mm/pgtable.c           |    8 ++++++++
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/tlbflush.h |   14 --------------
+ arch/x86/mm/init.c              |   13 +++++++++++++
+ 2 files changed, 13 insertions(+), 14 deletions(-)
 
 --- a/arch/x86/include/asm/tlbflush.h
 +++ b/arch/x86/include/asm/tlbflush.h
-@@ -442,9 +442,4 @@ static inline void arch_tlbbatch_add_mm(
+@@ -322,23 +322,9 @@ static inline void cr4_clear_bits(unsign
+ 	local_irq_restore(flags);
+ }
  
- extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+-/*
+- * Save some of cr4 feature set we're using (e.g.  Pentium 4MB
+- * enable and PPro Global page enable), so that any CPU's that boot
+- * up after us can get the correct flags.  This should only be used
+- * during boot on the boot cpu.
+- */
+ extern unsigned long mmu_cr4_features;
+ extern u32 *trampoline_cr4_features;
  
--#ifndef CONFIG_PARAVIRT
--#define paravirt_tlb_remove_table(tlb, page) \
--	tlb_remove_page(tlb, (void *)(page))
--#endif
+-static inline void cr4_set_bits_and_update_boot(unsigned long mask)
+-{
+-	mmu_cr4_features |= mask;
+-	if (trampoline_cr4_features)
+-		*trampoline_cr4_features = mmu_cr4_features;
+-	cr4_set_bits(mask);
+-}
 -
- #endif /* _ASM_X86_TLBFLUSH_H */
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -19,6 +19,14 @@ EXPORT_SYMBOL(physical_mask);
- #define PGTABLE_HIGHMEM 0
- #endif
+ extern void initialize_tlbstate_and_flush(void);
  
-+#ifndef CONFIG_PARAVIRT
-+static inline
-+void paravirt_tlb_remove_table(struct mmu_gather *tlb, void *table)
+ #define TLB_FLUSH_ALL	-1UL
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -172,6 +172,19 @@ struct map_range {
+ 
+ static int page_size_mask;
+ 
++/*
++ * Save some of cr4 feature set we're using (e.g.  Pentium 4MB
++ * enable and PPro Global page enable), so that any CPU's that boot
++ * up after us can get the correct flags. Invoked on the boot CPU.
++ */
++static inline void cr4_set_bits_and_update_boot(unsigned long mask)
 +{
-+	tlb_remove_page(tlb, table);
++	mmu_cr4_features |= mask;
++	if (trampoline_cr4_features)
++		*trampoline_cr4_features = mmu_cr4_features;
++	cr4_set_bits(mask);
 +}
-+#endif
 +
- gfp_t __userpte_alloc_gfp = GFP_PGTABLE_USER | PGTABLE_HIGHMEM;
- 
- pgtable_t pte_alloc_one(struct mm_struct *mm)
+ static void __init probe_page_size_mask(void)
+ {
+ 	/*
 
