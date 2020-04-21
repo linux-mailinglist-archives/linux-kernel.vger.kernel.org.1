@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BDF1B27C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA821B27C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgDUN1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:27:04 -0400
-Received: from mag112.magazineer.net ([157.7.134.112]:54059 "EHLO
-        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
-        with ESMTP id S1726018AbgDUN1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:27:04 -0400
-X-Greylist: delayed 324 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 09:27:03 EDT
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCOCE6dyUoJXMlOCVzJHI7SCRDJD86Tk1RJV4hPCUxJUYlIyVzJTAhISNXI0UjQiU7JV8lSiE8GyhC?=
-From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
-        <info@hr-service.work>
-Date:   Tue, 21 Apr 2020 22:27:03 +0900
-Reply-To: info@hr-service.work
-Message-Id: <20200321222703.28962@hr-service.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        id S1728969AbgDUN1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:27:38 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53860 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUN1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:27:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=BAwqzBbAoY3Q7WUm7rKW8PArz02f/a05BHX0yBvFBGA=; b=kjkGTa313jGFL7AFCrKIMMNFWv
+        5pPSWqCkUvv4GsmN/1oLNjld29lXro0yTXjTVkY7Nv9wopJzKLRpWCGbsWY2vvnDM5Hy7QpYrchHq
+        BeDbQTNYSP5urAw3xZKhC1psF5qKZKn0K9iRU2jHDATrM6i7Ab05ROCsE8N2rWtq3Egw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jQsw0-0041o2-US; Tue, 21 Apr 2020 15:27:32 +0200
+Date:   Tue, 21 Apr 2020 15:27:32 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, mkl@pengutronix.de,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>, kernel@pengutronix.de,
+        netdev <netdev@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        David Jander <david@protonic.nl>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: dsa: sja1105: regression after patch: "net: dsa: configure the
+ MTU for switch ports"
+Message-ID: <20200421132732.GC937199@lunn.ch>
+References: <20200421113324.vxh2lyasylf5kgkz@pengutronix.de>
+ <CA+h21ho2YnUfzMja1Y7=B7Yrqk=WD6jm-OoKKzX4uS3WJiU5aw@mail.gmail.com>
+ <20200421125828.jb44qzfzgd7sh436@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421125828.jb44qzfzgd7sh436@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ジョブドラフトセミナー運営室より、採用情報セミナーのご案内です。
-〜本セミナーはオンライン開催のためご自宅や職場で視聴可能です〜
+> > The code which is causing problems seems to be this one:
+> > 
+> >     mtu_limit = min_t(int, master->max_mtu, dev->max_mtu);
+> >     old_master_mtu = master->mtu;
+> >     new_master_mtu = largest_mtu + cpu_dp->tag_ops->overhead;
+> >     if (new_master_mtu > mtu_limit)
+> >         return -ERANGE;
+> > 
+> > called from
+> > 
+> >     rtnl_lock();
+> >     ret = dsa_slave_change_mtu(slave_dev, ETH_DATA_LEN);
+> >     rtnl_unlock();
+> >     if (ret && ret != -EOPNOTSUPP) {
+> >         dev_err(ds->dev, "error %d setting MTU on port %d\n",
+> >             ret, port->index);
+> >         goto out_free;
+> >     }
+> > 
+> > Before this patch, it was silently failing, now it's preventing the
+> > probing of the ports which I might agree with you is not better.
+> > Andrew warned about this, and I guess that during probe, we should
+> > warn but ignore any nonzero return code, not just EOPNOTSUPP. I'll
+> > send a patch out shortly to correct this.
+> > 
+> > Out of curiosity, what DSA master port do you have? Does it not
+> > support an MTU of 1504 bytes? Does MTU-sized traffic pass correctly
+> > through your interface? (you can test with iperf3)
+> 
+> It is FEC@iMX6QP attached to the port 4 of the sja1105 switch.
+> I'll try to make some tests tomorrow.
 
-少子化に伴い年々激化していく若手の採用市場。
+Ah, interesting. I've been testing recently on a Vybrid, so also
+FEC. I had the warning, but it kept going.
 
-中途でも新卒でも、優秀な人材を採用することが難しくなってきています。
+I don't particularly like this warning in this case. We have hardware
+which happy works, but is now issuing a warning on boot. I would
+prefer if it warned when only trying to configure an MTU bigger than
+the minimum needed for DSA, i.e. only the jumbo use case.
 
-そんな状況に課題を感じている企業様に向けて、マーケティングを起点に考える
-「若手人材獲得のための新しい採用戦略」セミナーを開催いたします。
-
-採用にマーケティングという新たな知見を取り入れたい方は是非ともご参加ください。
-
-
-　 ▼　詳細・申込　▼
-　 ■　https://hr-service.work/200423/　 ■
-
-
-オンライン開催
-――――――――――――――――――――――――――――
-
-   『マーケティング』で考える、若手獲得のための採用戦略
-　 日程：4月23日
-　 時間：16：00〜18：00
-　 会場：オンライン開催(ご自宅や職場で視聴可能)
-　
-　 ■　https://hr-service.work/200423/　 ■
-
-――――――――――――――――――――――――――――
-　本メールのご不要な方には大変ご迷惑をおかけいたしました。
-　配信停止ご希望の方は、お手数ですが「配信不要」とご返信いただくか、
-　下記アドレスより、お手続きをお願いいたします。
-　 https://form2dm.xyz/kaijo/
-――――――――――――――――――――――――――――
-   ジョブドラフトセミナー運営室(株式会社ジンジブ)
-　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
- 　TEL：03-5777-2679
-　 Mail：info@hr-service.work
-――――――――――――――――――――――――――――
+    Andrew
