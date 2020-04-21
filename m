@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B572C1B1F7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC451B1F7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgDUHHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:07:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgDUHHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:07:12 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E98DB206A5;
-        Tue, 21 Apr 2020 07:07:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587452832;
-        bh=nSyfKCbkaVtKHCZaeQ7c7Ek5l6MXuMmFCJQlpVuLZfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NUGOg1mXOuq/6HjHGlurmlbGhycqsLCFz0LK/ZaeGdY21oV5cjw12MYLtLeAPVFbw
-         VfFOlg1Z5rWrrgro1MaB35twX1Nt57OaWBkyZtWSW5gWCA7FSq6FKpOboLcPfpRpUG
-         9JxWfHvdPYP99brmwfjsmetxSMPBroBpO5dVQfOY=
-Date:   Tue, 21 Apr 2020 08:07:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        nouveau@lists.freedesktop.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm/thp: Rename pmd_mknotpresent() as pmd_mknotvalid()
-Message-ID: <20200421070703.GC14448@willie-the-truck>
-References: <1584680057-13753-1-git-send-email-anshuman.khandual@arm.com>
- <1584680057-13753-3-git-send-email-anshuman.khandual@arm.com>
- <20200420210354.GD29998@willie-the-truck>
- <78fee884-78fc-6102-1a37-12106dc21336@arm.com>
+        id S1727079AbgDUHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:07:59 -0400
+Received: from zimbra2.kalray.eu ([92.103.151.219]:47722 "EHLO
+        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgDUHH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:07:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id A6CDF27E039A;
+        Tue, 21 Apr 2020 09:07:57 +0200 (CEST)
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id VnFh86lcJuca; Tue, 21 Apr 2020 09:07:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id DFC6727E06C1;
+        Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu DFC6727E06C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1587452876;
+        bh=ufm9yZSRtYmx3MHRNMrA5MNRiT5MrRD1Yhw3IeM6pZA=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ejnAZ/pxGLDwi3zSwxLtUnKn7C6TI+a20eVd1LlWQ+Kz1237P+LBdvKlCqvCZ9+hs
+         L3WOOs0581spu9PyXfeEXsksUlddUiisiv0qdHmHjeVPCnch3f8fsv/T3Igo/3XSWw
+         PBzfe2iIs2Gcv2wWkN0AoEkI2QtSkadvffddzL4I=
+X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id QoHi6CGZQf_D; Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id C98EC27E039A;
+        Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
+From:   =?utf-8?Q?Cl=C3=A9ment?= Leger <cleger@kalray.eu>
+To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        richard <richard@nod.at>, vigneshr <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1220480151.16477138.1587452876610.JavaMail.zimbra@kalray.eu>
+In-Reply-To: <2185268.xDFeLDFsC1@192.168.0.120>
+References: <20200417160839.25880-1-cleger@kalray.eu> <1950407.5XCTmqoEVg@192.168.0.120> <1734428336.16421904.1587394202163.JavaMail.zimbra@kalray.eu> <2185268.xDFeLDFsC1@192.168.0.120>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for is25lp01g
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78fee884-78fc-6102-1a37-12106dc21336@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [192.168.40.202]
+X-Mailer: Zimbra 8.8.15_GA_3895 (ZimbraWebClient - GC81 (Linux)/8.8.15_GA_3895)
+Thread-Topic: spi-nor: Add support for is25lp01g
+Thread-Index: AQHWFw0/tWJ4ISRUwk6rGADNBybaDFUftyjv
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 04:57:26AM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 04/21/2020 02:33 AM, Will Deacon wrote:
-> > On Fri, Mar 20, 2020 at 10:24:17AM +0530, Anshuman Khandual wrote:
-> >> pmd_present() is expected to test positive after pmdp_mknotpresent() as the
-> >> PMD entry still points to a valid huge page in memory. pmdp_mknotpresent()
-> >> implies that given PMD entry is just invalidated from MMU perspective while
-> >> still holding on to pmd_page() referred valid huge page thus also clearing
-> >> pmd_present() test. This creates the following situation which is counter
-> >> intuitive.
-> >>
-> >> [pmd_present(pmd_mknotpresent(pmd)) = true]
-> >>
-> >> This renames pmd_mknotpresent() as pmd_mknotvalid() reflecting the helper's
-> >> functionality more accurately while changing the above mentioned situation
-> >> as follows. This does not create any functional change.
-> >>
-> >> [pmd_present(pmd_mknotvalid(pmd)) = true]
-> >>
-> >> This is not applicable for platforms that define own pmdp_invalidate() via
-> >> __HAVE_ARCH_PMDP_INVALIDATE. Suggestion for renaming came during a previous
-> >> discussion here.
-> > 
-> > Bikeshed alert: maybe pmd_mkinvalid() would be better, given that this is
-> > a one-trick pony for pmdp_invalidate()?
-> 
-> I had thought about making it pmd_mkinvalid() earlier. But as we were replacing
-> pmd_mknotpresent(), hence went with similar pattern pmd_mknotvalid() which was
-> originally suggested by Catalin. There is an existing pte_mknotpresent() in arc
-> platform as well. I dont have a very strong opinion either way, will be happy
-> to rename. But then still wondering if we really need to.
+Hi Tudor,
 
-I just think that having pmdp_invalidate() call pmd_mkinvalid() makes a lot
-of sense and, since this is a pure renaming patch, then that's worth taking
-into consideration.
+----- On 21 Apr, 2020, at 06:40, Tudor Ambarus Tudor.Ambarus@microchip.com =
+wrote:
 
-If you go with pmd_mkinvalid(), then:
+> On Monday, April 20, 2020 5:50:02 PM EEST Cl=C3=A9ment Leger wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know t=
+he
+>> content is safe
+>>=20
+>> Hi Tudor,
+>=20
+> Hi, Clement,
+>=20
+>>=20
+>> ----- On 20 Apr, 2020, at 14:14, Tudor Ambarus Tudor.Ambarus@microchip.c=
+om
+> wrote:
+>> > Hi, Clement,
+>> >=20
+>> > On Friday, April 17, 2020 7:08:39 PM EEST Clement Leger wrote:
+>> >> EXTERNAL EMAIL: Do not click links or open attachments unless you kno=
+w
+>> >> the
+>> >> content is safe
+>> >>=20
+>> >> Update the issi_parts table for is25lp01g (128MB) device from ISSI.
+>> >> Tested on Kalray K200 board.
+>> >>=20
+>> >> Signed-off-by: Clement Leger <cleger@kalray.eu>
+>> >> ---
+>> >>=20
+>> >>  drivers/mtd/spi-nor/issi.c | 2 ++
+>> >>  1 file changed, 2 insertions(+)
+>> >>=20
+>> >> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+>> >> index ffcb60e54a80..c3c3438e3d08 100644
+>> >> --- a/drivers/mtd/spi-nor/issi.c
+>> >> +++ b/drivers/mtd/spi-nor/issi.c
+>> >> @@ -49,6 +49,8 @@ static const struct flash_info issi_parts[] =3D {
+>> >>=20
+>> >>                              SECT_4K | SPI_NOR_DUAL_READ |
+>> >>                              SPI_NOR_QUAD_READ
+>> >> |=20
+>> >> | SPI_NOR_4B_OPCODES)
+>> >> |=20
+>> >>                 .fixups =3D &is25lp256_fixups },
+>> >>=20
+>> >> +       { "is25lp01g",  INFO(0x9d601b, 0, 64 * 1024, 2048,
+>> >=20
+>> > There is a "K" flavor of this flash which has 512 Byte Page size with =
+256
+>> > KB Block size. While the page size can be determined by parsing SFDP, =
+I
+>> > think we will have some problems with sector_size because as of now, t=
+he
+>> > sector_size is always set to 64KB. An incorrect sector_size will affec=
+t
+>> > erases and locking.
+>> Thanks, I did not noticed that ! If I understand, this will require to
+>> modify the core to handle sector size the same way as page_size and
+>> probably add a fixup to detect the "K" options from SFDP ?
+>=20
+> Right. You can add a post_bfpt fixup hook for this flash. You can
+> differentiate between the "K" version and the rest by the page size. Sinc=
+e the
+> page size is tightly coupled with the sector size, you can amend both in =
+the
+> post_bfpt hook.
 
-Acked-by: Will Deacon <will@kernel.org>
+Ok, this seems clear ! I'll give it a try. By looking quickly at the code I
+think that n_sectors will also have to be updated after discovering the
+sector_size from BFPT (for flash size computation). Since some parameters
+of the nor are initialized early in spi_nor_info_init_params using
+sector_size, should I move the call making use of sector_size later in the
+init (in spi_nor_late_init_params for instance) ?
 
-Will
+>=20
+>> This is probably more changes than I can handle, and you can probably dr=
+op
+>> this patch since not really functional for "K" type flash.
+>=20
+> I dropped it. You should try to fix it, I can guide you if needed. Or I c=
+an do
+> it myself, but I'll need some help from you at testing.
+
+I will try to do it but I will probably only be able to test the patches in=
+ a=20
+couple of weeks due to our architecture not being rebased on 5.7 yet.
+
+Thanks,
+
+Cl=C3=A9ment
+
+>=20
+> Cheers,
+> ta
