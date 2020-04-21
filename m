@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE31C1B1DBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 06:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EB1B2647
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgDUEyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 00:54:23 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:24811 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgDUEyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 00:54:23 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 9403728200D;
-        Tue, 21 Apr 2020 12:53:47 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AMsA9gCCCG0x*Vd28n6VQ4rK.3.1587444827503.Hmail.bernard@vivo.com>
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     alexander.deucher@amd.com,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWMl0gYW1kZ3B1OiByZW1vdmUgdW5uZWNlc3NhcnkgY29uZGl0aW9uIGNoZWNr?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.122
-In-Reply-To: <7fe6eeef-3129-3e54-67a2-46eccca9f529@amd.com>
+        id S1728636AbgDUMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:40:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2857 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728745AbgDUMkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:40:02 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 80C2F258C8F39C28579D;
+        Tue, 21 Apr 2020 20:39:59 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 21 Apr 2020 20:39:51 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net-next 0/3] hinic: add SR-IOV support
+Date:   Tue, 21 Apr 2020 04:56:32 +0000
+Message-ID: <20200421045635.8128-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 21 Apr 2020 12:53:47 +0800 (GMT+08:00)
-From:   =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
-Date:   Tue, 21 Apr 2020 12:53:47 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVPSEhLS0tLQ0xMSENLT1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSEhPTE5DS0pJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Ngg6Qhw4ODg8SwNRLR9JQxVNLSpPCTBVSFVKTkNMT09PQ0hJTUJKVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBTU5CQjcG
-X-HM-Tid: 0a719b15c5dd9395kuws9403728200d
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkZyb206IEZlbGl4IEt1ZWhsaW5nIDxmZWxpeC5rdWVobGluZ0BhbWQuY29tPgpEYXRlOiAyMDIw
-LTA0LTIxIDEyOjI0OjE5ClRvOiAgMTU4NzE4MDAzNy0xMTM4NDAtMS1naXQtc2VuZC1lbWFpbC1i
-ZXJuYXJkQHZpdm8uY29tLEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4s
-IkNocmlzdGlhbiBLw7ZuaWciIDxjaHJpc3RpYW4ua29lbmlnQGFtZC5jb20+LCJEYXZpZCAoQ2h1
-bk1pbmcpIFpob3UiIDxEYXZpZDEuWmhvdUBhbWQuY29tPixEYXZpZCBBaXJsaWUgPGFpcmxpZWRA
-bGludXguaWU+LERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD4sYW1kLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcsZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZyxsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnCkNjOiAgb3BlbnNvdXJjZS5rZXJuZWxAdml2by5jb20sQmVybmFy
-ZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgpTdWJqZWN0OiBSZTogW1BBVENIIFYyXSBhbWRncHU6
-IHJlbW92ZSB1bm5lY2Vzc2FyeSBjb25kaXRpb24gY2hlY2s+SGkgQmVybmFyZCwKPgo+UGxlYXNl
-IHNlZSBjb21tZW50cyBpbmxpbmUuCj4KPkFtIDIwMjAtMDQtMjAgdW0gMTA6NDEgcC5tLiBzY2hy
-aWViIEJlcm5hcmQgWmhhbzoKPj4gVGhlcmUgaXMgbm8gbmVlZCB0byBpZiBjaGVjayBhZ2Fpbiwg
-bWF5YmUgd2UgY291bGQgbWVyZ2UKPj4gaW50byB0aGUgYWJvdmUgZWxzZSBicmFuY2guCj4+Cj4+
-IFNpZ25lZC1vZmYtYnk6IEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4KPj4KPj4gLS0t
-Cj4+IENoYW5nZXMgc2luY2UgVjE6Cj4+ICpjb21taXQgbWVzc2FnZSBpbXByb3ZlCj4+ICpjb2Rl
-IHN0eWxlIHJlZmFjdG9yaW5nCj4+Cj4+IExpbmsgZm9yIFYxOgo+PiAqIGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL3BhdGNod29yay9wYXRjaC8xMjI2NTg3Lwo+PiAtLS0KPj4gIGRyaXZlcnMvZ3B1
-L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hbWRrZmRfZ3B1dm0uYyB8IDE2ICsrKysrKysrKy0tLS0t
-LS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCj4+
-Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2Zk
-X2dwdXZtLmMgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2ZkX2dwdXZt
-LmMKPj4gaW5kZXggOWRmZjc5MmM5MjkwLi5hNjRlZWIwN2JlYzQgMTAwNjQ0Cj4+IC0tLSBhL2Ry
-aXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hbWRrZmRfZ3B1dm0uYwo+PiArKysgYi9k
-cml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2ZkX2dwdXZtLmMKPj4gQEAgLTY2
-MCwxMyArNjYwLDE1IEBAIHN0YXRpYyBpbnQgcmVzZXJ2ZV9ib19hbmRfdm0oc3RydWN0IGtnZF9t
-ZW0gKm1lbSwKPj4gIAo+PiAgCXJldCA9IHR0bV9ldV9yZXNlcnZlX2J1ZmZlcnMoJmN0eC0+dGlj
-a2V0LCAmY3R4LT5saXN0LAo+PiAgCQkJCSAgICAgZmFsc2UsICZjdHgtPmR1cGxpY2F0ZXMpOwo+
-PiAtCWlmICghcmV0KQo+PiAtCQljdHgtPnJlc2VydmVkID0gdHJ1ZTsKPj4gLQllbHNlIHsKPj4g
-Kwo+PiArCWlmIChyZXQpIHsKPj4gIAkJcHJfZXJyKCJGYWlsZWQgdG8gcmVzZXJ2ZSBidWZmZXJz
-IGluIHR0bVxuIik7Cj4+ICAJCWtmcmVlKGN0eC0+dm1fcGQpOwo+PiAgCQljdHgtPnZtX3BkID0g
-TlVMTDsKPj4gIAl9Cj4+ICsJZWxzZSB7Cj4+ICsJCWN0eC0+cmVzZXJ2ZWQgPSB0cnVlOwo+PiAr
-CX0KPgo+SGVyZSB5b3UncmUganVzdCByZXZlcnNpbmcgdGhlIGlmIGFuZCBlbHNlIGJyYW5jaGVz
-LiBUaGlzIGNoYW5nZSBsb29rcwo+Y29tcGxldGVseSBzdXBlcmZsdW91cyB0byBtZS4KPgo+WW91
-J3JlIGFsc28gYnJlYWtpbmcgY29kaW5nIHN0eWxlIGNvbnZlbnRpb25zLiBUaGUgImVsc2UiIHNo
-b3VsZCBiZSBvbgo+dGhlIHNhbWUgbGluZSBhcyB0aGUgY2xvc2luZyBicmFjZSAifSIuIEknbSBw
-cmV0dHkgc3VyZSBjaGVja3BhdGNoLnBsCj53aWxsIGNvbXBsYWluIGFib3V0IHRoaXMuCj4KCklu
-IHRoaXMgZmlsZSwgb25seSB0aGVzZSB0d28gZnVuY3Rpb25zIGFyZSA8aWYgKCEgQ29uZGl0aW9u
-KS4uLiBlbHNlIC4uLi4gPiBmb3JtYXQuIApTbyBpbiBWMiwgYWZ0ZXIgaW1wcm92ZSB0aGUgY29t
-bWl0ICBpbmZvLCAKSSByZWZlciB0byB0aGUgZm9sbG93aW5nIGNvZGUgc3R5bGUgc3VnZ2VzdGlv
-bnMgYW5kIG1vZGlmeSBpdCB0byA8aWYgKGNvbmRpdGlvbikuLi5lbHNlLi4uID4gZm9ybWF0Cmh0
-dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
-bnV4LmdpdC90cmVlL0RvY3VtZW50YXRpb24vcHJvY2Vzcy9jb2Rpbmctc3R5bGUucnN0P2lkPTkw
-MjgwZWFhODhhYzFhOTE0MGRjNzU5OTQxMTIzNTMwZDU1NDViYjYjbjE5MQoocmVmZXIgZnJvbSBN
-YXJrdXMgRWxmcmluZ2BzIHN1Z2dlc3Rpb24pLgoKPj4gIAo+PiAgCXJldHVybiByZXQ7Cj4+ICB9
-Cj4+IEBAIC03MzMsMTUgKzczNSwxNSBAQCBzdGF0aWMgaW50IHJlc2VydmVfYm9fYW5kX2NvbmRf
-dm1zKHN0cnVjdCBrZ2RfbWVtICptZW0sCj4+ICAKPj4gIAlyZXQgPSB0dG1fZXVfcmVzZXJ2ZV9i
-dWZmZXJzKCZjdHgtPnRpY2tldCwgJmN0eC0+bGlzdCwKPj4gIAkJCQkgICAgIGZhbHNlLCAmY3R4
-LT5kdXBsaWNhdGVzKTsKPj4gLQlpZiAoIXJldCkKPj4gLQkJY3R4LT5yZXNlcnZlZCA9IHRydWU7
-Cj4+IC0JZWxzZQo+PiAtCQlwcl9lcnIoIkZhaWxlZCB0byByZXNlcnZlIGJ1ZmZlcnMgaW4gdHRt
-LlxuIik7Cj4+ICAKPj4gIAlpZiAocmV0KSB7Cj4+ICsJCXByX2VycigiRmFpbGVkIHRvIHJlc2Vy
-dmUgYnVmZmVycyBpbiB0dG0uXG4iKTsKPj4gIAkJa2ZyZWUoY3R4LT52bV9wZCk7Cj4+ICAJCWN0
-eC0+dm1fcGQgPSBOVUxMOwo+PiAgCX0KPj4gKwllbHNlIHsKPj4gKwkJY3R4LT5yZXNlcnZlZCA9
-IHRydWU7Cj4+ICsJfQo+Cj5TYW1lIGFzIGFib3ZlIHJlZ2FyZGluZyBjb2Rpbmcgc3R5bGUuCj4K
-PlRvIG1pbmltaXplIHVubmVjZXNzYXJ5IGNvZGUgY2hhbmdlcywgeW91IGNhbiBtZXJnZSB0aGUg
-ImlmIChyZXQpIC4uLiIKPmNvZGUgaW50byB0aGUgZWxzZS1icmFuY2ggb2YgdGhlIHByZXZpb3Vz
-IGlmLgo+Cj5SZWdhcmRzLAo+wqAgRmVsaXgKPgo+Cj4+ICAKPj4gIAlyZXR1cm4gcmV0Owo+PiAg
-fQoNCg0K
+patch #1 adds mailbox channel support and vf can
+communicate with pf or hw through it.
+patch #2 adds support for enabling vf and tx/rx
+capabilities based on vf.
+patch #3 adds support for vf's basic configurations.
+
+Luo bin (3):
+  hinic: add mailbox function support
+  hinic: add sriov feature support
+  hinic: add net_device_ops associated with vf
+
+ drivers/net/ethernet/huawei/hinic/Makefile    |    2 +-
+ drivers/net/ethernet/huawei/hinic/hinic_dev.h |    3 +
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c |    5 -
+ .../net/ethernet/huawei/hinic/hinic_hw_csr.h  |    2 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |  141 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |   48 +
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.c  |   98 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.h  |    7 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_if.c   |   46 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_if.h   |   18 +
+ .../net/ethernet/huawei/hinic/hinic_hw_io.c   |    1 +
+ .../net/ethernet/huawei/hinic/hinic_hw_io.h   |    6 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_mbox.c | 1217 +++++++++++++++++
+ .../net/ethernet/huawei/hinic/hinic_hw_mbox.h |  154 +++
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c |   13 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.h |   10 +-
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  100 +-
+ .../net/ethernet/huawei/hinic/hinic_port.c    |   75 +-
+ .../net/ethernet/huawei/hinic/hinic_port.h    |    4 +-
+ drivers/net/ethernet/huawei/hinic/hinic_rx.c  |   15 +-
+ .../net/ethernet/huawei/hinic/hinic_sriov.c   | 1007 ++++++++++++++
+ .../net/ethernet/huawei/hinic/hinic_sriov.h   |  102 ++
+ drivers/net/ethernet/huawei/hinic/hinic_tx.c  |   17 +-
+ 23 files changed, 2909 insertions(+), 182 deletions(-)
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_sriov.h
+
+-- 
+2.17.1
+
