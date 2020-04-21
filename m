@@ -2,147 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848D91B211E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A551B2118
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgDUIJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:09:43 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56568 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727889AbgDUIJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:09:42 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4E462C5A192B1903B93A;
-        Tue, 21 Apr 2020 16:09:35 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 21 Apr 2020 16:09:27 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <gregkh@linuxfoundation.org>, <info@metux.net>,
-        <allison@lohutok.net>, <james.morse@arm.com>, <tglx@linutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH] arm32: fix flushcache syscall with device address
-Date:   Tue, 21 Apr 2020 16:08:34 +0800
-Message-ID: <1587456514-61156-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727924AbgDUIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:09:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:14077 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726052AbgDUIJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:09:06 -0400
+IronPort-SDR: MlP1MZixv4WdHj4EWLcwozdvC+cyKGBd3ovzECBIhb1T8fYUAk2k9KmjlZEMPnqbLryMaFMr9a
+ GtwtDpq693iA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:09:06 -0700
+IronPort-SDR: 6R6W7FYAkTDl4rIJxBPrUxAx9i56JC1zpCUeD+Fhj8dRcIXP3VOpOfcV0RebEMTIfJ9T3i7Cc2
+ MkZDBuHsaljQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
+   d="scan'208";a="456680852"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2020 01:09:05 -0700
+Date:   Tue, 21 Apr 2020 01:09:05 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [patch 00/15] x86/tlb: Unexport per-CPU tlbstate
+Message-ID: <20200421080905.GF11134@linux.intel.com>
+References: <20200419203137.214111265@linutronix.de>
+ <20200420092045.GC24518@infradead.org>
+ <87sggyax05.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sggyax05.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An issue has been observed on our Kungpeng916 systems when using a PCI
-express GPU. This occurs when a 32 bit application running on a 64 bit
-kernel issues a cache flush operation to a memory address that is in
-a PCI BAR of the GPU.The results in an illegal operation and
-subsequent crash.
+On Mon, Apr 20, 2020 at 07:27:06PM +0200, Thomas Gleixner wrote:
+> Christoph Hellwig <hch@infradead.org> writes:
+> > Just looking over some exports at the end of the series (and thus
+> > ignoring bisection issues):
+> >
+> >  - Is there any good reason to keep __flush_tlb_all inline vs moving it
+> >    out of line and kill the flush_tlb_local and flush_tlb_global exports.
+> >    Also there is just a single modular users in SVM, I wonder if there is
+> >    any way to get rid of that one as well.
+> 
+> I'll have a look again.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Signed-off-by: Lixin Chen <chenlixin1@huawei.com>
-Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
----
- arch/arm64/kernel/sys_compat.c | 69 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/arch/arm64/kernel/sys_compat.c b/arch/arm64/kernel/sys_compat.c
-index 3c18c24..6c07944 100644
---- a/arch/arm64/kernel/sys_compat.c
-+++ b/arch/arm64/kernel/sys_compat.c
-@@ -15,12 +15,74 @@
- #include <linux/slab.h>
- #include <linux/syscalls.h>
- #include <linux/uaccess.h>
-+#include <linux/hugetlb.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/system_misc.h>
- #include <asm/tlbflush.h>
- #include <asm/unistd.h>
- 
-+static long __check_pt_cacheable(unsigned long vaddr)
-+{
-+	struct mm_struct *mm = current->mm;
-+	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pudval_t pudval;
-+	pmd_t *pmd;
-+	pmdval_t pmdval;
-+	pte_t *pte;
-+	pteval_t pteval;
-+	pgprot_t pgprot;
-+
-+	spin_lock(&mm->page_table_lock);
-+	pgd = pgd_offset(mm, vaddr);
-+	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
-+		goto no_page;
-+
-+	p4d = p4d_offset(pgd, vaddr);
-+	if (p4d_none(*p4d) || unlikely(p4d_bad(*p4d)))
-+		goto no_page;
-+
-+	pud = pud_offset(p4d, vaddr);
-+	if (pud_none(*pud) || unlikely(pud_bad(*pud)))
-+		goto no_page;
-+	if (pud_huge(*pud)) {
-+		pudval = pud_val(*pud);
-+		pgprot = __pgprot(pudval);
-+		goto out;
-+	}
-+
-+	pmd = pmd_offset(pud, vaddr);
-+	if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd)))
-+		goto no_page;
-+	if (pmd_huge(*pmd)) {
-+		pmdval = pmd_val(*pmd);
-+		pgprot = __pgprot(pmdval);
-+		goto out;
-+	}
-+
-+	pte = pte_offset_map(pmd, vaddr);
-+	if (!pte_present(*pte) || pte_none(*pte))
-+		goto no_page;
-+	pteval = pte_val(*pte);
-+	pgprot = __pgprot(pteval);
-+
-+out:
-+	pgprot.pgprot &= PTE_ATTRINDX_MASK;
-+	if (pgprot.pgprot != PTE_ATTRINDX(MT_NORMAL)) {
-+		pr_debug("non-cache page pgprot value=0x%llx.\n",
-+			pgprot.pgprot);
-+		goto no_page;
-+	}
-+	spin_unlock(&mm->page_table_lock);
-+	return 1;
-+
-+no_page:
-+	spin_unlock(&mm->page_table_lock);
-+	return 0;
-+}
-+
- static long
- __do_compat_cache_op(unsigned long start, unsigned long end)
- {
-@@ -32,6 +94,13 @@ __do_compat_cache_op(unsigned long start, unsigned long end)
- 		if (fatal_signal_pending(current))
- 			return 0;
- 
-+		 /* do not flush page table is non-cacheable */
-+		if (!__check_pt_cacheable(start)) {
-+			cond_resched();
-+			start += chunk;
-+			continue;
-+		}
-+
- 		if (cpus_have_const_cap(ARM64_WORKAROUND_1542419)) {
- 			/*
- 			 * The workaround requires an inner-shareable tlbi.
--- 
-2.7.4
-
+Regarding the SVM case, the only usage is for a TLB errata.  At a glance,
+svm_init_erratum_383() and is_erratum_383() don't use any KVM hooks, i.e. I
+don't see anything that would prevent moving those to .../kernel/cpu/amd.c.
