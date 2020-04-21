@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F258D1B1E4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 07:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926881B1E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 07:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgDUFpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 01:45:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41188 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgDUFpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 01:45:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2B660AA55;
-        Tue, 21 Apr 2020 05:45:22 +0000 (UTC)
-Subject: Re: [PATCH] scsi: fcoe: remove unneeded semicolon in fcoe.c
-To:     Jason Yan <yanaijie@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, zhengbin13@huawei.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200421034008.27865-1-yanaijie@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <e25d02bd-101a-724a-e4e8-2686efc9a6ff@suse.de>
-Date:   Tue, 21 Apr 2020 07:45:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1726021AbgDUFss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 01:48:48 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4646 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgDUFss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 01:48:48 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9e88cc0000>; Mon, 20 Apr 2020 22:46:52 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 20 Apr 2020 22:48:47 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 20 Apr 2020 22:48:47 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
+ 2020 05:48:47 +0000
+Received: from [10.40.165.65] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
+ 2020 05:48:44 +0000
+From:   Abhishek Sahu <abhsahu@nvidia.com>
+Subject: Re: [PATCH] x86/mm: fix compilation error for unknown type name
+ pgprot_t
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420082231.4202-1-abhsahu@nvidia.com>
+ <02c40a96-b9dd-14d8-57f4-426322b76bf2@deltatee.com>
+X-Nvconfidentiality: public
+Message-ID: <24e4100d-f59b-daa6-801b-28c9d062f262@nvidia.com>
+Date:   Tue, 21 Apr 2020 11:18:41 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200421034008.27865-1-yanaijie@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <02c40a96-b9dd-14d8-57f4-426322b76bf2@deltatee.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587448012; bh=XQ1Fst+62Tz5B163gJQuuOrjam2LBeO0+BsK83fBTrQ=;
+        h=X-PGP-Universal:From:Subject:To:CC:References:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=JgJ2K1y3LY5LX/lo22fhUCm85jKV5jR6BtYESyAhAMbWzT/aHkLZcoktCBGI2pG17
+         TPvt0B40uWPG4PuB/W61KWiTgDFv4FArWYotx9GknmEtuTNHDqLxmK5jVPmnc43L1Y
+         qgcc1qHpVz6CaVkfFSV2CNJW5rwabycmHVbm5FlvavuzkYWJv26Co3IHNv+D0pflhC
+         ItAhzgOU3b/YY5XtrskxkgMDY6aSSGWpp1DdEavVUAzLSCU1YNa5Xymmo7LMjC7BI/
+         7faTvwNWQKtlCwy6b1gVSNX57YlfF6NZKTOonJH2NaY5xn5nyK49KSHXKv+sxFQiB3
+         8FUwamF4MzC4A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/20 5:40 AM, Jason Yan wrote:
-> Fix the following coccicheck warning:
+On 4/20/2020 10:14 PM, Logan Gunthorpe wrote:
+> External email: Use caution opening links or attachments
 > 
-> drivers/scsi/fcoe/fcoe.c:1918:3-4: Unneeded semicolon
-> drivers/scsi/fcoe/fcoe.c:1930:3-4: Unneeded semicolon
+> 	
+> On 2020-04-20 2:22 a.m., Abhishek Sahu wrote:
+>> commit 30796e18c299 ("x86/mm: introduce __set_memory_prot()")
+>> added the function __set_memory_prot() which uses pgprot_t in
+>> function prototype. The currently included header files in
+>> <arch/x86/include/asm/set_memory.h> do not include type name
+>> pgprot_t. The pgprot_t is defined in <asm/pgtable_types.h>.
+>>
+>> Fixes: 30796e18c299 ("x86/mm: introduce __set_memory_prot()")
+>> Signed-off-by: Abhishek Sahu <abhsahu@nvidia.com>
 > 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->   drivers/scsi/fcoe/fcoe.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> I assume this is only hit with a specific driver or something that
+> includes set_memory.h without including pgtable_types.h before hand.
 > 
-> diff --git a/drivers/scsi/fcoe/fcoe.c b/drivers/scsi/fcoe/fcoe.c
-> index 25dae9f0b205..cb41d166e0c0 100644
-> --- a/drivers/scsi/fcoe/fcoe.c
-> +++ b/drivers/scsi/fcoe/fcoe.c
-> @@ -1915,7 +1915,7 @@ static int fcoe_device_notification(struct notifier_block *notifier,
->   		case FCOE_CTLR_ENABLED:
->   		case FCOE_CTLR_UNUSED:
->   			fcoe_ctlr_link_up(ctlr);
-> -		};
-> +		}
->   	} else if (fcoe_ctlr_link_down(ctlr)) {
->   		switch (cdev->enabled) {
->   		case FCOE_CTLR_DISABLED:
-> @@ -1927,7 +1927,7 @@ static int fcoe_device_notification(struct notifier_block *notifier,
->   			stats->LinkFailureCount++;
->   			put_cpu();
->   			fcoe_clean_pending_queue(lport);
-> -		};
-> +		}
->   	}
->   out:
->   	return rc;
+> It certainly compiles fine for me and the kbuild robot has had lots of
+> time to test it with random configs.
 > 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
-Cheers,
+  Thanks Logan.
 
-Hannes
--- 
-Dr. Hannes Reinecke            Teamlead Storage & Networking
-hare@suse.de                               +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+  Yes. The mainline is compiling fine with default config.
+  This problem is coming while compiling Out of tree NVIDIA driver.
+  But this problem can happen for the drivers which don't include
+  <pgtable_types.h>. I am not sure if this problem will come with
+  some other configs. Normally, the header files should not be
+  dependent upon the callers.
+
+  Regards,
+  Abhishek 
+
+
