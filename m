@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F91B1B1B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 04:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8DA1B1B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 04:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgDUCLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 22:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
+        id S1726468AbgDUCOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 22:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725829AbgDUCLe (ORCPT
+        by vger.kernel.org with ESMTP id S1725829AbgDUCOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 22:11:34 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768C7C061A0E;
-        Mon, 20 Apr 2020 19:11:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 495n9v52hKz9sP7;
-        Tue, 21 Apr 2020 12:11:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587435092;
-        bh=wOLWQwTVbg7rw74mgAEr4OU7rmhKp9+g6vkRNtSy+Tg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EH6goMi0f3ByuHLifjaKeaixR/SK0M3IU8MQvMK0zh6x9LeNPRscQ/A3oTcvTRwtM
-         mFnnTyP7zAE3MrZMN5y78sxTeM8YbU+13d8J1P0hNOt1yTb18bBHC/n/VgcyV5srgk
-         uZu+DWbNXkBXYVLGVqkeXBQqdv0vAEhKpSFn34KFWMVoeNFpaqGaxS03X9JVBJcZMD
-         fbbyGcZd6nm1DoilZuejqw00xqGntmWToo1UvP3votqdci47xt9tlsLcAKOHTRyaKQ
-         eBTgWp6rMEPRXwafzD+GJ6jHbLkwLkVgTZnaxTc1DzmRYobcDWn/evHl29rykgo/c6
-         nP3W8et7sErlA==
-Date:   Tue, 21 Apr 2020 12:11:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: linux-next: build failure after merge of the sound-asoc tree
-Message-ID: <20200421121130.44423958@canb.auug.org.au>
+        Mon, 20 Apr 2020 22:14:07 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D41C061A0E;
+        Mon, 20 Apr 2020 19:14:06 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id e9so5845186iok.9;
+        Mon, 20 Apr 2020 19:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ue82uDYWA62Hy59Wvk+2+qxFCKkQmMn/AGbB8RRC57I=;
+        b=tyCqA5WbnRlAG1A0UEbtRMXCtwlCbvvBqUfyP/iw4MncAbCWHIEtQExSiFvOL65Qn4
+         hjbMRds+nQeTSof2Lekw0gY96gefVlO/613LP61ywtYGcdaB3qHD2hmv48Bgj3Lbm/uE
+         D7Y/j68rCMduqxPiwj80p7ISto7gqEjYpDu8L0bg3m31ygrEYrZA3pIYzctRoKZxxHew
+         5qXNsA5B8KlZS3zzfE6RCq+R7wRZTaeGdxCHXWOWEAevfHZgyk41VRAWNgTuNbHN+QRr
+         7jnf1UstgTC6qTgBkOzrWAEJbWvRTBAegJVIhdlV7HXDS3qr5IejnGWBu6wVk6/7QimB
+         /jdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ue82uDYWA62Hy59Wvk+2+qxFCKkQmMn/AGbB8RRC57I=;
+        b=F/0C308sjQiJweZbPxfNAqJFmD6qC6eEPU58BG7gFSgX0+e9EJZQSFDAbbexipULJX
+         H9AM1u2hRz8ARyPIzafazqQjniis2WqRgzo5amHZdi8pXtxAdtXdZPRqUa7hvsfP8PT5
+         5yjfKFvFTEkI02xbMOsGZrV9AiULX9jU5jfL8qucybZw4w9t+ynR+tuvIoVIyxfJifgx
+         EfjaNTojSydtp/y4YbvCmSSkZnJhf/BZahL5hmKC3lVO/0KxnqEuirHoX4RNJTR5kv/8
+         U21v658mw53R41dXdv3SOMlYT1G1ah5zBO3kD4APsE80XDyujVJ5Is9gX+TfHtPWmQuY
+         uxhw==
+X-Gm-Message-State: AGi0PuaRPfJ2FU681qy9O/zPSBlEcWgFeFL8B7P/fwh294AUk2cJ3IfY
+        +aORC38zn6TMrFcxPueiNYB6qsMlR+gNTVVKMMg=
+X-Google-Smtp-Source: APiQypJwTvgHVt3MC3cyrtS/iRoUs1cJRDc1EoqUrFSy0YzEvzaX1lXUlInAMAF8I3JDra5peL0g2+GnpIBWAdwhPCo=
+X-Received: by 2002:a5d:8b57:: with SMTP id c23mr18541347iot.161.1587435246122;
+ Mon, 20 Apr 2020 19:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QRBgpKREa9gmFR3B0K60i2D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200417110723.12235-1-gmayyyha@gmail.com> <ad6ca41f601d4feb2c3bd2850aeab95c3187bf2d.camel@kernel.org>
+In-Reply-To: <ad6ca41f601d4feb2c3bd2850aeab95c3187bf2d.camel@kernel.org>
+From:   Yanhu Cao <gmayyyha@gmail.com>
+Date:   Tue, 21 Apr 2020 10:13:55 +0800
+Message-ID: <CAB9OAC1+E6Qs=hr0naT73MNQ5scKOck4vF2gzsCS=0fQMLvG8A@mail.gmail.com>
+Subject: Re: [v3] ceph: if we are blacklisted, __do_request returns directly
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QRBgpKREa9gmFR3B0K60i2D
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 20, 2020 at 8:16 PM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> On Fri, 2020-04-17 at 19:07 +0800, Yanhu Cao wrote:
+> > If we mount cephfs by the recover_session option,
+> > __do_request can return directly until the client automatically reconnects.
+> >
+> > Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
+> > ---
+> >  fs/ceph/mds_client.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > index 486f91f9685b..16ac5e5f7f79 100644
+> > --- a/fs/ceph/mds_client.c
+> > +++ b/fs/ceph/mds_client.c
+> > @@ -2708,6 +2708,12 @@ static void __do_request(struct ceph_mds_client *mdsc,
+> >
+> >       put_request_session(req);
+> >
+> > +     if (mdsc->fsc->blacklisted &&
+> > +         ceph_test_mount_opt(mdsc->fsc, CLEANRECOVER)) {
+> > +             err = -EBLACKLISTED;
+> > +             goto finish;
+> > +     }
+> > +
+>
+> Why check for CLEANRECOVER? If we're mounted with recover_session=no
+> wouldn't we want to do the same thing here?
+>
+> Either way, it's still blacklisted. The only difference is that it won't
+> attempt to automatically recover the session that way.
 
-Hi all,
+I think mds will clear the blacklist. In addition to loading cephfs
+via recover_session=clean, I didn't find a location where
+fsc->blacklisted is set to false. If the client has been blacklisted,
+should it always be blacklisted (fsc->blacklisted=true)? Or is there
+another way to set fsc->blacklised to false?
 
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-In file included from <command-line>:32:
-./usr/include/sound/sof/ext_manifest.h:20:10: fatal error: sound/sof/info.h=
-: No such file or directory
-   20 | #include <sound/sof/info.h>
-      |          ^~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  9e72f13ee541 ("ASoC: SOF: ext_manifest: parse windows")
-
-I have used the sound-asoc tree from next-20200414 again today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/QRBgpKREa9gmFR3B0K60i2D
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6eVlIACgkQAVBC80lX
-0GwOVQf9Fy3bdRlEciRi5Uo9x0WXHJYjfsvN5w0QU+R9LXti+NAuYuJ47KCEMR2B
-vDwr/83768vacuIebJrcgX3yRLzblkTmS3doc+bkCJaUzGTy8BAA5kI1NS5WLjXz
-eT4P4mb3VEDsQlHimXqJPsGC0QaORgrJ4X7FkFydZ+M8gbqnWJL9SC3yE+M54ZIc
-SL6BqCBuKBkZDkF8seNSKupgo6es2SXvxUrGgJwaPkMv/dhgCs+IkWfFJGdvdvMH
-mgd1vZazhz7PfX1PHCeRN3HVha7E5n1BRQS//a1VArl3NwJ+ivFsw3IX+f9h7dxC
-Rn64AZlzq4DIizaVeChjTyTebDImeg==
-=KbYX
------END PGP SIGNATURE-----
-
---Sig_/QRBgpKREa9gmFR3B0K60i2D--
+>
+>
+> >       mds = __choose_mds(mdsc, req, &random);
+> >       if (mds < 0 ||
+> >           ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
+> --
+> Jeff Layton <jlayton@kernel.org>
+>
