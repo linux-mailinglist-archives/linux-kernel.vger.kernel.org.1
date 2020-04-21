@@ -2,137 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8427D1B2830
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3251B2836
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgDUNkF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 09:40:05 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46112 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728391AbgDUNkE (ORCPT
+        id S1728977AbgDUNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:41:30 -0400
+Received: from forward104j.mail.yandex.net ([5.45.198.247]:47698 "EHLO
+        forward104j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728337AbgDUNl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:40:04 -0400
-Received: by mail-oi1-f195.google.com with SMTP id q204so11970165oia.13;
-        Tue, 21 Apr 2020 06:40:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3/1l4+L7c32gnSlR+jJxwn2uHEoI18nOZn1jAcK8+9Q=;
-        b=qVWO7oiIChojoNCxQH8rGnO1CVw0zz2QrOO4Z+nt2O0mUtAoNVX7jlgmRi6ZJbdUYz
-         EXPDych6FonQIco66FjGYP6BxiD4JVFLFaf94W2WgFDv2gMgjdASu4h+5MJyjXtZDsoK
-         FUz00XV5Qyafy5bJG2Bt5iKZAfc39fTje+zGPn/aKXr7U+Btq9l9KdQRuFEXSSvsPJM4
-         Q+FesvCsm4C4ud5j3bIRVit2YRPQDbRFren53Ujq10nLU1M4j29NGVa2dpnPLIUBKgXp
-         RtUgeQvRcwFed5NZsTm2Q4xPDskRaJAAc3ct1Vb6rvg1+WXVyQs4F01ORfV0+RRr8Hv/
-         4F4w==
-X-Gm-Message-State: AGi0PuaPvH/9AoSKN/8xJVXF02dUkl2zQWvVO6Sc6HXrETsq2hWEju0D
-        heJTnyzIKhn/qCfJXhoV48thCE8TKovN0GR2FfA=
-X-Google-Smtp-Source: APiQypLnyE8M1S3nafbqgPsJWblXWZUy3OMvbgpZ18EMhwOIcc0Hy40xHYlEJ+5FEBBaTRknY0lppcu8TbDznbLPHQw=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr3020719oih.148.1587476402149;
- Tue, 21 Apr 2020 06:40:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
- <CAMuHMdUUJATs+G-hvty=fgyrhyx1EafpFHoWfcm=V_tVLn3q2A@mail.gmail.com>
- <DB6PR0802MB25330E55914346B46288C712E9D40@DB6PR0802MB2533.eurprd08.prod.outlook.com>
- <CAMuHMdV1Lp0uEOm_KtUA-nF7-6y1kfyvArcunrLipp6h5A_GMw@mail.gmail.com> <DB6PR0802MB25330B64ABAE083E31B427DDE9D50@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-In-Reply-To: <DB6PR0802MB25330B64ABAE083E31B427DDE9D50@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Apr 2020 15:39:50 +0200
-Message-ID: <CAMuHMdWjBTEM-cU32ZcvvoYDcjdMzcKbQZUyvGggZRMRhkOmFg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/3] hw_random: introduce Arm CryptoCell TRNG driver
-To:     Hadar Gat <Hadar.Gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tue, 21 Apr 2020 09:41:29 -0400
+Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
+        by forward104j.mail.yandex.net (Yandex) with ESMTP id 4E4314A20FC;
+        Tue, 21 Apr 2020 16:41:21 +0300 (MSK)
+Received: from mxback12q.mail.yandex.net (mxback12q.mail.yandex.net [IPv6:2a02:6b8:c0e:1b3:0:640:3818:d096])
+        by forward101q.mail.yandex.net (Yandex) with ESMTP id 460A9CF40002;
+        Tue, 21 Apr 2020 16:41:21 +0300 (MSK)
+Received: from vla4-d1b041059520.qloud-c.yandex.net (vla4-d1b041059520.qloud-c.yandex.net [2a02:6b8:c17:914:0:640:d1b0:4105])
+        by mxback12q.mail.yandex.net (mxback/Yandex) with ESMTP id 93xlLFHrpE-fIB0fnjQ;
+        Tue, 21 Apr 2020 16:41:21 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1587476481;
+        bh=xCogxVJggB4U0WxqK21fNHt81GXV7XMyn6/5t3LcMbA=;
+        h=Subject:To:From:Cc:Date:Message-Id;
+        b=h8iyN+76zznVlaSgkJSHKBzd+V/7zOQG160+7quNxObd2jljOUq6wQchjPfcyKg0K
+         thZ5XwDNLtpkM4Md/ngAUb5yr4YWuraTezhtDrcr2yzM3Gf+apfwx80soLY+5PacVo
+         zC8b3m2igt0SSBbBj4jIojJ1w5FqtG9xXL0ulWEc=
+Authentication-Results: mxback12q.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by vla4-d1b041059520.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id X5d09Yh5QJ-fG2W9Rr2;
+        Tue, 21 Apr 2020 16:41:17 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Alexander Lobakin <bloodyreaper@yandex.ru>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Mao Wenan <maowenan@huawei.com>,
+        Alexander Lobakin <bloodyreaper@yandex.ru>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 net-next] net: dsa: add GRO support via gro_cells
+Date:   Tue, 21 Apr 2020 16:41:08 +0300
+Message-Id: <20200421134108.167646-1-bloodyreaper@yandex.ru>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hadar (and Gilad),
+gro_cells lib is used by different encapsulating netdevices, such as
+geneve, macsec, vxlan etc. to speed up decapsulated traffic processing.
+CPU tag is a sort of "encapsulation", and we can use the same mechs to
+greatly improve overall DSA performance.
+skbs are passed to the GRO layer after removing CPU tags, so we don't
+need any new packet offload types as it was firstly proposed by me in
+the first GRO-over-DSA variant [1].
 
-On Tue, Apr 21, 2020 at 3:13 PM Hadar Gat <Hadar.Gat@arm.com> wrote:
-> To better explain the relationship between ccree and cctrng drivers, here an description of the underlying hardware and the relationship to the two drivers:
->
-> Arm TrustZone CryptoCell is a hardware block that implements two separate and discreet, although related, interfaces: one for the Rich Execution Environment  (read: Linux) and the other for the Trusted Execution Environment (e.g. Trusty, Op-TEE).
->
-> The ccree driver exposes the REE interface of CryptoCell to Linux. Where a SoC vendor implements both REE and TEE in their design, that is all that is needed.
->
-> However, we have some customers that make use CryptoCell but never implement a Trusted Execution Environment. This is a design decision taken when the SoC hardware is being designed and not a software controlled configuration, as it involves how the buses are laid out. Some of these customers have requested from us to allow making use in Linux of the TRNG resources which are normally associated with the TEE side when it is not in use. For these customers, the cctrng driver allows making use in Linux the TRNG which is normally part of the TEE side of CryptoCell.
+The size of struct gro_cells is sizeof(void *), so hot struct
+dsa_slave_priv becomes only 4/8 bytes bigger, and all critical fields
+remain in one 32-byte cacheline.
+The other positive side effect is that drivers for network devices
+that can be shipped as CPU ports of DSA-driven switches can now use
+napi_gro_frags() to pass skbs to kernel. Packets built that way are
+completely non-linear and are likely being dropped without GRO.
 
-Thank you, that is the part I was missing.
+This was tested on to-be-mainlined-soon Ethernet driver that uses
+napi_gro_frags(), and the overall performance was on par with the
+variant from [1], sometimes even better due to minimal overhead.
+net.core.gro_normal_batch tuning may help to push it to the limit
+on particular setups and platforms.
 
-BTW, there seems to be no mention of CryptoCell 630 on arm.com; it
-covers only CC-300 and CC-700.
-But from the (very limited) information about the crypto engine on R-Car
-Gen3 SoCs, it looks like the RNG is indeed only present in the secure
-(trusted) part.
+iperf3 IPoE VLAN NAT TCP forwarding (port1.218 -> port0) setup
+on 1.2 GHz MIPS board:
 
-> > -----Original Message-----
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > On Mon, Apr 20, 2020 at 2:27 PM Hadar Gat <Hadar.Gat@arm.com> wrote:
-> > > > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > > Sent: Monday, 20 April 2020 12:35
-> > > >
-> > > > On Fri, Mar 27, 2020 at 7:11 AM Hadar Gat <hadar.gat@arm.com> wrote:
-> > > > > The Arm CryptoCell is a hardware security engine.
-> > > > > This patch introduces driver for its TRNG (True Random Number
-> > > > > Generator) engine.
-> > > >
-> > > > Thanks for your series!
-> > > >
-> > > > I am wondering what is the relation between this and
-> > > > Documentation/devicetree/bindings/crypto/arm-cryptocell.txt?
-> > >
-> > > Arm TrustZone CryptoCell hardware contains both cryptographic engine
-> > (ccree) and true random number generator engine (cctrng).
-> >
-> > OK.
-> >
-> > > These are separate engines with some sharing in logic and interface.
-> >
-> > Do they share the same register block?
-> >
-> > > cctrng engine may not always be present.
-> >
-> > I assume that applies to e.g. the older 630p?
-> >
-> > > The devicetree documentation is in:
-> > > For ccree -
-> > > Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > > For cctrng - Documentation/devicetree/bindings/rng/arm-cctrng.yaml
-> >
-> > Thank you, I had already read both documents.
+5.7-rc2 baseline:
 
-Gr{oetje,eeting}s,
+[ID]  Interval         Transfer     Bitrate        Retr
+[ 5]  0.00-120.01 sec  9.00 GBytes  644 Mbits/sec  413  sender
+[ 5]  0.00-120.00 sec  8.99 GBytes  644 Mbits/sec       receiver
 
-                        Geert
+Iface      RX packets  TX packets
+eth0       7097731     7097702
+port0      426050      6671829
+port1      6671681     425862
+port1.218  6671677     425851
 
+With this patch:
+
+[ID]  Interval         Transfer     Bitrate        Retr
+[ 5]  0.00-120.01 sec  12.2 GBytes  870 Mbits/sec  122  sender
+[ 5]  0.00-120.00 sec  12.2 GBytes  870 Mbits/sec       receiver
+
+Iface      RX packets  TX packets
+eth0       9474792     9474777
+port0      455200      353288
+port1      9019592     455035
+port1.218  353144      455024
+
+v2:
+ - Add some performance examples in the commit message;
+ - No functional changes.
+
+[1] https://lore.kernel.org/netdev/20191230143028.27313-1-alobakin@dlink.ru/
+
+Signed-off-by: Alexander Lobakin <bloodyreaper@yandex.ru>
+---
+ net/dsa/Kconfig    |  1 +
+ net/dsa/dsa.c      |  2 +-
+ net/dsa/dsa_priv.h |  3 +++
+ net/dsa/slave.c    | 10 +++++++++-
+ 4 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+index 92663dcb3aa2..739613070d07 100644
+--- a/net/dsa/Kconfig
++++ b/net/dsa/Kconfig
+@@ -9,6 +9,7 @@ menuconfig NET_DSA
+ 	tristate "Distributed Switch Architecture"
+ 	depends on HAVE_NET_DSA
+ 	depends on BRIDGE || BRIDGE=n
++	select GRO_CELLS
+ 	select NET_SWITCHDEV
+ 	select PHYLINK
+ 	select NET_DEVLINK
+diff --git a/net/dsa/dsa.c b/net/dsa/dsa.c
+index ee2610c4d46a..0384a911779e 100644
+--- a/net/dsa/dsa.c
++++ b/net/dsa/dsa.c
+@@ -234,7 +234,7 @@ static int dsa_switch_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	if (dsa_skb_defer_rx_timestamp(p, skb))
+ 		return 0;
+ 
+-	netif_receive_skb(skb);
++	gro_cells_receive(&p->gcells, skb);
+ 
+ 	return 0;
+ }
+diff --git a/net/dsa/dsa_priv.h b/net/dsa/dsa_priv.h
+index 904cc7c9b882..6d9a1ef65fa0 100644
+--- a/net/dsa/dsa_priv.h
++++ b/net/dsa/dsa_priv.h
+@@ -11,6 +11,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/netpoll.h>
+ #include <net/dsa.h>
++#include <net/gro_cells.h>
+ 
+ enum {
+ 	DSA_NOTIFIER_AGEING_TIME,
+@@ -77,6 +78,8 @@ struct dsa_slave_priv {
+ 
+ 	struct pcpu_sw_netstats	*stats64;
+ 
++	struct gro_cells	gcells;
++
+ 	/* DSA port data, such as switch, port index, etc. */
+ 	struct dsa_port		*dp;
+ 
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 5390ff541658..36c7491e8e5f 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -1762,6 +1762,11 @@ int dsa_slave_create(struct dsa_port *port)
+ 		free_netdev(slave_dev);
+ 		return -ENOMEM;
+ 	}
++
++	ret = gro_cells_init(&p->gcells, slave_dev);
++	if (ret)
++		goto out_free;
++
+ 	p->dp = port;
+ 	INIT_LIST_HEAD(&p->mall_tc_list);
+ 	p->xmit = cpu_dp->tag_ops->xmit;
+@@ -1781,7 +1786,7 @@ int dsa_slave_create(struct dsa_port *port)
+ 	ret = dsa_slave_phy_setup(slave_dev);
+ 	if (ret) {
+ 		netdev_err(master, "error %d setting up slave phy\n", ret);
+-		goto out_free;
++		goto out_gcells;
+ 	}
+ 
+ 	dsa_slave_notify(slave_dev, DSA_PORT_REGISTER);
+@@ -1800,6 +1805,8 @@ int dsa_slave_create(struct dsa_port *port)
+ 	phylink_disconnect_phy(p->dp->pl);
+ 	rtnl_unlock();
+ 	phylink_destroy(p->dp->pl);
++out_gcells:
++	gro_cells_destroy(&p->gcells);
+ out_free:
+ 	free_percpu(p->stats64);
+ 	free_netdev(slave_dev);
+@@ -1820,6 +1827,7 @@ void dsa_slave_destroy(struct net_device *slave_dev)
+ 	dsa_slave_notify(slave_dev, DSA_PORT_UNREGISTER);
+ 	unregister_netdev(slave_dev);
+ 	phylink_destroy(dp->pl);
++	gro_cells_destroy(&p->gcells);
+ 	free_percpu(p->stats64);
+ 	free_netdev(slave_dev);
+ }
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
