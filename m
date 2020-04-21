@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F7D1B2E1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74D81B2DD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgDURSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:18:10 -0400
-Received: from mail.ispras.ru ([83.149.199.45]:59120 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgDURSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:18:10 -0400
-X-Greylist: delayed 597 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 13:18:09 EDT
-Received: from localhost.localdomain (unknown [188.123.230.157])
-        by mail.ispras.ru (Postfix) with ESMTPSA id C2F80CD468;
-        Tue, 21 Apr 2020 20:08:10 +0300 (MSK)
-From:   Denis Straghkov <d.straghkov@ispras.ru>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Denis Straghkov <d.straghkov@ispras.ru>
-Subject: [PATCH] Staging: rtl8723bs: rtw_wlan_util: Add size check of SSID IE
-Date:   Tue, 21 Apr 2020 20:08:06 +0300
-Message-Id: <20200421170806.18783-1-d.straghkov@ispras.ru>
-X-Mailer: git-send-email 2.17.1
+        id S1726124AbgDURLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725987AbgDURK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:10:59 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA53C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:10:59 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g12so4582215wmh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wRF8mhv6ReO1PDrOI+WCZVSt0+yq+v9H72EfJ68K0w0=;
+        b=k+B4qS+9lJ0ExW055A2cabAgqkmJmyyDNvDFOhs5xwLnRsZgvtShLUbS6yLoCmiIzH
+         4Byg3rtggeH+8DGgVL9GAU5Fkn3X8Yy1LzoXf9j4cbA1R92XYxzpZUp6B3Cx0JnF/Srm
+         q7p57ILIUosjMyLqHNL3dUFqMgws0TqQWLRHy+tbdqqTNqyfK/zs8R8RQr6onciodr2B
+         Yc4jiNykFbZIVoFj1wZIfxt7ztyYYT21d7WOL9fZQ3t6P6Z1sX1ku5KODRyFAnKzkCXh
+         +DfhOealMK6qvWWGvUMcjXoty4rg4DDIoBr76zBW+ZYQJTCMNxnoNzutlIzHa330a2fT
+         oB+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wRF8mhv6ReO1PDrOI+WCZVSt0+yq+v9H72EfJ68K0w0=;
+        b=bQ7wgbisvJsA2VHoJrC7TC8FKD6tLfuftsVZiK7wF7KALGSnnA7D9teycDR0j+bMgr
+         vI84jBCCogKIy2IrMs54lGahgXUEXCgTqFpN6EcUdBQDfgkeIO73oVfvRneb/KBbQLoM
+         LG6eyGN6XOweXbkHdoVz5Fpl1dTeHfAX6jhLQWAvQ1DyzwRQRJGkbmR02JrDYLtpfvsy
+         ofsYAqsNC6QEG5TBEOVqDUl8nJB7ylasSwGh7pJhyNDSD2+dDAo2r0QGy/dme3hsxvh2
+         e2wfhc4fKbp2UV0QX4ZnzS7oi8ekZmrTjBQpgRVEMiOCL5qax9FU8Xj5LhmKhbTwpr3b
+         lisQ==
+X-Gm-Message-State: AGi0PubX5DWahIul8ATzz6P1FmfxTZGhbAmSMvh9IVznmp950BINB3+D
+        ruayDnuCrh3LmELaUc2RZ2WhuGpfnrf7J2o9Cnm0WQ==
+X-Google-Smtp-Source: APiQypLmJQEyzLsjaey4mJhzOTlmlm+KQEGznl7g0Kon5uiVzuUYQwtbez8EfkeIsC4A324npRTXz4lZaNuyB3p/dR4=
+X-Received: by 2002:a7b:c74d:: with SMTP id w13mr5676517wmk.36.1587489058116;
+ Tue, 21 Apr 2020 10:10:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200419203137.214111265@linutronix.de>
+In-Reply-To: <20200419203137.214111265@linutronix.de>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Tue, 21 Apr 2020 10:10:46 -0700
+Message-ID: <CALCETrWubcrju+j4ck65scs7gwHC44gkvryzwJZ=x_9B26=Fhw@mail.gmail.com>
+Subject: Re: [patch 00/15] x86/tlb: Unexport per-CPU tlbstate
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add size check of SSID information element in incoming 802.11
-frames, to prevent memcpy() of IE in array bssid->Ssid.Ssid, with
-size more than 32 bytes.
+On Sun, Apr 19, 2020 at 1:36 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> The per-CPU tlbstate contains sensitive information which should be really
+> only accessible in core code. It is exported to modules because some inline
+> functions which are required by KVM need access to it.
+>
+> The following series creates regular exported functions for the few things
+> which are needed by KVM and hides the struct definition and some low level
+> helpers from modules.
+>
+> The series is also available from git:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel x86/tlb
+>
+> Thanks,
 
-Signed-off-by: Denis Straghkov <d.straghkov@ispras.ru>
----
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 24 +++++++------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index 110338dbe372..08eb09e29015 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -1271,13 +1271,13 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 	unsigned char *pbuf;
- 	u32 wpa_ielen = 0;
- 	u8 *pbssid = GetAddr3Ptr(pframe);
--	u32 hidden_ssid = 0;
- 	struct HT_info_element *pht_info = NULL;
- 	struct rtw_ieee80211_ht_cap *pht_cap = NULL;
- 	u32 bcn_channel;
- 	unsigned short	ht_cap_info;
- 	unsigned char ht_info_infos_0;
- 	struct mlme_priv *pmlmepriv = &Adapter->mlmepriv;
-+	int ssid_len;
- 
- 	if (is_client_associated_to_ap(Adapter) == false)
- 		return true;
-@@ -1370,21 +1370,15 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 	}
- 
- 	/* checking SSID */
-+	ssid_len = 0;
- 	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, _SSID_IE_, &len, bssid->IELength - _FIXED_IE_LENGTH_);
--	if (!p) {
--		DBG_871X("%s marc: cannot find SSID for survey event\n", __func__);
--		hidden_ssid = true;
--	} else {
--		hidden_ssid = false;
--	}
--
--	if ((NULL != p) && (false == hidden_ssid && (*(p + 1)))) {
--		memcpy(bssid->Ssid.Ssid, (p + 2), *(p + 1));
--		bssid->Ssid.SsidLength = *(p + 1);
--	} else {
--		bssid->Ssid.SsidLength = 0;
--		bssid->Ssid.Ssid[0] = '\0';
--	}
-+        if (p) {
-+                ssid_len = *(p + 1);
-+                if (ssid_len > NDIS_802_11_LENGTH_SSID)
-+                        ssid_len = 0;
-+        }
-+        memcpy(bssid->Ssid.Ssid, (p + 2), ssid_len);
-+        bssid->Ssid.SsidLength = ssid_len;
- 
- 	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("%s bssid.Ssid.Ssid:%s bssid.Ssid.SsidLength:%d "
- 				"cur_network->network.Ssid.Ssid:%s len:%d\n", __func__, bssid->Ssid.Ssid,
--- 
-2.17.1
-
+The whole series is Acked-by: Andy Lutomirski <luto@kernel.org>
