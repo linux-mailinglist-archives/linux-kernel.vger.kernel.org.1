@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED04C1B31A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDF81B31B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgDUVPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S1726466AbgDUVPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726316AbgDUVPW (ORCPT
+        by vger.kernel.org with ESMTP id S1726323AbgDUVPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:15:22 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37765C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:21 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t4so361plq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:21 -0700 (PDT)
+        Tue, 21 Apr 2020 17:15:23 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD7C061BD3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y25so7202894pfn.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=u1Fvyyf5nczEffjGBcL+8ckFidnOh9Vp/pUQ4gio37U=;
-        b=PKvElx00HHdwyyEhNv9HrFEWal6afEqN2MXBKrf15GbVJ1eqTVjzJ6PBhfgwxArQ19
-         utaZDQ51WhLVHhZzbl4Ndd3g3CEgTOuSoyzsZq6y/bGCEj9EjYU3rkyWXz+mEGaXN0ri
-         A/vxKbYEYsvT+2dcKVPlQPPPY8HZwtQmJYTV0=
+        bh=dyr7DgRSAApkGKypjtWiO+J/nBVrflnd2ro7wp+lCpU=;
+        b=YQCSPXa3O6FWgeur8tmhetM7QnBo4yeaYGNe6L/Rh5ocCkAxg2cxAkq4Fwg4HI3OhY
+         yh6G01RnYc0W3jSisfLjS0rnepBRdrEKh0uJZEIj74yY1TB2UwAO4qnVFZMb6YKc++Qk
+         w5QYl+cFLMm8tzfI5gdZXzpEiMNkZcokYmtec=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=u1Fvyyf5nczEffjGBcL+8ckFidnOh9Vp/pUQ4gio37U=;
-        b=TxqoeVHdjBsk8SeGsoqPo/GPwzz/7TsSmABz32MvxylrxUTXqKlIIn4VmG/KU8TNsD
-         SQHhA5IPh5srVAZOzrjzFZamUHRGJK7WCUhvw0cqU44huyepln9LzgYSm9gQ3b8pD6Ux
-         xo5iZD5BMW9dkvyL3ISBdFE7TatQty/zzYhRNmdftlOp63F7kNLLqselngPjBCaE4qST
-         mOfYjfafSXIxn6eSjb6jFi+7Au+fgZNU1P6v/4IIraU2YTR5tLoRxUagqPjBGn3QQVZY
-         VImrWtqem63zQ2rWbarjXwn9axxuqV5kFM5gXEi1G7EhsaXJPoQZlppMFkpg6NcTPSUU
-         r2CQ==
-X-Gm-Message-State: AGi0Pub2lZWCvjPUYGtLpOoIfOxWlyahYv1i01Sy7qf1rL1iO/CyHxNk
-        0+ZFfQKOiNZTbiNHgGMOI7AsZA==
-X-Google-Smtp-Source: APiQypLO8Vq+2uFDtn1QekfYaQkMUKtaot3jc7Cj/gRVKWbD0siljhiALve3Rxk+OpHLYMMkTVAwJA==
-X-Received: by 2002:a17:902:c111:: with SMTP id 17mr23179231pli.334.1587503720751;
-        Tue, 21 Apr 2020 14:15:20 -0700 (PDT)
+        bh=dyr7DgRSAApkGKypjtWiO+J/nBVrflnd2ro7wp+lCpU=;
+        b=D2Z8D4GEboPgcJcX9l9vejZ1cuPOykOg43XmZ2pnJGL3j/cCO5HkU05ofoRUGPnaKg
+         j1qgKq4+8l7NMJkZ4TzKEWMZSo7fZ35ybRwdmtiLLXRTd1q6Lom/LzWRQvl/eruv35M9
+         4+ojn3HADxbHS4slN/qxRCji7sIN2tqaUmW6/4njYHX+cy9hjBrgosex/OBe9OPLWkfW
+         ordVq4ICr63Kty7eChS7o1zbGpVa7KS/XvZrZshy/wvHU/LJZ14zGrJRtaHH+DHW9+Pm
+         lLW76HX39DDoGu6Zvy16lluB3bKpKOa8dQwi49ANye1My/v40i1LqNQWdkqudFb3lauQ
+         QJlg==
+X-Gm-Message-State: AGi0PuYmw3uNm+3Rq4AojLRVgtDDX5MIVY6eMGeJ0nYonkN1/IlPFwwl
+        u8nQn/W7H8TkbWPQKwb7+QxYaA==
+X-Google-Smtp-Source: APiQypJYAevjNX0zt/cxP4Ps5JCKih9ahvdWxD4Kn/bSHY+zcFSbNZa+IDmvA7VSOHJ1eP897e2+oQ==
+X-Received: by 2002:aa7:8f26:: with SMTP id y6mr24224435pfr.36.1587503722029;
+        Tue, 21 Apr 2020 14:15:22 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id c1sm3287880pfo.152.2020.04.21.14.15.19
+        by smtp.gmail.com with ESMTPSA id c1sm3287880pfo.152.2020.04.21.14.15.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 14:15:20 -0700 (PDT)
+        Tue, 21 Apr 2020 14:15:21 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
         gregkh@linuxfoundation.org
@@ -55,9 +55,9 @@ Cc:     kgdb-bugreport@lists.sourceforge.net, mingo@redhat.com,
         catalin.marinas@arm.com, corbet@lwn.net, will@kernel.org,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/9] Revert "kgdboc: disable the console lock when in kgdb"
-Date:   Tue, 21 Apr 2020 14:14:40 -0700
-Message-Id: <20200421141234.v2.2.I02258eee1497e55bcbe8dc477de90369c7c7c2c5@changeid>
+Subject: [PATCH v2 3/9] kgdboc: Use a platform device to handle tty drivers showing up late
+Date:   Tue, 21 Apr 2020 14:14:41 -0700
+Message-Id: <20200421141234.v2.3.I4a493cfb0f9f740ce8fd2ab58e62dc92d18fed30@changeid>
 X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 In-Reply-To: <20200421211447.193860-1-dianders@chromium.org>
 References: <20200421211447.193860-1-dianders@chromium.org>
@@ -68,40 +68,268 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 81eaadcae81b4c1bf01649a3053d1f54e2d81cf1.
+If you build CONFIG_KGDB_SERIAL_CONSOLE into the kernel then you
+should be able to have KGDB init itself at bootup by specifying the
+"kgdboc=..." kernel command line parameter.  This has worked OK for me
+for many years, but on a new device I switched to it stopped working.
 
-Commit 81eaadcae81b ("kgdboc: disable the console lock when in kgdb")
-is no longer needed now that we have the patch ("kgdb: Disable
-WARN_CONSOLE_UNLOCKED for all kgdb").  Revert it.
+The problem is that on this new device the serial driver gets its
+probe deferred.  Now when kgdb initializes it can't find the tty
+driver and when it gives up it never tries again.
+
+We could try to find ways to move up the initialization of the serial
+driver and such a thing might be worthwhile, but it's nice to be
+robust against serial drivers that load late.  We could move kgdb to
+init itself later but that penalizes our ability to debug early boot
+code on systems where the driver inits early.  We could roll our own
+system of detecting when new tty drivers get loaded and then use that
+to figure out when kgdb can init, but that's ugly.
+
+Instead, let's jump on the -EPROBE_DEFER bandwagon.  We'll create a
+singleton instance of a "kgdboc" platform device.  If we can't find
+our tty device when the singleton "kgdboc" probes we'll return
+-EPROBE_DEFER which means that the system will call us back later to
+try again when the tty device might be there.
+
+We won't fully transition all of the kgdboc to a platform device
+because early kgdb initialization (via the "ekgdboc" kernel command
+line parameter) still runs before the platform device has been
+created.  The kgdb platform device is merely used as a convenient way
+to hook into the system's normal probe deferral mechanisms.
+
+As part of this, we'll ever-so-slightly change how the "kgdboc=..."
+kernel command line parameter works.  Previously if you booted up and
+kgdb couldn't find the tty driver then later reading
+'/sys/module/kgdboc/parameters/kgdboc' would return a blank string.
+Now kgdb will keep track of the string that came as part of the
+command line and give it back to you.  It's expected that this should
+be an OK change.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
-Changes in v2:
-- ("Revert "kgdboc: disable the console lock when in kgdb"") new for v2.
+Changes in v2: None
 
- drivers/tty/serial/kgdboc.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/tty/serial/kgdboc.c | 126 +++++++++++++++++++++++++++++-------
+ 1 file changed, 101 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index c9f94fa82be4..8a1a4d1b6768 100644
+index 8a1a4d1b6768..519d8cfbfbed 100644
 --- a/drivers/tty/serial/kgdboc.c
 +++ b/drivers/tty/serial/kgdboc.c
-@@ -275,14 +275,10 @@ static void kgdboc_pre_exp_handler(void)
- 	/* Increment the module count when the debugger is active */
- 	if (!kgdb_connected)
- 		try_module_get(THIS_MODULE);
--
--	atomic_inc(&ignore_console_lock_warning);
+@@ -20,6 +20,7 @@
+ #include <linux/vt_kern.h>
+ #include <linux/input.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #define MAX_CONFIG_LEN		40
+ 
+@@ -27,6 +28,7 @@ static struct kgdb_io		kgdboc_io_ops;
+ 
+ /* -1 = init not run yet, 0 = unconfigured, 1 = configured. */
+ static int configured		= -1;
++DEFINE_MUTEX(config_mutex);
+ 
+ static char config[MAX_CONFIG_LEN];
+ static struct kparam_string kps = {
+@@ -38,6 +40,8 @@ static int kgdboc_use_kms;  /* 1 if we use kernel mode switching */
+ static struct tty_driver	*kgdb_tty_driver;
+ static int			kgdb_tty_line;
+ 
++static struct platform_device *kgdboc_pdev;
++
+ #ifdef CONFIG_KDB_KEYBOARD
+ static int kgdboc_reset_connect(struct input_handler *handler,
+ 				struct input_dev *dev,
+@@ -133,11 +137,13 @@ static void kgdboc_unregister_kbd(void)
+ 
+ static void cleanup_kgdboc(void)
+ {
++	if (configured != 1)
++		return;
++
+ 	if (kgdb_unregister_nmi_console())
+ 		return;
+ 	kgdboc_unregister_kbd();
+-	if (configured == 1)
+-		kgdb_unregister_io_module(&kgdboc_io_ops);
++	kgdb_unregister_io_module(&kgdboc_io_ops);
  }
  
- static void kgdboc_post_exp_handler(void)
+ static int configure_kgdboc(void)
+@@ -198,20 +204,79 @@ static int configure_kgdboc(void)
+ 	kgdb_unregister_io_module(&kgdboc_io_ops);
+ noconfig:
+ 	kgdboc_unregister_kbd();
+-	config[0] = 0;
+ 	configured = 0;
+-	cleanup_kgdboc();
+ 
+ 	return err;
+ }
+ 
++static int kgdboc_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++
++	mutex_lock(&config_mutex);
++	if (configured != 1) {
++		ret = configure_kgdboc();
++
++		/* Convert "no device" to "defer" so we'll keep trying */
++		if (ret == -ENODEV)
++			ret = -EPROBE_DEFER;
++	}
++	mutex_unlock(&config_mutex);
++
++	return ret;
++}
++
++static struct platform_driver kgdboc_platform_driver = {
++	.probe = kgdboc_probe,
++	.driver = {
++		.name = "kgdboc",
++		.suppress_bind_attrs = true,
++	},
++};
++
+ static int __init init_kgdboc(void)
  {
--	atomic_dec(&ignore_console_lock_warning);
+-	/* Already configured? */
+-	if (configured == 1)
++	int ret;
++
++	/*
++	 * kgdboc is a little bit of an odd "platform_driver".  It can be
++	 * up and running long before the platform_driver object is
++	 * created and thus doesn't actually store anything in it.  There's
++	 * only one instance of kgdb so anything is stored as global state.
++	 * The platform_driver is only created so that we can leverage the
++	 * kernel's mechanisms (like -EPROBE_DEFER) to call us when our
++	 * underlying tty is ready.  Here we init our platform driver and
++	 * then create the single kgdboc instance.
++	 */
++	ret = platform_driver_register(&kgdboc_platform_driver);
++	if (ret)
++		return ret;
++
++	kgdboc_pdev = platform_device_alloc("kgdboc", PLATFORM_DEVID_NONE);
++	if (!kgdboc_pdev) {
++		ret = -ENOMEM;
++		goto err_did_register;
++	}
++
++	ret = platform_device_add(kgdboc_pdev);
++	if (!ret)
+ 		return 0;
+ 
+-	return configure_kgdboc();
++	platform_device_put(kgdboc_pdev);
++
++err_did_register:
++	platform_driver_unregister(&kgdboc_platform_driver);
++	return ret;
++}
++
++static void exit_kgdboc(void)
++{
++	mutex_lock(&config_mutex);
++	cleanup_kgdboc();
++	mutex_unlock(&config_mutex);
++
++	platform_device_unregister(kgdboc_pdev);
++	platform_driver_unregister(&kgdboc_platform_driver);
+ }
+ 
+ static int kgdboc_get_char(void)
+@@ -234,24 +299,20 @@ static int param_set_kgdboc_var(const char *kmessage,
+ 				const struct kernel_param *kp)
+ {
+ 	size_t len = strlen(kmessage);
++	int ret = 0;
+ 
+ 	if (len >= MAX_CONFIG_LEN) {
+ 		pr_err("config string too long\n");
+ 		return -ENOSPC;
+ 	}
+ 
+-	/* Only copy in the string if the init function has not run yet */
+-	if (configured < 0) {
+-		strcpy(config, kmessage);
+-		return 0;
+-	}
 -
- 	/* decrement the module count when the debugger detaches */
- 	if (!kgdb_connected)
- 		module_put(THIS_MODULE);
+ 	if (kgdb_connected) {
+ 		pr_err("Cannot reconfigure while KGDB is connected.\n");
+-
+ 		return -EBUSY;
+ 	}
+ 
++	mutex_lock(&config_mutex);
++
+ 	strcpy(config, kmessage);
+ 	/* Chop out \n char as a result of echo */
+ 	if (len && config[len - 1] == '\n')
+@@ -260,8 +321,30 @@ static int param_set_kgdboc_var(const char *kmessage,
+ 	if (configured == 1)
+ 		cleanup_kgdboc();
+ 
+-	/* Go and configure with the new params. */
+-	return configure_kgdboc();
++	/*
++	 * Configure with the new params as long as init already ran.
++	 * Note that we can get called before init if someone loads us
++	 * with "modprobe kgdboc kgdboc=..." or if they happen to use the
++	 * the odd syntax of "kgdboc.kgdboc=..." on the kernel command.
++	 */
++	if (configured >= 0)
++		ret = configure_kgdboc();
++
++	/*
++	 * If we couldn't configure then clear out the config.  Note that
++	 * specifying an invalid config on the kernel command line vs.
++	 * through sysfs have slightly different behaviors.  If we fail
++	 * to configure what was specified on the kernel command line
++	 * we'll leave it in the 'config' and return -EPROBE_DEFER from
++	 * our probe.  When specified through sysfs userspace is
++	 * responsible for loading the tty driver before setting up.
++	 */
++	if (ret)
++		config[0] = '\0';
++
++	mutex_unlock(&config_mutex);
++
++	return ret;
+ }
+ 
+ static int dbg_restore_graphics;
+@@ -320,15 +403,8 @@ __setup("kgdboc=", kgdboc_option_setup);
+ /* This is only available if kgdboc is a built in for early debugging */
+ static int __init kgdboc_early_init(char *opt)
+ {
+-	/* save the first character of the config string because the
+-	 * init routine can destroy it.
+-	 */
+-	char save_ch;
+-
+ 	kgdboc_option_setup(opt);
+-	save_ch = config[0];
+-	init_kgdboc();
+-	config[0] = save_ch;
++	configure_kgdboc();
+ 	return 0;
+ }
+ 
+@@ -336,7 +412,7 @@ early_param("ekgdboc", kgdboc_early_init);
+ #endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+ 
+ module_init(init_kgdboc);
+-module_exit(cleanup_kgdboc);
++module_exit(exit_kgdboc);
+ module_param_call(kgdboc, param_set_kgdboc_var, param_get_string, &kps, 0644);
+ MODULE_PARM_DESC(kgdboc, "<serial_device>[,baud]");
+ MODULE_DESCRIPTION("KGDB Console TTY Driver");
 -- 
 2.26.1.301.g55bc3eb7cb9-goog
 
