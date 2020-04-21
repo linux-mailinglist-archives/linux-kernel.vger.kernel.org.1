@@ -2,214 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BC91B1FBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430431B1FB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgDUHZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:25:25 -0400
-Received: from baldur.buserror.net ([165.227.176.147]:49720 "EHLO
-        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDUHZY (ORCPT
+        id S1727025AbgDUHXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:23:36 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57764 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgDUHXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:25:24 -0400
-Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
-        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <oss@buserror.net>)
-        id 1jQnFN-0005gp-BL; Tue, 21 Apr 2020 02:23:09 -0500
-Message-ID: <876d477d6d8db20c41be3eb59850c51e6badbfcf.camel@buserror.net>
-From:   Scott Wood <oss@buserror.net>
-To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
-        arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel@vivo.com, robh@kernel.org,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Randy Dunlap <rdunlap@infradead.org>
-Date:   Tue, 21 Apr 2020 02:23:08 -0500
-In-Reply-To: <20200420030538.101696-1-wenhu.wang@vivo.com>
-References: <20200420030538.101696-1-wenhu.wang@vivo.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        Tue, 21 Apr 2020 03:23:35 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 646582A004E;
+        Tue, 21 Apr 2020 08:23:33 +0100 (BST)
+Date:   Tue, 21 Apr 2020 09:23:28 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Mason Yang <masonccyang@mxic.com.tw>
+Cc:     broonie@kernel.org, tudor.ambarus@microchip.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D
+ mode
+Message-ID: <20200421092328.129308f6@collabora.com>
+In-Reply-To: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
-X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, arnd@arndb.de, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, robh@kernel.org, christophe.leroy@c-s.fr, mpe@ellerman.id.au, rdunlap@infradead.org
-X-SA-Exim-Mail-From: oss@buserror.net
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
-X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
-        *      this recipient and sender
-Subject: Re: [PATCH v2,RESEND] misc: new driver sram_uapi for user level
- SRAM access
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-04-19 at 20:05 -0700, Wang Wenhu wrote:
-> +static void sram_uapi_res_insert(struct sram_uapi *uapi,
-> +				 struct sram_resource *res)
-> +{
-> +	struct sram_resource *cur, *tmp;
-> +	struct list_head *head = &uapi->res_list;
-> +
-> +	list_for_each_entry_safe(cur, tmp, head, list) {
-> +		if (&tmp->list != head &&
-> +		    (cur->info.offset + cur->info.size + res->info.size <=
-> +		    tmp->info.offset)) {
-> +			res->info.offset = cur->info.offset + cur->info.size;
-> +			res->parent = uapi;
-> +			list_add(&res->list, &cur->list);
-> +			return;
-> +		}
-> +	}
++Pratyush who's working on a similar patchet [1].
 
-We don't need yet another open coded allocator.  If you really need to do this
-then use include/linux/genalloc.h, but maybe keep it simple and just have one
-allocaton per file descriptor so you don't need to manage fd offsets?
+Hello Mason,
 
-> +static struct sram_resource *sram_uapi_find_res(struct sram_uapi *uapi,
-> +						__u32 offset)
-> +{
-> +	struct sram_resource *res;
-> +
-> +	list_for_each_entry(res, &uapi->res_list, list) {
-> +		if (res->info.offset == offset)
-> +			return res;
-> +	}
-> +
-> +	return NULL;
-> +}
+On Tue, 21 Apr 2020 14:39:42 +0800
+Mason Yang <masonccyang@mxic.com.tw> wrote:
 
-What if the allocation is more than one page, and the user mmaps starting
-somewhere other than the first page?
+> Hello,
+> 
+> This is repost of patchset from Boris Brezillon's
+> [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
 
-> +	switch (cmd) {
-> +	case SRAM_UAPI_IOC_SET_SRAM_TYPE:
-> +		if (uapi->sa)
-> +			return -EEXIST;
-> +
-> +		get_user(type, (const __u32 __user *)arg);
-> +		uapi->sa = get_sram_api_from_type(type);
-> +		if (uapi->sa)
-> +			ret = 0;
-> +		else
-> +			ret = -ENODEV;
-> +
-> +		break;
-> +
+I only quickly went through the patches you sent and saying it's a
+repost of the RFC is a bit of a lie. You completely ignored the state
+tracking I was trying to do to avoid leaving the flash in 8D mode when
+suspending/resetting the board, and I think that part is crucial. If I
+remember correctly, we already had this discussion so I must say I'm a
+bit disappointed.
 
-Just expose one device per backing SRAM, especially if the user has any reason
-to care about where the SRAM is coming from (correlating sysfs nodes is much
-more expressive than some vague notion of "type").
+Can you sync with Pratyush? I think his series [1] is better in that it
+tries to restore the flash in single-SPI mode before suspend (it's
+missing the shutdown case, but that can be easily added I think). Of
+course that'd be even better to have proper state tracking at the SPI
+NOR level.
 
-> +	case SRAM_UAPI_IOC_ALLOC:
-> +		if (!uapi->sa)
-> +			return -EINVAL;
-> +
-> +		res = kzalloc(sizeof(*res), GFP_KERNEL);
-> +		if (!res)
-> +			return -ENOMEM;
-> +
-> +		size = copy_from_user((void *)&res->info,
-> +				      (const void __user *)arg,
-> +				      sizeof(res->info));
-> +		if (!PAGE_ALIGNED(res->info.size) || !res->info.size)
-> +			return -EINVAL;
+Regards,
 
-Missing EFAULT test (here and elsewhere), and res leaks on error.
+Boris
 
-> +
-> +		res->virt = (void *)uapi->sa->sram_alloc(res->info.size,
-> +							 &res->phys,
-> +							 PAGE_SIZE);
-
-Do we really need multiple allocators, or could the backend be limited to just
-adding regions to a generic allocator (with that allocator also serving in-
-kernel users)?
-
-If sram_alloc is supposed to return a virtual address, why isn't that the
-return type?
-
-> +		if (!res->virt) {
-> +			kfree(res);
-> +			return -ENOMEM;
-> +		}
-
-ENOSPC might be more appropriate, as this isn't general-purpose RAM.
-
-> +
-> +		sram_uapi_res_insert(uapi, res);
-> +		size = copy_to_user((void __user *)arg,
-> +				    (const void *)&res->info,
-> +				    sizeof(res->info));
-> +
-> +		ret = 0;
-> +		break;
-> +
-> +	case SRAM_UAPI_IOC_FREE:
-> +		if (!uapi->sa)
-> +			return -EINVAL;
-> +
-> +		size = copy_from_user((void *)&info, (const void __user *)arg,
-> +				      sizeof(info));
-> +
-> +		res = sram_uapi_res_delete(uapi, &info);
-> +		if (!res) {
-> +			pr_err("error no sram resource found\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		uapi->sa->sram_free(res->virt);
-> +		kfree(res);
-> +
-> +		ret = 0;
-> +		break;
-
-So you can just delete any arbitrary offset, even if you weren't the one that
-allocated it?  Even if this isn't meant for unprivileged use it seems error-
-prone.  
-
-> +
-> +	default:
-> +		pr_err("error no cmd not supported\n");
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int sram_uapi_mmap(struct file *filp, struct vm_area_struct *vma)
-> +{
-> +	struct sram_uapi *uapi = filp->private_data;
-> +	struct sram_resource *res;
-> +
-> +	res = sram_uapi_find_res(uapi, vma->vm_pgoff);
-> +	if (!res)
-> +		return -EINVAL;
-> +
-> +	if (vma->vm_end - vma->vm_start > res->info.size)
-> +		return -EINVAL;
-> +
-> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +
-> +	return remap_pfn_range(vma, vma->vm_start,
-> +			       res->phys >> PAGE_SHIFT,
-> +			       vma->vm_end - vma->vm_start,
-> +			       vma->vm_page_prot);
-> +}
-
-Will noncached always be what's wanted here?
-
--Scott
-
-
+[1]https://lkml.org/lkml/2020/3/13/659
