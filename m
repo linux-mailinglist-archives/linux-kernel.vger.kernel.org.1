@@ -2,88 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69C31B1FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BC91B1FBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgDUHTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgDUHTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:19:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60E422074B;
-        Tue, 21 Apr 2020 07:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587453544;
-        bh=pCEARRuc1fH9opZ9iz7/AswvNoJgJohYZGGefm4SL1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AFnZObskHRCdGYgq54OFuBPUSrXJKr4kGYuvpf4k2qLOspdzFHAdRG4YvfyDygR30
-         TazJj0OdKHmj3RIvfCeBrVXVmNB+RRqyFseNm4yQY/FMmUyKr/J+5VRINgygZdJEI1
-         V9sBUqHcakmBRpYm6bQB0HrKOowVgoCmODdyksBI=
-Date:   Tue, 21 Apr 2020 09:19:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Evalds Iodzevics <evalds.iodzevics@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH v2] x86/microcode/intel: replace sync_core() with
- native_cpuid_reg(eax)
-Message-ID: <20200421071902.GA372292@kroah.com>
-References: <20200420120037.1537-1-evalds.iodzevics@gmail.com>
- <20200421085344.1804-1-evalds.iodzevics@gmail.com>
- <20200421055955.GA343434@kroah.com>
- <CADqhmmeNd3A7Ki8SZi4j7aubm3bHDxQ-pNM6bR56geE9BwUjww@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADqhmmeNd3A7Ki8SZi4j7aubm3bHDxQ-pNM6bR56geE9BwUjww@mail.gmail.com>
+        id S1727887AbgDUHZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:25:25 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:49720 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbgDUHZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:25:24 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jQnFN-0005gp-BL; Tue, 21 Apr 2020 02:23:09 -0500
+Message-ID: <876d477d6d8db20c41be3eb59850c51e6badbfcf.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Wang Wenhu <wenhu.wang@vivo.com>, gregkh@linuxfoundation.org,
+        arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel@vivo.com, robh@kernel.org,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+Date:   Tue, 21 Apr 2020 02:23:08 -0500
+In-Reply-To: <20200420030538.101696-1-wenhu.wang@vivo.com>
+References: <20200420030538.101696-1-wenhu.wang@vivo.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: wenhu.wang@vivo.com, gregkh@linuxfoundation.org, arnd@arndb.de, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, robh@kernel.org, christophe.leroy@c-s.fr, mpe@ellerman.id.au, rdunlap@infradead.org
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v2,RESEND] misc: new driver sram_uapi for user level
+ SRAM access
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 09:41:42AM +0300, Evalds Iodzevics wrote:
-> On Tue, Apr 21, 2020 at 8:59 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Apr 21, 2020 at 11:53:44AM +0300, Evalds Iodzevics wrote:
-> > > On Intel it is required to do CPUID(1) before reading the microcode
-> > > revision MSR. Current code in 4.4 an 4.9 relies on sync_core() to call
-> > > CPUID, unfortunately on 32 bit machines code inside sync_core() always
-> > > jumps past CPUID instruction as it depends on data structure boot_cpu_data
-> > > witch are not populated correctly so early in boot sequence.
-> > >
-> > > It depends on:
-> > > commit 5dedade6dfa2 ("x86/CPU: Add native CPUID variants returning a single
-> > > datum")
-> > >
-> > > This patch is for 4.4 but also should apply to 4.9
-> > >
-> > > Signed-off-by: Evalds Iodzevics <evalds.iodzevics@gmail.com>
-> > > ---
-> > >  arch/x86/include/asm/microcode_intel.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > Why are you not sending this to the stable mailing list like I have
-> > pointed out numerous times by sending you a link to _how_ to get a patch
-> > into the stable kernel trees?
-> >
-> > Again, here it is:
-> >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> >
-> > Please follow that so that we can do this correctly.
-> >
-> > thanks,
-> >
-> > greg k-h
-> Sorry, I might sound dumb here but should i just send it to
-> stable@vger.kernel.org or try to tag it Cc: stable... in sign-off
-> area, its quite confusing for newcomer.
+On Sun, 2020-04-19 at 20:05 -0700, Wang Wenhu wrote:
+> +static void sram_uapi_res_insert(struct sram_uapi *uapi,
+> +				 struct sram_resource *res)
+> +{
+> +	struct sram_resource *cur, *tmp;
+> +	struct list_head *head = &uapi->res_list;
+> +
+> +	list_for_each_entry_safe(cur, tmp, head, list) {
+> +		if (&tmp->list != head &&
+> +		    (cur->info.offset + cur->info.size + res->info.size <=
+> +		    tmp->info.offset)) {
+> +			res->info.offset = cur->info.offset + cur->info.size;
+> +			res->parent = uapi;
+> +			list_add(&res->list, &cur->list);
+> +			return;
+> +		}
+> +	}
 
-Yes, be sure to cc: the stable@vger.kernel.org list when you send
-patches that you want to have applied to a stable kernel tree.
+We don't need yet another open coded allocator.  If you really need to do this
+then use include/linux/genalloc.h, but maybe keep it simple and just have one
+allocaton per file descriptor so you don't need to manage fd offsets?
 
-thanks,
+> +static struct sram_resource *sram_uapi_find_res(struct sram_uapi *uapi,
+> +						__u32 offset)
+> +{
+> +	struct sram_resource *res;
+> +
+> +	list_for_each_entry(res, &uapi->res_list, list) {
+> +		if (res->info.offset == offset)
+> +			return res;
+> +	}
+> +
+> +	return NULL;
+> +}
 
-greg k-h
+What if the allocation is more than one page, and the user mmaps starting
+somewhere other than the first page?
+
+> +	switch (cmd) {
+> +	case SRAM_UAPI_IOC_SET_SRAM_TYPE:
+> +		if (uapi->sa)
+> +			return -EEXIST;
+> +
+> +		get_user(type, (const __u32 __user *)arg);
+> +		uapi->sa = get_sram_api_from_type(type);
+> +		if (uapi->sa)
+> +			ret = 0;
+> +		else
+> +			ret = -ENODEV;
+> +
+> +		break;
+> +
+
+Just expose one device per backing SRAM, especially if the user has any reason
+to care about where the SRAM is coming from (correlating sysfs nodes is much
+more expressive than some vague notion of "type").
+
+> +	case SRAM_UAPI_IOC_ALLOC:
+> +		if (!uapi->sa)
+> +			return -EINVAL;
+> +
+> +		res = kzalloc(sizeof(*res), GFP_KERNEL);
+> +		if (!res)
+> +			return -ENOMEM;
+> +
+> +		size = copy_from_user((void *)&res->info,
+> +				      (const void __user *)arg,
+> +				      sizeof(res->info));
+> +		if (!PAGE_ALIGNED(res->info.size) || !res->info.size)
+> +			return -EINVAL;
+
+Missing EFAULT test (here and elsewhere), and res leaks on error.
+
+> +
+> +		res->virt = (void *)uapi->sa->sram_alloc(res->info.size,
+> +							 &res->phys,
+> +							 PAGE_SIZE);
+
+Do we really need multiple allocators, or could the backend be limited to just
+adding regions to a generic allocator (with that allocator also serving in-
+kernel users)?
+
+If sram_alloc is supposed to return a virtual address, why isn't that the
+return type?
+
+> +		if (!res->virt) {
+> +			kfree(res);
+> +			return -ENOMEM;
+> +		}
+
+ENOSPC might be more appropriate, as this isn't general-purpose RAM.
+
+> +
+> +		sram_uapi_res_insert(uapi, res);
+> +		size = copy_to_user((void __user *)arg,
+> +				    (const void *)&res->info,
+> +				    sizeof(res->info));
+> +
+> +		ret = 0;
+> +		break;
+> +
+> +	case SRAM_UAPI_IOC_FREE:
+> +		if (!uapi->sa)
+> +			return -EINVAL;
+> +
+> +		size = copy_from_user((void *)&info, (const void __user *)arg,
+> +				      sizeof(info));
+> +
+> +		res = sram_uapi_res_delete(uapi, &info);
+> +		if (!res) {
+> +			pr_err("error no sram resource found\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		uapi->sa->sram_free(res->virt);
+> +		kfree(res);
+> +
+> +		ret = 0;
+> +		break;
+
+So you can just delete any arbitrary offset, even if you weren't the one that
+allocated it?  Even if this isn't meant for unprivileged use it seems error-
+prone.  
+
+> +
+> +	default:
+> +		pr_err("error no cmd not supported\n");
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int sram_uapi_mmap(struct file *filp, struct vm_area_struct *vma)
+> +{
+> +	struct sram_uapi *uapi = filp->private_data;
+> +	struct sram_resource *res;
+> +
+> +	res = sram_uapi_find_res(uapi, vma->vm_pgoff);
+> +	if (!res)
+> +		return -EINVAL;
+> +
+> +	if (vma->vm_end - vma->vm_start > res->info.size)
+> +		return -EINVAL;
+> +
+> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> +
+> +	return remap_pfn_range(vma, vma->vm_start,
+> +			       res->phys >> PAGE_SHIFT,
+> +			       vma->vm_end - vma->vm_start,
+> +			       vma->vm_page_prot);
+> +}
+
+Will noncached always be what's wanted here?
+
+-Scott
+
+
