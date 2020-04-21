@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8401B2A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD391B2A6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729405AbgDUOoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:44:22 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:40198 "EHLO honk.sigxcpu.org"
+        id S1728918AbgDUOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:46:03 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:40312 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728337AbgDUOoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:44:20 -0400
+        id S1726018AbgDUOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:46:03 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 8C68BFB03;
-        Tue, 21 Apr 2020 16:44:17 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id C5128FB03;
+        Tue, 21 Apr 2020 16:46:01 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HQv9eiXO13nm; Tue, 21 Apr 2020 16:44:16 +0200 (CEST)
+        with ESMTP id btwSYLliZDjF; Tue, 21 Apr 2020 16:46:00 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 61255400FC; Tue, 21 Apr 2020 16:44:14 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     "Rob Herring" <robh+dt@kernel.org>,
-        "Shawn Guo" <shawnguo@kernel.org>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        "Fabio Estevam" <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
+        id BDC55400FB; Tue, 21 Apr 2020 16:45:59 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 16:45:59 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        "Martin Kepplinger" <martink@posteo.de>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        "Abel Vesa" <abel.vesa@nxp.com>,
-        "Anson Huang" <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
+        Martin Kepplinger <martink@posteo.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: Don't use underscore in node name
-Date:   Tue, 21 Apr 2020 16:44:14 +0200
-Message-Id: <55399d6b297e329f125a71aea16e5f48c2857945.1587480093.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <cover.1587480093.git.agx@sigxcpu.org>
-References: <cover.1587480093.git.agx@sigxcpu.org>
+Subject: Re: [PATCH] arm64: dts: imx8mq-librem5-devkit: Use 0.9V for VDD_GPU
+Message-ID: <20200421144559.GA62048@bogon.m.sigxcpu.org>
+References: <d9bfb11e3d66376792089d54d7d52fe3778efa33.1584636213.git.agx@sigxcpu.org>
+ <20200420145459.GE32419@dragon>
+ <20200420163224.GA44571@bogon.m.sigxcpu.org>
+ <20200421030307.GB8571@dragon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200421030307.GB8571@dragon>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename usb_typec to usb-typec to get a rid of a warning when building
-dtb with warnings enabled.
+Hi,
+On Tue, Apr 21, 2020 at 11:03:07AM +0800, Shawn Guo wrote:
+> On Mon, Apr 20, 2020 at 06:32:24PM +0200, Guido Günther wrote:
+> > Hi,
+> > On Mon, Apr 20, 2020 at 10:54:59PM +0800, Shawn Guo wrote:
+> > > On Thu, Mar 19, 2020 at 05:46:02PM +0100, Guido Günther wrote:
+> > > > According to the imx8mq data sheet running VDD_GPU at 0.9V is enough
+> > > > when not overclocking to 1GHz (which we currently don't do).
+> > > > 
+> > > > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > > 
+> > > It doesn't apply to my branch.
+> > 
+> > This was against linux next when i sent it, can you link to the branch
+> > it should apply to please?
+> 
+> Here it is:
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git for-next
+> 
+> Or even better:
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git imx/dt64
 
-Signed-off-by: Guido GÃ¼nther <agx@sigxcpu.org>
----
- arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks - and sorry for getting confused with all the kernel trees
+around. v2 should apply to the above:
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-index 0526ebf0da0f..6900ac274f5b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -410,7 +410,7 @@ ldo7_reg: LDO7 {
- 		};
- 	};
- 
--	typec_ptn5100: usb_typec@52 {
-+	typec_ptn5100: usb-typec@52 {
- 		compatible = "nxp,ptn5110";
- 		reg = <0x52>;
- 		pinctrl-names = "default";
--- 
-2.26.1
+   https://lore.kernel.org/linux-arm-kernel/55399d6b297e329f125a71aea16e5f48c2857945.1587480093.git.agx@sigxcpu.org/T/#mfa29f121347a9d3d76bb14d58fc63fe39767db9c
 
+Cheers,
+ -- Guido
+
+> 
+> Shawn
+> 
