@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2E21B3072
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7644A1B3060
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgDUTfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:35:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59471 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726012AbgDUTfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:35:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587497707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RDbNCpaQ63uuID2gepUGZxv4j3nJ6Y3J26CZxvwRo5k=;
-        b=PWAo4xkzu6z29Jox/HJYN/892kVtmn4xyQqMKfFOXAiS3YMtFiBeYy/JMGMfL4Sa/izDzR
-        hVUfqa+Z5kYuzK6y/+JtcnmaAz1TWaDW2VE9xt7ysUavrNZfl3vAVJPwRdd2OcnvvRAMyc
-        Xgk6kkzgiK20nBW75m8AZpFyJNB5SU0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-3wgr-Z2eMkSi9uCIkh26bQ-1; Tue, 21 Apr 2020 15:28:56 -0400
-X-MC-Unique: 3wgr-Z2eMkSi9uCIkh26bQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726319AbgDUTbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725930AbgDUTbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 15:31:48 -0400
+Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 178FF8024D3;
-        Tue, 21 Apr 2020 19:28:55 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-114-241.rdu2.redhat.com [10.10.114.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A37D7B3A8C;
-        Tue, 21 Apr 2020 19:28:49 +0000 (UTC)
-Subject: Re: [PATCH] blk-iocost: Fix systemtap error on iocost_ioc_vrate_adj
-To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-References: <20200421130755.18370-1-longman@redhat.com>
- <20200421105948.4f5a36f5@gandalf.local.home>
- <22ccb042-7d6f-3717-4024-9ec094b2f363@redhat.com>
- <20200421151649.11300568@gandalf.local.home>
- <3a747a8f-629e-f9d2-088d-963791d99486@kernel.dk>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <7faa2e43-5b3b-fe36-2f51-3791490048fb@redhat.com>
-Date:   Tue, 21 Apr 2020 15:28:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        by mail.kernel.org (Postfix) with ESMTPSA id 8555F206D5;
+        Tue, 21 Apr 2020 19:29:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587497351;
+        bh=BE4IFnhZXL+QecB5RHlSvGSBQfuvKjcw+a+56tvjuPI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tSARBWUP64gzQ5NLyeeC4TZ3buBZeIwn+Y3/W/QIGKUcqRbg74UFh/abweOaGS7S8
+         GFaDTsqncX4r1WL5lWFb6SHDZIRr4dlvswFtzmck/3ho/rWCKv5rLGegjNGrHBv+tb
+         /+uf2y3ydxg5X7aUSSvAuI8sOW6M8cgoH0wKnsm4=
+Date:   Tue, 21 Apr 2020 21:29:06 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 07/10] docs: RCU: RTFP: fix bibtex entries
+Message-ID: <20200421212850.616db8b0@coco.lan>
+In-Reply-To: <20200421175225.GA32083@paulmck-ThinkPad-P72>
+References: <cover.1587488137.git.mchehab+huawei@kernel.org>
+        <3cc10823634f12c3d3c44ee03f73b7aaa347df63.1587488137.git.mchehab+huawei@kernel.org>
+        <20200421174329.GR17661@paulmck-ThinkPad-P72>
+        <20200421175225.GA32083@paulmck-ThinkPad-P72>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <3a747a8f-629e-f9d2-088d-963791d99486@kernel.dk>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/20 3:17 PM, Jens Axboe wrote:
-> On 4/21/20 1:16 PM, Steven Rostedt wrote:
->> On Tue, 21 Apr 2020 14:36:29 -0400
->> Waiman Long <longman@redhat.com> wrote:
->>
->>>> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->>>>
->>>> -- Steve
->>>>  
->>> OK, will send a v2 patch to update the commit log. Thanks for the review.
->> I think Jens already took this patch.  Doesn't sound like a v2 is needed.
-> I did, with modified subject line.
->
->
-Oh, I see. Thanks for taking that.
+Em Tue, 21 Apr 2020 10:52:25 -0700
+"Paul E. McKenney" <paulmck@kernel.org> escreveu:
 
-Cheers,
-Longman
+> On Tue, Apr 21, 2020 at 10:43:29AM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 21, 2020 at 07:04:08PM +0200, Mauro Carvalho Chehab wrote:  
+> > > There are several troubles at the bibtex entries with
+> > > prevent them to be processed by LaTeX:
+> > > 
+> > > - On LaTeX, comment lines start with '%', but here, comments
+> > >   are starting with "#";
+> > > - Underlines should be escaped.
+> > > - While the best would be to use \url{} for all URL entries,
+> > >   let's do it at least for a couple that would otherwise
+> > >   produce errors on LaTeX.
+> > > 
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > 
+> > Another approach might be just to link to a public repo containing
+> > cleaned-up versions of these bibliography entries:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/perfbook.git/tree/bib/RCU.bib
+> > 
+> > That would have the advantage of keeping this information in only one
+> > place, and reducing the number of updates required.
 
+Yeah. I didn't know you had it somewhere else.
+
+> > 
+> > Thoughts?  
+> 
+> OK, I should have read the next patch in the series, where you convert
+> into a Sphinx-compatible bibliography.  Except that you had to convert
+> the bibtex entries by hand to produce the Sphinx-compatible entries?
+
+No, but it still required a lot of manual work.
+
+I manually converted the file to ReST. That was the easiest part.
+
+Then, I used sphinx-build to convert it into a LaTeX file and changed
+the produced .tex for it to use the .bib file. 
+
+The last step was the hardest one. I'm not familiar with LaTeX. I did
+several attempts to produce an output with the same kind of captions
+as the original file, but I was unable to generate it.
+
+So, I ended doing the final step the hard way: I used XeLaTeX to produce
+a PDF file. Then, I manually copied the entries from the output back into 
+the ReST file, carefully adjusting the captions, in order for them to
+point to the right places. 
+
+Before that, I tried to use a few Sphinx BibTeX extensions, but they
+are not complete: they were unable to parse some types of entries.
+If I'm not mistaken (I did it some time ago, on another computer),
+the ones I tested crashed when trying to parse some entries, like 
+'@Conference'.
+
+> That will get a bit ugly when it comes time to add more entries.
+> 
+> Or was the conversion of bibliography entries automated?
+
+I suspect it should be possible to automate it, but, as I said,
+I'm not too familiar with LaTeX. 
+
+Thanks,
+Mauro
