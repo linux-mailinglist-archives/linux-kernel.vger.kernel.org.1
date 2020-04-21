@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4401B2629
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787671B261B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgDUMd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 08:33:29 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:45503 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728879AbgDUMdY (ORCPT
+        id S1728788AbgDUMc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:32:56 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:65215 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728316AbgDUMcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:33:24 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03LCN1G0021757;
-        Tue, 21 Apr 2020 14:33:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=XOcOfmk0mzp2LNDxp8A7DBUhCmQQA1WzS4pxBJFuT4I=;
- b=hnFbBrbhUH6PNx/IwwA4OIARvamZ1ny/0XqEk4W050Jhw7AfGf0n2pb/zLKP5H6Py5zr
- 6W0bDRVOZzmQxdERo0OJGVAJ7qpOM/h7mw61EQq6sykm90H/bNuyUPeXn2FC6x4Otpry
- nW/p/ec/MOwE8dF+Lzpas1nARb5JEJCZvSkKTiyjKfxILl0H7g9ph3gVehSE0D3YxmPu
- uAfHdGcVhORGKEJ+WTICmorgngUOnWFKpUKSR3VVQejYeBozTUefsfu/fnxjJkYLcp44
- vG9fvRYULcXgnv0WLuTsxdWMEJSJ4zkWCQqQvMMmKIgQvm9i009923ZZg7o/UxCAzIIf hA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30fqaw81au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Apr 2020 14:33:15 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4BE9A10002A;
-        Tue, 21 Apr 2020 14:33:15 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 429112B0FCB;
-        Tue, 21 Apr 2020 14:33:15 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG5NODE3.st.com (10.75.127.15)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr 2020 14:33:14
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-To:     <hminas@synopsys.com>, <balbi@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <amelie.delaunay@st.com>
-Subject: [PATCH 4/4] usb: gadget: f_acm: add suspend resume callbacks
-Date:   Tue, 21 Apr 2020 14:32:21 +0200
-Message-ID: <1587472341-17935-5-git-send-email-fabrice.gasnier@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587472341-17935-1-git-send-email-fabrice.gasnier@st.com>
-References: <1587472341-17935-1-git-send-email-fabrice.gasnier@st.com>
+        Tue, 21 Apr 2020 08:32:55 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 03LCWTRG015942;
+        Tue, 21 Apr 2020 21:32:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 03LCWTRG015942
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587472350;
+        bh=0/WpwSdCDKFUy0QKnGd6kunc4ELKUfh3X/2O2KfXcik=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X2aHtr3YOdlWkBV2SK7VV1M028a+j1LTV4KNGToKlGQwnDkaD7OCRRllpZBKPrjCV
+         sUR0ZGrKynik2GsO43gN7nj3gibq3lLwV3nZI5OPlv1H/j6eCJx7sO0vK7JgaEobD7
+         DbMkJuR1rXLTe7PVUE6kFkP14L6w73GClrTIEvD9NLcqZaZ/H6Ek8yrw0puVcEAd+U
+         jBQwn1OuoiYCRNs6SK5goRbcdI1MUoEr+bxG7YsHhVZ0nyAlsRq0Rha5OE41bvum8x
+         iRCUt5MaJb4hYfJrzMmpVDAaODW6Q5iinyS2xmutgkDrsdO3mc5fvWXhoZvTxLBCva
+         whipeyPUCBOxA==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kbuild: ensure full rebuild when the compiler is updated
+Date:   Tue, 21 Apr 2020 21:32:26 +0900
+Message-Id: <20200421123227.1270021-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG5NODE3.st.com
- (10.75.127.15)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-21_05:2020-04-20,2020-04-21 signatures=0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend resume callbacks to notify u_serial of the bus suspend/resume
-state.
+Commit 21c54b774744 ("kconfig: show compiler version text in the top
+comment") added the environment variable, CC_VERSION_TEXT in the comment
+of the top Kconfig file. It can detect the compiler update, and invoke
+the syncconfig because all environment variables referenced in Kconfig
+files are recorded in include/config/auto.conf.cmd
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+This commit makes it a CONFIG option in order to ensure the full rebuild
+when the compiler is updated.
+
+This works like as follows:
+
+include/config/kconfig.h contains "CONFIG_CC_VERSION_TEXT" in the comment
+block.
+
+The top Makefile specifies "-include $(srctree)/include/linux/kconfig.h"
+to guarantee it is included from all kernel source files.
+
+fixdep parses every source file and all headers included from it,
+searching for words prefixed with "CONFIG_". Then, fixdep finds
+CONFIG_CC_VERSION_TEXT in include/config/kconfig.h and adds
+include/config/cc/version/text.h into every .*.cmd file.
+
+When the compiler is updated, syncconfig is invoked since the environment
+variable is referenced. CONFIG_CC_VERSION_TEXT is updated to the new
+version string, and include/config/cc/version/text.h is touched.
+
+In the next rebuild, Make rebuilds every files since the timestamp of
+include/config/cc/version/text.h is newer than that of target.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/usb/gadget/function/f_acm.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/usb/gadget/function/f_acm.c b/drivers/usb/gadget/function/f_acm.c
-index 7c152c2..200596e 100644
---- a/drivers/usb/gadget/function/f_acm.c
-+++ b/drivers/usb/gadget/function/f_acm.c
-@@ -723,6 +723,20 @@ static void acm_free_func(struct usb_function *f)
- 	kfree(acm);
- }
+ Kconfig                 |  2 --
+ include/linux/kconfig.h |  9 +++++++++
+ init/Kconfig            | 12 ++++++++++++
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/Kconfig b/Kconfig
+index e10b3ee084d4..745bc773f567 100644
+--- a/Kconfig
++++ b/Kconfig
+@@ -5,8 +5,6 @@
+ #
+ mainmenu "Linux/$(ARCH) $(KERNELVERSION) Kernel Configuration"
  
-+static void acm_resume(struct usb_function *f)
-+{
-+	struct f_acm *acm = func_to_acm(f);
-+
-+	gserial_resume(&acm->port);
-+}
-+
-+static void acm_suspend(struct usb_function *f)
-+{
-+	struct f_acm *acm = func_to_acm(f);
-+
-+	gserial_suspend(&acm->port);
-+}
-+
- static struct usb_function *acm_alloc_func(struct usb_function_instance *fi)
- {
- 	struct f_serial_opts *opts;
-@@ -750,6 +764,8 @@ static struct usb_function *acm_alloc_func(struct usb_function_instance *fi)
- 	acm->port_num = opts->port_num;
- 	acm->port.func.unbind = acm_unbind;
- 	acm->port.func.free_func = acm_free_func;
-+	acm->port.func.resume = acm_resume;
-+	acm->port.func.suspend = acm_suspend;
+-comment "Compiler: $(CC_VERSION_TEXT)"
+-
+ source "scripts/Kconfig.include"
  
- 	return &acm->port.func;
- }
+ source "init/Kconfig"
+diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
+index cc8fa109cfa3..406b8a2521b5 100644
+--- a/include/linux/kconfig.h
++++ b/include/linux/kconfig.h
+@@ -2,6 +2,15 @@
+ #ifndef __LINUX_KCONFIG_H
+ #define __LINUX_KCONFIG_H
+ 
++/*
++ * Do not remove this comment block. This contains "CONFIG_CC_VERSION_TEXT"
++ * to ensure the full rebuild when the compiler is updated.
++ *
++ * fixdep parses this header, which is included by every kernel source file,
++ * and adds include/config/cc/version/text.h to the dependency in .*.cmd files.
++ * When the compiler is updated, syncconfig touches it so every file is rebuilt.
++ */
++
+ #include <generated/autoconf.h>
+ 
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+diff --git a/init/Kconfig b/init/Kconfig
+index 9e22ee8fbd75..d3d153815d88 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -8,6 +8,18 @@ config DEFCONFIG_LIST
+ 	default "/boot/config-$(shell,uname -r)"
+ 	default "arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)"
+ 
++config CC_VERSION_TEXT
++	string
++	default "$(CC_VERSION_TEXT)"
++	help
++	  There two purposes for this entry:
++
++	  1. Reference the environment variable, CC_VERSION_TEXT, so Kconfig
++	     is invoked if the compiler is updated.
++
++	  2. Touch include/config/cc/version/text.h to force the full rebuild
++	     if the compiler is updated. See comment in include/linux/kconfig.h
++
+ config CC_IS_GCC
+ 	def_bool $(success,$(CC) --version | head -n 1 | grep -q gcc)
+ 
 -- 
-2.7.4
+2.25.1
 
