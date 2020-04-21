@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9A91B2193
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E051B218C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgDUI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:29:32 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40828 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726018AbgDUI3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:29:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TwDHj5a_1587457757;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwDHj5a_1587457757)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 21 Apr 2020 16:29:17 +0800
-Subject: Re: [PATCH 01/18] mm: fix NUMA node file count error in
- replace_page_cache()
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <js1304@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-2-hannes@cmpxchg.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <c5c379d5-d580-58ec-c9d1-f05d6cdc57b4@linux.alibaba.com>
-Date:   Tue, 21 Apr 2020 16:28:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        id S1726931AbgDUI2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:28:17 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46899 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUI2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:28:15 -0400
+IronPort-SDR: Gu50vmakIoIE4FDTjt+k31+AFj9dM+IahIFe0n2Zm/Vxta6SBx2IM9JSgl7cfQuqWR+WOqvNuE
+ S5zMe6ojU44Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:28:04 -0700
+IronPort-SDR: tYpd9XYj0rIS1xtRZpb6mUnsjXJcZoLdqcfdWMVuWRC181uxqpzHgPi/YbH884TIR9QNfQ54zt
+ 046xbfesXN7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
+   d="scan'208";a="300540575"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Apr 2020 01:28:02 -0700
+Date:   Tue, 21 Apr 2020 16:28:32 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH 2/2] sched: Extract the task putting code from
+ pick_next_task()
+Message-ID: <20200421082832.GD9721@chenyu-office.sh.intel.com>
+References: <cover.1587309963.git.yu.c.chen@intel.com>
+ <7c1eab789cb4b53ec5f54644c089ce27ea14088a.1587309963.git.yu.c.chen@intel.com>
+ <20200420183232.16b83374@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20200420221126.341272-2-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420183232.16b83374@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2020/4/21 ÉÏÎç6:11, Johannes Weiner Ð´µÀ:
-> When replacing one page with another one in the cache, we have to
-> decrease the file count of the old page's NUMA node and increase the
-> one of the new NUMA node, otherwise the old node leaks the count and
-> the new node eventually underflows its counter.
+On Mon, Apr 20, 2020 at 06:32:32PM -0400, Steven Rostedt wrote:
+> On Mon, 20 Apr 2020 00:31:52 +0800
+> Chen Yu <yu.c.chen@intel.com> wrote:
 > 
-> Fixes: 74d609585d8b ("page cache: Add and replace pages using the XArray")
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-> ---
->  mm/filemap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > Introduce a new function finish_prev_task() to do the balance
+> > when necessary, and then put previous task back to the run queue.
+> > This function is extracted from pick_next_task() to prepare for
+> > future usage by other type of task picking logic.
+> > 
+> > No functional change.
+> > 
+> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > ---
+> >  kernel/sched/core.c | 39 +++++++++++++++++++++++----------------
+> >  1 file changed, 23 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 3a61a3b8eaa9..bf59a5cf030c 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -3904,6 +3904,28 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
+> >  	schedstat_inc(this_rq()->sched_count);
+> >  }
+> >  
+> > +static void finish_prev_task(struct rq *rq, struct task_struct *prev,
+> > +			     struct rq_flags *rf)
+> > +{
+> > +	const struct sched_class *class;
+> > +#ifdef CONFIG_SMP
+> > +	/*
+> > +	 * We must do the balancing pass before put_next_task(), such
 > 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 23a051a7ef0f..49e3b5da0216 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -808,11 +808,11 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
->  	old->mapping = NULL;
->  	/* hugetlb pages do not participate in page cache accounting. */
->  	if (!PageHuge(old))
-> -		__dec_node_page_state(new, NR_FILE_PAGES);
-> +		__dec_node_page_state(old, NR_FILE_PAGES);
->  	if (!PageHuge(new))
->  		__inc_node_page_state(new, NR_FILE_PAGES);
->  	if (PageSwapBacked(old))
-> -		__dec_node_page_state(new, NR_SHMEM);
-> +		__dec_node_page_state(old, NR_SHMEM);
->  	if (PageSwapBacked(new))
->  		__inc_node_page_state(new, NR_SHMEM);
->  	xas_unlock_irqrestore(&xas, flags);
+> I know this is just a cut and paste move, but I'm thinking that this
+> comment is wrong. Shouldn't this be "put_prev_task()" as we have no
+> "put_next_task()" function.
+> 
+>
+Okay, I'll fix it in v3.
+> > +	finish_prev_task(rq, prev, rf);
+> 
+> I'm not sure I like the name of this function. Perhaps
+> "balance_and_put_prev_task()"? Something more in kind to what the function
+> does.
+>
+Per the discussion, I think put_prev_task_balance() might be an
+appropriate one.
+
+Thanks,
+Chenyu
+> -- Steve
+> 
+> >  
+> >  	for_each_class(class) {
+> >  		p = class->pick_next_task(rq);
 > 
