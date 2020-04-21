@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161F31B3275
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137951B3277
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 00:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgDUWF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 18:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgDUWF0 (ORCPT
+        id S1726284AbgDUWHg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 18:07:36 -0400
+Received: from mail.ac.gov.br ([179.252.114.240]:60098 "EHLO
+        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgDUWHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 18:05:26 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76016C0610D5;
-        Tue, 21 Apr 2020 15:05:26 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 496HgN52Xkz9sSM;
-        Wed, 22 Apr 2020 08:05:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587506723;
-        bh=GK1CYGCdk6i+naXgyQ9LSnhWR1e3C0+EZY/yit/lwA8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tQeP9nkXWEiEP0Kv85pXxLwN3do6n30Mh66GmGeBVniIfNa2/StMU+PregPLCR8fn
-         U7mu/sNaJTjK1Qy2fO5GutI2QEiuHu7ozKT4DzetnViGKqTZPChk2Cr8R9PKdMVEkd
-         c4fUg8oMv/8ppELbvugy2O8s5kOoHvgtMoitv8bQPuR28gq8mVkpQlDLinGJfTn702
-         t80erOvIf7uRIfLr4GtreuvPh+pzAcOVG8f6/z2OXpe4OsD0sAGW3iYna0KMl0Ryl9
-         vLOCuKz6TkjATSXOorz2GnA/HO+6EIUhoM4mLL3rgoU6sPXUbSi9eIzp6XGz5nvduS
-         K/Fg3/YJAczRg==
-Date:   Wed, 22 Apr 2020 08:05:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Trond Myklebust <trondmy@gmail.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: linux-next: Fixes tag needs some work in the nfs tree
-Message-ID: <20200422080518.3c5727e0@canb.auug.org.au>
+        Tue, 21 Apr 2020 18:07:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id BA42E36C2C12;
+        Tue, 21 Apr 2020 17:08:04 -0500 (ACT)
+Received: from srvifs070.ac.gov.br ([127.0.0.1])
+        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UafOKOAphWEh; Tue, 21 Apr 2020 17:08:03 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id E276036C2C26;
+        Tue, 21 Apr 2020 17:08:01 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id D148836C2BEB;
+        Tue, 21 Apr 2020 17:07:57 -0500 (ACT)
+Date:   Tue, 21 Apr 2020 18:07:57 -0400 (AMT)
+From:   Azim Hashim premji <angela.magalhaes@ac.gov.br>
+Reply-To: Azim Hashim premji <Azimhashimpremjiunion@outlook.co.id>
+Message-ID: <1298426669.108986.1587506877563.JavaMail.zimbra@ac.gov.br>
+Subject: Eine Spende wurde Ihnen genehmigt
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3poIhWV55NQEb.HbpWm3hBr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [41.80.120.141]
+X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
+Thread-Topic: Eine Spende wurde Ihnen genehmigt
+Thread-Index: GZcbaDhN2psHAKu4nmuGUqMNUOu/4w==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3poIhWV55NQEb.HbpWm3hBr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-In commit
+-- 
+Ich bin Azim Hashim Premji, ein indischer Geschäftsmagnat, Investor und Philanthrop. Ich bin der Vorsitzende von Wipro Limited. Ich habe 25 Prozent meines persönlichen Vermögens für wohltätige Zwecke gespendet. Und ich habe auch versprochen, den Rest von 25% in diesem Jahr 2020 zu verschenken.
 
-  115677dcbc45 ("SUNRPC: Remove unreachable error condition")
+Sie wurden ausgewählt, um die Summe von "Eine Million, zweihunderttausend Euro" in meinem laufenden Wohltätigkeitsprogramm zu erhalten. Für weitere Informationen senden Sie bitte eine E-Mail an:
 
-Fixes tag
+azimhashimpremjiunion@outlook.co.id
+oder auf WhatsApp Messenger: +19372662402
+Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich für weitere Informationen. Ich möchte auch, dass Sie Teil meiner Wohltätigkeitsstiftung sind, sobald Sie dieses Geld erhalten, damit wir Hand in Hand zusammenarbeiten können, um den Bedürftigen zu helfen.
 
-  Fixes: 7f554890587c ("SUNRPC: Allow addition of new transports to a
+Über diesen Link können Sie auch mehr über mich lesen
 
-has these problem(s):
+https://en.wikipedia.org/wiki/Azim_Premji
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3poIhWV55NQEb.HbpWm3hBr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6fbh4ACgkQAVBC80lX
-0GwPIAf9EeQiJCXubChuk1cbhaEnd2f25pVGttkRCivBnFpHfLgfPDqvpkmSuPbT
-zD8sOPrPsrLH/gGTnxyaGiFU9ONqsEh9AmNb9u3QhOT4H1SekQYMVYtfamK4WLRk
-zNa6XzJURqm1iKIG0f+kiwQerfBFmtXhUKcNjTRqf+HZagQLHTbIcsapswqMohdp
-2M+g4bcEOhak+qJDziq1FjlYiliBhJogo9R7KjycYJhniV3CUYBb4jccyrl0QvYz
-m2xTgDflstCoSzJr4WDqz9j3U+du/oNqw78UF+Ml7yzs9pE2gbYLxPugPOjHB3io
-bckoh9J6kqPea7JEoSzxWgKIKJbwaw==
-=HlZE
------END PGP SIGNATURE-----
-
---Sig_/3poIhWV55NQEb.HbpWm3hBr--
+Kontaktieren Sie sie per E-Mail für weitere Informationen: azimhashimpremjiunion@outlook.co.id
+oder auf WhatsApp Messenger: +19372662402
+Herzlichen Gruß,
