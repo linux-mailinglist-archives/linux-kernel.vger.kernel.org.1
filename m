@@ -2,134 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68611B2162
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5481B2171
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbgDUIRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbgDUIRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:17:37 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F95EC061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 01:17:37 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id p25so6271515pfn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 01:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=R51EKoGdprYIzq4mz86f7ksK2LhT5dJfZ4/kQMPqWXU=;
-        b=VzMHbZmGtC1cli7/MzDUNjXVYWUl1NxixqtpJm0/9P/EzaLVRa8g8WgYud0Qm6Rchk
-         /0trL5SM2/Zrj2mYcg8pq0A+qXdeLRNhfMiAZsy5X8Q7FkKkUcxE3FT4l8B0EtAmdA+a
-         qWQTbQU8+OIZBMPZCnCgj1bgpLATeorKYHYYWZhPAzfAJg7qSDI1mvGlLkPsXDXc0xmQ
-         nHxUsek7TS8kNEMxedKCaVU/PPk6efmG7yA1N7bxrcxILkRxr4XHk7vAf799he9GgfVg
-         ZXr8nDGGsq+0uBoSEWHxoMPWrO9TNXqLg4+rs5s/lfX6Mf18km5fSJ2iKKhhbu7/Mopp
-         enAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=R51EKoGdprYIzq4mz86f7ksK2LhT5dJfZ4/kQMPqWXU=;
-        b=Ya77saszxe2EG8M8sTlc+Ra5JZWWyksbjLA0QJx/ZBhCF0H/N9xtglsE2Oc1JVvMG9
-         peKYfZyH9JHfpxZwGU8LN1PCiEN0l4+FPKrOXZA/9yLhRMLr/4c+MJiarnXXsRQh1mSy
-         nahZlMtEkK53BFCBof8V/jvDrCWnZ8ZrD9vK+Gt+96AxE41tO3BUr9yCHL9CrMfHybCB
-         2N2kEHB9Q66BrWiYrOZ1wpf87Tod3+TOrsiE+V0yD4LNnhERWkjMRVilx4lTyDEgdKic
-         +bml1FDwInCQwOzwjJTJdk6TW5UxovbDC7HFpPnXcF5Gpb8T9lBqCzZj24HA1KYNN9gI
-         kK6g==
-X-Gm-Message-State: AGi0PuYVBNMjDvRtfq2Nfiv5T0Bn3lcDx/LWeVrakSAfKWriWqp0b5bm
-        U559ReZ3Yywo4U/+2kknX7Tq2g==
-X-Google-Smtp-Source: APiQypJD+fzqoCjmoNF33zw6GUvSp1zVm+GJEMjBcSfH6XjMDUyeBTOm2mgFujSrzxWUd3wuELt89Q==
-X-Received: by 2002:a63:4e21:: with SMTP id c33mr21379911pgb.305.1587457056828;
-        Tue, 21 Apr 2020 01:17:36 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id v9sm1610067pju.3.2020.04.21.01.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 01:17:36 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, linux-riscv@lists.infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH 4/4] arm64: mm: use ARCH_HAS_DEBUG_WX instead of arch defined
-Date:   Tue, 21 Apr 2020 16:17:15 +0800
-Message-Id: <e19709e7576f65e303245fe520cad5f7bae72763.1587455584.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <cover.1587455584.git.zong.li@sifive.com>
-References: <cover.1587455584.git.zong.li@sifive.com>
+        id S1727118AbgDUIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:20:50 -0400
+Received: from mout.web.de ([217.72.192.78]:52545 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726106AbgDUIUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:20:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1587457234;
+        bh=y5hPKTU7r66gyV9UKIkcFxOr+eMe7e4v7CrjUmkpEvs=;
+        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
+        b=EtruUq/qPP8ybHJDIlKGfvQU3QeuKk5GtkyqCq1zfBZTN9xRvfi4hvY72+xbXj6q/
+         /87M7CuHkFTrTd3OAuvSjCNbYnbWBTJ+E/zHEH3IN+PiybUgEUDzIxgmNiiysgIzfC
+         e4lMdDsGgVmGkGt6nD1izKKP2od6sTsflxvNUIXM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([2.243.91.59]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MNcV4-1jJfXE0fQg-007Fmw; Tue, 21
+ Apr 2020 10:20:34 +0200
+Cc:     1587180037-113840-1-git-send-email-bernard@vivo.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH V2] drm/amdgpu: Remove an unnecessary condition check in
+ reserve_bo_and_cond_vms()
+To:     Bernard Zhao <bernard@vivo.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Chunming Zhou <David1.Zhou@amd.com>,
+        =?UTF-8?Q?Felix_K=c3=bchling?= <Felix.Kuehling@amd.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <c972a800-9a38-8f17-09f8-12058bf4491d@web.de>
+Date:   Tue, 21 Apr 2020 10:20:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BnJHv8ylf25jOwixpSvtf4Uz1FQN46jWqrLF0PXKq6379rLW90+
+ 90e43xyLUxDqGi9FISO/MtA6xz/Oh4FMHdPfDdHvPkQE8ac8/j9D68d3FLya41luid7nONk
+ H6DEFTC0QXQYVSRgMtfAxy3cpUM0hLBU1WqBPvMWPMXQbSwQ0Blk/IhM0KtkAU98dw9AF4l
+ Wv1ATWHpB7ZVD/cC8sqMw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lxDFhQYhpK8=:Lwbwftss8nIPrnj3u5OhK1
+ zTpA9D0qjY/+f8wR+2EfENUHn4O3/8wa2iyYEwnoF8jmaopZp7YACx6UQ/E8dqijXuJdiYJTh
+ 8QSJYXl3WJNs9YY0XrL3mqV/CGmQmiPiMKd1PXMJ11UrMQ9L7FoLcTQfTr/R520I6TuRQyw5I
+ D6Z0vH+MOse/q7srIW1shy0Sv77Mbzvf2zRaDkUqIq0q+nQp1gkAzuhIfOSJNFDlrZDLMlySv
+ S9EyBd7Sqk0ISWgXodLD1UzmkFceh5FkuDCXcA3xjJ/ogqFOc5Fzrs1LrCZzqukIxZAdj6rjB
+ VnmbVD8DjFv1xrhxUekEX9hgFcO52J7lbtlxVJ1tHR9+mGLJFXAe+NX04P6pjufxNk5lWcGIg
+ Yx3HsODtSw5GXec3HttE37Vp0rCiGUNkKQe37Ivy3mIzHAmNI9kI+IfUgCF/YC5gdtCPVcfUX
+ d9EI3VG4coabftpphoVX5O48GwDh6ZtbLXSt2jDtNaV8ubtsYAMQ9UZQAyZCWaqlAc4wDI8B5
+ 3AmLlqnQExJ1DM3yio5m6CdDk7Uwj72HKYye7Vl2qIXUJJEKTRJIpS+QCHT1CSZxy514Eieec
+ rjs3NUz9nqceQKcymF5gjPtVceUO147+LPIBiyhpbiiCqnxIQibjld9qCfjpo+CGrS+Uit2l+
+ m45uns1IMeJG5GB6FCtYnjcPXnWFRwI+KpsaZCd+qmlY6TMfnc4lVPvKP1VjH/QGRzzowexbc
+ aMdNWMXTN2cn4YGts52UP2v9MfHxb/vC1/fzyYfA/YcqueOKStbDIYObB5NlJjzKGmfMpLDp9
+ sUZ5P4oc9P/YrpYLXYsIDXB7J3PjrqJWKnBmeOOrHTQIRRqQUQyL7+wRn+ZbxJag43jNxhkkQ
+ DgV6Z6uPk/hpobE2TmcXokA+cCGXLvesyL/Ieb+zFSTFEkErIed7h0Q4j1jPoKqem1E+8OWoY
+ SLqRL3CsQaFGjGGmrBhx78QNUE4w4LFk2giowKe8LUV25vR2whuq0RWwLE/G8PZUsfhuJ4y3w
+ ocnpEN2+7sAvoAjsbPwqvuI6perRpBCmBB+duSBldSbuLDPFGtc4W1L91O9wQ7gPOfabSGb/j
+ uIUpCNDHD209zn6GEVGJADDtQYhyMkZ2eipWAOmsR22fpEPoDpL/NFWVWS8ikfh5ZheI438z1
+ ThdGwt6UTcIjzUeak+uIG2gb7Y3VM0T/BWAXNkrC1aqX93pvTVnjM3vPqLzXDCiJBztOSJKQl
+ Dcp2ZIsXADW80Qwyi
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extract DEBUG_WX to mm/Kconfig.debug for shared use. Change to use
-ARCH_HAS_DEBUG_WX instead of DEBUG_WX defined by arch port.
+> There is no need to if check again,
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- arch/arm64/Kconfig       |  1 +
- arch/arm64/Kconfig.debug | 29 -----------------------------
- 2 files changed, 1 insertion(+), 29 deletions(-)
+Thanks for this information.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 40fb05d96c60..a16e2ce80854 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -9,6 +9,7 @@ config ARM64
- 	select ACPI_MCFG if (ACPI && PCI)
- 	select ACPI_SPCR_TABLE if ACPI
- 	select ACPI_PPTT if ACPI
-+	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_DMA_PREP_COHERENT
-diff --git a/arch/arm64/Kconfig.debug b/arch/arm64/Kconfig.debug
-index a1efa246c9ed..cdf7ec0b975e 100644
---- a/arch/arm64/Kconfig.debug
-+++ b/arch/arm64/Kconfig.debug
-@@ -23,35 +23,6 @@ config ARM64_RANDOMIZE_TEXT_OFFSET
- 	  of TEXT_OFFSET and platforms must not require a specific
- 	  value.
- 
--config DEBUG_WX
--	bool "Warn on W+X mappings at boot"
--	select PTDUMP_CORE
--	---help---
--	  Generate a warning if any W+X mappings are found at boot.
--
--	  This is useful for discovering cases where the kernel is leaving
--	  W+X mappings after applying NX, as such mappings are a security risk.
--	  This check also includes UXN, which should be set on all kernel
--	  mappings.
--
--	  Look for a message in dmesg output like this:
--
--	    arm64/mm: Checked W+X mappings: passed, no W+X pages found.
--
--	  or like this, if the check failed:
--
--	    arm64/mm: Checked W+X mappings: FAILED, <N> W+X pages found.
--
--	  Note that even if the check fails, your kernel is possibly
--	  still fine, as W+X mappings are not a security hole in
--	  themselves, what they do is that they make the exploitation
--	  of other unfixed kernel bugs easier.
--
--	  There is no runtime or memory usage effect of this option
--	  once the kernel has booted up - it's a one time check.
--
--	  If in doubt, say "Y".
--
- config DEBUG_EFI
- 	depends on EFI && DEBUG_INFO
- 	bool "UEFI debugging"
--- 
-2.26.1
+* Should the function name be mentioned in this commit message?
 
+* Would you like to adjust the patch subject another bit?
+
+
+> maybe we could merge into the above else branch.
+
+I suggest to reconsider this wording.
+Are you still unsure about the next changes?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?id=3Dae83d0b416db002fe95601e7f9=
+7f64b59514d936#n151
+
+How do you think about to add the tag =E2=80=9CFixes=E2=80=9D?
+
+
+It can be nicer if all patch reviewers (including me) will be explicitly s=
+pecified
+as recipients for such messages, can't it?
+
+Regards,
+Markus
