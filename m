@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92B81B2453
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCC71B2459
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728600AbgDUKuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 06:50:18 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22658 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgDUKuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 06:50:17 -0400
-IronPort-SDR: Xmb6aiz7XMAis+pfDYhD1qcJwwlz1UKwY3pOH/ewBfmV6AWGVE3ZEhW4lJLgTvEqgPVFXJgl4X
- W5mdD/ptvGHw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 03:50:17 -0700
-IronPort-SDR: 1/7uHZJs+ksuoPYOpbP3jEsnt+fB9q2u4GE7YI0HccD9ma8xvDqB98w96Lefg3XXDrj5rXutF8
- w+FVaCZlqTSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
-   d="scan'208";a="247146052"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Apr 2020 03:50:14 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>, Ben Segall <bsegall@google.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH 2/2][v3] sched: Extract the task putting code from pick_next_task()
-Date:   Tue, 21 Apr 2020 18:50:43 +0800
-Message-Id: <5a99860cf66293db58a397d6248bcb2eee326776.1587464698.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1587464698.git.yu.c.chen@intel.com>
-References: <cover.1587464698.git.yu.c.chen@intel.com>
+        id S1728606AbgDUKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 06:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728479AbgDUKu4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 06:50:56 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D61C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 03:50:56 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id v18so6274702qvx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 03:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X97gowXSXVuj90hXQ6kQpDZGS51aik4UM3Tpue+54yo=;
+        b=eFCf/fNPi3IrRTS06krXS2ZMEjJX8GKQ2J7VKIUNFHjMEHXoiLJBPNpxCePML0yGxn
+         jSN6Bi1BtJqbNIv6rNs4TSS/q33MdfZzi2ZsR5r2KFTIxgOclA+Q1+ZpLaHBvwRSPajI
+         LidR7KucPFXVKb2H1IHYcI7Nt6kxMIrbf1YbmLsHx1Lba0zX3QKpn5UxbaRDjqqzGyGO
+         o2AauplIbuT6czoZn4D20ciho6JwKS6XcD4Fxp0CZhjbNIRoEZkhX2aNIHRRIf0y4c4N
+         3q3v6rMwxGZuPM/4wRHTFaAkR1k3wIF/FqoVfnQVAw5vlry/yu1YUuHI3HEcMd4YAp/y
+         2xnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X97gowXSXVuj90hXQ6kQpDZGS51aik4UM3Tpue+54yo=;
+        b=Y+uLtgy7gIK0uH30XOl6BwXK+nJ/azmKzjVY2+YkBb5GGmmqrc8h4LZFvFyjLU2yt1
+         lD2Qi/7zHXQl9vyNl5ZvwqPG5O1dfc/qv0qQ5f++Reiif+F8WLxw+INzNloIU36YVm+B
+         GcwTBenaUzjuAsqaMFFExVTBOz9suv+RHkisocOVLvwpYPQ1iajnQMiHUYd0gebnbjZx
+         //Tqivhbwh4wV0GVd4IJeZ5Fqtu6dOEhj5rdqJW9JcgpXi9l25aZ2CqBqVMQLMB1gyDt
+         CpIj1bjYEpTZElYj4MSwzWLnBvYHTx/rdOJ3ZvwQVcNvajLDkQ+Mtq/MT7JZcOq+aP46
+         YGAg==
+X-Gm-Message-State: AGi0Puayda7g6ADufcce0VzH0quZLP6Zt9iUTkiFC+bmv6Vp8vKsPe9V
+        KrmRsyHRsAZB7sz89GYxmnegMgAKL8vgnJy4kV+Vtg==
+X-Google-Smtp-Source: APiQypJV/TkyKYL3JG6ZElcl+LDXWVoV5Zz2Nn/25blcKt7NCRqYuax1dcadhWUfAfrBLAbzu71QX7wTora2Y1MAEUU=
+X-Received: by 2002:ad4:4d06:: with SMTP id l6mr5926201qvl.34.1587466255012;
+ Tue, 21 Apr 2020 03:50:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <0000000000004ede4505a3cab90e@google.com>
+In-Reply-To: <0000000000004ede4505a3cab90e@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 21 Apr 2020 12:50:43 +0200
+Message-ID: <CACT4Y+ZuGaeyyVsCkqJRo4+0hoMP8Eq_JTuU0L-NFqTrQP_czA@mail.gmail.com>
+Subject: Re: linux-next test error: WARNING: suspicious RCU usage in ipmr_device_event
+To:     syzbot <syzbot+21f82f61c24a7295edf5@syzkaller.appspotmail.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new function put_prev_task_balance() to do the balance
-when necessary, and then put previous task back to the run queue.
-This function is extracted from pick_next_task() to prepare for
-future usage by other type of task picking logic.
+On Tue, Apr 21, 2020 at 12:46 PM syzbot
+<syzbot+21f82f61c24a7295edf5@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    39a314cd Add linux-next specific files for 20200421
+> git tree:       linux-next
 
-No functional change.
++linux-next, Stephen for a new linux-next breakage
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v3: According to Steven's suggestion, fix the comment
-    to change put_next_task() to put_prev_task()
-
-    Rename finish_prev_task() to put_prev_task_balance()
-    as this reflects what we do before picking a new task. 
-
-    Per Valentin's suggestion, put the declaration of
-    struct sched_class within the ifdef, given it isn't
-    used outside of it.
----
- kernel/sched/core.c | 39 +++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3a61a3b8eaa9..c9d7880f6bf2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3904,6 +3904,28 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
- 	schedstat_inc(this_rq()->sched_count);
- }
- 
-+static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
-+				  struct rq_flags *rf)
-+{
-+#ifdef CONFIG_SMP
-+	const struct sched_class *class;
-+	/*
-+	 * We must do the balancing pass before put_prev_task(), such
-+	 * that when we release the rq->lock the task is in the same
-+	 * state as before we took rq->lock.
-+	 *
-+	 * We can terminate the balance pass as soon as we know there is
-+	 * a runnable task of @class priority or higher.
-+	 */
-+	for_class_range(class, prev->sched_class, &idle_sched_class) {
-+		if (class->balance(rq, prev, rf))
-+			break;
-+	}
-+#endif
-+
-+	put_prev_task(rq, prev);
-+}
-+
- /*
-  * Pick up the highest-prio task:
-  */
-@@ -3937,22 +3959,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	}
- 
- restart:
--#ifdef CONFIG_SMP
--	/*
--	 * We must do the balancing pass before put_next_task(), such
--	 * that when we release the rq->lock the task is in the same
--	 * state as before we took rq->lock.
--	 *
--	 * We can terminate the balance pass as soon as we know there is
--	 * a runnable task of @class priority or higher.
--	 */
--	for_class_range(class, prev->sched_class, &idle_sched_class) {
--		if (class->balance(rq, prev, rf))
--			break;
--	}
--#endif
--
--	put_prev_task(rq, prev);
-+	put_prev_task_balance(rq, prev, rf);
- 
- 	for_each_class(class) {
- 		p = class->pick_next_task(rq);
--- 
-2.17.1
-
+> console output: https://syzkaller.appspot.com/x/log.txt?x=127ede73e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ef80c3f5d43f5bd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=21f82f61c24a7295edf5
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>
+> Unfortunately, I don't have any reproducer for this crash yet.
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+21f82f61c24a7295edf5@syzkaller.appspotmail.com
+>
+> tipc: TX() has been purged, node left!
+> =============================
+> WARNING: suspicious RCU usage
+> 5.7.0-rc2-next-20200421-syzkaller #0 Not tainted
+> -----------------------------
+> net/ipv4/ipmr.c:1757 RCU-list traversed in non-reader section!!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 1
+> 4 locks held by kworker/u4:0/7:
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: __write_once_size include/linux/compiler.h:250 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:615 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:642 [inline]
+>  #0: ffff8880a9772138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x844/0x16a0 kernel/workqueue.c:2239
+>  #1: ffffc90000cdfdc0 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x878/0x16a0 kernel/workqueue.c:2243
+>  #2: ffffffff8a5a2b70 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa50 net/core/net_namespace.c:565
+>  #3: ffffffff8a5aeae8 (rtnl_mutex){+.+.}-{3:3}, at: ip6gre_exit_batch_net+0x88/0x700 net/ipv6/ip6_gre.c:1602
+>
+> stack backtrace:
+> CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.7.0-rc2-next-20200421-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: netns cleanup_net
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x188/0x20d lib/dump_stack.c:118
+>  ipmr_device_event+0x240/0x2b0 net/ipv4/ipmr.c:1757
+>  notifier_call_chain+0xc0/0x230 kernel/notifier.c:83
+>  call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
+>  call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1933
+>  call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
+>  call_netdevice_notifiers net/core/dev.c:1974 [inline]
+>  rollback_registered_many+0x75c/0xe70 net/core/dev.c:8828
+>  unregister_netdevice_many.part.0+0x16/0x1e0 net/core/dev.c:9993
+>  unregister_netdevice_many+0x36/0x50 net/core/dev.c:9992
+>  ip6gre_exit_batch_net+0x4e8/0x700 net/ipv6/ip6_gre.c:1605
+>  ops_exit_list.isra.0+0x103/0x150 net/core/net_namespace.c:189
+>  cleanup_net+0x511/0xa50 net/core/net_namespace.c:603
+>  process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
+>  worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+>  kthread+0x38b/0x470 kernel/kthread.c:274
+>  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000004ede4505a3cab90e%40google.com.
