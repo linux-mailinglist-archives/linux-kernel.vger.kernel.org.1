@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9F31B21BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9964E1B37A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 08:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgDUIcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726600AbgDUIcr (ORCPT
+        id S1726505AbgDVGlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 02:41:42 -0400
+Received: from 45-173-5-121.ims.net.co ([45.173.5.121]:38440 "EHLO
+        email.alcaldiadecucuta.gov.co" rhost-flags-OK-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726337AbgDVGlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:32:47 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A0AC061A0F;
-        Tue, 21 Apr 2020 01:32:46 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id h2so2549316wmb.4;
-        Tue, 21 Apr 2020 01:32:46 -0700 (PDT)
+        Wed, 22 Apr 2020 02:41:42 -0400
+X-Greylist: delayed 69231 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 02:41:41 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by email.alcaldiadecucuta.gov.co (Postfix) with ESMTP id 3CD17603C29A9;
+        Tue, 21 Apr 2020 21:46:45 -0500 (-05)
+X-Virus-Scanned: amavisd-new at alcaldiadecucuta.gov.co
+Received: from email.alcaldiadecucuta.gov.co ([127.0.0.1])
+        by localhost (email.alcaldiadecucuta.gov.co [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZMZ0xNKUB1KL; Tue, 21 Apr 2020 21:46:44 -0500 (-05)
+Received: by email.alcaldiadecucuta.gov.co (Postfix, from userid 89)
+        id 1122C608F5DD1; Tue, 21 Apr 2020 07:35:03 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by email.alcaldiadecucuta.gov.co (Postfix) with ESMTP id 5D31E608F589F;
+        Tue, 21 Apr 2020 04:55:54 -0500 (-05)
+Received: from email.alcaldiadecucuta.gov.co ([127.0.0.1])
+        by localhost (email.alcaldiadecucuta.gov.co [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uukBmrNeTcrW; Tue, 21 Apr 2020 04:55:54 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by email.alcaldiadecucuta.gov.co (Postfix) with ESMTP id 0D2FB606FE6D7;
+        Tue, 21 Apr 2020 03:57:39 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 email.alcaldiadecucuta.gov.co 0D2FB606FE6D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=fdZ+qw8FSd+oZ7JAfQgjqj+cDvfl7DNp/1zLFgbSM2E=;
-        b=G67UBLWEM3iK3cdE5JucXd34fvZ4Qj9biiMaVbx1Pqx6O7/CrPFKV+kc3KRhB5GEJK
-         Rxx04dnq2tne3y+9MYeQzQonNXsQdubPhMhHS9oF6UwrJdCpbHVwqMvR5VnvLAedlfgS
-         OFwTJEEkAlkUABWPjZEEUgU174ZqcboQSvg0EKrOdhh3a9byCJRLtub+ZDl1/LQ+GS0/
-         OPwgtEH50KY46m/F5+f2loTp2Vy25zS+oPpLau2Ttyrxz+6CpcseZdEIdKCs/s7B3APA
-         9Xw1IOafn+w7kzO5saXSNWjBM2hiYHhhrqxcVaDJYOTsff+AEYzoUy+OulwPZsg79zr8
-         gOBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=fdZ+qw8FSd+oZ7JAfQgjqj+cDvfl7DNp/1zLFgbSM2E=;
-        b=QQo5qKPSMKk4BALyJaN0Is5Xt03bSJgji1oi3PTthNW32/+K29cZhii7NeEZrh0QIn
-         4V1ZdtRZxpdhynnZ1xApKfdm6md0lrvvtF5cqgsI5lFutkzp1nTgX2l0cFIja0un/ZcT
-         ZVMucHOo1qU9PZnZqN5pdLFPaBXXhxgsgQpZnCiqHwOuDIj2vLAiBKKoAxgLh6IrmsFe
-         fKYZhfr7qoGmMT3/4up00XeV/DFOmfwgo5xkIz8RAwv33yGMsNtgTMIkIbTH2cjf2hbp
-         XWQjCganU4qvPfL5odfaYZkndXRI7UvdhPGhz7OM6nIWa1jHbpkLiUjsdamG3N194hrr
-         npvQ==
-X-Gm-Message-State: AGi0Pub34U5LaVtSGMhMXu0UPNc1LFmsr04xL/k/a69YQ7EvliiMUaYW
-        rVceixNaYI2TmjI6e623pErbxd9gtSpz3943xQQ=
-X-Google-Smtp-Source: APiQypKu95XjFZWhNAScyNi+0tTB50gdzunIlMkUKPL7WWAHgb3OJtuJ+NG6FGMz4x9JdDKWwv5qNISk3IqSFHy1vvQ=
-X-Received: by 2002:a7b:c927:: with SMTP id h7mr3645204wml.122.1587457964786;
- Tue, 21 Apr 2020 01:32:44 -0700 (PDT)
+        d=alcaldiadecucuta.gov.co; s=C59AEB3E-0F70-11EA-BBE8-C4770649FBF9;
+        t=1587459459; bh=wErP2I1sP9rdde/wv6SnC5JqasRHjsLZ/VQrqxqIOLA=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=Dvrow98OSUT+Xl+DDe+zBWCc1pLJfa4TYXtJ6fyc2eHhLi0N7OsUeuwsdz/7bxenL
+         qDfxbRr+f9m6JUpSyp0GgJ32Yz70v/tqgdY1MWAXy1iwRBUYgBLHXRKXcEbxv7z4DG
+         v6q9Qrv9wJ2jAe7Pw1tbo+tCMV2myMMIlvKaN4X3kCOckSXUNXJwe20VQ7ptiXT4rr
+         omJSZqjUvMyqvAh3jUa1++KzQTQdJh9CKENc7k5C3qUynvhXdr8xw5Gv24qpaB0KC9
+         myevIm5ght4hqu8ZwlJCGOaMPiFVMDzQR1dAZp5hA4VKGkYJNYLcjuR38uggRH8yWg
+         CZb3Zb8bd/llA==
+X-Virus-Scanned: amavisd-new at alcaldiadecucuta.gov.co
+Received: from email.alcaldiadecucuta.gov.co ([127.0.0.1])
+        by localhost (email.alcaldiadecucuta.gov.co [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id AE6xShAidcGq; Tue, 21 Apr 2020 03:57:38 -0500 (-05)
+Received: from [192.168.42.160] (unknown [41.190.3.66])
+        by email.alcaldiadecucuta.gov.co (Postfix) with ESMTPSA id 9FDBB606A0E36;
+        Tue, 21 Apr 2020 03:33:54 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20200417074558.12316-1-sedat.dilek@gmail.com> <20200421075030.E9F6AC433BA@smtp.codeaurora.org>
-In-Reply-To: <20200421075030.E9F6AC433BA@smtp.codeaurora.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 21 Apr 2020 10:32:32 +0200
-Message-ID: <CA+icZUWjmZVT-0niozgA=9rdXcAOACTT4VUXgGooLYbELvMCHg@mail.gmail.com>
-Subject: Re: [PATCH wireless-drivers v3] iwlwifi: actually check allocated
- conf_tlv pointer
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris Rorvick <chris@rorvick.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: RES
+To:     Recipients <sosmujer@alcaldiadecucuta.gov.co>
+From:   "Ella Golan" <sosmujer@alcaldiadecucuta.gov.co>
+Date:   Tue, 21 Apr 2020 09:33:26 +0100
+Reply-To: msgolaan612@gmail.com
+Message-Id: <20200421083356.9FDBB606A0E36@email.alcaldiadecucuta.gov.co>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 9:50 AM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> > From: Chris Rorvick <chris@rorvick.com>
-> >
-> > Commit 71bc0334a637 ("iwlwifi: check allocated pointer when allocating
-> > conf_tlvs") attempted to fix a typoe introduced by commit 17b809c9b22e
-> > ("iwlwifi: dbg: move debug data to a struct") but does not implement the
-> > check correctly.
-> >
-> > Fixes: 71bc0334a637 ("iwlwifi: check allocated pointer when allocating conf_tlvs")
-> > Tweeted-by: @grsecurity
-> > Signed-off-by: Chris Rorvick <chris@rorvick.com>
-> > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
->
-> Patch applied to wireless-drivers.git, thanks.
->
-> a176e114ace4 iwlwifi: actually check allocated conf_tlv pointer
->
+I am Ms.Ella Golan, I am the Executive Vice President with FIRST INTERNATIO=
+NAL BANK OF ISRAEL LTD (FIBI). Am getting in touch with you about an extrem=
+ely important and urgent issue. If you would give me the opportunity, I wil=
+l provide you with details
 
-Thanks, Sedat.
+Faithfully,
 
-> --
-> https://patchwork.kernel.org/patch/11494331/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Ms.Ella Golan
