@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA921B1F6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D055A1B1F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgDUHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:04:37 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:25837 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725940AbgDUHEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:04:37 -0400
-X-UUID: 98a514005bb64390b454a02f1a5b77fe-20200421
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NUYr9270NMzbhd1XCbptanlSHaINIQJqwQxsC0bp9ig=;
-        b=qQyRzcIqZJQiYep7THGlYIwzTYdaY3ohbGzBWoQhoKmV9leWB3zwcOR6RYWq3OsrsdmEiBl+oYm36FsqJ1/OgFgyAZQTsaGvOQDysIYGCGLU6owgo9o14skNxpN6JTfaw6gnrcxETq/63OT2RAzJw8Qu5DGPBE56C66J9NnwURA=;
-X-UUID: 98a514005bb64390b454a02f1a5b77fe-20200421
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.mao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 749383923; Tue, 21 Apr 2020 15:04:04 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 21 Apr
- 2020 15:04:03 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 21 Apr 2020 15:04:02 +0800
-Message-ID: <1587452609.19579.14.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/3] mmc: core: need do mmc_power_cycle in
- mmc_sdio_resend_if_cond
-From:   "yong.mao@mediatek.com" <yong.mao@mediatek.com>
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Date:   Tue, 21 Apr 2020 15:03:29 +0800
-In-Reply-To: <20200420191518.GG199755@google.com>
-References: <1586835611-13857-1-git-send-email-yong.mao@mediatek.com>
-         <1586835611-13857-2-git-send-email-yong.mao@mediatek.com>
-         <20200420191518.GG199755@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 4D8631C23FF72E8651899E91F592EA4CAD41B7629A83C7A9F5136694A8EFCF822000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1727119AbgDUHFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:05:21 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41448 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726563AbgDUHFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:05:20 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2ogm55esnIqAA--.25S2;
+        Tue, 21 Apr 2020 15:05:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v4 0/4] Fix some issues about kmod
+Date:   Tue, 21 Apr 2020 15:05:00 +0800
+Message-Id: <1587452704-1299-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf2ogm55esnIqAA--.25S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Wr18tF4rWr4kZF1rJryDAwb_yoWxZrb_CF
+        srt3yfAayUKFWDAa17urs8Z393Ga18Zr15JrW8Jayakr98X398u3WvqrykX34fWrW5t392
+        gryDZFn7Arn7ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+        WxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjE1v3UUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA0LTIwIGF0IDEyOjE1IC0wNzAwLCBNYXR0aGlhcyBLYWVobGNrZSB3cm90
-ZToNCj4gSGksDQo+IA0KPiBPbiBUdWUsIEFwciAxNCwgMjAyMCBhdCAxMTo0MDowOUFNICswODAw
-LCBZb25nIE1hbyB3cm90ZToNCj4gPiBGcm9tOiB5b25nIG1hbyA8eW9uZy5tYW9AbWVkaWF0ZWsu
-Y29tPg0KPiA+IA0KPiA+IFdoZW4gbW1jX3NkaW9fcmVzbmVkX2lmX2NvbmQgaXMgaW52b2tlZCwg
-aXQgaW5kaWNhdGVzIHRoZSBTRElPDQo+ID4gZGV2aWNlIGlzIG5vdCBpbiB0aGUgcmlnaHQgc3Rh
-dGUuIEluIHRoaXMgY29uZGl0aW9uLCB0aGUgcHJldmlvdXMNCj4gPiBpbXBsZW1lbnRhdGlvbiBv
-ZiBtbWNfc2Rpb19yZXNlbmRfaWZfY29uZCBjYW4ndCBtYWtlIHN1cmUgU0RJTw0KPiA+IGRldmlj
-ZSBiZSBiYWNrIHRvIGlkbGUgc3RhdGUuIG1tY19wb3dlcl9jeWNsZSBjYW4gcmVzZXQgdGhlIFNE
-SU8NCj4gPiBkZXZpY2UgYnkgSFcgYW5kIGFsc28gbWFrZSBzdXJlIFNESU8gZGV2aWNlIGVudGVy
-IHRvIGlkbGUgc3RhdGUNCj4gPiBjb3JyZWN0bHkuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTog
-WW9uZyBNYW8gPHlvbmcubWFvQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9t
-bWMvY29yZS9zZGlvLmMgfCAxICsNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
-DQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbW1jL2NvcmUvc2Rpby5jIGIvZHJpdmVy
-cy9tbWMvY29yZS9zZGlvLmMNCj4gPiBpbmRleCBlYmIzODdhLi5hZGEwYTgwIDEwMDY0NA0KPiA+
-IC0tLSBhL2RyaXZlcnMvbW1jL2NvcmUvc2Rpby5jDQo+ID4gKysrIGIvZHJpdmVycy9tbWMvY29y
-ZS9zZGlvLmMNCj4gPiBAQCAtNTQ2LDYgKzU0Niw3IEBAIHN0YXRpYyBpbnQgbW1jX3NkaW9faW5p
-dF91aHNfY2FyZChzdHJ1Y3QgbW1jX2NhcmQgKmNhcmQpDQo+ID4gIHN0YXRpYyB2b2lkIG1tY19z
-ZGlvX3Jlc2VuZF9pZl9jb25kKHN0cnVjdCBtbWNfaG9zdCAqaG9zdCwNCj4gPiAgCQkJCSAgICBz
-dHJ1Y3QgbW1jX2NhcmQgKmNhcmQpDQo+ID4gIHsNCj4gPiArCW1tY19wb3dlcl9jeWNsZShob3N0
-LCBob3N0LT5jYXJkLT5vY3IpOw0KPiANCj4gTXkgTU1DL1NESU8gYmFja2dyb3VuZCBpcyBsaW1p
-dGVkLCBidXQgaXQgc2VlbXMgdGhpcyBpc24ndCBuZWVkZWQgZm9yIHRoZQ0KPiB2YXN0IG1ham9y
-aXR5IG9mIFNESU8gZGV2aWNlcywgb3RoZXJ3aXNlIGl0IHByb2JhYmx5IHdvdWxkIGhhdmUgYmVl
-biBhZGRlZA0KPiBlYXJsaWVyLiBJIHdvbmRlciBpZiBpdCB3b3VsZCBtYWtlIHNlbnNlIHRvIG1h
-a2UgdGhlIHBvd2VyIGN5Y2xlDQo+IGNvbmRpdGlvbmFsIHRocm91Z2ggYSBxdWlyaywgdG8gbGlt
-aXQgaXQgdG8gdGhlIGRldmljZXMgdGhhdCBuZWVkIGl0Lg0KPiANCgkNClRoYW5rcyBmb3IgeW91
-ciBjb21tZW50Lg0KbW1jX3NkaW9fcmVzZW5kX2lmX2NvbmQgQVBJIGlzIG5vdCBmb3Igbm9ybWFs
-IGluaXRpYWxpemF0aW9uIGZsb3csIGJ1dA0KZm9yIGVycm9yIGhhbmRsZSBmbG93LiBJZiBtbWNf
-c2Rpb19yZXNlbmRfaWZfY29uZCBpcyBpbnZva2VkLCBpdA0KaW5kaWNhdGVzIHRoZXJlIGlzIHNv
-bWV0aGluZyB3cm9uZyB3aXRoIHRoZSBTRElPIGRldmljZS4gSFcgcG93ZXIgY3ljbGUNCmlzIHRo
-ZSBiYXNpYyBndWFyYW50ZWUgZm9yIGRldmljZSB0byBiYWNrIHRvIGlkbGUgc3RhdGUuDQpUaGVy
-ZWZvcmUgdGhpcyBwYXRjaCB3aWxsIG5vdCBhZmZlY3QgdGhlIG5vcm1hbCBpbml0aWFsaXphdGlv
-biBmb3IgdGhlIA0KdmFzdCBtYWpvcml0eSBvZiBTRElPIGRldmljZXMsIGJ1dCBpdCBpcyB2ZXJ5
-IGhlbHBmdWwgZm9yIGVycm9yIGNhc2VzDQpmb3IgYWxsIFNESU8gZGV2aWNlcy4NCkluIG15IG9w
-aW5pb24sIHdlIGRvbid0IG5lZWQgdGhhdCBxdWlyay4NCkNvdWxkIFVsZiBoZWxwIHRvIGdpdmUg
-c29tZSBhZHZpc2VzIG9uIHRoaXM/DQpUaGFua3MuDQoNCj4gPiAgCXNkaW9fcmVzZXQoaG9zdCk7
-DQo+ID4gIAltbWNfZ29faWRsZShob3N0KTsNCj4gPiAgCW1tY19zZW5kX2lmX2NvbmQoaG9zdCwg
-aG9zdC0+b2NyX2F2YWlsKTsNCj4gPiAtLSANCj4gPiAxLjkuMQ0KDQo=
+v4:
+  - update the commit message with application of patch 3/4
+
+v3:
+  - use the quotes with correct format in the commit message of patch 4/4,
+    sorry for that
+
+v2:
+  - update the commit message to explain the detailed reason of patch 3/4
+  - add this cover letter
+
+Tiezhu Yang (4):
+  selftests: kmod: Use variable NAME in kmod_test_0001()
+  kmod: Remove redundant "be an" in the comment
+  kmod: Return directly if module name is empty in request_module()
+  test_kmod: Avoid potential double free in trigger_config_run_type()
+
+ kernel/kmod.c                        | 10 +++++++---
+ lib/test_kmod.c                      |  2 +-
+ tools/testing/selftests/kmod/kmod.sh |  4 ++--
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+
+-- 
+2.1.0
 
