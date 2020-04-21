@@ -2,169 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ACD1B1FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96521B1FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgDUHaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
+        id S1728135AbgDUHbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgDUHaO (ORCPT
+        with ESMTP id S1725989AbgDUHbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:30:14 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157D1C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:30:14 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y25so6236475pfn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:30:14 -0700 (PDT)
+        Tue, 21 Apr 2020 03:31:40 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A902C061A0F;
+        Tue, 21 Apr 2020 00:31:40 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b11so15222155wrs.6;
+        Tue, 21 Apr 2020 00:31:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jcpN/XiWAS11rrSyAPDkJjBumx0MxRm5WZVge7KIbAo=;
-        b=JYud2tk/6N1f/uA3Roin6jRKpujCUbSPMrF6i9FoQB5BBtRZdMWS2QDvmbGoiKXuHQ
-         TDJj/ngfSraP8Mgl2WbSqs24kJu21un2zHnQLwfvaMGYfPtOqrMKCa2QduYauvYJbz3h
-         w0PahAK5WeZx4jNZPQla+DMTr3GaHJl5cUk/lxLT+tWlXON9MwDRw6ECsx77m6IrTsqB
-         OtwIkUQ21sYyZFNNbMMJJkZZZaJbuHpbMVIROyl64ij3wzDGXwh317pbsSbtRiNHkxYX
-         2MJYC8inZ2bawqZRbmJOyQduZ2SLoosXOpfV1h5k5eFX0TzlRK2hakQaLJS5eoo+1jgf
-         lm+A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D9m3MRy8x+o4H1EEycml0VyqSiaYH7kBtrQzXfBUS8w=;
+        b=GlKRZFFyQs7kZycqIc8kmWXH6Ud4+HQlXs3tT/pPSNZiMX9h8VVS8uJ4YjqPe9VH8K
+         VOsgHdZHB+X8w3fU84GRwWmtLSlcVzqJK7F/LoKjnYTtGYgq3XlXvWec2jF5yMlqXgqT
+         DMgM1TfcX2lja1KJLWe7ISkMNWMptDaq+uRd0auhbWqgVgW1EPpuWXmJWENaC70cqkHl
+         W1OAI+RQF3UbWRsqpDAk3GeJKKu0TXTiXcokuG6Qfw9gi4uhUhhkh/njN+XgNpd68M6p
+         4MIsTwBlPzPF6/fdkxJpNRxasCq6hiJzXqMxnl+6c6ccJiiwVjHBSMjSmK14iNLpPdBh
+         8oig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jcpN/XiWAS11rrSyAPDkJjBumx0MxRm5WZVge7KIbAo=;
-        b=BICpB95c8z4tPIiI8gUE2aFfdgyrgeDbSJv6/J/0kYlHF0chc593BrGeyr/ZXLzQYd
-         1UuXPBw4D3yD2C9lW8FkiyDjWbDEKgsXI0uJWeJLskqCOIVXS3HqqpfcB5b2zA+iFp6C
-         HpcB4fi9xmuZmSiqQmroaTRB1VD4OAXHEiuaOiirZVyLEzkqlRIS4YXHfDSojYZB25DF
-         hcb70dOOFDFAM9Gq4jy0RlqZFBEqsqvoKDhqrJp7sWlJtN0KUAI4n9+CMeOBiMMy/NS1
-         zxUif2rCUh+3rtWdXq/DzcxeJKFHLupfKZtbPjxTYPQO5w8XbWnJu1upgy7IaiXs6vzi
-         7bXg==
-X-Gm-Message-State: AGi0PuaMmZ7hmhIR3+KJnS89rQFNIlQVKXGbIOeUcRDD7Ijpn6Zw1Rg5
-        hsfI7knZJ3SeXh3vBKGY+BjvAg==
-X-Google-Smtp-Source: APiQypJAkMhSjNf221KM9EVsZIhg2TPkidVKczHxUwbnnXw5dVzEe4kTer4jWi34bhipomvboJ76vg==
-X-Received: by 2002:a63:a519:: with SMTP id n25mr19759868pgf.256.1587454213662;
-        Tue, 21 Apr 2020 00:30:13 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id t7sm1535200pfh.143.2020.04.21.00.30.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 00:30:13 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 3/3] riscv: Use text_mutex instead of patch_lock
-Date:   Tue, 21 Apr 2020 15:30:01 +0800
-Message-Id: <4d5bf5e362523d48a89891942eb986d98b0584e1.1587453338.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <cover.1587453338.git.zong.li@sifive.com>
-References: <cover.1587453338.git.zong.li@sifive.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D9m3MRy8x+o4H1EEycml0VyqSiaYH7kBtrQzXfBUS8w=;
+        b=bY/MPHcON/9Cyl0dJG7ZISbjSsW7j3kyWOXuAeo8mOG2BGNVF26/Eg6TZ0cWQS0V37
+         VrcMTPEoyxsYGMxEJKCcJNfrqQ2sxqW6ZpO+P9XGb/nAnhzmE4IBnRekH+CsFbUJyKYe
+         9J/faFROUifUSEPa8sVsCh1jygNKPqistxBtW/5aCkrdCoVmtSacHypaNroSpH7IKP8C
+         s97ILkCDoguJ1AM495ZMeHYQ+kmoQWTS88c4eLWct3++ERwaCF30gWG2+4mlH3m2wos/
+         sJgC/FhMMaMQnSfHe4CAhT1KkfRLYl6dY88CtLJ1httWDvvyQ+fQKQipLEZozbr70/pa
+         huvA==
+X-Gm-Message-State: AGi0PuZVzIQHCFRDKr3qm5t0izjp7hRL8ZxIaG8qS824WxDHt9Z8Sj6w
+        U8SkI3bI123jpTG4qtfi2KvwxX/w4LaXFXrjKNQOHFjp
+X-Google-Smtp-Source: APiQypIBhAroyKy7dbi8XsEqmZkN6GmZp54F8mQFxWhAQGQ6iOUSPlckooO9rwUr3eRUH0h46LenNWSVw4928Sfzm+M=
+X-Received: by 2002:adf:8b1d:: with SMTP id n29mr22239047wra.196.1587454299040;
+ Tue, 21 Apr 2020 00:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200413070014.12960-1-zhang.lyra@gmail.com> <20200413070014.12960-2-zhang.lyra@gmail.com>
+ <20200420114222.GA14343@lakrids.cambridge.arm.com>
+In-Reply-To: <20200420114222.GA14343@lakrids.cambridge.arm.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 21 Apr 2020 15:31:02 +0800
+Message-ID: <CAAfSe-u+wraKLWFK2+oKed_ZzkckP0sFRhMkA5LB-b30CGawOw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/2] cpuidle: allow idle state to be found as
+ deepest state for s2idle only
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need the additional lock protection when patching the text.
+Hi Mark,
 
-There are two patching interfaces here:
- - patch_text: patch code and always synchronize with stop_machine()
- - patch_text_nosync: patch code without synchronization, it's caller's
-                      responsibility to synchronize all CPUs if needed.
+Many thanks for your comments.
 
-For the first one, stop_machine() is protected by its own mutex, and
-also the irq is already disabled here.
+On Mon, 20 Apr 2020 at 19:42, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Mon, Apr 13, 2020 at 03:00:13PM +0800, zhang.lyra@gmail.com wrote:
+> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> >
+> > Add a new flag CPUIDLE_FLAG_S2IDLE to allow c-state to be found as
+> > deepest state for s2idle only, so that users can add a new c-state
+> > for using s2idle and don't worry disturbing other use cases such as
+> > play_idle() which probably don't want to enter into so much deep
+> > idle state since devices are not suspended for that kind of cases.
+>
+> Can you please elaborate on this?
 
-For the second one, in risc-v real case now, it would be used to ftrace
-patching the mcount function, since it already running under
-kstop_machine(), no other thread will run, so we could use text_mutex
-on ftrace side.
+Ok.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/kernel/ftrace.c | 13 +++++++++++++
- arch/riscv/kernel/patch.c  | 13 +++++++------
- 2 files changed, 20 insertions(+), 6 deletions(-)
+The thing was, I added a new c-state (named DOMAIN_PD for example) in
+DT for using s2idle, and the target power level indicated in DOMAIN_PD
+would be deeper than the level for regular cpuidle (for example
+level-0 is for regular cpuidle; level-1 is for system suspend and
+power domain would be shutdown as well as all cores , DOMAIN_PD uses
+level-1). I worried that would cause the deeper power domain to be
+shutdown if DOMAIN_PD was selected by play_idle().
 
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index fb1e2b8fe254..08396614d6f4 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -7,10 +7,23 @@
- 
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
-+#include <linux/memory.h>
- #include <asm/cacheflush.h>
- #include <asm/patch.h>
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
-+int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
-+{
-+	mutex_lock(&text_mutex);
-+	return 0;
-+}
-+
-+int ftrace_arch_code_modify_post_process(void) __releases(&text_mutex)
-+{
-+	mutex_unlock(&text_mutex);
-+	return 0;
-+}
-+
- static int ftrace_check_current_call(unsigned long hook_pos,
- 				     unsigned int *expected)
- {
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 8acb9ae2da08..5805791cd5b5 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/spinlock.h>
- #include <linux/mm.h>
-+#include <linux/memory.h>
- #include <linux/uaccess.h>
- #include <linux/stop_machine.h>
- #include <asm/kprobes.h>
-@@ -18,8 +19,6 @@ struct patch_insn {
- };
- 
- #ifdef CONFIG_MMU
--static DEFINE_RAW_SPINLOCK(patch_lock);
--
- static void *patch_map(void *addr, int fixmap)
- {
- 	uintptr_t uintaddr = (uintptr_t) addr;
-@@ -49,10 +48,14 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
- {
- 	void *waddr = addr;
- 	bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
--	unsigned long flags = 0;
- 	int ret;
- 
--	raw_spin_lock_irqsave(&patch_lock, flags);
-+	/*
-+	 * Before reaching here, it was expected to lock the text_mutex
-+	 * already, so we don't need to give another lock here and could
-+	 * ensure that it was safe between each cores.
-+	 */
-+	lockdep_assert_held(&text_mutex);
- 
- 	if (across_pages)
- 		patch_map(addr + len, FIX_TEXT_POKE1);
-@@ -66,8 +69,6 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
- 	if (across_pages)
- 		patch_unmap(FIX_TEXT_POKE1);
- 
--	raw_spin_unlock_irqrestore(&patch_lock, flags);
--
- 	return ret;
- }
- NOKPROBE_SYMBOL(patch_insn_write);
--- 
-2.26.1
+But after have another look at PSCI in ATF, I consider that it
+probably is not a problem which would really happen. Since play_idle()
+wouldn't occur on all cpus at the same time, although play_idle()
+could use DOMAIN_PD, the system wouldn't enter into that so deep power
+level.
 
+Hope I've explained the things clearly :)
+
+In a word, this patch seems not needed for now.
+
+
+Thanks again,
+Chunyan
+
+
+>
+> Why exactly are these states not suited for regular cpu idle? What
+> problems do they cause? e.g. long wakeup latency?
+>
+> The flag and the for-s2-idle-only DT property are encoding a policy
+> rarher than a property, and as such I don't think this is the right way
+> to describe this in the DT. However, if there might be porperties of the
+> idle state that we could describe so that the OS can come to the same
+> conclusion.
+>
+> Thanks,
+> Mark.
+>
+> >
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  drivers/cpuidle/cpuidle.c        | 3 ++-
+> >  drivers/cpuidle/dt_idle_states.c | 3 +++
+> >  include/linux/cpuidle.h          | 1 +
+> >  3 files changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> > index de81298051b3..bb61f0c271d2 100644
+> > --- a/drivers/cpuidle/cpuidle.c
+> > +++ b/drivers/cpuidle/cpuidle.c
+> > @@ -89,7 +89,8 @@ static int find_deepest_state(struct cpuidle_driver *drv,
+> >                   s->exit_latency_ns <= latency_req ||
+> >                   s->exit_latency_ns > max_latency_ns ||
+> >                   (s->flags & forbidden_flags) ||
+> > -                 (s2idle && !s->enter_s2idle))
+> > +                 (s2idle && !s->enter_s2idle) ||
+> > +                 (!s2idle && (s->flags & CPUIDLE_FLAG_S2ILDE)))
+> >                       continue;
+> >
+> >               latency_req = s->exit_latency_ns;
+> > diff --git a/drivers/cpuidle/dt_idle_states.c b/drivers/cpuidle/dt_idle_states.c
+> > index 252f2a9686a6..530db2726c05 100644
+> > --- a/drivers/cpuidle/dt_idle_states.c
+> > +++ b/drivers/cpuidle/dt_idle_states.c
+> > @@ -80,6 +80,9 @@ static int init_state_node(struct cpuidle_state *idle_state,
+> >       idle_state->flags = 0;
+> >       if (of_property_read_bool(state_node, "local-timer-stop"))
+> >               idle_state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> > +
+> > +     if (of_property_read_bool(state_node, "for-s2idle-only"))
+> > +             idle_state->flags |= CPUIDLE_FLAG_S2ILDE;
+> >       /*
+> >        * TODO:
+> >        *      replace with kstrdup and pointer assignment when name
+> > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> > index ec2ef63771f0..08da701f74cd 100644
+> > --- a/include/linux/cpuidle.h
+> > +++ b/include/linux/cpuidle.h
+> > @@ -78,6 +78,7 @@ struct cpuidle_state {
+> >  #define CPUIDLE_FLAG_TIMER_STOP BIT(2) /* timer is stopped on this state */
+> >  #define CPUIDLE_FLAG_UNUSABLE        BIT(3) /* avoid using this state */
+> >  #define CPUIDLE_FLAG_OFF     BIT(4) /* disable this state by default */
+> > +#define CPUIDLE_FLAG_S2ILDE  BIT(5) /* state is used for s2idle only */
+> >
+> >  struct cpuidle_device_kobj;
+> >  struct cpuidle_state_kobj;
+> > --
+> > 2.20.1
+> >
