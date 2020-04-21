@@ -2,58 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE801B2BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE07B1B2AAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgDUP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:58:19 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49339 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726063AbgDUP6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:58:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jQvHs-0000iB-00; Tue, 21 Apr 2020 17:58:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 62247C0211; Tue, 21 Apr 2020 17:06:24 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 17:06:24 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3 0/3] MIPS: Fix some issues about arch_mem_init()
-Message-ID: <20200421150624.GA16684@alpha.franken.de>
-References: <1587470386-27133-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1728899AbgDUPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:08:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34858 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbgDUPIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 11:08:54 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jQuVt-0003oO-F2; Tue, 21 Apr 2020 15:08:41 +0000
+Date:   Tue, 21 Apr 2020 17:08:40 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        Christof Meerwald <cmeerw@cmeerw.org>,
+        linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH] signal: Avoid corrupting si_pid and si_uid in
+ do_notify_parent
+Message-ID: <20200421150840.gevtsrhdec5wwg6y@wittgenstein>
+References: <20200419201336.GI22017@edge.cmeerw.net>
+ <87sggyytnh.fsf@x220.int.ebiederm.org>
+ <20200421083031.5wapruzncjkagvhf@wittgenstein>
+ <871rog6g56.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1587470386-27133-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <871rog6g56.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 07:59:43PM +0800, Tiezhu Yang wrote:
-> v3:
->   - remove the Fixes tag of patch 2/3
+On Tue, Apr 21, 2020 at 09:57:09AM -0500, Eric W. Biederman wrote:
+> Christian Brauner <christian.brauner@ubuntu.com> writes:
 > 
-> v2:
->   - modify the subject of patch 3/3
+> > On Mon, Apr 20, 2020 at 12:05:38PM -0500, Eric W. Biederman wrote:
+> >> diff --git a/kernel/signal.c b/kernel/signal.c
+> >> index 9899c5f91ee1..a88a89422227 100644
+> >> --- a/kernel/signal.c
+> >> +++ b/kernel/signal.c
+> >> @@ -1993,8 +1993,12 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
+> >>  		if (psig->action[SIGCHLD-1].sa.sa_handler == SIG_IGN)
+> >>  			sig = 0;
+> >>  	}
+> >> +	/*
+> >> +	 * Bypass send_signal as the si_pid and si_uid values have
+> >> +	 * been generated in the parent's namespaces.
+> >> +	 */
+> >
+> > At first I misread that comment as saying that we're skipping sending a
+> > signal not that it relates to a specific function (and I won't admit that
+> > I wrote a whole long paragraph on why I'm confused we're skipping
+> > sending signals on invalid si_pid and si_uid...).
 > 
-> Tiezhu Yang (3):
->   MIPS: Do not initialise globals to 0
->   MIPS: Cleanup code about plat_mem_setup()
->   MIPS: Make sparse_init() using top-down allocation
+> I have updated the comment to read:
+> +       /*
+> +        * Send with __send_signal as si_pid and si_uid are in the
+> +        * parent's namespaces.
+> +        */
 > 
->  arch/mips/include/asm/bootinfo.h |  2 +-
->  arch/mips/kernel/setup.c         | 14 +++++++++++---
->  2 files changed, 12 insertions(+), 4 deletions(-)
+> That should be enough of a hint for someone to read the code and figure
+> out what is going on.
 
-all three patches applied to mips-next.
+Perfect, thanks!
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Christian
