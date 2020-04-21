@@ -2,128 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB571B31AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC5F1B31BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgDUVPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726335AbgDUVPc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:15:32 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249ADC0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:31 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 145so4933760pfw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=to0u/Jn7Js4VPZOuXqA43IyX5Na3y9BiQIqtXkvA+lM=;
-        b=Fi7GhO/HIQuePgWWr4CAwtD3Nm2BO9549F2xy6Ify+xWUhksu4HNmc2cI7/51GU+Ch
-         L/n5ai+tI4jzrDDdPfty2/gS+I7isrdFl83WaL/FlfxsVbFv0gdgZJthH5iQcYAQHTC5
-         QDlYrK8x4Xkir0fVq0MFu0g741PDRv9AznrbA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=to0u/Jn7Js4VPZOuXqA43IyX5Na3y9BiQIqtXkvA+lM=;
-        b=NmXgmr7d+ufiQQV7qk/DFYeHNIKMxcaEyO7MvT3JrVbifAV06zJdYk0OiwTw/FKw02
-         GihhZcDZW1UjISsCndHIFpvt7iAxuDrEgwBgm4P/iBsl8tINyJlft/kaK2o0Pqk5FpP7
-         LKYEMkhB8MQlB2/pcqeUYBDqocZrJCSwb6tumAYoiyEn4YuMVwCaAKg99hujQBtJ5WnC
-         FwQQvJT5jlfH+64zIR2BkOQ2S5+gdZYJnzW4mJ1ASBkGY4KCvc/BviIHu5rcUITsQqIc
-         5hKxKocFECTVCk4mZGQYlxLu2BGOv/+T7y1f7VAhTRfSWoRk/epvWCWAp341TzX+vQ8k
-         B9NA==
-X-Gm-Message-State: AGi0Puad/0ckGu7quo/XNyLSeVIjeJBBD2hxLBP8uyqFE6V3okni+TU6
-        +cHQ0h0r0p9Q+IuebjB+KiV3sQ==
-X-Google-Smtp-Source: APiQypJ7dM3c1Vl/KOkONz1GC46IExu+/RPzPNDHW1csvMJmR81uQd7VsO5+P57/5ygsNzFb3hkAUw==
-X-Received: by 2002:a63:de4b:: with SMTP id y11mr8602658pgi.23.1587503730684;
-        Tue, 21 Apr 2020 14:15:30 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id c1sm3287880pfo.152.2020.04.21.14.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 14:15:30 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        gregkh@linuxfoundation.org
-Cc:     kgdb-bugreport@lists.sourceforge.net, mingo@redhat.com,
-        hpa@zytor.com, bp@alien8.de, linux-serial@vger.kernel.org,
-        agross@kernel.org, tglx@linutronix.de, frowand.list@gmail.com,
-        bjorn.andersson@linaro.org, jslaby@suse.com,
-        catalin.marinas@arm.com, corbet@lwn.net, will@kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] serial: 8250_early: Support earlycon_kgdboc
-Date:   Tue, 21 Apr 2020 14:14:47 -0700
-Message-Id: <20200421141234.v2.9.I8f668556c244776523320a95b09373a86eda11b7@changeid>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-In-Reply-To: <20200421211447.193860-1-dianders@chromium.org>
-References: <20200421211447.193860-1-dianders@chromium.org>
+        id S1726485AbgDUVP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:15:56 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56627 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgDUVPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 17:15:55 -0400
+IronPort-SDR: l7zdTU6JI+5/skH8yRDJzyY1J6A6LaXGnb45/grQ2PCETZVAG0vXbPH19JRZp03wp1TS3rTCYG
+ LbIsR2ayMFfQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:15:54 -0700
+IronPort-SDR: ddiadRnywX6gsEymptcBeSspi/JXDa1bXSdHzolWtcLj8QO+Av62LEnLmlRduCvJ9U3MTu+X1n
+ pVrCRowtckyw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
+   d="scan'208";a="247279829"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Apr 2020 14:15:53 -0700
+Date:   Tue, 21 Apr 2020 14:15:53 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V9 09/11] fs: Introduce DCACHE_DONTCACHE
+Message-ID: <20200421211553.GC3372712@iweiny-DESK2.sc.intel.com>
+References: <20200421191754.3372370-1-ira.weiny@intel.com>
+ <20200421191754.3372370-10-ira.weiny@intel.com>
+ <20200421202519.GC6742@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421202519.GC6742@magnolia>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the read() function in the early console driver.  With
-recent kgdb patches this allows you to use kgdb to debug fairly early
-into the system boot.
+On Tue, Apr 21, 2020 at 01:25:19PM -0700, Darrick J. Wong wrote:
+> On Tue, Apr 21, 2020 at 12:17:51PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > DCACHE_DONTCACHE indicates a dentry should not be cached on final
+> > dput().
+> > 
+> > Also add a helper function to mark DCACHE_DONTCACHE on all dentries
+> > pointing to a specific inode when that inode is being set I_DONTCACHE.
+> > 
+> > This facilitates dropping dentry references to inodes sooner which
+> > require eviction to swap S_DAX mode.
+> > 
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
 
-We only bother implementing this if polling is enabled since kgdb
-can't be enabled without that.
+[snip]
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> > diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
+> > index de76f7f60695..3c8f44477804 100644
+> > --- a/fs/xfs/xfs_icache.c
+> > +++ b/fs/xfs/xfs_icache.c
+> > @@ -559,7 +559,7 @@ xfs_iget_cache_miss(
+> >  	 */
+> >  	iflags = XFS_INEW;
+> >  	if (flags & XFS_IGET_DONTCACHE)
+> > -		VFS_I(ip)->i_state |= I_DONTCACHE;
+> > +		mark_inode_dontcache(VFS_I(ip));
+> >  	ip->i_udquot = NULL;
+> >  	ip->i_gdquot = NULL;
+> >  	ip->i_pdquot = NULL;
+> > diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+> > index c1488cc84fd9..56b1482d9223 100644
+> > --- a/include/linux/dcache.h
+> > +++ b/include/linux/dcache.h
+> > @@ -177,6 +177,8 @@ struct dentry_operations {
+> >  
+> >  #define DCACHE_REFERENCED		0x00000040 /* Recently used, don't discard. */
+> >  
+> > +#define DCACHE_DONTCACHE		0x00000080 /* don't cache on final dput() */
+> 
+> "Purge from memory on final dput()"?
 
-Changes in v2: None
+Sounds good to me,
+Ira
 
- drivers/tty/serial/8250/8250_early.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/drivers/tty/serial/8250/8250_early.c b/drivers/tty/serial/8250/8250_early.c
-index 5cd8c36c8fcc..70d7826788f5 100644
---- a/drivers/tty/serial/8250/8250_early.c
-+++ b/drivers/tty/serial/8250/8250_early.c
-@@ -109,6 +109,28 @@ static void early_serial8250_write(struct console *console,
- 	uart_console_write(port, s, count, serial_putc);
- }
- 
-+#ifdef CONFIG_CONSOLE_POLL
-+static int early_serial8250_read(struct console *console,
-+				 char *s, unsigned int count)
-+{
-+	struct earlycon_device *device = console->data;
-+	struct uart_port *port = &device->port;
-+	unsigned int status;
-+	int num_read = 0;
-+
-+	while (num_read < count) {
-+		status = serial8250_early_in(port, UART_LSR);
-+		if (!(status & UART_LSR_DR))
-+			break;
-+		s[num_read++] = serial8250_early_in(port, UART_RX);
-+	}
-+
-+	return num_read;
-+}
-+#else
-+#define early_serial8250_read NULL
-+#endif
-+
- static void __init init_port(struct earlycon_device *device)
- {
- 	struct uart_port *port = &device->port;
-@@ -149,6 +171,7 @@ int __init early_serial8250_setup(struct earlycon_device *device,
- 		init_port(device);
- 
- 	device->con->write = early_serial8250_write;
-+	device->con->read = early_serial8250_read;
- 	return 0;
- }
- EARLYCON_DECLARE(uart8250, early_serial8250_setup);
--- 
-2.26.1.301.g55bc3eb7cb9-goog
-
+> 
+> --D
+> 
