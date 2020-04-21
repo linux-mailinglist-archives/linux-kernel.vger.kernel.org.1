@@ -2,87 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57B31B2F96
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFF61B2FD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgDUSxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:53:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28845 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725870AbgDUSxG (ORCPT
+        id S1726262AbgDUTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:09:11 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:38176 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726195AbgDUTJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:53:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587495185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2EGJfjTFggwaFFy3edNseI3v+h0M2XMOWbVl/ZbsKrg=;
-        b=hIsJrYHHxti7kf9UktPgowQm//lJixXKWRZe70Umoi+y3AFUPOpsz7mDSlJSeKdQ8wUqYX
-        3F4Camd8Uhx9xVC/dg0Nyh2RFILnpuEv/Nnz2PvBZnipV+/kPKn5eoHRK68D/UHjXQtIec
-        sYn38zgHvGC56ASc4i2JGcRuFA7QdM4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-lqdHmYfsMniKTXzB82Q-Hw-1; Tue, 21 Apr 2020 14:53:01 -0400
-X-MC-Unique: lqdHmYfsMniKTXzB82Q-Hw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A1F9107ACCC;
-        Tue, 21 Apr 2020 18:52:59 +0000 (UTC)
-Received: from krava (unknown [10.40.196.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9EF25C1D4;
-        Tue, 21 Apr 2020 18:52:55 +0000 (UTC)
-Date:   Tue, 21 Apr 2020 20:52:52 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 3/3] perf stat: Add --metrics-file option
-Message-ID: <20200421185252.GA962614@krava>
-References: <20200421181337.988681-1-jolsa@kernel.org>
- <20200421181337.988681-4-jolsa@kernel.org>
- <20200421183615.GD608746@tassilo.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421183615.GD608746@tassilo.jf.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Tue, 21 Apr 2020 15:09:09 -0400
+X-Greylist: delayed 940 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 15:09:08 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=To:References:Message-Id:
+        Content-Transfer-Encoding:Cc:Date:In-Reply-To:From:Subject:Mime-Version:
+        Content-Type:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=1b/gE5Wx8BbM9MjbWUVMc+EWAcqscOsveJTWROOiXcU=; b=mpSnJHUlfSqJPnjT8h6x4C7fE
+        We3wKZiZLGFQ1xcnsq/C0IBE4WGisZhe88IY3giPRkkftch2C1+XmXc5nUk38XIlw3CMADOOxSbKP
+        EN+svioBW8pNgNMM/+82Lu5NiU7rTAir/yfofa0Nk9GLhEd1BY5Z3XpxX2QE/wEwAW+84=;
+Received: from cpe-107-184-2-226.socal.res.rr.com ([107.184.2.226] helo=[192.168.2.117])
+        by mail.codeweavers.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <bshanks@codeweavers.com>)
+        id 1jQy1K-0003fV-A3; Tue, 21 Apr 2020 13:53:23 -0500
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
+Subject: Re: BUG: ff_effects lost after a fork
+From:   Brendan Shanks <bshanks@codeweavers.com>
+In-Reply-To: <20191127101008.GA327265@nuka.localdomain>
+Date:   Tue, 21 Apr 2020 11:53:19 -0700
+Cc:     dmitry.torokhov@gmail.com, rydberg@bitmath.org,
+        linux-kernel@vger.kernel.org,
+        Mathieu Maret <mathieu.maret@gmail.com>,
+        mmaret@pixium-vision.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5404D7D5-47EF-4399-B0D9-B3C68A3D5895@codeweavers.com>
+References: <20191127101008.GA327265@nuka.localdomain>
+To:     linux-input@vger.kernel.org
+X-Mailer: Apple Mail (2.3445.104.14)
+X-Spam-Score: -25.7
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  > On Nov 27, 2019, at 2:10 AM, Mathieu Maret <mathieu.maret@gmail.com>
+    wrote: > > Hi, > > I'm using evdev for vibrator interface. > I can register
+    ff_effect and play them. > But, if I do any kind of f [...] 
+ Content analysis details:   (-25.7 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+  -20 USER_IN_WHITELIST      From: address is in the user's white-list
+ -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+  0.8 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:36:15AM -0700, Andi Kleen wrote:
-> > +--metrics-file file::
-> > +Read metrics definitions from file in addition to compiled in metrics.
-> > +
-> 
-> You would need to define the syntax and format. Perhaps in a separate
-> man page.
 
-I'm not sure it's worthy of new man page, but perhaps section in
-perf-stat
+> On Nov 27, 2019, at 2:10 AM, Mathieu Maret <mathieu.maret@gmail.com> =
+wrote:
+>=20
+> Hi,
+>=20
+> I'm using evdev for vibrator interface.
+> I can register ff_effect and play them.
+> But, if I do any kind of fork, all the effects are flush and cannot be
+> used.
+>=20
+> You can find, below, an example of such a program.
+> =46rom some trace have put in the kernel, it's seems that at the end =
+of
+> the system() call, evdev_flush get called.
+>=20
+> evdev_flush() will call flush_effects() that will remove all the
+> registered effects.
+>=20
+> I've only one device with vibrator and it's a imx6 4.1.15 kernel. But
+> code looks the same that in linus master that why I'm posting it here. =
+I
+> hope that it will not waste people time
+>=20
 
-> 
-> Also there are some asserts that can be triggered by expressions. I think
-> you should fix those too and convert them to errors.
+Hi everyone,
 
-do you have some details on this? examples of those failures?
+I=E2=80=99m also hitting this bug with games that use force-feedback =
+steering wheels under Wine/Proton. It typically shows up as EVIOCSFF =
+ioctls failing with EINVAL, since all the effects were unexpectedly =
+flushed.
 
-thanks,
-jirka
+The problem is that input_ff_flush() is called whenever a file =
+descriptor is closed, but there can be multiple descriptors open to the =
+same file description (through fork(), dup(), etc). input_ff_flush() =
+removes all effects added by that file description, which the users of =
+the other descriptors certainly don't expect.
 
-> 
-> -Andi
-> 
+As for the fix, maybe fd_ops->flush() shouldn=E2=80=99t be implemented =
+at all?
+In the current design, effects =E2=80=9Cbelong=E2=80=9D to a file =
+description (a struct file *), not a descriptor. This seems sensible to =
+me: a process could open a device, upload an effect, then fork(), and it =
+makes sense that the child would have full control of the effects =
+created by the parent. It seems to me like nothing should be done when a =
+descriptor is closed, and input_ff_flush() should be called only when =
+the whole struct file is released.
 
+I=E2=80=99ve attached a modified copy of Mathieu=E2=80=99s code, which =
+reproduces the problem for me with a Logitech G25 steering wheel.
+
+Brendan Shanks
+CodeWeavers
+
+
+
+
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/input.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+#define DEV_PATH "/dev/input/event10"
+
+int main(int argc, char *argv[])
+{
+    int fd =3D open(DEV_PATH, O_RDWR);
+    if (fd < 0) {
+        printf("Cannot open " DEV_PATH);
+    }
+    // Register an effect
+    struct ff_effect effects;
+    memset(&effects, 0, sizeof(effects));
+    effects.type                      =3D FF_CONSTANT;
+    effects.id                        =3D -1;
+    effects.replay.length             =3D 1000;
+    effects.replay.delay              =3D 0;
+    if (ioctl(fd, EVIOCSFF, &effects) < 0) {
+        printf("Cannot upload effect %s\n", strerror(errno));
+        return -1;
+    }
+
+    int fd2 =3D dup(fd);
+    close(fd2);
+
+    // ioctl fails with EINVAL
+    if (ioctl(fd, EVIOCSFF, &effects) < 0) {
+        printf("Cannot upload effect %s\n", strerror(errno));
+        return -1;
+    }
+
+    close(fd);
+    return 0;
+}=
