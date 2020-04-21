@@ -2,141 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5921B2945
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAC51B2911
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgDUOSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:18:14 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:43134 "EHLO inva020.nxp.com"
+        id S1728813AbgDUOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:09:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:41591 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728803AbgDUOSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:18:11 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 321F01A0D8A;
-        Tue, 21 Apr 2020 16:18:09 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 021231A0DA4;
-        Tue, 21 Apr 2020 16:18:05 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9E149402ED;
-        Tue, 21 Apr 2020 22:17:59 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 3/3] dt-bindings: nvmem: Convert MXS OCOTP to json-schema
-Date:   Tue, 21 Apr 2020 22:09:41 +0800
-Message-Id: <1587478181-21226-3-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587478181-21226-1-git-send-email-Anson.Huang@nxp.com>
-References: <1587478181-21226-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726691AbgDUOJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:09:46 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 49656b64Szz9sSx; Wed, 22 Apr 2020 00:09:43 +1000 (AEST)
+X-powerpc-patch-notification: thanks
+X-powerpc-patch-commit: 8d0ea29db5aefd0d94fa4b6ca6124c68998f3c6a
+In-Reply-To: <1587016720.2275.1047.camel@hbabu-laptop>
+To:     Haren Myneni <haren@linux.ibm.com>
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+Cc:     mikey@neuling.org, srikar@linux.vnet.ibm.com,
+        frederic.barrat@fr.ibm.com, ajd@linux.ibm.com,
+        linux-kernel@vger.kernel.org, npiggin@gmail.com, hch@infradead.org,
+        oohall@gmail.com, clg@kaod.org, sukadev@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, herbert@gondor.apana.org.au
+Subject: Re: [PATCH v11 01/14] powerpc/xive: Define xive_native_alloc_irq_on_chip()
+Message-Id: <49656b64Szz9sSx@ozlabs.org>
+Date:   Wed, 22 Apr 2020 00:09:43 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the MXS OCOTP binding to DT schema format using json-schema.
+On Thu, 2020-04-16 at 05:58:40 UTC, Haren Myneni wrote:
+> 
+> This function allocates IRQ on a specific chip. VAS needs per chip
+> IRQ allocation and will have IRQ handler per VAS instance.
+> 
+> Signed-off-by: Haren Myneni <haren@linux.ibm.com>
+> Reviewed-by: Cédric Le Goater <clg@kaod.org>
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- drop clocks description.
----
- .../devicetree/bindings/nvmem/mxs-ocotp.txt        | 24 -----------
- .../devicetree/bindings/nvmem/mxs-ocotp.yaml       | 50 ++++++++++++++++++++++
- 2 files changed, 50 insertions(+), 24 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/nvmem/mxs-ocotp.txt
- create mode 100644 Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
+Series applied to powerpc next, thanks.
 
-diff --git a/Documentation/devicetree/bindings/nvmem/mxs-ocotp.txt b/Documentation/devicetree/bindings/nvmem/mxs-ocotp.txt
-deleted file mode 100644
-index 372c72f..0000000
---- a/Documentation/devicetree/bindings/nvmem/mxs-ocotp.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--On-Chip OTP Memory for Freescale i.MX23/i.MX28
--
--Required properties :
--- compatible :
--  - "fsl,imx23-ocotp" for i.MX23
--  - "fsl,imx28-ocotp" for i.MX28
--- #address-cells : Should be 1
--- #size-cells : Should be 1
--- reg : Address and length of OTP controller registers
--- clocks : Should contain a reference to the hbus clock
--
--= Data cells =
--Are child nodes of mxs-ocotp, bindings of which as described in
--bindings/nvmem/nvmem.txt
--
--Example for i.MX28:
--
--	ocotp: ocotp@8002c000 {
--		compatible = "fsl,imx28-ocotp", "fsl,ocotp";
--		#address-cells = <1>;
--		#size-cells = <1>;
--		reg = <0x8002c000 0x2000>;
--		clocks = <&clks 25>;
--	};
-diff --git a/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
-new file mode 100644
-index 0000000..ff317fd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/mxs-ocotp.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/mxs-ocotp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: On-Chip OTP Memory for Freescale i.MX23/i.MX28
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+allOf:
-+  - $ref: "nvmem.yaml#"
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx23-ocotp
-+      - fsl,imx28-ocotp
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ocotp: efuse@8002c000 {
-+        compatible = "fsl,imx28-ocotp";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        reg = <0x8002c000 0x2000>;
-+        clocks = <&clks 25>;
-+    };
-+
-+...
--- 
-2.7.4
+https://git.kernel.org/powerpc/c/8d0ea29db5aefd0d94fa4b6ca6124c68998f3c6a
 
+cheers
