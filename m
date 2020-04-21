@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940B21B1D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 06:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AB21B1D47
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 06:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgDUEJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 00:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50856 "EHLO mail.kernel.org"
+        id S1726055AbgDUEM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 00:12:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgDUEJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 00:09:57 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        id S1725730AbgDUEM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 00:12:56 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3DDF206CD;
-        Tue, 21 Apr 2020 04:09:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 343722084D;
+        Tue, 21 Apr 2020 04:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587442197;
-        bh=vVgjWSj4t0zjuBGj/5XSxzINm4DTHP8FETFc8y1UveM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ExykRY9mHe/Aln2NddYbWVwcTzDJAWsP8CWtrzAF7RdmLiUkyimHD81+at419FqWT
-         nX5UG5BEgozEhrEZotdBx0T+xAcNlIskvj0zdmPubCepG6bGJmgUYF0/mYkjG6foHC
-         dVoaTnBdIeebASzJKpw5Nn9ZfNuEmduB7nEKKbx0=
-Date:   Tue, 21 Apr 2020 12:09:50 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v3 2/5] ARM: dts: add Protonic PRTI6Q board
-Message-ID: <20200421040944.GF8571@dragon>
-References: <20200324110432.25062-1-o.rempel@pengutronix.de>
- <20200324110432.25062-3-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200324110432.25062-3-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1587442376;
+        bh=0stJHqO/CMElxQxgtwJK5qKK+mD2WutwBkPSA2WH9ro=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pt/a8+CSt1Fr4ooDnz33LrLucxb+jNTp3XBgFPG6qN1U1em2n0hDWA3RJymEQ1E6y
+         CJ1k43PqfW1ItjTykgRnF4XxLVCc369BUfBY9mClNLggkNPxz47mK4YC3q04CB/jh/
+         mvK/b07J/W9iER6NvYvjMgY1WGiCxfjPHt9+sYLA=
+Date:   Mon, 20 Apr 2020 21:12:55 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Robert Stupp <snazy@gmx.de>
+Subject: Re: [PATCH 2/3] mm: fix long time stall from mm_populate
+Message-Id: <20200420211255.55bb6e1275cf90f9dc292238@linux-foundation.org>
+In-Reply-To: <20200212221614.215302-2-minchan@kernel.org>
+References: <20200212221614.215302-1-minchan@kernel.org>
+        <20200212221614.215302-2-minchan@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 12:04:29PM +0100, Oleksij Rempel wrote:
-> Protonic PRTI6Q is a development board and a base class for different
-> specific customer application boards based on the i.MX6 family of SoCs,
-> developed by Protonic Holland.
+On Wed, 12 Feb 2020 14:16:13 -0800 Minchan Kim <minchan@kernel.org> wrote:
+
+> Basically, fault handler releases mmap_sem before requesting readahead
+> and then it is supposed to retry lookup the page from page cache with
+> FAULT_FLAG_TRIED so that it avoids the live lock of infinite retry.
 > 
-> Signed-off-by: David Jander <david@protonic.nl>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  .../devicetree/bindings/arm/fsl.yaml          |   1 +
+> However, what happens if the fault handler find a page from page
+> cache and the page has readahead marker but are waiting under
+> writeback? Plus one more condition, it happens under mm_populate
+> which repeats faulting unless it encounters error. So let's assemble
+> conditions below.
+> 
+> __mm_populate
+> for (...)
+>   get_user_pages(faluty_address)
+>     handle_mm_fault
+>       filemap_fault
+>         find a page form page(PG_uptodate|PG_readahead|PG_writeback)
+> 	it will return VM_FAULT_RETRY
+>   continue with faulty_address
+> 
+> IOW, it will repeat fault retry logic until the page will be written
+> back in the long run. It makes big spike latency of several seconds.
+> 
+> This patch solves the issue by turning off fault retry logic in second
+> trial.
 
-Have bindings changes (all Protonic compatibles) in a separate patch.
+I guess a resend would be helpful, to refresh memories.
 
-Shawn
+Please mention in the changelog whether this "long time stall" has been
+observed in practice.  If so, under what conditions, how often and how
+long was it?  etcetera.
+
+
