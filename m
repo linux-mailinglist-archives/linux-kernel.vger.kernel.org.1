@@ -2,221 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17721B1F85
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4F81B1EED
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 08:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgDUHJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:09:03 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:50579 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgDUHJB (ORCPT
+        id S1726364AbgDUGlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 02:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbgDUGlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:09:01 -0400
-Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG3.macronix.com with ESMTP id 03L6eIkj046015
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:40:18 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from localhost.localdomain ([172.17.195.96])
-        by TWHMLLG3.macronix.com with ESMTP id 03L6dnMb045498;
-        Tue, 21 Apr 2020 14:39:55 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-From:   Mason Yang <masonccyang@mxic.com.tw>
-To:     broonie@kernel.org, tudor.ambarus@microchip.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com
-Cc:     juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        Mason Yang <masonccyang@mxic.com.tw>
-Subject: [PATCH v2 5/5] spi: mxic: Patch for Octal 8D-8D-8D mode support
-Date:   Tue, 21 Apr 2020 14:39:47 +0800
-Message-Id: <1587451187-6889-6-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
-References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG3.macronix.com 03L6dnMb045498
+        Tue, 21 Apr 2020 02:41:55 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED84C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 23:41:54 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x25so2259897wmc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 23:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0xKvOssuL7JJmsttBiv1fIXPKP57ObqKY4ux9qvYDN4=;
+        b=NPdqCzrCrWuwp+BbdSfKZ2wALJctVNpq9FOqH+qB9W24tH9XaW4iJTx94HdiJIg+Jk
+         gJvbfBKxzzUC6+x3KsFTH5EnnMCrVoRl4jp44lzdRsMEJ0DfoFxWB2fbjVNj+p4h1SZG
+         1rOvHFe/qN4OkYu8FAhb0eOBw98VasxIoCwWh253ScQjZDRNkElYpGXkFddu/4VR5xVQ
+         hSOXUK/WPpre1DM5A5psxWtcBypmRzb5P3VRboIRBlIT8G3DhzRUuECQOSmxG7lY5mpi
+         EkOEjP8OM3HfohmXPRu/SXqVfBuik/aEQJt7Md3CPenE81KcRt8WLCRTKneCuc2V3Qe2
+         OQHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0xKvOssuL7JJmsttBiv1fIXPKP57ObqKY4ux9qvYDN4=;
+        b=JhF5Wl2kkuTEYy/Fq38Bp7AlG4Nvv/+Vyu6AprxQ7M3e3fMnCbZXxxPhjNy4ow2fXl
+         GjQ0lmhLVpJ/PDB20OClj+I5Fs7KWNeavODX7eddWxnm5aqmiQNIAm9yZgjinwJkzHd4
+         U548s9mTKwQghjlmI85DW8ZL8DIOLDNs9sSGNNksn87G45jcPUAhydAjCeyDPVGmLHBP
+         PAW4jruxDjuV1mRU7otQjpAeK/SwDVz5vpC4MILIhcTSwb+W+qpvMJIAhhSpeIXALOC+
+         Cudm1Hg3mM8BeAYa4tlAl2NlrKSPJE8UAVPTUGs+4OXoYeCjHx83/i7WINgaGFlvPuYS
+         NmxA==
+X-Gm-Message-State: AGi0PuahaR3Y2g7Lwviin6NyqJkXJxASrxFfL4FNRcyoGpIsOtuSeFTP
+        V5WCllcxO9zEq4oxri+aD9MT4kyZU+IPV9nKUQLgQufMjxQ=
+X-Google-Smtp-Source: APiQypL02YAnnZNGNB1vVxatPuOQrOmWIDtdves32H3kJJT5fycOolc4jjUmSakihyWqP6PQdmFnK/5UgqnzgjQuM6Q=
+X-Received: by 2002:a1c:148:: with SMTP id 69mr3347855wmb.181.1587451313367;
+ Mon, 20 Apr 2020 23:41:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200420120037.1537-1-evalds.iodzevics@gmail.com>
+ <20200421085344.1804-1-evalds.iodzevics@gmail.com> <20200421055955.GA343434@kroah.com>
+In-Reply-To: <20200421055955.GA343434@kroah.com>
+From:   Evalds Iodzevics <evalds.iodzevics@gmail.com>
+Date:   Tue, 21 Apr 2020 09:41:42 +0300
+Message-ID: <CADqhmmeNd3A7Ki8SZi4j7aubm3bHDxQ-pNM6bR56geE9BwUjww@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/microcode/intel: replace sync_core() with native_cpuid_reg(eax)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ben Hutchings <ben@decadent.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver patch for Octal 8S-8S-8S and 8D-8D-8D mode support.
-
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
----
- drivers/spi/spi-mxic.c | 101 ++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 70 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 69491f3..8054f2c 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -280,10 +280,58 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
- 	       mxic->regs + HC_CFG);
- }
- 
-+static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
-+{
-+	u32 cfg =  OP_CMD_BYTES(op->cmd.nbytes) |
-+		   OP_CMD_BUSW(fls(op->cmd.buswidth) - 1) |
-+		   (op->cmd.dtr ? OP_CMD_DDR : 0);
-+
-+	if (op->addr.nbytes)
-+		cfg |= OP_ADDR_BYTES(op->addr.nbytes) |
-+		       OP_ADDR_BUSW(fls(op->addr.buswidth) - 1) |
-+		       (op->addr.dtr ? OP_ADDR_DDR : 0);
-+
-+	if (op->dummy.nbytes)
-+		cfg |= OP_DUMMY_CYC(op->dummy.nbytes);
-+
-+	if (op->data.nbytes) {
-+		cfg |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
-+		      (op->data.dtr ? OP_DATA_DDR : 0);
-+		if (op->data.dir == SPI_MEM_DATA_IN) {
-+			cfg |= OP_READ;
-+			if (op->data.dtr == OP_DATA_DDR)
-+				cfg |= OP_DQS_EN;
-+		}
-+	}
-+
-+	return cfg;
-+}
-+
-+static void mxic_spi_set_hc_cfg(struct spi_device *spi, u32 flags)
-+{
-+	struct mxic_spi *mxic = spi_master_get_devdata(spi->master);
-+	int nio = 1;
-+
-+	if (spi->mode & (SPI_RX_OCTAL | SPI_TX_OCTAL))
-+		nio = 8;
-+	else if (spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
-+		nio = 4;
-+	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
-+		nio = 2;
-+
-+	writel(flags | HC_CFG_NIO(nio) |
-+	       HC_CFG_TYPE(spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
-+	       HC_CFG_SLV_ACT(spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1),
-+	       mxic->regs + HC_CFG);
-+}
-+
- static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 			      void *rxbuf, unsigned int len)
- {
- 	unsigned int pos = 0;
-+	bool dtr_enabled;
-+
-+	dtr_enabled = (readl(mxic->regs + SS_CTRL(0)) & OP_DATA_DDR);
- 
- 	while (pos < len) {
- 		unsigned int nbytes = len - pos;
-@@ -302,6 +350,9 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 		if (ret)
- 			return ret;
- 
-+		if (dtr_enabled && len & 0x1)
-+			nbytes++;
-+
- 		writel(data, mxic->regs + TXD(nbytes % 4));
- 
- 		if (rxbuf) {
-@@ -319,6 +370,8 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 
- 			data = readl(mxic->regs + RXD);
- 			data >>= (8 * (4 - nbytes));
-+			if (dtr_enabled && len & 0x1)
-+				nbytes++;
- 			memcpy(rxbuf + pos, &data, nbytes);
- 			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
- 		} else {
-@@ -335,8 +388,8 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 				     const struct spi_mem_op *op)
- {
--	if (op->data.buswidth > 4 || op->addr.buswidth > 4 ||
--	    op->dummy.buswidth > 4 || op->cmd.buswidth > 4)
-+	if (op->data.buswidth > 8 || op->addr.buswidth > 8 ||
-+	    op->dummy.buswidth > 8 || op->cmd.buswidth > 8)
- 		return false;
- 
- 	if (op->data.nbytes && op->dummy.nbytes &&
-@@ -346,6 +399,9 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 	if (op->addr.nbytes > 7)
- 		return false;
- 
-+	if (op->cmd.buswidth == 8 && op->cmd.nbytes == 2)
-+		return true;
-+
- 	return spi_mem_default_supports_op(mem, op);
- }
- 
-@@ -353,47 +409,29 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
- 	struct mxic_spi *mxic = spi_master_get_devdata(mem->spi->master);
--	int nio = 1, i, ret;
--	u32 ss_ctrl;
-+	int i, ret;
- 	u8 addr[8];
-+	u8 cmd[2];
- 
- 	ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
- 	if (ret)
- 		return ret;
- 
--	if (mem->spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
--		nio = 4;
--	else if (mem->spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
--		nio = 2;
-+	mxic_spi_set_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN);
- 
--	writel(HC_CFG_NIO(nio) |
--	       HC_CFG_TYPE(mem->spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
--	       HC_CFG_SLV_ACT(mem->spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1) |
--	       HC_CFG_MAN_CS_EN,
--	       mxic->regs + HC_CFG);
- 	writel(HC_EN_BIT, mxic->regs + HC_EN);
- 
--	ss_ctrl = OP_CMD_BYTES(1) | OP_CMD_BUSW(fls(op->cmd.buswidth) - 1);
--
--	if (op->addr.nbytes)
--		ss_ctrl |= OP_ADDR_BYTES(op->addr.nbytes) |
--			   OP_ADDR_BUSW(fls(op->addr.buswidth) - 1);
--
--	if (op->dummy.nbytes)
--		ss_ctrl |= OP_DUMMY_CYC(op->dummy.nbytes);
--
--	if (op->data.nbytes) {
--		ss_ctrl |= OP_DATA_BUSW(fls(op->data.buswidth) - 1);
--		if (op->data.dir == SPI_MEM_DATA_IN)
--			ss_ctrl |= OP_READ;
--	}
--
--	writel(ss_ctrl, mxic->regs + SS_CTRL(mem->spi->chip_select));
-+	writel(mxic_spi_mem_prep_op_cfg(op),
-+	       mxic->regs + SS_CTRL(mem->spi->chip_select));
- 
- 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
- 	       mxic->regs + HC_CFG);
- 
--	ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
-+	cmd[0] = op->cmd.opcode;
-+	if (op->cmd.nbytes == 2)
-+		cmd[1] = op->cmd.ext_opcode;
-+
-+	ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
- 	if (ret)
- 		goto out;
- 
-@@ -566,7 +604,8 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
- 	master->mode_bits = SPI_CPOL | SPI_CPHA |
- 			SPI_RX_DUAL | SPI_TX_DUAL |
--			SPI_RX_QUAD | SPI_TX_QUAD;
-+			SPI_RX_QUAD | SPI_TX_QUAD |
-+			SPI_RX_OCTAL | SPI_TX_OCTAL;
- 
- 	mxic_spi_hw_init(mxic);
- 
--- 
-1.9.1
-
+On Tue, Apr 21, 2020 at 8:59 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Apr 21, 2020 at 11:53:44AM +0300, Evalds Iodzevics wrote:
+> > On Intel it is required to do CPUID(1) before reading the microcode
+> > revision MSR. Current code in 4.4 an 4.9 relies on sync_core() to call
+> > CPUID, unfortunately on 32 bit machines code inside sync_core() always
+> > jumps past CPUID instruction as it depends on data structure boot_cpu_data
+> > witch are not populated correctly so early in boot sequence.
+> >
+> > It depends on:
+> > commit 5dedade6dfa2 ("x86/CPU: Add native CPUID variants returning a single
+> > datum")
+> >
+> > This patch is for 4.4 but also should apply to 4.9
+> >
+> > Signed-off-by: Evalds Iodzevics <evalds.iodzevics@gmail.com>
+> > ---
+> >  arch/x86/include/asm/microcode_intel.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Why are you not sending this to the stable mailing list like I have
+> pointed out numerous times by sending you a link to _how_ to get a patch
+> into the stable kernel trees?
+>
+> Again, here it is:
+>     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>
+> Please follow that so that we can do this correctly.
+>
+> thanks,
+>
+> greg k-h
+Sorry, I might sound dumb here but should i just send it to
+stable@vger.kernel.org or try to tag it Cc: stable... in sign-off
+area, its quite confusing for newcomer.
+Thanks for patience!
