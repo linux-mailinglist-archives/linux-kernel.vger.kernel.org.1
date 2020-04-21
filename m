@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AB81B21FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9732B1B21E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgDUItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:49:53 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39700 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbgDUItx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:49:53 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6C8DF1A0C15;
-        Tue, 21 Apr 2020 10:49:51 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 582C61A0C34;
-        Tue, 21 Apr 2020 10:49:46 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3CA4F4029E;
-        Tue, 21 Apr 2020 16:49:40 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_esai: Remove expensive print in irq handler
-Date:   Tue, 21 Apr 2020 16:41:23 +0800
-Message-Id: <1587458483-2166-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727829AbgDUInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:43:08 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36847 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726052AbgDUInH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:43:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587458586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9iDz7iWPK0i9U6uK8B+Kq/VOxGdFwzyl3Psdz4sCMdw=;
+        b=KmPWD4qH/aPr/2RrJUUerU6dXmB3un7+/Z4QcEO9rMLsAWcEJ3GcHwKkzP+743oQOxbso1
+        qY8DnGpz8jxROE/hwTegHv1fBjdR9XZLu6kVFwC6+JmxLde11DwAlKissi/GzdOmAbECWa
+        bLwWuvG5yYym8OzaUe5nl0z/5qD4rHg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-2FtRnLJzNz2bXqouSQxh6Q-1; Tue, 21 Apr 2020 04:43:04 -0400
+X-MC-Unique: 2FtRnLJzNz2bXqouSQxh6Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DD0F190B2A0;
+        Tue, 21 Apr 2020 08:43:02 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-113-193.ams2.redhat.com [10.36.113.193])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D5A351001B30;
+        Tue, 21 Apr 2020 08:43:01 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id AB34016E16; Tue, 21 Apr 2020 10:43:00 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 10:43:00 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Caicai <caizhaopeng@uniontech.com>
+Cc:     Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
+        virtualization@lists.linux-foundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Zhangyueqian <zhangyueqian@uniontech.com>,
+        Zhangshuang <zhangshuang@uniontech.com>,
+        Zhangshiwen <zhangshiwen@uniontech.com>
+Subject: Re: [PATCH 1/1] drm/qxl: add mutex_lock/mutex_unlock to ensure the
+ order in which resources are released.
+Message-ID: <20200421084300.zggroiptwbrblzqy@sirius.home.kraxel.org>
+References: <20200418063917.26278-1-caizhaopeng@uniontech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418063917.26278-1-caizhaopeng@uniontech.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use dev_dbg instead of dev_err in irq handler, the dev_err
-is expensive, we don't need the message to be printed everytime,
-which is almost a debug option.
+On Sat, Apr 18, 2020 at 02:39:17PM +0800, Caicai wrote:
+> When a qxl resource is released, the list that needs to be released is
+> fetched from the linked list ring and cleared. When you empty the list,
+> instead of trying to determine whether the ttm buffer object for each
+> qxl in the list is locked, you release the qxl object and remove the
+> element from the list until the list is empty. It was found that the
+> linked list was cleared first, and that the lock on the corresponding
+> ttm Bo for the QXL had not been released, so that the new qxl could not
+> be locked when it used the TTM.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_esai.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+So the dma_resv_reserve_shared() call in qxl_release_validate_bo() is
+unbalanced?  Because the dma_resv_unlock() call in
+qxl_release_fence_buffer_objects() never happens due to
+qxl_release_free_list() clearing the list beforehand?  Is that correct?
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7a49d03463a..453392a9cd68 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -94,10 +94,10 @@ static irqreturn_t esai_isr(int irq, void *devid)
- 		dev_dbg(&pdev->dev, "isr: Transmission Initialized\n");
- 
- 	if (esr & ESAI_ESR_RFF_MASK)
--		dev_warn(&pdev->dev, "isr: Receiving overrun\n");
-+		dev_dbg(&pdev->dev, "isr: Receiving overrun\n");
- 
- 	if (esr & ESAI_ESR_TFE_MASK)
--		dev_warn(&pdev->dev, "isr: Transmission underrun\n");
-+		dev_dbg(&pdev->dev, "isr: Transmission underrun\n");
- 
- 	if (esr & ESAI_ESR_TLS_MASK)
- 		dev_dbg(&pdev->dev, "isr: Just transmitted the last slot\n");
--- 
-2.21.0
+The only way I see for this to happen is that the guest is preempted
+between qxl_push_{cursor,command}_ring_release() and
+qxl_release_fence_buffer_objects() calls.  The host can complete the qxl
+command then, signal the guest, and the IRQ handler calls
+qxl_release_free_list() before qxl_release_fence_buffer_objects() runs.
+
+Looking through the code I think it should be safe to simply swap the
+qxl_release_fence_buffer_objects() +
+qxl_push_{cursor,command}_ring_release() calls to close that race
+window.  Can you try that and see if it fixes the bug for you?
+
+>  		if (flush)
+> -			flush_work(&qdev->gc_work);
+> +			//can't flush work, it may lead to deadlock
+> +			usleep_range(500, 1000);
+> +
+
+The commit message doesn't explain this chunk.
+
+take care,
+  Gerd
 
