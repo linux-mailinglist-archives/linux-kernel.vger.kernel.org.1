@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFB01B2346
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF6F1B2352
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgDUJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:52:40 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19105 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgDUJwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:52:40 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9ec1f40000>; Tue, 21 Apr 2020 02:50:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 21 Apr 2020 02:52:40 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 21 Apr 2020 02:52:40 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
- 2020 09:52:39 +0000
-Received: from [10.26.73.24] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Apr
- 2020 09:52:35 +0000
-Subject: Re: [PATCH 4.19 00/40] 4.19.117-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200420121444.178150063@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <9b60a783-4ac5-d8b6-4619-ab57052db6b8@nvidia.com>
-Date:   Tue, 21 Apr 2020 10:52:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728593AbgDUJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:53:58 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:48785 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726874AbgDUJx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 05:53:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:References:MIME-Version:Content-Type:
+        Content-Disposition:In-Reply-To; bh=hvdiuPl0KIHv2INqIIAEKyZp2lS6
+        iCXMohdB936WJOg=; b=Rvix9lKbxZ76GRlzsowkAXD1+NRZCwEcTPCwo2VRIy4h
+        4rIwDYNeRtMV681t3Q1OnPwjcyEwHxJckDLdqdhkJBXMHAhuu2pDmp4kG+0Cqfks
+        bO28oyEI5/zanPyOPyfydz6iDnL5O+L4BbyGpdrFDufRBRINFnpzbgcsLYyut3A=
+Received: from localhost (unknown [120.229.255.67])
+        by app1 (Coremail) with SMTP id XAUFCgAXHaGhwp5elmElAA--.192S2;
+        Tue, 21 Apr 2020 17:53:39 +0800 (CST)
+Date:   Tue, 21 Apr 2020 17:53:37 +0800
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+Message-ID: <20200421095337.GA88633@sherlly>
+References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+ <20200420224315.GI18421@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200420121444.178150063@linuxfoundation.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587462644; bh=z+rZ9uQMCoXe1CDAfEI6FSZ7fIoaIwTgBtq4NtD+ns4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=WG98noHdonWEgaOnjYGA+97Av+bH+HDa09iRYMaf5utz1rsp33R3Ti1RBnMMEmDuw
-         rNSmUHce7tuhV/kteziuNBMs+swL9/5Xe3jWZ8/nRmbYVnIasTsVkyVZjXdaY/s+zi
-         A6mGywhTIfUOZwcfjXmJSSc0NmBVAmXeLTgNjwgmluNNA6jLXQHsT8wY86hGeVUVg8
-         8E4dUkHHDj8uU0DRGA6W/WRifs5/v1zaMxCDXJ0c8CMRpg2uFcz+3INI2BMbln9nNc
-         qtD/e04tz2HMpE6E94uhyUEnS9kNPpGN5CuBCmnUAQDgiKXsNtrwFSwpJ/6RvGRNjI
-         7t74WRVbZuNCQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420224315.GI18421@twin.jikos.cz>
+X-CM-TRANSID: XAUFCgAXHaGhwp5elmElAA--.192S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7JFyxAr4xKw4kWr48Zr4DCFg_yoW8JrWUpr
+        WDKayj9r98Kr17ta1xJ3yYv3WFka97Gw18Jrn8CrWxX343X343AFZ2gr15Zryj9F1fAryI
+        q3WYvFW5C3ZI9FUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x2
+        0xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18Mc
+        Ij6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1iihUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 20/04/2020 13:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.117 release.
-> There are 40 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Apr 21, 2020 at 12:43:15AM +0200, David Sterba wrote:
+> On Mon, Apr 20, 2020 at 01:38:40PM +0800, Xiyu Yang wrote:
+> > btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
+> > returns a local reference of the blcok group that contains the given
+> > bytenr to "block_group" with increased refcount.
+> > 
+> > When btrfs_remove_block_group() returns, "block_group" becomes invalid,
+> > so the refcount should be decreased to keep refcount balanced.
+> > 
+> > The reference counting issue happens in several exception handling paths
+> > of btrfs_remove_block_group(). When those error scenarios occur such as
+> > btrfs_alloc_path() returns NULL, the function forgets to decrease its
+> > refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+> > leak.
+> > 
+> > Fix this issue by jumping to "out_put_group" label and calling
+> > btrfs_put_block_group() when those error scenarios occur.
+> > 
+> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 > 
-> Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.117-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
+> Thanks for the fix. May I ask if this was found by code inspection or by
+> some analysis tool?
 
+Thanks for your advice about the patch! We are looking for some automated ways
+to find this kind of bug.
 
-All tests are passing for Tegra ...
-
-Test results for stable-v4.19:
-    11 builds:	11 pass, 0 fail
-    22 boots:	22 pass, 0 fail
-    32 tests:	32 pass, 0 fail
-
-Linux version:	4.19.117-rc1-gdf86600ce713
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra30-cardhu-a04
-
-Cheers
-Jon
-
--- 
-nvpublic
