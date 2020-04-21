@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690581B1AF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AB41B1AF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgDUAwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 20:52:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgDUAwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 20:52:15 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AD93208E4;
-        Tue, 21 Apr 2020 00:52:12 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 20:52:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT
- default boost value
-Message-ID: <20200420205210.7217651c@oasis.local.home>
-In-Reply-To: <20200420151941.47ualxul5seqwdgh@e107158-lin.cambridge.arm.com>
-References: <20200403123020.13897-1-qais.yousef@arm.com>
-        <20200414182152.GB20442@darkstar>
-        <54ac2709-54e5-7a33-a6af-0a07e272365c@arm.com>
-        <20200420151941.47ualxul5seqwdgh@e107158-lin.cambridge.arm.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726405AbgDUAzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 20:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725989AbgDUAzp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 20:55:45 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A61C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 17:55:45 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i16so6468602ybq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 17:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zjlgz4iiGJZDWAcs2kDeck3depX+Yf98ZBNqYF4UaYA=;
+        b=WJ0EYg5pg+4/8R2lb3NoDqagsM6h3yDvt3PQtazEDA5NahCJApc7GCKHnOyvSLWm38
+         H5G99miToiYVt16mrUQi0Iztfk5WKuHk3f7RmxYprA6cP8NG9q580hAuqMUlu6tGxHCg
+         1o+kp//9DLxirifrqDnVrq6QMbw0f8mzgfEbOcbgW9Am6yg6ZO9+ixBjT/UteyFO9BB2
+         VVb1vWkjx3pRXX4GcLmhyM0I1lJ4YBkOwuy+bzUbMbgSBZexlALkrmdowtehcBuNKWsH
+         I5d42vCERTKBM80aba4XcES7TCrN7g1ZDbeEO9uHa+xuEPyYyldncLhTH8Njc3ZHHahg
+         Dn8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zjlgz4iiGJZDWAcs2kDeck3depX+Yf98ZBNqYF4UaYA=;
+        b=meitGMdQNKBEQBXGnclFcV3n+gt90KY7xofs7kk55rJTjRhkwdnlOGduzZqCgeIg25
+         LD1Ov71bc0aN2WROjDXuQzvDZQ2TIyL+iWS8JjGuu3tLKIGI58Yimjrnv720c9FrsvoB
+         pF9dllIPIL+S9TwHu2JNPf78u8RwlUnrkTI8iYZvM367wKEvwizcLFw2CYqDA6Hd5X7d
+         EQcihUV9YUsJm9vA6lA0tEe6lWDISPzgfNxcOxBo6OO6dqkvKCNz8WSqMjznxV213pd5
+         gsCrLdFwclurTscSjj4aiPlS5f6sFSg5alacc6DfZuzCniHqMBUwaYJoxpHWT39m2rhN
+         UQzQ==
+X-Gm-Message-State: AGi0PuavbbO3hYkHu7PyvNpbPlavMUdd5QEMQ2OR4IjPFCgzfy9ml+rU
+        MDZWflgOuDJsdmaaSwwpgDePegLO/9qZthkTgCidAw==
+X-Google-Smtp-Source: APiQypLnmc/lLWGYUiu3OVAcY5Pfzg+riBol6VMDq4lMsHjAWJpZpZXC3aZLcpHeQAMWcnxaSl4mg6l8jhZhxRLQr5Q=
+X-Received: by 2002:a25:748f:: with SMTP id p137mr22648428ybc.287.1587430544396;
+ Mon, 20 Apr 2020 17:55:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200415004353.130248-1-walken@google.com> <20200415004353.130248-8-walken@google.com>
+ <20200420182211.exrzkszefraeylv2@ca-dmjordan1.us.oracle.com> <20200420192322.GD5820@bombadil.infradead.org>
+In-Reply-To: <20200420192322.GD5820@bombadil.infradead.org>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Mon, 20 Apr 2020 17:55:30 -0700
+Message-ID: <CANN689EKUoD5xTVk7V49sU3BcZ1Ntp+zkAubmxRADeioju1ioA@mail.gmail.com>
+Subject: Re: [PATCH v4 07/10] mmap locking API: add mmap_read_trylock_non_owner()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 16:19:42 +0100
-Qais Yousef <qais.yousef@arm.com> wrote:
+On Mon, Apr 20, 2020 at 12:23 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Mon, Apr 20, 2020 at 02:22:11PM -0400, Daniel Jordan wrote:
+> > On Tue, Apr 14, 2020 at 05:43:50PM -0700, Michel Lespinasse wrote:
+> > > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> > > index 11d41f0c7005..998968659892 100644
+> > > --- a/kernel/bpf/stackmap.c
+> > > +++ b/kernel/bpf/stackmap.c
+> > > @@ -317,7 +316,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+> > >      * with build_id.
+> > >      */
+> > >     if (!user || !current || !current->mm || irq_work_busy ||
+> > > -       mmap_read_trylock(current->mm) == 0) {
+> > > +       !mmap_read_trylock_non_owner(current->mm)) {
+> > >             /* cannot access current->mm, fall back to ips */
+> > >             for (i = 0; i < trace_nr; i++) {
+> > >                     id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+> > > @@ -342,16 +341,10 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+> > >     }
+> > >
+> > >     if (!work) {
+> > > -           mmap_read_unlock(current->mm);
+> > > +           mmap_read_unlock_non_owner(current->mm);
+> >
+> > These 'non_owner' calls are not intuitive because current _is the owner, so the
+> > v3 version seems better, even if it adds a special wrapper for rwsem_release.
+> >
+> > Though it makes some sense if you think, "we're consistently using the
+> > non_owner APIs because there's a legitimate use somewhere else," so I'm fine
+> > either way.
+>
+> I'm not really a big fan of v3 nor v4.  What I'd like to see is a
+> 'transfer of ownership' API.  This could be to a different task, IRQ work,
+> RCU, softirq, timer, ...
+>
+> That would let us track locking dependencies across complex flows, eg this
+> wouldn't be warned about right now:
+>
+> rcu_work():
+>         lock(C)
+>         kfree(B)
+>         unlock(A)
+>         unlock(C)
+>
+> thread 1:
+>         lock(A)
+>         call_rcu(B)
+>
+> thread 2:
+>         lock(C)
+>         synchronize_rcu()
+>         unlock(C)
+>
+> but if we had an API that transferred ownership of A to RCU, then we'd
+> see the C->RCU->A->C cycle.
+>
+> This is perhaps a bit much work to require of Laurent in order to get
+> this patchset merged, but something to think about.
 
-> > root@h960:~# find / -name "*util_clamp*"
-> > /proc/sys/kernel/sched_rt_default_util_clamp_min
-> > /proc/sys/kernel/sched_util_clamp_max
-> > /proc/sys/kernel/sched_util_clamp_min
-> > 
-> > IMHO, keeping the common 'sched_util_clamp_' would be helpful here, e.g.
-> > 
-> > /proc/sys/kernel/sched_util_clamp_rt_default_min  
-> 
-> All RT related knobs are prefixed with 'sched_rt'. I kept the 'util_clamp_min'
-> coherent with the current sysctl (sched_util_clamp_min). Quentin suggested
-> adding 'default' to be more obvious, so I ended up with
-> 
-> 	'sched_rt' + '_default' + '_util_clamp_min'.
-> 
-> I think this is the logical and most consistent form. Given that Patrick seems
-> to be okay with the 'default' now, does this look good to you too?
+I think fundamentally, lockdep is better suited at handling locks that
+are owned by a given task. I think extending lockdep just for the bpf
+stacktrace use case would be way overkill ?
 
-There's only two files with "sched_rt" and they are tightly coupled
-(they define how much an RT task may use the CPU).
+But yes, I agree that declining ownership as we do here leaves us open
+to having lock dependency issues that lockdep won't diagnose.
 
-My question is, is this "sched_rt_default_util_clamp_min" related in
-any way to those other two files that start with "sched_rt", or is it
-more related to the files that start with "sched_util_clamp"?
-
-If the latter, then I would suggest using
-"sched_util_clamp_min_rt_default", as it looks to be more related to
-the "sched_util_clamp_min" than to anything else.
-
--- Steve
+-- 
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
