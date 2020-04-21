@@ -2,105 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0551F1B259E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7507E1B25AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgDUMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 08:10:20 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:11207 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDUMKT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:10:19 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 905DC282636;
-        Tue, 21 Apr 2020 20:09:43 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AIEABQDACBGx7eaGVybumqrT.3.1587470983521.Hmail.bernard@vivo.com>
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tom St Denis <tom.stdenis@amd.com>,
-        Ori Messinger <Ori.Messinger@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gYW1kZ3B1OiBmaXhlcyBtZW1sZWFrIGlzc3VlIHdoZW4gaW5pdCBmYWlsZWQ=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.122
-In-Reply-To: <738537e5-9a1a-25c8-3dd0-b1f5fd045979@amd.com>
+        id S1728632AbgDUMNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:13:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:33898 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726741AbgDUMNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:13:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDDB531B;
+        Tue, 21 Apr 2020 05:13:10 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57E1A3F68F;
+        Tue, 21 Apr 2020 05:13:08 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 13:13:05 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yury Norov <yury.norov@gmail.com>,
+        Paul Turner <pjt@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Josh Don <joshdon@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 0/4] sched/rt: Distribute tasks in find_lowest_rq()
+Message-ID: <20200421121305.ziu3dfqwo7cw6ymu@e107158-lin.cambridge.arm.com>
+References: <20200414150556.10920-1-qais.yousef@arm.com>
+ <jhjh7xlvqqe.mognet@arm.com>
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 21 Apr 2020 20:09:43 +0800 (GMT+08:00)
-From:   =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
-Date:   Tue, 21 Apr 2020 20:09:43 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVMQ0lCQkJCQklITEtNSllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSE9IQkhLTExJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Mj46OSo*Ojg5PANMHho8LQIZDhYKCS9VSFVKTkNMT0xLQkNITU5CVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBTU1CTDcG
-X-HM-Tid: 0a719ca4e1ad9395kuws905dc282636
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <jhjh7xlvqqe.mognet@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkZyb206ICJDaHJpc3RpYW4gS8O2bmlnIiA8Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPgpEYXRl
-OiAyMDIwLTA0LTIxIDE5OjIyOjQ5ClRvOiAgQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29t
-PixBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+LCJEYXZpZCAoQ2h1bk1p
-bmcpIFpob3UiIDxEYXZpZDEuWmhvdUBhbWQuY29tPixEYXZpZCBBaXJsaWUgPGFpcmxpZWRAbGlu
-dXguaWU+LERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD4sVG9tIFN0IERlbmlzIDx0b20u
-c3RkZW5pc0BhbWQuY29tPixPcmkgTWVzc2luZ2VyIDxPcmkuTWVzc2luZ2VyQGFtZC5jb20+LFNh
-bSBSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9yZz4sYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcsZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZyxsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnCkNjOiAgb3BlbnNvdXJjZS5rZXJuZWxAdml2by5jb20KU3ViamVjdDogUmU6IFtQQVRD
-SF0gYW1kZ3B1OiBmaXhlcyBtZW1sZWFrIGlzc3VlIHdoZW4gaW5pdCBmYWlsZWQ+QW0gMjEuMDQu
-MjAgdW0gMTM6MTcgc2NocmllYiBCZXJuYXJkIFpoYW86Cj4+IFZSQU0gbWFuYWdlciBhbmQgRFJN
-IE1NIHdoZW4gaW5pdCBmYWlsZWQsIHRoZXJlIGlzIG5vIG9wZXJhY3Rpb24KPj4gdG8gZnJlZSBr
-emFsbG9jIG1lbW9yeSAmIHJlbW92ZSBkZXZpY2UgZmlsZS4KPj4gVGhpcyB3aWxsIGxlYWQgdG8g
-bWVtbGVhayAmIGNhdXNlIHN0YWJpbGl0eSBpc3N1ZS4KPgo+TkFLLCBmYWlsdXJlIHRvIGNyZWF0
-ZSBzeXNmcyBub2RlcyBhcmUgbm90IGNyaXRpY2FsLgo+Cj5DaHJpc3RpYW4uCj4KCk9LLCBnZXQg
-aXQuCkJ5IHRoZSB3YXksIHNob3VsZCBpIG1vZGlmeSB0aGlzIHBhdGNoIHRvIGp1c3QgaGFuZGxl
-IDxrZnJlZShtZ3IpPiBpbiBlcnJvciBicmFuY2gsIG9yIHRoYXQgaXQgaXMgYWxzbyB1bm5lY2Vz
-c2FyeT8KClJlZ2FyZHMsCkJlcm5hcmQKCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEJlcm5hcmQgWmhh
-byA8YmVybmFyZEB2aXZvLmNvbT4KPj4gLS0tCj4+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvYW1kZ3B1X3ZyYW1fbWdyLmMgfCAyNCArKysrKysrKysrKysrKysrLS0tLQo+PiAgIDEgZmls
-ZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMgYi9kcml2
-ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfdnJhbV9tZ3IuYwo+PiBpbmRleCA4MmEzMjk5
-ZTUzYzAuLjRjNWZiMTUzZTZiNCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9h
-bWRncHUvYW1kZ3B1X3ZyYW1fbWdyLmMKPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvYW1kZ3B1X3ZyYW1fbWdyLmMKPj4gQEAgLTE3NSwzMCArMTc1LDQ0IEBAIHN0YXRpYyBpbnQg
-YW1kZ3B1X3ZyYW1fbWdyX2luaXQoc3RydWN0IHR0bV9tZW1fdHlwZV9tYW5hZ2VyICptYW4sCj4+
-ICAgCXJldCA9IGRldmljZV9jcmVhdGVfZmlsZShhZGV2LT5kZXYsICZkZXZfYXR0cl9tZW1faW5m
-b192cmFtX3RvdGFsKTsKPj4gICAJaWYgKHJldCkgewo+PiAgIAkJRFJNX0VSUk9SKCJGYWlsZWQg
-dG8gY3JlYXRlIGRldmljZSBmaWxlIG1lbV9pbmZvX3ZyYW1fdG90YWxcbiIpOwo+PiAtCQlyZXR1
-cm4gcmV0Owo+PiArCQlnb3RvIFZSQU1fVE9UQUxfRkFJTDsKPj4gICAJfQo+PiAgIAlyZXQgPSBk
-ZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1f
-dG90YWwpOwo+PiAgIAlpZiAocmV0KSB7Cj4+ICAgCQlEUk1fRVJST1IoIkZhaWxlZCB0byBjcmVh
-dGUgZGV2aWNlIGZpbGUgbWVtX2luZm9fdmlzX3ZyYW1fdG90YWxcbiIpOwo+PiAtCQlyZXR1cm4g
-cmV0Owo+PiArCQlnb3RvIFZJU19WUkFNX1RPVEFfRkFJTDsKPj4gICAJfQo+PiAgIAlyZXQgPSBk
-ZXZpY2VfY3JlYXRlX2ZpbGUoYWRldi0+ZGV2LCAmZGV2X2F0dHJfbWVtX2luZm9fdnJhbV91c2Vk
-KTsKPj4gICAJaWYgKHJldCkgewo+PiAgIAkJRFJNX0VSUk9SKCJGYWlsZWQgdG8gY3JlYXRlIGRl
-dmljZSBmaWxlIG1lbV9pbmZvX3ZyYW1fdXNlZFxuIik7Cj4+IC0JCXJldHVybiByZXQ7Cj4+ICsJ
-CWdvdG8gVlJBTV9VU0VEX0ZBSUw7Cj4+ICAgCX0KPj4gICAJcmV0ID0gZGV2aWNlX2NyZWF0ZV9m
-aWxlKGFkZXYtPmRldiwgJmRldl9hdHRyX21lbV9pbmZvX3Zpc192cmFtX3VzZWQpOwo+PiAgIAlp
-ZiAocmV0KSB7Cj4+ICAgCQlEUk1fRVJST1IoIkZhaWxlZCB0byBjcmVhdGUgZGV2aWNlIGZpbGUg
-bWVtX2luZm9fdmlzX3ZyYW1fdXNlZFxuIik7Cj4+IC0JCXJldHVybiByZXQ7Cj4+ICsJCWdvdG8g
-VklTX1ZSQU1fVVNFRF9GQUlMOwo+PiAgIAl9Cj4+ICAgCXJldCA9IGRldmljZV9jcmVhdGVfZmls
-ZShhZGV2LT5kZXYsICZkZXZfYXR0cl9tZW1faW5mb192cmFtX3ZlbmRvcik7Cj4+ICAgCWlmIChy
-ZXQpIHsKPj4gICAJCURSTV9FUlJPUigiRmFpbGVkIHRvIGNyZWF0ZSBkZXZpY2UgZmlsZSBtZW1f
-aW5mb192cmFtX3ZlbmRvclxuIik7Cj4+IC0JCXJldHVybiByZXQ7Cj4+ICsJCWdvdG8gVlJBTV9W
-RVJET1JfRkFJTDsKPj4gICAJfQo+PiAgIAo+PiAgIAlyZXR1cm4gMDsKPj4gKwo+PiArVlJBTV9W
-RVJET1JfRkFJTDoKPj4gKwlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRldi0+ZGV2LCAmZGV2X2F0dHJf
-bWVtX2luZm9fdmlzX3ZyYW1fdXNlZCk7Cj4+ICtWSVNfVlJBTV9VU0VEX0ZBSUw6Cj4+ICsJZGV2
-aWNlX3JlbW92ZV9maWxlKGFkZXYtPmRldiwgJmRldl9hdHRyX21lbV9pbmZvX3ZyYW1fdXNlZCk7
-Cj4+ICtSVkFNX1VTRURfRkFJTDoKPj4gKwlkZXZpY2VfcmVtb3ZlX2ZpbGUoYWRldi0+ZGV2LCAm
-ZGV2X2F0dHJfbWVtX2luZm9fdmlzX3ZyYW1fdG90YWwpOwo+PiArVklTX1ZSQU1fVE9UQV9GQUlM
-Ogo+PiArCWRldmljZV9yZW1vdmVfZmlsZShhZGV2LT5kZXYsICZkZXZfYXR0cl9tZW1faW5mb192
-cmFtX3RvdGFsKTsKPj4gK1ZSQU1fVE9UQUxfRkFJTDoKPj4gKwlrZnJlZShtZ3IpOwo+PiArCW1h
-bi0+cHJpdiA9IE5VTEw7Cj4+ICsKPj4gKwlyZXR1cm4gcmV0Owo+PiAgIH0KPj4gICAKPj4gICAv
-KioKPgoNCg0K
++Rafael +Marc
+
+(There's a question about a function that you maintain below, the context is
+that cpumask_any() now truly returns a random cpu in the mask and there were
+concern it might break something you maintain)
+
+On 04/14/20 19:58, Valentin Schneider wrote:
+> Hi,
+> 
+> On 14/04/20 16:05, Qais Yousef wrote:
+> > Now that we have a proper function that returns a 'random' CPU in a mask [1]
+> > utilize that in find_lowest_rq() to solve the thundering herd issue described
+> > in this thread
+> >
+> >       https://lore.kernel.org/lkml/20200219140243.wfljmupcrwm2jelo@e107158-lin/
+> >
+> > But as a pre-amble, I noticed that the new cpumask_any_and_distribute() is
+> > actually an alias for cpumask_any_and() which is documented as returning
+> > a 'random' cpu but actually just does cpumask_first_and().
+> >
+> > The first 3 patches cleanup the API so that the whole family of
+> > cpumask_any*() take advantage of the new 'random' behavior
+> 
+> I'm a bit wary about such blanket changes. I feel like most places impacted
+> by this change don't gain anything by using the random thing. In sched land
+> that would be:
+
+The API has always been clear that cpumask_any return a random cpu within the
+mask. And the fact it's a one liner with cpumask_first() directly visible,
+a user made the choice to stick to cpumask_any() indicates that that's what
+they wanted.
+
+Probably a lot of them they don't care what cpu is returned and happy with the
+random value. I don't see why it has to have an effect. Some could benefit,
+like my use case here. Or others truly don't care, then it's fine to return
+anything, as requested.
+
+> 
+> - The single cpumask_any() in core.c::select_task_rq()
+> - Pretty much any function that wants a CPU id to dereference a
+>   root_domain; there's some of them in deadline.c, topology.c
+> 
+> Looking some more into it, there's shadier things:
+> 
+> - cpufreq_offline() uses cpumask_any() to figure out the new policy
+>   leader... That one should be cpumask_first()
+
+I CCed Rafael who's the maintainer of this file who can speak better of what
+should be expected.
+
+I don't see why it _should_ be cpumask_first(). AFAICT any cpu can be the new
+leader. So nothing breaks here.
+
+> - gic_set_affinity() uses cpumask_any_and() (in the common case). If this
+>   starts using randomness, you will stop affining e.g. all SPIs to CPU0
+>   by default (!!!)
+
+I CCed Marc who's the maintainer of this file who can clarify better if this
+really breaks anything.
+
+If any interrupt expects to be affined to a specific CPU then this must be
+described in DT/driver. I think the GIC controller is free to distribute them
+to any cpu otherwise if !force. Which is usually done by irq_balancer anyway
+in userspace, IIUC.
+
+I don't see how cpumask_any_and() break anything here too. I actually think it
+improves on things by better distribute the irqs on the system by default.
+
+Marc will know better for sure. It's been a long time I looked at irqchip code.
+
+> - ... and there might be more
+
+I can appreciate you have some concerns this might break something. But IMO
+this will be isolated cases of bad copy/paste. I think the blanket conversion
+of cpumask_any() to cpumask_first() is the bad one because it dishonours the
+choice developers made to pick one over the other. As I mention above the doc
+was clear it will return a random value and the oneliner gave a clear
+alternative to the user if they missed the cpumask_first() API.
+
+The name of the API is so descriptive anyway to think that most users got it
+wrong. And I think it acts as a good natural documentation of the code.
+
+> 
+> I think people went with cpumask_any_* mostly because there is just
+> cpumask_first() while there are more cpumask_any_* variants, and since
+> those have been returning the first set CPU for over a decade people just
+> went with it.
+
+This is speculation. Unless we ask every developer we can't tell. Given the
+clear documentation of cpumask_any() returns a random value, the natural
+conclusion is that people want that or just truly don't care.
+
+> 
+> To move this forward, I would suggest renaming the current cpumask_any_*()
+> into cpumask_first_*(), and THEN introduce the new pseudo-random
+> ones. People are then free to hand-fix specific locations if it makes sense
+> there, like you're doing for RT.
+
+I strongly disagree with this. I'd rather keep the status-quo instead and just
+use the new function in rt.c as it's currently named.
+
+> 
+> I think it's safe to say the vast majority of the current callers do not
+> require randomness - the exceptions should mainly be scheduler / workqueues
+> and the like.
+
+It's hard to judge. As the API clearly says this returns a random value,
+I think assuming that most users got it wrong is the unnatural way of
+thinking. If there happened to be bad users, that's an isolated cases and bugs
+that we can certainly be easily fixed.
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> > and in patch
+> > 4 I convert the cpumask_first_and() --> cpumask_any_and() in find_lowest_rq()
+> > to allow to better distribute the RT tasks that wake up simultaneously.
+> >
+> > [1] https://lore.kernel.org/lkml/20200311010113.136465-1-joshdon@google.com/
+> >
+> > CC: Juri Lelli <juri.lelli@redhat.com>
+> > CC: Vincent Guittot <vincent.guittot@linaro.org>
+> > CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > CC: Steven Rostedt <rostedt@goodmis.org>
+> > CC: Ben Segall <bsegall@google.com>
+> > CC: Mel Gorman <mgorman@suse.de>
+> > CC: Andrew Morton <akpm@linux-foundation.org>
+> > CC: Thomas Gleixner <tglx@linutronix.de>
+> > CC: Yury Norov <yury.norov@gmail.com>
+> > CC: Paul Turner <pjt@google.com>
+> > CC: Alexey Dobriyan <adobriyan@gmail.com>
+> > CC: Josh Don <joshdon@google.com>
+> > CC: Pavan Kondeti <pkondeti@codeaurora.org>
+> > CC: linux-kernel@vger.kernel.org
+> >
+> > Qais Yousef (4):
+> >   cpumask: Rename cpumask_any_and_distribute
+> >   cpumask: Make cpumask_any() truly random
+> >   cpumask: Convert cpumask_any_but() to the new random function
+> >   sched/rt: Better distribute tasks that wakeup simultaneously
+> >
+> >  include/linux/cpumask.h | 33 ++++++-----------
+> >  kernel/sched/core.c     |  2 +-
+> >  kernel/sched/rt.c       |  4 +-
+> >  lib/cpumask.c           | 82 +++++++++++++++++++++++++++--------------
+> >  4 files changed, 68 insertions(+), 53 deletions(-)
