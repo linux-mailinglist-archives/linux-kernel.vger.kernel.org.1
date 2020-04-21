@@ -2,370 +2,564 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C3E1B2BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0871B2BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgDUPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
+        id S1728334AbgDUP4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725963AbgDUPzm (ORCPT
+        by vger.kernel.org with ESMTP id S1727911AbgDUP4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:55:42 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A29FC061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:55:42 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id t63so4124157wmt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:55:42 -0700 (PDT)
+        Tue, 21 Apr 2020 11:56:19 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67425C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:56:19 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id a9so7564153ybc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 08:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GhBIbUior2q4TR3qEaeoVKdQqxLMwUKQTHJUIa/lPXs=;
-        b=t3ugB6acScgCP8RAjyWoQEynvqJskpkreswJE7RDBWAu32LmrxGaX/YoSAIssmJjv5
-         XLbD0NmslPejCm+oX/GCtBEf7lcTvsyKO4OsEHK5TPECp7FFr/lGSOrSLr7gTGLXF1aF
-         DiyhflZB0wbWcasEomQFwzWlr92HgozAiBIVy03/02oQtUUcsZKV6p73g4gMqVWMLJ0L
-         /PPgp9A6ER4xqxJLHGw+W2mk0cr6jQz3lJQLKb9lHSmz+KRA3ec9Z/zAWa0lR1q9Vpmm
-         wkH7QCJrWSCurP5BGVZ6z7lcLeDjoZ2w7M07pCtvw7+ejaSZ9XgiLKrqZWxVr3podGgL
-         AfWQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=74DTtnYPeeEftI+DJz90+b857+M80IqiySHJZYpCKkE=;
+        b=Ji5qhxy2FouOvLD2CFt074w2szmXScutjMXqgXYXykhjIC6PquB0ml0HhM2h4tg3IU
+         mtbq00ZIIY95uzsLAgfAyuxslA4Wu+RWS443qAX4m1loUdvDV5rjEbIgYFYo1hwTKeNf
+         wKgZpG/HCgMZu7tEYY6OFQ1frrLhBa+x7jL+ogBkZ9bEekWG0DwnncLqhx27pGIVNItn
+         1Wmb+nTGi2C/OfEaYZqxvpByX9VKf2y5FRmEwIcAT/vqeDms1PfD06rhFOGWK01TWxYN
+         a/IN7RLASBEiOfKuFGN7gdwe4hjyPTDQEHr/o2USRWhn8OKFId1kYsOXEABgOpwrzChO
+         Vfjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GhBIbUior2q4TR3qEaeoVKdQqxLMwUKQTHJUIa/lPXs=;
-        b=S9OXBpbS1mP8B1A9yx1gh47mgr5h7MkwKrSogLpzZOVa+gimUN35eIieIDH5jYpxrj
-         kzK2In9bnPfSystOHostePidjOe9InwmuNUj0lEekXdT7Lj41g4M7/9HIChg5Yqji/al
-         uO9Ht1E7qhwG5kuJzRM4bIuVrkw8BLn35aaMmuDrtoym3ibWV7xe7igBPchLRBmpthS0
-         dZyvhX3MviWFVRbAnjTPZ10+kgtwSvmkfS3EiU9T89taEg3ZOvsEZEfOg1oohb6zTSxn
-         PGPuHCaIw4pTTe4JjFRXVHv1DJ33Pc1SqNFTTI/m7tBmldZSN6W5lAZjttAPK2EQEz2n
-         MDzQ==
-X-Gm-Message-State: AGi0PuYYNqx5mB5NqNGHps4PbKp9p4RDrN2zUGkLMQrxwNXV4p9jrasO
-        6z+lwbisNqSqGM2ZixE5kxqe0g==
-X-Google-Smtp-Source: APiQypLOt2BmWNbj65l6Ky1ouFJm3HDOTWIkjJwALfa4V5NO7uAyB5tHLaW7XMTRFJVBexe3hN6k4Q==
-X-Received: by 2002:a1c:790e:: with SMTP id l14mr5426387wme.174.1587484540962;
-        Tue, 21 Apr 2020 08:55:40 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56? ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
-        by smtp.gmail.com with ESMTPSA id h6sm4140261wmf.31.2020.04.21.08.55.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2020 08:55:39 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] DRM: ARC: add HDMI 2.0 TX encoder support
-To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        dri-devel@lists.freedesktop.org,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20200414232929.22788-1-Eugeniy.Paltsev@synopsys.com>
- <20200414232929.22788-2-Eugeniy.Paltsev@synopsys.com>
- <20200415173320.GG3456981@phenom.ffwll.local>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <267d49d8-a73a-0317-cb50-0f63f0ced049@baylibre.com>
-Date:   Tue, 21 Apr 2020 17:55:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=74DTtnYPeeEftI+DJz90+b857+M80IqiySHJZYpCKkE=;
+        b=lfKS6y4h/92/Pul893/jkZFTbfL77yAHukmE5BQFatXsj7RSMduK7Ini3EG6bbj5YE
+         gFqjTTJiieCWDsmuhKE3y6ESRMDd2H2fwv/nAnMCti1SpSfqZdUBmaML/t3Hos6KpNbk
+         mQlmw9VyrvaXB0c4meu6xhNKoXQwhjtJqLAjyrw2btZiIXr0ov+fjE8KDVDYqOYKOw+2
+         skLkWHIjl+Mgl4hGjANy+HoOF2ojriOtdKVbFPp0aSDLXZec7nYU6y3ZW2iTQ5ioUPkW
+         N9fTejRF8azAYRrmGNzi9Vv+wqF5D11Ge/i+uksCoO7NWD2LCFT9ZL7zXz0wE5tjrhSi
+         26fw==
+X-Gm-Message-State: AGi0PuZPtaqp2LM8DLSj3tUrhtF3aVAb3YB/DDxSgktD9UdKG3z7+yzy
+        NPxiQAP47J4wByYyAqmKRYYsXh0mtS8X8OoNj+UZFg==
+X-Google-Smtp-Source: APiQypLsdE4YMQfgsknD/ezEkbulhYz2MuiCQ6O7zf68qUp+WNAPs6T+pVpFuKWo1YX5EXPKCNRs8pOa9QfGa9KAGyI=
+X-Received: by 2002:a25:bd4c:: with SMTP id p12mr29034435ybm.140.1587484577802;
+ Tue, 21 Apr 2020 08:56:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200415173320.GG3456981@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200420163657.60650-1-mathewk@chromium.org> <20200420163657.60650-3-mathewk@chromium.org>
+ <AM6PR10MB2263B60191A7240E3F6E0C7A80D50@AM6PR10MB2263.EURPRD10.PROD.OUTLOOK.COM>
+ <20200421124112.GA618654@kuha.fi.intel.com>
+In-Reply-To: <20200421124112.GA618654@kuha.fi.intel.com>
+From:   Mat King <mathewk@google.com>
+Date:   Tue, 21 Apr 2020 09:56:06 -0600
+Message-ID: <CAL_quvQRJXoZ3MntB_G6c-y_DL2pnkN+_Vp0D2Ykq9sP++RnCA@mail.gmail.com>
+Subject: Re: [PATCH v0 2/2] typec: Add Type-C charger
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Mathew King <mathewk@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2020 19:33, Daniel Vetter wrote:
-> On Wed, Apr 15, 2020 at 02:29:28AM +0300, Eugeniy Paltsev wrote:
->> The Synopsys ARC SoCs (like HSDK4xD) include on-chip DesignWare HDMI
->> encoders. Support them with a platform driver to provide platform glue
->> data to the dw-hdmi driver.
->>
->> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->> Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
->> ---
->>  MAINTAINERS                       |   6 ++
->>  drivers/gpu/drm/Makefile          |   2 +-
->>  drivers/gpu/drm/arc/Kconfig       |   7 ++
->>  drivers/gpu/drm/arc/Makefile      |   1 +
->>  drivers/gpu/drm/arc/arc-dw-hdmi.c | 116 ++++++++++++++++++++++++++++++
->>  5 files changed, 131 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/gpu/drm/arc/arc-dw-hdmi.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index a6fbdf354d34..2aaed1190370 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -1258,6 +1258,12 @@ S:	Supported
->>  F:	drivers/gpu/drm/arc/
->>  F:	Documentation/devicetree/bindings/display/snps,arcpgu.txt
->>  
->> +ARC DW HDMI DRIVER
->> +M:	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
->> +S:	Supported
->> +F:	drivers/gpu/drm/arc/arc-dw-hdmi.c
->> +F:	Documentation/devicetree/bindings/display/bridge/snps,arc-dw-hdmi.yaml
->> +
->>  ARCNET NETWORK LAYER
->>  M:	Michael Grzeschik <m.grzeschik@pengutronix.de>
->>  L:	netdev@vger.kernel.org
->> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
->> index 6493088a0fdd..5b0bcf7f45cd 100644
->> --- a/drivers/gpu/drm/Makefile
->> +++ b/drivers/gpu/drm/Makefile
->> @@ -109,7 +109,7 @@ obj-y			+= panel/
->>  obj-y			+= bridge/
->>  obj-$(CONFIG_DRM_FSL_DCU) += fsl-dcu/
->>  obj-$(CONFIG_DRM_ETNAVIV) += etnaviv/
->> -obj-$(CONFIG_DRM_ARCPGU)+= arc/
->> +obj-y			+= arc/
->>  obj-y			+= hisilicon/
->>  obj-$(CONFIG_DRM_ZTE)	+= zte/
->>  obj-$(CONFIG_DRM_MXSFB)	+= mxsfb/
->> diff --git a/drivers/gpu/drm/arc/Kconfig b/drivers/gpu/drm/arc/Kconfig
->> index e8f3d63e0b91..baec9d2a4fba 100644
->> --- a/drivers/gpu/drm/arc/Kconfig
->> +++ b/drivers/gpu/drm/arc/Kconfig
->> @@ -8,3 +8,10 @@ config DRM_ARCPGU
->>  	  Choose this option if you have an ARC PGU controller.
->>  
->>  	  If M is selected the module will be called arcpgu.
->> +
->> +config DRM_ARC_DW_HDMI
->> +	tristate "ARC DW HDMI"
->> +	depends on DRM && OF
->> +	select DRM_DW_HDMI
->> +	help
->> +	  Synopsys DW HDMI driver for various ARC development boards
->> diff --git a/drivers/gpu/drm/arc/Makefile b/drivers/gpu/drm/arc/Makefile
->> index c7028b7427b3..7a156d8c2c3c 100644
->> --- a/drivers/gpu/drm/arc/Makefile
->> +++ b/drivers/gpu/drm/arc/Makefile
->> @@ -1,3 +1,4 @@
->>  # SPDX-License-Identifier: GPL-2.0-only
->>  arcpgu-y := arcpgu_crtc.o arcpgu_hdmi.o arcpgu_sim.o arcpgu_drv.o
->>  obj-$(CONFIG_DRM_ARCPGU) += arcpgu.o
->> +obj-$(CONFIG_DRM_ARC_DW_HDMI) += arc-dw-hdmi.o
->> diff --git a/drivers/gpu/drm/arc/arc-dw-hdmi.c b/drivers/gpu/drm/arc/arc-dw-hdmi.c
->> new file mode 100644
->> index 000000000000..46a6ee09b302
->> --- /dev/null
->> +++ b/drivers/gpu/drm/arc/arc-dw-hdmi.c
->> @@ -0,0 +1,116 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +//
->> +// Synopsys DW HDMI driver for various ARC development boards
->> +//
->> +// Copyright (C) 2020 Synopsys
->> +// Author: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
->> +
->> +#include <linux/component.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <drm/bridge/dw_hdmi.h>
->> +#include <drm/drm_crtc_helper.h>
->> +#include <drm/drm_edid.h>
->> +#include <drm/drm_encoder_slave.h>
->> +#include <drm/drm_of.h>
->> +
->> +static const struct dw_hdmi_mpll_config snps_hdmi_mpll_cfg[] = {
->> +	{
->> +		27000000, {
->> +			{ 0x00B3, 0x0000 },
->> +			{ 0x00B3, 0x0000 },
->> +			{ 0x00B3, 0x0000 }
->> +		},
->> +	}, {
->> +		74250000, {
->> +			{ 0x0072, 0x0001},
->> +			{ 0x0072, 0x0001},
->> +			{ 0x0072, 0x0001}
->> +		},
->> +	}, {
->> +		148500000, {
->> +			{ 0x0051, 0x0002},
->> +			{ 0x0051, 0x0002},
->> +			{ 0x0051, 0x0002}
->> +		},
->> +	}, {
->> +		~0UL, {
->> +			{ 0x00B3, 0x0000 },
->> +			{ 0x00B3, 0x0000 },
->> +			{ 0x00B3, 0x0000 },
->> +		},
->> +	}
->> +};
->> +
->> +static const struct dw_hdmi_curr_ctrl snps_hdmi_cur_ctr[] = {
->> +	/* pixelclk    bpp8    bpp10   bpp12 */
->> +	{ 27000000,  { 0x0000, 0x0000, 0x0000 }, },
->> +	{ 74250000,  { 0x0008, 0x0008, 0x0008 }, },
->> +	{ 148500000, { 0x001b, 0x001b, 0x001b }, },
->> +	{ ~0UL,      { 0x0000, 0x0000, 0x0000 }, }
->> +};
->> +
->> +
->> +static const struct dw_hdmi_phy_config snps_hdmi_phy_config[] = {
->> +	/* pixelclk   symbol  term    vlev */
->> +	{ 27000000,   0x8009, 0x0004, 0x0232},
->> +	{ 74250000,   0x8009, 0x0004, 0x0232},
->> +	{ 148500000,  0x8009, 0x0004, 0x0232},
->> +	{ ~0UL,       0x8009, 0x0004, 0x0232}
->> +};
->> +
->> +static struct dw_hdmi_plat_data snps_dw_hdmi_drv_data = {
->> +	.mpll_cfg   = snps_hdmi_mpll_cfg,
->> +	.cur_ctr    = snps_hdmi_cur_ctr,
->> +	.phy_config = snps_hdmi_phy_config,
->> +};
->> +
->> +static const struct of_device_id snps_dw_hdmi_dt_ids[] = {
->> +	{ .compatible = "snps,arc-dw-hdmi-hsdk", .data = &snps_dw_hdmi_drv_data },
->> +	{ /* sentinel */ }
->> +};
->> +MODULE_DEVICE_TABLE(of, snps_dw_hdmi_dt_ids);
->> +
->> +static int snps_dw_hdmi_probe(struct platform_device *pdev)
->> +{
->> +	const struct dw_hdmi_plat_data *plat_data;
->> +	const struct of_device_id *match;
->> +	struct dw_hdmi *hdmi;
->> +
->> +	if (!pdev->dev.of_node)
->> +		return -ENODEV;
->> +
->> +	match = of_match_node(snps_dw_hdmi_dt_ids, pdev->dev.of_node);
->> +	plat_data = match->data;
->> +
->> +	hdmi = dw_hdmi_probe(pdev, plat_data);
-> 
-> So this is kinda not how bridge drivers are supposed to be done nowadays,
-> direct calling into the driver was the old way, and dw-hdmi still works
-> like that. Modern way is roughly
-> - bridge drivers bind automatically to any bridge they support
-> - bridge drivers publish a bridge with drm_bridge_add()
-> - the driver using the bridge fishes out with dt magic using
->   of_drm_find_bridge() or another of the related of_ functions
+On Tue, Apr 21, 2020 at 6:41 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Tue, Apr 21, 2020 at 08:44:38AM +0000, Adam Thomson wrote:
+> > On 20 April 2020 17:37, Mathew King wrote:
+> >
+> > > Add an option to expose USB Type-C ports that can charge system
+> > > batteries as a power_supply class. This implementation only exposes
+> > > three properties of the power supply.
+> > >
+> > > POWER_SUPPLY_PROP_ONLINE - Set to true if the Type-C port is configured
+> > >                            as a sink and is connected to a partner
+> > > POWER_SUPPLY_PROP_STATUS - Set to CHARGING if a partner is connected and
+> > >                            the port is a sink and set to NOT_CHARGING
+> > >                            otherwise
+> > > POWER_SUPPLY_PROP_USB_TYPE - When a partner is conneced set to TYPE_C,
+> > >                              TYPE_PD, or TYPE_PD_DRP depending on the
+> > >                              partner capibilities and set to
+> > >                              TYPE_UNKNOWN otherwise
+> > >
+> > > This implementation can be expanded as the typec class is expaneded. In
+> > > particular the STATUS property should show more than CHARGING and
+> > > NOT_CHARGING. Also properties like VOLTAGE and CURRENT can be added
+> > > when
+> > > the typec class supports getting PDOs.
+> >
+> > Hmm, this functionally looks almost exactly like code already available in TCPM,
+> > except a much smaller subset. This looks like it would duplicate that work so as
+> > it stands doesn't feel sensible to me. It may be that the work in TCPM needs
+> > refactoring, but I don't believe the two should coexist.
+>
+> I agree. We can't register a psy for every port and partner
+> unconditionally like that.
+>
+> I do think that for the sake of uniformity it would make sense to have
+> the Type-C subsystem supply API that the Type-C drivers can use for
+> registering the psy instead of every Type-C driver doing that directly
+> with the psy API. So this patch should first introduce that API
+> without doing anything automatically.
+>
+> Once things settle down, we can consider taking care of the psy
+> registration for the drivers as well.
+>
+> Ideally the psy(s) registered here would supply the same information
+> and functionality as the psy registered in TCPM. Then a separate patch
+> that follows (that is part of the series) could simply convert TCPM to
+> use this new API for registering the psy.
+>
+> thanks,
 
-dw-hdmi is an IP, with some platform specific code and arrays to make it work
-on very different systems, thus we can't use this scheme everywhere....
+Thank you for the feedback Adam and Heikki. I will work on improving
+the port API so that the psy is not created unconditionally and I will
+work on getting to parity with the TCPM psy so that it can be switched
+to this new method.
 
-Some platforms (like r-car) uses the "right" model because the IP is integrated
-as-is with the default PHY and as an independent IP on the system.
-
-It's definitely not the case on Rockchip/Amlogic/Allwinner systems,
-and even worse on Amlogic system having a glue on top of the IP, and a
-custom PHY instead of the Synopsys PHY.
-
-Thus it would be great this would be the case on a Synopsys SoC... but like
-other platforms they have platform specific parameters.
-
-All this has been discussed and reviewed a few years ago, I would
-personally prefer "fishing out a bridge using dt magic" instead having
-1k glue code around the IP.
-
-Neil
-
-> 
-> I know a bit late, just spotted this because you brought your series here
-> up in my arc cleanup series, but can you pls look into adjusting
-> accordingly?
-> 
-> I shouldn't take more than moving this binding here into the dw-hdmi
-> driver, and switching arc itself over to the of_drm_find_bridge() call.
-> That way we could slowly work to transform old bridge drivers like dw-hdmi
-> to the new way, instead of adding more cases that will never get
-> converted.
-> 
-> Other upside is that arc stays a neat&tiny driver :-)
-> 
-> Thanks, Daniel
-> 
->> +	if (IS_ERR(hdmi))
->> +		return PTR_ERR(hdmi);
->> +
->> +	platform_set_drvdata(pdev, hdmi);
->> +
->> +	return 0;
->> +}
->> +
->> +static int snps_dw_hdmi_remove(struct platform_device *pdev)
->> +{
->> +	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
->> +
->> +	dw_hdmi_remove(hdmi);
->> +
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver snps_dw_hdmi_platform_driver = {
->> +	.probe  = snps_dw_hdmi_probe,
->> +	.remove = snps_dw_hdmi_remove,
->> +	.driver = {
->> +		.name = KBUILD_MODNAME,
->> +		.of_match_table = snps_dw_hdmi_dt_ids,
->> +	},
->> +};
->> +module_platform_driver(snps_dw_hdmi_platform_driver);
->> +
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_DESCRIPTION("ARC specific DW-HDMI driver extension");
->> +MODULE_AUTHOR("Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>");
->> -- 
->> 2.21.1
->>
-> 
-
+>
+> > >
+> > > Signed-off-by: Mathew King <mathewk@chromium.org>
+> > > ---
+> > >  drivers/usb/typec/Kconfig   |  11 ++
+> > >  drivers/usb/typec/Makefile  |   1 +
+> > >  drivers/usb/typec/charger.c | 204
+> > > ++++++++++++++++++++++++++++++++++++
+> > >  drivers/usb/typec/charger.h |  33 ++++++
+> > >  drivers/usb/typec/class.c   |  48 +++++++--
+> > >  drivers/usb/typec/class.h   |   2 +
+> > >  6 files changed, 290 insertions(+), 9 deletions(-)
+> > >  create mode 100644 drivers/usb/typec/charger.c
+> > >  create mode 100644 drivers/usb/typec/charger.h
+> > >
+> > > diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
+> > > index b4f2aac7ae8a..1040c990cb7e 100644
+> > > --- a/drivers/usb/typec/Kconfig
+> > > +++ b/drivers/usb/typec/Kconfig
+> > > @@ -46,6 +46,17 @@ menuconfig TYPEC
+> > >
+> > >  if TYPEC
+> > >
+> > > +config TYPEC_CHARGER
+> > > +   bool "Type-C Power Supply support"
+> > > +   depends on POWER_SUPPLY
+> > > +   help
+> > > +     Say Y here to enable Type-C charging ports to be exposed as a power
+> > > +     supply class.
+> > > +
+> > > +     If you choose this option Type-C charger support will be built into
+> > > +     the typec driver. This will expose all Type-C ports as a power_supply
+> > > +     class.
+> > > +
+> > >  source "drivers/usb/typec/tcpm/Kconfig"
+> > >
+> > >  source "drivers/usb/typec/ucsi/Kconfig"
+> > > diff --git a/drivers/usb/typec/Makefile b/drivers/usb/typec/Makefile
+> > > index 7753a5c3cd46..6fc5424761a1 100644
+> > > --- a/drivers/usb/typec/Makefile
+> > > +++ b/drivers/usb/typec/Makefile
+> > > @@ -1,6 +1,7 @@
+> > >  # SPDX-License-Identifier: GPL-2.0
+> > >  obj-$(CONFIG_TYPEC)                += typec.o
+> > >  typec-y                            := class.o mux.o bus.o
+> > > +typec-$(CONFIG_TYPEC_CHARGER)      += charger.o
+> > >  obj-$(CONFIG_TYPEC)                += altmodes/
+> > >  obj-$(CONFIG_TYPEC_TCPM)   += tcpm/
+> > >  obj-$(CONFIG_TYPEC_UCSI)   += ucsi/
+> > > diff --git a/drivers/usb/typec/charger.c b/drivers/usb/typec/charger.c
+> > > new file mode 100644
+> > > index 000000000000..07c3cd065be8
+> > > --- /dev/null
+> > > +++ b/drivers/usb/typec/charger.c
+> > > @@ -0,0 +1,204 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * USB Type-C Charger Class
+> > > + *
+> > > + * Copyright (C) 2020, Google LLC
+> > > + * Author: Mathew King <mathewk@google.com>
+> > > + */
+> > > +
+> > > +#include <linux/slab.h>
+> > > +
+> > > +#include "charger.h"
+> > > +#include "class.h"
+> > > +
+> > > +static enum power_supply_property typec_charger_props[] = {
+> > > +   POWER_SUPPLY_PROP_ONLINE,
+> > > +   POWER_SUPPLY_PROP_STATUS,
+> > > +   POWER_SUPPLY_PROP_USB_TYPE
+> > > +};
+> > > +
+> > > +static enum power_supply_usb_type typec_charger_usb_types[] = {
+> > > +   POWER_SUPPLY_USB_TYPE_UNKNOWN,
+> > > +   POWER_SUPPLY_USB_TYPE_C,
+> > > +   POWER_SUPPLY_USB_TYPE_PD,
+> > > +   POWER_SUPPLY_USB_TYPE_PD_DRP,
+> > > +};
+> > > +
+> > > +static int typec_charger_get_prop(struct power_supply *psy,
+> > > +                             enum power_supply_property psp,
+> > > +                             union power_supply_propval *val)
+> > > +{
+> > > +   struct typec_charger *charger = power_supply_get_drvdata(psy);
+> > > +
+> > > +   switch (psp) {
+> > > +   case POWER_SUPPLY_PROP_ONLINE:
+> > > +           val->intval = charger->psy_online;
+> > > +           break;
+> > > +   case POWER_SUPPLY_PROP_STATUS:
+> > > +           val->intval = charger->psy_status;
+> > > +           break;
+> > > +   case POWER_SUPPLY_PROP_USB_TYPE:
+> > > +           val->intval = charger->psy_usb_type;
+> > > +           break;
+> > > +   default:
+> > > +           return -EINVAL;
+> > > +   }
+> > > +
+> > > +   return 0;
+> > > +}
+> > > +
+> > > +static int typec_charger_set_prop(struct power_supply *psy,
+> > > +                             enum power_supply_property psp,
+> > > +                             const union power_supply_propval *val)
+> > > +{
+> > > +   return -EINVAL;
+> > > +}
+> > > +
+> > > +static int typec_charger_is_writeable(struct power_supply *psy,
+> > > +                                 enum power_supply_property psp)
+> > > +{
+> > > +   return 0;
+> > > +}
+> > > +
+> > > +/**
+> > > + * typec_charger_changed - Notify of a Type-C charger change
+> > > + * @charger: Type-C charger that changed
+> > > + *
+> > > + * Notifies the Type-C charger that one or more of its attributes may have
+> > > + * changed.
+> > > + */
+> > > +void typec_charger_changed(struct typec_charger *charger)
+> > > +{
+> > > +   int last_psy_status, last_psy_usb_type, last_psy_online;
+> > > +
+> > > +   last_psy_online = charger->psy_online;
+> > > +   last_psy_status = charger->psy_status;
+> > > +   last_psy_usb_type = charger->psy_usb_type;
+> > > +
+> > > +   if (!charger->partner) {
+> > > +           charger->psy_usb_type =
+> > > POWER_SUPPLY_USB_TYPE_UNKNOWN;
+> > > +           charger->psy_online = 0;
+> > > +           charger->psy_status =
+> > > POWER_SUPPLY_STATUS_NOT_CHARGING;
+> > > +           goto out_notify;
+> > > +   }
+> > > +
+> > > +   if (charger->port->pwr_role == TYPEC_SOURCE) {
+> > > +           charger->psy_online = 0;
+> > > +           charger->psy_status =
+> > > POWER_SUPPLY_STATUS_NOT_CHARGING;
+> > > +           if (charger->partner->usb_pd)
+> > > +                   charger->psy_usb_type =
+> > > POWER_SUPPLY_USB_TYPE_PD_DRP;
+> > > +           else
+> > > +                   charger->psy_usb_type =
+> > > POWER_SUPPLY_USB_TYPE_UNKNOWN;
+> > > +
+> > > +           goto out_notify;
+> > > +   }
+> > > +
+> > > +   charger->psy_online = 1;
+> > > +   charger->psy_status = POWER_SUPPLY_STATUS_CHARGING;
+> > > +
+> > > +   if (charger->partner->usb_pd)
+> > > +           charger->psy_usb_type = POWER_SUPPLY_USB_TYPE_PD;
+> > > +   else
+> > > +           charger->psy_usb_type = POWER_SUPPLY_USB_TYPE_C;
+> > > +
+> > > +out_notify:
+> > > +   if (last_psy_usb_type != charger->psy_usb_type ||
+> > > +       last_psy_status != charger->psy_status ||
+> > > +       last_psy_online != charger->psy_online)
+> > > +           power_supply_changed(charger->psy);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(typec_charger_changed);
+> > > +
+> > > +/**
+> > > + * typec_register_charger - Register a USB Type-C Charger
+> > > + * @port: Type-C port to register as a charger
+> > > + *
+> > > + * Registers a Type-C port as a charger.
+> > > + *
+> > > + * Returns handle to the charger on success or ERR_PTR on failure.
+> > > + */
+> > > +struct typec_charger *typec_register_charger(struct typec_port *port)
+> > > +{
+> > > +   struct power_supply_config psy_cfg = {};
+> > > +   struct typec_charger *charger;
+> > > +   struct power_supply *psy;
+> > > +
+> > > +   charger = kzalloc(sizeof(struct typec_charger), GFP_KERNEL);
+> > > +   if (!port)
+> > > +           return ERR_PTR(-ENOMEM);
+> > > +
+> > > +   charger->port = port;
+> > > +   sprintf(charger->name, TYPEC_CHARGER_DIR_NAME, port->id);
+> > > +   charger->psy_usb_type = POWER_SUPPLY_USB_TYPE_UNKNOWN;
+> > > +   charger->psy_online = 0;
+> > > +   charger->psy_status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+> > > +
+> > > +   charger->psy_desc.name = charger->name;
+> > > +   charger->psy_desc.type = POWER_SUPPLY_TYPE_USB;
+> > > +   charger->psy_desc.get_property = typec_charger_get_prop;
+> > > +   charger->psy_desc.set_property = typec_charger_set_prop;
+> > > +   charger->psy_desc.property_is_writeable =
+> > > +           typec_charger_is_writeable;
+> > > +   charger->psy_desc.properties = typec_charger_props;
+> > > +   charger->psy_desc.num_properties =
+> > > +                           ARRAY_SIZE(typec_charger_props);
+> > > +   charger->psy_desc.usb_types = typec_charger_usb_types;
+> > > +   charger->psy_desc.num_usb_types =
+> > > +                   ARRAY_SIZE(typec_charger_usb_types);
+> > > +   psy_cfg.drv_data = charger;
+> > > +
+> > > +   psy = devm_power_supply_register_no_ws(&port->dev, &charger-
+> > > >psy_desc,
+> > > +                                          &psy_cfg);
+> > > +   if (IS_ERR(psy)) {
+> > > +           dev_err(&port->dev, "Failed to register Type-C power
+> > > supply\n");
+> > > +           return ERR_CAST(psy);
+> > > +   }
+> > > +   charger->psy = psy;
+> > > +
+> > > +   return charger;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(typec_register_charger);
+> > > +
+> > > +/**
+> > > + * typec_unregister_charger - Unregister a USB Type-C Charger
+> > > + * @charger: The charger to unregister
+> > > + *
+> > > + * Unregisters a charger created with typec_register_charger().
+> > > + */
+> > > +void typec_unregister_charger(struct typec_charger *charger)
+> > > +{
+> > > +   if (!IS_ERR_OR_NULL(charger))
+> > > +           kfree(charger);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(typec_unregister_charger);
+> > > +
+> > > +/**
+> > > + * typec_charger_register_partner - Register a partner with a USB Type-C
+> > > Charger
+> > > + * @charger: The charger to add the partner too
+> > > + * @partner: The partner to add
+> > > + *
+> > > + * Add a partner to a Type-C charger to indicate that the partner is connected
+> > > + * and may be charging.
+> > > + */
+> > > +void typec_charger_register_partner(struct typec_charger *charger,
+> > > +                               struct typec_partner *partner)
+> > > +{
+> > > +   charger->partner = partner;
+> > > +   typec_charger_changed(charger);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(typec_charger_register_partner);
+> > > +
+> > > +/**
+> > > + * typec_charger_unregister_partner - Unregister a USB Type-C Charger partner
+> > > + * @charger: The charger to remove the partner from
+> > > + *
+> > > + * Remove partner added with typec_charger_register_partner().
+> > > + */
+> > > +void typec_charger_unregister_partner(struct typec_charger *charger)
+> > > +{
+> > > +   if (!IS_ERR_OR_NULL(charger))
+> > > +           charger->partner = NULL;
+> > > +
+> > > +   typec_charger_changed(charger);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(typec_charger_unregister_partner);
+> > > diff --git a/drivers/usb/typec/charger.h b/drivers/usb/typec/charger.h
+> > > new file mode 100644
+> > > index 000000000000..32cdaa7c1a83
+> > > --- /dev/null
+> > > +++ b/drivers/usb/typec/charger.h
+> > > @@ -0,0 +1,33 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +
+> > > +#ifndef __USB_TYPEC_CHARGER_H__
+> > > +#define __USB_TYPEC_CHARGER_H__
+> > > +
+> > > +#include <linux/power_supply.h>
+> > > +#include <linux/usb/typec.h>
+> > > +
+> > > +#include "class.h"
+> > > +
+> > > +#define TYPEC_CHARGER_DIR_NAME
+> > >     "TYPEC_CHARGER%d"
+> > > +#define TYPEC_CHARGER_DIR_NAME_LENGTH
+> > >     sizeof(TYPEC_CHARGER_DIR_NAME)
+> > > +
+> > > +struct typec_charger {
+> > > +   struct typec_port *port;
+> > > +   struct typec_partner *partner;
+> > > +   char name[TYPEC_CHARGER_DIR_NAME_LENGTH];
+> > > +   struct power_supply *psy;
+> > > +   struct power_supply_desc psy_desc;
+> > > +   int psy_usb_type;
+> > > +   int psy_online;
+> > > +   int psy_status;
+> > > +};
+> > > +
+> > > +struct typec_charger *typec_register_charger(struct typec_port *port);
+> > > +void typec_unregister_charger(struct typec_charger *charger);
+> > > +
+> > > +void typec_charger_register_partner(struct typec_charger *charger,
+> > > +                               struct typec_partner *partner);
+> > > +void typec_charger_unregister_partner(struct typec_charger *charger);
+> > > +void typec_charger_changed(struct typec_charger *charger);
+> > > +
+> > > +#endif /* __USB_TYPEC_CHARGER_H__ */
+> > > diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> > > index 9a1fdce137b9..1542d3af342c 100644
+> > > --- a/drivers/usb/typec/class.c
+> > > +++ b/drivers/usb/typec/class.c
+> > > @@ -13,6 +13,7 @@
+> > >  #include <linux/slab.h>
+> > >
+> > >  #include "bus.h"
+> > > +#include "charger.h"
+> > >  #include "class.h"
+> > >
+> > >  static DEFINE_IDA(typec_index_ida);
+> > > @@ -489,6 +490,12 @@ static void typec_partner_release(struct device *dev)
+> > >  {
+> > >     struct typec_partner *partner = to_typec_partner(dev);
+> > >
+> > > +   if (IS_ENABLED(CONFIG_TYPEC_CHARGER)) {
+> > > +           struct typec_port *port = to_typec_port(dev->parent);
+> > > +
+> > > +           typec_charger_unregister_partner(port->charger);
+> > > +   }
+> > > +
+> > >     ida_destroy(&partner->mode_ids);
+> > >     kfree(partner);
+> > >  }
+> > > @@ -580,6 +587,10 @@ struct typec_partner *typec_register_partner(struct
+> > > typec_port *port,
+> > >             return ERR_PTR(ret);
+> > >     }
+> > >
+> > > +   if (IS_ENABLED(CONFIG_TYPEC_CHARGER) && port->charger) {
+> > > +           typec_charger_register_partner(port->charger, partner);
+> > > +   }
+> > > +
+> > >     return partner;
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(typec_register_partner);
+> > > @@ -1283,6 +1294,9 @@ static void typec_release(struct device *dev)
+> > >  {
+> > >     struct typec_port *port = to_typec_port(dev);
+> > >
+> > > +   if (IS_ENABLED(CONFIG_TYPEC_CHARGER))
+> > > +           typec_unregister_charger(port->charger);
+> > > +
+> > >     ida_simple_remove(&typec_index_ida, port->id);
+> > >     ida_destroy(&port->mode_ids);
+> > >     typec_switch_put(port->sw);
+> > > @@ -1564,7 +1578,8 @@ struct typec_port *typec_register_port(struct device
+> > > *parent,
+> > >     id = ida_simple_get(&typec_index_ida, 0, 0, GFP_KERNEL);
+> > >     if (id < 0) {
+> > >             kfree(port);
+> > > -           return ERR_PTR(id);
+> > > +           ret = id;
+> > > +           goto err_return;
+> > >     }
+> > >
+> > >     switch (cap->type) {
+> > > @@ -1617,32 +1632,47 @@ struct typec_port *typec_register_port(struct device
+> > > *parent,
+> > >
+> > >     port->cap = kmemdup(cap, sizeof(*cap), GFP_KERNEL);
+> > >     if (!port->cap) {
+> > > -           put_device(&port->dev);
+> > > -           return ERR_PTR(-ENOMEM);
+> > > +           ret = -ENOMEM;
+> > > +           goto err_put_device;
+> > >     }
+> > >
+> > >     port->sw = typec_switch_get(&port->dev);
+> > >     if (IS_ERR(port->sw)) {
+> > >             ret = PTR_ERR(port->sw);
+> > > -           put_device(&port->dev);
+> > > -           return ERR_PTR(ret);
+> > > +           goto err_put_device;
+> > >     }
+> > >
+> > >     port->mux = typec_mux_get(&port->dev, NULL);
+> > >     if (IS_ERR(port->mux)) {
+> > >             ret = PTR_ERR(port->mux);
+> > > -           put_device(&port->dev);
+> > > -           return ERR_PTR(ret);
+> > > +           goto err_put_device;
+> > >     }
+> > >
+> > >     ret = device_add(&port->dev);
+> > >     if (ret) {
+> > >             dev_err(parent, "failed to register port (%d)\n", ret);
+> > > -           put_device(&port->dev);
+> > > -           return ERR_PTR(ret);
+> > > +           goto err_put_device;
+> > > +   }
+> > > +
+> > > +   if (IS_ENABLED(CONFIG_TYPEC_CHARGER)) {
+> > > +           port->charger = typec_register_charger(port);
+> > > +
+> > > +           if (IS_ERR(port->charger)) {
+> > > +                   ret = PTR_ERR(port->charger);
+> > > +                   goto err_device_del;
+> > > +           }
+> > >     }
+> > >
+> > >     return port;
+> > > +
+> > > +err_device_del:
+> > > +   device_del(&port->dev);
+> > > +
+> > > +err_put_device:
+> > > +   put_device(&port->dev);
+> > > +
+> > > +err_return:
+> > > +   return ERR_PTR(ret);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(typec_register_port);
+> > >
+> > > diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
+> > > index ec933dfe1323..0ff0a590d316 100644
+> > > --- a/drivers/usb/typec/class.h
+> > > +++ b/drivers/usb/typec/class.h
+> > > @@ -41,6 +41,8 @@ struct typec_port {
+> > >     struct typec_switch             *sw;
+> > >     struct typec_mux                *mux;
+> > >
+> > > +   struct typec_charger            *charger;
+> > > +
+> > >     const struct typec_capability   *cap;
+> > >     const struct typec_operations   *ops;
+> > >  };
+> > > --
+> > > 2.26.1.301.g55bc3eb7cb9-goog
+>
+> --
+> heikki
