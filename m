@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B711B30D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2241B30D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgDUT4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:56:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:12926 "EHLO mga14.intel.com"
+        id S1726432AbgDUT4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:56:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgDUT4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:56:30 -0400
-IronPort-SDR: v8v6KWO4hLM0DHT29242Oqjx9v9hZefrPttW9s8u9UgpFXRuvh9klig0bjdE786AqX9UodomnC
- KThs3Psf2qWQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 12:56:29 -0700
-IronPort-SDR: 45310gdaHpjeDnHv2hE60TDlC//gOb8vlpjLnefdzstkd68oq4wZxwg5+NG5M02X/mrpeKURgR
- /7BG5DiXnDRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="456228915"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Apr 2020 12:56:29 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 967233019B6; Tue, 21 Apr 2020 12:56:29 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 12:56:29 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Metzger, Markus T" <markus.t.metzger@intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simark@simark.ca>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 00/17] Enable FSGSBASE instructions
-Message-ID: <20200421195629.GE608746@tassilo.jf.intel.com>
-References: <A78C989F6D9628469189715575E55B236B508C1A@IRSMSX104.ger.corp.intel.com>
- <CALCETrWb9jvwOPuupet4n5=JytbS-x37bnn=THniv_d8cNvf_Q@mail.gmail.com>
- <29FD6626-4347-4B79-A027-52E44C7FDE55@intel.com>
- <20200413200336.GA11216@sasha-vm>
- <20200414003205.GF397326@tassilo.jf.intel.com>
- <20200417133021.GT1068@sasha-vm>
- <CALCETrW6LLmFR5Y6tmH=nPThCHefysf_nNwxHOFp4tAY4Spunw@mail.gmail.com>
- <20200420141320.GC608746@tassilo.jf.intel.com>
- <87y2qqaxkp.fsf@nanos.tec.linutronix.de>
- <20200421160622.GJ1809@sasha-vm>
+        id S1725930AbgDUT4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 15:56:53 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3942820747;
+        Tue, 21 Apr 2020 19:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587499012;
+        bh=ETifHYDRK1FzZJ6ND7rFAzLA3xN5oZGfPogquuTNc5Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=fYGrdLlQ6fiuttI3ramdPVO44yeoN8o1888LgBd/lARcHjSmUKvRaLOfskJE1JtLz
+         MAm+V9o2QzxbLTcMl3TwR8ojRjJLwszOwpXIT6XLsNw+Cjh3sc4F/EWtwntDhcCSYq
+         uCQ+wsZXZDOdUW0IUveXXlZl5OcvAxPzy2fynAqw=
+Subject: Re: [PATCH 5.5 00/65] 5.5.19-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, shuah <shuah@kernel.org>
+References: <20200420121505.909671922@linuxfoundation.org>
+From:   shuah <shuah@kernel.org>
+Message-ID: <0f30ba9e-ae8a-850c-04a4-1a96567b3dd4@kernel.org>
+Date:   Tue, 21 Apr 2020 13:56:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421160622.GJ1809@sasha-vm>
+In-Reply-To: <20200420121505.909671922@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Andi's point is that there is no known user it breaks, and the Intel
-> folks did some digging into potential users who might be affected by
-> this, including 'rr' brought up by Andy, and concluded that there won't
-> be breakage as a result of this patchset:
+On 4/20/20 6:38 AM, Greg Kroah-Hartman wrote:
+> --------------------
+> NOTE: this is going to be the LAST 5.5.y release, after this one, it will be
+> end-of-life, please move to 5.6.y at this point in time.
+> --------------------
 > 
-> 	https://mail.mozilla.org/pipermail/rr-dev/2018-March/000616.html
+> This is the start of the stable review cycle for the 5.5.19 release.
+> There are 65 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Sure, if you poke at it you could see a behavior change, but is there
-> an actual user that will be affected by it? I suspect not.
+> Responses should be made by Wed, 22 Apr 2020 12:10:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.5.19-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.5.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Actually we don't know of any behavior changes caused by the kernel
-with selectors.
+Compiled and booted on my test system. No dmesg regression.
+Reboot/poweroff work - hang problem fixed.
 
-The application can change itself of course, but only if it uses the 
-new instructions, which no current application does.
+thanks,
+-- Shuah
 
-[This was different in the original patch kit long ago which could
-change behavior on context switch for programs with out of sync selectors,
-but this has been long fixed]
-
-A debugger can also change behavior, but we're not aware of any case
-that it would break.
-
-For rr or criu we're also not aware of any case that could break.
-
-I honestly don't know what else could be done in due diligence.
-
-Also just to reiterate merging this would immediately shave off
-hundreds of cycles in most context switches.
-
--Andi
