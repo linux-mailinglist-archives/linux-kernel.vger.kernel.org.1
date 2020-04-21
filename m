@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930B11B2B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7311B2BAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgDUPvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725994AbgDUPvl (ORCPT
+        id S1726671AbgDUPys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:54:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27746 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725613AbgDUPyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:51:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3864C061A10;
-        Tue, 21 Apr 2020 08:51:40 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x18so17050250wrq.2;
-        Tue, 21 Apr 2020 08:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=kcT8YhRThPhegOm3BQj7wUe66PuL6hDa8ErzC+LQvVA=;
-        b=T/PyuRExpYtl18m3qkte0wueAWmWWpHTRgZgK8uwu12i+5YbEWa0GkQnamXwmmz2ym
-         HnDhNv2mBoB9JSc/2zO24+fUuBTWzCT81vqx7x/beNBoW2Cd5JlP50LrNaiIDdARVTY8
-         9sOn3cfal5fmxmyBKT2JFMwIzpFqAgVi9hKyEoKy3wy+BNKyqoyxTn7bgh02qlQqm7RA
-         4jSQfhpNWkjxqAkY0QObUBLau0NXNyECQ6J7+J8P/AnZz/3VYvfv5HOxkawlcQ6q2RQF
-         wXBghlmE8m7LWE8EISO7TF1NwV3wItGrFtlorZhTzNRY/p0HaUCSteOWlgJzbn1FNE26
-         YtUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kcT8YhRThPhegOm3BQj7wUe66PuL6hDa8ErzC+LQvVA=;
-        b=cvNsezhPgw4mvaB58C6wJsgVjcFXx/uhyop07eo3U9GBKF1jCxmG2vbitadggrZE9k
-         OL2tHVFjAI/ak3JQK9MixRN47jL57r7U0Px+qmtXfwgXNClDu/yFnXXBa7U+uEXsmZ9h
-         OCD6gCzntN0Cn3uxCTmsb70GaSSANNZCfOGNZ9grqBAgCvGurG2aWoN4KQLqc9yXTLp0
-         rjzxHMLSgbAoU/8Wu4UWArqxVXyUIzERFT9thXEiNxC/UChD+EgRgqGfB9XWTXI6BiOX
-         elLRRPOw2iyvo/ClWHeyrRwdHfic/4vFPwphhEwGH4PxnvI0TJXVxY+7siREhI/H7S51
-         eeZA==
-X-Gm-Message-State: AGi0PuYS2oDcvQKB71NuQ1OUlFnezeGyOUpOHetmztZceJclIRbH6bn7
-        q8ohc4E0YzBdDUl8qOSsRfN6NgTR
-X-Google-Smtp-Source: APiQypLwxUr2g6yIkcRAqbgAzcYzXQ/xaGoq2pE5TKNjpKqN73rSSuaC3AUnTp3g8GDcaDbKPiJI/g==
-X-Received: by 2002:a5d:4cd0:: with SMTP id c16mr23192004wrt.98.1587484299782;
-        Tue, 21 Apr 2020 08:51:39 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id v19sm4357664wra.57.2020.04.21.08.51.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Apr 2020 08:51:38 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, mchehab@kernel.org, ezequiel@collabora.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: media: rockchip-vpu: fix interrupt-names
-Date:   Tue, 21 Apr 2020 17:51:31 +0200
-Message-Id: <20200421155131.5839-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Tue, 21 Apr 2020 11:54:46 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03LFXENr112181
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:54:45 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gfebpxk7-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 11:54:45 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <tmricht@linux.ibm.com>;
+        Tue, 21 Apr 2020 16:54:37 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 21 Apr 2020 16:54:34 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03LFsdqQ6815904
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 15:54:39 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBAE252050;
+        Tue, 21 Apr 2020 15:54:38 +0000 (GMT)
+Received: from oc3784624756.ibm.com (unknown [9.206.132.69])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E29F05204E;
+        Tue, 21 Apr 2020 15:54:33 +0000 (GMT)
+To:     "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+From:   Thomas Richter <tmricht@linux.ibm.com>
+Subject: kernel/perf: Sample data being lost
+Organization: IBM
+Date:   Tue, 21 Apr 2020 17:54:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042115-0028-0000-0000-000003FC661A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042115-0029-0000-0000-000024C22A44
+Message-Id: <f09e62d0-af40-683a-648f-3c3b7137369b@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-21_05:2020-04-20,2020-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004210121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives for example this error:
+Since a couple of days I see this warning popping up very often:
 
-arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: video-codec@ff350000:
-interrupts: [[0, 9, 4]] is too short
-arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: video-codec@ff350000:
-interrupt-names: ['vdpu'] is too short
-arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: video-codec@ff350000:
-interrupt-names:0: 'vepu' was expected
+[root@m35lp76 perf]# ./perf record --call-graph dwarf -e rb0000 -- find /
+[ perf record: Woken up 282 times to write data ]
+Warning:
+Processed 16999 events and lost 382 chunks!
 
-With the conversion of rockchip-vpu.txt to yaml the correct
-'interrupt-names' for rk3328 was not included, so add them now.
-Also add 'minItems' to 'interrupts'for the completeness.
+Check IO/CPU overload!
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+[ perf record: Captured and wrote 125.730 MB perf.data (16219 samples) ]
+[root@m35lp76 perf]#
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/media/rockchip-vpu.yaml | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+The machine is idle, its my development system, so not much going on.
+It also happens using a software event, for example cycles. It shows
+up more often, the larger the sample size is. So for example:
 
-diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-index d7a42e6f9..27df18ad6 100644
---- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-+++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-@@ -24,12 +24,15 @@ properties:
-     maxItems: 1
- 
-   interrupts:
-+    minItems: 1
-     maxItems: 2
- 
-   interrupt-names:
--    items:
--      - const: vepu
-+    oneOf:
-       - const: vdpu
-+      - items:
-+        - const: vepu
-+        - const: vdpu
- 
-   clocks:
-     maxItems: 2
+[root@m35lp76 perf]# pwd
+/root/linux/tools/perf
+[root@m35lp76 perf]#  ./perf record  --call-graph dwarf -- find
+[ perf record: Woken up 2 times to write data ]
+Warning:
+Processed 231 events and lost 7 chunks!
+
+Check IO/CPU overload!
+
+[ perf record: Captured and wrote 1.000 MB perf.data (130 samples) ]
+[root@m35lp76 perf]#
+
+I have very seldom observed this before, only in extremely rare cases with
+a heavily loaded machine. I am wondering what has changed, I haven't
+changed anything in the s390 PMU device drivers.
+It could be
+ - common kernel code when writing into the ringbuffer.
+ - the perf tool too slow to read data from the mapped buffer.
+   However I have not come across changes in this area.
+
+Has anybody observed similar issue?
+
+PS: I have added some printk messages into my PMU devices drivers.
+I have seen messages that the 16384 pages for auxilary buffers are full
+and that samples have been dropped.
+
+
+Thanks a lot.                                 
 -- 
-2.11.0
+Thomas Richter, Dept 3252, IBM s390 Linux Development, Boeblingen, Germany
+--
+Vorsitzender des Aufsichtsrats: Matthias Hartmann
+Geschäftsführung: Dirk Wittkopp
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 
