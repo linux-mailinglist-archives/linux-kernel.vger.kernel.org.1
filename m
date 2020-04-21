@@ -2,329 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E33F1B2E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233171B2E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgDUR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        id S1729237AbgDURaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726530AbgDUR3u (ORCPT
+        by vger.kernel.org with ESMTP id S1726043AbgDURaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:29:50 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F54C0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:29:50 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id z6so5486294plk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9rz6rrT6JS8gYjAobTtkYKP4z/sTny8QWqFoZElORnw=;
-        b=EBRtV21IlL6LgpAascZ0qEd/iwHnkvajsKftBGT9dkMt2qh4djdfS5byXkgme35b2X
-         x0A8sWm8yjqXu76q+PCDCml87tYS1gf4GOc13TKbosjzVnlXP++oyBHRaNREiL8owwkm
-         vHn3RcgIb/VX03Yh31EnwqqF++pV1MVFc0L34=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9rz6rrT6JS8gYjAobTtkYKP4z/sTny8QWqFoZElORnw=;
-        b=GpNgczblc6EkFy9GJHJ2j0l5Av4RJVCR5sRlF1Wr6hzSMnWDdkyWePc260P0NO0Pzk
-         fQcGcfXtmmeWrIpKyDcKb5XaqBC0IXEsZIJ1G4oDiGCjIDSwUoPzMJ5M3BdPbvwBPl18
-         cP03Z87RNdiuHndcK2fgdGS2A88G2LtipXwtR/+27Z7cvnqCpfyiBi68qYFhinCj1jq6
-         VCQ/2p3+cAJD0lYRb5019ghwaLgfu3AZdUl8rH5V/kefYBcgeve2YK2XUlJyCCnV/g11
-         DzL9ZZ+4j8HViNG8jKz7O4uZpU8gMJEJRpZOh7y2daEQ3fzh/wxdWlJ8OUBJhL0mpiqG
-         RsIQ==
-X-Gm-Message-State: AGi0PuYdnafOmRUDiuVZEBnlAqHKKF/JZdEiZ+PxmkQbPB2NWoJ8G0is
-        P9ylDNYAfZLa/Yj8YUviAxVMkw==
-X-Google-Smtp-Source: APiQypJkr9V3JpyUMxdLmmas3PwNv9yxm81ERtQmpZ5jI9NNajrFSr6az47FhGo+DqAvQsiyc+zS+Q==
-X-Received: by 2002:a17:902:904a:: with SMTP id w10mr17503360plz.17.1587490190199;
-        Tue, 21 Apr 2020 10:29:50 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id v127sm2874816pfv.77.2020.04.21.10.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 10:29:49 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael.j.wysocki@intel.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mkshah@codeaurora.org, swboyd@chromium.org, mka@chromium.org,
-        evgreen@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] soc: qcom: rpmh-rsc: Remove the pm_lock
-Date:   Tue, 21 Apr 2020 10:29:08 -0700
-Message-Id: <20200421102745.v3.3.I295cb72bc5334a2af80313cbe97cb5c9dcb1442c@changeid>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-In-Reply-To: <20200421102745.v3.1.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
-References: <20200421102745.v3.1.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 21 Apr 2020 13:30:21 -0400
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADE8C0610D5;
+        Tue, 21 Apr 2020 10:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587490214;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=HikqoAbRox/lVm/oJtuVUkcBJdcoi2Fs9oSIyzhVSWA=;
+        b=OkjAAXU/dMQV2Gnohhxbvz1AdkHU3RKU/1TDZp5Rx92yl6b93QxrT8UR4Na+dAi43e
+        nkJorWREU+Ufh07M2579vYYM36/GTSdreA2NjHelDQhMThvpuw5WS2KZIZ02wylE+W1j
+        4jOErVK/Os3EJRaO7FhSMbdCMHISKZAroE0LwbcbIbCYTX90/aVsOULA3haoLMDd5ylA
+        +KFfAFQTZJ+RpmKSaHq0eIMToLxtr2ShAr9piDw3ULmvVraWbobB4yKTi8Aefs9PfbfL
+        jdJ/fFi2pqT/XbxxI2hJjExBCzZXCUMTe187W/g/wF/NFIkQ8bR7OuldFHFfMkCZWNTG
+        hsyg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmAiw43oXkQ="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.5.0 DYNA|AUTH)
+        with ESMTPSA id g06d2dw3LHTXJfm
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 21 Apr 2020 19:29:33 +0200 (CEST)
+Subject: Re: [PATCH v6 00/12] ARM/MIPS: DTS: add child nodes describing the PVRSGX GPU present in some OMAP SoC and JZ4780 (and many more)
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20200421141543.GU37466@atomide.com>
+Date:   Tue, 21 Apr 2020 19:29:32 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        OpenPVRSGX Linux Driver Group <openpvrsgx-devgroup@letux.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        linux-mips@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D9D4D057-A73D-485F-898D-5C05E89C16B7@goldelico.com>
+References: <cover.1586939718.git.hns@goldelico.com> <20200415101008.zxzxca2vlfsefpdv@gilmour.lan> <2E3401F1-A106-4396-8FE6-51CAB72926A4@goldelico.com> <20200415130233.rgn7xrtwqicptke2@gilmour.lan> <C589D06E-435E-4316-AD0A-8498325039E3@goldelico.com> <10969e64-fe1f-d692-4984-4ba916bd2161@gmail.com> <20200420073842.nx4xb3zqvu23arkc@gilmour.lan> <b5a06c19-7a3e-bcb8-5ae3-76901b9c6c35@gmail.com> <20200421112129.zjmkmzo3aftksgka@gilmour.lan> <20200421141543.GU37466@atomide.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Philipp Rossak <embed3d@gmail.com>,
+        Jonathan Bakker <xc-racer2@live.ca>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been postulated that the pm_lock is bad for performance because
-a CPU currently running rpmh_flush() could block other CPUs from
-coming out of idle.  Similarly CPUs coming out of / going into idle
-all need to contend with each other for the spinlock just to update
-the variable tracking who's in PM.
 
-Let's optimize this a bit.  Specifically:
+> Am 21.04.2020 um 16:15 schrieb Tony Lindgren <tony@atomide.com>:
+>=20
+> * Maxime Ripard <maxime@cerno.tech> [200421 11:22]:
+>> On Tue, Apr 21, 2020 at 11:57:33AM +0200, Philipp Rossak wrote:
+>>> I had a look on genpd and I'm not really sure if that fits.
+>>>=20
+>>> It is basically some bit that verify that the clocks should be =
+enabled or
+>>> disabled.
+>>=20
+>> No, it can do much more than that. It's a framework to control the =
+SoCs power
+>> domains, so clocks might be a part of it, but most of the time it's =
+going to be
+>> about powering up a particular device.
+>=20
+> Note that on omaps there are actually SoC module specific registers.
 
-- Use a count rather than a bitmask.  This is faster to access and
-  also means we can use the atomic_inc_return() function to really
-  detect who the last one to enter PM was.
-- Accept that it's OK if we race and are doing the flush (because we
-  think we're last) while another CPU is coming out of idle.  As long
-  as we block that CPU if/when it tries to do an active-only transfer
-  we're OK.
+Ah, I see. This is of course a difference that the TI glue logic has
+its own registers in the same address range as the sgx and this can't
+be easily handled by a common sgx driver.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+This indeed seems to be unique with omap.
 
-Changes in v3:
-- Rebased atop patch to get rid of per-TCS lock.
-- Removed bogus comment in rpmh_flush().
-- thelock => the lock.
-- Do one last double-check to try to avoid returning NOTIFY_BAD.
+> And there can be multiple devices within a single target module on
+> omaps. So the extra dts node and device is justified there.
+>=20
+> For other SoCs, the SGX clocks are probably best handled directly
+> in pvr-drv.c PM runtime functions unless a custom hardware wrapper
+> with SoC specific registers exists.
 
-Changes in v2:
-- Always grab drv->lock first to ensure lock ordering.
-- Grab the cache_lock in rpmh_flush().
-- Comments about why num_online_cpus() is OK.
-- Return NOTIFY_DONE for things we don't care about.
-- Use trylock to avoid spinning in CPU_PM code.
-- !rpmh_flush() should have been rpmh_flush(), so we were alwys failing.
-- Account for CPU_PM_ENTER_FAILED not being called if we return NOTIFY_BAD.
+That is why we need to evaluate what the better strategy is.
 
- drivers/soc/qcom/rpmh-internal.h | 11 +++--
- drivers/soc/qcom/rpmh-rsc.c      | 70 +++++++++++++++++++++-----------
- drivers/soc/qcom/rpmh.c          | 25 ++++++++----
- 3 files changed, 68 insertions(+), 38 deletions(-)
+So we have
+a) omap which has a custom wrapper around the sgx
+b) others without, i.e. an empty (or pass-through) wrapper
 
-diff --git a/drivers/soc/qcom/rpmh-internal.h b/drivers/soc/qcom/rpmh-internal.h
-index 1f2857b3f38e..ef60e790a750 100644
---- a/drivers/soc/qcom/rpmh-internal.h
-+++ b/drivers/soc/qcom/rpmh-internal.h
-@@ -95,7 +95,7 @@ struct rpmh_ctrlr {
-  * @num_tcs:            Number of TCSes in this DRV.
-  * @rsc_pm:             CPU PM notifier for controller.
-  *                      Used when solver mode is not present.
-- * @cpus_entered_pm:    CPU mask for cpus in idle power collapse.
-+ * @cpus_in_pm:         Number of CPUs not in idle power collapse.
-  *                      Used when solver mode is not present.
-  * @tcs:                TCS groups.
-  * @tcs_in_use:         S/W state of the TCS; only set for ACTIVE_ONLY
-@@ -103,9 +103,9 @@ struct rpmh_ctrlr {
-  *                      it was borrowed for an active_only transfer.  You
-  *                      must hold the lock in this struct (AKA drv->lock) in
-  *                      order to update this.
-- * @lock:               Synchronize state of the controller.
-- * @pm_lock:            Synchronize during PM notifications.
-- *                      Used when solver mode is not present.
-+ * @lock:               Synchronize state of the controller.  If RPMH's cache
-+ *                      lock will also be held, the order is: drv->lock then
-+ *                      cache_lock.
-  * @client:             Handle to the DRV's client.
-  */
- struct rsc_drv {
-@@ -114,11 +114,10 @@ struct rsc_drv {
- 	int id;
- 	int num_tcs;
- 	struct notifier_block rsc_pm;
--	struct cpumask cpus_entered_pm;
-+	atomic_t cpus_in_pm;
- 	struct tcs_group tcs[TCS_TYPE_NR];
- 	DECLARE_BITMAP(tcs_in_use, MAX_TCS_NR);
- 	spinlock_t lock;
--	spinlock_t pm_lock;
- 	struct rpmh_ctrlr client;
- };
- 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 992c79920e69..060be10bc491 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -736,6 +736,8 @@ int rpmh_rsc_write_ctrl_data(struct rsc_drv *drv, const struct tcs_request *msg)
-  * SLEEP and WAKE sets. If AMCs are busy, controller can not enter
-  * power collapse, so deny from the last cpu's pm notification.
-  *
-+ * Context: Must be called with the drv->lock held.
-+ *
-  * Return:
-  * * False		- AMCs are idle
-  * * True		- AMCs are busy
-@@ -750,9 +752,6 @@ static bool rpmh_rsc_ctrlr_is_busy(struct rsc_drv *drv)
- 	 * dedicated TCS for active state use, then re-purposed wake TCSes
- 	 * should be checked for not busy, because we used wake TCSes for
- 	 * active requests in this case.
--	 *
--	 * Since this is called from the last cpu, need not take drv->lock
--	 * before checking tcs_is_free().
- 	 */
- 	if (!tcs->num_tcs)
- 		tcs = &drv->tcs[WAKE_TCS];
-@@ -787,36 +786,62 @@ static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
- {
- 	struct rsc_drv *drv = container_of(nfb, struct rsc_drv, rsc_pm);
- 	int ret = NOTIFY_OK;
--
--	spin_lock(&drv->pm_lock);
-+	int cpus_in_pm;
- 
- 	switch (action) {
- 	case CPU_PM_ENTER:
--		cpumask_set_cpu(smp_processor_id(), &drv->cpus_entered_pm);
--
--		if (!cpumask_equal(&drv->cpus_entered_pm, cpu_online_mask))
--			goto exit;
-+		cpus_in_pm = atomic_inc_return(&drv->cpus_in_pm);
-+		/*
-+		 * NOTE: comments for num_online_cpus() point out that it's
-+		 * only a snapshot so we need to be careful. It should be OK
-+		 * for us to use, though.  It's important for us not to miss
-+		 * if we're the last CPU going down so it would only be a
-+		 * problem if a CPU went offline right after we did the check
-+		 * AND that CPU was not idle AND that CPU was the last non-idle
-+		 * CPU. That can't happen. CPUs would have to come out of idle
-+		 * before the CPU could go offline.
-+		 */
-+		if (cpus_in_pm < num_online_cpus())
-+			return NOTIFY_OK;
- 		break;
- 	case CPU_PM_ENTER_FAILED:
- 	case CPU_PM_EXIT:
--		cpumask_clear_cpu(smp_processor_id(), &drv->cpus_entered_pm);
--		goto exit;
-+		atomic_dec(&drv->cpus_in_pm);
-+		return NOTIFY_OK;
-+	default:
-+		return NOTIFY_DONE;
- 	}
- 
--	ret = rpmh_rsc_ctrlr_is_busy(drv);
--	if (ret) {
--		ret = NOTIFY_BAD;
--		goto exit;
-+	/*
-+	 * It's likely we're on the last CPU. Grab the drv->lock and write
-+	 * out the sleep/wake commands to RPMH hardware. Grabbing the lock
-+	 * means that if we race with another CPU coming up we are still
-+	 * guaranteed to be safe. If another CPU came up just after we checked
-+	 * and has grabbed the lock or started an active transfer then we'll
-+	 * notice we're busy and abort. If another CPU comes up after we start
-+	 * flushing it will be blocked from starting an active transfer until
-+	 * we're done flushing. If another CPU starts an active transfer after
-+	 * we release the lock we're still OK because we're no longer the last
-+	 * CPU.
-+	 */
-+	if (spin_trylock(&drv->lock)) {
-+		if (rpmh_rsc_ctrlr_is_busy(drv) || rpmh_flush(&drv->client))
-+			ret = NOTIFY_BAD;
-+		spin_unlock(&drv->lock);
-+	} else {
-+		/* Another CPU must be up */
-+		return NOTIFY_OK;
- 	}
- 
--	ret = rpmh_flush(&drv->client);
--	if (ret)
--		ret = NOTIFY_BAD;
--	else
--		ret = NOTIFY_OK;
-+	if (ret == NOTIFY_BAD) {
-+		/* Double-check if we're here because someone else is up */
-+		if (cpus_in_pm < num_online_cpus())
-+			ret = NOTIFY_OK;
-+		else
-+			/* We won't be called w/ CPU_PM_ENTER_FAILED */
-+			atomic_dec(&drv->cpus_in_pm);
-+	}
- 
--exit:
--	spin_unlock(&drv->pm_lock);
- 	return ret;
- }
- 
-@@ -959,7 +984,6 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
- 	solver_config = solver_config >> DRV_HW_SOLVER_SHIFT;
- 	if (!solver_config) {
- 		drv->rsc_pm.notifier_call = rpmh_rsc_cpu_pm_callback;
--		spin_lock_init(&drv->pm_lock);
- 		cpu_pm_register_notifier(&drv->rsc_pm);
- 	}
- 
-diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
-index d1626a1328d7..f2b5b46ccd1f 100644
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -435,9 +435,6 @@ static int send_single(struct rpmh_ctrlr *ctrlr, enum rpmh_state state,
-  *
-  * @ctrlr: Controller making request to flush cached data
-  *
-- * This function is called from sleep code on the last CPU
-- * (thus no spinlock needed).
-- *
-  * Return:
-  * * 0          - Success
-  * * Error code - Otherwise
-@@ -445,13 +442,21 @@ static int send_single(struct rpmh_ctrlr *ctrlr, enum rpmh_state state,
- int rpmh_flush(struct rpmh_ctrlr *ctrlr)
- {
- 	struct cache_req *p;
--	int ret;
-+	int ret = 0;
- 
- 	lockdep_assert_irqs_disabled();
- 
-+	/*
-+	 * Currently rpmh_flush() is only called when we think we're running
-+	 * on the last processor.  If the lock is busy it means another
-+	 * processor is up and it's better to abort than spin.
-+	 */
-+	if (!spin_trylock(&ctrlr->cache_lock))
-+		return -EBUSY;
-+
- 	if (!ctrlr->dirty) {
- 		pr_debug("Skipping flush, TCS has latest data.\n");
--		return 0;
-+		goto exit;
- 	}
- 
- 	/* Invalidate the TCSes first to avoid stale data */
-@@ -460,7 +465,7 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
- 	/* First flush the cached batch requests */
- 	ret = flush_batch(ctrlr);
- 	if (ret)
--		return ret;
-+		goto exit;
- 
- 	list_for_each_entry(p, &ctrlr->cache, list) {
- 		if (!is_req_valid(p)) {
-@@ -471,16 +476,18 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
- 		ret = send_single(ctrlr, RPMH_SLEEP_STATE, p->addr,
- 				  p->sleep_val);
- 		if (ret)
--			return ret;
-+			goto exit;
- 		ret = send_single(ctrlr, RPMH_WAKE_ONLY_STATE, p->addr,
- 				  p->wake_val);
- 		if (ret)
--			return ret;
-+			goto exit;
- 	}
- 
- 	ctrlr->dirty = false;
- 
--	return 0;
-+exit:
-+	spin_unlock(&ctrlr->cache_lock);
-+	return ret;
- }
- 
- /**
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+Which one do we make the "standard" and which one the "exception"?
+What are good reasons for either one?
+
+
+I am currently in strong favour of a) being standard because it
+makes the pvr-drv.c simpler and really generic (independent of
+wrapping into any SoC).
+
+This will likely avoid problems if we find more SoC with yet another
+scheme how the SGX clocks are wrapped.
+
+It also allows to handle different number of clocks (A31 seems to
+need 4, Samsung, A83 and JZ4780 one) without changing the sgx bindings
+or making big lists of conditionals. This variance would be handled
+outside the sgx core bindings and driver.
+
+So instead of an img+omap.yaml and an img+a81.yaml and an img+a31.yaml
+etc. we have a single img,pvrsgx.yaml and individual wrappers (the omap
+one already exists as bindings/bus/ti-sysc.txt).
+
+The only drawback is that we need this "pass-through" wrapper in DTS
+and driver code to handle clocks, power etc.
+
+
+The second best solution in my view is to make b) the standard
+and allow the clock(s) to be optional to cover the omap case.
+And conditionals are added to properly describe the variance of
+how the sgx is wrapped/integrated.
+
+
+IMHO this is a decision which can not be easily revised later.
+It is an architectural decision. So we should base it on strategic
+goals.
+
+>=20
+>=20
+> Regards,
+>=20
+> Tony
+>=20
+
+BR and thanks for clarification,
+Nikolaus
 
