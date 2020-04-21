@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFA61B2786
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A941B2796
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgDUNTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726691AbgDUNTk (ORCPT
+        id S1728950AbgDUNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:22:57 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57903 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbgDUNWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:19:40 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5F0C061A10;
-        Tue, 21 Apr 2020 06:19:40 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x25so3550698wmc.0;
-        Tue, 21 Apr 2020 06:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TAO+0ZkQGzRlz79i9so3eTTstzU170GvA9NPAGQEIMQ=;
-        b=D9x5mxHFMGg+HnZopS9+Zgl4ocxvopuSEo6BqEwDW+5f7Jn7eo+EHmjtUGZw43My+S
-         nIDulDrnrMxWXgjM4y+tGlVDAEjZkxqJfKld3UD7pDfmcQWp7ayYOkwv3kHM9k3z3L4B
-         y5BRcojU/DG5+0lIoEZ9XlRNCvYgxfhnxkwo3KIpIcdX7iZZSfh5ZbR7OrNk/g0LvUCs
-         Lf84VWlivj4vXdm6uRvwXD+7ay1CdeqM6cDVKe7MNMOVKUryPAnqYJDMGUwlWZc1zEvL
-         O76dUv+liatt0wUeHHESLmXa+leq7LgDWVVEXEf+nAEFNd5+7kvSQVgncU87Xi2rarAD
-         Ok5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TAO+0ZkQGzRlz79i9so3eTTstzU170GvA9NPAGQEIMQ=;
-        b=DXP+6cR1TQYsUf649J0ij4gQNtQcfS70MwPi3Qfy/5DnwM84Vs3wxXXvI/QQSAEygC
-         waNs2FBXPHVZr1SmgRvGunCdPnTxWZNAlVAmV3EM4s2BTve7obb9+OKZA6YXVqkTu/Tw
-         r1ItWUHIHLuRJy/CFYuopToEkks1nRY9XLf2RljmqyMTh7eOrADKtbZG2ZFJ8lyIgE0j
-         5vZdVRiLOgHV8ePbs+/Ixiuq/ncy9cr3dUaGj1FpWHNX1CdTqO8+ghXe+oJgZYLRy0AO
-         2j72HLNGI2FmR6f6bkcUi5PIRePLBxJe6AYgN42GLUvhVvFVOwChovoQGywn+I7VqZeT
-         Pl7A==
-X-Gm-Message-State: AGi0PuYHbUPkMVdZUYET/jQXvHLnZpDGJY88Rh07QKlrIs1pjWoUsU5x
-        quB6vchIV1Tjo3h9t+5L5cY=
-X-Google-Smtp-Source: APiQypLr/7nO9p+xL01dDsn1rdwzQMyND4hb6/GRHkqQt+WjCBL145fU5drl2P0dW+IH4WO5WuiZew==
-X-Received: by 2002:a7b:ce0b:: with SMTP id m11mr4981350wmc.67.1587475178825;
-        Tue, 21 Apr 2020 06:19:38 -0700 (PDT)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w6sm3847410wrm.86.2020.04.21.06.19.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2020 06:19:38 -0700 (PDT)
-Subject: Re: [PATCH v4] dt-bindings: rockchip-vpu: Convert bindings to
- json-schema
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     ezequiel@collabora.com, devicetree@vger.kernel.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        mark.rutland@arm.com, robh@kernel.org
-References: <20200326191343.1989-1-ezequiel@collabora.com>
- <12f6d7cf-6af6-4f54-3188-65e73b703a72@gmail.com>
-Message-ID: <9328212d-139f-6a0e-7d0c-3a5529a392f2@gmail.com>
-Date:   Tue, 21 Apr 2020 15:19:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <12f6d7cf-6af6-4f54-3188-65e73b703a72@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 21 Apr 2020 09:22:50 -0400
+Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03LDLBNY043494;
+        Tue, 21 Apr 2020 22:21:11 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
+ Tue, 21 Apr 2020 22:21:11 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
+Received: from ccsecurity.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03LDL6O7043463
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 21 Apr 2020 22:21:11 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, syzkaller@googlegroups.com,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v4 1/3] Add kernel config option for twisting kernel behavior.
+Date:   Tue, 21 Apr 2020 22:19:49 +0900
+Message-Id: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Existing kernel config options are defined based on "whether you want to
+enable this module/feature or not". And such granularity is sometimes
+too rough-grained for fuzzing tools which try to find bugs inside each
+module/feature.
 
-Question for the media maintainers Hans & Co. :
+While syzkaller (one of fuzzing tools) is finding many bugs, sometimes
+syzkaller examines stupid operations. Some examples of such operations
+are: changing console loglevel which in turn makes it impossible to get
+kernel messages when a crash happens, freezing filesystems which in turn
+causes khungtaskd to needlessly complain, programmatically sending
+Ctrl-Alt-Del which in turn causes the system to needlessly reboot.
+Currently we prevent syzkaller from examining stupid operations by
+blacklisting syscall arguments and/or disabling whole functionality
+using existing kernel config options. But such approach is difficult to
+maintain and needlessly prevents fuzzers from testing kernel code. [1]
 
-What's nxp,imx8mq-vpu.yaml doing under rga?
-Why is rockchip-vpu.yaml inserted under rga instead of vpu?
+We want fuzzers to test as much coverage as possible while we want
+fuzzers not to try stupid operations. To achieve this goal, we want
+cooperation from kernel side, and build-time branching (i.e. kernel
+config options) will be the simplest and the most reliable.
 
-Johan
+Therefore, this patch introduces a kernel config option which allows
+selecting fine-grained kernel config options for twisting kernel's
+behavior. Each fine-grained kernel config option will be added by future
+patches. For ease of management, grouping kernel config options for
+allowing e.g. syzkaller to select all fine-grained kernel config options
+which e.g. syzkaller wants would be added by future patches.
 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f0e7b4d17fcc..0cfd86594b0b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14471,7 +14471,8 @@ M:	Jacob Chen <jacob-chen@iotwrt.com>
->  M:	Ezequiel Garcia <ezequiel@collabora.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/devicetree/bindings/media/rockchip-rga.txt
-> +F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> +F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
->  F:	drivers/media/platform/rockchip/rga/
+[1] https://lkml.kernel.org/r/CACT4Y+a6KExbggs4mg8pvoD554PcDqQNW4sM15X-tc=YONCzYw@mail.gmail.com
 
-HANTRO VPU CODEC DRIVER
-M:	Ezequiel Garcia <ezequiel@collabora.com>
-M:	Philipp Zabel <p.zabel@pengutronix.de>
-L:	linux-media@vger.kernel.org
-L:	linux-rockchip@lists.infradead.org
-S:	Maintained
-F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-F:	Documentation/devicetree/bindings/media/rockchip-vpu.txt
-F:	drivers/staging/media/hantro/
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ lib/Kconfig.debug |  2 ++
+ lib/Kconfig.twist | 13 +++++++++++++
+ 2 files changed, 15 insertions(+)
+ create mode 100644 lib/Kconfig.twist
 
-ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
-M:	Jacob Chen <jacob-chen@iotwrt.com>
-M:	Ezequiel Garcia <ezequiel@collabora.com>
-L:	linux-media@vger.kernel.org
-S:	Maintained
-F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-F:	drivers/media/platform/rockchip/rga/
+Changes since v3 ( https://lkml.kernel.org/r/20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp ):
+  Use "twist" instead of "tweak".
+  Add an instance of fine-grained kernel config option as patch 2 of 3.
+  Add a grouping kernel config option for syzkaller as patch 3 of 3.
+
+Changes since v2 ( https://lkml.kernel.org/r/20200307135822.3894-1-penguin-kernel@I-love.SAKURA.ne.jp ):
+  Reduce the role of this kernel config option from "enable everything
+  which would be useful for fuzz testing" to "simply serve as a gate for
+  hiding individual kernel config option", for we should use individual
+  kernel config option for tweaking individual kernel behavior.
+
+Changes since v1 ( https://lkml.kernel.org/r/20191216095955.9886-1-penguin-kernel@I-love.SAKURA.ne.jp ):
+  Drop users of this kernel config option.
+  Update patch description.
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 21d9c5f6e7ec..e6162595ef9d 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2225,4 +2225,6 @@ config HYPERV_TESTING
+ 
+ endmenu # "Kernel Testing and Coverage"
+ 
++source "lib/Kconfig.twist"
++
+ endmenu # Kernel hacking
+diff --git a/lib/Kconfig.twist b/lib/Kconfig.twist
+new file mode 100644
+index 000000000000..a5ce0db67f28
+--- /dev/null
++++ b/lib/Kconfig.twist
+@@ -0,0 +1,13 @@
++menuconfig TWIST_KERNEL_BEHAVIOR
++	bool "Twist kernel behavior"
++	help
++	  Saying Y here allows modifying kernel behavior via kernel
++	  config options which will become visible by selecting this
++	  config option. Since these kernel config options are intended
++	  for helping e.g. fuzz testing, behavior twisted by this kernel
++	  option might be unstable. Userspace applications should not
++	  count on this option being selected.
++
++if TWIST_KERNEL_BEHAVIOR
++
++endif # TWIST_KERNEL_BEHAVIOR
+-- 
+2.18.2
+
