@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3311B2E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61591B2E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgDURjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgDURjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:39:19 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DCF0206D9;
-        Tue, 21 Apr 2020 17:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587490759;
-        bh=QF1+05dk/slmItoQhAvNaKvLSLjdXYQ42BslCBBfirY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=yI1sPGI106lApWhdhZXySBdWafeZKfms2kGThJMkQzjiNdywnl8M6olzmztK5VfL6
-         h+1tNxsXBIqAwaz/vfq5KHd5XD6hULgoHgC7RoePCFSnaSrh/01ux7SlMLN0AQnsks
-         LP8W/81QgnGeYyFmaQz/TCE3UqeY6Dq/m7Cc6qqk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 108493523441; Tue, 21 Apr 2020 10:39:19 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 10:39:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, mingo@kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        joel@joelfernandes.org
-Subject: Re: [PATCH] sched/fair: Fix call walk_tg_tree_from() without hold
- rcu_lock
-Message-ID: <20200421173919.GQ17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200406121008.62903-1-songmuchun@bytedance.com>
- <20200421135258.GS20730@hirez.programming.kicks-ass.net>
- <20200421154312.GO17661@paulmck-ThinkPad-P72>
- <20200421162452.GV20730@hirez.programming.kicks-ass.net>
+        id S1729227AbgDURjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:39:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725870AbgDURjk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:39:40 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03LHYqjn064244
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 13:39:38 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gg281jnj-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 13:39:38 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <ldufour@linux.ibm.com>;
+        Tue, 21 Apr 2020 18:38:52 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 21 Apr 2020 18:38:48 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03LHdV8u2883916
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 17:39:31 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCB05A405B;
+        Tue, 21 Apr 2020 17:39:31 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7EDCEA4054;
+        Tue, 21 Apr 2020 17:39:31 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.149.94])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Apr 2020 17:39:31 +0000 (GMT)
+Subject: Re: [PATCH] KVM: PPC: Book3S HV: read ibm,secure-memory nodes
+To:     "Oliver O'Halloran" <oohall@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     kvm-ppc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Paul Mackerras <paulus@samba.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200416162715.45846-1-ldufour@linux.ibm.com>
+ <87k129gdx8.fsf@mpe.ellerman.id.au>
+ <CAOSf1CF2YEG1U_1XP_Vvk3Bn1RCiNa1DAKEbemWu00JimoPsUQ@mail.gmail.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Date:   Tue, 21 Apr 2020 19:39:31 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421162452.GV20730@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAOSf1CF2YEG1U_1XP_Vvk3Bn1RCiNa1DAKEbemWu00JimoPsUQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042117-4275-0000-0000-000003C4150D
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042117-4276-0000-0000-000038D99A6F
+Message-Id: <db211c9c-3e6c-761c-8c9f-4110d3c0fcbe@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-21_07:2020-04-20,2020-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1015 adultscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004210133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 06:24:52PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 21, 2020 at 08:43:12AM -0700, Paul E. McKenney wrote:
-> > On Tue, Apr 21, 2020 at 03:52:58PM +0200, Peter Zijlstra wrote:
-> > > On Mon, Apr 06, 2020 at 08:10:08PM +0800, Muchun Song wrote:
-> > > > The walk_tg_tree_from() caller must hold rcu_lock,
-> > > 
-> > > Not quite; with the RCU unification done 'recently' having preemption
-> > > disabled is sufficient. AFAICT preemption is disabled.
-> > > 
-> > > In fact; and I mentioned this to someone the other day, perhaps Joel; we
-> > > can go and delete a whole bunch of rcu_read_lock() from the scheduler --
-> > > basically undo all the work we did after RCU was split many years ago.
-> > 
-> > "If only I knew then what I know now..."
-> > 
-> > Then again, I suspect that we all have ample opportunity to use that
-> > particular old phrase.  ;-)
+Le 21/04/2020 à 15:43, Oliver O'Halloran a écrit :
+> On Tue, Apr 21, 2020 at 11:37 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> Hi Laurent,
+>>
+>> Laurent Dufour <ldufour@linux.ibm.com> writes:
+>>> The newly introduced ibm,secure-memory nodes supersede the
+>>> ibm,uv-firmware's property secure-memory-ranges.
+>>
+>> Is either documented in a device tree binding document anywhere?
+>>
+>> cheers
+>>
+>>> Firmware will no more expose the secure-memory-ranges property so first
+>>> read the new one and if not found rollback to the older one.
 > 
-> Quite so; I'm just fearing that rcu-lockdep annotation stuff. IIRC that
-> doesn't (nor can it, in general) consider the implicit preempt-disable
-> from locks and such for !PREEMPT builds.
+> There's some in Ryan's UV support series for skiboot:
+> 
+> https://patchwork.ozlabs.org/project/skiboot/patch/20200227204023.22125-2-grimm@linux.ibm.com/
+> 
+> ...which is also marked RFC. Cool.
 
-Heh!  Now that might be me using that phrase again some time in the
-future rather than you using it.  ;-)
+Thanks Oliver for this pointer.
 
-But what exactly are you looking for?  After all, in !PREEMPT builds,
-preemption is always disabled.  It should not be too hard to make
-something that looked at the state provided by DEBUG_ATOMIC_SLEEP when
-selected, for example.  Alternatively, there is always the option
-of doing the testing in CONFIG_PREEMPT=y kernels.
+Yes this is an RFC but this documentation details the secure memory nodes 
+created by skiboot and parsed by this patch.
 
-But again, what exactly are you looking for?
+Michael, is that enough for you?
 
-							Thanx, Paul
+Laurent.
+
