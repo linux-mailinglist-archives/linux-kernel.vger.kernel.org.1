@@ -2,128 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B201B2F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2F81B2F7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgDUSub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 14:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725886AbgDUSub (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:50:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55082C0610D5;
-        Tue, 21 Apr 2020 11:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=yPMqIkcWHkz3THVCYl7z3197UQiTeNurLglX61WGoIM=; b=fHCnLkAF8AouzjXU7Dj/vz9FUM
-        WbpqZebgK96Zl5Bha1aTo+i3oNH3cuMDbTcwKr8spRxjEibY/7E5E/XaunV8yfY7dZuZNA3LVtneo
-        j2sMbpcr0hqv1D4wV2QpcSqt0fZUI/HV+USDwGfqMtPAM1Xb4Wx1gsfdJ4oCqugI87g1Woxnpqa5i
-        8pICEEkAu9/rHO2oaNGskK7QZ6cMgIy2ssRmYSo/p3rUMK3pLx2BoVwlCu6AuV1ou7mPMkEw0hqiS
-        FW9UWNgJL852hHFlDJMNCCn6YhF4OG7o3B/DSiK8EbdITSGaxah0kQgiLvmjBXVDZMYP1a2YLcE6b
-        l+Es1AXA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jQxyY-0001SO-Ft; Tue, 21 Apr 2020 18:50:30 +0000
-Subject: Re: [PATCH v1 13/15] nitro_enclaves: Add Kconfig for the Nitro
- Enclaves driver
-To:     Andra Paraschiv <andraprs@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
-        ne-devel-upstream@amazon.com
-References: <20200421184150.68011-1-andraprs@amazon.com>
- <20200421184150.68011-14-andraprs@amazon.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0b169445-a0c6-8eef-86b8-71a09021e143@infradead.org>
-Date:   Tue, 21 Apr 2020 11:50:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200421184150.68011-14-andraprs@amazon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726385AbgDUSrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:47:06 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22250 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgDUSrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 14:47:05 -0400
+IronPort-SDR: v6q5zadySag1mZAZAR9Q89x8umrul83xBbZabk+etWSZSoKE1xdzwcWqrAU31XtDFcbgrUbQ7G
+ AhltwOZ9keRg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 11:46:48 -0700
+IronPort-SDR: 0QmsZMol2UineBPjnJLcnI3Ht6x5MX1mZ16KJtDN+aMETxOpMG0zx7HB+0Ys7gp3S2h+k023rM
+ cu0dgEx7gZ5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
+   d="scan'208";a="334367858"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga001.jf.intel.com with ESMTP; 21 Apr 2020 11:46:47 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Lu Baolu" <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>
+Cc:     "Yi Liu" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v12 0/8] Nested Shared Virtual Address (SVA) VT-d support
+Date:   Tue, 21 Apr 2020 11:52:37 -0700
+Message-Id: <1587495165-80096-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+Shared virtual address (SVA), a.k.a, Shared virtual memory (SVM) on Intel
+platforms allow address space sharing between device DMA and applications.
+SVA can reduce programming complexity and enhance security.
+This series is intended to enable SVA virtualization, i.e. enable use of SVA
+within a guest user application.
 
-On 4/21/20 11:41 AM, Andra Paraschiv wrote:
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> ---
->  drivers/virt/Kconfig        |  2 ++
->  drivers/virt/amazon/Kconfig | 28 ++++++++++++++++++++++++++++
->  2 files changed, 30 insertions(+)
->  create mode 100644 drivers/virt/amazon/Kconfig
-> 
-> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-> index 363af2eaf2ba..06bb5cfa191d 100644
-> --- a/drivers/virt/Kconfig
-> +++ b/drivers/virt/Kconfig
-> @@ -32,4 +32,6 @@ config FSL_HV_MANAGER
->  	     partition shuts down.
->  
->  source "drivers/virt/vboxguest/Kconfig"
-> +
-> +source "drivers/virt/amazon/Kconfig"
->  endif
-> diff --git a/drivers/virt/amazon/Kconfig b/drivers/virt/amazon/Kconfig
-> new file mode 100644
-> index 000000000000..57fd0aa58803
-> --- /dev/null
-> +++ b/drivers/virt/amazon/Kconfig
-> @@ -0,0 +1,28 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> +#
-> +# This program is free software; you can redistribute it and/or modify it
-> +# under the terms and conditions of the GNU General Public License,
-> +# version 2, as published by the Free Software Foundation.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program; if not, see <http://www.gnu.org/licenses/>.
-> +
-> +# Amazon Nitro Enclaves (NE) support.
-> +# Nitro is a hypervisor that has been developed by Amazon.
-> +
-> +config NITRO_ENCLAVES
-> +	tristate "Nitro Enclaves Support"
-> +	depends on HOTPLUG_CPU
-> +	---help---
+This is the remaining portion of the original patchset that is based on
+Joerg's x86/vt-d branch. The preparatory and cleanup patches are merged here.
+(git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git)
 
-For v2:
-We are moving away from the use of "---help---" to just "help".
+Only IOMMU portion of the changes are included in this series. Additional
+support is needed in VFIO and QEMU (will be submitted separately) to complete
+this functionality.
 
-> +	  This driver consists of support for enclave lifetime management
-> +	  for Nitro Enclaves (NE).
-> +
-> +	  To compile this driver as a module, choose M here.
-> +	  The module will be called nitro_enclaves.
-> 
+To make incremental changes and reduce the size of each patchset. This series
+does not inlcude support for page request services.
 
-thanks.
+In VT-d implementation, PASID table is per device and maintained in the host.
+Guest PASID table is shadowed in VMM where virtual IOMMU is emulated.
+
+    .-------------.  .---------------------------.
+    |   vIOMMU    |  | Guest process CR3, FL only|
+    |             |  '---------------------------'
+    .----------------/
+    | PASID Entry |--- PASID cache flush -
+    '-------------'                       |
+    |             |                       V
+    |             |                CR3 in GPA
+    '-------------'
+Guest
+------| Shadow |--------------------------|--------
+      v        v                          v
+Host
+    .-------------.  .----------------------.
+    |   pIOMMU    |  | Bind FL for GVA-GPA  |
+    |             |  '----------------------'
+    .----------------/  |
+    | PASID Entry |     V (Nested xlate)
+    '----------------\.------------------------------.
+    |             |   |SL for GPA-HPA, default domain|
+    |             |   '------------------------------'
+    '-------------'
+Where:
+ - FL = First level/stage one page tables
+ - SL = Second level/stage two page tables
+
+This is the remaining VT-d only portion of V5 since the uAPIs and IOASID common
+code have been applied to Joerg's IOMMU core branch.
+(https://lkml.org/lkml/2019/10/2/833)
+
+The complete set with VFIO patches are here:
+https://github.com/jacobpan/linux.git:siov_sva
+
+The complete nested SVA upstream patches are divided into three phases:
+    1. Common APIs and PCI device direct assignment
+    2. Page Request Services (PRS) support
+    3. Mediated device assignment
+
+With this set and the accompanied VFIO code, we will achieve phase #1.
+
+Thanks,
+
+Jacob
+
+ChangeLog:
+	- v12
+	  - Fixed IA64 cross compile error
+	  - Squashed two patches that add macros with its users
+	  - Use ratelimited prints for all user called APIs
+	  - Check domain nesting attr for vSVA APIs.
+	  - Misc style improvements
+
+	- v11 Misc fixes and improvements based on review by Kevin & Eric
+	  - Fixed devTLB granularity conversion
+	  - Simplified VT-d granulairy lookup by replacing 2D map array
+	    with invalid entries.
+	  - Fixed locking in bind guest PASID
+	  - Added nesting domain attr check
+	  - Squashed agaw checking patch with user
+	  - Use rate limitted error message for all user originated calls
+ 
+	- v10
+	  - Addressed Eric's review in v7 and v9. Most fixes are in 3/10 and
+	    6/10. Extra condition checks and consolidation of duplicated codes.
+
+	- v9
+	  - Addressed Baolu's comments for v8 for IOTLB flush consolidation,
+	    bug fixes
+	  - Removed IOASID notifier code which will be submitted separately
+	    to address PASID life cycle management with multiple users.
+
+	- v8
+	  - Extracted cleanup patches from V7 and accepted into maintainer's
+	    tree (https://lkml.org/lkml/2019/12/2/514).
+	  - Added IOASID notifier and VT-d handler for termination of PASID
+	    IOMMU context upon free. This will ensure success of VFIO IOASID
+	    free API regardless PASID is in use.
+	    (https://lore.kernel.org/linux-iommu/1571919983-3231-1-git-send-email-yi.l.liu@intel.com/)
+
+	- V7
+	  - Respect vIOMMU PASID range in virtual command PASID/IOASID allocator
+	  - Caching virtual command capabilities to avoid runtime checks that
+	    could cause vmexits.
+
+	- V6
+	  - Rebased on top of Joerg's core branch
+	  (git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git core)
+	  - Adapt to new uAPIs and IOASID allocators
+
+	- V5
+	  Rebased on v5.3-rc4 which has some of the IOMMU fault APIs merged.
+ 	  Addressed v4 review comments from Eric Auger, Baolu Lu, and
+	    Jonathan Cameron. Specific changes are as follows:
+	  - Refined custom IOASID allocator to support multiple vIOMMU, hotplug
+	    cases.
+	  - Extracted vendor data from IOMMU guest PASID bind data, for VT-d
+	    will support all necessary guest PASID entry fields for PASID
+	    bind.
+	  - Support non-identity host-guest PASID mapping
+	  - Exception handling in various cases
+
+	- V4
+	  - Redesigned IOASID allocator such that it can support custom
+	  allocators with shared helper functions. Use separate XArray
+	  to store IOASIDs per allocator. Took advice from Eric Auger to
+	  have default allocator use the generic allocator structure.
+	  Combined into one patch in that the default allocator is just
+	  "another" allocator now. Can be built as a module in case of
+	  driver use without IOMMU.
+	  - Extended bind guest PASID data to support SMMU and non-identity
+	  guest to host PASID mapping https://lkml.org/lkml/2019/5/21/802
+	  - Rebased on Jean's sva/api common tree, new patches starts with
+	   [PATCH v4 10/22]
+
+	- V3
+	  - Addressed thorough review comments from Eric Auger (Thank you!)
+	  - Moved IOASID allocator from driver core to IOMMU code per
+	    suggestion by Christoph Hellwig
+	    (https://lkml.org/lkml/2019/4/26/462)
+	  - Rebased on top of Jean's SVA API branch and Eric's v7[1]
+	    (git://linux-arm.org/linux-jpb.git sva/api)
+	  - All IOMMU APIs are unmodified (except the new bind guest PASID
+	    call in patch 9/16)
+
+	- V2
+	  - Rebased on Joerg's IOMMU x86/vt-d branch v5.1-rc4
+	  - Integrated with Eric Auger's new v7 series for common APIs
+	  (https://github.com/eauger/linux/tree/v5.1-rc3-2stage-v7)
+	  - Addressed review comments from Andy Shevchenko and Alex Williamson on
+	    IOASID custom allocator.
+	  - Support multiple custom IOASID allocators (vIOMMUs) and dynamic
+	    registration.
+
+
+
+Jacob Pan (7):
+  iommu/vt-d: Move domain helper to header
+  iommu/vt-d: Use a helper function to skip agaw for SL
+  iommu/vt-d: Add nested translation helper function
+  iommu/vt-d: Add bind guest PASID support
+  iommu/vt-d: Support flushing more translation cache types
+  iommu/vt-d: Add svm/sva invalidate function
+  iommu/vt-d: Add custom allocator for IOASID
+
+Lu Baolu (1):
+  iommu/vt-d: Enlightened PASID allocation
+
+ drivers/iommu/dmar.c        |  40 ++++++
+ drivers/iommu/intel-iommu.c | 295 +++++++++++++++++++++++++++++++++----
+ drivers/iommu/intel-pasid.c | 344 ++++++++++++++++++++++++++++++++++++++++++--
+ drivers/iommu/intel-pasid.h |  23 ++-
+ drivers/iommu/intel-svm.c   | 204 ++++++++++++++++++++++++++
+ include/linux/intel-iommu.h |  71 ++++++++-
+ include/linux/intel-svm.h   |  17 +++
+ include/uapi/linux/iommu.h  |   5 +
+ 8 files changed, 948 insertions(+), 51 deletions(-)
+
 -- 
-~Randy
+2.7.4
 
