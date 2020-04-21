@@ -2,217 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A605E1B2282
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A993D1B22AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgDUJRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:17:50 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:24398 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgDUJRt (ORCPT
+        id S1728552AbgDUJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728517AbgDUJ1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:17:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1587460667; x=1618996667;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nouBLuztXCGeDYI2HpY1d0LPOxZ/NdHL8g3FwAok4pY=;
-  b=ux3H8+zKp1MLHgREfUZyoMoGVvFpYT0g2xdu0OW5KU+2/lM6F6ooOEiv
-   UH+9HM1n6W7GrtujRT4wEDqvAq9UmJ+MjpX4fTeOq+nmuzoilTVhBpUMr
-   mLQ2bAwQqlm3GGH+DRpMZm2BI7c2xdYUXjrbBmhuxFM40hpXZWC8vrVhx
-   J9R1qBVb0XHJVwqKMDS6GlhvAhaRElotsJ1KzxyZavvpBG7dlR9WQSp0/
-   W5ZTg3Sw0+b0aOTdHe0k41TTrtFfReybxfLCniDNdgYlSaS/KuXuosRHy
-   LTGQmJ9DYloZFOvVCL7Pwiev2lOGG9vo7yf2TPiNSSyzeNAtalNIzshPq
-   g==;
-IronPort-SDR: /oZQIkMl+iziD/yBL8h9zoj3woUD0FqDzWewTflYEKU5kShLfqHkMlnXw6Y5n/iP6NB3jrw0O3
- HKx+zDB3L4eR5w3oYKMRUrdw9ExC4tPhBsy5BzWbQCkyWA5BG8y7AAB93gC5lpUWiYfw6EFtHJ
- ylQorsE4sekbadjm8wIwfS57xJCfLl73tpMueUUJbf0XTzwRXE45B6eYMC2mxZjSlRiiw5FIB5
- scmTmT+EkET3MHcuHgmgyZT+wTY0DMtUAkKttlX/p+x15i89ySx1FE5fzvumUNCowU50GxK7VG
- s18=
-X-IronPort-AV: E=Sophos;i="5.72,409,1580799600"; 
-   d="scan'208";a="71006850"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Apr 2020 02:17:46 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 21 Apr 2020 02:17:46 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Tue, 21 Apr 2020 02:17:46 -0700
-Date:   Tue, 21 Apr 2020 11:17:45 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-CC:     <davem@davemloft.net>, <jiri@resnulli.us>, <ivecera@redhat.com>,
-        <kuba@kernel.org>, <roopa@cumulusnetworks.com>,
-        <olteanv@gmail.com>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next 10/13] bridge: mrp: Implement netlink interface
- to configure MRP
-Message-ID: <20200421091745.qei76hnb7gipfkb4@soft-dev3.microsemi.net>
-References: <20200420150947.30974-1-horatiu.vultur@microchip.com>
- <20200420150947.30974-11-horatiu.vultur@microchip.com>
- <4d989958-0c2b-69de-2015-1808e2ce94db@cumulusnetworks.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <4d989958-0c2b-69de-2015-1808e2ce94db@cumulusnetworks.com>
-User-Agent: NeoMutt/20180716
+        Tue, 21 Apr 2020 05:27:00 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569C1C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:27:00 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jQpB4-0007xk-7I; Tue, 21 Apr 2020 11:26:50 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id B110A1002EE;
+        Tue, 21 Apr 2020 11:26:49 +0200 (CEST)
+Message-Id: <20200421092027.591582014@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Tue, 21 Apr 2020 11:20:27 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [patch V2 00/16] x86/tlb: Unexport per-CPU tlbstate
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 04/21/2020 11:47, Nikolay Aleksandrov wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On 20/04/2020 18:09, Horatiu Vultur wrote:
-> > Implement netlink interface to configure MRP. The implementation
-> > will do sanity checks over the attributes and then eventually call the MRP
-> > interface.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  net/bridge/br_mrp_netlink.c | 117 ++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 117 insertions(+)
-> >  create mode 100644 net/bridge/br_mrp_netlink.c
-> >
-> > diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
-> > new file mode 100644
-> > index 000000000000..0ff42e7c7f57
-> > --- /dev/null
-> > +++ b/net/bridge/br_mrp_netlink.c
-> > @@ -0,0 +1,117 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +
-> > +#include <net/genetlink.h>
-> > +
-> > +#include <uapi/linux/mrp_bridge.h>
-> > +#include "br_private.h"
-> > +#include "br_private_mrp.h"
-> > +
-> > +static const struct nla_policy br_mrp_policy[IFLA_BRIDGE_MRP_MAX + 1] = {
-> > +     [IFLA_BRIDGE_MRP_UNSPEC]        = { .type = NLA_REJECT },
-> > +     [IFLA_BRIDGE_MRP_INSTANCE]      = { .type = NLA_EXACT_LEN,
-> > +                                         .len = sizeof(struct br_mrp_instance)},
-> > +     [IFLA_BRIDGE_MRP_PORT_STATE]    = { .type = NLA_U32 },
-> > +     [IFLA_BRIDGE_MRP_PORT_ROLE]     = { .type = NLA_EXACT_LEN,
-> > +                                         .len = sizeof(struct br_mrp_port_role)},
-> > +     [IFLA_BRIDGE_MRP_RING_STATE]    = { .type = NLA_EXACT_LEN,
-> > +                                         .len = sizeof(struct br_mrp_ring_state)},
-> > +     [IFLA_BRIDGE_MRP_RING_ROLE]     = { .type = NLA_EXACT_LEN,
-> > +                                         .len = sizeof(struct br_mrp_ring_role)},
-> > +     [IFLA_BRIDGE_MRP_START_TEST]    = { .type = NLA_EXACT_LEN,
-> > +                                         .len = sizeof(struct br_mrp_start_test)},
-> > +};
-> > +
-> > +int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
-> > +              struct nlattr *attr, int cmd, struct netlink_ext_ack *extack)
-> > +{
-> 
-> Note that "p" can be NULL here if br_afspec() was called for the bridge device.
-> Some of the functions below dereference it without any checks and will deref a
-> null ptr.
+The per-CPU tlbstate contains sensitive information which should be really
+only accessible in core code. It is exported to modules because some inline
+functions which are required by KVM need access to it.
 
-Good check, I will update the functions br_mrp_set_port_role and
-br_mrp_set_port_state to check for the null ptr.
+The first version can be found here:
 
-> 
-> > +     struct nlattr *tb[IFLA_BRIDGE_MRP_MAX + 1];
-> > +     int err;
-> > +
-> > +     if (br->stp_enabled != BR_NO_STP) {
-> > +             NL_SET_ERR_MSG_MOD(extack, "MRP can't be enabled if STP is already enabled\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     err = nla_parse_nested(tb, IFLA_BRIDGE_MRP_MAX, attr,
-> > +                            NULL, extack);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_INSTANCE]) {
-> > +             struct br_mrp_instance *instance =
-> > +                     nla_data(tb[IFLA_BRIDGE_MRP_INSTANCE]);
-> > +
-> > +             if (cmd == RTM_SETLINK)
-> > +                     err = br_mrp_add(br, instance);
-> > +             else
-> > +                     err = br_mrp_del(br, instance);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_PORT_STATE]) {
-> > +             enum br_mrp_port_state_type state =
-> > +                     nla_get_u32(tb[IFLA_BRIDGE_MRP_PORT_STATE]);
-> > +
-> > +             err = br_mrp_set_port_state(p, state);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_PORT_ROLE]) {
-> > +             struct br_mrp_port_role *role =
-> > +                     nla_data(tb[IFLA_BRIDGE_MRP_PORT_ROLE]);
-> > +
-> > +             err = br_mrp_set_port_role(p, role);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_RING_STATE]) {
-> > +             struct br_mrp_ring_state *state =
-> > +                     nla_data(tb[IFLA_BRIDGE_MRP_RING_STATE]);
-> > +
-> > +             err = br_mrp_set_ring_state(br, state);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_RING_ROLE]) {
-> > +             struct br_mrp_ring_role *role =
-> > +                     nla_data(tb[IFLA_BRIDGE_MRP_RING_ROLE]);
-> > +
-> > +             err = br_mrp_set_ring_role(br, role);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     if (tb[IFLA_BRIDGE_MRP_START_TEST]) {
-> > +             struct br_mrp_start_test *test =
-> > +                     nla_data(tb[IFLA_BRIDGE_MRP_START_TEST]);
-> > +
-> > +             err = br_mrp_start_test(br, test);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int br_mrp_port_open(struct net_device *dev, u8 loc)
-> > +{
-> > +     struct net_bridge_port *p;
-> > +     int err = 0;
-> > +
-> > +     p = br_port_get_rcu(dev);
-> > +     if (!p) {
-> > +             err = -EINVAL;
-> > +             goto out;
-> > +     }
-> > +
-> > +     p->loc = loc;
-> > +     br_ifinfo_notify(RTM_NEWLINK, NULL, p);
-> > +
-> > +out:
-> > +     return err;
-> > +}
-> > +EXPORT_SYMBOL(br_mrp_port_open);
-> >
-> 
+    https://lore.kernel.org/r/20200419203137.214111265@linutronix.de
 
--- 
-/Horatiu
+Changes vs. V1:
+
+  - Reduced the number of exports by uninlining __flush_tlb_all() (Christoph)
+
+  - Addressed fallout reported by 0-day
+
+  - Picked up acks/reviewed tags
+
+I left the LKDTM part alone for now and decided to keep the
+__flush_tlb_all() export for SVM as moving that errata handling to builtin
+code would required two exports in turn.
+
+The series is also available from git:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel x86/tlb
+
+Thanks,
+
+	tglx
+
+8<-----------------
+ arch/x86/events/core.c             |   11 
+ arch/x86/include/asm/mmu_context.h |   88 -------
+ arch/x86/include/asm/paravirt.h    |   12 -
+ arch/x86/include/asm/pgtable_32.h  |    2 
+ arch/x86/include/asm/tlbflush.h    |  441 +++----------------------------------
+ arch/x86/kernel/alternative.c      |   55 ++++
+ arch/x86/kernel/cpu/common.c       |   25 ++
+ arch/x86/kernel/cpu/mtrr/generic.c |    4 
+ arch/x86/kernel/paravirt.c         |   21 -
+ arch/x86/kernel/process.c          |   11 
+ arch/x86/mm/init.c                 |   14 +
+ arch/x86/mm/init_64.c              |    2 
+ arch/x86/mm/ioremap.c              |    2 
+ arch/x86/mm/kmmio.c                |    2 
+ arch/x86/mm/mem_encrypt.c          |    2 
+ arch/x86/mm/pat/set_memory.c       |    2 
+ arch/x86/mm/pgtable.c              |    8 
+ arch/x86/mm/pgtable_32.c           |    2 
+ arch/x86/mm/tlb.c                  |  384 +++++++++++++++++++++++++++++++-
+ arch/x86/platform/uv/tlb_uv.c      |    4 
+ drivers/xen/privcmd.c              |    1 
+ 21 files changed, 556 insertions(+), 537 deletions(-)
+
+
