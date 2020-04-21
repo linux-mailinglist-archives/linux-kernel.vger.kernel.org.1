@@ -2,253 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3108F1B3018
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79AD1B2FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgDUTSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:18:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18934 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgDUTSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:18:31 -0400
-IronPort-SDR: DyJlBRDADn0rABmAj852OXCQz9hZs1kY6ue+s6K4Tbcl2JbZxNFu19eRjcoQTRcMXqXVyRJpIY
- iZh+SqlbPe+A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 12:18:27 -0700
-IronPort-SDR: WoTUm0fw1jxep0Y0SY1vdE60rR6r4v/PinefNkNioRXWYMDUtdkCfgxARt8H3Zzg9r8qBiQuI2
- iS3MGDgm9O1g==
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="258815142"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 12:18:26 -0700
-From:   ira.weiny@intel.com
-To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH V9 11/11] Documentation/dax: Update Usage section
-Date:   Tue, 21 Apr 2020 12:17:53 -0700
-Message-Id: <20200421191754.3372370-12-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200421191754.3372370-1-ira.weiny@intel.com>
-References: <20200421191754.3372370-1-ira.weiny@intel.com>
+        id S1726157AbgDUTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725902AbgDUTR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 15:17:57 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673C8C0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 12:17:57 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id f19so16201656iog.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 12:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fg+d9vwBB0VnYM+Wjdo25HAeAJv48I8DsMCOjXRYSG8=;
+        b=WxTmLPXr0CN6t9INnjIZm6HWE9QW38vHWbuWfNXcN8JB45LP9RjUQ7HFqJS1djAXRU
+         k+P7IT6uNQo+fwAG3q8DqgKjoph9cgAC6XQ0PKjysheJvfoS8V8fnMZ7OgVT1FVIlMA0
+         /iwnGO9u9Cb1SzhpdYcUmyotjBJKOdxagT6B9dmmwLeuXQQIxvFnz3odHVnQRxOgDsun
+         pjeXRwbbcgBEfq6a0zAcRLm0a5WbMR31UOdNDMm5+FSGu8XKPuVuT57Kj3PsAffgourz
+         r/7zjLUsy/uukZFD3XTfmn++PGk5nvBuD0CLCES88WJQB7EJvov0tsSt1VdqXFB5HaeT
+         Vfsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fg+d9vwBB0VnYM+Wjdo25HAeAJv48I8DsMCOjXRYSG8=;
+        b=Yuj0+Hytxi62WZ2B2GkyNib1NBUnzcb4+tNJQPkJkIY3xrHWq2jz8NbuDxQzniURqD
+         wyzuL4pAewT73yZUqRKD6aZDeYesUKyk8fnX1D4Gb5g9RtbVyxl1RnMPy8QQEWR7pE1x
+         fOI+8IrhbodtP5eNUwz2RZu2DF5wCJ09QgQWAZZvvO/kS/SuaXBNKRGhoBN9p7HfLj5a
+         KmJ63oU2TQCjuV0GIxtZPIiGb7Y83JMvMRigf2fxOaQtIyRT0Q9f6BXrU6aNQUiJDtP6
+         B5IjHsaU308wrne+kIvBvwHlke8t8lW2FhyHBBCe1YRcNKeCPXMrb2EGdSZHHcww/1Fk
+         1lQg==
+X-Gm-Message-State: AGi0PubeO1Bdg+3zj7DWUJvW7f7KtfrCqiU4ojM1mjnkCGYtl19Wi9E3
+        7AoBomkFocqTyEmdaTiJ86aiuA==
+X-Google-Smtp-Source: APiQypJ+r6SoH5WGNOv8uTtJ4RO+FvnSg+7Z68uby7s7ga0AKoakunxfUDh5bzrg79Fuy2kc4j/saw==
+X-Received: by 2002:a5d:9490:: with SMTP id v16mr1497006ioj.63.1587496676697;
+        Tue, 21 Apr 2020 12:17:56 -0700 (PDT)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id c87sm1208311ilg.2.2020.04.21.12.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 12:17:55 -0700 (PDT)
+Subject: Re: [PATCH] blk-iocost: Fix systemtap error on iocost_ioc_vrate_adj
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>
+References: <20200421130755.18370-1-longman@redhat.com>
+ <20200421105948.4f5a36f5@gandalf.local.home>
+ <22ccb042-7d6f-3717-4024-9ec094b2f363@redhat.com>
+ <20200421151649.11300568@gandalf.local.home>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3a747a8f-629e-f9d2-088d-963791d99486@kernel.dk>
+Date:   Tue, 21 Apr 2020 13:17:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200421151649.11300568@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On 4/21/20 1:16 PM, Steven Rostedt wrote:
+> On Tue, 21 Apr 2020 14:36:29 -0400
+> Waiman Long <longman@redhat.com> wrote:
+> 
+>>> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>>>
+>>> -- Steve
+>>>  
+>> OK, will send a v2 patch to update the commit log. Thanks for the review.
+> 
+> I think Jens already took this patch.  Doesn't sound like a v2 is needed.
 
-Update the Usage section to reflect the new individual dax selection
-functionality.
+I did, with modified subject line.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
----
-Changes from V8:
-	Updates from Darrick
-
-Changes from V7:
-	Cleanups/clarifications from Darrick and Dan
-
-Changes from V6:
-	Update to allow setting FS_XFLAG_DAX any time.
-	Update with list of behaviors from Darrick
-	https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-
-Changes from V5:
-	Update to reflect the agreed upon semantics
-	https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
----
- Documentation/filesystems/dax.txt | 164 +++++++++++++++++++++++++++++-
- 1 file changed, 161 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-index 679729442fd2..8f4ab08be715 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.txt
-@@ -17,11 +17,169 @@ For file mappings, the storage device is mapped directly into userspace.
- Usage
- -----
- 
--If you have a block device which supports DAX, you can make a filesystem
-+If you have a block device which supports DAX, you can make a file system
- on it as usual.  The DAX code currently only supports files with a block
- size equal to your kernel's PAGE_SIZE, so you may need to specify a block
--size when creating the filesystem.  When mounting it, use the "-o dax"
--option on the command line or add 'dax' to the options in /etc/fstab.
-+size when creating the file system.
-+
-+Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
-+is different.
-+
-+Enabling DAX on ext4 and ext2
-+-----------------------------
-+
-+When mounting the filesystem, use the "-o dax" option on the command line or
-+add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
-+within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
-+
-+
-+Enabling DAX on xfs
-+-------------------
-+
-+Summary
-+-------
-+
-+ 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
-+    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
-+    about this access mode.
-+
-+ 2. There exists an advisory file inode flag FS_XFLAG_DAX that is
-+    inherited from the parent directory FS_XFLAG_DAX inode flag at file
-+    creation time.  This advisory flag can be set or cleared at any
-+    time, but doing so does not immediately affect the S_DAX state.
-+
-+    Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
-+    and the fs is on pmem then it will enable S_DAX at inode load time;
-+    if FS_XFLAG_DAX is not set, it will not enable S_DAX.
-+
-+ 3. There exists a dax= mount option.
-+
-+    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
-+
-+    "-o dax=always" means "always set S_DAX (at least on pmem),
-+                    and ignore FS_XFLAG_DAX."
-+
-+    "-o dax"        is an alias for "dax=always".
-+
-+    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
-+
-+ 4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
-+    be set or cleared at any time.  The flag state is inherited by any files or
-+    subdirectories when they are created within that directory.
-+
-+ 5. Programs that require a specific file access mode (DAX or not DAX)
-+    can do one of the following:
-+
-+    (a) Create files in directories that the FS_XFLAG_DAX flag set as
-+        needed; or
-+
-+    (b) Have the administrator set an override via mount option; or
-+
-+    (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
-+        must then cause the kernel to evict the inode from memory.  This
-+        can be done by:
-+
-+        i>  Closing the file and re-opening the file and using statx to
-+            see if the fs has changed the S_DAX flag; and
-+
-+        ii> If the file still does not have the desired S_DAX access
-+            mode, either unmount and remount the filesystem, or close
-+            the file and use drop_caches.
-+
-+ 6. It is expected that users who want to squeeze every last bit of performance
-+    out of the particular rough and tumble bits of their storage will also be
-+    exposed to the difficulties of what happens when the operating system can't
-+    totally virtualize those hardware capabilities.  DAX is such a feature.
-+
-+
-+Details
-+-------
-+
-+There are 2 per-file dax flags.  One is a physical inode setting (FS_XFLAG_DAX)
-+and the other a currently enabled state (S_DAX).
-+
-+FS_XFLAG_DAX is maintained, on disk, on individual inodes.  It is preserved
-+within the file system.  This 'physical' config setting can be set using an
-+ioctl and/or an application such as "xfs_io -c 'chattr [-+]x'".  Files and
-+directories automatically inherit FS_XFLAG_DAX from their parent directory
-+_when_ _created_.  Therefore, setting FS_XFLAG_DAX at directory creation time
-+can be used to set a default behavior for an entire sub-tree.  (Doing so on the
-+root directory acts to set a default for the entire file system.)
-+
-+To clarify inheritance here are 3 examples:
-+
-+Example A:
-+
-+mkdir -p a/b/c
-+xfs_io 'chattr +x' a
-+mkdir a/b/c/d
-+mkdir a/e
-+
-+	dax: a,e
-+	no dax: b,c,d
-+
-+Example B:
-+
-+mkdir a
-+xfs_io 'chattr +x' a
-+mkdir -p a/b/c/d
-+
-+	dax: a,b,c,d
-+	no dax:
-+
-+Example C:
-+
-+mkdir -p a/b/c
-+xfs_io 'chattr +x' c
-+mkdir a/b/c/d
-+
-+	dax: c,d
-+	no dax: a,b
-+
-+
-+The current enabled state (S_DAX) is set when a file inode is _loaded_ based on
-+the underlying media support, the value of FS_XFLAG_DAX, and the file systems
-+dax mount option setting.  See below.
-+
-+statx can be used to query S_DAX.  NOTE that a directory will never have S_DAX
-+set and therefore statx will never indicate that S_DAX is set on directories.
-+
-+NOTE: Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs
-+even if the underlying media does not support dax and/or the file system is
-+overridden with a mount option.
-+
-+
-+Overriding FS_XFLAG_DAX (dax= mount option)
-+-------------------------------------------
-+
-+There exists a dax mount option.  Using the mount option does not change the
-+physical configured state of individual files but overrides the S_DAX operating
-+state when inodes are loaded.
-+
-+Given underlying media support, the dax mount option is a tri-state option
-+(never, always, inode) with the following meanings:
-+
-+   "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
-+   "-o dax=always" means "always set S_DAX, ignore FS_XFLAG_DAX"
-+        "-o dax" by itself means "dax=always" to remain compatible with older
-+	         kernels
-+   "-o dax=inode" means "follow FS_XFLAG_DAX"
-+
-+The default state is 'inode'.  Given underlying media support, the following
-+algorithm is used to determine the effective mode of the file S_DAX on a
-+capable device.
-+
-+	S_DAX = FS_XFLAG_DAX;
-+
-+	if (dax_mount == "always")
-+		S_DAX = true;
-+	else if (dax_mount == "off"
-+		S_DAX = false;
-+
-+To reiterate: Setting, and inheritance, continues to affect FS_XFLAG_DAX even
-+while the file system is mounted with a dax override.  However, in-core inode
-+state (S_DAX) will continue to be overridden until the filesystem is remounted
-+with dax=inode and the inode is evicted."
- 
- 
- Implementation Tips for Block Driver Writers
 -- 
-2.25.1
+Jens Axboe
 
