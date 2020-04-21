@@ -2,170 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033951B291C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F421B28F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbgDUOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:12:15 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:37844 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUOMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:12:14 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6386B1A0D78;
-        Tue, 21 Apr 2020 16:12:11 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 409661A0D7F;
-        Tue, 21 Apr 2020 16:12:06 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0DAAF402D9;
-        Tue, 21 Apr 2020 22:11:59 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2] dt-bindings: gpio: Convert i.MX to json-schema
-Date:   Tue, 21 Apr 2020 22:03:43 +0800
-Message-Id: <1587477823-21036-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728626AbgDUOFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726691AbgDUOFc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:05:32 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3BFC061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:05:32 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id o3so8472357vsd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=be+Vc7xAZCr9Ahzwagy0wNJ1CV7ApQx8T+7Py7ZdjNQ=;
+        b=gBwYA42KhR9bSnokVesIaERlD/XOFBta05NQJCMc8PglMAis4wqWMUKb4s+Wd9DSVz
+         2wX98j0Rb8tWT0+oKFWO01C5DwY9/NubX8+nLILBTZJCkNevY+cnvqu1Y4F+D4HoESsd
+         oa0L8CJoC796UzDIfdyUfxEC5R7xU8yrScI1CzoXtncrIeu6yK79vwXAdX2Lmwjpr+ME
+         /23BkW+VYuAc84TdpindwSWUl2d3P3mh8niWzOW0ZUEAK7Bzew2vkyFI6aeQlOt6K6Op
+         B0QMf0T76n2DbqHfTuLjo8Vn6ug8Ruos6yJ4cMNEfSdGBlDs4cp5D4B+IHduFSgapmCA
+         mpHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=be+Vc7xAZCr9Ahzwagy0wNJ1CV7ApQx8T+7Py7ZdjNQ=;
+        b=g+5sGIvUe3ca/k0qpghtRVb+dCsYT9imjetLR697tjn61Ptl7MDxRCQUbeHzwLT3Ty
+         9lvMTLb8uMlwHkhpt8+aDhyy75SYPpfYm+vXX42xMwMdxXiIWiJ43hriNNoIq+9Hsgrq
+         yH8TZxgFPQoNe2uX408/3P7VVCa38gb4AxLdKmh/TS8qe57yr4cpkPhCVUpga/FYmRMe
+         fG6qr4ZtV4KY4Wp2o5/Co1dOJ+o4RE0lXO/rR9LCI7GNf8FN5qN9R5/gEqZ5lq/MPPWP
+         8Fchmp1PWha8HR3dKvGL02Z08H/0VyFVFGa0Qi4GBb538dIdfaMK4vkcLmnP+HB64cdO
+         UpFg==
+X-Gm-Message-State: AGi0PuZkRSjkGWEb8/kJVfWCNz0iLDARul0c8aXdbMMTX/aikgv3wpsK
+        fiKTUVwnqc9pQY4MLlZzDLwZymm0B1PF8p3BzRTpjw==
+X-Google-Smtp-Source: APiQypLs3Snj8EJSeZBgRwIyen5KSmd5DxEjSyGrzGJzVxK0ot19ligIs3sOjcHBff9en12Ea3bsG2F9tYJE2CgfHAg=
+X-Received: by 2002:a67:8b46:: with SMTP id n67mr4834888vsd.35.1587477931040;
+ Tue, 21 Apr 2020 07:05:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200409064416.83340-1-sboyd@kernel.org> <20200409064416.83340-7-sboyd@kernel.org>
+In-Reply-To: <20200409064416.83340-7-sboyd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 21 Apr 2020 16:04:54 +0200
+Message-ID: <CAPDyKFqpS=wke5Y=rTeq3+8bQyacVHcbWnBwG5pxsJ4hPys+9g@mail.gmail.com>
+Subject: Re: [PATCH v2 06/10] mmc: meson-mx-sdio: Depend on OF_ADDRESS and not
+ just OF
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX GPIO binding to DT schema format using json-schema.
+On Thu, 9 Apr 2020 at 08:44, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Making COMMON_CLK a visible option causes the sparc allyesconfig to fail
+> to build like so:
+>
+>    sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_remove':
+>    meson-mx-sdio.c:(.text+0x70): undefined reference to `of_platform_device_destroy'
+>    sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_probe':
+>    meson-mx-sdio.c:(.text+0x9e4): undefined reference to `of_platform_device_create'
+>    sparc64-linux-ld: meson-mx-sdio.c:(.text+0xdd4): undefined reference to `of_platform_device_destroy'
+>
+> This is because the implementation of of_platform_device_destroy() is
+> inside an #ifdef CONFIG_OF_ADDRESS section of drivers/of/platform.c.
+> This driver already depends on OF being enabled, so let's tighten that
+> constrain a little more so that it depends on OF_ADDRESS instead. This
+> way we won't try to build this driver on platforms that don't have this
+> function.
+>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- improve compatible;
-	- drop clocks description.
----
- .../devicetree/bindings/gpio/fsl-imx-gpio.txt      | 35 -----------
- .../devicetree/bindings/gpio/fsl-imx-gpio.yaml     | 68 ++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 35 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+I don't have the complete picture here, can I just apply this a fix to
+my mmc tree?
 
-diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
-deleted file mode 100644
-index b4cd9f90..0000000
---- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--* Freescale i.MX/MXC GPIO controller
--
--Required properties:
--- compatible : Should be "fsl,<soc>-gpio"
--- reg : Address and length of the register set for the device
--- interrupts : Should be the port interrupt shared by all 32 pins, if
--  one number.  If two numbers, the first one is the interrupt shared
--  by low 16 pins and the second one is for high 16 pins.
--- gpio-controller : Marks the device node as a gpio controller.
--- #gpio-cells : Should be two.  The first cell is the pin number and
--  the second cell is used to specify the gpio polarity:
--      0 = active high
--      1 = active low
--- interrupt-controller: Marks the device node as an interrupt controller.
--- #interrupt-cells : Should be 2.  The first cell is the GPIO number.
--  The second cell bits[3:0] is used to specify trigger type and level flags:
--      1 = low-to-high edge triggered.
--      2 = high-to-low edge triggered.
--      4 = active high level-sensitive.
--      8 = active low level-sensitive.
--
--Optional properties:
--- clocks: the clock for clocking the GPIO silicon
--
--Example:
--
--gpio0: gpio@73f84000 {
--	compatible = "fsl,imx51-gpio", "fsl,imx35-gpio";
--	reg = <0x73f84000 0x4000>;
--	interrupts = <50 51>;
--	gpio-controller;
--	#gpio-cells = <2>;
--	interrupt-controller;
--	#interrupt-cells = <2>;
--};
-diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-new file mode 100644
-index 0000000..0b223ab
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/fsl-imx-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX/MXC GPIO controller
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx1-gpio
-+      - fsl,imx21-gpio
-+      - fsl,imx31-gpio
-+      - fsl,imx35-gpio
-+      - fsl,imx7d-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description: |
-+      Should be the port interrupt shared by all 32 pins, if one number.
-+      If two numbers, the first one is the interrupt shared by low 16 pins
-+      and the second one is for high 16 pins.
-+    minItems: 1
-+    maxItems: 2
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  gpio-controller: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - "#gpio-cells"
-+  - gpio-controller
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio0: gpio@73f84000 {
-+        compatible = "fsl,imx35-gpio";
-+        reg = <0x73f84000 0x4000>;
-+        interrupts = <50 51>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+    };
-+
-+...
--- 
-2.7.4
+Kind regards
+Uffe
 
+> ---
+>  drivers/mmc/host/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 3a5089f0332c..31b2a8826b30 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -409,7 +409,7 @@ config MMC_MESON_MX_SDIO
+>         tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+>         depends on ARCH_MESON || COMPILE_TEST
+>         depends on COMMON_CLK
+> -       depends on OF
+> +       depends on OF_ADDRESS
+>         help
+>           This selects support for the SD/MMC Host Controller on
+>           Amlogic Meson6, Meson8 and Meson8b SoCs.
+> --
+> Sent by a computer, using git, on the internet
+>
