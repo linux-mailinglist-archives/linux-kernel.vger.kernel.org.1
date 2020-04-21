@@ -2,115 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA3D1B2AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34D1B2AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 17:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgDUPPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 11:15:23 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37430 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725902AbgDUPPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:15:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587482121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=04PEf90F+6uRCyLy6Mn+cR2kwE1/6Z45D9X5YBg8bFQ=;
-        b=I9IPejQcITuNJIcVNKwq+bOoc3OOKRHJMToxPIZjefsnERsCwW6UN2dmWV5QxDi0jcOXCJ
-        xfe1UrBZLHepA40/84jMZSw0nnoSJc6pbSpdbUjwJ8mXGQywnxXKvQnTeHUvDgVOGpHliq
-        mSKSbvrHSVC3wXjKyAsRekIeussJacs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-DnTW3m3TOnWJI0bXu-clzw-1; Tue, 21 Apr 2020 11:15:14 -0400
-X-MC-Unique: DnTW3m3TOnWJI0bXu-clzw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5A2218FE867;
-        Tue, 21 Apr 2020 15:15:11 +0000 (UTC)
-Received: from x2.localnet (ovpn-113-195.phx2.redhat.com [10.3.113.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2781376E92;
-        Tue, 21 Apr 2020 15:15:04 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     linux-audit@redhat.com
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Richard Guy Briggs <rgb@redhat.com>, fw@strlen.de,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
-        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
-        tgraf@infradead.org
-Subject: Re: [PATCH ghak25 v3 3/3] audit: add subj creds to NETFILTER_CFG record to cover async unregister
-Date:   Tue, 21 Apr 2020 11:15:02 -0400
-Message-ID: <2156032.xcGZvdN1jG@x2>
-Organization: Red Hat
-In-Reply-To: <CAHC9VhSbbjFbF0A_-saquZ8B85XaF7SWD2e1QcWsXhFSQrUAbQ@mail.gmail.com>
-References: <cover.1584480281.git.rgb@redhat.com> <20200318213327.ow22q6nnjn3ijq6v@madcap2.tricolour.ca> <CAHC9VhSbbjFbF0A_-saquZ8B85XaF7SWD2e1QcWsXhFSQrUAbQ@mail.gmail.com>
+        id S1729159AbgDUPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 11:10:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:37030 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUPKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 11:10:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D270A31B;
+        Tue, 21 Apr 2020 08:10:53 -0700 (PDT)
+Received: from [10.37.12.172] (unknown [10.37.12.172])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB6CD3F73D;
+        Tue, 21 Apr 2020 08:10:21 -0700 (PDT)
+Subject: Re: [PATCH v2 8/8] arm64: cpufeature: Add an overview comment for the
+ cpufeature framework
+To:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        saiprakash.ranjan@codeaurora.org, dianders@chromium.org,
+        kernel-team@android.com
+References: <20200421142922.18950-1-will@kernel.org>
+ <20200421142922.18950-9-will@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <79835826-1b28-7616-834c-7b3779db4fac@arm.com>
+Date:   Tue, 21 Apr 2020 16:15:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200421142922.18950-9-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, April 17, 2020 5:53:47 PM EDT Paul Moore wrote:
-> On Wed, Mar 18, 2020 at 5:33 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > On 2020-03-18 17:22, Paul Moore wrote:
-> > > On Wed, Mar 18, 2020 at 9:12 AM Richard Guy Briggs <rgb@redhat.com> 
-wrote:
-> > > > On 2020-03-17 17:30, Richard Guy Briggs wrote:
-> > > > > Some table unregister actions seem to be initiated by the kernel to
-> > > > > garbage collect unused tables that are not initiated by any
-> > > > > userspace actions.  It was found to be necessary to add the subject
-> > > > > credentials to cover this case to reveal the source of these
-> > > > > actions.  A sample record:
-> > > > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) :
-> > > > >   table=nat family=bridge entries=0 op=unregister pid=153 uid=root
-> > > > >   auid=unset tty=(none) ses=unset
-> > > > >   subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2 exe=(null)
-
-If this is the kernel, why is pid not 0? And if pid is 0, then isn't 
-exe=/boot/vmlinuz-X.Y.Z-blah?
-
-> > > > Given the precedent set by bpf unload, I'd really rather drop this
-> > > > patch that adds subject credentials.
-
-<snip> 
-
-> I'm in the middle of building patches 1/3 and 2/3, assuming all goes
-> well I'll merge them into audit/next (expect mail soon), however I'm
-> going back and forth on this patch.  Like you I kinda don't like it,
-> and with both of us not in love with this patch I have to ask if there
-> is certification requirement for this?
-
-Yes, any change to information flow must be auditable.
-
-> I know about the generic
-> subj/obj requirements, but in the case where there is no associated
-> task/syscall/etc. information it isn't like the extra fields supplied
-> in this patch are going to have much information in that regard; it's
-> really the *absence* of that information which is telling.
-
-Exactly. But if someone does a search based on the fields, they need to be 
-able to find this record. For example, suppose I want to know what actions 
-have been performed by kernel_t, I can run a  search and find this event. 
-
-> Which brings me to wonder if simply the lack of any associated records in
-> this event is enough?  Before when we weren't associating records into
-> a single event it would have been a problem, but the way things
-> currently are, if there are no other records (and you have configured
-> that) then I think you have everything you need to know.
+On 04/21/2020 03:29 PM, Will Deacon wrote:
+> Now that Suzuki isn't within throwing distance, I thought I'd better add
+> a rough overview comment to cpufeature.c so that it doesn't take me days
+> to remember how it works next time.
 > 
-> Thoughts?
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
 
-You can't search on the absense of information. There are some fields that 
-have meaning. It's OK if they are unset. It happens for daemons, too. But we 
-don't remove the fields because of it. It tells part of the story.
-
--Steve
-
-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
