@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7001B1B66
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 03:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EAE1B1B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 03:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgDUBwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 21:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725829AbgDUBwv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 21:52:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAADC061A0E;
-        Mon, 20 Apr 2020 18:52:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726458AbgDUByV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 21:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725958AbgDUByU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Apr 2020 21:54:20 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 495mmD1y73z9sP7;
-        Tue, 21 Apr 2020 11:52:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587433968;
-        bh=dcUAjJ2YJIPcKjtL3wg3Tuk27IdwMehCCVY6JTOAw1E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JNdxsR9PF+B4CRxWmv3jF7EQ02zp/iKtW9THCtCW9RpWDwZQtjW8U7p80ccJr5hae
-         ggw2Ok0fm3xKBrEOAdtl5I4LSMdXnSwSSIsqp73ezcimqFMT/eUp3OzDn15Yv0pgPH
-         3sEbA40XxqsMLKK5Jb7G+tg+GFqqIBAqI/sRkdrIVh2f32hP+GggeEIeFY3otsmVyZ
-         2sMo0EMGYGt0+PzyaIy4SUGJDfOBnBaVDeO08L252EaWxL9WDz8Hypos1h863ppnzZ
-         XWQGwemazVDpiuCH6SjvSk7sj/ooeOYgwqgVZudsvFiJF0LsMR74xurp7/8DxfBsOe
-         EHyU/6k6NaI3A==
-Date:   Tue, 21 Apr 2020 11:52:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: linux-next: manual merge of the drm-misc tree with the
- drm-misc-fixes tree
-Message-ID: <20200421115241.704f2fbf@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 810692078C;
+        Tue, 21 Apr 2020 01:54:19 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 21:54:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH 03/15] print_integer: new and improved way of printing
+ integers
+Message-ID: <20200420215417.6e2753ee@oasis.local.home>
+In-Reply-To: <20200420212723.GE185537@smile.fi.intel.com>
+References: <20200420205743.19964-1-adobriyan@gmail.com>
+        <20200420205743.19964-3-adobriyan@gmail.com>
+        <20200420211911.GC185537@smile.fi.intel.com>
+        <20200420212723.GE185537@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/q6d+VS6IJMID_hHtC8zLY7g";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/q6d+VS6IJMID_hHtC8zLY7g
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 21 Apr 2020 00:27:23 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Hi all,
+> >   
+> > > 	TODO
+> > > 	benchmark with mainline because nouveau is broken for me -(
+> > > 	vsnprintf() changes make the code slower  
+> > 
+> > Exactly main point of this exercise. I don't believe that algos in vsprintf.c
+> > are too dumb to use division per digit (yes, division by constant which is not
+> > power of two is a heavy operation).
+> >   
+> 
+> And second point here, why not to use existing algos from vsprintf.c?
 
-Today's linux-next merge of the drm-misc tree got a conflict in:he drm-misc=
- tree with the drm-misc-fixes tree
+Exactly. The code in _print_integer_u32() doesn't look as fast as the
+code in vsprintf() that happens to use lookup tables and converts
+without any loops.
 
-  drivers/gpu/drm/tidss/tidss_encoder.c
+Hint, loops are bad, they cause the CPU to slow down.
 
-between commit:
+Anyway, this patch series would require a pretty good improvement, as
+the code replacing the sprintf() usages is pretty ugly compared to a
+simple sprintf() call.
 
-  9da67433f64e ("drm/tidss: fix crash related to accessing freed memory")
+Randomly picking patch 6:
 
-from the drm-misc-fixes tree and commit:
+ static int loadavg_proc_show(struct seq_file *m, void *v)
+ {
+ 	unsigned long avnrun[3];
+ 
+ 	get_avenrun(avnrun, FIXED_1/200, 0);
+ 
+	seq_printf(m, "%lu.%02lu %lu.%02lu %lu.%02lu %u/%d %d\n",
+		LOAD_INT(avnrun[0]), LOAD_FRAC(avnrun[0]),
+		LOAD_INT(avnrun[1]), LOAD_FRAC(avnrun[1]),
+		LOAD_INT(avnrun[2]), LOAD_FRAC(avnrun[2]),
+		nr_running(), nr_threads,
+		idr_get_cursor(&task_active_pid_ns(current)->idr) - 1);
+ 	return 0;
+ }
 
-  b28ad7deb2f2 ("drm/tidss: Use simple encoder")
+  *vs* 
 
-from the drm-misc tree.
+ static int loadavg_proc_show(struct seq_file *m, void *v)
+ {
+ 	unsigned long avnrun[3];
+	char buf[3 * (LEN_UL + 1 + 2 + 1) + 10 + 1 + 10 + 1 + 10 + 1];
+	char *p = buf + sizeof(buf);
+	int i;
 
-I fixed it up (I just used the latter version of this file) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
+	*--p = '\n';
+	p = _print_integer_u32(p, idr_get_cursor(&task_active_pid_ns(current)->idr) - 1);
+	*--p = ' ';
+	p = _print_integer_u32(p, nr_threads);
+	*--p = '/';
+	p = _print_integer_u32(p, nr_running());
 
---=20
-Cheers,
-Stephen Rothwell
+ 	get_avenrun(avnrun, FIXED_1/200, 0);
+	for (i = 2; i >= 0; i--) {
+		*--p = ' ';
+		--p;		/* overwritten */
+		*--p = '0';	/* conditionally overwritten */
+		(void)_print_integer_u32(p + 2, LOAD_FRAC(avnrun[i]));
+		*--p = '.';
+		p = _print_integer_ul(p, LOAD_INT(avnrun[i]));
+	}
+ 
+	seq_write(m, p, buf + sizeof(buf) - p);
+ 	return 0;
+ }
 
---Sig_/q6d+VS6IJMID_hHtC8zLY7g
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+I much rather keep the first version.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6eUekACgkQAVBC80lX
-0Gz6JAgAkmrmiMLfCI2OjzKabtaC7XpRHlyRj3kBAUcrMAJ5SJyTWqAg0XRSbh4C
-JUNvPZUthTxLKvOgI3JaTD3Ue9/9AkExIAxM5lc6sMG4H5bV+6xAAr0vdkFxW4k4
-EwZ1Ejd3tHr+CTz8X5CB27195yC3vq0TTxhE6F7nXIxr1/VAjL5iJ8eM7jhj6myh
-FtOb7GQxs9rSaa6d85ZiCtop/C1j/e6jccrtNH9XHRM54ppa/7yTwEpSwnnN9Vs9
-kz85bKzuZ+1Lv2z2LQlynykF8WWgclyeJI/S900Dkt1/h4d6b+Q2a2RHCAmwBe98
-lwkK+BQb1YLNEtXWkQ7+MGHswJxSQw==
-=JWOC
------END PGP SIGNATURE-----
-
---Sig_/q6d+VS6IJMID_hHtC8zLY7g--
+-- Steve
