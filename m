@@ -2,63 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B221B24B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B451B24B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgDULPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDULPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:15:05 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE90DC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:15:05 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id 184so8135057vsu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=rzWQIqhyw/gMaj7MW0y1YR6QLZeX1DM3mlQkJYHlmlJlbU4xWmgVckOmOdhqfYZzVN
-         vcOwoYXPIKmpUhaMHgrMmgnQvxwbsGAAq1fSZvmY0we0I+lnvoc7EoOil8cNDrgaJ059
-         05IafxMmVw5sO2DNRRhEOZ8vyWUyHrOB+rVLbu9IGZKNF8DLtvJbt0A4lMDjbTakzudF
-         snkBOEZj3ZTuSAvx8rlswX9WlTkNaxefaM+DIceceJQZjGRy7Jo7o5Z8Qol3HRNki/hO
-         hqzUqlGruwPXKOs75nqDwwIqR+ckxkKJ81S6eyKlZglAHidlXtG5Jy3dUsff7I8ahfQc
-         Clqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=KXWMjN6r2mAsUDwh3oUrxcL+DLbwuO5ho9uZHCcRYHZdjqAUmNkA8ZlPYAm1fIfgbO
-         r9yvk2UYfwg4DnMcd7pI4hLOYrzFslU94PMzUndF4lGGc7PHLtbY5/5FOVwyNejvjFn5
-         UPnjOBO8NZiXGB6/BfwqMYTBYmsCT4ZOsygtv/V7VbHFYDPlOn0k9D0eQWrUBK2/KSJJ
-         kBcrhXfGjFQPCq3E8u0lO8bLokBIumEcWeb54SPzIMRtdII1ZdsO+mbGZdidQZAQ8rB1
-         qwbMPLE5Xzs1W9umeSj0Lw//IZvRwdgh8aNQZ3pF62ZPBV6bzkWVhpTzu4F7xCJNwPWo
-         3BzA==
-X-Gm-Message-State: AGi0PubGwqB790d2d2O/BXMjeBOS3Vk2qur7EaTp0VNJyMAFkgZkx0at
-        TSY5nWlXqloBcPAaWiA6FAEV5k21eRJmYKD+Mas=
-X-Google-Smtp-Source: APiQypLLmKuM0pCt8MVR89c7OAQRnxEMI7/yGL8n1dC9ksXuXbUrvvFgpQ0UZTo1jWUfdgROCtzKQqMv+fyjignGAFM=
-X-Received: by 2002:a05:6102:1c:: with SMTP id j28mr1033870vsp.209.1587467704731;
- Tue, 21 Apr 2020 04:15:04 -0700 (PDT)
+        id S1728584AbgDULPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:15:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:33308 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDULPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:15:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0F0C1FB;
+        Tue, 21 Apr 2020 04:15:17 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9217C3F73D;
+        Tue, 21 Apr 2020 04:15:16 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 12:15:14 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Oliver Neukum <oneukum@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux-pm mailing list <linux-pm@vger.kernel.org>,
+        Kernel development list <linux-kernel@vger.kernel.org>
+Subject: Re: lockdep warning in urb.c:363 usb_submit_urb
+Message-ID: <20200421111513.fy3oqebij6fnvbnc@e107158-lin.cambridge.arm.com>
+References: <Pine.LNX.4.44L0.2003251631360.1724-100000@netrider.rowland.org>
+ <Pine.LNX.4.44L0.2004201622260.22032-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Received: by 2002:ab0:658f:0:0:0:0:0 with HTTP; Tue, 21 Apr 2020 04:15:04
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Michelle <michellegood044@gmail.com>
-Date:   Tue, 21 Apr 2020 11:15:04 +0000
-Message-ID: <CAJ5e1jZy7RX9DJdKySBVLzwSw0tFsXOuj4HJ+8CaxnCweRrCGw@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L0.2004201622260.22032-100000@netrider.rowland.org>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+On 04/20/20 16:26, Alan Stern wrote:
+> On Wed, 25 Mar 2020, Alan Stern wrote:
+> 
+> > On Wed, 25 Mar 2020, Qais Yousef wrote:
+> > 
+> > > Thanks for all the hints Alan.
+> > > 
+> > > I think I figured it out, the below patch seems to fix it for me. Looking
+> > > at other drivers resume functions it seems we're missing the
+> > > pm_runtime_disable()->set_active()->enable() dance. Doing that fixes the
+> > > warning and the dev_err() in driver/base/power.
+> > 
+> > Ah, yes.  This should have been added years ago; guess I forgot.  :-(
+> > 
+> > > I don't see xhci-plat.c doing that, I wonder if it needs it too.
+> > > 
+> > > I'm not well versed about the details and the rules here. So my fix could be
+> > > a hack, though it does seem the right thing to do.
+> > > 
+> > > I wonder why the power core doesn't handle this transparently..
+> > 
+> > Initially, we didn't want the PM core to do this automatically because
+> > we thought some devices might want to remain runtime-suspended
+> > following a system resume, and only the device driver would know what 
+> > to do.
+> 
+> Qais:
+> 
+> So it looks like the discussion with Rafael will lead to changes in the
+> PM core, but they won't go into the -stable kernels, and they won't
+> directly fix the problem here.
+> 
+> In the meantime, why don't you write up your patch below and submit it
+> properly?  Even better, create similar patches for ehci-platform.c and
+> xhci-plat.c and submit them too.
+
+Sure.
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> Alan Stern
+> 
+> > > diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+> > > index 7addfc2cbadc..eb92c8092fae 100644
+> > > --- a/drivers/usb/host/ohci-platform.c
+> > > +++ b/drivers/usb/host/ohci-platform.c
+> > > @@ -299,6 +299,10 @@ static int ohci_platform_resume(struct device *dev)
+> > >         }
+> > > 
+> > >         ohci_resume(hcd, false);
+> > > +
+> > > +       pm_runtime_disable(dev);
+> > > +       pm_runtime_set_active(dev);
+> > > +       pm_runtime_enable(dev);
+> > >         return 0;
+> > >  }
+> > >  #endif /* CONFIG_PM_SLEEP */
+> > > 
+> > > 
+> > > Thanks
+> > > 
+> > > --
+> > > Qais Yousef
+> > 
+> > 
+> > 
+> 
