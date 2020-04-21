@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6D21B2E3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0667B1B2E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729105AbgDURX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:23:57 -0400
-Received: from sonic304-21.consmr.mail.ne1.yahoo.com ([66.163.191.147]:33050
-        "EHLO sonic304-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725930AbgDURX4 (ORCPT
+        id S1729199AbgDURYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725930AbgDURYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:23:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587489834; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=CoMF//G9CZ4EhMX/GC8sJ8FuNJvxsSskg/8849ddDsTguC1G1OR4UgiVnBVUoNwe0Ip/huCNuymGmZtCm0OXveww9M0z2wva/WOD1AB8/UFT68sBObHnpbyu8A2d8Gi/D4maCdi6apJiIHB8A+6wtKzaYGytXT9Gy+KT8rIofIaKLZlnVZqQEOYcwEWjjvmykPKqHtFut3DQcWr2HiQh28v70PkuvmfpsLMUfmIP9fLvCbmyU8d9IfNpNxTKYuoTudOUkMHYNJmg2AxpUyF/oNej2Z2093axtj9lHSkNwB57GqE8PGd8WZHx8TzlnTFbo2shdUbBe8N5cd+Rkelf+w==
-X-YMail-OSG: wf5OJGcVM1kAArWWO3fYkQsQ3YaHt5ZMoONQuI6MSGG3YOxfQ.sahSTY9RLUEaP
- .OGLGlB3GKDqJ_1AH1398B3Nre6Xc8N6DdMgq_XxbQKmzwqzI1IxL9TUJMOCbVGs6zlptizb4nty
- 5lmJFgYK4MSgxkw2FRoIPRyFhYX9YfLpuHVwGvY4lKr1mQawf0Ql00CP1oFqAI60viJnAfi8.hc0
- tfanegoTz1TiJ5Jca8LIG37v8ju94tqdjPihR_2SALVi2Qk6PYajv9qbDNBTVRJc8Q5PLVWYjSt5
- 157ukwQ0C48aDbpOCS1SheqssJ8OHiB6L21Brbmu5pv_yrGj2MCussy5q9KDwp4uDOqtUyU2U9gM
- 0Oj2uYa_LY3g.rBoB.HAp30kZ7o9nBoatuYK4.zKM779xZD18tGOduGKzx0suEBbilgSrPcwU9hE
- QR2kdZiuFB2LElo5ULrQNiLZtO13noeLHeiSaAiFyi3xHSwaLGNFt9qB7ejclmL2Li4kz9Wc_kwO
- ofHDug_aOuv89XhPYXacyypJLxUgWiy_bc9O.OXoosg53CazOVOhZo5A9otjGNk90nKwGA.7zwW7
- WCf_Be1vIGkBHytd_5ux5_0kaW9CowRbg0E8NjfplLr5lgWjwPnb.zNAkso9sukhyKuoXGNOzaBd
- bewHg.XtM1iQWTuWm47C86dX5XebQTZYBswSiKphtDnB.WepcE_Dx_NlaLOjjRhnUzwm9S3l3LSu
- 6NhFGxTS9EWfiU318UQexIDsKkwEGEOPM_inkcZq2V07WuKoRcjGNNHCwrTQAut62f_LfJnOj.Sb
- QZ4c0FAYAatn5H3nSawXCKkrATMG.r9gX6DDxbvy9jCtBW_MYY6sNlwjwk_e2pv.VdsHxjvdJIKC
- eiwUZa8o34sYZiteBieKZgv7JxdB3KXuUWc0DwMOdSCGwUiy7Z9kDqfbsGLFv1j6pyAw8zVwbBW0
- Cq1P0Kom6ZJkKtJaRLqFH5FMx6I_V_vjU3VkWO1s56v9aa3yC8aUbVlE_NkDeJYzXiIBo6NQMPrR
- DVT2K2lpC9zCKQohGmEznKVSbAC3mp8eyqqlLNdjz2krYD7sQr28uYiSsTJYs_PAU31pUd_7xJWO
- Z_7THy.H.H9FVObMOQwhuk0C0w8lctavbNxZCyr25M3wYWS4gVXvlelec5NlmSqN5SyzE3je3yQN
- hPc9FGko3NPuTKYImfSkMF1fe1s5B7tce6H7v5pYaOGpTYJ0ngS1fgI42k_nVWQaPbSRlEFhLJLR
- j1o3rx4kFXkSKJHH1NjKxzUKB.c_2cWof18TIDHDQGoS4ITZhcfE9VHUJ2PfaGZ0EVrBU0ThcpTY
- 6XHw60w--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Apr 2020 17:23:54 +0000
-Date:   Tue, 21 Apr 2020 17:23:50 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
-Reply-To: mrs.minaabrunel30@gmail.com
-Message-ID: <1515331421.406263.1587489830185@mail.yahoo.com>
-Subject: My Dear in the lord
+        Tue, 21 Apr 2020 13:24:07 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81552C061A41
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:24:06 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id e2so9274135eje.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1W3PglCbU+VRJOx26t9wE7ivGuB2QpnMU2YOdNm+Jzg=;
+        b=r6bzeb1Q5G0VunXAHq8mF0eYNzq3cn0foazV3UN4f9FJQVmHm52Mqw/AXxheXIrTKO
+         22yvilhk7u6SflG2fv3IjC4uuJCLhii+qTxMRXI/z2qYYYuijaMmPO4+AJLPAzE6bS/M
+         ber1yR/AlbVzENt2BPDZQ2zNBSF55LtDX0SPGsge1CUbuhiwNlIp7mVATRssrypgV9GQ
+         UdrtKoLXzxN7WwUIYr3N2AC9tUrSZLuA1gSa/R9JPHJEUl9nSp+T4ADPmVlUAjKEDM5L
+         r3YFpAk133SAfYjaA+49ilfgw/a6v69xm3sKtxaSJRmu7+uUY2NAMxKYSamuQIm/As/Y
+         nW8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1W3PglCbU+VRJOx26t9wE7ivGuB2QpnMU2YOdNm+Jzg=;
+        b=NSHjXi6XuX6WFdIpwXVnU7AmgzDj3pl3VKM8W3Q4OCCaN3pqyuusIQPaHBeVSqQkam
+         0al8jNGYl+oONVqVe8yZ4ZJlXeLhvwIlWq5VTYLAQLqqabnKSnxyozP57t7s6u3mLom6
+         X5lQn4IKbzFHS4F+SGZX7wi6WSs5GGUlZ3fpTgOsPkPG/QlfirPxCESOcDY7lqkC67Ti
+         nzM8QTS6NQObMCnjrdjbBKdr/CmLVDT6nspLlTxI1ec+egOENe9nHMn2qoM6E8+SP16A
+         uxFtZ7ReVZZ2Ph0IExt62MIFA5P8c7JGJzC55noz1F1Q040hdB0ZclkbaRX40Q45MnCu
+         ZzyQ==
+X-Gm-Message-State: AGi0PuaDcwf5UrbJhKLTAducEPdwNWU7H5kKRconG4LOAyGU/7okCkK7
+        8rkMzd9/qUG0zXnHx7/GYNZpEsyOsrUcdRa8LHJNcw==
+X-Google-Smtp-Source: APiQypL13LdRmQ1m2Z66qNUe0XHNSa5D8tNS1JsnYDeuhkI6hxd1Kjbs4h40veMRno5tls0HrbBJ/q72mmsriss1Izg=
+X-Received: by 2002:a17:906:2792:: with SMTP id j18mr17137875ejc.215.1587489845147;
+ Tue, 21 Apr 2020 10:24:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1515331421.406263.1587489830185.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15739 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200415201420.15958-1-mike.leach@linaro.org> <20200417021113.GB5426@leoy-ThinkPad-X240s>
+ <CANLsYkzx_DeXcJ_dBju_OWWRiREAqzG6opeQAuXf5gTsdgZtQQ@mail.gmail.com>
+In-Reply-To: <CANLsYkzx_DeXcJ_dBju_OWWRiREAqzG6opeQAuXf5gTsdgZtQQ@mail.gmail.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 21 Apr 2020 18:23:54 +0100
+Message-ID: <CAJ9a7Vj-P_b46nVpzWumWQ3TshWa08dNOvoZ7Uaq8Vn2WiL11w@mail.gmail.com>
+Subject: Re: [PATCH] perf: cs-etm: Update to build with latest opencsd version.
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HI Mathieu, Leo.
 
-
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+Agreed - I'll fix up to use only the latest
 
 Thanks
-Mrs. Mina A. Brunel
+
+Mike
+
+On Tue, 21 Apr 2020 at 17:52, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Thu, 16 Apr 2020 at 20:11, Leo Yan <leo.yan@linaro.org> wrote:
+> >
+> > Hi Mike,
+> >
+> > On Wed, Apr 15, 2020 at 09:14:20PM +0100, Mike Leach wrote:
+> > > OpenCSD version v0.14.0 adds in a new output element. This is represented
+> > > by a new value in the generic element type enum, which must be added to
+> > > the handling code in perf cs-etm-decoder to prevent build errors due to
+> > > build options on the perf project.
+> > >
+> > > This element is not currently used by the perf decoder.
+> > >
+> > > Tested on Linux 5.7-rc1.
+> > >
+> > > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > > ---
+> > >  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > > index cd92a99eb89d..da4737cbc2ab 100644
+> > > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > > @@ -564,6 +564,10 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
+> > >               resp = cs_etm_decoder__set_tid(etmq, packet_queue,
+> > >                                              elem, trace_chan_id);
+> > >               break;
+> > > +     /* Unused packet types */
+> > > +#if OCSD_VER_NUM >= 0x0E00
+> > > +     case OCSD_GEN_TRC_ELEM_I_RANGE_NOPATH:
+> > > +#endif
+> >
+> > I don't think use macros to distinguish OpenCSD version number is a
+> > good idea, this will get more and more code to checking version number
+> > if later have more these kinds improvement and finally it's hard to
+> > maintain.
+>
+> I agree.
+>
+> >
+> > Sugget just simply add the new case for
+> > OCSD_GEN_TRC_ELEM_I_RANGE_NOPATH, considering if user uses an old version
+> > OpenCSD and doesn't output this new element, the new added case doesn't
+> > introduce issue for old OpenCSD lib.
+> >
+> > Futhermore, suggest to change the code in
+> > tools/build/feature/test-libopencsd.c, so can reflect the kernel 5.7
+> > to require OpenCSD v0.14.0 or later version when build perf.
+>
+> As Leo pointed out, I think we should just continue dealing with new
+> versions of the library in test-libopencsd.c.
+>
+> >
+> > Thanks,
+> > Leo
+> >
+> > >       case OCSD_GEN_TRC_ELEM_ADDR_NACC:
+> > >       case OCSD_GEN_TRC_ELEM_CYCLE_COUNT:
+> > >       case OCSD_GEN_TRC_ELEM_ADDR_UNKNOWN:
+> > > --
+> > > 2.17.1
+> > >
+> > > _______________________________________________
+> > > CoreSight mailing list
+> > > CoreSight@lists.linaro.org
+> > > https://lists.linaro.org/mailman/listinfo/coresight
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
