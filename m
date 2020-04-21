@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345051B2795
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7C21B279E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgDUNWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:22:52 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57898 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728824AbgDUNWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:22:49 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03LDLCsZ043506;
-        Tue, 21 Apr 2020 22:21:12 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Tue, 21 Apr 2020 22:21:12 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from ccsecurity.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03LDL6O9043463
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 21 Apr 2020 22:21:11 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Matthew Garrett <mjg59@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, syzkaller@googlegroups.com,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v4 3/3] twist: Add option for selecting twist options for syzkaller's testing
-Date:   Tue, 21 Apr 2020 22:19:51 +0900
-Message-Id: <20200421131951.4948-3-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20200421131951.4948-1-penguin-kernel@I-love.SAKURA.ne.jp>
+        id S1728989AbgDUNXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:23:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2861 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728859AbgDUNXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:23:35 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E1C2A57CB1E21CE031AC;
+        Tue, 21 Apr 2020 21:23:30 +0800 (CST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.83.77) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 21 Apr 2020 21:23:21 +0800
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <bp@alien8.de>, <james.morse@arm.com>, <helgaas@kernel.org>,
+        <lenb@kernel.org>, <tony.luck@intel.com>,
+        <dan.carpenter@oracle.com>, <gregkh@linuxfoundation.org>,
+        <zhangliguang@linux.alibaba.com>, <tglx@linutronix.de>
+CC:     <linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+        <tanxiaofei@huawei.com>, <yangyicong@hisilicon.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+Subject: [RESEND PATCH v7 0/6] ACPI / APEI: Add support to notify non-fatal HW errors
+Date:   Tue, 21 Apr 2020 14:21:30 +0100
+Message-ID: <20200421132136.1595-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <Shiju Jose>
+References: <Shiju Jose>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.83.77]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a kernel developer adds a kernel config option, they will not go
-and update configs on all external testing systems. This problem is also
-common for "enable all boot tests that can run on this kernel", or
-"configure a 'standard' debug build". Currently doing these things
-require all of expertise, sacred knowledge, checking all configs
-one-by-one as well as checking every new kernel patch and that needs to
-be done by everybody doing any kernel testing.
+Add common interface for queuing up the non-fatal HW errors and notify
+the registered kernel drivers.The interface supports drivers to register
+to receive the callback for the non-fatal HW errors, including the vendor
+specific HW errors, for the recovery and supports handling the non-fatal
+errors in the process context.
 
-In order to reduce the burden of maintaining kernel config options, this
-patch introduces a kernel config option which will select twist options
-when building kernels for syzkaller's testing.
+Patch set
+1. add the new interface to the APEI driver for the non-fatal HW
+   error notification.
+2. change the existing error handling for the standard errors
+   to use the above notification interface.
+2. add driver to handle HiSilicon hip PCIe controller's errors.
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
----
- lib/Kconfig.twist | 6 ++++++
- 1 file changed, 6 insertions(+)
+Changes:
 
-diff --git a/lib/Kconfig.twist b/lib/Kconfig.twist
-index a1d038bcc2a5..95020a56bbfc 100644
---- a/lib/Kconfig.twist
-+++ b/lib/Kconfig.twist
-@@ -10,6 +10,12 @@ menuconfig TWIST_KERNEL_BEHAVIOR
- 
- if TWIST_KERNEL_BEHAVIOR
- 
-+config TWIST_FOR_SYZKALLER_TESTING
-+       bool "Select all twist options suitable for syzkaller testing"
-+       select TWIST_DISABLE_KBD_K_SPEC_HANDLER
-+       help
-+	 Say N unless you are building kernels for syzkaller's testing.
-+
- config TWIST_DISABLE_KBD_K_SPEC_HANDLER
-        bool "Disable k_spec() function in drivers/tty/vt/keyboard.c"
-        help
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
+
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
+
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+
+V3:
+1. Fix the comments from Bjorn Helgaas.
+
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
+
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.
+
+Shiju Jose (5):
+  ACPI / APEI: Add support to queuing up the non-fatal HW errors and
+    notify
+  ACPI / APEI: Add callback for memory errors to the GHES notifier
+  ACPI / APEI: Add callback for AER to the GHES notifier
+  ACPI / APEI: Add callback for ARM HW errors to the GHES notifier
+  ACPI / APEI: Add callback for non-standard HW errors to the GHES
+    notifier
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 | 268 ++++++++++++++++---
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 323 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  28 ++
+ 5 files changed, 595 insertions(+), 33 deletions(-)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+
 -- 
-2.18.2
+2.17.1
+
 
