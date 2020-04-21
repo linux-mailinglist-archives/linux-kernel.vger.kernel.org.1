@@ -2,84 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BA41B2E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245011B2E33
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729151AbgDURUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:20:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725990AbgDURUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:20:08 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A816206D5;
-        Tue, 21 Apr 2020 17:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587489608;
-        bh=Tkhv5FZI2lpcXSiwylUJy+SpFY9x+7AFo3ppBxZ0m70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0YsZKbRvFLNmt7aYxNscTQiCjhYPZi4jt46Kt10VY0Vg0MMOtzBUQ6wd9/YvnaByj
-         JaWR/j0BcX3xft91Hm6mJpEkiefM8zCqeHqM9+Bzc5n7BBPDPTzr/g3Mf+rd01VinX
-         56m7GnDg1ks2mcSPB64l/RX8A50NO0bow8BFgiGo=
-Date:   Tue, 21 Apr 2020 18:20:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [Patch v3 1/9] spi: bcm-qspi: Handle clock probe deferral
-Message-ID: <20200421172005.GG4540@sirena.org.uk>
-References: <20200420190853.45614-1-kdasu.kdev@gmail.com>
- <20200420190853.45614-2-kdasu.kdev@gmail.com>
- <158748156553.18089.8164001089518853868.b4-ty@kernel.org>
- <2d810e4f-5f05-4257-59a8-882ae790ecd1@gmail.com>
- <20200421171558.GE4540@sirena.org.uk>
- <0d91f426-e767-2e69-bcb7-ddc4d7611861@gmail.com>
+        id S1729202AbgDURVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725963AbgDURVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:21:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2927BC061A41;
+        Tue, 21 Apr 2020 10:21:20 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id j7so3486957pgj.13;
+        Tue, 21 Apr 2020 10:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ugtg5hHpJFG35qHHQCnbS1MFWmfROkCZGRcRHzPASYg=;
+        b=sS5qUOfbkv48i8UKD7QbuYoz6NO+vv9wkELxwAJNYaaOFnRNYBrlUwNjqqBxAtawwA
+         YbRUyrffYN1I5K5cEg8/h7z2cXlMx7mD5xjMsKQ5oJwhR3gbl8/QxSEMMj+6iNLlcOmS
+         6bKSCqcAgi7QciaGB+uRCBUnSMQwAlSIjdfbOq3iqWxwQnEfCOke72xy5YBlzG0qK7sI
+         O/6Nr2nrAsBs5IFMONeB5zzVr680L5JLuSUXf/umCgpNP3HZFqiBDACXlQ/1q1ON8jnA
+         hiFHbOsz5gJK9d+mgC71tEgcnKt0ZFZGK3xKExFvI2EHHt4oEGjS3jqEzUFnZrUkULgB
+         YL6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ugtg5hHpJFG35qHHQCnbS1MFWmfROkCZGRcRHzPASYg=;
+        b=J00CT+5tKYvaNujKL15BKtfoCIoc2uJ9hGdIMqccv6XMMr/Ef1Htn2O28Hr3lUJYpk
+         dZQzedYFan0uO2ujwZh16K6ez+JsGHRVulOErVWDSx4T/B/sCd0otk9V4dST1B4fylJv
+         ZN3AKOXxtE4zy+10tCdEfsFIHAko/AhmLyjb4eeNcvEju+1kQNDfiJSxZKNUtNDA4Orq
+         On8B/IDdBLJhB4EkFP98ixb+1AeEcZxs1FJ3B+xW8uNayydU2moyqm4unxjtS3mEXgcO
+         /A5qiJvQuBs44IbxD0CsmxqP9LP/bSLGtuVzltEkv7jAYPO/F4SWMShUZBq2N2lLC8Bu
+         HjEg==
+X-Gm-Message-State: AGi0Publ23AVmSRFmcmKprG9c4YoQyB9OajeR+/fx7y4mQb3lgUU4l6M
+        4iI45vKOox85tOhS0VHBnCA=
+X-Google-Smtp-Source: APiQypJ93iOmcQRIEJQVE+px4eeCYWBzb9IOA+IXbz+Gzs3J+soATOjbpmk8tT2rvNN53eTJEfwUbg==
+X-Received: by 2002:a63:d454:: with SMTP id i20mr22228409pgj.209.1587489679728;
+        Tue, 21 Apr 2020 10:21:19 -0700 (PDT)
+Received: from [10.230.188.26] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 23sm2871247pjb.11.2020.04.21.10.21.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 10:21:18 -0700 (PDT)
+Subject: Re: [PATCH v2 5/7] net: macb: fix call to pm_runtime in the
+ suspend/resume functions
+To:     nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        harini.katakam@xilinx.com
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        sergio.prado@e-labworks.com, antoine.tenart@bootlin.com,
+        linux@armlinux.org.uk, andrew@lunn.ch, michal.simek@xilinx.com
+References: <cover.1587463802.git.nicolas.ferre@microchip.com>
+ <1c537d1287aaf57b8b20a923686dbb551e1727f0.1587463802.git.nicolas.ferre@microchip.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1bd761fc-5eeb-bef5-5a6b-86d67fed3a7f@gmail.com>
+Date:   Tue, 21 Apr 2020 10:21:18 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yZnyZsPjQYjG7xG7"
-Content-Disposition: inline
-In-Reply-To: <0d91f426-e767-2e69-bcb7-ddc4d7611861@gmail.com>
-X-Cookie: Non-sequiturs make me eat lampshades.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1c537d1287aaf57b8b20a923686dbb551e1727f0.1587463802.git.nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---yZnyZsPjQYjG7xG7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 21, 2020 at 10:17:10AM -0700, Florian Fainelli wrote:
+On 4/21/2020 3:41 AM, nicolas.ferre@microchip.com wrote:
+> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+> 
+> The calls to pm_runtime_force_suspend/resume() functions are only
+> relevant if the device is not configured to act as a WoL wakeup source.
+> Add the device_may_wakeup() test before calling them.
+> 
+> Fixes: 3e2a5e153906 ("net: macb: add wake-on-lan support via magic packet")
+> Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Cc: Harini Katakam <harini.katakam@xilinx.com>
+> Cc: Sergio Prado <sergio.prado@e-labworks.com>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> ---
+> Changes in v2:
+> - new in v2 serries
+> 
+>   drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> index 72b8983a763a..8cf8e21fbb07 100644
+> --- a/drivers/net/ethernet/cadence/macb_main.c
+> +++ b/drivers/net/ethernet/cadence/macb_main.c
+> @@ -4564,7 +4564,8 @@ static int __maybe_unused macb_suspend(struct device *dev)
+>   
+>   	if (bp->ptp_info)
+>   		bp->ptp_info->ptp_remove(netdev);
+> -	pm_runtime_force_suspend(dev);
+> +	if (!(device_may_wakeup(dev)))
+> +		pm_runtime_force_suspend(dev);
 
-> > That then doesn't work with git itself unfortunately, someone's got to
-> > loose out :/
+Only if you need to respin, the parenthesis around device_may_wakeup() 
+are not required:
 
-> Could you provide both links with a market at the front, e.g.:
-
-> Git URL: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
-> for-5.7
-> CGIT URL: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/?h=for-5.7
-
-Ask Konstantin to implement it (I'm using b4 ty now) and I might!
-
---yZnyZsPjQYjG7xG7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6fK0QACgkQJNaLcl1U
-h9CXvAf/UAZv8UO4t1Uin3jqj6OCGFmCstSiXzKLQb6UC83EXEXtZndbgTidnKMv
-42qXpXqGgImz//y91Bv35peHhy3Ugd6d2NpBGOpgozLfUiyJXJEWXGAvr9cpd/v7
-TgLtQSuXEvKixIV6byhSNRI8huDsoFIRRcUUrLk1eg/zXY5sjQURC6O6fHZwCKXz
-/bSEIKCUTohvzJC6wh/wVxWXzlBuy85zvsUnG2WgJ9u58IxFJIJGZGpqkoipqNtJ
-357ztZeYezZAYB+St91NNk12GPW/n6IkWptiI52wrIGBoyBUU4QZTk6/jsxaOPve
-I9M/jwmVHX3d2H18f47isum/9rP01Q==
-=93nF
------END PGP SIGNATURE-----
-
---yZnyZsPjQYjG7xG7--
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
