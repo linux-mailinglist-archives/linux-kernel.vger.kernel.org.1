@@ -2,157 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC451B1F7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B061B1F87
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgDUHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:07:59 -0400
-Received: from zimbra2.kalray.eu ([92.103.151.219]:47722 "EHLO
-        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgDUHH7 (ORCPT
+        id S1728077AbgDUHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:09:07 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:32784 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbgDUHJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:07:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra2.kalray.eu (Postfix) with ESMTP id A6CDF27E039A;
-        Tue, 21 Apr 2020 09:07:57 +0200 (CEST)
-Received: from zimbra2.kalray.eu ([127.0.0.1])
-        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id VnFh86lcJuca; Tue, 21 Apr 2020 09:07:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra2.kalray.eu (Postfix) with ESMTP id DFC6727E06C1;
-        Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu DFC6727E06C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
-        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1587452876;
-        bh=ufm9yZSRtYmx3MHRNMrA5MNRiT5MrRD1Yhw3IeM6pZA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ejnAZ/pxGLDwi3zSwxLtUnKn7C6TI+a20eVd1LlWQ+Kz1237P+LBdvKlCqvCZ9+hs
-         L3WOOs0581spu9PyXfeEXsksUlddUiisiv0qdHmHjeVPCnch3f8fsv/T3Igo/3XSWw
-         PBzfe2iIs2Gcv2wWkN0AoEkI2QtSkadvffddzL4I=
-X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
-Received: from zimbra2.kalray.eu ([127.0.0.1])
-        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id QoHi6CGZQf_D; Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
-Received: from zimbra2.kalray.eu (localhost [127.0.0.1])
-        by zimbra2.kalray.eu (Postfix) with ESMTP id C98EC27E039A;
-        Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 09:07:56 +0200 (CEST)
-From:   =?utf-8?Q?Cl=C3=A9ment?= Leger <cleger@kalray.eu>
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        richard <richard@nod.at>, vigneshr <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1220480151.16477138.1587452876610.JavaMail.zimbra@kalray.eu>
-In-Reply-To: <2185268.xDFeLDFsC1@192.168.0.120>
-References: <20200417160839.25880-1-cleger@kalray.eu> <1950407.5XCTmqoEVg@192.168.0.120> <1734428336.16421904.1587394202163.JavaMail.zimbra@kalray.eu> <2185268.xDFeLDFsC1@192.168.0.120>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for is25lp01g
+        Tue, 21 Apr 2020 03:09:06 -0400
+Received: by mail-wr1-f68.google.com with SMTP id s10so6032368wrr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:09:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mnRK7+f6MWldP7sRJPCD/Ckowsyp8lbBNzHdwkravLw=;
+        b=e4XlgjwflFvyWWztQvW3O1PIWpz1i7SfPk9LBLGJQ/Buiu3mlj4XUBDz/8qnrgrGSo
+         9AKM1uasDc8/lNg6VFRCCzom+Ryf8QtPU/llC2Cbpemm3wFeIDSVek6S72dodJZZmIxv
+         s/HYMWW/KgIj6GROP8aMPV2Fim6b6fU4FID/dyDGlH7f0GeAHabX9qsXYTi/OSBXldsl
+         KmELDNfuJHpLrXM/mS7VvFW/IoCJ6yDmPuK6zJD8BB0viO3mPv4ePzCPkjYkyT7sqJbx
+         /UySjCoGcW6LAf9UI6cOJB/dXjHkmbhxwTxU+yoQHw+lZsxARZGUwr7uzMfjxF4lvKdT
+         ewKw==
+X-Gm-Message-State: AGi0PuYoTB9XyR34v5WBSaihcuUjg1RHBjTrtDMTXSXshbEKDQ6T3Cqc
+        +mU5CwVwCBBzagy36yXOpA0=
+X-Google-Smtp-Source: APiQypK1kf31IhHjCW9dEWKg5aIOW+8/ey3O9030weCpGExdjTrK5jo0w5OYWLg+g3P3GcrPaX/Smg==
+X-Received: by 2002:adf:df04:: with SMTP id y4mr22736572wrl.413.1587452944230;
+        Tue, 21 Apr 2020 00:09:04 -0700 (PDT)
+Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
+        by smtp.gmail.com with ESMTPSA id s8sm2317137wru.38.2020.04.21.00.09.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 00:09:03 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 09:09:01 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
+ signal
+Message-ID: <20200421070901.GB27314@dhcp22.suse.cz>
+References: <20200408014010.80428-1-peterx@redhat.com>
+ <20200408014010.80428-2-peterx@redhat.com>
+ <20200409070253.GB18386@dhcp22.suse.cz>
+ <CAHk-=whwRqkwdaJQf4g0-Evd6RmXR3dkkKyfnPjbnkeia=b1ug@mail.gmail.com>
+ <20200414110429.GF4629@dhcp22.suse.cz>
+ <20200420124759.GO27314@dhcp22.suse.cz>
+ <CAHk-=whnAGzRqaKjLuhRuYLkGY4uY_H-9KxuoCOtW8DkSL38Tw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.168.40.202]
-X-Mailer: Zimbra 8.8.15_GA_3895 (ZimbraWebClient - GC81 (Linux)/8.8.15_GA_3895)
-Thread-Topic: spi-nor: Add support for is25lp01g
-Thread-Index: AQHWFw0/tWJ4ISRUwk6rGADNBybaDFUftyjv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whnAGzRqaKjLuhRuYLkGY4uY_H-9KxuoCOtW8DkSL38Tw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
+On Mon 20-04-20 10:31:17, Linus Torvalds wrote:
+> On Mon, Apr 20, 2020 at 5:48 AM Michal Hocko <mhocko@kernel.org> wrote:
+> >
+> > Any opinion on this Linus? Should I just repost the patch?
+> 
+> I'm ok with the patch, but it's not exactly urgent and I was assuming
+> it would go the usual path through the -mm tree.
 
------ On 21 Apr, 2020, at 06:40, Tudor Ambarus Tudor.Ambarus@microchip.com =
-wrote:
-
-> On Monday, April 20, 2020 5:50:02 PM EEST Cl=C3=A9ment Leger wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know t=
-he
->> content is safe
->>=20
->> Hi Tudor,
->=20
-> Hi, Clement,
->=20
->>=20
->> ----- On 20 Apr, 2020, at 14:14, Tudor Ambarus Tudor.Ambarus@microchip.c=
-om
-> wrote:
->> > Hi, Clement,
->> >=20
->> > On Friday, April 17, 2020 7:08:39 PM EEST Clement Leger wrote:
->> >> EXTERNAL EMAIL: Do not click links or open attachments unless you kno=
-w
->> >> the
->> >> content is safe
->> >>=20
->> >> Update the issi_parts table for is25lp01g (128MB) device from ISSI.
->> >> Tested on Kalray K200 board.
->> >>=20
->> >> Signed-off-by: Clement Leger <cleger@kalray.eu>
->> >> ---
->> >>=20
->> >>  drivers/mtd/spi-nor/issi.c | 2 ++
->> >>  1 file changed, 2 insertions(+)
->> >>=20
->> >> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
->> >> index ffcb60e54a80..c3c3438e3d08 100644
->> >> --- a/drivers/mtd/spi-nor/issi.c
->> >> +++ b/drivers/mtd/spi-nor/issi.c
->> >> @@ -49,6 +49,8 @@ static const struct flash_info issi_parts[] =3D {
->> >>=20
->> >>                              SECT_4K | SPI_NOR_DUAL_READ |
->> >>                              SPI_NOR_QUAD_READ
->> >> |=20
->> >> | SPI_NOR_4B_OPCODES)
->> >> |=20
->> >>                 .fixups =3D &is25lp256_fixups },
->> >>=20
->> >> +       { "is25lp01g",  INFO(0x9d601b, 0, 64 * 1024, 2048,
->> >=20
->> > There is a "K" flavor of this flash which has 512 Byte Page size with =
-256
->> > KB Block size. While the page size can be determined by parsing SFDP, =
-I
->> > think we will have some problems with sector_size because as of now, t=
-he
->> > sector_size is always set to 64KB. An incorrect sector_size will affec=
-t
->> > erases and locking.
->> Thanks, I did not noticed that ! If I understand, this will require to
->> modify the core to handle sector size the same way as page_size and
->> probably add a fixup to detect the "K" options from SFDP ?
->=20
-> Right. You can add a post_bfpt fixup hook for this flash. You can
-> differentiate between the "K" version and the rest by the page size. Sinc=
-e the
-> page size is tightly coupled with the sector size, you can amend both in =
-the
-> post_bfpt hook.
-
-Ok, this seems clear ! I'll give it a try. By looking quickly at the code I
-think that n_sectors will also have to be updated after discovering the
-sector_size from BFPT (for flash size computation). Since some parameters
-of the nor are initialized early in spi_nor_info_init_params using
-sector_size, should I move the call making use of sector_size later in the
-init (in spi_nor_late_init_params for instance) ?
-
->=20
->> This is probably more changes than I can handle, and you can probably dr=
-op
->> this patch since not really functional for "K" type flash.
->=20
-> I dropped it. You should try to fix it, I can guide you if needed. Or I c=
-an do
-> it myself, but I'll need some help from you at testing.
-
-I will try to do it but I will probably only be able to test the patches in=
- a=20
-couple of weeks due to our architecture not being rebased on 5.7 yet.
-
-Thanks,
-
-Cl=C3=A9ment
-
->=20
-> Cheers,
-> ta
+OK, I will repost then. Thanks!
+-- 
+Michal Hocko
+SUSE Labs
