@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451DF1B321D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F156C1B320A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgDUVty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:49:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57953 "EHLO mga11.intel.com"
+        id S1726337AbgDUVpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:45:17 -0400
+Received: from mga03.intel.com ([134.134.136.65]:26604 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726079AbgDUVtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:49:53 -0400
-IronPort-SDR: BOQAzbOAy5KHQQ8xToWrRII8kPxqF4ya5WRv96TgPbD1YPiRE2o2p95UK8Vld8Ej8paevJQ0GT
- diyRwu8TMa8g==
+        id S1725850AbgDUVpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 17:45:16 -0400
+IronPort-SDR: wMs3zuSSGIbZUN5ycGOZbicEm00WWT+MwNlXFq8m4CJXVW/iTYqcDs6A4/3+85/r/RnBTOs1O/
+ 8sUj3C2O5Wgg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:49:53 -0700
-IronPort-SDR: eVfo8RINT9OgNT3GeFKPNilkLAYIFW8XAxi5dWgdN+xqxjdVrKmQ/RJCg+tlL0tecIWGRGx6iy
- IIWxugc7skpw==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:45:16 -0700
+IronPort-SDR: MwvvF2uOE0/rXubMe0J7rP2SBZ7NPzFjCQFRpdgTxUXhT+1BkCZkaaUflxP8D0Ma8PrKuUH+uN
+ o6C6CID10IyA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="245797152"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Apr 2020 14:49:53 -0700
-Date:   Tue, 21 Apr 2020 14:49:53 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V9 11/11] Documentation/dax: Update Usage section
-Message-ID: <20200421214952.GE3372712@iweiny-DESK2.sc.intel.com>
-References: <20200421191754.3372370-1-ira.weiny@intel.com>
- <20200421191754.3372370-12-ira.weiny@intel.com>
- <20200421203423.GE6742@magnolia>
+   d="scan'208";a="244305142"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007.jf.intel.com with ESMTP; 21 Apr 2020 14:45:16 -0700
+Date:   Tue, 21 Apr 2020 14:51:14 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 03/10] iommu/ioasid: Introduce per set allocation APIs
+Message-ID: <20200421145114.49e05059@jacob-builder>
+In-Reply-To: <20200407110107.GA285264@myrica>
+References: <1585158931-1825-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1585158931-1825-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200401134745.GE882512@myrica>
+        <20200406130245.690cfe15@jacob-builder>
+        <20200407110107.GA285264@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421203423.GE6742@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 01:34:23PM -0700, Darrick J. Wong wrote:
-> On Tue, Apr 21, 2020 at 12:17:53PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
+Hi Jean,
+
+Sorry for the late reply, been trying to redesign the notification part.
+
+On Tue, 7 Apr 2020 13:01:07 +0200
+Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
+
+> On Mon, Apr 06, 2020 at 01:02:45PM -0700, Jacob Pan wrote:
+> > > > +	sdata = kzalloc(sizeof(*sdata), GFP_KERNEL);
+> > > > +	if (!sdata)
+> > > > +		return -ENOMEM;    
+> > > 
+> > > I don't understand why we need this structure at all, nor why we
+> > > need the SID. Users have already allocated an ioasid_set, so why
+> > > not just stick the content of ioasid_set_data in there, and pass
+> > > the ioasid_set pointer to ioasid_alloc()?
+> > >   
 > > 
-> > Update the Usage section to reflect the new individual dax selection
-> > functionality.
+> > My thinking was that ioasid_set is an opaque user token, e.g. we
+> > use mm to identify a common set belong to a VM.
 > > 
-
-[snip]
-
-> > +
-> > +The default state is 'inode'.  Given underlying media support, the following
-> > +algorithm is used to determine the effective mode of the file S_DAX on a
-> > +capable device.
-> > +
-> > +	S_DAX = FS_XFLAG_DAX;
-> > +
-> > +	if (dax_mount == "always")
-> > +		S_DAX = true;
-> > +	else if (dax_mount == "off"
+> > This sdata is an IOASID internal structure for managing & servicing
+> > per set data. If we let user fill in the content, some of the
+> > entries need to be managed by the IOASID code under a lock.  
 > 
-> Missing trailing parenthesis here.
-
-Done.
-
+> We don't have to let users fill the content. A bit like iommu_domain:
+> device drivers don't modify it, they pass it to iommu_map() rather
+> than passing a domain ID.
 > 
-> > +		S_DAX = false;
-> > +
-> > +To reiterate: Setting, and inheritance, continues to affect FS_XFLAG_DAX even
-> > +while the file system is mounted with a dax override.  However, in-core inode
-> > +state (S_DAX) will continue to be overridden until the filesystem is remounted
-> > +with dax=inode and the inode is evicted."
+much better.
+
+> > IMO, not suitable to let user allocate and manage.
+> > 
+> > Perhaps we should rename struct ioasid_set to ioasid_set_token?  
 > 
-> Trailing double-quote here.
-
-Fixed done.
-
+> Is the token actually used anywhere?  As far as I can tell VFIO does
+> its own uniqueness check before calling ioasid_alloc_set(), and
+> consumers of notifications don't read the token.
 > 
-> Otherwise, this looks good to me.
+for vt-d, the per vm token (preferrably mm) will be used by kvm to
+manage its PASID translation table.
+when kvm receives a notification about a new guest-host PASID mapping,
+it needs to know which vm it belongs to. So if mm is used as token,
+both vfio and kvm can identify PASID ownership.
 
-thanks,
-Ira
+> > 
+> > /**
+> >  * struct ioasid_set_data - Meta data about ioasid_set
+> >  *
+> >  * @token:	Unique to identify an IOASID set
+> >  * @xa:		XArray to store ioasid_set private ID to
+> > system-wide IOASID
+> >  *		mapping
+> >  * @max_id:	Max number of IOASIDs can be allocated within
+> > the set
+> >  * @nr_id	Number of IOASIDs allocated in the set
+> >  * @sid		ID of the set
+> >  */
+> > struct ioasid_set_data {
+> > 	struct ioasid_set *token;
+> > 	struct xarray xa;
+> > 	int size;
+> > 	int nr_ioasids;
+> > 	int sid;
+> > 	struct rcu_head rcu;
+> > };  
+> 
+> How about we remove the current ioasid_set, call this structure
+> ioasid_set instead of ioasid_set_data, and have ioasid_alloc_set()
+> return it, rather than requiring users to allocate the ioasid_set
+> themselves?
+> 
+> 	struct ioasid_set *ioasid_alloc_set(ioasid_t quota):
+> 
+> This way ioasid_set is opaque to users (we could have the definition
+> in ioasid.c), but it can be passed to ioasid_alloc() and avoids the
+> lookup by SID. Could also add the unique token as a void * argument to
+> ioasid_alloc_set(), if needed.
+> 
+Sounds good. still pass a token. Thanks for the idea.
+
+> Thanks,
+> Jean
+
+[Jacob Pan]
