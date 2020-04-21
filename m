@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1384A1B2A37
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB5C1B2A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgDUOli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
+        id S1729352AbgDUOnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgDUOlh (ORCPT
+        with ESMTP id S1728963AbgDUOnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:41:37 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B1AC061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:41:37 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id v2so5307190plp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 07:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OAkWzyrmiNTr4R8CFrDKjccmx17c2tmL1k3qSayXTkA=;
-        b=peYf1Hsx3QFOvH4UdxFxKFC6xujLskLrprQL2GmBrt8R9l3AotDY6kdN6Q4WyCwKKv
-         +6n0FoKCn4JYUi+SL1/QrEbMtVHUkqCSkKgp92vkbMEtbAs+rnN1K38RvM85JKdNKgoW
-         ruyMSqetc0SCQ/COtqHlbzLP6U2lVGLDoI5mZunfVtWQ9z9MZX08vKvBO0o0qxZt3W9q
-         tdm7QhSDAXsDQssB5jnFt+ZniJjeyL1XGE4OcMfJDveAJcnDkzqhHjgZmqdcDO6GQcgj
-         rTSFYGBcahBrB6Its5CASSnUv2ca+vYsIPRGC9UPYluL/Jm9qR/mKZ8kfCXJxk+0ywTz
-         CDmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OAkWzyrmiNTr4R8CFrDKjccmx17c2tmL1k3qSayXTkA=;
-        b=VsBXNTl4nhgjSGbKlyqMAYK3Pgnm2m+Z4vnm0TKjzHBcoqfbBqsE3IXUIYJq/kWGHN
-         y9M7+rtmlCnhraGjcGbyZgVcHUONxQduwDbfM/9lcuFoXS+y5DeQJPeIJAVVb5H67FSE
-         8tc+TtYXRTqGquEb+qrpkbgzZpFVeMPdyrecY2AfJ+vTRLz0MsDichpgoVw8FxtDtGXX
-         9vAM6DTjuAxEBFuAZlT7CQa+7PLVI9mTmhuqA3OSha0TyFNV6CxeZXvGfF6rPxYZr8MD
-         WscvlykR42Uq+VPfDhhS0V9hQ9qvGFmv65XBB8z4NI8gWXHcFyaJA/qQP85Pnhvywyiv
-         yYLQ==
-X-Gm-Message-State: AGi0PubEqo74QrUS7mp+48msWrveFVQdbW9EodYWZ1rSfeg9+4Fowy0s
-        CpfzoIzWvZvt+5rLX4APWTk9Cg==
-X-Google-Smtp-Source: APiQypLOBAOMlLYRXcDAQ8iZMfW8KRRIv5z+Tt48CyOLKweyws0hiPajteOPhKUSaumNmVz+0RSfoQ==
-X-Received: by 2002:a17:90a:d917:: with SMTP id c23mr5914490pjv.192.1587480097282;
-        Tue, 21 Apr 2020 07:41:37 -0700 (PDT)
-Received: from Smcdef-MBP.lan ([103.136.220.68])
-        by smtp.gmail.com with ESMTPSA id b8sm2613936pft.11.2020.04.21.07.41.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Apr 2020 07:41:36 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mingo@kernel.org, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] sched/fair: Use __this_cpu_read() in wake_wide()
-Date:   Tue, 21 Apr 2020 22:41:23 +0800
-Message-Id: <20200421144123.33580-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Tue, 21 Apr 2020 10:43:17 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB49DC061A41;
+        Tue, 21 Apr 2020 07:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=dY79REsLwvs8M2Rkjsj0Kv3oPbcFcJ+41V7FNNmLGX0=; b=NdUIgbRV16Ex4LIOSDoUFWIvZ
+        Qrit5lY9w/b9nPH0BzKucYkau8v8BZO66kQ6heEp6+gFPxFjjw5Ulf6HNDZrA7Fnd+mOPRjWlmP/h
+        ybj9+N7kEQJpBz2G6pjWmv6qIuddsPJPSKY1B3dDpsShbivNRzT0r7PRQ3STQe/fi/KUVTh2l7mSp
+        DIXs9SaMEmj1kP5S5tkSGSJpA0RA3cb2/j5C0B81CkMAImgjc+x2UI2GAvHUDKKPEPXLEWw0Cgivh
+        n+snrn7u9TbIBv4SMnwzDd2fiUcENfABz0t8o2f6H1HWZEIh67xbBL/5nUGXeEg3QMahrPG1DOF4D
+        Jo7yd6LNA==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:41618)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jQu79-00029h-LK; Tue, 21 Apr 2020 15:43:07 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jQu74-00076r-NY; Tue, 21 Apr 2020 15:43:02 +0100
+Date:   Tue, 21 Apr 2020 15:43:02 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH net-next 1/3] net: phy: add concept of shared storage
+ for PHYs
+Message-ID: <20200421144302.GD25745@shell.armlinux.org.uk>
+References: <20200420232624.9127-1-michael@walle.cc>
+ <20200421143455.GB933345@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421143455.GB933345@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code is executed with preemption(and interrupts) disabled,
-so it's safe to use __this_cpu_write().
+On Tue, Apr 21, 2020 at 04:34:55PM +0200, Andrew Lunn wrote:
+> > +static inline bool phy_package_init_once(struct phy_device *phydev)
+> > +{
+> > +	struct phy_package_shared *shared = phydev->shared;
+> > +
+> > +	if (!shared)
+> > +		return false;
+> > +
+> > +	return !test_and_set_bit(PHY_SHARED_F_INIT_DONE, &shared->flags);
+> > +}
+> 
+> I need to look at how you actually use this, but i wonder if this is
+> sufficient. Can two PHYs probe at the same time? Could we have one PHY
+> be busy setting up the global init, and the other thinks the global
+> setup is complete? Do we want a comment like: 'Returns true when the
+> global package initialization is either under way or complete'?
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IIRC, probe locking in the driver model is by per-driver locks, so
+any particular driver won't probe more than one device at a time.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 870853c47b63c..356660ec4ff3e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5705,7 +5705,7 @@ static int wake_wide(struct task_struct *p)
- {
- 	unsigned int master = current->wakee_flips;
- 	unsigned int slave = p->wakee_flips;
--	int factor = this_cpu_read(sd_llc_size);
-+	int factor = __this_cpu_read(sd_llc_size);
- 
- 	if (master < slave)
- 		swap(master, slave);
 -- 
-2.11.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
