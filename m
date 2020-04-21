@@ -2,163 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7B81B1AE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBE31B1AF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 02:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgDUAth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Apr 2020 20:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S1726756AbgDUAwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Apr 2020 20:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726587AbgDUAth (ORCPT
+        by vger.kernel.org with ESMTP id S1726018AbgDUAwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Apr 2020 20:49:37 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F10C061A0E;
-        Mon, 20 Apr 2020 17:49:37 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id s10so8953649edy.9;
-        Mon, 20 Apr 2020 17:49:37 -0700 (PDT)
+        Mon, 20 Apr 2020 20:52:00 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990D2C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 17:52:00 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id n188so6471824ybc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Apr 2020 17:52:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wJHlw0Va8nRu1bocL0iGdefgbBDvsiBEjRNcEzF2emU=;
-        b=meeAYjLZhNhYpKBnFQIRY8QNiqkTLOGzc2f5eEof1vaJQqZnU3xO9BHaM0ZTWqz18H
-         7JdM/LuAS1FxwOG+U10a3oGmldXeSsYkdnMVfzGPyQiNrW5OHAnV4Q5byiDuVeQsbNl1
-         E333eMFKt3b2MoMegW3BJnD5V/q7diY8XYF6A=
+        bh=NzVEjIhE3G8lvkyzAwCPpB3DMUYR5E+cR65yZNSQbxc=;
+        b=tXXBWTHU+2qNp9K4xs2Ulr+LHFl6T2MeUb2ilsTIF1Z72AADbToaiIyMqNr0KwUVxk
+         u6EvbZSc8mCoVUXlTEVkVN+U7Qa3ceu1tQUD77MTZUK0UbRVGeApyRGTKG5xPAqpfQL+
+         oE3ANckoo6XeBV78XCLsQeDJE/PiyxzS5vAkiBSi4bfMiOqVU8IjAfd4VGzEedxJqnGW
+         haC221Mr4P0tqgQokgCAIsS+iXqX97pnmTLfVlPIVJKK1SPOGiSSfCylJIjCdOlwSHSX
+         k28nvoZ+zQGUl0hlqy2x3si0WSSh+uNJiWEM8Qx/vp3NtdqZTl5omyKqKSXxoZiBxuWb
+         y84Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wJHlw0Va8nRu1bocL0iGdefgbBDvsiBEjRNcEzF2emU=;
-        b=a/wFIf5hD+/oJA5RSbMbbz1417fcXd889TM/dWOyGPwLU2YG+PFn6jLSkdlxXujwEW
-         18CTMXcohge7LNpTHmi4hWtbDZRnJMNLXkLBei4h3MCCWqIJTUMLdTLGMYQ4J1RVg9Dz
-         COCD5sbAfQk+ukX4YVvQ9ntUsFyRKrLW3utL0LPERlAbqBlyIrlY01XjUQQJQ+XKScZG
-         N9FR80YTN/HvCd5xu8DmM/wxbZQMui69EhGB1JNKa7pbVi6dnM+Zeub4V2FObvezLLfa
-         DbHpTnBBYYJ5vVAja978ugiwP/lH8lnUWwZwK+O2s+sOb4nYn1TcClujZuJnG2Tzz6uC
-         qoAQ==
-X-Gm-Message-State: AGi0PuZK7Z8jiqf5gHNt7re+5wEGy2Ci1tPLA2JTFM7D0IH2034oWIoV
-        6nXQq7yalFTE2WbRRY9WgNXEiS3ZhvK1fvMZOtk=
-X-Google-Smtp-Source: APiQypI1EAeVQeoUmWxrcddmzILwfd83lCEKJEUjqchmR0ZO8JH1LNOiAonElPJJKLVzNuxsgOg9s5aCArGIIeHtz4k=
-X-Received: by 2002:a50:cd17:: with SMTP id z23mr16344581edi.191.1587430175724;
- Mon, 20 Apr 2020 17:49:35 -0700 (PDT)
+        bh=NzVEjIhE3G8lvkyzAwCPpB3DMUYR5E+cR65yZNSQbxc=;
+        b=tEUHBsdmevnH7BHzeOnMi8CftPXTJYnF9gLQAmWvOQlwBMPzbki0rBGnOO+0vdVuZ3
+         2uaWSIEX/kIwfUwpVIy2wm9Zo4U0q/Fn96Rr24LKFVx1Jnt+e7n8DCfStE8ncDGezctb
+         cE94GPoj/j23c3nfwqbe4YvvgkGVJa8WllvsdNU8FEmup5l4OUF4fKSYtAVshtHZB+EK
+         sWGQKwTF/EsLdIIAc4ElAJNm4bIoiiIsnoMLypkB1GjjNFzIpXqN3cIs++VEHGugNjS8
+         7n7Fi6+SsU2vVHPChtifsReGAZWQZmvEd+Fbbj2xN654etPBVZNprhvffPfNFaIeJkuT
+         l+4w==
+X-Gm-Message-State: AGi0PuYSJYZ2TB6r2m0qf0PN131ADjR3JVWHo1of3oNaqQTMrddwvmxC
+        3rb2w73p58c/H9oxf9GcboRqgl0jwj9IGWESs1Splg==
+X-Google-Smtp-Source: APiQypI2k2dh6JVBflHjutO4XGPb5dcGoF3tBdky35qHOVENePPd/Bjq4BAYpRTFPx6qgQKk6qchd7f97Pq6xebk/GM=
+X-Received: by 2002:a25:13ca:: with SMTP id 193mr20028377ybt.320.1587430319630;
+ Mon, 20 Apr 2020 17:51:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <a5945463f86c984151962a475a3ee56a2893e85d.1587407777.git.christophe.leroy@c-s.fr>
-In-Reply-To: <a5945463f86c984151962a475a3ee56a2893e85d.1587407777.git.christophe.leroy@c-s.fr>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 21 Apr 2020 00:49:23 +0000
-Message-ID: <CACPK8XdzLiUkzp-B3DuwxVHgn-hZqKypoyU_PLtE5d0K=B1mXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] drivers/powerpc: Replace _ALIGN_UP() by ALIGN()
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        alsa-devel@alsa-project.org, kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
+References: <20200415004353.130248-1-walken@google.com> <20200415004353.130248-7-walken@google.com>
+ <20200420193310.GF5820@bombadil.infradead.org>
+In-Reply-To: <20200420193310.GF5820@bombadil.infradead.org>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Mon, 20 Apr 2020 17:51:47 -0700
+Message-ID: <CANN689Eu72s1FTCfgXp8NZJ80jj9-pUNdj6gw4OKZPa1pR5+jg@mail.gmail.com>
+Subject: Re: [PATCH v4 06/10] mmap locking API: convert nested write lock sites
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 at 18:37, Christophe Leroy <christophe.leroy@c-s.fr> wrote:
+On Mon, Apr 20, 2020 at 12:33 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> _ALIGN_UP() is specific to powerpc
-> ALIGN() is generic and does the same
+> On Tue, Apr 14, 2020 at 05:43:49PM -0700, Michel Lespinasse wrote:
+> > @@ -47,7 +48,7 @@ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+> >        * when the new ->mm is used for the first time.
+> >        */
+> >       __switch_mm(&new->context.id);
+> > -     down_write_nested(&new->mmap_sem, 1);
+> > +     mmap_write_lock_nested(new, 1);
 >
-> Replace _ALIGN_UP() by ALIGN()
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> This should have already been using SINGLE_DEPTH_NESTING.  1 is
+> uninformative.
 
-I was curious, so I expanded out the kernel one. Here's the diff:
+Sure, I can change that.
+Note, all mmap_write_lock_nested call sites use single depth nesting,
+so I'm not entirely sure if the argument should be passed to
+mmap_write_lock_nested in the first place ?
 
-- (((addr)+((size)-1))&(~((typeof(addr))(size)-1)))
-+ (((addr)+((typeof(addr))(size) - 1))&~((typeof(addr))(size)-1))
-
-So it adds a cast, but aside from that it's the same.
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-> ---
->  drivers/ps3/ps3-lpm.c               | 6 +++---
->  drivers/vfio/pci/vfio_pci_nvlink2.c | 2 +-
->  drivers/video/fbdev/ps3fb.c         | 4 ++--
->  sound/ppc/snd_ps3.c                 | 2 +-
->  4 files changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/ps3/ps3-lpm.c b/drivers/ps3/ps3-lpm.c
-> index 83c45659bc9d..064b5884ba13 100644
-> --- a/drivers/ps3/ps3-lpm.c
-> +++ b/drivers/ps3/ps3-lpm.c
-> @@ -1096,8 +1096,8 @@ int ps3_lpm_open(enum ps3_lpm_tb_type tb_type, void *tb_cache,
->                 lpm_priv->tb_cache_internal = NULL;
->                 lpm_priv->tb_cache = NULL;
->         } else if (tb_cache) {
-> -               if (tb_cache != (void *)_ALIGN_UP((unsigned long)tb_cache, 128)
-> -                       || tb_cache_size != _ALIGN_UP(tb_cache_size, 128)) {
-> +               if (tb_cache != (void *)ALIGN((unsigned long)tb_cache, 128)
-> +                       || tb_cache_size != ALIGN(tb_cache_size, 128)) {
->                         dev_err(sbd_core(), "%s:%u: unaligned tb_cache\n",
->                                 __func__, __LINE__);
->                         result = -EINVAL;
-> @@ -1116,7 +1116,7 @@ int ps3_lpm_open(enum ps3_lpm_tb_type tb_type, void *tb_cache,
->                         result = -ENOMEM;
->                         goto fail_malloc;
->                 }
-> -               lpm_priv->tb_cache = (void *)_ALIGN_UP(
-> +               lpm_priv->tb_cache = (void *)ALIGN(
->                         (unsigned long)lpm_priv->tb_cache_internal, 128);
->         }
->
-> diff --git a/drivers/vfio/pci/vfio_pci_nvlink2.c b/drivers/vfio/pci/vfio_pci_nvlink2.c
-> index ed20d73cc27c..65c61710c0e9 100644
-> --- a/drivers/vfio/pci/vfio_pci_nvlink2.c
-> +++ b/drivers/vfio/pci/vfio_pci_nvlink2.c
-> @@ -67,7 +67,7 @@ static size_t vfio_pci_nvgpu_rw(struct vfio_pci_device *vdev,
->          *
->          * This is not fast path anyway.
->          */
-> -       sizealigned = _ALIGN_UP(posoff + count, PAGE_SIZE);
-> +       sizealigned = ALIGN(posoff + count, PAGE_SIZE);
->         ptr = ioremap_cache(data->gpu_hpa + posaligned, sizealigned);
->         if (!ptr)
->                 return -EFAULT;
-> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
-> index 834f63edf700..9df78fb77267 100644
-> --- a/drivers/video/fbdev/ps3fb.c
-> +++ b/drivers/video/fbdev/ps3fb.c
-> @@ -44,7 +44,7 @@
->  #define GPU_CMD_BUF_SIZE                       (2 * 1024 * 1024)
->  #define GPU_FB_START                           (64 * 1024)
->  #define GPU_IOIF                               (0x0d000000UL)
-> -#define GPU_ALIGN_UP(x)                                _ALIGN_UP((x), 64)
-> +#define GPU_ALIGN_UP(x)                                ALIGN((x), 64)
->  #define GPU_MAX_LINE_LENGTH                    (65536 - 64)
->
->  #define GPU_INTR_STATUS_VSYNC_0                        0       /* vsync on head A */
-> @@ -1015,7 +1015,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
->         }
->  #endif
->
-> -       max_ps3fb_size = _ALIGN_UP(GPU_IOIF, 256*1024*1024) - GPU_IOIF;
-> +       max_ps3fb_size = ALIGN(GPU_IOIF, 256*1024*1024) - GPU_IOIF;
->         if (ps3fb_videomemory.size > max_ps3fb_size) {
->                 dev_info(&dev->core, "Limiting ps3fb mem size to %lu bytes\n",
->                          max_ps3fb_size);
-> diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
-> index 6d2a33b8faa0..b8161a08f2ca 100644
-> --- a/sound/ppc/snd_ps3.c
-> +++ b/sound/ppc/snd_ps3.c
-> @@ -926,7 +926,7 @@ static int snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
->                             PAGE_SHIFT, /* use system page size */
->                             0, /* dma type; not used */
->                             NULL,
-> -                           _ALIGN_UP(SND_PS3_DMA_REGION_SIZE, PAGE_SIZE));
-> +                           ALIGN(SND_PS3_DMA_REGION_SIZE, PAGE_SIZE));
->         dev->d_region->ioid = PS3_AUDIO_IOID;
->
->         ret = ps3_dma_region_create(dev->d_region);
-> --
-> 2.25.0
->
+-- 
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
