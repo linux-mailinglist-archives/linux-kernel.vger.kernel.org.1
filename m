@@ -2,278 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3231B22D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72CF1B22DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgDUJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgDUJc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:32:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B173206E9;
-        Tue, 21 Apr 2020 09:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587461577;
-        bh=mRZDPb/qOuSMsEULU0GR/w3mXNQJsys8Fbv6ln6rrGw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R1/s2DSNQul5SlNaHgRXdL97W75CURe4tVJUaBMtQcpYo/jL962deTC40xsfT0XDc
-         cNYRBhvb2D1EMua4K3CCIhtl0xbuWMxMthA412pEknm3x1adZRPBrfu4yijP1R/GTq
-         qcDFn066gW/UGWN5tSZv9HxUU7W6QGTlFtkya/6s=
-Date:   Tue, 21 Apr 2020 11:32:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Slaby <jslaby@suse.com>, devicetree@vger.kernel.org,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] drivers/soc/litex: add LiteX SoC Controller driver
-Message-ID: <20200421093255.GB725219@kroah.com>
-References: <20200402084513.4173306-0-mholenko@antmicro.com>
- <20200402084513.4173306-3-mholenko@antmicro.com>
- <CAPk366QLHbR9cnLs244VbOXOLAg56yhG7O-DEAc1x1ZTvthiig@mail.gmail.com>
- <20200402074259.GC2755501@kroah.com>
- <CAPk366Qm62TtwM7xNUSUT4L+7MwWDSPXyGCWXrXHYPjLeVf9OA@mail.gmail.com>
- <20200416141832.GA1356374@kroah.com>
- <CAPk366Rg8CVW=rvL_d9PiA0+uuD3bZoQ6Yqw0Rhndqtw0Ecrbg@mail.gmail.com>
+        id S1728421AbgDUJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725920AbgDUJeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 05:34:10 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A17AC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:34:10 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m10so520684oie.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z4lUem6J31Z1o9v7Dk0MyJIdWtAPPyTWPMlNC8wY8cI=;
+        b=ETzqOnQ6ktcw7qLsv0AqL9NW9zS0cjRuCnMWV3XaTeAHF51px8JFDw6Oy0MQZnn77o
+         W0HsSEOjnS6G1rgFK5eWWbAtkvq0ngdp4csOjpuwMwsPQXbf7CPqPUbcmvYPSA+vfyIa
+         B/ZdeWuDq+s1uEwXoWPv+6rY/Cvru9cEwApvavhjjQqmg8b/wYG8ljZs9sG0VJIxQ0Q+
+         Pyv37lMT5KmPFttDfJ5eBdmjPUJ5TOOBzz8PbN+967RSCwj+86hyWEzYEutvmFC2zMxV
+         OhptjSXknaRMvFnLnDr+vMODCbmOH6cfFauWRGjmaw5Gzy7c2fx0BLOoER54sWLGvDij
+         sIwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z4lUem6J31Z1o9v7Dk0MyJIdWtAPPyTWPMlNC8wY8cI=;
+        b=tXtNB0TSe33UkR/AuT4CRr35Z/OX078IZKJvoP+LfOOUl33wl7b04OYf02UzYsyyHG
+         BwlRZRQ7BVCMCh0DigZwkytiao4R5fFEYlrhGbnUCVj5phqAQB20O6R9hEv531tMLpUz
+         SEKQdWaxjnTliOCh0a8dirPZlMLvwqok70tkQ1brZ7C8TufyJhBPOm5giZLv4kTj5xCO
+         oy3cjioAqhYNKZ/zgXPODDxOcAqJwVTBCL1zoq7otleMkkh7iws2S+MNE2kYqukeGdCj
+         cipT6FHSA/iIFqqYhsUKz8bM9BWmdc3T/ymIUQpaIQwI96peQYq3iMcvAUybEL2TGyU8
+         6+DA==
+X-Gm-Message-State: AGi0Pua2Yhy6i8AyPU8FIzNjQvbu9FMAIRpBV/PF0KBEg5VzttwyYKJ3
+        zVTh8+OGdindt02ppT3J5kstwgRmBrcNkk5h3xBC2g==
+X-Google-Smtp-Source: APiQypJD0csI6smYkR6G35u9L/1AKGmw6sOUpQA5lng7nTgg6dTRQD7g1O6fQgRa81o+FVGU8OrLg/i3Id29vtHk9Xs=
+X-Received: by 2002:aca:c5cf:: with SMTP id v198mr2616654oif.70.1587461649249;
+ Tue, 21 Apr 2020 02:34:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPk366Rg8CVW=rvL_d9PiA0+uuD3bZoQ6Yqw0Rhndqtw0Ecrbg@mail.gmail.com>
+References: <20200419094439.GA32841@carbon> <491f0b0bc9e4419d93a78974fd7f44c7@AcuMS.aculab.com>
+ <20200419182957.GA36919@carbon> <8e5a0283ed76465aac19a2b97a27ff15@AcuMS.aculab.com>
+ <20200420150545.GB17661@paulmck-ThinkPad-P72> <20200420225715.GA176156@google.com>
+ <20200420231244.GK17661@paulmck-ThinkPad-P72>
+In-Reply-To: <20200420231244.GK17661@paulmck-ThinkPad-P72>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 21 Apr 2020 11:33:57 +0200
+Message-ID: <CANpmjNOfXNE-Zh3MNP=-gmnhvKbsfUfTtWkyg_=VqTxS4nnptQ@mail.gmail.com>
+Subject: Re: [RFC] WRITE_ONCE_INC() and friends
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Petko Manolov <petko.manolov@konsulko.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:29:33AM +0200, Mateusz Holenko wrote:
-> On Thu, Apr 16, 2020 at 4:18 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Tue, 21 Apr 2020 at 01:12, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Apr 21, 2020 at 12:57:15AM +0200, Marco Elver wrote:
+> > On Mon, 20 Apr 2020, Paul E. McKenney wrote:
 > >
-> > On Thu, Apr 02, 2020 at 03:50:34PM +0200, Mateusz Holenko wrote:
-> > > On Thu, Apr 2, 2020 at 9:43 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Thu, Apr 02, 2020 at 08:50:40AM +0200, Mateusz Holenko wrote:
-> > > > > On Thu, Apr 2, 2020 at 8:46 AM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> > > > > >
-> > > > > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > > > >
-> > > > > > This commit adds driver for the FPGA-based LiteX SoC
-> > > > > > Controller from LiteX SoC builder.
-> > > > > >
-> > > > > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > > > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > > > > ---
-> > > > > >
-> > > > > > Notes:
-> > > > > >     Changes in v4:
-> > > > > >     - fixed indent in Kconfig's help section
-> > > > > >     - fixed copyright header
-> > > > > >     - changed compatible to "litex,soc-controller"
-> > > > > >     - simplified litex_soc_ctrl_probe
-> > > > > >     - removed unnecessary litex_soc_ctrl_remove
-> > > > > >
-> > > > > >     This commit has been introduced in v3 of the patchset.
-> > > > > >
-> > > > > >     It includes a simplified version of common 'litex.h'
-> > > > > >     header introduced in v2 of the patchset.
-> > > > > >
-> > > > > >  MAINTAINERS                        |   2 +
-> > > > > >  drivers/soc/Kconfig                |   1 +
-> > > > > >  drivers/soc/Makefile               |   1 +
-> > > > > >  drivers/soc/litex/Kconfig          |  14 ++
-> > > > > >  drivers/soc/litex/Makefile         |   3 +
-> > > > > >  drivers/soc/litex/litex_soc_ctrl.c | 217 +++++++++++++++++++++++++++++
-> > > > > >  include/linux/litex.h              |  45 ++++++
-> > > > > >  7 files changed, 283 insertions(+)
-> > > > > >  create mode 100644 drivers/soc/litex/Kconfig
-> > > > > >  create mode 100644 drivers/soc/litex/Makefile
-> > > > > >  create mode 100644 drivers/soc/litex/litex_soc_ctrl.c
-> > > > > >  create mode 100644 include/linux/litex.h
-> > > > > >
-> > > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > > index 2f5ede8a08aa..a35be1be90d5 100644
-> > > > > > --- a/MAINTAINERS
-> > > > > > +++ b/MAINTAINERS
-> > > > > > @@ -9729,6 +9729,8 @@ M:        Karol Gugala <kgugala@antmicro.com>
-> > > > > >  M:     Mateusz Holenko <mholenko@antmicro.com>
-> > > > > >  S:     Maintained
-> > > > > >  F:     Documentation/devicetree/bindings/*/litex,*.yaml
-> > > > > > +F:     drivers/soc/litex/litex_soc_ctrl.c
-> > > > > > +F:     include/linux/litex.h
-> > > > > >
-> > > > > >  LIVE PATCHING
-> > > > > >  M:     Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > > > diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> > > > > > index 1778f8c62861..78add2a163be 100644
-> > > > > > --- a/drivers/soc/Kconfig
-> > > > > > +++ b/drivers/soc/Kconfig
-> > > > > > @@ -9,6 +9,7 @@ source "drivers/soc/bcm/Kconfig"
-> > > > > >  source "drivers/soc/fsl/Kconfig"
-> > > > > >  source "drivers/soc/imx/Kconfig"
-> > > > > >  source "drivers/soc/ixp4xx/Kconfig"
-> > > > > > +source "drivers/soc/litex/Kconfig"
-> > > > > >  source "drivers/soc/mediatek/Kconfig"
-> > > > > >  source "drivers/soc/qcom/Kconfig"
-> > > > > >  source "drivers/soc/renesas/Kconfig"
-> > > > > > diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> > > > > > index 8b49d782a1ab..fd016b51cddd 100644
-> > > > > > --- a/drivers/soc/Makefile
-> > > > > > +++ b/drivers/soc/Makefile
-> > > > > > @@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_GEMINI)     += gemini/
-> > > > > >  obj-$(CONFIG_ARCH_MXC)         += imx/
-> > > > > >  obj-$(CONFIG_ARCH_IXP4XX)      += ixp4xx/
-> > > > > >  obj-$(CONFIG_SOC_XWAY)         += lantiq/
-> > > > > > +obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
-> > > > > >  obj-y                          += mediatek/
-> > > > > >  obj-y                          += amlogic/
-> > > > > >  obj-y                          += qcom/
-> > > > > > diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..71264c0e1d6c
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/soc/litex/Kconfig
-> > > > > > @@ -0,0 +1,14 @@
-> > > > > > +# SPDX-License_Identifier: GPL-2.0
-> > > > > > +
-> > > > > > +menu "Enable LiteX SoC Builder specific drivers"
-> > > > > > +
-> > > > > > +config LITEX_SOC_CONTROLLER
-> > > > > > +       tristate "Enable LiteX SoC Controller driver"
-> > > > > > +       help
-> > > > > > +         This option enables the SoC Controller Driver which verifies
-> > > > > > +         LiteX CSR access and provides common litex_get_reg/litex_set_reg
-> > > > > > +         accessors.
-> > > > > > +         All drivers that use functions from litex.h must depend on
-> > > > > > +         LITEX_SOC_CONTROLLER.
-> > > > > > +
-> > > > > > +endmenu
-> > > > > > diff --git a/drivers/soc/litex/Makefile b/drivers/soc/litex/Makefile
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..98ff7325b1c0
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/soc/litex/Makefile
-> > > > > > @@ -0,0 +1,3 @@
-> > > > > > +# SPDX-License_Identifier: GPL-2.0
-> > > > > > +
-> > > > > > +obj-$(CONFIG_LITEX_SOC_CONTROLLER)     += litex_soc_ctrl.o
-> > > > > > diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..5defba000fd4
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/soc/litex/litex_soc_ctrl.c
-> > > > > > @@ -0,0 +1,217 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > > +/*
-> > > > > > + * LiteX SoC Controller Driver
-> > > > > > + *
-> > > > > > + * Copyright (C) 2020 Antmicro <www.antmicro.com>
-> > > > > > + *
-> > > > > > + */
-> > > > > > +
-> > > > > > +#include <linux/litex.h>
-> > > > > > +#include <linux/device.h>
-> > > > > > +#include <linux/errno.h>
-> > > > > > +#include <linux/of.h>
-> > > > > > +#include <linux/of_platform.h>
-> > > > > > +#include <linux/platform_device.h>
-> > > > > > +#include <linux/printk.h>
-> > > > > > +#include <linux/module.h>
-> > > > > > +#include <linux/errno.h>
-> > > > > > +#include <linux/io.h>
-> > > > > > +
-> > > > > > +/*
-> > > > > > + * The parameters below are true for LiteX SoC
-> > > > > > + * configured for 8-bit CSR Bus, 32-bit aligned.
-> > > > > > + *
-> > > > > > + * Supporting other configurations will require
-> > > > > > + * extending the logic in this header.
-> > > > > > + */
-> > > > > > +#define LITEX_REG_SIZE             0x4
-> > > > > > +#define LITEX_SUBREG_SIZE          0x1
-> > > > > > +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
-> > > > > > +
-> > > > > > +static DEFINE_SPINLOCK(csr_lock);
-> > > > > > +
-> > > > > > +static inline unsigned long read_pointer_with_barrier(
-> > > > > > +       const volatile void __iomem *addr)
-> > > > > > +{
-> > > > > > +       unsigned long val;
-> > > > > > +
-> > > > > > +       __io_br();
-> > > > > > +       val = *(const volatile unsigned long __force *)addr;
-> > > > > > +       __io_ar();
-> > > > > > +       return val;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static inline void write_pointer_with_barrier(
-> > > > > > +       volatile void __iomem *addr, unsigned long val)
-> > > > > > +{
-> > > > > > +       __io_br();
-> > > > > > +       *(volatile unsigned long __force *)addr = val;
-> > > > > > +       __io_ar();
-> > > > > > +}
-> > > > > > +
+> > > On Sun, Apr 19, 2020 at 09:37:10PM +0000, David Laight wrote:
+> > > > From: Petko Manolov
+> > > > > Sent: 19 April 2020 19:30
 > > > > >
-> > > > > I'm defining read_pointer_with_barrier/write_pointer_with_barrier in
-> > > > > order to make sure that a series of reads/writes to a single CSR
-> > > > > register will not be reordered by the compiler.
+> > > > > On 20-04-19 18:02:50, David Laight wrote:
+> > > > > > From: Petko Manolov
+> > > > > > > Sent: 19 April 2020 10:45
+> > > > > > > Recently I started reading up on KCSAN and at some point I ran into stuff like:
+> > > > > > >
+> > > > > > > WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+> > > > > > > WRITE_ONCE(p->mm->numa_scan_seq, READ_ONCE(p->mm->numa_scan_seq) + 1);
+> > > > > >
+> > > > > > If all the accesses use READ/WRITE_ONCE() why not just mark the structure
+> > > > > > field 'volatile'?
+> > > > >
+> > > > > This is a bit heavy.  I guess you've read this one:
+> > > > >
+> > > > >         https://lwn.net/Articles/233479/
 > > > >
-> > > > Please do not do this, there are core kernel calls for this, otherwise
-> > > > this would be required by every individual driver, which would be crazy.
+> > > > I remember reading something similar before.
+> > > > I also remember a very old gcc (2.95?) that did a readback
+> > > > after every volatile write on sparc (to flush the store buffer).
+> > > > That broke everything.
 > > > >
-> > > > > Does __raw_readl/__raw_writel guarantee this property? If so, I could
-> > > > > drop my functions and use the system ones instead.
+> > > > I suspect there is a lot more code that is attempting to be lockless
+> > > > these days.
+> > > > Ring buffers (one writer and one reader) are a typical example where
+> > > > you don't need locks but do need to use a consistent value.
 > > > >
-> > > > Try it and see.
+> > > > Now you may also need ordering between accesses - which I think needs
+> > > > more than volatile.
 > > >
-> > > Since I want to avoid read/write reordering caused by the compiler
-> > > optimizations I don't want to rely on a single manual test.
-> > > What I mean is that even if it works now for me, it does not guarantee
-> > > that it will in the future version of the compiler/using different
-> > > compilation flags/etc, right?
+> > > In Petko's patch, all needed ordering is supplied by the fact that it
+> > > is the same variable being read and written.  But yes, in many other
+> > > cases, more ordering is required.
+> > >
+> > > > > And no, i am not sure all accesses are through READ/WRITE_ONCE().  If, for
+> > > > > example, all others are from withing spin_lock/unlock pairs then we _may_ not
+> > > > > need READ/WRITE_ONCE().
+> > > >
+> > > > The cost of volatile accesses is probably minimal unless the
+> > > > code is written assuming the compiler will only access things once.
+> > >
+> > > And there are variables marked as volatile, for example, jiffies.
+> > >
+> > > But one downside of declaring variables volatile is that it can prevent
+> > > KCSAN from spotting violations of the concurrency design for those
+> > > variables.
 > >
-> > No, if the common functions stop working, then they will be fixed.  If
-> > you try to roll your own and they stop working in the future, no one
-> > will notice.
-> 
-> Sure, no doubts here. What I wanted to say though was that I want to
-> protect the code against compiler optimizations (code reordering) that
-> I might not be able to detect using just a one-time test. It has nothing to
-> do with bugs in common functions, only with the compiler itself (and again
-> it's not a bug).
-> The way optimizations are handled is dependent on the compiler
-> and the configuration and I'm manually testing just one of many possible
-> setups.
-> 
-> I also checked that there are explicit memory barriers used in the
-> code of readl(),
-> so I assume __raw_readl()/__raw_writel() does not guarantee ordering alone
-> (as otherwise __io_br() wouldn't be used in readl()).
+> > Note that, KCSAN currently treats volatiles not as special, except a
+> > list of some known global volatiles (like jiffies). This means, that
+> > KCSAN will tell us about data races involving unmarked volatiles (unless
+> > they're in the list).
+> >
+> > As far as I can tell, this is what we want. At least according to LKMM.
+> >
+> > If, for whatever reason, volatiles should be treated differently, we'll
+> > have to modify the compilers to emit different instrumentation for the
+> > kernel.
+>
+> I stand corrected, then, thank you!
+>
+> In the current arrangement, declaring a variable volatile will cause
+> KCSAN to generate lots of false positives.
+>
+> I don't currently have a strong feeling on changing the current situation
+> with respect to volatile variables.  Is there a strong reason to change?
+> The general view of the community, as you say, has been that you don't use
+> the volatile keyword outside of exceptions such as jiffies, atomic_read(),
+> atomic_set(), READ_ONCE(), WRITE_ONCE() and perhaps a few others.
+>
+> Thoughts?
 
-Correct, you have "open coded" the existing readX() functions here, just
-use them.
+I certainly agree, and also want to point out that checkpatch.pl
+complains about volatile. We know using volatile has problems. KCSAN
+is (along with checkpatch.pl) another tool that can warn us about such
+problems (warning in case there is real concurrency). Another thing to
+point out is that volatile is not portable, in case
+READ_ONCE()/WRITE_ONCE()'s smp_load_barrier_depends() is not a noop.
+So from what I see, there are strong reasons against changing the
+situation for volatiles and KCSAN.
 
-thanks,
-
-greg k-h
+Thanks,
+-- Marco
