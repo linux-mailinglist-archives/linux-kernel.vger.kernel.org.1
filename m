@@ -2,247 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807021B26C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7631B26C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgDUMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 08:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728769AbgDUMwb (ORCPT
+        id S1728936AbgDUMw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:52:58 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46009 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728802AbgDUMwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:52:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1CBC061A41
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 05:52:30 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jQsNz-0004N6-SH; Tue, 21 Apr 2020 14:52:23 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jQsNx-0002JF-Gk; Tue, 21 Apr 2020 14:52:21 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: [PATCH net-next v4 4/4] net: phy: tja11xx: add delayed registration of TJA1102 PHY1
-Date:   Tue, 21 Apr 2020 14:52:19 +0200
-Message-Id: <20200421125219.8402-5-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200421125219.8402-1-o.rempel@pengutronix.de>
-References: <20200421125219.8402-1-o.rempel@pengutronix.de>
+        Tue, 21 Apr 2020 08:52:55 -0400
+Received: by mail-wr1-f66.google.com with SMTP id t14so16289110wrw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 05:52:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wH+l3kjkV4M80pSfaf6tFiuhqXzQ05Et/uLXKnbO3F0=;
+        b=bSkBphiiCZWHgpMJPiMcs4fOqvxiFFTnk482WAaeE+Kt+ZRb8UKhGkpZUXYmzTu3nv
+         M4jrjCvLLAGysDOROm7pgmdL5aC9ivFb5IvRk6L6UmBvs7rFevdn18+iwcJ81vlDaJvL
+         WSyUbU/SUdHUD9Ad0BqTUoOTUUkpHUzFQD1knjZXFJPnj/EredQrEWlCT538hC5clFoU
+         /pKfrEyVR86dO5ZFLe2iXoFy0r6u56TEU7EkYuyNsfeEF0a5q9ZwrZKuCKiNawrmo8Qw
+         dKO5jAinBFr/BvIrXezAElisr9qHxwSj7PuESk7vZv5KJZWP4vWdWy1rFn5bU0ScG4hL
+         RHew==
+X-Gm-Message-State: AGi0PuYJ8qM+Es96WIiJOVxrwXHUlm3upbnblqWJburo/iYZHrxI8TAi
+        bllFVgKnWG13cn4ZOZ2WTGY=
+X-Google-Smtp-Source: APiQypJK2DJznM4LBkwNiRARpy4QXbLWtusdChfPktwY+Si3C/BZwRW5C4+XrfnGFfZdOyFoMUQ86A==
+X-Received: by 2002:a5d:670c:: with SMTP id o12mr10344273wru.286.1587473572262;
+        Tue, 21 Apr 2020 05:52:52 -0700 (PDT)
+Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
+        by smtp.gmail.com with ESMTPSA id u17sm4375673wra.63.2020.04.21.05.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 05:52:51 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 14:52:50 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH RFC 1/2] mm/memory_hotplug: no need to init new pgdat
+ with node_start_pfn
+Message-ID: <20200421125250.GG27314@dhcp22.suse.cz>
+References: <20200416104707.20219-1-david@redhat.com>
+ <20200416104707.20219-2-david@redhat.com>
+ <20200421123011.GE27314@dhcp22.suse.cz>
+ <ac246ba8-9a61-0e0b-3aff-caf78743e81f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac246ba8-9a61-0e0b-3aff-caf78743e81f@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TJA1102 is a dual PHY package with PHY0 having proper PHYID and PHY1
-having no ID. On one hand it is possible to for PHY detection by
-compatible, on other hand we should be able to reset complete chip
-before PHY1 configured it, and we need to define dependencies for proper
-power management.
+On Tue 21-04-20 14:35:12, David Hildenbrand wrote:
+> On 21.04.20 14:30, Michal Hocko wrote:
+> > Sorry for the late reply
+> > 
+> > On Thu 16-04-20 12:47:06, David Hildenbrand wrote:
+> >> A hotadded node/pgdat will span no pages at all, until memory is moved to
+> >> the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
+> >> when onlining memory blocks. We don't have to initialize the
+> >> node_start_pfn to the memory we are adding.
+> > 
+> > You are right that the node is empty at this phase but that is already
+> > reflected by zero present pages (hmm, I do not see spanned pages to be
+> > set 0 though). What I am missing here is why this is an improvement. The
+> > new node is already visible here and I do not see why we hide the
+> > information we already know.
+> 
+> "information we already know" - no, not before we online the memory.
 
-We can solve it by defining PHY1 as child of PHY0:
-	tja1102_phy0: ethernet-phy@4 {
-		reg = <0x4>;
+Is this really the case? All add_memory_resource users operate on a
+physical memory range.
 
-		interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
+> Before onlining, it's just setting node_start_pfn to *some value* to be
+> overwritten in move_pfn_range_to_zone()->resize_pgdat_range().
 
-		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-		reset-assert-us = <20>;
-		reset-deassert-us = <2000>;
+Yes the value is overwritten but I am not sure this is actually correct
+thing to do. I cannot remember why I've chosen to do that. It doesn't
+really seem unlikely to online node in a higher physical address.
 
-		tja1102_phy1: ethernet-phy@5 {
-			reg = <0x5>;
-
-			interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
-		};
-	};
-
-The PHY1 should be a subnode of PHY0 and registered only after PHY0 was
-completely reset and initialized.
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/phy/nxp-tja11xx.c | 112 +++++++++++++++++++++++++++++++---
- 1 file changed, 105 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
-index a064e4ab3616..2bde9386baf1 100644
---- a/drivers/net/phy/nxp-tja11xx.c
-+++ b/drivers/net/phy/nxp-tja11xx.c
-@@ -6,11 +6,14 @@
- #include <linux/delay.h>
- #include <linux/ethtool.h>
- #include <linux/kernel.h>
-+#include <linux/mdio.h>
- #include <linux/mii.h>
- #include <linux/module.h>
- #include <linux/phy.h>
- #include <linux/hwmon.h>
- #include <linux/bitfield.h>
-+#include <linux/of_mdio.h>
-+#include <linux/of_irq.h>
- 
- #define PHY_ID_MASK			0xfffffff0
- #define PHY_ID_TJA1100			0x0180dc40
-@@ -57,6 +60,8 @@
- struct tja11xx_priv {
- 	char		*hwmon_name;
- 	struct device	*hwmon_dev;
-+	struct phy_device *phydev;
-+	struct work_struct phy_register_work;
- };
- 
- struct tja11xx_phy_stats {
-@@ -333,16 +338,12 @@ static const struct hwmon_chip_info tja11xx_hwmon_chip_info = {
- 	.info		= tja11xx_hwmon_info,
- };
- 
--static int tja11xx_probe(struct phy_device *phydev)
-+static int tja11xx_hwmon_register(struct phy_device *phydev,
-+				  struct tja11xx_priv *priv)
- {
- 	struct device *dev = &phydev->mdio.dev;
--	struct tja11xx_priv *priv;
- 	int i;
- 
--	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
--
- 	priv->hwmon_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
- 	if (!priv->hwmon_name)
- 		return -ENOMEM;
-@@ -360,6 +361,103 @@ static int tja11xx_probe(struct phy_device *phydev)
- 	return PTR_ERR_OR_ZERO(priv->hwmon_dev);
- }
- 
-+static int tja11xx_probe(struct phy_device *phydev)
-+{
-+	struct device *dev = &phydev->mdio.dev;
-+	struct tja11xx_priv *priv;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->phydev = phydev;
-+
-+	return tja11xx_hwmon_register(phydev, priv);
-+}
-+
-+static void tja1102_p1_register(struct work_struct *work)
-+{
-+	struct tja11xx_priv *priv = container_of(work, struct tja11xx_priv,
-+						 phy_register_work);
-+	struct phy_device *phydev_phy0 = priv->phydev;
-+	struct mii_bus *bus = phydev_phy0->mdio.bus;
-+	struct device *dev = &phydev_phy0->mdio.dev;
-+	struct device_node *np = dev->of_node;
-+	struct device_node *child;
-+	int ret;
-+
-+	for_each_available_child_of_node(np, child) {
-+		struct phy_device *phy;
-+		int addr;
-+
-+		addr = of_mdio_parse_addr(dev, child);
-+		if (addr < 0) {
-+			dev_err(dev, "Can't parse addr\n");
-+			continue;
-+		} else if (addr != phydev_phy0->mdio.addr + 1) {
-+			/* Currently we care only about double PHY chip TJA1102.
-+			 * If some day NXP will decide to bring chips with more
-+			 * PHYs, this logic should be reworked.
-+			 */
-+			dev_err(dev, "Unexpected address. Should be: %i\n",
-+				phydev_phy0->mdio.addr + 1);
-+			continue;
-+		}
-+
-+		if (mdiobus_is_registered_device(bus, addr)) {
-+			dev_err(dev, "device is already registered\n");
-+			continue;
-+		}
-+
-+		/* Real PHY ID of Port 1 is 0 */
-+		phy = phy_device_create(bus, addr, PHY_ID_TJA1102, false, NULL);
-+		if (IS_ERR(phy)) {
-+			dev_err(dev, "Can't create PHY device for Port 1: %i\n",
-+				addr);
-+			continue;
-+		}
-+
-+		/* Overwrite parent device. phy_device_create() set parent to
-+		 * the mii_bus->dev, which is not correct in case.
-+		 */
-+		phy->mdio.dev.parent = dev;
-+
-+		ret = __of_mdiobus_register_phy(bus, phy, child, addr);
-+		if (ret) {
-+			/* All resources needed for Port 1 should be already
-+			 * available for Port 0. Both ports use the same
-+			 * interrupt line, so -EPROBE_DEFER would make no sense
-+			 * here.
-+			 */
-+			dev_err(dev, "Can't register Port 1. Unexpected error: %i\n",
-+				ret);
-+			phy_device_free(phy);
-+		}
-+	}
-+}
-+
-+static int tja1102_p0_probe(struct phy_device *phydev)
-+{
-+	struct device *dev = &phydev->mdio.dev;
-+	struct tja11xx_priv *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->phydev = phydev;
-+	INIT_WORK(&priv->phy_register_work, tja1102_p1_register);
-+
-+	ret = tja11xx_hwmon_register(phydev, priv);
-+	if (ret)
-+		return ret;
-+
-+	schedule_work(&priv->phy_register_work);
-+
-+	return 0;
-+}
-+
- static int tja1102_match_phy_device(struct phy_device *phydev, bool port0)
- {
- 	int ret;
-@@ -443,7 +541,7 @@ static struct phy_driver tja11xx_driver[] = {
- 	}, {
- 		.name		= "NXP TJA1102 Port 0",
- 		.features       = PHY_BASIC_T1_FEATURES,
--		.probe		= tja11xx_probe,
-+		.probe		= tja1102_p0_probe,
- 		.soft_reset	= tja11xx_soft_reset,
- 		.config_init	= tja11xx_config_init,
- 		.read_status	= tja11xx_read_status,
+Btw. one thing that I have in my notes, I was never able to actually
+test the no numa node case. Because I have always been testing with node
+being allocated during the boot. Do you have any way to trigger this
+path?
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
