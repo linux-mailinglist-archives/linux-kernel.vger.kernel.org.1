@@ -2,102 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B1D1B25E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAEC1B25F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 14:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728820AbgDUMY3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 08:24:29 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:34915 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728391AbgDUMY1 (ORCPT
+        id S1728780AbgDUM0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 08:26:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:4496 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728524AbgDUM0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:24:27 -0400
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id EFAE120000A;
-        Tue, 21 Apr 2020 12:24:24 +0000 (UTC)
-Date:   Tue, 21 Apr 2020 14:24:24 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "Xia, Hui" <hui.xia@intel.com>
-Cc:     "Li, Philip" <philip.li@intel.com>, lkp <lkp@intel.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] iio: adc: ti-ads8344: properly byte swap value
-Message-ID: <20200421122424.GK7326@piout.net>
-References: <20200415212257.161238-2-alexandre.belloni@bootlin.com>
- <202004161449.NY5hL54S%lkp@intel.com>
- <20200416205023.GA437042@piout.net>
- <20200419024948.GK21730@intel.com>
- <2A5F4C9150EECB4DAA6291810D6D61B9745DE89F@shsmsx102.ccr.corp.intel.com>
+        Tue, 21 Apr 2020 08:26:51 -0400
+X-UUID: f2df5e8bcb1642a8b8be13b48baa09d9-20200421
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1drU5b9UZyhoKKcmaKClDLCSPZ1nRiiu5qjvWITjXi0=;
+        b=ZpZ8SUhsDDxCrbn08NSGH7kvr1+trGLhML7MVqUfbAH8EU5RYsKSJMHrKKvAPmSX1GD+J2oDwcm55pAFXPPfA5ndAx1VWJOTEDExcusKtgtN0TCsNcX6qEgAjtSkBjAHKIH3DWAQ4IM273kNNjc/olasDdm+BahQa2rOVOpPLy4=;
+X-UUID: f2df5e8bcb1642a8b8be13b48baa09d9-20200421
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 419430501; Tue, 21 Apr 2020 20:26:46 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 21 Apr 2020 20:26:42 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 21 Apr 2020 20:26:42 +0800
+Message-ID: <1587472005.5870.7.camel@mtksdccf07>
+Subject: Re: [PATCH] kasan: fix KASAN unit tests for tag-based KASAN
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+CC:     David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Andrey Konovalov" <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Tue, 21 Apr 2020 20:26:45 +0800
+In-Reply-To: <CACT4Y+af5fegnN9XOUSkf_B62J5sf2ZZbUwYk=GxtSmAhF3ryQ@mail.gmail.com>
+References: <20200421014007.6012-1-walter-zh.wu@mediatek.com>
+         <CACT4Y+af5fegnN9XOUSkf_B62J5sf2ZZbUwYk=GxtSmAhF3ryQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <2A5F4C9150EECB4DAA6291810D6D61B9745DE89F@shsmsx102.ccr.corp.intel.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+SGkgRG1pdHJ5LA0KDQpPbiBUdWUsIDIwMjAtMDQtMjEgYXQgMTM6NTYgKzAyMDAsIERtaXRyeSBW
+eXVrb3Ygd3JvdGU6DQo+IE9uIFR1ZSwgQXByIDIxLCAyMDIwIGF0IDM6NDAgQU0gV2FsdGVyIFd1
+IDx3YWx0ZXItemgud3VAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdoZW4gd2UgdXNl
+IHRhZy1iYXNlZCBLQVNBTiwgdGhlbiBLQVNBTiB1bml0IHRlc3RzIGRvbid0IGRldGVjdA0KPiA+
+IG91dC1vZi1ib3VuZHMgbWVtb3J5IGFjY2Vzcy4gQmVjYXVzZSB3aXRoIHRhZy1iYXNlZCBLQVNB
+TiB0aGUgc3RhdGUNCj4gPiBvZiBlYWNoIDE2IGFsaWduZWQgYnl0ZXMgb2YgbWVtb3J5IGlzIGVu
+Y29kZWQgaW4gb25lIHNoYWRvdyBieXRlDQo+ID4gYW5kIHRoZSBzaGFkb3cgdmFsdWUgaXMgdGFn
+IG9mIHBvaW50ZXIsIHNvIHdlIG5lZWQgdG8gcmVhZCBuZXh0DQo+ID4gc2hhZG93IGJ5dGUsIHRo
+ZSBzaGFkb3cgdmFsdWUgaXMgbm90IGVxdWFsIHRvIHRhZyBvZiBwb2ludGVyLA0KPiA+IHRoZW4g
+dGFnLWJhc2VkIEtBU0FOIHdpbGwgZGV0ZWN0IG91dC1vZi1ib3VuZHMgbWVtb3J5IGFjY2Vzcy4N
+Cj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFdhbHRlciBXdSA8d2FsdGVyLXpoLnd1QG1lZGlhdGVr
+LmNvbT4NCj4gPiBDYzogQW5kcmV5IFJ5YWJpbmluIDxhcnlhYmluaW5AdmlydHVvenpvLmNvbT4N
+Cj4gPiBDYzogRG1pdHJ5IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KPiA+IENjOiBBbGV4
+YW5kZXIgUG90YXBlbmtvIDxnbGlkZXJAZ29vZ2xlLmNvbT4NCj4gPiBDYzogTWF0dGhpYXMgQnJ1
+Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCj4gPiBDYzogQW5kcmV5IEtvbm92YWxvdiA8
+YW5kcmV5a252bEBnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4
+LWZvdW5kYXRpb24ub3JnPg0KPiA+IC0tLQ0KPiA+ICBsaWIvdGVzdF9rYXNhbi5jIHwgNjIgKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tDQo+ID4gIDEgZmls
+ZSBjaGFuZ2VkLCA1NSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL2xpYi90ZXN0X2thc2FuLmMgYi9saWIvdGVzdF9rYXNhbi5jDQo+ID4gaW5kZXgg
+ZTMwODdkOTBlMDBkLi5hMTY0ZjZiNDdmZTUgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL3Rlc3Rfa2Fz
+YW4uYw0KPiA+ICsrKyBiL2xpYi90ZXN0X2thc2FuLmMNCj4gPiBAQCAtNDAsNyArNDAsMTIgQEAg
+c3RhdGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxsb2Nfb29iX3JpZ2h0KHZvaWQpDQo+ID4g
+ICAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiAgICAgICAgIH0NCj4gDQo+IEhpIFdhbHRlciwN
+Cj4gDQo+IFRoaXMgd291bGQgYmUgZ3JlYXQgdG8gaGF2ZSENCj4gQnV0IEkgYW0gY29uY2VybmVk
+IGFib3V0IHRoZXNlIHNlcmllcyB0aGF0IHBvcnQgS0FTQU4gdGVzdHMgdG8gS1VOSVQ6DQo+IGh0
+dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzQvMTcvMTE0NA0KPiBJIHN1c3BlY3QgaXQgd2lsbCBi
+ZSBvbmUgbGFyZ2UgbWVyZ2UgY29uZmxpY3QuIE5vdCBzdXJlIHdoYXQgaXMgdGhlDQo+IHByb3Bl
+ciB3YXkgdG8gcmVzb3ZsZSB0aGlzLiBJJ3ZlIGFkZGVkIGF1dGhvcnMgdG8gQ0MuDQo+IA0KWWVz
+LCBpdCBzaG91bGQgaGF2ZSBjb25mbGljdHMuIFRoYW5rcyBmb3IgeW91ciByZW1pbmRlci4NCj4g
+DQo+ID4gKyNpZmRlZiBDT05GSUdfS0FTQU5fR0VORVJJQw0KPiA+ICAgICAgICAgcHRyW3NpemVd
+ID0gJ3gnOw0KPiA+ICsjZWxzZQ0KPiA+ICsgICAgICAgcHRyW3NpemUgKyA1XSA9ICd4JzsNCj4g
+PiArI2VuZGlmDQo+ID4gKw0KPiANCj4gRm9yIHRoaXMgcGFydGljdWxhciBzbmlwcGV0IEkgdGhp
+bmsgd2UgY2FuIHJlZHVjZSBhbW91bnQgb2YgaWRlZidlcnkNCj4gYW5kIGFtb3VudCBvZiBub24t
+Y29tcGlsZWQgY29kZSBpbiBlYWNoIGNvbmZpZ3VyYXRpb24gd2l0aCBzb21ldGhpbmcNCj4gbGlr
+ZToNCj4gDQo+ICAgcHRyW3NpemUgKyA1XSA9ICd4JzsNCj4gICBpZiAoRU5BQkxFRChDT05GSUdf
+S0FTQU5fR0VORVJJQykpDQo+ICAgICAgIHB0cltzaXplXSA9ICd4JzsNCj4gDQo+IE9uZSBjaGVj
+ayBydW5zIGFsd2F5cyAoaXQgc2hvdWxkIHBhc3MgaW4gYm90aCBjb25maWdzLCByaWdodD8pLiBU
+aGUNCg0KVGhlcmUgaXMgYSBwcm9ibGVtLCBXaXRoIGdlbmVyaWMgS0FTQU4gaXQgbWF5IHRyaWdn
+ZXIgdHdvIEtBU0FOIHJlcG9ydHMuDQppZiB3ZSBjaGFuZ2UgaXQgbGlrZToNCiANCmlmIChFTkFC
+TEVEKENPTkZJR19LQVNBTl9HRU5FUklDKSkNCiAgICBwdHJbc2l6ZV0gPSAneCc7DQplbHNlDQog
+ICAgcHRyW3NpemUgKyA1XSA9ICd4JzsNCg0KPiBvbmx5IG9ubHkgaW4gR0VORVJJQywgYnV0IGl0
+J3MgQy1sZXZlbCBpZiByYXRoZXIgdGhhbiBwcmVwcm9jZXNzb3IuDQo+IEtVTklUIHNob3VsZCBt
+YWtlIDIgYnVncyBwZXIgdGVzdCBlYXNpbHkgZXhwcmVzc2FibGUgKGFuZCB0ZXN0YWJsZSkuDQo+
+IA0KDQo+IA0KPiANCj4gDQo+ID4gICAgICAgICBrZnJlZShwdHIpOw0KPiA+ICB9DQo+ID4NCj4g
+PiBAQCAtOTIsNyArOTcsMTIgQEAgc3RhdGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxsb2Nf
+cGFnZWFsbG9jX29vYl9yaWdodCh2b2lkKQ0KPiA+ICAgICAgICAgICAgICAgICByZXR1cm47DQo+
+ID4gICAgICAgICB9DQo+ID4NCj4gPiArI2lmZGVmIENPTkZJR19LQVNBTl9HRU5FUklDDQo+ID4g
+ICAgICAgICBwdHJbc2l6ZV0gPSAwOw0KPiA+ICsjZWxzZQ0KPiA+ICsgICAgICAgcHRyW3NpemUg
+KyA2XSA9IDA7DQo+ID4gKyNlbmRpZg0KPiA+ICsNCj4gPiAgICAgICAgIGtmcmVlKHB0cik7DQo+
+ID4gIH0NCj4gPg0KPiA+IEBAIC0xNjIsNyArMTcyLDExIEBAIHN0YXRpYyBub2lubGluZSB2b2lk
+IF9faW5pdCBrbWFsbG9jX29vYl9rcmVhbGxvY19tb3JlKHZvaWQpDQo+ID4gICAgICAgICAgICAg
+ICAgIHJldHVybjsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICsjaWZkZWYgQ09ORklHX0tBU0FO
+X0dFTkVSSUMNCj4gPiAgICAgICAgIHB0cjJbc2l6ZTJdID0gJ3gnOw0KPiA+ICsjZWxzZQ0KPiA+
+ICsgICAgICAgcHRyMltzaXplMiArIDEzXSA9ICd4JzsNCj4gPiArI2VuZGlmDQo+ID4gICAgICAg
+ICBrZnJlZShwdHIyKTsNCj4gPiAgfQ0KPiA+DQo+ID4gQEAgLTE4MCw3ICsxOTQsMTIgQEAgc3Rh
+dGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxsb2Nfb29iX2tyZWFsbG9jX2xlc3Modm9pZCkN
+Cj4gPiAgICAgICAgICAgICAgICAga2ZyZWUocHRyMSk7DQo+ID4gICAgICAgICAgICAgICAgIHJl
+dHVybjsNCj4gPiAgICAgICAgIH0NCj4gPiArDQo+ID4gKyNpZmRlZiBDT05GSUdfS0FTQU5fR0VO
+RVJJQw0KPiA+ICAgICAgICAgcHRyMltzaXplMl0gPSAneCc7DQo+ID4gKyNlbHNlDQo+ID4gKyAg
+ICAgICBwdHIyW3NpemUyICsgMl0gPSAneCc7DQo+ID4gKyNlbmRpZg0KPiA+ICAgICAgICAga2Zy
+ZWUocHRyMik7DQo+ID4gIH0NCj4gPg0KPiA+IEBAIC0yMTYsNyArMjM1LDExIEBAIHN0YXRpYyBu
+b2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9jX29vYl9tZW1zZXRfMih2b2lkKQ0KPiA+ICAgICAg
+ICAgICAgICAgICByZXR1cm47DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiArI2lmZGVmIENPTkZJ
+R19LQVNBTl9HRU5FUklDDQo+ID4gICAgICAgICBtZW1zZXQocHRyKzcsIDAsIDIpOw0KPiA+ICsj
+ZWxzZQ0KPiA+ICsgICAgICAgbWVtc2V0KHB0cisxNSwgMCwgMik7DQo+ID4gKyNlbmRpZg0KPiA+
+ICAgICAgICAga2ZyZWUocHRyKTsNCj4gPiAgfQ0KPiA+DQo+ID4gQEAgLTIzMiw3ICsyNTUsMTEg
+QEAgc3RhdGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxsb2Nfb29iX21lbXNldF80KHZvaWQp
+DQo+ID4gICAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICsj
+aWZkZWYgQ09ORklHX0tBU0FOX0dFTkVSSUMNCj4gPiAgICAgICAgIG1lbXNldChwdHIrNSwgMCwg
+NCk7DQo+ID4gKyNlbHNlDQo+ID4gKyAgICAgICBtZW1zZXQocHRyKzE1LCAwLCA0KTsNCj4gPiAr
+I2VuZGlmDQo+ID4gICAgICAgICBrZnJlZShwdHIpOw0KPiA+ICB9DQo+ID4NCj4gPiBAQCAtMjQ5
+LDcgKzI3NiwxMSBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21hbGxvY19vb2JfbWVt
+c2V0Xzgodm9pZCkNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuOw0KPiA+ICAgICAgICAgfQ0K
+PiA+DQo+ID4gKyNpZmRlZiBDT05GSUdfS0FTQU5fR0VORVJJQw0KPiA+ICAgICAgICAgbWVtc2V0
+KHB0cisxLCAwLCA4KTsNCj4gPiArI2Vsc2UNCj4gPiArICAgICAgIG1lbXNldChwdHIrMTUsIDAs
+IDgpOw0KPiA+ICsjZW5kaWYNCj4gPiAgICAgICAgIGtmcmVlKHB0cik7DQo+ID4gIH0NCj4gPg0K
+PiA+IEBAIC0yNjUsNyArMjk2LDExIEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFs
+bG9jX29vYl9tZW1zZXRfMTYodm9pZCkNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuOw0KPiA+
+ICAgICAgICAgfQ0KPiA+DQo+ID4gKyNpZmRlZiBDT05GSUdfS0FTQU5fR0VORVJJQw0KPiA+ICAg
+ICAgICAgbWVtc2V0KHB0cisxLCAwLCAxNik7DQo+ID4gKyNlbHNlDQo+ID4gKyAgICAgICBtZW1z
+ZXQocHRyKzE1LCAwLCAxNik7DQo+ID4gKyNlbmRpZg0KPiA+ICAgICAgICAga2ZyZWUocHRyKTsN
+Cj4gPiAgfQ0KPiA+DQo+ID4gQEAgLTI4MSw3ICszMTYsMTEgQEAgc3RhdGljIG5vaW5saW5lIHZv
+aWQgX19pbml0IGttYWxsb2Nfb29iX2luX21lbXNldCh2b2lkKQ0KPiA+ICAgICAgICAgICAgICAg
+ICByZXR1cm47DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiArI2lmZGVmIENPTkZJR19LQVNBTl9H
+RU5FUklDDQo+ID4gICAgICAgICBtZW1zZXQocHRyLCAwLCBzaXplKzUpOw0KPiA+ICsjZWxzZQ0K
+PiA+ICsgICAgICAgbWVtc2V0KHB0ciwgMCwgc2l6ZSs3KTsNCj4gPiArI2VuZGlmDQo+ID4gICAg
+ICAgICBrZnJlZShwdHIpOw0KPiA+ICB9DQo+ID4NCj4gPiBAQCAtNDE1LDcgKzQ1NCwxMSBAQCBz
+dGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21lbV9jYWNoZV9vb2Iodm9pZCkNCj4gPiAgICAg
+ICAgICAgICAgICAgcmV0dXJuOw0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gKyNpZmRlZiBDT05G
+SUdfS0FTQU5fR0VORVJJQw0KPiA+ICAgICAgICAgKnAgPSBwW3NpemVdOw0KPiA+ICsjZWxzZQ0K
+PiA+ICsgICAgICAgKnAgPSBwW3NpemUgKyA4XTsNCj4gPiArI2VuZGlmDQo+ID4gICAgICAgICBr
+bWVtX2NhY2hlX2ZyZWUoY2FjaGUsIHApOw0KPiA+ICAgICAgICAga21lbV9jYWNoZV9kZXN0cm95
+KGNhY2hlKTsNCj4gPiAgfQ0KPiA+IEBAIC00OTcsNiArNTQwLDExIEBAIHN0YXRpYyBub2lubGlu
+ZSB2b2lkIF9faW5pdCBjb3B5X3VzZXJfdGVzdCh2b2lkKQ0KPiA+ICAgICAgICAgY2hhciBfX3Vz
+ZXIgKnVzZXJtZW07DQo+ID4gICAgICAgICBzaXplX3Qgc2l6ZSA9IDEwOw0KPiA+ICAgICAgICAg
+aW50IHVudXNlZDsNCj4gPiArI2lmZGVmIENPTkZJR19LQVNBTl9HRU5FUklDDQo+ID4gKyAgICAg
+ICBzaXplX3Qgb29iX3NpemUgPSAxOw0KPiA+ICsjZWxzZQ0KPiA+ICsgICAgICAgc2l6ZV90IG9v
+Yl9zaXplID0gNzsNCj4gPiArI2VuZGlmDQo+ID4NCj4gPiAgICAgICAgIGttZW0gPSBrbWFsbG9j
+KHNpemUsIEdGUF9LRVJORUwpOw0KPiA+ICAgICAgICAgaWYgKCFrbWVtKQ0KPiA+IEBAIC01MTIs
+MjUgKzU2MCwyNSBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQgY29weV91c2VyX3Rlc3Qo
+dm9pZCkNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICAgICAgICAgcHJfaW5mbygib3V0LW9mLWJv
+dW5kcyBpbiBjb3B5X2Zyb21fdXNlcigpXG4iKTsNCj4gPiAtICAgICAgIHVudXNlZCA9IGNvcHlf
+ZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyAxKTsNCj4gPiArICAgICAgIHVudXNlZCA9
+IGNvcHlfZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyBvb2Jfc2l6ZSk7DQo+ID4NCj4g
+PiAgICAgICAgIHByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gY29weV90b191c2VyKClcbiIpOw0K
+PiA+IC0gICAgICAgdW51c2VkID0gY29weV90b191c2VyKHVzZXJtZW0sIGttZW0sIHNpemUgKyAx
+KTsNCj4gPiArICAgICAgIHVudXNlZCA9IGNvcHlfdG9fdXNlcih1c2VybWVtLCBrbWVtLCBzaXpl
+ICsgb29iX3NpemUpOw0KPiA+DQo+ID4gICAgICAgICBwcl9pbmZvKCJvdXQtb2YtYm91bmRzIGlu
+IF9fY29weV9mcm9tX3VzZXIoKVxuIik7DQo+ID4gLSAgICAgICB1bnVzZWQgPSBfX2NvcHlfZnJv
+bV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyAxKTsNCj4gPiArICAgICAgIHVudXNlZCA9IF9f
+Y29weV9mcm9tX3VzZXIoa21lbSwgdXNlcm1lbSwgc2l6ZSArIG9vYl9zaXplKTsNCj4gPg0KPiA+
+ICAgICAgICAgcHJfaW5mbygib3V0LW9mLWJvdW5kcyBpbiBfX2NvcHlfdG9fdXNlcigpXG4iKTsN
+Cj4gPiAtICAgICAgIHVudXNlZCA9IF9fY29weV90b191c2VyKHVzZXJtZW0sIGttZW0sIHNpemUg
+KyAxKTsNCj4gPiArICAgICAgIHVudXNlZCA9IF9fY29weV90b191c2VyKHVzZXJtZW0sIGttZW0s
+IHNpemUgKyBvb2Jfc2l6ZSk7DQo+ID4NCj4gPiAgICAgICAgIHByX2luZm8oIm91dC1vZi1ib3Vu
+ZHMgaW4gX19jb3B5X2Zyb21fdXNlcl9pbmF0b21pYygpXG4iKTsNCj4gPiAtICAgICAgIHVudXNl
+ZCA9IF9fY29weV9mcm9tX3VzZXJfaW5hdG9taWMoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEpOw0K
+PiA+ICsgICAgICAgdW51c2VkID0gX19jb3B5X2Zyb21fdXNlcl9pbmF0b21pYyhrbWVtLCB1c2Vy
+bWVtLCBzaXplICsgb29iX3NpemUpOw0KPiA+DQo+ID4gICAgICAgICBwcl9pbmZvKCJvdXQtb2Yt
+Ym91bmRzIGluIF9fY29weV90b191c2VyX2luYXRvbWljKClcbiIpOw0KPiA+IC0gICAgICAgdW51
+c2VkID0gX19jb3B5X3RvX3VzZXJfaW5hdG9taWModXNlcm1lbSwga21lbSwgc2l6ZSArIDEpOw0K
+PiA+ICsgICAgICAgdW51c2VkID0gX19jb3B5X3RvX3VzZXJfaW5hdG9taWModXNlcm1lbSwga21l
+bSwgc2l6ZSArIG9vYl9zaXplKTsNCj4gPg0KPiA+ICAgICAgICAgcHJfaW5mbygib3V0LW9mLWJv
+dW5kcyBpbiBzdHJuY3B5X2Zyb21fdXNlcigpXG4iKTsNCj4gPiAtICAgICAgIHVudXNlZCA9IHN0
+cm5jcHlfZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyAxKTsNCj4gPiArICAgICAgIHVu
+dXNlZCA9IHN0cm5jcHlfZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyBvb2Jfc2l6ZSk7
+DQo+ID4NCj4gPiAgICAgICAgIHZtX211bm1hcCgodW5zaWduZWQgbG9uZyl1c2VybWVtLCBQQUdF
+X1NJWkUpOw0KPiA+ICAgICAgICAga2ZyZWUoa21lbSk7DQo+ID4gLS0NCj4gPiAyLjE4LjANCj4g
+Pg0KPiA+IC0tDQo+ID4gWW91IHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBiZWNhdXNlIHlvdSBhcmUg
+c3Vic2NyaWJlZCB0byB0aGUgR29vZ2xlIEdyb3VwcyAia2FzYW4tZGV2IiBncm91cC4NCj4gPiBU
+byB1bnN1YnNjcmliZSBmcm9tIHRoaXMgZ3JvdXAgYW5kIHN0b3AgcmVjZWl2aW5nIGVtYWlscyBm
+cm9tIGl0LCBzZW5kIGFuIGVtYWlsIHRvIGthc2FuLWRldit1bnN1YnNjcmliZUBnb29nbGVncm91
+cHMuY29tLg0KPiA+IFRvIHZpZXcgdGhpcyBkaXNjdXNzaW9uIG9uIHRoZSB3ZWIgdmlzaXQgaHR0
+cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9kL21zZ2lkL2thc2FuLWRldi8yMDIwMDQyMTAxNDAwNy42
+MDEyLTEtd2FsdGVyLXpoLnd1JTQwbWVkaWF0ZWsuY29tLg0KDQo=
 
-On 21/04/2020 07:25:01+0000, Xia, Hui wrote:
-> >-----Original Message-----
-> >From: Li, Philip <philip.li@intel.com>
-> >Sent: 2020年4月19日 10:50
-> >To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> >Cc: lkp <lkp@intel.com>; Jonathan Cameron <jic23@kernel.org>; kbuild-
-> >all@lists.01.org; Hartmut Knaack <knaack.h@gmx.de>; Lars-Peter Clausen
-> ><lars@metafoo.de>; Peter Meerwald-Stadler <pmeerw@pmeerw.net>; Gregory
-> >CLEMENT <gregory.clement@bootlin.com>; linux-iio@vger.kernel.org; linux-
-> >kernel@vger.kernel.org
-> >Subject: Re: [PATCH 1/3] iio: adc: ti-ads8344: properly byte swap value
-> >
-> >On Thu, Apr 16, 2020 at 10:50:23PM +0200, Alexandre Belloni wrote:
-> >> Hi,
-> >>
-> >> On 16/04/2020 14:22:03+0800, kbuild test robot wrote:
-> >> > Hi Alexandre,
-> >> >
-> >> > I love your patch! Yet something to improve:
-> >> >
-> >> > [auto build test ERROR on iio/togreg] [also build test ERROR on
-> >> > v5.7-rc1 next-20200415] [if your patch is applied to the wrong git
-> >> > tree, please drop us a note to help improve the system. BTW, we also
-> >> > suggest to use '--base' option to specify the base tree in git
-> >> > format-patch, please see https://stackoverflow.com/a/37406982]
-> >> >
-> >> > url:    https://github.com/0day-ci/linux/commits/Alexandre-Belloni/iio-adc-ti-
-> >ads8344-improve-the-driver/20200416-073357
-> >> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-> >> > config: c6x-allyesconfig (attached as .config)
-> >> > compiler: c6x-elf-gcc (GCC) 9.3.0
-> >> > reproduce:
-> >> >         wget https://raw.githubusercontent.com/intel/lkp-
-> >tests/master/sbin/make.cross -O ~/bin/make.cross
-> >> >         chmod +x ~/bin/make.cross
-> >> >         # save the attached .config to linux build tree
-> >> >         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0
-> >> > make.cross ARCH=c6x
-> >> >
-> >>
-> >> I spent some time to reproduce and this is actually not that trivial
-> >> because your toolchains are linked with libisl22 and most
-> >> distributions still ship an older version. Maybe you can do something about that?
-> >Thanks for the feedback, we will resolve this to use old version in earliest time.
-> The cross toolchains has been updated to link with libisl19 the stable version. Please remove the old toolchain and make.cross again.
-> Feel free to let us know if still have problem. Thanks.
-> 
-
-Thank you, this works properly on more machines now.
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
