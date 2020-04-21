@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D05B1B29A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A192E1B29B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgDUO3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:29:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729159AbgDUO3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:29:48 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5080C20724;
-        Tue, 21 Apr 2020 14:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587479387;
-        bh=vq62htzQrEGkXQgbmBIdb3flO+yGFZQ1M31v4/nKJRM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hu8zjX8bct2a6eO9hoEe3hbPq+qhKJA3kLRvPBvyROaRtSdHsc0csp7/E9Jx7ZGCG
-         gdbzQa31ODGBaEHFBB36vsimK/YYtIJ4KspcGBQq0hDjrjdUA2efBGuHIjQtGW1zwh
-         uRyDvXHtb5D44+ytNrHc8bdNyUXfK2g4OVH++ZP8=
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>, kernel-team@android.com
-Subject: [PATCH v2 8/8] arm64: cpufeature: Add an overview comment for the cpufeature framework
-Date:   Tue, 21 Apr 2020 15:29:22 +0100
-Message-Id: <20200421142922.18950-9-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200421142922.18950-1-will@kernel.org>
-References: <20200421142922.18950-1-will@kernel.org>
+        id S1729029AbgDUObB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728422AbgDUObA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:31:00 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B440FC061A10;
+        Tue, 21 Apr 2020 07:30:59 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id x1so11139888ejd.8;
+        Tue, 21 Apr 2020 07:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nJKmwmL8pJeyEkXSJcr3CbIoVGjTvKtRz5mLqOZGiFM=;
+        b=WhnkTtco3iWRQt6NFjmoYU9L1wfydDjHO2SvHJp+KDB2RgB3AgDTsA/GTLnu1lFqV7
+         Zoar8hUYXl22NCEiW9OLuM6g4ZpigIq1k+fGakrItDCr5csRuT2nTq1tEN3hY7sASA35
+         QQDYwD+W2cemygxtTq+6p/8bXUFvSmPUfcupMcYEwTpMhQMNzTQKHHByFvZRAmiqakCI
+         3nNqBUs4DTRYabiA4O8RSJ9HKYGKFg7nV29Xh9rD/6dok3gjVqn9/YhDbSI/6Vem0yGA
+         5XhMVFY2DWrsc/BVBKYRoQ/BeFZWODboD3lFpwKsITVIq1BAFrAdIhgyM9kmZWWBdP+g
+         R0Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nJKmwmL8pJeyEkXSJcr3CbIoVGjTvKtRz5mLqOZGiFM=;
+        b=Nvk9w+4E5xzesvvPiND8i+cM+OJXfc7Tts2giQx2IxajKPGmi3VggXFxtpXJ5q8P1n
+         DG+T1wfm+3zo4p6rvZagLCMMDaekITF1zFWHiCFFea7jtumO3QMcf2r+kG2QKG+GOASr
+         7Gzq0PpgxJzkdyXH6+5KBA907DfE4+EY4Xq3J7xkD7s4Il/22lSKaklzNwu7STLnxybD
+         iGJ/KqotjLN2slWmCOtBnrvVYbGTvB7OwJfhI3MOKB5gzzE2zkuMSrJuSq53x/RKdamB
+         FEKWm2mHKsSzJTwtv2YOYMgNxUPvsMPoxtd9IXSplN7hzYTDTFive23/bGRm1ALb4N8L
+         jigw==
+X-Gm-Message-State: AGi0Pua5g55Ss6e1Rg6+k4PUnFmX7g9DW70HRZR7FztS8Oyikd/7Vhx4
+        8xWgvGMwmsyHz7NZZPn3cHj+hEBb2z6gwJCXdCc=
+X-Google-Smtp-Source: APiQypLvKjlIrLLDZw7H9NUfR5+MQ7F35cXfQad0lKg6B/PUGcGli1jOCM/Qn1qXml6rqBmbydwxEzLoYlAyc6lbVGk=
+X-Received: by 2002:a17:906:1fd6:: with SMTP id e22mr21913379ejt.150.1587479458385;
+ Tue, 21 Apr 2020 07:30:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
+ <20200410104132.294639-1-christian@brauner.io> <b7550fcd-ba12-e64a-3228-e6668b31a8a7@gmail.com>
+In-Reply-To: <b7550fcd-ba12-e64a-3228-e6668b31a8a7@gmail.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Tue, 21 Apr 2020 16:30:46 +0200
+Message-ID: <CAKgNAkhQr+sKGAu+KcxPEsuwG3kjQOyzVW7E1yM9cMtSZrhW9A@mail.gmail.com>
+Subject: Re: [PATCH] clone.2: Document CLONE_INTO_CGROUP
+To:     Christian Brauner <christian@brauner.io>
+Cc:     "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that Suzuki isn't within throwing distance, I thought I'd better add
-a rough overview comment to cpufeature.c so that it doesn't take me days
-to remember how it works next time.
+Hi Christian,
 
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/cpufeature.c | 50 ++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+Ping!
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index d63653d7c5d0..c1d44d127baa 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -3,6 +3,56 @@
-  * Contains CPU feature definitions
-  *
-  * Copyright (C) 2015 ARM Ltd.
-+ *
-+ * A note for the weary kernel hacker: the code here is confusing and hard to
-+ * follow! That's partly because it's solving a nasty problem, but also because
-+ * there's a little bit of over-abstraction that tends to obscure what's going
-+ * on behind a maze of helper functions and macros.
-+ *
-+ * The basic problem is that hardware folks have started gluing together CPUs
-+ * with distinct architectural features; in some cases even creating SoCs where
-+ * user-visible instructions are available only on a subset of the available
-+ * cores. We try to address this by snapshotting the feature registers of the
-+ * boot CPU and comparing these with the feature registers of each secondary
-+ * CPU when bringing them up. If there is a mismatch, then we update the
-+ * snapshot state to indicate the lowest-common denominator of the feature,
-+ * known as the "safe" value. This snapshot state can be queried to view the
-+ * "sanitised" value of a feature register.
-+ *
-+ * The sanitised register values are used to decide which capabilities we
-+ * have in the system. These may be in the form of traditional "hwcaps"
-+ * advertised to userspace or internal "cpucaps" which are used to configure
-+ * things like alternative patching and static keys. While a feature mismatch
-+ * may result in a TAINT_CPU_OUT_OF_SPEC kernel taint, a capability mismatch
-+ * may prevent a CPU from being onlined at all.
-+ *
-+ * Some implementation details worth remembering:
-+ *
-+ * - Mismatched features are *always* sanitised to a "safe" value, which
-+ *   usually indicates that the feature is not supported.
-+ *
-+ * - A mismatched feature marked with FTR_STRICT will cause a "SANITY CHECK"
-+ *   warning when onlining an offending CPU and the kernel will be tainted
-+ *   with TAINT_CPU_OUT_OF_SPEC.
-+ *
-+ * - Features marked as FTR_VISIBLE have their sanitised value visible to
-+ *   userspace. FTR_VISIBLE features in registers that are only visible
-+ *   to EL0 by trapping *must* have a corresponding HWCAP so that late
-+ *   onlining of CPUs cannot lead to features disappearing at runtime.
-+ *
-+ * - A "feature" is typically a 4-bit register field. A "capability" is the
-+ *   high-level description derived from the sanitised field value.
-+ *
-+ * - Read the Arm ARM (DDI 0487F.a) section D13.1.3 ("Principles of the ID
-+ *   scheme for fields in ID registers") to understand when feature fields
-+ *   may be signed or unsigned (FTR_SIGNED and FTR_UNSIGNED accordingly).
-+ *
-+ * - KVM exposes its own view of the feature registers to guest operating
-+ *   systems regardless of FTR_VISIBLE. This is typically driven from the
-+ *   sanitised register values to allow virtual CPUs to be migrated between
-+ *   arbitrary physical CPUs, but some features not present on the host are
-+ *   also advertised and emulated. Look at sys_reg_descs[] for the gory
-+ *   details.
-  */
- 
- #define pr_fmt(fmt) "CPU features: " fmt
+Cheers,
+
+Michael
+
+On Fri, 10 Apr 2020 at 22:18, Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>
+> Hi Christian,
+>
+> Thank you for writing this!
+>
+> On 4/10/20 12:41 PM, Christian Brauner wrote:
+> > From: Christian Brauner <christian.brauner@ubuntu.com>
+> >
+> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> > ---
+> >  man2/clone.2 | 20 ++++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> >
+> > diff --git a/man2/clone.2 b/man2/clone.2
+> > index 39cec4c86..8d9aa9f99 100644
+> > --- a/man2/clone.2
+> > +++ b/man2/clone.2
+> > @@ -197,6 +197,7 @@ struct clone_args {
+> >      u64 tls;          /* Location of new TLS */
+> >      u64 set_tid;      /* Pointer to a \fIpid_t\fP array */
+> >      u64 set_tid_size; /* Number of elements in \fIset_tid\fP */
+> > +    u64 cgroup;       /* Target cgroup file descriptor for the child process */
+> >  };
+> >  .EE
+> >  .in
+> > @@ -448,6 +449,25 @@ Specifying this flag together with
+> >  .B CLONE_SIGHAND
+> >  is nonsensical and disallowed.
+> >  .TP
+> > +.BR CLONE_INTO_CGROUP " (since Linux 5.7)"
+> > +.\" commit ef2c41cf38a7559bbf91af42d5b6a4429db8fc68
+> > +By default, the child process will belong to the same cgroup as its parent.
+>
+> s/belong to/be placed in/
+>
+> s/cgroup/version 2 cgroup/
+>
+> > +If this flag is specified the child process will be created in a
+> > +different cgroup than its parent.
+> > +
+> > +When using
+> > +.RB clone3 ()
+> > +the target cgroup can be specified by setting the
+> > +.I cl_args.cgroup
+> > +member to the file descriptor of the target cgroup. The cgroup file
+>
+> We need to say something about how this file descriptor is
+> obtained. Is it by opening a directory in the v2 cgroup hierarchy?
+> With what flags? O_RDONLY? or is O_PATH also possible? Yes, these
+> are some rhetorical questions (I read your nice commit message);
+> these things need to be explicit in the manual page though.
+>
+> Also, your commit message mentions a nice list of use cases.
+> I think it would be well worth capturing those in a paragraph
+> in the manual page text.
+>
+> > +descriptor must refer to a cgroup in a cgroup v2 hierarchy
+> > +(see
+> > +.BR cgroup (2)).
+>
+> s/cgroup/cgroups/
+> s/2/7/
+>
+> > +
+> > +Note that all usual cgroup v2 process migration restrictions apply. See
+> > +.BR cgroup (2)
+>
+> s/cgroup/cgroups/
+> s/2/7/
+>
+> Thanks,
+>
+> Michael
+>
+> --
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
+
+
+
 -- 
-2.26.1.301.g55bc3eb7cb9-goog
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
