@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1261B2E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9DE1B2E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgDURj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgDURj2 (ORCPT
+        id S1728956AbgDURhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:37:54 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:49485 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgDURhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:39:28 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF178C0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d17so7106870pgo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=fLBHNTyEET/yN5Pbpw/2Hy4qmejsajrMOOJIyx+I7vQ=;
-        b=KxYeTqdE2Xi/vsj4nfFw22Mcod7tNepgLgc7ivj4J1gSCt6gZxeOxbavGFtnIwhVrF
-         cyCfz+vVg56J/H2lfYv4JDibjvABfMelTSj26Lt4JBQQzGDEmRatxGsJWjIIU3YsUBo/
-         IixeXzxsautP+LS5WbTP55rRehic1N2mklNfHQWqf4+57SoXzSYkWqnxqGCo3VgIqvUF
-         /ZjEFTlmUKmb93uKsH0LwJodvDRfDhFnc3IOD3VdrJ5fBY6u0B2jV9TGyO/2hRWGzRGe
-         6gZo4RJS2IPaLpr3f6baakWQgFNSfjtwToSPI+sf6lCDbb9xX89jrUVzdJUOp+xFQxt3
-         RcxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=fLBHNTyEET/yN5Pbpw/2Hy4qmejsajrMOOJIyx+I7vQ=;
-        b=Es1h+3VXnaBte6mDRHZ0ZUEBfrh0bBunBMvOrtsd2R95e/9a8bFt/AEU5mD8EkwsXD
-         GyJZPQ5J4o8Iwiu1QXXZPV6h7M3sgxTcNUQ3aLwTMKrj7wJ+8uTqMEFB8hxWSc8/ULtI
-         6y0h4Np4hcjw58jNqGXKsXFLV8vziWkOhS//EVIgMQxm+CrCNeFFOQAa3gJ1gSGrcGSP
-         /YtpJlGzzVrj/hFKU1X2Sts8VvVSwY1HCmbOoiqAmuLFXY6ru5tnkmXxlhPhNPcB7hf+
-         8u5dpvgIOtG9K4hQqi9FQj5UMCgroKb88AJt+5nayn3b0JglvF1QogX5CV+fCsqVp7QQ
-         LPdg==
-X-Gm-Message-State: AGi0PuZw1WDmu1fAccBRX9+BOqwcDNLaWNJdh6XywYYxv1wL6cnX5+ZB
-        Kd8MT1wi6c8UffAWB3UPXR0wLRKVQQIkaA==
-X-Google-Smtp-Source: APiQypKywrO7hvKPoqgv4/W+BCQ475nPawaOscHavB+UF8mMal6F4MZ01I4kbOku83ik8xRZ5a2M0w==
-X-Received: by 2002:a62:6807:: with SMTP id d7mr6229124pfc.296.1587490767094;
-        Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id f99sm3213045pjg.22.2020.04.21.10.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 10:39:26 -0700 (PDT)
-Subject: [PATCH] checkpatch: Allow users to specify the python command to use
-Date:   Tue, 21 Apr 2020 10:36:05 -0700
-Message-Id: <20200421173604.38979-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+        Tue, 21 Apr 2020 13:37:54 -0400
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 03LHbD8u012335;
+        Wed, 22 Apr 2020 02:37:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 03LHbD8u012335
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587490634;
+        bh=onymGhbUck19AZVdqs2MMUXq8sVb6RSuA8p4Ua6walc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=miZbySjAoZGsWn6F6etUcfv/Ib8DJrQCkBcrx4vDs/A6q9tm9SmR7wAqCo8Ea26Nu
+         RdFiwVYL6OwNVSEP0DOcq1ruM7rqyp+oH9RhoqmKWfq7Uh+9bgAwkPuUqsOQbnxjoX
+         O+Ac8cIDJjvPKkuGZbYSXYV/SdYPjF6pr1cPgoPGqcoYk5oOYRtkqtxOcH3xzZhShK
+         d2YUPJLyc8dGY8baaN5DclAi2aIqbrSE75MIzcqSC08ZC1B7MnE+W0GLpLAQJoz+Gs
+         y8KCC7F4VcMabHtzhT75V1s6rVdd2B8A69QeXO3RxCUC08AxzBXW0+T7yhTHh2mqpF
+         SZ00t3BFi/gHg==
+X-Nifty-SrcIP: [209.85.217.44]
+Received: by mail-vs1-f44.google.com with SMTP id 1so8941407vsl.9;
+        Tue, 21 Apr 2020 10:37:13 -0700 (PDT)
+X-Gm-Message-State: AGi0PubMadMVI2Tii8Ru0TMH38Vqp1iu4nkTitWPvWamBcapfegTebwC
+        PhPTSGfQvQwiP3IA3GO4k3/4Ii29dhn1D8/thk0=
+X-Google-Smtp-Source: APiQypKVTO7WNsW+ml/GS/8vAZR7f48di3kb94bDCzOQtw069Fm/nYwoVlcsTcMljs4Fs7q86fNhJZH6heQm60CJ8sg=
+X-Received: by 2002:a67:6e07:: with SMTP id j7mr10430712vsc.181.1587490632767;
+ Tue, 21 Apr 2020 10:37:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     apw@canonical.com, joe@perches.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:        linux-kernel@vger.kernel.org
+References: <20200229003731.2728-1-robh@kernel.org> <20200421100749.GA5429@pendragon.ideasonboard.com>
+ <CAK7LNARvPytUQoncngLe=s-TzQByQCXd64H99UgrW40=X34JyQ@mail.gmail.com>
+ <20200421110537.GC5983@pendragon.ideasonboard.com> <CAK7LNAQtfyqfbQx2ivg=sVdhxDH9ShVBa+bL-4sC7MU1N=y+cw@mail.gmail.com>
+ <20200421134654.GD5983@pendragon.ideasonboard.com>
+In-Reply-To: <20200421134654.GD5983@pendragon.ideasonboard.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 22 Apr 2020 02:36:36 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARcL5tfwFWE=EbW6pnpJKwfQY5n93WmFD0Ggw+EkSJ8mg@mail.gmail.com>
+Message-ID: <CAK7LNARcL5tfwFWE=EbW6pnpJKwfQY5n93WmFD0Ggw+EkSJ8mg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kbuild: Always validate DT binding examples
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+Hi Laurent,
 
-checkpatch.pl invokes spdxcheck.py using "python".  On my system that's
-Python 2, but I only have a git package for Python 3.  This patch adds a
-"--python=..." argument to checkpatch.pl that allows users to specify a
-command to invoke Python.  I've just given this a little smoke test:
-running it without any arguments still works, and running with
---python=python3 finds the git module.
+On Tue, Apr 21, 2020 at 10:47 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>   HOSTLD  scripts/dtc/dtc
+>   CHKDT   Documentation/devicetree/bindings/arm/psci.yaml
+> make[2]: execvp: /bin/sh: Argument list too long
+> make[2]: *** [/home/laurent/src/kernel/this_is_a_long_directory_name/linux/Documentation/devicetree/bindings/Makefile:38: Documentation/devicetree/bindings/processed-schema-examples.yaml] Error 127
+> make[1]: *** [/home/laurent/src/kernel/this_is_a_long_directory_name/linux/Makefile:1300: dt_binding_check] Error 2
+> make[1]: Leaving directory '/home/laurent/src/kernel/this_is_a_long_directory_name/linux/output/x86'
+> make: *** [Makefile:180: sub-make] Error 2
+>
+> It seems to only fail with out of tree builds (O=...). I expect that
+> failures will become more common the more YAML bindings we have, even
+> without long directory names.
 
----
-I'd considered reading some sort of environment variable, but searching
-for "getenv" in checkpatch.pl didn't reveal any other enviornment
-variables so I figured it'd be cleaner to avoid adding one.  I only
-invoke checkpatch.pl from wrapper scripts anyway, so it's the same for
-me.
----
- scripts/checkpatch.pl | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Indeed. This will be a common problem sooner or later.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index d64c67b67e3c..05ce52a2aaa9 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -65,6 +65,7 @@ my $allow_c99_comments = 1; # Can be overridden by --ignore C99_COMMENT_TOLERANC
- # git output parsing needs US English output, so first set backtick child process LANGUAGE
- my $git_command ='export LANGUAGE=en_US.UTF-8; git';
- my $tabsize = 8;
-+my $python = "python";
- 
- sub help {
- 	my ($exitcode) = @_;
-@@ -125,6 +126,7 @@ Options:
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-                              is a terminal ('auto'). Default is 'auto'.
-+  --python=COMMAND           Use the give command to invoke python.
-   -h, --help, --version      display this help and exit
- 
- When FILE is - read standard input.
-@@ -233,6 +235,7 @@ GetOptions(
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
- 	'nocolor'	=> \$color,	#keep old behaviors of -nocolor
-+	'python=s'      => \$python,
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
- ) or help(1);
-@@ -897,10 +900,10 @@ sub is_maintained_obsolete {
- sub is_SPDX_License_valid {
- 	my ($license) = @_;
- 
--	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
-+	return 1 if (!$tree || which($python) eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
- 
- 	my $root_path = abs_path($root);
--	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
-+	my $status = `cd "$root_path"; echo "$license" | $python scripts/spdxcheck.py -`;
- 	return 0 if ($status ne "");
- 	return 1;
- }
+Rob already suggested a solution.
+
+
+Another way is to use a pipe.
+
+See the following code in scripts/Makefile.modpost
+
+
+# Read out modules.order instead of expanding $(modules) to pass in modpost.
+# Otherwise, allmodconfig would fail with "Argument list too long".
+quiet_cmd_modpost = MODPOST $(words $(modules)) modules
+      cmd_modpost = sed 's/ko$$/o/' $(MODORDER) | $(MODPOST)
+
+
+The same issue happens for modpost
+because allmodconfig floods the command line.
+
+
 -- 
-2.26.1.301.g55bc3eb7cb9-goog
-
+Best Regards
+Masahiro Yamada
