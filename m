@@ -2,86 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5D71B21C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB251B21D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgDUIhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:37:45 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29758 "EHLO mga14.intel.com"
+        id S1728462AbgDUIjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUIhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:37:45 -0400
-IronPort-SDR: r29xraq78hBiIhTHoza3FL1uTErqPK4A0EdPgKDte7i4WhRSgedea6wXNA2S5Sadw8TJ0ZURd0
- XPCxg0WYpr5Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:37:44 -0700
-IronPort-SDR: CEHbwDgISfbBnr3/OcAdWR6P1aWQPaTA2mGHl9y6W7jCn4K1uZuWdDCyELQdmIw/me8+TRYmwq
- EpTe7YWZRMBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
-   d="scan'208";a="456688398"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Apr 2020 01:37:42 -0700
-Date:   Tue, 21 Apr 2020 16:38:12 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH 2/2] sched: Extract the task putting code from
- pick_next_task()
-Message-ID: <20200421083812.GE9721@chenyu-office.sh.intel.com>
-References: <cover.1587309963.git.yu.c.chen@intel.com>
- <7c1eab789cb4b53ec5f54644c089ce27ea14088a.1587309963.git.yu.c.chen@intel.com>
- <20200420183232.16b83374@gandalf.local.home>
- <jhjwo69lqcm.mognet@arm.com>
- <20200420231355.GU2483@worktop.programming.kicks-ass.net>
- <20200420222319.34f9f646@oasis.local.home>
- <CAKfTPtBG=Nu+76NywfD0rk-BmT=2egTd_9FaPU4oCP1D_eyuBQ@mail.gmail.com>
+        id S1726018AbgDUIje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:39:34 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E75D72084D;
+        Tue, 21 Apr 2020 08:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587458373;
+        bh=UMgsF+kC9TWV3s7/dU1Ph1gFI7QKIr6nayEkvVbuUck=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y0OaLO+IOqjutS4JakiH/lriNh0t/Jtrfxy+6rbgcttm5QLk+GDmpQKjGB4OOO4Z5
+         Ck/+ee6y7dfJzjoEA/DbdCL7zI/hzCRpKqegt4k4eenGJPqkGMeWEYz8qsdCmnPJhW
+         vX6M2k3UzPvrVQw2p9p2SRX3q1zfSTRiJ37g0/ME=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jQoRG-0058Vv-VB; Tue, 21 Apr 2020 09:39:31 +0100
+Date:   Tue, 21 Apr 2020 09:39:28 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alan Mikhak <alan.mikhak@sifive.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>, tglx@linutronix.de,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH] genirq/msi: Check null pointer before copying struct
+ msi_msg
+Message-ID: <20200421093928.4a600662@why>
+In-Reply-To: <CABEDWGxLKB68iknXtK8-4ke3wGW-6RKBnDEh6rFbBekLyawVOw@mail.gmail.com>
+References: <1587149322-28104-1-git-send-email-alan.mikhak@sifive.com>
+        <20200418122123.10157ddd@why>
+        <CY4PR12MB1271277CEE4F1FE06B71DDE8DAD60@CY4PR12MB1271.namprd12.prod.outlook.com>
+        <8a03b55223b118c6fc605d7204e01460@kernel.org>
+        <CABEDWGxLKB68iknXtK8-4ke3wGW-6RKBnDEh6rFbBekLyawVOw@mail.gmail.com>
+Organization: Approximate
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBG=Nu+76NywfD0rk-BmT=2egTd_9FaPU4oCP1D_eyuBQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: alan.mikhak@sifive.com, Gustavo.Pimentel@synopsys.com, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-pci@vger.kernel.org, tglx@linutronix.de, kishon@ti.com, paul.walmsley@sifive.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 09:42:26AM +0200, Vincent Guittot wrote:
-> On Tue, 21 Apr 2020 at 04:23, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 20 Apr 2020 09:08:27 -0700
+Alan Mikhak <alan.mikhak@sifive.com> wrote:
+
+Alan,
+
+> On Mon, Apr 20, 2020 at 2:14 AM Marc Zyngier <maz@kernel.org> wrote:
 > >
-> > On Tue, 21 Apr 2020 01:13:55 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > > > The 'finish' thing isn't too far from the truth; it's the last thing we
-> > > > need to do with the prev task (in terms of sched bookkeeping, I mean) -
-> > > > and in Chen's defence ISTR Peter suggested that name.
-> > > >
-> > > > Seeing as it's a "supercharged" put_prev_task(), I could live with the
-> > > > marginally shorter "put_prev_task_balance()".
+> > On 2020-04-18 16:19, Gustavo Pimentel wrote:  
+> > > Hi Marc and Alan,
+> > >  
+> > >> I'm not convinced by this. If you know that, by construction, these
+> > >> interrupts are not associated with an underlying MSI, why calling
+> > >> get_cached_msi_msg() the first place?
+> > >>
+> > >> There seem to be some assumptions in the DW EDMA driver that the
+> > >> signaling would be MSI based, so maybe someone from Synopsys
+> > >> (Gustavo?)
+> > >> could clarify that. From my own perspective, running on an endpoint
+> > >> device means that it is *generating* interrupts, and I'm not sure what
+> > >> the MSIs represent here.  
 > > >
-> > > What Valentin said; it's the last put we do before picking a new task.
-> > > Also, I don't like long names. That said, I'm open to short and
-> > > appropriate suggestions.
+> > > Giving a little context to this topic.
+> > >
+> > > The eDMA IP present on the Synopsys DesignWare PCIe Endpoints can be
+> > > configured and triggered *remotely* as well *locally*.
+> > > For the sake of simplicity let's assume for now the eDMA was
+> > > implemented
+> > > on the EP and that is the IP that we want to configure and use.
+> > >
+> > > When I say *remotely* I mean that this IP can be configurable through
+> > > the
+> > > RC/CPU side, however, for that, it requires the eDMA registers to be
+> > > exposed through a PCIe BAR on the EP. This will allow setting the SAR,
+> > > DAR and other settings, also need(s) the interrupt(s) address(es) to be
+> > > set as well (MSI or MSI-X only) so that it can signal through PCIe (to
+> > > the RC and consecutively the associated EP driver) if the data transfer
+> > > has been completed, aborted or if the Linked List consumer algorithm
+> > > has
+> > > passed in some linked element marked with a watermark.
+> > >
+> > > It was based on this case that the eDMA driver was exclusively
+> > > developed.
+> > >
+> > > However, Alan, wants to expand a little more this, by being able to use
+> > > this driver on the EP side (through
+> > > pcitest/pci_endpoint_test/pci_epf_test) so that he can configure this
+> > > IP
+> > > *locally*.
+> > > In fact, when doing this, he doesn't need to configure the interrupt
+> > > address (MSI or MSI-X), because this IP provides a local interrupt line
+> > > so that be connected to other blocks on the EP side.  
 > >
-> > I wont bikeshed this too much.
+> > Right, so this confirms my hunch that the driver is being used in
+> > a way that doesn't reflect the expected use case. Rather than
+> > papering over the problem by hacking the core code, I'd rather see
+> > the eDMA driver be updated to support both host and endpoint cases.
+> > This probably boils down to a PCI vs non-PCI set of helpers.
 > >
-> > Is the "finish" more appropriate with the other use cases that are
-> > coming. I do like that "put_prev_task_balance()" too.
+> > Alan, could you confirm whether we got it right?  
 > 
-> This name looks reasonnable
->
-Okay, I'll change it to this name.
+> Thanks Marc and Gustavo. I appreciate all your comments and feedback.
+> 
+> You both got it right. As Gustavo mentioned, I am trying to expand dw-edma
+> for additional use cases.
+> 
+> First new use case is for integration of dw-edma with pci-epf-test so the latter
+> can initiate dma transfers locally from endpoint memory to host memory over the
+> PCIe bus in response to a user command issued from the host-side command
+> prompt using the pcitest utility. When the locally-initiated dma
+> transfer completes
+> in this use case on the endpoint side, dw-edma issues an interrupt to the local
+> CPU on the endpoint side by way of a legacy interrupt and pci-epf-test issues
+> an interrupt toward the remote host CPU across the PCIe bus by way of legacy,
+> MSI, or possibly MSI-X interrupt.
+> 
+> Second new use case is for integration of dw-edma with pci_endpoint_test
+> running on the host CPU so the latter can initiate dma transfers locally from
+> host-side in response to a user command issued from the host-side command
+> prompt using the pcitest utility. This use case is for host systems that have
+> Synopsys DesignWare PCI eDMA hardware on the host side. When the
+> locally-initiated dma transfer completes in this use case on the host-side,
+> dw-edma issues a legacy interrupt to its local host CPU and pci-epf-test running
+> on the endpoint side issues a legacy, MSI, or possibly MSI-X interrupt
+> across the
+> PCIe bus toward the host CPU.
+> 
+> When both the host and endpoint sides have the Synopsys DesignWare PCI
+> eDMA hardware, more use cases become possible in which eDMA controllers
+> from both systems can be engaged to move data. Embedded DMA controllers
+> from other PCIe IP vendors may also be supported with additional dmaengine
+> drivers under the Linux PCI Endpoint Framework with pci-epf-test, pcitest, and
+> pci_endpoint_test suite as well as new PCI endpoint function drivers for such
+> applications that require dma, for example nvme or virtio_net endpoint function
+> drivers.
+> 
+> I submitted a recent patch [1] and [2] which Gustavo ACk'd to decouple dw-edma
+> from struct pci_dev. This enabled me to exercise dw-edma on some riscv host
+> and endpoint systems that I work with.
+> 
+> I will submit another patch to decouple dw-edma from struct msi_msg such
+> that it would only call get_cached_msi_msg() on the host-side in its
+> original use case with remotely initiated dma transfers using the BAR
+> access method.
+> 
+> The crash that I reported in __get_cached_msi_msg() is probably worth
+> fixing too. It seems to be low impact since get_cached_msi_msg()
+> seems to be called infrequently by a few callers.
+
+It isn't about the frequency of the calls, nor the overhead of this
+function. It is about the fundamental difference between a wired
+interrupt (in most case a level triggered one) and a MSI (edge by
+definition on PCI). By making get_cached_msi_msg() "safe" to be called
+for non-MSI IRQs, you hide a variety of design bugs which would
+otherwise be obvious, like the one you are currently dealing with.
+
+Your eDMA driver uses MSI by construction, and is likely to use the MSI
+semantics (edge triggering, coalescing, memory barrier). On the other
+hand, your use case is likely to have interrupts with very different
+semantics (level triggered, no barrier effect). Papering over these
+differences is not the way to go, I'm afraid.
+
+I would recommend that you adapt the driver to have a separate
+interrupt management for the non-MSI case, or at least not blindly use
+MSI-specific APIs when not using them.
 
 Thanks,
-Chenyu
-> >
-> > -- Steve
+
+	M.
+-- 
+Jazz is not dead. It just smells funny...
