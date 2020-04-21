@@ -2,289 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87FC1B3266
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8971B3259
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgDUVzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:55:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11705 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726055AbgDUVzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:55:22 -0400
-IronPort-SDR: WqL6g9l4FIoAJ3K6mjwGJ6WlLBWRlGUWQEDRxwntnIPuQ3mizy4+iLBnwdoNtmO6HxLcIEcC0J
- SM7++ISvRboA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:55:21 -0700
-IronPort-SDR: PSHy7yy9eTa9HV4sz3CJu1qGIEfHb1z0PQlm7f1cN2QRDZaK/yNKhkILu3Av9WZVa69dwQWKTR
- XKPXMyaIzoTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="456260934"
-Received: from mnchalux-mobl2.gar.corp.intel.com (HELO localhost) ([10.252.44.234])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Apr 2020 14:55:16 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     akpm@linux-foundation.org, dave.hansen@intel.com,
-        sean.j.christopherson@intel.com, nhorman@redhat.com,
-        npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
-        cedric.xing@intel.com, puiterwijk@redhat.com,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v29 20/20] docs: x86/sgx: Document SGX micro architecture and kernel internals
-Date:   Wed, 22 Apr 2020 00:53:16 +0300
-Message-Id: <20200421215316.56503-21-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+        id S1726636AbgDUVym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:54:42 -0400
+Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:36622
+        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726606AbgDUVyd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 17:54:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587506072; bh=LIZ+w6k1ownPO2wlWYc5nTuNJh/NXt4NJ/uchHZY8dM=; h=Subject:From:To:References:Date:In-Reply-To:From:Subject; b=RhuXK7Nss1Aw+l4fQ3YclAsEP8hW60S4DzAO5IXvGnS0aCAVV6LkJABrQTuJ+DRjKWnPxhmbCWdihTCYjUokx4B0Qo8lqUy1po9ROU6EaCPQApg9gaT57wisamfA2/rc68OYio6ge0pVIt/6RsTxVY01VmlTunQTuSa/wb4eAusnwS/b2u5s6N8jzFQND9R6teZYV2OWwA79OUmfvUs9pWjXdyLxT+iECT0QZw4S72fFFrQrVfCgiUX+CkSr0ug/H6OFvCjnjhkNkl5SnEWww5R/acLRELAvZOrdY5XvHB7GFDPBvZNZ94+EIbPtB15kTWphXqS9RuUN9n+KBYZ1yA==
+X-YMail-OSG: ncDvGvMVM1nM4VWPfwKZpTIYswTathy0T04aSKWs0gTMAjZ8ySg4N52shGhwVjN
+ NPSOc19a1Tt.JJvzhMhU4.o22hCB.asliOlxRF1nTXO1TNWGURAFDTtVQ3Cxsk2hefgfh3mVVk6f
+ O6B6oJg9l_j9gemlt2dBLOYqf999bWao2JG37gLZ5n5uWFZDgrQ0lDTBbiLbSqljq40g5GTSDSYH
+ U3oiPi6k5m6NA6md1tBPWtIFQE8qOXLFX0MZ12TOtUT6eJfwlZWqR6heqVMjRApUw2KsF46sW9ly
+ XfbLOXIFNESRAR78r_SDBpRWaBAu2CYFOVcx4NuQP8lBSZgolEmkoU07i3HFi.Xx6_7WvPHf8ndy
+ Mkr59oKSHZzI2OZyG1TjFtRH2BJsVLlNEO0i7NGWPeyf3wAyBv8UgGnXooxVJSmZzr2D0iXEhFhc
+ oFWhaACY6ga..IGYAmgC1GJ8rXzwpv5RnfFETYXn4bN8rihFkigxJNoPDbvaXSalny1wJ95sbUe4
+ i_puxxS1_gDENilUr7EgbihoGxFZubpwhujQe4Cj0DJWxyqlR4fq5sbJWm.NcQtAgZmpsmIceIXL
+ w2Us_yw_UeHGpGnlMe9Y8dZIZp5ycSpKMjpJ1l_gk4FitISVv2.Drs7gygpensHANXvwUxH1kqCH
+ mTpxE4n4oO2KPxdbrSDjdtSo_p1LU0Z4nYaJIsfONaHH3eXowc7lN5SElNlKqZsLg3kCxtXwu8Pt
+ xstoeBWBtEUF.XtXoccGwN0vwyjwVZ3v3s.pupwFuLpWjaPP8kLjcG7Ofj7K02HMtTmpf.JLuaIC
+ 5ogVuHf9ijsjRFhcUDKDjmOzMHG1y2uhuq721PIXq4TrVidvPg3QU_FcFV33TEGXsQ6P6SJlez.5
+ Wyt8TwFZTUBPrSG0U51y0z1RowN4uY6e_Ac7HIimr8__AMhHpg9NKrcnGKZZTwqUXrsT1mk4cqqu
+ JRetwwsy1MD1d8Wv.EK8NBwaZ6txt9QlOeaGR8tXBd9qXa_HXO845mgP8szndlBpPjmXknc3J8RC
+ x_jLqQy_UGoqzv3zBKtQK46R4QUbpfjYgEq9.ptNyr3.46rSc3zuOZQ3I0xnFAgGEvrayJFU9L7L
+ O8sTIUh7r_vCpD6WoPi1aHThJ1p8sP8AWEafh2kvDVG4PJLbvEHS.32mDKtIfkFpeozverJy3ZE0
+ FAj9u_2ebnFQDARuzXNb4QzmyDOP8ZefsdBQDcjqwPmIRgPjAl6QtPJWvIU7K6vjNVr6mLnvDGex
+ LpkprubsfcUuYvtLO.T_MKyGg3OC15MAboGR5bB5UNYcH_2kR6rdBkrtkdkxbgWz1EYwEMJJv99x
+ rxqlNTAayxAfptRjoaJstydsl5pwjfP1AcIC1yZkwJxID2RFouGJtERpqxG2g97ZU0MfX3ktlYAm
+ Z5ka.EOOHB5bEnwv7PEQ7U1j8GQH6bUvh_DeJN1.ISg--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Apr 2020 21:54:32 +0000
+Received: by smtp423.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b010878ddf1b67f43e77c2a22313e6d5;
+          Tue, 21 Apr 2020 21:54:28 +0000 (UTC)
+Subject: Re: [lss-pc] [PATCH] Documentation: LSM: Correct the basic LSM
+ description
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     Linux Security Summit Program Committee 
+        <lss-pc@lists.linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+References: <4c053d72-2d58-612f-6d6b-f04226d0181e.ref@schaufler-ca.com>
+ <4c053d72-2d58-612f-6d6b-f04226d0181e@schaufler-ca.com>
+Autocrypt: addr=casey@schaufler-ca.com; keydata=
+ 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
+ abzjfg==
+Message-ID: <94baec8d-7d8e-6ec3-2c87-ff1a0b15be3c@schaufler-ca.com>
+Date:   Tue, 21 Apr 2020 14:54:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=a
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c053d72-2d58-612f-6d6b-f04226d0181e@schaufler-ca.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.15739 hermes Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Intel SGX kernel architecture. The fine-grained micro
-architecture details can be looked up from Intel SDM Volume 3D.
+On 4/21/2020 2:48 PM, Casey Schaufler wrote:
 
-Cc: linux-doc@vger.kernel.org
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- Documentation/x86/index.rst |   1 +
- Documentation/x86/sgx.rst   | 206 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 207 insertions(+)
- create mode 100644 Documentation/x86/sgx.rst
+> This is a first pass at updating the basic documentation on
+> Linux Security Modules (LSM), which is frighteningly out of date.
+> Remove untrue statements about the LSM framework. Replace them
+> with true statements where it is convenient to do so. This is
+> the beginnig of a larger effort to bring the LSM documentation
+> up to date.
+>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index a8de2fbc1caa..971f30a7d166 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -31,3 +31,4 @@ x86-specific Documentation
-    usb-legacy-support
-    i386/index
-    x86_64/index
-+   sgx
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-new file mode 100644
-index 000000000000..9609a3409ad1
---- /dev/null
-+++ b/Documentation/x86/sgx.rst
-@@ -0,0 +1,206 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============
-+Architecture
-+============
-+
-+*Software Guard eXtensions (SGX)* is a set of instructions that enable ring-3
-+applications to set aside private regions of code and data. These regions are
-+called enclaves. An enclave can be entered to a fixed set of entry points. Only
-+a CPU running inside the enclave can access its code and data.
-+
-+The support can be determined by
-+
-+	``grep sgx /proc/cpuinfo``
-+
-+Enclave Page Cache
-+==================
-+
-+SGX utilizes an *Enclave Page Cache (EPC)* to store pages that are associated
-+with an enclave. It is contained in a BIOS reserved region of physical memory.
-+Unlike pages used for regular memory, pages can only be accessed outside the
-+enclave for different purposes with the instructions **ENCLS**, **ENCLV** and
-+**ENCLU**.
-+
-+Direct memory accesses to an enclave can be only done by a CPU executing inside
-+the enclave. An enclave can be entered with **ENCLU[EENTER]** to a fixed set of
-+entry points. However, a CPU executing inside the enclave can do outside memory
-+accesses.
-+
-+Page Types
-+----------
-+
-+**SGX Enclave Control Structure (SECS)**
-+   Enclave's address range, attributes and other global data are defined
-+   by this structure.
-+
-+**Regular (REG)**
-+   Regular EPC pages contain the code and data of an enclave.
-+
-+**Thread Control Structure (TCS)**
-+   Thread Control Structure pages define the entry points to an enclave and
-+   track the execution state of an enclave thread.
-+
-+**Version Array (VA)**
-+   Version Array pages contain 512 slots, each of which can contain a version
-+   number for a page evicted from the EPC.
-+
-+Enclave Page Cache Map
-+----------------------
-+
-+The processor tracks EPC pages via the *Enclave Page Cache Map (EPCM)*.  EPCM
-+contains an entry for each EPC page, which describes the owning enclave, access
-+rights and page type among the other things.
-+
-+The permissions from EPCM is consulted if and only if walking the kernel page
-+tables succeeds. The total permissions are thus a conjunction between page table
-+and EPCM permissions.
-+
-+For all intents and purposes the SGX architecture allows the processor to
-+invalidate all EPCM entries at will, i.e. requires that software be prepared to
-+handle an EPCM fault at any time. The contents of EPC are encrypted with an
-+ephemeral key, which is lost on power transitions.
-+
-+EPC management
-+==============
-+
-+EPC pages do not have ``struct page`` instances. They are IO memory from kernel
-+perspective. The consequence is that they are always mapped as shared memory.
-+Kernel defines ``/dev/sgx/enclave`` that can be mapped as ``MAP_SHARED`` to
-+define the address range for an enclave.
-+
-+EPC Over-subscription
-+=====================
-+
-+When the amount of free EPC pages goes below a low watermark the swapping thread
-+starts reclaiming pages. The pages that do not have the **A** bit set are
-+selected as victim pages.
-+
-+Launch Control
-+==============
-+
-+SGX provides a launch control mechanism. After all enclave pages have been
-+copied, kernel executes **ENCLS[EINIT]**, which initializes the enclave. Only
-+after this the CPU can execute inside the enclave.
-+
-+This leaf function takes an RSA-3072 signature of the enclave measurement and an
-+optional cryptographic token. Linux does not take advantage of launch tokens.
-+The instruction checks that the signature is signed with the key defined in
-+**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
-+enclave is allowed to be executed.
-+
-+MSRs can be configured by the BIOS to be either readable or writable. Linux
-+supports only writable configuration in order to give full control to the kernel
-+on launch control policy. Readable configuration requires the use of previously
-+mentioned launch tokens.
-+
-+The current kernel implementation supports only writable MSRs. The launch is
-+performed by setting the MSRs to the hash of the enclave signer's public key.
-+The alternative would be to have *a launch enclave* that would be signed with
-+the key set into MSRs, which would then generate launch tokens for other
-+enclaves. This would only make sense with read-only MSRs, and thus the option
-+has been discarded.
-+
-+Attestation
-+===========
-+
-+Local Attestation
-+-----------------
-+
-+In local attestation an enclave creates a **REPORT** data structure with
-+**ENCLS[EREPORT]**, which describes the origin of an enclave. In particular, it
-+contains a AES-CMAC of the enclave contents signed with a report key unique to
-+each processor. All enclaves have access to this key.
-+
-+This mechanism can also be used in addition as a communication channel as the
-+**REPORT** data structure includes a 64-byte field for variable information.
-+
-+Remote Attestation
-+------------------
-+
-+For remote attestation (or provisioning) there are schemes available:
-+
-+* EPID scheme, which requires the use of Intel managed attestation service.
-+* ECDSA scheme, which allows a 3rd party to act as an attestation service.
-+
-+Intel has released an open source *Quoting Enclave (QE)* and *Provisioning
-+Certification Enclave (PCE)* for the ECDSA based scheme. A PCE is used to
-+certify the locally used QE's.
-+
-+Intel also provides a proprietary of the PCE. This is a necessary when one
-+needs to be able to prove that an enclave is running on real hardware. To
-+achieve this the enclave needs to be rooted to the Intel's PKI, which obviously
-+cannot be exposed to 3rd parties.
-+
-+Both schemes require **ATTRIBUTES.PROVISIONKEY** but only EPID scheme uses the
-+on-die provisioning key. This privilege should be under normal conditions given
-+only to QE's because uncontrolled use of attestation could be used by malware
-+for benefit.
-+
-+Encryption engines
-+==================
-+
-+In order to conceal the enclave data while it is out of the CPU package,
-+memory controller has to be extended with an encryption engine. MC can then
-+route incoming requests coming from CPU cores running in enclave mode to the
-+encryption engine.
-+
-+In CPUs prior to Icelake, Memory Encryption Engine (MEE) is used to
-+encrypt pages leaving the CPU caches. MEE uses a n-ary Merkle tree with root in
-+SRAM to maintain integrity of the encrypted data. This provides integrity and
-+anti-replay protection but does not scale to large memory sizes because the time
-+required to update the Merkle tree grows logarithmically in relation to the
-+memory size.
-+
-+CPUs starting from Icelake use Total Memory Encryption (TME) in the place of
-+MEE. TME throws away the Merkle tree, which means losing integrity and
-+anti-replay protection but also enables variable size memory pools for EPC.
-+Using this attack for benefit would require an interposer on the system bus.
-+
-+Backing storage
-+===============
-+
-+Backing storage is shared and not accounted. It is implemented as a private
-+shmem file. Providing a backing storage in some form from user space is not
-+possible - accounting would go to invalid state as reclaimed pages would get
-+accounted to the processes of which behalf the kernel happened to be acting on.
-+
-+Access control
-+==============
-+
-+`mmap()` permissions are capped by the enclave permissions. A direct
-+consequence of this is that all the pages for an address range must be added
-+before `mmap()` can be applied. Effectively an enclave page with minimum
-+permission in the address range sets the permission cap for the mapping
-+operation.
-+
-+Usage Models
-+============
-+
-+Shared Library
-+--------------
-+
-+Sensitive data and the code that acts on it is partitioned from the application
-+into a separate library. The library is then linked as a DSO which can be loaded
-+into an enclave. The application can then make individual function calls into
-+the enclave through special SGX instructions. A run-time within the enclave is
-+configured to marshal function parameters into and out of the enclave and to
-+call the correct library function.
-+
-+Application Container
-+---------------------
-+
-+An application may be loaded into a container enclave which is specially
-+configured with a library OS and run-time which permits the application to run.
-+The enclave run-time and library OS work together to execute the application
-+when a thread enters the enclave.
-+
-+References
-+==========
-+
-+"Intel® Software Guard Extensions: EPID Provisioning and Attestation Services"
-+   https://software.intel.com/sites/default/files/managed/57/0e/ww10-2016-sgx-provisioning-and-attestation-final.pdf
-+
-+"Supporting Third Party Attestation for Intel® SGX with Intel® Data Center
-+Attestation Primitives"
-+   https://software.intel.com/sites/default/files/managed/f1/b8/intel-sgx-support-for-third-party-attestation.pdf
--- 
-2.25.1
+
+Need I say ... oops.
 
