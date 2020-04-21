@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556591B2845
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FB71B284C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgDUNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728865AbgDUNoI (ORCPT
+        id S1729067AbgDUNoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:44:19 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:46805 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728745AbgDUNoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:44:08 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E183C061A10;
-        Tue, 21 Apr 2020 06:44:08 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k6so404443iob.3;
-        Tue, 21 Apr 2020 06:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sPfBvq/n3vTz/kJ2DUkeMcpcV+Na4dhwXrNFcf9zH4c=;
-        b=fQyXbJZ4IBEWkP/bdhtRwYUJUyQ0QJnF1Bb8f3of8yxd8ucr8UU+FTlvyoiYxIWzxo
-         NQKQCkVQWRv76mDcDKhDZEfFfi6kYNzbPwa4HgPt8JvMoUxE3KpSFqDrZvK41gKybpJG
-         zaxKqxrkiLVmaK+94om70VgXPxkKyqWCnPqxEtgyaL1RLXcWyvmWw7wfVRqQmjdS43er
-         iMxuXXrsCwoFS6hAlymsfQfTCsXbO0HMd7M6M6CNNyk7t/Kjk2cOCszE7sfqEjBSZXW1
-         g1m21BNDn5VbS1z2vfpxWNC63rg7k/IjjF4j680C9GslztsSyKI7MOeXuHNz3AjuXc5r
-         I89Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sPfBvq/n3vTz/kJ2DUkeMcpcV+Na4dhwXrNFcf9zH4c=;
-        b=JtErP1bjzSuaWY+q4QTZyXerekqyJ2Ln8/kDFCTtOIcOc5Si4WKxPVlvTpFmmZT48P
-         jPsOycABMCm/cJYrP00jmSfi0YfDwXfBzDW+3IjyKgU9yyXLDu3smISMAdgjFNoQFJpU
-         D65J5mnicZ5ryOePAYFZHfWMKzQNv5o/V/LQB1IeQIiiwmCqFiETTA/nhZAqcGJfgkDb
-         u/3vuoa5uTbBfz9tFrm8BqLjSi234i3JXdavNpdwnaAlo536B/22QDZkvt24NmxSIj0h
-         mfaQnkzadGH+rs/1/NV1e8qP8xX7MFyNQNflM9PPkvyr36OfpjL/rpYnNx1UCvMB6i3Y
-         DYlw==
-X-Gm-Message-State: AGi0Puai63P1uw6ezGxz7WZlBMNGT+Vn4rtqfHXopF2NMWYH9AHGKcoC
-        hvdCjDgb/yU6CMtPbl2C4WP5bhhFH+yimj3O4p8=
-X-Google-Smtp-Source: APiQypImmMB49AgGl1BnBc0wcKFgqit9q6XYYifrmzA6W040jedeCZWXN8p6VY69AT0qDUZKGUxJdWq4qHdmn/56g6U=
-X-Received: by 2002:a05:6602:2cc4:: with SMTP id j4mr20392563iow.144.1587476647207;
- Tue, 21 Apr 2020 06:44:07 -0700 (PDT)
+        Tue, 21 Apr 2020 09:44:18 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id QtC4jlYNblKa1QtC7j15or; Tue, 21 Apr 2020 15:44:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1587476655; bh=nzCZ64gPxIoM/j+JyeXGQ/ySy+plAMu9pIDfwkwYt6c=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=MGvCzKGiVXtR3xzMsKksuQC2abAPuOsl2d2sj01xJtAkH2mGZl6f9J+LipDrhUCFi
+         fq+M033mKeIBN/bzdy5L+czBCVqGYxJalyfsrZIG1ZbkJAboJnZSKopzP/pp+uq4ZX
+         SVrwC3v9uMwJJP99JV+o7mTCn2s4xiog/QixFL3SkaX3vT4opaUS2t71JNKe/ml652
+         tnwmcg9wzldpnL2jMIV2aFJHPo+HgMjghCvvB27bX4Z9xGJ2CbXUkKMh8IctY9sG57
+         B/2AmLr7CN3tqPwJSZPI++qWO5ahCzVxD23ys1C2rbMflHA7krh4qqPcqLPGjwzckq
+         eTOxTjOQxnMhQ==
+Subject: Re: [PATCH v4] dt-bindings: rockchip-vpu: Convert bindings to
+ json-schema
+To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
+Cc:     ezequiel@collabora.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, mark.rutland@arm.com,
+        robh@kernel.org
+References: <20200326191343.1989-1-ezequiel@collabora.com>
+ <12f6d7cf-6af6-4f54-3188-65e73b703a72@gmail.com>
+ <9328212d-139f-6a0e-7d0c-3a5529a392f2@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <30717aac-f589-ffbd-aefb-07c2934f7a2e@xs4all.nl>
+Date:   Tue, 21 Apr 2020 15:44:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200416162715.45846-1-ldufour@linux.ibm.com> <87k129gdx8.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87k129gdx8.fsf@mpe.ellerman.id.au>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Tue, 21 Apr 2020 23:43:56 +1000
-Message-ID: <CAOSf1CF2YEG1U_1XP_Vvk3Bn1RCiNa1DAKEbemWu00JimoPsUQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: PPC: Book3S HV: read ibm,secure-memory nodes
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Paul Mackerras <paulus@samba.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9328212d-139f-6a0e-7d0c-3a5529a392f2@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFOD3+wi8uRwj+8VMeKVJAVRmyaCf97nXh7DTYhJ/GTwnfn03wdMnQ2R6vwD2I2C30SNPt/yaF2SYIz2mc8V60m9aOERfxj+viHcuNDmX49kufGAyme4
+ jBztzH57g3sFqQRuyxXEqwOWEsd0WEt3+jmlj0d7nLVV65O5lyqM5wUCkwNEJ0XMLt99HovguvLNV59IHn3rbKjIiEqP1gcS8ufKXbrfChZYzkQIRYCH59kN
+ ddpzFS70DPlLbjMJqNZ8T0HheZVn5xGR8I05J5FbJzkvHxLpt8RI2RGGWYzR8v6f9P4xWdv3ZKq3V54jq0CHyR+lMIszB9qhNpzIfKYGcnuC/IAAMf2DkVkG
+ ie6RUDNMi5+rrv3bqy2YyWDpoW3DSN6yLERrBy/TK9jIK1rILzwPdD/xqhJfdwu+i42mp0b+38cdCbwkYiRNTO9/S040gWLnoIJ7fxPtFKk1sQKcX+0=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:37 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Hi Laurent,
->
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
-> > The newly introduced ibm,secure-memory nodes supersede the
-> > ibm,uv-firmware's property secure-memory-ranges.
->
-> Is either documented in a device tree binding document anywhere?
->
-> cheers
->
-> > Firmware will no more expose the secure-memory-ranges property so first
-> > read the new one and if not found rollback to the older one.
+On 21/04/2020 15:19, Johan Jonker wrote:
+> Hi,
+> 
+> Question for the media maintainers Hans & Co. :
+> 
+> What's nxp,imx8mq-vpu.yaml doing under rga?
+> Why is rockchip-vpu.yaml inserted under rga instead of vpu?
 
-There's some in Ryan's UV support series for skiboot:
+That's clearly wrong. Probably my fault when trying to resolve
+a conflict.
 
-https://patchwork.ozlabs.org/project/skiboot/patch/20200227204023.22125-2-grimm@linux.ibm.com/
+Ezequiel, can you make a patch fixing this? It's probably a good
+idea if you double-check these entries to make sure I didn't inadvertently
+introduce more mistakes.
 
-...which is also marked RFC. Cool.
+Regards,
 
-Oliver
+	Hans
+
+> 
+> Johan
+> 
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index f0e7b4d17fcc..0cfd86594b0b 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -14471,7 +14471,8 @@ M:	Jacob Chen <jacob-chen@iotwrt.com>
+>>  M:	Ezequiel Garcia <ezequiel@collabora.com>
+>>  L:	linux-media@vger.kernel.org
+>>  S:	Maintained
+>> -F:	Documentation/devicetree/bindings/media/rockchip-rga.txt
+>> +F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+>> +F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+>>  F:	drivers/media/platform/rockchip/rga/
+> 
+> HANTRO VPU CODEC DRIVER
+> M:	Ezequiel Garcia <ezequiel@collabora.com>
+> M:	Philipp Zabel <p.zabel@pengutronix.de>
+> L:	linux-media@vger.kernel.org
+> L:	linux-rockchip@lists.infradead.org
+> S:	Maintained
+> F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> F:	Documentation/devicetree/bindings/media/rockchip-vpu.txt
+> F:	drivers/staging/media/hantro/
+> 
+> ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
+> M:	Jacob Chen <jacob-chen@iotwrt.com>
+> M:	Ezequiel Garcia <ezequiel@collabora.com>
+> L:	linux-media@vger.kernel.org
+> S:	Maintained
+> F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> F:	drivers/media/platform/rockchip/rga/
+> 
+
