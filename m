@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC211B30F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 22:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2E21B3072
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgDUUIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 16:08:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55392 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgDUUIh (ORCPT
+        id S1726117AbgDUTfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 15:35:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59471 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726012AbgDUTfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 16:08:37 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LK2bFe134049;
-        Tue, 21 Apr 2020 20:08:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=X+//GjRlupUmIYIFzP0Ctl779RKP1FxieoOD/8PQKf8=;
- b=NFQwfC7R605RcIgKo5Bh4sZ43bethE5EefhF9TffLBQgJfOqa4IJ6QtNFnyOIofTqFeF
- QqLgeMAV+Hbz3nElDNa5aropDYZnBfxXIarOP1OA7o0jMjnDjorcSnC0/ytIVSjhtc/T
- C6C9YApg1Xq7QhZZCqoEU8KWvabxnkKFo13OixJyPMTDh1dgVw79bB4zT9kAbVSN8SW6
- se3r8m47IdbxR1FWo6+j1GB2aT00imuiA2jUi79nUTItAhJ0akBRIjXlqpe1yzJRjUB3
- bWnRqD4tGr/OtMmdLkMbbCjNymlIlxZX443+BmSxefAfFaHaEgtFKThkb+Dz7WmPDXyA Ug== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30fsgky4a5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Apr 2020 20:08:21 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03LK2Vee128225;
-        Tue, 21 Apr 2020 20:08:21 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 30gbber9dh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Apr 2020 20:08:21 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03LK8JCT006680;
-        Tue, 21 Apr 2020 20:08:19 GMT
-Received: from mihai.localdomain (/10.153.73.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 Apr 2020 13:08:19 -0700
-From:   Mihai Carabas <mihai.carabas@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2] x86: microcode: fix return value for microcode late loading
-Date:   Tue, 21 Apr 2020 22:28:38 +0300
-Message-Id: <1587497318-4438-1-git-send-email-mihai.carabas@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1586858135-29337-1-git-send-email-mihai.carabas@oracle.com>
-References: <1586858135-29337-1-git-send-email-mihai.carabas@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- suspectscore=1 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004210150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- spamscore=0 bulkscore=0 phishscore=0 suspectscore=1 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004210150
+        Tue, 21 Apr 2020 15:35:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587497707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RDbNCpaQ63uuID2gepUGZxv4j3nJ6Y3J26CZxvwRo5k=;
+        b=PWAo4xkzu6z29Jox/HJYN/892kVtmn4xyQqMKfFOXAiS3YMtFiBeYy/JMGMfL4Sa/izDzR
+        hVUfqa+Z5kYuzK6y/+JtcnmaAz1TWaDW2VE9xt7ysUavrNZfl3vAVJPwRdd2OcnvvRAMyc
+        Xgk6kkzgiK20nBW75m8AZpFyJNB5SU0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-3wgr-Z2eMkSi9uCIkh26bQ-1; Tue, 21 Apr 2020 15:28:56 -0400
+X-MC-Unique: 3wgr-Z2eMkSi9uCIkh26bQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 178FF8024D3;
+        Tue, 21 Apr 2020 19:28:55 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-114-241.rdu2.redhat.com [10.10.114.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A37D7B3A8C;
+        Tue, 21 Apr 2020 19:28:49 +0000 (UTC)
+Subject: Re: [PATCH] blk-iocost: Fix systemtap error on iocost_ioc_vrate_adj
+To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>
+References: <20200421130755.18370-1-longman@redhat.com>
+ <20200421105948.4f5a36f5@gandalf.local.home>
+ <22ccb042-7d6f-3717-4024-9ec094b2f363@redhat.com>
+ <20200421151649.11300568@gandalf.local.home>
+ <3a747a8f-629e-f9d2-088d-963791d99486@kernel.dk>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <7faa2e43-5b3b-fe36-2f51-3791490048fb@redhat.com>
+Date:   Tue, 21 Apr 2020 15:28:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <3a747a8f-629e-f9d2-088d-963791d99486@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value from stop_machine might not be consistent.
+On 4/21/20 3:17 PM, Jens Axboe wrote:
+> On 4/21/20 1:16 PM, Steven Rostedt wrote:
+>> On Tue, 21 Apr 2020 14:36:29 -0400
+>> Waiman Long <longman@redhat.com> wrote:
+>>
+>>>> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>>>>
+>>>> -- Steve
+>>>>  
+>>> OK, will send a v2 patch to update the commit log. Thanks for the review.
+>> I think Jens already took this patch.  Doesn't sound like a v2 is needed.
+> I did, with modified subject line.
+>
+>
+Oh, I see. Thanks for taking that.
 
-stop_machine_cpuslocked returns:
-- zero if all functions have returned 0
-- a non-zero value if at least one of the functions returned
-a non-zero value
-
-There is no way to know if it is negative or positive. So make
-__reload_late return 0 on success, or negative otherwise.
-
-Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
----
-Changes in v2:
-- do not print anything on UCODE_NFOUND as microcode not found
-is not an error
-
- arch/x86/kernel/cpu/microcode/core.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 7019d4b..a2ae3da 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -545,8 +545,7 @@ static int __wait_for_cpus(atomic_t *t, long long timeout)
- /*
-  * Returns:
-  * < 0 - on error
-- *   0 - no update done
-- *   1 - microcode was updated
-+ *   0 - success (no update done or microcode was updated)
-  */
- static int __reload_late(void *info)
- {
-@@ -576,8 +575,8 @@ static int __reload_late(void *info)
- 	if (err > UCODE_NFOUND) {
- 		pr_warn("Error reloading microcode on CPU %d\n", cpu);
- 		ret = -1;
--	} else if (err == UCODE_UPDATED || err == UCODE_OK) {
--		ret = 1;
-+	} else if (err == UCODE_NFOUND) {
-+		ret = -1;
- 	}
- 
- wait_for_siblings:
-@@ -608,7 +607,7 @@ static int microcode_reload_late(void)
- 	atomic_set(&late_cpus_out, 0);
- 
- 	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
--	if (ret > 0)
-+	if (ret == 0)
- 		microcode_check();
- 
- 	pr_info("Reload completed, microcode revision: 0x%x\n", boot_cpu_data.microcode);
-@@ -649,7 +648,7 @@ static ssize_t reload_store(struct device *dev,
- put:
- 	put_online_cpus();
- 
--	if (ret >= 0)
-+	if (ret == 0)
- 		ret = size;
- 
- 	return ret;
--- 
-1.8.3.1
+Cheers,
+Longman
 
