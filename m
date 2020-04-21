@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E321B29C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEC31B29CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbgDUObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:31:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43650 "EHLO mail.kernel.org"
+        id S1729289AbgDUObg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:31:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728807AbgDUObN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729065AbgDUObN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Apr 2020 10:31:13 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50580206D6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 51592206D9;
         Tue, 21 Apr 2020 14:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587479472;
-        bh=Ps99F9PFRvMCZhRBvdlxLhbqU4z1Ty16TYpU4e80mKw=;
+        bh=luwbTwtGXShN7C9OMTgXycWd4bY3m03E8h+UHSYfI8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lbvt2f3iR5vvXQqXyWG3Z2PluydtylOqj8fvgiYB1fJjt7kjGlfbzAPL2cPOPHQhw
-         OFZgprygdFYs9wC8puykhrHu2jMYeAanQUkxcsqYv2Acuipb8mNgdLh5zA4IImulNF
-         9ecFUtsguYTDbgkXrZcp80eCYIypF6g5FnoK1UpA=
+        b=t+FjEv2Y2e1X30oclruApi8lz3QJVKH1rct9fNFI6W0G+Rfez8Cs56jg1TgA6jAzc
+         QdgfAvWTHGmU967+PedleY2r0goaSr/VSjXqNtnFDJGPeVUYWs/HWCb1L8YS73Skyi
+         VdGVLsqPss26dwfjnyjnADbWSBSVSO4cVue6vEUo=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jQtva-00BkqQ-HZ; Tue, 21 Apr 2020 16:31:10 +0200
+        id 1jQtva-00BkqU-IK; Tue, 21 Apr 2020 16:31:10 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 3/5] scripts: sphinx-pre-install: change recommendation text if venv exists
-Date:   Tue, 21 Apr 2020 16:31:07 +0200
-Message-Id: <bcf79d0399a1c3444ca938dcdce599c3273980ab.1587478901.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 4/5] scripts: sphinx-pre-install: fix a bug when using with venv
+Date:   Tue, 21 Apr 2020 16:31:08 +0200
+Message-Id: <aa622ff71bebf6960fc0262fb90e7ebc7a999a02.1587478901.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1587478901.git.mchehab+huawei@kernel.org>
 References: <cover.1587478901.git.mchehab+huawei@kernel.org>
@@ -43,87 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If one is running a Sphinx version older than what's recommended,
-but there's already a newer working virtual env, change the
-text, as it is just a matter of switching to the new venv, instead
-of creating a new one from scratch.
+When python3 creates a venv, it adds python into it!
+
+This causes any upgrade recommendation to look like this:
+
+	/devel/v4l/docs/sphinx_1.7.9/bin/python3 -m venv sphinx_2.4.4
+	. sphinx_2.4.4/bin/activate
+	pip install -r ./Documentation/sphinx/requirements.txt
+
+With is wrong (and it may not work). So, when recomending
+an upgrade, exclude the venv dir from the search path, and
+get the system's python.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/sphinx-pre-install | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ scripts/sphinx-pre-install | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 0d5684c08bbc..938b65d40fc8 100755
+index 938b65d40fc8..987aebf7e3a0 100755
 --- a/scripts/sphinx-pre-install
 +++ b/scripts/sphinx-pre-install
-@@ -29,6 +29,7 @@ my $install = "";
- my $virtenv_dir = "";
- my $python_cmd = "";
- my $min_version;
-+my $cur_version;
- my $rec_version = "1.7.9";	# PDF won't build here
- my $min_pdf_version = "2.4.4";	# Min version where pdf builds
- 
-@@ -257,7 +258,6 @@ sub get_sphinx_version($)
- sub check_sphinx()
- {
- 	my $default_version;
--	my $cur_version;
- 
- 	open IN, $conf or die "Can't open $conf";
- 	while (<IN>) {
-@@ -703,8 +703,6 @@ sub check_needs()
- 		print "Unknown OS\n\n";
+@@ -148,6 +148,24 @@ sub findprog($)
  	}
+ }
  
--	print "To upgrade Sphinx, use:\n\n" if ($rec_sphinx_upgrade);
--
- 	# Check python command line, trying first python3
- 	$python_cmd = findprog("python3");
- 	$python_cmd = check_program("python", 0) if (!$python_cmd);
-@@ -786,24 +784,36 @@ sub check_needs()
- 		@activates = sort {$b cmp $a} @activates;
- 		my ($activate, $ver);
- 		foreach my $f (@activates) {
--			$activate = $f;
--			next if ($activate lt $min_activate);
-+			next if ($f lt $min_activate);
++sub find_python_no_venv()
++{
++	my $prog = shift;
++
++	my $cur_dir = qx(pwd);
++	$cur_dir =~ s/\s+$//;
++
++	foreach my $dir (split(/:/, $ENV{PATH})) {
++		next if ($dir =~ m,($cur_dir)/sphinx,);
++		return "$dir/python3" if(-x "$dir/python3");
++	}
++	foreach my $dir (split(/:/, $ENV{PATH})) {
++		next if ($dir =~ m,($cur_dir)/sphinx,);
++		return "$dir/python" if(-x "$dir/python");
++	}
++	return "python";
++}
++
+ sub check_program($$)
+ {
+ 	my $prog = shift;
+@@ -814,6 +832,8 @@ sub check_needs()
  
--			my $sphinx_cmd = $activate;
-+			my $sphinx_cmd = $f;
- 			$sphinx_cmd =~ s/activate/sphinx-build/;
- 			next if (! -f $sphinx_cmd);
+ 			print "To upgrade Sphinx, use:\n\n" if ($rec_sphinx_upgrade);
  
- 			$ver = get_sphinx_version($sphinx_cmd);
--			last if ($ver ge $min_version);
-+			if ($need_sphinx && ($ver ge $min_version)) {
-+				$activate = $f;
-+				last;
-+			} elsif ($ver gt $cur_version) {
-+				$activate = $f;
-+				last;
-+			}
- 		}
--		if ($need_sphinx && ($activate ne "")) {
--			printf "\nNeed to activate Sphinx (version $ver) on virtualenv with:\n";
--			printf "\t. $activate\n";
--			deactivate_help();
--			exit (1);
-+		if ($activate ne "") {
-+			if ($need_sphinx) {
-+				printf "\nNeed to activate Sphinx (version $ver) on virtualenv with:\n";
-+				printf "\t. $activate\n";
-+				deactivate_help();
-+				exit (1);
-+			} else {
-+				printf "\nYou may also use a newer Sphinx (version $ver) with:\n";
-+				printf "\tdeactivate && . $activate\n";
-+			}
- 		} else {
- 			my $rec_activate = "$virtenv_dir/bin/activate";
- 
-+			print "To upgrade Sphinx, use:\n\n" if ($rec_sphinx_upgrade);
++			$python_cmd = find_python_no_venv();
 +
  			if ($need_venv) {
  				printf "\t$python_cmd -m venv $virtenv_dir\n";
