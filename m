@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9631B2038
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B181B204B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 09:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgDUHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 03:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDUHrT (ORCPT
+        id S1727111AbgDUHuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 03:50:35 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:62852 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725992AbgDUHuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:47:19 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDE0C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:47:19 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id f3so14078496ioj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 00:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OeY1D5X0JTe+X4nNccsTmfIHAJbVoZEYQTxgNeqW028=;
-        b=NCdIJS3I3tyMbQF5olMC+eUV6oQEQKyGdY9AXUQLfpzFEDXi6k5GMbZK/iNrkE/LFj
-         MHjHx8MCqFEjTe3OpSCjvgjswdR/xfdxAqaaktflmnX6Q3uE5egmYuO+Pe4lXlkWCjFw
-         sthcMkuVk0Fb7zK9/r6LjPM8k98RNebHHT69pVnq6068yJgGfd3wmKbHpEuGQzpMDH+L
-         N6Q5w96ta8azjJdeXVIYLRGqS2Q+QZVinSjajx/yZMgrmUhg+kRF0JTSF7QXI2BcwAI/
-         kRQ+vo5H1vhvrUu/wAXPwh/JBDtfAftYF3eLMdM/E4hPhZ89+WEy1cekgin+66XU6Kw+
-         puTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OeY1D5X0JTe+X4nNccsTmfIHAJbVoZEYQTxgNeqW028=;
-        b=GcFiZ3c8zh7bo9Tl7goUHGLWjYLeLthGrlrNMqhYmNxekN6+4fawGxlkrqGkJQ26v6
-         /e1E9tP7kaGL8FksU5bYkoPSPwsdKXlBs3RcBFlYwn3r2yRsaHCobxeSBj67UWZxmpSS
-         hTZiUZId24ztHBWKuSBlV/V1DGXR7oHq8UGeLRAn0OTSgydkZYIbY+Dje7ewE2xpZqHi
-         aBd4dxZMv6g5hrmaZheXoq2WPXQSALUHeP3bQ+gzdwI022FVL9gF79+JXb66P6YFRcCv
-         Nf3oXBlMTrs/MI9FgqFRg8jfV8+wuxpeYe2fusvP/JYy9yjSSI9duqVm6JRwKvZDSzCv
-         61kw==
-X-Gm-Message-State: AGi0Puav4Tx622oll1TnLbrO1YK/fRwkPfjcV+kdHvXY+/kI/OBIaYGa
-        uTRH5zjS0IK31JiHI6NxErm6ut3TgYCpMlXmakWOfg==
-X-Google-Smtp-Source: APiQypK8Fgiv9fuxZ96YyuvwHZijN8BQ7LGwA3Vk2+rHhZNpoJL5ML+jbbE9xAFzb+UsDPsxi8UytpkHJxDB0QJRJng=
-X-Received: by 2002:a05:6602:199:: with SMTP id m25mr19489799ioo.13.1587455238413;
- Tue, 21 Apr 2020 00:47:18 -0700 (PDT)
+        Tue, 21 Apr 2020 03:50:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587455431; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=kst1zyO2lCjRLxmPkLZYJ0AM8pU8DebCRu7H17+CtE0=;
+ b=p5DDgu6lofezAuAkcM6izbqvuwvsSxhrXwvjSIMQWsAZKuHepCN/HEpaderSe6lU8iwhN/8S
+ 5gjOjz4CvQPBp3P4UeVg7uMxSNF+zaeWiLGLoOY2d2kBXFJxg9+feh8rj4uOR5KdSe5cdDIT
+ Gk43eJ1N85NeIhxUzXQD50km5b8=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9ea5c7.7f6ee29ba538-smtp-out-n02;
+ Tue, 21 Apr 2020 07:50:31 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E9F6AC433BA; Tue, 21 Apr 2020 07:50:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 054C3C433CB;
+        Tue, 21 Apr 2020 07:50:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 054C3C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200417080549.23751-1-brgl@bgdev.pl> <20200417080549.23751-2-brgl@bgdev.pl>
- <CAHp75Vf_kBfb_oLB2Dp48iYiDgs2k_RgzpudTvQMoxNYGMz3TA@mail.gmail.com>
-In-Reply-To: <CAHp75Vf_kBfb_oLB2Dp48iYiDgs2k_RgzpudTvQMoxNYGMz3TA@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 21 Apr 2020 09:47:07 +0200
-Message-ID: <CAMRc=MdopCtsB23bk058iHd2LGqecqot1nAsi5S8x72U4wiGCg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] irq: make irq_domain_reset_irq_data() available
- even for non-V2 users
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH wireless-drivers v3] iwlwifi: actually check allocated
+ conf_tlv pointer
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200417074558.12316-1-sedat.dilek@gmail.com>
+References: <20200417074558.12316-1-sedat.dilek@gmail.com>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Rorvick <chris@rorvick.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200421075030.E9F6AC433BA@smtp.codeaurora.org>
+Date:   Tue, 21 Apr 2020 07:50:30 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pt., 17 kwi 2020 o 12:50 Andy Shevchenko <andy.shevchenko@gmail.com> napisa=
-=C5=82(a):
->
-> On Fri, Apr 17, 2020 at 11:13 AM Bartosz Golaszewski <brgl@bgdev.pl> wrot=
-e:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > irq_domain_reset_irq_data() doesn't modify the parent data, so it can b=
-e
-> > made available even if irq domain hierarchy is not being built. We'll
-> > subsequently use it in irq_sim code.
->
->
-> > @@ -475,7 +476,6 @@ extern int __irq_domain_alloc_irqs(struct irq_domai=
-n *domain, int irq_base,
-> >  extern void irq_domain_free_irqs(unsigned int virq, unsigned int nr_ir=
-qs);
-> >  extern int irq_domain_activate_irq(struct irq_data *irq_data, bool ear=
-ly);
-> >  extern void irq_domain_deactivate_irq(struct irq_data *irq_data);
-> > -
-> >  static inline int irq_domain_alloc_irqs(struct irq_domain *domain,
-> >                         unsigned int nr_irqs, int node, void *arg)
-> >  {
->
-> Seems extra hunk slipped to the patch.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Sedat Dilek <sedat.dilek@gmail.com> wrote:
 
-Indeed, I'll wait for more reviews though before resending.
+> From: Chris Rorvick <chris@rorvick.com>
+> 
+> Commit 71bc0334a637 ("iwlwifi: check allocated pointer when allocating
+> conf_tlvs") attempted to fix a typoe introduced by commit 17b809c9b22e
+> ("iwlwifi: dbg: move debug data to a struct") but does not implement the
+> check correctly.
+> 
+> Fixes: 71bc0334a637 ("iwlwifi: check allocated pointer when allocating conf_tlvs")
+> Tweeted-by: @grsecurity
+> Signed-off-by: Chris Rorvick <chris@rorvick.com>
+> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-Bart
+Patch applied to wireless-drivers.git, thanks.
+
+a176e114ace4 iwlwifi: actually check allocated conf_tlv pointer
+
+-- 
+https://patchwork.kernel.org/patch/11494331/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
