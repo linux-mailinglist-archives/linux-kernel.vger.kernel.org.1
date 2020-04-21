@@ -2,323 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF2E1B26FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE4F1B2710
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728792AbgDUNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726780AbgDUNBp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:01:45 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D40C061A10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:01:45 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id p13so6430195qvt.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:01:45 -0700 (PDT)
+        id S1728902AbgDUNDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:03:34 -0400
+Received: from mail-mw2nam10on2053.outbound.protection.outlook.com ([40.107.94.53]:16289
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726780AbgDUNDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:03:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e4F6X40vhgg9D0xivejDf8h841gM6TCd5bfJDuD52HZbG3rKw7Qm3MaaJOEX/2VUIq1kPYGmiMmkUxnDGMI89tLj8y0hyrkumA2DXRndChhMVMtF3AJ9g+vPt2T73VYGZIy1S58h8Og4LR8ZCx3rb62AvZXsfv9P6TUE+G6Vhzx3fuMM2fvfmixbhMOGqKtdT3LgFh/IvwFAO0Nc9wBzLhKm8Nf1F/yFFqnzSgI4vzPG5DtFZdwd00KruR293xXw6xBC6QVe+FEUhckryM6+so62iCJWILqx1uVtdyu4Xa3tvmkiUNVQGBnGbUuXWRwm8rpnA5dIva0M1grfpFPRHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YDUEgxeWOZ78A9hE1wo///i8Z9K2dkaaghMy/aorsU8=;
+ b=TFH48YMEk70oC7g1B9K4L/LYMWrp/6qmvbuoqx56nS/hTaeTOCeIVl+6VTquYT8C16PJOdnZvqTElNxREXCneOtkF3SyKf8A2U4Ll7aPg/MpN8/7QII9vEvNpcnSWZOjCR4WyJH2VLon7Yna2XmIRdhsuSGjVbT14dCgnXYFSZg0EWpvuDjsd5YsFXXmzcy0QjXF8/kClwF0MTQJgCg80he+t5BZ+hAIlMrRYIR9STM6Fd22r3Rv9QCfomsuRVF0+L7AYOMUW60qaS5zwQ92xjvn4zvC7Naft2IHgM2GbxaeabQMbqGlODu5u7e0BN9MGVhV1bhHVo4d/0gUDHRp7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6bxpXR7bk9lriyagOO2UqkV9Fm2IwK+BGPfkmvwlllg=;
-        b=Y1fbcTDdB4pAfXbWuu0qCG+GiUYb96vpjnmGAFccY+9j1v13cfYYYRjb73MRcZXYkp
-         U6EUTapHN9b9XenIOE4lK9D0skhRRaKRbgIi6UH10YgxB4FSdYbtrmmyy2mFX7rQ+8R/
-         kGn6S3t1uPAksnkCI4N/P4q0xaxZzwS+9Yp5d8ADm/pq1cwx0wJSHVhSFnoBFkZKOH+E
-         yDdrM2omM7plYRSKEiPH9ZORCCGp7mEKBEyRIXDcFjWKwc7f5WS6l8QkW9Ak/SJoA07r
-         kCGwk+SL2V5/2244fqoqANhTIqFEGclIW9TN9d2rthe3JBNWnOtS58O/PtfRNthm8+61
-         T37Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6bxpXR7bk9lriyagOO2UqkV9Fm2IwK+BGPfkmvwlllg=;
-        b=HCOR6mllnzH3s9jMs/+NSgY0HgQemIsmRocK5Ug0E84AQpB9jcRVSzdmJgdnIzCocI
-         UDFSQRF2VNPx4Eah+9eytKSor7X94WL1OUGObO/IQ9nHk+xtaTwxCky9DieEf07ou9Pr
-         MW7SPc8o+GNvYhOIfqSoEUlsMS1DKkKyBjozT6XJHeITpxAggB7E31p5Qtv1XKKBJ1iw
-         m/r6j4LGoPvtBWCvvAm836qYMJmLooIf44G/NvobqoqBnJPO8tr3EygVcvWyiyOzBo1O
-         zvBXbAw3pBfacjpChlDcPkLQ/IXkzQnDIuH2S44P5oW4L+Qx6ggENUGY7ay8fLswExio
-         QycQ==
-X-Gm-Message-State: AGi0PuYflrviKFl77aRuEnm/H2FDd5mSR8OVJqq+7ydDgl7o95WFqdEu
-        4nti8MqzrFrzCQJRolW8sZrXkth5tnl1lTDXOA/gsg==
-X-Google-Smtp-Source: APiQypLBt/g9IVIcofjvmBFH/qVYPkFDIZThvQ9tJkf8X2mWe5oPzgaUwrZkerf+z9oIHEEkmTmVpUTSEno7/Es3070=
-X-Received: by 2002:a0c:b2d2:: with SMTP id d18mr2496270qvf.80.1587474103980;
- Tue, 21 Apr 2020 06:01:43 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YDUEgxeWOZ78A9hE1wo///i8Z9K2dkaaghMy/aorsU8=;
+ b=VL3t/Npj62wnUJCkvdV4lgy5Jp1v2BOF/pvFr/Omh4f+WMsPH7ikrjN1iyLv4+8TK1y0FKF4eRh8Tzk8wktaJWKVDgB0ncF+UrZ4seYQDlrkfVbbAGCVFIwunoZV2FlMQ9Z08R1/hLx8W+zARAtKZN9d1E5c1Rmk1E3CVIYP+MU=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Christian.Koenig@amd.com; 
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com (2603:10b6:5:2a9::15)
+ by DM6PR12MB2892.namprd12.prod.outlook.com (2603:10b6:5:182::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
+ 2020 13:03:29 +0000
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766]) by DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766%3]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
+ 13:03:29 +0000
+Subject: Re: [PATCH] amdgpu: fixes memleak issue when init failed
+To:     =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tom St Denis <tom.stdenis@amd.com>,
+        Ori Messinger <Ori.Messinger@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+References: <AIEABQDACBGx7eaGVybumqrT.3.1587470983521.Hmail.bernard@vivo.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5c1510e2-9007-50b8-9be9-b8a00f943c9b@amd.com>
+Date:   Tue, 21 Apr 2020 15:02:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+In-Reply-To: <AIEABQDACBGx7eaGVybumqrT.3.1587470983521.Hmail.bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0P190CA0018.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::28) To DM6PR12MB4401.namprd12.prod.outlook.com
+ (2603:10b6:5:2a9::15)
 MIME-Version: 1.0
-References: <20200421014007.6012-1-walter-zh.wu@mediatek.com>
- <CACT4Y+af5fegnN9XOUSkf_B62J5sf2ZZbUwYk=GxtSmAhF3ryQ@mail.gmail.com> <1587472005.5870.7.camel@mtksdccf07>
-In-Reply-To: <1587472005.5870.7.camel@mtksdccf07>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 21 Apr 2020 15:01:31 +0200
-Message-ID: <CACT4Y+avYV1xoqB6V5XrQSs-p2s3mKKu+LZQc4EzPaW-jV+KaA@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix KASAN unit tests for tag-based KASAN
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Patricia Alfonso <trishalfonso@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0P190CA0018.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.26 via Frontend Transport; Tue, 21 Apr 2020 13:03:27 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: dd3f655c-9fba-4a0e-99a9-08d7e5f46305
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2892:|DM6PR12MB2892:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2892044145B348086456514483D50@DM6PR12MB2892.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-Forefront-PRVS: 038002787A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4401.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(81156014)(6916009)(53546011)(2906002)(86362001)(6486002)(478600001)(52116002)(4326008)(316002)(8936002)(8676002)(31686004)(36756003)(66946007)(186003)(66574012)(31696002)(2616005)(5660300002)(66476007)(66556008)(16526019)(54906003);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8y1aS+CHxjBo6SUmRJbTiGK8XNtY/HpVRaZCVIaBWKANR/XRsJQcXSOPnmfwVuu6SoE06qrJMNxRjekRsMAzyq/g6ydIVm+HUr0GuJgWBeLdunZYmAXqZAr6o3CSNOAWZMXkKQld7tdf92WUHN4CMIYM14+4UxnBZgW/GmbM7PlLP75DeFjTT1xDZmwzaHNut+CTlkTUsny/CJKJvMVflNyMf2U4SYOhmo6UebyBzxBp6Nc+WHuiOjfk9xB7E5qXxrqdtxSl8rN5wQbkweNXuJNXTaHjFpqJ0MjkaW4aSvlNEAvDLPTt/GRu4d8PvDXP2TRGLBDr+cIq9ZouP/+dN520I6f/MDi2/J9nhpEc9CsF1Nb6kWGLTBWy4rATgzG/FfdjveF+NZ2rjUPPnpB51IBh4LUwPDBMNQ11UJEnvhYG1gAgYLmbWtHKNLbdx3OQ
+X-MS-Exchange-AntiSpam-MessageData: p5951OFVyXqmNn9OBxXg5y2/JccIUBDxn0O3IPTfE+DjsGy614GSUIJ/fmnvqIiN0jaC3MI+p0EMv2BKEAzCcpa2CgNy0t7D/ZbSVoNiA1b2t6ganHCa4kvoYNJNbEo+thZEOog9+KmLVybe+Gz3FYP6TQs3bdKRs8ZZeyey4fe1n9o7ZCUqolfZ8kf/zVkFss1KbQif1KvtwgmJYT0HX85L6PU5YTKkKSgAi561B3JH5nfc+RajagfvV7F9V0SeU4cFHaE+Jw68FMwomZp3bsWEmt3W7yR2lN22FQQsXZe2vkDhA7cLpomaLgY1yFfTCebudEaq6yZRSb76yFaJSiPVtmPVjE70CByZLUbPX4Oe5ISGIJBgaTN5o6lS+LTUWNxTng1LCV3/v9XfQfbwcicHTgMMAI45zIIyXMJ3qhVjp2sCHYtNIPoEH52P1wUWmPibolhbgI2Q7u0xlMNm1GEHC4WHhgdHfb0tAcGLb63gdcuB3DfszVmSbaMpVsdF8MTgWOej0RTVqEaclhNUrnH90AshEc3RAILJ4ryBj26u+fE70/KQ0tEwQZqAq4IwNOqfYtF3ef5E3q/yDCHgP3n9n6CWAZhFMcqHxD2uxWHkbMA+zIHMtcFq0nQrcWZ6fFEEWxuBuJTfVZHF9I16wZxLahaSUkEQyvO7UNqkpwEZ1S/02c5iyQKm/wBKNwcFHK2SuJ3CvJ46A/8y8EbsVi6Ijd6no8fC/xQzYm8VqycfGMgYfYloRZJk4MvkuS8VOfMsgrLexMrblE7qOgDz5/gE1FFBnLBx230vgDckBN8mYcgQBu97Pw8Bk1YpE6bl+/szjPBfEgZZ1m9HWPVY5hAtxNP8RhzPq/80DsrXb5U=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd3f655c-9fba-4a0e-99a9-08d7e5f46305
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2020 13:03:29.4905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jSaXiebFt/Tty9sqPbznCV9BRGfEQMPDVmqRsEQNVdYahXBgDGAZsyx7JT0qrPGS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2892
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 2:26 PM Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> Hi Dmitry,
->
-> On Tue, 2020-04-21 at 13:56 +0200, Dmitry Vyukov wrote:
-> > On Tue, Apr 21, 2020 at 3:40 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
-> > >
-> > > When we use tag-based KASAN, then KASAN unit tests don't detect
-> > > out-of-bounds memory access. Because with tag-based KASAN the state
-> > > of each 16 aligned bytes of memory is encoded in one shadow byte
-> > > and the shadow value is tag of pointer, so we need to read next
-> > > shadow byte, the shadow value is not equal to tag of pointer,
-> > > then tag-based KASAN will detect out-of-bounds memory access.
-> > >
-> > > Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> > > Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> > > Cc: Dmitry Vyukov <dvyukov@google.com>
-> > > Cc: Alexander Potapenko <glider@google.com>
-> > > Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> > > Cc: Andrey Konovalov <andreyknvl@google.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > ---
-> > >  lib/test_kasan.c | 62 ++++++++++++++++++++++++++++++++++++++++++------
-> > >  1 file changed, 55 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> > > index e3087d90e00d..a164f6b47fe5 100644
-> > > --- a/lib/test_kasan.c
-> > > +++ b/lib/test_kasan.c
-> > > @@ -40,7 +40,12 @@ static noinline void __init kmalloc_oob_right(void)
-> > >                 return;
-> > >         }
-> >
-> > Hi Walter,
-> >
-> > This would be great to have!
-> > But I am concerned about these series that port KASAN tests to KUNIT:
-> > https://lkml.org/lkml/2020/4/17/1144
-> > I suspect it will be one large merge conflict. Not sure what is the
-> > proper way to resovle this. I've added authors to CC.
-> >
-> Yes, it should have conflicts. Thanks for your reminder.
-> >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         ptr[size] = 'x';
-> > > +#else
-> > > +       ptr[size + 5] = 'x';
-> > > +#endif
-> > > +
-> >
-> > For this particular snippet I think we can reduce amount of idef'ery
-> > and amount of non-compiled code in each configuration with something
-> > like:
-> >
-> >   ptr[size + 5] = 'x';
-> >   if (ENABLED(CONFIG_KASAN_GENERIC))
-> >       ptr[size] = 'x';
-> >
-> > One check runs always (it should pass in both configs, right?). The
->
-> There is a problem, With generic KASAN it may trigger two KASAN reports.
+Am 21.04.20 um 14:09 schrieb 赵军奎:
+> From: "Christian König" <christian.koenig@amd.com>
+> Date: 2020-04-21 19:22:49
+> To:  Bernard Zhao <bernard@vivo.com>,Alex Deucher <alexander.deucher@amd.com>,"David (ChunMing) Zhou" <David1.Zhou@amd.com>,David Airlie <airlied@linux.ie>,Daniel Vetter <daniel@ffwll.ch>,Tom St Denis <tom.stdenis@amd.com>,Ori Messinger <Ori.Messinger@amd.com>,Sam Ravnborg <sam@ravnborg.org>,amd-gfx@lists.freedesktop.org,dri-devel@lists.freedesktop.org,linux-kernel@vger.kernel.org
+> Cc:  opensource.kernel@vivo.com
+> Subject: Re: [PATCH] amdgpu: fixes memleak issue when init failed>Am 21.04.20 um 13:17 schrieb Bernard Zhao:
+>>> VRAM manager and DRM MM when init failed, there is no operaction
+>>> to free kzalloc memory & remove device file.
+>>> This will lead to memleak & cause stability issue.
+>> NAK, failure to create sysfs nodes are not critical.
+>>
+>> Christian.
+>>
+> OK, get it.
+> By the way, should i modify this patch to just handle <kfree(mgr)> in error branch, or that it is also unnecessary?
 
-Why is this a problem? If there are 2, fine. KUNIT can check that if
-we expect 2, there are indeed 2.
+What you can do is to drop the "return ret" if anything with the sysfs 
+nodes goes wrong and instead print the error code.
 
-> if we change it like:
+It's really annoying that loading, unloading and loading the driver 
+again sometimes fails because we have a bug in the sysfs files cleanup.
+
+We certainly should fix those bugs as well, but they are just not 
+critical for correct driver functionality.
+
+Regards,
+Christian.
+
 >
-> if (ENABLED(CONFIG_KASAN_GENERIC))
->     ptr[size] = 'x';
-> else
->     ptr[size + 5] = 'x';
+> Regards,
+> Bernard
 >
-> > only only in GENERIC, but it's C-level if rather than preprocessor.
-> > KUNIT should make 2 bugs per test easily expressable (and testable).
-> >
+>>> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>>> ---
+>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 24 ++++++++++++++++----
+>>>    1 file changed, 19 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+>>> index 82a3299e53c0..4c5fb153e6b4 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+>>> @@ -175,30 +175,44 @@ static int amdgpu_vram_mgr_init(struct ttm_mem_type_manager *man,
+>>>    	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_total);
+>>>    	if (ret) {
+>>>    		DRM_ERROR("Failed to create device file mem_info_vram_total\n");
+>>> -		return ret;
+>>> +		goto VRAM_TOTAL_FAIL;
+>>>    	}
+>>>    	ret = device_create_file(adev->dev, &dev_attr_mem_info_vis_vram_total);
+>>>    	if (ret) {
+>>>    		DRM_ERROR("Failed to create device file mem_info_vis_vram_total\n");
+>>> -		return ret;
+>>> +		goto VIS_VRAM_TOTA_FAIL;
+>>>    	}
+>>>    	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_used);
+>>>    	if (ret) {
+>>>    		DRM_ERROR("Failed to create device file mem_info_vram_used\n");
+>>> -		return ret;
+>>> +		goto VRAM_USED_FAIL;
+>>>    	}
+>>>    	ret = device_create_file(adev->dev, &dev_attr_mem_info_vis_vram_used);
+>>>    	if (ret) {
+>>>    		DRM_ERROR("Failed to create device file mem_info_vis_vram_used\n");
+>>> -		return ret;
+>>> +		goto VIS_VRAM_USED_FAIL;
+>>>    	}
+>>>    	ret = device_create_file(adev->dev, &dev_attr_mem_info_vram_vendor);
+>>>    	if (ret) {
+>>>    		DRM_ERROR("Failed to create device file mem_info_vram_vendor\n");
+>>> -		return ret;
+>>> +		goto VRAM_VERDOR_FAIL;
+>>>    	}
+>>>    
+>>>    	return 0;
+>>> +
+>>> +VRAM_VERDOR_FAIL:
+>>> +	device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_used);
+>>> +VIS_VRAM_USED_FAIL:
+>>> +	device_remove_file(adev->dev, &dev_attr_mem_info_vram_used);
+>>> +RVAM_USED_FAIL:
+>>> +	device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_total);
+>>> +VIS_VRAM_TOTA_FAIL:
+>>> +	device_remove_file(adev->dev, &dev_attr_mem_info_vram_total);
+>>> +VRAM_TOTAL_FAIL:
+>>> +	kfree(mgr);
+>>> +	man->priv = NULL;
+>>> +
+>>> +	return ret;
+>>>    }
+>>>    
+>>>    /**
 >
-> >
-> >
-> >
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -92,7 +97,12 @@ static noinline void __init kmalloc_pagealloc_oob_right(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         ptr[size] = 0;
-> > > +#else
-> > > +       ptr[size + 6] = 0;
-> > > +#endif
-> > > +
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -162,7 +172,11 @@ static noinline void __init kmalloc_oob_krealloc_more(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         ptr2[size2] = 'x';
-> > > +#else
-> > > +       ptr2[size2 + 13] = 'x';
-> > > +#endif
-> > >         kfree(ptr2);
-> > >  }
-> > >
-> > > @@ -180,7 +194,12 @@ static noinline void __init kmalloc_oob_krealloc_less(void)
-> > >                 kfree(ptr1);
-> > >                 return;
-> > >         }
-> > > +
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         ptr2[size2] = 'x';
-> > > +#else
-> > > +       ptr2[size2 + 2] = 'x';
-> > > +#endif
-> > >         kfree(ptr2);
-> > >  }
-> > >
-> > > @@ -216,7 +235,11 @@ static noinline void __init kmalloc_oob_memset_2(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         memset(ptr+7, 0, 2);
-> > > +#else
-> > > +       memset(ptr+15, 0, 2);
-> > > +#endif
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -232,7 +255,11 @@ static noinline void __init kmalloc_oob_memset_4(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         memset(ptr+5, 0, 4);
-> > > +#else
-> > > +       memset(ptr+15, 0, 4);
-> > > +#endif
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -249,7 +276,11 @@ static noinline void __init kmalloc_oob_memset_8(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         memset(ptr+1, 0, 8);
-> > > +#else
-> > > +       memset(ptr+15, 0, 8);
-> > > +#endif
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -265,7 +296,11 @@ static noinline void __init kmalloc_oob_memset_16(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         memset(ptr+1, 0, 16);
-> > > +#else
-> > > +       memset(ptr+15, 0, 16);
-> > > +#endif
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -281,7 +316,11 @@ static noinline void __init kmalloc_oob_in_memset(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         memset(ptr, 0, size+5);
-> > > +#else
-> > > +       memset(ptr, 0, size+7);
-> > > +#endif
-> > >         kfree(ptr);
-> > >  }
-> > >
-> > > @@ -415,7 +454,11 @@ static noinline void __init kmem_cache_oob(void)
-> > >                 return;
-> > >         }
-> > >
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > >         *p = p[size];
-> > > +#else
-> > > +       *p = p[size + 8];
-> > > +#endif
-> > >         kmem_cache_free(cache, p);
-> > >         kmem_cache_destroy(cache);
-> > >  }
-> > > @@ -497,6 +540,11 @@ static noinline void __init copy_user_test(void)
-> > >         char __user *usermem;
-> > >         size_t size = 10;
-> > >         int unused;
-> > > +#ifdef CONFIG_KASAN_GENERIC
-> > > +       size_t oob_size = 1;
-> > > +#else
-> > > +       size_t oob_size = 7;
-> > > +#endif
-> > >
-> > >         kmem = kmalloc(size, GFP_KERNEL);
-> > >         if (!kmem)
-> > > @@ -512,25 +560,25 @@ static noinline void __init copy_user_test(void)
-> > >         }
-> > >
-> > >         pr_info("out-of-bounds in copy_from_user()\n");
-> > > -       unused = copy_from_user(kmem, usermem, size + 1);
-> > > +       unused = copy_from_user(kmem, usermem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in copy_to_user()\n");
-> > > -       unused = copy_to_user(usermem, kmem, size + 1);
-> > > +       unused = copy_to_user(usermem, kmem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in __copy_from_user()\n");
-> > > -       unused = __copy_from_user(kmem, usermem, size + 1);
-> > > +       unused = __copy_from_user(kmem, usermem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in __copy_to_user()\n");
-> > > -       unused = __copy_to_user(usermem, kmem, size + 1);
-> > > +       unused = __copy_to_user(usermem, kmem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in __copy_from_user_inatomic()\n");
-> > > -       unused = __copy_from_user_inatomic(kmem, usermem, size + 1);
-> > > +       unused = __copy_from_user_inatomic(kmem, usermem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in __copy_to_user_inatomic()\n");
-> > > -       unused = __copy_to_user_inatomic(usermem, kmem, size + 1);
-> > > +       unused = __copy_to_user_inatomic(usermem, kmem, size + oob_size);
-> > >
-> > >         pr_info("out-of-bounds in strncpy_from_user()\n");
-> > > -       unused = strncpy_from_user(kmem, usermem, size + 1);
-> > > +       unused = strncpy_from_user(kmem, usermem, size + oob_size);
-> > >
-> > >         vm_munmap((unsigned long)usermem, PAGE_SIZE);
-> > >         kfree(kmem);
-> > > --
-> > > 2.18.0
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200421014007.6012-1-walter-zh.wu%40mediatek.com.
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/1587472005.5870.7.camel%40mtksdccf07.
+
