@@ -2,166 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E791B2E63
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1261B2E6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 19:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgDURh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 13:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
+        id S1729139AbgDURj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 13:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgDURh1 (ORCPT
+        with ESMTP id S1725870AbgDURj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 13:37:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2043C0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:37:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 18so3262713pfx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:37:27 -0700 (PDT)
+        Tue, 21 Apr 2020 13:39:28 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF178C0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d17so7106870pgo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n8qVaalIidRR7pGSEV5tyf0PxDkGEOKDNCWi4IECU3E=;
-        b=b12RD4Q+/eDpJ8K5uxx3pSY6Me2Hr6dzy4utDsv6A8bko7a9tF6XKrl99Wyd+r4v3o
-         1FAauDl8St//AMNITUY9tZsFBfgz4ftqbQ5fB/3kktoonbKWQzk/vXiB1dcZbXwJvuLJ
-         zbDi3tQ0Rc6Ux2LTauqIwmKTuwL3s74n3e448+IuMamMvRriWHwJe4zvddNeMa6JE8kc
-         +xh4hvApNt+Ua8yeyeEQFSucdlfWVlGCQCBshWSoSJoywVwaM4kiy+MkepoFbfsD3GDU
-         j4tyuKol3YM4UXG2E/dS1MwkuMKRwxjnLP/tDidFfAhnLOR/FQDb3VtUQ2OADDBJeJ5q
-         LvFA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=fLBHNTyEET/yN5Pbpw/2Hy4qmejsajrMOOJIyx+I7vQ=;
+        b=KxYeTqdE2Xi/vsj4nfFw22Mcod7tNepgLgc7ivj4J1gSCt6gZxeOxbavGFtnIwhVrF
+         cyCfz+vVg56J/H2lfYv4JDibjvABfMelTSj26Lt4JBQQzGDEmRatxGsJWjIIU3YsUBo/
+         IixeXzxsautP+LS5WbTP55rRehic1N2mklNfHQWqf4+57SoXzSYkWqnxqGCo3VgIqvUF
+         /ZjEFTlmUKmb93uKsH0LwJodvDRfDhFnc3IOD3VdrJ5fBY6u0B2jV9TGyO/2hRWGzRGe
+         6gZo4RJS2IPaLpr3f6baakWQgFNSfjtwToSPI+sf6lCDbb9xX89jrUVzdJUOp+xFQxt3
+         RcxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n8qVaalIidRR7pGSEV5tyf0PxDkGEOKDNCWi4IECU3E=;
-        b=QX8J5fpalmaXQOJ5VeKGZql65qb1Ehr/OIt1SdLHsXofBE9Stj9o1iuncVTM2x/e2z
-         B+Sy/jE6c0zj1nwLlvP0Mubyc4X3Ycxr36leAxeOW7iFWKI2FFaUGGKKt8uXYvD6E02y
-         SvsWazx1TTITl/3qvriZiTErrrG8fOb2bDTvCArNREeUqPVFA3UOsGvcSbwlijAPbLuS
-         n4PE8QKC7O5McLKC9REf7VqR37Qwk4pJ+N6rvRzg1xMasfuf92BlGx6KV731+3GJxjYC
-         S63rSDzycSy4RWO/dqoXPyhNmHw/LM/Gd9xIxSnYqSOyuu14jJOQbWuP6zxJiwoSj9pQ
-         WjlA==
-X-Gm-Message-State: AGi0PubQW24xsd2m2N07lQ3qpdl45TcmRm9uDpCXKI/MLpk9uakCI9e1
-        HsZL8W/JfD789Ed3d58ixEk=
-X-Google-Smtp-Source: APiQypJtnl2nLcMt15nfPhna9D5nM3tB9NS63SlG2E8fT8j/LMpRKnWzfOwcDbTwgitenufmufCvGQ==
-X-Received: by 2002:aa7:8593:: with SMTP id w19mr22839905pfn.97.1587490646870;
-        Tue, 21 Apr 2020 10:37:26 -0700 (PDT)
-Received: from debian.net.fpt ([42.119.230.166])
-        by smtp.gmail.com with ESMTPSA id h197sm55386pfe.208.2020.04.21.10.37.23
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=fLBHNTyEET/yN5Pbpw/2Hy4qmejsajrMOOJIyx+I7vQ=;
+        b=Es1h+3VXnaBte6mDRHZ0ZUEBfrh0bBunBMvOrtsd2R95e/9a8bFt/AEU5mD8EkwsXD
+         GyJZPQ5J4o8Iwiu1QXXZPV6h7M3sgxTcNUQ3aLwTMKrj7wJ+8uTqMEFB8hxWSc8/ULtI
+         6y0h4Np4hcjw58jNqGXKsXFLV8vziWkOhS//EVIgMQxm+CrCNeFFOQAa3gJ1gSGrcGSP
+         /YtpJlGzzVrj/hFKU1X2Sts8VvVSwY1HCmbOoiqAmuLFXY6ru5tnkmXxlhPhNPcB7hf+
+         8u5dpvgIOtG9K4hQqi9FQj5UMCgroKb88AJt+5nayn3b0JglvF1QogX5CV+fCsqVp7QQ
+         LPdg==
+X-Gm-Message-State: AGi0PuZw1WDmu1fAccBRX9+BOqwcDNLaWNJdh6XywYYxv1wL6cnX5+ZB
+        Kd8MT1wi6c8UffAWB3UPXR0wLRKVQQIkaA==
+X-Google-Smtp-Source: APiQypKywrO7hvKPoqgv4/W+BCQ475nPawaOscHavB+UF8mMal6F4MZ01I4kbOku83ik8xRZ5a2M0w==
+X-Received: by 2002:a62:6807:: with SMTP id d7mr6229124pfc.296.1587490767094;
+        Tue, 21 Apr 2020 10:39:27 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id f99sm3213045pjg.22.2020.04.21.10.39.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 10:37:26 -0700 (PDT)
-From:   Phong Tran <tranmanphong@gmail.com>
-To:     mark.rutland@arm.com, steve.capper@arm.com, steven.price@arm.com,
-        will@kernel.org, keescook@chromium.org, greg@kroah.com
-Cc:     akpm@linux-foundation.org, alexios.zavras@intel.com,
-        broonie@kernel.org, kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, Phong Tran <tranmanphong@gmail.com>
-Subject: [PATCH v2] arm64: add check_wx_pages debugfs for CHECK_WX
-Date:   Wed, 22 Apr 2020 00:35:58 +0700
-Message-Id: <20200421173557.10817-1-tranmanphong@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200307093926.27145-1-tranmanphong@gmail.com>
-References: <20200307093926.27145-1-tranmanphong@gmail.com>
+        Tue, 21 Apr 2020 10:39:26 -0700 (PDT)
+Subject: [PATCH] checkpatch: Allow users to specify the python command to use
+Date:   Tue, 21 Apr 2020 10:36:05 -0700
+Message-Id: <20200421173604.38979-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc:     apw@canonical.com, joe@perches.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-follow the suggestion from
-https://github.com/KSPP/linux/issues/35
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Signed-off-by: Phong Tran <tranmanphong@gmail.com>
----
-Change since v1:
-- Update the Kconfig help text
-- Don't check the return value of debugfs_create_file()
-- Tested on QEMU aarch64
-root@qemuarm64:~# zcat /proc/config.gz | grep PTDUMP
-CONFIG_GENERIC_PTDUMP=y
-CONFIG_PTDUMP_CORE=y
-CONFIG_PTDUMP_DEBUGFS=y
-root@qemuarm64:~# uname -a
-Linux qemuarm64 5.7.0-rc2-00001-g20ddb383c313 #3 SMP PREEMPT Tue Apr 21 23:18:56 +07 2020 aarch64 GNU/Linux
-root@qemuarm64:~# echo 1 > /sys/kernel/debug/check_wx_pages
-[   63.261868] Checked W+X mappings: passed, no W+X pages found
----
- arch/arm64/Kconfig.debug        |  5 ++++-
- arch/arm64/include/asm/ptdump.h |  2 ++
- arch/arm64/mm/dump.c            |  1 +
- arch/arm64/mm/ptdump_debugfs.c  | 18 ++++++++++++++++++
- 4 files changed, 25 insertions(+), 1 deletion(-)
+checkpatch.pl invokes spdxcheck.py using "python".  On my system that's
+Python 2, but I only have a git package for Python 3.  This patch adds a
+"--python=..." argument to checkpatch.pl that allows users to specify a
+command to invoke Python.  I've just given this a little smoke test:
+running it without any arguments still works, and running with
+--python=python3 finds the git module.
 
-diff --git a/arch/arm64/Kconfig.debug b/arch/arm64/Kconfig.debug
-index a1efa246c9ed..cd82c9d3664a 100644
---- a/arch/arm64/Kconfig.debug
-+++ b/arch/arm64/Kconfig.debug
-@@ -48,7 +48,10 @@ config DEBUG_WX
- 	  of other unfixed kernel bugs easier.
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+---
+I'd considered reading some sort of environment variable, but searching
+for "getenv" in checkpatch.pl didn't reveal any other enviornment
+variables so I figured it'd be cleaner to avoid adding one.  I only
+invoke checkpatch.pl from wrapper scripts anyway, so it's the same for
+me.
+---
+ scripts/checkpatch.pl | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index d64c67b67e3c..05ce52a2aaa9 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -65,6 +65,7 @@ my $allow_c99_comments = 1; # Can be overridden by --ignore C99_COMMENT_TOLERANC
+ # git output parsing needs US English output, so first set backtick child process LANGUAGE
+ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
+ my $tabsize = 8;
++my $python = "python";
  
- 	  There is no runtime or memory usage effect of this option
--	  once the kernel has booted up - it's a one time check.
-+	  once the kernel has booted up - it's a one time check at
-+	  boot, and can also be triggered at runtime by echo "1" to
-+	  "check_wx_pages". The "check_wx_pages" is available only with
-+	  CONFIG_PTDUMP_DEBUGFS is enabled.
+ sub help {
+ 	my ($exitcode) = @_;
+@@ -125,6 +126,7 @@ Options:
+   --typedefsfile             Read additional types from this file
+   --color[=WHEN]             Use colors 'always', 'never', or only when output
+                              is a terminal ('auto'). Default is 'auto'.
++  --python=COMMAND           Use the give command to invoke python.
+   -h, --help, --version      display this help and exit
  
- 	  If in doubt, say "Y".
+ When FILE is - read standard input.
+@@ -233,6 +235,7 @@ GetOptions(
+ 	'color=s'	=> \$color,
+ 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
+ 	'nocolor'	=> \$color,	#keep old behaviors of -nocolor
++	'python=s'      => \$python,
+ 	'h|help'	=> \$help,
+ 	'version'	=> \$help
+ ) or help(1);
+@@ -897,10 +900,10 @@ sub is_maintained_obsolete {
+ sub is_SPDX_License_valid {
+ 	my ($license) = @_;
  
-diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-index 38187f74e089..c90a6ec6f59b 100644
---- a/arch/arm64/include/asm/ptdump.h
-+++ b/arch/arm64/include/asm/ptdump.h
-@@ -24,9 +24,11 @@ struct ptdump_info {
- void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
- #ifdef CONFIG_PTDUMP_DEBUGFS
- void ptdump_debugfs_register(struct ptdump_info *info, const char *name);
-+void ptdump_check_wx_init(void);
- #else
- static inline void ptdump_debugfs_register(struct ptdump_info *info,
- 					   const char *name) { }
-+static inline void ptdump_check_wx_init(void) { }
- #endif
- void ptdump_check_wx(void);
- #endif /* CONFIG_PTDUMP_CORE */
-diff --git a/arch/arm64/mm/dump.c b/arch/arm64/mm/dump.c
-index 860c00ec8bd3..60c99a047763 100644
---- a/arch/arm64/mm/dump.c
-+++ b/arch/arm64/mm/dump.c
-@@ -378,6 +378,7 @@ static int ptdump_init(void)
- #endif
- 	ptdump_initialize();
- 	ptdump_debugfs_register(&kernel_ptdump_info, "kernel_page_tables");
-+	ptdump_check_wx_init();
- 	return 0;
+-	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
++	return 1 if (!$tree || which($python) eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
+ 
+ 	my $root_path = abs_path($root);
+-	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
++	my $status = `cd "$root_path"; echo "$license" | $python scripts/spdxcheck.py -`;
+ 	return 0 if ($status ne "");
+ 	return 1;
  }
- device_initcall(ptdump_init);
-diff --git a/arch/arm64/mm/ptdump_debugfs.c b/arch/arm64/mm/ptdump_debugfs.c
-index d29d722ec3ec..6b0aa16cb17b 100644
---- a/arch/arm64/mm/ptdump_debugfs.c
-+++ b/arch/arm64/mm/ptdump_debugfs.c
-@@ -20,3 +20,21 @@ void ptdump_debugfs_register(struct ptdump_info *info, const char *name)
- {
- 	debugfs_create_file(name, 0400, NULL, info, &ptdump_fops);
- }
-+
-+static int check_wx_debugfs_set(void *data, u64 val)
-+{
-+	if (val != 1ULL)
-+		return -EINVAL;
-+
-+	ptdump_check_wx();
-+
-+	return 0;
-+}
-+
-+DEFINE_SIMPLE_ATTRIBUTE(check_wx_fops, NULL, check_wx_debugfs_set, "%llu\n");
-+
-+void ptdump_check_wx_init(void)
-+{
-+	debugfs_create_file("check_wx_pages", 0200, NULL,
-+			NULL, &check_wx_fops) ? 0 : -ENOMEM;
-+}
 -- 
-2.20.1
+2.26.1.301.g55bc3eb7cb9-goog
 
