@@ -2,119 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BFA1B290F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100C61B293F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 16:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgDUOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 10:09:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
+        id S1729006AbgDUOSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 10:18:10 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:43078 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728316AbgDUOJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 10:09:38 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC31C20679;
-        Tue, 21 Apr 2020 14:09:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587478177;
-        bh=47dRdhfCGfscyToO3yQIR/h3qAEu9MIShpFMyDMcDmI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yFw/bG6wzQTTx41T7fqFE/rQqJQh+ZXKvwN8atl/NcYeL9chbqyoSJAH8F38mH+gq
-         F7I99+ZbrVRFK+sSpqtfFJ9fRG8x1ZP61XCwnFYL50Sk3k2u7Yfn6VShMA08vaTpDZ
-         190GqcI/SyUD/BjsR16rZ4j5fqpbKO51eqOzt3mk=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jQtah-005Cye-Tb; Tue, 21 Apr 2020 15:09:36 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Apr 2020 15:09:35 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Paul Turner <pjt@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Josh Don <joshdon@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 0/4] sched/rt: Distribute tasks in find_lowest_rq()
-In-Reply-To: <jhjv9ltkmel.mognet@arm.com>
-References: <20200414150556.10920-1-qais.yousef@arm.com>
- <jhjh7xlvqqe.mognet@arm.com>
- <20200421121305.ziu3dfqwo7cw6ymu@e107158-lin.cambridge.arm.com>
- <jhjv9ltkmel.mognet@arm.com>
-Message-ID: <dda160a8d78b44dbc310759502a49afc@kernel.org>
-X-Sender: maz@kernel.org
-User-Agent: Roundcube Webmail/1.3.10
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, qais.yousef@arm.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, akpm@linux-foundation.org, tglx@linutronix.de, yury.norov@gmail.com, pjt@google.com, adobriyan@gmail.com, joshdon@google.com, pkondeti@codeaurora.org, linux-kernel@vger.kernel.org, rjw@rjwysocki.net
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726628AbgDUOSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:18:09 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A56891A0D8D;
+        Tue, 21 Apr 2020 16:18:07 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3FD771A0D96;
+        Tue, 21 Apr 2020 16:18:03 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DAF40402D9;
+        Tue, 21 Apr 2020 22:17:57 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 1/3] dt-bindings: nvmem: Convert i.MX OCOTP to json-schema
+Date:   Tue, 21 Apr 2020 22:09:39 +0800
+Message-Id: <1587478181-21226-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-21 14:18, Valentin Schneider wrote:
-> On 21/04/20 13:13, Qais Yousef wrote:
+Convert the i.MX OCOTP binding to DT schema format using json-schema.
 
-[...]
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- improve compatible;
+	- drop clocks description.
+---
+ .../devicetree/bindings/nvmem/imx-ocotp.txt        | 50 ------------
+ .../devicetree/bindings/nvmem/imx-ocotp.yaml       | 95 ++++++++++++++++++++++
+ 2 files changed, 95 insertions(+), 50 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/nvmem/imx-ocotp.txt
+ create mode 100644 Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
 
->> I CCed Marc who's the maintainer of this file who can clarify better 
->> if this
->> really breaks anything.
->> 
->> If any interrupt expects to be affined to a specific CPU then this 
->> must be
->> described in DT/driver. I think the GIC controller is free to 
->> distribute them
->> to any cpu otherwise if !force. Which is usually done by irq_balancer 
->> anyway
->> in userspace, IIUC.
->> 
->> I don't see how cpumask_any_and() break anything here too. I actually 
->> think it
->> improves on things by better distribute the irqs on the system by 
->> default.
-
-That's a pretty bold statement. Unfortunately, it isn't universally 
-true.
-Some workload will be very happy with interrupts spread all over the 
-map,
-and some others will suffer from it because, well, it interrupts 
-userspace.
-
-> As you say, if someone wants smarter IRQ affinity they can do 
-> irq_balancer
-> and whatnot. The default kernel policy for now has been to shove 
-> everything
-> on the lowest-numbered CPU, and I see no valid reason to change that.
-
-Exactly. I would like to keep the kernel policy as simple as possible 
-for
-non-managed interrupts (managed interrupts are another kettle of fish 
-entirely).
-Userpace is in control to place things "intelligently", so let's not try 
-and
-make the kernel smarter than it strictly needs to be.
-
-Thanks,
-
-         M.
+diff --git a/Documentation/devicetree/bindings/nvmem/imx-ocotp.txt b/Documentation/devicetree/bindings/nvmem/imx-ocotp.txt
+deleted file mode 100644
+index 6e346d5..0000000
+--- a/Documentation/devicetree/bindings/nvmem/imx-ocotp.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-Freescale i.MX6 On-Chip OTP Controller (OCOTP) device tree bindings
+-
+-This binding represents the on-chip eFuse OTP controller found on
+-i.MX6Q/D, i.MX6DL/S, i.MX6SL, i.MX6SX, i.MX6UL, i.MX6ULL/ULZ, i.MX6SLL,
+-i.MX7D/S, i.MX7ULP, i.MX8MQ, i.MX8MM, i.MX8MN and i.MX8MP SoCs.
+-
+-Required properties:
+-- compatible: should be one of
+-	"fsl,imx6q-ocotp" (i.MX6Q/D/DL/S),
+-	"fsl,imx6sl-ocotp" (i.MX6SL), or
+-	"fsl,imx6sx-ocotp" (i.MX6SX),
+-	"fsl,imx6ul-ocotp" (i.MX6UL),
+-	"fsl,imx6ull-ocotp" (i.MX6ULL/ULZ),
+-	"fsl,imx7d-ocotp" (i.MX7D/S),
+-	"fsl,imx6sll-ocotp" (i.MX6SLL),
+-	"fsl,imx7ulp-ocotp" (i.MX7ULP),
+-	"fsl,imx8mq-ocotp" (i.MX8MQ),
+-	"fsl,imx8mm-ocotp" (i.MX8MM),
+-	"fsl,imx8mn-ocotp" (i.MX8MN),
+-	"fsl,imx8mp-ocotp" (i.MX8MP),
+-	followed by "syscon".
+-- #address-cells : Should be 1
+-- #size-cells : Should be 1
+-- reg: Should contain the register base and length.
+-- clocks: Should contain a phandle pointing to the gated peripheral clock.
+-
+-Optional properties:
+-- read-only: disable write access
+-
+-Optional Child nodes:
+-
+-- Data cells of ocotp:
+-  Detailed bindings are described in bindings/nvmem/nvmem.txt
+-
+-Example:
+-	ocotp: ocotp@21bc000 {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		compatible = "fsl,imx6sx-ocotp", "syscon";
+-		reg = <0x021bc000 0x4000>;
+-		clocks = <&clks IMX6SX_CLK_OCOTP>;
+-
+-		tempmon_calib: calib@38 {
+-			reg = <0x38 4>;
+-		};
+-
+-		tempmon_temp_grade: temp-grade@20 {
+-			reg = <0x20 4>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
+new file mode 100644
+index 0000000..fe9c7df
+--- /dev/null
++++ b/Documentation/devicetree/bindings/nvmem/imx-ocotp.yaml
+@@ -0,0 +1,95 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/imx-ocotp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX6 On-Chip OTP Controller (OCOTP) device tree bindings
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++description: |
++  This binding represents the on-chip eFuse OTP controller found on
++  i.MX6Q/D, i.MX6DL/S, i.MX6SL, i.MX6SX, i.MX6UL, i.MX6ULL/ULZ, i.MX6SLL,
++  i.MX7D/S, i.MX7ULP, i.MX8MQ, i.MX8MM, i.MX8MN and i.MX8MP SoCs.
++
++allOf:
++  - $ref: "nvmem.yaml#"
++
++properties:
++  compatible:
++    items:
++      - enum:
++        - fsl,imx6q-ocotp
++        - fsl,imx6sl-ocotp
++        - fsl,imx6sx-ocotp
++        - fsl,imx6ul-ocotp
++        - fsl,imx6ull-ocotp
++        - fsl,imx7d-ocotp
++        - fsl,imx6sll-ocotp
++        - fsl,imx7ulp-ocotp
++        - fsl,imx8mq-ocotp
++        - fsl,imx8mm-ocotp
++        - fsl,imx8mn-ocotp
++        - fsl,imx8mp-ocotp
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - "#address-cells"
++  - "#size-cells"
++  - compatible
++  - reg
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    type: object
++
++    properties:
++      reg:
++        maxItems: 1
++        description:
++          Offset and size in bytes within the storage device.
++
++    required:
++      - reg
++
++    additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx6sx-clock.h>
++
++    ocotp: efuse@21bc000 {
++        #address-cells = <1>;
++        #size-cells = <1>;
++        compatible = "fsl,imx6sx-ocotp", "syscon";
++        reg = <0x021bc000 0x4000>;
++        clocks = <&clks IMX6SX_CLK_OCOTP>;
++
++        cpu_speed_grade: speed-grade@10 {
++            reg = <0x10 4>;
++        };
++
++        tempmon_calib: calib@38 {
++            reg = <0x38 4>;
++        };
++
++        tempmon_temp_grade: temp-grade@20 {
++            reg = <0x20 4>;
++        };
++    };
++
++...
 -- 
-Jazz is not dead. It just smells funny...
+2.7.4
+
