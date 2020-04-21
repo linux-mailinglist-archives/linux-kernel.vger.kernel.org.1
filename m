@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14061B2569
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB841B255A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgDUL4v convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 07:56:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:14306 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgDUL4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:56:50 -0400
-IronPort-SDR: z+CsqIZzFRQqE4/qgUnDcKoUaDmzQCGRPDobaunAQ2JQfnK8de4q8toiIvzWJwhUOL82Z0skz+
- LjqAnxSNAiew==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 04:56:50 -0700
-IronPort-SDR: ss5gZPH9RFXb/mbTaVOM9KDF+8qBwsRimZ4nsKZ+Y39bb7azaHnyps5sn0NKG2EhdwxYfnEFlp
- Lfm+8sEUlcJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,410,1580803200"; 
-   d="scan'208";a="279611530"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Apr 2020 04:56:50 -0700
-Received: from shsmsx106.ccr.corp.intel.com (10.239.4.159) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Apr 2020 04:56:50 -0700
-Received: from shsmsx101.ccr.corp.intel.com ([169.254.1.129]) by
- SHSMSX106.ccr.corp.intel.com ([169.254.10.89]) with mapi id 14.03.0439.000;
- Tue, 21 Apr 2020 19:48:09 +0800
-From:   "Ma, Jianpeng" <jianpeng.ma@intel.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [RESEND]block: remove unused header
-Thread-Topic: [RESEND]block: remove unused header
-Thread-Index: AdYX0rl3DxU1LQC5RfqOTHbWaoDw/w==
-Date:   Tue, 21 Apr 2020 11:48:08 +0000
-Message-ID: <6AA21C22F0A5DA478922644AD2EC308C73C54781@SHSMSX101.ccr.corp.intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728533AbgDULwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:52:18 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:33318 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726018AbgDULwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:52:18 -0400
+Received: from [10.130.0.79] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn91s3p5eY4gqAA--.6S3;
+        Tue, 21 Apr 2020 19:52:13 +0800 (CST)
+Subject: Re: [PATCH v2 2/3] MIPS: Cleanup code about plat_mem_setup()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1587468238-24032-1-git-send-email-yangtiezhu@loongson.cn>
+ <1587468238-24032-3-git-send-email-yangtiezhu@loongson.cn>
+ <20200421114656.GA12375@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <abfef20f-cdc6-9400-f1f4-e80cfd7d885e@loongson.cn>
+Date:   Tue, 21 Apr 2020 19:52:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
+In-Reply-To: <20200421114656.GA12375@alpha.franken.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxn91s3p5eY4gqAA--.6S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeV
+        CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2
+        V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfU0iiSUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dax related code already removed from this file.
+On 04/21/2020 07:46 PM, Thomas Bogendoerfer wrote:
+> On Tue, Apr 21, 2020 at 07:23:57PM +0800, Tiezhu Yang wrote:
+>> In the current code, plat_mem_setup() is called by arch_mem_init() instead
+>> of setup_arch() and has been declared in asm/bootinfo.h, so modify the code
+>> comment to reflect the reality and remove the useless duplicate declartion
+>> in arch/mips/kernel/setup.c.
+>>
+>> Fixes: 2925aba4223f ("[MIPS] Cleanup memory management initialization.")
+> this isn't a fix, so please no fixes tag.
 
-Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
----
- fs/block_dev.c | 1 -
- 1 file changed, 1 deletion(-)
+OK, I will remove the tag and send v3.
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 52b6f646cdbd..4163435dc231 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -19,7 +19,6 @@
- #include <linux/module.h>
- #include <linux/blkpg.h>
- #include <linux/magic.h>
--#include <linux/dax.h>
- #include <linux/buffer_head.h>
- #include <linux/swap.h>
- #include <linux/pagevec.h>
--- 
-2.17.1
+>
+> Thomas.
+>
 
-> -----Original Message-----
-> From: Christoph Hellwig <hch@infradead.org>
-> Sent: Tuesday, April 21, 2020 7:33 PM
-> To: Ma, Jianpeng <jianpeng.ma@intel.com>
-> Cc: axboe@kernel.dk; Williams, Dan J <dan.j.williams@intel.com>; linux-
-> kernel@vger.kernel.org
-> Subject: Re: block: remove unused header
-> 
-> On Tue, Apr 21, 2020 at 05:48:46AM +0000, Ma, Jianpeng wrote:
-> > >From 95218bc1d79f2bcbdd8819be26efa698868a34ca Mon Sep 17 00:00:00
-> 2001
-> > From: Jianpeng Ma <jianpeng.ma@intel.com>
-> > Date: Tue, 21 Apr 2020 01:15:24 -0400
-> > Subject: [PATCH] block: remove unused header.
-> >
-> > Dax related code already removed from this file.
-> >
-> > Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
-> 
-> Except for the mangled patch format this looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> Can you resend it with proper patch headers?
