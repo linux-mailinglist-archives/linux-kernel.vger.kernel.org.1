@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26E71B3207
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3AC1B320B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 23:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgDUVnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 17:43:31 -0400
-Received: from mga05.intel.com ([192.55.52.43]:3426 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgDUVna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 17:43:30 -0400
-IronPort-SDR: 7P8WNAcWUyj0aQ3Xi9OK9W1KZ9ggHx/r4D4g3kNIXe7tb1Jh77NDsEDZsyKWLMXtViP+DAeqfF
- Vpfe0R5UHuDw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 14:43:29 -0700
-IronPort-SDR: l9v2emWz69/KRu2nwYAzuWNK6yG8VzlTGptMSXs336pBbWT0m/0+nvmKP3w1ZyAH2wx8R3haKM
- 7VHY+96vMIrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,411,1580803200"; 
-   d="scan'208";a="279792039"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Apr 2020 14:43:29 -0700
-Date:   Tue, 21 Apr 2020 14:43:29 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V9 10/11] fs/xfs: Update
- xfs_ioctl_setattr_dax_invalidate()
-Message-ID: <20200421214328.GD3372712@iweiny-DESK2.sc.intel.com>
-References: <20200421191754.3372370-1-ira.weiny@intel.com>
- <20200421191754.3372370-11-ira.weiny@intel.com>
- <20200421203140.GD6742@magnolia>
- <20200421213049.GC27860@dread.disaster.area>
+        id S1726359AbgDUVp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 17:45:59 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55164 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725850AbgDUVp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 17:45:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587505557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hrPqSHzvDqHMhPjGbnbzUJQXRgekl0cm+3+Jn2/BimY=;
+        b=S7zywpEMd7LEqFHACldR0UmYKqhAVgxcOOIZuUkbC0818+3Qms+c2mRTXy0/JTGC9gx1Sk
+        AoBCXT6yWFNJkl9Y2ER3A+VkuAvq2JguC2LuMd6LCMgCLzmuqGDzW4JXJ4bXIVrFcrOs1h
+        9E0JAGMf17J72kgtlo05TgNbyzk5upw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-juOgthchOb2J8RT3L4P7Wg-1; Tue, 21 Apr 2020 17:45:55 -0400
+X-MC-Unique: juOgthchOb2J8RT3L4P7Wg-1
+Received: by mail-wm1-f72.google.com with SMTP id o5so15244wmo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 14:45:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hrPqSHzvDqHMhPjGbnbzUJQXRgekl0cm+3+Jn2/BimY=;
+        b=oebIipWZjTZ9NJ8oMLNyuRUpExxc0zqj4Gda76Pw1yxI8rVamuXNIVYEah33cyWdoZ
+         ks/mK936YYTX2xfJiN+CX04kP3qZGFweRpEFBT1ofS9+htrLAaqftWTsDgDT9EKgbNm2
+         J1wR+RUmPoAHd6yXqvMdby2nSQNc1SxFdzJWH6i7xTzznBw98OkznVGj2Aa4DFPfbr+c
+         37d+mJ05BpRvfK7fFJlDYTnSKtfcHa3XklvsLDUdmBTrNLJ2IwShNZzaC/PwuBuG8QGh
+         R54BhWlMmWfylbj0fNeaXqdYfq/F7Qyf35fiQ0E59DKCQuxlb7g3zupcKzhH5sM64gUe
+         gY9w==
+X-Gm-Message-State: AGi0PuYC8ADmFIxzm6wXqsrLdgYngw403uL38EhV+PldqKatholH3uXi
+        rv+/kEyJh7PrW6FyUs2yL6P7eEmuU/xyZKPAkXLePLI9L5EaytBIY/A/bXA3ZS0C9TR83wbFOD1
+        BEc+c7sD/+7ixgXpDrHTeaE0k
+X-Received: by 2002:a1c:bc05:: with SMTP id m5mr6487210wmf.143.1587505554206;
+        Tue, 21 Apr 2020 14:45:54 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKxMSa7I7p8Lu5YsI0+4oCtBwBPlOn5btcgzQhE21NXEYuoD2a64Zx/AKYlzP5XHQXGdM+iIA==
+X-Received: by 2002:a1c:bc05:: with SMTP id m5mr6487200wmf.143.1587505553982;
+        Tue, 21 Apr 2020 14:45:53 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:f43b:97b2:4c89:7446? ([2001:b07:6468:f312:f43b:97b2:4c89:7446])
+        by smtp.gmail.com with ESMTPSA id q187sm4918951wma.41.2020.04.21.14.45.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 14:45:53 -0700 (PDT)
+Subject: Re: [PATCH v1 01/15] nitro_enclaves: Add ioctl interface definition
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
+        ne-devel-upstream@amazon.com
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <20200421184150.68011-2-andraprs@amazon.com>
+ <7e0cb729-60ca-3b2e-909b-8883b24908a8@infradead.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <716e0cfb-fa4a-5fc5-f198-6574fa8dc046@redhat.com>
+Date:   Tue, 21 Apr 2020 23:45:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421213049.GC27860@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <7e0cb729-60ca-3b2e-909b-8883b24908a8@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 07:30:49AM +1000, Dave Chinner wrote:
-> On Tue, Apr 21, 2020 at 01:31:40PM -0700, Darrick J. Wong wrote:
-> > On Tue, Apr 21, 2020 at 12:17:52PM -0700, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > Because of the separation of FS_XFLAG_DAX from S_DAX and the delayed
-> > > setting of S_DAX, data invalidation no longer needs to happen when
-> > > FS_XFLAG_DAX is changed.
-> > > 
-> > > Change xfs_ioctl_setattr_dax_invalidate() to be
-> > > xfs_ioctl_dax_check_set_cache() and alter the code to reflect the new
-> > > functionality.
-> > > 
-> > > Furthermore, we no longer need the locking so we remove the join_flags
-> > > logic.
-> > > 
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > ---
-> > > Changes from V8:
-> > > 	Change name of function to xfs_ioctl_dax_check_set_cache()
-> > > 	Update commit message
-> > > 	Fix bit manipulations
-> > > 
-> > > Changes from V7:
-> > > 	Use new flag_inode_dontcache()
-> > > 	Skip don't cache if mount over ride is active.
-> > > 
-> > > Changes from v6:
-> > > 	Fix completely broken implementation and update commit message.
-> > > 	Use the new VFS layer I_DONTCACHE to facilitate inode eviction
-> > > 	and S_DAX changing on drop_caches
-> > > 
-> > > Changes from v5:
-> > > 	New patch
-> > > ---
-> > >  fs/xfs/xfs_ioctl.c | 108 +++++++++------------------------------------
-> > >  1 file changed, 20 insertions(+), 88 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> > > index 104495ac187c..b87b571a6748 100644
-> > > --- a/fs/xfs/xfs_ioctl.c
-> > > +++ b/fs/xfs/xfs_ioctl.c
-> > > @@ -1245,64 +1245,26 @@ xfs_ioctl_setattr_xflags(
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -/*
-> > > - * If we are changing DAX flags, we have to ensure the file is clean and any
-> > > - * cached objects in the address space are invalidated and removed. This
-> > > - * requires us to lock out other IO and page faults similar to a truncate
-> > > - * operation. The locks need to be held until the transaction has been committed
-> > > - * so that the cache invalidation is atomic with respect to the DAX flag
-> > > - * manipulation.
-> > > - */
-> > > -static int
-> > > -xfs_ioctl_setattr_dax_invalidate(
-> > > +static void
-> > > +xfs_ioctl_dax_check_set_cache(
-> > 
-> > That's a ... strange name.  Set cache on what?
-> > 
-> > Oh, this is the function that sets I_DONTCACHE if an FS_XFLAG_DAX change
-> > could have an immediate effect on S_DAX (assuming no other users).  What
-> > do you think of the following?
-> > 
-> > 	/*
-> > 	 * If a change to FS_XFLAG_DAX will result in an change to S_DAX
-> > 	 * the next time the incore inode is initialized, set the VFS
-> > 	 * I_DONTCACHE flag to try to hurry that along.
-> > 	 */
-> > 	static void
-> > 	xfs_ioctl_try_change_vfs_dax(...)
+On 21/04/20 20:47, Randy Dunlap wrote:
+>> +
+>> +/**
+>> + * The command is used to trigger enclave start after the enclave resources,
+>> + * such as memory and CPU, have been set.
+>> + *
+>> + * The enclave start metadata is an in / out data structure. It includes
+>> + * provided info by the caller - enclave cid and flags - and returns the
+>> + * slot uid and the cid (if input cid is 0).
+>> + */
+>> +#define NE_ENCLAVE_START _IOWR('B', 0x1, struct enclave_start_metadata)
+> Please document ioctl major ('B' in this case) and range used in
+> Documentation/userspace-api/ioctl/ioctl-number.rst.
 > 
-> That doesn't seem any better. This is a preparation function now, in
-> that it can't fail and doesn't change the outcome of the operation
-> being performed. So, IMO, calling it something like
-> xfs_ioctl_setattr_prepare_dax() would be a better name for it.
 
-But it does potentially (after a check) set I_DONTCACHE.
+Since it's really just a couple ioctls, I can "donate" part of the KVM
+space, for example major 0xAE minor 0x20-0x3f.
 
-What about?
+Paolo
 
-xfs_ioctl_dax_check_set_dontcache()?
-
-Ira
-
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
