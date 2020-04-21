@@ -2,110 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6931B24BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45631B24D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 13:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgDULQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 07:16:48 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53021 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDULQs (ORCPT
+        id S1728707AbgDULRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 07:17:25 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:24956 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728337AbgDULRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 07:16:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587467806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=97DLxg4Yjg3km/mFNl5Zacv6VSLE1VXtqLZ5V4giXi0=;
-        b=HlrVX0GsVKY+PNOhH8kTEyTdXU1qVbiJHKgccyIqX3DhE6pqXPhMEgn7owWA0C3bBOWVnf
-        T8eHCQPdf0JTtQ1kTLSllOrjsYfchMeq8RNEo8uoJBxNRx1hz0tBmFVCgt90lnTAqFz/ZM
-        rgo4EOYKmdzPYEx+hVdV4wjssYoW+Nk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-4NZ7qyVbNU-zDvsmYgxkfQ-1; Tue, 21 Apr 2020 07:16:44 -0400
-X-MC-Unique: 4NZ7qyVbNU-zDvsmYgxkfQ-1
-Received: by mail-wr1-f72.google.com with SMTP id i10so7313044wrq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 04:16:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=97DLxg4Yjg3km/mFNl5Zacv6VSLE1VXtqLZ5V4giXi0=;
-        b=jrA8xI4s62W8juof+/CHVJQXh/Vz0xbtnqUEEAwkY2xckghnbXxzJGxK8+v9HXvizr
-         EOWzOXh2s1zIi6yxTYniodwC+UJlNA++aGe5GcEDOgvX2wT8TYQis0QugBnerOYb+QdM
-         5fydesyQTasV23SiWRF6b7HsitWRAHBN5qm3gmCGg7wSmZvLjfUN7U/XLnbCeDHpk/dF
-         M9JXtvwanBEQf0lxXlNg1yLfQ6lQtkQRf50UVmmw/TtQ9+1rkiLQW4JOnvD/cDqdznLn
-         OL5sbAvcV/tBKK2U3tp5oQDFG9Fyr0X41K7sV01Vptk11lNxtFZ3XlF9xcwgspHCFzNs
-         mC6Q==
-X-Gm-Message-State: AGi0Puaaa9bWAMS1PHvvWFH2mS0rOR6JDBbDH1TJqfSu7cDuIVU0hjt0
-        YnmPlT4u+ANrjEmyYc3amzYJ6CpqlQFth8Moz9uO8PdElHb4wrzfuGR5QeHTF/V9jWmgeKaKnw8
-        cJX116P1WI7NPAx8C7AGdFk9m
-X-Received: by 2002:a5d:5652:: with SMTP id j18mr6767442wrw.40.1587467803535;
-        Tue, 21 Apr 2020 04:16:43 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIM+q3J6iSnskRnURVF3g9hh9MdKKvxJisuR8ZZlbkBs6sJqC1TWZ4HVghfB2r6qghAm3/t8A==
-X-Received: by 2002:a5d:5652:: with SMTP id j18mr6767417wrw.40.1587467803259;
-        Tue, 21 Apr 2020 04:16:43 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:f43b:97b2:4c89:7446? ([2001:b07:6468:f312:f43b:97b2:4c89:7446])
-        by smtp.gmail.com with ESMTPSA id t17sm3290485wro.2.2020.04.21.04.16.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2020 04:16:42 -0700 (PDT)
-Subject: Re: [PATCH 1/4] KVM: x86: hyperv: Remove duplicate definitions of
- Reference TSC Page
-To:     Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-References: <20200420173838.24672-1-mikelley@microsoft.com>
- <20200420173838.24672-2-mikelley@microsoft.com>
- <20200421092925.rxb72yep4paruvi6@debian>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6c2bae31-14a8-39cf-6e6d-139d84146477@redhat.com>
-Date:   Tue, 21 Apr 2020 13:16:42 +0200
+        Tue, 21 Apr 2020 07:17:24 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03LBC8lR025528;
+        Tue, 21 Apr 2020 13:17:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=/c16tCY9ekQ35yC4luKxDhPkTxyEHJ14jZb/3fcZqkE=;
+ b=pzKPTnjr6v2ZLEYjerQsEGRihro9YwPNcBh8DzpgozrlZcahPHcTbC36jXENi6xHwubV
+ AttYW5Cymhc0xgMay9GU+9f/TTIN30xsSZTZnwS5SbjfOiIXiDdBbPPtEnbRRbU2ou3e
+ suUD5EO2R2ozzGKmZP9AgTbPJMPPu59Pq0/+S5eijEsrN64l4c018FtiZwGilTNVQAaL
+ SV6WLQlKVSMjoLOSyJK4prUd+xKeEKEJ+VZAHs5oOqsMARgGSsHENQMnlJv+J4QuRr9i
+ lVxbV9mAexlrsu0LuX9h23Vt2pTuEs2B4ZtwMniZ/tToVkWqBDKlY57SwWI0RcYj3Lok +g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fpp8qx6h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Apr 2020 13:17:11 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AE7FF10003B;
+        Tue, 21 Apr 2020 13:17:10 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9EFB02ADA0F;
+        Tue, 21 Apr 2020 13:17:10 +0200 (CEST)
+Received: from lmecxl0912.tpe.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 21 Apr
+ 2020 13:17:04 +0200
+Subject: Re: [PATCH 2/6] ARM: dts: Add missing pinctrl entries for STM32MP15
+To:     <mani@kernel.org>, <robh+dt@kernel.org>,
+        <mcoquelin.stm32@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420173124.27416-1-mani@kernel.org>
+ <20200420173124.27416-3-mani@kernel.org>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <2241c327-7cd6-7abd-b94f-00abe43b97e1@st.com>
+Date:   Tue, 21 Apr 2020 13:16:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200421092925.rxb72yep4paruvi6@debian>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200420173124.27416-3-mani@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-21_04:2020-04-20,2020-04-21 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/20 11:29, Wei Liu wrote:
-> On Mon, Apr 20, 2020 at 10:38:35AM -0700, Michael Kelley wrote:
->> The Hyper-V Reference TSC Page structure is defined twice. struct
->> ms_hyperv_tsc_page has padding out to a full 4 Kbyte page size. But
->> the padding is not needed because the declaration includes a union
->> with HV_HYP_PAGE_SIZE.  KVM uses the second definition, which is
->> struct _HV_REFERENCE_TSC_PAGE, because it does not have the padding.
->>
->> Fix the duplication by removing the padding from ms_hyperv_tsc_page.
->> Fix up the KVM code to use it. Remove the no longer used struct
->> _HV_REFERENCE_TSC_PAGE.
->>
->> There is no functional change.
->>
->> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
->> ---
->>  arch/x86/include/asm/hyperv-tlfs.h | 8 --------
->>  arch/x86/include/asm/kvm_host.h    | 2 +-
->>  arch/x86/kvm/hyperv.c              | 4 ++--
+Hi Mani
+
+Commit title should be ARM: dts: stm32 ...
+otherwise it's good.
+
+regards
+alex
+
+On 4/20/20 7:31 PM, mani@kernel.org wrote:
+> From: Manivannan Sadhasivam <mani@kernel.org>
 > 
-> Paolo, this patch touches KVM code. Let me know how you would like to
-> handle this.
-
-Just include it, I don't expect conflicts.
-
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Paolo
-
+> These pinctrl definitions will be used by Stinger96/IoTBox boards
+> from Shiratech.
+> 
+> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> ---
+>   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 64 ++++++++++++++++++++++++
+>   1 file changed, 64 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> index aeddcaadb829..858c83038e5a 100644
+> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> @@ -1519,6 +1519,30 @@
+>   		};
+>   	};
+>   
+> +	usart2_pins_b: usart2-1 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('F', 5, AF7)>, /* USART2_TX */
+> +				 <STM32_PINMUX('A', 1, AF7)>; /* USART2_RTS */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('F', 4, AF7)>, /* USART2_RX */
+> +				 <STM32_PINMUX('E', 15, AF7)>; /* USART2_CTS_NSS */
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	usart2_sleep_pins_b: usart2-sleep-1 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('F', 5, ANALOG)>, /* USART2_TX */
+> +				 <STM32_PINMUX('A', 1, ANALOG)>, /* USART2_RTS */
+> +				 <STM32_PINMUX('F', 4, ANALOG)>, /* USART2_RX */
+> +				 <STM32_PINMUX('E', 15, ANALOG)>; /* USART2_CTS_NSS */
+> +		};
+> +	};
+> +
+>   	usart3_pins_a: usart3-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('B', 10, AF7)>; /* USART3_TX */
+> @@ -1558,6 +1582,19 @@
+>   		};
+>   	};
+>   
+> +	uart4_pins_c: uart4-2 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('G', 11, AF6)>; /* UART4_TX */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('B', 2, AF8)>; /* UART4_RX */
+> +			bias-disable;
+> +		};
+> +	};
+> +
+>   	uart7_pins_a: uart7-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 8, AF7)>; /* UART4_TX */
+> @@ -1573,6 +1610,19 @@
+>   		};
+>   	};
+>   
+> +	uart7_pins_b: uart7-1 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('F', 7, AF7)>; /* UART7_TX */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('F', 6, AF7)>; /* UART7_RX */
+> +			bias-disable;
+> +		};
+> +	};
+> +
+>   	uart8_pins_a: uart8-0 {
+>   		pins1 {
+>   			pinmux = <STM32_PINMUX('E', 1, AF8)>; /* UART8_TX */
+> @@ -1647,4 +1697,18 @@
+>   			bias-disable;
+>   		};
+>   	};
+> +
+> +	spi4_pins_a: spi4-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
+> +				 <STM32_PINMUX('E', 6, AF5)>;  /* SPI4_MOSI */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <1>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('E', 13, AF5)>; /* SPI4_MISO */
+> +			bias-disable;
+> +		};
+> +	};
+>   };
+> 
