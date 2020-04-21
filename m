@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BCC1B223E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BC61B224A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 11:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgDUJDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 05:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726013AbgDUJDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:03:09 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE605C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 02:03:09 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jQonv-0007bH-OJ; Tue, 21 Apr 2020 11:02:56 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id C9C63104099; Tue, 21 Apr 2020 11:02:54 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     "Singh\, Balbir" <sblbir@amazon.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "keescook\@chromium.org" <keescook@chromium.org>,
-        "tony.luck\@intel.com" <tony.luck@intel.com>,
-        "benh\@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "jpoimboe\@redhat.com" <jpoimboe@redhat.com>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "dave.hansen\@intel.com" <dave.hansen@intel.com>
-Subject: Re:  [PATCH v3 3/5] arch/x86/mm: Refactor cond_ibpb() to support other use cases
-In-Reply-To: <9cbabf58e0a6fe3775c268d1fa4517d02ad7e617.camel@amazon.com>
-References: <20200408090229.16467-1-sblbir@amazon.com> <20200408090229.16467-4-sblbir@amazon.com> <87sgh2l0q4.fsf@nanos.tec.linutronix.de> <12023cc73a6344ed7499e09492a6934c1dfaf044.camel@amazon.com> <87pnc5xgff.fsf@nanos.tec.linutronix.de> <9cbabf58e0a6fe3775c268d1fa4517d02ad7e617.camel@amazon.com>
-Date:   Tue, 21 Apr 2020 11:02:54 +0200
-Message-ID: <87wo69us75.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S1728452AbgDUJFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 05:05:19 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:34924 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726095AbgDUJFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 05:05:19 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT2knt55emXsqAA--.36S2;
+        Tue, 21 Apr 2020 17:04:40 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/3] MIPS: Fix some issues about arch_mem_init()
+Date:   Tue, 21 Apr 2020 17:04:26 +0800
+Message-Id: <1587459869-12183-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxT2knt55emXsqAA--.36S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYo7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87
+        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+        MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
+        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x0JU4KZXUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Singh, Balbir" <sblbir@amazon.com> writes:
-> On Sat, 2020-04-18 at 11:59 +0200, Thomas Gleixner wrote:
->> 
->> "Singh, Balbir" <sblbir@amazon.com> writes:
->> > On Fri, 2020-04-17 at 15:07 +0200, Thomas Gleixner wrote:
->> > > 
->> > > Balbir Singh <sblbir@amazon.com> writes:
->> > > > 
->> > > >  /*
->> > > > - * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer
->> > > > which is
->> > > > - * stored in cpu_tlb_state.last_user_mm_ibpb.
->> > > > + * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
->> > > > + * stored in cpu_tlb_state.last_user_mm_spec.
->> > > >   */
->> > > >  #define LAST_USER_MM_IBPB    0x1UL
->> > > > +#define LAST_USER_MM_SPEC_MASK       (LAST_USER_MM_IBPB)
->> > > > 
->> > > >       /* Reinitialize tlbstate. */
->> > > > -     this_cpu_write(cpu_tlbstate.last_user_mm_ibpb,
->> > > > LAST_USER_MM_IBPB);
->> > > > +     this_cpu_write(cpu_tlbstate.last_user_mm_spec,
->> > > > LAST_USER_MM_IBPB);
->> > > 
->> > > Shouldn't that be LAST_USER_MM_MASK?
->> > > 
->> > 
->> > No, that crashes the system for SW flushes, because it tries to flush the
->> > L1D
->> > via the software loop and early enough we don't have the l1d_flush_pages
->> > allocated. LAST_USER_MM_MASK has LAST_USER_MM_FLUSH_L1D bit set.
->> 
->> You can trivially prevent this by checking l1d_flush_pages != NULL.
->> 
->
-> But why would we want to flush on reinit? It is either coming back from a low
-> power state or initialising, is it worth adding a check for != NULL everytime
-> we flush to handle this case?
+Tiezhu Yang (3):
+  MIPS: Do not initialise globals to 0
+  MIPS: Cleanup code about plat_mem_setup()
+  MIPS: Reduce possibility of kernel panic under CONFIG_SWIOTLB
 
-Fair enough. Please add a comment so the same question does not come
-back 3 month from now.
+ arch/mips/include/asm/bootinfo.h |  2 +-
+ arch/mips/kernel/setup.c         | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-Thanks,
+-- 
+2.1.0
 
-        tglx
