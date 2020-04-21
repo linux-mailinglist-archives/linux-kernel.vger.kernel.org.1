@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE16B1B2123
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B951B2165
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 10:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgDUIKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 04:10:41 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:10522 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726691AbgDUIKl (ORCPT
+        id S1728573AbgDUISE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 04:18:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:35110 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728003AbgDUISD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:10:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587456641; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qhaNkfzyboUvEtiuhO92CVabH2/SAoOegZ9nrvZgMWo=; b=tN0ezxY1Mxl8UD7vD3a6o8qYJdtZG7ca7qMhCEreqa4+Bh9rajOEhA32dD5Dvv9lTkIz4nKQ
- UDyaDxUSefF4Nv1KQ9004oBGybziVsNitbFG6SR7tDSDgK+C6/uf2noi4tncFIXBRJJ8jNNb
- yA3Sj6afQipgWUQK4L7UeVMyx8A=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9eaa71.7f8335735fb8-smtp-out-n01;
- Tue, 21 Apr 2020 08:10:25 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6D5D4C433F2; Tue, 21 Apr 2020 08:10:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.43.137] (unknown [106.213.184.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC36CC433CB;
-        Tue, 21 Apr 2020 08:10:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC36CC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH] arm64: dts: qcom: sm8250: Fix PDC compatible and reg
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200415054703.739507-1-bjorn.andersson@linaro.org>
- <20200421070227.GD72691@vkoul-mobl>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <d67adcc2-7f5c-3ed7-5c7c-c3b6b46cbd0b@codeaurora.org>
-Date:   Tue, 21 Apr 2020 13:40:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 21 Apr 2020 04:18:03 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-45-R6erxUPxNwmDnj4dVoOApw-1; Tue, 21 Apr 2020 09:11:10 +0100
+X-MC-Unique: R6erxUPxNwmDnj4dVoOApw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 21 Apr 2020 09:11:10 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 21 Apr 2020 09:11:10 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+CC:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: FPU register granularity [Was: Re: [PATCH crypto-stable] crypto:
+ arch/lib - limit simd usage to PAGE_SIZE chunks]
+Thread-Topic: FPU register granularity [Was: Re: [PATCH crypto-stable] crypto:
+ arch/lib - limit simd usage to PAGE_SIZE chunks]
+Thread-Index: AQHWF5Nwrne9SiRX+kyNbDVRZjwXoqiDOD6g
+Date:   Tue, 21 Apr 2020 08:11:10 +0000
+Message-ID: <77009e0fb2fd442791fa192841a1ae16@AcuMS.aculab.com>
+References: <20200420075711.2385190-1-Jason@zx2c4.com>
+ <2cdb57f2cdbd49e9bb1034d01d054bb7@AcuMS.aculab.com>
+ <CAHmME9pq2Kdrp5C1+90PQyXsaG8xfdRwG-xGNs5U0ykVORrMbw@mail.gmail.com>
+In-Reply-To: <CAHmME9pq2Kdrp5C1+90PQyXsaG8xfdRwG-xGNs5U0ykVORrMbw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200421070227.GD72691@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogSmFzb24gQS4gRG9uZW5mZWxkDQo+IFNlbnQ6IDIxIEFwcmlsIDIwMjAgMDU6MTUNCj4g
+DQo+IEhpIERhdmlkLA0KPiANCj4gT24gTW9uLCBBcHIgMjAsIDIwMjAgYXQgMjozMiBBTSBEYXZp
+ZCBMYWlnaHQgPERhdmlkLkxhaWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPiBNYXliZSBrZXJu
+ZWxfZnBfYmVnaW4oKSBzaG91bGQgYmUgcGFzc2VkIHRoZSBhZGRyZXNzIG9mIHNvbWV3aGVyZQ0K
+PiA+IHRoZSBhZGRyZXNzIG9mIGFuIGZwdSBzYXZlIGFyZWEgYnVmZmVyIGNhbiBiZSB3cml0dGVu
+IHRvLg0KPiA+IFRoZW4gdGhlIHByZS1lbXB0aW9uIGNvZGUgY2FuIGFsbG9jYXRlIHRoZSBidWZm
+ZXIgYW5kIHNhdmUgdGhlDQo+ID4gc3RhdGUgaW50byBpdC4NCj4gDQo+IEludGVyZXN0aW5nIGlk
+ZWEuIEl0IGxvb2tzIGxpa2UgYHN0cnVjdCB4cmVnc19zdGF0ZWAgaXMgb25seSA1NzYNCj4gYnl0
+ZXMuIFRoYXQncyBub3QgZXhhY3RseSBzbWFsbCwgYnV0IGl0J3Mgbm90IGluc2FuZWx5IGh1Z2Ug
+ZWl0aGVyLA0KPiBhbmQgbWF5YmUgd2UgY291bGQganVzdGlmaWFibHkgc3RpY2sgdGhhdCBvbiB0
+aGUgc3RhY2ssIG9yIGV2ZW4NCj4gcmVzZXJ2ZSBwYXJ0IG9mIHRoZSBzdGFjayBhbGxvY2F0aW9u
+IGZvciB0aGF0IHRoYXQgdGhlIGZ1bmN0aW9uIHdvdWxkDQo+IGtub3cgYWJvdXQsIHdpdGhvdXQg
+bmVlZGluZyB0byBzcGVjaWZ5IGFueSBhZGRyZXNzLg0KDQpBcyB5b3Ugc2FpZCB5b3Vyc2VsZiwg
+d2l0aCBBVlg1MTIgaXQgaXMgbXVjaCBsYXJnZXIuDQpXaGljaCBpcyB3aHkgSSBzdWdnZXN0ZWQg
+dGhlIHNhdmUgY29kZSBjb3VsZCBhbGxvY2F0ZSB0aGUgYXJlYS4NCk5vdGUgdGhhdCB0aGlzIHdv
+dWxkIG9ubHkgYmUgbmVlZGVkIGZvciBuZXN0ZWQgdXNlIChmb3IgYSBmdWxsIHNhdmUpLg0KDQo+
+ID4ga2VybmVsX2ZwdV9iZWdpbigpIG91Z2h0IGFsc28gYmUgcGFzc2VkIGEgcGFyYW1ldGVyIHNh
+eWluZyB3aGljaA0KPiA+IGZwdSBmZWF0dXJlcyBhcmUgcmVxdWlyZWQsIGFuZCByZXR1cm4gd2hp
+Y2ggYXJlIGFsbG9jYXRlZC4NCj4gPiBPbiB4ODYgdGhpcyBjb3VsZCBiZSB1c2VkIHRvIGNoZWNr
+IGZvciBBVlg1MTIgKGV0Yykgd2hpY2ggbWF5IGJlDQo+ID4gYXZhaWxhYmxlIGluIGFuIElTUiB1
+bmxlc3MgaXQgaW50ZXJydXB0ZWQgaW5zaWRlIGEga2VybmVsX2ZwdV9iZWdpbigpDQo+ID4gc2Vj
+dGlvbiAoZXRjKS4NCj4gPiBJdCB3b3VsZCBhbHNvIGFsbG93IG9wdGltaXNhdGlvbnMgaWYgb25s
+eSAxIG9yIDIgZnB1IHJlZ2lzdGVycyBhcmUNCj4gPiBuZWVkZWQgKGVnIGZvciBzb21lIG9mIHRo
+ZSBjcnlwdG8gZnVuY3Rpb25zKSByYXRoZXIgdGhhbiB0aGUgd2hvbGUNCj4gPiBmcHUgcmVnaXN0
+ZXIgc2V0Lg0KPiANCj4gRm9yIEFWWDUxMiB0aGlzIHByb2JhYmx5IG1ha2VzIHNlbnNlLCBJIHN1
+cHBvc2UuIEJ1dCBJJ20gbm90IHN1cmUgaWYNCj4gdGhlcmUgYXJlIHRvbyBtYW55IGJpdHMgb2Yg
+Y3J5cHRvIGNvZGUgdGhhdCBvbmx5IHVzZSBhIGZldyByZWdpc3RlcnMuDQo+IFRoZXJlIGFyZSB0
+aG9zZSBhY2NlbGVyYXRlZCBtZW1jcHkgcm91dGluZXMgaW4gaTkxNSB0aG91Z2ggLS0gZXZlciBz
+ZWUNCj4gZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tZW1jcHkuYz8gc29ydCBvZiB3aWxkLiBC
+dXQgaWYgd2UgZGlkIGdvDQo+IHRoaXMgd2F5LCBJIHdvbmRlciBpZiBpdCdkIG1ha2Ugc2Vuc2Ug
+dG8gdG90YWxseSBvdmVyZW5naW5lZXIgaXQgYW5kDQo+IHdyaXRlIGEgZ2NjL2FzIHBsdWdpbiB0
+byBjcmVhdGUgdGhlIHJlZ2lzdGVyIG1hc2sgZm9yIHVzLiBPciwgbWF5YmUNCj4gc29tZSBjaGVj
+a2VyIGluc2lkZSBvZiBvYmp0b29sIGNvdWxkIGhlbHAgaGVyZS4NCg0KSSBzdXNwZWN0IHNvbWUg
+b2YgdGhhdCBjb2RlIGlzIG92ZXJseSB1bnJvbGxlZC4NCg0KPiBBY3R1YWxseSwgdGhvdWdoLCB0
+aGUgdGhpbmcgSSd2ZSBiZWVuIHdvbmRlcmluZyBhYm91dCBpcyBhY3R1YWxseQ0KPiBtb3Zpbmcg
+aW4gdGhlIGNvbXBsZXRlIG9wcG9zaXRlIGRpcmVjdGlvbjogaXMgdGhlcmUgc29tZQ0KPiBlZmZp
+Y2llbnQtZW5vdWdoIHdheSB0aGF0IHdlIGNvdWxkIGFsbG93IEZQVSByZWdpc3RlcnMgaW4gYWxs
+IGNvbnRleHRzDQo+IGFsd2F5cywgd2l0aG91dCB0aGUgbmVlZCBmb3Iga2VybmVsX2ZwdV9iZWdp
+bi9lbmQ/IEkgd2FzIHJldmVyc2luZw0KPiBudG9za3JubC5leGUgYW5kIHdhcyBraW5kIG9mIGlt
+cHJlc3NlZCAobWF5YmUgbm90IHRoZSByaWdodCB3b3JkPykgYnkNCj4gdGhlaXIganVkaWNpb3Vz
+IHVzZSBvZiB2ZWN0b3Jpc2F0aW9uIGV2ZXJ5d2hlcmUuIEkgYXNzdW1lIGEgbG90IG9mDQo+IHRo
+YXQgaXMgYmVpbmcgZ2VuZXJhdGVkIGJ5IHRoZWlyIGNvbXBpbGVyLCB3aGljaCBvZiBjb3Vyc2Ug
+Z2NjIGNvdWxkDQo+IGRvIGZvciB1cyBpZiB3ZSBsZXQgaXQuIElzIHRoYXQgYW4gaW50ZXJlc3Rp
+bmcgYXZlbnVlIHRvIGNvbnNpZGVyPyBPcg0KPiBhcmUgeW91IHByZXR0eSBjZXJ0YWluIHRoYXQg
+aXQnZCBiZSBhIGh1Z2UgbWlzdGFrZSwgd2l0aCBhbg0KPiBpcnJldmVyc2libGUgc3BlZWQgaGl0
+Pw0KDQoNCkkgdGhpbmsgd2luZG93cyB0YWtlcyB0aGUgJ2hpdCcgb2Ygc2F2aW5nIHRoZSBlbnRp
+cmUgZnB1IHN0YXRlIG9uDQpldmVyeSBrZXJuZWwgZW50cnkuDQpOb3RlIHRoYXQgZm9yIHN5c3Rl
+bSBjYWxscyB0aGlzIGlzIGFjdHVhbGx5IG1pbmltYWwuDQpBbGwgdGhlICdjYWxsZWUgc2F2ZWQn
+IHJlZ2lzdGVycyAobW9zdCBvZiB0aGUgZnB1IG9uZXMpIGNhbiBiZQ0KdHJhc2hlZCAtIGllIHJl
+bG9hZGVkIHdpdGggemVyb3MuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFr
+ZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwg
+VUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-We can drop the second reg,
-, <0 0x17c000f0 0 0x60>
-
-The change [1] to read second reg and configure it, is not yet gone in 
-pdc irqchip driver.
-Otherthan this, the patch looks good to me.
-
-Thanks,
-Maulik
-
-On 4/21/2020 12:32 PM, Vinod Koul wrote:
-> On 14-04-20, 22:47, Bjorn Andersson wrote:
->> The pdc node suffers from both too narrow compatible and insufficient
->> cells in the reg, fix these.
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> Tested-by: Vinod Koul <vkoul@kernel.org>
->
->> Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
->> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> index 891d83b2afea..2a7eaefd221d 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> @@ -314,8 +314,8 @@ intc: interrupt-controller@17a00000 {
->>   		};
->>   
->>   		pdc: interrupt-controller@b220000 {
->> -			compatible = "qcom,sm8250-pdc";
->> -			reg = <0x0b220000 0x30000>, <0x17c000f0 0x60>;
->> +			compatible = "qcom,sm8250-pdc", "qcom,pdc";
->> +			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
->>   			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
->>   					  <125 63 1>, <126 716 12>;
->>   			#interrupt-cells = <2>;
->> -- 
->> 2.24.0
-[1] https://patchwork.kernel.org/patch/11145353/
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
