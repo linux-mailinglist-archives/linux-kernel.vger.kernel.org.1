@@ -2,165 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFF61B2FD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 21:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEBA1B2F99
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 20:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgDUTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 15:09:11 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:38176 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgDUTJJ (ORCPT
+        id S1726017AbgDUSyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 14:54:41 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46942 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725870AbgDUSyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 15:09:09 -0400
-X-Greylist: delayed 940 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 15:09:08 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=To:References:Message-Id:
-        Content-Transfer-Encoding:Cc:Date:In-Reply-To:From:Subject:Mime-Version:
-        Content-Type:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=1b/gE5Wx8BbM9MjbWUVMc+EWAcqscOsveJTWROOiXcU=; b=mpSnJHUlfSqJPnjT8h6x4C7fE
-        We3wKZiZLGFQ1xcnsq/C0IBE4WGisZhe88IY3giPRkkftch2C1+XmXc5nUk38XIlw3CMADOOxSbKP
-        EN+svioBW8pNgNMM/+82Lu5NiU7rTAir/yfofa0Nk9GLhEd1BY5Z3XpxX2QE/wEwAW+84=;
-Received: from cpe-107-184-2-226.socal.res.rr.com ([107.184.2.226] helo=[192.168.2.117])
-        by mail.codeweavers.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <bshanks@codeweavers.com>)
-        id 1jQy1K-0003fV-A3; Tue, 21 Apr 2020 13:53:23 -0500
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: BUG: ff_effects lost after a fork
-From:   Brendan Shanks <bshanks@codeweavers.com>
-In-Reply-To: <20191127101008.GA327265@nuka.localdomain>
-Date:   Tue, 21 Apr 2020 11:53:19 -0700
-Cc:     dmitry.torokhov@gmail.com, rydberg@bitmath.org,
-        linux-kernel@vger.kernel.org,
-        Mathieu Maret <mathieu.maret@gmail.com>,
-        mmaret@pixium-vision.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5404D7D5-47EF-4399-B0D9-B3C68A3D5895@codeweavers.com>
-References: <20191127101008.GA327265@nuka.localdomain>
-To:     linux-input@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.104.14)
-X-Spam-Score: -25.7
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  > On Nov 27, 2019, at 2:10 AM, Mathieu Maret <mathieu.maret@gmail.com>
-    wrote: > > Hi, > > I'm using evdev for vibrator interface. > I can register
-    ff_effect and play them. > But, if I do any kind of f [...] 
- Content analysis details:   (-25.7 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
-  -20 USER_IN_WHITELIST      From: address is in the user's white-list
- -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
-  0.8 AWL                    AWL: Adjusted score from AWL reputation of From: address
+        Tue, 21 Apr 2020 14:54:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587495278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MrU2HNJZTQBPSn2z8yAKMiwd+9c1Olx+Jq2ydnHE1vM=;
+        b=MA5GTdLk/icqwNSbDV6VbGrESZfdKtB4Wx43GM6vHaIdABLilkeTvGjVV26iBWVVHzwTMs
+        t+vu7ncqEIhzBtQU1HPWiOe9aylsAClmr2zI6UTYvQ3uGN0OC97Z+yy4o4M9dwmwRY3uhx
+        /tXA1sFnzsaZxbDXsgWkhNqkCRQWhjc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-7PWAMLsjMYaygNzxcEJMOg-1; Tue, 21 Apr 2020 14:54:34 -0400
+X-MC-Unique: 7PWAMLsjMYaygNzxcEJMOg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44AC01083E80;
+        Tue, 21 Apr 2020 18:54:33 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C5471001B30;
+        Tue, 21 Apr 2020 18:54:25 +0000 (UTC)
+Date:   Tue, 21 Apr 2020 14:54:22 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Steve Grubb <sgrubb@redhat.com>
+Cc:     linux-audit@redhat.com, fw@strlen.de,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org
+Subject: Re: [PATCH ghak25 v3 3/3] audit: add subj creds to NETFILTER_CFG
+ record to cover async unregister
+Message-ID: <20200421185422.ziu2ejdvuofg5fu5@madcap2.tricolour.ca>
+References: <cover.1584480281.git.rgb@redhat.com>
+ <20200318213327.ow22q6nnjn3ijq6v@madcap2.tricolour.ca>
+ <CAHC9VhSbbjFbF0A_-saquZ8B85XaF7SWD2e1QcWsXhFSQrUAbQ@mail.gmail.com>
+ <2156032.xcGZvdN1jG@x2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2156032.xcGZvdN1jG@x2>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-04-21 11:15, Steve Grubb wrote:
+> On Friday, April 17, 2020 5:53:47 PM EDT Paul Moore wrote:
+> > On Wed, Mar 18, 2020 at 5:33 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > On 2020-03-18 17:22, Paul Moore wrote:
+> > > > On Wed, Mar 18, 2020 at 9:12 AM Richard Guy Briggs <rgb@redhat.com> 
+> wrote:
+> > > > > On 2020-03-17 17:30, Richard Guy Briggs wrote:
+> > > > > > Some table unregister actions seem to be initiated by the kernel to
+> > > > > > garbage collect unused tables that are not initiated by any
+> > > > > > userspace actions.  It was found to be necessary to add the subject
+> > > > > > credentials to cover this case to reveal the source of these
+> > > > > > actions.  A sample record:
+> > > > > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) :
+> > > > > >   table=nat family=bridge entries=0 op=unregister pid=153 uid=root
+> > > > > >   auid=unset tty=(none) ses=unset
+> > > > > >   subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2 exe=(null)
+> 
+> If this is the kernel, why is pid not 0? And if pid is 0, then isn't 
+> exe=/boot/vmlinuz-X.Y.Z-blah?
 
-> On Nov 27, 2019, at 2:10 AM, Mathieu Maret <mathieu.maret@gmail.com> =
-wrote:
->=20
-> Hi,
->=20
-> I'm using evdev for vibrator interface.
-> I can register ff_effect and play them.
-> But, if I do any kind of fork, all the effects are flush and cannot be
-> used.
->=20
-> You can find, below, an example of such a program.
-> =46rom some trace have put in the kernel, it's seems that at the end =
-of
-> the system() call, evdev_flush get called.
->=20
-> evdev_flush() will call flush_effects() that will remove all the
-> registered effects.
->=20
-> I've only one device with vibrator and it's a imx6 4.1.15 kernel. But
-> code looks the same that in linus master that why I'm posting it here. =
-I
-> hope that it will not waste people time
->=20
+It isn't PID 0 because it is a kernel thread.
 
-Hi everyone,
+> > > > > Given the precedent set by bpf unload, I'd really rather drop this
+> > > > > patch that adds subject credentials.
+> 
+> <snip> 
+> 
+> > I'm in the middle of building patches 1/3 and 2/3, assuming all goes
+> > well I'll merge them into audit/next (expect mail soon), however I'm
+> > going back and forth on this patch.  Like you I kinda don't like it,
+> > and with both of us not in love with this patch I have to ask if there
+> > is certification requirement for this?
+> 
+> Yes, any change to information flow must be auditable.
+> 
+> > I know about the generic
+> > subj/obj requirements, but in the case where there is no associated
+> > task/syscall/etc. information it isn't like the extra fields supplied
+> > in this patch are going to have much information in that regard; it's
+> > really the *absence* of that information which is telling.
+> 
+> Exactly. But if someone does a search based on the fields, they need to be 
+> able to find this record. For example, suppose I want to know what actions 
+> have been performed by kernel_t, I can run a  search and find this event. 
+> 
+> > Which brings me to wonder if simply the lack of any associated records in
+> > this event is enough?  Before when we weren't associating records into
+> > a single event it would have been a problem, but the way things
+> > currently are, if there are no other records (and you have configured
+> > that) then I think you have everything you need to know.
+> > 
+> > Thoughts?
+> 
+> You can't search on the absense of information. There are some fields that 
+> have meaning. It's OK if they are unset. It happens for daemons, too. But we 
+> don't remove the fields because of it. It tells part of the story.
+> 
+> -Steve
+> 
+> 
+> --
+> Linux-audit mailing list
+> Linux-audit@redhat.com
+> https://www.redhat.com/mailman/listinfo/linux-audit
 
-I=E2=80=99m also hitting this bug with games that use force-feedback =
-steering wheels under Wine/Proton. It typically shows up as EVIOCSFF =
-ioctls failing with EINVAL, since all the effects were unexpectedly =
-flushed.
+- RGB
 
-The problem is that input_ff_flush() is called whenever a file =
-descriptor is closed, but there can be multiple descriptors open to the =
-same file description (through fork(), dup(), etc). input_ff_flush() =
-removes all effects added by that file description, which the users of =
-the other descriptors certainly don't expect.
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
-As for the fix, maybe fd_ops->flush() shouldn=E2=80=99t be implemented =
-at all?
-In the current design, effects =E2=80=9Cbelong=E2=80=9D to a file =
-description (a struct file *), not a descriptor. This seems sensible to =
-me: a process could open a device, upload an effect, then fork(), and it =
-makes sense that the child would have full control of the effects =
-created by the parent. It seems to me like nothing should be done when a =
-descriptor is closed, and input_ff_flush() should be called only when =
-the whole struct file is released.
-
-I=E2=80=99ve attached a modified copy of Mathieu=E2=80=99s code, which =
-reproduces the problem for me with a Logitech G25 steering wheel.
-
-Brendan Shanks
-CodeWeavers
-
-
-
-
-#include <errno.h>
-#include <fcntl.h>
-#include <linux/input.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-#define DEV_PATH "/dev/input/event10"
-
-int main(int argc, char *argv[])
-{
-    int fd =3D open(DEV_PATH, O_RDWR);
-    if (fd < 0) {
-        printf("Cannot open " DEV_PATH);
-    }
-    // Register an effect
-    struct ff_effect effects;
-    memset(&effects, 0, sizeof(effects));
-    effects.type                      =3D FF_CONSTANT;
-    effects.id                        =3D -1;
-    effects.replay.length             =3D 1000;
-    effects.replay.delay              =3D 0;
-    if (ioctl(fd, EVIOCSFF, &effects) < 0) {
-        printf("Cannot upload effect %s\n", strerror(errno));
-        return -1;
-    }
-
-    int fd2 =3D dup(fd);
-    close(fd2);
-
-    // ioctl fails with EINVAL
-    if (ioctl(fd, EVIOCSFF, &effects) < 0) {
-        printf("Cannot upload effect %s\n", strerror(errno));
-        return -1;
-    }
-
-    close(fd);
-    return 0;
-}=
