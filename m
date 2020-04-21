@@ -2,167 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587A71B2399
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63BA1B23A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 12:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgDUKII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 06:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDUKIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 06:08:07 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC8DC061A0F;
-        Tue, 21 Apr 2020 03:08:07 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 51F4B528;
-        Tue, 21 Apr 2020 12:08:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1587463683;
-        bh=jZZNucahbB0cQG+f2xHIqkLJ13LcR9CX7G3M1Fg9Rgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fMnCntoTQdyFCITsBXIIgatU8psMgcwl/9xqO+hdIRpCQgKgkA6XNCiJJO8RpWvnp
-         4IR28sn9GueMuUq7E41/OJjVRWBhumhDbkMjufFlu/GZgSAqdFlBbzTyg1Psz038dH
-         ipHNDn6ndT0LE7lFZTT6o5IyFZCf90KXGZIWG0dg=
-Date:   Tue, 21 Apr 2020 13:07:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] kbuild: Always validate DT binding examples
-Message-ID: <20200421100749.GA5429@pendragon.ideasonboard.com>
-References: <20200229003731.2728-1-robh@kernel.org>
+        id S1728414AbgDUKPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 06:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725920AbgDUKPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 06:15:46 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B76232072D;
+        Tue, 21 Apr 2020 10:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587464146;
+        bh=/qHKDq3x1BKgXgyJGzsD5R8TaA5U9ZIfbNoCLSPaJkE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=gT5a173moPBUTXYIvTDlmEjckUuRyohDpJunYr1Ff09RDOYN7u3MF4KLOv2lHNu2s
+         8r5tRrjkrrs+67TtQ2uGXlTYXwh+WkVHWvQRxRGe0sYFviTY9yRdUGj79W2oL1Zo2z
+         YR/1Lqc7Flr5ImJimhXIBOGJ/OTrRh/gNMtzpWqA=
+Message-ID: <86562f7eca48dd13a6cbafa4c6465d3a731fab88.camel@kernel.org>
+Subject: Re: [v3] ceph: if we are blacklisted, __do_request returns directly
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Yanhu Cao <gmayyyha@gmail.com>
+Cc:     Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 21 Apr 2020 06:15:44 -0400
+In-Reply-To: <CAB9OAC1+E6Qs=hr0naT73MNQ5scKOck4vF2gzsCS=0fQMLvG8A@mail.gmail.com>
+References: <20200417110723.12235-1-gmayyyha@gmail.com>
+         <ad6ca41f601d4feb2c3bd2850aeab95c3187bf2d.camel@kernel.org>
+         <CAB9OAC1+E6Qs=hr0naT73MNQ5scKOck4vF2gzsCS=0fQMLvG8A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200229003731.2728-1-robh@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Fri, Feb 28, 2020 at 06:37:30PM -0600, Rob Herring wrote:
-> Most folks only run dt_binding_check on the single schema they care about
-> by setting DT_SCHEMA_FILES. That means example is only checked against
-> that one schema which is not always sufficient.
+On Tue, 2020-04-21 at 10:13 +0800, Yanhu Cao wrote:
+> On Mon, Apr 20, 2020 at 8:16 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > On Fri, 2020-04-17 at 19:07 +0800, Yanhu Cao wrote:
+> > > If we mount cephfs by the recover_session option,
+> > > __do_request can return directly until the client automatically reconnects.
+> > > 
+> > > Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
+> > > ---
+> > >  fs/ceph/mds_client.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > > 
+> > > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > > index 486f91f9685b..16ac5e5f7f79 100644
+> > > --- a/fs/ceph/mds_client.c
+> > > +++ b/fs/ceph/mds_client.c
+> > > @@ -2708,6 +2708,12 @@ static void __do_request(struct ceph_mds_client *mdsc,
+> > > 
+> > >       put_request_session(req);
+> > > 
+> > > +     if (mdsc->fsc->blacklisted &&
+> > > +         ceph_test_mount_opt(mdsc->fsc, CLEANRECOVER)) {
+> > > +             err = -EBLACKLISTED;
+> > > +             goto finish;
+> > > +     }
+> > > +
+> > 
+> > Why check for CLEANRECOVER? If we're mounted with recover_session=no
+> > wouldn't we want to do the same thing here?
+> > 
+> > Either way, it's still blacklisted. The only difference is that it won't
+> > attempt to automatically recover the session that way.
 > 
-> Let's address this by splitting processed-schema.yaml into 2 files: one
-> that's always all schemas for the examples and one that's just the schema
-> in DT_SCHEMA_FILES for dtbs.
-
-This broke
-
-make DT_SCHEMA_FILES=Documentation/devicetree/.. dt_binding_check
-
-for me :-(
-
-make[1]: Entering directory '/home/laurent/src/linux/output/arm32'
-make[2]: execvp: /bin/sh: Argument list too long
-make[2]: *** [/home/laurent/src/linux/Documentation/devicetree/bindings/Makefile:35: Documentation/devicetree/bindings/processed-schema-examples.yaml] Error 127
-make[1]: *** [/home/laurent/src/linux/Makefile:1296: dt_binding_check] Error 2
-make[1]: Leaving directory '/home/laurent/src/linux/output/arm32'
-make: *** [Makefile:180: sub-make] Error 2
-
-Before the patch, dt-mk-schema was called with DT_SCHEMA_FILES only, and
-it is now called with DT_DOCS unconditionally.
-
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: linux-kbuild@vger.kernel.org
-> Co-developed-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Masahiro, given you pretty much re-wrote this, I added you as 
-> Co-developed-by.
+> I think mds will clear the blacklist. In addition to loading cephfs
+> via recover_session=clean, I didn't find a location where
+> fsc->blacklisted is set to false. If the client has been blacklisted,
+> should it always be blacklisted (fsc->blacklisted=true)? Or is there
+> another way to set fsc->blacklised to false?
 > 
-> Based on next/master
-> 
->  Documentation/devicetree/bindings/.gitignore |  2 +-
->  Documentation/devicetree/bindings/Makefile   | 22 +++++++++++++-------
->  scripts/Makefile.lib                         |  3 ++-
->  3 files changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/.gitignore b/Documentation/devicetree/bindings/.gitignore
-> index ef82fcfcccab..57afa1533a5f 100644
-> --- a/Documentation/devicetree/bindings/.gitignore
-> +++ b/Documentation/devicetree/bindings/.gitignore
-> @@ -1,2 +1,2 @@
->  *.example.dts
-> -processed-schema.yaml
-> +processed-schema*.yaml
-> diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-> index 646cb3525373..7c40d5ba1b51 100644
-> --- a/Documentation/devicetree/bindings/Makefile
-> +++ b/Documentation/devicetree/bindings/Makefile
-> @@ -2,7 +2,6 @@
->  DT_DOC_CHECKER ?= dt-doc-validate
->  DT_EXTRACT_EX ?= dt-extract-example
->  DT_MK_SCHEMA ?= dt-mk-schema
-> -DT_MK_SCHEMA_FLAGS := $(if $(DT_SCHEMA_FILES), -u)
->  
->  quiet_cmd_chk_binding = CHKDT   $(patsubst $(srctree)/%,%,$<)
->        cmd_chk_binding = $(DT_DOC_CHECKER) -u $(srctree)/$(src) $< ; \
-> @@ -11,26 +10,33 @@ quiet_cmd_chk_binding = CHKDT   $(patsubst $(srctree)/%,%,$<)
->  $(obj)/%.example.dts: $(src)/%.yaml FORCE
->  	$(call if_changed,chk_binding)
->  
-> -DT_TMP_SCHEMA := processed-schema.yaml
-> +# Use full schemas when checking %.example.dts
-> +DT_TMP_SCHEMA := $(obj)/processed-schema-examples.yaml
->  
->  quiet_cmd_mk_schema = SCHEMA  $@
->        cmd_mk_schema = $(DT_MK_SCHEMA) $(DT_MK_SCHEMA_FLAGS) -o $@ $(real-prereqs)
->  
-> -DT_DOCS = $(shell \
-> +DT_DOCS = $(addprefix $(src)/, \
-> +	$(shell \
->  	cd $(srctree)/$(src) && \
->  	find * \( -name '*.yaml' ! \
-> -		-name $(DT_TMP_SCHEMA) ! \
-> +		-name 'processed-schema*' ! \
->  		-name '*.example.dt.yaml' \) \
-> -	)
-> +	))
->  
-> -DT_SCHEMA_FILES ?= $(addprefix $(src)/,$(DT_DOCS))
-> +DT_SCHEMA_FILES ?= $(DT_DOCS)
->  
->  ifeq ($(CHECK_DTBS),)
->  extra-y += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
->  extra-y += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
-> +extra-y += processed-schema-examples.yaml
-> +
-> +$(obj)/processed-schema-examples.yaml: $(DT_DOCS) FORCE
-> +	$(call if_changed,mk_schema)
->  endif
->  
-> -$(obj)/$(DT_TMP_SCHEMA): $(DT_SCHEMA_FILES) FORCE
-> +$(obj)/processed-schema.yaml: DT_MK_SCHEMA_FLAGS := -u
-> +$(obj)/processed-schema.yaml: $(DT_SCHEMA_FILES) FORCE
->  	$(call if_changed,mk_schema)
->  
-> -extra-y += $(DT_TMP_SCHEMA)
-> +extra-y += processed-schema.yaml
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index f5ff506e4a24..b12dd5ba4896 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -307,7 +307,8 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
->  
->  DT_CHECKER ?= dt-validate
->  DT_BINDING_DIR := Documentation/devicetree/bindings
-> -DT_TMP_SCHEMA := $(objtree)/$(DT_BINDING_DIR)/processed-schema.yaml
-> +# DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
-> +DT_TMP_SCHEMA ?= $(objtree)/$(DT_BINDING_DIR)/processed-schema.yaml
->  
->  quiet_cmd_dtb_check =	CHECK   $@
->        cmd_dtb_check =	$(DT_CHECKER) -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@
+
+Basically, this patch is just changing it so that when the client is
+blacklisted and the mount is done with recover_session=clean, we'll
+shortcut the rest of the __do_request and just return -EBLACKLISTED.
+
+My question is: why do we need to test for recover_session=clean here? 
+
+If the client _knows_ that it is blacklisted, why would it want to
+continue with __do_request in the recover_session=no case? Would it make
+more sense to always return early in __do_request when the client is
+blacklisted?
+
+
+> > 
+> > >       mds = __choose_mds(mdsc, req, &random);
+> > >       if (mds < 0 ||
+> > >           ceph_mdsmap_get_state(mdsc->mdsmap, mds) < CEPH_MDS_STATE_ACTIVE) {
+> > --
+> > Jeff Layton <jlayton@kernel.org>
+> > 
 
 -- 
-Regards,
+Jeff Layton <jlayton@kernel.org>
 
-Laurent Pinchart
