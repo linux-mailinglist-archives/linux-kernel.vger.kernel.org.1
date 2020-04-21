@@ -2,87 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBBA1B27C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB91B27C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Apr 2020 15:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgDUNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 09:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
+        id S1728900AbgDUN0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 09:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728645AbgDUNZ0 (ORCPT
+        by vger.kernel.org with ESMTP id S1728337AbgDUN0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 09:25:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FC1C061A10;
-        Tue, 21 Apr 2020 06:25:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z26so13943486ljz.11;
-        Tue, 21 Apr 2020 06:25:25 -0700 (PDT)
+        Tue, 21 Apr 2020 09:26:44 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2E0C061A10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:26:43 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u10so11089842lfo.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 06:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zNLfcextec8+a0Z1+E3Iliuz3OGd0yXcMUIIhnR/K+I=;
-        b=CsPEQFhnc7ES5ou+9OngIcjPZy9tAZECifEnJLBI4gJKLLQ7yySAxB065JIR1bdGqv
-         2Hp8tjTiC4kYHzx/13PP0O2ZvHIyLTNLC2y4eVfx17hwYBFBPBppesaWOv0PCU3wE908
-         W09nq3AU4ByvxqdAA3WgfDwp70MzT/hlEEbYRZFS7mkAzcSO6iYsrwWlPIdDYproHN28
-         TmEMlqAjICMwEN7vZiz5IQjzgLawNUb6Xcx87iaCnFHite6j2mCdoMA0moFllWbM49XW
-         aDk/buYTdCy2cL92u7H/00sDr6Fa75vPTrTaaTKjw8fkZlW4CUww3WqBOvV2DS/y/Awb
-         FJRw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfnArLUZmRY8aEwrBjVPUBVpxOW3jh3IS1qWj7upXQU=;
+        b=em1Yu/BfKjy3mYbOfEAlWkLy0VxgNac6q02EeVEP40/+dNGIc4qZnxZJzN1aUqqF9j
+         VfxvtHk2mRPrs7vASsv9DKckJO97nW9c3BB3iy5fSQ2vVfbASBjRLj90IJEDxJt/c6/D
+         QJL12CojEXh74lgwahndqD3uYb+Kn0dpqz43vo4Tgu/Xz9erI3ymcAJ7hQWgDLa4IWa4
+         uc0hDUhdx6IQbU437cKwHP4ZxoQQmMtnWgwPOaB+dpaLGUGbXw5dM2Avt5oWVCNIH6Zs
+         J0SkSJOxCOQBNfMQgTayFOayDJtSCArLkUmixY9puDICKBavuNMbgxS+4clNfcdtHC2y
+         tKEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zNLfcextec8+a0Z1+E3Iliuz3OGd0yXcMUIIhnR/K+I=;
-        b=YGBuieJySWME4gypuQZC1VLgwzM6ocoRkHv/Jy3z7seVTO9M1SI+kqJSxvcU0t/jPX
-         dt7R9m71BzcTL4o/cdmlRnQ7iPxSrTPMOIAvWk9o7RIW/y/GIcgikmQcC1BRbjlMTVJY
-         SbN/i+z5wYhd123+MtTuPuQA/coBfOa56EEnjfUM0qqLmTaoUgmNDFk0DU7ac4e45Ets
-         6+Cxa3fKSniCNeRc5ST4R7ymzz3x85I+wBFGpaSiPG7T/8ldgLjFd7bV0qinuc9/7TIY
-         8usNxaAI7j6ljv49oqLBAMrZb/veKJZa7ovPf0y09q1aewHPiJokiNhnmCxIwS8lW++4
-         KzXw==
-X-Gm-Message-State: AGi0PuZzNTts4O4TaxKl7Fqdvp405k+TUuidoh/4J3UlDe4rVlOzzsyQ
-        vNHfOdf3mP+qClwsTDaA57Uh7uTf
-X-Google-Smtp-Source: APiQypL+HPGjefPtpy/Xsn0VxuLp1+WcCkAhlvtQpboWQsXE8nuxRhOK2Ri7zdaxzB2st6owdRQGSw==
-X-Received: by 2002:a2e:7a0a:: with SMTP id v10mr8482272ljc.86.1587475524095;
-        Tue, 21 Apr 2020 06:25:24 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id f22sm1888770lja.39.2020.04.21.06.25.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2020 06:25:23 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
- for a long time
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200324191217.1829-1-digetx@gmail.com>
- <20200324191217.1829-2-digetx@gmail.com>
- <1e259e22-c300-663a-e537-18d854e0f478@nvidia.com>
- <f59ba318-8e99-c486-fa4d-1ee28a7b203d@gmail.com>
- <b01cec76-bb39-9fb5-8f6e-4023c075e6b3@gmail.com>
- <8cd085e1-f9fd-6ec0-9f7a-d5463f176a63@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <db1132ce-53a8-371c-98e0-cb7cd91d5c7d@gmail.com>
-Date:   Tue, 21 Apr 2020 16:25:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfnArLUZmRY8aEwrBjVPUBVpxOW3jh3IS1qWj7upXQU=;
+        b=eYZshBHBfM57jx3IEH9l9Fij+sEZVvAqsAj0nB0ohzwI4WaCr/81hF0BsXC8mN8ZC/
+         FsPvjuhA+FRBlx2x+Cwsp+1lMVgG6xfQK7TLILYoYW8neGfRFIAJdZ5jXcq83Igu6cLl
+         Efwf+mR5LbceRxlKHUm2hDnXmoq84x3Cu55Eew38XIYeC34z0cQjc36NPh/rLb9fxfj2
+         KlwIhRH7K59ozC/W6LD05YtEJKO3Sq8vz4clc+fUn76+oUHQAqSGFDxQusKshyQ0fX7Q
+         eGV2o7a40at0Kgx1BJjH9tzmq1/NkS77tX2uVMTXLc3kxlJDUX1nbaf6uVM6J2yvtVoK
+         oEaQ==
+X-Gm-Message-State: AGi0PubFF1p2yzCSfACny4yazs5GDsBrPlswImvboIeHxBQYfA9f10MZ
+        nZJrRKDztBdqdK/J162HG+sg9bTwzWL/EwnVnKI=
+X-Google-Smtp-Source: APiQypLYcQNO7N5edDb88BJb18sHe2W/eLWzvSk/+JuQ/mLx5YnFqCfOv/Fs2YtF6iLCsMQ1l1t0CSb3vnU9G7TYzew=
+X-Received: by 2002:ac2:53a6:: with SMTP id j6mr13807643lfh.153.1587475602059;
+ Tue, 21 Apr 2020 06:26:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8cd085e1-f9fd-6ec0-9f7a-d5463f176a63@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <328db39335b515b190b518445a777ee97751d393.1587173992.git.baolin.wang7@gmail.com>
+ <202004211716.IWGuUFlz%lkp@intel.com>
+In-Reply-To: <202004211716.IWGuUFlz%lkp@intel.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Tue, 21 Apr 2020 21:26:30 +0800
+Message-ID: <CADBw62o4zQ0UBMgSA13TLgb3ZOiBv-CbCS1j7adgUazoREPSzQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mfd: syscon: Add Spreadtrum physical regmap bus support
+To:     kbuild test robot <lkp@intel.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.04.2020 12:49, Jon Hunter пишет:
-...
-> I can try the above, but I agree it would be best to avoid messing with
-> the suspend levels if possible.
+On Tue, Apr 21, 2020 at 6:03 PM kbuild test robot <lkp@intel.com> wrote:
+>
+> Hi Baolin,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on ljones-mfd/for-mfd-next]
+> [also build test ERROR on arm-soc/for-next linus/master linux/master v5.7-rc2 next-20200420]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/mfd-syscon-Add-Spreadtrum-physical-regmap-bus-support/20200421-035442
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
+> config: x86_64-randconfig-f002-20200421 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project a9b137f9ffba8cb25dfd7dd1fb613e8aac121b37)
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> drivers/mfd/syscon.c:182:31: error: use of undeclared identifier 'sprd_syscon_regmap_bus'
+>                    regmap = regmap_init(NULL, &sprd_syscon_regmap_bus, base,
+>                                                ^
+> >> drivers/mfd/syscon.c:182:10: error: assigning to 'struct regmap *' from incompatible type 'void'
+>                    regmap = regmap_init(NULL, &sprd_syscon_regmap_bus, base,
+>                           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    2 errors generated.
 
-Will be awesome if you could try it and report back the result.
+Ah, sorry, will fix the building errors in next version. Thanks for reporting.
+
+>
+> vim +/sprd_syscon_regmap_bus +182 drivers/mfd/syscon.c
+>
+>    106
+>    107  static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>    108  {
+>    109          struct clk *clk;
+>    110          struct syscon *syscon;
+>    111          struct regmap *regmap;
+>    112          void __iomem *base;
+>    113          u32 reg_io_width;
+>    114          int ret;
+>    115          struct regmap_config syscon_config = syscon_regmap_config;
+>    116          struct resource res;
+>    117          bool use_phy_regmap_bus = false;
+>    118
+>    119          syscon = kzalloc(sizeof(*syscon), GFP_KERNEL);
+>    120          if (!syscon)
+>    121                  return ERR_PTR(-ENOMEM);
+>    122
+>    123          if (of_address_to_resource(np, 0, &res)) {
+>    124                  ret = -ENOMEM;
+>    125                  goto err_map;
+>    126          }
+>    127
+>    128          base = ioremap(res.start, resource_size(&res));
+>    129          if (!base) {
+>    130                  ret = -ENOMEM;
+>    131                  goto err_map;
+>    132          }
+>    133
+>    134          /* Parse the device's DT node for an endianness specification */
+>    135          if (of_property_read_bool(np, "big-endian"))
+>    136                  syscon_config.val_format_endian = REGMAP_ENDIAN_BIG;
+>    137          else if (of_property_read_bool(np, "little-endian"))
+>    138                  syscon_config.val_format_endian = REGMAP_ENDIAN_LITTLE;
+>    139          else if (of_property_read_bool(np, "native-endian"))
+>    140                  syscon_config.val_format_endian = REGMAP_ENDIAN_NATIVE;
+>    141
+>    142          /*
+>    143           * search for reg-io-width property in DT. If it is not provided,
+>    144           * default to 4 bytes. regmap_init_mmio will return an error if values
+>    145           * are invalid so there is no need to check them here.
+>    146           */
+>    147          ret = of_property_read_u32(np, "reg-io-width", &reg_io_width);
+>    148          if (ret)
+>    149                  reg_io_width = 4;
+>    150
+>    151          ret = of_hwspin_lock_get_id(np, 0);
+>    152          if (ret > 0 || (IS_ENABLED(CONFIG_HWSPINLOCK) && ret == 0)) {
+>    153                  syscon_config.use_hwlock = true;
+>    154                  syscon_config.hwlock_id = ret;
+>    155                  syscon_config.hwlock_mode = HWLOCK_IRQSTATE;
+>    156          } else if (ret < 0) {
+>    157                  switch (ret) {
+>    158                  case -ENOENT:
+>    159                          /* Ignore missing hwlock, it's optional. */
+>    160                          break;
+>    161                  default:
+>    162                          pr_err("Failed to retrieve valid hwlock: %d\n", ret);
+>    163                          /* fall-through */
+>    164                  case -EPROBE_DEFER:
+>    165                          goto err_regmap;
+>    166                  }
+>    167          }
+>    168
+>    169          syscon_config.name = of_node_full_name(np);
+>    170          syscon_config.reg_stride = reg_io_width;
+>    171          syscon_config.val_bits = reg_io_width * 8;
+>    172          syscon_config.max_register = resource_size(&res) - reg_io_width;
+>    173
+>    174           /*
+>    175            * The Spreadtrum syscon need register a real physical regmap bus
+>    176            * with new atomic bits updating operation instead of using
+>    177            * read-modify-write.
+>    178            */
+>    179          if (IS_ENABLED(CONFIG_ARCH_SPRD) &&
+>    180              of_device_is_compatible(np, "sprd,atomic-syscon")) {
+>    181                  use_phy_regmap_bus = true;
+>  > 182                  regmap = regmap_init(NULL, &sprd_syscon_regmap_bus, base,
+>    183                                       &syscon_config);
+>    184          } else {
+>    185                  regmap = regmap_init_mmio(NULL, base, &syscon_config);
+>    186          }
+>    187          if (IS_ERR(regmap)) {
+>    188                  pr_err("regmap init failed\n");
+>    189                  ret = PTR_ERR(regmap);
+>    190                  goto err_regmap;
+>    191          }
+>    192
+>    193          if (!use_phy_regmap_bus && check_clk) {
+>    194                  clk = of_clk_get(np, 0);
+>    195                  if (IS_ERR(clk)) {
+>    196                          ret = PTR_ERR(clk);
+>    197                          /* clock is optional */
+>    198                          if (ret != -ENOENT)
+>    199                                  goto err_clk;
+>    200                  } else {
+>    201                          ret = regmap_mmio_attach_clk(regmap, clk);
+>    202                          if (ret)
+>    203                                  goto err_attach;
+>    204                  }
+>    205          }
+>    206
+>    207          syscon->regmap = regmap;
+>    208          syscon->np = np;
+>    209
+>    210          spin_lock(&syscon_list_slock);
+>    211          list_add_tail(&syscon->list, &syscon_list);
+>    212          spin_unlock(&syscon_list_slock);
+>    213
+>    214          return syscon;
+>    215
+>    216  err_attach:
+>    217          if (!IS_ERR(clk))
+>    218                  clk_put(clk);
+>    219  err_clk:
+>    220          regmap_exit(regmap);
+>    221  err_regmap:
+>    222          iounmap(base);
+>    223  err_map:
+>    224          kfree(syscon);
+>    225          return ERR_PTR(ret);
+>    226  }
+>    227
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+
+-- 
+Baolin Wang
