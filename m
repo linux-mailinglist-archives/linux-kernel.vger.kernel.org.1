@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B524E1B420F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2A41B3CDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgDVKEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55326 "EHLO mail.kernel.org"
+        id S1728872AbgDVKJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:09:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728059AbgDVKEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:42 -0400
+        id S1728857AbgDVKJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC5E22077D;
-        Wed, 22 Apr 2020 10:04:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C174320575;
+        Wed, 22 Apr 2020 10:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549882;
-        bh=EJmqHt+h/6G4Xr4awT29NwvKmpV78geh+kOmsfZbSi8=;
+        s=default; t=1587550165;
+        bh=no0cu/GcBoa4h31619A2Tv0ZNmB4vF9yJ80qWdtZ6os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1EvBQP7EuJ32aJw/z0GCJfxJZdrFxfj40vrZEa6OJhrZ9YXaYMSW4iO+poZwqZdfQ
-         Z+U6sdHA2zXhMge+mcYtn4JEqUQLdubE5pv+7wElWK1VeeKYd9iPv0d+YTp0KPnq5a
-         7fl9PmK6a79bBJdL5DBzetDVc8wEMFyqelRsjWfA=
+        b=xqj2st/nlFZeIemZ/GYzBGdaQLjps7KqIkAn79UARvg3+reDi9vkI1rgbmkD6H0ff
+         hCs1bFj1R8TmZ9XMa8DrHt5d0krjn+8kTRvc+9fK7tFrpOaW+ergeBdJ+7JObBgzk6
+         c7KDBZFgRHjIIowh0sVVIad8VuXsGjVvueM4fkIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        Anssi Hannula <anssi.hannula@bitwise.fi>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.9 044/125] tools: gpio: Fix out-of-tree build regression
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 035/199] ASoC: topology: use name_prefix for new kcontrol
 Date:   Wed, 22 Apr 2020 11:56:01 +0200
-Message-Id: <20200422095040.635320732@linuxfoundation.org>
+Message-Id: <20200422095101.557362470@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+From: 이경택 <gt82.lee@samsung.com>
 
-commit 82f04bfe2aff428b063eefd234679b2d693228ed upstream.
+commit abca9e4a04fbe9c6df4d48ca7517e1611812af25 upstream.
 
-Commit 0161a94e2d1c7 ("tools: gpio: Correctly add make dependencies for
-gpio_utils") added a make rule for gpio-utils-in.o but used $(output)
-instead of the correct $(OUTPUT) for the output directory, breaking
-out-of-tree build (O=xx) with the following error:
+Current topology doesn't add prefix of component to new kcontrol.
 
-  No rule to make target 'out/tools/gpio/gpio-utils-in.o', needed by 'out/tools/gpio/lsgpio-in.o'.  Stop.
-
-Fix that.
-
-Fixes: 0161a94e2d1c ("tools: gpio: Correctly add make dependencies for gpio_utils")
-Cc: <stable@vger.kernel.org>
-Cc: Laura Abbott <labbott@redhat.com>
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Link: https://lore.kernel.org/r/20200325103154.32235-1-anssi.hannula@bitwise.fi
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/009b01d60804$ae25c2d0$0a714870$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/gpio/Makefile |    2 +-
+ sound/soc/soc-topology.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/gpio/Makefile
-+++ b/tools/gpio/Makefile
-@@ -32,7 +32,7 @@ $(OUTPUT)include/linux/gpio.h: ../../inc
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -421,7 +421,7 @@ static int soc_tplg_add_kcontrol(struct
+ 	struct snd_soc_component *comp = tplg->comp;
  
- prepare: $(OUTPUT)include/linux/gpio.h
+ 	return soc_tplg_add_dcontrol(comp->card->snd_card,
+-				comp->dev, k, NULL, comp, kcontrol);
++				comp->dev, k, comp->name_prefix, comp, kcontrol);
+ }
  
--GPIO_UTILS_IN := $(output)gpio-utils-in.o
-+GPIO_UTILS_IN := $(OUTPUT)gpio-utils-in.o
- $(GPIO_UTILS_IN): prepare FORCE
- 	$(Q)$(MAKE) $(build)=gpio-utils
- 
+ /* remove a mixer kcontrol */
 
 
