@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E6A1B41E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3A1B4040
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732107AbgDVKzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:55:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
+        id S1729662AbgDVKTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727054AbgDVKGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:49 -0400
+        id S1729024AbgDVKSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BCF420575;
-        Wed, 22 Apr 2020 10:06:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DD412070B;
+        Wed, 22 Apr 2020 10:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550008;
-        bh=7QgeglU0Ikc/qfy2xfFtJXgiuvLE1HtqwiqKz5k4OpE=;
+        s=default; t=1587550682;
+        bh=euQa/IrC+M5frlOR1iG3WPuzEiQuZ/BuYmF5XaRlhqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K/jasFN4//oYUjKmwiahPSAFNJqInuVlN5pIwq/aUV2ykNC2578car1Ri8ldkfLWt
-         hNMpbzzNcDE/YEA/gKXcfpHA2t+C0vU4dAzxihgrpfHlo+ksEWsjGq/uetYp8ECTL/
-         nCRJp+HFkzPNeUpleIJHf5WZWiYY1PQw+Qw13ZJk=
+        b=EDB2UAp0i7Qy2IZ/Wft+v+hLFD/0S55WO5ochjy9Ulg1SQR9XXE+xNbR/oWfeeeWF
+         85Hx3wqC/lZn/dU6VZ2yLq3U5j7ImgOAhkyMWXNGGA7QNdDWbAgOktVFfHWGhsX9Kd
+         DUYFpEcBNpX50Iawf29+BlvKgdBz8rB0MmLz4kFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Subhash Jadavani <subhashj@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 095/125] scsi: ufs: ufs-qcom: remove broken hci version quirk
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 051/118] NFSv4/pnfs: Return valid stateids in nfs_layout_find_inode_by_stateid()
 Date:   Wed, 22 Apr 2020 11:56:52 +0200
-Message-Id: <20200422095048.517945138@linuxfoundation.org>
+Message-Id: <20200422095040.410692868@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subhash Jadavani <subhashj@codeaurora.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 69a6fff068567469c0ef1156ae5ac8d3d71701f0 ]
+[ Upstream commit d911c57a19551c6bef116a3b55c6b089901aacb0 ]
 
-UFSHCD_QUIRK_BROKEN_UFS_HCI_VERSION is only applicable for QCOM UFS host
-controller version 2.x.y and this has been fixed from version 3.x.y
-onwards, hence this change removes this quirk for version 3.x.y onwards.
+Make sure to test the stateid for validity so that we catch instances
+where the server may have been reusing stateids in
+nfs_layout_find_inode_by_stateid().
 
-[mkp: applied by hand]
-
-Signed-off-by: Subhash Jadavani <subhashj@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7b410d9ce460 ("pNFS: Delay getting the layout header in CB_LAYOUTRECALL handlers")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufs-qcom.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/callback_proc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1094,7 +1094,7 @@ static void ufs_qcom_advertise_quirks(st
- 		hba->quirks |= UFSHCD_QUIRK_BROKEN_LCC;
- 	}
+diff --git a/fs/nfs/callback_proc.c b/fs/nfs/callback_proc.c
+index f39924ba050b1..fc775b0b5194f 100644
+--- a/fs/nfs/callback_proc.c
++++ b/fs/nfs/callback_proc.c
+@@ -130,6 +130,8 @@ static struct inode *nfs_layout_find_inode_by_stateid(struct nfs_client *clp,
  
--	if (host->hw_ver.major >= 0x2) {
-+	if (host->hw_ver.major == 0x2) {
- 		hba->quirks |= UFSHCD_QUIRK_BROKEN_UFS_HCI_VERSION;
- 
- 		if (!ufs_qcom_cap_qunipro(host))
+ 	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
+ 		list_for_each_entry(lo, &server->layouts, plh_layouts) {
++			if (!pnfs_layout_is_valid(lo))
++				continue;
+ 			if (stateid != NULL &&
+ 			    !nfs4_stateid_match_other(stateid, &lo->plh_stateid))
+ 				continue;
+-- 
+2.20.1
+
 
 
