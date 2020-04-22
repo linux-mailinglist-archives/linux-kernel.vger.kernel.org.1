@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B140E1B3F60
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB631B417A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgDVKgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59020 "EHLO mail.kernel.org"
+        id S1732142AbgDVKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:52:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729884AbgDVKWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:45 -0400
+        id S1726798AbgDVKJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1737F2076E;
-        Wed, 22 Apr 2020 10:22:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B427C2070B;
+        Wed, 22 Apr 2020 10:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550965;
-        bh=Isrih8rMZJRUmtk7ZuU2q84AJ4iMXZIZZshpIbEwdNY=;
+        s=default; t=1587550197;
+        bh=wgY92Up2hqj3U3bxEm7of4dFDNE/XdwTMo46DQJ7BiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkQAMo0x+VojIo//uuhJ1UF8pGRjOr8Q85kmaL5sdV14aQk3ToNAV7ChfyuP69rEz
-         kz9zZjlFOmnUM/LEF1xTUN+l+qGwi5CmllhgIHT+rZqBa2hyb2uOVULeRknA5yjDHA
-         uTegZ/rXW2v6Hni7KIv9Ec2WmPfbiOzZI0D4PNA4=
+        b=DSL94LrshyIwWeaC7jzMIhOjhLD/mp6y1lwRI20bgEAwm55GyAvliENLaviyJjdwX
+         5Z1um0puHgnTgEN7oTeooGCO7p9K/Ip2XuLdLi7VxTn2yk5b8edgqYU519Xij9Uj9n
+         AXVXAb3zI2wST4Kgzih3tJvAAfLFXMGPu6g9U71A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Torsten Duwe <duwe@suse.de>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 046/166] s390/crypto: explicitly memzero stack key material in aes_s390.c
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 4.14 047/199] thermal: devfreq_cooling: inline all stubs for CONFIG_DEVFREQ_THERMAL=n
 Date:   Wed, 22 Apr 2020 11:56:13 +0200
-Message-Id: <20200422095054.041358626@linuxfoundation.org>
+Message-Id: <20200422095102.898478844@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Torsten Duwe <duwe@suse.de>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 4a559cd15dbc79958fa9b18ad4e8afe4a0bf4744 ]
+commit 3f5b9959041e0db6dacbea80bb833bff5900999f upstream.
 
-aes_s390.c has several functions which allocate space for key material on
-the stack and leave the used keys there. It is considered good practice
-to clean these locations before the function returns.
+When CONFIG_DEVFREQ_THERMAL is disabled all functions except
+of_devfreq_cooling_register_power() were already inlined. Also inline
+the last function to avoid compile errors when multiple drivers call
+of_devfreq_cooling_register_power() when CONFIG_DEVFREQ_THERMAL is not
+set. Compilation failed with the following message:
+  multiple definition of `of_devfreq_cooling_register_power'
+(which then lists all usages of of_devfreq_cooling_register_power())
 
-Link: https://lkml.kernel.org/r/20200221165511.GB6928@lst.de
-Signed-off-by: Torsten Duwe <duwe@suse.de>
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Thomas Zimmermann reported this problem [0] on a kernel config with
+CONFIG_DRM_LIMA={m,y}, CONFIG_DRM_PANFROST={m,y} and
+CONFIG_DEVFREQ_THERMAL=n after both, the lima and panfrost drivers
+gained devfreq cooling support.
+
+[0] https://www.spinics.net/lists/dri-devel/msg252825.html
+
+Fixes: a76caf55e5b356 ("thermal: Add devfreq cooling")
+Cc: stable@vger.kernel.org
+Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200403205133.1101808-1-martin.blumenstingl@googlemail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/crypto/aes_s390.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/devfreq_cooling.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/crypto/aes_s390.c b/arch/s390/crypto/aes_s390.c
-index 1c23d84a9097d..73044634d3427 100644
---- a/arch/s390/crypto/aes_s390.c
-+++ b/arch/s390/crypto/aes_s390.c
-@@ -342,6 +342,7 @@ static int cbc_aes_crypt(struct skcipher_request *req, unsigned long modifier)
- 		memcpy(walk.iv, param.iv, AES_BLOCK_SIZE);
- 		ret = skcipher_walk_done(&walk, nbytes - n);
- 	}
-+	memzero_explicit(&param, sizeof(param));
- 	return ret;
- }
+--- a/include/linux/devfreq_cooling.h
++++ b/include/linux/devfreq_cooling.h
+@@ -75,7 +75,7 @@ void devfreq_cooling_unregister(struct t
  
-@@ -470,6 +471,8 @@ static int xts_aes_crypt(struct skcipher_request *req, unsigned long modifier)
- 			 walk.dst.virt.addr, walk.src.virt.addr, n);
- 		ret = skcipher_walk_done(&walk, nbytes - n);
- 	}
-+	memzero_explicit(&pcc_param, sizeof(pcc_param));
-+	memzero_explicit(&xts_param, sizeof(xts_param));
- 	return ret;
- }
+ #else /* !CONFIG_DEVFREQ_THERMAL */
  
--- 
-2.20.1
-
+-struct thermal_cooling_device *
++static inline struct thermal_cooling_device *
+ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 				  struct devfreq_cooling_power *dfc_power)
+ {
 
 
