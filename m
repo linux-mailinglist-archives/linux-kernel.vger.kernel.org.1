@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14911B4119
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B4A1B41CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgDVKu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:50:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1728270AbgDVKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgDVKMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:17 -0400
+        id S1726997AbgDVKFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 909072071E;
-        Wed, 22 Apr 2020 10:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D7182076C;
+        Wed, 22 Apr 2020 10:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550336;
-        bh=ku/WBQgDgTsASdjlbTI9Gz4PTwRb7TBqXG5/TcklQrI=;
+        s=default; t=1587549947;
+        bh=q43WsyVwnxr+w9PBven+jALxwMWtgXu7qhQ+Mok4cgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gcN5eoz0WQNg+F05ayrYhOk+gARoLyRSsyK/HMfYeHoxpKB0/8s1NE1tEQI/o3BbO
-         yTeO5F6E3Msct+WITdda49Yvk4KW5BWsmj0/LGno1ve4NY91+li3hUZe/ihZ6+52Yn
-         XHeX/lMl1LXvvXIgaIMPxYDLmDqXMoLlux4cBgLg=
+        b=2Z6Ypi8zY3mwV7JyTg+xiEzPfD31wAO26uRF/fE6GEb8eOcmcngRsEqXF4bYBgwBH
+         nPQOwlosSNiJNmRGLe5t/T63ExdZlFHUKsaFZpI0UEm5roxeOWpsvdwEGYVdmyMMeF
+         hsxwSgi8cW6HhBfGE/rr0t34Mtpm/5NBP7Z6b8oM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yilu Lin <linyilu@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>
-Subject: [PATCH 4.14 063/199] CIFS: Fix bug which the return value by asynchronous read is error
+        stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.9 072/125] ext4: fix incorrect group count in ext4_fill_super error message
 Date:   Wed, 22 Apr 2020 11:56:29 +0200
-Message-Id: <20200422095104.559673854@linuxfoundation.org>
+Message-Id: <20200422095044.903316387@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yilu Lin <linyilu@huawei.com>
+From: Josh Triplett <josh@joshtriplett.org>
 
-commit 97adda8b3ab703de8e4c8d27646ddd54fe22879c upstream.
+commit df41460a21b06a76437af040d90ccee03888e8e5 upstream.
 
-This patch is used to fix the bug in collect_uncached_read_data()
-that rc is automatically converted from a signed number to an
-unsigned number when the CIFS asynchronous read fails.
-It will cause ctx->rc is error.
+ext4_fill_super doublechecks the number of groups before mounting; if
+that check fails, the resulting error message prints the group count
+from the ext4_sb_info sbi, which hasn't been set yet. Print the freshly
+computed group count instead (which at that point has just been computed
+in "blocks_count").
 
-Example:
-Share a directory and create a file on the Windows OS.
-Mount the directory to the Linux OS using CIFS.
-On the CIFS client of the Linux OS, invoke the pread interface to
-deliver the read request.
-
-The size of the read length plus offset of the read request is greater
-than the maximum file size.
-
-In this case, the CIFS server on the Windows OS returns a failure
-message (for example, the return value of
-smb2.nt_status is STATUS_INVALID_PARAMETER).
-
-After receiving the response message, the CIFS client parses
-smb2.nt_status to STATUS_INVALID_PARAMETER
-and converts it to the Linux error code (rdata->result=-22).
-
-Then the CIFS client invokes the collect_uncached_read_data function to
-assign the value of rdata->result to rc, that is, rc=rdata->result=-22.
-
-The type of the ctx->total_len variable is unsigned integer,
-the type of the rc variable is integer, and the type of
-the ctx->rc variable is ssize_t.
-
-Therefore, during the ternary operation, the value of rc is
-automatically converted to an unsigned number. The final result is
-ctx->rc=4294967274. However, the expected result is ctx->rc=-22.
-
-Signed-off-by: Yilu Lin <linyilu@huawei.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+Fixes: 4ec1102813798 ("ext4: Add sanity checks for the superblock before mounting the filesystem")
+Link: https://lore.kernel.org/r/8b957cd1513fcc4550fe675c10bcce2175c33a49.1585431964.git.josh@joshtriplett.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/file.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/super.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -3303,7 +3303,7 @@ again:
- 	if (rc == -ENODATA)
- 		rc = 0;
- 
--	ctx->rc = (rc == 0) ? ctx->total_len : rc;
-+	ctx->rc = (rc == 0) ? (ssize_t)ctx->total_len : rc;
- 
- 	mutex_unlock(&ctx->aio_mutex);
- 
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3951,9 +3951,9 @@ static int ext4_fill_super(struct super_
+ 			EXT4_BLOCKS_PER_GROUP(sb) - 1);
+ 	do_div(blocks_count, EXT4_BLOCKS_PER_GROUP(sb));
+ 	if (blocks_count > ((uint64_t)1<<32) - EXT4_DESC_PER_BLOCK(sb)) {
+-		ext4_msg(sb, KERN_WARNING, "groups count too large: %u "
++		ext4_msg(sb, KERN_WARNING, "groups count too large: %llu "
+ 		       "(block count %llu, first data block %u, "
+-		       "blocks per group %lu)", sbi->s_groups_count,
++		       "blocks per group %lu)", blocks_count,
+ 		       ext4_blocks_count(es),
+ 		       le32_to_cpu(es->s_first_data_block),
+ 		       EXT4_BLOCKS_PER_GROUP(sb));
 
 
