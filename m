@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA2E1B3C8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268901B3D10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgDVKGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:06:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58570 "EHLO mail.kernel.org"
+        id S1729194AbgDVKLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:11:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728372AbgDVKGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:34 -0400
+        id S1729160AbgDVKLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8908420774;
-        Wed, 22 Apr 2020 10:06:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2592920776;
+        Wed, 22 Apr 2020 10:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549994;
-        bh=e0BLSrIFRbPvC47jx0c234YbzrAFTYQdeTkVFHy1MJI=;
+        s=default; t=1587550277;
+        bh=fL9fnzJr3b736mjTeKAqS6MF9bED42tZ1GIzikhz2JQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/WFXit/83hu98Nkc7HbVTXsL20l9ucnEAfn+wMPRgHBZhwE9s27mcFHwCQ5BxZPu
-         ztoovFTmhasQaUE0/55/qiKFxv50rexAIrOBKQl6KWgUOfx4e/1LBrzBRrZN7OBGV5
-         T+uo3fPxleL48blwA88aV3XRcGwLi1wHya5r5Rf8=
+        b=SACM/CRTzRQ3+C7PXw2r++mrE9MEW53kDaP1TWkN2w5Ntt9AX70Kk+o6D6L5YKFX5
+         4BxAq9TJzfUmu/nX6fWpnLrkFL2SGq2DCIJwNVQmK2bcotyrSZO613w3hWvrexbRlh
+         LXSZXN4ERqafWAx7eXQuLBfuV1nlzuVpy9njX8zA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Moriarty <joe.moriarty@oracle.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 090/125] drm: NULL pointer dereference [null-pointer-deref] (CWE 476) problem
+        stable@vger.kernel.org, Michael Mueller <mimu@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.14 081/199] s390/diag: fix display of diagnose call statistics
 Date:   Wed, 22 Apr 2020 11:56:47 +0200
-Message-Id: <20200422095047.524731877@linuxfoundation.org>
+Message-Id: <20200422095106.204217180@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Moriarty <joe.moriarty@oracle.com>
+From: Michael Mueller <mimu@linux.ibm.com>
 
-commit 22a07038c0eaf4d1315a493ce66dcd255accba19 upstream.
+commit 6c7c851f1b666a8a455678a0b480b9162de86052 upstream.
 
-The Parfait (version 2.1.0) static code analysis tool found the
-following NULL pointer derefernce problem.
+Show the full diag statistic table and not just parts of it.
 
-- drivers/gpu/drm/drm_dp_mst_topology.c
-The call to drm_dp_calculate_rad() in function drm_dp_port_setup_pdt()
-could result in a NULL pointer being returned to port->mstb due to a
-failure to allocate memory for port->mstb.
+The issue surfaced in a KVM guest with a number of vcpus
+defined smaller than NR_DIAG_STAT.
 
-Signed-off-by: Joe Moriarty <joe.moriarty@oracle.com>
-Reviewed-by: Steven Sistare <steven.sistare@oracle.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20180212195144.98323-3-joe.moriarty@oracle.com
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 1ec2772e0c3c ("s390/diag: add a statistic for diagnose calls")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael Mueller <mimu@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/s390/kernel/diag.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -1041,10 +1041,12 @@ static bool drm_dp_port_setup_pdt(struct
- 		lct = drm_dp_calculate_rad(port, rad);
+--- a/arch/s390/kernel/diag.c
++++ b/arch/s390/kernel/diag.c
+@@ -79,7 +79,7 @@ static int show_diag_stat(struct seq_fil
  
- 		port->mstb = drm_dp_add_mst_branch_device(lct, rad);
--		port->mstb->mgr = port->mgr;
--		port->mstb->port_parent = port;
-+		if (port->mstb) {
-+			port->mstb->mgr = port->mgr;
-+			port->mstb->port_parent = port;
+ static void *show_diag_stat_start(struct seq_file *m, loff_t *pos)
+ {
+-	return *pos <= nr_cpu_ids ? (void *)((unsigned long) *pos + 1) : NULL;
++	return *pos <= NR_DIAG_STAT ? (void *)((unsigned long) *pos + 1) : NULL;
+ }
  
--		send_link = true;
-+			send_link = true;
-+		}
- 		break;
- 	}
- 	return send_link;
+ static void *show_diag_stat_next(struct seq_file *m, void *v, loff_t *pos)
 
 
