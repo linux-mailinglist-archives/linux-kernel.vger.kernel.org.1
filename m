@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC36E1B4270
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58761B3F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgDVKBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
+        id S1731370AbgDVKhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbgDVKBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:05 -0400
+        id S1729728AbgDVKW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86A5F20776;
-        Wed, 22 Apr 2020 10:01:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D57C42076E;
+        Wed, 22 Apr 2020 10:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549665;
-        bh=iijQm+vNqb5gxx3b/SErClBdPw6VdnL4ZoN+sOuyTBA=;
+        s=default; t=1587550948;
+        bh=RKJ7Yog8jQWWRje6qQ+jbTWQkqvorlLM1SYf3LrHV7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iv6V7mvFL3vIVOtUZtbTepL05w5mbfFrc7n6cd41VbYq9uBZHdv+ZHdzynIWTUwCg
-         nXNgCpdn9hFlI2aprGM0bH9kZlJgC2edCl0MYRydHxCIj2mgeztJJopVYFr9nXRSjK
-         OuTG9eNi5MjyyrDXwyc0YPewbC/vFk/66k0Hib6o=
+        b=pATepj8vynOvrcNCJyb2+Oeq1tOJ5FIzRoFqQemtKEjBsX79rgQPx6thSSWoWQhaq
+         V5ilHoZlSW1+Yr5ngA7JWm4j+DemLD1CARv60qmPYqokaK7jHLbnzh9FW3PgDuu4Ym
+         Ukq9JleXO/TByzdsvK5DnwoVEzPKkMYgLtavD+/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.4 019/100] usb: gadget: composite: Inform controller driver of self-powered
+        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
+        Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.6 022/166] of: unittest: kmemleak in of_unittest_platform_populate()
 Date:   Wed, 22 Apr 2020 11:55:49 +0200
-Message-Id: <20200422095026.366862018@linuxfoundation.org>
+Message-Id: <20200422095050.910886620@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Frank Rowand <frank.rowand@sony.com>
 
-commit 5e5caf4fa8d3039140b4548b6ab23dd17fce9b2c upstream.
+commit 216830d2413cc61be3f76bc02ffd905e47d2439e upstream.
 
-Different configuration/condition may draw different power. Inform the
-controller driver of the change so it can respond properly (e.g.
-GET_STATUS request). This fixes an issue with setting MaxPower from
-configfs. The composite driver doesn't check this value when setting
-self-powered.
+kmemleak reports several memory leaks from devicetree unittest.
+This is the fix for problem 2 of 5.
 
-Cc: stable@vger.kernel.org
-Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+of_unittest_platform_populate() left an elevated reference count for
+grandchild nodes (which are platform devices).  Fix the platform
+device reference counts so that the memory will be freed.
+
+Fixes: fb2caa50fbac ("of/selftest: add testcase for nodes with same name and address")
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/composite.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/of/unittest.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -744,6 +744,11 @@ static int set_config(struct usb_composi
- 	/* when we return, be sure our power usage is valid */
- 	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
- done:
-+	if (power <= USB_SELF_POWER_VBUS_MAX_DRAW)
-+		usb_gadget_set_selfpowered(gadget);
-+	else
-+		usb_gadget_clear_selfpowered(gadget);
-+
- 	usb_gadget_vbus_draw(gadget, power);
- 	if (result >= 0 && cdev->delayed_status)
- 		result = USB_GADGET_DELAYED_STATUS;
-@@ -2156,6 +2161,7 @@ void composite_suspend(struct usb_gadget
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -1155,10 +1155,13 @@ static void __init of_unittest_platform_
  
- 	cdev->suspended = 1;
- 
-+	usb_gadget_set_selfpowered(gadget);
- 	usb_gadget_vbus_draw(gadget, 2);
- }
- 
-@@ -2179,6 +2185,9 @@ void composite_resume(struct usb_gadget
- 
- 		maxpower = cdev->config->MaxPower;
- 
-+		if (maxpower > USB_SELF_POWER_VBUS_MAX_DRAW)
-+			usb_gadget_clear_selfpowered(gadget);
-+
- 		usb_gadget_vbus_draw(gadget, maxpower ?
- 			maxpower : CONFIG_USB_GADGET_VBUS_DRAW);
+ 	of_platform_populate(np, match, NULL, &test_bus->dev);
+ 	for_each_child_of_node(np, child) {
+-		for_each_child_of_node(child, grandchild)
+-			unittest(of_find_device_by_node(grandchild),
++		for_each_child_of_node(child, grandchild) {
++			pdev = of_find_device_by_node(grandchild);
++			unittest(pdev,
+ 				 "Could not create device for node '%pOFn'\n",
+ 				 grandchild);
++			of_dev_put(pdev);
++		}
  	}
+ 
+ 	of_platform_depopulate(&test_bus->dev);
 
 
