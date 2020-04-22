@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD9D1B4AC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F511B4ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgDVQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:43:24 -0400
-Received: from namei.org ([65.99.196.166]:52006 "EHLO namei.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726423AbgDVQnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:43:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 03MGgnwT012761;
-        Wed, 22 Apr 2020 16:42:49 GMT
-Date:   Thu, 23 Apr 2020 02:42:49 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     deven.desai@linux.microsoft.com
-cc:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
-        "Serge E. Hallyn" <serge@hallyn.com>, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, jannh@google.com,
-        tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
-        sashal@kernel.org, jaskarankhurana@linux.microsoft.com,
-        nramas@linux.microsoft.com, mdsakib@linux.microsoft.com,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Chad Sellers <csellers@tresys.com>,
-        John Johansen <john.johansen@canonical.com>
-Subject: Re: [RFC PATCH v3 05/12] fs: add security blob and hooks for
- block_device
-In-Reply-To: <20200415162550.2324-6-deven.desai@linux.microsoft.com>
-Message-ID: <alpine.LRH.2.21.2004230234420.12318@namei.org>
-References: <20200415162550.2324-1-deven.desai@linux.microsoft.com> <20200415162550.2324-6-deven.desai@linux.microsoft.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726698AbgDVQm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgDVQm5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 12:42:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD1CC03C1A9;
+        Wed, 22 Apr 2020 09:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=QrOT19ZBwGb45jWLFj76OzHtPNsa1vHjv1F1pWQrc8k=; b=VL29IIAvz3o+pIOic+M/ERYU0q
+        EVI7jhensQnBa/i3Cl+yBEjQM+pug+vJ63mFgTybIr3L24mfuh424niWhU75TZRa0vSGtw3hiHoFH
+        SPTVUAJoXqp2HCEleBZAVTgVInlqvAulYNK1Tqhk5FoTSxddTtxrmLALx6Yze6ctKuHwFP4QMjLRs
+        +zioDDI0XAaQ6eXVAEXUANy2YamaKd0bJHu2mFs9es1hdPeVAJXIwHpu5NNc4eeTZL4VYbfZ+3Ifz
+        +AL84IlMjDG1B2vxhXGfX3tXREdXLwsgXZPjZKdfrQ4ort/wdga8pMgM2un27ePOxkXJDSJE1j+BF
+        +Okd6D7A==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRISf-0007OW-3J; Wed, 22 Apr 2020 16:42:57 +0000
+Subject: Re: [PATCH] io: correct documentation mismatches for io memcpy
+To:     Wang Wenhu <wenhu.wang@vivo.com>, arnd@arndb.de,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+References: <20200422092905.39529-1-wenhu.wang@vivo.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4b0a80ed-a639-c8c0-e6c3-01ba3266b7de@infradead.org>
+Date:   Wed, 22 Apr 2020 09:42:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200422092905.39529-1-wenhu.wang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020, deven.desai@linux.microsoft.com wrote:
+Hi--
 
-> From: Deven Bowers <deven.desai@linux.microsoft.com>
+2 small nits: please see below.
+
+On 4/22/20 2:29 AM, Wang Wenhu wrote:
+> Minor mismatches exist between funtion documentations and parameter
+> definitions.
 > 
-> Add a security blob and associated allocation, deallocation and set hooks
-> for a block_device structure.
+> Function definition lines are as following:
+> static inline void memcpy_fromio(void *buffer,
+> 				 const volatile void __iomem *addr,
+> 				 size_t size)
 > 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
+> 			       size_t size)
+> 
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> ---
+>  include/asm-generic/io.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index d39ac997dda8..63131ec4857f 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -1067,9 +1067,9 @@ static inline void memset_io(volatile void __iomem *addr, int value,
+>  #define memcpy_fromio memcpy_fromio
+>  /**
+>   * memcpy_fromio	Copy a block of data from I/O memory
 
-Is there any feedback from block or LSM folk on the addition of a security 
-blob for block_device here?
+This needs a dash ('-') between the function name & its description.
 
-IPE uses this is to track the status of integrity verification of e.g. 
-DM-Verity devices, per this code from a subsequent patch:
+> - * @dst:		The (RAM) destination for the copy
+> - * @src:		The (I/O memory) source for the data
+> - * @count:		The number of bytes to copy
+> + * @buffer:		The (RAM) destination for the copy
+> + * @addr:		The (I/O memory) source for the data
+> + * @size:		The number of bytes to copy
+>   *
+>   * Copy a block of data from I/O memory.
+>   */
+> @@ -1085,9 +1085,9 @@ static inline void memcpy_fromio(void *buffer,
+>  #define memcpy_toio memcpy_toio
+>  /**
+>   * memcpy_toio		Copy a block of data into I/O memory
 
+Same here.
 
-+       ret = security_bdev_setsecurity(dm_table_get_md(v->ti->table)->bdev,
-+                                       DM_VERITY_SIGNATURE_SEC_NAME,
-+                                       v->sig->sig, v->sig->sig_size);
+> - * @dst:		The (I/O memory) destination for the copy
+> - * @src:		The (RAM) source for the data
+> - * @count:		The number of bytes to copy
+> + * @addr:		The (I/O memory) destination for the copy
+> + * @buffer:		The (RAM) source for the data
+> + * @size:		The number of bytes to copy
+>   *
+>   * Copy a block of data to I/O memory.
+>   */
+> 
 
+If you would fix the above, you can also add:
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
+thanks.
 -- 
-James Morris
-<jmorris@namei.org>
-
+~Randy
