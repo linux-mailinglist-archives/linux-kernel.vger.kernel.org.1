@@ -2,59 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C031B4680
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259071B468E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgDVNqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 09:46:00 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:56318 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgDVNp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 09:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=a9kRH5QF2TI9yXFP3ouQbi+XF7QL0pQFysuGYJQ1zj8=; b=iabOWH9b7qDm0AxWRar1kaL/Wi
-        YpUd2o85657kz4sMQSe3ke2Df8SRX/qQea5tWAEsRfKehguh+ciqt1Gv4v0TbwYc+2z4ieAZuo3Tz
-        cMm4ObHTb6VPfjGhLWArKIpll6O2u1Y+JZg6tE68Zs0P5FbhMfwEBjwrxgpvC6h7SU9k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jRFhJ-004D6p-Ew; Wed, 22 Apr 2020 15:45:53 +0200
-Date:   Wed, 22 Apr 2020 15:45:53 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v5 3/4] net: mdio: of: export part of
- of_mdiobus_register_phy()
-Message-ID: <20200422134553.GC974925@lunn.ch>
-References: <20200422092456.24281-1-o.rempel@pengutronix.de>
- <20200422092456.24281-4-o.rempel@pengutronix.de>
+        id S1726998AbgDVNq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 09:46:29 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49776 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726975AbgDVNq2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 09:46:28 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MDiRxo083787;
+        Wed, 22 Apr 2020 13:46:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ZXw8WRe+1+ti8NtxJ2Zt9aajNxmS/04DjrSxbrXEJSY=;
+ b=UDJE3DnjdTKCLTPXwmaquXLFx/ie8LIs87/gEGhh9Fr81ijDF4YE8tb6gd8wYWfXcDuW
+ S14UiZwraIIXAPDj/N3HTmwu7qI+SvKWsEwtg76gqaoAAtR4JYA+Dej45W/gpHdjivbI
+ iVHaLBOfY4Tm8OfvC30Yfu00VRnUDBHbqOcsYN8ltM9oXe9DkXSd3/zD2zW+X8Ci9gRF
+ JeX9HvSEpOlKqIICksED5JC1ma9u8fJMP77xtGO9fxmRJ7319YDcrotnJ3DfvEqfMCZw
+ n9uhKH6+rIFR4Sr1JkpTDSHE+B41703TAJSdoHM9be/1A5i+EavX6hU2qjmfn0+u+Com Ww== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30grpgqby8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 13:46:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MDfddP112936;
+        Wed, 22 Apr 2020 13:46:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30gb3ty429-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 13:46:15 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03MDkDa9032313;
+        Wed, 22 Apr 2020 13:46:14 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 Apr 2020 06:46:13 -0700
+Date:   Wed, 22 Apr 2020 09:46:35 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] padata: add separate cpuhp node for CPUHP_PADATA_DEAD
+Message-ID: <20200422134635.dk44a4zy2rz6p3d3@ca-dmjordan1.us.oracle.com>
+References: <20200421163455.2177998-1-daniel.m.jordan@oracle.com>
+ <20200422132702.DCAA7206EC@mail.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422092456.24281-4-o.rempel@pengutronix.de>
+In-Reply-To: <20200422132702.DCAA7206EC@mail.kernel.org>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004220110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004220110
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 11:24:55AM +0200, Oleksij Rempel wrote:
-> This function will be needed in tja11xx driver for secondary PHY
-> support.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On Wed, Apr 22, 2020 at 01:27:02PM +0000, Sasha Levin wrote:
+> Hi
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Hi!
 
-    Andrew
+> v5.4.33: Failed to apply! Possible dependencies:
+>     bfcdcef8c8e3 ("padata: update documentation")
+
+Yes, it's a trivial conflict in the header comment for padata_instance.
+
+> How should we proceed with this patch?
+
+If mainline is ok with the change, I will send a 5.4-only version with the
+resolution.
+
+By the way, I should not have cc'd stable on the email, it was picked up from
+the Cc: line in the patch.
+
+Daniel
