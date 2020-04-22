@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D061B50E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 01:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2B41B50F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 01:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgDVXjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 19:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgDVXjc (ORCPT
+        id S1726462AbgDVXkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 19:40:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32882 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725846AbgDVXkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 19:39:32 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615CCC03C1AA;
-        Wed, 22 Apr 2020 16:39:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id c23so2834066qtp.11;
-        Wed, 22 Apr 2020 16:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=E1PBrkT1LoNCkirZimCNKHoVPu32mXxSCEKcm1zSQdY=;
-        b=oDo/4WF/ApXIvPS+YZM/b4AuPq4KMtNUrAx4kPRyrKcfDY/7N/wACbuVSV9Bv/+yzf
-         fsnHPe6JvdEzXhWLh9tQ6LLzYjBZVEjddVBn1gtQAALZMkA67fSSmIEs97PND8XNvZYp
-         /CLble/z+CslEMET1pTe/sVN52S4rwol8nho+e70U31cQydk8ItNbaD2Aun5iR9YbF6y
-         S2gA8LYXgnTxOjCa8ODOggGJVmTiCJMrAfqWMBASVIq+rkmiTUfucLWHgc1v7UxPm/SA
-         KXTVxF1f1yGF6eVCicEPf0DvQnww0cq8E9wKeCSoC9OtuV2k7GYnhhDWSC8guN4M4SP1
-         qKPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=E1PBrkT1LoNCkirZimCNKHoVPu32mXxSCEKcm1zSQdY=;
-        b=o3iyGTgInp+JDbK3ZKu1V8KCVnFcy5Swx8zmg3Gi7K+NT3Rvx4qniorndN+yaKVsn2
-         SejvSGlhYTwCkGMipEu+4FbdOEmIPK0D/9RvL5UpzqV9OrJdOvU9ePxgmBjQsNSdgdII
-         jV0ceMr9XLgzQKUSZdiybHjGOdyPZktOlc3ODFwW2j8LtXlI8LrdFAR4TnuE1sJE91py
-         oLZwpagFVTxzBmirBvuOidhJPP6EvJr4GBuLI/LsASESp2NXDped6TxuRaksRbw/9vF/
-         L3olmqhOKUKcvPmipIxEAecihYVOZwu8F6bQqdPKk1tu8DNMIVDfJwxAuHGWSxFA0WGs
-         wdvg==
-X-Gm-Message-State: AGi0PuaLDmC1JDCp7KtFfwHP+xUdA4XumqsOfzi5PtxVlb6GL3d5qF7X
-        rOLFEfIScTJCbF54vSNzdoU=
-X-Google-Smtp-Source: APiQypIx5CG1YBGE7PM0vaWxnGyfc8b17Jq+bNco8g/8Tp6x3Az3BOQ4nLnVYoI1NU6hWc+y49zG8Q==
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr1262025qtj.181.1587598771607;
-        Wed, 22 Apr 2020 16:39:31 -0700 (PDT)
-Received: from imac (dhcp-108-168-12-59.cable.user.start.ca. [108.168.12.59])
-        by smtp.gmail.com with ESMTPSA id i6sm475709qkk.123.2020.04.22.16.39.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Apr 2020 16:39:31 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 19:39:28 -0400
-From:   Tim Lewis <elatllat@gmail.com>
-To:     elatllat@gmail.com
-Cc:     narmstrong@baylibre.com, khilman@baylibre.com,
-        christianshewitt@gmail.com, joy.cho@hardkernel.com,
-        tobetter@gmail.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, mark.rutland@arm.com,
-        robh+dt@kernel.org
-Subject: [PATCH v3] arm64: dts: meson: S922X: extend cpu opp-points
-Message-ID: <20200422233928.GA2816@imac>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Wed, 22 Apr 2020 19:40:41 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MNeKsM008818;
+        Wed, 22 Apr 2020 16:40:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=B43E7k/FCJbc1e2VheqY3qZ7DNS6yOxVxu9jtVVRs48=;
+ b=b7gWNncsnnHm2pj37vRK/BxoyiM4yZGxvouAt6+X+Yjos4uh6OW4I0iqHzfNzC1jDBHU
+ bX6tAjHQr7bnNmbHwNMoE3diDNgdLPcZd/mzC7cirafbM1v486OuWdWGgxE556QUtxNv
+ M0j27MWgWbs63X5QvfDL4slyJmoo6h/Uyis= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30ghjpvcbm-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 Apr 2020 16:40:21 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 22 Apr 2020 16:40:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I1zw/lR1C7g9Y20V/7WSvh9XohR1TkkKvxE538w+SO7Oo6bzEZE4wta7vfP4loZBZ6Nx7bHh5qsgg13YMdhVrf1Q38f2OSz4g9tN4vQl36rYXFnHVNoLgwI7TR8s/G6ttPyd6O+tP33SRD/hDpycBhsFFPeByWH3sPHWWZhPsge0GN5y4JvGFZrvi81Cgvcqh7kJat9fVVaUoPNkf3BrA8iKkvvxDgLEvOjJhHWNpbnMbgfQPD3Oq8ztpdj9QI0VQZI8MGBVvcQfQTN5TUrqeG7jwnvZF+eUd1gjNA2Ec4keBDWUWkdJEh+z+IDPpkmOMmb2KuuPPUnlXOZpQN9uYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B43E7k/FCJbc1e2VheqY3qZ7DNS6yOxVxu9jtVVRs48=;
+ b=mqvhaAN2dDP84oU9yNif16ylymR20BdQqxGpNJ3vLKc2Hc3DB9M37xLyBNSAnZBQidgeMA3FANsd1IHqIw1aDss39+VXOAEofioTMdyui92z2UnK2hExWRmjJsHizO1P9E58lA80UVEVxpug9twsYwiYZNM/I3SL9uJPdr/HlI1EZGiFYL4mfzfecf0kUKvzgdZrJyXKkEpcfKEeiIt28cNpsBNMSsqHAfZBJJ70qwY00F/Mxh6pLSTwX57sOawJzsLV//B0BUujUxLcs8QbVakxGMewCDMMv5TOk81SeY8HRPmyv/++10GF0P+4yV+40qLHf3ZfGaMruZP0IBxxfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B43E7k/FCJbc1e2VheqY3qZ7DNS6yOxVxu9jtVVRs48=;
+ b=ZGK2j1VussxKtyigN0kbsq3Ogp1mR828QMOrc1WVuiCZrAmxUk4PE5pr6wluD8pS53rcG6ZMp+TvezZeQ38a0A7uuH6dDSreQ5ORrLc0hFhDaNDc3sIL65Jg2RwVNY5fZoChrKJhzKqBKjbxqVlj9gYoPBkGJrankAvXffBHEXY=
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BYAPR15MB3301.namprd15.prod.outlook.com (2603:10b6:a03:101::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Wed, 22 Apr
+ 2020 23:40:09 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992%7]) with mapi id 15.20.2921.030; Wed, 22 Apr 2020
+ 23:40:09 +0000
+Date:   Wed, 22 Apr 2020 16:40:06 -0700
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH 5/5] sysctl: pass kernel pointers to ->proc_handler
+Message-ID: <20200422234006.GB6764@rdna-mbp.dhcp.thefacebook.com>
+References: <20200421171539.288622-1-hch@lst.de>
+ <20200421171539.288622-6-hch@lst.de>
+ <20200421192330.GA60879@rdna-mbp.dhcp.thefacebook.com>
+ <20200422172254.GA30102@lst.de>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200422172254.GA30102@lst.de>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-ClientProxiedBy: CO1PR15CA0064.namprd15.prod.outlook.com
+ (2603:10b6:101:1f::32) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2620:10d:c090:400::5:1d4c) by CO1PR15CA0064.namprd15.prod.outlook.com (2603:10b6:101:1f::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Wed, 22 Apr 2020 23:40:08 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1d4c]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6a2905c4-6400-47ce-10b4-08d7e7167e2e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3301:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3301CD24A6134E195668AB13A8D20@BYAPR15MB3301.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03818C953D
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(366004)(39860400002)(396003)(136003)(376002)(346002)(8676002)(4744005)(2906002)(4326008)(316002)(52116002)(81156014)(7416002)(9686003)(6486002)(86362001)(54906003)(478600001)(186003)(6496006)(16526019)(1076003)(6916009)(66946007)(8936002)(5660300002)(66476007)(33656002)(66556008);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zDj16FjdrmPhWxAo7//JMl43AKSs4pwDhjj6+sAUFm/YaCE3p7hpwj2EnJEImHyMEmOf/UXvOuMs6AnQO1qe2ECSQ4r8xwSu2xaXB604Oix9qV3+YxEyVZA4RZIIGBft8do3LnTPFL3UXH9NJxCrl0JvKVPBwjv4iYfvWtr+04cntaWUNOWz7j1lTTRqAlYlHE/Q4+72/bkWkQ2+cJdy0Ae6NXPt188WQ2hvDxce23+Kubg7b9cLQ+wbvKFLQAMUBnG+OAkhIsMo7ep7J7Dgv2JWrudd/PYq8awxeZi1aA44GuVraJM9HHolmdSKLdkz4vfGFwli3zm0bFVZUzhCcMGUreqvuPSkfm1/WufMok/Eg/H/SJT477yNJUkwzFF3ZneEzkHZWwRvV7RNNLwonU3uCnNvlJbCDMyxXLpLfUnFSLnN7sDCl3q8O8rlyDuZ
+X-MS-Exchange-AntiSpam-MessageData: DWOlApBR7q4M5Ejl2po1W3gE3iu64rgEMXz2iKiZS0O2dA/i8beq7OV76nl3znh86UOfVCASMEKnmm2x13qv6BqoYfhpN16x1+mIIe3hFfWOPguBE7gJwpqQwGPYT8G06RekRPEsxdG9ZNPaj5Pjwmg/JiYxRYV6/YOidjn8aASXoStMWUhrJy3KYdNEPaLk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a2905c4-6400-47ce-10b4-08d7e7167e2e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 23:40:08.9468
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jW6Oj33P4FRKJsXyqeNpeXmdl+r1u9LltWiVdj9vjLxJnTPhflK6JdD1zciKsw5B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3301
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_08:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=885 spamscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 suspectscore=0 bulkscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220181
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HardKernel supports overclock through the addition to extra opp points
-in their official kernel sources for odroid-n2 [1]. Christian tested
-on other S922X devices with "no obvious issues". Neil thinks dvfs and
-thermal managementis can keep other S922X devices safe.
+Christoph Hellwig <hch@lst.de> [Wed, 2020-04-22 10:23 -0700]:
+> On Tue, Apr 21, 2020 at 12:23:30PM -0700, Andrey Ignatov wrote:
+> > >  	if (ret == 1 && ctx.new_updated) {
+> > > -		*new_buf = ctx.new_val;
+> > > +		*buf = ctx.new_val;
+> > 
+> > Original value of *buf should be freed before overriding it here
+> > otherwise it's lost/leaked unless I missed something.
+> > 
+> > Other than this BPF part of this patch looks good to me. Feel free to
+> > add my Ack on the next iteration with this fix.
+> 
+> Thanks, fixed.
+> 
+> Can you also comment on "bpf-cgroup: remove unused exports" ?
 
-[1] https://github.com/hardkernel/linux/commit/f86cd9487c7483b2a05f448b9ebacf6bd5a2ad2f
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-Signed-off-by: Tim Lewis <elatllat@gmail.com>
+Sure, reviewed.
 
----
- arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi | 15 +++++++++++++++
- 1 files changed, 15 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-index 046cc332d..1e5d0ee5d 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-@@ -65,6 +65,11 @@
- 			opp-hz = /bits/ 64 <1896000000>;
- 			opp-microvolt = <981000>;
- 		};
-+
-+		opp-1992000000 {
-+			opp-hz = /bits/ 64 <1992000000>;
-+			opp-microvolt = <1001000>;
-+		};
- 	};
- 
- 	cpub_opp_table_1: opp-table-1 {
-@@ -120,5 +125,15 @@
- 			opp-hz = /bits/ 64 <1704000000>;
- 			opp-microvolt = <891000>;
- 		};
-+
-+		opp-1800000000 {
-+			opp-hz = /bits/ 64 <1800000000>;
-+			opp-microvolt = <981000>;
-+		};
-+
-+		opp-1908000000 {
-+			opp-hz = /bits/ 64 <1908000000>;
-+			opp-microvolt = <1022000>;
-+		};
- 	};
- };
 -- 
-2.17.1
-
+Andrey Ignatov
