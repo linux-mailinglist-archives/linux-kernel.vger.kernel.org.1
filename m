@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE51B3F53
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859021B3D6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgDVKWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        id S1729563AbgDVKOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730038AbgDVKTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:19:04 -0400
+        id S1729549AbgDVKOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 454F22076E;
-        Wed, 22 Apr 2020 10:19:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1E8C2070B;
+        Wed, 22 Apr 2020 10:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550743;
-        bh=/KnOurnx6Etk4y412/BZj+JikJrWXkN0RDnFDDfh8k0=;
+        s=default; t=1587550475;
+        bh=F99xk0SnwSsIMiTxAabUhr6xnimitrs0ZPmUg5LI9ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXFA3/hLhFlBQmqxFDmokWHzRcb5GtvN1ynqINHdDHveRnIJ48OGajVTEyNWgwbVr
-         yT3jeG415mAZpYheSn0ZrgqBnk/KFvmM5x7nbnS1unEoED2vqELeollBfNDsnRF5Uy
-         J4yqlwyWffI2wtwR5gtJmVXShg5j4pzq3DrO6K2U=
+        b=peUPbg62vCgIayWkFD31FegrYqy+mBN7jrtr48wqSi6EGLWqOuvi1wfCMcDs6xuEG
+         83+S1dig2RytBdCvo72PtN7G+/9S4RVSHDoxaOVS/EomOdvmHKN9/OhkgOiCOBUGHO
+         HXN5V28oZj27CBL4LorggeH6GSB7zwUMvgvHkdzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Santos <daniel.santos@pobox.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ian Abbott <abbotti@mev.co.uk>, Joe Perches <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 074/118] compiler.h: fix error in BUILD_BUG_ON() reporting
+Subject: [PATCH 4.19 31/64] NFSv4/pnfs: Return valid stateids in nfs_layout_find_inode_by_stateid()
 Date:   Wed, 22 Apr 2020 11:57:15 +0200
-Message-Id: <20200422095043.847880553@linuxfoundation.org>
+Message-Id: <20200422095018.485272938@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,68 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit af9c5d2e3b355854ff0e4acfbfbfadcd5198a349 ]
+[ Upstream commit d911c57a19551c6bef116a3b55c6b089901aacb0 ]
 
-compiletime_assert() uses __LINE__ to create a unique function name.  This
-means that if you have more than one BUILD_BUG_ON() in the same source
-line (which can happen if they appear e.g.  in a macro), then the error
-message from the compiler might output the wrong condition.
+Make sure to test the stateid for validity so that we catch instances
+where the server may have been reusing stateids in
+nfs_layout_find_inode_by_stateid().
 
-For this source file:
-
-	#include <linux/build_bug.h>
-
-	#define macro() \
-		BUILD_BUG_ON(1); \
-		BUILD_BUG_ON(0);
-
-	void foo()
-	{
-		macro();
-	}
-
-gcc would output:
-
-./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_9' declared with attribute error: BUILD_BUG_ON failed: 0
-  _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
-
-However, it was not the BUILD_BUG_ON(0) that failed, so it should say 1
-instead of 0. With this patch, we use __COUNTER__ instead of __LINE__, so
-each BUILD_BUG_ON() gets a different function name and the correct
-condition is printed:
-
-./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_0' declared with attribute error: BUILD_BUG_ON failed: 1
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Reviewed-by: Daniel Santos <daniel.santos@pobox.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Ian Abbott <abbotti@mev.co.uk>
-Cc: Joe Perches <joe@perches.com>
-Link: http://lkml.kernel.org/r/20200331112637.25047-1-vegard.nossum@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 7b410d9ce460 ("pNFS: Delay getting the layout header in CB_LAYOUTRECALL handlers")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/compiler.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/callback_proc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 5e88e7e33abec..034b0a644efcc 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -347,7 +347,7 @@ static inline void *offset_to_ptr(const int *off)
-  * compiler has support to do so.
-  */
- #define compiletime_assert(condition, msg) \
--	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
-+	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+diff --git a/fs/nfs/callback_proc.c b/fs/nfs/callback_proc.c
+index 3159673549540..bcc51f131a496 100644
+--- a/fs/nfs/callback_proc.c
++++ b/fs/nfs/callback_proc.c
+@@ -130,6 +130,8 @@ static struct inode *nfs_layout_find_inode_by_stateid(struct nfs_client *clp,
  
- #define compiletime_assert_atomic_type(t)				\
- 	compiletime_assert(__native_word(t),				\
+ 	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
+ 		list_for_each_entry(lo, &server->layouts, plh_layouts) {
++			if (!pnfs_layout_is_valid(lo))
++				continue;
+ 			if (stateid != NULL &&
+ 			    !nfs4_stateid_match_other(stateid, &lo->plh_stateid))
+ 				continue;
 -- 
 2.20.1
 
