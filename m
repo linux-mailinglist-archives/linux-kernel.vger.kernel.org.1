@@ -2,272 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850C31B4A13
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D9B1B4A64
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgDVQSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:18:49 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47580 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgDVQSs (ORCPT
+        id S1727768AbgDVQWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727101AbgDVQWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:18:48 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 56C542A089E
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Andrzej Hajda <a.hajda@samsung.com>, kernel@collabora.com,
-        linux-stm32@st-md-mailman.stormreply.com, linux-imx@nxp.com,
-        Rob Herring <robh@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Adrian Pop <pop.adrian61@gmail.com>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-        Sjoerd Simons <sjoerd.simons@collabora.com>,
-        Martyn Welch <martyn.welch@collabora.com>
-Subject: Re: [PATCH v7 5/8] dt-bindings: display: add i.MX6 MIPI DSI host
- controller doc
-In-Reply-To: <20200422152956.GE28105@pendragon.ideasonboard.com>
-References: <20200421161610.1501827-1-adrian.ratiu@collabora.com>
- <20200421161610.1501827-6-adrian.ratiu@collabora.com>
- <20200422005832.GK5983@pendragon.ideasonboard.com>
- <20200422010155.GL5983@pendragon.ideasonboard.com>
- <877dy7ker6.fsf@collabora.com>
- <20200422152956.GE28105@pendragon.ideasonboard.com>
-Date:   Wed, 22 Apr 2020 19:19:50 +0300
-Message-ID: <87368vjxw9.fsf@collabora.com>
+        Wed, 22 Apr 2020 12:22:42 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE6CC03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:22:42 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id y19so1156664qvv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EjNhcH/bXfvIZUzEIVKgOCJoMZqdaN2tqLtyNe1ZM7c=;
+        b=DTRIJ8iviVnMVICbRDafDZ0ZzbTidI7VRE4I8aJhBLYyvYSzst1rQtmNc8SIu2mR5S
+         +OsIC9oE1hLB9e8G6GB9r7LP37oeG8bt5D12jMhzfWUYny1mM4Ospo9TbkRL3W0g9m2U
+         ENNiGMWwdGxlHA+HzA//YNhNriKkqhHBiodwIO9I/wsig9loxKVhKqIxVc2v64543C/G
+         1K/z4Duh8+B9n2Kvnq5AzY5KKaMyJ2qKPyttM26pFyOiSPPptiz4GrGVl5APASoKpPtL
+         sl7ODCd1JmhGb8Dv5DyK6SMgVCoFGwk2cUFXZ9eEVzxZt2DA0eEdzu8hyt6g4dnSOBFU
+         sRAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=EjNhcH/bXfvIZUzEIVKgOCJoMZqdaN2tqLtyNe1ZM7c=;
+        b=Vs9i55KZUfX5totTSN/aca0CGzvQhTp3iQTN9P97HF3odnX+IGtUpWNZvNJE6/TW3h
+         45dAMq0ZiuPVJtGnP14xCir9TVWjowjqD/9gmlPwympCm3XMPwyZL772ujwIxksIz0fL
+         x6iPUvsL4ND4S7aMly3Mf2augudYAU5RqIg1/Ja07rCNAfyWOPsXZ90N4J60/LhigGMx
+         kH5DDX/mcV8k/D06Zvj11o7KD8f8NmJGC78we0NubnZ+a5ZGVKbUiUVuGcef5Z5Hvgll
+         E1wObCCuxQQNlb/XD0NJoe02diPS0Ge8H3Mshd98JfcNl71G8qgyngw6kZG3b+djMot3
+         S9Rw==
+X-Gm-Message-State: AGi0PubzWAwQ78KL+EZWC0Gi4K/dHRE51XmQKa7/5NJq5nto8EEwbt9O
+        uUrRnbpfK/fmZvqOJ9Ez8K8=
+X-Google-Smtp-Source: APiQypLIRBkrRvorZmQzP9AyOatxObc8z0ffbAJgLwrskkjNJkq9DGhP7FwWpCURk/qaK3ZekGrgqQ==
+X-Received: by 2002:a0c:ba2e:: with SMTP id w46mr24906882qvf.97.1587572560936;
+        Wed, 22 Apr 2020 09:22:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:6260])
+        by smtp.gmail.com with ESMTPSA id o201sm4228901qke.31.2020.04.22.09.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 09:22:39 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 12:22:38 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+Subject: Re: [Poke: Tejun] Re: [RFC v3 03/11] drm/vblank: Add vblank works
+Message-ID: <20200422162238.GC5462@mtj.thefacebook.com>
+References: <20200417194145.36350-1-lyude@redhat.com>
+ <20200417194145.36350-4-lyude@redhat.com>
+ <ef9da9d93022822fe4bec7e906540fcc9852ce59.camel@redhat.com>
+ <20200417210356.GD43469@mtj.thefacebook.com>
+ <20200421123459.GY3456981@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421123459.GY3456981@phenom.ffwll.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Apr 2020, Laurent Pinchart 
-<laurent.pinchart@ideasonboard.com> wrote:
-> Hi Adrian, 
-> 
-> On Wed, Apr 22, 2020 at 01:15:41PM +0300, Adrian Ratiu wrote: 
->> On Wed, 22 Apr 2020, Laurent Pinchart wrote: 
->> > On Wed, Apr 22, 2020 at 03:58:33AM +0300, Laurent Pinchart 
->> > wrote:  
->> >> On Tue, Apr 21, 2020 at 07:16:07PM +0300, Adrian Ratiu 
->> >> wrote:  
->> >>> This provides an example DT binding for the MIPI DSI host 
->> >>> controller present on the i.MX6 SoC based on Synopsis 
->> >>> DesignWare v1.01 IP.   Cc: Rob Herring <robh@kernel.org> 
->> >>> Cc:  Neil Armstrong <narmstrong@baylibre.com> Cc: Fabio 
->> >>> Estevam  <festevam@gmail.com> Cc: Laurent Pinchart 
->> >>> <laurent.pinchart@ideasonboard.com> Cc: 
->> >>> devicetree@vger.kernel.org Tested-by: Adrian Pop 
->> >>> <pop.adrian61@gmail.com> Tested-by: Arnaud Ferraris 
->> >>> <arnaud.ferraris@collabora.com> Signed-off-by: Sjoerd 
->> >>> Simons  <sjoerd.simons@collabora.com> Signed-off-by: Martyn 
->> >>> Welch  <martyn.welch@collabora.com> Signed-off-by: Adrian 
->> >>> Ratiu  <adrian.ratiu@collabora.com> --- Changes since v6:  
->> >>>   - Added ref to the newly created snps,dw-mipi-dsi.yaml 
->> >>>   (Laurent) - Moved *-cells properties outside 
->> >>>   patternProperties (Laurent) - Removed the panel port 
->> >>>   documentation (Laurent) - Wrapped lines at 80 chars, typo 
->> >>>   fixes, sort includes (Laurent)  
->> >>>  Changes since v5:  
->> >>>   - Fixed missing reg warning (Fabio) - Updated dt-schema 
->> >>>   and  fixed warnings (Rob)  
->> >>>  Changes since v4:  
->> >>>   - Fixed yaml binding to pass `make dt_binding_check 
->> >>>   dtbs_check` and addressed received binding feedback (Rob)  
->> >>>  Changes since v3:  
->> >>>   - Added commit message (Neil) - Converted to yaml format 
->> >>>   (Neil) - Minor dt node + driver fixes (Rob) - Added small 
->> >>>   panel example to the host controller binding  
->> >>>  Changes since v2:  
->> >>>   - Fixed commit tags (Emil)  
->> >>> ---  
->> >>>  .../display/imx/fsl,mipi-dsi-imx6.yaml        | 135 
->> >>>  ++++++++++++++++++ 1 file changed, 135 insertions(+) 
->> >>>  create  mode 100644 
->> >>>  Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
->> >>>  diff --git  
->> >>> a/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
->> >>> b/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
->> >>> new file mode 100644 index 0000000000000..b73e3ae33a852 --- 
->> >>> /dev/null +++ 
->> >>> b/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
->> >>> @@ -0,0 +1,135 @@ +# SPDX-License-Identifier: (GPL-2.0-only 
->> >>> OR BSD-2-Clause) +%YAML 1.2 +--- +$id: 
->> >>> http://devicetree.org/schemas/display/imx/fsl,mipi-dsi-imx6.yaml# 
->> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml# + 
->> >>> +title: Freescale i.MX6 DW MIPI DSI Host Controller + 
->> >>> +maintainers: +  - Adrian Ratiu 
->> >>> <adrian.ratiu@collabora.com>  + +description: | +  The 
->> >>> i.MX6 DSI host controller is a  Synopsys DesignWare MIPI 
->> >>> DSI v1.01 +  IP block with a  companion PHY IP.  
->> >  I forgot to mention, if there's a companion PHY, shouldn't 
->> > it be  referenced from the DT bindings ?  
->>  I don't think so, that description was copied verbatim from 
->> the  imx6 ref manual IIRC, the physical layer is the same for 
->> MIPI DSI  which does TX as for MIPI CSI which does RX, but 
->> looking at the  ref manual and how drivers are written I don't 
->> think it's  necessary. 
-> 
-> Does that mean that the PHY is controlled through the registers 
-> specified by the reg property ? If so then this is fine. 
->
+Hello,
 
-Yes that is correct, there is just a single set of conf registers 
-specified via reg.
+On Tue, Apr 21, 2020 at 02:34:59PM +0200, Daniel Vetter wrote:
+> > > Also, of course, let me know if yu're not happy with the
+> > > __kthread_queue_work() changes/kthread_worker usage in drm_vblank_work as well
+> > 
+> > Just glanced over it and I still wonder whether it needs to be that tightly
+> > integrated, but we can look into that once we settle on whether this is the
+> > right direction.
+> 
+> I don't think we absolutely have to do this, simply means some nested
+> irq-safe spinlock. One in vblank_work, other in kthread_worker. Since the
+> delayed work doesn't do that I think it'd be nice if the drm_vblank
+> (instead of timer) delayed work could use the same pattern.
 
->> This might change if we wanted to unify the DSI and CSI drivers a 
->> bit, but considering the scope already associated with this patch 
->> series I'm a bit afraid to open a subject like that =)
->
-> That's understandable :-)
->
->> >>> +
->> >>> +  These DT bindings follow the Synopsys DW MIPI DSI bindings defined in
->> >>> +  Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt with
->> >>> +  the following device-specific properties.
->> >>> +
->> >>> +allOf:
->> >>> +  - $ref: ../bridge/snps,dw-mipi-dsi.yaml#
->> >>> +
->> >>> +properties:
->> >>> +  '#address-cells':
->> >>> +    const: 1
->> >>> +
->> >>> +  '#size-cells':
->> >>> +    const: 0
->> >>> +
->> >>> +  compatible:
->> >>> +    items:
->> >>> +      - const: fsl,imx6q-mipi-dsi
->> >>> +      - const: snps,dw-mipi-dsi
->> >>> +
->> >>> +  reg:
->> >>> +    maxItems: 1
->> >>> +
->> >>> +  interrupts:
->> >>> +    maxItems: 1
->> >>> +
->> >>> +  clocks:
->> >>> +    items:
->> >>> +      - description: Module Clock
->> >>> +      - description: DSI bus clock
->> >>> +
->> >>> +  clock-names:
->> >>> +    items:
->> >>> +      - const: ref
->> >>> +      - const: pclk
->> >>> +
->> >>> +  fsl,gpr:
->> >>> +    description:
->> >>> +      Phandle to the iomuxc-gpr region containing the multiplexer ctrl register.
->> >>> +    $ref: /schemas/types.yaml#/definitions/phandle
->> >>> +
->> >>> +  ports:
->> >>> +    type: object
->> >>> +    description: |
->> >>> +      A node containing DSI input & output port nodes with endpoint
->> >>> +      definitions as documented in
->> >>> +      Documentation/devicetree/bindings/media/video-interfaces.txt
->> >>> +      Documentation/devicetree/bindings/graph.txt
->> >>> +    properties:
->> >>> +      port@0:
->> >>> +        type: object
->> >>> +        description:
->> >>> +          DSI input port node, connected to the ltdc rgb output port.
->> >>> +
->> >>> +      port@1:
->> >>> +        type: object
->> >>> +        description:
->> >>> +          RGB output port node, connected to a panel or a bridge input port.
->> >> 
->> >> Isn't it the other way around, doesn't the bridge take RGB input and
->> >> output DSI ? And to be precise, it's not about RGB, but about the input
->> >> being parallel interface (DSI will also carry RGB).
->> >> 
->> >> I would add
->> >> 
->> >>     required:
->> >>       - port@0
->> >>       - port@1
->> >> 
->> >>> +
->> >>> +additionalProperties: false
->> >>> +
->> >>> +patternProperties:
->> >>> +  "^panel@[0-3]$":
->> >>> +    type: object
->> >>> +
->> >>> +required:
->> >>> +  - "#address-cells"
->> >>> +  - "#size-cells"
->> >>> +  - compatible
->> >>> +  - reg
->> >>> +  - interrupts
->> >>> +  - clocks
->> >>> +  - clock-names
->> >>> +  - ports
->> >>> +
->> >>> +examples:
->> >>> +  - |+
->> >>> +    #include <dt-bindings/clock/imx6qdl-clock.h>
->> >>> +    #include <dt-bindings/gpio/gpio.h>
->> >>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> >>> +
->> >>> +    dsi: dsi@21e0000 {
->> >>> +        #address-cells = <1>;
->> >>> +        #size-cells = <0>;
->> >>> +        compatible = "fsl,imx6q-mipi-dsi", "snps,dw-mipi-dsi";
->> >>> +        reg = <0x021e0000 0x4000>;
->> >>> +        interrupts = <0 102 IRQ_TYPE_LEVEL_HIGH>;
->> >>> +        fsl,gpr = <&gpr>;
->> >>> +        clocks = <&clks IMX6QDL_CLK_MIPI_CORE_CFG>,
->> >>> +                 <&clks IMX6QDL_CLK_MIPI_IPG>;
->> >>> +        clock-names = "ref", "pclk";
->> >>> +
->> >>> +        ports {
->> >>> +            #address-cells = <1>;
->> >>> +            #size-cells = <0>;
->> >> 
->> >> port@0 is missing.
->> >> 
->> >>> +            port@1 {
->> >>> +                reg = <1>;
->> >>> +                dsi_out: endpoint {
->> >>> +                    remote-endpoint = <&panel_in>;
->> >>> +                };
->> >>> +            };
->> >>> +        };
->> >>> +
->> >>> +        panel@0 {
->> >>> +            compatible = "sharp,ls032b3sx01";
->> >>> +            reg = <0>;
->> >>> +            reset-gpios = <&gpio6 8 GPIO_ACTIVE_LOW>;
->> >>> +            ports {
->> >>> +                #address-cells = <1>;
->> >>> +                #size-cells = <0>;
->> >>> +                port@0 {
->> >>> +                    reg = <0>;
->> >>> +                    panel_in: endpoint {
->> >>> +                        remote-endpoint = <&dsi_out>;
->> >>> +                    };
->> >>> +                };
->> >>> +            };
->> >>> +        };
->> >>> +    };
->> >>> +
->> >>> +...
->
-> -- 
-> Regards,
->
-> Laurent Pinchart
+I'd prefer if they were two separate locks unless that makes practical
+difference, but if it does, please go ahead.
+
+Thanks.
+
+-- 
+tejun
