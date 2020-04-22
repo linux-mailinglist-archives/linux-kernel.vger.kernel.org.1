@@ -2,196 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0421B3586
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448E71B3598
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgDVD2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 23:28:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:24164 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbgDVD2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 23:28:34 -0400
-IronPort-SDR: TLAQwSVycTOn9IGZ3t6p0192xnI+R3aeY0IGl+dTr7rncs7hBZjwJ81M9+bmQlH9gEITsupvfw
- rlXYi1NibLhw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 20:28:33 -0700
-IronPort-SDR: Kgm4GfB/vjdE6ywLMDh8Xh/KM3PVMA2pxPw2mUhmfMlk2vXrvKh9Qe8BGseLISeeGv7CSKytDP
- t7mv5SvgYppQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
-   d="scan'208";a="429759490"
-Received: from glass.png.intel.com ([172.30.181.92])
-  by orsmga005.jf.intel.com with ESMTP; 21 Apr 2020 20:28:30 -0700
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: [PATCH net-next v2 1/1] net: stmmac: Add support for VLAN promiscuous mode
-Date:   Wed, 22 Apr 2020 11:31:06 +0800
-Message-Id: <20200422033106.25745-1-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S1726398AbgDVDg0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Apr 2020 23:36:26 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39218 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726321AbgDVDgZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 23:36:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TwHMyq2_1587526579;
+Received: from 30.27.116.1(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0TwHMyq2_1587526579)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 22 Apr 2020 11:36:20 +0800
+Content-Type: text/plain;
+        charset=gb2312
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 1/2] sched: Defend cfs and rt bandwidth quota against
+ overflow
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <xm261roim4hi.fsf@google.com>
+Date:   Wed, 22 Apr 2020 11:36:19 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, chiluk+linux@indeed.com,
+        vincent.guittot@linaro.org, pauld@redhead.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <9E9BB5A6-E282-4359-A6BB-4B3B53AE875D@linux.alibaba.com>
+References: <20200420024421.22442-1-changhuaixin@linux.alibaba.com>
+ <20200420024421.22442-2-changhuaixin@linux.alibaba.com>
+ <xm261roim4hi.fsf@google.com>
+To:     bsegall@google.com
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Chuah, Kim Tatt" <kim.tatt.chuah@intel.com>
 
-For dwmac4, enable VLAN promiscuity when MAC controller is requested to
-enter promiscuous mode.
 
-Signed-off-by: Chuah, Kim Tatt <kim.tatt.chuah@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Tan, Tee Min <tee.min.tan@intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- drivers/net/ethernet/stmicro/stmmac/dwmac4.h  |  1 +
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 67 +++++++++++++++++++
- 3 files changed, 69 insertions(+)
+> 在 2020年4月21日，上午1:50，bsegall@google.com 写道：
+> 
+> Huaixin Chang <changhuaixin@linux.alibaba.com> writes:
+> 
+>> Kernel limitation on cpu.cfs_quota_us is insufficient. Some large
+>> numbers might cause overflow in to_ratio() calculation and produce
+>> unexpected results.
+>> 
+>> For example, if we make two cpu cgroups and then write a reasonable
+>> value and a large value into child's and parent's cpu.cfs_quota_us. This
+>> will cause a write error.
+>> 
+>> 	cd /sys/fs/cgroup/cpu
+>> 	mkdir parent; mkdir parent/child
+>> 	echo 8000 > parent/child/cpu.cfs_quota_us
+>> 	# 17592186044416 is (1UL << 44)
+>> 	echo 17592186044416 > parent/cpu.cfs_quota_us
+>> 
+>> In this case, quota will overflow and thus fail the __cfs_schedulable
+>> check. Similar overflow also affects rt bandwidth.
+> 
+> More to the point is that I think doing
+> 
+> echo 17592186044416 > parent/cpu.cfs_quota_us
+> echo 8000 > parent/child/cpu.cfs_quota_us
+> 
+> will only fail on the second write, while with this patch it will fail
+> on the first, which should be more understandable.
+> 
+> 
+> to_ratio could be altered to avoid unnecessary internal overflow, but
+> min_cfs_quota_period is less than 1<<BW_SHIFT, so a cutoff would still
+> be needed.
+> 
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 6208a68a331d..127f75862962 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -473,6 +473,7 @@ struct mac_device_info {
- 	unsigned int xlgmac;
- 	unsigned int num_vlan;
- 	u32 vlan_filter[32];
-+	unsigned int promisc;
- };
- 
- struct stmmac_rx_routing {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
-index 28cac28253b8..61f3249bd724 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
-@@ -90,6 +90,7 @@
- #define GMAC_VLAN_CSVL			BIT(19)
- #define GMAC_VLAN_VLC			GENMASK(17, 16)
- #define GMAC_VLAN_VLC_SHIFT		16
-+#define GMAC_VLAN_VLHT			GENMASK(15, 0)
- 
- /* MAC VLAN Tag */
- #define GMAC_VLAN_TAG_VID		GENMASK(15, 0)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index 39692d15d80c..ecd834e0e121 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -450,6 +450,12 @@ static int dwmac4_add_hw_vlan_rx_fltr(struct net_device *dev,
- 	if (vid > 4095)
- 		return -EINVAL;
- 
-+	if (hw->promisc) {
-+		netdev_err(dev,
-+			   "Adding VLAN in promisc mode not supported\n");
-+		return -EPERM;
-+	}
-+
- 	/* Single Rx VLAN Filter */
- 	if (hw->num_vlan == 1) {
- 		/* For single VLAN filter, VID 0 means VLAN promiscuous */
-@@ -499,6 +505,12 @@ static int dwmac4_del_hw_vlan_rx_fltr(struct net_device *dev,
- {
- 	int i, ret = 0;
- 
-+	if (hw->promisc) {
-+		netdev_err(dev,
-+			   "Deleting VLAN in promisc mode not supported\n");
-+		return -EPERM;
-+	}
-+
- 	/* Single Rx VLAN Filter */
- 	if (hw->num_vlan == 1) {
- 		if ((hw->vlan_filter[0] & GMAC_VLAN_TAG_VID) == vid) {
-@@ -523,9 +535,45 @@ static int dwmac4_del_hw_vlan_rx_fltr(struct net_device *dev,
- 	return ret;
- }
- 
-+static void dwmac4_vlan_promisc_enable(struct net_device *dev,
-+				       struct mac_device_info *hw)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 value;
-+	u32 hash;
-+	u32 val;
-+	int i;
-+
-+	/* Single Rx VLAN Filter */
-+	if (hw->num_vlan == 1) {
-+		dwmac4_write_single_vlan(dev, 0);
-+		return;
-+	}
-+
-+	/* Extended Rx VLAN Filter Enable */
-+	for (i = 0; i < hw->num_vlan; i++) {
-+		if (hw->vlan_filter[i] & GMAC_VLAN_TAG_DATA_VEN) {
-+			val = hw->vlan_filter[i] & ~GMAC_VLAN_TAG_DATA_VEN;
-+			dwmac4_write_vlan_filter(dev, hw, i, val);
-+		}
-+	}
-+
-+	hash = readl(ioaddr + GMAC_VLAN_HASH_TABLE);
-+	if (hash & GMAC_VLAN_VLHT) {
-+		value = readl(ioaddr + GMAC_VLAN_TAG);
-+		if (value & GMAC_VLAN_VTHM) {
-+			value &= ~GMAC_VLAN_VTHM;
-+			writel(value, ioaddr + GMAC_VLAN_TAG);
-+		}
-+	}
-+}
-+
- static void dwmac4_restore_hw_vlan_rx_fltr(struct net_device *dev,
- 					   struct mac_device_info *hw)
- {
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 value;
-+	u32 hash;
- 	u32 val;
- 	int i;
- 
-@@ -542,6 +590,13 @@ static void dwmac4_restore_hw_vlan_rx_fltr(struct net_device *dev,
- 			dwmac4_write_vlan_filter(dev, hw, i, val);
- 		}
- 	}
-+
-+	hash = readl(ioaddr + GMAC_VLAN_HASH_TABLE);
-+	if (hash & GMAC_VLAN_VLHT) {
-+		value = readl(ioaddr + GMAC_VLAN_TAG);
-+		value |= GMAC_VLAN_VTHM;
-+		writel(value, ioaddr + GMAC_VLAN_TAG);
-+	}
- }
- 
- static void dwmac4_set_filter(struct mac_device_info *hw,
-@@ -624,6 +679,18 @@ static void dwmac4_set_filter(struct mac_device_info *hw,
- 		value |= GMAC_PACKET_FILTER_VTFE;
- 
- 	writel(value, ioaddr + GMAC_PACKET_FILTER);
-+
-+	if (dev->flags & IFF_PROMISC) {
-+		if (!hw->promisc) {
-+			hw->promisc = 1;
-+			dwmac4_vlan_promisc_enable(dev, hw);
-+		}
-+	} else {
-+		if (hw->promisc) {
-+			hw->promisc = 0;
-+			dwmac4_restore_hw_vlan_rx_fltr(dev, hw);
-+		}
-+	}
- }
- 
- static void dwmac4_flow_ctrl(struct mac_device_info *hw, unsigned int duplex,
--- 
-2.17.0
+Yes, I will rewrite commit log in the following patch.
+
+> Also tg_rt_schedulable sums a bunch of to_ratio(), and doesn't check for
+> overflow on that sum, so if we consider preventing weirdness around
+> schedulable checks and max quotas relevant we should probably fix that too.
+> 
+
+It seems to me that check for overflow on sum of to_ratio(rt_period, rt_runtime) is not necessary. As to_ratio() of a rt group is bounded by global_rt_period() and global_rt_runtime() due to the checks in tg_rt_schedulable(). And global_rt_runtime() is not allowed to be greater than global_rt_period() thanks to sched_rt_global_validate(). Thus, to_ratio() of a rt group will not exceed BW_UNIT, sum of which is unlikely to overflow then. Checks against rt_runtime overflow during to_ratio is still needed.
+
+Is that correct?
+
+>> 
+>> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+>> ---
+>> kernel/sched/core.c  | 8 ++++++++
+>> kernel/sched/rt.c    | 9 +++++++++
+>> kernel/sched/sched.h | 2 ++
+>> 3 files changed, 19 insertions(+)
+>> 
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 3a61a3b8eaa9..f0a74e35c3f0 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -7390,6 +7390,8 @@ static DEFINE_MUTEX(cfs_constraints_mutex);
+>> 
+>> const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
+>> static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
+>> +/* More than 203 days if BW_SHIFT equals 20. */
+>> +static const u64 max_cfs_runtime = MAX_BW_USEC * NSEC_PER_USEC;
+>> 
+>> static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+>> 
+>> @@ -7417,6 +7419,12 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>> 	if (period > max_cfs_quota_period)
+>> 		return -EINVAL;
+>> 
+>> +	/*
+>> +	 * Bound quota to defend quota against overflow during bandwidth shift.
+>> +	 */
+>> +	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+>> +		return -EINVAL;
+>> +
+>> 	/*
+>> 	 * Prevent race between setting of cfs_rq->runtime_enabled and
+>> 	 * unthrottle_offline_cfs_rqs().
+>> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+>> index df11d88c9895..f5eea19d68c4 100644
+>> --- a/kernel/sched/rt.c
+>> +++ b/kernel/sched/rt.c
+>> @@ -2569,6 +2569,9 @@ static int __rt_schedulable(struct task_group *tg, u64 period, u64 runtime)
+>> 	return ret;
+>> }
+>> 
+>> +/* More than 203 days if BW_SHIFT equals 20. */
+>> +static const u64 max_rt_runtime = MAX_BW_USEC * NSEC_PER_USEC;
+> 
+> It looks to me like __rt_schedulable doesn't divide by NSEC_PER_USEC, so
+> to_ratio is operating on nsec, and the limit is in nsec, and MAX_BW_USEC
+> should probably not be named USEC then as well.
+
+Yes, the limit for rt_runtime is in nsec. This should be changed.
+
+> 
+>> +
+>> static int tg_set_rt_bandwidth(struct task_group *tg,
+>> 		u64 rt_period, u64 rt_runtime)
+>> {
+>> @@ -2585,6 +2588,12 @@ static int tg_set_rt_bandwidth(struct task_group *tg,
+>> 	if (rt_period == 0)
+>> 		return -EINVAL;
+>> 
+>> +	/*
+>> +	 * Bound quota to defend quota against overflow during bandwidth shift.
+>> +	 */
+>> +	if (rt_runtime != RUNTIME_INF && rt_runtime > max_rt_runtime)
+>> +		return -EINVAL;
+>> +
+>> 	mutex_lock(&rt_constraints_mutex);
+>> 	err = __rt_schedulable(tg, rt_period, rt_runtime);
+>> 	if (err)
+>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+>> index db3a57675ccf..6f6b7f545557 100644
+>> --- a/kernel/sched/sched.h
+>> +++ b/kernel/sched/sched.h
+>> @@ -1918,6 +1918,8 @@ extern void init_dl_inactive_task_timer(struct sched_dl_entity *dl_se);
+>> #define BW_SHIFT		20
+>> #define BW_UNIT			(1 << BW_SHIFT)
+>> #define RATIO_SHIFT		8
+>> +#define MAX_BW_BITS		(64 - BW_SHIFT)
+>> +#define MAX_BW_USEC		((1UL << MAX_BW_BITS) - 1)
+>> unsigned long to_ratio(u64 period, u64 runtime);
+>> 
+>> extern void init_entity_runnable_average(struct sched_entity *se);
 
