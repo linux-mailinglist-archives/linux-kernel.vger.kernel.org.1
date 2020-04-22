@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610AE1B3F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DD61B3DCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730890AbgDVKhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:37:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58822 "EHLO mail.kernel.org"
+        id S1729991AbgDVKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730209AbgDVKWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:36 -0400
+        id S1729865AbgDVKRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:17:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36BE42075A;
-        Wed, 22 Apr 2020 10:22:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10EE02070B;
+        Wed, 22 Apr 2020 10:17:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550955;
-        bh=u/HMnLGTaLSNri32SyqVZvXqm4KgTOgJ5AYusxzD3mA=;
+        s=default; t=1587550660;
+        bh=WL3PbyBJMFw8o4KxrC8xipxehGC7bO8H7IF894iaawA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFzgHEvUegU1hdph0a4+/p5Qm/AMUpNZ8ZSaq/GgoMC7Rva64vV8S5Zo2ck2jkO0J
-         Ln8K1tJTuQHQYXAZ3WPZpbGdcF5bdb7iN6mQ0jL6+21NeVpRY4JX/429jHGiqQ8rIm
-         Rs22N7zqxT4GJcSz8MBc2ZlCp7juA6A4ZZMafm8Q=
+        b=qHzUKosN6ZFx7mTa0W+o2AxnHu/h9muVV+2QxbHjflTrKUxS28Do94zokUcqNTH1w
+         U0MWnLqqRELOdbEmsfGdi761awUBNSOljbV6KYvMf2VV7lWxZJeVa7nKl7rf6ZbHwU
+         V8P7jeEOkqPSbxCmp/lcI4TocG4pDoTwKXc8UyD8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 042/166] clk: at91: usb: continue if clk_hw_round_rate() return zero
-Date:   Wed, 22 Apr 2020 11:56:09 +0200
-Message-Id: <20200422095053.550865792@linuxfoundation.org>
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 009/118] ARM: dts: imx6: Use gpc for FEC interrupt controller to fix wake on LAN.
+Date:   Wed, 22 Apr 2020 11:56:10 +0200
+Message-Id: <20200422095033.067534688@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-[ Upstream commit b0ecf1c6c6e82da4847900fad0272abfd014666d ]
+commit 4141f1a40fc0789f6fd4330e171e1edf155426aa upstream.
 
-clk_hw_round_rate() may call round rate function of its parents. In case
-of SAM9X60 two of USB parrents are PLLA and UPLL. These clocks are
-controlled by clk-sam9x60-pll.c driver. The round rate function for this
-driver is sam9x60_pll_round_rate() which call in turn
-sam9x60_pll_get_best_div_mul(). In case the requested rate is not in the
-proper range (rate < characteristics->output[0].min &&
-rate > characteristics->output[0].max) the sam9x60_pll_round_rate() will
-return a negative number to its caller (called by
-clk_core_round_rate_nolock()). clk_hw_round_rate() will return zero in
-case a negative number is returned by clk_core_round_rate_nolock(). With
-this, the USB clock will continue its rate computation even caller of
-clk_hw_round_rate() returned an error. With this, the USB clock on SAM9X60
-may not chose the best parent. I detected this after a suspend/resume
-cycle on SAM9X60.
+In order to wake from suspend by ethernet magic packets the GPC
+must be used as intc does not have wakeup functionality.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Link: https://lkml.kernel.org/r/1579261009-4573-2-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But the FEC DT node currently uses interrupt-extended,
+specificying intc, thus breaking WoL.
+
+This problem is probably fallout from the stacked domain conversion
+as intc used to chain to GPC.
+
+So replace "interrupts-extended" by "interrupts" to use the default
+parent which is GPC.
+
+Fixes: b923ff6af0d5 ("ARM: imx6: convert GPC to stacked domains")
+
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/at91/clk-usb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/imx6qdl.dtsi |    5 ++---
+ arch/arm/boot/dts/imx6qp.dtsi  |    1 -
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-usb.c b/drivers/clk/at91/clk-usb.c
-index bda92980e0155..c0895c993cce2 100644
---- a/drivers/clk/at91/clk-usb.c
-+++ b/drivers/clk/at91/clk-usb.c
-@@ -75,6 +75,9 @@ static int at91sam9x5_clk_usb_determine_rate(struct clk_hw *hw,
- 			tmp_parent_rate = req->rate * div;
- 			tmp_parent_rate = clk_hw_round_rate(parent,
- 							   tmp_parent_rate);
-+			if (!tmp_parent_rate)
-+				continue;
-+
- 			tmp_rate = DIV_ROUND_CLOSEST(tmp_parent_rate, div);
- 			if (tmp_rate < req->rate)
- 				tmp_diff = req->rate - tmp_rate;
--- 
-2.20.1
-
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -1039,9 +1039,8 @@
+ 				compatible = "fsl,imx6q-fec";
+ 				reg = <0x02188000 0x4000>;
+ 				interrupt-names = "int0", "pps";
+-				interrupts-extended =
+-					<&intc 0 118 IRQ_TYPE_LEVEL_HIGH>,
+-					<&intc 0 119 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
++					     <0 119 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clks IMX6QDL_CLK_ENET>,
+ 					 <&clks IMX6QDL_CLK_ENET>,
+ 					 <&clks IMX6QDL_CLK_ENET_REF>;
+--- a/arch/arm/boot/dts/imx6qp.dtsi
++++ b/arch/arm/boot/dts/imx6qp.dtsi
+@@ -77,7 +77,6 @@
+ };
+ 
+ &fec {
+-	/delete-property/interrupts-extended;
+ 	interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
+ 		     <0 119 IRQ_TYPE_LEVEL_HIGH>;
+ };
 
 
