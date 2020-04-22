@@ -2,165 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1C71B4AC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101B81B4AD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgDVQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:44:15 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48810 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726147AbgDVQoP (ORCPT
+        id S1726760AbgDVQrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:47:09 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:18678 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726732AbgDVQrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:44:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587573854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c0nWZoKPKTTJxXUMabK38nbk8dEd9Y8pN0ufpg96O1o=;
-        b=ENAoOIZehoG8swNWwCsaw7PsBG6qyf7tYeALkBXSjWK7xMBdfiLIoQ9UKgImCf39OcPHar
-        bEHQeRP0RuB0D3V/nWh2217H2b7A+MzIOUw5zLCS/glXrHEkcZKz26W9VtOIrYbqsoLNWU
-        FYjM9vuoKR+BsD5DtFeukmQSQa40eiE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-9W6c9HByNa2NbULOmEnGpw-1; Wed, 22 Apr 2020 12:44:11 -0400
-X-MC-Unique: 9W6c9HByNa2NbULOmEnGpw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D753418FE860;
-        Wed, 22 Apr 2020 16:44:09 +0000 (UTC)
-Received: from treble (ovpn-117-114.rdu2.redhat.com [10.10.117.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 957706084B;
-        Wed, 22 Apr 2020 16:44:08 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 11:44:06 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: linux-next: Tree for Apr 22 (objtool warnings)
-Message-ID: <20200422164406.qhvd2my35wnjlzyg@treble>
-References: <20200422171016.484b031d@canb.auug.org.au>
- <2bf0635d-1406-23db-28c7-e55da9a07e05@infradead.org>
+        Wed, 22 Apr 2020 12:47:08 -0400
+Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MGib2b022060;
+        Wed, 22 Apr 2020 12:46:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=8sAwbGtPY6C5C2oCLjUhBeRwqaYHoWlxX2hC3iKgaRU=;
+ b=vW1wqvVma4wD9UUyBB5HViamUDwpiIJJnIb/JnzYB4KJ55UMkG6t1oR3/pgaskXOYve3
+ TP10vaHGVIoPxK5vRkytoot5lCpEyBakrWfnDrCVIoQ9LKCCkKrZGNXYCJv0soLdKaIK
+ O9GgTrMGDRVKSnwNhkN4yPjfft6tZkl0QmpA36kBM8JHiBilDo5LRp9LdofXHB0T4Hej
+ k8MDlifjPqWzvsrdS60TegIfykpjXjSjbm6tKPjw35HZyWqzCy0j6dvtmIIX/JQClfNf
+ hFxgRPUUpyl6ua+x2Bu5jjJZJNxuaDgyJ4nGdgSZHYRlGbGC9OakXfCXYvY5SG/o4RhI /w== 
+Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0b-00154904.pphosted.com with ESMTP id 30fwcxfsc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Apr 2020 12:46:54 -0400
+Received: from pps.filterd (m0144102.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MGksGA020621;
+        Wed, 22 Apr 2020 12:46:54 -0400
+Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2051.outbound.protection.outlook.com [104.47.44.51])
+        by mx0b-00154901.pphosted.com with ESMTP id 30jr8ra3jm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 12:46:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EfueYS+9xkseXXxvKAAc6aR33ocHQi4Si5lZJJM7keVumQVA4APDOvnFp1ReB8odEa9LKjado7uazy9Q2U0YPYuZXnumgxlpmCPugyhKxBLlXz62ejmVQ8QKy0ASUcG7e1vRV/l1fuCCzsqvyDeH9DgOo3NDUYAcLqg2pmfsTmzKHTbEfqJvstM7mMVL7Rvt0+13kORVNA1tm5MQdbpcs5EVJwPJzJ/slKguG9NQWLCWzZURV2PFM3XYZ8zPrhKB/z9RdIa9eHqGhp2v2pEHegyHWEfBNQriLbuFKbKy2k1k/t1ZejHXoCQ3vHMRDQTpucpc85CzM+oXPHumrhRpyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8sAwbGtPY6C5C2oCLjUhBeRwqaYHoWlxX2hC3iKgaRU=;
+ b=oTV4j3QbtgZLvEtB84of5PCk8U8GhbKpVRZByHO9kC64IDi3B0k1Fg4gokPHHzLNRKlMzmOes2GLaW8JMo7mKtx90MAzW5kHcsZJuyRtzu+3mfcv5doczq0UvBPAfQgzgMhYzauwfbkRIpqvSmB3TapgEMgML2AzTPT7uM28LiA0OY1WokYTp9xoXeVAfZd+cjS4+3YYw3Afd4w4Q+Onc2jNiNUb5Y9lL9RmkHNG0pGJa3Hu56pqJWcFo4YKeMCX98AFA7AeP5Papc4ytDqRpAlAhpkNyW2bQo0Emsb2RZoLFab6WzPaoAuor7OYZ0JPRArD0IVQnPcqERWo6F+frQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8sAwbGtPY6C5C2oCLjUhBeRwqaYHoWlxX2hC3iKgaRU=;
+ b=asxQMLFwcbL2FHXNRP5UZSA5rp42xwM+LUsBgSo8k9m+bmjgKNpJwj/kEVQ05a5RpsLbpK9YTePE+HVR3laGXZ/adRPSobXyWYUnXS6FMI1R2c/wPXadOQ+7oOLMu6anwnUx7VvrC1lXk60QMAl5wRjh+G4/UmAUarp2JqgP2+k=
+Received: from DM6PR19MB2682.namprd19.prod.outlook.com (2603:10b6:5:139::14)
+ by DM6PR19MB3289.namprd19.prod.outlook.com (2603:10b6:5:6::31) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2921.27; Wed, 22 Apr 2020 16:45:18 +0000
+Received: from DM6PR19MB2682.namprd19.prod.outlook.com
+ ([fe80::a586:af72:89c5:a6a5]) by DM6PR19MB2682.namprd19.prod.outlook.com
+ ([fe80::a586:af72:89c5:a6a5%5]) with mapi id 15.20.2921.030; Wed, 22 Apr 2020
+ 16:45:18 +0000
+From:   "Ravich, Leonid" <Leonid.Ravich@dell.com>
+To:     Dave Jiang <dave.jiang@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
+CC:     "lravich@gmail.com" <lravich@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Barabash, Alexander" <Alexander.Barabash@dell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/3] dmaengine: ioat: adding missed issue_pending to
+ timeout handler
+Thread-Topic: [PATCH 3/3] dmaengine: ioat: adding missed issue_pending to
+ timeout handler
+Thread-Index: AQHWGJhg4YA7SFfSVESGZnhyjmveYqiFMVkAgAAn6mA=
+Date:   Wed, 22 Apr 2020 16:45:18 +0000
+Message-ID: <DM6PR19MB2682454E56C25482B85E82B298D20@DM6PR19MB2682.namprd19.prod.outlook.com>
+References: <1587554529-29839-1-git-send-email-leonid.ravich@dell.com>
+ <1587554529-29839-3-git-send-email-leonid.ravich@dell.com>
+ <68c65d83-58fe-f2cb-d505-9b216caa1f4b@intel.com>
+In-Reply-To: <68c65d83-58fe-f2cb-d505-9b216caa1f4b@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Leonid.Ravich@emc.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-04-22T16:45:14.8939982Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=67d89b23-e4cc-4d3c-b970-ff8414c31a71;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+x-originating-ip: [85.250.222.246]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3192a8ae-f061-4d25-da82-08d7e6dc8a81
+x-ms-traffictypediagnostic: DM6PR19MB3289:
+x-ld-processed: 945c199a-83a2-4e80-9f8c-5a91be5752dd,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB328961C719C8C36CABD5837A98D20@DM6PR19MB3289.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-forefront-prvs: 03818C953D
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2682.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(396003)(39860400002)(366004)(136003)(346002)(53546011)(76116006)(55016002)(478600001)(5660300002)(4326008)(71200400001)(9686003)(6506007)(54906003)(316002)(8676002)(33656002)(2906002)(8936002)(81156014)(26005)(186003)(110136005)(7696005)(66446008)(66476007)(66946007)(52536014)(64756008)(786003)(66556008)(86362001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: dell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QgNmEXQcGzmuDg7m0fkLNCwy3MeoJSQs4T4YR3aO+8ODeMsGOK2/pEpcJqRKEuA3M9E0FMX8y1fOZjrDhDTlxMqW972EHfGBBwcoQlW4MJDD6/fKaRMp0iCvgKx4wY+47lfQadnYlZlSDGin1Thvy+4Qz2F/VB2lWPoWs31ahhvBQnfNnAudu4VCEDr+qWt8wsnLQltKDbOlfS739Z3/KBLaniCpxNnb2NLKstJwb2ksF6VdlTxNP9byOaeYoy4BloFjwA3FHojuBhqVJq4ER2hYWXuquGUeAyeB1ch1Nr3biZ1CMeVgThOrUKF/SIR9gZvwL2lCh4xhIrQlm+CMkIRrP+oDD8fTltMGc2AGAwBQdRX71QG7WywFo3miJNLYmSzsoLCHf5A17fukmqOF8cZYH6dMVLcyouFXb3XHcmXAKeMScZ8jvZ1OBmQ6OHBE
+x-ms-exchange-antispam-messagedata: kTHwpPJ+60ud5qEM7cfBGnly4N8no58vg2lMD86wAOfJEdaSb41jX5rLENqnn0piB811I/RFWv8KflZmZdFt95CLaIKon0/ACyzb4dJc0UatRVgKqeHIWTFJSohbqopWEJRjYLZGxolxK3TPsfqQfA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2bf0635d-1406-23db-28c7-e55da9a07e05@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3192a8ae-f061-4d25-da82-08d7e6dc8a81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2020 16:45:18.5235
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zu0O6ddRlb0KqmJDqp6o82bZ4XU+khPDzKumpTlc5fZ6LX+8qh4/Ls8yWwDPAIrVf30phhy2n8CFZnlxUYoz2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB3289
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_06:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 phishscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220125
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015
+ impostorscore=0 phishscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 priorityscore=1501 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 08:35:29AM -0700, Randy Dunlap wrote:
-> On 4/22/20 12:10 AM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20200421:
-> > 
-> 
-> on x86_64:
-
-In both cases the unreachable instruction happens immediately after a
-call to a function which is truncated with a UD2 (because of
-UBSAN_TRAP).
-
-When I remove UBSAN_TRAP, the UD2s are replaced with calls to
-__ubsan_handle_type_mismatch_v1().
-
-Kees, any idea?
-
-> arch/x86/net/bpf_jit_comp.o: warning: objtool: bpf_int_jit_compile()+0x246: unreachable instruction
-
-00000000000010a1 <do_jit>:
-    10a1:	55                   	push   %rbp
-    10a2:	53                   	push   %rbx
-    10a3:	48 81 ec d0 00 00 00 	sub    $0xd0,%rsp
-    10aa:	48 89 fb             	mov    %rdi,%rbx
-    10ad:	65 48 8b 04 25 28 00 	mov    %gs:0x28,%rax
-    10b4:	00 00 
-    10b6:	48 89 84 24 c8 00 00 	mov    %rax,0xc8(%rsp)
-    10bd:	00 
-    10be:	31 c0                	xor    %eax,%eax
-    10c0:	48 8b bc 24 e0 00 00 	mov    0xe0(%rsp),%rdi
-    10c7:	00 
-    10c8:	e8 00 00 00 00       	callq  10cd <do_jit+0x2c>
-			10c9: R_X86_64_PLT32	__tsan_func_entry-0x4
-    10cd:	f6 c3 07             	test   $0x7,%bl
-    10d0:	75 7f                	jne    1151 <do_jit+0xb0>
-    10d2:	48 8d 7b 0c          	lea    0xc(%rbx),%rdi
-    10d6:	e8 00 00 00 00       	callq  10db <do_jit+0x3a>
-			10d7: R_X86_64_PLT32	__tsan_read4-0x4
-    10db:	48 89 e7             	mov    %rsp,%rdi
-    10de:	e8 00 00 00 00       	callq  10e3 <do_jit+0x42>
-			10df: R_X86_64_PLT32	__tsan_write8-0x4
-    10e3:	48 8d 6c 24 08       	lea    0x8(%rsp),%rbp
-    10e8:	48 89 2c 24          	mov    %rbp,(%rsp)
-    10ec:	48 8d 7b 04          	lea    0x4(%rbx),%rdi
-    10f0:	e8 00 00 00 00       	callq  10f5 <do_jit+0x54>
-			10f1: R_X86_64_PLT32	__tsan_read4-0x4
-    10f5:	48 8d 7b 20          	lea    0x20(%rbx),%rdi
-    10f9:	e8 00 00 00 00       	callq  10fe <do_jit+0x5d>
-			10fa: R_X86_64_PLT32	__tsan_read8-0x4
-    10fe:	48 8b 7b 20          	mov    0x20(%rbx),%rdi
-    1102:	40 f6 c7 07          	test   $0x7,%dil
-    1106:	75 49                	jne    1151 <do_jit+0xb0>
-    1108:	48 83 c7 18          	add    $0x18,%rdi
-    110c:	e8 00 00 00 00       	callq  1111 <do_jit+0x70>
-			110d: R_X86_64_PLT32	__tsan_read4-0x4
-    1111:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
-			1114: R_X86_64_32S	ideal_nops
-    1118:	e8 00 00 00 00       	callq  111d <do_jit+0x7c>
-			1119: R_X86_64_PLT32	__tsan_read8-0x4
-    111d:	48 8b 1d 00 00 00 00 	mov    0x0(%rip),%rbx        # 1124 <do_jit+0x83>
-			1120: R_X86_64_PC32	ideal_nops-0x4
-    1124:	48 8d 7b 48          	lea    0x48(%rbx),%rdi
-    1128:	f6 c3 07             	test   $0x7,%bl
-    112b:	75 24                	jne    1151 <do_jit+0xb0>
-    112d:	e8 00 00 00 00       	callq  1132 <do_jit+0x91>
-			112e: R_X86_64_PLT32	__tsan_read8-0x4
-    1132:	48 8b 43 48          	mov    0x48(%rbx),%rax
-    1136:	8b 10                	mov    (%rax),%edx
-    1138:	89 55 00             	mov    %edx,0x0(%rbp)
-    113b:	0f b6 40 04          	movzbl 0x4(%rax),%eax
-    113f:	88 45 04             	mov    %al,0x4(%rbp)
-    1142:	48 8d 7c 24 0d       	lea    0xd(%rsp),%rdi
-    1147:	e8 00 00 00 00       	callq  114c <do_jit+0xab>
-			1148: R_X86_64_PLT32	__tsan_write1-0x4
-    114c:	c6 44 24 0d 55       	movb   $0x55,0xd(%rsp)
-    1151:	0f 0b                	ud2    
-
-> drivers/media/i2c/ir-kbd-i2c.o: warning: objtool: ir_probe()+0x745: unreachable instruction
-
-000000000000091e <zilog_init>:
-     91e:	55                   	push   %rbp
-     91f:	48 83 ec 70          	sub    $0x70,%rsp
-     923:	65 48 8b 04 25 28 00 	mov    %gs:0x28,%rax
-     92a:	00 00 
-     92c:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
-     931:	31 c0                	xor    %eax,%eax
-     933:	48 8b 7c 24 78       	mov    0x78(%rsp),%rdi
-     938:	e8 00 00 00 00       	callq  93d <zilog_init+0x1f>
-			939: R_X86_64_PLT32	__tsan_func_entry-0x4
-     93d:	48 8d 6c 24 08       	lea    0x8(%rsp),%rbp
-     942:	be 60 00 00 00       	mov    $0x60,%esi
-     947:	48 89 ef             	mov    %rbp,%rdi
-     94a:	e8 00 00 00 00       	callq  94f <zilog_init+0x31>
-			94b: R_X86_64_PLT32	__tsan_write_range-0x4
-     94f:	b9 0c 00 00 00       	mov    $0xc,%ecx
-     954:	31 c0                	xor    %eax,%eax
-     956:	48 89 ef             	mov    %rbp,%rdi
-     959:	f3 48 ab             	rep stos %rax,%es:(%rdi)
-     95c:	48 89 ef             	mov    %rbp,%rdi
-     95f:	e8 00 00 00 00       	callq  964 <zilog_init+0x46>
-			960: R_X86_64_PLT32	__tsan_write1-0x4
-     964:	c6 44 24 08 60       	movb   $0x60,0x8(%rsp)
-     969:	0f 0b                	ud2    
-
-
--- 
-Josh
-
+PiBGcm9tOiBEYXZlIEppYW5nIDxkYXZlLmppYW5nQGludGVsLmNvbT4NCj4gDQo+IE9uIDQvMjIv
+MjAyMCA0OjIyIEFNLCBsZW9uaWQucmF2aWNoQGRlbGwuY29tIHdyb3RlOg0KPiA+IEZyb206IExl
+b25pZCBSYXZpY2ggPExlb25pZC5SYXZpY2hAZW1jLmNvbT4NCj4gPg0KPiA+IGNvbXBsZXRpb24g
+dGltZW91dCBtaWdodCB0cmlnZ2VyIHVubmVzZXNlcnkgRE1BIGVuZ2luZSBodyByZWJvb3QgaW4N
+Cj4gPiBjYXNlIG9mIG1pc3NlZCBpc3N1ZV9wZW5kaW5nKCkgLg0KPiANCj4gSnVzdCBjdXJpb3Vz
+LCBhcmUgeW91IGhpdHRpbmcgYSB1c2UgY2FzZSB3aGVyZSB0aGlzIGlzIGhhcHBlbmluZz8gQW5k
+IHdoYXQncw0KPiBjYXVzaW5nIHRoZSBjb21wbGV0aW9uIHRpbWVvdXQ/DQoNClVuZm9ydHVuYXRl
+bHkgSSBkaWQgICwNCmluIG15IGNhc2UgSSBtaXNzZWQgY2FsbGluZyAgZG1hX2FzeW5jX2lzc3Vl
+X3BlbmRpbmcoKSBhZnRlciBmZXcgZG1hZW5naW5lX3ByZXBfZG1hX21lbWNweSgpIGR1ZSB0byBz
+b21lIGVycm9yIGhhbmRsaW5nIGJ1ZyAsICB0aW1lb3V0IHRpbWVyICB3ZXJlIHN0aWxsIGFybWVk
+IGR1ZSB0byBwcmV2aW91cyByZXF1ZXN0cyAocHJvYmFibHkpICBhbmQgd2hlbiBmaW5hbGx5IHRo
+ZSB0aW1lciBmaXJlZCB0aGUgZW5naW5lIHdlcmUgYWN0aXZlIChpb2F0X3JpbmdfYWN0aXZlKCkp
+IHNvIGl0IHdlbnQgdG8gcmVzZXQgLg0KDQpBdCBsZWFzdCB0aGlzIGlzIHRoZSB0aGVvcnkgOiku
+DQo+IA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTGVvbmlkIFJhdmljaCA8TGVvbmlkLlJhdmlj
+aEBlbWMuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9kbWEvaW9hdC9kbWEuYyB8IDcgKysr
+KysrKw0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvZG1hL2lvYXQvZG1hLmMgYi9kcml2ZXJzL2RtYS9pb2F0L2RtYS5j
+IGluZGV4DQo+ID4gNTVhOGNmMS4uMmFiMDdhMyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Rt
+YS9pb2F0L2RtYS5jDQo+ID4gKysrIGIvZHJpdmVycy9kbWEvaW9hdC9kbWEuYw0KPiA+IEBAIC05
+NTUsNiArOTU1LDEzIEBAIHZvaWQgaW9hdF90aW1lcl9ldmVudChzdHJ1Y3QgdGltZXJfbGlzdCAq
+dCkNCj4gPiAgIAkJZ290byB1bmxvY2tfb3V0Ow0KPiA+ICAgCX0NCj4gPg0KPiA+ICsJLyogaGFu
+ZGxlIG1pc3NlZCBpc3N1ZSBwZW5kaW5nIGNhc2UgKi8NCj4gPiArCWlmIChpb2F0X3JpbmdfcGVu
+ZGluZyhpb2F0X2NoYW4pKSB7DQo+ID4gKwkJc3Bpbl9sb2NrX2JoKCZpb2F0X2NoYW4tPnByZXBf
+bG9jayk7DQo+ID4gKwkJX19pb2F0X2lzc3VlX3BlbmRpbmcoaW9hdF9jaGFuKTsNCj4gPiArCQlz
+cGluX3VubG9ja19iaCgmaW9hdF9jaGFuLT5wcmVwX2xvY2spOw0KPiA+ICsJfQ0KPiA+ICsNCj4g
+PiAgIAlzZXRfYml0KElPQVRfQ09NUExFVElPTl9BQ0ssICZpb2F0X2NoYW4tPnN0YXRlKTsNCj4g
+PiAgIAltb2RfdGltZXIoJmlvYXRfY2hhbi0+dGltZXIsIGppZmZpZXMgKyBDT01QTEVUSU9OX1RJ
+TUVPVVQpOw0KPiA+ICAgdW5sb2NrX291dDoNCj4gPg0K
