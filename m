@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8321B3EFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FF71B3D5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731175AbgDVKdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:33:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33466 "EHLO mail.kernel.org"
+        id S1728799AbgDVKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgDVKY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:24:59 -0400
+        id S1729484AbgDVKOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A4CB20780;
-        Wed, 22 Apr 2020 10:24:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAB412070B;
+        Wed, 22 Apr 2020 10:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551099;
-        bh=VQEL4zYdQmOL2lvORooDfGkshP55G+pqZwAq3XpfnQI=;
+        s=default; t=1587550450;
+        bh=5L12vHqEHOaC7r0soFuYDqTeJHuaOYPdWwuR3ACjprM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EM4e2exycSRoKmq7ivMTQ9vTjd9v59/3Lz7W0I1m8agB7W6W2XgX552XcJjQHfGsq
-         a+StkuQ0uuPG042TY5/AHHnnjURMJpX8sS4RsoOhhId0CaIfP3DAQktRQhzlxgI2Mm
-         QH+BqPUjR3aJpfy6cNmYoFH5605Z8DqsHw/jpFms=
+        b=0yC2cOU/1o/HD+7hfELMHAFqh42QOojVdWSWwgOwU6kjZmlP4BEPtyda53iwldcfk
+         7oaD6y4OJgPnCfGmtSGM9hR5Vruq3tAMRRVcQnuct5XINIQTODaD+Fr4HjjyFuknA+
+         F5hFNqaEntzezUT+41W1U2LblQzf+/DVoOSoqX7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 099/166] platform/x86: intel-hid: fix: Update Tiger Lake ACPI device ID
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/64] x86/Hyper-V: Free hv_panic_page when fail to register kmsg dump
 Date:   Wed, 22 Apr 2020 11:57:06 +0200
-Message-Id: <20200422095059.579465770@linuxfoundation.org>
+Message-Id: <20200422095017.076629957@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,40 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gayatri Kammela <gayatri.kammela@intel.com>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-[ Upstream commit d5764dc597467664a1a70ab66a2314a011aeccd4 ]
+[ Upstream commit 7f11a2cc10a4ae3a70e2c73361f4a9a33503539b ]
 
-Tiger Lake's new unique ACPI device IDs for intel-hid driver is not
-valid because of missing 'C' in the ID. Fix the ID by updating it.
+If kmsg_dump_register() fails, hv_panic_page will not be used
+anywhere.  So free and reset it.
 
-After the update, the new ID should now look like
-INT1051 --> INTC1051
-
-Fixes: bdd11b654035 ("platform/x86: intel-hid: Add Tiger Lake ACPI device ID")
-Suggested-by: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Link: https://lore.kernel.org/r/20200406155331.2105-3-Tianyu.Lan@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hv/vmbus_drv.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index 43d590250228c..9c0e6e0fabdff 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -19,8 +19,8 @@ MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Alex Hung");
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 5ff7c1708d0e7..dd6d18d918a4b 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1222,9 +1222,13 @@ static int vmbus_bus_init(void)
+ 			hv_panic_page = (void *)get_zeroed_page(GFP_KERNEL);
+ 			if (hv_panic_page) {
+ 				ret = kmsg_dump_register(&hv_kmsg_dumper);
+-				if (ret)
++				if (ret) {
+ 					pr_err("Hyper-V: kmsg dump register "
+ 						"error 0x%x\n", ret);
++					free_page(
++					    (unsigned long)hv_panic_page);
++					hv_panic_page = NULL;
++				}
+ 			} else
+ 				pr_err("Hyper-V: panic message page memory "
+ 					"allocation failed");
+@@ -1252,7 +1256,6 @@ static int vmbus_bus_init(void)
+ 	hv_remove_vmbus_irq();
  
- static const struct acpi_device_id intel_hid_ids[] = {
--	{"INT1051", 0},
- 	{"INT33D5", 0},
-+	{"INTC1051", 0},
- 	{"", 0},
- };
- 
+ 	bus_unregister(&hv_bus);
+-	free_page((unsigned long)hv_panic_page);
+ 	unregister_sysctl_table(hv_ctl_table_hdr);
+ 	hv_ctl_table_hdr = NULL;
+ 	return ret;
 -- 
 2.20.1
 
