@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443FE1B3F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04471B3E34
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgDVKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:22:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
+        id S1730289AbgDVK0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729477AbgDVKTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:19:21 -0400
+        id S1730696AbgDVK0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:26:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 827262076B;
-        Wed, 22 Apr 2020 10:19:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2E4E2075A;
+        Wed, 22 Apr 2020 10:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550761;
-        bh=9d6dIVVW/eoJFIE97fA3VAir62eKBHLtOhBqUlU/lXE=;
+        s=default; t=1587551175;
+        bh=SkYy+KuoP2SP8ufyYCYQvRtjgVmVX+j4n9Gx1vxC/lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YK/QuQnQHlaaiBgTpIJxC8dVbe4WgWKUEHovoV2I0FcHXXT15rIu/1m7sfQOlGIyw
-         2RCs4ueENL40+xa6FQ3mO5gJJZ5bzgqaHaAi8BgzkLIMXBo3IgJKB5pXnOvoGe14Ll
-         Lv3oGFA5kc9XIw4XCMicCfaGj0Ak8T0uJQX7le/M=
+        b=CyNw6HsEeSrAfj13qoAnFJSq+cLg4cB4jX247tuIVSOfHjs9JTzlZ5xwnv4K8EnrO
+         krR8fDMyS+WSk95qHTG6j6EWMytqYCAmCwMhP9VIC8vW1JwFL0fLwbQeHuqWxGimt9
+         ueV3iHgwZXBGdyMCCIwmJViki99hE8skAFlmA1aE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Zhang <Jack.Zhang1@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 080/118] drm/amdkfd: kfree the wrong pointer
+Subject: [PATCH 5.6 114/166] ACPI: Update Tiger Lake ACPI device IDs
 Date:   Wed, 22 Apr 2020 11:57:21 +0200
-Message-Id: <20200422095044.777383204@linuxfoundation.org>
+Message-Id: <20200422095100.939845685@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +47,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Zhang <Jack.Zhang1@amd.com>
+From: Gayatri Kammela <gayatri.kammela@intel.com>
 
-[ Upstream commit 3148a6a0ef3cf93570f30a477292768f7eb5d3c3 ]
+[ Upstream commit b62c770fee699a137359e1f1da9bf14a7f348567 ]
 
-Originally, it kfrees the wrong pointer for mem_obj.
-It would cause memory leak under stress test.
+Tiger Lake's new unique ACPI device IDs for DPTF and fan drivers are not
+valid as the IDs are missing 'C'. Fix the IDs by updating them.
 
-Signed-off-by: Jack Zhang <Jack.Zhang1@amd.com>
-Acked-by: Nirmoy Das <nirmoy.das@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+After the update, the new IDs should now look like
+INT1047 --> INTC1047
+INT1040 --> INTC1040
+INT1043 --> INTC1043
+INT1044 --> INTC1044
+
+Fixes: 55cfe6a5c582 ("ACPI: DPTF: Add Tiger Lake ACPI device IDs")
+Fixes: c248dfe7e0ca ("ACPI: fan: Add Tiger Lake ACPI device ID")
+Suggested-by: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/device_pm.c            | 2 +-
+ drivers/acpi/dptf/dptf_power.c      | 2 +-
+ drivers/acpi/dptf/int340x_thermal.c | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index 0dc1084b5e829..ad9483b9eea32 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -1112,9 +1112,9 @@ int kfd_gtt_sa_allocate(struct kfd_dev *kfd, unsigned int size,
- 	return 0;
- 
- kfd_gtt_no_free_chunk:
--	pr_debug("Allocation failed with mem_obj = %p\n", mem_obj);
-+	pr_debug("Allocation failed with mem_obj = %p\n", *mem_obj);
- 	mutex_unlock(&kfd->gtt_sa_lock);
--	kfree(mem_obj);
-+	kfree(*mem_obj);
- 	return -ENOMEM;
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index b64c62bfcea56..b2263ec67b432 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -1321,8 +1321,8 @@ int acpi_dev_pm_attach(struct device *dev, bool power_on)
+ 	 */
+ 	static const struct acpi_device_id special_pm_ids[] = {
+ 		{"PNP0C0B", }, /* Generic ACPI fan */
+-		{"INT1044", }, /* Fan for Tiger Lake generation */
+ 		{"INT3404", }, /* Fan */
++		{"INTC1044", }, /* Fan for Tiger Lake generation */
+ 		{}
+ 	};
+ 	struct acpi_device *adev = ACPI_COMPANION(dev);
+diff --git a/drivers/acpi/dptf/dptf_power.c b/drivers/acpi/dptf/dptf_power.c
+index 387f27ef3368b..e4e8b75d39f09 100644
+--- a/drivers/acpi/dptf/dptf_power.c
++++ b/drivers/acpi/dptf/dptf_power.c
+@@ -97,8 +97,8 @@ static int dptf_power_remove(struct platform_device *pdev)
  }
+ 
+ static const struct acpi_device_id int3407_device_ids[] = {
+-	{"INT1047", 0},
+ 	{"INT3407", 0},
++	{"INTC1047", 0},
+ 	{"", 0},
+ };
+ MODULE_DEVICE_TABLE(acpi, int3407_device_ids);
+diff --git a/drivers/acpi/dptf/int340x_thermal.c b/drivers/acpi/dptf/int340x_thermal.c
+index 1ec7b6900662c..bc71a6a603345 100644
+--- a/drivers/acpi/dptf/int340x_thermal.c
++++ b/drivers/acpi/dptf/int340x_thermal.c
+@@ -13,10 +13,6 @@
+ 
+ #define INT3401_DEVICE 0X01
+ static const struct acpi_device_id int340x_thermal_device_ids[] = {
+-	{"INT1040"},
+-	{"INT1043"},
+-	{"INT1044"},
+-	{"INT1047"},
+ 	{"INT3400"},
+ 	{"INT3401", INT3401_DEVICE},
+ 	{"INT3402"},
+@@ -28,6 +24,10 @@ static const struct acpi_device_id int340x_thermal_device_ids[] = {
+ 	{"INT3409"},
+ 	{"INT340A"},
+ 	{"INT340B"},
++	{"INTC1040"},
++	{"INTC1043"},
++	{"INTC1044"},
++	{"INTC1047"},
+ 	{""},
+ };
  
 -- 
 2.20.1
