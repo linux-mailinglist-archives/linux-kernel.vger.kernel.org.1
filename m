@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C08C1B4F7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 23:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1971B4F81
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 23:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgDVVkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 17:40:42 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42098 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726562AbgDVVkl (ORCPT
+        id S1726670AbgDVVlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 17:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgDVVlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 17:40:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587591639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:in-reply-to:
-         references:references:references;
-        bh=/kIA4+QZqqISnPEbYYsZEJA0KgGrqNOmJL/9H2ArNGo=;
-        b=MN8Wqi0VG1eI2DHN+f6aEdhWA48vp2qfgYKuG210M8NMCWAy0LKrjZBbmAtreP3pspFl0l
-        sTxp+2pLJmWvi2hVuKFgtltpWpP5IsLlbc4KbBUD+o6TH4T14pbAViKn4im6otTAq5QLrn
-        SJJYBIZOzLpDgMOWMsEYkmzxEbIb3BE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-y7nOhjMyNWuZrfkUKTEwgg-1; Wed, 22 Apr 2020 17:40:36 -0400
-X-MC-Unique: y7nOhjMyNWuZrfkUKTEwgg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF90D8017FD;
-        Wed, 22 Apr 2020 21:40:34 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 95E115D70A;
-        Wed, 22 Apr 2020 21:40:31 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
-        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
-        eparis@parisplace.org, ebiederm@xmission.com, tgraf@infradead.org,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH ghak25 v4 3/3] audit: add subj creds to NETFILTER_CFG record to cover async unregister
-Date:   Wed, 22 Apr 2020 17:39:30 -0400
-Message-Id: <b8ba40255978a73ea15e3859d5c945ecd5fede8e.1587500467.git.rgb@redhat.com>
-In-Reply-To: <cover.1587500467.git.rgb@redhat.com>
-References: <cover.1587500467.git.rgb@redhat.com>
-In-Reply-To: <cover.1587500467.git.rgb@redhat.com>
-References: <cover.1587500467.git.rgb@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Wed, 22 Apr 2020 17:41:21 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CA0C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:41:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i10so4376940wrv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ThhukyQINKI9whzNRVjFk4vyyNMAskuRdMfXhDNMzHw=;
+        b=St0hXYA70gpzdeNRTuM1ZDupzmvZsnJzUQA8kIcp5aafnhKa+vEsAj/3nxKZQEOnnm
+         BHXMvwLE+vNxlAADZO5QgdCRij+dAh5MvvzX/gPMC2Vjr9UvUx6gldOefKGLpccaSavG
+         gNGFH+1ZXsvoizKnp4UNk/hg3jTr1hrKvxq1TFHITicRhe6sz4vgCNPm20QCdZ2qFFvI
+         E3aygkvT7qRdYOCol7WIO9i1ZoUX7qdCWDQJKf6Wll8t7F+hUQPfJmuuhNAm2wKbVceH
+         WA3UK980MibzA7++XQvnLHTwxpjaAnL8hdoLCbDGuuNOdww4Mz/lJR3US6LBEGI+ucAR
+         t5lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ThhukyQINKI9whzNRVjFk4vyyNMAskuRdMfXhDNMzHw=;
+        b=NqW//YnLtm1dk9L/y9XMZx7RyFMjDb6WvtHp+ELKt9z2rlz3SAaxP5w3ygqfkdjmP3
+         OWNv8R4RPPyiz4kNH4b275IckW4T079DNiswl/Eirk6RhOOeFHwnISKPDo9XpszSXXmX
+         KF/me/j2R/Q3Fk2ouRu57zmH3n73Mw+kJI5M7p0vyqbGDV+CGaKjRimkM0HbmNahnAxa
+         R2fYKUZJAlA2fwgJ5m0T8glJIZ1UOHzNaCEu961zZrgHYrBEwHKw8lC+6V0cywATCyK2
+         a7S7jY8jaL4bkVSH75qcEEItwVmv3qXhT88d7UGmoD7EGNhpWKf4WSB3AhlkYjgJ7I0Q
+         c8iA==
+X-Gm-Message-State: AGi0PuZumGl/BSnH0Zfyct+1SrMHTIxmvWJWN2Q+/AmRwTYy/NgSE7/q
+        vDR8cowjO9IxiFGt5GLx1mc=
+X-Google-Smtp-Source: APiQypJFdVUUcvCoLGEcck1TA1kOWxee40GrKRRTfNUBhRVTWDz51oR2Z4lREoX1Ws5xzVPoifqFSg==
+X-Received: by 2002:a5d:4748:: with SMTP id o8mr1148817wrs.422.1587591679490;
+        Wed, 22 Apr 2020 14:41:19 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id h17sm746578wmm.6.2020.04.22.14.41.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 Apr 2020 14:41:18 -0700 (PDT)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        ying.huang@intel.com, Wei Yang <richard.weiyang@gmail.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH v2] mm/swapfile.c: simplify the scan loop in scan_swap_map_slots()
+Date:   Wed, 22 Apr 2020 21:41:11 +0000
+Message-Id: <20200422214111.19370-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some table unregister actions seem to be initiated by the kernel to
-garbage collect unused tables that are not initiated by any userspace
-actions.  It was found to be necessary to add the subject credentials to
-cover this case to reveal the source of these actions.  A sample record:
+After commit c60aa176c6de8 ("swapfile: swap allocation cycle if
+nonrot"), swap allocation is cyclic. Current approach is done with two
+separate loop on the upper and lower half. This looks a little
+redundant.
 
-  type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat family=bridge entries=0 op=unregister pid=153 uid=root auid=unset tty=(none) ses=unset subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2 exe=(null)
+From another point of view, the loop iterates [lowest_bit, highest_bit]
+range starting with (offset + 1) but except scan_base. So we can
+simplify the loop with condition (next_offset() != scan_base) by
+introducing next_offset() which makes sure offset fit in that range
+with correct order.
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+CC: Hugh Dickins <hughd@google.com>
+CC: "Huang, Ying" <ying.huang@intel.com>
+
 ---
- kernel/auditsc.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+v2:
+  * return scan_base if the lower part is eaten
+  * only start over when iterating on the upper part
+---
+ mm/swapfile.c | 31 ++++++++++++++-----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index d281c18d1771..d7a45b181be0 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -2557,12 +2557,30 @@ void __audit_log_nfcfg(const char *name, u8 af, unsigned int nentries,
- 		       enum audit_nfcfgop op)
- {
- 	struct audit_buffer *ab;
-+	const struct cred *cred;
-+	struct tty_struct *tty;
-+	char comm[sizeof(current->comm)];
- 
- 	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_NETFILTER_CFG);
- 	if (!ab)
- 		return;
- 	audit_log_format(ab, "table=%s family=%u entries=%u op=%s",
- 			 name, af, nentries, audit_nfcfgs[op].s);
-+
-+	cred = current_cred();
-+	tty = audit_get_tty();
-+	audit_log_format(ab, " pid=%u uid=%u auid=%u tty=%s ses=%u",
-+			 task_pid_nr(current),
-+			 from_kuid(&init_user_ns, cred->uid),
-+			 from_kuid(&init_user_ns, audit_get_loginuid(current)),
-+			 tty ? tty_name(tty) : "(none)",
-+			 audit_get_sessionid(current));
-+	audit_put_tty(tty);
-+	audit_log_task_context(ab); /* subj= */
-+	audit_log_format(ab, " comm=");
-+	audit_log_untrustedstring(ab, get_task_comm(comm, current));
-+	audit_log_d_path_exe(ab, current->mm); /* exe= */
-+
- 	audit_log_end(ab);
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index f903e5a165d5..0005a4a1c1b4 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -729,6 +729,19 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 	}
  }
- EXPORT_SYMBOL_GPL(__audit_log_nfcfg);
+ 
++static unsigned long next_offset(struct swap_info_struct *si,
++				unsigned long *offset, unsigned long scan_base)
++{
++	/* only start over when iterating on the upper part */
++	if (++(*offset) > si->highest_bit && *offset > scan_base) {
++		*offset = si->lowest_bit;
++		/* someone has eaten the lower part */
++		if (si->lowest_bit >= scan_base)
++			return scan_base;
++	}
++	return *offset;
++}
++
+ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 			       unsigned char usage, int nr,
+ 			       swp_entry_t slots[])
+@@ -876,22 +889,7 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 
+ scan:
+ 	spin_unlock(&si->lock);
+-	while (++offset <= si->highest_bit) {
+-		if (!si->swap_map[offset]) {
+-			spin_lock(&si->lock);
+-			goto checks;
+-		}
+-		if (vm_swap_full() && si->swap_map[offset] == SWAP_HAS_CACHE) {
+-			spin_lock(&si->lock);
+-			goto checks;
+-		}
+-		if (unlikely(--latency_ration < 0)) {
+-			cond_resched();
+-			latency_ration = LATENCY_LIMIT;
+-		}
+-	}
+-	offset = si->lowest_bit;
+-	while (offset < scan_base) {
++	while (next_offset(si, &offset, scan_base) != scan_base) {
+ 		if (!si->swap_map[offset]) {
+ 			spin_lock(&si->lock);
+ 			goto checks;
+@@ -904,7 +902,6 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 			cond_resched();
+ 			latency_ration = LATENCY_LIMIT;
+ 		}
+-		offset++;
+ 	}
+ 	spin_lock(&si->lock);
+ 
 -- 
-1.8.3.1
+2.23.0
 
