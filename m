@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C85B1B3C4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2452C1B3C56
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgDVKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54772 "EHLO mail.kernel.org"
+        id S1728096AbgDVKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbgDVKEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:23 -0400
+        id S1728083AbgDVKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:04:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C72A020575;
-        Wed, 22 Apr 2020 10:04:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36EC82078C;
+        Wed, 22 Apr 2020 10:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549863;
-        bh=TwbeNkf9wh9yqk/pHfVPa0QM9C0aKBP8I7YXCSMXwFk=;
+        s=default; t=1587549889;
+        bh=2ysPOcU4eG5VZaaWZplLGws6Gl0xgfw0JPR9mog2OUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM+7BLXvJ3iOANDUSONXVEgLvZuQAIVDRff1RnbT4RvP/nklanAN3Jlr6pGg+h+1y
-         gxYDEgrcRe1ZJY2yPNWcYhryCf67qR7NQOpEUfRORRK2KPej+WxVtuiCd2D50OjWsh
-         j2xJe2utgNYzsLSZwWvj+0LDixtz9WPldgg7e2N8=
+        b=2CDNd4xopGF6JYZxrjyjPWkydquaKhLLkyu5lbauu7qlZ4WzDc9e26OkSWs8XYkYe
+         c+bCb7tRSbs4uV3Nfj7FsHzK1PCEPpKaLm4rvNx5sykOLL1mO3WOnlI5GrMnmMSWZM
+         3WfRyENTgzBAgnofQK8dnXMMtdoAQLgc1o1qlhRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 010/125] x86/boot: Use unsigned comparison for addresses
-Date:   Wed, 22 Apr 2020 11:55:27 +0200
-Message-Id: <20200422095034.632765229@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 011/125] locking/lockdep: Avoid recursion in lockdep_count_{for,back}ward_deps()
+Date:   Wed, 22 Apr 2020 11:55:28 +0200
+Message-Id: <20200422095034.817854633@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
 References: <20200422095032.909124119@linuxfoundation.org>
@@ -44,69 +45,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Boqun Feng <boqun.feng@gmail.com>
 
-[ Upstream commit 81a34892c2c7c809f9c4e22c5ac936ae673fb9a2 ]
+[ Upstream commit 25016bd7f4caf5fc983bbab7403d08e64cba3004 ]
 
-The load address is compared with LOAD_PHYSICAL_ADDR using a signed
-comparison currently (using jge instruction).
+Qian Cai reported a bug when PROVE_RCU_LIST=y, and read on /proc/lockdep
+triggered a warning:
 
-When loading a 64-bit kernel using the new efi32_pe_entry() point added by:
+  [ ] DEBUG_LOCKS_WARN_ON(current->hardirqs_enabled)
+  ...
+  [ ] Call Trace:
+  [ ]  lock_is_held_type+0x5d/0x150
+  [ ]  ? rcu_lockdep_current_cpu_online+0x64/0x80
+  [ ]  rcu_read_lock_any_held+0xac/0x100
+  [ ]  ? rcu_read_lock_held+0xc0/0xc0
+  [ ]  ? __slab_free+0x421/0x540
+  [ ]  ? kasan_kmalloc+0x9/0x10
+  [ ]  ? __kmalloc_node+0x1d7/0x320
+  [ ]  ? kvmalloc_node+0x6f/0x80
+  [ ]  __bfs+0x28a/0x3c0
+  [ ]  ? class_equal+0x30/0x30
+  [ ]  lockdep_count_forward_deps+0x11a/0x1a0
 
-  97aa276579b2 ("efi/x86: Add true mixed mode entry point into .compat section")
+The warning got triggered because lockdep_count_forward_deps() call
+__bfs() without current->lockdep_recursion being set, as a result
+a lockdep internal function (__bfs()) is checked by lockdep, which is
+unexpected, and the inconsistency between the irq-off state and the
+state traced by lockdep caused the warning.
 
-using Qemu with -m 3072, the firmware actually loads us above 2Gb,
-resulting in a very early crash.
+Apart from this warning, lockdep internal functions like __bfs() should
+always be protected by current->lockdep_recursion to avoid potential
+deadlocks and data inconsistency, therefore add the
+current->lockdep_recursion on-and-off section to protect __bfs() in both
+lockdep_count_forward_deps() and lockdep_count_backward_deps()
 
-Use the JAE instruction to perform a unsigned comparison instead, as physical
-addresses should be considered unsigned.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200301230436.2246909-6-nivedita@alum.mit.edu
-Link: https://lore.kernel.org/r/20200308080859.21568-14-ardb@kernel.org
+Reported-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200312151258.128036-1-boqun.feng@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/compressed/head_32.S | 2 +-
- arch/x86/boot/compressed/head_64.S | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ kernel/locking/lockdep.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
-index fd0b6a272dd5b..7532f6f536774 100644
---- a/arch/x86/boot/compressed/head_32.S
-+++ b/arch/x86/boot/compressed/head_32.S
-@@ -170,7 +170,7 @@ preferred_addr:
- 	notl	%eax
- 	andl    %eax, %ebx
- 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
--	jge	1f
-+	jae	1f
- #endif
- 	movl	$LOAD_PHYSICAL_ADDR, %ebx
- 1:
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 9e3a183561a9a..3fac2d133e4ec 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -104,7 +104,7 @@ ENTRY(startup_32)
- 	notl	%eax
- 	andl	%eax, %ebx
- 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
--	jge	1f
-+	jae	1f
- #endif
- 	movl	$LOAD_PHYSICAL_ADDR, %ebx
- 1:
-@@ -339,7 +339,7 @@ preferred_addr:
- 	notq	%rax
- 	andq	%rax, %rbp
- 	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
--	jge	1f
-+	jae	1f
- #endif
- 	movq	$LOAD_PHYSICAL_ADDR, %rbp
- 1:
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index d7f425698a4a1..9f56e3fac795a 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1241,9 +1241,11 @@ unsigned long lockdep_count_forward_deps(struct lock_class *class)
+ 	this.class = class;
+ 
+ 	raw_local_irq_save(flags);
++	current->lockdep_recursion = 1;
+ 	arch_spin_lock(&lockdep_lock);
+ 	ret = __lockdep_count_forward_deps(&this);
+ 	arch_spin_unlock(&lockdep_lock);
++	current->lockdep_recursion = 0;
+ 	raw_local_irq_restore(flags);
+ 
+ 	return ret;
+@@ -1268,9 +1270,11 @@ unsigned long lockdep_count_backward_deps(struct lock_class *class)
+ 	this.class = class;
+ 
+ 	raw_local_irq_save(flags);
++	current->lockdep_recursion = 1;
+ 	arch_spin_lock(&lockdep_lock);
+ 	ret = __lockdep_count_backward_deps(&this);
+ 	arch_spin_unlock(&lockdep_lock);
++	current->lockdep_recursion = 0;
+ 	raw_local_irq_restore(flags);
+ 
+ 	return ret;
 -- 
 2.20.1
 
