@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F411B41B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6891B4252
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbgDVKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731054AbgDVKy4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:54:56 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF25BC03C1A8;
-        Wed, 22 Apr 2020 03:54:55 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id s10so1388275iln.11;
-        Wed, 22 Apr 2020 03:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qbTF/6WmCkCfEIdriAM1kmliqTmGRinJAcRxbEj4b+o=;
-        b=GGJjGzCKvcvFvEW9/4GVAuFLkz3biI8fYmQaRXZIfBzbbjnkJJsPu+9fMJRGq2299y
-         WVi8hHMJZt2d5mpBoRRtiDs62ILUCFUE9Ntz6l0QwQZCtDSQiJrv+idS//YkPobi5zfG
-         9dcXZiCZR5sjzOS/vfgzBmPslX64F7iJ0Z5GDAmMJUKs37vzKtyVWbzRF6f5A3GIuPJF
-         MCDRJbp1a6jltHGq0LAjiWwueWkkaafePfn871/S5kHphDCI8Qe4/R+kTG4f8mUsDOXb
-         lXgaggFh3voCWmybYfaTI+rESz13UKY35lfqylKR77luvlFtmroNLLdwYl77PJR9Y+AN
-         qwLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qbTF/6WmCkCfEIdriAM1kmliqTmGRinJAcRxbEj4b+o=;
-        b=ialUim3c4+QvaCFTpCz+0PDzRd29YKah/PYn0UvmLsROFLmVeQWIwEQouyh1/qZBWO
-         GVcZ5eLU3Z3GUM0a4Fm7277LKt2KXztrex2TC6Yl2t7Gtu+PVRMzh+Fxp3URSKz0J7PL
-         GJJvGNwTY/kU9FuryorfXU0OmpiNr7FBGVGYCZN+tTlHYwfHaHB7nlurhX9YV/8mU7H6
-         EbqVkFmXKFe0sfGFOEgO+ln4K/E9NkroU4ixkPzfMD08XuTgkUhgyre9UNzZ7LGDlvMa
-         6pJH7aI/JwA88jswpof8nUVQEORzRtlI0Fcrr45GqpLPdVzi2JnOcRFWu2mOxOWB9whG
-         shNg==
-X-Gm-Message-State: AGi0PuYtTW6P1puHytduC0wf6jAElRqvRX0SUEWFTa2TriUTYrdz7vxV
-        EGRXnGJ9b5FLJh5XWhwDadThUJI/CQDeplr0opc=
-X-Google-Smtp-Source: APiQypL3aEJoYT/ir7jYLSXWokkuifO05C5RCcBccYb9L3IA5KrZYKikP5zAsU+AH/S8APS2NglRyYT0QgH109JIPB4=
-X-Received: by 2002:a92:1fc5:: with SMTP id f66mr24891442ilf.157.1587552895234;
- Wed, 22 Apr 2020 03:54:55 -0700 (PDT)
+        id S1728512AbgDVLAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:00:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:47506 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726976AbgDVK7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:59:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3768931B;
+        Wed, 22 Apr 2020 03:59:53 -0700 (PDT)
+Received: from [192.168.0.7] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DDE83F6CF;
+        Wed, 22 Apr 2020 03:59:49 -0700 (PDT)
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200403123020.13897-1-qais.yousef@arm.com>
+ <292dbd54-e590-dc4f-41e6-5f86e478c0ee@arm.com>
+ <20200420151341.7zni3bwroso2kpdc@e107158-lin.cambridge.arm.com>
+ <de020088-3b06-3674-dab9-244ae577cc54@arm.com>
+ <20200421112733.4jbguidgbqwzhv23@e107158-lin.cambridge.arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <45236ccd-24d2-3b99-cd9b-bac13cfaceab@arm.com>
+Date:   Wed, 22 Apr 2020 12:59:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200422095031.522502705@linuxfoundation.org> <20200422095042.013796362@linuxfoundation.org>
-In-Reply-To: <20200422095042.013796362@linuxfoundation.org>
-From:   Marian Klein <mkleinsoft@gmail.com>
-Date:   Wed, 22 Apr 2020 11:54:43 +0100
-Message-ID: <CAA0DKYqAoeY8YSWVQCfcq4CQ5iF35eoYm--5SNrFL46+m46fag@mail.gmail.com>
-Subject: Re: [PATCH 5.4 061/118] hibernate: Allow uswsusp to write to swap
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Domenico Andreoli <domenico.andreoli@linux.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200421112733.4jbguidgbqwzhv23@e107158-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Everyone
-I am glad the official patch made it into 5.4 finally.
-Well done everyone. Now distros should pick it up quickly , especially
-ubuntu 20.04 Long Term Support.
-Your most faithful fan
-Marian
+On 21/04/2020 13:27, Qais Yousef wrote:
+> On 04/21/20 13:18, Dietmar Eggemann wrote:
+>> On 20/04/2020 17:13, Qais Yousef wrote:
+>>> On 04/20/20 10:29, Dietmar Eggemann wrote:
+>>>> On 03.04.20 14:30, Qais Yousef wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>> @@ -924,6 +945,14 @@ uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+>>>>>  	return uc_req;
+>>>>>  }
+>>>>>  
+>>>>> +static void uclamp_rt_sync_default_util_min(struct task_struct *p)
+>>>>> +{
+>>>>> +	struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+>>>>> +
+>>>>> +	if (!uc_se->user_defined)
+>>>>> +		uclamp_se_set(uc_se, sysctl_sched_rt_default_uclamp_util_min, false);
+>>>>> +}
+>>>>> +
+>>>>>  unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+>>>>>  {
+>>>>>  	struct uclamp_se uc_eff;
+>>>>> @@ -1030,6 +1059,12 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+>>>>>  	if (unlikely(!p->sched_class->uclamp_enabled))
+>>>>>  		return;
+>>>>>  
+>>>>> +	/*
+>>>>> +	 * When sysctl_sched_rt_default_uclamp_util_min value is changed by the
+>>>>> +	 * user, we apply any new value on the next wakeup, which is here.
+>>>>> +	 */
+>>>>> +	uclamp_rt_sync_default_util_min(p);
+>>>>> +
+>>>>
+>>>> Does this have to be an extra function? Can we not reuse
+>>>> uclamp_tg_restrict() by slightly rename it to uclamp_restrict()?
 
-On Wed, 22 Apr 2020 at 11:18, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Domenico Andreoli <domenico.andreoli@linux.com>
->
-> [ Upstream commit 56939e014a6c212b317414faa307029e2e80c3b9 ]
->
-> It turns out that there is one use case for programs being able to
-> write to swap devices, and that is the userspace hibernation code.
->
-> Quick fix: disable the S_SWAPFILE check if hibernation is configured.
->
-> Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
-> Reported-by: Domenico Andreoli <domenico.andreoli@linux.com>
-> Reported-by: Marian Klein <mkleinsoft@gmail.com>
-> Signed-off-by: Domenico Andreoli <domenico.andreoli@linux.com>
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/block_dev.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index d612468ee66bf..34644ce4b5025 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -34,6 +34,7 @@
->  #include <linux/task_io_accounting_ops.h>
->  #include <linux/falloc.h>
->  #include <linux/uaccess.h>
-> +#include <linux/suspend.h>
->  #include "internal.h"
->
->  struct bdev_inode {
-> @@ -1975,7 +1976,8 @@ ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
->         if (bdev_read_only(I_BDEV(bd_inode)))
->                 return -EPERM;
->
-> -       if (IS_SWAPFILE(bd_inode))
-> +       /* uswsusp needs write permission to the swap */
-> +       if (IS_SWAPFILE(bd_inode) && !hibernation_available())
->                 return -ETXTBSY;
->
->         if (!iov_iter_count(from))
-> --
-> 2.20.1
->
->
->
+Btw, there was an issue in my little snippet. I used uc_req.user_defined
+uninitialized in uclamp_restrict().
+
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f3706dad32ce..7e6b2b7cd1e5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -903,12 +903,11 @@ uclamp_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+ {
+ 	struct uclamp_se uc_req, __maybe_unused uc_max;
+ 
+-	if (unlikely(rt_task(p)) && clamp_id == UCLAMP_MIN &&
+-	    !uc_req.user_defined) {
++	if (unlikely(rt_task(p)) && clamp_id == UCLAMP_MIN) {
+ 		struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+ 		int rt_min = sysctl_sched_rt_default_uclamp_util_min;
+ 
+-		if (uc_se->value != rt_min) {
++		if (!uc_se->user_defined && uc_se->value != rt_min) {
+ 			uclamp_se_set(uc_se, rt_min, false);
+ 			printk("uclamp_restrict() [%s %d] p->uclamp_req[%d].value=%d\n",
+ 			       p->comm, p->pid, clamp_id, uc_se->value);
+
+>>> Hmm the thing is that we're not restricting here. In contrary we're boosting,
+>>> so the name would be misleading.
+>>
+>> I always thought that we're restricting p->uclamp_req[UCLAMP_MIN].value (default 1024) to
+>> sysctl_sched_rt_default_uclamp_util_min (0-1024)?
+> 
+> The way I look at it is that we're *setting* it to
+> sysctl_sched_rt_default_uclamp_util_min if !user_defined.
+> 
+> The restriction mechanism that ensures this set value doesn't escape
+> cgroup/global restrictions setup.
+
+I guess we overall agree here. 
+
+I see 3 restriction levels: (!user_defined) task -> taskgroup -> system
+
+I see sysctl_sched_rt_default_uclamp_util_min (min_rt_default) as a
+restriction on task level.
+
+It's true that the task level restriction is setting the value at the same time.
+
+For CFS (id=UCLAMP_[MIN\|MAX]) and RT (id=UCLAMP_MAX) we use
+uclamp_none(id) and those values (0, 1024) are fixed so these task level
+values don't need to be further restricted.
+
+For RT (id=UCLAMP_MIN) we use 'min_rt_default' and since it can change
+we have to check the task level restriction in 'uclamp_eff_get() ->
+uclamp_(tg)_restrict()'.
+
+root@h960:~# echo 999 > /proc/sys/kernel/sched_rt_default_util_clamp_min
+
+[ 2540.507236] uclamp_eff_get() [rtkit-daemon 419] tag=0 uclamp_id=0 uc_req.value=1024
+[ 2540.514947] uclamp_eff_get() [rtkit-daemon 419] tag=1 uclamp_id=0 uc_req.value=1024
+[ 2548.015208] uclamp_restrict() [rtkit-daemon 419] p->uclamp_req[0].value=999
+
+root@h960:~# echo 666 > /proc/sys/kernel/sched_util_clamp_min
+
+[ 2548.022219] uclamp_eff_get() [rtkit-daemon 419] tag=0 uclamp_id=0 uc_req.value=999
+[ 2548.029825] uclamp_eff_get() [rtkit-daemon 419] tag=1 uclamp_id=0 uc_req.value=999
+[ 2553.479509] uclamp_eff_get() [rtkit-daemon 419] tag=0 uclamp_id=0 uc_max.value=666
+[ 2553.487131] uclamp_eff_get() [rtkit-daemon 419] tag=1 uclamp_id=0 uc_max.value=666
+
+Haven't tried to put an rt task into a taskgroup other than root.
