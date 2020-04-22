@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055FD1B3F46
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C521B41F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgDVKgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
+        id S1732067AbgDVK5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727806AbgDVKXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:10 -0400
+        id S1728151AbgDVKF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A264F2076B;
-        Wed, 22 Apr 2020 10:23:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB07F20776;
+        Wed, 22 Apr 2020 10:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550990;
-        bh=KYVbrnZQ7AJD/sDVMLkUCoghFt+lMHOAtPcsirwNruA=;
+        s=default; t=1587549928;
+        bh=3h2z9IDbzxVQV+fUdUOCvqUsPvo+eOXmgmiUdyvpTDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PkflgV9oHyUU+Es8k0vjicPnNkQkki/1Tfj8hrJxZS/pewnNGz8cnk2GA1Egxs40x
-         Pvf/dRky6eJAztBzVWJhL7Xs1V32z6m/pO8ZWfhnkDZrBEuzdbTyIGTR8stK5ngQod
-         ve4Zh4jKs0FPgXlgauzdYStzOilnE60E1Eok7Of4=
+        b=w5zOepKS7BNfGDo3T+rL1nVSUSgPpmH/LsFTfCMQyOWBAW/u7MkFUSv4BLFm6Qr9Y
+         +2KIer4VUgX93F3ljqkfExPLUwjBf21PQjBJNgtlRfU42ekVYEwkchIQOFVsxceFUI
+         ciCKCzkwnGfaiIuWiByRvBs9LOBPgx1lx8/LD/a0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 055/166] memory: tegra: Correct debugfs clk rate-range on Tegra20
+Subject: [PATCH 4.9 065/125] mfd: dln2: Fix sanity checking for endpoints
 Date:   Wed, 22 Apr 2020 11:56:22 +0200
-Message-Id: <20200422095054.847251371@linuxfoundation.org>
+Message-Id: <20200422095043.799654775@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2243af41115d0e36e6414df6dd2a0386e022d9f8 ]
+[ Upstream commit fb945c95a482200876993977008b67ea658bd938 ]
 
-Correctly set clk rate-range if number of available timings is zero.
-This fixes noisy "invalid range [4294967295, 0]" error messages during
-boot.
+While the commit 2b8bd606b1e6 ("mfd: dln2: More sanity checking for endpoints")
+tries to harden the sanity checks it made at the same time a regression,
+i.e.  mixed in and out endpoints. Obviously it should have been not tested on
+real hardware at that time, but unluckily it didn't happen.
 
-Fixes: 8209eefa3d37 ("memory: tegra: Implement EMC debugfs interface on Tegra20")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+So, fix above mentioned typo and make device being enumerated again.
+
+While here, introduce an enumerator for magic values to prevent similar issue
+to happen in the future.
+
+Fixes: 2b8bd606b1e6 ("mfd: dln2: More sanity checking for endpoints")
+Cc: Oliver Neukum <oneukum@suse.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/tegra/tegra20-emc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mfd/dln2.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
-index 8ae474d9bfb90..b16715e9515d0 100644
---- a/drivers/memory/tegra/tegra20-emc.c
-+++ b/drivers/memory/tegra/tegra20-emc.c
-@@ -628,6 +628,11 @@ static void tegra_emc_debugfs_init(struct tegra_emc *emc)
- 			emc->debugfs.max_rate = emc->timings[i].rate;
- 	}
+diff --git a/drivers/mfd/dln2.c b/drivers/mfd/dln2.c
+index 95d0f2df0ad42..672831d5ee32e 100644
+--- a/drivers/mfd/dln2.c
++++ b/drivers/mfd/dln2.c
+@@ -93,6 +93,11 @@ struct dln2_mod_rx_slots {
+ 	spinlock_t lock;
+ };
  
-+	if (!emc->num_timings) {
-+		emc->debugfs.min_rate = clk_get_rate(emc->clk);
-+		emc->debugfs.max_rate = emc->debugfs.min_rate;
-+	}
++enum dln2_endpoint {
++	DLN2_EP_OUT	= 0,
++	DLN2_EP_IN	= 1,
++};
 +
- 	err = clk_set_rate_range(emc->clk, emc->debugfs.min_rate,
- 				 emc->debugfs.max_rate);
- 	if (err < 0) {
+ struct dln2_dev {
+ 	struct usb_device *usb_dev;
+ 	struct usb_interface *interface;
+@@ -740,10 +745,10 @@ static int dln2_probe(struct usb_interface *interface,
+ 	    hostif->desc.bNumEndpoints < 2)
+ 		return -ENODEV;
+ 
+-	epin = &hostif->endpoint[0].desc;
+-	epout = &hostif->endpoint[1].desc;
++	epout = &hostif->endpoint[DLN2_EP_OUT].desc;
+ 	if (!usb_endpoint_is_bulk_out(epout))
+ 		return -ENODEV;
++	epin = &hostif->endpoint[DLN2_EP_IN].desc;
+ 	if (!usb_endpoint_is_bulk_in(epin))
+ 		return -ENODEV;
+ 
 -- 
 2.20.1
 
