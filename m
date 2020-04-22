@@ -2,124 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABD21B4C8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8562E1B4CA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgDVSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 14:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgDVSRd (ORCPT
+        id S1726454AbgDVSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 14:24:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30010 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725839AbgDVSY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 14:17:33 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A89C03C1A9;
-        Wed, 22 Apr 2020 11:17:33 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id p10so3444073ioh.7;
-        Wed, 22 Apr 2020 11:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/O8wxkOyz2zqjTvXW5zmlSLKb1rtq1CNhNBPyoq68Ms=;
-        b=Mltae6nP2Mbpr8cAm/sWdOn8rNtI/OcVNw/eOS5AvECfCyKKYKWRzhTgMTN3KuMQ12
-         YDZoIz+eiUNnrsrOWB2JwH2pSNIf90p+8OyeWU0Zl7mGFkke8HotD8oCtnI8IyC7s2OT
-         WljR0uyIlHxHgxXMprKYW+Y+Zhsdv2uCsFJBsAHwIRdNQRPbbICBZCLMf4xL0yRNKKoy
-         QNAg2vy5mimsD9CYhdFH5ROCZSZa1vBEE4Sy7gEXrM1IUiWxScpvUbbtMpx5iUjz2gXa
-         0bCQd9lcEQC6Q6rAyVfn3Ne/HQ4hceLPJOyjh2LqYZR5BDbcoTqmup1GpQXmronZ/dww
-         h0cA==
+        Wed, 22 Apr 2020 14:24:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587579895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fxIemATZr+Jj72Sq0gv/Y8Y0CxRoIaNtcDCWp0Bqo4s=;
+        b=E1A4uzto6IDptQIgb2dILXCDEK6LFQP8DQis91yb2A/2zgbNiX+zXFhiaBf6Z+0p56K6Mx
+        moqHUDE0W3j8lqNgwZYOrOE87oYNy2tBgd5oRWoOpJLovANW7CIFobcG8+MT+s+7+PBgp7
+        eGcwDn+nNH/aVrmxqSQcUUREm4npxYw=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-QyZ91bRwNKa0CgADZWcj6Q-1; Wed, 22 Apr 2020 14:24:52 -0400
+X-MC-Unique: QyZ91bRwNKa0CgADZWcj6Q-1
+Received: by mail-qk1-f197.google.com with SMTP id k138so3808499qke.15
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 11:24:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/O8wxkOyz2zqjTvXW5zmlSLKb1rtq1CNhNBPyoq68Ms=;
-        b=Pv7v5E2HlUikZh0GGGY9UpIsoph57zKHbOdPU+mlRpc8fOv3kb+DtuectQNM/Qkn9I
-         auvIHDquGObt54Dwz6bM4O+cxe8xXEFNCrENiO5oZiZFCyIQcya5ZD5vPTdE8K6WZJ62
-         LFssKZUjc7De59DPFeFJr0oxabILKO8IYHwn1g9aK/F6tQjIRVN2G/8eh7+cDrZpun6Y
-         ZIf7MAURIazYrSe9CCw5nNWOVccSfPBWYnPsYx/FRlXgE2X6XesFrPNKK0ihazSaifWv
-         x0R4agoVR3Cupg/s1rkBE4HUYCK4g1vJC2OgqcmYuAu3Sp9Ct4DwVYe3k4v1pdUOMVSu
-         UsYg==
-X-Gm-Message-State: AGi0PubhAxeee1zy7SNsayKZ8qcY6TQTxWzx+rlNIidJUYDUMV5levWd
-        fqhnGpKFZsXhsJRafaQAWsVUtd/PW52yLn7SxZs=
-X-Google-Smtp-Source: APiQypLi5JAfufXmUiHGVYgFDJyCS0FH1GWVjaU1HKRYJC6SB/+hStZS40jpXRvlDRPyXafhRd4YtWORgk95NeW/zck=
-X-Received: by 2002:a6b:e802:: with SMTP id f2mr26865444ioh.128.1587579452616;
- Wed, 22 Apr 2020 11:17:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=fxIemATZr+Jj72Sq0gv/Y8Y0CxRoIaNtcDCWp0Bqo4s=;
+        b=ml572qIMUmAjYreJOaKjvJCoT4ZaE+WUh4oQDd2gGnNePz7xrpZEvfRPc1x6U9B2SV
+         VV7i+BpsHa6J6MI8J2iCKPR1DG3OsHHAK5D8QJbuHaEtZ2s+B0HFy+vBZ97DgtmYNFsO
+         JO8rkZVrO82pZGti8mTeplRV8htMaAe3TgVPmCfU8KzZOifpJEkOTEM9FuyoMoleNsAx
+         BIN7sf3G/OjyhCJ+a660WRRAXjoqpXJGx7dRJi3k+cfZEWyDoLYKA20HnvA7dIOny/Dc
+         wY98IS2AX+QI4rzCNH6njc8Unp6tQluQDaTlTNHD4D/sbamm739JzS+Viw3S9vJJgdXM
+         WdKw==
+X-Gm-Message-State: AGi0PuZ0oQEhebrZWl5YWwj1TLpPang1Lb7NCPidLndaRWEI5A9qsdfL
+        Swtn+nK/o0BXaWJ0wMaBvr5LnlfJBVQBipSQ+qk4NgRjvF6E1toEs9suWC+YsZuywXU/v9cL3Yd
+        UxTlIwuFjVu0iD8l+GvhW48W1
+X-Received: by 2002:aed:2d27:: with SMTP id h36mr27910773qtd.228.1587579891960;
+        Wed, 22 Apr 2020 11:24:51 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLz+UUmoUr3xJ6cMh3LxzwsvUl02i/MbCJdPL1/ZO5RxgnrNGWmZWlAI4BqK7ytrWMDLRWivw==
+X-Received: by 2002:aed:2d27:: with SMTP id h36mr27910724qtd.228.1587579891410;
+        Wed, 22 Apr 2020 11:24:51 -0700 (PDT)
+Received: from trix.remote.csb ([75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id o22sm4509050qtm.90.2020.04.22.11.24.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Apr 2020 11:24:50 -0700 (PDT)
+Subject: Re: How to upload fpga firmware
+To:     Sascha Hauer <s.hauer@pengutronix.de>, linux-fpga@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>
+References: <20200422114432.GM1694@pengutronix.de>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <cba38c9a-4f13-ce6b-1705-0266b991261f@redhat.com>
+Date:   Wed, 22 Apr 2020 11:24:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200328003249.1248978-1-martin.blumenstingl@googlemail.com> <20200328003249.1248978-4-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20200328003249.1248978-4-martin.blumenstingl@googlemail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Wed, 22 Apr 2020 23:47:21 +0530
-Message-ID: <CANAwSgTYgDDodsTbWsuWSgxh7vhci7PLKa14iz-7gF1BuRdgjQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] mmc: host: meson-mx-sdhc: new driver for the
- Amlogic Meson SDHC host
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, jianxin.pan@amlogic.com,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        yinxin_1989@aliyun.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lnykww@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200422114432.GM1694@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+I believe you need to use OPAE, user level interface to the kernel.
 
-On Sat, 28 Mar 2020 at 06:04, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+Here is a good starting point.
+
+https://opae.github.io/latest/docs/fpga_tools/fpgaconf/fpgaconf.html
+
+Tom
+
+On 4/22/20 4:44 AM, Sascha Hauer wrote:
+> Hi,
 >
-> The SDHC MMC host controller on Amlogic SoCs provides an eMMC and MMC
-> card interface with 1/4/8-bit bus width.
-> It supports eMMC spec 4.4x/4.5x including HS200 (up to 100MHz clock).
+> I wonder what can be done with the mainline state of drivers/fpga/. The
+> entry to the framework seems to be fpga_mgr_load(). The only user of
+> this function is fpga_region_program_fpga(). This in turn is only called
+> in response of applying a device tree overlay. A device tree overlay is
+> applied with of_overlay_fdt_apply() which has no users in the Kernel.
 >
-> The public S805 datasheet [0] contains a short documentation about the
-> registers. Unfortunately it does not describe how to use the registers
-> to make the hardware work. Thus this driver is based on reading (and
-> understanding) the Amlogic 3.10 GPL kernel code.
+> My current task is to load a firmware to a FPGA. The code all seems to
+> be there in the Kernel, it only lacks a way to trigger it. I am not very
+> interested in device tree overlays since the FPGA appears as a PCI
+> device (although applying a dtbo could enable the PCIe controller device
+> tree node). Is there some mainline way to upload FPGA firmware? At the
+> moment we are using the attached patch to trigger loading the firmware
+> from userspace. Would something like this be acceptable for mainline?
 >
-> Some hardware details are not easy to see. Jianxin Pan was kind enough
-> to answer my questions:
-> The hardware has built-in busy timeout support. The maximum timeout is
-> 30 seconds. This is only documented in Amlogic's internal
-> documentation.
+> Sascha
 >
-> The controller only works with very specific clock configurations. The
-> details are not part of the public datasheet. In my own words the
-> supported configurations are:
-> - 399.812kHz:   clkin =  850MHz div = 2126 sd_rx_phase = 63
-> - 1MHz:         clkin =  850MHz div = 850  sd_rx_phase = 55
-> - 5.986MHz:     clkin =  850MHz div = 142  sd_rx_phase = 24
-> - 25MHz:        clkin =  850MHz div = 34   sd_rx_phase = 15
-> - 47.222MHz:    clkin =  850MHz div = 18   sd_rx_phase = 11/15 (SDR50/HS)
-> - 53.125MHz:    clkin =  850MHz div = 16   sd_rx_phase = (tuning)
-> - 70.833MHz:    clkin =  850MHz div = 12   sd_rx_phase = (tuning)
-> - 85MHz:        clkin =  850MHz div = 10   sd_rx_phase = (tuning)
-> - 94.44MHz:     clkin =  850MHz div = 9    sd_rx_phase = (tuning)
-> - 106.25MHz:    clkin =  850MHz div = 8    sd_rx_phase = (tuning)
-> - 127.5MHz:     clkin = 1275MHz div = 10   sd_rx_phase = (tuning)
-> - 141.667MHz:   clkin =  850MHz div = 6    sd_rx_phase = (tuning)
-> - 159.375MHz:   clkin = 1275MHz div = 8    sd_rx_phase = (tuning)
-> - 212.5MHz:     clkin = 1275MHz div = 6    sd_rx_phase = (tuning)
-> - (sd_tx_phase is always 1, 94.44MHz is not listed in the datasheet
->    but this is what the 3.10 BSP kernel on Odroid-C1 actually uses)
+> ---------------------------8<----------------------------------
 >
-> NOTE: CMD23 support is disabled for now because it results in command
-> timeouts and thus decreases read performance.
+> From 71a5ea845dd673d4011391f9e57fdaf427767ed5 Mon Sep 17 00:00:00 2001
+> From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> Date: Tue, 2 Oct 2018 17:13:40 +0200
+> Subject: [PATCH] fpga: region: Add sysfs attribute for loading firmware
 >
-> Tested-by: Wei Wang <lnykww@gmail.com>
-> Tested-by: Xin Yin <yinxin_1989@aliyun.com>
-> Reviewed-by: Xin Yin <yinxin_1989@aliyun.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 > ---
+>  drivers/fpga/fpga-region.c | 50 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 49 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+> index bde5a9d460c5..ca6dc830fadf 100644
+> --- a/drivers/fpga/fpga-region.c
+> +++ b/drivers/fpga/fpga-region.c
+> @@ -5,6 +5,7 @@
+>   *  Copyright (C) 2013-2016 Altera Corporation
+>   *  Copyright (C) 2017 Intel Corporation
+>   */
+> +#include <linux/device.h>
+>  #include <linux/fpga/fpga-bridge.h>
+>  #include <linux/fpga/fpga-mgr.h>
+>  #include <linux/fpga/fpga-region.h>
+> @@ -170,11 +171,58 @@ static ssize_t compat_id_show(struct device *dev,
+>  		       (unsigned long long)region->compat_id->id_h,
+>  		       (unsigned long long)region->compat_id->id_l);
+>  }
+> -
+>  static DEVICE_ATTR_RO(compat_id);
+>  
+> +static ssize_t firmware_name_show(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  char *buf)
+> +{
+> +	struct fpga_region *region = to_fpga_region(dev);
+> +
+> +	if (!region->info || !region->info->firmware_name)
+> +		return 0;
+> +
+> +	return sprintf(buf, "%s\n", region->info->firmware_name);
+> +}
+> +
+> +static ssize_t firmware_name_store(struct device *dev,
+> +				   struct device_attribute *attr,
+> +				   const char *firmware_name, size_t count)
+> +{
+> +	struct fpga_region *region = to_fpga_region(dev);
+> +	struct fpga_image_info *info = region->info;
+> +	int error;
+> +
+> +	if (!info) {
+> +		info = fpga_image_info_alloc(dev);
+> +		if (!info)
+> +			return -ENOMEM;
+> +	} else if (info->firmware_name) {
+> +		devm_kfree(dev, info->firmware_name);
+> +	}
+> +
+> +	info->firmware_name = devm_kstrdup(dev, firmware_name, GFP_KERNEL);
+> +	if (!info->firmware_name)
+> +		return -ENOMEM;
+> +
+> +	if (count >  0 && info->firmware_name[count - 1] == '\n')
+> +		info->firmware_name[count - 1] = '\0';
+> +
+> +	region->info = info;
+> +	error = fpga_region_program_fpga(region);
+> +	if (error) {
+> +		devm_kfree(dev, info->firmware_name);
+> +		info->firmware_name = NULL;
+> +	}
+> +
+> +	return error ? error : count;
+> +}
+> +
+> +static DEVICE_ATTR_RW(firmware_name);
+> +
+>  static struct attribute *fpga_region_attrs[] = {
+>  	&dev_attr_compat_id.attr,
+> +	&dev_attr_firmware_name.attr,
+>  	NULL,
+>  };
+>  ATTRIBUTE_GROUPS(fpga_region);
 
-Please add my tested on Odroid C1+
-
-Tested-by: Anand Moon <linux.amoon@gmail.com>
-
-Best Regards
--Anand
