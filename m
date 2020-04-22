@@ -2,181 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6801B4548
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C041B4554
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgDVMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725839AbgDVMjP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:39:15 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAADC03C1A8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 05:39:14 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id bu9so701249qvb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 05:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iT2l1J0Dw3okJWfIDfIHP+VXyr+NSCzlVVz/2ADc/qE=;
-        b=hBw8mqtc970Us/4260DEmO5MG0Tj4jDDe+CnrIkEvmuKjPVcisES4Kj6cv7V/PtYyo
-         BQZJBqZNrw6i83kgXfUd2A0y+l3J/16xM0HkrF3HFtBL5L5eFJyMyp8UuKHp/ZnnDVQu
-         eDlemguK6yvwN5yYMtqTKPheoXcwmj63LFQk/q7ZKQtKxUrh6epwY1R19VAJvTuEWxrk
-         s64aJkzIA3d2LMWYlHLnqlwjwLRen5ZjtVVniFagjFWCRlWf8wj/SWJo8FZQHs42NZ7r
-         da3CC+XYYJgdMgLe9zp5sD8kRMzKEy5gsmJ77mCRj7xOaNDoy6bTvhUscJoDUawILgvh
-         QmTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iT2l1J0Dw3okJWfIDfIHP+VXyr+NSCzlVVz/2ADc/qE=;
-        b=qcZQkaEYZqT64p66f6xx04DjGs7y7oSruB+iiZtApeSKZl9r/u8EyGljVQ1LS5zoVc
-         qShrqGyGl9msaa/CCvGpCm+c9ewVFi0Au7vrH9/l5lQS3ac1ki6vJiuiA3Z3AHE8eFyP
-         aIv7uHBpqpXnYzEwHzvzH3in3pMyS09my+l3vxuuJH6FV1NERq6eeVYPEssedcLePP8B
-         dSn+kmLfGqLiAo6Z4zWfuFJHSU0d+fvuYbTRyBNaMp0pD2f7r706fYG6I4fjKWgb0H9i
-         8qPzosnsOmoo93TedrvSVbpyzegSQ2gUCzw8z4qpRWAh56O+P+3Eijt62dJvUIQXfO6r
-         aMJA==
-X-Gm-Message-State: AGi0PuYgpodnlfaX8wqT1MDH/9ato9DF3ZeH7kc3o5tUauMwb6C6Gt9C
-        KetitHg/CRaqprJfSNWYfglBUQ==
-X-Google-Smtp-Source: APiQypIQwpWEBc+W8O45Mbgt1/Nc3xO9DTWMuz03GmoYUsF1958LKHcE8AUKRxmOkkqb+5DrbeZ/zg==
-X-Received: by 2002:a0c:da87:: with SMTP id z7mr24708949qvj.141.1587559152840;
-        Wed, 22 Apr 2020 05:39:12 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id i5sm3692472qki.42.2020.04.22.05.39.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Apr 2020 05:39:11 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jREel-00064v-7W; Wed, 22 Apr 2020 09:39:11 -0300
-Date:   Wed, 22 Apr 2020 09:39:11 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-mm@kvack.org, Ralph Campbell <rcampbell@nvidia.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        intel-gfx@lists.freedesktop.org,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        nouveau@lists.freedesktop.org
-Subject: Re: [PATCH hmm 5/5] mm/hmm: remove the customizable pfn format from
- hmm_range_fault
-Message-ID: <20200422123911.GV26002@ziepe.ca>
-References: <0-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com>
- <5-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com>
- <20200422060329.GD22366@lst.de>
+        id S1726579AbgDVMqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:46:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725839AbgDVMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:46:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C0F96AD4B;
+        Wed, 22 Apr 2020 12:46:02 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4703C1E0E53; Wed, 22 Apr 2020 14:46:00 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 14:46:00 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2 V3] MM: replace PF_LESS_THROTTLE with
+ PF_LOCAL_THROTTLE
+Message-ID: <20200422124600.GH8775@quack2.suse.cz>
+References: <87tv2b7q72.fsf@notabene.neil.brown.name>
+ <87v9miydai.fsf@notabene.neil.brown.name>
+ <87ftdgw58w.fsf@notabene.neil.brown.name>
+ <87wo6gs26e.fsf@notabene.neil.brown.name>
+ <87tv1ks24t.fsf@notabene.neil.brown.name>
+ <20200416151906.GQ23739@quack2.suse.cz>
+ <87zhb5r30c.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422060329.GD22366@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87zhb5r30c.fsf@notabene.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 08:03:29AM +0200, Christoph Hellwig wrote:
+On Tue 21-04-20 12:22:59, NeilBrown wrote:
+> On Thu, Apr 16 2020, Jan Kara wrote:
 > 
+> > On Thu 16-04-20 10:30:42, NeilBrown wrote:
+> >> 
+> >> PF_LESS_THROTTLE exists for loop-back nfsd (and a similar need in the
+> >> loop block driver and callers of prctl(PR_SET_IO_FLUSHER)), where a
+> >> daemon needs to write to one bdi (the final bdi) in order to free up
+> >> writes queued to another bdi (the client bdi).
+> >> 
+> >> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
+> >> pages, so that it can still dirty pages after other processses have been
+> >> throttled.
+> >> 
+> >> This approach was designed when all threads were blocked equally,
+> >> independently on which device they were writing to, or how fast it was.
+> >> Since that time the writeback algorithm has changed substantially with
+> >> different threads getting different allowances based on non-trivial
+> >> heuristics.  This means the simple "add 25%" heuristic is no longer
+> >> reliable.
+> >> 
+> >> The important issue is not that the daemon needs a *larger* dirty page
+> >> allowance, but that it needs a *private* dirty page allowance, so that
+> >> dirty pages for the "client" bdi that it is helping to clear (the bdi for
+> >> an NFS filesystem or loop block device etc) do not affect the throttling
+> >> of the deamon writing to the "final" bdi.
+> >> 
+> >> This patch changes the heuristic so that the task is only throttled if
+> >> *both* the global threshhold *and* the per-wb threshold are exceeded.
+> >> This is similar to the effect of BDI_CAP_STRICTLIMIT which causes the
+> >> global limits to be ignored, but it isn't as strict.  A PF_LOCAL_THROTTLE
+> >> task will be allowed to proceed unthrottled if the global threshold is
+> >> not exceeded or if the local threshold is not exceeded.  They need to
+> >> both be exceeded before PF_LOCAL_THROTTLE tasks are throttled.
+> >> 
+> >> This approach of "only throttle when target bdi is busy" is consistent
+> >> with the other use of PF_LESS_THROTTLE in current_may_throttle(), were
+> >> it causes attention to be focussed only on the target bdi.
+> >> 
+> >> So this patch
+> >>  - renames PF_LESS_THROTTLE to PF_LOCAL_THROTTLE,
+> >>  - removes the 25% bonus that that flag gives, and
+> >>  - If PF_LOCAL_THROTTLE is set, don't delay at all unless both
+> >>    thresholds are exceeded.
+> >> 
+> >> Note that previously realtime threads were treated the same as
+> >> PF_LESS_THROTTLE threads.  This patch does *not* change the behvaiour for
+> >> real-time threads, so it is now different from the behaviour of nfsd and
+> >> loop tasks.  I don't know what is wanted for realtime.
+> >> 
+> >> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> >> Signed-off-by: NeilBrown <neilb@suse.de>
+> >
+> > ...
+> >
+> >> @@ -1700,6 +1699,17 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
+> >>  				sdtc = mdtc;
+> >>  		}
+> >>  
+> >> +		if (current->flags & PF_LOCAL_THROTTLE)
+> >> +			/* This task must only be throttled based on the bdi
+> >> +			 * it is writing to - dirty pages for other bdis might
+> >> +			 * be pages this task is trying to write out.  So it
+> >> +			 * gets a free pass unless both global and local
+> >> +			 * thresholds are exceeded.  i.e unless
+> >> +			 * "dirty_exceeded".
+> >> +			 */
+> >> +			if (!dirty_exceeded)
+> >> +				break;
+> >> +
+> >>  		if (dirty_exceeded && !wb->dirty_exceeded)
+> >>  			wb->dirty_exceeded = 1;
+> >
+> > Ok, but note that this will have one sideeffect you maybe didn't realize:
+> > Currently we try to throttle tasks softly - the heuristic rougly works like
+> > this: If dirty < (thresh + bg_thresh)/2, leave the task alone.
+> > (thresh+bg_thresh)/2 is called "freerun ceiling". If dirty is greater than
+> > this, we delay the task somewhat (the aim is to delay the task as long as
+> > it would take to write back the pages task has dirtied) in
+> > balance_dirty_pages() so ideally 'thresh' is never hit. Only if the
+> > heuristic consistently underestimates the time to writeback pages, we hit
+> > 'thresh' and then block the task as long as it takes flush worker to clean
+> > enough pages to get below 'thresh'. This all leads to task being usually
+> > gradually slowed down in balance_dirty_pages() which generally leads to
+> > smoother overall system behavior.
+> >
+> > What you did makes PF_LOCAL_THROTTLE tasks ignore any limits and then when
+> > local bdi limit is exceeded, they'll suddently hit the wall and be blocked
+> > for a long time in balance_dirty_pages().
+> >
+> > So I like what you suggest in principle, just I think the implementation
+> > has undesirable sideeffects. I think it would be better to modify
+> > wb_position_ratio() to take PF_LOCAL_THROTTLE into account. It will be
+> > probably similar to how BDI_CAP_STRICTLIMIT is handled but different in
+> > some ways because BDI_CAP_STRICTLIMIT takes minimum from wb_pos_ratio and
+> > global pos_ratio, you rather want to take wb_pos_ratio only. Also there are
+> > some early bail out conditions when we are over global dirty limit which
+> > you need to handle differently for PF_LOCAL_THROTTLE. And then, when you
+> > have appropriate pos_ratio computed based on your policy, you can let the
+> > task wait for appropriate amount of time and things should just work (TM) ;).
+> > Thinking about it, you probably also want to add 'freerun' condition for
+> > PF_LOCAL_THROTTLE tasks like:
+> >
+> > 	if ((current->flags & PF_LOCAL_THROTTLE) &&
+> > 	    wb_dirty <= dirty_freerun_ceiling(wb_thresh, wb_bg_thresh))
+> > 		go the freerun path...
+> >
 > 
-> On Tue, Apr 21, 2020 at 09:21:46PM -0300, Jason Gunthorpe wrote:
-> > +void nouveau_hmm_convert_pfn(struct nouveau_drm *drm, struct hmm_range *range,
-> > +			     u64 *ioctl_addr)
-> >  {
-> >  	unsigned long i, npages;
-> >  
-> > +	/*
-> > +	 * The ioctl_addr prepared here is passed through nvif_object_ioctl()
-> > +	 * to an eventual DMA map on some call chain like:
-> > +	 *    nouveau_svm_fault():
-> > +	 *      args.i.m.method = NVIF_VMM_V0_PFNMAP
-> > +	 *      nouveau_range_fault()
-> > +	 *       nvif_object_ioctl()
-> > +	 *        client->driver->ioctl()
-> > +	 *           struct nvif_driver nvif_driver_nvkm:
-> > +	 *             .ioctl = nvkm_client_ioctl
-> > +	 *            nvkm_ioctl()
-> > +	 *             nvkm_ioctl_path()
-> > +	 *               nvkm_ioctl_v0[type].func(..)
-> > +	 *               nvkm_ioctl_mthd()
-> > +	 *                nvkm_object_mthd()
-> > +	 *                   struct nvkm_object_func nvkm_uvmm:
-> > +	 *                     .mthd = nvkm_uvmm_mthd
-> > +	 *                    nvkm_uvmm_mthd()
-> > +	 *                     nvkm_uvmm_mthd_pfnmap()
-> > +	 *                      nvkm_vmm_pfn_map()
-> > +	 *                       nvkm_vmm_ptes_get_map()
-> > +	 *                        func == gp100_vmm_pgt_pfn
-> > +	 *                         struct nvkm_vmm_desc_func gp100_vmm_desc_spt:
-> > +	 *                           .pfn = gp100_vmm_pgt_pfn
-> > +	 *                          nvkm_vmm_iter()
-> > +	 *                           REF_PTES == func == gp100_vmm_pgt_pfn()
-> > +	 *			      dma_map_page()
-> > +	 *
-> > +	 * This is all just encoding the internal hmm reprensetation into a
-> > +	 * different nouveau internal representation.
-> > +	 */
+> Thanks.....
+> I have 2 thoughts on this.
+> One is that I'm not sure how much it really matters.
+> The PF_LOCAL_THROTTLE task it always doing writeout on behalf of some
+> other process.  Some process writes to NFS or to a loop block device or
+> somewhere, then the PF_LOCAL_THROTTLE task writes those dirty pages out
+> to a different BDI.  So the top level task will be throttled, an the
+> PF_LOCAL_THROTTLE task won't get more than it can handle.
+> There will be starting transients of course, but I doubt it would
+> generally be a problem.  However it would still be nice to find the
+> "right" solution.
+
+I'm not sure PF_LOCAL_THROTTLE "won't get more than it can handle". Once
+dirty pages on NFS BDI accumulate, flush worker will start to push them out
+as fast as it can. So the only thing that's limitting this is the dirty
+throttling on the receiving (NFS server - thus underlying BDI) side. When
+underlying BDI throttling triggers depends on that BDI dirty limits and
+those are proportional part of global dirty limits scaled by writeback
+throughput on underlying BDI compared to other BDIs. So depending on which
+BDIs are in the system and how active they are in dirtying pages
+'underlying BDI' will get different dirty limits set. It's quite imaginable
+that in some configurations it will be easy to push NFS server to hit its
+dirty limit even with PF_LOCAL_THROTTLE. And then having NFS server
+undersponsive for couple seconds because it is blocked in
+balance_dirty_pages() just is not nice...
+
+> My second thought is that I really don't understand the writeback code.
+> I think I understand the general principle, and there are lots of big
+> comments that try to explain things, but it just doesn't seem to help.
+> I look at the code and see more questions than answers.
+
+I fully understand what you mean :). The logic is complex and while
+Fengguang wrote a lot of comments it is still rather hard to follow.
+
+> What are the units for "dirty_ratelimit"??  I think it is pages per
+> second, because it is initialized to INIT_BW which is documented as 100
+> MB/s.
+
+Yes, that's what I think as well.
+
+> What is the difference between dirty_ratelimit and
+> balanced_dirty_ratelimit?
+> The later is "balanced" I guess.  What does that mean?
+> Apparently (from backing-dev-defs.h) dirty_ratelimit moves in smaller
+> steps and is more smooth than balanced_dirty_ratelimit.  How is being
+> less smooth, more balanced??
+
+Yeah. So I cannot really explain the naming to you (not sure why Fengguang
+chose these names). But 'balanced_dirty_ratelimit' is pages/second value we
+want to limit task to based on the events in the most current time slice.
+'dirty_ratelimit' is smoothed version of 'balanced_dirty_ratelimit' taking
+more of history into account.
+
+> What is pos_ratio? And what is RATELIMIT_CALC_SHIFT ???
+> Maybe pos_ratio is the ratio of the actual number of dirty pages to the
+> desired number?  And pos_ratio is calculated with fixed-point arithmetic
+> and RATELIMIT_CALC_SHIFT tells where the point is?
+
+So RATELIMIT_CALC_SHIFT is indeed the shift of fixed point arithmetic used
+in the computations. Pos_ratio is the multiplicative "correction" factor we
+apply to computed dirty_ratelimit (i.e., task_ratelimit = dirty_ratelimit *
+pos_ratio) - so if we see we are able to writeout say 100 MB/s but we are
+still relatively far from dirty limits, we let tasks dirty 200 MB/s
+(pos_ratio is 2). As we are nearing dirty limits, pos_ratio is dropping
+(it's appropriately scaled and shifted third order polynomial) so very
+close to dirty limits, we let tasks dirty only say 10 MB/s even though we
+are still able to write out 100 MB/s.
+
+> I think I understand freerun - half way between the dirty limit and the
+> dirty_bg limit.  Se below dirty_bg, no writeback happens.  Between there
+> and freerun, writeback happens, but nothing in throttled.  From free up
+> to the limit, tasks are progressively throttled.
+
+Correct.
+
+> "setpoint" is the midpoint of this range.  Is the goal that pos_ratio is
+> computed for.
+> (except that in the BDI_CAP_STRICTLIMIT part of wb_position_ratio)
+> wb_setpoint is set to the bottom of this range, same as the freerun ceiling.)
+
+Correct.
+
+> Then we have the control lines, which are cubic(?) for global counts and
+> linear for per-wb - but truncated at 1/4.  The comment says "so that
+> wb_dirty can be smoothly throttled".  It'll take me a while to work out
+> what a hard edge results in smooth throttling.  I suspect it makes sense
+> but it doesn't jump out at me.
 > 
-> Nice callchain from hell..  Unfortunately such "code listings" tend to
-> get out of date very quickly, so I'm not sure it is worth keeping in
-> the code.  What would be really worthile is consolidating the two
-> different sets of defines (NVIF_VMM_PFNMAP_V0_ vs NVKM_VMM_PFN_)
-> to make the code a little easier to follow.
-
-I was mainly concerned that this function is using hmm properly,
-becuase it sure looks like it is just forming the CPU physical address
-into a HW specific data. But it turns out it is just an internal data
-for some other code and the dma_map is impossibly far away
-
-It took forever to find, I figured I'd leave a hint for the next poor
-soul that has to look at this.. 
-
-Also, I think it shows there is no 'performance' argument here, if
-this path needs more performance the above should be cleaned
-before we abuse hmm_range_fault.
-
-Put it in the commit message instead?
-
-> >  	npages = (range->end - range->start) >> PAGE_SHIFT;
-> >  	for (i = 0; i < npages; ++i) {
-> >  		struct page *page;
-> >  
-> > +		if (!(range->hmm_pfns[i] & HMM_PFN_VALID)) {
-> > +			ioctl_addr[i] = 0;
-> >  			continue;
-> > +		}
+> So, you see, I don't feel at all confident changing any of this code
+> because I just don't get it.
 > 
-> Can't we rely on the caller pre-zeroing the array?
+> So I'm inclined to stick with the patch that I have. :-(
 
-This ends up as args.phys in nouveau_svm_fault - I didn't see a
-zeroing?
+OK, I'll try to write something and we'll see if it will work :)
 
-I think it makes sense that this routine fully sets the output array
-and does not assume pre-initialize
-
-> > +		page = hmm_pfn_to_page(range->hmm_pfns[i]);
-> > +		if (is_device_private_page(page))
-> > +			ioctl_addr[i] = nouveau_dmem_page_addr(page) |
-> > +					NVIF_VMM_PFNMAP_V0_V |
-> > +					NVIF_VMM_PFNMAP_V0_VRAM;
-> > +		else
-> > +			ioctl_addr[i] = page_to_phys(page) |
-> > +					NVIF_VMM_PFNMAP_V0_V |
-> > +					NVIF_VMM_PFNMAP_V0_HOST;
-> > +		if (range->hmm_pfns[i] & HMM_PFN_WRITE)
-> > +			ioctl_addr[i] |= NVIF_VMM_PFNMAP_V0_W;
-> 
-> Now that this routine isn't really device memory specific any more, I
-> wonder if it should move to nouveau_svm.c.
-
-Yes, if we expose nouveau_dmem_page_addr(), I will try it
-
-Thanks,
-Jason
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
