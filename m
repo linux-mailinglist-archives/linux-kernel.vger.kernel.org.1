@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7331B3921
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346961B392C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgDVHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726528AbgDVHjU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:39:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B905CC03C1A6;
-        Wed, 22 Apr 2020 00:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=wnRfqx1VoCTyZu/k8lNZZmFfqSwOg7HpqVhS1+x+fA4=; b=H6INQmabbIGiZI854RTp/0wiTT
-        6SxoKlEodn2N/yYVxRSCNXHcHdvu2Roxo+u7FgvoS9Sbeer+gOBTfkfKhwwEAwp+SI9dyj0X9HeGE
-        tJ+GtuArLi9b39lUyOiF+SBTlSdUeOrQ6H1knPi01zC3xf+1s/sKqLCZrXpuYPxRtYn44qHWIy6LM
-        zaIXdzeL7JHt4BOv55LaNuYJauKSJy1/HrvCMFyA95D5tD+yjPBwKZFlA2RsJe6itDqBwva0wGh6d
-        aG6lTZl94iFc+qrDXny9KAJT8yrNxu9G+DnQKK0WGyTEUE1GZzZIMJtNBUJZCI9EE98BLu6tWF12k
-        /eMMR7Vg==;
-Received: from [2001:4bb8:191:e12c:c70:4a89:bc61:3] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jR9yV-0000Dr-AH; Wed, 22 Apr 2020 07:39:15 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     axboe@kernel.dk
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, hdegoede@redhat.com,
-        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] bdi: remove the name field in struct backing_dev_info
-Date:   Wed, 22 Apr 2020 09:38:51 +0200
-Message-Id: <20200422073851.303714-10-hch@lst.de>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200422073851.303714-1-hch@lst.de>
-References: <20200422073851.303714-1-hch@lst.de>
+        id S1726619AbgDVHjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:39:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41788 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726412AbgDVHjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 03:39:47 -0400
+IronPort-SDR: ayo8cCg8ajFOOTdASh6lBOIhqPIEwTThV3dw8F3JB8GrEM0Xn5+ugtCZqTFZnNq6F2S/qX1yuT
+ +8vQJdnWhqXw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 00:39:44 -0700
+IronPort-SDR: Y4kJm8tR+zcYkVeYbRmYKmz7vFnym1XDSE0gfzRmkCsjqNxyzXCQIgvJ0vGn3licwk1jCyoJHR
+ NJZy1UT7TZbw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
+   d="scan'208";a="245907344"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Apr 2020 00:39:40 -0700
+Subject: Re: [PATCH V6 08/15] ftrace: Add perf text poke events for ftrace
+ trampolines
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+References: <20200405201327.7332-1-adrian.hunter@intel.com>
+ <20200405201327.7332-9-adrian.hunter@intel.com>
+ <20200421134504.GQ20730@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <ce16611a-8b6c-765d-c254-5bb98493b082@intel.com>
+Date:   Wed, 22 Apr 2020 10:39:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200421134504.GQ20730@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name is only printed for a not registered bdi in writeback.  Use the
-device name there as is more useful anyway for the unlike case that the
-warning triggers.
+On 21/04/20 4:45 pm, Peter Zijlstra wrote:
+> On Sun, Apr 05, 2020 at 11:13:20PM +0300, Adrian Hunter wrote:
+>> Add perf text poke events for ftrace trampolines when created and when
+>> freed.
+> 
+> Maybe also put in a little more detail on the various events. Because
+> arch_ftrace_update_trampoline() can also generate text_poke_bp() events,
+> to update an existing trampoline.
+> 
+> A diagram, like with the kprobes thing perhaps.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- block/blk-core.c                 | 1 -
- drivers/mtd/mtdcore.c            | 1 -
- fs/fs-writeback.c                | 2 +-
- fs/super.c                       | 2 --
- include/linux/backing-dev-defs.h | 2 --
- mm/backing-dev.c                 | 1 -
- 6 files changed, 1 insertion(+), 8 deletions(-)
+How about adding this:
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index ab87f2833ab2..f37068c611bf 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -494,7 +494,6 @@ struct request_queue *__blk_alloc_queue(int node_id)
- 
- 	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
--	q->backing_dev_info->name = "block";
- 	q->node = node_id;
- 
- 	timer_setup(&q->backing_dev_info->laptop_mode_wb_timer,
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 39ec563d9a14..fcb018ce17c3 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2040,7 +2040,6 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
- 	if (!bdi)
- 		return ERR_PTR(-ENOMEM);
- 
--	bdi->name = name;
- 	/*
- 	 * We put '-0' suffix to the name to get the same name format as we
- 	 * used to get. Since this is called only once, we get a unique name. 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 76ac9c7d32ec..d85323607b49 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2320,7 +2320,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
- 			     !test_bit(WB_registered, &wb->state),
--			     "bdi-%s not registered\n", wb->bdi->name);
-+			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
- 
- 			inode->dirtied_when = jiffies;
- 			if (dirtytime)
-diff --git a/fs/super.c b/fs/super.c
-index dd28fcd706ff..4991f441988e 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1602,8 +1602,6 @@ int super_setup_bdi_name(struct super_block *sb, char *fmt, ...)
- 	if (!bdi)
- 		return -ENOMEM;
- 
--	bdi->name = sb->s_type->name;
--
- 	va_start(args, fmt);
- 	err = bdi_register_va(bdi, fmt, args);
- 	va_end(args);
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 2849bdbb3acb..011bb8ad0738 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -194,8 +194,6 @@ struct backing_dev_info {
- 	congested_fn *congested_fn; /* Function pointer if device is md/dm */
- 	void *congested_data;	/* Pointer to aux data for congested func */
- 
--	const char *name;
--
- 	struct kref refcnt;	/* Reference counter for the structure */
- 	unsigned int capabilities; /* Device capabilities */
- 	unsigned int min_ratio;
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 1f55d5b8269f..d382272bcc31 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -15,7 +15,6 @@
- #include <trace/events/writeback.h>
- 
- struct backing_dev_info noop_backing_dev_info = {
--	.name		= "noop",
- 	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
- };
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
--- 
-2.26.1
+There can be 3 text_poke events for ftrace trampolines:
+
+1. NULL -> trampoline
+   By ftrace_update_trampoline() when !ops->trampoline
+   Trampoline created
+
+2. [e.g. on x86] CALL rel32 -> CALL rel32
+   By arch_ftrace_update_trampoline() when ops->trampoline and
+                        ops->flags & FTRACE_OPS_FL_ALLOC_TRAMP
+   [e.g. on x86] via text_poke_bp() which generates text poke events
+   Trampoline-called function target updated
+
+3. trampoline -> NULL
+   By ftrace_trampoline_free() when ops->trampoline and
+                 ops->flags & FTRACE_OPS_FL_ALLOC_TRAMP
+   Trampoline freed
+
+> 
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>  kernel/trace/ftrace.c | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+>> index 398d58b8ffa5..3318f7eca76c 100644
+>> --- a/kernel/trace/ftrace.c
+>> +++ b/kernel/trace/ftrace.c
+>> @@ -2792,6 +2792,13 @@ static void ftrace_trampoline_free(struct ftrace_ops *ops)
+>>  {
+>>  	if (ops && (ops->flags & FTRACE_OPS_FL_ALLOC_TRAMP) &&
+>>  	    ops->trampoline) {
+>> +		/*
+>> +		 * Record the text poke event before the ksymbol unregister
+>> +		 * event.
+>> +		 */
+>> +		perf_event_text_poke((void *)ops->trampoline,
+>> +				     (void *)ops->trampoline,
+>> +				     ops->trampoline_size, NULL, 0);
+>>  		perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL,
+>>  				   ops->trampoline, ops->trampoline_size,
+>>  				   true, FTRACE_TRAMPOLINE_SYM);
+>> @@ -6816,6 +6823,13 @@ static void ftrace_update_trampoline(struct ftrace_ops *ops)
+>>  		perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL,
+>>  				   ops->trampoline, ops->trampoline_size, false,
+>>  				   FTRACE_TRAMPOLINE_SYM);
+>> +		/*
+>> +		 * Record the perf text poke event after the ksymbol register
+>> +		 * event.
+>> +		 */
+>> +		perf_event_text_poke((void *)ops->trampoline, NULL, 0,
+>> +				     (void *)ops->trampoline,
+>> +				     ops->trampoline_size);
+>>  	}
+>>  }
+>>  
+>> -- 
+>> 2.17.1
+>>
 
