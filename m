@@ -2,239 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76D51B390F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1308F1B3946
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgDVHf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:35:58 -0400
-Received: from forward103o.mail.yandex.net ([37.140.190.177]:37812 "EHLO
-        forward103o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725786AbgDVHf6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:35:58 -0400
-Received: from forward100q.mail.yandex.net (forward100q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb97])
-        by forward103o.mail.yandex.net (Yandex) with ESMTP id 759365F82106;
-        Wed, 22 Apr 2020 10:35:53 +0300 (MSK)
-Received: from mxback7q.mail.yandex.net (mxback7q.mail.yandex.net [IPv6:2a02:6b8:c0e:41:0:640:cbbf:d618])
-        by forward100q.mail.yandex.net (Yandex) with ESMTP id 720DD7080006;
-        Wed, 22 Apr 2020 10:35:53 +0300 (MSK)
-Received: from vla4-a16f3368381d.qloud-c.yandex.net (vla4-a16f3368381d.qloud-c.yandex.net [2a02:6b8:c17:d85:0:640:a16f:3368])
-        by mxback7q.mail.yandex.net (mxback/Yandex) with ESMTP id afxpmOc8PX-ZqHawV0n;
-        Wed, 22 Apr 2020 10:35:53 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1587540953;
-        bh=ID2SuIBCfDbyux3wZ+N7oUgWeEk9nHmFay9kJWpJDl8=;
-        h=In-Reply-To:Subject:Cc:To:From:References:Date:Message-ID;
-        b=PmhVWDBxxdSVzdS2n2ZJQanADXkJWoTaTgvZvYbzCrcrGlgyzT/qzk0AYRN+5Nxiu
-         Wrwlun9jtTNLcKxPVdFDqmzdOsTEnbM2I5RUz7J2jYU3KzoWsoOxEVoDLRyVKltu7e
-         ED9bOylz5YDS9krDCXpzJLd6iz8ISHcg1BNHekRA=
-Authentication-Results: mxback7q.mail.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by vla4-a16f3368381d.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id FD3Dk2IMkv-ZpWiB2IY;
-        Wed, 22 Apr 2020 10:35:51 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Date:   Wed, 22 Apr 2020 10:35:49 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Nikita Shubin <nshubin@topcon.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] remoteproc: imx_rproc: set pc on start
-Message-ID: <20200422103549.0000512d@maquefel.me>
-In-Reply-To: <CANLsYkyUoG9fW7NoXMS1D7WjPGew7FT0jyOP1E0ipmwW-qEG7A@mail.gmail.com>
-References: <20200304142628.8471-1-NShubin@topcon.com>
-        <20200406113310.3041-1-nikita.shubin@maquefel.me>
-        <20200406113310.3041-2-nikita.shubin@maquefel.me>
-        <20200414164519.GA24061@xps15>
-        <45761587100993@mail.yandex.ru>
-        <CANLsYkxvuwFdG3YnE7tTxQaD7uF0d_XnPjt1KS++FFe0W3fbdw@mail.gmail.com>
-        <20200417202653.00002500@maquefel.me>
-        <CANLsYkyUoG9fW7NoXMS1D7WjPGew7FT0jyOP1E0ipmwW-qEG7A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726474AbgDVHqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:46:19 -0400
+Received: from mga06.intel.com ([134.134.136.31]:36404 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725786AbgDVHqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 03:46:18 -0400
+IronPort-SDR: yqjJJAZ+apkpBUZhenY05i3cNHKqJjeSN21IGYOxKEo8mUonxREeU+Ir7X1IQE77Bfi+mfiy9z
+ axPJa9yCOh3Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 00:46:17 -0700
+IronPort-SDR: IiqeFspJ0CdB38qBX6Cd2a66HZX2GAU621wxqs2QmfifCRoH56m9KszWZEuthNv39GbncIKt4K
+ Qz6f47zS8OYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
+   d="scan'208";a="279929982"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Apr 2020 00:46:09 -0700
+Date:   Wed, 22 Apr 2020 03:36:28 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "eskultet@redhat.com" <eskultet@redhat.com>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>
+Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
+ VFIO live migration
+Message-ID: <20200422073628.GA12879@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200413055201.27053-1-yan.y.zhao@intel.com>
+ <20200417104450.2d2f2fa9.cohuck@redhat.com>
+ <20200417095202.GD16688@joy-OptiPlex-7040>
+ <20200417132457.45d91fe3.cohuck@redhat.com>
+ <20200420012457.GE16688@joy-OptiPlex-7040>
+ <20200420165600.4951ae82@w520.home>
+ <20200421023718.GA12111@joy-OptiPlex-7040>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D86DF06@SHSMSX104.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D86DF06@SHSMSX104.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 16:24:21 -0600
-Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+On Tue, Apr 21, 2020 at 08:08:49PM +0800, Tian, Kevin wrote:
+> > From: Yan Zhao
+> > Sent: Tuesday, April 21, 2020 10:37 AM
+> > 
+> > On Tue, Apr 21, 2020 at 06:56:00AM +0800, Alex Williamson wrote:
+> > > On Sun, 19 Apr 2020 21:24:57 -0400
+> > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > >
+> > > > On Fri, Apr 17, 2020 at 07:24:57PM +0800, Cornelia Huck wrote:
+> > > > > On Fri, 17 Apr 2020 05:52:02 -0400
+> > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > > > >
+> > > > > > On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
+> > > > > > > On Mon, 13 Apr 2020 01:52:01 -0400
+> > > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > > > > > >
+> > > > > > > > This patchset introduces a migration_version attribute under sysfs
+> > of VFIO
+> > > > > > > > Mediated devices.
+> > > > > > > >
+> > > > > > > > This migration_version attribute is used to check migration
+> > compatibility
+> > > > > > > > between two mdev devices.
+> > > > > > > >
+> > > > > > > > Currently, it has two locations:
+> > > > > > > > (1) under mdev_type node,
+> > > > > > > >     which can be used even before device creation, but only for
+> > mdev
+> > > > > > > >     devices of the same mdev type.
+> > > > > > > > (2) under mdev device node,
+> > > > > > > >     which can only be used after the mdev devices are created, but
+> > the src
+> > > > > > > >     and target mdev devices are not necessarily be of the same
+> > mdev type
+> > > > > > > > (The second location is newly added in v5, in order to keep
+> > consistent
+> > > > > > > > with the migration_version node for migratable pass-though
+> > devices)
+> > > > > > >
+> > > > > > > What is the relationship between those two attributes?
+> > > > > > >
+> > > > > > (1) is for mdev devices specifically, and (2) is provided to keep the
+> > same
+> > > > > > sysfs interface as with non-mdev cases. so (2) is for both mdev
+> > devices and
+> > > > > > non-mdev devices.
+> > > > > >
+> > > > > > in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
+> > > > > > is binding to vfio-pci, but is able to register migration region and do
+> > > > > > migration transactions from a vendor provided affiliate driver),
+> > > > > > the vendor driver would export (2) directly, under device node.
+> > > > > > It is not able to provide (1) as there're no mdev devices involved.
+> > > > >
+> > > > > Ok, creating an alternate attribute for non-mdev devices makes sense.
+> > > > > However, wouldn't that rather be a case (3)? The change here only
+> > > > > refers to mdev devices.
+> > > > >
+> > > > as you pointed below, (3) and (2) serve the same purpose.
+> > > > and I think a possible usage is to migrate between a non-mdev device and
+> > > > an mdev device. so I think it's better for them both to use (2) rather
+> > > > than creating (3).
+> > >
+> > > An mdev type is meant to define a software compatible interface, so in
+> > > the case of mdev->mdev migration, doesn't migrating to a different type
+> > > fail the most basic of compatibility tests that we expect userspace to
+> > > perform?  IOW, if two mdev types are migration compatible, it seems a
+> > > prerequisite to that is that they provide the same software interface,
+> > > which means they should be the same mdev type.
+> > >
+> > > In the hybrid cases of mdev->phys or phys->mdev, how does a
+> > management
+> > > tool begin to even guess what might be compatible?  Are we expecting
+> > > libvirt to probe ever device with this attribute in the system?  Is
+> > > there going to be a new class hierarchy created to enumerate all
+> > > possible migrate-able devices?
+> > >
+> > yes, management tool needs to guess and test migration compatible
+> > between two devices. But I think it's not the problem only for
+> > mdev->phys or phys->mdev. even for mdev->mdev, management tool needs
+> > to
+> > first assume that the two mdevs have the same type of parent devices
+> > (e.g.their pciids are equal). otherwise, it's still enumerating
+> > possibilities.
+> > 
+> > on the other hand, for two mdevs,
+> > mdev1 from pdev1, its mdev_type is 1/2 of pdev1;
+> > mdev2 from pdev2, its mdev_type is 1/4 of pdev2;
+> > if pdev2 is exactly 2 times of pdev1, why not allow migration between
+> > mdev1 <-> mdev2.
+> 
+> How could the manage tool figure out that 1/2 of pdev1 is equivalent 
+> to 1/4 of pdev2? If we really want to allow such thing happen, the best
+> choice is to report the same mdev type on both pdev1 and pdev2.
+I think that's exactly the value of this migration_version interface.
+the management tool can take advantage of this interface to know if two
+devices are migration compatible, no matter they are mdevs, non-mdevs,
+or mix.
 
-> On Fri, 17 Apr 2020 at 11:27, Nikita Shubin
-> <nikita.shubin@maquefel.me> wrote:
-> >
-> > On Fri, 17 Apr 2020 11:01:22 -0600
-> > Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
-> >
-> > > On Thu, 16 Apr 2020 at 23:40, <nikita.shubin@maquefel.me> wrote:
+as I know, (please correct me if not right), current libvirt still
+requires manually generating mdev devices, and it just duplicates src vm
+configuration to the target vm.
+for libvirt, currently it's always phys->phys and mdev->mdev (and of the
+same mdev type).
+But it does not justify that hybrid cases should not be allowed. otherwise,
+why do we need to introduce this migration_version interface and leave
+the judgement of migration compatibility to vendor driver? why not simply
+set the criteria to something like "pciids of parent devices are equal,
+and mdev types are equal" ?
+
+
+> btw mdev<->phys just brings trouble to upper stack as Alex pointed out. 
+could you help me understand why it will bring trouble to upper stack?
+
+I think it just needs to read src migration_version under src dev node,
+and test it in target migration version under target dev node. 
+
+after all, through this interface we just help the upper layer
+knowing available options through reading and testing, and they decide
+to use it or not.
+
+> Can we simplify the requirement by allowing only mdev<->mdev and 
+> phys<->phys migration? If an customer does want to migrate between a 
+> mdev and phys, he could wrap physical device into a wrapped mdev 
+> instance (with the same type as the source mdev) instead of using vendor 
+> ops. Doing so does add some burden but if mdev<->phys is not dominant 
+> usage then such tradeoff might be worthywhile...
+>
+If the interfaces for phys<->phys and mdev<->mdev are consistent, it makes no
+difference to phys<->mdev, right?
+I think the vendor string for a mdev device is something like:
+"Parent PCIID + mdev type + software version", and
+that for a phys device is something like:
+"PCIID + software version".
+as long as we don't migrate between devices from different vendors, it's
+easy for vendor driver to tell if a phys device is migration compatible
+to a mdev device according it supports it or not.
+
+
+Thanks
+Yan
+> 
+> > 
+> > 
+> > > I agree that there was a gap in the previous proposal for non-mdev
+> > > devices, but I think this bring a lot of questions that we need to
+> > > puzzle through and libvirt will need to re-evaluate how they might
+> > > decide to pick a migration target device.  For example, I'm sure
+> > > libvirt would reject any policy decisions regarding picking a physical
+> > > device versus an mdev device.  Had we previously left it that only a
+> > > layer above libvirt would select a target device and libvirt only tests
+> > > compatibility to that target device?
+> > I'm not sure if there's a layer above libvirt would select a target
+> > device. but if there is such a layer (even it's human), we need to
+> > provide an interface for them to know whether their decision is suitable
+> > for migration. The migration_version interface provides a potential to
+> > allow mdev->phys migration, even libvirt may currently reject it.
+> > 
+> > 
+> > > We also need to consider that this expands the namespace.  If we no
+> > > longer require matching types as the first level of comparison, then
+> > > vendor migration strings can theoretically collide.  How do we
+> > > coordinate that can't happen?  Thanks,
+> > yes, it's indeed a problem.
+> > could only allowing migration beteen devices from the same vendor be a
+> > good
+> > prerequisite?
+> > 
+> > Thanks
+> > Yan
+> > >
+> > > > > > > Is existence (and compatibility) of (1) a pre-req for possible
+> > > > > > > existence (and compatibility) of (2)?
+> > > > > > >
+> > > > > > no. (2) does not reply on (1).
+> > > > >
+> > > > > Hm. Non-existence of (1) seems to imply "this type does not support
+> > > > > migration". If an mdev created for such a type suddenly does support
+> > > > > migration, it feels a bit odd.
+> > > > >
+> > > > yes. but I think if the condition happens, it should be reported a bug
+> > > > to vendor driver.
+> > > > should I add a line in the doc like "vendor driver should ensure that the
+> > > > migration compatibility from migration_version under mdev_type should
+> > be
+> > > > consistent with that from migration_version under device node" ?
 > > > >
-> > > > Hi Mathieue,
+> > > > > (It obviously cannot be a prereq for what I called (3) above.)
+> > > > >
+> > > > > >
+> > > > > > > Does userspace need to check (1) or can it completely rely on (2), if
+> > > > > > > it so chooses?
+> > > > > > >
+> > > > > > I think it can completely reply on (2) if compatibility check before
+> > > > > > mdev creation is not required.
+> > > > > >
+> > > > > > > If devices with a different mdev type are indeed compatible, it
+> > seems
+> > > > > > > userspace can only find out after the devices have actually been
+> > > > > > > created, as (1) does not apply?
+> > > > > > yes, I think so.
+> > > > >
+> > > > > How useful would it be for userspace to even look at (1) in that case?
+> > > > > It only knows if things have a chance of working if it actually goes
+> > > > > ahead and creates devices.
+> > > > >
+> > > > hmm, is it useful for userspace to test the migration_version under mdev
+> > > > type before it knows what mdev device to generate ?
+> > > > like when the userspace wants to migrate an mdev device in src vm,
+> > > > but it has not created target vm and the target mdev device.
 > > > >
-> > > > Hi Nikita,
-> > > >
-> > > > On Mon, Apr 06, 2020 at 02:33:08PM +0300,
-> > > > nikita.shubin@maquefel.me wrote:
-> > > >
-> > > >  In case elf file interrupt vector is not supposed to be at
-> > > > OCRAM_S, it is needed to write elf entry point to OCRAM_S +
-> > > > 0x4, to boot M4 firmware.
-> > > >
-> > > >  Otherwise firmware located anywhere besides OCRAM_S won't boot.
-> > > >
-> > > >  The firmware must set stack poiner as first instruction:
-> > > >
-> > > >  Reset_Handler:
-> > > >      ldr sp, = __stack /* set stack pointer */
-> > > >
-> > > >  Signed-off-by: Nikita Shubin <NShubin@topcon.com>
-> > > >
-> > > >
-> > > > The address in the SoB has to match what is found in the "From:"
-> > > > field of the email header. Checkpatch is complaining about that,
-> > > > something I would have expected to be fixed before sending this
-> > > > set out.
-> > > >
-> > > > Noted and will be fixed.
-> > > >
-> > > >  ---
-> > > >   drivers/remoteproc/imx_rproc.c | 16 +++++++++++++++-
-> > > >   1 file changed, 15 insertions(+), 1 deletion(-)
-> > > >
-> > > >  diff --git a/drivers/remoteproc/imx_rproc.c
-> > > > b/drivers/remoteproc/imx_rproc.c index
-> > > > 3e72b6f38d4b..bebc58d0f711 100644 ---
-> > > > a/drivers/remoteproc/imx_rproc.c +++
-> > > > b/drivers/remoteproc/imx_rproc.c @@ -45,6 +45,8 @@
-> > > >
-> > > >   #define IMX7D_RPROC_MEM_MAX 8
-> > > >
-> > > >  +#define IMX_BOOT_PC 0x4
-> > > >  +
-> > > >   /**
-> > > >    * struct imx_rproc_mem - slim internal memory structure
-> > > >    * @cpu_addr: MPU virtual address of the memory region
-> > > >  @@ -85,6 +87,7 @@ struct imx_rproc {
-> > > >           const struct imx_rproc_dcfg *dcfg;
-> > > >           struct imx_rproc_mem mem[IMX7D_RPROC_MEM_MAX];
-> > > >           struct clk *clk;
-> > > >  + void __iomem *bootreg;
-> > > >   };
-> > > >
-> > > >   static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
-> > > >  @@ -162,11 +165,16 @@ static int imx_rproc_start(struct rproc
-> > > > *rproc) struct device *dev = priv->dev;
-> > > >           int ret;
-> > > >
-> > > >  + /* write entry point to program counter */
-> > > >  + writel(rproc->bootaddr, priv->bootreg);
+> > > > > >
+> > > > > > > One of my worries is that the existence of an attribute with the
+> > same
+> > > > > > > name in two similar locations might lead to confusion. But maybe it
+> > > > > > > isn't a problem.
+> > > > > > >
+> > > > > > Yes, I have the same feeling. but as (2) is for sysfs interface
+> > > > > > consistency, to make it transparent to userspace tools like libvirt,
+> > > > > > I guess the same name is necessary?
+> > > > >
+> > > > > What do we actually need here, I wonder? (1) and (2) seem to serve
+> > > > > slightly different purposes, while (2) and what I called (3) have the
+> > > > > same purpose. Is it important to userspace that (1) and (2) have the
+> > > > > same name?
+> > > > so change (1) to migration_type_version and (2) to
+> > > > migration_instance_version?
+> > > > But as they are under different locations, could that location imply
+> > > > enough information?
 > > > >
 > > > >
-> > > > What happens on all the other IMX systems where this fix is not
-> > > > needed? Will they continue to work properly?
+> > > > Thanks
+> > > > Yan
 > > > >
-> > > > Yes, my bad, it is also needed for IMX6 (but even so i need to
-> > > > study this topic more carefully), this should be applied
-> > > > exclusively for imx7d for now, and if will be needed someone
-> > > > with imx6 hardware to test on can extend this on imx6 also.
-> > > >
-> > > >
-> > > >
-> > > >
-> > > >  +
-> > > >           ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
-> > > >                                    dcfg->src_mask,
-> > > > dcfg->src_start); if (ret)
-> > > >                   dev_err(dev, "Failed to enable M4!\n");
-> > > >
-> > > >  + dev_info(&rproc->dev, "Started from 0x%x\n",
-> > > > rproc->bootaddr); +
-> > > >           return ret;
-> > > >   }
-> > > >
-> > > >  @@ -182,6 +190,9 @@ static int imx_rproc_stop(struct rproc
-> > > > *rproc) if (ret)
-> > > >                   dev_err(dev, "Failed to stop M4!\n");
-> > > >
-> > > >  + /* clear entry points */
-> > > >  + writel(0, priv->bootreg);
-> > > >  +
-> > > >           return ret;
-> > > >   }
-> > > >
-> > > >  @@ -243,7 +254,8 @@ static void *imx_rproc_da_to_va(struct
-> > > > rproc *rproc, u64 da, int len) static const struct rproc_ops
-> > > > imx_rproc_ops = { .start = imx_rproc_start,
-> > > >           .stop = imx_rproc_stop,
-> > > >  - .da_to_va = imx_rproc_da_to_va,
-> > > >  + .da_to_va = imx_rproc_da_to_va,
-> > > >  + .get_boot_addr = rproc_elf_get_boot_addr,
-> > > >
-> > > >
-> > > > How is this useful? Sure it will set rproc->bootaddr in
-> > > > rproc_fw_boot() but what good does that do when it is invariably
-> > > > set again in imx_rproc_start() ?
-> > > >
-> > > > The priv->bootreg is the address where we are writing Entry
-> > > > Point and it is fixed, 0x04 address is translated to
-> > > > 0x00180004, so don't quite understand you we are writing
-> > > > rproc->bootaddr into priv->bootreg, not wiseversa.
 > > > >
 > > >
-> > > What is your reason to set ops->get_boot_addr ?  How does that
-> > > help the work done in this patch?
-> >
-> > The reason is the following :
-> >
-> > remoteproc_core.c:
-> > | rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
-> > | rproc->bootaddr = rproc_get_boot_addr(rproc, fw);
-> >
-> > remoteproc_internal.h
-> > | static inline
-> > | u32 rproc_get_boot_addr(struct rproc *rproc, const struct firmware
-> > *fw) | {
-> > |       if (rproc->ops->get_boot_addr)
-> > |               return rproc->ops->get_boot_addr(rproc, fw);
-> > |
-> > |       return 0;
-> > | }
-> 
-> And as I said above the value of rproc->bootaddr is set to
-> priv->bootreg in imx_rproc_stop().  What am I missing?  More over
-> imx_rproc_ops doesn't have a ->load() function and as such rproc_alloc
-> will set it to rproc_elf_get_boot_addr()
-
-Yes, you are totally correct, it is not required in this patch thank you
-for pointing this out.
-
-> 
-> >
-> > >
-> > > >
-> > > >   };
-> > > >
-> > > >   static int imx_rproc_addr_init(struct imx_rproc *priv,
-> > > >  @@ -360,6 +372,8 @@ static int imx_rproc_probe(struct
-> > > > platform_device *pdev) goto err_put_rproc;
-> > > >           }
-> > > >
-> > > >  + priv->bootreg = imx_rproc_da_to_va(rproc, IMX_BOOT_PC,
-> > > > sizeof(u32)); +
-> > > >           /*
-> > > >            * clk for M4 block including memory. Should be
-> > > >            * enabled before .start for FW transfer.
-> > > >  --
-> > > >  2.25.1
-> > > >
-> >
-
+> > _______________________________________________
+> > intel-gvt-dev mailing list
+> > intel-gvt-dev@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
