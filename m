@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DED31B3C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0CB1B3D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgDVKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51926 "EHLO mail.kernel.org"
+        id S1729500AbgDVKOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727034AbgDVKCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:42 -0400
+        id S1729479AbgDVKOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3140320787;
-        Wed, 22 Apr 2020 10:02:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E89820775;
+        Wed, 22 Apr 2020 10:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549761;
-        bh=8W1vFSWViNeHhEhT1gm4IAWUjpSWJW1aRrND3K87PAI=;
+        s=default; t=1587550447;
+        bh=86Oq2sZQUjcvGZ9/UwEo1yNRJHuBONwEDrlcqA+shww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzNZokm1Za+Azl4pahFDePvsuYuqxKmQwva2LgTGc+K9LjPMzLWOMww/LWHJjGW27
-         mVYQZVj4zUMZDLcVb+gJSyNW82/Psq6SqdiwUvCAvd6TFq51suk7kg5Zv4No0EHyxt
-         46JnY0T4/TlPjAyk3blu20YU1N6dAI7CXl+1j+q0=
+        b=VUORTRc6b6KffXEAKbgWZ+oxD1g0qO307uwS7f4yDW3FS2Sh4YQZqnd+g7/rgCyPd
+         yeea/Q6a1Yo1VgYpoRSJcYxbHpghIypAdXGiMZg4r7rR2sJfyJJdpnEgvhrrIHCxvO
+         uwVmIPWpCnxDPF8dbuRYNVsVusRHfGmtib2cDjks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4.4 095/100] locktorture: Print ratio of acquisitions, not failures
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 21/64] x86/Hyper-V: Unload vmbus channel in hv panic callback
 Date:   Wed, 22 Apr 2020 11:57:05 +0200
-Message-Id: <20200422095040.045537728@linuxfoundation.org>
+Message-Id: <20200422095016.907037742@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +44,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-commit 80c503e0e68fbe271680ab48f0fe29bc034b01b7 upstream.
+[ Upstream commit 74347a99e73ae00b8385f1209aaea193c670f901 ]
 
-The __torture_print_stats() function in locktorture.c carefully
-initializes local variable "min" to statp[0].n_lock_acquired, but
-then compares it to statp[i].n_lock_fail.  Given that the .n_lock_fail
-field should normally be zero, and given the initialization, it seems
-reasonable to display the maximum and minimum number acquisitions
-instead of miscomputing the maximum and minimum number of failures.
-This commit therefore switches from failures to acquisitions.
+When kdump is not configured, a Hyper-V VM might still respond to
+network traffic after a kernel panic when kernel parameter panic=0.
+The panic CPU goes into an infinite loop with interrupts enabled,
+and the VMbus driver interrupt handler still works because the
+VMbus connection is unloaded only in the kdump path.  The network
+responses make the other end of the connection think the VM is
+still functional even though it has panic'ed, which could affect any
+failover actions that should be taken.
 
-And this turns out to be not only a day-zero bug, but entirely my
-own fault.  I hate it when that happens!
+Fix this by unloading the VMbus connection during the panic process.
+vmbus_initiate_unload() could then be called twice (e.g., by
+hyperv_panic_event() and hv_crash_handler(), so reset the connection
+state in vmbus_initiate_unload() to ensure the unload is done only
+once.
 
-Fixes: 0af3fe1efa53 ("locktorture: Add a lock-torture kernel module")
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Link: https://lore.kernel.org/r/20200406155331.2105-2-Tianyu.Lan@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/locktorture.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/hv/channel_mgmt.c |  3 +++
+ drivers/hv/vmbus_drv.c    | 19 +++++++++++++------
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -655,10 +655,10 @@ static void __torture_print_stats(char *
- 		if (statp[i].n_lock_fail)
- 			fail = true;
- 		sum += statp[i].n_lock_acquired;
--		if (max < statp[i].n_lock_fail)
--			max = statp[i].n_lock_fail;
--		if (min > statp[i].n_lock_fail)
--			min = statp[i].n_lock_fail;
-+		if (max < statp[i].n_lock_acquired)
-+			max = statp[i].n_lock_acquired;
-+		if (min > statp[i].n_lock_acquired)
-+			min = statp[i].n_lock_acquired;
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index 16eb9b3f1cb1b..3bf1f9ef8ea25 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -849,6 +849,9 @@ void vmbus_initiate_unload(bool crash)
+ {
+ 	struct vmbus_channel_message_header hdr;
+ 
++	if (xchg(&vmbus_connection.conn_state, DISCONNECTED) == DISCONNECTED)
++		return;
++
+ 	/* Pre-Win2012R2 hosts don't support reconnect */
+ 	if (vmbus_proto_version < VERSION_WIN8_1)
+ 		return;
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 9aa18f387a346..5ff7c1708d0e7 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -63,9 +63,12 @@ static int hyperv_panic_event(struct notifier_block *nb, unsigned long val,
+ {
+ 	struct pt_regs *regs;
+ 
+-	regs = current_pt_regs();
++	vmbus_initiate_unload(true);
+ 
+-	hyperv_report_panic(regs, val);
++	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE) {
++		regs = current_pt_regs();
++		hyperv_report_panic(regs, val);
++	}
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -1228,10 +1231,16 @@ static int vmbus_bus_init(void)
+ 		}
+ 
+ 		register_die_notifier(&hyperv_die_block);
+-		atomic_notifier_chain_register(&panic_notifier_list,
+-					       &hyperv_panic_block);
  	}
- 	page += sprintf(page,
- 			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
+ 
++	/*
++	 * Always register the panic notifier because we need to unload
++	 * the VMbus channel connection to prevent any VMbus
++	 * activity after the VM panics.
++	 */
++	atomic_notifier_chain_register(&panic_notifier_list,
++			       &hyperv_panic_block);
++
+ 	vmbus_request_offers();
+ 
+ 	return 0;
+@@ -1875,7 +1884,6 @@ static void hv_kexec_handler(void)
+ {
+ 	hv_synic_clockevents_cleanup();
+ 	vmbus_initiate_unload(false);
+-	vmbus_connection.conn_state = DISCONNECTED;
+ 	/* Make sure conn_state is set as hv_synic_cleanup checks for it */
+ 	mb();
+ 	cpuhp_remove_state(hyperv_cpuhp_online);
+@@ -1890,7 +1898,6 @@ static void hv_crash_handler(struct pt_regs *regs)
+ 	 * doing the cleanup for current CPU only. This should be sufficient
+ 	 * for kdump.
+ 	 */
+-	vmbus_connection.conn_state = DISCONNECTED;
+ 	hv_synic_cleanup(smp_processor_id());
+ 	hyperv_cleanup();
+ };
+-- 
+2.20.1
+
 
 
