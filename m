@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01AE1B419A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6E71B3CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729541AbgDVKyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33898 "EHLO mail.kernel.org"
+        id S1728718AbgDVKIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:08:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728707AbgDVKI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:27 -0400
+        id S1728113AbgDVKI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:08:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D00E02076C;
-        Wed, 22 Apr 2020 10:08:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5129F2087E;
+        Wed, 22 Apr 2020 10:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550106;
-        bh=YH4AGpdCWy5IFEc8AHZ2MuIqQUIpNjevYeeA9hxY4Kw=;
+        s=default; t=1587550108;
+        bh=8PpGL1xkqmeHJ2Vira44+EEkc2xrM5AF6XsNGJQaXU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dXAOInUWNDbCOwPrVHvRW+v3wrmvAptsOOsWCZoS0oX0QaJ56B1gE0v4rQiywpNNL
-         jvpAZpWtC5+Q543GtW9CpMvwCtmT8TLLiYoI/7qmaLAL1lUw2cVLQkuwpXBuFsxsqz
-         /TNXNyErfRSdNopvBAHEUigpyWTKp/sezazpBlGg=
+        b=Gb63vfAHIdZQpl0veoul7VkDsNPkcE7bsqTkvk5V1N6qOYCg2gCA7FCHZVPSojaTB
+         GnFP5C5y/5rz/HefesiESHSGeUXnTnG0CvFIDhXqGn5HiMfXHwEZsJfTGGqv6L5nDN
+         ncSWFZ635HWELTQ0QKHwoR/UlTjdho67M1TeDewc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 004/199] hinic: fix wrong para of wait_for_completion_timeout
-Date:   Wed, 22 Apr 2020 11:55:30 +0200
-Message-Id: <20200422095058.279264154@linuxfoundation.org>
+Subject: [PATCH 4.14 005/199] cxgb4/ptp: pass the sign of offset delta in FW CMD
+Date:   Wed, 22 Apr 2020 11:55:31 +0200
+Message-Id: <20200422095058.378489135@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
 References: <20200422095057.806111593@linuxfoundation.org>
@@ -44,58 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-[ Upstream commit 0da7c322f116210ebfdda59c7da663a6fc5e9cc8 ]
+[ Upstream commit 50e0d28d3808146cc19b0d5564ef4ba9e5bf3846 ]
 
-the second input parameter of wait_for_completion_timeout should
-be jiffies instead of millisecond
+cxgb4_ptp_fineadjtime() doesn't pass the signedness of offset delta
+in FW_PTP_CMD. Fix it by passing correct sign.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c | 3 ++-
- drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 5 +++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-index 7d95f0866fb0b..e1de97effcd24 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-@@ -398,7 +398,8 @@ static int cmdq_sync_cmd_direct_resp(struct hinic_cmdq *cmdq,
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+index 9f9d6cae39d55..758f2b8363282 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+@@ -246,6 +246,9 @@ static int  cxgb4_ptp_fineadjtime(struct adapter *adapter, s64 delta)
+ 			     FW_PTP_CMD_PORTID_V(0));
+ 	c.retval_len16 = cpu_to_be32(FW_CMD_LEN16_V(sizeof(c) / 16));
+ 	c.u.ts.sc = FW_PTP_SC_ADJ_FTIME;
++	c.u.ts.sign = (delta < 0) ? 1 : 0;
++	if (delta < 0)
++		delta = -delta;
+ 	c.u.ts.tm = cpu_to_be64(delta);
  
- 	spin_unlock_bh(&cmdq->cmdq_lock);
- 
--	if (!wait_for_completion_timeout(&done, CMDQ_TIMEOUT)) {
-+	if (!wait_for_completion_timeout(&done,
-+					 msecs_to_jiffies(CMDQ_TIMEOUT))) {
- 		spin_lock_bh(&cmdq->cmdq_lock);
- 
- 		if (cmdq->errcode[curr_prod_idx] == &errcode)
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-index 278dc13f3dae8..9fcf2e5e00039 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-@@ -52,7 +52,7 @@
- 
- #define MSG_NOT_RESP                    0xFFFF
- 
--#define MGMT_MSG_TIMEOUT                1000
-+#define MGMT_MSG_TIMEOUT                5000
- 
- #define mgmt_to_pfhwdev(pf_mgmt)        \
- 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
-@@ -276,7 +276,8 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
- 		goto unlock_sync_msg;
- 	}
- 
--	if (!wait_for_completion_timeout(recv_done, MGMT_MSG_TIMEOUT)) {
-+	if (!wait_for_completion_timeout(recv_done,
-+					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
- 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
- 		err = -ETIMEDOUT;
- 		goto unlock_sync_msg;
+ 	err = t4_wr_mbox(adapter, adapter->mbox, &c, sizeof(c), NULL);
 -- 
 2.20.1
 
