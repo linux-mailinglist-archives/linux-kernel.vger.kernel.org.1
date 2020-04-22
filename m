@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852FB1B3F3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5101B4288
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgDVKXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:23:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59322 "EHLO mail.kernel.org"
+        id S1732422AbgDVLCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730254AbgDVKW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:58 -0400
+        id S1726285AbgDVKAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 691662075A;
-        Wed, 22 Apr 2020 10:22:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 390D220784;
+        Wed, 22 Apr 2020 10:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550977;
-        bh=uM8RYOThTOAePXpnhO/MjXiLuve+HcAfoAQLYud7kjg=;
+        s=default; t=1587549645;
+        bh=mIVHQ0uSnkMp/t2dweUoji1QdAwBFsjSYmZqiOKQEuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ksrfLgHYBxP94+GZl9eb+cvhLyg1mELZ1dWGN9O4w2Kr6Kc/ITldWcT64yJGfgUdu
-         SYmAQeywO2h0bDFsy+59RdJ/H7AJ2n4IbkJMEpl0fa32skgmERiOOzhexj+hs2OMTM
-         lNNocwzy4bjGzNanz2WZ8/8CR+oDXQSQSVAjN5EM=
+        b=bT6NAmoZLuptkbUFZ9DXQjPdmHjlAnYMC6ZURLy+PdwsAJk9LLxtAn/3VAL6jlwa3
+         GXr73gpYKGAtMLXfA3rlTFa1NxWWkyA47ZVGk0q7Cs1Z+FCaYuMCZDs2JxKI19MEH6
+         hGsoQNiPun2ImcdlR3VuinB8o7KZ47E0mPIL5k90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zorro Lang <zlang@redhat.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 050/166] xfs: fix iclog release error check race with shutdown
+        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 047/100] hfsplus: fix crash and filesystem corruption when deleting files
 Date:   Wed, 22 Apr 2020 11:56:17 +0200
-Message-Id: <20200422095054.425468418@linuxfoundation.org>
+Message-Id: <20200422095030.902624869@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,74 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Simon Gander <simon@tuxera.com>
 
-[ Upstream commit 6b789c337a5963ae57cbc7fe9e41488c40a9b014 ]
+commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
 
-Prior to commit df732b29c8 ("xfs: call xlog_state_release_iclog with
-l_icloglock held"), xlog_state_release_iclog() always performed a
-locked check of the iclog error state before proceeding into the
-sync state processing code. As of this commit, part of
-xlog_state_release_iclog() was open-coded into
-xfs_log_release_iclog() and as a result the locked error state check
-was lost.
+When removing files containing extended attributes, the hfsplus driver may
+remove the wrong entries from the attributes b-tree, causing major
+filesystem damage and in some cases even kernel crashes.
 
-The lockless check still exists, but this doesn't account for the
-possibility of a race with a shutdown being performed by another
-task causing the iclog state to change while the original task waits
-on ->l_icloglock. This has reproduced very rarely via generic/475
-and manifests as an assert failure in __xlog_state_release_iclog()
-due to an unexpected iclog state.
+To remove a file, all its extended attributes have to be removed as well.
+The driver does this by looking up all keys in the attributes b-tree with
+the cnid of the file.  Each of these entries then gets deleted using the
+key used for searching, which doesn't contain the attribute's name when it
+should.  Since the key doesn't contain the name, the deletion routine will
+not find the correct entry and instead remove the one in front of it.  If
+parent nodes have to be modified, these become corrupt as well.  This
+causes invalid links and unsorted entries that not even macOS's fsck_hfs
+is able to fix.
 
-Restore the locked error state check in xlog_state_release_iclog()
-to ensure that an iclog state update via shutdown doesn't race with
-the iclog release state processing code.
+To fix this, modify the search key before an entry is deleted from the
+attributes b-tree by copying the found entry's key into the search key,
+therefore ensuring that the correct entry gets removed from the tree.
 
-Fixes: df732b29c807 ("xfs: call xlog_state_release_iclog with l_icloglock held")
-Reported-by: Zorro Lang <zlang@redhat.com>
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Simon Gander <simon@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/xfs_log.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/hfsplus/attributes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index f6006d94a581e..796ff37d5bb5b 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -605,18 +605,23 @@ xfs_log_release_iclog(
- 	struct xlog		*log = mp->m_log;
- 	bool			sync;
- 
--	if (iclog->ic_state == XLOG_STATE_IOERROR) {
--		xfs_force_shutdown(mp, SHUTDOWN_LOG_IO_ERROR);
--		return -EIO;
--	}
-+	if (iclog->ic_state == XLOG_STATE_IOERROR)
-+		goto error;
- 
- 	if (atomic_dec_and_lock(&iclog->ic_refcnt, &log->l_icloglock)) {
-+		if (iclog->ic_state == XLOG_STATE_IOERROR) {
-+			spin_unlock(&log->l_icloglock);
-+			goto error;
-+		}
- 		sync = __xlog_state_release_iclog(log, iclog);
- 		spin_unlock(&log->l_icloglock);
- 		if (sync)
- 			xlog_sync(log, iclog);
+--- a/fs/hfsplus/attributes.c
++++ b/fs/hfsplus/attributes.c
+@@ -291,6 +291,10 @@ static int __hfsplus_delete_attr(struct
+ 		return -ENOENT;
  	}
- 	return 0;
-+error:
-+	xfs_force_shutdown(mp, SHUTDOWN_LOG_IO_ERROR);
-+	return -EIO;
- }
  
- /*
--- 
-2.20.1
-
++	/* Avoid btree corruption */
++	hfs_bnode_read(fd->bnode, fd->search_key,
++			fd->keyoffset, fd->keylength);
++
+ 	err = hfs_brec_remove(fd);
+ 	if (err)
+ 		return err;
 
 
