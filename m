@@ -2,300 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00E1B4530
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282B31B4536
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgDVMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:30:58 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:5148 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725968AbgDVMa5 (ORCPT
+        id S1726629AbgDVMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:32:08 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:32179 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgDVMcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:30:57 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MCDDBb031151;
-        Wed, 22 Apr 2020 14:30:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=qZad2l1D8nuc7lEsIJFfNgK6NVli4mPy1LVt0pHWBsw=;
- b=fi0DbAuHy+8a0dBiQN3l0B/3REbkylQiCqS5hoSYoK6LjDhwEf2PtPF6mrpDVZcjve15
- IN9xdU0zkHCDwCAYvFrAz5UgfJI8Z+832WAFE0vsyrc/WlMvC3UjNEyUIsYV4ENqXDBN
- mH4OLHtbSGrmNyZzOwgyWjvb/XdsK/NwPEIQnhzOdLu+66hoRMJGcfWA9XH3M7BP8FA2
- Q6oxt5hf/LJYzdJijFy4GxGkvTwSV9izAhoR+Yhmu9fMWQTMVVaQH6pjtsgOtqxNEkRZ
- kWh9Ns92yTObeKbr8HNVw5kP7ojeLHl6nqu5+hyoNC7XL8kysDffsA0y4UAk4x0NkPfW lA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30fqaweauu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Apr 2020 14:30:52 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 179B810002A;
-        Wed, 22 Apr 2020 14:30:52 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 06F942AE6CC;
-        Wed, 22 Apr 2020 14:30:52 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
- 2020 14:30:51 +0200
-Subject: Re: [RFC 02/18] remoteproc: Introduce virtio device add/remove
- functions in core.
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <t@xps15>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20200416161331.7606-1-arnaud.pouliquen@st.com>
- <20200416161331.7606-3-arnaud.pouliquen@st.com>
- <20200421204102.GA17676@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <20b31a48-60f8-96eb-98b1-4da2bd350209@st.com>
-Date:   Wed, 22 Apr 2020 14:30:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 22 Apr 2020 08:32:05 -0400
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 03MCVdHu003393
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 21:31:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 03MCVdHu003393
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587558700;
+        bh=18U+KD98bGoEuR6HWpNpyNBYDarF4Eglb8nm1vLH1uM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A/dBfb+Rb7SEC0o38ZdVIvNh9O53R1nAOr2NDFimUJhc2fw8nXSDmyQr93f05iVTk
+         1D0xtjCWgI2MFdvuQ5TwOEXdDP6lugWik4CbefGpsT08VxCicuR/Sq20unpWZh4cIE
+         0NhkcPaqu/A75lJgNHJAhLorsOFCgQz1aYQjZM2yLfG0Kvriuks6D3k2TKp3QyL6un
+         jAy3KPoVwjmmnqpalQzOw2KGFRsaQc4wrjzyS5c/AjS2zA8u07muomseUbWyICqzRG
+         YBtO14Kyih5GgM7Z3njgZUHhANlwdH0Y+0f46bhepJojQjRJ0pHAwqHxF5jDPZjMuI
+         H7HsnjRftqWUQ==
+X-Nifty-SrcIP: [209.85.222.47]
+Received: by mail-ua1-f47.google.com with SMTP id g10so1373129uae.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 05:31:40 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZlkHvosQTbLDd75vE+eCBKzMiLmnB4Rjuaj3ZhTu9oQ5nh041D
+        /VbIcSYbsUU81va2SWtGzOAywSZ/+YsjDosBLb8=
+X-Google-Smtp-Source: APiQypJ9exjhakXg2Zd4w+0mothFVo9SiU5pXO0nEEgqwxxyrfeuZ5MkvXiVsJT67jzlS06HguNuPV3c6AbphmaUeKo=
+X-Received: by 2002:a67:e94d:: with SMTP id p13mr16329166vso.215.1587558699066;
+ Wed, 22 Apr 2020 05:31:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200421204102.GA17676@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-22_03:2020-04-22,2020-04-22 signatures=0
+References: <20200419191958.208600-1-masahiroy@kernel.org> <CAMuHMdXmJ3gfYzubQRbN6Bx0A=p8TodidmoeaZkJVtYjhDcQnw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXmJ3gfYzubQRbN6Bx0A=p8TodidmoeaZkJVtYjhDcQnw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 22 Apr 2020 21:30:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ+3Jgf9sNUju3gTJvvRxUn6bM1r1A6j9HCTNmeOWXFzQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ+3Jgf9sNUju3gTJvvRxUn6bM1r1A6j9HCTNmeOWXFzQ@mail.gmail.com>
+Subject: Re: [PATCH v4] ARM: decompressor: simplify libfdt builds
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
+On Wed, Apr 22, 2020 at 4:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Yamada-san, Kees, Russell,
+>
+> -CC RMK's patch system
+> +CC lakml
+>
+> On Sun, Apr 19, 2020 at 9:26 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > Copying source files during the build time may not end up with
+> > as clean code as expected.
+> >
+> > lib/fdt*.c simply wrap scripts/dtc/libfdt/fdt*.c, and it works
+> > nicely. Let's follow this approach for the arm decompressor, too.
+> >
+> > Add four wrappers, arch/arm/boot/compressed/fdt*.c and remove
+> > the Makefile messes. Another nice thing is we no longer need to
+> > maintain the own libfdt_env.h because the decompressor can include
+> > <linux/libfdt_env.h>.
+> >
+> > There is a subtle problem when generated files are turned into
+> > check-in files.
+> >
+> > When you are doing a rebuild of an existing object tree with O=
+> > option, there exists stale "shipped" copies that the old Makefile
+> > implementation created. The build system ends up with compiling the
+> > stale generated files because Make searches for prerequisites in the
+> > current directory, i.e. $(objtree) first, and then the directory
+> > listed in VPATH, i.e. $(srctree).
+> >
+> > To mend this issue, I added the following code:
+> >
+> >   ifdef building_out_of_srctree
+> >   $(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
+> >   endif
+> >
+> > This will need to stay for a while because "git bisect" crossing this
+> > commit, otherwise, would result in a build error.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> This is now commit 365a6327cd643eed ("ARM: 8968/1: decompressor:
+> simplify libfdt builds") in arm/for-next.
+>
+> In light of reworking "[PATCH v5] ARM: boot: Obtain start of physical
+> memory from DTB"[1] on top of this, which would conditionally add
+> another source file to libfdt_objs, I have a few questions.
+>
+> > --- a/arch/arm/boot/compressed/Makefile
+> > +++ b/arch/arm/boot/compressed/Makefile
+> > @@ -76,29 +76,31 @@ compress-$(CONFIG_KERNEL_LZMA) = lzma
+> >  compress-$(CONFIG_KERNEL_XZ)   = xzkern
+> >  compress-$(CONFIG_KERNEL_LZ4)  = lz4
+> >
+> > -# Borrowed libfdt files for the ATAG compatibility mode
+> > -
+> > -libfdt         := fdt_rw.c fdt_ro.c fdt_wip.c fdt.c
+> > -libfdt_hdrs    := fdt.h libfdt.h libfdt_internal.h
+> > -
+> > -libfdt_objs    := $(addsuffix .o, $(basename $(libfdt)))
+> > +ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+> > +libfdt_objs = fdt_rw.o fdt_ro.o fdt_wip.o fdt.o atags_to_fdt.o
+> >
+>
+> I guess the code below can be moved out of the ifeq block, as it doesn't
+> really do anything if CONFIG_ARM_ATAG_DTB_COMPAT=n, and $(libfdt_objs)
+> becomes empty?
+> If not, I think I'll have to add a new Kconfig symbol ARM_BOOT_LIBFDT,
+> to be selected by ARM_ATAG_DTB_COMPAT and USE_OF.
 
-On 4/21/20 10:41 PM, Mathieu Poirier wrote:
-> Hey Arnaud,
-> 
-> I have started to review this set. Comments will come in over the next few days
-> and I will be sure to let you know when I'm done.
 
-Take as much time you need, there is already a lot in your pipe.
-This RFC could be probably split into a few series, but i preferred to keep all
-together to have a whole picture. Aim of this RFC is to open the discussion on
-the restructuring of the rproc_virtio and the use of components to synchronize child devices.
 
-Thanks!
+Right. We can narrow the ifeq block.
+I did not know your on-going work.
 
-Arnaud 
 
-> 
-> On Thu, Apr 16, 2020 at 06:13:15PM +0200, Arnaud Pouliquen wrote:
->> In preparation of the migration of the management of rvdev in
->> rproc_virtio, this patch spins off new functions to manage the
->> virtio device.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->>  drivers/remoteproc/remoteproc_core.c | 149 +++++++++++++++------------
->>  1 file changed, 83 insertions(+), 66 deletions(-)
->>
->> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->> index 2a0425ab82a7..5c90d569c0f7 100644
->> --- a/drivers/remoteproc/remoteproc_core.c
->> +++ b/drivers/remoteproc/remoteproc_core.c
->> @@ -441,6 +441,86 @@ static void rproc_rvdev_release(struct device *dev)
->>  	kfree(rvdev);
->>  }
->>  
->> +static int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
->> +{
->> +	struct rproc *rproc = rvdev->rproc;
->> +	struct fw_rsc_vdev *rsc = rvdev->rsc;
->> +	char name[16];
->> +	int ret, i;
->> +
->> +	/* Initialise vdev subdevice */
->> +	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
->> +	rvdev->dev.parent = &rproc->dev;
->> +	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
->> +	rvdev->dev.release = rproc_rvdev_release;
->> +	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
->> +	dev_set_drvdata(&rvdev->dev, rvdev);
->> +
->> +	ret = device_register(&rvdev->dev);
->> +	if (ret) {
->> +		put_device(&rvdev->dev);
->> +		return ret;
->> +	}
->> +	/* Make device dma capable by inheriting from parent's capabilities */
->> +	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
->> +
->> +	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
->> +					   dma_get_mask(rproc->dev.parent));
->> +	if (ret) {
->> +		dev_warn(&rvdev->dev,
->> +			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
->> +			 dma_get_mask(rproc->dev.parent), ret);
->> +	}
->> +
->> +	/* parse the vrings */
->> +	for (i = 0; i < rsc->num_of_vrings; i++) {
->> +		ret = rproc_parse_vring(rvdev, rsc, i);
->> +		if (ret)
->> +			goto free_rvdev;
->> +	}
->> +
->> +	/* allocate the vring resources */
->> +	for (i = 0; i < rsc->num_of_vrings; i++) {
->> +		ret = rproc_alloc_vring(rvdev, i);
->> +		if (ret)
->> +			goto free_vg;
-> 
-> I don't get the "free_vg" part... At the moment this patch is only about
-> refactoring and as such I would encourage you to keep things the same as
-> much as possible.  It is certainly ok to make modifications but they should be
-> done in an incremental patch.  Otherwise reviewers needlessly have to scrutinize
-> the changes thinking there is something more to figure out.
-> 
->> +	}
->> +
->> +	rvdev->subdev.start = rproc_vdev_do_start;
->> +	rvdev->subdev.stop = rproc_vdev_do_stop;
->> +
->> +	rproc_add_subdev(rproc, &rvdev->subdev);
->> +
->> +	return 0;
->> +
->> +free_vg:
->> +	for (i--; i >= 0; i--) {
->> +		struct rproc_vring *rvring = &rvdev->vring[i];
->> +
->> +		rproc_free_vring(rvring);
->> +	}
->> +
->> +free_rvdev:
->> +	device_unregister(&rvdev->dev);
->> +
->> +	return ret;
->> +}
->> +
->> +static void rproc_rvdev_remove_device(struct rproc_vdev *rvdev)
->> +{
->> +	struct rproc *rproc = rvdev->rproc;
->> +	struct rproc_vring *rvring;
->> +	int id;
->> +
->> +	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
->> +		rvring = &rvdev->vring[id];
->> +		rproc_free_vring(rvring);
->> +	}
->> +
->> +	rproc_remove_subdev(rproc, &rvdev->subdev);
->> +	device_unregister(&rvdev->dev);
->> +}
->> +
->>  /**
->>   * rproc_handle_vdev() - handle a vdev fw resource
->>   * @rproc: the remote processor
->> @@ -473,8 +553,6 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->>  {
->>  	struct device *dev = &rproc->dev;
->>  	struct rproc_vdev *rvdev;
->> -	int i, ret;
->> -	char name[16];
->>  
->>  	/* make sure resource isn't truncated */
->>  	if (struct_size(rsc, vring, rsc->num_of_vrings) + rsc->config_len >
->> @@ -505,83 +583,22 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->>  	kref_init(&rvdev->refcount);
->>  
->>  	rvdev->rsc = rsc;
->> +	rvdev->rsc_offset = offset;
->>  	rvdev->id = rsc->id;
->>  	rvdev->rproc = rproc;
->>  	rvdev->index = rproc->nb_vdev++;
->>  
->> -	/* Initialise vdev subdevice */
->> -	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
->> -	rvdev->dev.parent = rproc->dev.parent;
->> -	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
->> -	rvdev->dev.release = rproc_rvdev_release;
->> -	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
->> -	dev_set_drvdata(&rvdev->dev, rvdev);
->> -
->> -	ret = device_register(&rvdev->dev);
->> -	if (ret) {
->> -		put_device(&rvdev->dev);
->> -		return ret;
->> -	}
->> -	/* Make device dma capable by inheriting from parent's capabilities */
->> -	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
->> -
->> -	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
->> -					   dma_get_mask(rproc->dev.parent));
->> -	if (ret) {
->> -		dev_warn(dev,
->> -			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
->> -			 dma_get_mask(rproc->dev.parent), ret);
->> -	}
->> -
->> -	/* parse the vrings */
->> -	for (i = 0; i < rsc->num_of_vrings; i++) {
->> -		ret = rproc_parse_vring(rvdev, rsc, i);
->> -		if (ret)
->> -			goto free_rvdev;
->> -	}
->> -
->> -	/* remember the resource offset*/
->> -	rvdev->rsc_offset = offset;
->> -
->> -	/* allocate the vring resources */
->> -	for (i = 0; i < rsc->num_of_vrings; i++) {
->> -		ret = rproc_alloc_vring(rvdev, i);
->> -		if (ret)
->> -			goto unwind_vring_allocations;
->> -	}
->> -
->>  	list_add_tail(&rvdev->node, &rproc->rvdevs);
->>  
->> -	rvdev->subdev.start = rproc_vdev_do_start;
->> -	rvdev->subdev.stop = rproc_vdev_do_stop;
->> -
->> -	rproc_add_subdev(rproc, &rvdev->subdev);
->> -
->> -	return 0;
->> -
->> -unwind_vring_allocations:
->> -	for (i--; i >= 0; i--)
->> -		rproc_free_vring(&rvdev->vring[i]);
->> -free_rvdev:
->> -	device_unregister(&rvdev->dev);
->> -	return ret;
->> +	return rproc_rvdev_add_device(rvdev);
->>  }
->>  
->>  void rproc_vdev_release(struct kref *ref)
->>  {
->>  	struct rproc_vdev *rvdev = container_of(ref, struct rproc_vdev, refcount);
->> -	struct rproc_vring *rvring;
->> -	struct rproc *rproc = rvdev->rproc;
->> -	int id;
->> -
->> -	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
->> -		rvring = &rvdev->vring[id];
->> -		rproc_free_vring(rvring);
->> -	}
->>  
->> -	rproc_remove_subdev(rproc, &rvdev->subdev);
->> +	rproc_rvdev_remove_device(rvdev);
-> 
-> At this time I don't see how introducing rproc_rvdev_remore_device() is
-> advantageous.  Maybe I'll find an answer as I review upcoming patches...
-> 
-> Thanks,
-> Mathieu 
-> 
->>  	list_del(&rvdev->node);
->> -	device_unregister(&rvdev->dev);
->>  }
->>  
->>  /**
->> -- 
->> 2.17.1
->>
+If I had known your work adding one more file here,
+I would have written this part as follows:
+
+
+------------------------------>8----------------------------------
+libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
+
+ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+OBJS += $(libfdt_objs) atags_to_fdt.o
+endif
+
+# -fstack-protector-strong triggers protection checks in this code,
+# but it is being used too early to link to meaningful stack_chk logic.
+nossp-flags-$(CONFIG_CC_HAS_STACKPROTECTOR_NONE) := -fno-stack-protector
+$(foreach o, $(libfdt_objs) atags_to_fdt.o, \
+$(eval CFLAGS_$(o) := -I $(srctree)/scripts/dtc/libfdt $(nossp-flags-y)))
+
+# These were previously generated C files. When you are building the kernel
+# with O=, make sure to remove the stale files in the output tree. Otherwise,
+# the build system wrongly compiles the stale ones.
+ifdef building_out_of_srctree
+$(shell rm -f $(addprefix $(obj)/, fdt_rw.c fdt_ro.c fdt_wip.c fdt.c))
+endif
+-------------------------------------->8-----------------------------
+
+
+
+
+So, how shall we move forward?
+
+Leave the necessary Makefile change to Geert?
+
+If Geert and Russell want to replace my patch,
+I can send v5 with the code above.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
