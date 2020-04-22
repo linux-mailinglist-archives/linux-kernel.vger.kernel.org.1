@@ -2,165 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE021B4B23
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8681B4B19
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgDVQ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:57:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41474 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgDVQ5r (ORCPT
+        id S1726776AbgDVQ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgDVQ50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:57:47 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MGmbre004744;
-        Wed, 22 Apr 2020 16:56:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=LFL7+e4rirW/BkUxDvX7Q/JJpL0GDaD2BXrkYZ/Jcqw=;
- b=MYqyVkvMM2l3bcO0sT1OP4Def5zhIfw/QdGlifi1bpsPSISeIps2HlN6swempAZOHxXU
- Xuwr7UsHf04EjB4t+Bx9Iryi2BwAf30Z4vB0a0cmU9iZJLT2BhOnDAlxqqp8uH5BLXmm
- yLz0SYoMr3BnkdKC1onkAb1OOYCfyVsD6yoveKI8U5apJsHviWgi1LC2od6TwBZfhW1s
- 8mVD64RprsPOCCsEabcXnkybmZn0gbNZlHNE3QhzDHsievUxgYz9ZV/pJVdke7G4VMta
- Pr6NAwDyxeSmgA9PCwLd2+I+VrpMva1Va6GkzI8Go+hHrYfD6lzFVPuAQgtNlWxdAUD9 1w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30grpgrh3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 16:56:25 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MGmInv111640;
-        Wed, 22 Apr 2020 16:56:24 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30gb1jxhcr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 16:56:24 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03MGu7au024097;
-        Wed, 22 Apr 2020 16:56:07 GMT
-Received: from [192.168.2.157] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Apr 2020 09:56:07 -0700
-Subject: Re: [PATCH v3 3/4] hugetlbfs: remove hugetlb_add_hstate() warning for
- existing hstate
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S.Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Longpeng <longpeng2@huawei.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200417185049.275845-1-mike.kravetz@oracle.com>
- <20200417185049.275845-4-mike.kravetz@oracle.com>
- <87blnj4x9p.fsf@linux.ibm.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <d39a33da-6095-c616-6bff-6af8795922d1@oracle.com>
-Date:   Wed, 22 Apr 2020 09:56:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 22 Apr 2020 12:57:26 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A7CC03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:57:26 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h11so1160535plr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LA63jnfhhhDCyX7Fu0cdpcXti3GWsmdF3pn/l4YJ88c=;
+        b=StViLItM3IVtkPnVbWVLQjAKCHxIZQegI1rtlUPycFWJL89AP8nxjL6hirDcS+pXRz
+         rW0LQla7jZvBhEaQEouwe6lHacxYUA4kkYLrUWEYKm7lPruPLWIEP2DEbzCA6h+XS39Q
+         47VfIhdoYLPL/RXx7PbBoWqx48FGT0SudNTcIjAiplCTTINuJFXAFbg+cC2l3VSK15Dq
+         vv4250KTXIwHKtVEO0uqE3LNXkhfW7lcjPs4kwfxBAox9WzlZTT3Y80hnmuZ9GNPPJAe
+         1D/wtSmiKwZahqacvNfmYRSvWS7diZm+4NGGX1bgP/CYP93G+VG7rl4B5PuYhRN5IFp3
+         ZqQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LA63jnfhhhDCyX7Fu0cdpcXti3GWsmdF3pn/l4YJ88c=;
+        b=BGPlu62vxXz6RPY1LJtGF6fFSBEtEHyyd71mIh3FdkbIZPjFCnnpntQREhyDtbADjr
+         iQmjzCFZqYEEVXclnrzi1WYTnpOdsd95LsVaxkGgsskW322Ed8H4fgvH8gv6poW1BGZv
+         S5L6R6lbINFu2Qv+KrSVNOaSXzaC6R1ZvbGvn4KzR1IjnAUfBxcqulSrQEBtR+ydu/vB
+         UmhrF25S3mxBAEfhmRcC0epFoCKGsXmEIOseSrXbI06QXCEKXaBI4a1Gt6zT8Po22cZ7
+         9yq0AIqDEuzt6G1o8AHihWQZ+Tpb0rCA8Xzphwgmc4478ZTGQkVtWumXBrB7Gt4IjsNF
+         Q5qw==
+X-Gm-Message-State: AGi0PuYPf/AS9hPjAGsv680NSRMdolfFfXt9dsZW4+pyEdQEvthbmO2B
+        G+asgfuQbrcHQPZA0rs7Wx8ZRQ==
+X-Google-Smtp-Source: APiQypJrAPHYm3pFKDOryB0qSlR2qS4ej4IFKk7cli/N7z1Gq6cJ+cvck8r8p0iidKtU2dULeEJx/A==
+X-Received: by 2002:a17:902:76c1:: with SMTP id j1mr4790699plt.79.1587574645684;
+        Wed, 22 Apr 2020 09:57:25 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id s22sm3938pfd.51.2020.04.22.09.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 09:57:25 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 10:57:23 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [RFC 02/18] remoteproc: Introduce virtio device add/remove
+ functions in core.
+Message-ID: <20200422165723.GA9283@xps15>
+References: <20200416161331.7606-1-arnaud.pouliquen@st.com>
+ <20200416161331.7606-3-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
-In-Reply-To: <87blnj4x9p.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004220126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 clxscore=1011
- malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004220126
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416161331.7606-3-arnaud.pouliquen@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/20 3:42 AM, Aneesh Kumar K.V wrote:
-> Mike Kravetz <mike.kravetz@oracle.com> writes:
+This morning I'm attempting to take a fresh look at this set...
+
+On Thu, Apr 16, 2020 at 06:13:15PM +0200, Arnaud Pouliquen wrote:
+> In preparation of the migration of the management of rvdev in
+> rproc_virtio, this patch spins off new functions to manage the
+> virtio device.
 > 
->> The routine hugetlb_add_hstate prints a warning if the hstate already
->> exists.  This was originally done as part of kernel command line
->> parsing.  If 'hugepagesz=' was specified more than once, the warning
->> 	pr_warn("hugepagesz= specified twice, ignoring\n");
->> would be printed.
->>
->> Some architectures want to enable all huge page sizes.  They would
->> call hugetlb_add_hstate for all supported sizes.  However, this was
->> done after command line processing and as a result hstates could have
->> already been created for some sizes.  To make sure no warning were
->> printed, there would often be code like:
->> 	if (!size_to_hstate(size)
->> 		hugetlb_add_hstate(ilog2(size) - PAGE_SHIFT)
->>
->> The only time we want to print the warning is as the result of command
->> line processing.
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 149 +++++++++++++++------------
+>  1 file changed, 83 insertions(+), 66 deletions(-)
 > 
-> Does this patch break hugepages=x command line? I haven't tested this
-> yet. But one of the details w.r.t. skipping that hugetlb_add_hstate is
-> to make sure we can configure the max_huge_pages. 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 2a0425ab82a7..5c90d569c0f7 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -441,6 +441,86 @@ static void rproc_rvdev_release(struct device *dev)
+>  	kfree(rvdev);
+>  }
+>  
+> +static int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
+> +{
+> +	struct rproc *rproc = rvdev->rproc;
+> +	struct fw_rsc_vdev *rsc = rvdev->rsc;
+> +	char name[16];
+> +	int ret, i;
+> +
+> +	/* Initialise vdev subdevice */
+> +	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+> +	rvdev->dev.parent = &rproc->dev;
+> +	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
+> +	rvdev->dev.release = rproc_rvdev_release;
+> +	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+> +	dev_set_drvdata(&rvdev->dev, rvdev);
+> +
+> +	ret = device_register(&rvdev->dev);
+> +	if (ret) {
+> +		put_device(&rvdev->dev);
+> +		return ret;
+> +	}
+> +	/* Make device dma capable by inheriting from parent's capabilities */
+> +	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+> +
+> +	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
+> +					   dma_get_mask(rproc->dev.parent));
+> +	if (ret) {
+> +		dev_warn(&rvdev->dev,
+> +			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
+> +			 dma_get_mask(rproc->dev.parent), ret);
+> +	}
+> +
+> +	/* parse the vrings */
+> +	for (i = 0; i < rsc->num_of_vrings; i++) {
+> +		ret = rproc_parse_vring(rvdev, rsc, i);
+> +		if (ret)
+> +			goto free_rvdev;
+> +	}
+> +
+> +	/* allocate the vring resources */
+> +	for (i = 0; i < rsc->num_of_vrings; i++) {
+> +		ret = rproc_alloc_vring(rvdev, i);
+> +		if (ret)
+> +			goto free_vg;
+> +	}
+> +
+> +	rvdev->subdev.start = rproc_vdev_do_start;
+> +	rvdev->subdev.stop = rproc_vdev_do_stop;
+> +
+> +	rproc_add_subdev(rproc, &rvdev->subdev);
+> +
+> +	return 0;
+> +
+> +free_vg:
+> +	for (i--; i >= 0; i--) {
+> +		struct rproc_vring *rvring = &rvdev->vring[i];
+> +
+> +		rproc_free_vring(rvring);
+> +	}
+> +
+> +free_rvdev:
+> +	device_unregister(&rvdev->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void rproc_rvdev_remove_device(struct rproc_vdev *rvdev)
+> +{
+> +	struct rproc *rproc = rvdev->rproc;
+> +	struct rproc_vring *rvring;
+> +	int id;
+> +
+> +	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
+> +		rvring = &rvdev->vring[id];
+> +		rproc_free_vring(rvring);
+> +	}
+> +
+> +	rproc_remove_subdev(rproc, &rvdev->subdev);
+> +	device_unregister(&rvdev->dev);
+> +}
+> +
+>  /**
+>   * rproc_handle_vdev() - handle a vdev fw resource
+>   * @rproc: the remote processor
+> @@ -473,8 +553,6 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  {
+>  	struct device *dev = &rproc->dev;
+>  	struct rproc_vdev *rvdev;
+> -	int i, ret;
+> -	char name[16];
+>  
+>  	/* make sure resource isn't truncated */
+>  	if (struct_size(rsc, vring, rsc->num_of_vrings) + rsc->config_len >
+> @@ -505,83 +583,22 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  	kref_init(&rvdev->refcount);
+>  
+>  	rvdev->rsc = rsc;
+> +	rvdev->rsc_offset = offset;
+>  	rvdev->id = rsc->id;
+>  	rvdev->rproc = rproc;
+>  	rvdev->index = rproc->nb_vdev++;
+>  
+> -	/* Initialise vdev subdevice */
+> -	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+> -	rvdev->dev.parent = rproc->dev.parent;
+> -	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
+> -	rvdev->dev.release = rproc_rvdev_release;
+> -	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+> -	dev_set_drvdata(&rvdev->dev, rvdev);
+> -
+> -	ret = device_register(&rvdev->dev);
+> -	if (ret) {
+> -		put_device(&rvdev->dev);
+> -		return ret;
+> -	}
+> -	/* Make device dma capable by inheriting from parent's capabilities */
+> -	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+> -
+> -	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
+> -					   dma_get_mask(rproc->dev.parent));
+> -	if (ret) {
+> -		dev_warn(dev,
+> -			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
+> -			 dma_get_mask(rproc->dev.parent), ret);
+> -	}
+> -
+> -	/* parse the vrings */
+> -	for (i = 0; i < rsc->num_of_vrings; i++) {
+> -		ret = rproc_parse_vring(rvdev, rsc, i);
+> -		if (ret)
+> -			goto free_rvdev;
+> -	}
+> -
+> -	/* remember the resource offset*/
+> -	rvdev->rsc_offset = offset;
+> -
+> -	/* allocate the vring resources */
+> -	for (i = 0; i < rsc->num_of_vrings; i++) {
+> -		ret = rproc_alloc_vring(rvdev, i);
+> -		if (ret)
+> -			goto unwind_vring_allocations;
+> -	}
+> -
+>  	list_add_tail(&rvdev->node, &rproc->rvdevs);
+
+This should go in rproc_rvdev_add_device()
+
+>  
+> -	rvdev->subdev.start = rproc_vdev_do_start;
+> -	rvdev->subdev.stop = rproc_vdev_do_stop;
+> -
+> -	rproc_add_subdev(rproc, &rvdev->subdev);
+> -
+> -	return 0;
+> -
+> -unwind_vring_allocations:
+> -	for (i--; i >= 0; i--)
+> -		rproc_free_vring(&rvdev->vring[i]);
+> -free_rvdev:
+> -	device_unregister(&rvdev->dev);
+> -	return ret;
+> +	return rproc_rvdev_add_device(rvdev);
+>  }
+>  
+>  void rproc_vdev_release(struct kref *ref)
+>  {
+>  	struct rproc_vdev *rvdev = container_of(ref, struct rproc_vdev, refcount);
+> -	struct rproc_vring *rvring;
+> -	struct rproc *rproc = rvdev->rproc;
+> -	int id;
+> -
+> -	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
+> -		rvring = &rvdev->vring[id];
+> -		rproc_free_vring(rvring);
+> -	}
+>  
+> -	rproc_remove_subdev(rproc, &rvdev->subdev);
+> +	rproc_rvdev_remove_device(rvdev);
+>  	list_del(&rvdev->node);
+> -	device_unregister(&rvdev->dev);
+
+Keep this function intact, rename it rproc_rvdev_remove_device() to balance out
+rproc_rvdev_add_device() and modify rproc_resource_cleanup() to reflect the
+change.  I suppose we have nothing to loose since rproc_handle_vdev() and
+rproc_vdev_release(), from a syntactic point of view, didn't balance each other
+out.
+
+>  }
+>  
+>  /**
+> -- 
+> 2.17.1
 > 
-
-Are you asking about hugepages=x being the only option on the command line?
-If so, then the behavior is not changed.  This will result in x pages of
-default huge page size being allocated.  Where default huge page size is of
-course architecture dependent.  On an x86 VM,
-
-[    0.040474] Kernel command line: BOOT_IMAGE=/vmlinuz-5.6.0-mm1+ root=/dev/mapper/fedora_new--host-root ro rd.lvm.lv=fedora_new-host/root rd.lvm.lv=fedora_new-host/swap console=tty0 console=ttyS0,115200 audit=0 transparent_hugepage=always hugepages=128
-[    0.332618] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
-[    0.333245] HugeTLB registered 2.00 MiB page size, pre-allocated 128 pages
-
-BTW - Here are the command line options I tested on x86 with this series.
-
-No errors or warnings
----------------------
-hugepages=128
-hugepagesz=2M hugepages=128
-default_hugepagesz=2M hugepages=128
-hugepages=128 default_hugepagesz=2M
-hugepagesz=1G hugepages=2
-hugepages=2 default_hugepagesz=1G
-default_hugepagesz=1G hugepages=2
-hugepages=128 hugepagesz=1G hugepages=2
-hugepagesz=1G hugepages=2 hugepagesz=2M hugepages=128
-default_hugepagesz=2M hugepages=128 hugepagesz=1G hugepages=2
-hugepages=128 default_hugepagesz=2M hugepagesz=1G hugepages=2
-hugepages=2 default_hugepagesz=1G hugepagesz=2M hugepages=128
-default_hugepagesz=1G hugepages=2 hugepagesz=2M hugepages=128
-default_hugepagesz=2M hugepagesz=2M hugepages=128
-default_hugepagesz=2M hugepagesz=1G hugepages=2 hugepagesz=2M hugepages=128
-
-Error or warning
-----------------
-hugepages=128 hugepagesz=2M hugepages=256
-hugepagesz=2M hugepages=128 hugepagesz=2M hugepages=256
-default_hugepagesz=2M hugepages=128 hugepagesz=2M hugepages=256
-hugepages=128 hugepages=256
-hugepagesz=2M hugepages=128 hugepages=2 default_hugepagesz=1G
-
--- 
-Mike Kravetz
