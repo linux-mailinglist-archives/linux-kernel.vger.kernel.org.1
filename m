@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEBE1B3E6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF77F1B3BE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbgDVK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37248 "EHLO mail.kernel.org"
+        id S1725895AbgDVKAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:00:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730418AbgDVK17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:27:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726590AbgDVKAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:03 -0400
+Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52F8B2098B;
-        Wed, 22 Apr 2020 10:27:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CF0320776;
+        Wed, 22 Apr 2020 10:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551278;
-        bh=aLEexzmvFjZs+xrFTUh+Epi0eEaW4BXGZTMzypmLQtI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHORauBwY+mujz8ddtLXagAuv0A2wo3ugRAGcf4l9gyDW0LXj/tT1zVJ+nWv3cn3+
-         dAU+pZCUw/pHBVIbb8XfsqiilZphMXxCXm3lQ/IpQs1o2vggyEni3RK8YeXY2p6F/7
-         ZrTqCSmbvCgGoBDgj5z2p+Nl88je9wm8t8pxdhZs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH 5.6 166/166] bpf, test_verifier: switch bpf_get_stacks 0 s> r8 test
-Date:   Wed, 22 Apr 2020 11:58:13 +0200
-Message-Id: <20200422095106.153738046@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1587549602;
+        bh=fTbTECVBN+Kz09FDYc7YbldgvRd8WnH3neoB4D6wj34=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=CyXnhtVQc/tjmkDRIYakYjCI5CAGw3rGlNL21QcC8sdhycajuvegJUEGK6GEUDnEz
+         te+rOS0eVTHZKW4ZCrTH3neUWbLJqt2rMAOOmJGQvCrt1ID0sBcQxwAZPtGxFb6+1t
+         LEZr/4pkNDHM8aSZQ3K75+O1a+/FaU4LRlcqPAy8=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200414193616.1368209-2-aford173@gmail.com>
+References: <20200414193616.1368209-1-aford173@gmail.com> <20200414193616.1368209-2-aford173@gmail.com>
+Subject: Re: [PATCH 2/3] clk: vc5: Enable addition output configurations of the Versaclock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     aford@beaconembedded.com, charles.stevens@logicpd.com,
+        Adam Ford <aford173@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Date:   Wed, 22 Apr 2020 03:00:01 -0700
+Message-ID: <158754960123.132238.9912757167863379129@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+Quoting Adam Ford (2020-04-14 12:36:15)
+> @@ -865,6 +904,77 @@ static int vc5_probe(struct i2c_client *client,
+>                                 init.name);
+>                         goto err_clk;
+>                 }
+> +
+> +               /* Fetch Clock Output configuration from DT (if specified=
+) */
+> +               child_name =3D kasprintf(GFP_KERNEL, "OUT%d", n);
+> +               np_output =3D of_get_child_by_name(client->dev.of_node, c=
+hild_name);
+> +               kfree(child_name);
+> +               if (!np_output)
+> +                       continue;
+> +               if (!(ret || of_property_read_u32(np_output,
+> +                       "idt,mode", &value))) {
+> +                       vc5->clk_out[n].clk_output_cfg0_mask |=3D VC5_CLK=
+_OUTPUT_CFG0_CFG_MASK;
+> +                       switch (value) {
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_LVPECL:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_CMOS:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_HCSL33:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_LVDS:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_CMOS2:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_CMOSD:
+> +                       case VC5_CLK_OUTPUT_CFG0_CFG_HCSL25:
+> +                               vc5->clk_out[n].clk_output_cfg0 |=3D valu=
+e << VC5_CLK_OUTPUT_CFG0_CFG_SHIFT;
+> +                               break;
+> +                       default:
+> +                               ret =3D -EINVAL;
+> +                               break;
+> +                       }
+> +               }
 
-[ no upstream commit ]
+Can these three things be functions that are called and passed a
+vc5->clk_out[n] pointer? Then the code would be something like=20
 
-Switch the comparison, so that is_branch_taken() will recognize that below
-branch is never taken:
-
-  [...]
-  17: [...] R1_w=inv0 [...] R8_w=inv(id=0,smin_value=-2147483648,smax_value=-1,umin_value=18446744071562067968,var_off=(0xffffffff80000000; 0x7fffffff)) [...]
-  17: (67) r8 <<= 32
-  18: [...] R8_w=inv(id=0,smax_value=-4294967296,umin_value=9223372036854775808,umax_value=18446744069414584320,var_off=(0x8000000000000000; 0x7fffffff00000000)) [...]
-  18: (c7) r8 s>>= 32
-  19: [...] R8_w=inv(id=0,smin_value=-2147483648,smax_value=-1,umin_value=18446744071562067968,var_off=(0xffffffff80000000; 0x7fffffff)) [...]
-  19: (6d) if r1 s> r8 goto pc+16
-  [...] R1_w=inv0 [...] R8_w=inv(id=0,smin_value=-2147483648,smax_value=-1,umin_value=18446744071562067968,var_off=(0xffffffff80000000; 0x7fffffff)) [...]
-  [...]
-
-Currently we check for is_branch_taken() only if either K is source, or source
-is a scalar value that is const. For upstream it would be good to extend this
-properly to check whether dst is const and src not.
-
-For the sake of the test_verifier, it is probably not needed here:
-
-  # ./test_verifier 101
-  #101/p bpf_get_stack return R0 within range OK
-  Summary: 1 PASSED, 0 SKIPPED, 0 FAILED
-
-I haven't seen this issue in test_progs* though, they are passing fine:
-
-  # ./test_progs-no_alu32 -t get_stack
-  Switching to flavor 'no_alu32' subdirectory...
-  #20 get_stack_raw_tp:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-  # ./test_progs -t get_stack
-  #20 get_stack_raw_tp:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/testing/selftests/bpf/verifier/bpf_get_stack.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/tools/testing/selftests/bpf/verifier/bpf_get_stack.c
-+++ b/tools/testing/selftests/bpf/verifier/bpf_get_stack.c
-@@ -19,7 +19,7 @@
- 	BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
- 	BPF_ALU64_IMM(BPF_LSH, BPF_REG_8, 32),
- 	BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 32),
--	BPF_JMP_REG(BPF_JSGT, BPF_REG_1, BPF_REG_8, 16),
-+	BPF_JMP_REG(BPF_JSLT, BPF_REG_8, BPF_REG_1, 16),
- 	BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
- 	BPF_MOV64_REG(BPF_REG_2, BPF_REG_7),
- 	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_8),
+ ret =3D prop1_parse_and_update(vc5->clk_out[n]);
+ if (ret)
+ 	goto err_clk;
+ ret =3D prop2_parse_and_update(...)
+ if (ret)
+ 	goto err_clk;
 
 
+> +               if (!(ret || of_property_read_u32(np_output,
+> +                       "idt,voltage-microvolts", &value))) {
+> +                       vc5->clk_out[n].clk_output_cfg0_mask |=3D VC5_CLK=
+_OUTPUT_CFG0_PWR_MASK;
+> diff --git a/include/dt-bindings/clk/versaclock.h b/include/dt-bindings/c=
+lk/versaclock.h
+> new file mode 100644
+> index 000000000000..30add3488713
+> --- /dev/null
+> +++ b/include/dt-bindings/clk/versaclock.h
+> @@ -0,0 +1,13 @@
+> +/* HEADER */
+
+Any SPDX license for this in place of HEADER?
+
+> +
+> +/* This file defines field values used by the versaclock 6 family
+> + * for defining output type
+> + */
+> +
+> +#define VC5_LVPECL     0
+> +#define VC5_CMOS       1
+> +#define VC5_HCSL33     2
+> +#define VC5_LVDS       3
+> +#define VC5_CMOS2      4
+> +#define VC5_CMOSD      5
+> +#define VC5_HCSL25     6
