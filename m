@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B2F1B420E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB4B1B3F6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgDVKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
+        id S1731408AbgDVKhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgDVKEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:40 -0400
+        id S1729610AbgDVKW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B3FF20776;
-        Wed, 22 Apr 2020 10:04:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E67C2076B;
+        Wed, 22 Apr 2020 10:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549880;
-        bh=xfVhNM3DhhQiAXNyN86zX53Kbc4sf7pftZqBgdUJKVM=;
+        s=default; t=1587550931;
+        bh=PVXL39a8G9cSFLZbfkP7Np2QJO/Y1QW8+3ErBrGVbnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qBHXZ3w1qBkGhI/kjrSknQksPi7RS7YXTn8NnjXolejdFuR1VRawOZAOcVs8C9MdY
-         4PbCJMOfMt98wex7DaRMq8NKnrn1lTT1jBAGzGbvuv3ABYT51UppuKkp0cpf7fRdMz
-         voYWQvHP+CNPnt5/Uwtjt/UefE177i48bEUlbffk=
+        b=SGFLZ35YckpxJ94qH8LB7exPrJzqzl+K4FHKmfJhBIQ/i3Qrdh4DdFCu4bifRGGK6
+         jQ5vIMflpXGD9+40o3Zc5nLNTTE7upUp2MimX+HzU3XYUdPt1sBEOvJFQhrWGhH9s6
+         CLWRl0xMtzEKtQUrWeb7AykTLEHlLDVqqqqBrTso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, konrad.wilk@oracle.com,
-        dwmw@amazon.co.uk, bp@suse.de, srinivas.eeda@oracle.com,
-        peterz@infradead.org, hpa@zytor.com,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.9 043/125] x86/speculation: Remove redundant arch_smt_update() invocation
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>
+Subject: [PATCH 5.6 033/166] afs: Fix rename operation status delivery
 Date:   Wed, 22 Apr 2020 11:56:00 +0200
-Message-Id: <20200422095040.483696912@linuxfoundation.org>
+Message-Id: <20200422095052.366136259@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +42,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@oracle.com>
+From: David Howells <dhowells@redhat.com>
 
-commit 34d66caf251df91ff27b24a3a786810d29989eca upstream.
+commit b98f0ec91c42d87a70da42726b852ac8d78a3257 upstream.
 
-With commit a74cfffb03b7 ("x86/speculation: Rework SMT state change"),
-arch_smt_update() is invoked from each individual CPU hotplug function.
+The afs_deliver_fs_rename() and yfs_deliver_fs_rename() functions both only
+decode the second file status returned unless the parent directories are
+different - unfortunately, this means that the xdr pointer isn't advanced
+and the volsync record will be read incorrectly in such an instance.
 
-Therefore the extra arch_smt_update() call in the sysfs SMT control is
-redundant.
+Fix this by always decoding the second status into the second
+status/callback block which wasn't being used if the dirs were the same.
 
-Fixes: a74cfffb03b7 ("x86/speculation: Rework SMT state change")
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: <konrad.wilk@oracle.com>
-Cc: <dwmw@amazon.co.uk>
-Cc: <bp@suse.de>
-Cc: <srinivas.eeda@oracle.com>
-Cc: <peterz@infradead.org>
-Cc: <hpa@zytor.com>
-Link: https://lkml.kernel.org/r/e2e064f2-e8ef-42ca-bf4f-76b612964752@default
-Cc: Guenter Roeck <linux@roeck-us.net>
+The afs_update_dentry_version() calls that update the directory data
+version numbers on the dentries can then unconditionally use the second
+status record as this will always reflect the state of the destination dir
+(the two records will be identical if the destination dir is the same as
+the source dir)
+
+Fixes: 260a980317da ("[AFS]: Add "directory write" support.")
+Fixes: 30062bd13e36 ("afs: Implement YFS support in the fs client")
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/cpu.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/afs/dir.c       |   13 +++----------
+ fs/afs/fsclient.c  |   12 ++++++------
+ fs/afs/yfsclient.c |    8 +++-----
+ 3 files changed, 12 insertions(+), 21 deletions(-)
 
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -2027,10 +2027,8 @@ int cpuhp_smt_disable(enum cpuhp_smt_con
- 		 */
- 		cpuhp_offline_cpu_device(cpu);
- 	}
--	if (!ret) {
-+	if (!ret)
- 		cpu_smt_control = ctrlval;
--		arch_smt_update();
--	}
- 	cpu_maps_update_done();
- 	return ret;
- }
-@@ -2041,7 +2039,6 @@ int cpuhp_smt_enable(void)
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -1892,7 +1892,6 @@ static int afs_rename(struct inode *old_
+ 	if (afs_begin_vnode_operation(&fc, orig_dvnode, key, true)) {
+ 		afs_dataversion_t orig_data_version;
+ 		afs_dataversion_t new_data_version;
+-		struct afs_status_cb *new_scb = &scb[1];
  
- 	cpu_maps_update_begin();
- 	cpu_smt_control = CPU_SMT_ENABLED;
--	arch_smt_update();
- 	for_each_present_cpu(cpu) {
- 		/* Skip online CPUs and CPUs on offline nodes */
- 		if (cpu_online(cpu) || !node_online(cpu_to_node(cpu)))
+ 		orig_data_version = orig_dvnode->status.data_version + 1;
+ 
+@@ -1904,7 +1903,6 @@ static int afs_rename(struct inode *old_
+ 			new_data_version = new_dvnode->status.data_version + 1;
+ 		} else {
+ 			new_data_version = orig_data_version;
+-			new_scb = &scb[0];
+ 		}
+ 
+ 		while (afs_select_fileserver(&fc)) {
+@@ -1912,7 +1910,7 @@ static int afs_rename(struct inode *old_
+ 			fc.cb_break_2 = afs_calc_vnode_cb_break(new_dvnode);
+ 			afs_fs_rename(&fc, old_dentry->d_name.name,
+ 				      new_dvnode, new_dentry->d_name.name,
+-				      &scb[0], new_scb);
++				      &scb[0], &scb[1]);
+ 		}
+ 
+ 		afs_vnode_commit_status(&fc, orig_dvnode, fc.cb_break,
+@@ -1957,13 +1955,8 @@ static int afs_rename(struct inode *old_
+ 		 * Note that if we ever implement RENAME_EXCHANGE, we'll have
+ 		 * to update both dentries with opposing dir versions.
+ 		 */
+-		if (new_dvnode != orig_dvnode) {
+-			afs_update_dentry_version(&fc, old_dentry, &scb[1]);
+-			afs_update_dentry_version(&fc, new_dentry, &scb[1]);
+-		} else {
+-			afs_update_dentry_version(&fc, old_dentry, &scb[0]);
+-			afs_update_dentry_version(&fc, new_dentry, &scb[0]);
+-		}
++		afs_update_dentry_version(&fc, old_dentry, &scb[1]);
++		afs_update_dentry_version(&fc, new_dentry, &scb[1]);
+ 		d_move(old_dentry, new_dentry);
+ 		goto error_tmp;
+ 	}
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -986,16 +986,16 @@ static int afs_deliver_fs_rename(struct
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* unmarshall the reply once we've received all of it */
++	/* If the two dirs are the same, we have two copies of the same status
++	 * report, so we just decode it twice.
++	 */
+ 	bp = call->buffer;
+ 	ret = xdr_decode_AFSFetchStatus(&bp, call, call->out_dir_scb);
+ 	if (ret < 0)
+ 		return ret;
+-	if (call->out_dir_scb != call->out_scb) {
+-		ret = xdr_decode_AFSFetchStatus(&bp, call, call->out_scb);
+-		if (ret < 0)
+-			return ret;
+-	}
++	ret = xdr_decode_AFSFetchStatus(&bp, call, call->out_scb);
++	if (ret < 0)
++		return ret;
+ 	xdr_decode_AFSVolSync(&bp, call->out_volsync);
+ 
+ 	_leave(" = 0 [done]");
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -1157,11 +1157,9 @@ static int yfs_deliver_fs_rename(struct
+ 	ret = xdr_decode_YFSFetchStatus(&bp, call, call->out_dir_scb);
+ 	if (ret < 0)
+ 		return ret;
+-	if (call->out_dir_scb != call->out_scb) {
+-		ret = xdr_decode_YFSFetchStatus(&bp, call, call->out_scb);
+-		if (ret < 0)
+-			return ret;
+-	}
++	ret = xdr_decode_YFSFetchStatus(&bp, call, call->out_scb);
++	if (ret < 0)
++		return ret;
+ 
+ 	xdr_decode_YFSVolSync(&bp, call->out_volsync);
+ 	_leave(" = 0 [done]");
 
 
