@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CDE1B4C94
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4C71B4CA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgDVSVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 14:21:53 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.196]:11807 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725839AbgDVSVw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 14:21:52 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 0582A281C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:21:51 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id RK0MjOtUF1s2xRK0Mj14es; Wed, 22 Apr 2020 13:21:51 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=lXe4aUduGFa5N9eQSWfHXoHr+JUqKxsXu9a5PcuZH4E=; b=ud8YNCYHC5HVEqiEUTTQp++F9L
-        IktpKplFcXA4zu7xNOBQMVrbNxWoKsiGYwgmBWsnw4Jt6KVgGaNBDUMm28q7DPtAdnAQlefPfRzr/
-        6cxl0PdBwK6A/inUZd0QFbOtAiXyrGmi2f/oZE7mkqZRzDD7r5FdHZAVCRuXbwPTxSuPKx7Vv85tc
-        JdxsXEis4eY/EbYfS1zMlG0xF4XH5ZueXX3aeecBtoXTxHVfBoNFyhi8PzZE1t78qJvRMoLYo6h92
-        pSByIT5Aoi6w6lI/2M+iRMj6J1oHDgtHN4PvBa7dL9vjs30M/IBsEdBNT3OJZeiN9BHaAuGzsR6mA
-        plxbuF2g==;
-Received: from [201.162.241.217] (port=27065 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jRK0M-0045wf-Kl; Wed, 22 Apr 2020 13:21:50 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: remaining flexible-array conversions
-Message-ID: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
-Date:   Wed, 22 Apr 2020 13:26:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726448AbgDVS1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 14:27:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725648AbgDVS1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 14:27:24 -0400
+Received: from Mani-XPS-13-9360 (unknown [157.46.59.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F28802098B;
+        Wed, 22 Apr 2020 18:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587580043;
+        bh=aX7ErMuTRR6KxWw7n67/xp1KzVfow6ube4HmuPuKO0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KUomHkfmo3+5bmLFETG93ObUl5KqABnNCzS/TOFpYf7ErUDdk5JyhpWWCxI2b3MW2
+         AHaquTr297uPb89AdGe3+onWMQxTO5Xh8mFj2rGGvNh+UNsOT+AL633dVF1qp6Fejd
+         +mP0vHTYslEPPuLVL5uJWr2vCHk6/+VM1W8Kg98c=
+Date:   Wed, 22 Apr 2020 23:57:15 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     jic23@kernel.org
+Cc:     Rob Herring <robh@kernel.org>, narcisaanamaria12@gmail.com,
+        knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com
+Subject: Re: [RESEND PATCH v3 1/3] dt-bindings: iio: chemical: Add binding
+ for CCS811 VOC sensor
+Message-ID: <20200422182715.GA27920@Mani-XPS-13-9360>
+References: <20200414184930.5576-1-mani@kernel.org>
+ <20200414184930.5576-2-mani@kernel.org>
+ <20200420211111.GA754@bogus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.217
-X-Source-L: No
-X-Exim-ID: 1jRK0M-0045wf-Kl
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.217]:27065
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420211111.GA754@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Apr 20, 2020 at 04:11:11PM -0500, Rob Herring wrote:
+> On Wed, Apr 15, 2020 at 12:19:28AM +0530, mani@kernel.org wrote:
+> > From: Manivannan Sadhasivam <mani@kernel.org>
+> > 
+> > This commit adds devicetree binding for AMS CCS811 VOC sensor.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> > ---
+> >  .../bindings/iio/chemical/ams,ccs811.yaml     | 51 +++++++++++++++++++
+> >  1 file changed, 51 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> > new file mode 100644
+> > index 000000000000..5cb068666a3e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> > @@ -0,0 +1,51 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/chemical/ams,ccs811.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: AMS CCS811 VOC Sensor
+> > +
+> > +maintainers:
+> > +  - Narcisa Vasile <narcisaanamaria12@gmail.com>
+> > +
+> > +description: |
+> > +  Ultra-Low Power Digital Gas Sensor for Monitoring Indoor Air Quality.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ams,ccs811
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  reset-gpios:
+> > +    description: GPIO connected to the nRESET line. This is an active low
+> > +                 input to CCS811.
+> > +    maxItems: 1
+> > +
+> > +  wakeup-gpios:
+> > +    description: GPIO connected to the nWAKE line. This is an active low
+> > +                 input to CCS811.
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> 
+> Add:
+> 
+> additionalProperties: false
+> 
 
-Just wanted to ask you if you would agree on pulling the remaining
-flexible-array conversions all at once, after they bake for a couple
-of weeks in linux-next[1]
+Hi Jonathan,
 
-This is not a disruptive change and there are no code generation
-differences. So, I think it would make better use of everyone's time
-if you pull this treewide patch[2] from my tree (after sending you a
-proper pull-request, of course) sometime in the next couple of weeks.
+Do you want me to spin another series or you can add it while applying?
 
-Notice that the treewide patch I mention here has been successfully
-built (on top of v5.7-rc1) for multiple architectures (arm, arm64,
-sparc, powerpc, ia64, s390, i386, nios2, c6x, xtensa, openrisc, mips,
-parisc, x86_64, riscv, sh, sparc64) and 82 different configurations
-with the help of the 0-day CI guys[3].
+Thanks,
+Mani
 
-What do you think?
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=d496496793ff69c4a6b1262a0001eb5cd0a56544
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=for-next/kspp&id=d783301058f3d3605f9ad34f0192692ef572d663
-[3] https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/kernel-ci/kspp-fam0-20200420.md
-
-Thanks
---
-Gustavo
+> With that,
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
