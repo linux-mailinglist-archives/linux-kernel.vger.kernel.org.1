@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4051B3FD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B877E1B3FFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731198AbgDVKlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57214 "EHLO mail.kernel.org"
+        id S1731588AbgDVKmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730091AbgDVKUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:20:30 -0400
+        id S1730113AbgDVKUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:20:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 657472098B;
-        Wed, 22 Apr 2020 10:20:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 527C820882;
+        Wed, 22 Apr 2020 10:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550829;
-        bh=z8g8OdfadhKw32Sk4wBRsKxWdO7/BnY8Qy81U8Uxue4=;
+        s=default; t=1587550834;
+        bh=MxfZqwYuTbJQqXM8IFaFiD9upgymHdyWQGEkNliFGuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kuhxtKWMX/3GERoy9iyou3U4DDwjHUSLJV+YXQ2WFNO9mUJQ5XoAIv+Hb9uNfMN8P
-         jJ2c7bjtgRriOXjrugbHXv5Wyg6RHXJx9ixuFMbpWeLPdhywPzhZiD6CPRqLXfjuNV
-         POnTDuOf2OOu+PU8eXxK9BGygc+Oi8vyL3creXU0=
+        b=UHoP9hzxTIE/Uyw64b+CkHjQn9zwQTa1hzO8bPKIItmGZszNPipDsUPrXhU6yS4VP
+         xQXqEj9z42Y1xKk3rStu/nTZBjFwrLwVDnwdWR1QbHqkATKVJAAUjlkPeVM5Gtl7JG
+         rkDfuPFD+kac0vGz5H78EkL9k6rnMIMlOUH/74jI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.4 110/118] mtd: spinand: Explicitly use MTD_OPS_RAW to write the bad block marker to OOB
-Date:   Wed, 22 Apr 2020 11:57:51 +0200
-Message-Id: <20200422095049.001390567@linuxfoundation.org>
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 5.4 111/118] docs: Fix path to MTD command line partition parser
+Date:   Wed, 22 Apr 2020 11:57:52 +0200
+Message-Id: <20200422095049.135454091@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
 References: <20200422095031.522502705@linuxfoundation.org>
@@ -45,38 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+From: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-commit 621a7b780bd8b7054647d53d5071961f2c9e0873 upstream.
+commit fb2511247dc4061fd122d0195838278a4a0b7b59 upstream.
 
-When writing the bad block marker to the OOB area the access mode
-should be set to MTD_OPS_RAW as it is done for reading the marker.
-Currently this only works because req.mode is initialized to
-MTD_OPS_PLACE_OOB (0) and spinand_write_to_cache_op() checks for
-req.mode != MTD_OPS_AUTO_OOB.
+cmdlinepart.c has been moved to drivers/mtd/parsers/.
 
-Fix this by explicitly setting req.mode to MTD_OPS_RAW.
-
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200218100432.32433-3-frieder.schrempf@kontron.de
+Fixes: a3f12a35c91d ("mtd: parsers: Move CMDLINE parser")
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/spi/core.c |    1 +
- 1 file changed, 1 insertion(+)
+ Documentation/admin-guide/kernel-parameters.txt |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -609,6 +609,7 @@ static int spinand_markbad(struct nand_d
- 		.ooboffs = 0,
- 		.ooblen = sizeof(marker),
- 		.oobbuf.out = marker,
-+		.mode = MTD_OPS_RAW,
- 	};
- 	int ret;
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2741,7 +2741,7 @@
+ 			<name>,<region-number>[,<base>,<size>,<buswidth>,<altbuswidth>]
  
+ 	mtdparts=	[MTD]
+-			See drivers/mtd/cmdlinepart.c.
++			See drivers/mtd/parsers/cmdlinepart.c
+ 
+ 	multitce=off	[PPC]  This parameter disables the use of the pSeries
+ 			firmware feature for updating multiple TCE entries
 
 
