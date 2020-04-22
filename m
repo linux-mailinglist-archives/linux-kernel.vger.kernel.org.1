@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31FD1B3E01
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13B21B412A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730022AbgDVKXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:23:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59688 "EHLO mail.kernel.org"
+        id S1731996AbgDVKuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730302AbgDVKXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:17 -0400
+        id S1729300AbgDVKMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:12:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CFD72076B;
-        Wed, 22 Apr 2020 10:23:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0EE12070B;
+        Wed, 22 Apr 2020 10:12:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550997;
-        bh=UCBTEmjPwfYxedLpiloHCMhgXUjd7KM5HX10MVfS7vk=;
+        s=default; t=1587550327;
+        bh=FJ5gKHUKWaL00/Yg14OCF+bnaMFYnd2VPJmO5ZS6rt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OoImiid6NkLZFI1ToVJqUZvH4/JIgbWU7R0DohuW9RrhQWPwiPU7PQ8cD6iCrf61V
-         BXfBfgGPCTW1A6KTnbCrhN+OYfGWPb/XN9GiA4BxnVAuiiWm6dI6Qxdz4HxLKjJcQV
-         SSX+ZnsDsB2SZduPJLkvcoIV8HHW9tqxOdBhSXPQ=
+        b=eUdaiFoul6XLZg4SAbv4yUn4lmcUxpGTLVHd0cZyd9u91m/44RimKFNpLLScJsqFj
+         AKSCI3Mafgmhw2vMK+/aVDET1wg9ERp/bEUzc6/xXw/LSfUE8sP5BHWDTr3nhXMg9J
+         o71I41QjVpqj/aHzUGcmloZpqA/XWjC6e/cx3Y/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 058/166] arm64: dts: allwinner: a64: Fix display clock register range
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 4.14 059/199] KVM: s390: vsie: Fix delivery of addressing exceptions
 Date:   Wed, 22 Apr 2020 11:56:25 +0200
-Message-Id: <20200422095055.101757354@linuxfoundation.org>
+Message-Id: <20200422095104.163280364@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 3e9a1a8b7f811de3eb1445d72f68766b704ad17c ]
+commit 4d4cee96fb7a3cc53702a9be8299bf525be4ee98 upstream.
 
-Register range of display clocks is 0x10000, as it can be seen from
-DE2 documentation.
+Whenever we get an -EFAULT, we failed to read in guest 2 physical
+address space. Such addressing exceptions are reported via a program
+intercept to the nested hypervisor.
 
-Fix it.
+We faked the intercept, we have to return to guest 2. Instead, right
+now we would be returning -EFAULT from the intercept handler, eventually
+crashing the VM.
+the correct thing to do is to return 1 as rc == 1 is the internal
+representation of "we have to go back into g2".
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Fixes: 2c796fc8f5dbd ("arm64: dts: allwinner: a64: add necessary device tree nodes for DE2 CCU")
-[wens@csie.org: added fixes tag]
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Addressing exceptions can only happen if the g2->g3 page tables
+reference invalid g2 addresses (say, either a table or the final page is
+not accessible - so something that basically never happens in sane
+environments.
+
+Identified by manual code inspection.
+
+Fixes: a3508fbe9dc6 ("KVM: s390: vsie: initial support for nested virtualization")
+Cc: <stable@vger.kernel.org> # v4.8+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200403153050.20569-3-david@redhat.com
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+[borntraeger@de.ibm.com: fix patch description]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kvm/vsie.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 862b47dc9dc90..baa6f08dc1087 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -264,7 +264,7 @@
- 
- 			display_clocks: clock@0 {
- 				compatible = "allwinner,sun50i-a64-de2-clk";
--				reg = <0x0 0x100000>;
-+				reg = <0x0 0x10000>;
- 				clocks = <&ccu CLK_BUS_DE>,
- 					 <&ccu CLK_DE>;
- 				clock-names = "bus",
--- 
-2.20.1
-
+--- a/arch/s390/kvm/vsie.c
++++ b/arch/s390/kvm/vsie.c
+@@ -1027,6 +1027,7 @@ static int vsie_run(struct kvm_vcpu *vcp
+ 		scb_s->iprcc = PGM_ADDRESSING;
+ 		scb_s->pgmilc = 4;
+ 		scb_s->gpsw.addr = __rewind_psw(scb_s->gpsw, 4);
++		rc = 1;
+ 	}
+ 	return rc;
+ }
 
 
