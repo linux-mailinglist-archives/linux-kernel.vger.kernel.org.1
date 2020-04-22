@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8A11B360A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4498D1B35F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgDVEOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725811AbgDVEOF (ORCPT
+        id S1726057AbgDVELU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:11:20 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58539 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725808AbgDVELT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:14:05 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51645C061BD3;
-        Tue, 21 Apr 2020 21:14:04 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id x1so797608ejd.8;
-        Tue, 21 Apr 2020 21:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kg2icj+XoK5z32K73+Ky/IwpjRd8JDVLbZ4vK1dpblg=;
-        b=fKfmdlAjjmK8jg1eJvSvHV5q0/GDlVU5mgiBSkk2siru0FaCsYR7TDzluj28w2ykYI
-         rBtotEP8Ybp+ikkyTDdYtDCF5749niE/qGwtj7Wi0vOQVDqDPabTDvaqObBHZBCaH2sz
-         kD5P+o+VjEcB3y1ohRM4KTR85lwz8xggeIkarMzqnXwHOgeTh3ixzF3PHC4AjvS3QNbs
-         glErE9umhqdySH8MsjfA91MnzebjY144oQOJ2IghEXix0p16bfMwYMrrA8H0mXxoOIwm
-         r2TuQf4Xg9iMpQojz5tUPRuWc/16xIRNbzSQK71IoO6We8SFpqtnib4UW18zYRoUGQ4C
-         AvyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kg2icj+XoK5z32K73+Ky/IwpjRd8JDVLbZ4vK1dpblg=;
-        b=c3tBE1BnmgK1IfiWE4JQesm8lDqeZDiGZCjnO8gUrnTnCv1UXsqd9hTOanml4uWvPS
-         krJt7WpExkR85fvEAaeCOQqfPVyUjy2yPOSPimP+FtBrvscy9LOkoKfRwv750JiqUDem
-         s8DDnG1EKDGgCEJO+TuxCnBfyXne3d+aj7Hs6NAZqvS7HgQDxkMzvdX8Fm9ZkwPbXkXR
-         oQZ17klMQJdyeePzEOebax1y3zVs6lNwB9wKfG8IGSrBfgQczmelfY+YPU80Qek8qTGB
-         pKc9zKUmuPlQWIyxU9s53G6BmKc2oYssZv7HiYIbUwHmnQvhWhBqefyfgUVysvu6+qYM
-         ckLg==
-X-Gm-Message-State: AGi0PubIi9yfmR84LhTRaS6sq2PI8DJDmXHfF4CtBTggPWbL92vAKV3g
-        WlThLl+Pgk4oRXfGMdaE8G4hYWr3Yy/Gc8goWUU=
-X-Google-Smtp-Source: APiQypI6WXkmtEDcEn4hoI80i3yEhHGQE8peJzOKcK0eRX/He4uM5ZDaJo/shg3UcGKBmW0Dnwh6M7vluM08gr+QaLE=
-X-Received: by 2002:a17:906:548:: with SMTP id k8mr23639280eja.259.1587528842861;
- Tue, 21 Apr 2020 21:14:02 -0700 (PDT)
+        Wed, 22 Apr 2020 00:11:19 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4CB7D5C011D;
+        Wed, 22 Apr 2020 00:11:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 22 Apr 2020 00:11:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=F1dj2Jw3YDEgFV7WpVHDIIKM8X
+        ojVODpM5ZQVusEuJM=; b=MXYvLLEwShFV7Dm5T/etH8ddYFj7Rzkh6OZFhNMgCq
+        LVC7aVazTJhWfaIWGrgE4yyMA+cZEH9GO5xiBQmVYcBGbJNONh37rwp7edlihMnV
+        AGnZaycj22wMsimVKiNBN2GJQp/cVOy0FR/p2XFg9IIzMytq3wPvTW9HMu/6yLVd
+        0yI7b6DDnSjyoe/NyegEOpLaCE4PvFAHfqyD2yGtY4odM6dYmcl2bX2xXwc7v7IC
+        9p03Ypw+dKZ3Wiwg274J+je4nZ16f5Mh69iJE0aDjT3wSJ0YCBlk2KZO/XVT8ND3
+        /NySffPG2VvjNa925/VSnokPHri0gkofc3pdAWb/IhzQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=F1dj2Jw3YDEgFV7Wp
+        VHDIIKM8XojVODpM5ZQVusEuJM=; b=I6/lLaf6mN8ViDw9W6zmLNRPTP2Q7dBzW
+        O6vE0TjGDKeXifaidQVvkcn/gNr7l72X7Cp2Q2UDGScoLbfeqAMdaJz0ys+5VIMM
+        NA2jL0SKpSJZM4UDH9IMdsshomiOt3+MzsdNDOZnBxjmvaENaMZrE8+Sl7enDaJi
+        Js+gYZ3N7x0A7jtfRL45077iLACz+ZKOpE4s8oH6SXwcIKntcR8xpNB0KSVbwgBy
+        pdVW228l5Hn7hxjy8hW3yBqBYu84bYws9Rpjm6/+1IY7LJeo3+NcXQIK8lmcLtiQ
+        yiP8sw8qdmprHy8I4mCM5T7vcNR0MTdSdWl5i/s4ZSOgBYtCDxgqw==
+X-ME-Sender: <xms:5cOfXjAJUL0XNAkUOsRMfHSSZYhZmCVEDnDBIMCoZJtvm6MzklxdDA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeeigdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppeejtd
+    drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:5cOfXl32P132cVkl3p8G-YSPyd-dNlCGnZEITP4g0bN8QSoRbpxCFg>
+    <xmx:5cOfXhV9Tv7UVJ6_TU_WEwAEdP5It6mnWG5rTjxSu_cAKR6gjVenmg>
+    <xmx:5cOfXnm_uym1zKcNPPvObexA2m2AMC2QiS3txZa94y2myED_qTCbgA>
+    <xmx:5sOfXiYwIMKOhNpq-bw3eff8wf1T5dUZUrDfKhLjgow9PquBK5NoJw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4FE5A3065CBF;
+        Wed, 22 Apr 2020 00:11:17 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] arm64: dts: allwinner: a64: Disable SPDIF by default
+Date:   Tue, 21 Apr 2020 23:15:02 -0500
+Message-Id: <20200422041502.7497-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200421171552.28393-1-luke.r.nels@gmail.com> <6f1130b3-eaea-cc5e-716f-5d6be77101b9@zytor.com>
- <CAKU6vyb38-XcFeAiP7OW0j++0jS-J4gZP6S2E21dpQwvcEFpKQ@mail.gmail.com> <CAMzpN2hpwK00duVmrzuhDeZY+H7doJ+C-O6=SWrzy+KvAsupqw@mail.gmail.com>
-In-Reply-To: <CAMzpN2hpwK00duVmrzuhDeZY+H7doJ+C-O6=SWrzy+KvAsupqw@mail.gmail.com>
-From:   Xi Wang <xi.wang@gmail.com>
-Date:   Tue, 21 Apr 2020 21:13:26 -0700
-Message-ID: <CAKU6vybSa3vwxNcgG2oLmYcvYhaeFhtkJGLKT7Rg=24t7Ju0yg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf, x32: Fix invalid instruction in BPF_LDX zero-extension
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Wang YanQing <udknight@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 8:22 PM Brian Gerst <brgerst@gmail.com> wrote:
-> You should explain the reason it is invalid, ie. the instruction
-> encoding needs a 32-bit immediate but the current code only emits an
-> 8-bit immediate.
+As of v5.7-rc2, Linux now prints the following message at boot:
 
-Thanks!  Will do in v2.
+  [   33.848525] platform sound_spdif: deferred probe pending
+
+This is because &sound_spdif is waiting on its DAI link component
+&spdif to probe, but &spdif is disabled in the DTS. Disable the
+audio card as well to match.
+
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 6f8c30d89b9b..6c233ff031c6 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -169,6 +169,7 @@ link0_codec: codec {
+ 	sound_spdif {
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,name = "On-board SPDIF";
++		status = "disabled";
+ 
+ 		simple-audio-card,cpu {
+ 			sound-dai = <&spdif>;
+-- 
+2.24.1
+
