@@ -2,102 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924341B3953
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537871B3950
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgDVHsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726508AbgDVHsR (ORCPT
+        id S1726470AbgDVHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:48:06 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:36660 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbgDVHsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:48:17 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDABC03C1A7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:16 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id x16so1017856pgi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=D5tpZw1i2R58vBAfGzRizvOpwrXZg+TLaUwg0kTWWxs=;
-        b=mF3VO5nn+0V0WQZGmFq3OmpNmldsAk2V1nDaBzIyI98U3m+z30xNsWm1xn55GudLVa
-         BLmK/YMD0QTtBvyDFWXzwKMUAXEHQIShuIeY0+nuaJTK9eEbSu0v8KKrdlTIINma23/j
-         akbcVUKffaMDETqAqAc4CLHKWXqHiJMDxjec2FlqjyPNeiWRp8S11RpFvaKyEXXjPNrs
-         wDFuOY4hEYAM/SVPcK17AvOxhqIpls1/K1YFly2aAPU/0qLgiAH99BdZUEAOuplGMXwh
-         LduuaO1EWFJ29FBYwwmSEUiI8bQg+4oLtQfwB+cWByotugfWvPO+nNTZy1SVwPXsNP8q
-         7iUQ==
+        Wed, 22 Apr 2020 03:48:06 -0400
+Received: by mail-pf1-f195.google.com with SMTP id g30so671510pfr.3;
+        Wed, 22 Apr 2020 00:48:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=D5tpZw1i2R58vBAfGzRizvOpwrXZg+TLaUwg0kTWWxs=;
-        b=hvpW7xGD7ntVHxa6rnxQosqksZemRCY+SXIDOLfRCHDouS3mgYmgZgjvFpdDavvUms
-         hA1Z8tF8aMh3M/UyD2QeXlNe1Ykm1dVKz4e5otr5oSJMzLtEUqCWzJr3o3EigxhUn01/
-         7fryNsKYA1b8IeYCjCG1nnltB+w6UCHpnhCQ6AEpnDPIqXg414Z9zAop6B+2+rLXbE4Q
-         y7S34JKGmHBE5NuAG/SOWsQ3H4GpjQIH1r6JjwJDqnyGJsW5SNsgMaqWy27CtXUsqimB
-         yQGvR5i/XPAlrJ30+q5nAGdm2v7vbg9KC8zbWuviDRo57PNaMw8IuGf7Zshu1Vtgr4Xb
-         jw+A==
-X-Gm-Message-State: AGi0PubdZ3lw0ubrZ/1VtXB+9pUkupFxc6LR4w06HOfPJL/FNhd4uITz
-        0IByEvJevUK+0XND1UE9BR0Tge1M1raw
-X-Google-Smtp-Source: APiQypKEDsb2XJwyiTIKy+E9xSYQzRKrEnvVyggmLHtTzDA89Ky+xrOfIAX0h7HIsxrLf3S3mnnQ7j6Wf0AA
-X-Received: by 2002:a17:90a:24e7:: with SMTP id i94mr10482216pje.117.1587541695879;
- Wed, 22 Apr 2020 00:48:15 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 00:48:02 -0700
-In-Reply-To: <20200422074809.160248-1-irogers@google.com>
-Message-Id: <20200422074809.160248-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20200422074809.160248-1-irogers@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH 1/8] perf expr: unlimited escaped characters in a symbol
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+SMYq/4vJ74M0LfJtwun4BRKxfhWvtLo+wkfl9OYurc=;
+        b=aXiZj2rZEHQUVuS1IPtOwokWeWWRiskWQUgYfqeeF8bakjcUajCkH6RwRIMzjzFNXw
+         AvIfkFtHxgV3KLWzr0cXx0+U+o7atpgw40kGNFLCjqNWROrQdXM4sIBf/BHwdsT2Ymun
+         Cuk+K5FxNxnHVAHfN2nvI4uHAt6H5dUjzpsrJjW2ByTvpm1UDx5ZR3F1IIemSQH5S2mr
+         swCCIOAY3dkJhKdVxwL+0LC4KehjL4LmlAOyssagovXZ6gWA5xUN0pKxvHqoYunFFd7l
+         4DzHLjeYD02OB4YiG+pnROz01vkanXtGYUKf3B9r2ovAdO/4WFSv+/6Ci7R+4pqB++3y
+         JsmA==
+X-Gm-Message-State: AGi0PubOvXnSfmfOnPltDzmoH8XPU5yiK502xUeQeErw7pkL0d6wBozu
+        ilpbappA6Ru6AImLcSapfLA=
+X-Google-Smtp-Source: APiQypLRQPdTJrBV6I/vZtyxwxFN1GzQ0y7RzxhSMbXI2z5hooPeifS431qso2u8rbsgVBHwKEY4Bw==
+X-Received: by 2002:a63:6f07:: with SMTP id k7mr26600891pgc.274.1587541684638;
+        Wed, 22 Apr 2020 00:48:04 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id fh18sm16882435pjb.0.2020.04.22.00.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 00:48:03 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id D50C1402A1; Wed, 22 Apr 2020 07:48:02 +0000 (UTC)
+Date:   Wed, 22 Apr 2020 07:48:02 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 03/10] blktrace: fix debugfs use after free
+Message-ID: <20200422074802.GS11244@42.do-not-panic.com>
+References: <20200419194529.4872-1-mcgrof@kernel.org>
+ <20200419194529.4872-4-mcgrof@kernel.org>
+ <20200422072715.GC19116@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422072715.GC19116@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current expression allows 2 escaped '-,=' characters. However, some
-metrics require more, for example Haswell DRAM_BW_Use.
+On Wed, Apr 22, 2020 at 12:27:15AM -0700, Christoph Hellwig wrote:
+> On Sun, Apr 19, 2020 at 07:45:22PM +0000, Luis Chamberlain wrote:
+> > +{
+> > +	struct dentry *dir = NULL;
+> > +
+> > +	/* This can happen if we have a bug in the lower layers */
+> > +	dir = debugfs_lookup(kobject_name(q->kobj.parent), blk_debugfs_root);
+> > +	if (dir) {
+> > +		pr_warn("%s: registering request_queue debugfs directory twice is not allowed\n",
+> > +			kobject_name(q->kobj.parent));
+> > +		dput(dir);
+> > +		return -EALREADY;
+> > +	}
+> 
+> I don't see why we need this check.  If it is valueable enough we
+> should have a debugfs_create_dir_exclusive or so that retunrns an error
+> for an exsting directory, instead of reimplementing it in the caller in
+> a racy way.  But I'm not really sure we need it to start with.
 
-Fixes: 26226a97724d (perf expr: Move expr lexer to flex)
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/expr.l | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In short races, and even with synchronous request_queue removal I'm
+seeing the race is still possible, but that's due to some other races
+I'm going to chase down now.
 
-diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
-index 2582c2464938..95bcf3629edf 100644
---- a/tools/perf/util/expr.l
-+++ b/tools/perf/util/expr.l
-@@ -73,7 +73,7 @@ number		[0-9]+
- sch		[-,=]
- spec		\\{sch}
- sym		[0-9a-zA-Z_\.:@]+
--symbol		{spec}*{sym}*{spec}*{sym}*
-+symbol		({spec}|{sym})+
- 
- %%
- 	struct expr_scanner_ctx *sctx = expr_get_extra(yyscanner);
--- 
-2.26.2.303.gf8c07b1a785-goog
+The easier solution really is to just have a debugfs dir created for
+each partition if debugfs is enabled, this way the directory will
+always be there, and the lookups are gone.
 
+> > +
+> > +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
+> > +					    blk_debugfs_root);
+> > +	if (!q->debugfs_dir)
+> > +		return -ENOMEM;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +void blk_queue_debugfs_unregister(struct request_queue *q)
+> > +{
+> > +	debugfs_remove_recursive(q->debugfs_dir);
+> > +	q->debugfs_dir = NULL;
+> > +}
+> 
+> Which to me suggests we can just fold these two into the callers,
+> with an IS_ENABLED for the creation case given that we check for errors
+> and the stub will always return an error.
+
+Sorry not sure I follow this.
+
+> >  	debugfs_create_files(q->debugfs_dir, q, blk_mq_debugfs_queue_attrs);
+> >  
+> >  	/*
+> > @@ -856,9 +853,7 @@ void blk_mq_debugfs_register(struct request_queue *q)
+> >  
+> >  void blk_mq_debugfs_unregister(struct request_queue *q)
+> >  {
+> > -	debugfs_remove_recursive(q->debugfs_dir);
+> >  	q->sched_debugfs_dir = NULL;
+> > -	q->debugfs_dir = NULL;
+> >  }
+> 
+> This function is weird - the sched dir gets removed by the
+> debugfs_remove_recursive, so just leaving a function that clears
+> a pointer is rather odd.  In fact I don't think we need to clear
+> either sched_debugfs_dir or debugfs_dir anywhere.
+
+Indeed. Will clean it up.
+
+> > @@ -975,6 +976,14 @@ int blk_register_queue(struct gendisk *disk)
+> >  		goto unlock;
+> >  	}
+> >  
+> > +	ret = blk_queue_debugfs_register(q);
+> > +	if (ret) {
+> > +		blk_trace_remove_sysfs(dev);
+> > +		kobject_del(&q->kobj);
+> > +		kobject_put(&dev->kobj);
+> > +		goto unlock;
+> > +	}
+> > +
+> 
+> Please use a goto label to consolidate the common cleanup code.
+
+Sure.
+
+> Also I think these generic debugfs changes probably should be separate
+> to the blktrace changes.
+
+I'll try to do that.
+
+> >  static struct dentry *blk_trace_debugfs_dir(struct blk_user_trace_setup *buts,
+> > +					    struct request_queue *q,
+> >  					    struct blk_trace *bt)
+> >  {
+> >  	struct dentry *dir = NULL;
+> >  
+> > +	/* This can only happen if we have a bug on our lower layers */
+> > +	if (!q->kobj.parent) {
+> > +		pr_warn("%s: request_queue parent is gone\n", buts->name);
+> > +		return NULL;
+> > +	}
+> 
+> Why is this not simply a WARN_ON_ONCE()?
+
+I'll actually remove it and instead fix the race where it happens.
+
+> > +	if (blk_trace_target_disk(buts->name, kobject_name(q->kobj.parent))) {
+> > +		if (!q->debugfs_dir) {
+> > +			pr_warn("%s: expected request_queue debugfs_dir is not set\n",
+> > +				buts->name);
+> > +			return NULL;
+> > +		}
+> > +		/*
+> > +		 * debugfs_lookup() is used to ensure the directory is not
+> > +		 * taken from underneath us. We must dput() it later once
+> > +		 * done with it within blktrace.
+> > +		 */
+> > +		dir = debugfs_lookup(buts->name, blk_debugfs_root);
+> > +		if (!dir) {
+> > +			pr_warn("%s: expected request_queue debugfs_dir dentry is gone\n",
+> > +				buts->name);
+> > +			return NULL;
+> > +		}
+> > +		 /*
+> > +		 * This is a reaffirmation that debugfs_lookup() shall always
+> > +		 * return the same dentry if it was already set.
+> > +		 */
+> > +		if (dir != q->debugfs_dir) {
+> > +			dput(dir);
+> > +			pr_warn("%s: expected dentry dir != q->debugfs_dir\n",
+> > +				buts->name);
+> > +			return NULL;
+> > +		}
+> > +		bt->backing_dir = q->debugfs_dir;
+> > +		return bt->backing_dir;
+> > +	}
+> 
+> Even with the gigantic commit log I don't get the point of this
+> code.  It looks rather sketchy and I can't find a rationale for it.
+
+Yeah I think this is going to be much easier on the eyes with the
+revert to synchronous request_queue removal first.
+
+  Luis
