@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8471B3CBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0B21B3D88
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgDVKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33114 "EHLO mail.kernel.org"
+        id S1729697AbgDVKPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728640AbgDVKIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:07 -0400
+        id S1727881AbgDVKPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:15:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 489132076C;
-        Wed, 22 Apr 2020 10:08:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17DC120575;
+        Wed, 22 Apr 2020 10:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550086;
-        bh=S6wAKXdXmDJgv7u1+X6ARKowSlSQupWIYsmGHU1DPC0=;
+        s=default; t=1587550541;
+        bh=0ouXlNHJWvjkfuC2gmYfU3a8nAoZ49GTebh8z7Xu9Vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qeIpvu765E9U0SRHoDh81FuLn9r8aSsY8hah1G7Jzd/cxvXHe13x2qOniLutnuR6F
-         gIDNFgL3SzRGv1+L7J6W0nj4EXXND8S/gSi6JIXDrLn9t99iI1y8G5b5h2ElQS2lka
-         277vCGY2HmFLBXRn48Yix2USfsHUwYVLDhdNTSbc=
+        b=wQNfYVxu4RYggsU00ZeNBvaFzXCrJ4hubyJ3wzpWJoCF8ZUhhNPVMj5x6Y2kVRZ4m
+         W+IFmNIk3l/PizGvTAEkwjOUUhO3gSdlfAf+On2W5dg2JnarKaN39vIYcrLPX0Ogop
+         OEsNgrzynvlv0UrnSYpVLypKshLMRUMdWt3ggcqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 103/125] clk: at91: usb: continue if clk_hw_round_rate() return zero
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 4.19 16/64] lib/raid6: use vdupq_n_u8 to avoid endianness warnings
 Date:   Wed, 22 Apr 2020 11:57:00 +0200
-Message-Id: <20200422095049.604355084@linuxfoundation.org>
+Message-Id: <20200422095015.766450493@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +46,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: ndesaulniers@google.com <ndesaulniers@google.com>
 
-[ Upstream commit b0ecf1c6c6e82da4847900fad0272abfd014666d ]
+commit 1ad3935b39da78a403e7df7a3813f866c731bc64 upstream.
 
-clk_hw_round_rate() may call round rate function of its parents. In case
-of SAM9X60 two of USB parrents are PLLA and UPLL. These clocks are
-controlled by clk-sam9x60-pll.c driver. The round rate function for this
-driver is sam9x60_pll_round_rate() which call in turn
-sam9x60_pll_get_best_div_mul(). In case the requested rate is not in the
-proper range (rate < characteristics->output[0].min &&
-rate > characteristics->output[0].max) the sam9x60_pll_round_rate() will
-return a negative number to its caller (called by
-clk_core_round_rate_nolock()). clk_hw_round_rate() will return zero in
-case a negative number is returned by clk_core_round_rate_nolock(). With
-this, the USB clock will continue its rate computation even caller of
-clk_hw_round_rate() returned an error. With this, the USB clock on SAM9X60
-may not chose the best parent. I detected this after a suspend/resume
-cycle on SAM9X60.
+Clang warns: vector initializers are not compatible with NEON intrinsics
+in big endian mode [-Wnonportable-vector-initialization]
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Link: https://lkml.kernel.org/r/1579261009-4573-2-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While this is usually the case, it's not an issue for this case since
+we're initializing the uint8x16_t (16x uint8_t's) with the same value.
+
+Instead, use vdupq_n_u8 which both compilers lower into a single movi
+instruction: https://godbolt.org/z/vBrgzt
+
+This avoids the static storage for a constant value.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/214
+Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/at91/clk-usb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ lib/raid6/neon.uc            |    5 ++---
+ lib/raid6/recov_neon_inner.c |    7 ++-----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-usb.c b/drivers/clk/at91/clk-usb.c
-index 791770a563fcc..6fac6383d024e 100644
---- a/drivers/clk/at91/clk-usb.c
-+++ b/drivers/clk/at91/clk-usb.c
-@@ -78,6 +78,9 @@ static int at91sam9x5_clk_usb_determine_rate(struct clk_hw *hw,
- 			tmp_parent_rate = req->rate * div;
- 			tmp_parent_rate = clk_hw_round_rate(parent,
- 							   tmp_parent_rate);
-+			if (!tmp_parent_rate)
-+				continue;
-+
- 			tmp_rate = DIV_ROUND_CLOSEST(tmp_parent_rate, div);
- 			if (tmp_rate < req->rate)
- 				tmp_diff = req->rate - tmp_rate;
--- 
-2.20.1
-
+--- a/lib/raid6/neon.uc
++++ b/lib/raid6/neon.uc
+@@ -28,7 +28,6 @@
+ 
+ typedef uint8x16_t unative_t;
+ 
+-#define NBYTES(x) ((unative_t){x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x})
+ #define NSIZE	sizeof(unative_t)
+ 
+ /*
+@@ -61,7 +60,7 @@ void raid6_neon$#_gen_syndrome_real(int
+ 	int d, z, z0;
+ 
+ 	register unative_t wd$$, wq$$, wp$$, w1$$, w2$$;
+-	const unative_t x1d = NBYTES(0x1d);
++	const unative_t x1d = vdupq_n_u8(0x1d);
+ 
+ 	z0 = disks - 3;		/* Highest data disk */
+ 	p = dptr[z0+1];		/* XOR parity */
+@@ -92,7 +91,7 @@ void raid6_neon$#_xor_syndrome_real(int
+ 	int d, z, z0;
+ 
+ 	register unative_t wd$$, wq$$, wp$$, w1$$, w2$$;
+-	const unative_t x1d = NBYTES(0x1d);
++	const unative_t x1d = vdupq_n_u8(0x1d);
+ 
+ 	z0 = stop;		/* P/Q right side optimization */
+ 	p = dptr[disks-2];	/* XOR parity */
+--- a/lib/raid6/recov_neon_inner.c
++++ b/lib/raid6/recov_neon_inner.c
+@@ -10,11 +10,6 @@
+ 
+ #include <arm_neon.h>
+ 
+-static const uint8x16_t x0f = {
+-	0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+-	0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+-};
+-
+ #ifdef CONFIG_ARM
+ /*
+  * AArch32 does not provide this intrinsic natively because it does not
+@@ -41,6 +36,7 @@ void __raid6_2data_recov_neon(int bytes,
+ 	uint8x16_t pm1 = vld1q_u8(pbmul + 16);
+ 	uint8x16_t qm0 = vld1q_u8(qmul);
+ 	uint8x16_t qm1 = vld1q_u8(qmul + 16);
++	uint8x16_t x0f = vdupq_n_u8(0x0f);
+ 
+ 	/*
+ 	 * while ( bytes-- ) {
+@@ -87,6 +83,7 @@ void __raid6_datap_recov_neon(int bytes,
+ {
+ 	uint8x16_t qm0 = vld1q_u8(qmul);
+ 	uint8x16_t qm1 = vld1q_u8(qmul + 16);
++	uint8x16_t x0f = vdupq_n_u8(0x0f);
+ 
+ 	/*
+ 	 * while (bytes--) {
 
 
