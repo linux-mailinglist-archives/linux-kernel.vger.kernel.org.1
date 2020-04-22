@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D221B3F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2E71B3BE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729221AbgDVKjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
+        id S1726535AbgDVJ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 05:59:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729448AbgDVKVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:21:36 -0400
+        id S1725961AbgDVJ7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 05:59:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D49DB20882;
-        Wed, 22 Apr 2020 10:21:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8280C20735;
+        Wed, 22 Apr 2020 09:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550896;
-        bh=Y8KrPqTYg6EyHN8+4nfG36nHZ7JfVHBBJJRUstUqWxo=;
+        s=default; t=1587549585;
+        bh=/2XVAIVe8wVjZAqWWzOmKbk2XSQeGlcjzHmXAH4lmVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A9kYYHJfHRsKU2hcmdypXH/qB5iNk0Jutxm4ag5UCwdElHJG0UnHufkbZiWfCQbza
-         yA+HMc8he04+DuMKgIKJYnsSpOGPvCFRXGHzN6LyMNEUQoUSTsoNq2rVq+2NcDlS+C
-         Tatt6K0gVqSoMp2joSYzTKbABl1XLp8bvL1oWJlc=
+        b=o4GYhqJLpnJdMsUAbLg4lZbz6jWGtuyufkYNw0zIPPK+0/kp3jd2kl3OVnXTkhPih
+         hSWPG//Vp5zJ5uioNdCeJHElmr7xAQqX+E9rXeGs5ua5P/PZkKfLbcpenS7Nytz1wm
+         +Muj2YAAaIj+PKg7kfxfHERxBhqA0XV5hEcn2t1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 019/166] ALSA: hda: Dont release card at firmware loading error
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 016/100] ASoC: dpcm: allow start or stop during pause for backend
 Date:   Wed, 22 Apr 2020 11:55:46 +0200
-Message-Id: <20200422095050.507371801@linuxfoundation.org>
+Message-Id: <20200422095025.822200592@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: 이경택 <gt82.lee@samsung.com>
 
-commit 25faa4bd37c10f19e4b848b9032a17a3d44c6f09 upstream.
+commit 21fca8bdbb64df1297e8c65a746c4c9f4a689751 upstream.
 
-At the error path of the firmware loading error, the driver tries to
-release the card object and set NULL to drvdata.  This may be referred
-badly at the possible PM action, as the driver itself is still bound
-and the PM callbacks read the card object.
+soc_compr_trigger_fe() allows start or stop after pause_push.
+In dpcm_be_dai_trigger(), however, only pause_release is allowed
+command after pause_push.
+So, start or stop after pause in compress offload is always
+returned as error if the compress offload is used with dpcm.
+To fix the problem, SND_SOC_DPCM_STATE_PAUSED should be allowed
+for start or stop command.
 
-Instead, we continue the probing as if it were no option set.  This is
-often a better choice than the forced abort, too.
-
-Fixes: 5cb543dba986 ("ALSA: hda - Deferred probing with request_firmware_nowait()")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/004d01d607c1$7a3d5250$6eb7f6f0$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_intel.c |   19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ sound/soc/soc-pcm.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2031,24 +2031,15 @@ static void azx_firmware_cb(const struct
- {
- 	struct snd_card *card = context;
- 	struct azx *chip = card->private_data;
--	struct pci_dev *pci = chip->pci;
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1951,7 +1951,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+-			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
  
--	if (!fw) {
--		dev_err(card->dev, "Cannot load firmware, aborting\n");
--		goto error;
--	}
--
--	chip->fw = fw;
-+	if (fw)
-+		chip->fw = fw;
-+	else
-+		dev_err(card->dev, "Cannot load firmware, continue without patching\n");
- 	if (!chip->disabled) {
- 		/* continue probing */
--		if (azx_probe_continue(chip))
--			goto error;
-+		azx_probe_continue(chip);
- 	}
--	return; /* OK */
--
-- error:
--	snd_card_free(card);
--	pci_set_drvdata(pci, NULL);
- }
- #endif
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+@@ -1981,7 +1982,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+-			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
++			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
  
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
 
 
