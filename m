@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890C81B44F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD88F1B44DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgDVMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
+        id S1728664AbgDVMWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728344AbgDVMRa (ORCPT
+        by vger.kernel.org with ESMTP id S1728537AbgDVMRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:17:30 -0400
+        Wed, 22 Apr 2020 08:17:32 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B0BC03C1AC;
-        Wed, 22 Apr 2020 05:17:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C34C03C1A8;
+        Wed, 22 Apr 2020 05:17:32 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jREJY-0007fP-JG; Wed, 22 Apr 2020 14:17:16 +0200
+        id 1jREJb-0007fV-UF; Wed, 22 Apr 2020 14:17:20 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1298C1C02FC;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 83D221C0451;
         Wed, 22 Apr 2020 14:17:16 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 12:17:15 -0000
+Date:   Wed, 22 Apr 2020 12:17:16 -0000
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf machine: Remove the indent in
- resolve_lbr_callchain_sample
+Subject: [tip: perf/core] perf header: Support CPU PMU capabilities
 Cc:     Kan Liang <kan.liang@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -41,12 +41,11 @@ Cc:     Kan Liang <kan.liang@linux.intel.com>,
         Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
         Stephane Eranian <eranian@google.com>,
         Vitaly Slobodskoy <vitaly.slobodskoy@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200319202517.23423-6-kan.liang@linux.intel.com>
-References: <20200319202517.23423-6-kan.liang@linux.intel.com>
+In-Reply-To: <20200319202517.23423-3-kan.liang@linux.intel.com>
+References: <20200319202517.23423-3-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <158755783560.28353.6964819556320935379.tip-bot2@tip-bot2>
+Message-ID: <158755783614.28353.6122206762974510726.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -62,44 +61,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     f8603267bf8589f2a6a3e0a7de0a8dc6b6bd3c7d
-Gitweb:        https://git.kernel.org/tip/f8603267bf8589f2a6a3e0a7de0a8dc6b6bd3c7d
+Commit-ID:     6f91ea283a1ed23e4a548ddd62db6deb2c707f82
+Gitweb:        https://git.kernel.org/tip/6f91ea283a1ed23e4a548ddd62db6deb2c707f82
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Thu, 19 Mar 2020 13:25:05 -07:00
+AuthorDate:    Thu, 19 Mar 2020 13:25:02 -07:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Sat, 18 Apr 2020 09:05:00 -03:00
 
-perf machine: Remove the indent in resolve_lbr_callchain_sample
+perf header: Support CPU PMU capabilities
 
-The indent is unnecessary in resolve_lbr_callchain_sample.  Removing it
-will make the following patch simpler.
+To stitch LBR call stack, the max LBR information is required. So the
+CPU PMU capabilities information has to be stored in perf header.
 
-Current code path for resolve_lbr_callchain_sample()
+Add a new feature HEADER_CPU_PMU_CAPS for CPU PMU capabilities.
+Retrieve all CPU PMU capabilities, not just max LBR information.
 
-        /* LBR only affects the user callchain */
-        if (i != chain_nr) {
-                body of the function
-                ....
-                return 1;
-        }
+Add variable max_branches to facilitate future usage.
 
-        return 0;
+Committer testing:
 
-With the patch,
+  # ls -la /sys/devices/cpu/caps/
+  total 0
+  drwxr-xr-x. 2 root root    0 Apr 17 10:53 .
+  drwxr-xr-x. 6 root root    0 Apr 17 07:02 ..
+  -r--r--r--. 1 root root 4096 Apr 17 10:53 max_precise
+  #
+  # cat /sys/devices/cpu/caps/max_precise
+  0
+  # perf record sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.033 MB perf.data (7 samples) ]
+  #
+  # perf report --header-only | egrep 'cpu(desc|.*capabilities)'
+  # cpudesc : AMD Ryzen 5 3600X 6-Core Processor
+  # cpu pmu capabilities: max_precise=0
+  #
 
-        /* LBR only affects the user callchain */
-        if (i == chain_nr)
-                return 0;
+And then on an Intel machine:
 
-        body of the function
-        ...
-        return 1;
-
-No functional changes.
+  $ ls -la /sys/devices/cpu/caps/
+  total 0
+  drwxr-xr-x. 2 root root    0 Apr 17 10:51 .
+  drwxr-xr-x. 6 root root    0 Apr 17 10:04 ..
+  -r--r--r--. 1 root root 4096 Apr 17 11:37 branches
+  -r--r--r--. 1 root root 4096 Apr 17 10:51 max_precise
+  -r--r--r--. 1 root root 4096 Apr 17 11:37 pmu_name
+  $ cat /sys/devices/cpu/caps/max_precise
+  3
+  $ cat /sys/devices/cpu/caps/branches
+  32
+  $ cat /sys/devices/cpu/caps/pmu_name
+  skylake
+  $ perf record sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.001 MB perf.data (8 samples) ]
+  $ perf report --header-only | egrep 'cpu(desc|.*capabilities)'
+  # cpudesc : Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz
+  # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
+  $
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Acked-by: Jiri Olsa <jolsa@redhat.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
@@ -110,155 +134,218 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 Cc: Stephane Eranian <eranian@google.com>
 Cc: Vitaly Slobodskoy <vitaly.slobodskoy@intel.com>
-Link: http://lore.kernel.org/lkml/20200319202517.23423-6-kan.liang@linux.intel.com
+Link: http://lore.kernel.org/lkml/20200319202517.23423-3-kan.liang@linux.intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/machine.c | 123 ++++++++++++++++++-------------------
- 1 file changed, 63 insertions(+), 60 deletions(-)
+ tools/perf/Documentation/perf.data-file-format.txt |  16 ++-
+ tools/perf/util/env.h                              |   3 +-
+ tools/perf/util/header.c                           | 108 ++++++++++++-
+ tools/perf/util/header.h                           |   1 +-
+ 4 files changed, 128 insertions(+)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 09845ea..be1bd92 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2208,6 +2208,12 @@ static int resolve_lbr_callchain_sample(struct thread *thread,
- 	int chain_nr = min(max_stack, (int)chain->nr), i;
- 	u8 cpumode = PERF_RECORD_MISC_USER;
- 	u64 ip, branch_from = 0;
-+	struct branch_stack *lbr_stack;
-+	struct branch_entry *entries;
-+	int lbr_nr, j, k;
-+	bool branch;
-+	struct branch_flags *flags;
-+	int mix_chain_nr;
+diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+index b0152e1..b6472e4 100644
+--- a/tools/perf/Documentation/perf.data-file-format.txt
++++ b/tools/perf/Documentation/perf.data-file-format.txt
+@@ -373,6 +373,22 @@ struct {
+ Indicates that trace contains records of PERF_RECORD_COMPRESSED type
+ that have perf_events records in compressed form.
  
- 	for (i = 0; i < chain_nr; i++) {
- 		if (chain->ips[i] == PERF_CONTEXT_USER)
-@@ -2215,71 +2221,68 @@ static int resolve_lbr_callchain_sample(struct thread *thread,
- 	}
- 
- 	/* LBR only affects the user callchain */
--	if (i != chain_nr) {
--		struct branch_stack *lbr_stack = sample->branch_stack;
--		struct branch_entry *entries = perf_sample__branch_entries(sample);
--		int lbr_nr = lbr_stack->nr, j, k;
--		bool branch;
--		struct branch_flags *flags;
--		/*
--		 * LBR callstack can only get user call chain.
--		 * The mix_chain_nr is kernel call chain
--		 * number plus LBR user call chain number.
--		 * i is kernel call chain number,
--		 * 1 is PERF_CONTEXT_USER,
--		 * lbr_nr + 1 is the user call chain number.
--		 * For details, please refer to the comments
--		 * in callchain__printf
--		 */
--		int mix_chain_nr = i + 1 + lbr_nr + 1;
--
--		for (j = 0; j < mix_chain_nr; j++) {
--			int err;
--			branch = false;
--			flags = NULL;
-+	if (i == chain_nr)
-+		return 0;
- 
--			if (callchain_param.order == ORDER_CALLEE) {
--				if (j < i + 1)
--					ip = chain->ips[j];
--				else if (j > i + 1) {
--					k = j - i - 2;
--					ip = entries[k].from;
--					branch = true;
--					flags = &entries[k].flags;
--				} else {
--					ip = entries[0].to;
--					branch = true;
--					flags = &entries[0].flags;
--					branch_from = entries[0].from;
--				}
-+	lbr_stack = sample->branch_stack;
-+	entries = perf_sample__branch_entries(sample);
-+	lbr_nr = lbr_stack->nr;
-+	/*
-+	 * LBR callstack can only get user call chain.
-+	 * The mix_chain_nr is kernel call chain
-+	 * number plus LBR user call chain number.
-+	 * i is kernel call chain number,
-+	 * 1 is PERF_CONTEXT_USER,
-+	 * lbr_nr + 1 is the user call chain number.
-+	 * For details, please refer to the comments
-+	 * in callchain__printf
-+	 */
-+	mix_chain_nr = i + 1 + lbr_nr + 1;
++	HEADER_CPU_PMU_CAPS = 28,
 +
-+	for (j = 0; j < mix_chain_nr; j++) {
-+		int err;
++	A list of cpu PMU capabilities. The format of data is as below.
 +
-+		branch = false;
-+		flags = NULL;
++struct {
++	u32 nr_cpu_pmu_caps;
++	{
++		char	name[];
++		char	value[];
++	} [nr_cpu_pmu_caps]
++};
 +
-+		if (callchain_param.order == ORDER_CALLEE) {
-+			if (j < i + 1)
-+				ip = chain->ips[j];
-+			else if (j > i + 1) {
-+				k = j - i - 2;
-+				ip = entries[k].from;
-+				branch = true;
-+				flags = &entries[k].flags;
- 			} else {
--				if (j < lbr_nr) {
--					k = lbr_nr - j - 1;
--					ip = entries[k].from;
--					branch = true;
--					flags = &entries[k].flags;
--				}
--				else if (j > lbr_nr)
--					ip = chain->ips[i + 1 - (j - lbr_nr)];
--				else {
--					ip = entries[0].to;
--					branch = true;
--					flags = &entries[0].flags;
--					branch_from = entries[0].from;
--				}
-+				ip = entries[0].to;
-+				branch = true;
-+				flags = &entries[0].flags;
-+				branch_from = entries[0].from;
-+			}
-+		} else {
-+			if (j < lbr_nr) {
-+				k = lbr_nr - j - 1;
-+				ip = entries[k].from;
-+				branch = true;
-+				flags = &entries[k].flags;
-+			} else if (j > lbr_nr)
-+				ip = chain->ips[i + 1 - (j - lbr_nr)];
-+			else {
-+				ip = entries[0].to;
-+				branch = true;
-+				flags = &entries[0].flags;
-+				branch_from = entries[0].from;
- 			}
--
--			err = add_callchain_ip(thread, cursor, parent,
--					       root_al, &cpumode, ip,
--					       branch, flags, NULL,
--					       branch_from);
--			if (err)
--				return (err < 0) ? err : 0;
- 		}
--		return 1;
--	}
++
++Example:
++ cpu pmu capabilities: branches=32, max_precise=3, pmu_name=icelake
++
+ 	other bits are reserved and should ignored for now
+ 	HEADER_FEAT_BITS	= 256,
  
--	return 0;
-+		err = add_callchain_ip(thread, cursor, parent,
-+				       root_al, &cpumode, ip,
-+				       branch, flags, NULL,
-+				       branch_from);
-+		if (err)
-+			return (err < 0) ? err : 0;
-+	}
-+	return 1;
+diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+index 7632075..1ab2682 100644
+--- a/tools/perf/util/env.h
++++ b/tools/perf/util/env.h
+@@ -48,6 +48,7 @@ struct perf_env {
+ 	char			*cpuid;
+ 	unsigned long long	total_mem;
+ 	unsigned int		msr_pmu_type;
++	unsigned int		max_branches;
+ 
+ 	int			nr_cmdline;
+ 	int			nr_sibling_cores;
+@@ -57,12 +58,14 @@ struct perf_env {
+ 	int			nr_memory_nodes;
+ 	int			nr_pmu_mappings;
+ 	int			nr_groups;
++	int			nr_cpu_pmu_caps;
+ 	char			*cmdline;
+ 	const char		**cmdline_argv;
+ 	char			*sibling_cores;
+ 	char			*sibling_dies;
+ 	char			*sibling_threads;
+ 	char			*pmu_mappings;
++	char			*cpu_pmu_caps;
+ 	struct cpu_topology_map	*cpu;
+ 	struct cpu_cache_level	*caches;
+ 	int			 caches_cnt;
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index acbd046..28e82da 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -1395,6 +1395,38 @@ static int write_compressed(struct feat_fd *ff __maybe_unused,
+ 	return do_write(ff, &(ff->ph->env.comp_mmap_len), sizeof(ff->ph->env.comp_mmap_len));
  }
  
- static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
++static int write_cpu_pmu_caps(struct feat_fd *ff,
++			      struct evlist *evlist __maybe_unused)
++{
++	struct perf_pmu *cpu_pmu = perf_pmu__find("cpu");
++	struct perf_pmu_caps *caps = NULL;
++	int nr_caps;
++	int ret;
++
++	if (!cpu_pmu)
++		return -ENOENT;
++
++	nr_caps = perf_pmu__caps_parse(cpu_pmu);
++	if (nr_caps < 0)
++		return nr_caps;
++
++	ret = do_write(ff, &nr_caps, sizeof(nr_caps));
++	if (ret < 0)
++		return ret;
++
++	list_for_each_entry(caps, &cpu_pmu->caps, list) {
++		ret = do_write_string(ff, caps->name);
++		if (ret < 0)
++			return ret;
++
++		ret = do_write_string(ff, caps->value);
++		if (ret < 0)
++			return ret;
++	}
++
++	return ret;
++}
++
+ static void print_hostname(struct feat_fd *ff, FILE *fp)
+ {
+ 	fprintf(fp, "# hostname : %s\n", ff->ph->env.hostname);
+@@ -1809,6 +1841,27 @@ static void print_compressed(struct feat_fd *ff, FILE *fp)
+ 		ff->ph->env.comp_level, ff->ph->env.comp_ratio);
+ }
+ 
++static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
++{
++	const char *delimiter = "# cpu pmu capabilities: ";
++	u32 nr_caps = ff->ph->env.nr_cpu_pmu_caps;
++	char *str;
++
++	if (!nr_caps) {
++		fprintf(fp, "# cpu pmu capabilities: not available\n");
++		return;
++	}
++
++	str = ff->ph->env.cpu_pmu_caps;
++	while (nr_caps--) {
++		fprintf(fp, "%s%s", delimiter, str);
++		delimiter = ", ";
++		str += strlen(str) + 1;
++	}
++
++	fprintf(fp, "\n");
++}
++
+ static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
+ {
+ 	const char *delimiter = "# pmu mappings: ";
+@@ -2846,6 +2899,60 @@ static int process_compressed(struct feat_fd *ff,
+ 	return 0;
+ }
+ 
++static int process_cpu_pmu_caps(struct feat_fd *ff,
++				void *data __maybe_unused)
++{
++	char *name, *value;
++	struct strbuf sb;
++	u32 nr_caps;
++
++	if (do_read_u32(ff, &nr_caps))
++		return -1;
++
++	if (!nr_caps) {
++		pr_debug("cpu pmu capabilities not available\n");
++		return 0;
++	}
++
++	ff->ph->env.nr_cpu_pmu_caps = nr_caps;
++
++	if (strbuf_init(&sb, 128) < 0)
++		return -1;
++
++	while (nr_caps--) {
++		name = do_read_string(ff);
++		if (!name)
++			goto error;
++
++		value = do_read_string(ff);
++		if (!value)
++			goto free_name;
++
++		if (strbuf_addf(&sb, "%s=%s", name, value) < 0)
++			goto free_value;
++
++		/* include a NULL character at the end */
++		if (strbuf_add(&sb, "", 1) < 0)
++			goto free_value;
++
++		if (!strcmp(name, "branches"))
++			ff->ph->env.max_branches = atoi(value);
++
++		free(value);
++		free(name);
++	}
++	ff->ph->env.cpu_pmu_caps = strbuf_detach(&sb, NULL);
++	return 0;
++
++free_value:
++	free(value);
++free_name:
++	free(name);
++error:
++	strbuf_release(&sb);
++	return -1;
++}
++
+ #define FEAT_OPR(n, func, __full_only) \
+ 	[HEADER_##n] = {					\
+ 		.name	    = __stringify(n),			\
+@@ -2903,6 +3010,7 @@ const struct perf_header_feature_ops feat_ops[HEADER_LAST_FEATURE] = {
+ 	FEAT_OPR(BPF_PROG_INFO, bpf_prog_info,  false),
+ 	FEAT_OPR(BPF_BTF,       bpf_btf,        false),
+ 	FEAT_OPR(COMPRESSED,	compressed,	false),
++	FEAT_OPR(CPU_PMU_CAPS,	cpu_pmu_caps,	false),
+ };
+ 
+ struct header_print_data {
+diff --git a/tools/perf/util/header.h b/tools/perf/util/header.h
+index 840f95c..650bd1c 100644
+--- a/tools/perf/util/header.h
++++ b/tools/perf/util/header.h
+@@ -43,6 +43,7 @@ enum {
+ 	HEADER_BPF_PROG_INFO,
+ 	HEADER_BPF_BTF,
+ 	HEADER_COMPRESSED,
++	HEADER_CPU_PMU_CAPS,
+ 	HEADER_LAST_FEATURE,
+ 	HEADER_FEAT_BITS	= 256,
+ };
