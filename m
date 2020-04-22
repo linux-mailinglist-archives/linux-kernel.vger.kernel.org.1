@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A213D1B41BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059271B3D1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgDVKzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59518 "EHLO mail.kernel.org"
+        id S1729255AbgDVKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728483AbgDVKHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:08 -0400
+        id S1729227AbgDVKLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9246B20575;
-        Wed, 22 Apr 2020 10:07:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A28BE2070B;
+        Wed, 22 Apr 2020 10:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550028;
-        bh=PnmVhv6j1lYMEXCgXSgukmmBE05wXIWdHaYvJgdOp+k=;
+        s=default; t=1587550300;
+        bh=zZc828fF4edIgF7h+Y+tA2AdhzZFPemG6RYMtNeiebY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YT344tvQCSBSwUHkhTvGlVQwL/tWqM9qUWMS7TN4b7Lba4KWO3sSxNZ3lU0JNj3qH
-         y3cE1gWACbYT7yEfj5txLd4+3j4ag5aM2jlNk9MEK1vRKqxVd3FJ5hh3alvekg3WMy
-         Dd0GzXFXyCiwk7dXquiA93mLauZ8+wSF43eRqIrA=
+        b=VasVYX6SQRy2q2f6FQF1p1P85yJeTG5FcoZtTv7my3PWcxbJPEmqAbFJDU1YmOUI8
+         zFN91FyUF0QWxRXq8nN9MxSmw2+5PpyaD9Gxl2jxk5JkP3EpqLZjKvTwXvQODAzJLz
+         fx2GFy/f/9I/zEbA3f8jSNYRAKDmIWQjOQGlSSGs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lior David <qca_liord@qca.qualcomm.com>,
-        Maya Erez <qca_merez@qca.qualcomm.com>,
-        Kalle Valo <kvalo@qca.qualcomm.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 098/125] wil6210: fix length check in __wmi_send
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.14 089/199] powerpc/hash64/devmap: Use H_PAGE_THP_HUGE when setting up huge devmap PTE entries
 Date:   Wed, 22 Apr 2020 11:56:55 +0200
-Message-Id: <20200422095048.942033072@linuxfoundation.org>
+Message-Id: <20200422095106.969848295@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +44,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lior David <qca_liord@qca.qualcomm.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit 26a6d5274865532502c682ff378ac8ebe2886238 ]
+commit 36b78402d97a3b9aeab136feb9b00d8647ec2c20 upstream.
 
-The current length check:
-sizeof(cmd) + len > r->entry_size
-will allow very large values of len (> U16_MAX - sizeof(cmd))
-and can cause a buffer overflow. Fix the check to cover this case.
-In addition, ensure the mailbox entry_size is not too small,
-since this can also bypass the above check.
+H_PAGE_THP_HUGE is used to differentiate between a THP hugepage and
+hugetlb hugepage entries. The difference is WRT how we handle hash
+fault on these address. THP address enables MPSS in segments. We want
+to manage devmap hugepage entries similar to THP pt entries. Hence use
+H_PAGE_THP_HUGE for devmap huge PTE entries.
 
-Signed-off-by: Lior David <qca_liord@qca.qualcomm.com>
-Signed-off-by: Maya Erez <qca_merez@qca.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+With current code while handling hash PTE fault, we do set is_thp =
+true when finding devmap PTE huge PTE entries.
+
+Current code also does the below sequence we setting up huge devmap
+entries.
+
+	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
+	if (pfn_t_devmap(pfn))
+		entry = pmd_mkdevmap(entry);
+
+In that case we would find both H_PAGE_THP_HUGE and PAGE_DEVMAP set
+for huge devmap PTE entries. This results in false positive error like
+below.
+
+  kernel BUG at /home/kvaneesh/src/linux/mm/memory.c:4321!
+  Oops: Exception in kernel mode, sig: 5 [#1]
+  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+  Modules linked in:
+  CPU: 56 PID: 67996 Comm: t_mmap_dio Not tainted 5.6.0-rc4-59640-g371c804dedbc #128
+  ....
+  NIP [c00000000044c9e4] __follow_pte_pmd+0x264/0x900
+  LR [c0000000005d45f8] dax_writeback_one+0x1a8/0x740
+  Call Trace:
+    str_spec.74809+0x22ffb4/0x2d116c (unreliable)
+    dax_writeback_one+0x1a8/0x740
+    dax_writeback_mapping_range+0x26c/0x700
+    ext4_dax_writepages+0x150/0x5a0
+    do_writepages+0x68/0x180
+    __filemap_fdatawrite_range+0x138/0x180
+    file_write_and_wait_range+0xa4/0x110
+    ext4_sync_file+0x370/0x6e0
+    vfs_fsync_range+0x70/0xf0
+    sys_msync+0x220/0x2e0
+    system_call+0x5c/0x68
+
+This is because our pmd_trans_huge check doesn't exclude _PAGE_DEVMAP.
+
+To make this all consistent, update pmd_mkdevmap to set
+H_PAGE_THP_HUGE and pmd_trans_huge check now excludes _PAGE_DEVMAP
+correctly.
+
+Fixes: ebd31197931d ("powerpc/mm: Add devmap support for ppc64")
+Cc: stable@vger.kernel.org # v4.13+
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200313094842.351830-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/wireless/ath/wil6210/interrupt.c |   22 +++++++++++++++++++++-
- drivers/net/wireless/ath/wil6210/wmi.c       |    2 +-
- 2 files changed, 22 insertions(+), 2 deletions(-)
 
---- a/drivers/net/wireless/ath/wil6210/interrupt.c
-+++ b/drivers/net/wireless/ath/wil6210/interrupt.c
-@@ -356,6 +356,25 @@ static void wil_cache_mbox_regs(struct w
- 	wil_mbox_ring_le2cpus(&wil->mbox_ctl.tx);
- }
+---
+ arch/powerpc/include/asm/book3s/64/hash-4k.h  |    6 ++++++
+ arch/powerpc/include/asm/book3s/64/hash-64k.h |    8 +++++++-
+ arch/powerpc/include/asm/book3s/64/pgtable.h  |    4 +++-
+ arch/powerpc/include/asm/book3s/64/radix.h    |    5 +++++
+ 4 files changed, 21 insertions(+), 2 deletions(-)
+
+--- a/arch/powerpc/include/asm/book3s/64/hash-4k.h
++++ b/arch/powerpc/include/asm/book3s/64/hash-4k.h
+@@ -108,6 +108,12 @@ extern pmd_t hash__pmdp_huge_get_and_cle
+ extern int hash__has_transparent_hugepage(void);
+ #endif
  
-+static bool wil_validate_mbox_regs(struct wil6210_priv *wil)
++static inline pmd_t hash__pmd_mkdevmap(pmd_t pmd)
 +{
-+	size_t min_size = sizeof(struct wil6210_mbox_hdr) +
-+		sizeof(struct wmi_cmd_hdr);
-+
-+	if (wil->mbox_ctl.rx.entry_size < min_size) {
-+		wil_err(wil, "rx mbox entry too small (%d)\n",
-+			wil->mbox_ctl.rx.entry_size);
-+		return false;
-+	}
-+	if (wil->mbox_ctl.tx.entry_size < min_size) {
-+		wil_err(wil, "tx mbox entry too small (%d)\n",
-+			wil->mbox_ctl.tx.entry_size);
-+		return false;
-+	}
-+
-+	return true;
++	BUG();
++	return pmd;
 +}
 +
- static irqreturn_t wil6210_irq_misc(int irq, void *cookie)
- {
- 	struct wil6210_priv *wil = cookie;
-@@ -391,7 +410,8 @@ static irqreturn_t wil6210_irq_misc(int
- 	if (isr & ISR_MISC_FW_READY) {
- 		wil_dbg_irq(wil, "IRQ: FW ready\n");
- 		wil_cache_mbox_regs(wil);
--		set_bit(wil_status_mbox_ready, wil->status);
-+		if (wil_validate_mbox_regs(wil))
-+			set_bit(wil_status_mbox_ready, wil->status);
- 		/**
- 		 * Actual FW ready indicated by the
- 		 * WMI_FW_READY_EVENTID
---- a/drivers/net/wireless/ath/wil6210/wmi.c
-+++ b/drivers/net/wireless/ath/wil6210/wmi.c
-@@ -209,7 +209,7 @@ static int __wmi_send(struct wil6210_pri
- 	uint retry;
- 	int rc = 0;
+ #endif /* !__ASSEMBLY__ */
  
--	if (sizeof(cmd) + len > r->entry_size) {
-+	if (len > r->entry_size - sizeof(cmd)) {
- 		wil_err(wil, "WMI size too large: %d bytes, max is %d\n",
- 			(int)(sizeof(cmd) + len), r->entry_size);
- 		return -ERANGE;
+ #endif /* _ASM_POWERPC_BOOK3S_64_HASH_4K_H */
+--- a/arch/powerpc/include/asm/book3s/64/hash-64k.h
++++ b/arch/powerpc/include/asm/book3s/64/hash-64k.h
+@@ -181,7 +181,7 @@ static inline void mark_hpte_slot_valid(
+  */
+ static inline int hash__pmd_trans_huge(pmd_t pmd)
+ {
+-	return !!((pmd_val(pmd) & (_PAGE_PTE | H_PAGE_THP_HUGE)) ==
++	return !!((pmd_val(pmd) & (_PAGE_PTE | H_PAGE_THP_HUGE | _PAGE_DEVMAP)) ==
+ 		  (_PAGE_PTE | H_PAGE_THP_HUGE));
+ }
+ 
+@@ -209,6 +209,12 @@ extern pmd_t hash__pmdp_huge_get_and_cle
+ 				       unsigned long addr, pmd_t *pmdp);
+ extern int hash__has_transparent_hugepage(void);
+ #endif /*  CONFIG_TRANSPARENT_HUGEPAGE */
++
++static inline pmd_t hash__pmd_mkdevmap(pmd_t pmd)
++{
++	return __pmd(pmd_val(pmd) | (_PAGE_PTE | H_PAGE_THP_HUGE | _PAGE_DEVMAP));
++}
++
+ #endif	/* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_POWERPC_BOOK3S_64_HASH_64K_H */
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -1179,7 +1179,9 @@ extern void serialize_against_pte_lookup
+ 
+ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+ {
+-	return __pmd(pmd_val(pmd) | (_PAGE_PTE | _PAGE_DEVMAP));
++	if (radix_enabled())
++		return radix__pmd_mkdevmap(pmd);
++	return hash__pmd_mkdevmap(pmd);
+ }
+ 
+ static inline int pmd_devmap(pmd_t pmd)
+--- a/arch/powerpc/include/asm/book3s/64/radix.h
++++ b/arch/powerpc/include/asm/book3s/64/radix.h
+@@ -289,6 +289,11 @@ extern pmd_t radix__pmdp_huge_get_and_cl
+ extern int radix__has_transparent_hugepage(void);
+ #endif
+ 
++static inline pmd_t radix__pmd_mkdevmap(pmd_t pmd)
++{
++	return __pmd(pmd_val(pmd) | (_PAGE_PTE | _PAGE_DEVMAP));
++}
++
+ extern int __meminit radix__vmemmap_create_mapping(unsigned long start,
+ 					     unsigned long page_size,
+ 					     unsigned long phys);
 
 
