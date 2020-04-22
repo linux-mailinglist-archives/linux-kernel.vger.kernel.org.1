@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EFE1B3F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11691B3DCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731191AbgDVKdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
+        id S1729997AbgDVKSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729736AbgDVKYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:24:49 -0400
+        id S1729874AbgDVKRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:17:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A41FE2071E;
-        Wed, 22 Apr 2020 10:24:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF2512075A;
+        Wed, 22 Apr 2020 10:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551089;
-        bh=fa6sFC6ExgJLrtzdqYbGOIXx3ZLfMUmZOOEM2DJyOJ4=;
+        s=default; t=1587550665;
+        bh=75thLSJ4zjswmdRdpBYB2fBlkoCC/ZCTS41RhNUtlg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=exhyVC7CPoTysCJE84517JputvHvV7SQu6JszM6LHhXbFgctUcFzNBRiLZ9z7/n7O
-         beF5RS+NozFSpMZ7mJBPhmc0mLuNo+HdHlKqGmKUQ0hRYegE9WTbKWdceHgOTfoSRx
-         qLNCoh0GUYp+wUEDI6rQ8ZGoBDlANWmkbiQt/tW4=
+        b=X0mp8lyukHPymKcGlEK2aySuo/tFsaIyOwuZ10UBGKzhaMfbJ/fnVywN5n1x/KzNi
+         9RH1wO4tYj/LePtM3SmRLfQEa6DKhHPpLLbTRXYybJ/8WcAe3NvUPUZssbi1BemZz/
+         DaW0WxCNm5zTYOD49zDRfghY1eqLdCNtsvHR6qc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kevin Grandemange <kevin.grandemange@allegrodvt.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 069/166] dma-coherent: fix integer overflow in the reserved-memory dma allocation
-Date:   Wed, 22 Apr 2020 11:56:36 +0200
-Message-Id: <20200422095056.319089776@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 036/118] clk: Dont cache errors from clk_ops::get_phase()
+Date:   Wed, 22 Apr 2020 11:56:37 +0200
+Message-Id: <20200422095037.828695876@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +46,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Grandemange <kevin.grandemange@allegrodvt.com>
+From: Stephen Boyd <sboyd@kernel.org>
 
-[ Upstream commit 286c21de32b904131f8cf6a36ce40b8b0c9c5da3 ]
+[ Upstream commit f21cf9c77ee82ef8adfeb2143adfacf21ec1d5cc ]
 
-pageno is an int and the PAGE_SHIFT shift is done on an int,
-overflowing if the memory is bigger than 2G
+We don't check for errors from clk_ops::get_phase() before storing away
+the result into the clk_core::phase member. This can lead to some fairly
+confusing debugfs information if these ops do return an error. Let's
+skip the store when this op fails to fix this. While we're here, move
+the locking outside of clk_core_get_phase() to simplify callers from
+the debugfs side.
 
-This can be reproduced using for example a reserved-memory of 4G
-
-reserved-memory {
-		    #address-cells = <2>;
-		    #size-cells = <2>;
-		    ranges;
-
-		    reserved_dma: buffer@0 {
-		        compatible = "shared-dma-pool";
-		        no-map;
-		        reg = <0x5 0x00000000 0x1 0x0>;
-        };
-};
-
-Signed-off-by: Kevin Grandemange <kevin.grandemange@allegrodvt.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lkml.kernel.org/r/20200205232802.29184-2-sboyd@kernel.org
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/dma/coherent.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/clk/clk.c | 48 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
-index 551b0eb7028a3..2a0c4985f38e4 100644
---- a/kernel/dma/coherent.c
-+++ b/kernel/dma/coherent.c
-@@ -134,7 +134,7 @@ static void *__dma_alloc_from_coherent(struct device *dev,
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 62d0fc486d3a2..80b029713722b 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2642,12 +2642,14 @@ static int clk_core_get_phase(struct clk_core *core)
+ {
+ 	int ret;
  
- 	spin_lock_irqsave(&mem->spinlock, flags);
+-	clk_prepare_lock();
++	lockdep_assert_held(&prepare_lock);
++	if (!core->ops->get_phase)
++		return 0;
++
+ 	/* Always try to update cached phase if possible */
+-	if (core->ops->get_phase)
+-		core->phase = core->ops->get_phase(core->hw);
+-	ret = core->phase;
+-	clk_prepare_unlock();
++	ret = core->ops->get_phase(core->hw);
++	if (ret >= 0)
++		core->phase = ret;
  
--	if (unlikely(size > (mem->size << PAGE_SHIFT)))
-+	if (unlikely(size > ((dma_addr_t)mem->size << PAGE_SHIFT)))
- 		goto err;
- 
- 	pageno = bitmap_find_free_region(mem->bitmap, mem->size, order);
-@@ -144,8 +144,9 @@ static void *__dma_alloc_from_coherent(struct device *dev,
- 	/*
- 	 * Memory was found in the coherent area.
- 	 */
--	*dma_handle = dma_get_device_base(dev, mem) + (pageno << PAGE_SHIFT);
--	ret = mem->virt_base + (pageno << PAGE_SHIFT);
-+	*dma_handle = dma_get_device_base(dev, mem) +
-+			((dma_addr_t)pageno << PAGE_SHIFT);
-+	ret = mem->virt_base + ((dma_addr_t)pageno << PAGE_SHIFT);
- 	spin_unlock_irqrestore(&mem->spinlock, flags);
- 	memset(ret, 0, size);
  	return ret;
-@@ -194,7 +195,7 @@ static int __dma_release_from_coherent(struct dma_coherent_mem *mem,
- 				       int order, void *vaddr)
+ }
+@@ -2661,10 +2663,16 @@ static int clk_core_get_phase(struct clk_core *core)
+  */
+ int clk_get_phase(struct clk *clk)
  {
- 	if (mem && vaddr >= mem->virt_base && vaddr <
--		   (mem->virt_base + (mem->size << PAGE_SHIFT))) {
-+		   (mem->virt_base + ((dma_addr_t)mem->size << PAGE_SHIFT))) {
- 		int page = (vaddr - mem->virt_base) >> PAGE_SHIFT;
- 		unsigned long flags;
++	int ret;
++
+ 	if (!clk)
+ 		return 0;
  
-@@ -238,10 +239,10 @@ static int __dma_mmap_from_coherent(struct dma_coherent_mem *mem,
- 		struct vm_area_struct *vma, void *vaddr, size_t size, int *ret)
+-	return clk_core_get_phase(clk->core);
++	clk_prepare_lock();
++	ret = clk_core_get_phase(clk->core);
++	clk_prepare_unlock();
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(clk_get_phase);
+ 
+@@ -2878,13 +2886,21 @@ static struct hlist_head *orphan_list[] = {
+ static void clk_summary_show_one(struct seq_file *s, struct clk_core *c,
+ 				 int level)
  {
- 	if (mem && vaddr >= mem->virt_base && vaddr + size <=
--		   (mem->virt_base + (mem->size << PAGE_SHIFT))) {
-+		   (mem->virt_base + ((dma_addr_t)mem->size << PAGE_SHIFT))) {
- 		unsigned long off = vma->vm_pgoff;
- 		int start = (vaddr - mem->virt_base) >> PAGE_SHIFT;
--		int user_count = vma_pages(vma);
-+		unsigned long user_count = vma_pages(vma);
- 		int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+-	seq_printf(s, "%*s%-*s %7d %8d %8d %11lu %10lu %5d %6d\n",
++	int phase;
++
++	seq_printf(s, "%*s%-*s %7d %8d %8d %11lu %10lu ",
+ 		   level * 3 + 1, "",
+ 		   30 - level * 3, c->name,
+ 		   c->enable_count, c->prepare_count, c->protect_count,
+-		   clk_core_get_rate(c), clk_core_get_accuracy(c),
+-		   clk_core_get_phase(c),
+-		   clk_core_get_scaled_duty_cycle(c, 100000));
++		   clk_core_get_rate(c), clk_core_get_accuracy(c));
++
++	phase = clk_core_get_phase(c);
++	if (phase >= 0)
++		seq_printf(s, "%5d", phase);
++	else
++		seq_puts(s, "-----");
++
++	seq_printf(s, " %6d\n", clk_core_get_scaled_duty_cycle(c, 100000));
+ }
  
- 		*ret = -ENXIO;
+ static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
+@@ -2921,6 +2937,7 @@ DEFINE_SHOW_ATTRIBUTE(clk_summary);
+ 
+ static void clk_dump_one(struct seq_file *s, struct clk_core *c, int level)
+ {
++	int phase;
+ 	unsigned long min_rate, max_rate;
+ 
+ 	clk_core_get_boundaries(c, &min_rate, &max_rate);
+@@ -2934,7 +2951,9 @@ static void clk_dump_one(struct seq_file *s, struct clk_core *c, int level)
+ 	seq_printf(s, "\"min_rate\": %lu,", min_rate);
+ 	seq_printf(s, "\"max_rate\": %lu,", max_rate);
+ 	seq_printf(s, "\"accuracy\": %lu,", clk_core_get_accuracy(c));
+-	seq_printf(s, "\"phase\": %d,", clk_core_get_phase(c));
++	phase = clk_core_get_phase(c);
++	if (phase >= 0)
++		seq_printf(s, "\"phase\": %d,", phase);
+ 	seq_printf(s, "\"duty_cycle\": %u",
+ 		   clk_core_get_scaled_duty_cycle(c, 100000));
+ }
+@@ -3375,14 +3394,11 @@ static int __clk_core_init(struct clk_core *core)
+ 		core->accuracy = 0;
+ 
+ 	/*
+-	 * Set clk's phase.
++	 * Set clk's phase by clk_core_get_phase() caching the phase.
+ 	 * Since a phase is by definition relative to its parent, just
+ 	 * query the current clock phase, or just assume it's in phase.
+ 	 */
+-	if (core->ops->get_phase)
+-		core->phase = core->ops->get_phase(core->hw);
+-	else
+-		core->phase = 0;
++	clk_core_get_phase(core);
+ 
+ 	/*
+ 	 * Set clk's duty cycle.
 -- 
 2.20.1
 
