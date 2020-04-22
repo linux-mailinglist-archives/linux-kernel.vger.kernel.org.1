@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511651B3DDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E263E1B3C80
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgDVKTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54662 "EHLO mail.kernel.org"
+        id S1728325AbgDVKGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729928AbgDVKSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:18:13 -0400
+        id S1728317AbgDVKGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 103F62076B;
-        Wed, 22 Apr 2020 10:18:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 790712075A;
+        Wed, 22 Apr 2020 10:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550692;
-        bh=u/HMnLGTaLSNri32SyqVZvXqm4KgTOgJ5AYusxzD3mA=;
+        s=default; t=1587549971;
+        bh=idgshFs3pJ4wddZ6Cds1FGvsSASdv3dtQQDtPhm/v8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l538e/JgXw2g/Z9UZnthWv66XTpel90CQf3VmAKe+SBCctlsSXDv2Z/AAquxvcvvu
-         HAM2941LsAiFvDIJIctcdhACSqq073dZu1G1jS0dDy07HdQS/c2F6dpRMnp9Hqm6H5
-         MERgC83T/kMQybAtDJ+tlCuV1PLg2zG+XaySGxwU=
+        b=E/eI5zgEj/E0PEuxqN3sSpPuUICoS1PSdLjZiKLZX4+Gz0omzKdi0uQyvOXOvkqbC
+         yW2TKwJqFxspFC6DiMp5xtkviD56obCT4dwMqdn/o2TJSOGukuz46tj6bnLs2yAEgI
+         uIX2hr6zIYhHE8/iPrAPcc+ZiiBcdr3GQhnUQDvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Peter Shier <pshier@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ben Hutchings <ben@decadent.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/118] clk: at91: usb: continue if clk_hw_round_rate() return zero
+Subject: [PATCH 4.9 081/125] kvm: x86: Host feature SSBD doesnt imply guest feature SPEC_CTRL_SSBD
 Date:   Wed, 22 Apr 2020 11:56:38 +0200
-Message-Id: <20200422095038.020122851@linuxfoundation.org>
+Message-Id: <20200422095046.158101353@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +48,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Jim Mattson <jmattson@google.com>
 
-[ Upstream commit b0ecf1c6c6e82da4847900fad0272abfd014666d ]
+commit 396d2e878f92ec108e4293f1c77ea3bc90b414ff upstream.
 
-clk_hw_round_rate() may call round rate function of its parents. In case
-of SAM9X60 two of USB parrents are PLLA and UPLL. These clocks are
-controlled by clk-sam9x60-pll.c driver. The round rate function for this
-driver is sam9x60_pll_round_rate() which call in turn
-sam9x60_pll_get_best_div_mul(). In case the requested rate is not in the
-proper range (rate < characteristics->output[0].min &&
-rate > characteristics->output[0].max) the sam9x60_pll_round_rate() will
-return a negative number to its caller (called by
-clk_core_round_rate_nolock()). clk_hw_round_rate() will return zero in
-case a negative number is returned by clk_core_round_rate_nolock(). With
-this, the USB clock will continue its rate computation even caller of
-clk_hw_round_rate() returned an error. With this, the USB clock on SAM9X60
-may not chose the best parent. I detected this after a suspend/resume
-cycle on SAM9X60.
+The host reports support for the synthetic feature X86_FEATURE_SSBD
+when any of the three following hardware features are set:
+  CPUID.(EAX=7,ECX=0):EDX.SSBD[bit 31]
+  CPUID.80000008H:EBX.AMD_SSBD[bit 24]
+  CPUID.80000008H:EBX.VIRT_SSBD[bit 25]
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Link: https://lkml.kernel.org/r/1579261009-4573-2-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Either of the first two hardware features implies the existence of the
+IA32_SPEC_CTRL MSR, but CPUID.80000008H:EBX.VIRT_SSBD[bit 25] does
+not. Therefore, CPUID.(EAX=7,ECX=0):EDX.SSBD[bit 31] should only be
+set in the guest if CPUID.(EAX=7,ECX=0):EDX.SSBD[bit 31] or
+CPUID.80000008H:EBX.AMD_SSBD[bit 24] is set on the host.
+
+Fixes: 0c54914d0c52a ("KVM: x86: use Intel speculation bugs and features as derived in generic x86 code")
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Reviewed-by: Jacob Xu <jacobhxu@google.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[bwh: Backported to 4.x: adjust indentation]
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/at91/clk-usb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/cpuid.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/at91/clk-usb.c b/drivers/clk/at91/clk-usb.c
-index bda92980e0155..c0895c993cce2 100644
---- a/drivers/clk/at91/clk-usb.c
-+++ b/drivers/clk/at91/clk-usb.c
-@@ -75,6 +75,9 @@ static int at91sam9x5_clk_usb_determine_rate(struct clk_hw *hw,
- 			tmp_parent_rate = req->rate * div;
- 			tmp_parent_rate = clk_hw_round_rate(parent,
- 							   tmp_parent_rate);
-+			if (!tmp_parent_rate)
-+				continue;
-+
- 			tmp_rate = DIV_ROUND_CLOSEST(tmp_parent_rate, div);
- 			if (tmp_rate < req->rate)
- 				tmp_diff = req->rate - tmp_rate;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index c57dab0884fed..63c3ff9e74d42 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -479,7 +479,8 @@ static inline int __do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
+ 				entry->edx |= F(SPEC_CTRL);
+ 			if (boot_cpu_has(X86_FEATURE_STIBP))
+ 				entry->edx |= F(INTEL_STIBP);
+-			if (boot_cpu_has(X86_FEATURE_SSBD))
++			if (boot_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) ||
++			    boot_cpu_has(X86_FEATURE_AMD_SSBD))
+ 				entry->edx |= F(SPEC_CTRL_SSBD);
+ 			/*
+ 			 * We emulate ARCH_CAPABILITIES in software even
 -- 
 2.20.1
 
