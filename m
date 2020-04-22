@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F214F1B4A96
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DD41B4A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgDVQdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:33:02 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3382 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgDVQdC (ORCPT
+        id S1726839AbgDVQdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:33:05 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7426 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgDVQdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:33:02 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ea071b10000>; Wed, 22 Apr 2020 09:32:49 -0700
+        Wed, 22 Apr 2020 12:33:03 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea0714a0000>; Wed, 22 Apr 2020 09:31:06 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
+  by hqpgpgate101.nvidia.com (PGP Universal service);
   Wed, 22 Apr 2020 09:33:02 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 22 Apr 2020 09:33:02 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
- 2020 16:33:01 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 22 Apr 2020 16:33:01 +0000
+        by hqpgpgate101.nvidia.com on Wed, 22 Apr 2020 09:33:02 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
+ 2020 16:33:02 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 22 Apr 2020 16:33:02 +0000
 Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.165.49]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ea071bd0000>; Wed, 22 Apr 2020 09:33:01 -0700
+        id <B5ea071bd0003>; Wed, 22 Apr 2020 09:33:02 -0700
 From:   Sowjanya Komatineni <skomatineni@nvidia.com>
 To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
         <baolin.wang@linaro.org>, <kstewart@linuxfoundation.org>,
@@ -35,41 +35,116 @@ To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
         <jonathanh@nvidia.com>, <skomatineni@nvidia.com>
 CC:     <anrao@nvidia.com>, <linux-tegra@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
-Subject: [PATCH 5.5.18 0/2] Fix for long operation cmds busy detection
-Date:   Wed, 22 Apr 2020 09:32:56 -0700
-Message-ID: <1587573178-30326-1-git-send-email-skomatineni@nvidia.com>
+Subject: [PATCH 5.5.18 1/2] sdhci: tegra: Implement Tegra specific set_timeout callback
+Date:   Wed, 22 Apr 2020 09:32:57 -0700
+Message-ID: <1587573178-30326-2-git-send-email-skomatineni@nvidia.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1587573178-30326-1-git-send-email-skomatineni@nvidia.com>
+References: <1587573178-30326-1-git-send-email-skomatineni@nvidia.com>
 X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587573169; bh=UfGeyrkbNZXh5G8PF6DuyJaJvNbRZiJ76BYRYIS88GE=;
+        t=1587573066; bh=kYhxxXI3LV4oeArlKvtdIWzgGCgrp9TkYQa4roEyFZw=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         X-NVConfidentiality:MIME-Version:Content-Type;
-        b=n+XDQOaaKQilw1L6BadmGvY2vfB3YvRuGRMzkFc8bUFF0NhqOWklFw5Ogk9j8yZHE
-         dTrdB0n88z+zOcC9SVfcAmOfERsyLp1ox96AZf3Na1mWkANVe8YKYN5Bp/DV9q77yg
-         yFFmTn2Sr5TUOMzHexODXizXbu6rnPbhzbeQ+rUMcMupgHBUyFs7yB/blFuSchKTWN
-         zdnPOM/H5qcTErLNHuQWPL/03KJx7oTr0pry6QQO/JN2SNlHWIGS3ADfAcefdRzbVy
-         qnWMfh9Uq+jGH2yCxSNAHG/aph9RK6jJTqGo1GWSkX+fgYNR5Y3S8G59CV8tDaCdDV
-         7AUfrSBuXvXIA==
+         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
+         Content-Type;
+        b=T7RZktl9cTBHMofEzSCsxdf1S+3ZDhzLuwZRI0zyxZVw7tIcw+94l6yWXPEP6dVeA
+         PmMWNv08o3ffVJm1nEz4QslQOcqaoXl1X+hFEYVv7s9e6pLTj5Lwu9pvG2fOth5lVe
+         EMuoaOywzlsBbEcm6GIpZY5bS+zCO76JGFPhGevcEZRSlB+8UBOWvSBhD6SMIQ7zL1
+         uJpg0Dk/YTx+ml3aQLRkqhBnQNFZm9oUyAv/o957PN3WO1JTS1N9pCCCALpLU2Cw5T
+         gpPc0LIw67FRmnuk3KOjcD8dahZqg68+fLxN2CEgQR2hTNcHkOjXUYD0slN/8US3Nh
+         87OUbfH2m5fSA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is to backport the upstream patches that fixes busy detection
-for long operation mmc commands by implementing Tegra specific timeout
-callback to switch between finite and infinite HW busy detection wait
-modes.
+commit 5e958e4aacf4
+("sdhci: tegra: Implement Tegra specific set_timeout callback")
 
+Tegra host supports HW busy detection and timeouts based on the
+count programmed in SDHCI_TIMEOUT_CONTROL register and max busy
+timeout it supports is 11s in finite busy wait mode.
 
-Sowjanya Komatineni (2):
-  sdhci: tegra: Implement Tegra specific set_timeout callback
-  sdhci: tegra: Enable MMC_CAP_WAIT_WHILE_BUSY host capability
+Some operations like SLEEP_AWAKE, ERASE and flush cache through
+SWITCH commands take longer than 11s and Tegra host supports
+infinite HW busy wait mode where HW waits forever till the card
+is busy without HW timeout.
 
- drivers/mmc/host/sdhci-tegra.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+This patch implements Tegra specific set_timeout sdhci_ops to allow
+switching between finite and infinite HW busy detection wait modes
+based on the device command expected operation time.
 
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+---
+ drivers/mmc/host/sdhci-tegra.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+index a25c3a4..fa8f6a4 100644
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -45,6 +45,7 @@
+ #define SDHCI_TEGRA_CAP_OVERRIDES_DQS_TRIM_SHIFT	8
+ 
+ #define SDHCI_TEGRA_VENDOR_MISC_CTRL			0x120
++#define SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT		BIT(0)
+ #define SDHCI_MISC_CTRL_ENABLE_SDR104			0x8
+ #define SDHCI_MISC_CTRL_ENABLE_SDR50			0x10
+ #define SDHCI_MISC_CTRL_ENABLE_SDHCI_SPEC_300		0x20
+@@ -1227,6 +1228,34 @@ static u32 sdhci_tegra_cqhci_irq(struct sdhci_host *host, u32 intmask)
+ 	return 0;
+ }
+ 
++static void tegra_sdhci_set_timeout(struct sdhci_host *host,
++				    struct mmc_command *cmd)
++{
++	u32 val;
++
++	/*
++	 * HW busy detection timeout is based on programmed data timeout
++	 * counter and maximum supported timeout is 11s which may not be
++	 * enough for long operations like cache flush, sleep awake, erase.
++	 *
++	 * ERASE_TIMEOUT_LIMIT bit of VENDOR_MISC_CTRL register allows
++	 * host controller to wait for busy state until the card is busy
++	 * without HW timeout.
++	 *
++	 * So, use infinite busy wait mode for operations that may take
++	 * more than maximum HW busy timeout of 11s otherwise use finite
++	 * busy wait mode.
++	 */
++	val = sdhci_readl(host, SDHCI_TEGRA_VENDOR_MISC_CTRL);
++	if (cmd && cmd->busy_timeout >= 11 * HZ)
++		val |= SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
++	else
++		val &= ~SDHCI_MISC_CTRL_ERASE_TIMEOUT_LIMIT;
++	sdhci_writel(host, val, SDHCI_TEGRA_VENDOR_MISC_CTRL);
++
++	__sdhci_set_timeout(host, cmd);
++}
++
+ static const struct cqhci_host_ops sdhci_tegra_cqhci_ops = {
+ 	.write_l    = tegra_cqhci_writel,
+ 	.enable	= sdhci_tegra_cqe_enable,
+@@ -1366,6 +1395,7 @@ static const struct sdhci_ops tegra210_sdhci_ops = {
+ 	.set_uhs_signaling = tegra_sdhci_set_uhs_signaling,
+ 	.voltage_switch = tegra_sdhci_voltage_switch,
+ 	.get_max_clock = tegra_sdhci_get_max_clock,
++	.set_timeout = tegra_sdhci_set_timeout,
+ };
+ 
+ static const struct sdhci_pltfm_data sdhci_tegra210_pdata = {
+@@ -1403,6 +1433,7 @@ static const struct sdhci_ops tegra186_sdhci_ops = {
+ 	.voltage_switch = tegra_sdhci_voltage_switch,
+ 	.get_max_clock = tegra_sdhci_get_max_clock,
+ 	.irq = sdhci_tegra_cqhci_irq,
++	.set_timeout = tegra_sdhci_set_timeout,
+ };
+ 
+ static const struct sdhci_pltfm_data sdhci_tegra186_pdata = {
 -- 
 2.7.4
 
