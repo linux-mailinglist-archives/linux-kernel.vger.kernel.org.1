@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E695C1B3C23
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F181B40F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgDVKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52120 "EHLO mail.kernel.org"
+        id S1732110AbgDVKta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727055AbgDVKCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:49 -0400
+        id S1726604AbgDVKNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D11120787;
-        Wed, 22 Apr 2020 10:02:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A05120575;
+        Wed, 22 Apr 2020 10:13:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549768;
-        bh=/shy0GdN/NXun4N9nEB8CicnvknVFEkqKuMDz9PbvHQ=;
+        s=default; t=1587550400;
+        bh=EPpaxcS8UexAx2lSQrSz+suQLiTjBG6z20uWIReh5LU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hm1nDchaNwdko9Kd6MuQxt1Gusqt5q3DFVA9pWooFbZVBBtWNPP+Lfibag4xKas4p
-         AnJqPl0cXtHdLo0NNzl5Sp+aJJKltdbMB7TbUKZiTgmjSS4ANw1d+1aKc1M+YCrMX/
-         FfCn03kBLbG9alKxIAUYxoSdAQX1IRoZW45vKqrE=
+        b=dEpFmi8+28k23fsj7hYQP521hzXwdYLduWLH7VO2+6D8G79UectvwOaWLGjtXo+8t
+         kltj3kOYNZCVGwTZYZ/nEpo75P4ZGALIbFOr/r0g18fqfJLxlkjTevXps0O5hBJA47
+         gn0TFhaT6RVRNjgILhRN6iRHwC0c55lPI/jdCxPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Evalds Iodzevics <evalds.iodzevics@gmail.com>
-Subject: [PATCH 4.4 098/100] x86/CPU: Add native CPUID variants returning a single datum
-Date:   Wed, 22 Apr 2020 11:57:08 +0200
-Message-Id: <20200422095040.523364127@linuxfoundation.org>
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Scott Wood <oss@buserror.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 103/199] powerpc/fsl_booke: Avoid creating duplicate tlb1 entry
+Date:   Wed, 22 Apr 2020 11:57:09 +0200
+Message-Id: <20200422095108.143377880@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-commit 5dedade6dfa243c130b85d1e4daba6f027805033 upstream.
+[ Upstream commit aa4113340ae6c2811e046f08c2bc21011d20a072 ]
 
-... similarly to the cpuid_<reg>() variants.
+In the current implementation, the call to loadcam_multi() is wrapped
+between switch_to_as1() and restore_to_as0() calls so, when it tries
+to create its own temporary AS=1 TLB1 entry, it ends up duplicating
+the existing one created by switch_to_as1(). Add a check to skip
+creating the temporary entry if already running in AS=1.
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: http://lkml.kernel.org/r/20170109114147.5082-2-bp@alien8.de
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Evalds Iodzevics <evalds.iodzevics@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: d9e1831a4202 ("powerpc/85xx: Load all early TLB entries at once")
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Scott Wood <oss@buserror.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200123111914.2565-1-laurentiu.tudor@nxp.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/processor.h |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/powerpc/mm/tlb_nohash_low.S | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -212,6 +212,24 @@ static inline void native_cpuid(unsigned
- 	    : "memory");
- }
+diff --git a/arch/powerpc/mm/tlb_nohash_low.S b/arch/powerpc/mm/tlb_nohash_low.S
+index 048b8e9f44928..63964af9a162e 100644
+--- a/arch/powerpc/mm/tlb_nohash_low.S
++++ b/arch/powerpc/mm/tlb_nohash_low.S
+@@ -400,7 +400,7 @@ _GLOBAL(set_context)
+  * extern void loadcam_entry(unsigned int index)
+  *
+  * Load TLBCAM[index] entry in to the L2 CAM MMU
+- * Must preserve r7, r8, r9, and r10
++ * Must preserve r7, r8, r9, r10 and r11
+  */
+ _GLOBAL(loadcam_entry)
+ 	mflr	r5
+@@ -436,6 +436,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
+  */
+ _GLOBAL(loadcam_multi)
+ 	mflr	r8
++	/* Don't switch to AS=1 if already there */
++	mfmsr	r11
++	andi.	r11,r11,MSR_IS
++	bne	10f
  
-+#define native_cpuid_reg(reg)					\
-+static inline unsigned int native_cpuid_##reg(unsigned int op)	\
-+{								\
-+	unsigned int eax = op, ebx, ecx = 0, edx;		\
-+								\
-+	native_cpuid(&eax, &ebx, &ecx, &edx);			\
-+								\
-+	return reg;						\
-+}
+ 	/*
+ 	 * Set up temporary TLB entry that is the same as what we're
+@@ -461,6 +465,7 @@ _GLOBAL(loadcam_multi)
+ 	mtmsr	r6
+ 	isync
+ 
++10:
+ 	mr	r9,r3
+ 	add	r10,r3,r4
+ 2:	bl	loadcam_entry
+@@ -469,6 +474,10 @@ _GLOBAL(loadcam_multi)
+ 	mr	r3,r9
+ 	blt	2b
+ 
++	/* Don't return to AS=0 if we were in AS=1 at function start */
++	andi.	r11,r11,MSR_IS
++	bne	3f
 +
-+/*
-+ * Native CPUID functions returning a single datum.
-+ */
-+native_cpuid_reg(eax)
-+native_cpuid_reg(ebx)
-+native_cpuid_reg(ecx)
-+native_cpuid_reg(edx)
-+
- static inline void load_cr3(pgd_t *pgdir)
- {
- 	write_cr3(__pa(pgdir));
+ 	/* Return to AS=0 and clear the temporary entry */
+ 	mfmsr	r6
+ 	rlwinm.	r6,r6,0,~(MSR_IS|MSR_DS)
+@@ -484,6 +493,7 @@ _GLOBAL(loadcam_multi)
+ 	tlbwe
+ 	isync
+ 
++3:
+ 	mtlr	r8
+ 	blr
+ #endif
+-- 
+2.20.1
+
 
 
