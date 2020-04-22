@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DBA1B46DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495DA1B4722
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgDVOJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:09:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59046 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgDVOJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:09:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 817B3ABCF;
-        Wed, 22 Apr 2020 14:09:02 +0000 (UTC)
-Subject: Re: [RFC PATCH 4/4] mm: Add PG_zero support
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20200412090945.GA19582@open-light-1.localdomain>
- <20200412101223.GK21484@bombadil.infradead.org>
- <5eb37d79-6420-fcb9-2b4c-6cc6194afcd9@linux.intel.com>
- <20200413140537.eb674579cf8c71b4e20581ab@linux-foundation.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <344a3a78-62ad-48fe-40cf-18993175d1e0@suse.cz>
-Date:   Wed, 22 Apr 2020 16:09:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727901AbgDVOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:22:14 -0400
+Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:34267 "EHLO
+        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726479AbgDVOWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 10:22:13 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.4.231])
+        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 984EE4F477ED;
+        Wed, 22 Apr 2020 16:13:05 +0200 (CEST)
+Received: from arch.lan (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 22 Apr
+ 2020 16:13:04 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     <linux-iio@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <jic23@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Subject: [PATCH 0/6] Add support for SCD30 sensor
+Date:   Wed, 22 Apr 2020 16:11:29 +0200
+Message-ID: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-In-Reply-To: <20200413140537.eb674579cf8c71b4e20581ab@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [89.70.31.203]
+X-ClientProxiedBy: DAG3EX2.emp2.local (172.16.2.22) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 5832442993075313687
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeejgdeikecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvufffkffoggfgtghisehtkeertdertddtnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecukfhppedtrddtrddtrddtpdekledrjedtrdefuddrvddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehjihgtvdefsehkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/20 11:05 PM, Andrew Morton wrote:
-> On Mon, 13 Apr 2020 08:11:59 -0700 Alexander Duyck <alexander.h.duyck@linux.intel.com> wrote:
-> 
->> In addition, unlike madvising the page away there is a pretty 
->> significant performance penalty for having to clear the page a second 
->> time when the page is split or merged.
-> 
-> I wonder if there might be an issue with increased memory traffic (and
-> increased energy consumption, etc).  If a page is zeroed immediately
-> before getting data written into it (eg, plain old file write(),
-> anonymous pagefault) then we can expect that those 4096 zeroes will be
-> in CPU cache and mostly not written back.  But if that page was zeroed
-> a "long" time ago, the caches will probably have been written back. 
-> Net result: we go from 4k of memory traffic for a 4k page up to 8k of
-> memory traffic?
+Following series adds support for Sensirion SCD30 sensor module capable of
+measuring carbon dioxide, temperature and relative humidity. CO2 measurements
+base on NDIR principle while temperature and relative humidity are measured by
+the on board SHT31. As for sensor communication, both I2C and serial interfaces
+are supported.
 
-Heh, I was quite sure that this is not the first time background zeroing is
-proposed, so I went to google for it... and found that one BSD kernel actually
-removed this functionality in 2016 [1] and this was one of the reasons.
+Tomasz Duszynski (6):
+  iio: chemical: scd30: add core driver
+  iio: chemical: scd30: add I2C interface driver
+  iio: chemical: scd30: add serial interface driver
+  Documentation: ABI: testing: scd30: document iio attributes
+  dt-bindings: iio: scd30: add device binding file
+  MAINTAINERS: add myself as a SCD30 driver maintainer
 
-[1]
-https://gitweb.dragonflybsd.org/dragonfly.git/commitdiff/afd2da4dc9056ea79cdf15e8a9386a3d3998f33e
+ Documentation/ABI/testing/sysfs-bus-iio-scd30 |  97 +++
+ .../iio/chemical/sensirion,scd30.yaml         |  71 ++
+ MAINTAINERS                                   |   9 +
+ drivers/iio/chemical/Kconfig                  |  33 +
+ drivers/iio/chemical/Makefile                 |   3 +
+ drivers/iio/chemical/scd30.h                  |  72 ++
+ drivers/iio/chemical/scd30_core.c             | 796 ++++++++++++++++++
+ drivers/iio/chemical/scd30_i2c.c              | 141 ++++
+ drivers/iio/chemical/scd30_serial.c           | 262 ++++++
+ 9 files changed, 1484 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
+ create mode 100644 drivers/iio/chemical/scd30.h
+ create mode 100644 drivers/iio/chemical/scd30_core.c
+ create mode 100644 drivers/iio/chemical/scd30_i2c.c
+ create mode 100644 drivers/iio/chemical/scd30_serial.c
 
-> Also, the name CONFIG_ZERO_PAGE sounds like it has something to do with
-> the long established "zero page".  Confusing.  CONFIG_PREZERO_PAGE,
-> maybe?
-> 
+--
+2.26.1
 
