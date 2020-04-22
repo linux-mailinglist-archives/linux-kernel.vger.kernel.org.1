@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C171B3C76
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E379C1B4169
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgDVKF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
+        id S1729086AbgDVKKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:10:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727080AbgDVKFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:05:53 -0400
+        id S1729030AbgDVKKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:10:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46CEB2075A;
-        Wed, 22 Apr 2020 10:05:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7EF2070B;
+        Wed, 22 Apr 2020 10:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549952;
-        bh=vzyeGWSnxKHvry/0WkMZLr9DqVuc/TIqJByLXmq2mH8=;
+        s=default; t=1587550238;
+        bh=TibIueb0M+lOJQSe1nhs/wwZ4oaHWerhdzbeIDpF7PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBhCMwOsLqM5nPnB46P0vHNLaTm+J0CyV3vAbr+KPJSHFrGBk8n4gDlAFgHYq5Tzn
-         eFwxCHWLiO4mofSuZ1bwpJCn6QT74hE0COBHyDqPkY2J1AZIEeAxFIRr2hAEoSfYAH
-         GI16PTNDcBxYpLhX3LKMVwejJ1XP+4reYu7WrPoA=
+        b=OP+rlgX16N09QJTLaj6a56+/uTXrqjL3tzH3t6pQyozDoCUk+gI+MT0BwHHHmB9xg
+         yZT4+VSK4vprgd+iFdPu1VXzeuW59sv+v1VARrT0BwBxvmegQMLb0QmteRZS/+Bpy+
+         33u5kZjbgKYvUQiD+RWRGZQWr/bQ4Vidu1hbSANo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 074/125] ASoC: Intel: mrfld: fix incorrect check on p->sink
-Date:   Wed, 22 Apr 2020 11:56:31 +0200
-Message-Id: <20200422095045.153563016@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 066/199] ALSA: hda: Initialize power_state field properly
+Date:   Wed, 22 Apr 2020 11:56:32 +0200
+Message-Id: <20200422095104.828618585@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit f5e056e1e46fcbb5f74ce560792aeb7d57ce79e6 upstream.
+commit 183ab39eb0ea9879bb68422a83e65f750f3192f0 upstream.
 
-The check on p->sink looks bogus, I believe it should be p->source
-since the following code blocks are related to p->source. Fix
-this by replacing p->sink with p->source.
+The recent commit 98081ca62cba ("ALSA: hda - Record the current power
+state before suspend/resume calls") made the HD-audio driver to store
+the PM state in power_state field.  This forgot, however, the
+initialization at power up.  Although the codec drivers usually don't
+need to refer to this field in the normal operation, let's initialize
+it properly for consistency.
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Copy-paste error")
-Link: https://lore.kernel.org/r/20191119113640.166940-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 98081ca62cba ("ALSA: hda - Record the current power state before suspend/resume calls")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/intel/atom/sst-atom-controls.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_codec.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1343,7 +1343,7 @@ int sst_send_pipe_gains(struct snd_soc_d
- 				dai->capture_widget->name);
- 		w = dai->capture_widget;
- 		snd_soc_dapm_widget_for_each_source_path(w, p) {
--			if (p->connected && !p->connected(w, p->sink))
-+			if (p->connected && !p->connected(w, p->source))
- 				continue;
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -942,6 +942,7 @@ int snd_hda_codec_new(struct hda_bus *bu
  
- 			if (p->connect &&  p->source->power &&
+ 	/* power-up all before initialization */
+ 	hda_set_power_state(codec, AC_PWRST_D0);
++	codec->core.dev.power.power_state = PMSG_ON;
+ 
+ 	snd_hda_codec_proc_new(codec);
+ 
 
 
