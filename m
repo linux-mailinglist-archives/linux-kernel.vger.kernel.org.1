@@ -2,136 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09851B444A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4131B4511
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgDVMSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:18:51 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2872 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729017AbgDVMSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:18:10 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6D3479F84AA3A02A7E97;
-        Wed, 22 Apr 2020 20:18:05 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.154) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 22 Apr 2020
- 20:18:03 +0800
-Subject: Re: [PATCH] xfrm: policy: Only use mark as policy lookup key
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-References: <20200421143149.45108-1-yuehaibing@huawei.com>
- <20200422093344.GY13121@gauss3.secunet.de>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lucien.xin@gmail.com>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
-Date:   Wed, 22 Apr 2020 20:18:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        id S1726362AbgDVM0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:26:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725810AbgDVM0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:26:34 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D498620882;
+        Wed, 22 Apr 2020 12:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587558394;
+        bh=WoG2dRF24011ASSJYkMybNHc6GOGg8Zw81SdJa7uWmA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JL01+7NyGCwL4SlN73HMZYvZs4+e0Kpgw5i4ViVCGIdgw9rRAAkJE1o9XG9xEXdzs
+         bmrk6baGNDggzYYVj4vUQIpIcMlF4kuKxlK/2MGRUlIeJLKFvmKPfouVDoupzAal9P
+         UJoM+AYccAuas6549mdjRFCs08BhdDEiaOjCYUxY=
+Date:   Wed, 22 Apr 2020 13:26:27 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v4 00/11] Rework READ_ONCE() to improve codegen
+Message-ID: <20200422122626.GA676@willie-the-truck>
+References: <20200421151537.19241-1-will@kernel.org>
+ <CAHk-=wjjz927czq5zKkV1TUvajbWZGsPeFBSgnQftLNWmCcoSg@mail.gmail.com>
+ <20200422081838.GA29541@willie-the-truck>
+ <20200422113721.GA20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200422093344.GY13121@gauss3.secunet.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422113721.GA20730@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/22 17:33, Steffen Klassert wrote:
-> On Tue, Apr 21, 2020 at 10:31:49PM +0800, YueHaibing wrote:
->> While update xfrm policy as follow:
->>
->> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>  priority 1 mark 0 mask 0x10
->> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>  priority 2 mark 0 mask 0x00
->> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>  priority 2 mark 0 mask 0x10
->>
->> We get this warning:
->>
->> WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
->> Kernel panic - not syncing: panic_on_warn set ...
->> CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
->> Call Trace:
->> RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
->>  xfrm_policy_inexact_insert+0x70/0x330
->>  xfrm_policy_insert+0x1df/0x250
->>  xfrm_add_policy+0xcc/0x190 [xfrm_user]
->>  xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
->>  netlink_rcv_skb+0x4c/0x120
->>  xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
->>  netlink_unicast+0x1b3/0x270
->>  netlink_sendmsg+0x350/0x470
->>  sock_sendmsg+0x4f/0x60
->>
->> Policy C and policy A has the same mark.v and mark.m, so policy A is
->> matched in first round lookup while updating C. However policy C and
->> policy B has same mark and priority, which also leads to matched. So
->> the WARN_ON is triggered.
->>
->> xfrm policy lookup should only be matched when the found policy has the
->> same lookup keys (mark.v & mark.m) no matter priority.
->>
->> Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  net/xfrm/xfrm_policy.c | 16 +++++-----------
->>  1 file changed, 5 insertions(+), 11 deletions(-)
->>
->> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
->> index 297b2fd..67d0469 100644
->> --- a/net/xfrm/xfrm_policy.c
->> +++ b/net/xfrm/xfrm_policy.c
->> @@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
->>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->>  				   struct xfrm_policy *pol)
->>  {
->> -	u32 mark = policy->mark.v & policy->mark.m;
->> -
->> -	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
->> -		return true;
->> -
->> -	if ((mark & pol->mark.m) == pol->mark.v &&
->> -	    policy->priority == pol->priority)
+On Wed, Apr 22, 2020 at 01:37:21PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 22, 2020 at 09:18:39AM +0100, Will Deacon wrote:
+> > On Tue, Apr 21, 2020 at 11:42:56AM -0700, Linus Torvalds wrote:
+> > > On Tue, Apr 21, 2020 at 8:15 AM Will Deacon <will@kernel.org> wrote:
+> > > >
+> > > > It's me again. This is version four of the READ_ONCE() codegen improvement
+> > > > patches [...]
+> > > 
+> > > Let's just plan on biting the bullet and do this for 5.8. I'm assuming
+> > > that I'll juet get a pull request from you?
+> > 
+> > Sure thing, thanks. I'll get it into -next along with the arm64 bits for
+> > 5.8, but I'll send it as a separate pull when the time comes. I'll also
+> > include the sparc32 changes because otherwise the build falls apart and
+> > we'll get an army of angry robots yelling at us (they seem to form the
+> > majority of the active sparc32 user base afaict).
 > 
-> If you remove the priority check, you can't insert policies with matching
-> mark and different priorities anymore. This brings us back the old bug.
+> So I'm obviously all for these patches; do note however that it collides
+> most mighty with the KCSAN stuff, which I believe is still pending.
 
-Yes, this is true.
+That stuff has been pending for the last two releases afaict :/
 
-> 
-> I plan to apply the patch from Xin Long, this seems to be the right way
-> to address this problem.
+Anyway, I'm happy to either provide a branch with this series on, or do
+the merge myself, or send this again based on something else. What works
+best for you? The only thing I'd obviously like to avoid is tightly
+coupling this to KCSAN if there's a chance of it missing the merge window
+again.
 
-That still brings an issue, update like this:
+Cheers,
 
-policy A (mark.v = 1, mark.m = 0, priority = 1)
-policy B (mark.v = 1, mark.m = 0, priority = 1)
-
-A and B will all in the list.
-
-So should do this:
-
- static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
-                                   struct xfrm_policy *pol)
- {
--       u32 mark = policy->mark.v & policy->mark.m;
--
--       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
--               return true;
--
--       if ((mark & pol->mark.m) == pol->mark.v &&
-+       if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m) &&
-            policy->priority == pol->priority)
-                return true;
-
-
-
-> 
-> .
-> 
-
+Will
