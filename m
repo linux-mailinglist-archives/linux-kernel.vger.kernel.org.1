@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E551B3C0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C554E1B3D52
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgDVKCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50876 "EHLO mail.kernel.org"
+        id S1729462AbgDVKN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:13:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726928AbgDVKCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:03 -0400
+        id S1728989AbgDVKNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9651B20774;
-        Wed, 22 Apr 2020 10:02:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F9342070B;
+        Wed, 22 Apr 2020 10:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549723;
-        bh=NR6BDxCl2kUKKfDXUZWP84PAIdF5Fq3+/GAPcRgkRD4=;
+        s=default; t=1587550433;
+        bh=o7LQRhGCJHvu2k5dRWH+W5iMaruiTiVb/uaYUbX0qCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yq5qd+MhJkeaBfx/khvZaV2yoRkouUEU28QL2WcgQNPgx8oLQ1S1T0Vr5Sq4UGSV9
-         dNKmWUZt9OIERr+69wqSdHgf2k+6LgzcudtKNov3e1oEBBT1ibkl3c9GmlGXpAYdif
-         KjScBTFV9vTfLcsAkQzezCCDW/dtkDpIEisrzs/w=
+        b=1TNKYHZgrJyhPlMKMfR8zM1Nv+pqCRVPV+T+5mE4MuDh7NuYXhcqXoV3AyZW7lVuy
+         kpEgHOx+YxB0DPDKVXjKGDsiE29hd/btp0FAtzLjK1xiVa6Rk13bAoZawi+bXpkzTv
+         86yWfmVDOmSBKJTqFT9cGUIFEOL4fmRWQpXRiwyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mohit Aggarwal <maggarwa@codeaurora.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 080/100] rtc: pm8xxx: Fix issue in RTC write path
+        stable@vger.kernel.org, Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 4.19 06/64] arm, bpf: Fix bugs with ALU64 {RSH, ARSH} BPF_K shift by 0
 Date:   Wed, 22 Apr 2020 11:56:50 +0200
-Message-Id: <20200422095037.442615330@linuxfoundation.org>
+Message-Id: <20200422095013.541945961@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,116 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohit Aggarwal <maggarwa@codeaurora.org>
+From: Luke Nelson <lukenels@cs.washington.edu>
 
-[ Upstream commit 83220bf38b77a830f8e62ab1a0d0408304f9b966 ]
+commit bb9562cf5c67813034c96afb50bd21130a504441 upstream.
 
-In order to set time in rtc, need to disable
-rtc hw before writing into rtc registers.
+The current arm BPF JIT does not correctly compile RSH or ARSH when the
+immediate shift amount is 0. This causes the "rsh64 by 0 imm" and "arsh64
+by 0 imm" BPF selftests to hang the kernel by reaching an instruction
+the verifier determines to be unreachable.
 
-Also fixes disabling of alarm while setting
-rtc time.
+The root cause is in how immediate right shifts are encoded on arm.
+For LSR and ASR (logical and arithmetic right shift), a bit-pattern
+of 00000 in the immediate encodes a shift amount of 32. When the BPF
+immediate is 0, the generated code shifts by 32 instead of the expected
+behavior (a no-op).
 
-Signed-off-by: Mohit Aggarwal <maggarwa@codeaurora.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+This patch fixes the bugs by adding an additional check if the BPF
+immediate is 0. After the change, the above mentioned BPF selftests pass.
+
+Fixes: 39c13c204bb11 ("arm: eBPF JIT compiler")
+Co-developed-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20200408181229.10909-1-luke.r.nels@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/rtc/rtc-pm8xxx.c |   49 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 38 insertions(+), 11 deletions(-)
 
---- a/drivers/rtc/rtc-pm8xxx.c
-+++ b/drivers/rtc/rtc-pm8xxx.c
-@@ -74,16 +74,18 @@ struct pm8xxx_rtc {
- /*
-  * Steps to write the RTC registers.
-  * 1. Disable alarm if enabled.
-- * 2. Write 0x00 to LSB.
-- * 3. Write Byte[1], Byte[2], Byte[3] then Byte[0].
-- * 4. Enable alarm if disabled in step 1.
-+ * 2. Disable rtc if enabled.
-+ * 3. Write 0x00 to LSB.
-+ * 4. Write Byte[1], Byte[2], Byte[3] then Byte[0].
-+ * 5. Enable rtc if disabled in step 2.
-+ * 6. Enable alarm if disabled in step 1.
-  */
- static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
- {
- 	int rc, i;
- 	unsigned long secs, irq_flags;
--	u8 value[NUM_8_BIT_RTC_REGS], alarm_enabled = 0;
--	unsigned int ctrl_reg;
-+	u8 value[NUM_8_BIT_RTC_REGS], alarm_enabled = 0, rtc_disabled = 0;
-+	unsigned int ctrl_reg, rtc_ctrl_reg;
- 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
- 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
+---
+ arch/arm/net/bpf_jit_32.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -930,7 +930,11 @@ static inline void emit_a32_rsh_i64(cons
+ 	rd = arm_bpf_get_reg64(dst, tmp, ctx);
  
-@@ -92,23 +94,38 @@ static int pm8xxx_rtc_set_time(struct de
+ 	/* Do LSR operation */
+-	if (val < 32) {
++	if (val == 0) {
++		/* An immediate value of 0 encodes a shift amount of 32
++		 * for LSR. To shift by 0, don't do anything.
++		 */
++	} else if (val < 32) {
+ 		emit(ARM_MOV_SI(tmp2[1], rd[1], SRTYPE_LSR, val), ctx);
+ 		emit(ARM_ORR_SI(rd[1], tmp2[1], rd[0], SRTYPE_ASL, 32 - val), ctx);
+ 		emit(ARM_MOV_SI(rd[0], rd[0], SRTYPE_LSR, val), ctx);
+@@ -956,7 +960,11 @@ static inline void emit_a32_arsh_i64(con
+ 	rd = arm_bpf_get_reg64(dst, tmp, ctx);
  
- 	rtc_tm_to_time(tm, &secs);
- 
-+	dev_dbg(dev, "Seconds value to be written to RTC = %lu\n", secs);
-+
- 	for (i = 0; i < NUM_8_BIT_RTC_REGS; i++) {
- 		value[i] = secs & 0xFF;
- 		secs >>= 8;
- 	}
- 
--	dev_dbg(dev, "Seconds value to be written to RTC = %lu\n", secs);
--
- 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
- 
--	rc = regmap_read(rtc_dd->regmap, regs->ctrl, &ctrl_reg);
-+	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
- 	if (rc)
- 		goto rtc_rw_fail;
- 
- 	if (ctrl_reg & regs->alarm_en) {
- 		alarm_enabled = 1;
- 		ctrl_reg &= ~regs->alarm_en;
--		rc = regmap_write(rtc_dd->regmap, regs->ctrl, ctrl_reg);
-+		rc = regmap_write(rtc_dd->regmap, regs->alarm_ctrl, ctrl_reg);
-+		if (rc) {
-+			dev_err(dev, "Write to RTC Alarm control register failed\n");
-+			goto rtc_rw_fail;
-+		}
-+	}
-+
-+	/* Disable RTC H/w before writing on RTC register */
-+	rc = regmap_read(rtc_dd->regmap, regs->ctrl, &rtc_ctrl_reg);
-+	if (rc)
-+		goto rtc_rw_fail;
-+
-+	if (rtc_ctrl_reg & PM8xxx_RTC_ENABLE) {
-+		rtc_disabled = 1;
-+		rtc_ctrl_reg &= ~PM8xxx_RTC_ENABLE;
-+		rc = regmap_write(rtc_dd->regmap, regs->ctrl, rtc_ctrl_reg);
- 		if (rc) {
- 			dev_err(dev, "Write to RTC control register failed\n");
- 			goto rtc_rw_fail;
-@@ -137,11 +154,21 @@ static int pm8xxx_rtc_set_time(struct de
- 		goto rtc_rw_fail;
- 	}
- 
-+	/* Enable RTC H/w after writing on RTC register */
-+	if (rtc_disabled) {
-+		rtc_ctrl_reg |= PM8xxx_RTC_ENABLE;
-+		rc = regmap_write(rtc_dd->regmap, regs->ctrl, rtc_ctrl_reg);
-+		if (rc) {
-+			dev_err(dev, "Write to RTC control register failed\n");
-+			goto rtc_rw_fail;
-+		}
-+	}
-+
- 	if (alarm_enabled) {
- 		ctrl_reg |= regs->alarm_en;
--		rc = regmap_write(rtc_dd->regmap, regs->ctrl, ctrl_reg);
-+		rc = regmap_write(rtc_dd->regmap, regs->alarm_ctrl, ctrl_reg);
- 		if (rc) {
--			dev_err(dev, "Write to RTC control register failed\n");
-+			dev_err(dev, "Write to RTC Alarm control register failed\n");
- 			goto rtc_rw_fail;
- 		}
- 	}
+ 	/* Do ARSH operation */
+-	if (val < 32) {
++	if (val == 0) {
++		/* An immediate value of 0 encodes a shift amount of 32
++		 * for ASR. To shift by 0, don't do anything.
++		 */
++	} else if (val < 32) {
+ 		emit(ARM_MOV_SI(tmp2[1], rd[1], SRTYPE_LSR, val), ctx);
+ 		emit(ARM_ORR_SI(rd[1], tmp2[1], rd[0], SRTYPE_ASL, 32 - val), ctx);
+ 		emit(ARM_MOV_SI(rd[0], rd[0], SRTYPE_ASR, val), ctx);
 
 
