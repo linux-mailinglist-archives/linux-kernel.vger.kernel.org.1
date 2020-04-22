@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F9F1B3F11
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D171B402E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731249AbgDVKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32844 "EHLO mail.kernel.org"
+        id S1730049AbgDVKTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730426AbgDVKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:24:29 -0400
+        id S1729919AbgDVKSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACC882075A;
-        Wed, 22 Apr 2020 10:24:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CE1B2075A;
+        Wed, 22 Apr 2020 10:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551069;
-        bh=cpi8xhq+oGMQDR0pcONOu5VnjZ2jS7IwZWsgpVsV+8s=;
+        s=default; t=1587550690;
+        bh=ha+CAQ7iEhlPF52xa10ZLaHKRCJQ1ZS6XYdgwGYgaWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iD+4igIjAGjChRl6LgDU+5PjVZkDG+Jk2MwZEzeZu2a8HcRrGn05n8JnoUshishQ8
-         /USGlP5pbSMa/an6wBPgjJ727yDNc68f91a+sUx4tu767Agvlgltsjv7f7zqoYGmfI
-         X94FuQbmvyOi75YSN3IenPmrOBSYn8UCFRmbOTBU=
+        b=DCkjrSXvni1A9F5d+K4eJ792g+miATOzt4tNRGV/CGV5RAOeBShKzy3hrWLfzv+6e
+         snAK/LB3XCv6M+SLBLyKk/7JYtnWXlMX8ePTyLF2mPcTduWEwxdjtdPhjmeT3yx54P
+         cR544kNxjmI7C+oUpl87vFhRgVl1qGS/gbKW8Ww0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Roth <mdroth@linux.vnet.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 088/166] btrfs: add RCU locks around block group initialization
+Subject: [PATCH 5.4 054/118] KVM: PPC: Book3S HV: Fix H_CEDE return code for nested guests
 Date:   Wed, 22 Apr 2020 11:56:55 +0200
-Message-Id: <20200422095058.125383678@linuxfoundation.org>
+Message-Id: <20200422095040.897701454@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Michael Roth <mdroth@linux.vnet.ibm.com>
 
-[ Upstream commit 29566c9c773456467933ee22bbca1c2b72a3506c ]
+[ Upstream commit 1f50cc1705350a4697923203fedd7d8fb1087fe2 ]
 
-The space_info list is normally RCU protected and should be traversed
-with rcu_read_lock held. There's a warning
+The h_cede_tm kvm-unit-test currently fails when run inside an L1 guest
+via the guest/nested hypervisor.
 
-  [29.104756] WARNING: suspicious RCU usage
-  [29.105046] 5.6.0-rc4-next-20200305 #1 Not tainted
-  [29.105231] -----------------------------
-  [29.105401] fs/btrfs/block-group.c:2011 RCU-list traversed in non-reader section!!
+  ./run-tests.sh -v
+  ...
+  TESTNAME=h_cede_tm TIMEOUT=90s ACCEL= ./powerpc/run powerpc/tm.elf -smp 2,threads=2 -machine cap-htm=on -append "h_cede_tm"
+  FAIL h_cede_tm (2 tests, 1 unexpected failures)
 
-pointing out that the locking is missing in btrfs_read_block_groups.
-However this is not necessary as the list traversal happens at mount
-time when there's no other thread potentially accessing the list.
+While the test relates to transactional memory instructions, the actual
+failure is due to the return code of the H_CEDE hypercall, which is
+reported as 224 instead of 0. This happens even when no TM instructions
+are issued.
 
-To fix the warning and for consistency let's add the RCU lock/unlock,
-the code won't be affected much as it's doing some lightweight
-operations.
+224 is the value placed in r3 to execute a hypercall for H_CEDE, and r3
+is where the caller expects the return code to be placed upon return.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+In the case of guest running under a nested hypervisor, issuing H_CEDE
+causes a return from H_ENTER_NESTED. In this case H_CEDE is
+specially-handled immediately rather than later in
+kvmppc_pseries_do_hcall() as with most other hcalls, but we forget to
+set the return code for the caller, hence why kvm-unit-test sees the
+224 return code and reports an error.
+
+Guest kernels generally don't check the return value of H_CEDE, so
+that likely explains why this hasn't caused issues outside of
+kvm-unit-tests so far.
+
+Fix this by setting r3 to 0 after we finish processing the H_CEDE.
+
+RHBZ: 1778556
+
+Fixes: 4bad77799fed ("KVM: PPC: Book3S HV: Handle hypercalls correctly when nested")
+Cc: linuxppc-dev@ozlabs.org
+Cc: David Gibson <david@gibson.dropbear.id.au>
+Cc: Paul Mackerras <paulus@ozlabs.org>
+Signed-off-by: Michael Roth <mdroth@linux.vnet.ibm.com>
+Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-group.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/kvm/book3s_hv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 7f09147872dc7..c9a3bbc8c6afb 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1987,6 +1987,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 		btrfs_release_path(path);
- 	}
- 
-+	rcu_read_lock();
- 	list_for_each_entry_rcu(space_info, &info->space_info, list) {
- 		if (!(btrfs_get_alloc_profile(info, space_info->flags) &
- 		      (BTRFS_BLOCK_GROUP_RAID10 |
-@@ -2007,6 +2008,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 				list)
- 			inc_block_group_ro(cache, 1);
- 	}
-+	rcu_read_unlock();
- 
- 	btrfs_init_global_block_rsv(info);
- 	ret = check_chunk_block_group_mappings(info);
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 36abbe3c346df..e2183fed947d4 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3623,6 +3623,7 @@ int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
+ 		if (trap == BOOK3S_INTERRUPT_SYSCALL && !vcpu->arch.nested &&
+ 		    kvmppc_get_gpr(vcpu, 3) == H_CEDE) {
+ 			kvmppc_nested_cede(vcpu);
++			kvmppc_set_gpr(vcpu, 3, 0);
+ 			trap = 0;
+ 		}
+ 	} else {
 -- 
 2.20.1
 
