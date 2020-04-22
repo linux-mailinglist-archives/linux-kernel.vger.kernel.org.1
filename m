@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0981B4189
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82CC1B3F7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731957AbgDVKxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:53:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36290 "EHLO mail.kernel.org"
+        id S1730407AbgDVKh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728220AbgDVKJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:30 -0400
+        id S1729953AbgDVKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F99A20575;
-        Wed, 22 Apr 2020 10:09:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E660221556;
+        Wed, 22 Apr 2020 10:22:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550170;
-        bh=KErQhGHc/OJRqK6E4NzknUAPebN5O4IpqYQ8HLmCtiY=;
+        s=default; t=1587550938;
+        bh=aWAXO2NOidbzbTCCk/CUCUqwMnMHKbmmDl/JPB73t+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AmmnoSkckUUyujVZm9pSRiLqUJoWpHtwSDg/elUXfegfuJgNnDnQdSSOcwQsdXTw6
-         58BZ2qnzTmfoTOgjj0n1b9zQ0bKHMXbF15Jmz2jRV7mWN3b2eebMHlr172gD1CuTFz
-         3+f8lRG8AQCo/fAnfspXUe2pJM16iwpYS0xQACBA=
+        b=bKS+H8/JjjVNU0lV7jLy1l0d0rQXveT150W7Z4G1f2DScZLzq35Ct1fMwOYUtWhYb
+         CQXg/fUDiuMB0vvfOAQ10BXWh8RJR1+UYS0CVs3UB6UCx16/8hvB6GFA0mbxeymEp+
+         GTfWovOxzFyMKgpocsPaFLS+AWdNJzl3Wq1nspAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.14 037/199] usb: gadget: composite: Inform controller driver of self-powered
+        stable@vger.kernel.org, cki-project@redhat.com,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.6 036/166] block, bfq: turn put_queue into release_process_ref in __bfq_bic_change_cgroup
 Date:   Wed, 22 Apr 2020 11:56:03 +0200
-Message-Id: <20200422095101.731839198@linuxfoundation.org>
+Message-Id: <20200422095052.694362148@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-commit 5e5caf4fa8d3039140b4548b6ab23dd17fce9b2c upstream.
+commit c8997736650060594845e42c5d01d3118aec8d25 upstream.
 
-Different configuration/condition may draw different power. Inform the
-controller driver of the change so it can respond properly (e.g.
-GET_STATUS request). This fixes an issue with setting MaxPower from
-configfs. The composite driver doesn't check this value when setting
-self-powered.
+A bfq_put_queue() may be invoked in __bfq_bic_change_cgroup(). The
+goal of this put is to release a process reference to a bfq_queue. But
+process-reference releases may trigger also some extra operation, and,
+to this goal, are handled through bfq_release_process_ref(). So, turn
+the invocation of bfq_put_queue() into an invocation of
+bfq_release_process_ref().
 
-Cc: stable@vger.kernel.org
-Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Tested-by: cki-project@redhat.com
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/composite.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ block/bfq-cgroup.c  |    5 +----
+ block/bfq-iosched.c |    2 --
+ block/bfq-iosched.h |    1 +
+ 3 files changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -850,6 +850,11 @@ static int set_config(struct usb_composi
- 	else
- 		power = min(power, 900U);
- done:
-+	if (power <= USB_SELF_POWER_VBUS_MAX_DRAW)
-+		usb_gadget_set_selfpowered(gadget);
-+	else
-+		usb_gadget_clear_selfpowered(gadget);
-+
- 	usb_gadget_vbus_draw(gadget, power);
- 	if (result >= 0 && cdev->delayed_status)
- 		result = USB_GADGET_DELAYED_STATUS;
-@@ -2281,6 +2286,7 @@ void composite_suspend(struct usb_gadget
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -714,10 +714,7 @@ static struct bfq_group *__bfq_bic_chang
  
- 	cdev->suspended = 1;
+ 		if (entity->sched_data != &bfqg->sched_data) {
+ 			bic_set_bfqq(bic, NULL, 0);
+-			bfq_log_bfqq(bfqd, async_bfqq,
+-				     "bic_change_group: %p %d",
+-				     async_bfqq, async_bfqq->ref);
+-			bfq_put_queue(async_bfqq);
++			bfq_release_process_ref(bfqd, async_bfqq);
+ 		}
+ 	}
  
-+	usb_gadget_set_selfpowered(gadget);
- 	usb_gadget_vbus_draw(gadget, 2);
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2716,8 +2716,6 @@ static void bfq_bfqq_save_state(struct b
+ 	}
  }
  
-@@ -2309,6 +2315,9 @@ void composite_resume(struct usb_gadget
- 		else
- 			maxpower = min(maxpower, 900U);
- 
-+		if (maxpower > USB_SELF_POWER_VBUS_MAX_DRAW)
-+			usb_gadget_clear_selfpowered(gadget);
-+
- 		usb_gadget_vbus_draw(gadget, maxpower);
- 	}
+-
+-static
+ void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq)
+ {
+ 	/*
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -955,6 +955,7 @@ void bfq_bfqq_expire(struct bfq_data *bf
+ 		     bool compensate, enum bfqq_expiration reason);
+ void bfq_put_queue(struct bfq_queue *bfqq);
+ void bfq_end_wr_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
++void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq);
+ void bfq_schedule_dispatch(struct bfq_data *bfqd);
+ void bfq_put_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
  
 
 
