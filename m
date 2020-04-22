@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B831B4104
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4239C1B3D81
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731918AbgDVKtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
+        id S1729711AbgDVKP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:15:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729397AbgDVKNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:01 -0400
+        id S1729642AbgDVKPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:15:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C218E2077D;
-        Wed, 22 Apr 2020 10:13:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 624A320575;
+        Wed, 22 Apr 2020 10:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550381;
-        bh=5NMuyZWCmZliclrYSh0KvOo0b4ZlLH5yjLm2O9vAJtY=;
+        s=default; t=1587550511;
+        bh=+KmynoHUM8GPQn2SP+1MLZiKCFKLZrqLb2uvnd1KsQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M89UoZFSAw8TUlBcV4WmEXNM006fTbFfdp+jbQGEzUkkoAnj45VIGubgHSzo9xKkN
-         +fdtIVl88br9+Gmdm3WFhl8rlxzfzPbJ4UnBbyd1UysPIGb2SPOWqpHf5cBTbjv6VC
-         UlDYdXr+ngl9lN2n1LIlC4vN7mqSOHOZzEdGAe1c=
+        b=ged5WkkSCHAlTwyHpk+JdUnKwc2V/lrD1tYHP7zxC7ZhW2ZdYP6NIxQuE2b80ba0E
+         BgZkI29kYUXBisMskbjVWMavHDrqB9iO55obMkk3Y/y5XR+nWO3/UbbjuKdeeNJQMM
+         t65m+so3yqdhlOLRqPn15KAFm4ZwIpii15EY3AGY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+6693adf1698864d21734@syzkaller.appspotmail.com,
-        syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com,
-        stable@kernel.org, Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 123/199] mac80211_hwsim: Use kstrndup() in place of kasprintf()
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 45/64] NFS: Fix memory leaks in nfs_pageio_stop_mirroring()
 Date:   Wed, 22 Apr 2020 11:57:29 +0200
-Message-Id: <20200422095109.817494465@linuxfoundation.org>
+Message-Id: <20200422095020.831749047@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,68 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 7ea862048317aa76d0f22334202779a25530980c upstream.
+[ Upstream commit 862f35c94730c9270833f3ad05bd758a29f204ed ]
 
-syzbot reports a warning:
+If we just set the mirror count to 1 without first clearing out
+the mirrors, we can leak queued up requests.
 
-precision 33020 too large
-WARNING: CPU: 0 PID: 9618 at lib/vsprintf.c:2471 set_precision+0x150/0x180 lib/vsprintf.c:2471
- vsnprintf+0xa7b/0x19a0 lib/vsprintf.c:2547
- kvasprintf+0xb2/0x170 lib/kasprintf.c:22
- kasprintf+0xbb/0xf0 lib/kasprintf.c:59
- hwsim_del_radio_nl+0x63a/0x7e0 drivers/net/wireless/mac80211_hwsim.c:3625
- genl_family_rcv_msg_doit net/netlink/genetlink.c:672 [inline]
- ...
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Thus it seems that kasprintf() with "%.*s" format can not be used for
-duplicating a string with arbitrary length. Replace it with kstrndup().
-
-Note that later this string is limited to NL80211_WIPHY_NAME_MAXLEN == 64,
-but the code is simpler this way.
-
-Reported-by: syzbot+6693adf1698864d21734@syzkaller.appspotmail.com
-Reported-by: syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com
-Cc: stable@kernel.org
-Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-Link: https://lore.kernel.org/r/20200410123257.14559-1-tuomas.tynkkynen@iki.fi
-[johannes: add note about length limit]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mac80211_hwsim.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/nfs/pagelist.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -3134,9 +3134,9 @@ static int hwsim_new_radio_nl(struct sk_
- 		param.no_vif = true;
+diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
+index 9cf59e2622f8e..5dae7c85d9b6e 100644
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -865,15 +865,6 @@ static void nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
+ 	pgio->pg_mirror_count = mirror_count;
+ }
  
- 	if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 		param.hwname = hwname;
-@@ -3175,9 +3175,9 @@ static int hwsim_del_radio_nl(struct sk_
- 	if (info->attrs[HWSIM_ATTR_RADIO_ID]) {
- 		idx = nla_get_u32(info->attrs[HWSIM_ATTR_RADIO_ID]);
- 	} else if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 	} else
+-/*
+- * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
+- */
+-void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
+-{
+-	pgio->pg_mirror_count = 1;
+-	pgio->pg_mirror_idx = 0;
+-}
+-
+ static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
+ {
+ 	pgio->pg_mirror_count = 1;
+@@ -1302,6 +1293,14 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
+ 	}
+ }
+ 
++/*
++ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
++ */
++void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
++{
++	nfs_pageio_complete(pgio);
++}
++
+ int __init nfs_init_nfspagecache(void)
+ {
+ 	nfs_page_cachep = kmem_cache_create("nfs_page",
+-- 
+2.20.1
+
 
 
