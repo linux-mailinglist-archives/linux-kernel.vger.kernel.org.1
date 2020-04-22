@@ -2,272 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFE11B3410
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E5B1B3427
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgDVAk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgDVAk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:40:27 -0400
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D47A2076B;
-        Wed, 22 Apr 2020 00:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587516026;
-        bh=JrE4SFb3uJdJn6w4bpKQFbHrGjxfDltzodlDIbB/g8s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EtgbIUyrKaCGuMhfjQUJP7iDIVSWVQN030NoF/zHtDVjirajFdK7intfO+Efdeqdn
-         ZwWKwe+7SuatM6epm7i7rE/Dg3Jp9v5fQY5vaMgbjQx7eX3X9CGN+vqp0bjC1vL034
-         tCbc9PDfKupqLgSxRYKWl891P2zFgJWqbvOn30bk=
-Received: by mail-ej1-f51.google.com with SMTP id e2so466756eje.13;
-        Tue, 21 Apr 2020 17:40:26 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZF3wTkGnxmF+lgCnTKgqjUj09Q4E9JUhDm2EX5QaX3TBNVTG6k
-        n1+NMeZs7W0QGPFRzziGt5jwtON03JnR1i6+QA==
-X-Google-Smtp-Source: APiQypK7cdCKjli8HuUiA28l0aQv0sLbTXWgBnvZw+Qy1aWczSZMJuwiLUBEsh2xe4WaVZor6AsjcT7aHjEYSSesgns=
-X-Received: by 2002:a17:906:7717:: with SMTP id q23mr28916ejm.38.1587516024861;
- Tue, 21 Apr 2020 17:40:24 -0700 (PDT)
+        id S1726405AbgDVAtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726387AbgDVAtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 20:49:17 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E35FC0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:49:17 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id fb4so122561qvb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DXWORpjRxTkR+i2fu0N9aGTa6+ZQqTZNmK158+3pxDo=;
+        b=XXLAHVjCxmQ0g6P2WSs/mW+8skAgEVSeb5nc/EBOC+NLqjYIAm5C09vy+AXo9NYmfF
+         NuHUkcuMDH0a1DRZzGjmt54BElkiJlno6nBpxUT0EPKcmqSA4/bYO2WbY7dzaNrsqOn5
+         cyDQd1ZAV0QjIHtu5L4OU2ziPMQrf7AdumzEU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DXWORpjRxTkR+i2fu0N9aGTa6+ZQqTZNmK158+3pxDo=;
+        b=QT3HVDvF5dU2RYvWkTmr7n55mBbwT6dFtLL27DZB3g1rnKTY6imPNk4QOzbEUoUok7
+         4ohiwC2NF1pmRf+a3ZOl+2PP+Ih/pkxpUo6pjGnoV6MU+NSa8HQSwjokUrrn/lUk6IHE
+         uXFemkxtXNgOdZjx/8da5LXBL68VlBog4qq3h5mX0EPUUdT0KsC7ZZFDolP+pb8RUOO0
+         1YsS6KJ7q12DPRL5fLXruJ6RFiKojfqQNASz4OdBhdLkfmnTwPHT6Gj6G14GAvLDCu8l
+         lWRJbpzM2Y/GyQJ/BzR4288NwrYKbPZM6musH1uwOvAABV0pfs0bMWIfx2arCJ0/qq6v
+         JiHg==
+X-Gm-Message-State: AGi0PubPvIt8T8LmVK4b4apal3CIocST4ZCtVuYhuIWYWZT8Ku3wz9ZH
+        WQqLBM5+UK0m4fvkfhKI9aO4lWzE5TM=
+X-Google-Smtp-Source: APiQypIMhp7JY0W4gwQZKnCtTSbtRigeRBOH8mIizZ81Igo0bb+2DddE6rIniYJ6VPwP2HYeBRn1pw==
+X-Received: by 2002:a0c:a8e5:: with SMTP id h37mr2182035qvc.69.1587516556307;
+        Tue, 21 Apr 2020 17:49:16 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id q32sm3028626qta.13.2020.04.21.17.49.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 17:49:16 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id i2so315501ybk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:49:15 -0700 (PDT)
+X-Received: by 2002:ab0:592c:: with SMTP id n41mr14287181uad.73.1587516064329;
+ Tue, 21 Apr 2020 17:41:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200311165322.1594233-1-enric.balletbo@collabora.com>
- <20200311165322.1594233-5-enric.balletbo@collabora.com> <02290a21-7392-a2cf-576c-215091ec05e8@suse.com>
- <1585177534.26117.4.camel@mtksdaap41> <f3c2926a-ef92-b004-9786-5be1645af497@suse.com>
- <1585234277.12089.3.camel@mtksdaap41> <73ef0b8e-2802-a047-2a56-936b63d264cb@suse.com>
- <CAAOTY__EV8PHau9CzSiA8up1QAmZxfK2QnaTid0WrNOsn2Xcag@mail.gmail.com> <c809233f-6d96-8871-e6a4-b66ed5cc535f@suse.com>
-In-Reply-To: <c809233f-6d96-8871-e6a4-b66ed5cc535f@suse.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 22 Apr 2020 08:40:13 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8Nyu3AckQf==aKuiGZQ6t7xsKhCrwoa0oxq5qySOo_KQ@mail.gmail.com>
-Message-ID: <CAAOTY_8Nyu3AckQf==aKuiGZQ6t7xsKhCrwoa0oxq5qySOo_KQ@mail.gmail.com>
-Subject: Re: [PATCH v12 4/5] soc / drm: mediatek: Move routing control to
- mmsys device
-To:     Matthias Brugger <mbrugger@suse.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        CK Hu <ck.hu@mediatek.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        linux-clk@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>,
-        mtk01761 <wendell.lin@mediatek.com>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, Seiya Wang <seiya.wang@mediatek.com>,
-        sean.wang@mediatek.com, Houlong Wei <houlong.wei@mediatek.com>,
+References: <20200421110520.197930-1-evanbenn@chromium.org> <e81737bc-9461-0fdb-245f-d88bdde8f0ee@roeck-us.net>
+In-Reply-To: <e81737bc-9461-0fdb-245f-d88bdde8f0ee@roeck-us.net>
+From:   Evan Benn <evanbenn@chromium.org>
+Date:   Wed, 22 Apr 2020 10:40:37 +1000
+X-Gmail-Original-Message-ID: <CAKz_xw0wAN4rG8xF1Y7amshoECJAjiWNDFQ5GQHPAbCfXi1bDg@mail.gmail.com>
+Message-ID: <CAKz_xw0wAN4rG8xF1Y7amshoECJAjiWNDFQ5GQHPAbCfXi1bDg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add a watchdog driver that uses ARM Secure Monitor Calls.
+To:     Guenter Roeck <linux@roeck-us.net>, Simon Glass <sjg@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Xingyu Chen <xingyu.chen@amlogic.com>,
+        Julius Werner <jwerner@chromium.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
         "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        matthias.bgg@kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+> Subject says v2. This is confusing, at the very least.
+>
+> Guenter
 
-Matthias Brugger <mbrugger@suse.com> =E6=96=BC 2020=E5=B9=B44=E6=9C=8821=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=885:31=E5=AF=AB=E9=81=93=EF=BC=9A
->
->
->
-> On 4/16/20 6:22 PM, Chun-Kuang Hu wrote:
-> > Hi, Matthias:
-> >
-> > Matthias Brugger <mbrugger@suse.com> =E6=96=BC 2020=E5=B9=B43=E6=9C=882=
-6=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:45=E5=AF=AB=E9=81=93=EF=
-=BC=9A
-> >>
-> >>
-> >>
-> >> On 26/03/2020 15:51, CK Hu wrote:
-> >>> Hi, Matthias:
-> >>>
-> >>> On Thu, 2020-03-26 at 12:54 +0100, Matthias Brugger wrote:
-> >>>> Hi CK,
-> >>>>
-> >>>> On 26/03/2020 00:05, CK Hu wrote:
-> >>>>> Hi, Matthias:
-> >>>>>
-> >>>>> On Wed, 2020-03-25 at 17:16 +0100, Matthias Brugger wrote:
-> >>>>>>
-> >>>>>> On 11/03/2020 17:53, Enric Balletbo i Serra wrote:
-> >>>>>>> Provide a mtk_mmsys_ddp_connect() and mtk_mmsys_disconnect() func=
-tions to
-> >>>>>>> replace mtk_ddp_add_comp_to_path() and mtk_ddp_remove_comp_from_p=
-ath().
-> >>>>>>> Those functions will allow DRM driver and others to control the d=
-ata
-> >>>>>>> path routing.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.c=
-om>
-> >>>>>>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> >>>>>>> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> >>>>>>> Acked-by: CK Hu <ck.hu@mediatek.com>
-> >>>>>>
-> >>>>>> This patch does not apply against v5.6-rc1.
-> >>>>>> Please rebase as this is a quite big patch and it won't be easy to=
- do that by hand.
-> >>>>>
-> >>>>> I think this patch depends on [1] which has been acked by me and I =
-have
-> >>>>> not picked it. The simple way is that you pick [1] first and then p=
-ick
-> >>>>> this series.
-> >>>>>
-> >>>>> [1]
-> >>>>> https://patchwork.kernel.org/patch/11406227/
-> >>>>>
-> >>>>
-> >>>> You would need to provide a stable tag for me that I can merge into =
-my tree. You
-> >>>> can also try to merge my for-next [1] which has the newest version f=
-rom Enric.
-> >>>> If you see any merge conflict, then we have to do something about it=
- :)
-> >>>>
-> >>>> Regards,
-> >>>> Matthias
-> >>>>
-> >>>> [1]
-> >>>> https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.g=
-it/log/?h=3Dfor-next
-> >>>>
-> >>>
-> >>> You have applied this series, so I would not apply other patches whic=
-h
-> >>> would conflict with this series. After this series land on main strea=
-m
-> >>> (wish it happen in this merge window), I would rebase other patch on
-> >>> main stream.
-> >>>
-> >>
-> >> I haven't (yet) send the pull request. If you want to bring in your pa=
-tches in
-> >> v5.7 as well we can find a solution to that. Shall I provide you with =
-a stable
-> >> branch which you can merge? This way you can add all your patches in t=
-he pull
-> >> request as well and we don't have to wait for v5.8 to get things into =
-mainline.
-> >>
-> >> Let me know and I'll provide you with a stable branch.
-> >
-> > This series is in linux-next but does not in main stream. So would you
-> > please provide a stable branch so I could pull this series?
-> >
->
-> Please find the pull request below:
->
-> The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f31=
-36:
->
->   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
->
-> are available in the Git repository at:
->
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/
-> tags/v5.7-next-drm-stable
->
-> for you to fetch changes up to 667c769246b01c53ad0925d603d2a2531abd3ef2:
->
->   soc / drm: mediatek: Fix mediatek-drm device probing (2020-04-13
-> 13:01:16 +0200)
->
-> ----------------------------------------------------------------
-> Enric Balletbo i Serra (3):
->       dt-bindings: mediatek: Update mmsys binding to reflect it is a
-> system controller
->       soc / drm: mediatek: Move routing control to mmsys device
->       soc / drm: mediatek: Fix mediatek-drm device probing
->
-> Matthias Brugger (2):
->       drm/mediatek: Omit warning on probe defers
->       clk / soc: mediatek: Move mt8173 MMSYS to platform driver
->
->  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt |   7 =
-+--
->  drivers/clk/mediatek/Kconfig                                      |   7 =
-+++
->  drivers/clk/mediatek/Makefile                                     |   1 =
-+
->  drivers/clk/mediatek/clk-mt8173-mm.c                              | 146
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/clk/mediatek/clk-mt8173.c                                 | 104
-> ------------------------------------------
->  drivers/gpu/drm/mediatek/Kconfig                                  |   1 =
-+
->  drivers/gpu/drm/mediatek/mtk_disp_color.c                         |   5 =
-++-
->  drivers/gpu/drm/mediatek/mtk_disp_ovl.c                           |   5 =
-++-
->  drivers/gpu/drm/mediatek/mtk_disp_rdma.c                          |   5 =
-++-
->  drivers/gpu/drm/mediatek/mtk_dpi.c                                |  12
-> +++--
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c                           |  19
-> ++++----
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.c                            | 259
-> +------------------------------------------------------------------------=
---------------------------------
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.h                            |   7 =
----
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c                            |  45
-> ++++++++++---------
->  drivers/gpu/drm/mediatek/mtk_drm_drv.h                            |   2 =
-+-
->  drivers/gpu/drm/mediatek/mtk_dsi.c                                |   8
-> +++-
->  drivers/gpu/drm/mediatek/mtk_hdmi.c                               |   4 =
-+-
->  drivers/soc/mediatek/Kconfig                                      |   8
-> ++++
->  drivers/soc/mediatek/Makefile                                     |   1 =
-+
->  drivers/soc/mediatek/mtk-mmsys.c                                  | 337
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/soc/mediatek/mtk-mmsys.h                            |  20
-> +++++++++
->  21 files changed, 592 insertions(+), 411 deletions(-)
->  create mode 100644 drivers/clk/mediatek/clk-mt8173-mm.c
->  create mode 100644 drivers/soc/mediatek/mtk-mmsys.c
->  create mode 100644 include/linux/soc/mediatek/mtk-mmsys.h
+Apologies! I am using the patman script, it threw this message that I
+did not understand: 'Change log for unknown version v3'.
+And I did not spot the issue in the emails before send. Not sure why
+patman worked for v2 and v3 but not v4... I will take a look.
 
-Pulled into mediatek-drm-next [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
->
->
->
-> > Regards,
-> > Chun-Kuang.
-> >
-> >>
-> >> Regards,
-> >> Matthias
-> >>
-> >>> Regards,
-> >>> CK
-> >>>
-> >>>>> Regards,
-> >>>>> CK
-> >>>>>
-> >>>>>>
-> >>>>>> Regards,
-> >>>>>> Matthias
-> >>>>>>
-> >>>>>>> ---
-> >>>>>>>
+Evan
