@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DDA1B40DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2A51B3DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732052AbgDVKsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:48:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
+        id S1730213AbgDVKWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:22:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728259AbgDVKO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:14:26 -0400
+        id S1730030AbgDVKS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE2A62071E;
-        Wed, 22 Apr 2020 10:14:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 170CC20784;
+        Wed, 22 Apr 2020 10:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550465;
-        bh=c3tDbP3kjZMereB6y5jCbrX1IZryCnz0sMYCtncHOyQ=;
+        s=default; t=1587550736;
+        bh=m+w5uaRYA/AL4UTSG98B7NccPyt8vlHvlJqoKTpYCvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z9O/RbfA2qQhwUGIlGL7lVEm0+chH/XPHQSbFJzlSV1w3AbqjtEvnq79Gxu6j08sK
-         syR5JDbKL1mGbc7N5FdG4LxGgGqxkFzuAxTeoJfk4kG0TBaUyMmXv50rHeLYg0lWmY
-         E43fABCuWoURiL5QLf+LtvLB0ppvXaYtgUBLTV0A=
+        b=ZzMmIYJh6qdWMDYdhzHk5ODLs+PKfMl1AZAXCpZMc7hkemZdxDDPtTIlbNU2iY1LB
+         Iu5+ejJcPI1/TzXCDiszah+f7LYxwboKEvnpQoakoiActmxxMhWmXOCcPyJ9wqFXa1
+         DcljmlL2hOlTIAEGcSk+NF+ybQj191ASwZULDq7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Ralph Campbell <rcampbell@nvidia.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/64] clk: tegra: Fix Tegra PMC clock out parents
+Subject: [PATCH 5.4 071/118] drm/nouveau/svm: fix vma range check for migration
 Date:   Wed, 22 Apr 2020 11:57:12 +0200
-Message-Id: <20200422095018.029209976@linuxfoundation.org>
+Message-Id: <20200422095043.428936108@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sowjanya Komatineni <skomatineni@nvidia.com>
+From: Ralph Campbell <rcampbell@nvidia.com>
 
-[ Upstream commit 6fe38aa8cac3a5db38154331742835a4d9740788 ]
+[ Upstream commit b92103b559c77abc5f8b7bec269230a219c880b7 ]
 
-Tegra PMC clocks clk_out_1, clk_out_2, and clk_out_3 supported parents
-are osc, osc_div2, osc_div4 and extern clock.
+find_vma_intersection(mm, start, end) only guarantees that end is greater
+than or equal to vma->vm_start but doesn't guarantee that start is
+greater than or equal to vma->vm_start. The calculation for the
+intersecting range in nouveau_svmm_bind() isn't accounting for this and
+can call migrate_vma_setup() with a starting address less than
+vma->vm_start. This results in migrate_vma_setup() returning -EINVAL for
+the range instead of nouveau skipping that part of the range and migrating
+the rest.
 
-Clock driver is using incorrect parents clk_m, clk_m_div2, clk_m_div4
-for PMC clocks.
-
-This patch fixes this.
-
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/tegra/clk-tegra-pmc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_svm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/tegra/clk-tegra-pmc.c b/drivers/clk/tegra/clk-tegra-pmc.c
-index a35579a3f884f..476dab494c44d 100644
---- a/drivers/clk/tegra/clk-tegra-pmc.c
-+++ b/drivers/clk/tegra/clk-tegra-pmc.c
-@@ -60,16 +60,16 @@ struct pmc_clk_init_data {
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index 25b7055949c45..824654742a604 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -186,6 +186,7 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 		if (!vma)
+ 			break;
  
- static DEFINE_SPINLOCK(clk_out_lock);
- 
--static const char *clk_out1_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern1",
-+static const char *clk_out1_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern1",
- };
- 
--static const char *clk_out2_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern2",
-+static const char *clk_out2_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern2",
- };
- 
--static const char *clk_out3_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern3",
-+static const char *clk_out3_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern3",
- };
- 
- static struct pmc_clk_init_data pmc_clks[] = {
++		addr = max(addr, vma->vm_start);
+ 		next = min(vma->vm_end, end);
+ 		/* This is a best effort so we ignore errors */
+ 		nouveau_dmem_migrate_vma(cli->drm, vma, addr, next);
 -- 
 2.20.1
 
