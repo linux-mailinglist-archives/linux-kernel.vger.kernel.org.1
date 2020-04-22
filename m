@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05B81B3C25
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B251B41CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgDVKC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52186 "EHLO mail.kernel.org"
+        id S1728287AbgDVKGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgDVKCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:51 -0400
+        id S1728261AbgDVKF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF12520774;
-        Wed, 22 Apr 2020 10:02:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DA3C20774;
+        Wed, 22 Apr 2020 10:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549771;
-        bh=fhMCzs+5oAeNDilCXNjN57Y84x/pplV7/I0kKxgTNjk=;
+        s=default; t=1587549957;
+        bh=jxPDTHLcyW7xuKbuOk1/YrIV68KsElQp/GXSchGDbHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmyN2YFipHfYj8rZW9L2dHmoSsSiuN5LtxW01uECdOwOsS9R/GiFsKJ9WnF9ncj91
-         2zDikVCHGTk9v/evf+ZOWdTFyutUI2ukxz8tjcO2efRI5BQruSaqroF6p4nmET7OoN
-         8LBRH6OPgUEgxFRz+m7PFrv96507jqBq9jknz7Ko=
+        b=dRRW9qo70tS93+IKNM5/BbDci7+QOPI/PUTWPf5RFQTiulbpGzUINxe2g6nIGvnUd
+         bbmuaPNXNex4A1zveVJlRCNY8cInXgjEczd/nF5lGbGL6IvIQjaGOczgyEJUI8vWWW
+         NGSthUnxCvKdj8ACySSilUjmjn0TqYO6stN+AjNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 063/100] ASoC: Intel: mrfld: return error codes when an error occurs
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 076/125] ALSA: usb-audio: Dont override ignore_ctl_error value from the map
 Date:   Wed, 22 Apr 2020 11:56:33 +0200
-Message-Id: <20200422095034.407167183@linuxfoundation.org>
+Message-Id: <20200422095045.414780998@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 3025571edd9df653e1ad649f0638368a39d1bbb5 upstream.
+commit 3507245b82b4362dc9721cbc328644905a3efa22 upstream.
 
-Currently function sst_platform_get_resources always returns zero and
-error return codes set by the function are never returned. Fix this
-by returning the error return code in variable ret rather than the
-hard coded zero.
+The mapping table may contain also ignore_ctl_error flag for devices
+that are known to behave wild.  Since this flag always writes the
+card's own ignore_ctl_error flag, it overrides the value already set
+by the module option, so it doesn't follow user's expectation.
+Let's fix the code not to clear the flag that has been set by user.
 
-Addresses-Coverity: ("Unused value")
-Fixes: f533a035e4da ("ASoC: Intel: mrfld - create separate module for pci part")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200208220720.36657-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206873
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200412081331.4742-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/intel/atom/sst/sst_pci.c |    2 +-
+ sound/usb/mixer.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/soc/intel/atom/sst/sst_pci.c
-+++ b/sound/soc/intel/atom/sst/sst_pci.c
-@@ -107,7 +107,7 @@ static int sst_platform_get_resources(st
- 	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
- do_release_regions:
- 	pci_release_regions(pci);
--	return 0;
-+	return ret;
- }
- 
- /*
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2336,7 +2336,7 @@ static int snd_usb_mixer_controls(struct
+ 		if (map->id == state.chip->usb_id) {
+ 			state.map = map->map;
+ 			state.selector_map = map->selector_map;
+-			mixer->ignore_ctl_error = map->ignore_ctl_error;
++			mixer->ignore_ctl_error |= map->ignore_ctl_error;
+ 			break;
+ 		}
+ 	}
 
 
