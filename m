@@ -2,126 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC8B1B3B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C83B1B3B3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgDVJYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 05:24:17 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:20545 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726224AbgDVJYQ (ORCPT
+        id S1726362AbgDVJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 05:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725934AbgDVJZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:24:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587547454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DMhA18q5o54p19fFpaLKF4OTjlHgtCkpRiehNkdmtk0=;
-        b=grApRieNK+OmW+Ph9h2tR9zU0uKExcWmmISzc/RrgOUdVjDeysh8DaWsu+FczjWWILTAPj
-        WIzMeEmSv0ZlCUw1vFqJ3GxVNUuoG4yjZ7fkrmNMYqjutoOIvIUTxPBxLB0L7SPmoT9jIe
-        BuntuwErSvNNbVZzI/ZjHmqtDlZ+J5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-bYl2gzczORKSGHhwjavuQw-1; Wed, 22 Apr 2020 05:24:10 -0400
-X-MC-Unique: bYl2gzczORKSGHhwjavuQw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1503B8017FC;
-        Wed, 22 Apr 2020 09:24:08 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B2FFB3A8F;
-        Wed, 22 Apr 2020 09:23:56 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 17:23:51 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hare@suse.de" <hare@suse.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
-Message-ID: <20200422092351.GF299948@T590>
-References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
- <20200422012814.GB299948@T590>
- <HK0P153MB0273B954294B331E20AACB41BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
- <20200422020134.GC299948@T590>
- <20200422030807.GK17661@paulmck-ThinkPad-P72>
- <20200422041629.GE299948@T590>
- <HK0P153MB0273CF2901E193C03C934A47BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+        Wed, 22 Apr 2020 05:25:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DC7C03C1A8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 02:25:07 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jRBcr-0007Rg-36; Wed, 22 Apr 2020 11:25:01 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jRBco-0006Kj-HT; Wed, 22 Apr 2020 11:24:58 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v5 0/4] add TJA1102 support
+Date:   Wed, 22 Apr 2020 11:24:52 +0200
+Message-Id: <20200422092456.24281-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <HK0P153MB0273CF2901E193C03C934A47BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 04:58:14AM +0000, Dexuan Cui wrote:
-> > From: Ming Lei <ming.lei@redhat.com>
-> > Sent: Tuesday, April 21, 2020 9:16 PM
-> > ...
-> > > > > When we're in storvsc_suspend(), all the userspace processes have been
-> > > > > frozen and all the file systems have been flushed, and there should not
-> > > > > be too much I/O from the kernel space, so IMO scsi_host_block() should
-> > be
-> > > > > pretty fast here.
-> > > >
-> > > > I guess it depends on RCU's implementation, so CC RCU guys.
-> > > >
-> > > > Hello Paul & Josh,
-> > > >
-> > > > Could you clarify that if sysnchronize_rcu becomes quickly during
-> > > > system suspend?
-> > >
-> > > Once you have all but one CPU offlined, it becomes extremely fast, as
-> > > in roughly a no-op (which is an idea of Josh's from back in the day).
-> > > But if there is more than one CPU online, then synchronize_rcu() still
-> > > takes on the order of several to several tens of jiffies.
-> > >
-> > > So, yes, in some portions of system suspend, synchronize_rcu() becomes
-> > > very fast indeed.
-> > 
-> > Hi Paul,
-> > 
-> > Thanks for your clarification.
-> > 
-> > In system suspend path, device is suspended before
-> > suspend_disable_secondary_cpus(),
-> > so I guess synchronize_rcu() is not quick enough even though user space
-> > processes and some kernel threads are frozen.
-> > 
-> > Thanks,
-> > Ming
-> 
-> storvsc_suspend() -> scsi_host_block() is only called in the hibernation
-> path, which is not a hot path at all, so IMHO we don't really care if it
-> takes 10ms or 100ms or even 1s. :-)  BTW, in my test, typically the
+changes v5:
+- rename __of_mdiobus_register_phy() to of_mdiobus_phy_device_register()
 
-Are you sure the 'we' can cover all users?
+changes v4:
+- remove unused phy_id variable
 
-> scsi_host_block() here takes about 3ms in my 40-vCPU VM.
+changes v3:
+- export part of of_mdiobus_register_phy() and reuse it in tja11xx
+  driver
+- coding style fixes
 
-If more LUNs are added, the time should be increased proportionallly,
-that is why I think scsi_host_block() is bad.
+changes v2:
+- use .match_phy_device
+- add irq support
+- add add delayed registration for PHY1
 
+Oleksij Rempel (4):
+  dt-bindings: net: phy: Add support for NXP TJA11xx
+  net: phy: tja11xx: add initial TJA1102 support
+  net: mdio: of: export part of of_mdiobus_register_phy()
+  net: phy: tja11xx: add delayed registration of TJA1102 PHY1
 
-Thanks,
-Ming
+ .../devicetree/bindings/net/nxp,tja11xx.yaml  |  61 ++++++
+ drivers/net/phy/nxp-tja11xx.c                 | 201 +++++++++++++++++-
+ drivers/of/of_mdio.c                          |  73 ++++---
+ include/linux/of_mdio.h                       |  11 +-
+ 4 files changed, 308 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+
+-- 
+2.26.1
 
