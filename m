@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FB61B3D84
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB351B412E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgDVKPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:15:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
+        id S1732145AbgDVKuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:50:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729708AbgDVKP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:27 -0400
+        id S1729249AbgDVKLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 402F12075A;
-        Wed, 22 Apr 2020 10:15:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97A4E20575;
+        Wed, 22 Apr 2020 10:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550526;
-        bh=jlCOKvLmCY4J1mQYSp+GJ52kQPnp+v36+Lyr6EuYj8A=;
+        s=default; t=1587550310;
+        bh=K+uM9txe6RidWvLhVcS9tv/Lh4YLAQQ5NMzlaOE6ScA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oqbpzjOdX5CMXf+LD7XndGN1ZaMx7Yoe7+uzos2wJqdo2Ql5J6pmfab7VG+NKnQoU
-         vyLU8XlcjSej0fAskW/5K/v0Kpi40w4yT4yW6oNMj7s04HSvljO/hahEfQTwgDZawy
-         NdJuXqsZa04uRiAkE+12nZuqrCjzXdjx4SBRvQMI=
+        b=KQ8fAOJg6QvB6URFijN+bAzNmBbL5gXxqRsXhE32CHuwIjVNwahFCDw/apWYsxpIj
+         iAVrmQDGGLWibJXqM8+fx40N8/sO5za+0HwqWmiJUC6P50xdTVTV7QAGnqqYa0778E
+         glcov3ToddPTntd5L2F92+rWaw75Awd8t1nNfFhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 4.19 15/64] x86/Hyper-V: Report crash register data or kmsg before running crash kernel
+        stable@vger.kernel.org,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH 4.14 093/199] powerpc: Add attributes for setjmp/longjmp
 Date:   Wed, 22 Apr 2020 11:56:59 +0200
-Message-Id: <20200422095015.598699528@linuxfoundation.org>
+Message-Id: <20200422095107.377311816@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+From: Segher Boessenkool <segher@kernel.crashing.org>
 
-commit a11589563e96bf262767294b89b25a9d44e7303b upstream.
+commit aa497d4352414aad22e792b35d0aaaa12bbc37c5 upstream.
 
-We want to notify Hyper-V when a Linux guest VM crash occurs, so
-there is a record of the crash even when kdump is enabled.   But
-crash_kexec_post_notifiers defaults to "false", so the kdump kernel
-runs before the notifiers and Hyper-V never gets notified.  Fix this by
-always setting crash_kexec_post_notifiers to be true for Hyper-V VMs.
+The setjmp function should be declared as "returns_twice", or bad
+things can happen[1]. This does not actually change generated code in
+my testing.
 
-Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Link: https://lore.kernel.org/r/20200406155331.2105-5-Tianyu.Lan@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+The longjmp function should be declared as "noreturn", so that the
+compiler can optimise calls to it better. This makes the generated
+code a little shorter.
+
+1: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-returns_005ftwice-function-attribute
+
+Signed-off-by: Segher Boessenkool <segher@kernel.crashing.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c02ce4a573f3bac907e2c70957a2d1275f910013.1567605586.git.segher@kernel.crashing.org
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/cpu/mshyperv.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/powerpc/include/asm/setjmp.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -250,6 +250,16 @@ static void __init ms_hyperv_init_platfo
- 			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
- 	}
+--- a/arch/powerpc/include/asm/setjmp.h
++++ b/arch/powerpc/include/asm/setjmp.h
+@@ -12,7 +12,7 @@
  
-+	/*
-+	 * Hyper-V expects to get crash register data or kmsg when
-+	 * crash enlightment is available and system crashes. Set
-+	 * crash_kexec_post_notifiers to be true to make sure that
-+	 * calling crash enlightment interface before running kdump
-+	 * kernel.
-+	 */
-+	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE)
-+		crash_kexec_post_notifiers = true;
-+
- #ifdef CONFIG_X86_LOCAL_APIC
- 	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
- 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
+ #define JMP_BUF_LEN    23
+ 
+-extern long setjmp(long *);
+-extern void longjmp(long *, long);
++extern long setjmp(long *) __attribute__((returns_twice));
++extern void longjmp(long *, long) __attribute__((noreturn));
+ 
+ #endif /* _ASM_POWERPC_SETJMP_H */
 
 
