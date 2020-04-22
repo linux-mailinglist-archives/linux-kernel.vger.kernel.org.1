@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E071B3F87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552931B4294
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbgDVKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        id S1732434AbgDVLCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:02:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729922AbgDVKWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:06 -0400
+        id S1726654AbgDVKAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D3622084D;
-        Wed, 22 Apr 2020 10:22:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E41E20735;
+        Wed, 22 Apr 2020 10:00:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550921;
-        bh=qf2dcxdlSyp8hF1Man+929JVoDmyuznROXXiamjfelU=;
+        s=default; t=1587549638;
+        bh=Wwmox0R4RoMH1wIvUK45KwsgmKAYgn9Af7TOQuHnS1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0SArciEdBcH5Tjk59Uz/gxC12j+VRGXnwZ8p35x/bbPY9Uxge1Oxta5SwaZh1LVIE
-         ILzmvtOK60/JQrjOEJ8n2tV1b2WVhNreOhi9KNrDJ37vSJDCN042QXh9fmDapJmLzq
-         4i31qH24ePutD9tYBB0TjPf8vnFmZ6+DOdfcmumQ=
+        b=z4ZS3K2J6IcQyKsKJY1cOBU+MiQ6nxoTEHBlMuuoQNGpG4MNOnl8ar6p/g4VwgRyd
+         siTkRE2a2bmAwWIjFrZKdqgpInneA+5J3I1tJh+KVbk2iqlbbx6TK9MqfzI9MhDZrK
+         +H6INElBDIsQHqfrs+SkZoU7xS7+0MNuSnVR8oRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.6 021/166] of: unittest: kmemleak on changeset destroy
+        stable@vger.kernel.org,
+        Sriharsha Allenki <sallenki@codeaurora.org>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 4.4 018/100] usb: gadget: f_fs: Fix use after free issue as part of queue failure
 Date:   Wed, 22 Apr 2020 11:55:48 +0200
-Message-Id: <20200422095050.780723107@linuxfoundation.org>
+Message-Id: <20200422095026.140789186@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Sriharsha Allenki <sallenki@codeaurora.org>
 
-commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 upstream.
+commit f63ec55ff904b2f2e126884fcad93175f16ab4bb upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 1 of 5.
+In AIO case, the request is freed up if ep_queue fails.
+However, io_data->req still has the reference to this freed
+request. In the case of this failure if there is aio_cancel
+call on this io_data it will lead to an invalid dequeue
+operation and a potential use after free issue.
+Fix this by setting the io_data->req to NULL when the request
+is freed as part of queue failure.
 
-of_unittest_changeset() reaches deeply into the dynamic devicetree
-functions.  Several nodes were left with an elevated reference
-count and thus were not properly cleaned up.  Fix the reference
-counts so that the memory will be freed.
-
-Fixes: 201c910bd689 ("of: Transactional DT support.")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
+Fixes: 2e4c7553cd6f ("usb: gadget: f_fs: add aio support")
+Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
+CC: stable <stable@vger.kernel.org>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20200326115620.12571-1-sallenki@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/of/unittest.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/gadget/function/f_fs.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -777,6 +777,10 @@ static void __init of_unittest_changeset
- 	unittest(!of_changeset_revert(&chgset), "revert failed\n");
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -812,6 +812,7 @@ static ssize_t ffs_epfile_io(struct file
  
- 	of_changeset_destroy(&chgset);
-+
-+	of_node_put(n1);
-+	of_node_put(n2);
-+	of_node_put(n21);
- #endif
- }
- 
+ 			ret = usb_ep_queue(ep->ep, req, GFP_ATOMIC);
+ 			if (unlikely(ret)) {
++				io_data->req = NULL;
+ 				usb_ep_free_request(ep->ep, req);
+ 				goto error_lock;
+ 			}
 
 
