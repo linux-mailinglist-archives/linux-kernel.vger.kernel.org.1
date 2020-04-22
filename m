@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585C01B3EF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3861A1B4045
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731170AbgDVKdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:33:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33652 "EHLO mail.kernel.org"
+        id S1731447AbgDVKoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:44:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730495AbgDVKZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:25:06 -0400
+        id S1730020AbgDVKSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D239720780;
-        Wed, 22 Apr 2020 10:25:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D576E2070B;
+        Wed, 22 Apr 2020 10:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551106;
-        bh=Lw5BH7pmk+9cni4ByfUZ7qQ8QaNhnIgwh6zVSoOuQGM=;
+        s=default; t=1587550729;
+        bh=5/HU+5mPMZDHSKhelDvZphwM7oa683qtuQ+sg6gNB/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BjrDrWqNXvdqiIPxT0ZXDU6y32Eka8tBn209I4YvaF+zTN6cgXB1bSJ1RiUN/CptJ
-         Cf7uL6WofRI6+GFhqBorS1NIxSyewdxCeu9mTt9iGIF4x0XxexY3k5/z1V0Jj8YrAP
-         RAatVwg/ozPGBSa5rM3m7NS5RqixCfM0uS0sjHSI=
+        b=yJ0T8PIFLFIHd4s4TdSun5XBAuH1dorumc1+TiegUIKLliuGtThMMWsckHf3yMN6O
+         pWkh9wdrkoFtk9MsUxiuqleu7dhz3/x2JpFAvGVITsGFNbT22h4JWFbSL6YzdGLZOF
+         D4VZxVtRcR2YyO1jQQRUK6E3lhspVbyB0WRsgdT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ralph Campbell <rcampbell@nvidia.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
+        stable@vger.kernel.org, Long Li <longli@microsoft.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 102/166] drm/nouveau/svm: check for SVM initialized before migrating
+Subject: [PATCH 5.4 068/118] cifs: Allocate encryption header through kmalloc
 Date:   Wed, 22 Apr 2020 11:57:09 +0200
-Message-Id: <20200422095059.864165328@linuxfoundation.org>
+Message-Id: <20200422095043.058391027@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +44,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ralph Campbell <rcampbell@nvidia.com>
+From: Long Li <longli@microsoft.com>
 
-[ Upstream commit 822cab6150d3002952407a8297ff5a0d32bb7b54 ]
+[ Upstream commit 3946d0d04bb360acca72db5efe9ae8440012d9dc ]
 
-When migrating system memory to GPU memory, check that SVM has been
-enabled. Even though most errors can be ignored since migration is
-a performance optimization, return an error because this is a violation
-of the API.
+When encryption is used, smb2_transform_hdr is defined on the stack and is
+passed to the transport. This doesn't work with RDMA as the buffer needs to
+be DMA'ed.
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Fix it by using kmalloc.
+
+Signed-off-by: Long Li <longli@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_svm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/cifs/transport.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index df9bf1fd1bc0b..3ec5da025bea7 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -171,6 +171,11 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
- 	mm = get_task_mm(current);
- 	down_read(&mm->mmap_sem);
+diff --git a/fs/cifs/transport.c b/fs/cifs/transport.c
+index e67a43fd037c9..fe1552cc8a0a7 100644
+--- a/fs/cifs/transport.c
++++ b/fs/cifs/transport.c
+@@ -466,7 +466,7 @@ smb_send_rqst(struct TCP_Server_Info *server, int num_rqst,
+ 	      struct smb_rqst *rqst, int flags)
+ {
+ 	struct kvec iov;
+-	struct smb2_transform_hdr tr_hdr;
++	struct smb2_transform_hdr *tr_hdr;
+ 	struct smb_rqst cur_rqst[MAX_COMPOUND];
+ 	int rc;
  
-+	if (!cli->svm.svmm) {
-+		up_read(&mm->mmap_sem);
-+		return -EINVAL;
-+	}
+@@ -476,28 +476,34 @@ smb_send_rqst(struct TCP_Server_Info *server, int num_rqst,
+ 	if (num_rqst > MAX_COMPOUND - 1)
+ 		return -ENOMEM;
+ 
+-	memset(&cur_rqst[0], 0, sizeof(cur_rqst));
+-	memset(&iov, 0, sizeof(iov));
+-	memset(&tr_hdr, 0, sizeof(tr_hdr));
+-
+-	iov.iov_base = &tr_hdr;
+-	iov.iov_len = sizeof(tr_hdr);
+-	cur_rqst[0].rq_iov = &iov;
+-	cur_rqst[0].rq_nvec = 1;
+-
+ 	if (!server->ops->init_transform_rq) {
+ 		cifs_server_dbg(VFS, "Encryption requested but transform "
+ 				"callback is missing\n");
+ 		return -EIO;
+ 	}
+ 
++	tr_hdr = kmalloc(sizeof(*tr_hdr), GFP_NOFS);
++	if (!tr_hdr)
++		return -ENOMEM;
 +
- 	for (addr = args->va_start, end = args->va_start + size; addr < end;) {
- 		struct vm_area_struct *vma;
- 		unsigned long next;
++	memset(&cur_rqst[0], 0, sizeof(cur_rqst));
++	memset(&iov, 0, sizeof(iov));
++	memset(tr_hdr, 0, sizeof(*tr_hdr));
++
++	iov.iov_base = tr_hdr;
++	iov.iov_len = sizeof(*tr_hdr);
++	cur_rqst[0].rq_iov = &iov;
++	cur_rqst[0].rq_nvec = 1;
++
+ 	rc = server->ops->init_transform_rq(server, num_rqst + 1,
+ 					    &cur_rqst[0], rqst);
+ 	if (rc)
+-		return rc;
++		goto out;
+ 
+ 	rc = __smb_send_rqst(server, num_rqst + 1, &cur_rqst[0]);
+ 	smb3_free_compound_rqst(num_rqst, &cur_rqst[1]);
++out:
++	kfree(tr_hdr);
+ 	return rc;
+ }
+ 
 -- 
 2.20.1
 
