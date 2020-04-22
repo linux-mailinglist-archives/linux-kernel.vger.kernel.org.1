@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182861B3EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB7C1B3F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731158AbgDVKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:32:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731124AbgDVKcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:32:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9187CABCC;
-        Wed, 22 Apr 2020 10:32:32 +0000 (UTC)
-Message-ID: <1587551540.26476.12.camel@suse.com>
-Subject: Re: general protection fault in go7007_usb_probe
-From:   Oliver Neukum <oneukum@suse.com>
-To:     syzbot <syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com>,
-        andreyknvl@google.com, hverkuil-cisco@xs4all.nl,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Cc:     tiwai@suse.com
-Date:   Wed, 22 Apr 2020 12:32:20 +0200
-In-Reply-To: <000000000000a0f56c05a3d59b69@google.com>
-References: <000000000000a0f56c05a3d59b69@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1731207AbgDVKde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730722AbgDVKd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:33:29 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C59EC03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:33:29 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id z6so756770plk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=3XIGZouvYh+rdqKpGPlhY0A3zplshUQshCiuW1z0Fm0=;
+        b=OroIEo2pxba4gr0tsT1jLqWC23fjBzJTimQwB9Axn7lbyljR3+UTYxvbK+bg/jfvoj
+         zpmsjYAiOtOpvNZJ5YM3mvg129qQ8O6ScLc4x+BupjaEn0Vj2DGRsxZXKhEmj1a3eLYe
+         e5DWBvgnCMfhF2tj6u+bWxLeRaIl8bGpgvFLk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=3XIGZouvYh+rdqKpGPlhY0A3zplshUQshCiuW1z0Fm0=;
+        b=Ivc+gDqLChEyExIX0vwu+w8J7d6q+e0Z6ggEudbuJ868rOkkuMDmILHCVLISWEY/95
+         UGpWasq5caCYWSi72w3HC3QqJqwfhoqeZP8O8FgQ0+irKh/222TaQOZkZbGOKX/G8GLa
+         l58AmPMTjrltjia6lGPaWGcZ6DLifyujQeTYrrmPFZuoYxJa19uSgY894DC5IoYv+kSx
+         B5kifPB6fQa6wblHnfqv1NGjIEMhFXeMvqCV4j915GiH0esxdqvvCnAKVb9rbiVt7Gre
+         inVv711iuFiMSrOJrM8lNHlEjuDDpC2jDCena3mHVgWeZysW903W5xvXMEp1FbsieKnY
+         9aMw==
+X-Gm-Message-State: AGi0PuY2ZKBTokKK7W7qX+n6HmscTfGIaFS3GyONyrPcrgivqlqnLgeg
+        KFLuaqNyib4faCY2LCG1dwzGfw==
+X-Google-Smtp-Source: APiQypLMsLCwNYw2W3WRKMiDhv7mlWTPpb3vt1ZnWuWcCzDQuh+O3OakzilAgwJ3En97vlFAATzJWA==
+X-Received: by 2002:a17:902:ba86:: with SMTP id k6mr26705713pls.47.1587551608817;
+        Wed, 22 Apr 2020 03:33:28 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id 71sm4959579pfw.111.2020.04.22.03.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 03:33:28 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200421102745.v3.3.I295cb72bc5334a2af80313cbe97cb5c9dcb1442c@changeid>
+References: <20200421102745.v3.1.I2d44fc0053d019f239527a4e5829416714b7e299@changeid> <20200421102745.v3.3.I295cb72bc5334a2af80313cbe97cb5c9dcb1442c@changeid>
+Subject: Re: [PATCH v3 3/3] soc: qcom: rpmh-rsc: Remove the pm_lock
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mkshah@codeaurora.org, mka@chromium.org, evgreen@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com
+Date:   Wed, 22 Apr 2020 03:33:27 -0700
+Message-ID: <158755160722.163502.9129728895530548942@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 21.04.2020, 16:45 -0700 schrieb syzbot:
-> syzbot has found a reproducer for the following crash on:
-> 
-> HEAD commit:    e9010320 usb: cdns3: gadget: make a bunch of functions sta..
-> git tree:       https://github.com/google/kasan.git usb-fuzzer
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12da0b58100000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=bd14feb44652cfaf
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cabfa4b5b05ff6be4ef0
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1146eb17e00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159d136fe00000
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com
+Quoting Douglas Anderson (2020-04-21 10:29:08)
+>         case CPU_PM_ENTER_FAILED:
+>         case CPU_PM_EXIT:
+> -               cpumask_clear_cpu(smp_processor_id(), &drv->cpus_entered_=
+pm);
+> -               goto exit;
+> +               atomic_dec(&drv->cpus_in_pm);
+> +               return NOTIFY_OK;
+> +       default:
+> +               return NOTIFY_DONE;
 
-Hi,
-
-this looks to be technically caused by
-
-commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Thu Feb 6 16:45:27 2020 +0100
-
-    media: go7007: Fix URB type for interrupt handling
-
-It introduces this check:
-
-+       ep = usb->usbdev->ep_in[4];
-+       if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
-
-However, there is no guarantee ep_in[4] exists, if a malicious device
-were involved. But, I do not want to just add a check for NULL. That
-would just paper over the bug and the driver would fail at a later
-stage.
-
-How many endpoints do these devices need to have to operate?
-
-	Regards
-		Oliver
-
+Can this be split out and merged now? It's a bugfix for code that is in
+-next.
