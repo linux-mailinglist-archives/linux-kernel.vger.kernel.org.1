@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017981B3CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38171B3FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgDVKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39386 "EHLO mail.kernel.org"
+        id S1730276AbgDVKja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728975AbgDVKKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:17 -0400
+        id S1728100AbgDVKVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 618212075A;
-        Wed, 22 Apr 2020 10:10:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ADA72076E;
+        Wed, 22 Apr 2020 10:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550216;
-        bh=vDbC//cFoiarsCOyRPOI0FBifzs1I3USmWge+kKgjaU=;
+        s=default; t=1587550884;
+        bh=NAnVbASWnjgs7XmskmVMUUmV+KLJ3N68NxMBDVxbZLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOJuVmEmlvb4tR2AQriYQmPRPPHoaeQnZLnXBQzuBRinvGdwNHAdthi5Xqs3D1mpr
-         6TTG/SGR1J4ny3uxFHN/Pm9agKx511hvPPFfGnNXA+62RHxj0WkFA3PUszcoQ9YNQk
-         hSuKqLzzr4xPD4xkBYuBA05rkbHILZwli/OCnhlQ=
+        b=EiULXAxMJVgzhuY/jxFZnJ17466E2GuVO4Wt+z9TO+vMb2AQSCBVzUdYi14VEch65
+         XGkFucNxzwB5lDljqiSDuGeZstQRyCMeMLfnlhAjARxjbsu48ldZz2KxOdaGQdz9ZF
+         kI2ZMm2ft3zcqfArGd1G1DYCs+0RonZnOGbTSI+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 015/199] selftests/x86/ptrace_syscall_32: Fix no-vDSO segfault
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.6 014/166] netfilter: nf_tables: report EOPNOTSUPP on unsupported flags/object type
 Date:   Wed, 22 Apr 2020 11:55:41 +0200
-Message-Id: <20200422095059.731868273@linuxfoundation.org>
+Message-Id: <20200422095049.851270478@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 630b99ab60aa972052a4202a1ff96c7e45eb0054 ]
+commit d9583cdf2f38d0f526d9a8c8564dd2e35e649bc7 upstream.
 
-If AT_SYSINFO is not present, don't try to call a NULL pointer.
+EINVAL should be used for malformed netlink messages. New userspace
+utility and old kernels might easily result in EINVAL when exercising
+new set features, which is misleading.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/faaf688265a7e1a5b944d6f8bc0f6368158306d3.1584052409.git.luto@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8aeff920dcc9 ("netfilter: nf_tables: add stateful object reference to set elements")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/x86/ptrace_syscall.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/netfilter/nf_tables_api.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/x86/ptrace_syscall.c b/tools/testing/selftests/x86/ptrace_syscall.c
-index 6f22238f32173..12aaa063196e7 100644
---- a/tools/testing/selftests/x86/ptrace_syscall.c
-+++ b/tools/testing/selftests/x86/ptrace_syscall.c
-@@ -414,8 +414,12 @@ int main()
- 
- #if defined(__i386__) && (!defined(__GLIBC__) || __GLIBC__ > 2 || __GLIBC_MINOR__ >= 16)
- 	vsyscall32 = (void *)getauxval(AT_SYSINFO);
--	printf("[RUN]\tCheck AT_SYSINFO return regs\n");
--	test_sys32_regs(do_full_vsyscall32);
-+	if (vsyscall32) {
-+		printf("[RUN]\tCheck AT_SYSINFO return regs\n");
-+		test_sys32_regs(do_full_vsyscall32);
-+	} else {
-+		printf("[SKIP]\tAT_SYSINFO is not available\n");
-+	}
- #endif
- 
- 	test_ptrace_syscall_restart();
--- 
-2.20.1
-
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3950,7 +3950,7 @@ static int nf_tables_newset(struct net *
+ 			      NFT_SET_INTERVAL | NFT_SET_TIMEOUT |
+ 			      NFT_SET_MAP | NFT_SET_EVAL |
+ 			      NFT_SET_OBJECT))
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 		/* Only one of these operations is supported */
+ 		if ((flags & (NFT_SET_MAP | NFT_SET_OBJECT)) ==
+ 			     (NFT_SET_MAP | NFT_SET_OBJECT))
+@@ -3988,7 +3988,7 @@ static int nf_tables_newset(struct net *
+ 		objtype = ntohl(nla_get_be32(nla[NFTA_SET_OBJ_TYPE]));
+ 		if (objtype == NFT_OBJECT_UNSPEC ||
+ 		    objtype > NFT_OBJECT_MAX)
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 	} else if (flags & NFT_SET_OBJECT)
+ 		return -EINVAL;
+ 	else
 
 
