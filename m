@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FEA1B3CF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB221B3F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgDVKKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38136 "EHLO mail.kernel.org"
+        id S1731181AbgDVKgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728285AbgDVKKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:02 -0400
+        id S1730232AbgDVKWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD28320575;
-        Wed, 22 Apr 2020 10:10:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C1DF2076B;
+        Wed, 22 Apr 2020 10:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550202;
-        bh=Dq85OBwbLWN5CPivEkWRazfUgAcrK8+PPUm19L5OCe4=;
+        s=default; t=1587550973;
+        bh=xfxEHbO2CYxxBaJ6smtcDNMkhdPl2Aa+kTgvxGBP8Uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H6SA3On2a7YcYnvcmhm5PdUF/k2nw6pBWTUlCLiegA5pIp3FjeJa2go7q4W0MQHFH
-         Ll5nFUyHiccrPdwvK7qQ61PYsquyye7kFWzZ3k/SzCr8k+qnxUq0mlDITWUhv4ls9S
-         MUN4fzowC80SPRiy7NIp6IxynOMwJj4cEl/fCYu8=
+        b=tkw/yLb6MJ9y5VyztVB0hZY/65knENsv4cW2JVpIORwj2+dA5j/G7K/vjKV/m/IQe
+         KraxsrE3Oz2NMja0ONTJC7k7gGbiyWWcE0H+W3u4n1Fav9qC3sHieUUy5C2epLrGnH
+         U1MOXF6Hea+jbzZQSCEmh2owwcRKYbPM8MqVH3ug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yicong Yang <yangyicong@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.14 049/199] PCI/ASPM: Clear the correct bits when enabling L1 substates
-Date:   Wed, 22 Apr 2020 11:56:15 +0200
-Message-Id: <20200422095103.092440269@linuxfoundation.org>
+        stable@vger.kernel.org, Wenbo Zhang <ethercflow@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 049/166] bpf: Reliably preserve btf_trace_xxx types
+Date:   Wed, 22 Apr 2020 11:56:16 +0200
+Message-Id: <20200422095054.334001038@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-commit 58a3862a10a317a81097ab0c78aecebabb1704f5 upstream.
+[ Upstream commit 441420a1f0b3031f228453697406c86f110e59d4 ]
 
-In pcie_config_aspm_l1ss(), we cleared the wrong bits when enabling ASPM L1
-Substates.  Instead of the L1.x enable bits (PCI_L1SS_CTL1_L1SS_MASK, 0xf), we
-cleared the Link Activation Interrupt Enable bit (PCI_L1SS_CAP_L1_PM_SS,
-0x10).
+btf_trace_xxx types, crucial for tp_btf BPF programs (raw tracepoint with
+verifier-checked direct memory access), have to be preserved in kernel BTF to
+allow verifier do its job and enforce type/memory safety. It was reported
+([0]) that for kernels built with Clang current type-casting approach doesn't
+preserve these types.
 
-Clear the L1.x enable bits before writing the new L1.x configuration.
+This patch fixes it by declaring an anonymous union for each registered
+tracepoint, capturing both struct bpf_raw_event_map information, as well as
+recording btf_trace_##call type reliably. Structurally, it's still the same
+content as for a plain struct bpf_raw_event_map, so no other changes are
+necessary.
 
-[bhelgaas: changelog]
-Fixes: aeda9adebab8 ("PCI/ASPM: Configure L1 substate settings")
-Link: https://lore.kernel.org/r/1584093227-1292-1-git-send-email-yangyicong@hisilicon.com
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-CC: stable@vger.kernel.org	# v4.11+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  [0] https://github.com/iovisor/bcc/issues/2770#issuecomment-591007692
 
+Fixes: e8c423fb31fa ("bpf: Add typecast to raw_tracepoints to help BTF generation")
+Reported-by: Wenbo Zhang <ethercflow@gmail.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200301081045.3491005-2-andriin@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pcie/aspm.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/trace/bpf_probe.h | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -693,9 +693,9 @@ static void pcie_config_aspm_l1ss(struct
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index b04c292709730..1ce3be63add1f 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -75,13 +75,17 @@ static inline void bpf_test_probe_##call(void)				\
+ 	check_trace_callback_type_##call(__bpf_trace_##template);	\
+ }									\
+ typedef void (*btf_trace_##call)(void *__data, proto);			\
+-static struct bpf_raw_event_map	__used					\
+-	__attribute__((section("__bpf_raw_tp_map")))			\
+-__bpf_trace_tp_map_##call = {						\
+-	.tp		= &__tracepoint_##call,				\
+-	.bpf_func	= (void *)(btf_trace_##call)__bpf_trace_##template,	\
+-	.num_args	= COUNT_ARGS(args),				\
+-	.writable_size	= size,						\
++static union {								\
++	struct bpf_raw_event_map event;					\
++	btf_trace_##call handler;					\
++} __bpf_trace_tp_map_##call __used					\
++__attribute__((section("__bpf_raw_tp_map"))) = {			\
++	.event = {							\
++		.tp		= &__tracepoint_##call,			\
++		.bpf_func	= __bpf_trace_##template,		\
++		.num_args	= COUNT_ARGS(args),			\
++		.writable_size	= size,					\
++	},								\
+ };
  
- 	/* Enable what we need to enable */
- 	pci_clear_and_set_dword(parent, up_cap_ptr + PCI_L1SS_CTL1,
--				PCI_L1SS_CAP_L1_PM_SS, val);
-+				PCI_L1SS_CTL1_L1SS_MASK, val);
- 	pci_clear_and_set_dword(child, dw_cap_ptr + PCI_L1SS_CTL1,
--				PCI_L1SS_CAP_L1_PM_SS, val);
-+				PCI_L1SS_CTL1_L1SS_MASK, val);
- }
- 
- static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+ #define FIRST(x, ...) x
+-- 
+2.20.1
+
 
 
