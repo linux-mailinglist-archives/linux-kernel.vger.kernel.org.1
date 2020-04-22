@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA281B41DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0B71B3CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgDVKHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59400 "EHLO mail.kernel.org"
+        id S1728971AbgDVKKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgDVKHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:03 -0400
+        id S1728955AbgDVKKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:10:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE49220774;
-        Wed, 22 Apr 2020 10:07:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 130D12077D;
+        Wed, 22 Apr 2020 10:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550023;
-        bh=qNozrlyI2SnAMAfBALERdcstlwLYUaOaO+RmbvU4N1I=;
+        s=default; t=1587550209;
+        bh=s2KdDNJtF0qnO4d32B5YxCq8JiwYZ0+8BfvcQJBlUoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ycQm+gc/SOzBAw4wD8IeqMYqrx7W5yhLo/8zhs8kjPJLsZw9Cs/l+AaZ6uytrOzow
-         M1mA97mdHBbuet8RiNTfUc868SgafS9uyEBQ+fhbmvU2Z4FuyT+TzABmSzz/9oxI9e
-         D05GhVJ5fOaay4MBbpqFHbbi/Kaq/DV60nvd4Krg=
+        b=y6jBgjfW/pC+cCl0J1iPBHsmVCaDkxyJPjlYKZM1WENMCEE21+IVa4xPiCFuzDTph
+         dbJiyed0eFCWIJzfeunEMIH5UOVMCxIouVcKNizWbD9Dg0NHqkPDFYkduQHXoU0+8k
+         1rFk4FUjqJcVqrAgiXMFf6YwjowCD02Sak1I5ivQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 060/125] drm/dp_mst: Fix clearing payload state on topology disable
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH 4.14 051/199] KEYS: reaching the keys quotas correctly
 Date:   Wed, 22 Apr 2020 11:56:17 +0200
-Message-Id: <20200422095043.155469271@linuxfoundation.org>
+Message-Id: <20200422095103.301623069@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,91 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
-[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
+commit 2e356101e72ab1361821b3af024d64877d9a798d upstream.
 
-The issues caused by:
+Currently, when we add a new user key, the calltrace as below:
 
-commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
-mgr")
+add_key()
+  key_create_or_update()
+    key_alloc()
+    __key_instantiate_and_link
+      generic_key_instantiate
+        key_payload_reserve
+          ......
 
-Prompted me to take a closer look at how we clear the payload state in
-general when disabling the topology, and it turns out there's actually
-two subtle issues here.
+Since commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly"),
+we can reach max bytes/keys in key_alloc, but we forget to remove this
+limit when we reserver space for payload in key_payload_reserve. So we
+can only reach max keys but not max bytes when having delta between plen
+and type->def_datalen. Remove this limit when instantiating the key, so we
+can keep consistent with key_alloc.
 
-The first is that we're not grabbing &mgr.payload_lock when clearing the
-payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
-lock order is &mgr.payload_lock -> &mgr.lock (because we always want
-&mgr.lock to be the inner-most lock so topology validation always
-works), this makes perfect sense. It also means that -technically- there
-could be racing between someone calling
-drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
-modeset occurring that's modifying the payload state at the same time.
+Also, fix the similar problem in keyctl_chown_key().
 
-The second is the more obvious issue that Wayne Lin discovered, that
-we're not clearing proposed_payloads when disabling the topology.
+Fixes: 0b77f5bfb45c ("keys: make the keyring quotas controllable through /proc/sys")
+Fixes: a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly")
+Cc: stable@vger.kernel.org # 5.0.x
+Cc: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I actually can't see any obvious places where the racing caused by the
-first issue would break something, and it could be that some of our
-higher-level locks already prevent this by happenstance, but better safe
-then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
-first grabs &mgr.payload_lock followed by &mgr.lock so that we never
-race when modifying the payload state. Then, we also clear
-proposed_payloads to fix the original issue of enabling a new topology
-with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
-structures, but those are getting destroyed along with the ports anyway.
-
-Changes since v1:
-* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
-  vsyrjala
-
-Cc: Sean Paul <sean@poorly.run>
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.4+
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ security/keys/key.c    |    2 +-
+ security/keys/keyctl.c |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 592ebcd440b6d..8dbcb498d56c3 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2034,6 +2034,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 	int ret = 0;
- 	struct drm_dp_mst_branch *mstb = NULL;
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -383,7 +383,7 @@ int key_payload_reserve(struct key *key,
+ 		spin_lock(&key->user->lock);
  
-+	mutex_lock(&mgr->payload_lock);
- 	mutex_lock(&mgr->lock);
- 	if (mst_state == mgr->mst_state)
- 		goto out_unlock;
-@@ -2096,7 +2097,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		/* this can fail if the device is gone */
- 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
- 		ret = 0;
--		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
-+		memset(mgr->payloads, 0,
-+		       mgr->max_payloads * sizeof(mgr->payloads[0]));
-+		memset(mgr->proposed_vcpis, 0,
-+		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
- 		mgr->payload_mask = 0;
- 		set_bit(0, &mgr->payload_mask);
- 		mgr->vcpi_mask = 0;
-@@ -2104,6 +2108,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 		if (delta > 0 &&
+-		    (key->user->qnbytes + delta >= maxbytes ||
++		    (key->user->qnbytes + delta > maxbytes ||
+ 		     key->user->qnbytes + delta < key->user->qnbytes)) {
+ 			ret = -EDQUOT;
+ 		}
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -882,8 +882,8 @@ long keyctl_chown_key(key_serial_t id, u
+ 				key_quota_root_maxbytes : key_quota_maxbytes;
  
- out_unlock:
- 	mutex_unlock(&mgr->lock);
-+	mutex_unlock(&mgr->payload_lock);
- 	if (mstb)
- 		drm_dp_put_mst_branch_device(mstb);
- 	return ret;
--- 
-2.20.1
-
+ 			spin_lock(&newowner->lock);
+-			if (newowner->qnkeys + 1 >= maxkeys ||
+-			    newowner->qnbytes + key->quotalen >= maxbytes ||
++			if (newowner->qnkeys + 1 > maxkeys ||
++			    newowner->qnbytes + key->quotalen > maxbytes ||
+ 			    newowner->qnbytes + key->quotalen <
+ 			    newowner->qnbytes)
+ 				goto quota_overrun;
 
 
