@@ -2,348 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE21B4B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5529E1B4B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgDVQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        id S1726402AbgDVRAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726445AbgDVQ5d (ORCPT
+        with ESMTP id S1725980AbgDVRAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:57:33 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85654C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:57:33 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id w4so3146670ioc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:57:33 -0700 (PDT)
+        Wed, 22 Apr 2020 13:00:12 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C190C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:00:12 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id a6so2439954uao.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:00:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=MrTLB042d8ow8cXeAt38M16cngvyRktM3oRMp1lzHpY=;
-        b=IVHSLCOkvWTBPnq2OLacMnkRmhRZKTnMtoYkAU9OzJ5OnSnUq/etB6/zhQXdYd6I/w
-         GhZ5KNeHMHfBvokJua/SZVRehakp1n+FcUx6mXiXb829lMRRRQSkdaFVSCW4TzmPMYVX
-         I3t7jwzfAfD7pKSPwOiUobJbxZU71A2o4XPGk=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L/O5KwO3nOxDvXJ07hYZXiY7YmCfT4z0Qa9cSD5ewpg=;
+        b=DQshYo20P818TEnP5OMd8H3N/OyBjq2JbqEAdVAeSVG8qrfaJSDjw+Qh7mdP/+O0EH
+         DeSIxtiOvwukT7Vbuzi4cs1xbxXrloS5zpU/tkFrV2+KYIWQMzwJfPMszuojRD3cTSwp
+         yz4TgDhBz8HtWMXdM/dtAqAk1tEwp/O07PtRgQ5KUFZA51Wk+o/JAcrENteopUj1+mML
+         iKsOYqMdpq7FwVUcoYNJtL76eDwxbjneM2R3dJ6nlj8kng36ZVsQgh7gkHJF8GV6M6hy
+         P1JV1Cal7V6v/nmSPGE3jHAXb2Baj54ghFVHyx3o4wcx+za6HU1KKnZJiRTIjrQs3zZ7
+         cZtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=MrTLB042d8ow8cXeAt38M16cngvyRktM3oRMp1lzHpY=;
-        b=JGzBF6fyDgsIpRzpAU+OKwThQAf2G8/s8R6dv1SHuBvnYKgL95aV73I9lZ0GJ19rvl
-         r+d6NEs/v7oo6VVcdUjMT7djRELGVeDWDej+bOoHx5xvC2pQOt0d6p2/RjUi8SoXuy5r
-         PVZC9TRIXVcyqCdMJKfSO+9ee7VInh89oi2RjOpMROtnYymHGFDUw6RCN0jPny0lSDVT
-         AOGHyVfBx/DNtz4i93+jANCFE7k9b6fXWVcVfWJUCscIMqamfBNnVlDS90XXdTeInEOS
-         795qOna6GJLImezqv77YpjwIAj4GpYSSOzM0UX7CPF8gpORCKlL+j47eFV1dNmUUQTlO
-         DAbg==
-X-Gm-Message-State: AGi0PuZYtdm5W2FXNeZMTsyQMxp444j4a314jBvDtK0ekNu3b+5W0O+s
-        uvQGYjP4X5BixaWEP2Fd5tUgPg==
-X-Google-Smtp-Source: APiQypKcQE0Pv0sf0RsJOPcH3h8muNJdDT7xF2ZZfMQPqBb/GeXyV2Xjy2xa1INywnFU0M1GNmSoTQ==
-X-Received: by 2002:a02:415:: with SMTP id 21mr26748637jab.126.1587574652803;
-        Wed, 22 Apr 2020 09:57:32 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k18sm2218329ili.77.2020.04.22.09.57.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 09:57:32 -0700 (PDT)
-To:     torvalds@linux-foundation.org
-Cc:     skhan@linuxfoundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest update for Linux 5.7-rc3
-Message-ID: <853c91e8-83ba-3d37-7601-803485dbc8ed@linuxfoundation.org>
-Date:   Wed, 22 Apr 2020 10:57:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L/O5KwO3nOxDvXJ07hYZXiY7YmCfT4z0Qa9cSD5ewpg=;
+        b=n8f05zNBi1H15SMHLHIw2Wyzo/rIPVGGIKhtaaHGkk1eCzcFuM3+p74IAKPGq4/fZl
+         bDJ2dxj5ctP3UcWoZgaa3VthQk/uxlSdG+SGn2kXG9BU84+MK9eNKQUYaEMRIILuht9h
+         zvVhekyBLNhHnwxp8QtV9kNHrE4UWFEHnoLgM9jPBADxzBFSjzV2OLh+HZNISjKMRSnh
+         vgRGVo6gQGd/pWtaQsuE0Arc0zJWHhuabUSESabdjHQlY/444sGVMVzdZFXqcmD+47hM
+         jvg51nwNQVm8lWx+dTqcegmikzD8lyR4pr63gBwZLEzALPf51h1yBPh49kIabRyo3XkA
+         nzGw==
+X-Gm-Message-State: AGi0PuZhlghUw5/VE9jOekh5kf9UCAiEJQRf7zXii/JifZ/agIGCklzM
+        g9+icZ6McC2bB8yFAgegRgHEpOqOhmlshcPxg9hvTw==
+X-Google-Smtp-Source: APiQypLa/e6Cqt7Vstz3uJ4c15sXDsUKYq/kUtlxRjycsoEPDwtCDz5D9ounDPaZ/qRG2Cvk2VsouvI8xzei/8uZjA4=
+X-Received: by 2002:a67:8b09:: with SMTP id n9mr20446512vsd.191.1587574811418;
+ Wed, 22 Apr 2020 10:00:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------49CF7118CB8C27F8EA3839BE"
-Content-Language: en-US
+References: <20200422112719.826676174@infradead.org> <20200422112831.811655681@infradead.org>
+In-Reply-To: <20200422112831.811655681@infradead.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 22 Apr 2020 18:59:35 +0200
+Message-ID: <CAPDyKFo+qCZU=snj==4CFRfL9R0KLcG2RMYeFW_BMX=-Mo5rtg@mail.gmail.com>
+Subject: Re: [PATCH 10/23] sched,mmc: Convert to sched_set_fifo*()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>, qais.yousef@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        bsegall@google.com, mgorman@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------49CF7118CB8C27F8EA3839BE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, 22 Apr 2020 at 13:29, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Because SCHED_FIFO is a broken scheduler model (see previous patches)
+> take away the priority field, the kernel can't possibly make an
+> informed decision.
+>
+> In this case, use fifo_low, because it only cares about being above
+> SCHED_NORMAL. Effectively no change in behaviour.
+>
+> Cc: ulf.hansson@linaro.org
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Ingo Molnar <mingo@kernel.org>
 
-Hi Linus,
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Please pull the following Kselftest update for Linux 5.7-rc3.
+FYI: I am slowly moving towards removing the entire kthread for the
+sdio_irq_thread(). It shouldn't be too far off to be posted, one or
+two kernel releases or so.
 
-This kselftest update for Linux 5.7-rc3 consists of fixes to runner
-scripts and individual test run-time bugs. Includes fixes to tpm2
-and memfd test run-time regressions.
+Kind regards
+Uffe
 
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
-
-   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-5.7-rc3
-
-for you to fetch changes up to b87080eab4c1377706c113fc9c0157f19ea8fed1:
-
-   selftests/ipc: Fix test failure seen after initial test run 
-(2020-04-14 10:24:28 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-5.7-rc3
-
-This kselftest update for Linux 5.7-rc3 consists of fixes to runner
-scripts and individual test run-time bugs. Includes fixes to tpm2
-and memfd test run-time regressions.
-
-----------------------------------------------------------------
-Andrea Righi (1):
-       kselftest/runner: allow to properly deliver signals to tests
-
-Colin Ian King (1):
-       selftests/harness: fix spelling mistake "SIGARLM" -> "SIGALRM"
-
-Jarkko Sakkinen (1):
-       Revert "Kernel selftests: tpm2: check for tpm support"
-
-Sandipan Das (2):
-       selftests: vm: Do not override definition of ARCH
-       selftests: vm: Fix 64-bit test builds for powerpc64le
-
-Shuah Khan (1):
-       selftests: Fix memfd test run-time regression
-
-Thadeu Lima de Souza Cascardo (1):
-       selftests/seccomp: allow clock_nanosleep instead of nanosleep
-
-Tyler Hicks (1):
-       selftests/ipc: Fix test failure seen after initial test run
-
-Xiao Yang (1):
-       selftests/ftrace: Add CONFIG_SAMPLE_FTRACE_DIRECT=m kconfig
-
-  tools/testing/selftests/ftrace/config         |  1 +
-  tools/testing/selftests/ipc/msgque.c          |  2 +-
-  tools/testing/selftests/kselftest/runner.sh   |  2 +-
-  tools/testing/selftests/kselftest_harness.h   |  6 +++---
-  tools/testing/selftests/memfd/Makefile        |  3 ++-
-  tools/testing/selftests/seccomp/seccomp_bpf.c | 14 ++++++++------
-  tools/testing/selftests/tpm2/test_smoke.sh    | 13 ++-----------
-  tools/testing/selftests/tpm2/test_space.sh    |  9 +--------
-  tools/testing/selftests/vm/Makefile           |  4 ++--
-  tools/testing/selftests/vm/run_vmtests        |  2 +-
-  10 files changed, 22 insertions(+), 34 deletions(-)
-
-----------------------------------------------------------------
-
---------------49CF7118CB8C27F8EA3839BE
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-5.7-rc3.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-5.7-rc3.diff"
-
-diff --git a/tools/testing/selftests/ftrace/config b/tools/testing/selftests/ftrace/config
-index c2c8de4fafff..e59d985eeff0 100644
---- a/tools/testing/selftests/ftrace/config
-+++ b/tools/testing/selftests/ftrace/config
-@@ -11,5 +11,6 @@ CONFIG_PREEMPTIRQ_DELAY_TEST=m
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_SAMPLES=y
-+CONFIG_SAMPLE_FTRACE_DIRECT=m
- CONFIG_SAMPLE_TRACE_PRINTK=m
- CONFIG_KALLSYMS_ALL=y
-diff --git a/tools/testing/selftests/ipc/msgque.c b/tools/testing/selftests/ipc/msgque.c
-index 4c156aeab6b8..5ec4d9e18806 100644
---- a/tools/testing/selftests/ipc/msgque.c
-+++ b/tools/testing/selftests/ipc/msgque.c
-@@ -137,7 +137,7 @@ int dump_queue(struct msgque_data *msgque)
- 	for (kern_id = 0; kern_id < 256; kern_id++) {
- 		ret = msgctl(kern_id, MSG_STAT, &ds);
- 		if (ret < 0) {
--			if (errno == -EINVAL)
-+			if (errno == EINVAL)
- 				continue;
- 			printf("Failed to get stats for IPC queue with id %d\n",
- 					kern_id);
-diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-index e84d901f8567..676b3a8b114d 100644
---- a/tools/testing/selftests/kselftest/runner.sh
-+++ b/tools/testing/selftests/kselftest/runner.sh
-@@ -33,7 +33,7 @@ tap_timeout()
- {
- 	# Make sure tests will time out if utility is available.
- 	if [ -x /usr/bin/timeout ] ; then
--		/usr/bin/timeout "$kselftest_timeout" "$1"
-+		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
- 	else
- 		"$1"
- 	fi
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index 2902f6a78f8a..2bb8c81fc0b4 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -705,7 +705,7 @@ static void __timeout_handler(int sig, siginfo_t *info, void *ucontext)
- 	/* Sanity check handler execution environment. */
- 	if (!t) {
- 		fprintf(TH_LOG_STREAM,
--			"no active test in SIGARLM handler!?\n");
-+			"no active test in SIGALRM handler!?\n");
- 		abort();
- 	}
- 	if (sig != SIGALRM || sig != info->si_signo) {
-@@ -731,7 +731,7 @@ void __wait_for_test(struct __test_metadata *t)
- 	if (sigaction(SIGALRM, &action, &saved_action)) {
- 		t->passed = 0;
- 		fprintf(TH_LOG_STREAM,
--			"%s: unable to install SIGARLM handler\n",
-+			"%s: unable to install SIGALRM handler\n",
- 			t->name);
- 		return;
- 	}
-@@ -743,7 +743,7 @@ void __wait_for_test(struct __test_metadata *t)
- 	if (sigaction(SIGALRM, &saved_action, NULL)) {
- 		t->passed = 0;
- 		fprintf(TH_LOG_STREAM,
--			"%s: unable to uninstall SIGARLM handler\n",
-+			"%s: unable to uninstall SIGALRM handler\n",
- 			t->name);
- 		return;
- 	}
-diff --git a/tools/testing/selftests/memfd/Makefile b/tools/testing/selftests/memfd/Makefile
-index 0a15f9e23431..187b14cad00c 100644
---- a/tools/testing/selftests/memfd/Makefile
-+++ b/tools/testing/selftests/memfd/Makefile
-@@ -4,8 +4,9 @@ CFLAGS += -I../../../../include/uapi/
- CFLAGS += -I../../../../include/
- CFLAGS += -I../../../../usr/include/
- 
--TEST_GEN_PROGS := memfd_test fuse_test fuse_mnt
-+TEST_GEN_PROGS := memfd_test
- TEST_PROGS := run_fuse_test.sh run_hugetlbfs_test.sh
-+TEST_GEN_FILES := fuse_test fuse_mnt
- 
- fuse_mnt.o: CFLAGS += $(shell pkg-config fuse --cflags)
- 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 89fb3e0b552e..c0aa46ce14f6 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -2803,12 +2803,13 @@ TEST(syscall_restart)
- 			 offsetof(struct seccomp_data, nr)),
- 
- #ifdef __NR_sigreturn
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_sigreturn, 6, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_sigreturn, 7, 0),
- #endif
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_read, 5, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit, 4, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_rt_sigreturn, 3, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_nanosleep, 4, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_read, 6, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit, 5, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_rt_sigreturn, 4, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_nanosleep, 5, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_clock_nanosleep, 4, 0),
- 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_restart_syscall, 4, 0),
- 
- 		/* Allow __NR_write for easy logging. */
-@@ -2895,7 +2896,8 @@ TEST(syscall_restart)
- 	ASSERT_EQ(PTRACE_EVENT_SECCOMP, (status >> 16));
- 	ASSERT_EQ(0, ptrace(PTRACE_GETEVENTMSG, child_pid, NULL, &msg));
- 	ASSERT_EQ(0x100, msg);
--	EXPECT_EQ(__NR_nanosleep, get_syscall(_metadata, child_pid));
-+	ret = get_syscall(_metadata, child_pid);
-+	EXPECT_TRUE(ret == __NR_nanosleep || ret == __NR_clock_nanosleep);
- 
- 	/* Might as well check siginfo for sanity while we're here. */
- 	ASSERT_EQ(0, ptrace(PTRACE_GETSIGINFO, child_pid, NULL, &info));
-diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
-index b630c7b5950a..8155c2ea7ccb 100755
---- a/tools/testing/selftests/tpm2/test_smoke.sh
-+++ b/tools/testing/selftests/tpm2/test_smoke.sh
-@@ -1,17 +1,8 @@
- #!/bin/bash
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
--self.flags = flags
- 
--# Kselftest framework requirement - SKIP code is 4.
--ksft_skip=4
--
--
--if [ -f /dev/tpm0 ] ; then
--	python -m unittest -v tpm2_tests.SmokeTest
--	python -m unittest -v tpm2_tests.AsyncTest
--else
--	exit $ksft_skip
--fi
-+python -m unittest -v tpm2_tests.SmokeTest
-+python -m unittest -v tpm2_tests.AsyncTest
- 
- CLEAR_CMD=$(which tpm2_clear)
- if [ -n $CLEAR_CMD ]; then
-diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
-index 180b469c53b4..a6f5e346635e 100755
---- a/tools/testing/selftests/tpm2/test_space.sh
-+++ b/tools/testing/selftests/tpm2/test_space.sh
-@@ -1,11 +1,4 @@
- #!/bin/bash
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- 
--# Kselftest framework requirement - SKIP code is 4.
--ksft_skip=4
--
--if [ -f /dev/tpmrm0 ] ; then
--	python -m unittest -v tpm2_tests.SpaceTest
--else
--	exit $ksft_skip
--fi
-+python -m unittest -v tpm2_tests.SpaceTest
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index d31db052dff6..6998877f707e 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for vm selftests
- uname_M := $(shell uname -m 2>/dev/null || echo not)
--ARCH ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/')
-+MACHINE ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/')
- 
- CFLAGS = -Wall -I ../../../../usr/include $(EXTRA_CFLAGS)
- LDLIBS = -lrt
-@@ -20,7 +20,7 @@ TEST_GEN_FILES += thuge-gen
- TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
- 
--ifneq (,$(filter $(ARCH),arm64 ia64 mips64 parisc64 ppc64 riscv64 s390x sh64 sparc64 x86_64))
-+ifneq (,$(filter $(MACHINE),arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64))
- TEST_GEN_FILES += va_128TBswitch
- TEST_GEN_FILES += virtual_address_range
- TEST_GEN_FILES += write_to_hugetlbfs
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests
-index 665009ebfba4..76ca5e7a3951 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -59,7 +59,7 @@ else
- fi
- 
- #filter 64bit architectures
--ARCH64STR="arm64 ia64 mips64 parisc64 ppc64 riscv64 s390x sh64 sparc64 x86_64"
-+ARCH64STR="arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64"
- if [ -z $ARCH ]; then
-   ARCH=`uname -m 2>/dev/null | sed -e 's/aarch64.*/arm64/'`
- fi
-
---------------49CF7118CB8C27F8EA3839BE--
+> ---
+>  drivers/mmc/core/sdio_irq.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> --- a/drivers/mmc/core/sdio_irq.c
+> +++ b/drivers/mmc/core/sdio_irq.c
+> @@ -139,11 +139,10 @@ EXPORT_SYMBOL_GPL(sdio_signal_irq);
+>  static int sdio_irq_thread(void *_host)
+>  {
+>         struct mmc_host *host = _host;
+> -       struct sched_param param = { .sched_priority = 1 };
+>         unsigned long period, idle_period;
+>         int ret;
+>
+> -       sched_setscheduler(current, SCHED_FIFO, &param);
+> +       sched_set_fifo_low(current);
+>
+>         /*
+>          * We want to allow for SDIO cards to work even on non SDIO
+>
+>
