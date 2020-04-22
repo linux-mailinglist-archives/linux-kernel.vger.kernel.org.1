@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C861B4340
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E12E1B434E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgDVL3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        id S1726144AbgDVLaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726510AbgDVL3Z (ORCPT
+        by vger.kernel.org with ESMTP id S1726448AbgDVL3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Apr 2020 07:29:25 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E19C03C1AE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228D9C03C1AB
         for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 04:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=sGPoG9nHkRgcF5sVGoi2OVg1N+i4DA3e12+aG10N4j0=; b=qrAL1XfZyYppT26PTddnkyQscM
-        j8LpY/SqA4DAv1M8WxGrD6gsbvfAujKxm9x6Jp02kSoOZZhmKV4UH4dFe+y5lfuYpKu+JmHb8Lcxy
-        uC2yA+C7xpYm5CjAOt+1o2Dn3Scqslx+mcZQRhctj8Q/WdYGRfi/zRdvFw/3qjUbElTlShZB5BUGD
-        ErtbpLf/eHIvXlASNmbAgYPtSNsboAvptmPb404nqGHSkBuVBcCRxvG0PQ0tpxtNGnDh/aYarZjQO
-        oMcXxiPlf+6B5ZcQEVgQu2QTGS6Nky5azwFXe8Umi4WlI1phkXFT0TPRXLCh8IW0wi2jdiabrhzMp
-        qLIH6AtQ==;
+        bh=llWoNTl7a6WItJGcLBTC8j7ePN5aoj4IZ6+7VC2n6DI=; b=OfkSuJ9norfNio6+xaZkqCPpmL
+        uNvQeSVJwV5Oekx6j971guWZ8znLdsuxfPzj8d/G6v9sjYot0CoKmY5mgCPKovW/DaU2bsjb8VbS+
+        h0NAlhdvBWEA5SDk79bbtEBTlg05I38pZCnmblEg67hikwX+mZt//ogXYs0+UXuDGBcRS38oNMWoZ
+        p0bZotU0LRp31LYLnI58R3VrSaZrf1rr4+2IEkc0fqgKROgNJDYM/rZ0Ij9MOKdTGhxT240nAmSlQ
+        YVUFRTA32gMMw2dy+vH9DQMq1yfIeW5728QgDY3Mgl9oPp/ApK/MXWZ5IvkzdqfNeUJhtXdPT0fpS
+        fbq8R3Dw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRDYy-0003bN-JQ; Wed, 22 Apr 2020 11:29:08 +0000
+        id 1jRDYy-0003bO-KM; Wed, 22 Apr 2020 11:29:08 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 562B230797E;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5719D30797F;
         Wed, 22 Apr 2020 13:29:03 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id F393A22B9589C; Wed, 22 Apr 2020 13:29:02 +0200 (CEST)
-Message-Id: <20200422112832.224090625@infradead.org>
+        id 07F5C22B99F04; Wed, 22 Apr 2020 13:29:03 +0200 (CEST)
+Message-Id: <20200422112832.283981577@infradead.org>
 User-Agent: quilt/0.65
-Date:   Wed, 22 Apr 2020 13:27:36 +0200
+Date:   Wed, 22 Apr 2020 13:27:37 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, rostedt@goodmis.org, qais.yousef@arm.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        peterz@infradead.org
-Subject: [PATCH 17/23] sched,irq: Convert to sched_set_fifo()
+        peterz@infradead.org, paulmck@kernel.org
+Subject: [PATCH 18/23] sched,locktorture: Convert to sched_set_fifo()
 References: <20200422112719.826676174@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,41 +57,50 @@ Because SCHED_FIFO is a broken scheduler model (see previous patches)
 take away the priority field, the kernel can't possibly make an
 informed decision.
 
-Effectively no change.
+Effectively changes prio from 99 to 50.
 
-Cc: tglx@linutronix.de
+Cc: paulmck@kernel.org
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Ingo Molnar <mingo@kernel.org>
 ---
- kernel/irq/manage.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ kernel/locking/locktorture.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1271,9 +1271,6 @@ static int
- setup_irq_thread(struct irqaction *new, unsigned int irq, bool secondary)
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -436,8 +436,6 @@ static int torture_rtmutex_lock(void) __
+ 
+ static void torture_rtmutex_boost(struct torture_random_state *trsp)
  {
- 	struct task_struct *t;
--	struct sched_param param = {
--		.sched_priority = MAX_USER_RT_PRIO/2,
--	};
+-	int policy;
+-	struct sched_param param;
+ 	const unsigned int factor = 50000; /* yes, quite arbitrary */
  
- 	if (!secondary) {
- 		t = kthread_create(irq_thread, new, "irq/%d-%s", irq,
-@@ -1281,13 +1278,12 @@ setup_irq_thread(struct irqaction *new,
+ 	if (!rt_task(current)) {
+@@ -448,8 +446,7 @@ static void torture_rtmutex_boost(struct
+ 		 */
+ 		if (trsp && !(torture_random(trsp) %
+ 			      (cxt.nrealwriters_stress * factor))) {
+-			policy = SCHED_FIFO;
+-			param.sched_priority = MAX_RT_PRIO - 1;
++			sched_set_fifo(current);
+ 		} else /* common case, do nothing */
+ 			return;
  	} else {
- 		t = kthread_create(irq_thread, new, "irq/%d-s-%s", irq,
- 				   new->name);
--		param.sched_priority -= 1;
+@@ -462,13 +459,10 @@ static void torture_rtmutex_boost(struct
+ 		 */
+ 		if (!trsp || !(torture_random(trsp) %
+ 			       (cxt.nrealwriters_stress * factor * 2))) {
+-			policy = SCHED_NORMAL;
+-			param.sched_priority = 0;
++			sched_set_normal(current, 0);
+ 		} else /* common case, do nothing */
+ 			return;
  	}
+-
+-	sched_setscheduler_nocheck(current, policy, &param);
+ }
  
- 	if (IS_ERR(t))
- 		return PTR_ERR(t);
- 
--	sched_setscheduler_nocheck(t, SCHED_FIFO, &param);
-+	sched_set_fifo(t);
- 
- 	/*
- 	 * We keep the reference to the task struct even if
+ static void torture_rtmutex_delay(struct torture_random_state *trsp)
 
 
