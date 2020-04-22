@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA001B3D15
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD5D1B3D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729216AbgDVKLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:11:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
+        id S1729468AbgDVKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729196AbgDVKL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:11:28 -0400
+        id S1726398AbgDVKN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EF5420575;
-        Wed, 22 Apr 2020 10:11:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 298BF2076E;
+        Wed, 22 Apr 2020 10:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550287;
-        bh=w7Oe6kU8KeqaGTWQVW1K2a031A4Zc+I/XnQvs7lfw9o=;
+        s=default; t=1587550435;
+        bh=ZIZwPWB9Q6NZv4fDKlr0cQJtBfcBFdOoZdqqJkEjXX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GvPn6ZoLb8o3AlTjpWdErvsZrH2ALVvPOb8yUjEzs0qgLBC1Mv4qALH984u1Og9Tm
-         yOb0Z4Xlzwb7l+GJ4pe07xnqHI7iWJ8a4QRNJldDpcAlTIwDk0ioukmaxZVra4IOa1
-         QzqXzD18B0D2m37fynv2o/T/yAllcEuEjc2S5rXM=
+        b=TmKaAKiZ+KQlZo3Ti14Vrm62pYsj04UFaDWa/U+8ULOprmmttvH7BiKzDw2wkXVys
+         ZQLu7EI0ZqKA3Wr+tNjJl+Ehr49Mf38RS6CdxL98uy8FMJ3LHMbAA5gM8M8MhdOE7j
+         C37P7YozVvaEHcH237MshOQneJ8IqUS/a0NR6yMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 084/199] cpufreq: powernv: Fix use-after-free
-Date:   Wed, 22 Apr 2020 11:56:50 +0200
-Message-Id: <20200422095106.499041584@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 07/64] ARM: dts: imx6: Use gpc for FEC interrupt controller to fix wake on LAN.
+Date:   Wed, 22 Apr 2020 11:56:51 +0200
+Message-Id: <20200422095013.710989670@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver O'Halloran <oohall@gmail.com>
+From: Martin Fuzzey <martin.fuzzey@flowbird.group>
 
-commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
+commit 4141f1a40fc0789f6fd4330e171e1edf155426aa upstream.
 
-The cpufreq driver has a use-after-free that we can hit if:
+In order to wake from suspend by ethernet magic packets the GPC
+must be used as intc does not have wakeup functionality.
 
-a) There's an OCC message pending when the notifier is registered, and
-b) The cpufreq driver fails to register with the core.
+But the FEC DT node currently uses interrupt-extended,
+specificying intc, thus breaking WoL.
 
-When a) occurs the notifier schedules a workqueue item to handle the
-message. The backing work_struct is located on chips[].throttle and
-when b) happens we clean up by freeing the array. Once we get to
-the (now free) queued item and the kernel crashes.
+This problem is probably fallout from the stacked domain conversion
+as intc used to chain to GPC.
 
-Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
+So replace "interrupts-extended" by "interrupts" to use the default
+parent which is GPC.
+
+Fixes: b923ff6af0d5 ("ARM: imx6: convert GPC to stacked domains")
+
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/boot/dts/imx6qdl.dtsi |    5 ++---
+ arch/arm/boot/dts/imx6qp.dtsi  |    1 -
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -1041,6 +1041,12 @@ free_and_return:
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -1013,9 +1013,8 @@
+ 				compatible = "fsl,imx6q-fec";
+ 				reg = <0x02188000 0x4000>;
+ 				interrupt-names = "int0", "pps";
+-				interrupts-extended =
+-					<&intc 0 118 IRQ_TYPE_LEVEL_HIGH>,
+-					<&intc 0 119 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
++					     <0 119 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clks IMX6QDL_CLK_ENET>,
+ 					 <&clks IMX6QDL_CLK_ENET>,
+ 					 <&clks IMX6QDL_CLK_ENET_REF>;
+--- a/arch/arm/boot/dts/imx6qp.dtsi
++++ b/arch/arm/boot/dts/imx6qp.dtsi
+@@ -77,7 +77,6 @@
+ };
  
- static inline void clean_chip_info(void)
- {
-+	int i;
-+
-+	/* flush any pending work items */
-+	if (chips)
-+		for (i = 0; i < nr_chips; i++)
-+			cancel_work_sync(&chips[i].throttle);
- 	kfree(chips);
- }
- 
+ &fec {
+-	/delete-property/interrupts-extended;
+ 	interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
+ 		     <0 119 IRQ_TYPE_LEVEL_HIGH>;
+ };
 
 
