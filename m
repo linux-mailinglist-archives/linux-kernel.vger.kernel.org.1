@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9AD1B3C59
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299B81B3F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgDVKE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55658 "EHLO mail.kernel.org"
+        id S1731426AbgDVKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728095AbgDVKEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:55 -0400
+        id S1729963AbgDVKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 105F42084D;
-        Wed, 22 Apr 2020 10:04:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4E6D215A4;
+        Wed, 22 Apr 2020 10:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549894;
-        bh=g3+HMXdOfkbjdJRbK4JBkgvPXh1NE7LVKh9RtaPuKEA=;
+        s=default; t=1587550943;
+        bh=diEZJSbSIO+MnsYSZTyrg2M3dM6CyjSD/7Ket4healQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YdjdGCcMNMfBUiu9bnktfSHDgVH1TB03qfqnfcpdHm9lCqoboIvAZOTpJOqWhPMcq
-         R7D+yvW5A++xVulrmaqQhd8Uwvrz5KXrt7nDTNZKUM8fsLyzirPXtOsW7pqSvspjg6
-         fYFX4U06xbfxiyA7Ceh31jMYJadTBIMr4f+Jsniw=
+        b=R5S7A6OjCjHt2Xt19ej47wT3qHZS+Z14XJDksI0JQa/O+f3pG1AORGqUsOH88EjZP
+         vHowtEB4oLlN3kZCOc4/538jUGOYl/JM1CfWaq0ed6elIAYD0XjVkMUcfTLG5mnIyX
+         ZDiuH2ZkMo37aqOAU9KZ3R5nGY0GCUtu/bJrVd2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Fredrik Strupe <fredrik@strupe.net>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.9 048/125] arm64: armv8_deprecated: Fix undef_hook mask for thumb setend
+        stable@vger.kernel.org, cki-project@redhat.com,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.6 038/166] block, bfq: invoke flush_idle_tree after reparent_active_queues in pd_offline
 Date:   Wed, 22 Apr 2020 11:56:05 +0200
-Message-Id: <20200422095041.292862000@linuxfoundation.org>
+Message-Id: <20200422095052.959030321@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fredrik Strupe <fredrik@strupe.net>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-commit fc2266011accd5aeb8ebc335c381991f20e26e33 upstream.
+commit 4d38a87fbb77fb9ff2ff4e914162a8ae6453eff5 upstream.
 
-For thumb instructions, call_undef_hook() in traps.c first reads a u16,
-and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
-u16 is read, which then makes up the the lower half-word of a T32
-instruction. For T16 instructions, the second u16 is not read,
-which makes the resulting u32 opcode always have the upper half set to
-0.
+In bfq_pd_offline(), the function bfq_flush_idle_tree() is invoked to
+flush the rb tree that contains all idle entities belonging to the pd
+(cgroup) being destroyed. In particular, bfq_flush_idle_tree() is
+invoked before bfq_reparent_active_queues(). Yet the latter may happen
+to add some entities to the idle tree. It happens if, in some of the
+calls to bfq_bfqq_move() performed by bfq_reparent_active_queues(),
+the queue to move is empty and gets expired.
 
-However, having the upper half of instr_mask in the undef_hook set to 0
-masks out the upper half of all thumb instructions - both T16 and T32.
-This results in trapped T32 instructions with the lower half-word equal
-to the T16 encoding of setend (b650) being matched, even though the upper
-half-word is not 0000 and thus indicates a T32 opcode.
+This commit simply reverses the invocation order between
+bfq_flush_idle_tree() and bfq_reparent_active_queues().
 
-An example of such a T32 instruction is eaa0b650, which should raise a
-SIGILL since T32 instructions with an eaa prefix are unallocated as per
-Arm ARM, but instead works as a SETEND because the second half-word is set
-to b650.
-
-This patch fixes the issue by extending instr_mask to include the
-upper u32 half, which will still match T16 instructions where the upper
-half is 0, but not T32 instructions.
-
-Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
-Cc: <stable@vger.kernel.org> # 4.0.x-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Tested-by: cki-project@redhat.com
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kernel/armv8_deprecated.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/bfq-cgroup.c |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
---- a/arch/arm64/kernel/armv8_deprecated.c
-+++ b/arch/arm64/kernel/armv8_deprecated.c
-@@ -604,7 +604,7 @@ static struct undef_hook setend_hooks[]
- 	},
- 	{
- 		/* Thumb mode */
--		.instr_mask	= 0x0000fff7,
-+		.instr_mask	= 0xfffffff7,
- 		.instr_val	= 0x0000b650,
- 		.pstate_mask	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_MASK),
- 		.pstate_val	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_USR),
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -894,13 +894,6 @@ static void bfq_pd_offline(struct blkg_p
+ 		st = bfqg->sched_data.service_tree + i;
+ 
+ 		/*
+-		 * The idle tree may still contain bfq_queues belonging
+-		 * to exited task because they never migrated to a different
+-		 * cgroup from the one being destroyed now.
+-		 */
+-		bfq_flush_idle_tree(st);
+-
+-		/*
+ 		 * It may happen that some queues are still active
+ 		 * (busy) upon group destruction (if the corresponding
+ 		 * processes have been forced to terminate). We move
+@@ -913,6 +906,19 @@ static void bfq_pd_offline(struct blkg_p
+ 		 * scheduler has taken no reference.
+ 		 */
+ 		bfq_reparent_active_queues(bfqd, bfqg, st, i);
++
++		/*
++		 * The idle tree may still contain bfq_queues
++		 * belonging to exited task because they never
++		 * migrated to a different cgroup from the one being
++		 * destroyed now. In addition, even
++		 * bfq_reparent_active_queues() may happen to add some
++		 * entities to the idle tree. It happens if, in some
++		 * of the calls to bfq_bfqq_move() performed by
++		 * bfq_reparent_active_queues(), the queue to move is
++		 * empty and gets expired.
++		 */
++		bfq_flush_idle_tree(st);
+ 	}
+ 
+ 	__bfq_deactivate_entity(entity, false);
 
 
