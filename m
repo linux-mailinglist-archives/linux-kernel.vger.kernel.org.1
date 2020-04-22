@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE3E1B4E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151491B4EAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgDVUub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 16:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48166 "EHLO mail.kernel.org"
+        id S1726497AbgDVU5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 16:57:25 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:45876 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgDVUub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:50:31 -0400
-Received: from localhost (mobile-166-175-187-227.mycingular.net [166.175.187.227])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ADD42077D;
-        Wed, 22 Apr 2020 20:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587588630;
-        bh=ba/VpW1rfJQ6IqlivIHGTiQZUhWmQAKxSxz45LgtBl0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Hv7dVKaLz4pLARkfibDJyiXpH/zPj46TRBQ0CYLhopEeCwYDhh7CKOmHAbFrU9cSa
-         fuxjJZhqwNyQkkW/b+CrhuwJVV3nhknevRti99E0/Qn4WlFEqZjqG54EI3z/rgOTtf
-         Y/6nKQyqkAVKDaqc6lOH+ObLzg//5AsyYKFu+mFM=
-Date:   Wed, 22 Apr 2020 15:50:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Roy Spliet <nouveau@spliet.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-pm@vger.kernel.org
-Subject: Re: Unrecoverable AER error when resuming from RAM (hda regression
- in 5.7-rc2)
-Message-ID: <20200422205028.GA223132@google.com>
+        id S1726105AbgDVU5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 16:57:25 -0400
+X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 16:57:22 EDT
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 2555C9A3; Wed, 22 Apr 2020 15:50:51 -0500 (CDT)
+Date:   Wed, 22 Apr 2020 15:50:51 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        David Rheinsberg <david.rheinsberg@gmail.com>,
+        Tom Gundersen <teg@jklm.no>,
+        Christian Kellner <ckellner@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        Steve Barber <smbarber@google.com>,
+        Dylan Reid <dgreid@google.com>,
+        Filipe Brandenburger <filbranden@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Benjamin Elder <bentheelder@google.com>,
+        Akihiro Suda <suda.kyoto@gmail.com>
+Subject: Re: [PATCH v2 3/7] loop: use ns_capable for some loop operations
+Message-ID: <20200422205051.GA31944@mail.hallyn.com>
+References: <20200422145437.176057-1-christian.brauner@ubuntu.com>
+ <20200422145437.176057-4-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587494585.7pihgq0z3i.none@localhost>
+In-Reply-To: <20200422145437.176057-4-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Rafael, linux-pm]
-
-On Tue, Apr 21, 2020 at 03:08:44PM -0400, Alex Xu (Hello71) wrote:
-> With 5.7-rc2, after resuming from suspend to RAM, I get:
+On Wed, Apr 22, 2020 at 04:54:33PM +0200, Christian Brauner wrote:
+> The following  LOOP_GET_STATUS, LOOP_SET_STATUS, and LOOP_SET_BLOCK_SIZE
+> operations are now allowed in non-initial namespaces. Most other
+> operations were already possible before.
 > 
-> [   55.679382] pcieport 0000:00:03.1: AER: Multiple Uncorrected (Non-Fatal) error received: 0000:00:00.0
-> [   55.679405] pcieport 0000:00:03.1: AER: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
-> [   55.679410] pcieport 0000:00:03.1: AER:   device [1022:1453] error status/mask=00100000/04400000
-> [   55.679414] pcieport 0000:00:03.1: AER:    [20] UnsupReq               (First)
-> [   55.679417] pcieport 0000:00:03.1: AER:   TLP Header: 40000004 0a0000ff fffc0e80 00000000
-> [   55.679423] amdgpu 0000:0a:00.0: AER: can't recover (no error_detected callback)
-> [   55.679425] snd_hda_intel 0000:0a:00.1: AER: can't recover (no error_detected callback)
-> [   55.679455] pcieport 0000:00:03.1: AER: device recovery failed
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Seth Forshee <seth.forshee@canonical.com>
+> Cc: Tom Gundersen <teg@jklm.no>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christian Kellner <ckellner@redhat.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Rheinsberg <david.rheinsberg@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-I'm not at all confident in my decoding skills, but I *think* the TLP
-header decodes to:
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
 
-  Fmt           010b         3 DW header with data (32-bit address)
-  Type          00000b       MWr
-  Length        0x4          4 DW = 16 bytes
-  Requester ID  0x0a00       0a:00.0
-  Byte enables  0xff
-  Address       0xfffc0e80
-
-which would mean the 0a:00.0 GPU did a 16-byte write to 0xfffc0e80,
-and the 00:03.1 Root Port reported that as an Unsupported Request.
-I don't know why that would be unless the address is invalid.
-
-Maybe that's supposed to be an MSI address?  Maybe a complete dmesg or
-/proc/iomem would have a clue?
-
-I feel like this UR issue could be a PCI core issue or maybe some sort
-of misuse of PCI power management, but I can't seem to get traction on
-it.
-
-> Then the display freezes and the system basically falls apart (can't 
-> even sudo reboot -f, need to use magic sysrq).
+> ---
+> /* v2 */
+> - Christian Brauner <christian.brauner@ubuntu.com>:
+>   - Adapated loop_capable() based on changes in the loopfs
+>     implementation patchset. Otherwise it is functionally equivalent to
+>     the v1 version.
+> ---
+>  drivers/block/loop.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
 > 
-> I bisected this to "ALSA: hda: Skip controller resume if not needed". 
-> Setting snd_hda_intel.power_save=0 resolves the issue.
-
-FWIW, the complete citation is c4c8dd6ef807 ("ALSA: hda: Skip
-controller resume if not needed"),
-https://git.kernel.org/linus/c4c8dd6ef807, which first appeared in
-v5.7-rc2.
-
-> I am using an ASRock B450 Pro4 with Realtek HDA codec:
-> 
-> [    1.009400] snd_hda_intel 0000:0a:00.1: enabling device (0000 -> 0002)
-> [    1.009425] snd_hda_intel 0000:0a:00.1: Force to non-snoop mode
-> [    1.009653] snd_hda_intel 0000:0c:00.3: enabling device (0000 -> 0002)
-> [    1.021452] snd_hda_codec_generic hdaudioC0D0: ignore pin 0x7, too many assigned pins
-> [    1.021461] snd_hda_codec_generic hdaudioC0D0: ignore pin 0x9, too many assigned pins
-> [    1.021471] snd_hda_codec_generic hdaudioC0D0: ignore pin 0xb, too many assigned pins
-> [    1.021480] snd_hda_codec_generic hdaudioC0D0: ignore pin 0xd, too many assigned pins
-> [    1.021482] snd_hda_codec_generic hdaudioC0D0: autoconfig for Generic: line_outs=0 (0x0/0x0/0x0/0x0/0x0) type:line
-> [    1.021482] snd_hda_codec_generic hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> [    1.021483] snd_hda_codec_generic hdaudioC0D0:    hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> [    1.021484] snd_hda_codec_generic hdaudioC0D0:    mono: mono_out=0x0
-> [    1.021484] snd_hda_codec_generic hdaudioC0D0:    dig-out=0x3/0x5
-> [    1.021485] snd_hda_codec_generic hdaudioC0D0:    inputs:
-> [    1.046053] snd_hda_codec_realtek hdaudioC1D0: autoconfig for ALC892: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
-> [    1.046054] snd_hda_codec_realtek hdaudioC1D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-> [    1.046055] snd_hda_codec_realtek hdaudioC1D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-> [    1.046055] snd_hda_codec_realtek hdaudioC1D0:    mono: mono_out=0x0
-> [    1.046056] snd_hda_codec_realtek hdaudioC1D0:    inputs:
-> [    1.046057] snd_hda_codec_realtek hdaudioC1D0:      Front Mic=0x19
-> [    1.046058] snd_hda_codec_realtek hdaudioC1D0:      Rear Mic=0x18
-> [    1.046058] snd_hda_codec_realtek hdaudioC1D0:      Line=0x1a
-> 
-> I also have an ASUS RX 480 graphics card with HDMI audio output.
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 52f7583dd17d..8e21d4b33e01 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -1352,6 +1352,16 @@ void loopfs_evict_locked(struct loop_device *lo)
+>  	}
+>  	mutex_unlock(&loop_ctl_mutex);
+>  }
+> +
+> +static bool loop_capable(const struct loop_device *lo, int cap)
+> +{
+> +	return ns_capable(loopfs_ns(lo), cap);
+> +}
+> +#else /* !CONFIG_BLK_DEV_LOOPFS */
+> +static inline bool loop_capable(const struct loop_device *lo, int cap)
+> +{
+> +	return capable(cap);
+> +}
+>  #endif /* CONFIG_BLK_DEV_LOOPFS */
+>  
+>  static int
+> @@ -1368,7 +1378,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+>  		return err;
+>  	if (lo->lo_encrypt_key_size &&
+>  	    !uid_eq(lo->lo_key_owner, uid) &&
+> -	    !capable(CAP_SYS_ADMIN)) {
+> +	    !loop_capable(lo, CAP_SYS_ADMIN)) {
+>  		err = -EPERM;
+>  		goto out_unlock;
+>  	}
+> @@ -1499,7 +1509,7 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
+>  	memcpy(info->lo_crypt_name, lo->lo_crypt_name, LO_NAME_SIZE);
+>  	info->lo_encrypt_type =
+>  		lo->lo_encryption ? lo->lo_encryption->number : 0;
+> -	if (lo->lo_encrypt_key_size && capable(CAP_SYS_ADMIN)) {
+> +	if (lo->lo_encrypt_key_size && loop_capable(lo, CAP_SYS_ADMIN)) {
+>  		info->lo_encrypt_key_size = lo->lo_encrypt_key_size;
+>  		memcpy(info->lo_encrypt_key, lo->lo_encrypt_key,
+>  		       lo->lo_encrypt_key_size);
+> @@ -1723,7 +1733,7 @@ static int lo_ioctl(struct block_device *bdev, fmode_t mode,
+>  		return loop_clr_fd(lo);
+>  	case LOOP_SET_STATUS:
+>  		err = -EPERM;
+> -		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN)) {
+> +		if ((mode & FMODE_WRITE) || loop_capable(lo, CAP_SYS_ADMIN)) {
+>  			err = loop_set_status_old(lo,
+>  					(struct loop_info __user *)arg);
+>  		}
+> @@ -1732,7 +1742,7 @@ static int lo_ioctl(struct block_device *bdev, fmode_t mode,
+>  		return loop_get_status_old(lo, (struct loop_info __user *) arg);
+>  	case LOOP_SET_STATUS64:
+>  		err = -EPERM;
+> -		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN)) {
+> +		if ((mode & FMODE_WRITE) || loop_capable(lo, CAP_SYS_ADMIN)) {
+>  			err = loop_set_status64(lo,
+>  					(struct loop_info64 __user *) arg);
+>  		}
+> @@ -1742,7 +1752,7 @@ static int lo_ioctl(struct block_device *bdev, fmode_t mode,
+>  	case LOOP_SET_CAPACITY:
+>  	case LOOP_SET_DIRECT_IO:
+>  	case LOOP_SET_BLOCK_SIZE:
+> -		if (!(mode & FMODE_WRITE) && !capable(CAP_SYS_ADMIN))
+> +		if (!(mode & FMODE_WRITE) && !loop_capable(lo, CAP_SYS_ADMIN))
+>  			return -EPERM;
+>  		/* Fall through */
+>  	default:
+> -- 
+> 2.26.1
