@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7779B1B3CE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604F61B3F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgDVKJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36062 "EHLO mail.kernel.org"
+        id S1731439AbgDVKiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbgDVKJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:23 -0400
+        id S1729923AbgDVKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 519162071E;
-        Wed, 22 Apr 2020 10:09:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00A6920882;
+        Wed, 22 Apr 2020 10:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550162;
-        bh=zYLLeZUuJjFU+3s0q+vvwntAkLUUhn1wQ9t3ln5uvKc=;
+        s=default; t=1587550933;
+        bh=UoxmTXfy6bjZv9139OaXUfWx1bTquwXo0PhsUWbBzp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTTNvYbyltm4XchC9nsVFVtmqw9whaTYBkqKtp1w+lzxKt0drk3P2DIPBRaasW1hY
-         uVx7Tm3imM+gXnq27EXDXDboYsjhjKnduux2n7Ge3QM415wOO0IkzrqdpSHvd7aWdX
-         6vGr0kQ5zIw7Eq3x/N0TnxisxtI6sbctdiZRzH24=
+        b=vTN9k/6MfUj2VZ0AjFC2YDNg2FjUiKZ7R/JETGto3fgmKvvIG7thuH7fbqHQ6SlTw
+         FaU7ojNBxogjkymg9x3BEg6XZvwc3lLrlHdTStx+B0PcHet7hfe6yBsP0BhPl2CXC+
+         8LYWy1HrZRTaQ0iJm1AdW2ekl8ROnniDRxT9Cuqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 034/199] ASoC: dpcm: allow start or stop during pause for backend
-Date:   Wed, 22 Apr 2020 11:56:00 +0200
-Message-Id: <20200422095101.462146954@linuxfoundation.org>
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>
+Subject: [PATCH 5.6 034/166] afs: Fix afs_d_validate() to set the right directory version
+Date:   Wed, 22 Apr 2020 11:56:01 +0200
+Message-Id: <20200422095052.471436236@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: David Howells <dhowells@redhat.com>
 
-commit 21fca8bdbb64df1297e8c65a746c4c9f4a689751 upstream.
+commit 40fc81027f892284ce31f8b6de1e497f5b47e71f upstream.
 
-soc_compr_trigger_fe() allows start or stop after pause_push.
-In dpcm_be_dai_trigger(), however, only pause_release is allowed
-command after pause_push.
-So, start or stop after pause in compress offload is always
-returned as error if the compress offload is used with dpcm.
-To fix the problem, SND_SOC_DPCM_STATE_PAUSED should be allowed
-for start or stop command.
+If a dentry's version is somewhere between invalid_before and the current
+directory version, we should be setting it forward to the current version,
+not backwards to the invalid_before version.  Note that we're only doing
+this at all because dentry::d_fsdata isn't large enough on a 32-bit system.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/004d01d607c1$7a3d5250$6eb7f6f0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fix this by using a separate variable for invalid_before so that we don't
+accidentally clobber the current dir version.
+
+Fixes: a4ff7401fbfa ("afs: Keep track of invalid-before version for dentry coherency")
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-pcm.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/afs/dir.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2048,7 +2048,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
- 		switch (cmd) {
- 		case SNDRV_PCM_TRIGGER_START:
- 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
--			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				continue;
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -1032,7 +1032,7 @@ static int afs_d_revalidate(struct dentr
+ 	struct dentry *parent;
+ 	struct inode *inode;
+ 	struct key *key;
+-	afs_dataversion_t dir_version;
++	afs_dataversion_t dir_version, invalid_before;
+ 	long de_version;
+ 	int ret;
  
- 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
-@@ -2078,7 +2079,8 @@ int dpcm_be_dai_trigger(struct snd_soc_p
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			break;
- 		case SNDRV_PCM_TRIGGER_STOP:
--			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
-+			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				continue;
+@@ -1084,8 +1084,8 @@ static int afs_d_revalidate(struct dentr
+ 	if (de_version == (long)dir_version)
+ 		goto out_valid_noupdate;
  
- 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+-	dir_version = dir->invalid_before;
+-	if (de_version - (long)dir_version >= 0)
++	invalid_before = dir->invalid_before;
++	if (de_version - (long)invalid_before >= 0)
+ 		goto out_valid;
+ 
+ 	_debug("dir modified");
 
 
