@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37941B4FCB
+	by mail.lfdr.de (Postfix) with ESMTP id 3733B1B4FCA
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgDVWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        id S1726572AbgDVWE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgDVWEy (ORCPT
+        with ESMTP id S1726503AbgDVWE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:04:54 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A45C03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:54 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id v4so3393252pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:54 -0700 (PDT)
+        Wed, 22 Apr 2020 18:04:56 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69561C03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:56 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id c190so3362153pfc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=G2xrre78+ftU1oJoCW/exxUkKUD8kGPaWluZ1hoDbqU=;
-        b=U78TwxqNsHI89Ogk7zPRBRxNrrZz7s6GoxqFdwDnh16Y8AyV1ozBFeJ9cNqawXYVqy
-         HtyzesSibD4jes0LTTZq8QlvN2eEeqizvhPvApwefxRFSikoWndvs74ANf9DgfN5OcVh
-         ZTZgglfpAmBQLRFpmjyVN3FgIMQVcwl+oZRAMEARbEjLL8x9rBLZtlPzbLmpjYZ/yIAz
-         JnoXq9QcHkfHdwFpYMfOhSaxXRvZxDAU+siByyaZjCzyCjYsX9MFotuu+UpV5CiecgCG
-         BpBzYNt2iCoqkTQZvb+8RigFr9SAIXn11UmDcrCBu8PhABd9I6pA1ycf8sAbCSLcUT48
-         M+7A==
+        bh=oAqP7W1R/rWeRnCp5eohdMy0vZSSIvqsCqJsvvhhCbc=;
+        b=dpt+01Dxp1Ig4ZuFFsq0LeyS2p4dzFBIeO+309FExsz0BizUT4EQm0nqqVHf4Y7jp8
+         bmftMI/i0CUyCKZHt2qxdp3I3nhrtuOM/VJn//+ovkpLXCSSAYVLybrQiVdPZz4sPRKW
+         wd5oK4kMzjHcUBEn3aydGBmqcKtuXPiM2aJ+O4C14Q4K0zWKGaq4mhRT5Q8+G5QxaX+F
+         QuZv0ndceG6R7a0fEWpY6Zk73CCxN+nyo/L66vOckuV3bOaXbp8UZmd9D1hKgROviSsj
+         yx/drAkLx90WT4OPJ61CkPq6Jz2HXfhaBz7ceGHdq7wZkSdr2q4y39YT/2g61sSTotIf
+         dwwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=G2xrre78+ftU1oJoCW/exxUkKUD8kGPaWluZ1hoDbqU=;
-        b=PhijNW94tLIoO9/hPRDfNQ0tcLAXzOlPaUAJNoJyYNfBMcmEljyxrIKudQvbq1gdhJ
-         +AUrOTWZ9V+1iDez7+4YgZUnGO/GHTJBQUia9OgR3FJ2PpGw7kJR8rmddkVt+kq/Dq+r
-         OZsufM0VqSAPxCTjiWh9k4PmL5Zh7ICoj4euCAROtCLchnKnORyliTn6FokmXP+kIX1Q
-         TXtwdQBk6VuWartw4jc4fyEY3RSosnRB8I/nwnkhk2/NfbihpAyp3WkKWuyEEbHaSwwE
-         r1UUBtWDgyGJnlm7+zbkvUVPS/AMOZvV0noauw9P72ZXB+JT+SD1ki3UAIMMUiwIZc41
-         jQ3w==
-X-Gm-Message-State: AGi0PuZdJc5xGOU3zzjwEwZAjNMn2ldFAMqYDzHCRPgl2pxzAHjuc7D8
-        XBEA6GaYvARyela2Q2qxgUf6ZwWDowy1
-X-Google-Smtp-Source: APiQypJ+ojiFc3cdqxEICVUXBxwHbxliEw5QkVoAkgZBMTuy2F8/4YaPRqhR7LgprYZub+2dZ5bjNfypMoJh
-X-Received: by 2002:a63:43c3:: with SMTP id q186mr1047417pga.411.1587593093688;
- Wed, 22 Apr 2020 15:04:53 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:04:27 -0700
+        bh=oAqP7W1R/rWeRnCp5eohdMy0vZSSIvqsCqJsvvhhCbc=;
+        b=Gx5tkjXFvNCsG0+hrfmVaI33rZ2MZlBMe2I4HydN1FqNXuG/2IuMcHtT9otEvGs5SB
+         b4wjItKJQaVoxEaHhrvC7oLACFioanq+UiqXlq19JB6llMjgUM8fDf64V0GMhuFgaBkW
+         u4h3efO0VjVH0zcXjUEGPUYCNpXND9D0MpLylDQBcJJmNv9RYUvJ2E+cvK27ee6O0zfA
+         jkIAXj1rxjLqi3urPVh7EwOQ6UG0qI32tjPqGHTuxnk6HnQ4apcI6Eanvg5yC4/L2rni
+         YwNQTZrTrYZkGz1vbKCTIF1RkowFk+hdR61f4kh1ACBNuD7weO6XWkt9HWwYQlIFp4d6
+         9eMg==
+X-Gm-Message-State: AGi0Pua9/m6UxQirVaeSTncR6WKEXdUlVnKMxt3yQDhxuhwF1i6e4Q2e
+        4OXAFh1c7N05bwdRHzLoK+UAFkpymrSP
+X-Google-Smtp-Source: APiQypIQ7vI6a1YqSpcsaxKNBrRNaNwqASaQTfhAI2I8fELmqoZ/0fm1LrunajBzgkSUaN7zWC/OUeDANrIi
+X-Received: by 2002:a17:90a:ee84:: with SMTP id i4mr891584pjz.71.1587593095931;
+ Wed, 22 Apr 2020 15:04:55 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 15:04:28 -0700
 In-Reply-To: <20200422220430.254014-1-irogers@google.com>
-Message-Id: <20200422220430.254014-9-irogers@google.com>
+Message-Id: <20200422220430.254014-10-irogers@google.com>
 Mime-Version: 1.0
 References: <20200422220430.254014-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v2 08/11] perf metrics: fix parse errors in power8 metrics
+Subject: [PATCH v2 09/11] perf metrics: fix parse errors in power9 metrics
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,33 +80,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Mismatched parentheses.
 
-Fixes: dd81eafacc52 (perf vendor events power8: Cpi_breakdown & estimated_dcache_miss_cpi metrics)
+Fixes: 7f3cf5ac7743 (perf vendor events power9: Cpi_breakdown & estimated_dcache_miss_cpi metrics)
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/pmu-events/arch/powerpc/power9/metrics.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-index bffb2d4a6420..ad71486a38e3 100644
---- a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-+++ b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-@@ -169,7 +169,7 @@
+diff --git a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
+index 811c2a8c1c9e..f427436f2c0a 100644
+--- a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
++++ b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
+@@ -362,7 +362,7 @@
      },
      {
-         "BriefDescription": "Cycles GCT empty where dispatch was held",
--        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL)",
-+        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL",
+         "BriefDescription": "Completion stall for other reasons",
+-        "MetricExpr": "PM_CMPLU_STALL - PM_CMPLU_STALL_NTC_DISP_FIN - PM_CMPLU_STALL_NTC_FLUSH - PM_CMPLU_STALL_LSU - PM_CMPLU_STALL_EXEC_UNIT - PM_CMPLU_STALL_BRU)/PM_RUN_INST_CMPL",
++        "MetricExpr": "(PM_CMPLU_STALL - PM_CMPLU_STALL_NTC_DISP_FIN - PM_CMPLU_STALL_NTC_FLUSH - PM_CMPLU_STALL_LSU - PM_CMPLU_STALL_EXEC_UNIT - PM_CMPLU_STALL_BRU)/PM_RUN_INST_CMPL",
          "MetricGroup": "cpi_breakdown",
-         "MetricName": "gct_empty_disp_held_cpi"
-     },
-@@ -886,7 +886,7 @@
-     },
-     {
-         "BriefDescription": "GCT slot utilization (11 to 14) as a % of cycles this thread had atleast 1 slot valid",
--        "MetricExpr": "PM_GCT_UTIL_11_14_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
-+        "MetricExpr": "PM_GCT_UTIL_11_14_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC ) * 100",
-         "MetricGroup": "general",
-         "MetricName": "gct_util_11to14_slots_percent"
+         "MetricName": "other_stall_cpi"
      },
 -- 
 2.26.2.303.gf8c07b1a785-goog
