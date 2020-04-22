@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E4E1B3BEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9AD1B3C59
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgDVKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47352 "EHLO mail.kernel.org"
+        id S1728104AbgDVKE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726487AbgDVKAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:00:15 -0400
+        id S1728095AbgDVKEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:04:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7BD62077D;
-        Wed, 22 Apr 2020 10:00:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 105F42084D;
+        Wed, 22 Apr 2020 10:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549614;
-        bh=wRvSAt//1Dl7jXusj8IViGumHNtyt3coDpWgMy+UbOI=;
+        s=default; t=1587549894;
+        bh=g3+HMXdOfkbjdJRbK4JBkgvPXh1NE7LVKh9RtaPuKEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gxwCDm2Va/bC/GJ2GTXgvBX3vcdC2gCakg1uS+rPk8qy/8LD4QFQamVZ0RPReDJ5N
-         FfJA2VTB/SlurIFbrZ35hDw+Jl0Yd+TWAMj8XaSPdz1tSLqyhl1hWQ1RbIbPMAI22/
-         +Wl/33VQVUeX1urYB59SVqvg/eR8XSr20ZLL28UE=
+        b=YdjdGCcMNMfBUiu9bnktfSHDgVH1TB03qfqnfcpdHm9lCqoboIvAZOTpJOqWhPMcq
+         R7D+yvW5A++xVulrmaqQhd8Uwvrz5KXrt7nDTNZKUM8fsLyzirPXtOsW7pqSvspjg6
+         fYFX4U06xbfxiyA7Ceh31jMYJadTBIMr4f+Jsniw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 035/100] futex: futex_wake_op, do not fail on invalid op
+        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Fredrik Strupe <fredrik@strupe.net>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 4.9 048/125] arm64: armv8_deprecated: Fix undef_hook mask for thumb setend
 Date:   Wed, 22 Apr 2020 11:56:05 +0200
-Message-Id: <20200422095028.981138893@linuxfoundation.org>
+Message-Id: <20200422095041.292862000@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,87 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-commit e78c38f6bdd900b2ad9ac9df8eff58b745dc5b3c upstream.
+commit fc2266011accd5aeb8ebc335c381991f20e26e33 upstream.
 
-In commit 30d6e0a4190d ("futex: Remove duplicated code and fix undefined
-behaviour"), I let FUTEX_WAKE_OP to fail on invalid op.  Namely when op
-should be considered as shift and the shift is out of range (< 0 or > 31).
+For thumb instructions, call_undef_hook() in traps.c first reads a u16,
+and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
+u16 is read, which then makes up the the lower half-word of a T32
+instruction. For T16 instructions, the second u16 is not read,
+which makes the resulting u32 opcode always have the upper half set to
+0.
 
-But strace's test suite does this madness:
+However, having the upper half of instr_mask in the undef_hook set to 0
+masks out the upper half of all thumb instructions - both T16 and T32.
+This results in trapped T32 instructions with the lower half-word equal
+to the T16 encoding of setend (b650) being matched, even though the upper
+half-word is not 0000 and thus indicates a T32 opcode.
 
-  futex(0x7fabd78bcffc, 0x5, 0xfacefeed, 0xb, 0x7fabd78bcffc, 0xa0caffee);
-  futex(0x7fabd78bcffc, 0x5, 0xfacefeed, 0xb, 0x7fabd78bcffc, 0xbadfaced);
-  futex(0x7fabd78bcffc, 0x5, 0xfacefeed, 0xb, 0x7fabd78bcffc, 0xffffffff);
+An example of such a T32 instruction is eaa0b650, which should raise a
+SIGILL since T32 instructions with an eaa prefix are unallocated as per
+Arm ARM, but instead works as a SETEND because the second half-word is set
+to b650.
 
-When I pick the first 0xa0caffee, it decodes as:
+This patch fixes the issue by extending instr_mask to include the
+upper u32 half, which will still match T16 instructions where the upper
+half is 0, but not T32 instructions.
 
-  0x80000000 & 0xa0caffee: oparg is shift
-  0x70000000 & 0xa0caffee: op is FUTEX_OP_OR
-  0x0f000000 & 0xa0caffee: cmp is FUTEX_OP_CMP_EQ
-  0x00fff000 & 0xa0caffee: oparg is sign-extended 0xcaf = -849
-  0x00000fff & 0xa0caffee: cmparg is sign-extended 0xfee = -18
-
-That means the op tries to do this:
-
-  (futex |= (1 << (-849))) == -18
-
-which is completely bogus. The new check of op in the code is:
-
-        if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28)) {
-                if (oparg < 0 || oparg > 31)
-                        return -EINVAL;
-                oparg = 1 << oparg;
-        }
-
-which results obviously in the "Invalid argument" errno:
-
-  FAIL: futex
-  ===========
-
-  futex(0x7fabd78bcffc, 0x5, 0xfacefeed, 0xb, 0x7fabd78bcffc, 0xa0caffee) = -1: Invalid argument
-  futex.test: failed test: ../futex failed with code 1
-
-So let us soften the failure to print only a (ratelimited) message, crop
-the value and continue as if it were right.  When userspace keeps up, we
-can switch this to return -EINVAL again.
-
-[v2] Do not return 0 immediatelly, proceed with the cropped value.
-
-Fixes: 30d6e0a4190d ("futex: Remove duplicated code and fix undefined behaviour")
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Darren Hart <dvhart@infradead.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
+Cc: <stable@vger.kernel.org> # 4.0.x-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/futex.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/armv8_deprecated.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1479,8 +1479,16 @@ static int futex_atomic_op_inuser(unsign
- 	int oldval, ret;
- 
- 	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28)) {
--		if (oparg < 0 || oparg > 31)
--			return -EINVAL;
-+		if (oparg < 0 || oparg > 31) {
-+			char comm[sizeof(current->comm)];
-+			/*
-+			 * kill this print and return -EINVAL when userspace
-+			 * is sane again
-+			 */
-+			pr_info_ratelimited("futex_wake_op: %s tries to shift op by %d; fix this program\n",
-+					get_task_comm(comm, current), oparg);
-+			oparg &= 31;
-+		}
- 		oparg = 1 << oparg;
- 	}
- 
+--- a/arch/arm64/kernel/armv8_deprecated.c
++++ b/arch/arm64/kernel/armv8_deprecated.c
+@@ -604,7 +604,7 @@ static struct undef_hook setend_hooks[]
+ 	},
+ 	{
+ 		/* Thumb mode */
+-		.instr_mask	= 0x0000fff7,
++		.instr_mask	= 0xfffffff7,
+ 		.instr_val	= 0x0000b650,
+ 		.pstate_mask	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_MASK),
+ 		.pstate_val	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_USR),
 
 
