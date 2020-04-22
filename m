@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35701B3CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6B11B422A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbgDVKIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34426 "EHLO mail.kernel.org"
+        id S1729002AbgDVK6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:58:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728738AbgDVKIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:39 -0400
+        id S1726587AbgDVKDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:03:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25E482071E;
-        Wed, 22 Apr 2020 10:08:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5859D20857;
+        Wed, 22 Apr 2020 10:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550118;
-        bh=qjQazNArWeNAA7WhoMO2JjCBRNq1jnnEvi3X36L9kf0=;
+        s=default; t=1587549814;
+        bh=HnkQ5CHHdwe9lvr7BpMfGxYss3pgl7ZbZQxAJQZMvlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCiitB/uS0awRiAE8FChAOPgS9rav8iNRODr7x0FSJBq8W78dPxkZgnmiQ7xLZxJa
-         sULuFGZSggJb+USrg7XqwcdKRRIQRK8WGL3Iur9zkF4vJUz8GuaD9d2sZyryYhm9Zg
-         Il8rnuu4ovlzaAMgSMDTThYmCBiiB4YgiIkcd8TY=
+        b=nO0wbxo8+LyuHVR4Rwd6XjBDjc//5cGQLBWLSx8Ek3T4OZ6tetcEJ6lkEuED+gX91
+         fHDwEo8gXaksSrKmUCQUyCZHuAt5634GV13dcqrB/MZLV93S6+7N98KnX+5TL21+wt
+         nWk7evkNwQuEPBkbe0eXdzY9o7BJ1iPcjp4i5igc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 009/199] null_blk: Handle null_add_dev() failures properly
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 018/125] ASoC: topology: use name_prefix for new kcontrol
 Date:   Wed, 22 Apr 2020 11:55:35 +0200
-Message-Id: <20200422095059.184127267@linuxfoundation.org>
+Message-Id: <20200422095036.225034486@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,64 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: 이경택 <gt82.lee@samsung.com>
 
-[ Upstream commit 9b03b713082a31a5b90e0a893c72aa620e255c26 ]
+commit abca9e4a04fbe9c6df4d48ca7517e1611812af25 upstream.
 
-If null_add_dev() fails then null_del_dev() is called with a NULL argument.
-Make null_del_dev() handle this scenario correctly. This patch fixes the
-following KASAN complaint:
+Current topology doesn't add prefix of component to new kcontrol.
 
-null-ptr-deref in null_del_dev+0x28/0x280 [null_blk]
-Read of size 8 at addr 0000000000000000 by task find/1062
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/009b01d60804$ae25c2d0$0a714870$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Call Trace:
- dump_stack+0xa5/0xe6
- __kasan_report.cold+0x65/0x99
- kasan_report+0x16/0x20
- __asan_load8+0x58/0x90
- null_del_dev+0x28/0x280 [null_blk]
- nullb_group_drop_item+0x7e/0xa0 [null_blk]
- client_drop_item+0x53/0x80 [configfs]
- configfs_rmdir+0x395/0x4e0 [configfs]
- vfs_rmdir+0xb6/0x220
- do_rmdir+0x238/0x2c0
- __x64_sys_unlinkat+0x75/0x90
- do_syscall_64+0x6f/0x2f0
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc: Johannes Thumshirn <jth@kernel.org>
-Cc: Hannes Reinecke <hare@suse.com>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/null_blk.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/soc-topology.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/null_blk.c b/drivers/block/null_blk.c
-index e9776ca0996b0..b4078901dbcb9 100644
---- a/drivers/block/null_blk.c
-+++ b/drivers/block/null_blk.c
-@@ -1593,7 +1593,12 @@ static void null_nvm_unregister(struct nullb *nullb) {}
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -344,7 +344,7 @@ static int soc_tplg_add_kcontrol(struct
+ 	struct snd_soc_component *comp = tplg->comp;
  
- static void null_del_dev(struct nullb *nullb)
- {
--	struct nullb_device *dev = nullb->dev;
-+	struct nullb_device *dev;
-+
-+	if (!nullb)
-+		return;
-+
-+	dev = nullb->dev;
+ 	return soc_tplg_add_dcontrol(comp->card->snd_card,
+-				comp->dev, k, NULL, comp, kcontrol);
++				comp->dev, k, comp->name_prefix, comp, kcontrol);
+ }
  
- 	ida_simple_remove(&nullb_indexes, nullb->index);
- 
--- 
-2.20.1
-
+ /* remove a mixer kcontrol */
 
 
