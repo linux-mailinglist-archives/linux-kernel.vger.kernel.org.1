@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ACD1B3DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4007F1B3DB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730346AbgDVKXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
+        id S1729577AbgDVKRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:17:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730278AbgDVKXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:06 -0400
+        id S1729772AbgDVKQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:16:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAFF72076B;
-        Wed, 22 Apr 2020 10:23:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D47102076B;
+        Wed, 22 Apr 2020 10:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550985;
-        bh=Ovw4O+bQIjjYv0PGALGX8rJlm27Kw+SfdVJ5q442p7o=;
+        s=default; t=1587550603;
+        bh=5kB55+Q5g37dANj2uahwxtaTN4x+h1sIiK9+c6nIWog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TCfaNBysi6SWdmvW2Lmuac2t2/52b7dpx0iPBL/DzqGPf1JOLaXYTmiw9F9eSgCqZ
-         f2pPRSYmBL2f7Q5TXVFPwO8xH5qAvHbMl37kSGRBjeIgNlD5NmLTfrYsGv9BMEHLVX
-         7P+y4YyBRU8cPE/rSHbK3WgvSyDz4jnaT9PcB7ik=
+        b=tkzKucF9SLOAhWtuCI6F6Ty5B8+WHcBDajUzeuVFmelk5CKhPt46OZLWc0J6FN7M/
+         cF0mV+lmmznt89TKZCOVbQ0+3z+ZemAQWacc8qFSu0MG30JRdaDzcdmpQyBeNiab4b
+         y7WA9/U6D8LIP+MHmhQA9aQUAW7dYE9ZywoCH304=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 053/166] ARM: dts: rockchip: fix vqmmc-supply property name for rk3188-bqedison2qc
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 5.4 019/118] x86/Hyper-V: Unload vmbus channel in hv panic callback
 Date:   Wed, 22 Apr 2020 11:56:20 +0200
-Message-Id: <20200422095054.676767284@linuxfoundation.org>
+Message-Id: <20200422095034.726540343@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,61 +44,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-[ Upstream commit 9cd568dc588c5d168615bf34f325fabe33b2c9a0 ]
+commit 74347a99e73ae00b8385f1209aaea193c670f901 upstream.
 
-A test with the command below does not detect all errors
-in combination with 'additionalProperties: false' and
-allOf:
-  - $ref: "synopsys-dw-mshc-common.yaml#"
-allOf:
-  - $ref: "mmc-controller.yaml#"
+When kdump is not configured, a Hyper-V VM might still respond to
+network traffic after a kernel panic when kernel parameter panic=0.
+The panic CPU goes into an infinite loop with interrupts enabled,
+and the VMbus driver interrupt handler still works because the
+VMbus connection is unloaded only in the kdump path.  The network
+responses make the other end of the connection think the VM is
+still functional even though it has panic'ed, which could affect any
+failover actions that should be taken.
 
-'additionalProperties' applies to all properties that are not
-accounted-for by 'properties' or 'patternProperties' in
-the immediate schema.
+Fix this by unloading the VMbus connection during the panic process.
+vmbus_initiate_unload() could then be called twice (e.g., by
+hyperv_panic_event() and hv_crash_handler(), so reset the connection
+state in vmbus_initiate_unload() to ensure the unload is done only
+once.
 
-First when we combine rockchip-dw-mshc.yaml,
-synopsys-dw-mshc-common.yaml and mmc-controller.yaml it gives
-this error:
+Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Link: https://lore.kernel.org/r/20200406155331.2105-2-Tianyu.Lan@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-arch/arm/boot/dts/rk3188-bqedison2qc.dt.yaml: mmc@10218000:
-'vmmcq-supply' does not match any of the regexes:
-'^.*@[0-9]+$',
-'^clk-phase-(legacy|sd-hs|mmc-(hs|hs[24]00|ddr52)|
-uhs-(sdr(12|25|50|104)|ddr50))$',
-'pinctrl-[0-9]+'
-
-'vmmcq-supply' is not a valid property name for mmc nodes.
-Fix this error by renaming it to 'vqmmc-supply'.
-
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20200307134841.13803-1-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rk3188-bqedison2qc.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hv/channel_mgmt.c |    3 +++
+ drivers/hv/vmbus_drv.c    |   21 +++++++++++++--------
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3188-bqedison2qc.dts b/arch/arm/boot/dts/rk3188-bqedison2qc.dts
-index ad1afd403052a..8afb2fd5d9f1b 100644
---- a/arch/arm/boot/dts/rk3188-bqedison2qc.dts
-+++ b/arch/arm/boot/dts/rk3188-bqedison2qc.dts
-@@ -465,7 +465,7 @@
- 	non-removable;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&sd1_clk>, <&sd1_cmd>, <&sd1_bus4>;
--	vmmcq-supply = <&vccio_wl>;
-+	vqmmc-supply = <&vccio_wl>;
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	status = "okay";
--- 
-2.20.1
-
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -839,6 +839,9 @@ void vmbus_initiate_unload(bool crash)
+ {
+ 	struct vmbus_channel_message_header hdr;
+ 
++	if (xchg(&vmbus_connection.conn_state, DISCONNECTED) == DISCONNECTED)
++		return;
++
+ 	/* Pre-Win2012R2 hosts don't support reconnect */
+ 	if (vmbus_proto_version < VERSION_WIN8_1)
+ 		return;
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -53,9 +53,12 @@ static int hyperv_panic_event(struct not
+ {
+ 	struct pt_regs *regs;
+ 
+-	regs = current_pt_regs();
++	vmbus_initiate_unload(true);
+ 
+-	hyperv_report_panic(regs, val);
++	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE) {
++		regs = current_pt_regs();
++		hyperv_report_panic(regs, val);
++	}
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -1389,10 +1392,16 @@ static int vmbus_bus_init(void)
+ 		}
+ 
+ 		register_die_notifier(&hyperv_die_block);
+-		atomic_notifier_chain_register(&panic_notifier_list,
+-					       &hyperv_panic_block);
+ 	}
+ 
++	/*
++	 * Always register the panic notifier because we need to unload
++	 * the VMbus channel connection to prevent any VMbus
++	 * activity after the VM panics.
++	 */
++	atomic_notifier_chain_register(&panic_notifier_list,
++			       &hyperv_panic_block);
++
+ 	vmbus_request_offers();
+ 
+ 	return 0;
+@@ -2202,8 +2211,6 @@ static int vmbus_bus_suspend(struct devi
+ 
+ 	vmbus_initiate_unload(false);
+ 
+-	vmbus_connection.conn_state = DISCONNECTED;
+-
+ 	/* Reset the event for the next resume. */
+ 	reinit_completion(&vmbus_connection.ready_for_resume_event);
+ 
+@@ -2288,7 +2295,6 @@ static void hv_kexec_handler(void)
+ {
+ 	hv_stimer_global_cleanup();
+ 	vmbus_initiate_unload(false);
+-	vmbus_connection.conn_state = DISCONNECTED;
+ 	/* Make sure conn_state is set as hv_synic_cleanup checks for it */
+ 	mb();
+ 	cpuhp_remove_state(hyperv_cpuhp_online);
+@@ -2305,7 +2311,6 @@ static void hv_crash_handler(struct pt_r
+ 	 * doing the cleanup for current CPU only. This should be sufficient
+ 	 * for kdump.
+ 	 */
+-	vmbus_connection.conn_state = DISCONNECTED;
+ 	cpu = smp_processor_id();
+ 	hv_stimer_cleanup(cpu);
+ 	hv_synic_disable_regs(cpu);
 
 
