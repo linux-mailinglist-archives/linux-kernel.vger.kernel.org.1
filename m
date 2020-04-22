@@ -2,68 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A342C1B486A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F901B4875
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgDVPVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:21:05 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49499 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgDVPVE (ORCPT
+        id S1726413AbgDVPVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:21:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28082 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726361AbgDVPVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:21:04 -0400
-Received: by mail-il1-f197.google.com with SMTP id z18so2211200ilp.16
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:21:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=pz5CUTnf5j/KbXtN31blRs8hszDPf+GoywqGxmL0NSU=;
-        b=jUcTq3r5+FrBxTRJK6v+QsfZVeu+jK8EXPby9NZQpUd1sy0i918Sm/kfm6kU3o6n5a
-         B8braiAB/iyyonYkHsmKGZbfNQiUx4BEw/fa0tRNSSpe5PEh9xEWxj2D17AqzzakQb1p
-         zlrvwWRO5FALxnlREF5cL93cr44PPUeH3iShS5FmYjB4NEc6SUCSj6IzPyvsc8fmDItr
-         LufVKRQipqrW0o6+LNH6I1eMcB0GvpdHuWAa7FqZ7iMxBQB5eBN6KdKpHAmiF9B4CGJB
-         sMpzrPqnvbqlwJnO3AmnQJNIIKpMebIQLUWHEW+7TW7tfkZB8LYJ575UaY1H5piQVU62
-         eOiw==
-X-Gm-Message-State: AGi0PuZoUzy5IUZ3UvkN+q+NzILzhyMWhDVT9VD2te+3HKM+VLqr6XaG
-        QHal24rPFeKDx15CoqYJCBQMeT1vpVsHuqd9JU7oWWqC48Fo
-X-Google-Smtp-Source: APiQypLGfxG+wShvFp6rdfNRJ1n5KuK6e6eGMdujQtoUfdCunfXWlEVxafiQDoC6rEC+Ti0UWFJk3U/4qIqvqPZ78ZYBhiQaXDeB
+        Wed, 22 Apr 2020 11:21:35 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MFBjmh091861
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 11:21:34 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gg2957ka-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 11:21:34 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <gerald.schaefer@de.ibm.com>;
+        Wed, 22 Apr 2020 16:20:56 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 22 Apr 2020 16:20:53 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MFLSJx1311004
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 15:21:28 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FFC84203F;
+        Wed, 22 Apr 2020 15:21:28 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20CB042042;
+        Wed, 22 Apr 2020 15:21:28 +0000 (GMT)
+Received: from thinkpad (unknown [9.145.91.245])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Apr 2020 15:21:28 +0000 (GMT)
+Date:   Wed, 22 Apr 2020 17:21:26 +0200
+From:   Gerald Schaefer <gerald.schaefer@de.ibm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Subject: Re: [PATCH v2 6/9] s390/module: Use s390_kernel_write() for late
+ relocations
+In-Reply-To: <20200422164037.7edd21ea@thinkpad>
+References: <cover.1587131959.git.jpoimboe@redhat.com>
+        <18266eb2c2c9a2ce0033426837d89dcb363a85d3.1587131959.git.jpoimboe@redhat.com>
+        <20200422164037.7edd21ea@thinkpad>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d149:: with SMTP id t9mr17233217ilg.213.1587568863606;
- Wed, 22 Apr 2020 08:21:03 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 08:21:03 -0700
-In-Reply-To: <Pine.LNX.4.44L0.2004221058240.20574-100000@netrider.rowland.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002bfce805a3e2aec4@google.com>
-Subject: Re: KASAN: use-after-free Read in usbhid_close (3)
-From:   syzbot <syzbot+7bf5a7b0f0a1f9446f4c@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, benjamin.tissoires@redhat.com,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, ingrassia@epigenesys.com, jikos@kernel.org,
-        julian@cipht.net, killertofu@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, pingc@wacom.com, pinglinux@gmail.com,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042215-0008-0000-0000-00000375744E
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042215-0009-0000-0000-00004A973E22
+Message-Id: <20200422172126.743908f5@thinkpad>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_06:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1015 adultscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 22 Apr 2020 16:40:37 +0200
+Gerald Schaefer <gerald.schaefer@de.ibm.com> wrote:
 
-syzbot has tested the proposed patch and the reproducer did not trigger crash:
+> On Fri, 17 Apr 2020 09:04:31 -0500
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> 
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > Because of late module patching, a livepatch module needs to be able to
+> > apply some of its relocations well after it has been loaded.  Instead of
+> > playing games with module_{dis,en}able_ro(), use existing text poking
+> > mechanisms to apply relocations after module loading.
+> > 
+> > So far only x86, s390 and Power have HAVE_LIVEPATCH but only the first
+> > two also have STRICT_MODULE_RWX.
+> > 
+> > This will allow removal of the last module_disable_ro() usage in
+> > livepatch.  The ultimate goal is to completely disallow making
+> > executable mappings writable.
+> > 
+> > Also, for the late patching case, use text_mutex, which is supposed to
+> > be held for all runtime text patching operations.
+> > 
+> > [ jpoimboe: Split up patches.  Use mod state to determine whether
+> > 	    memcpy() can be used.  Add text_mutex.  Make it build. ]
+> > 
+> > Cc: linux-s390@vger.kernel.org
+> > Cc: heiko.carstens@de.ibm.com
+> > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > ---
+> >  arch/s390/kernel/module.c | 125 ++++++++++++++++++++++++--------------
+> >  1 file changed, 79 insertions(+), 46 deletions(-)
+> 
+> Sorry, just noticed this. Heiko will return next month, and I'm not
+> really familiar with s390 livepatching. Adding Vasily, he might
+> have some more insight.
+> 
+> So, I might be completely wrong here, but using s390_kernel_write()
+> for writing to anything other than 1:1 mapped kernel, should go
+> horribly wrong, as that runs w/o DAT. It would allow to bypass
+> DAT write protection, which I assume is why you want to use it,
+> but it should not work on module text section, as that would be
+> in vmalloc space and not 1:1 mapped kernel memory.
+> 
+> Not quite sure how to test / trigger this, did this really work for
+> you on s390?
 
-Reported-and-tested-by: syzbot+7bf5a7b0f0a1f9446f4c@syzkaller.appspotmail.com
+OK, using s390_kernel_write() as default write function for module
+relocation seems to work fine for me, so apparently I am missing /
+mixing up something. Sorry for the noise, please ignore my concern.
 
-Tested on:
-
-commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
-dashboard link: https://syzkaller.appspot.com/bug?extid=7bf5a7b0f0a1f9446f4c
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14f40acfe00000
-
-Note: testing is done by a robot and is best-effort only.
