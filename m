@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EF11B3DB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A081B4175
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgDVKRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52354 "EHLO mail.kernel.org"
+        id S1732234AbgDVKw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729189AbgDVKQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:33 -0400
+        id S1728947AbgDVKKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:10:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1FB12070B;
-        Wed, 22 Apr 2020 10:16:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9888020775;
+        Wed, 22 Apr 2020 10:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550593;
-        bh=HA6+GC89rafwWNBKzZMz9dvrNvatJ3whB4WkyWT57a8=;
+        s=default; t=1587550207;
+        bh=aGquuusWEy//4Cijg3ojUT8EFZej4syeVu8388MiEp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tasJydlYVxgxeIA7JEXg2kkSwa52GZN7dToxLhSY7VKNupL9y8GJGuMFKteIXYysO
-         VZuMPa/OEgeJ5MPNi4Cp4Id2pOXkNVHadvlz8Yh5FVVGmeTHc5vnQfYNqhzL7qo5Fd
-         NuWap7HolMM1ZgiBsOKw1/YM4WWv75O//1aZxCQ8=
+        b=sIA8bzobJSeocmwKnZv0psD+I6F6FkWpOCFH9Dv0qGWOeb7jDpoLhzcJ7/rpCu3yE
+         92DFBTZ3sRG7rQjiPJp5zLl39lNyqhI6pTPKvBPZDrCgRlDo/XxH1JBmsYJB6rzdmK
+         oaCvrkgGjkG8tSE27upk9whXU9QH2z75Mf1c27wI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.4 015/118] of: unittest: kmemleak on changeset destroy
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 4.14 050/199] PCI: endpoint: Fix for concurrent memory allocation in OB address region
 Date:   Wed, 22 Apr 2020 11:56:16 +0200
-Message-Id: <20200422095034.058524447@linuxfoundation.org>
+Message-Id: <20200422095103.177403649@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 upstream.
+commit 04e046ca57ebed3943422dee10eec9e73aec081e upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 1 of 5.
+pci-epc-mem uses a bitmap to manage the Endpoint outbound (OB) address
+region. This address region will be shared by multiple endpoint
+functions (in the case of multi function endpoint) and it has to be
+protected from concurrent access to avoid updating an inconsistent state.
 
-of_unittest_changeset() reaches deeply into the dynamic devicetree
-functions.  Several nodes were left with an elevated reference
-count and thus were not properly cleaned up.  Fix the reference
-counts so that the memory will be freed.
+Use a mutex to protect bitmap updates to prevent the memory
+allocation API from returning incorrect addresses.
 
-Fixes: 201c910bd689 ("of: Transactional DT support.")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: stable@vger.kernel.org # v4.14+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/of/unittest.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pci/endpoint/pci-epc-mem.c |   10 ++++++++--
+ include/linux/pci-epc.h            |    3 +++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -776,6 +776,10 @@ static void __init of_unittest_changeset
- 	unittest(!of_changeset_revert(&chgset), "revert failed\n");
+--- a/drivers/pci/endpoint/pci-epc-mem.c
++++ b/drivers/pci/endpoint/pci-epc-mem.c
+@@ -90,6 +90,7 @@ int __pci_epc_mem_init(struct pci_epc *e
+ 	mem->page_size = page_size;
+ 	mem->pages = pages;
+ 	mem->size = size;
++	mutex_init(&mem->lock);
  
- 	of_changeset_destroy(&chgset);
-+
-+	of_node_put(n1);
-+	of_node_put(n2);
-+	of_node_put(n21);
- #endif
+ 	epc->mem = mem;
+ 
+@@ -133,7 +134,7 @@ void __iomem *pci_epc_mem_alloc_addr(str
+ 				     phys_addr_t *phys_addr, size_t size)
+ {
+ 	int pageno;
+-	void __iomem *virt_addr;
++	void __iomem *virt_addr = NULL;
+ 	struct pci_epc_mem *mem = epc->mem;
+ 	unsigned int page_shift = ilog2(mem->page_size);
+ 	int order;
+@@ -141,15 +142,18 @@ void __iomem *pci_epc_mem_alloc_addr(str
+ 	size = ALIGN(size, mem->page_size);
+ 	order = pci_epc_mem_get_order(mem, size);
+ 
++	mutex_lock(&mem->lock);
+ 	pageno = bitmap_find_free_region(mem->bitmap, mem->pages, order);
+ 	if (pageno < 0)
+-		return NULL;
++		goto ret;
+ 
+ 	*phys_addr = mem->phys_base + (pageno << page_shift);
+ 	virt_addr = ioremap(*phys_addr, size);
+ 	if (!virt_addr)
+ 		bitmap_release_region(mem->bitmap, pageno, order);
+ 
++ret:
++	mutex_unlock(&mem->lock);
+ 	return virt_addr;
  }
+ EXPORT_SYMBOL_GPL(pci_epc_mem_alloc_addr);
+@@ -175,7 +179,9 @@ void pci_epc_mem_free_addr(struct pci_ep
+ 	pageno = (phys_addr - mem->phys_base) >> page_shift;
+ 	size = ALIGN(size, mem->page_size);
+ 	order = pci_epc_mem_get_order(mem, size);
++	mutex_lock(&mem->lock);
+ 	bitmap_release_region(mem->bitmap, pageno, order);
++	mutex_unlock(&mem->lock);
+ }
+ EXPORT_SYMBOL_GPL(pci_epc_mem_free_addr);
  
+--- a/include/linux/pci-epc.h
++++ b/include/linux/pci-epc.h
+@@ -63,6 +63,7 @@ struct pci_epc_ops {
+  * @bitmap: bitmap to manage the PCI address space
+  * @pages: number of bits representing the address region
+  * @page_size: size of each page
++ * @lock: mutex to protect bitmap
+  */
+ struct pci_epc_mem {
+ 	phys_addr_t	phys_base;
+@@ -70,6 +71,8 @@ struct pci_epc_mem {
+ 	unsigned long	*bitmap;
+ 	size_t		page_size;
+ 	int		pages;
++	/* mutex to protect against concurrent access for memory allocation*/
++	struct mutex	lock;
+ };
+ 
+ /**
 
 
