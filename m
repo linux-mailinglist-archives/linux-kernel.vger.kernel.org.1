@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D930C1B3DC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2463B1B3E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgDVKSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
+        id S1730631AbgDVKZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:25:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729309AbgDVKRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:20 -0400
+        id S1730557AbgDVKZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:25:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D18E02075A;
-        Wed, 22 Apr 2020 10:17:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FB8C20776;
+        Wed, 22 Apr 2020 10:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550640;
-        bh=+ikwfPbm7c6KxTJD0BmB89GFJ0B4TtDtOz7to9+x0x0=;
+        s=default; t=1587551145;
+        bh=oooFEStGUZHNuhXxGFvK4GTwAIxHao8rhtCGvyKcdGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WLaP5fGTtujjMCWDcqVijEObMZZjO+D7j55Jii095M9REucI8MLXPWpxVf0FGos16
-         dNLEf8nqyZt+YN9HJ5CB1PwSDUAqoyn58qlW9CI5j5Tgt8v33J5hQD9a3qiY4ptzm4
-         E9KTPq6uwLjwlClTTgXJhv7IXl/3Eb3JAIprsVhs=
+        b=0s/EtYtDi6/mkUPMSViHOvN8yWyP561WWILU/x/oDleKXEx/LzDsdYDegb8nUU18a
+         eimcCTuu8a/wvktxvx61onskX+rx+3CdHv0KlJqrsR0sm0OVxY1UOiH9x3ABswPYwY
+         bzcfd6n6c+8rbD6vUjQP78iaAioh8jBozYLj4yyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jason Dillaman <dillaman@redhat.com>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/118] rbd: avoid a deadlock on header_rwsem when flushing notifies
+Subject: [PATCH 5.6 066/166] arm64: dts: clearfog-gt-8k: set gigabit PHY reset deassert delay
 Date:   Wed, 22 Apr 2020 11:56:33 +0200
-Message-Id: <20200422095037.117674327@linuxfoundation.org>
+Message-Id: <20200422095055.966208347@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 0e4e1de5b63fa423b13593337a27fd2d2b0bcf77 ]
+[ Upstream commit 46f94c7818e7ab82758fca74935ef3d454340b4e ]
 
-rbd_unregister_watch() flushes notifies and therefore cannot be called
-under header_rwsem because a header update notify takes header_rwsem to
-synchronize with "rbd map".  If mapping an image fails after the watch
-is established and a header update notify sneaks in, we deadlock when
-erroring out from rbd_dev_image_probe().
+If the mv88e6xxx DSA driver is built as a module, it causes the
+ethernet driver to re-probe when it's loaded. This in turn causes
+the gigabit PHY to be momentarily reset and reprogrammed. However,
+we attempt to reprogram the PHY immediately after deasserting reset,
+and the PHY ignores the writes.
 
-Move watch registration and unregistration out of the critical section.
-The only reason they were put there was to make header_rwsem management
-slightly more obvious.
+This results in the PHY operating in the wrong mode, and the copper
+link states down.
 
-Fixes: 811c66887746 ("rbd: fix rbd map vs notify races")
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Reviewed-by: Jason Dillaman <dillaman@redhat.com>
+Set a reset deassert delay of 10ms for the gigabit PHY to avoid this.
+
+Fixes: babc5544c293 ("arm64: dts: clearfog-gt-8k: 1G eth PHY reset signal")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Acked-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rbd.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index a67315786db47..bab9c546ba334 100644
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -4636,6 +4636,10 @@ static void cancel_tasks_sync(struct rbd_device *rbd_dev)
- 	cancel_work_sync(&rbd_dev->unlock_work);
- }
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+index a211a046b2f2f..b90d78a5724b2 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+@@ -367,6 +367,7 @@
+ 		pinctrl-0 = <&cp0_copper_eth_phy_reset>;
+ 		reset-gpios = <&cp0_gpio2 11 GPIO_ACTIVE_LOW>;
+ 		reset-assert-us = <10000>;
++		reset-deassert-us = <10000>;
+ 	};
  
-+/*
-+ * header_rwsem must not be held to avoid a deadlock with
-+ * rbd_dev_refresh() when flushing notifies.
-+ */
- static void rbd_unregister_watch(struct rbd_device *rbd_dev)
- {
- 	cancel_tasks_sync(rbd_dev);
-@@ -6942,6 +6946,9 @@ static void rbd_dev_image_release(struct rbd_device *rbd_dev)
-  * device.  If this image is the one being mapped (i.e., not a
-  * parent), initiate a watch on its header object before using that
-  * object to get detailed information about the rbd image.
-+ *
-+ * On success, returns with header_rwsem held for write if called
-+ * with @depth == 0.
-  */
- static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
- {
-@@ -6974,6 +6981,9 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
- 		}
- 	}
- 
-+	if (!depth)
-+		down_write(&rbd_dev->header_rwsem);
-+
- 	ret = rbd_dev_header_info(rbd_dev);
- 	if (ret)
- 		goto err_out_watch;
-@@ -7027,6 +7037,8 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
- err_out_probe:
- 	rbd_dev_unprobe(rbd_dev);
- err_out_watch:
-+	if (!depth)
-+		up_write(&rbd_dev->header_rwsem);
- 	if (!depth)
- 		rbd_unregister_watch(rbd_dev);
- err_out_format:
-@@ -7085,12 +7097,9 @@ static ssize_t do_rbd_add(struct bus_type *bus,
- 		goto err_out_rbd_dev;
- 	}
- 
--	down_write(&rbd_dev->header_rwsem);
- 	rc = rbd_dev_image_probe(rbd_dev, 0);
--	if (rc < 0) {
--		up_write(&rbd_dev->header_rwsem);
-+	if (rc < 0)
- 		goto err_out_rbd_dev;
--	}
- 
- 	/* If we are mapping a snapshot it must be marked read-only */
- 	if (rbd_dev->spec->snap_id != CEPH_NOSNAP)
+ 	switch0: switch0@4 {
 -- 
 2.20.1
 
