@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8757F1B3D04
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FA91B3C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgDVKKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41118 "EHLO mail.kernel.org"
+        id S1727117AbgDVKDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:03:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728533AbgDVKKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:46 -0400
+        id S1727100AbgDVKDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:03:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98B532071E;
-        Wed, 22 Apr 2020 10:10:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC4EC208E4;
+        Wed, 22 Apr 2020 10:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550246;
-        bh=jjGhZd1676gM1faEzaRyv70Uy8sPoRRPSl6ORlKF1AQ=;
+        s=default; t=1587549783;
+        bh=XJr0lxy5vIcZ2OGNprXuiu1yZaGRxoLt/EV3+aKxOn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VefO1/OQiqXosLSb0P/Nw+oaIfNc9v3tyTZnIsJ6UlLuhYHfv2PBjOvbdQp/YE7Ea
-         yimFnMgIB4iD4vI2Zk1wlsYYZ8SC4o/E3GRgZY81P0j+0Ni5U8bA7JkdF9DmouMXFb
-         VrYU9zm28O3KeQI0AVIN2stwgRbWk4wMBFUyZ900=
+        b=lWA0ILj8Bdaw+kt3B1ofb7ZneWKzgNMT44P1iiE/7lUf4z8upT6erEJ2IhKLSCpKa
+         dlVQJ+TlxD5HDJVx9nY13acDdb/8Pb1ErDHUlMQTEnDh2CBFHcrx60aAIJM6Iq21hP
+         CICcK71bSZFBfPdMbEzpZcWdEWUvQq4tloAEw1mo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, konrad.wilk@oracle.com,
-        dwmw@amazon.co.uk, bp@suse.de, srinivas.eeda@oracle.com,
-        peterz@infradead.org, hpa@zytor.com,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 069/199] x86/speculation: Remove redundant arch_smt_update() invocation
-Date:   Wed, 22 Apr 2020 11:56:35 +0200
-Message-Id: <20200422095105.093919891@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.4 066/100] ext4: do not zeroout extents beyond i_disksize
+Date:   Wed, 22 Apr 2020 11:56:36 +0200
+Message-Id: <20200422095034.909940954@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@oracle.com>
+From: Jan Kara <jack@suse.cz>
 
-commit 34d66caf251df91ff27b24a3a786810d29989eca upstream.
+commit 801674f34ecfed033b062a0f217506b93c8d5e8a upstream.
 
-With commit a74cfffb03b7 ("x86/speculation: Rework SMT state change"),
-arch_smt_update() is invoked from each individual CPU hotplug function.
+We do not want to create initialized extents beyond end of file because
+for e2fsck it is impossible to distinguish them from a case of corrupted
+file size / extent tree and so it complains like:
 
-Therefore the extra arch_smt_update() call in the sysfs SMT control is
-redundant.
+Inode 12, i_size is 147456, should be 163840.  Fix? no
 
-Fixes: a74cfffb03b7 ("x86/speculation: Rework SMT state change")
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: <konrad.wilk@oracle.com>
-Cc: <dwmw@amazon.co.uk>
-Cc: <bp@suse.de>
-Cc: <srinivas.eeda@oracle.com>
-Cc: <peterz@infradead.org>
-Cc: <hpa@zytor.com>
-Link: https://lkml.kernel.org/r/e2e064f2-e8ef-42ca-bf4f-76b612964752@default
-Cc: Guenter Roeck <linux@roeck-us.net>
+Code in ext4_ext_convert_to_initialized() and
+ext4_split_convert_extents() try to make sure it does not create
+initialized extents beyond inode size however they check against
+inode->i_size which is wrong. They should instead check against
+EXT4_I(inode)->i_disksize which is the current inode size on disk.
+That's what e2fsck is going to see in case of crash before all dirty
+data is written. This bug manifests as generic/456 test failure (with
+recent enough fstests where fsx got fixed to properly pass
+FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
+mount option.
+
+CC: stable@vger.kernel.org
+Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20200331105016.8674-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/cpu.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/ext4/extents.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -2089,10 +2089,8 @@ int cpuhp_smt_disable(enum cpuhp_smt_con
- 		 */
- 		cpuhp_offline_cpu_device(cpu);
- 	}
--	if (!ret) {
-+	if (!ret)
- 		cpu_smt_control = ctrlval;
--		arch_smt_update();
--	}
- 	cpu_maps_update_done();
- 	return ret;
- }
-@@ -2103,7 +2101,6 @@ int cpuhp_smt_enable(void)
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3439,8 +3439,8 @@ static int ext4_ext_convert_to_initializ
+ 		(unsigned long long)map->m_lblk, map_len);
  
- 	cpu_maps_update_begin();
- 	cpu_smt_control = CPU_SMT_ENABLED;
--	arch_smt_update();
- 	for_each_present_cpu(cpu) {
- 		/* Skip online CPUs and CPUs on offline nodes */
- 		if (cpu_online(cpu) || !node_online(cpu_to_node(cpu)))
+ 	sbi = EXT4_SB(inode->i_sb);
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map_len)
+ 		eof_block = map->m_lblk + map_len;
+ 
+@@ -3701,8 +3701,8 @@ static int ext4_split_convert_extents(ha
+ 		  __func__, inode->i_ino,
+ 		  (unsigned long long)map->m_lblk, map->m_len);
+ 
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map->m_len)
+ 		eof_block = map->m_lblk + map->m_len;
+ 	/*
 
 
