@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E4F1B3EF6
+	by mail.lfdr.de (Postfix) with ESMTP id 182861B3EF5
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731163AbgDVKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731127AbgDVKc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:32:27 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5378FC03C1A8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:27 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u16so1729044wmc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eOSmb4FNbQc6x3T+mRoZC0joYWCmW+ZeBUjg4eP6aXk=;
-        b=Zm9KGFN5WhiJAMGvIS/8fs+K7TIH74Egwy+ahtjhZ7hyTvZf2WPAY1ohhPkUR4bnGU
-         WARVTSb60uIFdCGRa0w3NMyvGFKex9AAsfatpQkJFc3UcEf9+GRPz1n1QzKv7nlO17XX
-         MDfbkz+nLt6/7tqO7tl74oA0bg/dKqZSQhtrtcwYhBAXdpgkbSleTnu5BlbFPuOa7ZoQ
-         P1x+OLPCx2iwGeahB8YIdwjvvokevpQwQJfm8MI970PtLvMm6Ptm7ixkBmB3K1gTX0tA
-         bIFn+duuqMpZKItsW0r507SpwNE0zY1akPctSg2uOXa1+Gx4Ucchj4XLwyPgv/11ljuy
-         9GGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=eOSmb4FNbQc6x3T+mRoZC0joYWCmW+ZeBUjg4eP6aXk=;
-        b=mEkB3iLY0F0UaxWNiWmOAfoNz44D+mp3TatmAG5KFGK/dxN5p2BzXwO1q8o0TdY2Yc
-         6sjThwO3UXOH3+t5jrLG8/tqeoseA52oHEtS+gFkQVp1tO9hBd3+oTxMAaBcxpB8alyf
-         mciD026ICsSLSgi/uYaLLM8aI9YWC55/4t2AvIoH0PQ1spr5gWcPmPc+aL0Jhehdw7Bq
-         5fT0fdaht1RRIT+oEY7BN6z6TqPOQ4raVgfim5Q+aSqoEVNBmf8wfskVYCxuhYHOD609
-         fL2KumJ7oMvKlg88Js5QL3cX/XKzqrGpCYO9X+nQEscYfynCxoxAy06iuejGiOofU0Z5
-         +6aw==
-X-Gm-Message-State: AGi0Pubh179VQNn/xCu3mUOU9QOWTx2vOzCKZl4dZJOmxFmYGb9u7a8E
-        /vYsTPmmvQws6FKMZ9K6j/4ahcCJ
-X-Google-Smtp-Source: APiQypKDt445X4MTERp9wOMYIX8ok4hBlzelZltnx8LUq0sA1j7glgEufMILI4Amg4B2foHyXUop2w==
-X-Received: by 2002:a1c:3b09:: with SMTP id i9mr9568179wma.19.1587551545700;
-        Wed, 22 Apr 2020 03:32:25 -0700 (PDT)
-Received: from localhost.localdomain (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id s12sm6891603wmc.7.2020.04.22.03.32.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 03:32:24 -0700 (PDT)
-From:   Ingo Molnar <mingo@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 3/3] objtool: Constify arch_decode_instruction()
-Date:   Wed, 22 Apr 2020 12:32:05 +0200
-Message-Id: <20200422103205.61900-4-mingo@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200422103205.61900-1-mingo@kernel.org>
-References: <20200422103205.61900-1-mingo@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1731158AbgDVKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:32:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34672 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731124AbgDVKcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:32:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9187CABCC;
+        Wed, 22 Apr 2020 10:32:32 +0000 (UTC)
+Message-ID: <1587551540.26476.12.camel@suse.com>
+Subject: Re: general protection fault in go7007_usb_probe
+From:   Oliver Neukum <oneukum@suse.com>
+To:     syzbot <syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com>,
+        andreyknvl@google.com, hverkuil-cisco@xs4all.nl,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Cc:     tiwai@suse.com
+Date:   Wed, 22 Apr 2020 12:32:20 +0200
+In-Reply-To: <000000000000a0f56c05a3d59b69@google.com>
+References: <000000000000a0f56c05a3d59b69@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mostly straightforward constification, except that WARN_FUNC()
-needs a writable pointer while we have read-only pointers,
-so deflect this to WARN().
+Am Dienstag, den 21.04.2020, 16:45 -0700 schrieb syzbot:
+> syzbot has found a reproducer for the following crash on:
+> 
+> HEAD commit:    e9010320 usb: cdns3: gadget: make a bunch of functions sta..
+> git tree:       https://github.com/google/kasan.git usb-fuzzer
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12da0b58100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bd14feb44652cfaf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cabfa4b5b05ff6be4ef0
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1146eb17e00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159d136fe00000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- tools/objtool/arch.h            | 2 +-
- tools/objtool/arch/x86/decode.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
-index 561c3162d177..445b8fa73ccb 100644
---- a/tools/objtool/arch.h
-+++ b/tools/objtool/arch.h
-@@ -72,7 +72,7 @@ struct instruction;
- 
- void arch_initial_func_cfi_state(struct cfi_init_state *state);
- 
--int arch_decode_instruction(struct elf *elf, struct section *sec,
-+int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    unsigned int *len, enum insn_type *type,
- 			    unsigned long *immediate,
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index f0d42ad7d5ff..c45a0b4e0760 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -27,7 +27,7 @@ static unsigned char op_to_cfi_reg[][2] = {
- 	{CFI_DI, CFI_R15},
- };
- 
--static int is_x86_64(struct elf *elf)
-+static int is_x86_64(const struct elf *elf)
- {
- 	switch (elf->ehdr.e_machine) {
- 	case EM_X86_64:
-@@ -77,7 +77,7 @@ unsigned long arch_jump_destination(struct instruction *insn)
- 	return insn->offset + insn->len + insn->immediate;
- }
- 
--int arch_decode_instruction(struct elf *elf, struct section *sec,
-+int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    unsigned int *len, enum insn_type *type,
- 			    unsigned long *immediate,
-@@ -98,7 +98,7 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
- 	insn_get_length(&insn);
- 
- 	if (!insn_complete(&insn)) {
--		WARN_FUNC("can't decode instruction", sec, offset);
-+		WARN("can't decode instruction at %s:0x%lx", sec->name, offset);
- 		return -1;
- 	}
- 
--- 
-2.20.1
+this looks to be technically caused by
+
+commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Feb 6 16:45:27 2020 +0100
+
+    media: go7007: Fix URB type for interrupt handling
+
+It introduces this check:
+
++       ep = usb->usbdev->ep_in[4];
++       if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
+
+However, there is no guarantee ep_in[4] exists, if a malicious device
+were involved. But, I do not want to just add a check for NULL. That
+would just paper over the bug and the driver would fail at a later
+stage.
+
+How many endpoints do these devices need to have to operate?
+
+	Regards
+		Oliver
 
