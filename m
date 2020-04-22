@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C221B40FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82341B3E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729423AbgDVKNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:13:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        id S1730914AbgDVK1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:27:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729375AbgDVKMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:52 -0400
+        id S1730886AbgDVK13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:27:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0C282070B;
-        Wed, 22 Apr 2020 10:12:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCC642071E;
+        Wed, 22 Apr 2020 10:27:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550371;
-        bh=fhMCzs+5oAeNDilCXNjN57Y84x/pplV7/I0kKxgTNjk=;
+        s=default; t=1587551249;
+        bh=aYUuWPfJpzqoqPVjphiZ2zRMzjSHaBbquwqd8TH1J4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o+Kr4FZt1hStmVhdQZ1QKKx+VD4VCFMiuWS1Z7ylcAU0OMLP7Ip8+bg/Tnyn2PUCh
-         Dlc+nbt+xhrn+8qbmxUwjjoUx4NmvvpsOiTipdBvIad0S4pq+TlPfWuN7Hec2VAZRn
-         KKoCKbibe3rmIwyqawQVIWhy73VSEc+73uZAEVDA=
+        b=Excz8FmavcyKQI5HtXypDJHXZziYgEqSqHUDQNDYtZKIfZ4Plw+rUzUdC+43VYkKj
+         J73kKNZYMUSmFp9sbYq5P3b6TOK6LHJDcAM1FrfiAlqJsuWXEPFfYgbij2e7SMVvTF
+         dbVSyK1CyhkPrQ2Pubsm0bpQTOn26xJI4ZurRxqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 119/199] ASoC: Intel: mrfld: return error codes when an error occurs
-Date:   Wed, 22 Apr 2020 11:57:25 +0200
-Message-Id: <20200422095109.520131013@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 119/166] f2fs: fix NULL pointer dereference in f2fs_write_begin()
+Date:   Wed, 22 Apr 2020 11:57:26 +0200
+Message-Id: <20200422095101.400234165@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-commit 3025571edd9df653e1ad649f0638368a39d1bbb5 upstream.
+[ Upstream commit 62f63eea291b50a5677ae7503ac128803174698a ]
 
-Currently function sst_platform_get_resources always returns zero and
-error return codes set by the function are never returned. Fix this
-by returning the error return code in variable ret rather than the
-hard coded zero.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+RIP: 0010:f2fs_write_begin+0x823/0xb90 [f2fs]
+Call Trace:
+ f2fs_quota_write+0x139/0x1d0 [f2fs]
+ write_blk+0x36/0x80 [quota_tree]
+ get_free_dqblk+0x42/0xa0 [quota_tree]
+ do_insert_tree+0x235/0x4a0 [quota_tree]
+ do_insert_tree+0x26e/0x4a0 [quota_tree]
+ do_insert_tree+0x26e/0x4a0 [quota_tree]
+ do_insert_tree+0x26e/0x4a0 [quota_tree]
+ qtree_write_dquot+0x70/0x190 [quota_tree]
+ v2_write_dquot+0x43/0x90 [quota_v2]
+ dquot_acquire+0x77/0x100
+ f2fs_dquot_acquire+0x2f/0x60 [f2fs]
+ dqget+0x310/0x450
+ dquot_transfer+0x7e/0x120
+ f2fs_setattr+0x11a/0x4a0 [f2fs]
+ notify_change+0x349/0x480
+ chown_common+0x168/0x1c0
+ do_fchownat+0xbc/0xf0
+ __x64_sys_fchownat+0x20/0x30
+ do_syscall_64+0x5f/0x220
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Addresses-Coverity: ("Unused value")
-Fixes: f533a035e4da ("ASoC: Intel: mrfld - create separate module for pci part")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200208220720.36657-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Passing fsdata parameter to .write_{begin,end} in f2fs_quota_write(),
+so that if quota file is compressed one, we can avoid above NULL
+pointer dereference when updating quota content.
 
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_pci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/super.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/sound/soc/intel/atom/sst/sst_pci.c
-+++ b/sound/soc/intel/atom/sst/sst_pci.c
-@@ -107,7 +107,7 @@ static int sst_platform_get_resources(st
- 	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
- do_release_regions:
- 	pci_release_regions(pci);
--	return 0;
-+	return ret;
- }
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 3669f060b6257..8deb0a260d928 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1929,6 +1929,7 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
+ 	int offset = off & (sb->s_blocksize - 1);
+ 	size_t towrite = len;
+ 	struct page *page;
++	void *fsdata = NULL;
+ 	char *kaddr;
+ 	int err = 0;
+ 	int tocopy;
+@@ -1938,7 +1939,7 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
+ 								towrite);
+ retry:
+ 		err = a_ops->write_begin(NULL, mapping, off, tocopy, 0,
+-							&page, NULL);
++							&page, &fsdata);
+ 		if (unlikely(err)) {
+ 			if (err == -ENOMEM) {
+ 				congestion_wait(BLK_RW_ASYNC, HZ/50);
+@@ -1954,7 +1955,7 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
+ 		flush_dcache_page(page);
  
- /*
+ 		a_ops->write_end(NULL, mapping, off, tocopy, tocopy,
+-						page, NULL);
++						page, fsdata);
+ 		offset = 0;
+ 		towrite -= tocopy;
+ 		off += tocopy;
+-- 
+2.20.1
+
 
 
