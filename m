@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ECC1B48CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4751A1B48B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgDVPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:36:16 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:27616 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgDVPgP (ORCPT
+        id S1726422AbgDVPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgDVPeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:36:15 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 03MFYGMY002287;
-        Thu, 23 Apr 2020 00:34:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 03MFYGMY002287
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587569657;
-        bh=rwMSy1LovyBoYlWhrHE4Cpvn0tJcHVV/wU2hEdyXFiw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EI1FRHPm3J416v+tdT2D5RbGqEs7FhDqvNK4DzULdSb9NlSZaIAhw/ZYeKyFUVpnE
-         vpCTByjQopJcNJeiyOmoc1Qp+U31tMmEYeA3c5VJWqlhwzygRCkeDv+nUtM2iCrDRm
-         ZAeNzsRN80GsVjJm5hbqceL1Cs0/Zn8VaCKTNDrlqAjCkVIPMl6HWt8XOZ4folNF+K
-         3JYoc8kO5649Pz1pr3TgxIu03dbITTrUsr2xwHaZHR5AjTr6qPK1wIF5mVEehsMDpq
-         /8URmxYIb1yHn/t2QfsUhht2vrXqyPfX8h86cjgT19fevnhpwIkko9E56hgkp5XMVL
-         PE01Adq/kqq7Q==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Takao Orito <orito.takao@socionext.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: sdhci-of-at91: make MMC_SDHCI_OF_AT91 depend on HAVE_CLK
-Date:   Thu, 23 Apr 2020 00:34:01 +0900
-Message-Id: <20200422153401.7913-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Apr 2020 11:34:16 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707EFC03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:34:15 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id o139so1370260ybc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0swt+GeZSXW6Eflw++OF9bLRU7Pp5VCRQPX3j3z34UQ=;
+        b=vx6ksF3hk5yh5M7mF0Mp+4K+xF/3TgLsEW6adSFK8R3F+l1DWxyl/+b6UDRlYvRKCl
+         CAS/DrfANcNdkR8KsrMtGXt2ego+uLPunneqXzWSJgxW67jl/adIfR1KhWUbZSN9kuYj
+         nNGtZc0aQR71uiqClRR7ho5JTvAZOwHH4ULND9p2NaIWBTAugbwq95rROIBdUiaxkXlp
+         jf5XVQ3M9AL6MoJWdGHMFaHrxn5sUBlH9hF9PUkTmkn1XISq3HlIHZ7293R800zK0Xrm
+         SS1JH1yxfsL/6xpx9kQncVvh2HgyABvW8Cn0xOAWTEiuvhkEbbS3zwA3kHP4xigvWxEm
+         uEhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0swt+GeZSXW6Eflw++OF9bLRU7Pp5VCRQPX3j3z34UQ=;
+        b=JUlVrtacUFw5/Cdh8nPqgwabUgMvcamOWTyorWWRuM4Gjuva2En+RqQy6Jc9zlgvMt
+         HvYuhCR3bvGpi++FQuLCF8SaVWu6oM/Z9ya4Lb9Pl7BTMb26DvsnoQK1ox8cIC9gdw7q
+         wRbLgV+zOpdQRgxmt5hdeZDg6FaWx+wJDj7SnFyZHNUWairWXwbGh9PwBs6t/g9mJLhN
+         IB5q8BQTnicr91jRfFODbIJcK8MG5tfel+ZM1xJ8MWWIccQUmTLd6QSIUuLXFwY4jDbw
+         G3SdGndvQSglnx9NKtOJ7VxYXU1kqve0d1bMYQSOyzCc0OHObmXkVpgkuH61bXlrKHz+
+         dxzw==
+X-Gm-Message-State: AGi0PubN3eQd/TnoZjV4bzFqPFQDL4EIPgWeVOuWF11AyT2NT1DOX9JY
+        hn7VA5x9jzx3u7/pzJALa1mavxGByU3dFtp8GTLigg==
+X-Google-Smtp-Source: APiQypK8JN4UihZi6+27xjX6jnB0MFAW45iOjXQBCHIFJd5Ny0Wk6IyIRuue0WbgwHZMYsuI1WSSHPlViwnURMiLkw4=
+X-Received: by 2002:a25:4443:: with SMTP id r64mr35953653yba.41.1587569654285;
+ Wed, 22 Apr 2020 08:34:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200422074809.160248-1-irogers@google.com> <20200422074809.160248-3-irogers@google.com>
+ <20200422143840.GJ608746@tassilo.jf.intel.com>
+In-Reply-To: <20200422143840.GJ608746@tassilo.jf.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 22 Apr 2020 08:34:02 -0700
+Message-ID: <CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com>
+Subject: Re: [PATCH 2/8] perf metrics: fix parse errors in cascade lake metrics
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If sdhci-of-at91.c is compiled without CONFIG_HAVE_CLK, the line
+On Wed, Apr 22, 2020 at 7:38 AM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> On Wed, Apr 22, 2020 at 12:48:03AM -0700, Ian Rogers wrote:
+> > Remove over escaping with \\.
+> > Remove extraneous if 1 if 0 == 1 else 0 else 0.
+>
+> So where do these parse errors happen exactly? Some earlier
+> patches introduced them as regressions?
 
-  caps1 |= FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
+I'll work to track down a Fixes tag. I can repro the Skylakex errors
+without the test in this series, by doing:
 
-... emits "FIELD_PREP: value too large for the field" warning.
+$ perf stat -M DRAM_Read_Latency sleep 1
+Error:
+The sys_perf_event_open() syscall returned with 22 (Invalid argument)
+for event (cha/event=0x36\,uma
+sk=0x21/).
+/bin/dmesg | grep -i perf may provide additional information.
 
-The compiler seems to decide clk_mul is constant (unsigned int)-1,
-because clk_get_rate() returns 0 when CONFIG_HAVE_CLK is disabled.
+This was just the escaping issue. I'm less clear on the other cascade
+lake issue, and it is a bit more work for me to test on cascade lake.
+What is "if 1 if 0 == 1 else 0 else 0" trying to do? Perhaps hunting
+for the Fixes will let me know, but it looks like a copy-paste error.
 
-Add HAVE_CLK to the depenency since this driver does not work without
-the clock APIs anyway.
+> The original metrics worked without parse errors as far as I know.
 
-Link: https://lkml.org/lkml/2020/4/17/613
-Fixes: linux-next ("mmc: sdhci: use FIELD_GET/PREP for capabilities bit masks")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+The skylake issue above repros on 5.2.17 and so it seems like it is
+broken for a while. The test in this series will prevent this in the
+future, but without this patch that test fails.
 
-Ulf,
+> If it fixes something earlier it would need Fixes: tags.
 
-I do not know how to fill the Fixes tag.
-It is currently 8da1ff4f68a2 in linux-next, but I am not sure it is
-stable. I just added 'linux-next'.
+Working on it. Thanks for the input!
 
-If you have a preferred way, please modify it.
+Ian
 
-
-
-
-
- drivers/mmc/host/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 462b5352fea7..2aee844722d6 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -171,7 +171,7 @@ config MMC_SDHCI_OF_ASPEED
- config MMC_SDHCI_OF_AT91
- 	tristate "SDHCI OF support for the Atmel SDMMC controller"
- 	depends on MMC_SDHCI_PLTFM
--	depends on OF
-+	depends on OF && HAVE_CLK
- 	help
- 	  This selects the Atmel SDMMC driver
- 
--- 
-2.25.1
-
+> -Andi
