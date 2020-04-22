@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09981B33D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D96C1B33D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgDVAOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S1726490AbgDVAO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgDVAOp (ORCPT
+        with ESMTP id S1726451AbgDVAOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:14:45 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B62C03C1A6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:44 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id t18so237126pgi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:44 -0700 (PDT)
+        Tue, 21 Apr 2020 20:14:49 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CBEC0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:47 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w6so523469qtt.21
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2opZsbHIn/7vppLXalOzj/KzjaH4KmbCOQZ36m9L9lE=;
-        b=YU+DpsujXi0dVqJJUn+VODEzULokQfOL0DEI1YbafX+yE0cHnEjcF9d9u7UqxpJGa7
-         3BcZBWBvk9crC3TVt+cufx3Fss2NCMhw6FWgs071GWBCKXJeIFvaWfxJEzUxbNvaYkJa
-         j+6TfuSj3AiBez+mBQSM2YW7w9QCdSp+sFTVVQ8ugkK2yjdrw3Toaiel9ipwHGk+lGFu
-         Kc4IY/Ztnjd1luBlFc1lraZ2m3sNb6BzDrJGoeXVNV/Xh8gbvbaViErJH43THqBdEFOf
-         p2hSFugDNMm6rwwkVT+KxJC/7Q/n5/sZwMRsJ0SqpOPicpMfREqWL++llmwCv0eqVjCJ
-         ZukQ==
+        bh=/eDOjnM9HRS8OZpDk6pfMhfG32YpgGHrkgLs3JMHIzE=;
+        b=mhFOnMH/PFj8RkvZsUJ1VayE7RcJCiCKYRKPCTgHI/fvOovo1BaQA8sWItdsVrCd/T
+         otCFheAAbr+9nY7JfJbtd9rFN77Nmb3bQLd1EZ1FaJMm266MHuGxGP9QKjcS1flE40NY
+         hrlF6yDVCIG9TDEPSLHJ4ND1d7OwiLuEutGlvdSaGyw3Nms6jlWfCja48ssqqLSd4QqK
+         e3ClRzD/PywU8gG42OJcjZBW7tkCk4vn5HujRCV1q9gADsHVr/9d7nZaXbbMBifVSCB5
+         MDhFhmxmT7QuB91O++3TdnH5sPBTZJrysrMbrwqMIFlTns+fI6RNpAI3TwTrxAuqYovt
+         +MQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2opZsbHIn/7vppLXalOzj/KzjaH4KmbCOQZ36m9L9lE=;
-        b=TUx+04JxFtCb08kPokEAXRFOgWZv36RBsgtGYjeh8T+AoFthwiNtGlW05+HrFII/Cb
-         CbM9+xGAX6eadNvmgN6visEFN1DjZAFnVftcr09HBHt0P0SR7OjA5PVSDIV6kV86dYSC
-         9PX1eXzJC2C2E3oGt5nWdQ1u1foXVbFTqQm5/8hh7DCQn9b0bpiMkL/d3ZOyOt0s2Sji
-         YHK3qJW/JUQWc2UXpPCx64U08ZbLgTBULLIwKlKu+mDjF6UKKwWoApfr4xj8ZrJeK6Ag
-         CqANbjLNLPtHXLHTOekj638GWA0sdYcfmjQaengg0R0cwScvs8DJcFMR5KNsMX/oX71U
-         WsPg==
-X-Gm-Message-State: AGi0PuYGe3XgymPd21SbOCxL2w6XAbVg8E0RUZLTFG0cEa0TviaPr9RW
-        pb6T6nlYys8YI4dE2PEcag2JLItiqqI=
-X-Google-Smtp-Source: APiQypIXTchO/qnvCAeRZjmkZ2EVbLqjiP88Fl2FWaZemSZbbMCYcFq80mBz45/FOR986aYwIIFHjDIfBSc=
-X-Received: by 2002:a17:90a:2709:: with SMTP id o9mr8504791pje.168.1587514483951;
- Tue, 21 Apr 2020 17:14:43 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 17:14:20 -0700
+        bh=/eDOjnM9HRS8OZpDk6pfMhfG32YpgGHrkgLs3JMHIzE=;
+        b=VksMLnReWaJWw5fNLvntKBzZKJOIeXV3nFRStffCLA1+avOe6O/uwvR64ySARtRHTz
+         RhK9nmLevB8LphnyGd1Ox/bHUmVgURsPFAEINBiPeEOSBXzD0ZRxgmgU/O1nGglfiHYD
+         6JqlT/EujHvAK4XfUcW8Ww5vPesWID/J8aPRi1prqLfBD1B6jkq3pL/UiHX2qoP/PC+e
+         AONecKjES8cl5TBDJqPdiMcFJVBssA/Gf3FroiqxKeMEIapVXCXx/7ky8aYu0v+/koxu
+         fG+al+OcPlbZcsDcfK2TR4I38/iQSIK8iTvA4fpyY1lUV43/RfNivECyerTXn4RwFkYn
+         IPug==
+X-Gm-Message-State: AGi0PuarNrWksh7KqmbX7X8f3yLfLdZZh8Ch66DPSmW/5MnYEKWM5HGK
+        H1yafk/Ic5Bec4zNusMTtq9xlzda08w=
+X-Google-Smtp-Source: APiQypLkCgZ5QyMRA2Kls797eOnq3Fvv4/RJFRvdM8oKCvxtZFU9mbexebet60I1wVNAoL/zP89dxl6R5Vw=
+X-Received: by 2002:a0c:facb:: with SMTP id p11mr22619057qvo.17.1587514486557;
+ Tue, 21 Apr 2020 17:14:46 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 17:14:21 -0700
 In-Reply-To: <20200422001422.232330-1-walken@google.com>
-Message-Id: <20200422001422.232330-9-walken@google.com>
+Message-Id: <20200422001422.232330-10-walken@google.com>
 Mime-Version: 1.0
 References: <20200422001422.232330-1-walken@google.com>
 X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH v5 08/10] mmap locking API: add MMAP_LOCK_INITIALIZER
+Subject: [PATCH v5 09/10] mmap locking API: add mmap_assert_locked
 From:   Michel Lespinasse <walken@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm <linux-mm@kvack.org>
@@ -73,71 +73,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define a new initializer for the mmap locking api.
-Initially this just evaluates to __RWSEM_INITIALIZER as the API
-is defined as wrappers around rwsem.
+Add mmap_assert_locked to assert that mmap_sem is held.
 
 Signed-off-by: Michel Lespinasse <walken@google.com>
 ---
- arch/x86/kernel/tboot.c    | 2 +-
- drivers/firmware/efi/efi.c | 2 +-
- include/linux/mmap_lock.h  | 3 +++
- mm/init-mm.c               | 2 +-
- 4 files changed, 6 insertions(+), 3 deletions(-)
+ fs/userfaultfd.c          |  6 +++---
+ include/linux/mmap_lock.h | 10 ++++++++++
+ mm/gup.c                  |  2 +-
+ mm/memory.c               |  2 +-
+ 4 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
-index b89f6ac6a0c0..885058325c20 100644
---- a/arch/x86/kernel/tboot.c
-+++ b/arch/x86/kernel/tboot.c
-@@ -90,7 +90,7 @@ static struct mm_struct tboot_mm = {
- 	.pgd            = swapper_pg_dir,
- 	.mm_users       = ATOMIC_INIT(2),
- 	.mm_count       = ATOMIC_INIT(1),
--	.mmap_sem       = __RWSEM_INITIALIZER(init_mm.mmap_sem),
-+	MMAP_LOCK_INITIALIZER(init_mm)
- 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
- 	.mmlist         = LIST_HEAD_INIT(init_mm.mmlist),
- };
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 911a2bd0f6b7..916313ec8acb 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -54,7 +54,7 @@ struct mm_struct efi_mm = {
- 	.mm_rb			= RB_ROOT,
- 	.mm_users		= ATOMIC_INIT(2),
- 	.mm_count		= ATOMIC_INIT(1),
--	.mmap_sem		= __RWSEM_INITIALIZER(efi_mm.mmap_sem),
-+	MMAP_LOCK_INITIALIZER(efi_mm)
- 	.page_table_lock	= __SPIN_LOCK_UNLOCKED(efi_mm.page_table_lock),
- 	.mmlist			= LIST_HEAD_INIT(efi_mm.mmlist),
- 	.cpu_bitmap		= { [BITS_TO_LONGS(NR_CPUS)] = 0},
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 9c645eee1a59..12b492409040 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -234,7 +234,7 @@ static inline bool userfaultfd_huge_must_wait(struct userfaultfd_ctx *ctx,
+ 	pte_t *ptep, pte;
+ 	bool ret = true;
+ 
+-	VM_BUG_ON(!rwsem_is_locked(&mm->mmap_sem));
++	mmap_assert_locked(mm);
+ 
+ 	ptep = huge_pte_offset(mm, address, vma_mmu_pagesize(vma));
+ 
+@@ -286,7 +286,7 @@ static inline bool userfaultfd_must_wait(struct userfaultfd_ctx *ctx,
+ 	pte_t *pte;
+ 	bool ret = true;
+ 
+-	VM_BUG_ON(!rwsem_is_locked(&mm->mmap_sem));
++	mmap_assert_locked(mm);
+ 
+ 	pgd = pgd_offset(mm, address);
+ 	if (!pgd_present(*pgd))
+@@ -405,7 +405,7 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
+ 	 * Coredumping runs without mmap_sem so we can only check that
+ 	 * the mmap_sem is held, if PF_DUMPCORE was not set.
+ 	 */
+-	WARN_ON_ONCE(!rwsem_is_locked(&mm->mmap_sem));
++	mmap_assert_locked(mm);
+ 
+ 	ctx = vmf->vma->vm_userfaultfd_ctx.ctx;
+ 	if (!ctx)
 diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index d1826ce42f00..9e104835a0d1 100644
+index 9e104835a0d1..f7a3a9550cc5 100644
 --- a/include/linux/mmap_lock.h
 +++ b/include/linux/mmap_lock.h
-@@ -1,6 +1,9 @@
+@@ -1,6 +1,8 @@
  #ifndef _LINUX_MMAP_LOCK_H
  #define _LINUX_MMAP_LOCK_H
  
-+#define MMAP_LOCK_INITIALIZER(name) \
-+	.mmap_sem = __RWSEM_INITIALIZER(name.mmap_sem),
++#include <linux/mmdebug.h>
 +
- static inline void mmap_init_lock(struct mm_struct *mm)
- {
- 	init_rwsem(&mm->mmap_sem);
-diff --git a/mm/init-mm.c b/mm/init-mm.c
-index 19603302a77f..fe9c03d8e07b 100644
---- a/mm/init-mm.c
-+++ b/mm/init-mm.c
-@@ -31,7 +31,7 @@ struct mm_struct init_mm = {
- 	.pgd		= swapper_pg_dir,
- 	.mm_users	= ATOMIC_INIT(2),
- 	.mm_count	= ATOMIC_INIT(1),
--	.mmap_sem	= __RWSEM_INITIALIZER(init_mm.mmap_sem),
-+	MMAP_LOCK_INITIALIZER(init_mm)
- 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
- 	.arg_lock	=  __SPIN_LOCK_UNLOCKED(init_mm.arg_lock),
- 	.mmlist		= LIST_HEAD_INIT(init_mm.mmlist),
+ #define MMAP_LOCK_INITIALIZER(name) \
+ 	.mmap_sem = __RWSEM_INITIALIZER(name.mmap_sem),
+ 
+@@ -73,4 +75,12 @@ static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
+ 	up_read_non_owner(&mm->mmap_sem);
+ }
+ 
++static inline void mmap_assert_locked(struct mm_struct *mm)
++{
++	if (IS_ENABLED(CONFIG_LOCKDEP) && debug_locks)
++		VM_BUG_ON_MM(!lockdep_is_held(&mm->mmap_sem), mm);
++	else
++		VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
++}
++
+ #endif /* _LINUX_MMAP_LOCK_H */
+diff --git a/mm/gup.c b/mm/gup.c
+index 0404e52513b2..e12993ceb711 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1403,7 +1403,7 @@ long populate_vma_page_range(struct vm_area_struct *vma,
+ 	VM_BUG_ON(end   & ~PAGE_MASK);
+ 	VM_BUG_ON_VMA(start < vma->vm_start, vma);
+ 	VM_BUG_ON_VMA(end   > vma->vm_end, vma);
+-	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
++	mmap_assert_locked(mm);
+ 
+ 	gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK;
+ 	if (vma->vm_flags & VM_LOCKONFAULT)
+diff --git a/mm/memory.c b/mm/memory.c
+index e6dd3309c5a3..20f98ea8968e 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1214,7 +1214,7 @@ static inline unsigned long zap_pud_range(struct mmu_gather *tlb,
+ 		next = pud_addr_end(addr, end);
+ 		if (pud_trans_huge(*pud) || pud_devmap(*pud)) {
+ 			if (next - addr != HPAGE_PUD_SIZE) {
+-				VM_BUG_ON_VMA(!rwsem_is_locked(&tlb->mm->mmap_sem), vma);
++				mmap_assert_locked(tlb->mm);
+ 				split_huge_pud(vma, pud, addr);
+ 			} else if (zap_huge_pud(tlb, vma, pud, addr))
+ 				goto next;
 -- 
 2.26.1.301.g55bc3eb7cb9-goog
 
