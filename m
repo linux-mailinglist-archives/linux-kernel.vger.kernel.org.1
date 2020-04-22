@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B039B1B3565
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055FE1B3578
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgDVDIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 23:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgDVDIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 23:08:09 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D89E2070B;
-        Wed, 22 Apr 2020 03:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587524888;
-        bh=00kZ49s3t3bAlBmeWs2Vc0CxVHkvA4fbM6GiSen4rQQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=wfdApLvE/3xwrwCtPcMQr1rL34+cx7YSXiAQccBXOmD97IxVPg3SHSlvcCwDOWfZk
-         ZTrE+akF4LIqOg7mcI7UOXl/+wNfTSzxk0aqcnnRvo677IluDAh759XEb3Baz0um7u
-         fOmSCBtBUImQw/YC+HStUtsAapP4pnoE5LDuh45o=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F3BCE35226E4; Tue, 21 Apr 2020 20:08:07 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 20:08:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hare@suse.de" <hare@suse.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
-Message-ID: <20200422030807.GK17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
- <20200422012814.GB299948@T590>
- <HK0P153MB0273B954294B331E20AACB41BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
- <20200422020134.GC299948@T590>
+        id S1726396AbgDVDP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 23:15:59 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36846 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgDVDP7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 23:15:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TwHav-7_1587525353;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwHav-7_1587525353)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 22 Apr 2020 11:15:54 +0800
+Subject: Re: [PATCH 15/18] mm: memcontrol: make swap tracking an integral part
+ of memory control
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Joonsoo Kim <js1304@gmail.com>, Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200420221126.341272-1-hannes@cmpxchg.org>
+ <20200420221126.341272-16-hannes@cmpxchg.org>
+ <e9d58c82-d746-dcd0-d9e3-6322014a3b03@linux.alibaba.com>
+ <20200421143923.GC341682@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <2721c508-9b32-d0e7-454d-386129bfda1b@linux.alibaba.com>
+Date:   Wed, 22 Apr 2020 11:14:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422020134.GC299948@T590>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200421143923.GC341682@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:01:34AM +0800, Ming Lei wrote:
-> On Wed, Apr 22, 2020 at 01:48:25AM +0000, Dexuan Cui wrote:
-> > > From: Ming Lei <ming.lei@redhat.com>
-> > > Sent: Tuesday, April 21, 2020 6:28 PM
-> > > To: Dexuan Cui <decui@microsoft.com>
-> > > 
-> > > On Tue, Apr 21, 2020 at 05:17:24PM -0700, Dexuan Cui wrote:
-> > > > During hibernation, the sdevs are suspended automatically in
-> > > > drivers/scsi/scsi_pm.c before storvsc_suspend(), so after
-> > > > storvsc_suspend(), there is no disk I/O from the file systems, but there
-> > > > can still be disk I/O from the kernel space, e.g. disk_check_events() ->
-> > > > sr_block_check_events() -> cdrom_check_events() can still submit I/O
-> > > > to the storvsc driver, which causes a paic of NULL pointer dereference,
-> > > > since storvsc has closed the vmbus channel in storvsc_suspend(): refer
-> > > > to the below links for more info:
-> > > >
-> > > > Fix the panic by blocking/unblocking all the I/O queues properly.
-> > > >
-> > > > Note: this patch depends on another patch "scsi: core: Allow the state
-> > > > change from SDEV_QUIESCE to SDEV_BLOCK" (refer to the second link
-> > > above).
-> > > >
-> > > > Fixes: 56fb10585934 ("scsi: storvsc: Add the support of hibernation")
-> > > > Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> > > > ---
-> > > >  drivers/scsi/storvsc_drv.c | 10 ++++++++++
-> > > >  1 file changed, 10 insertions(+)
-> > > >
-> > > > diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> > > > index fb41636519ee..fd51d2f03778 100644
-> > > > --- a/drivers/scsi/storvsc_drv.c
-> > > > +++ b/drivers/scsi/storvsc_drv.c
-> > > > @@ -1948,6 +1948,11 @@ static int storvsc_suspend(struct hv_device
-> > > *hv_dev)
-> > > >  	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-> > > >  	struct Scsi_Host *host = stor_device->host;
-> > > >  	struct hv_host_device *host_dev = shost_priv(host);
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = scsi_host_block(host);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > >
-> > > >  	storvsc_wait_to_drain(stor_device);
-> > > >
-> > > > @@ -1968,10 +1973,15 @@ static int storvsc_suspend(struct hv_device
-> > > *hv_dev)
-> > > >
-> > > >  static int storvsc_resume(struct hv_device *hv_dev)
-> > > >  {
-> > > > +	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-> > > > +	struct Scsi_Host *host = stor_device->host;
-> > > >  	int ret;
-> > > >
-> > > >  	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
-> > > >  				     hv_dev_is_fc(hv_dev));
-> > > > +	if (!ret)
-> > > > +		ret = scsi_host_unblock(host, SDEV_RUNNING);
-> > > > +
-> > > >  	return ret;
-> > > >  }
-> > > 
-> > > scsi_host_block() is actually too heavy for just avoiding
-> > > scsi internal command, which can be done simply by one atomic
-> > > variable.
-> > > 
-> > > Not mention scsi_host_block() is implemented too clumsy because
-> > > nr_luns * synchronize_rcu() are required in scsi_host_block(),
-> > > which should have been optimized to just one.
-> > > 
-> > > Also scsi_device_quiesce() is heavy too, still takes 2
-> > > synchronize_rcu() for one LUN.
-> > > 
-> > > That is said SCSI suspend may take (3 * nr_luns) sysnchronize_rcu() in
-> > > case that the HBA's suspend handler needs scsi_host_block().
-> > > 
-> > > Thanks,
-> > > Ming
-> > 
-> > When we're in storvsc_suspend(), all the userspace processes have been
-> > frozen and all the file systems have been flushed, and there should not
-> > be too much I/O from the kernel space, so IMO scsi_host_block() should be
-> > pretty fast here. 
-> 
-> I guess it depends on RCU's implementation, so CC RCU guys.
-> 
-> Hello Paul & Josh,
-> 
-> Could you clarify that if sysnchronize_rcu becomes quickly during
-> system suspend?
 
-Once you have all but one CPU offlined, it becomes extremely fast, as
-in roughly a no-op (which is an idea of Josh's from back in the day).
-But if there is more than one CPU online, then synchronize_rcu() still
-takes on the order of several to several tens of jiffies.
 
-So, yes, in some portions of system suspend, synchronize_rcu() becomes
-very fast indeed.
+在 2020/4/21 下午10:39, Johannes Weiner 写道:
+> Hi Alex,
+> 
+> thanks for your quick review so far, I'll add the tags to the patches.
+> 
+> On Tue, Apr 21, 2020 at 05:27:30PM +0800, Alex Shi wrote:
+>>
+>>
+>> 在 2020/4/21 上午6:11, Johannes Weiner 写道:
+>>> The swapaccount=0 boot option will continue to exist, and it will
+>>> eliminate the page_counter overhead and hide the swap control files,
+>>> but it won't disable swap slot ownership tracking.
+>>
+>> May we add extra explanation for this change to user? and the default
+>> memsw limitations?
+> 
+> Can you elaborate what you think is missing and where you would like
+> to see it documented?
+> 
+Maybe the following doc change is better after whole patchset? 
+Guess users would would happy to know details of this change.
 
-							Thanx, Paul
+Also as to the RSS account name change, I don't know if it's good to polish
+them in docs.
+
+Thanks
+Alex
+
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+index 0ae4f564c2d6..1fd0878089fe 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -199,11 +199,11 @@ An RSS page is unaccounted when it's fully unmapped. A PageCache page is
+ unaccounted when it's removed from radix-tree. Even if RSS pages are fully
+ unmapped (by kswapd), they may exist as SwapCache in the system until they
+ are really freed. Such SwapCaches are also accounted.
+-A swapped-in page is not accounted until it's mapped.
++A swapped-in page is accounted after adding into swapcache.
+
+ Note: The kernel does swapin-readahead and reads multiple swaps at once.
+-This means swapped-in pages may contain pages for other tasks than a task
+-causing page fault. So, we avoid accounting at swap-in I/O.
++Since page's memcg recorded into swap whatever memsw enabled, the page will
++be accounted after swapin.
+
+ At page migration, accounting information is kept.
+
+@@ -230,10 +230,10 @@ caller of swapoff rather than the users of shmem.
+ 2.4 Swap Extension (CONFIG_MEMCG_SWAP)
+ --------------------------------------
+
+-Swap Extension allows you to record charge for swap. A swapped-in page is
+-charged back to original page allocator if possible.
++Swap usage is always recorded for each of cgroup. Swap Extension allows you to
++read and limit it.
+
+-When swap is accounted, following files are added.
++When swap is limited, following files are added.
+
+  - memory.memsw.usage_in_bytes.
+  - memory.memsw.limit_in_bytes.
+
+> From a semantics POV, nothing changes with this patch. The memsw limit
+> defaults to "max", so it doesn't exert any control per default. The
+> only difference is whether we maintain swap records or not.
+> 
