@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A8A1B4103
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CB71B3EC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732125AbgDVKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46612 "EHLO mail.kernel.org"
+        id S1731085AbgDVKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:31:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729414AbgDVKNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:04 -0400
+        id S1730627AbgDVKZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:25:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C32C2076E;
-        Wed, 22 Apr 2020 10:13:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADFAD20784;
+        Wed, 22 Apr 2020 10:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550383;
-        bh=3kan2kXNwNgWSR0WNCKeiC0pVJHBLgCdxgTsDOO0Txc=;
+        s=default; t=1587551153;
+        bh=uJOLIfl4FKvP8Jesaa0wKyt+zFZumfqh+bE3cWD19U0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3EAbIvXcqLxxUcpqDu/hht/cDgm3MBE8XB/GWLHw6j82Sz4CFBQue6GWB4c9NRpS
-         lCbt+Z12Iq20Y3Ss15n39edJ/jeHFGuddrg1tffmqULG8XypSFyYBhFU+ls8b7kS+z
-         wdyHMFdN5T4hfcC5eLbom3skU8G2EiPhiyI0BdH4=
+        b=w8eZmFoJS2H+Yr1cgNHKnzbwPPepY7/i4fMZ7q0F7otYG5QuA6iGl1U/Ee1A2rPAT
+         RXjwbmPIORddSTvSg7V30bJbaWAN7fVc488jSvrwlzpV0ytstGUu2E/D0t+hiIp3hi
+         4RyNS9oMIBDd6f+Y4hSV4GbtUhOPjDqd3DNDwSGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 124/199] ext4: do not zeroout extents beyond i_disksize
+        stable@vger.kernel.org, Prashant Malani <pmalani@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 123/166] mfd: cros_ec: Check DT node for usbpd-notify add
 Date:   Wed, 22 Apr 2020 11:57:30 +0200
-Message-Id: <20200422095109.895327373@linuxfoundation.org>
+Message-Id: <20200422095101.757435001@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Prashant Malani <pmalani@chromium.org>
 
-commit 801674f34ecfed033b062a0f217506b93c8d5e8a upstream.
+[ Upstream commit f8db89d14efb770dd59aa0ca74386e5de68310d5 ]
 
-We do not want to create initialized extents beyond end of file because
-for e2fsck it is impossible to distinguish them from a case of corrupted
-file size / extent tree and so it complains like:
+Add a check to ensure there is indeed an EC device tree entry before
+adding the cros-usbpd-notify device. This covers configs where both
+CONFIG_ACPI and CONFIG_OF are defined, but the EC device is defined
+using device tree and not in ACPI.
 
-Inode 12, i_size is 147456, should be 163840.  Fix? no
-
-Code in ext4_ext_convert_to_initialized() and
-ext4_split_convert_extents() try to make sure it does not create
-initialized extents beyond inode size however they check against
-inode->i_size which is wrong. They should instead check against
-EXT4_I(inode)->i_disksize which is the current inode size on disk.
-That's what e2fsck is going to see in case of crash before all dirty
-data is written. This bug manifests as generic/456 test failure (with
-recent enough fstests where fsx got fixed to properly pass
-FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
-mount option.
-
-CC: stable@vger.kernel.org
-Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20200331105016.8674-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4602dce0361e ("mfd: cros_ec: Add cros-usbpd-notify subdevice")
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/extents.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mfd/cros_ec_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3446,8 +3446,8 @@ static int ext4_ext_convert_to_initializ
- 		(unsigned long long)map->m_lblk, map_len);
- 
- 	sbi = EXT4_SB(inode->i_sb);
--	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
--		inode->i_sb->s_blocksize_bits;
-+	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-+			>> inode->i_sb->s_blocksize_bits;
- 	if (eof_block < map->m_lblk + map_len)
- 		eof_block = map->m_lblk + map_len;
- 
-@@ -3702,8 +3702,8 @@ static int ext4_split_convert_extents(ha
- 		  __func__, inode->i_ino,
- 		  (unsigned long long)map->m_lblk, map->m_len);
- 
--	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
--		inode->i_sb->s_blocksize_bits;
-+	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-+			>> inode->i_sb->s_blocksize_bits;
- 	if (eof_block < map->m_lblk + map->m_len)
- 		eof_block = map->m_lblk + map->m_len;
- 	/*
+diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+index 39e6116950536..32c2b912b58b2 100644
+--- a/drivers/mfd/cros_ec_dev.c
++++ b/drivers/mfd/cros_ec_dev.c
+@@ -211,7 +211,7 @@ static int ec_device_probe(struct platform_device *pdev)
+ 	 * explicitly added on platforms that don't have the PD notifier ACPI
+ 	 * device entry defined.
+ 	 */
+-	if (IS_ENABLED(CONFIG_OF)) {
++	if (IS_ENABLED(CONFIG_OF) && ec->ec_dev->dev->of_node) {
+ 		if (cros_ec_check_features(ec, EC_FEATURE_USB_PD)) {
+ 			retval = mfd_add_hotplug_devices(ec->dev,
+ 					cros_usbpd_notify_cells,
+-- 
+2.20.1
+
 
 
