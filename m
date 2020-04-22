@@ -2,249 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD20D1B4FD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EA11B4FD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgDVWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S1726689AbgDVWFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgDVWFF (ORCPT
+        with ESMTP id S1726421AbgDVWFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:05:05 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABDDC03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:05:01 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id bc2so3040536plb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ccAncsvLs1Shxdnx0s2rhoVdoaZEUZXVPRbZhF6Qp9w=;
-        b=K1iHYrJ3sczYEZpWiRx0KO03qtljW5ykTqGPUOkrKzgP81ORPGvJJXIY6EJsNUll6j
-         i0QlrxudZhOUMH3CBDlnmlIJ8ePleSN27H+v0JbwEzH+sCCrdrmfN+WMAonr16sAzzcd
-         kZ0/sVQSf93tHeQ5lO9/xN8w4e0udZtL3033DnBPqnwfQ7CRzCHiSG0X4Xn9NPvd58jh
-         0zbp4QPMe1FFGHtwYukX23rZK4/EI5LM48h6AFy+pVtolB+5o/MOj4ghBz+AOU/YOqfy
-         jUumpKdxx1WS/I0/8d12XLcRsb1jUdDRR//liGNnd0ehtD1DR4tL8xykvVAfwlO5Exge
-         nOgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ccAncsvLs1Shxdnx0s2rhoVdoaZEUZXVPRbZhF6Qp9w=;
-        b=GirR4DdUpaQXx9mhlnDfY7HJmVDn4XR1F1EYlKrdnXSjYQqUFPRdmkS/Eu3Aa9hlM2
-         Y+p4uIlbwVd23LWnN+Uyid7xq92A5ifhlGAiiv+cLr6BR6ZUbx6WpQxvjl1CAn1kNBL7
-         B/zfDPlpjA2JNqPFD4cdLvERw50uabbNtB1VC26wBB8E8k1iRuyM39tw7z3S9vSUdkvE
-         +3UwXZFjnF6SiNWYhcVwsme68JWP7aJ2jXA1dDj/9NOTZ5aBSfQjTVAOHjhQ5WU+rRwN
-         oC0GTNBzsd6RuR+SVOUUI8vC67sMD7xwFVzTeBhhgHMe5VnIoNaI3V3EDLaEA00a+XWy
-         YOwA==
-X-Gm-Message-State: AGi0PuYAw+ACgcy6fgjBpFn9r2LRlE46SUEnviBo0dEOzEMWUbb7n5/J
-        OEVizledyJsAe8HTi9B6udY/yL24KfpU
-X-Google-Smtp-Source: APiQypK5pedQFtw9mxUk8NaEPKRidbrbFzJc8Ri8D7P0nUM14OJHTmE4EiHWmn0wNB5v/9X29yC6LZa8pHPx
-X-Received: by 2002:a17:90a:9504:: with SMTP id t4mr902919pjo.21.1587593100740;
- Wed, 22 Apr 2020 15:05:00 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:04:30 -0700
-In-Reply-To: <20200422220430.254014-1-irogers@google.com>
-Message-Id: <20200422220430.254014-12-irogers@google.com>
-Mime-Version: 1.0
-References: <20200422220430.254014-1-irogers@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v2 11/11] perf test: add expr test for pmu metrics
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 22 Apr 2020 18:05:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1F4C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:05:18 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F0DC10034799E0EEF8349F9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:c100:3479:9e0e:ef83:49f9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0981E1EC0D66;
+        Thu, 23 Apr 2020 00:05:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1587593117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hR0OWELozgYes+SCcKL8kMuliprtW69y8+TArTclptg=;
+        b=ocFtZn2S71ijNkLHoqiEKRfBm5aETIjGgGqV/UDhlEZsZqRjMPyRrtJK0/4k7EM1wF1kSW
+        bai8q/nqMTySOcG0tcjjSQA268Rujl/3FaJxQCVj0kbZ5A/FheI+SfJk3CHwVcEKqBeADO
+        74SMW5n0nwn19UBC2I6xG2PDAADAa2A=
+Date:   Thu, 23 Apr 2020 00:05:12 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: AMD boot woe due to "x86/mm: Cleanup pgprot_4k_2_large() and
+ pgprot_large_2_4k()"
+Message-ID: <20200422220512.GK26846@zn.tnic>
+References: <20200422214751.GJ26846@zn.tnic>
+ <462564C5-1F0F-4635-AAB8-7629A6379425@lca.pw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <462564C5-1F0F-4635-AAB8-7629A6379425@lca.pw>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic floating point number test.
-Verify that all pmu metrics, for the current architecture, parse.
+On Wed, Apr 22, 2020 at 05:57:09PM -0400, Qian Cai wrote:
+> I thought Christ is going to send some minor updates anyway, so it may
+> be better for him to include this one together? Otherwise, I am fine to
+> send this one standalone.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/builtin-test.c |  5 ++
- tools/perf/tests/expr.c         | 96 ++++++++++++++++++++++++++++++++-
- tools/perf/tests/tests.h        |  2 +
- 3 files changed, 102 insertions(+), 1 deletion(-)
+You mean Christoph.
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index b6322eb0f423..28d547951f6b 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -63,6 +63,11 @@ static struct test generic_tests[] = {
- 	{
- 		.desc = "Simple expression parser",
- 		.func = test__expr,
-+		.subtest = {
-+			.get_nr		= test__expr_subtest_get_nr,
-+			.get_desc	= test__expr_subtest_get_desc,
-+		},
-+
- 	},
- 	{
- 		.desc = "PERF_RECORD_* events & perf_sample fields",
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index ea10fc4412c4..35af232eb01d 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -1,9 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include "pmu-events/pmu-events.h"
- #include "util/debug.h"
- #include "util/expr.h"
- #include "tests.h"
- #include <stdlib.h>
- #include <string.h>
-+#include <linux/kernel.h>
- #include <linux/zalloc.h>
- 
- static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
-@@ -16,7 +18,7 @@ static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
- 	return 0;
- }
- 
--int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
-+static int parse_tests(void)
- {
- 	const char *p;
- 	const char **other;
-@@ -39,6 +41,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 	ret |= test(&ctx, "min(1,2) + 1", 2);
- 	ret |= test(&ctx, "max(1,2) + 1", 3);
- 	ret |= test(&ctx, "1+1 if 3*4 else 0", 2);
-+	ret |= test(&ctx, "1.1 + 2.1", 3.2);
- 
- 	if (ret)
- 		return ret;
-@@ -65,3 +68,94 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 
- 	return 0;
- }
-+
-+static int pmu_tests(void)
-+{
-+	struct pmu_events_map *map;
-+	struct pmu_event *pe;
-+	int i, j, k;
-+	const char **ids;
-+	int idnum;
-+	int ret = 0;
-+	struct expr_parse_ctx ctx;
-+	double result;
-+
-+	i = 0;
-+	for (;;) {
-+		map = &pmu_events_map[i++];
-+		if (!map->table) {
-+			map = NULL;
-+			break;
-+		}
-+		j = 0;
-+		for (;;) {
-+			pe = &map->table[j++];
-+			if (!pe->name && !pe->metric_group && !pe->metric_name)
-+				break;
-+			if (!pe->metric_expr)
-+				continue;
-+			if (expr__find_other(pe->metric_expr, NULL,
-+						&ids, &idnum) < 0) {
-+				pr_debug("Parse other failed for map %s %s %s\n",
-+					map->cpuid, map->version, map->type);
-+				pr_debug("On metric %s\n", pe->metric_name);
-+				pr_debug("On expression %s\n", pe->metric_expr);
-+				ret++;
-+				continue;
-+			}
-+			expr__ctx_init(&ctx);
-+			/*
-+			 * Add all ids with a made up value. The value may
-+			 * trigger divide by zero when subtracted and so try to
-+			 * make them unique.
-+			 */
-+			for (k = 0; k < idnum; k++)
-+				expr__add_id(&ctx, ids[k], k + 1);
-+
-+			if (expr__parse(&result, &ctx, pe->metric_expr)) {
-+				pr_debug("Parse failed for map %s %s %s\n",
-+					map->cpuid, map->version, map->type);
-+				pr_debug("On metric %s\n", pe->metric_name);
-+				pr_debug("On expression %s\n", pe->metric_expr);
-+				ret++;
-+			}
-+			for (k = 0; k < idnum; k++)
-+				zfree(&ids[k]);
-+			free(ids);
-+		}
-+	}
-+	return ret;
-+}
-+
-+static const struct {
-+	int (*func)(void);
-+	const char *desc;
-+} expr_testcase_table[] = {
-+	{
-+		.func = parse_tests,
-+		.desc = "Basic expressions",
-+	},
-+	{
-+		.func = pmu_tests,
-+		.desc = "Parsing of pmu metrics",
-+	},
-+};
-+
-+const char *test__expr_subtest_get_desc(int i)
-+{
-+	if (i < 0 || i >= (int)ARRAY_SIZE(expr_testcase_table))
-+		return NULL;
-+	return expr_testcase_table[i].desc;
-+}
-+
-+int test__expr_subtest_get_nr(void)
-+{
-+	return (int)ARRAY_SIZE(expr_testcase_table);
-+}
-+
-+int test__expr(struct test *test __maybe_unused, int i __maybe_unused)
-+{
-+	if (i < 0 || i >= (int)ARRAY_SIZE(expr_testcase_table))
-+		return TEST_FAIL;
-+	return expr_testcase_table[i].func();
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 61a1ab032080..315d64ffd14c 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -72,6 +72,8 @@ int test__keep_tracking(struct test *test, int subtest);
- int test__parse_no_sample_id_all(struct test *test, int subtest);
- int test__dwarf_unwind(struct test *test, int subtest);
- int test__expr(struct test *test, int subtest);
-+const char *test__expr_subtest_get_desc(int subtest);
-+int test__expr_subtest_get_nr(void);
- int test__hists_filter(struct test *test, int subtest);
- int test__mmap_thread_lookup(struct test *test, int subtest);
- int test__thread_maps_share(struct test *test, int subtest);
+Ok, I'll let you guys hash it out.
+
+Thx.
+
 -- 
-2.26.2.303.gf8c07b1a785-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
