@@ -2,146 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473661B42F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AD31B4302
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgDVLSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:18:22 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52488 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgDVLSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:18:21 -0400
-IronPort-SDR: FgWiHvAOJHLpkGbni7gqeEFkbkE1Ui8NlDlyFMNMbz925qYByMqIvG5OgQUYheD+xn/IZLyvrR
- woo3hef3GJMg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 04:18:18 -0700
-IronPort-SDR: yjDUmLnrAp3nPM++rWGbhbiP+fk2ZZXzCpYbitG0voHooB4HcwejvvPP1Xn+E70WMzCRqlrpwA
- VCXcjkYUFh6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,414,1580803200"; 
-   d="scan'208";a="290800598"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Apr 2020 04:18:14 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jRDOP-0004yW-Jf; Wed, 22 Apr 2020 19:18:13 +0800
-Date:   Wed, 22 Apr 2020 19:17:34 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        bjorn.andersson@linaro.org, Arnd Bergmann <arnd@arndb.de>
-Cc:     kbuild-all@lists.01.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH v3 6/7] misc: bcm-vk: add Broadcom VK driver
-Message-ID: <202004221945.LY6x0DQD%lkp@intel.com>
-References: <20200420162809.17529-7-scott.branden@broadcom.com>
+        id S1726733AbgDVLT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725787AbgDVLTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 07:19:23 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293BBC03C1A8;
+        Wed, 22 Apr 2020 04:19:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id t63so1862460wmt.3;
+        Wed, 22 Apr 2020 04:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7/BLLLzInoLEb37soX3+1vL3RtGn9XG8RZCsed4AJ9c=;
+        b=oUTgC1unxTNGrkAobClJd3vMl93zNO/UG9sew82P03MXYQ4rmYgpS/jNEsC8/IjsuO
+         LkKguB7oNb4bGuTbzHBllpAhxn3+63mBROzFkDPFBW+kT1G0tP4gyNo8cdaTDsyJdoRz
+         Rpvd0p5lsQ9Wo2H36YDdR3vsGXrekUxZwtHvwSqhcvUXvEJu8Yz1vEKg0fyKdYVV6gZB
+         0f5f8p0ivFh5QknqNKoQEwQ145mL54XRBY7vcwehMcHXs5cSknvRVZ8rQGqE9VH2wfaT
+         Du8MAd7Kj49xguqMZ+USRzoE+6ptCYGK7N3NMIcD2I1f/nvJRe9sY8uISbgsCmfhyDdH
+         wm2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7/BLLLzInoLEb37soX3+1vL3RtGn9XG8RZCsed4AJ9c=;
+        b=sfn+g8bbG+WwBYkYjJdF6AELohAr29ysotPjE5JFPnK8s9z9o46NEFsWYDMyKYFMAt
+         3fWsrbjHrhdpgTAFWy49gyCcHwWBsojFo65/kh8RqRLSVNIWTS1EwhVyh/ofZVx0K7rY
+         tNFj//mlkbQg8a/jPdf3BFag+ED4XOrZ1GvCARU72OJS0Fb0YD5WOPcS3AyxkKD+ZFCr
+         ZKJbeJo6LjK3e/L+4NBnWXp8Zc21L9Wq1LIIJZo4+c/0Wg+ebZkyfHjBSVTgof33YuJB
+         /yp8q+zuMs4dgzU/ERUWfv2YvnKmgldJWFJi2Eum1ftWhxLTy+/CZ701lUhYSZxJDs6I
+         LATw==
+X-Gm-Message-State: AGi0PuagiZsUuCCXFjiuTWejvi+dCZp/7O+aFd1mv/5yBxRcHxI0R/Bi
+        addPnxNY3vF+WZUMDO8/4kmLf1WtiOIaGFrZHq0=
+X-Google-Smtp-Source: APiQypIQ+Vy+uvK/1QosWrOTLYLYcq7DWz9hj//AA2zDdrxKxVawab0mF8LGoNDzB3sMob8o/y+VOvU1EptwDlX+9UE=
+X-Received: by 2002:a7b:cd04:: with SMTP id f4mr9591767wmj.3.1587554361895;
+ Wed, 22 Apr 2020 04:19:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420162809.17529-7-scott.branden@broadcom.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200422051529.30757-1-zhang.lyra@gmail.com> <CAJZ5v0ikL3avFomZVqtBhfEjeauN-5ZUm9kZwzG=Vo+Ks0AiyA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ikL3avFomZVqtBhfEjeauN-5ZUm9kZwzG=Vo+Ks0AiyA@mail.gmail.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Wed, 22 Apr 2020 19:18:45 +0800
+Message-ID: <CAAfSe-sVEEPOrq_ZzB1z59uXTfhmNh=+U_QvgaTcd4U1=9Tfvg@mail.gmail.com>
+Subject: Re: [PATCH] PM: sleep: call devfreq_suspend/resume and
+ cpufreq_suspend/resume in pairs.
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Vincent Wang <vincent.wang@unisoc.com>,
+        Samer Xie <samer.xie@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Scott,
+Hi Rafael,
 
-I love your patch! Perhaps something to improve:
+(Behalf Of Vincent Wang)
 
-[auto build test WARNING on driver-core/driver-core-testing]
-[also build test WARNING on next-20200421]
-[cannot apply to char-misc/char-misc-testing kselftest/next linus/master v5.7-rc2]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+Thanks for your comments, please see my answers below.
 
-url:    https://github.com/0day-ci/linux/commits/Scott-Branden/firmware-add-partial-read-support-in-request_firmware_into_buf/20200422-114528
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git 55623260bb33e2ab849af76edf2253bc04cb241f
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-191-gc51a0382-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+On Wed, 22 Apr 2020 at 17:05, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, Apr 22, 2020 at 7:15 AM Chunyan Zhang <zhang.lyra@gmail.com> wrot=
+e:
+> >
+> > From: Vincent Wang <vincent.wang@unisoc.com>
+> >
+> > If dpm_prepare() fails in dpm_suspend_start(), dpm_suspend() can't be
+> > called.
+>
+> That's correct.
+>
+> > And then, devfreq_suspend() and cpufreq_suspend() will not be
+> > called in the suspend flow.
+>
+> Right.
+>
+> > But in the resiume flow, devfreq_resume() and cpufreq_resume() will
+> > be called.
+>
+> Right, and they are expected to cope with the situation.
+>
+> > This patch will ensure that devfreq_suspend/devfreq_resume and
+> > cpufreq_suspend/cpufreq_resume are called in pairs.
+>
+> So why is it better to do this than to make devfreq_resume() meet the
+> expectations?
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
+Yes=EF=BC=8Cwe found an issue with cpufreq schedutil governor on kernel4.14=
+,
+and I think the issue should haven't been changed on the latest
+version of kernel.
+
+In the function dpm_suspend_start(), dpm_suspend() would not be
+exceuted if return error from device_prepare() [1]. So
+cpufreq_cpufreq() will not be called, then
+cpufreq_remove_update_util_hook() will not be called either, and so
+cpufreq_update_util_data will not be NULL.
+
+In the dpm resume flow, sugov_start() will be called, in which
+sg_cpu.update_util will be set to 0.
+
+And since cpufreq_update_util_data is not NULL, data->func will not be
+set and is still NULL which actually is sg_cpu.update_util.
+
+void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+                        void (*func)(struct update_util_data *data, u64 tim=
+e,
+                                     unsigned int flags))
+{
+[...]
+        if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
+                return;
+
+        data->func =3D func;
+[...]
+}
+
+When cpufreq_update_util() is called by scheduler, there will be a
+NULL pointer issue.
 
 
-sparse warnings: (new ones prefixed by >>)
+[1] https://elixir.bootlin.com/linux/v5.7-rc1/source/drivers/base/power/mai=
+n.c#L2052
 
->> drivers/misc/bcm-vk/bcm_vk_dev.c:189:15: sparse: sparse: incorrect type in assignment (different address spaces) @@    expected struct bcm_vk_peer_log *p_ctl @@    got struct bcm_vk_peer_log *p_ctl @@
->> drivers/misc/bcm-vk/bcm_vk_dev.c:189:15: sparse:    expected struct bcm_vk_peer_log *p_ctl
->> drivers/misc/bcm-vk/bcm_vk_dev.c:189:15: sparse:    got void [noderef] <asn:2> *
->> drivers/misc/bcm-vk/bcm_vk_dev.c:685:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@    expected void const [noderef] <asn:1> *from @@    got oderef] <asn:1> *from @@
->> drivers/misc/bcm-vk/bcm_vk_dev.c:685:36: sparse:    expected void const [noderef] <asn:1> *from
->> drivers/misc/bcm-vk/bcm_vk_dev.c:685:36: sparse:    got struct vk_image *arg
-   drivers/misc/bcm-vk/bcm_vk_dev.c:780:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@    expected void const [noderef] <asn:1> *from @@    got oderef] <asn:1> *from @@
-   drivers/misc/bcm-vk/bcm_vk_dev.c:780:36: sparse:    expected void const [noderef] <asn:1> *from
->> drivers/misc/bcm-vk/bcm_vk_dev.c:780:36: sparse:    got struct vk_reset *arg
->> drivers/misc/bcm-vk/bcm_vk_dev.c:858:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@    expected struct vk_image *arg @@    got void [nstruct vk_image *arg @@
->> drivers/misc/bcm-vk/bcm_vk_dev.c:858:45: sparse:    expected struct vk_image *arg
->> drivers/misc/bcm-vk/bcm_vk_dev.c:858:45: sparse:    got void [noderef] <asn:1> *argp
->> drivers/misc/bcm-vk/bcm_vk_dev.c:862:40: sparse: sparse: incorrect type in argument 2 (different address spaces) @@    expected struct vk_reset *arg @@    got void [nstruct vk_reset *arg @@
->> drivers/misc/bcm-vk/bcm_vk_dev.c:862:40: sparse:    expected struct vk_reset *arg
-   drivers/misc/bcm-vk/bcm_vk_dev.c:862:40: sparse:    got void [noderef] <asn:1> *argp
---
->> drivers/misc/bcm-vk/bcm_vk_msg.c:507:17: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/misc/bcm-vk/bcm_vk_msg.c:707:15: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/misc/bcm-vk/bcm_vk_msg.c:715:23: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/misc/bcm-vk/bcm_vk_msg.c:871:31: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/misc/bcm-vk/bcm_vk_msg.c:899:47: sparse: sparse: cast removes address space '<asn:2>' of expression
 
-vim +189 drivers/misc/bcm-vk/bcm_vk_dev.c
-
-   180	
-   181	static void bcm_vk_dump_peer_log(struct bcm_vk *vk)
-   182	{
-   183		struct bcm_vk_peer_log log, *p_ctl;
-   184		char loc_buf[BCM_VK_PEER_LOG_LINE_MAX];
-   185		int cnt;
-   186		struct device *dev = &vk->pdev->dev;
-   187		uint data_offset;
-   188	
- > 189		p_ctl = vk->bar[BAR_2] + vk->peerlog_off;
-   190		log = *p_ctl;
-   191		/* do a rmb() to make sure log is updated */
-   192		rmb();
-   193	
-   194		dev_dbg(dev, "Peer PANIC: Size 0x%x(0x%x), [Rd Wr] = [%d %d]\n",
-   195			log.buf_size, log.mask, log.rd_idx, log.wr_idx);
-   196	
-   197		cnt = 0;
-   198		data_offset = vk->peerlog_off + sizeof(struct bcm_vk_peer_log);
-   199		while (log.rd_idx != log.wr_idx) {
-   200			loc_buf[cnt] = vkread8(vk, BAR_2, data_offset + log.rd_idx);
-   201	
-   202			if ((loc_buf[cnt] == '\0') ||
-   203			    (cnt == (BCM_VK_PEER_LOG_LINE_MAX - 1))) {
-   204				dev_err(dev, "%s", loc_buf);
-   205				cnt = 0;
-   206			} else {
-   207				cnt++;
-   208			}
-   209			log.rd_idx = (log.rd_idx + 1) & log.mask;
-   210		}
-   211		/* update rd idx at the end */
-   212		vkwrite32(vk, log.rd_idx, BAR_2, vk->peerlog_off);
-   213	}
-   214	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> > Signed-off-by: Vincent Wang <vincent.wang@unisoc.com>
+> > Signed-off-by: Samer Xie <samer.xie@unisoc.com>
+> > Signed-off-by: Chunyan Zhang <zhang.lyra@gmail.com>
+> > ---
+> >  drivers/base/power/main.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> > index fdd508a78ffd..eb3d987d43e0 100644
+> > --- a/drivers/base/power/main.c
+> > +++ b/drivers/base/power/main.c
+> > @@ -1866,9 +1866,6 @@ int dpm_suspend(pm_message_t state)
+> >         trace_suspend_resume(TPS("dpm_suspend"), state.event, true);
+> >         might_sleep();
+> >
+> > -       devfreq_suspend();
+> > -       cpufreq_suspend();
+> > -
+> >         mutex_lock(&dpm_list_mtx);
+> >         pm_transition =3D state;
+> >         async_error =3D 0;
+> > @@ -1988,6 +1985,9 @@ int dpm_prepare(pm_message_t state)
+> >         trace_suspend_resume(TPS("dpm_prepare"), state.event, true);
+> >         might_sleep();
+> >
+> > +       devfreq_suspend();
+> > +       cpufreq_suspend();
+> > +
+> >         /*
+> >          * Give a chance for the known devices to complete their probes=
+, before
+> >          * disable probing of devices. This sync point is important at =
+least
+> > --
+> > 2.20.1
+> >
