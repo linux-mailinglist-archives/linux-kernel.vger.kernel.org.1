@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D472E1B3EF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B908C1B3EF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730822AbgDVKca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
+        id S1731149AbgDVKcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730418AbgDVKcX (ORCPT
+        with ESMTP id S1731119AbgDVKcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:32:23 -0400
+        Wed, 22 Apr 2020 06:32:25 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B26AC03C1A8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:23 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u127so1744870wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71A7C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:24 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id h2so1706219wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9qT5N0HlpnMDUnkbn37SG8bW5Viuyft6HaRlW5BeEgQ=;
-        b=XmuiqSb9/cQF4/SANulGpjtbhrjbh8Q94FBkXpSdjw51E1WZM0VyVhxx4/mE2uMhRO
-         vSVkEv+fZ6Lf19/JdPiC+/vvvpnTDpvD8XllVwot9XoYgOoQUJZ9jhmhNAVU5ZWJdWP+
-         ZMupUuEp+Df3z7h0T7nbDXR0bEJgq9v55KJwQD0lPaxwP99Ry1wz89+nfGaGRhaIzS6C
-         RlFjIYn3zfllw/zPUYEwZtU9devS17kQLL0Si12Jo1Hkc/YPSLnW/rRl4UMM/z3I3mhN
-         EU1bYEDEL5oxpYuYjC12g8yA77yqvFzVE1KWIab1WnXyhw2Bp4Vp2IXogLMiix8rmeqc
-         qUpw==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lNc4we7ESJBS0HuNbhflGP7Zf4Z9nmjjGCh1DH2rdq4=;
+        b=dUouRE0SOcGAsrk1VtKYHClkJ6iKHArdDMWWgQByxLq8/UgJN3/74xwmAa+PPp/h1K
+         dDjn8lN5/zQrsZSHbUoVx9SAQ/Zg4Ym873ZWn+Xdob6XeEWl1/7Mak8IPfiA50eOUQCf
+         fXeLJeMHutX6eIdDWeARKVWfq3LOK2xtJN4olLubWb7FGsYxz3BVlfyzYJdM4zVbEZ4E
+         TSP/aSp4X6pMSkwhoSR2M5SSn1xWqKhXoSlWO41RpO7tA7QKlsalmRVkdpWAlMUHXkj6
+         cPSPNIIhcz0KIhpZaKxHRqzH0SvyTDn4YvusuiqyMzuub5cYeJu1VmJIq+MPhLx5rhwB
+         tOTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=9qT5N0HlpnMDUnkbn37SG8bW5Viuyft6HaRlW5BeEgQ=;
-        b=H174Tkq3pfBAe6TwRwp8QI9dt/D8dNGzH/BbVhaXZH/pkBOZaVrv1IlEkMlVkjMYPj
-         rCT80ln/c9EX1RyvEZdYE61khTktCm4TW0fPMbw/cwl2B83/BDN+SwezGCtci5ncz3Yj
-         fEVLWf6vDHQQKlPBv1FNfjLSByCp1QmZcLh8gA2L+/0vwLt2qClCCjb+67Kv+F2dZ58u
-         9TZqbRmQyk/G+NxKsvUS/gR1r0nJ6gYI0t4pNjxwSGsqqzgw7pjkKcjINIWTJLqcftWt
-         vDa6DOlyMhYprJ2KpxQFfNxzXQtFzxPH0/QNcq8Fhjb2XTDn6RNWY8ogjSrLcMEGq6JO
-         MM1w==
-X-Gm-Message-State: AGi0Pubaqdmw3+v3iknJa0QmLRN+s9aDckYAWSmiBqE4mt37uugLYlOo
-        lupGS3T/eX8zz8wncepCb/cuvRF/
-X-Google-Smtp-Source: APiQypKUk8Qp68qCr4yHUuT4laYRQ7MNpDzqaq7wsmTZtHVCcndmp74Bao26jD12AARePKjR3Ndevw==
-X-Received: by 2002:a1c:7c18:: with SMTP id x24mr9161286wmc.146.1587551541852;
-        Wed, 22 Apr 2020 03:32:21 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=lNc4we7ESJBS0HuNbhflGP7Zf4Z9nmjjGCh1DH2rdq4=;
+        b=a3wE+y9YBucUKa37EsFxIs3+bcFMB2MXBIuT2uBRW2iYmn0HZ5rjCl3Y14iuzDeCTe
+         wcAX44un4D1S8S7lFXQvRg+uqdLi+26P4c+MVGkZM2zki2ezLq1eu4GOJwTey9Xe+W4r
+         xs/sVKKywsVTkCK60Rcu/I+A3JXpS288XByYkv9doN1wszg7a06yebP6iaQD8iCYD9hK
+         6UFrvYMmQh7SaWcR3ykdgljds5eH6wjBANctR2s2Snqj+LH5/jPH55ig3vcCGGz4aOiv
+         fXgSI5DfcU5Lu1CBW/7BMDP1eDtQA2CEBdJOJ61tU/VYqJUSaXfsKkcBrK4XMo9N/1lN
+         LTgA==
+X-Gm-Message-State: AGi0PubUyg1hHa/wTRM+ZmE2WxWuuJmD4jvHS53A0vh+Gvcd/gXm1y7r
+        wCRnMXd5xVUB6n2lxTYAzU8yTnsO
+X-Google-Smtp-Source: APiQypLGHJtudSOWeWVg0GgdHoVq9ESiVrgJ5vVvqIDjCppR1LhZxC73OryVAgYZDbYLMOcTG2DVLQ==
+X-Received: by 2002:a1c:ba09:: with SMTP id k9mr9607860wmf.176.1587551543071;
+        Wed, 22 Apr 2020 03:32:23 -0700 (PDT)
 Received: from localhost.localdomain (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id s12sm6891603wmc.7.2020.04.22.03.32.20
+        by smtp.gmail.com with ESMTPSA id s12sm6891603wmc.7.2020.04.22.03.32.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 03:32:21 -0700 (PDT)
+        Wed, 22 Apr 2020 03:32:22 -0700 (PDT)
 From:   Ingo Molnar <mingo@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -56,10 +56,12 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Borislav Petkov <bp@alien8.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 0/3] objtool: Constify most of the instruction decoding loop
-Date:   Wed, 22 Apr 2020 12:32:02 +0200
-Message-Id: <20200422103205.61900-1-mingo@kernel.org>
+Subject: [PATCH 1/3] objtool: Constify 'struct elf *' parameters
+Date:   Wed, 22 Apr 2020 12:32:03 +0200
+Message-Id: <20200422103205.61900-2-mingo@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200422103205.61900-1-mingo@kernel.org>
+References: <20200422103205.61900-1-mingo@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,36 +69,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Constify some of the decoding primitives, to ascertain and enforce that
-arch_decode_instructions() is a read-only consumer of the various ELF data
-structures. (Which it is.)
+In preparation to parallelize certain parts of objtool, map out which uses
+of various data structures are read-only vs. read-write.
 
-This is in preparation to parallelize the most expensive parts of objtool,
-but makes sense independently as well.
+As a first step constify 'struct elf' pointer passing, most of the secondary
+uses of it in find_symbol_*() methods are read-only.
 
-These bits can also be found at:
+Also, while at it, better group the 'struct elf' handling methods in elf.h.
 
-  git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git WIP.core/objtool
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ tools/objtool/elf.c | 10 +++++-----
+ tools/objtool/elf.h | 20 ++++++++++----------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-(Subject to rebasing.)
-
-Thanks,
-
-     Ingo
-
-====
-Ingo Molnar (3):
-  objtool: Constify 'struct elf *' parameters
-  objtool: Rename elf_read() to elf_open_read()
-  objtool: Constify arch_decode_instruction()
-
- tools/objtool/arch.h            |  2 +-
- tools/objtool/arch/x86/decode.c |  6 +++---
- tools/objtool/check.c           |  2 +-
- tools/objtool/elf.c             | 12 ++++++------
- tools/objtool/elf.h             | 22 +++++++++++-----------
- 5 files changed, 22 insertions(+), 22 deletions(-)
-
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index f26bb3e8db7b..fab5534c3365 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -127,7 +127,7 @@ static int symbol_by_offset(const void *key, const struct rb_node *node)
+ 	return 0;
+ }
+ 
+-struct section *find_section_by_name(struct elf *elf, const char *name)
++struct section *find_section_by_name(const struct elf *elf, const char *name)
+ {
+ 	struct section *sec;
+ 
+@@ -217,7 +217,7 @@ struct symbol *find_func_containing(struct section *sec, unsigned long offset)
+ 	return NULL;
+ }
+ 
+-struct symbol *find_symbol_by_name(struct elf *elf, const char *name)
++struct symbol *find_symbol_by_name(const struct elf *elf, const char *name)
+ {
+ 	struct symbol *sym;
+ 
+@@ -228,7 +228,7 @@ struct symbol *find_symbol_by_name(struct elf *elf, const char *name)
+ 	return NULL;
+ }
+ 
+-struct rela *find_rela_by_dest_range(struct elf *elf, struct section *sec,
++struct rela *find_rela_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len)
+ {
+ 	struct rela *rela, *r = NULL;
+@@ -257,7 +257,7 @@ struct rela *find_rela_by_dest_range(struct elf *elf, struct section *sec,
+ 	return NULL;
+ }
+ 
+-struct rela *find_rela_by_dest(struct elf *elf, struct section *sec, unsigned long offset)
++struct rela *find_rela_by_dest(const struct elf *elf, struct section *sec, unsigned long offset)
+ {
+ 	return find_rela_by_dest_range(elf, sec, offset, 1);
+ }
+@@ -769,7 +769,7 @@ int elf_rebuild_rela_section(struct section *sec)
+ 	return 0;
+ }
+ 
+-int elf_write(struct elf *elf)
++int elf_write(const struct elf *elf)
+ {
+ 	struct section *sec;
+ 	Elf_Scn *s;
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 2811d04346c9..a55bcde9f1b1 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -114,22 +114,22 @@ static inline u32 rela_hash(struct rela *rela)
+ }
+ 
+ struct elf *elf_read(const char *name, int flags);
+-struct section *find_section_by_name(struct elf *elf, const char *name);
++struct section *elf_create_section(struct elf *elf, const char *name, size_t entsize, int nr);
++struct section *elf_create_rela_section(struct elf *elf, struct section *base);
++void elf_add_rela(struct elf *elf, struct rela *rela);
++int elf_write(const struct elf *elf);
++void elf_close(struct elf *elf);
++
++struct section *find_section_by_name(const struct elf *elf, const char *name);
+ struct symbol *find_func_by_offset(struct section *sec, unsigned long offset);
+ struct symbol *find_symbol_by_offset(struct section *sec, unsigned long offset);
+-struct symbol *find_symbol_by_name(struct elf *elf, const char *name);
++struct symbol *find_symbol_by_name(const struct elf *elf, const char *name);
+ struct symbol *find_symbol_containing(struct section *sec, unsigned long offset);
+-struct rela *find_rela_by_dest(struct elf *elf, struct section *sec, unsigned long offset);
+-struct rela *find_rela_by_dest_range(struct elf *elf, struct section *sec,
++struct rela *find_rela_by_dest(const struct elf *elf, struct section *sec, unsigned long offset);
++struct rela *find_rela_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+-struct section *elf_create_section(struct elf *elf, const char *name, size_t
+-				   entsize, int nr);
+-struct section *elf_create_rela_section(struct elf *elf, struct section *base);
+ int elf_rebuild_rela_section(struct section *sec);
+-int elf_write(struct elf *elf);
+-void elf_close(struct elf *elf);
+-void elf_add_rela(struct elf *elf, struct rela *rela);
+ 
+ #define for_each_sec(file, sec)						\
+ 	list_for_each_entry(sec, &file->elf->sections, list)
 -- 
 2.20.1
 
