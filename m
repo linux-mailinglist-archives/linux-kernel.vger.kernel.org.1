@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1CC1B4215
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC91A1B3BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgDVK5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55752 "EHLO mail.kernel.org"
+        id S1726591AbgDVKAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726858AbgDVKE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:57 -0400
+        id S1726066AbgDVKAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 863562077D;
-        Wed, 22 Apr 2020 10:04:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49E4520776;
+        Wed, 22 Apr 2020 10:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549897;
-        bh=PkqY5os02qCbo/HNGnzajYh6FNoNP4kntucX+B0/Sm0=;
+        s=default; t=1587549616;
+        bh=RXGWWDNqVU5w/HtdHRoEklIc5A5zJOR7dLQpA+nJpVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sRaLGGyqhY99cIdvjF2TEfU2Is97iFFp+gEcCSiUiW/hyg4mvh76V2495TqDX5PJa
-         h1tmXf3lgRQqygIHqs6cKPNYfbXA92t1SGPRn/eSQO1wTo6EKs2CE1bAeZR8VkqhMh
-         KH6vqLpQFXD7N+acOV16CtRCnLMTs3kJtXjNaGZ8=
+        b=AKNyEYwdqj8yyhMZY7VG3qQvmCqdVaNU/Ssj+uk2NmXlG9hbV6NV4hV0ahauYA37z
+         j4siQTOi+utCbY7teu4gCWdrg0qvMD+6lvDX64bgNesTnBWe1MWzknw2UAbi9PZkiD
+         hp2LhQnye/aSW83fkI8uEsZ1kvpveTLuahy15RzI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 4.9 049/125] rtc: omap: Use define directive for PIN_CONFIG_ACTIVE_HIGH
+        Vineeth Remanan Pillai <vineethp@amazon.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 036/100] xen-netfront: Rework the fix for Rx stall during OOM and network stress
 Date:   Wed, 22 Apr 2020 11:56:06 +0200
-Message-Id: <20200422095041.465091661@linuxfoundation.org>
+Message-Id: <20200422095029.087288097@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Vineeth Remanan Pillai <vineethp@amazon.com>
 
-commit c50156526a2f7176b50134e3e5fb108ba09791b2 upstream.
+commit 538d92912d3190a1dd809233a0d57277459f37b2 upstream.
 
-Clang warns when one enumerated type is implicitly converted to another:
+The commit 90c311b0eeea ("xen-netfront: Fix Rx stall during network
+stress and OOM") caused the refill timer to be triggerred almost on
+all invocations of xennet_alloc_rx_buffers for certain workloads.
+This reworks the fix by reverting to the old behaviour and taking into
+consideration the skb allocation failure. Refill timer is now triggered
+on insufficient requests or skb allocation failure.
 
-drivers/rtc/rtc-omap.c:574:21: warning: implicit conversion from
-enumeration type 'enum rtc_pin_config_param' to different enumeration
-type 'enum pin_config_param' [-Wenum-conversion]
-        {"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
-        ~                  ^~~~~~~~~~~~~~~~~~~~~~
-drivers/rtc/rtc-omap.c:579:12: warning: implicit conversion from
-enumeration type 'enum rtc_pin_config_param' to different enumeration
-type 'enum pin_config_param' [-Wenum-conversion]
-        PCONFDUMP(PIN_CONFIG_ACTIVE_HIGH, "input active high", NULL, false),
-        ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/pinctrl/pinconf-generic.h:163:11: note: expanded from
-macro 'PCONFDUMP'
-        .param = a, .display = b, .format = c, .has_arg = d     \
-                 ^
-2 warnings generated.
-
-It is expected that pinctrl drivers can extend pin_config_param because
-of the gap between PIN_CONFIG_END and PIN_CONFIG_MAX so this conversion
-isn't an issue. Most drivers that take advantage of this define the
-PIN_CONFIG variables as constants, rather than enumerated values. Do the
-same thing here so that Clang no longer warns.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/144
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Vineeth Remanan Pillai <vineethp@amazon.com>
+Fixes: 90c311b0eeea (xen-netfront: Fix Rx stall during network stress and OOM)
+Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/rtc/rtc-omap.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/xen-netfront.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/drivers/rtc/rtc-omap.c
-+++ b/drivers/rtc/rtc-omap.c
-@@ -559,9 +559,7 @@ static const struct pinctrl_ops rtc_pinc
- 	.dt_free_map = pinconf_generic_dt_free_map,
- };
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -283,6 +283,7 @@ static void xennet_alloc_rx_buffers(stru
+ {
+ 	RING_IDX req_prod = queue->rx.req_prod_pvt;
+ 	int notify;
++	int err = 0;
  
--enum rtc_pin_config_param {
--	PIN_CONFIG_ACTIVE_HIGH = PIN_CONFIG_END + 1,
--};
-+#define PIN_CONFIG_ACTIVE_HIGH		(PIN_CONFIG_END + 1)
+ 	if (unlikely(!netif_carrier_ok(queue->info->netdev)))
+ 		return;
+@@ -297,8 +298,10 @@ static void xennet_alloc_rx_buffers(stru
+ 		struct xen_netif_rx_request *req;
  
- static const struct pinconf_generic_params rtc_params[] = {
- 	{"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
+ 		skb = xennet_alloc_one_rx_buffer(queue);
+-		if (!skb)
++		if (!skb) {
++			err = -ENOMEM;
+ 			break;
++		}
+ 
+ 		id = xennet_rxidx(req_prod);
+ 
+@@ -322,8 +325,13 @@ static void xennet_alloc_rx_buffers(stru
+ 
+ 	queue->rx.req_prod_pvt = req_prod;
+ 
+-	/* Not enough requests? Try again later. */
+-	if (req_prod - queue->rx.sring->req_prod < NET_RX_SLOTS_MIN) {
++	/* Try again later if there are not enough requests or skb allocation
++	 * failed.
++	 * Enough requests is quantified as the sum of newly created slots and
++	 * the unconsumed slots at the backend.
++	 */
++	if (req_prod - queue->rx.rsp_cons < NET_RX_SLOTS_MIN ||
++	    unlikely(err)) {
+ 		mod_timer(&queue->rx_refill_timer, jiffies + (HZ/10));
+ 		return;
+ 	}
 
 
