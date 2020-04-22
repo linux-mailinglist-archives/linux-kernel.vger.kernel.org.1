@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB7A1B4090
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE801B427F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731920AbgDVKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:46:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
+        id S1728653AbgDVLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729785AbgDVKQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:53 -0400
+        id S1726712AbgDVKBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:01:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D02062076E;
-        Wed, 22 Apr 2020 10:16:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC46120735;
+        Wed, 22 Apr 2020 10:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550613;
-        bh=CZgZG+rKEREoHAtxAe5bzj7Vxs8nuKcRagnJnrkCH1c=;
+        s=default; t=1587549660;
+        bh=TY0BqX0TTkmJeyM9D+KUlXpLmjAF8PLqVtTtr9U70SM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7VKlygtfp7BoEfObNaX3dY/mwZIJCzyqlM8LE/bZnjM6R4eXqJ4B8fC4SdJ1Fcfq
-         nvTumntxGkrSb909LUlkeZwogOTDbk2uLQODax+cmLzzZdN4B4Q4VFQR5WJ6n7eZkz
-         fGPYUsOUX1KT6KD3izPd8JAhPJ0xMoEv0xz+rhJc=
+        b=awv+qL8wRL7bdll5Ez+XEE6HqxgEiPliLx2OEEOSBWR0zugttl7uQZNaWyx12rbKc
+         c+BMQbe4l1N18YwY+LZlbisjAhYW2zgZGkQqy0Y/Muls4qvMrUcDszsT/iY+/zsXbk
+         o1LbcFjTVQxl2yxTie2S6OUUa1k8+3imCO0ZGOZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.4 022/118] x86/Hyper-V: Report crash register data when sysctl_record_panic_msg is not set
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Scott Wood <oss@buserror.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 053/100] powerpc/fsl_booke: Avoid creating duplicate tlb1 entry
 Date:   Wed, 22 Apr 2020 11:56:23 +0200
-Message-Id: <20200422095035.366179385@linuxfoundation.org>
+Message-Id: <20200422095032.584360789@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-commit 040026df7088c56ccbad28f7042308f67bde63df upstream.
+[ Upstream commit aa4113340ae6c2811e046f08c2bc21011d20a072 ]
 
-When sysctl_record_panic_msg is not set, the panic will
-not be reported to Hyper-V via hyperv_report_panic_msg().
-So the crash should be reported via hyperv_report_panic().
+In the current implementation, the call to loadcam_multi() is wrapped
+between switch_to_as1() and restore_to_as0() calls so, when it tries
+to create its own temporary AS=1 TLB1 entry, it ends up duplicating
+the existing one created by switch_to_as1(). Add a check to skip
+creating the temporary entry if already running in AS=1.
 
-Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Link: https://lore.kernel.org/r/20200406155331.2105-6-Tianyu.Lan@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: d9e1831a4202 ("powerpc/85xx: Load all early TLB entries at once")
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Scott Wood <oss@buserror.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200123111914.2565-1-laurentiu.tudor@nxp.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hv/vmbus_drv.c |   23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ arch/powerpc/mm/tlb_nohash_low.S | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -48,6 +48,18 @@ static int hyperv_cpuhp_online;
- 
- static void *hv_panic_page;
- 
-+/*
-+ * Boolean to control whether to report panic messages over Hyper-V.
-+ *
-+ * It can be set via /proc/sys/kernel/hyperv/record_panic_msg
-+ */
-+static int sysctl_record_panic_msg = 1;
-+
-+static int hyperv_report_reg(void)
-+{
-+	return !sysctl_record_panic_msg || !hv_panic_page;
-+}
-+
- static int hyperv_panic_event(struct notifier_block *nb, unsigned long val,
- 			      void *args)
- {
-@@ -61,7 +73,7 @@ static int hyperv_panic_event(struct not
- 	 * the notification here.
- 	 */
- 	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE
--	    && !hv_panic_page) {
-+	    && hyperv_report_reg()) {
- 		regs = current_pt_regs();
- 		hyperv_report_panic(regs, val);
- 	}
-@@ -79,7 +91,7 @@ static int hyperv_die_event(struct notif
- 	 * doing hyperv_report_panic_msg() later with kmsg data, don't do
- 	 * the notification here.
- 	 */
--	if (!hv_panic_page)
-+	if (hyperv_report_reg())
- 		hyperv_report_panic(regs, val);
- 	return NOTIFY_DONE;
- }
-@@ -1262,13 +1274,6 @@ static void vmbus_isr(void)
- }
- 
- /*
-- * Boolean to control whether to report panic messages over Hyper-V.
-- *
-- * It can be set via /proc/sys/kernel/hyperv/record_panic_msg
-- */
--static int sysctl_record_panic_msg = 1;
--
--/*
-  * Callback from kmsg_dump. Grab as much as possible from the end of the kmsg
-  * buffer and call into Hyper-V to transfer the data.
+diff --git a/arch/powerpc/mm/tlb_nohash_low.S b/arch/powerpc/mm/tlb_nohash_low.S
+index 68c477592e436..6e6a10bf3907e 100644
+--- a/arch/powerpc/mm/tlb_nohash_low.S
++++ b/arch/powerpc/mm/tlb_nohash_low.S
+@@ -400,7 +400,7 @@ _GLOBAL(set_context)
+  * extern void loadcam_entry(unsigned int index)
+  *
+  * Load TLBCAM[index] entry in to the L2 CAM MMU
+- * Must preserve r7, r8, r9, and r10
++ * Must preserve r7, r8, r9, r10 and r11
   */
+ _GLOBAL(loadcam_entry)
+ 	mflr	r5
+@@ -436,6 +436,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
+  */
+ _GLOBAL(loadcam_multi)
+ 	mflr	r8
++	/* Don't switch to AS=1 if already there */
++	mfmsr	r11
++	andi.	r11,r11,MSR_IS
++	bne	10f
+ 
+ 	/*
+ 	 * Set up temporary TLB entry that is the same as what we're
+@@ -461,6 +465,7 @@ _GLOBAL(loadcam_multi)
+ 	mtmsr	r6
+ 	isync
+ 
++10:
+ 	mr	r9,r3
+ 	add	r10,r3,r4
+ 2:	bl	loadcam_entry
+@@ -469,6 +474,10 @@ _GLOBAL(loadcam_multi)
+ 	mr	r3,r9
+ 	blt	2b
+ 
++	/* Don't return to AS=0 if we were in AS=1 at function start */
++	andi.	r11,r11,MSR_IS
++	bne	3f
++
+ 	/* Return to AS=0 and clear the temporary entry */
+ 	mfmsr	r6
+ 	rlwinm.	r6,r6,0,~(MSR_IS|MSR_DS)
+@@ -484,6 +493,7 @@ _GLOBAL(loadcam_multi)
+ 	tlbwe
+ 	isync
+ 
++3:
+ 	mtlr	r8
+ 	blr
+ #endif
+-- 
+2.20.1
+
 
 
