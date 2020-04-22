@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0091B3ED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F09F1B41A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731112AbgDVKcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
+        id S1728603AbgDVKH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730562AbgDVKZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:25:24 -0400
+        id S1728564AbgDVKHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:07:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E97482071E;
-        Wed, 22 Apr 2020 10:25:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04AF32076C;
+        Wed, 22 Apr 2020 10:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551123;
-        bh=uzrTWlHs53ZPHHMtK8nctjkf4SsWJpLaX73oQPd1U6o=;
+        s=default; t=1587550062;
+        bh=zGC4dr+ld+nnucTsreo0JbDdkNckR7Sp2tOzN775+C0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FKO36OlYPqqPun1A4G0pY3KrD9niXvdFtqnoh7OXVD8EGRZdTOLWXUX3oEIpWBt/i
-         aUm9Dq6t/52WkWcNZ6bTtQVJXYgDYCFcdxnSO7nqLnqw7bODGGG8BbfCiyKT7NWE5F
-         DvUwvrDEeeorIdnASWGM/VPqmX5LugdOHssyFPBc=
+        b=P83ZHGInT3Cesn5dQQVIz1TVZPfyGqfSOvGogrSxzJVr5keA1MxcHhMLBznyPtd64
+         tOWoVmam+yUC6Kk1kLKAFw3k3P0if7bV3z+KHlIuuc903P5J2+td+6W4zb+ni6VK44
+         ZxpcmMbfAwWLjJW9GS1+Dq1sgJ39OH6Fx3g/24mk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karol Herbst <kherbst@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lyude Paul <lyude@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@intel.com>,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 108/166] drm/nouveau: workaround runpm fail by disabling PCI power management on certain intel bridges
-Date:   Wed, 22 Apr 2020 11:57:15 +0200
-Message-Id: <20200422095100.404318585@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 119/125] tty: evh_bytechan: Fix out of bounds accesses
+Date:   Wed, 22 Apr 2020 11:57:16 +0200
+Message-Id: <20200422095051.784717539@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,145 +44,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Karol Herbst <kherbst@redhat.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
 
-[ Upstream commit 434fdb51513bf3057ac144d152e6f2f2b509e857 ]
+commit 3670664b5da555a2a481449b3baafff113b0ac35 upstream.
 
-Fixes the infamous 'runtime PM' bug many users are facing on Laptops with
-Nvidia Pascal GPUs by skipping said PCI power state changes on the GPU.
+ev_byte_channel_send() assumes that its third argument is a 16 byte
+array. Some places where it is called it may not be (or we can't
+easily tell if it is). Newer compilers have started producing warnings
+about this, so make sure we actually pass a 16 byte array.
 
-Depending on the used kernel there might be messages like those in demsg:
+There may be more elegant solutions to this, but the driver is quite
+old and hasn't been updated in many years.
 
-"nouveau 0000:01:00.0: Refused to change power state, currently in D3"
-"nouveau 0000:01:00.0: can't change power state from D3cold to D0 (config
-space inaccessible)"
-followed by backtraces of kernel crashes or timeouts within nouveau.
+The warnings (from a powerpc allyesconfig build) are:
 
-It's still unkown why this issue exists, but this is a reliable workaround
-and solves a very annoying issue for user having to choose between a
-crashing kernel or higher power consumption of their Laptops.
+  In file included from include/linux/byteorder/big_endian.h:5,
+                   from arch/powerpc/include/uapi/asm/byteorder.h:14,
+                   from include/asm-generic/bitops/le.h:6,
+                   from arch/powerpc/include/asm/bitops.h:250,
+                   from include/linux/bitops.h:29,
+                   from include/linux/kernel.h:12,
+                   from include/asm-generic/bug.h:19,
+                   from arch/powerpc/include/asm/bug.h:109,
+                   from include/linux/bug.h:5,
+                   from include/linux/mmdebug.h:5,
+                   from include/linux/gfp.h:5,
+                   from include/linux/slab.h:15,
+                   from drivers/tty/ehv_bytechan.c:24:
+  drivers/tty/ehv_bytechan.c: In function ‘ehv_bc_udbg_putc’:
+  arch/powerpc/include/asm/epapr_hcalls.h:298:20: warning: array subscript 1 is outside array bounds of ‘const char[1]’ [-Warray-bounds]
+    298 |  r6 = be32_to_cpu(p[1]);
+  include/uapi/linux/byteorder/big_endian.h:40:51: note: in definition of macro ‘__be32_to_cpu’
+     40 | #define __be32_to_cpu(x) ((__force __u32)(__be32)(x))
+        |                                                   ^
+  arch/powerpc/include/asm/epapr_hcalls.h:298:7: note: in expansion of macro ‘be32_to_cpu’
+    298 |  r6 = be32_to_cpu(p[1]);
+        |       ^~~~~~~~~~~
+  drivers/tty/ehv_bytechan.c:166:13: note: while referencing ‘data’
+    166 | static void ehv_bc_udbg_putc(char c)
+        |             ^~~~~~~~~~~~~~~~
 
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Mika Westerberg <mika.westerberg@intel.com>
-Cc: linux-pci@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: nouveau@lists.freedesktop.org
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205623
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: dcd83aaff1c8 ("tty/powerpc: introduce the ePAPR embedded hypervisor byte channel driver")
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Tested-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+[mpe: Trim warnings from change log]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200109183912.5fcb52aa@canb.auug.org.au
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/nouveau/nouveau_drm.c | 63 +++++++++++++++++++++++++++
- drivers/gpu/drm/nouveau/nouveau_drv.h |  2 +
- 2 files changed, 65 insertions(+)
+ drivers/tty/ehv_bytechan.c |   21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
-index b65ae817eabf5..2d4c899e1f8b9 100644
---- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-@@ -618,6 +618,64 @@ nouveau_drm_device_fini(struct drm_device *dev)
- 	kfree(drm);
+--- a/drivers/tty/ehv_bytechan.c
++++ b/drivers/tty/ehv_bytechan.c
+@@ -139,6 +139,21 @@ static int find_console_handle(void)
+ 	return 1;
  }
  
-+/*
-+ * On some Intel PCIe bridge controllers doing a
-+ * D0 -> D3hot -> D3cold -> D0 sequence causes Nvidia GPUs to not reappear.
-+ * Skipping the intermediate D3hot step seems to make it work again. This is
-+ * probably caused by not meeting the expectation the involved AML code has
-+ * when the GPU is put into D3hot state before invoking it.
-+ *
-+ * This leads to various manifestations of this issue:
-+ *  - AML code execution to power on the GPU hits an infinite loop (as the
-+ *    code waits on device memory to change).
-+ *  - kernel crashes, as all PCI reads return -1, which most code isn't able
-+ *    to handle well enough.
-+ *
-+ * In all cases dmesg will contain at least one line like this:
-+ * 'nouveau 0000:01:00.0: Refused to change power state, currently in D3'
-+ * followed by a lot of nouveau timeouts.
-+ *
-+ * In the \_SB.PCI0.PEG0.PG00._OFF code deeper down writes bit 0x80 to the not
-+ * documented PCI config space register 0x248 of the Intel PCIe bridge
-+ * controller (0x1901) in order to change the state of the PCIe link between
-+ * the PCIe port and the GPU. There are alternative code paths using other
-+ * registers, which seem to work fine (executed pre Windows 8):
-+ *  - 0xbc bit 0x20 (publicly available documentation claims 'reserved')
-+ *  - 0xb0 bit 0x10 (link disable)
-+ * Changing the conditions inside the firmware by poking into the relevant
-+ * addresses does resolve the issue, but it seemed to be ACPI private memory
-+ * and not any device accessible memory at all, so there is no portable way of
-+ * changing the conditions.
-+ * On a XPS 9560 that means bits [0,3] on \CPEX need to be cleared.
-+ *
-+ * The only systems where this behavior can be seen are hybrid graphics laptops
-+ * with a secondary Nvidia Maxwell, Pascal or Turing GPU. It's unclear whether
-+ * this issue only occurs in combination with listed Intel PCIe bridge
-+ * controllers and the mentioned GPUs or other devices as well.
-+ *
-+ * documentation on the PCIe bridge controller can be found in the
-+ * "7th Generation Intel® Processor Families for H Platforms Datasheet Volume 2"
-+ * Section "12 PCI Express* Controller (x16) Registers"
-+ */
-+
-+static void quirk_broken_nv_runpm(struct pci_dev *pdev)
++static unsigned int local_ev_byte_channel_send(unsigned int handle,
++					       unsigned int *count,
++					       const char *p)
 +{
-+	struct drm_device *dev = pci_get_drvdata(pdev);
-+	struct nouveau_drm *drm = nouveau_drm(dev);
-+	struct pci_dev *bridge = pci_upstream_bridge(pdev);
++	char buffer[EV_BYTE_CHANNEL_MAX_BYTES];
++	unsigned int c = *count;
 +
-+	if (!bridge || bridge->vendor != PCI_VENDOR_ID_INTEL)
-+		return;
-+
-+	switch (bridge->device) {
-+	case 0x1901:
-+		drm->old_pm_cap = pdev->pm_cap;
-+		pdev->pm_cap = 0;
-+		NV_INFO(drm, "Disabling PCI power management to avoid bug\n");
-+		break;
++	if (c < sizeof(buffer)) {
++		memcpy(buffer, p, c);
++		memset(&buffer[c], 0, sizeof(buffer) - c);
++		p = buffer;
 +	}
++	return ev_byte_channel_send(handle, count, p);
 +}
 +
- static int nouveau_drm_probe(struct pci_dev *pdev,
- 			     const struct pci_device_id *pent)
- {
-@@ -699,6 +757,7 @@ static int nouveau_drm_probe(struct pci_dev *pdev,
- 	if (ret)
- 		goto fail_drm_dev_init;
+ /*************************** EARLY CONSOLE DRIVER ***************************/
  
-+	quirk_broken_nv_runpm(pdev);
- 	return 0;
+ #ifdef CONFIG_PPC_EARLY_DEBUG_EHV_BC
+@@ -157,7 +172,7 @@ static void byte_channel_spin_send(const
  
- fail_drm_dev_init:
-@@ -734,7 +793,11 @@ static void
- nouveau_drm_remove(struct pci_dev *pdev)
- {
- 	struct drm_device *dev = pci_get_drvdata(pdev);
-+	struct nouveau_drm *drm = nouveau_drm(dev);
- 
-+	/* revert our workaround */
-+	if (drm->old_pm_cap)
-+		pdev->pm_cap = drm->old_pm_cap;
- 	nouveau_drm_device_remove(dev);
- 	pci_disable_device(pdev);
+ 	do {
+ 		count = 1;
+-		ret = ev_byte_channel_send(CONFIG_PPC_EARLY_DEBUG_EHV_BC_HANDLE,
++		ret = local_ev_byte_channel_send(CONFIG_PPC_EARLY_DEBUG_EHV_BC_HANDLE,
+ 					   &count, &data);
+ 	} while (ret == EV_EAGAIN);
  }
-diff --git a/drivers/gpu/drm/nouveau/nouveau_drv.h b/drivers/gpu/drm/nouveau/nouveau_drv.h
-index c2c332fbde979..2a6519737800c 100644
---- a/drivers/gpu/drm/nouveau/nouveau_drv.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_drv.h
-@@ -140,6 +140,8 @@ struct nouveau_drm {
+@@ -224,7 +239,7 @@ static int ehv_bc_console_byte_channel_s
+ 	while (count) {
+ 		len = min_t(unsigned int, count, EV_BYTE_CHANNEL_MAX_BYTES);
+ 		do {
+-			ret = ev_byte_channel_send(handle, &len, s);
++			ret = local_ev_byte_channel_send(handle, &len, s);
+ 		} while (ret == EV_EAGAIN);
+ 		count -= len;
+ 		s += len;
+@@ -404,7 +419,7 @@ static void ehv_bc_tx_dequeue(struct ehv
+ 			    CIRC_CNT_TO_END(bc->head, bc->tail, BUF_SIZE),
+ 			    EV_BYTE_CHANNEL_MAX_BYTES);
  
- 	struct list_head clients;
+-		ret = ev_byte_channel_send(bc->handle, &len, bc->buf + bc->tail);
++		ret = local_ev_byte_channel_send(bc->handle, &len, bc->buf + bc->tail);
  
-+	u8 old_pm_cap;
-+
- 	struct {
- 		struct agp_bridge_data *bridge;
- 		u32 base;
--- 
-2.20.1
-
+ 		/* 'len' is valid only if the return code is 0 or EV_EAGAIN */
+ 		if (!ret || (ret == EV_EAGAIN))
 
 
