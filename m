@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4239C1B3D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A8A1B4103
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgDVKP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:15:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50416 "EHLO mail.kernel.org"
+        id S1732125AbgDVKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729642AbgDVKPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:12 -0400
+        id S1729414AbgDVKNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 624A320575;
-        Wed, 22 Apr 2020 10:15:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C32C2076E;
+        Wed, 22 Apr 2020 10:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550511;
-        bh=+KmynoHUM8GPQn2SP+1MLZiKCFKLZrqLb2uvnd1KsQY=;
+        s=default; t=1587550383;
+        bh=3kan2kXNwNgWSR0WNCKeiC0pVJHBLgCdxgTsDOO0Txc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ged5WkkSCHAlTwyHpk+JdUnKwc2V/lrD1tYHP7zxC7ZhW2ZdYP6NIxQuE2b80ba0E
-         BgZkI29kYUXBisMskbjVWMavHDrqB9iO55obMkk3Y/y5XR+nWO3/UbbjuKdeeNJQMM
-         t65m+so3yqdhlOLRqPn15KAFm4ZwIpii15EY3AGY=
+        b=A3EAbIvXcqLxxUcpqDu/hht/cDgm3MBE8XB/GWLHw6j82Sz4CFBQue6GWB4c9NRpS
+         lCbt+Z12Iq20Y3Ss15n39edJ/jeHFGuddrg1tffmqULG8XypSFyYBhFU+ls8b7kS+z
+         wdyHMFdN5T4hfcC5eLbom3skU8G2EiPhiyI0BdH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 45/64] NFS: Fix memory leaks in nfs_pageio_stop_mirroring()
-Date:   Wed, 22 Apr 2020 11:57:29 +0200
-Message-Id: <20200422095020.831749047@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.14 124/199] ext4: do not zeroout extents beyond i_disksize
+Date:   Wed, 22 Apr 2020 11:57:30 +0200
+Message-Id: <20200422095109.895327373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 862f35c94730c9270833f3ad05bd758a29f204ed ]
+commit 801674f34ecfed033b062a0f217506b93c8d5e8a upstream.
 
-If we just set the mirror count to 1 without first clearing out
-the mirrors, we can leak queued up requests.
+We do not want to create initialized extents beyond end of file because
+for e2fsck it is impossible to distinguish them from a case of corrupted
+file size / extent tree and so it complains like:
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Inode 12, i_size is 147456, should be 163840.  Fix? no
+
+Code in ext4_ext_convert_to_initialized() and
+ext4_split_convert_extents() try to make sure it does not create
+initialized extents beyond inode size however they check against
+inode->i_size which is wrong. They should instead check against
+EXT4_I(inode)->i_disksize which is the current inode size on disk.
+That's what e2fsck is going to see in case of crash before all dirty
+data is written. This bug manifests as generic/456 test failure (with
+recent enough fstests where fsx got fixed to properly pass
+FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
+mount option.
+
+CC: stable@vger.kernel.org
+Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20200331105016.8674-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/nfs/pagelist.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ fs/ext4/extents.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
-index 9cf59e2622f8e..5dae7c85d9b6e 100644
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -865,15 +865,6 @@ static void nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
- 	pgio->pg_mirror_count = mirror_count;
- }
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3446,8 +3446,8 @@ static int ext4_ext_convert_to_initializ
+ 		(unsigned long long)map->m_lblk, map_len);
  
--/*
-- * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
-- */
--void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
--{
--	pgio->pg_mirror_count = 1;
--	pgio->pg_mirror_idx = 0;
--}
--
- static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
- {
- 	pgio->pg_mirror_count = 1;
-@@ -1302,6 +1293,14 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
- 	}
- }
+ 	sbi = EXT4_SB(inode->i_sb);
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map_len)
+ 		eof_block = map->m_lblk + map_len;
  
-+/*
-+ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
-+ */
-+void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
-+{
-+	nfs_pageio_complete(pgio);
-+}
-+
- int __init nfs_init_nfspagecache(void)
- {
- 	nfs_page_cachep = kmem_cache_create("nfs_page",
--- 
-2.20.1
-
+@@ -3702,8 +3702,8 @@ static int ext4_split_convert_extents(ha
+ 		  __func__, inode->i_ino,
+ 		  (unsigned long long)map->m_lblk, map->m_len);
+ 
+-	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+-		inode->i_sb->s_blocksize_bits;
++	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
++			>> inode->i_sb->s_blocksize_bits;
+ 	if (eof_block < map->m_lblk + map->m_len)
+ 		eof_block = map->m_lblk + map->m_len;
+ 	/*
 
 
