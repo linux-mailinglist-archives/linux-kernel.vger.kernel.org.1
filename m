@@ -2,221 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BF61B4E1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028611B4E3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgDVUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 16:13:30 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43457 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726714AbgDVUN2 (ORCPT
+        id S1726410AbgDVUQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 16:16:08 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:25421 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726090AbgDVUQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:13:28 -0400
-Received: by mail-ot1-f68.google.com with SMTP id g14so3342847otg.10;
-        Wed, 22 Apr 2020 13:13:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FU28JBKGEW/8GQtu1EPA/t3igT0iC4W0GHS/U/6pah4=;
-        b=V7dCPC0ZpML8QoKAXcbyONXtvrMqpCN04mbrUtoPRrodX9gVxpT9KvhBHXGFH+3EH0
-         cGFrrvMOb0JRp8uKr78fX3M17qw/bI8C4i9qvc5vvXd/tUnvVIZ2m7n8FeV5IO2dIvcl
-         srgSBOQQPD+FGlYTAaVLX3PTspygSYz+PRRBHLkIC+s5vYM2lyghUTN7euBMs2aV9Hem
-         hg7aD36o2PpmhxjbmbTkpa8zVXZX+ni4yBAQIzTM+s9pf1f0cL/Z3oo13OjgoUyaMNCr
-         7Jk9ZEEXDBMhrvID86ZeIDcVZHRiPC3/06iM2M2I6HE7jADrm6zObIY0xJKamoVUdHNv
-         Pfjg==
-X-Gm-Message-State: AGi0PubZ7hK3Aw6jekBoOzXxRQz0lZjpnb/FTJqYW7GNTd7pVk82ZOlF
-        PDnM72NbSqzM3FnGVfUejyZ3S68=
-X-Google-Smtp-Source: APiQypLq1juXk3wkyAmmhugjQWskZwTMMSVHNWayyrQVPc7tVA60BLU67e9v/cwDx0dAkBMdlJyA5A==
-X-Received: by 2002:a9d:6b11:: with SMTP id g17mr712345otp.264.1587586407497;
-        Wed, 22 Apr 2020 13:13:27 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t26sm33325otl.71.2020.04.22.13.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 13:13:26 -0700 (PDT)
-Received: (nullmailer pid 20547 invoked by uid 1000);
-        Wed, 22 Apr 2020 20:13:25 -0000
-Date:   Wed, 22 Apr 2020 15:13:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au
-Subject: Re: [PATCH v10 1/7] dt-bindings: soc: Add Aspeed XDMA Engine
-Message-ID: <20200422201325.GA12023@bogus>
-References: <20200420202611.17776-1-eajames@linux.ibm.com>
- <20200420202611.17776-2-eajames@linux.ibm.com>
+        Wed, 22 Apr 2020 16:16:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587586567; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=vnAn4LSCPJ/CxwUPiIM88+jEzBLRDw5k0xtLf/1X3mQ=; b=DPI+MyohdT4r1iw7lPmlWU0eVwN6ZLbUZZ15KlC1J7LTZcggkSWBiEUPfoVjDmBUuY98Javh
+ ICjMNEieG9bPIA0uMepfwiYYuHPhb6TafgdPxJdgRJkwNnGrMHXCBG1k1Qi0rlpKB0mKQf2Z
+ ZHnYgALXGystBF0fR+azc2tQ1RU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea0a605.7fb521bcced8-smtp-out-n03;
+ Wed, 22 Apr 2020 20:16:05 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F02C8C433BA; Wed, 22 Apr 2020 20:16:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28AA3C433D2;
+        Wed, 22 Apr 2020 20:16:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 28AA3C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v2 1/5] bus: mhi: core: Handle syserr during power_up
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bhaumik Vasav Bhatt <bbhatt@codeaurora.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1586278230-29565-1-git-send-email-jhugo@codeaurora.org>
+ <1586278230-29565-2-git-send-email-jhugo@codeaurora.org>
+ <1768ba6e-12c2-7b4f-0f17-44fecc6473b9@codeaurora.org>
+ <11d9f35b-b911-7985-8846-0a45904ceed1@codeaurora.org>
+ <5c4efe13-42a4-e802-4070-5d9d30b8cac2@codeaurora.org>
+ <79feeb0b-0837-c5b6-087d-856c3e238c67@codeaurora.org>
+ <20200413133447.GA19124@Mani-XPS-13-9360>
+ <ee51ae8f-5826-5402-9178-3f2fba1358f8@codeaurora.org>
+ <20200421060835.GD4327@Mani-XPS-13-9360>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <6a1c95f1-d7f5-2073-9262-415473986633@codeaurora.org>
+Date:   Wed, 22 Apr 2020 14:16:02 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420202611.17776-2-eajames@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200421060835.GD4327@Mani-XPS-13-9360>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 03:26:05PM -0500, Eddie James wrote:
-> Document the bindings for the Aspeed AST25XX and AST26XX XDMA engine.
+On 4/21/2020 12:08 AM, Manivannan Sadhasivam wrote:
+> On Mon, Apr 13, 2020 at 08:01:36AM -0600, Jeffrey Hugo wrote:
+>> On 4/13/2020 7:34 AM, Manivannan Sadhasivam wrote:
+>>> On Fri, Apr 10, 2020 at 03:39:57PM -0600, Jeffrey Hugo wrote:
+>>>> On 4/10/2020 2:37 PM, Bhaumik Vasav Bhatt wrote:
+>>>>> Hi Jeff,
+>>>>>
+>>>>> We will always have the mhi_intvec_handler registered and trigger your
+>>>>> wake_up state event when you write MHI RESET. BHI INTVEC IRQ using
+>>>>> mhi_cntrl->irq[0] is _not_ unregistered once you enter AMSS EE.
+>>>>
+>>>> I understand it is not unregistered.  However mhi_cntrl->irq[0] may be
+>>>> reserved for BHI, and thus only exercised by PBL EE.  Where as,
+>>>> mhi_cntrl->irq[1..N] may be only exercised by AMSS EE. mhi_intvec_handler is
+>>>> not called in response to mhi_cntrl->irq[1..N].
+>>>>
+>>>> Additionally, I re-reviewed the MHI spec, and I don't see where the spec
+>>>> requires the device to issue an interrupt upon completion of the RESET
+>>>> request.
+>>>>
+>>>> Under section 3.5, step 11 states -
+>>>>
+>>>> "The host must poll for the value of the RESET bit to detect the completion
+>>>> of the reset procedure by the device (RESET is set to 0)."
+>>>>
+>>>
+>>> If this is the scenario then we need to change all of the wait_event_timeout()
+>>> implementation for MHI RESET in current stack to polling.
+>>>
+>>> Or the interrupt generation is not defined in spec (sheet) but part of the
+>>> existing implementation?
+>>
+>> It probably could be considered part of the existing implementation, but I'd
+>> like to hear from Hemant/Bhaumik.  Wherever we end up, I'd like to have the
+>> spec match.
 > 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  .../devicetree/bindings/soc/aspeed/xdma.yaml  | 108 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 114 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml b/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
-> new file mode 100644
-> index 000000000000..428a575da1be
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-or-later)
+> Hemant/Bhaumik, can you please share your thoughts?
 
-Dual license new bindings please:
+Sorry.  Hemant, Bhaumik, and I have had a few calls discussing this.  We 
+are trying to come to a consensus on the expectation of the device 
+behavior, so that we can propose the best solution.  Probably a few more 
+days yet while we await for a bit of clarification.
 
-(GPL-2.0-only OR BSD-2-Clause)
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/aspeed/xdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aspeed AST25XX and AST26XX XDMA Engine
-> +
-> +maintainers:
-> + - Eddie James <eajames@linux.ibm.com>
-> +
-> +description: |
-> +  This binding describes the XDMA Engine embedded in the AST2500 and AST2600
-> +  SOCs. The XDMA engine can perform automatic DMA operations over PCI between
-> +  the SOC (acting as a BMC) and a host processor.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aspeed,ast2500-xdma
-> +      - aspeed,ast2600-xdma
-> +
-> +  reg:
-> +    items:
-> +      - description: engine register space
-
-That's all 'reg' properties. You don't need a description for a 
-single entry. Just:
-
-reg:
-  maxItems: 1
-
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    maxItems: 2
-> +    items:
-> +      - const: device
-> +      - const: root-complex
-> +
-> +  interrupts-extended:
-
-Just use 'interrupts'. The tools fix things up so both work.
-
-> +    maxItems: 2
-> +    items:
-> +      - description: global interrupt for the XDMA engine
-> +      - description: PCI-E reset or PERST interrupt
-> +
-> +  aspeed,scu:
-> +    description: a reference to the System Control Unit node of the Aspeed SOC.
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  aspeed,pcie-device:
-> +    description: describes which PCI-E device the XDMA engine should use
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/string
-> +      - oneOf:
-> +        - items:
-> +          - const: bmc
-> +        - items:
-> +          - const: vga
-
-The oneOf (inclusive) can be just:
-
-enum: [ bmc, vga ]
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - resets
-> +  - interrupts-extended
-> +  - aspeed,scu
-> +  - memory-region
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: aspeed,ast2600-xdma
-> +then:
-> +  required:
-> +    - reset-names
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
-> +    syscon: syscon@1e6e2000 {
-> +        reg = <0x1e6e2000 0x1000>;
-> +        ranges = <0 0x1e6e2000 0x1000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        #clock-cells = <1>;
-> +        #reset-cells = <1>;
-> +        scu_ic0: interrupt-controller@560 {
-> +            reg = <0x560 0x4>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <1>;
-> +        };
-> +    };
-> +    xdma@1e6e7000 {
-> +        compatible = "aspeed,ast2600-xdma";
-> +        reg = <0x1e6e7000 0x100>;
-> +        clocks = <&syscon ASPEED_CLK_GATE_BCLK>;
-> +        resets = <&syscon ASPEED_RESET_DEV_XDMA>, <&syscon ASPEED_RESET_RC_XDMA>;
-> +        reset-names = "device", "root-complex";
-> +        interrupts-extended = <&gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-> +                              <&scu_ic0 ASPEED_AST2600_SCU_IC0_PCIE_PERST_LO_TO_HI>;
-> +        aspeed,scu = <&syscon>;
-> +        aspeed,pcie-device = "bmc";
-> +        memory-region = <&vga_memory>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ecd7def6ff4b..b1963e01a75e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2774,6 +2774,12 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/media/aspeed-video.txt
->  F:	drivers/media/platform/aspeed-video.c
->  
-> +ASPEED XDMA ENGINE DRIVER
-> +M:	Eddie James <eajames@linux.ibm.com>
-> +L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
-> +
->  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
->  M:	Corentin Chary <corentin.chary@gmail.com>
->  L:	acpi4asus-user@lists.sourceforge.net
-> -- 
-> 2.24.0
-> 
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
