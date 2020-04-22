@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0000A1B3E58
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8361E1B40C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730899AbgDVK1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36484 "EHLO mail.kernel.org"
+        id S1732031AbgDVKsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:48:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730876AbgDVK10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:27:26 -0400
+        id S1729230AbgDVKPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:15:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D626F20CC7;
-        Wed, 22 Apr 2020 10:27:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 823C920575;
+        Wed, 22 Apr 2020 10:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551244;
-        bh=W3JfxGtuYZ3e4P6WQe47wolTMldvgQkjlDJEiIf6qR8=;
+        s=default; t=1587550502;
+        bh=J+5NNN+ZKJmcrZjlqrrTDsqXcJDLt2+GNu/YQmcBwdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SHNg7m8Ev0LYU+50h9c4uV5hN3WlcKggezKizZH9chBAx42Uf6sunnaaMh/+09ru8
-         dtJwMHxzaxn64abAbpphIv/kmxV15yMAVZ7hrfsrXxeQByyXStOAau/a9Glfz1zdBn
-         N/DojkmmNVv2VStjF5XHD+CcZaPTdJQVZhwqWQ8g=
+        b=AEZGbww/7CPdSUyISPDC6cJUFu3hjM8oLy9r7C77adSH4tq3leRHDT/RVcaBrcRGF
+         C1tp2W3ivvp8mkhmjaoQ1sJNDkr8MpYBp5oc5KNTGjaOmQ5nJNGwj4/MtuPLsknn04
+         UwohbgoQZGyExdqvVjSbeILQEyxeNVW/XuLQh9x4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Daniel Santos <daniel.santos@pobox.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ian Abbott <abbotti@mev.co.uk>, Joe Perches <joe@perches.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 117/166] f2fs: fix potential .flags overflow on 32bit architecture
-Date:   Wed, 22 Apr 2020 11:57:24 +0200
-Message-Id: <20200422095101.217910921@linuxfoundation.org>
+Subject: [PATCH 4.19 41/64] compiler.h: fix error in BUILD_BUG_ON() reporting
+Date:   Wed, 22 Apr 2020 11:57:25 +0200
+Message-Id: <20200422095020.277465444@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,211 +49,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Vegard Nossum <vegard.nossum@oracle.com>
 
-[ Upstream commit 7653b9d87516ed65e112d2273c65eca6f97d0a27 ]
+[ Upstream commit af9c5d2e3b355854ff0e4acfbfbfadcd5198a349 ]
 
-f2fs_inode_info.flags is unsigned long variable, it has 32 bits
-in 32bit architecture, since we introduced FI_MMAP_FILE flag
-when we support data compression, we may access memory cross
-the border of .flags field, corrupting .i_sem field, result in
-below deadlock.
+compiletime_assert() uses __LINE__ to create a unique function name.  This
+means that if you have more than one BUILD_BUG_ON() in the same source
+line (which can happen if they appear e.g.  in a macro), then the error
+message from the compiler might output the wrong condition.
 
-To fix this issue, let's expand .flags as an array to grab enough
-space to store new flags.
+For this source file:
 
-Call Trace:
- __schedule+0x8d0/0x13fc
- ? mark_held_locks+0xac/0x100
- schedule+0xcc/0x260
- rwsem_down_write_slowpath+0x3ab/0x65d
- down_write+0xc7/0xe0
- f2fs_drop_nlink+0x3d/0x600 [f2fs]
- f2fs_delete_inline_entry+0x300/0x440 [f2fs]
- f2fs_delete_entry+0x3a1/0x7f0 [f2fs]
- f2fs_unlink+0x500/0x790 [f2fs]
- vfs_unlink+0x211/0x490
- do_unlinkat+0x483/0x520
- sys_unlink+0x4a/0x70
- do_fast_syscall_32+0x12b/0x683
- entry_SYSENTER_32+0xaa/0x102
+	#include <linux/build_bug.h>
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Tested-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+	#define macro() \
+		BUILD_BUG_ON(1); \
+		BUILD_BUG_ON(0);
+
+	void foo()
+	{
+		macro();
+	}
+
+gcc would output:
+
+./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_9' declared with attribute error: BUILD_BUG_ON failed: 0
+  _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+
+However, it was not the BUILD_BUG_ON(0) that failed, so it should say 1
+instead of 0. With this patch, we use __COUNTER__ instead of __LINE__, so
+each BUILD_BUG_ON() gets a different function name and the correct
+condition is printed:
+
+./include/linux/compiler.h:350:38: error: call to `__compiletime_assert_0' declared with attribute error: BUILD_BUG_ON failed: 1
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Daniel Santos <daniel.santos@pobox.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Ian Abbott <abbotti@mev.co.uk>
+Cc: Joe Perches <joe@perches.com>
+Link: http://lkml.kernel.org/r/20200331112637.25047-1-vegard.nossum@oracle.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h  | 99 ++++++++++++++++++++++++-------------------------
- fs/f2fs/inode.c |  2 +-
- 2 files changed, 50 insertions(+), 51 deletions(-)
+ include/linux/compiler.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 64caa46f0c8bd..71801a1709f0f 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -676,6 +676,44 @@ enum {
- 	MAX_GC_FAILURE
- };
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index bb22908c79e83..75112aa8064e8 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -345,7 +345,7 @@ static inline void *offset_to_ptr(const int *off)
+  * compiler has support to do so.
+  */
+ #define compiletime_assert(condition, msg) \
+-	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
++	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
  
-+/* used for f2fs_inode_info->flags */
-+enum {
-+	FI_NEW_INODE,		/* indicate newly allocated inode */
-+	FI_DIRTY_INODE,		/* indicate inode is dirty or not */
-+	FI_AUTO_RECOVER,	/* indicate inode is recoverable */
-+	FI_DIRTY_DIR,		/* indicate directory has dirty pages */
-+	FI_INC_LINK,		/* need to increment i_nlink */
-+	FI_ACL_MODE,		/* indicate acl mode */
-+	FI_NO_ALLOC,		/* should not allocate any blocks */
-+	FI_FREE_NID,		/* free allocated nide */
-+	FI_NO_EXTENT,		/* not to use the extent cache */
-+	FI_INLINE_XATTR,	/* used for inline xattr */
-+	FI_INLINE_DATA,		/* used for inline data*/
-+	FI_INLINE_DENTRY,	/* used for inline dentry */
-+	FI_APPEND_WRITE,	/* inode has appended data */
-+	FI_UPDATE_WRITE,	/* inode has in-place-update data */
-+	FI_NEED_IPU,		/* used for ipu per file */
-+	FI_ATOMIC_FILE,		/* indicate atomic file */
-+	FI_ATOMIC_COMMIT,	/* indicate the state of atomical committing */
-+	FI_VOLATILE_FILE,	/* indicate volatile file */
-+	FI_FIRST_BLOCK_WRITTEN,	/* indicate #0 data block was written */
-+	FI_DROP_CACHE,		/* drop dirty page cache */
-+	FI_DATA_EXIST,		/* indicate data exists */
-+	FI_INLINE_DOTS,		/* indicate inline dot dentries */
-+	FI_DO_DEFRAG,		/* indicate defragment is running */
-+	FI_DIRTY_FILE,		/* indicate regular/symlink has dirty pages */
-+	FI_NO_PREALLOC,		/* indicate skipped preallocated blocks */
-+	FI_HOT_DATA,		/* indicate file is hot */
-+	FI_EXTRA_ATTR,		/* indicate file has extra attribute */
-+	FI_PROJ_INHERIT,	/* indicate file inherits projectid */
-+	FI_PIN_FILE,		/* indicate file should not be gced */
-+	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
-+	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
-+	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
-+	FI_MMAP_FILE,		/* indicate file was mmapped */
-+	FI_MAX,			/* max flag, never be used */
-+};
-+
- struct f2fs_inode_info {
- 	struct inode vfs_inode;		/* serve a vfs inode */
- 	unsigned long i_flags;		/* keep an inode flags for ioctl */
-@@ -688,7 +726,7 @@ struct f2fs_inode_info {
- 	umode_t i_acl_mode;		/* keep file acl mode temporarily */
- 
- 	/* Use below internally in f2fs*/
--	unsigned long flags;		/* use to pass per-file flags */
-+	unsigned long flags[BITS_TO_LONGS(FI_MAX)];	/* use to pass per-file flags */
- 	struct rw_semaphore i_sem;	/* protect fi info */
- 	atomic_t dirty_pages;		/* # of dirty pages */
- 	f2fs_hash_t chash;		/* hash value of given file name */
-@@ -2498,43 +2536,6 @@ static inline __u32 f2fs_mask_flags(umode_t mode, __u32 flags)
- 		return flags & F2FS_OTHER_FLMASK;
- }
- 
--/* used for f2fs_inode_info->flags */
--enum {
--	FI_NEW_INODE,		/* indicate newly allocated inode */
--	FI_DIRTY_INODE,		/* indicate inode is dirty or not */
--	FI_AUTO_RECOVER,	/* indicate inode is recoverable */
--	FI_DIRTY_DIR,		/* indicate directory has dirty pages */
--	FI_INC_LINK,		/* need to increment i_nlink */
--	FI_ACL_MODE,		/* indicate acl mode */
--	FI_NO_ALLOC,		/* should not allocate any blocks */
--	FI_FREE_NID,		/* free allocated nide */
--	FI_NO_EXTENT,		/* not to use the extent cache */
--	FI_INLINE_XATTR,	/* used for inline xattr */
--	FI_INLINE_DATA,		/* used for inline data*/
--	FI_INLINE_DENTRY,	/* used for inline dentry */
--	FI_APPEND_WRITE,	/* inode has appended data */
--	FI_UPDATE_WRITE,	/* inode has in-place-update data */
--	FI_NEED_IPU,		/* used for ipu per file */
--	FI_ATOMIC_FILE,		/* indicate atomic file */
--	FI_ATOMIC_COMMIT,	/* indicate the state of atomical committing */
--	FI_VOLATILE_FILE,	/* indicate volatile file */
--	FI_FIRST_BLOCK_WRITTEN,	/* indicate #0 data block was written */
--	FI_DROP_CACHE,		/* drop dirty page cache */
--	FI_DATA_EXIST,		/* indicate data exists */
--	FI_INLINE_DOTS,		/* indicate inline dot dentries */
--	FI_DO_DEFRAG,		/* indicate defragment is running */
--	FI_DIRTY_FILE,		/* indicate regular/symlink has dirty pages */
--	FI_NO_PREALLOC,		/* indicate skipped preallocated blocks */
--	FI_HOT_DATA,		/* indicate file is hot */
--	FI_EXTRA_ATTR,		/* indicate file has extra attribute */
--	FI_PROJ_INHERIT,	/* indicate file inherits projectid */
--	FI_PIN_FILE,		/* indicate file should not be gced */
--	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
--	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
--	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
--	FI_MMAP_FILE,		/* indicate file was mmapped */
--};
--
- static inline void __mark_inode_dirty_flag(struct inode *inode,
- 						int flag, bool set)
- {
-@@ -2556,20 +2557,18 @@ static inline void __mark_inode_dirty_flag(struct inode *inode,
- 
- static inline void set_inode_flag(struct inode *inode, int flag)
- {
--	if (!test_bit(flag, &F2FS_I(inode)->flags))
--		set_bit(flag, &F2FS_I(inode)->flags);
-+	test_and_set_bit(flag, F2FS_I(inode)->flags);
- 	__mark_inode_dirty_flag(inode, flag, true);
- }
- 
- static inline int is_inode_flag_set(struct inode *inode, int flag)
- {
--	return test_bit(flag, &F2FS_I(inode)->flags);
-+	return test_bit(flag, F2FS_I(inode)->flags);
- }
- 
- static inline void clear_inode_flag(struct inode *inode, int flag)
- {
--	if (test_bit(flag, &F2FS_I(inode)->flags))
--		clear_bit(flag, &F2FS_I(inode)->flags);
-+	test_and_clear_bit(flag, F2FS_I(inode)->flags);
- 	__mark_inode_dirty_flag(inode, flag, false);
- }
- 
-@@ -2660,19 +2659,19 @@ static inline void get_inline_info(struct inode *inode, struct f2fs_inode *ri)
- 	struct f2fs_inode_info *fi = F2FS_I(inode);
- 
- 	if (ri->i_inline & F2FS_INLINE_XATTR)
--		set_bit(FI_INLINE_XATTR, &fi->flags);
-+		set_bit(FI_INLINE_XATTR, fi->flags);
- 	if (ri->i_inline & F2FS_INLINE_DATA)
--		set_bit(FI_INLINE_DATA, &fi->flags);
-+		set_bit(FI_INLINE_DATA, fi->flags);
- 	if (ri->i_inline & F2FS_INLINE_DENTRY)
--		set_bit(FI_INLINE_DENTRY, &fi->flags);
-+		set_bit(FI_INLINE_DENTRY, fi->flags);
- 	if (ri->i_inline & F2FS_DATA_EXIST)
--		set_bit(FI_DATA_EXIST, &fi->flags);
-+		set_bit(FI_DATA_EXIST, fi->flags);
- 	if (ri->i_inline & F2FS_INLINE_DOTS)
--		set_bit(FI_INLINE_DOTS, &fi->flags);
-+		set_bit(FI_INLINE_DOTS, fi->flags);
- 	if (ri->i_inline & F2FS_EXTRA_ATTR)
--		set_bit(FI_EXTRA_ATTR, &fi->flags);
-+		set_bit(FI_EXTRA_ATTR, fi->flags);
- 	if (ri->i_inline & F2FS_PIN_FILE)
--		set_bit(FI_PIN_FILE, &fi->flags);
-+		set_bit(FI_PIN_FILE, fi->flags);
- }
- 
- static inline void set_raw_inline(struct inode *inode, struct f2fs_inode *ri)
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 78c3f1d70f1dc..901e9f4ce12b5 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -345,7 +345,7 @@ static int do_read_inode(struct inode *inode)
- 	fi->i_flags = le32_to_cpu(ri->i_flags);
- 	if (S_ISREG(inode->i_mode))
- 		fi->i_flags &= ~F2FS_PROJINHERIT_FL;
--	fi->flags = 0;
-+	bitmap_zero(fi->flags, FI_MAX);
- 	fi->i_advise = ri->i_advise;
- 	fi->i_pino = le32_to_cpu(ri->i_pino);
- 	fi->i_dir_level = ri->i_dir_level;
+ #define compiletime_assert_atomic_type(t)				\
+ 	compiletime_assert(__native_word(t),				\
 -- 
 2.20.1
 
