@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CE31B3CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B2C1B3C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgDVKJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
+        id S1727004AbgDVKGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728910AbgDVKJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:50 -0400
+        id S1727056AbgDVKGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EE3F20575;
-        Wed, 22 Apr 2020 10:09:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 037C420575;
+        Wed, 22 Apr 2020 10:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550189;
-        bh=6q4OAloMiXQpA7u3d14ReQ3KM8lmt0J112lT/o4l9Qo=;
+        s=default; t=1587549969;
+        bh=4Yfw7zDvXO8ES44N9Te9KXxXB+R1yHGUNOhl8YlHk/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bj0yE5wGnTwjYrXCMMiUT/d+gt8ezbAHTnx+FwCIKiu7LVEqQwmGzBflO7F9nMtyf
-         gBg/GgMvbW9eoPxzik7aq6iJErMo7zUcsMb1b6Nrp1Co/LF6jAsJLf9ifkXWPvhBBI
-         RpNFp6eTjlvpjdmORbLfJy3xnHo6mzJjv26J5qmY=
+        b=RIMXmVv1V11jyH6gxdoUk5TQ0N/Gu4nZb1BM6xsTuXMpj+4ScKzK5USCOvXW5s8+n
+         EG6sCZWgmerfWCn2nPs95hdsoFwZgfDqW30Gs1x96YHxNUchiwpWuvBJia4TiE7cly
+         avbdPOHGZm12/Z80MkulThmLOzhe8ws0GpR6eQBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 044/199] ALSA: hda/realtek - Set principled PC Beep configuration for ALC256
-Date:   Wed, 22 Apr 2020 11:56:10 +0200
-Message-Id: <20200422095102.361238297@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Ben Hutchings <benh@debian.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 054/125] kmod: make request_module() return an error when autoloading is disabled
+Date:   Wed, 22 Apr 2020 11:56:11 +0200
+Message-Id: <20200422095042.255124584@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +51,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit c44737449468a0bdc50e09ec75e530f208391561 upstream.
+commit d7d27cfc5cf0766a26a8f56868c5ad5434735126 upstream.
 
-The Realtek PC Beep Hidden Register[1] is currently set by
-patch_realtek.c in two different places:
+Patch series "module autoloading fixes and cleanups", v5.
 
-In alc_fill_eapd_coef(), it's set to the value 0x5757, corresponding to
-non-beep input on 1Ah and no 1Ah loopback to either headphones or
-speakers. (Although, curiously, the loopback amp is still enabled.) This
-write was added fairly recently by commit e3743f431143 ("ALSA:
-hda/realtek - Dell headphone has noise on unmute for ALC236") and is a
-safe default. However, it happens in the wrong place:
-alc_fill_eapd_coef() runs on module load and cold boot but not on S3
-resume, meaning the register loses its value after suspend.
+This series fixes a bug where request_module() was reporting success to
+kernel code when module autoloading had been completely disabled via
+'echo > /proc/sys/kernel/modprobe'.
 
-Conversely, in alc256_init(), the register is updated to unset bit 13
-(disable speaker loopback) and set bit 5 (set non-beep input on 1Ah).
-Although this write does run on S3 resume, it's not quite enough to fix
-up the register's default value of 0x3717. What's missing is a set of
-bit 14 to disable headphone loopback. Without that, we end up with a
-feedback loop where the headphone jack is being driven by amplified
-samples of itself[2].
+It also addresses the issues raised on the original thread
+(https://lkml.kernel.org/lkml/20200310223731.126894-1-ebiggers@kernel.org/T/#u)
+bydocumenting the modprobe sysctl, adding a self-test for the empty path
+case, and downgrading a user-reachable WARN_ONCE().
 
-This change eliminates the update in alc256_init() and replaces it with
-the 0x5757 write from alc_fill_eapd_coef(). Kailang says that 0x5757 is
-supposed to be the codec's default value, so using it will make
-debugging easier for Realtek.
+This patch (of 4):
 
-Affects the ALC255, ALC256, ALC257, ALC235, and ALC236 codecs.
+It's long been possible to disable kernel module autoloading completely
+(while still allowing manual module insertion) by setting
+/proc/sys/kernel/modprobe to the empty string.
 
-[1] Newly documented in Documentation/sound/hd-audio/realtek-pc-beep.rst
+This can be preferable to setting it to a nonexistent file since it
+avoids the overhead of an attempted execve(), avoids potential
+deadlocks, and avoids the call to security_kernel_module_request() and
+thus on SELinux-based systems eliminates the need to write SELinux rules
+to dontaudit module_request.
 
-[2] Setting the "Headphone Mic Boost" control from userspace changes
-this feedback loop and has been a widely-shared workaround for headphone
-noise on laptops like the Dell XPS 13 9350. This commit eliminates the
-feedback loop and makes the workaround unnecessary.
+However, when module autoloading is disabled in this way,
+request_module() returns 0.  This is broken because callers expect 0 to
+mean that the module was successfully loaded.
 
-Fixes: e1e8c1fdce8b ("ALSA: hda/realtek - Dell headphone has noise on unmute for ALC236")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Link: https://lore.kernel.org/r/bf22b417d1f2474b12011c2a39ed6cf8b06d3bf5.1585584498.git.tommyhebb@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Apparently this was never noticed because this method of disabling
+module autoloading isn't used much, and also most callers don't use the
+return value of request_module() since it's always necessary to check
+whether the module registered its functionality or not anyway.
+
+But improperly returning 0 can indeed confuse a few callers, for example
+get_fs_type() in fs/filesystems.c where it causes a WARNING to be hit:
+
+	if (!fs && (request_module("fs-%.*s", len, name) == 0)) {
+		fs = __get_fs_type(name, len);
+		WARN_ONCE(!fs, "request_module fs-%.*s succeeded, but still no fs?\n", len, name);
+	}
+
+This is easily reproduced with:
+
+	echo > /proc/sys/kernel/modprobe
+	mount -t NONEXISTENT none /
+
+It causes:
+
+	request_module fs-NONEXISTENT succeeded, but still no fs?
+	WARNING: CPU: 1 PID: 1106 at fs/filesystems.c:275 get_fs_type+0xd6/0xf0
+	[...]
+
+This should actually use pr_warn_once() rather than WARN_ONCE(), since
+it's also user-reachable if userspace immediately unloads the module.
+Regardless, request_module() should correctly return an error when it
+fails.  So let's make it return -ENOENT, which matches the error when
+the modprobe binary doesn't exist.
+
+I've also sent patches to document and test this case.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jeff Vander Stoep <jeffv@google.com>
+Cc: Ben Hutchings <benh@debian.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200310223731.126894-1-ebiggers@kernel.org
+Link: http://lkml.kernel.org/r/20200312202552.241885-1-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ kernel/kmod.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -333,7 +333,9 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0215:
- 	case 0x10ec0233:
- 	case 0x10ec0235:
-+	case 0x10ec0236:
- 	case 0x10ec0255:
-+	case 0x10ec0256:
- 	case 0x10ec0257:
- 	case 0x10ec0282:
- 	case 0x10ec0283:
-@@ -345,11 +347,6 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0300:
- 		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
- 		break;
--	case 0x10ec0236:
--	case 0x10ec0256:
--		alc_write_coef_idx(codec, 0x36, 0x5757);
--		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
--		break;
- 	case 0x10ec0275:
- 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
- 		break;
-@@ -3122,7 +3119,13 @@ static void alc256_init(struct hda_codec
- 	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight power */
- 	alc_update_coefex_idx(codec, 0x53, 0x02, 0x8000, 1 << 15); /* Clear bit */
- 	alc_update_coefex_idx(codec, 0x53, 0x02, 0x8000, 0 << 15);
--	alc_update_coef_idx(codec, 0x36, 1 << 13, 1 << 5); /* Switch pcbeep path to Line in path*/
-+	/*
-+	 * Expose headphone mic (or possibly Line In on some machines) instead
-+	 * of PC Beep on 1Ah, and disable 1Ah loopback for all outputs. See
-+	 * Documentation/sound/hd-audio/realtek-pc-beep.rst for details of
-+	 * this register.
-+	 */
-+	alc_write_coef_idx(codec, 0x36, 0x5757);
- }
+--- a/kernel/kmod.c
++++ b/kernel/kmod.c
+@@ -119,7 +119,7 @@ out:
+  * invoke it.
+  *
+  * If module auto-loading support is disabled then this function
+- * becomes a no-operation.
++ * simply returns -ENOENT.
+  */
+ int __request_module(bool wait, const char *fmt, ...)
+ {
+@@ -140,7 +140,7 @@ int __request_module(bool wait, const ch
+ 	WARN_ON_ONCE(wait && current_is_async());
  
- static void alc256_shutup(struct hda_codec *codec)
+ 	if (!modprobe_path[0])
+-		return 0;
++		return -ENOENT;
+ 
+ 	va_start(args, fmt);
+ 	ret = vsnprintf(module_name, MODULE_NAME_LEN, fmt, args);
 
 
