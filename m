@@ -2,64 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F0E1B3A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A8B1B3A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgDVI1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 04:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725811AbgDVI1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 04:27:44 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906D520663;
-        Wed, 22 Apr 2020 08:27:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587544064;
-        bh=9nPEUCr7SP5h8JspfKl0cqAh0KchfqzJhrBmJScvk98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N2Kd0CFMnUNEzctUveKaEibsEEqBa9DcDG4hGVTv8fZGK2TQnCOv7oQA+LpXWhdcM
-         ZjjyoUZR7rQFM4BXY5h1Mkdb3GGyJLVybTDwtTUZFOuqoU6AYb1bWF6olOX/YcUEnn
-         kH+Bj3lvxWVJA/B/mXDxyALdCj+6QxQDn+BpjUkQ=
-Date:   Wed, 22 Apr 2020 10:27:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Evalds Iodzevics <evalds.iodzevics@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        ben@decadent.org.uk, bp@suse.de, stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/microcode/intel: replace sync_core() with
- native_cpuid_reg(eax)
-Message-ID: <20200422082741.GA3017981@kroah.com>
-References: <20200422081759.1632-1-evalds.iodzevics@gmail.com>
+        id S1726460AbgDVI2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 04:28:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2833 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725811AbgDVI2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 04:28:43 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F0402F77B6BB4EF88F18;
+        Wed, 22 Apr 2020 16:28:40 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Apr 2020 16:28:39 +0800
+From:   Mao Wenan <maowenan@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH bpf-next 0/2] Change return code if failed to load object
+Date:   Wed, 22 Apr 2020 16:30:08 +0800
+Message-ID: <20200422083010.28000-1-maowenan@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422081759.1632-1-evalds.iodzevics@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 11:17:59AM +0300, Evalds Iodzevics wrote:
-> On Intel it is required to do CPUID(1) before reading the microcode
-> revision MSR. Current code in 4.4 an 4.9 relies on sync_core() to call
-> CPUID, unfortunately on 32 bit machines code inside sync_core() always
-> jumps past CPUID instruction as it depends on data structure boot_cpu_data
-> witch are not populated correctly so early in boot sequence.
-> 
-> It depends on:
-> commit 5dedade6dfa2 ("x86/CPU: Add native CPUID variants returning a single
-> datum")
-> 
-> This patch is for 4.4 but also should apply to 4.9
-> 
-> Signed-off-by: Evalds Iodzevics <evalds.iodzevics@gmail.com>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/include/asm/microcode_intel.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+The first patch change return code from -EINVAL to -EOPNOTSUPP, 
+the second patch quote the err value returned by bpf_object__load().  
 
-Thanks, much better, now queued up.
+Mao Wenan (2):
+  bpf: Change error code when ops is NULL
+  libbpf: Return err if bpf_object__load failed
 
-greg k-h
+ kernel/bpf/syscall.c   | 8 +++++---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+-- 
+2.20.1
+
