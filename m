@@ -2,196 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C450D1B3592
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38791B359C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgDVDdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 23:33:31 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:62690 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgDVDda (ORCPT
+        id S1726444AbgDVDiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 23:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726228AbgDVDip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 23:33:30 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200422033327epoutp03a94b406cf23166739f2308a9651a9898~IBttcg0Ux0765307653epoutp03R
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:33:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200422033327epoutp03a94b406cf23166739f2308a9651a9898~IBttcg0Ux0765307653epoutp03R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587526407;
-        bh=rHRFhOm3d5X3uCzrv6JCkr/Ga5lu4G0lQQo0a8i9lGI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=M81xgS/HNgOmemFKY2ZaGxzmRXpYDVCxjf63pnw2CJEN2qzFlZvbpTd3oviGy8AKX
-         c/b+eJ6PW/LntiNaAUGVPWp4uSfQN0fTjL5v5QtujzJ1erZg2qKK4gV9AVQrOSIQeb
-         pOYvYO1GZuC1HXN5cbjPHZJe+nkWeePp7CzqiHmw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200422033326epcas1p3445abb3dc8e8ea5ea94bdd7414615af1~IBtsd99P20666006660epcas1p38;
-        Wed, 22 Apr 2020 03:33:26 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 496Qxw042jzMqYkZ; Wed, 22 Apr
-        2020 03:33:24 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E1.AC.04744.30BBF9E5; Wed, 22 Apr 2020 12:33:23 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200422033323epcas1p173c1775e4f262ad67fd6cf5b3c03e48d~IBtpafPcC3085130851epcas1p12;
-        Wed, 22 Apr 2020 03:33:23 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200422033323epsmtrp2871297e58febd5706787c9a36d57c39e~IBtpZmnzm1058110581epsmtrp2k;
-        Wed, 22 Apr 2020 03:33:23 +0000 (GMT)
-X-AuditID: b6c32a38-26bff70000001288-08-5e9fbb03869c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FA.90.04024.30BBF9E5; Wed, 22 Apr 2020 12:33:23 +0900 (KST)
-Received: from [10.113.221.211] (unknown [10.113.221.211]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200422033323epsmtip20a692321730c3e5cfb52e70ae63cba61~IBtpL78Lg2768627686epsmtip2O;
-        Wed, 22 Apr 2020 03:33:23 +0000 (GMT)
-Subject: Re: [PATCH] drm/exynos: Delete an error message in three functions
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-From:   Inki Dae <inki.dae@samsung.com>
-Message-ID: <a088b8e7-869b-8f8f-b9a1-9b68de7b714c@samsung.com>
-Date:   Wed, 22 Apr 2020 12:38:24 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.9.0
+        Tue, 21 Apr 2020 23:38:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D40C0610D6;
+        Tue, 21 Apr 2020 20:38:45 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id t11so448885lfe.4;
+        Tue, 21 Apr 2020 20:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cjSTi7hlF1/NelCXmbeNWnOnAcO/OjzgBK0nAtkVF1M=;
+        b=HsYir1MD1qN3cOFB5Lr3179LEcQcQ1a/Qq3NCUTytLRTeuLM6l9Rixek6ovajwT16b
+         BMP9vfjjaXChJCfi00vAzyGiJPpHofR2+PIw9/z7h8vSXN9Ha0RkgU3gQTFJgkAe2HGQ
+         W5fCz7w7LP1mkVNxJDhgDJsp586/okfTrd0rancohGo7/OAN863jRiEwLN8kGkOC4P+h
+         9IPyvWOfG/qXyqqXp4L2tadElFAk//2zk3q6qm3zcY0lBsTOw3BLEg0BSy6YGPPF+otf
+         pnpXsE6oUgHvE10hJqnJrncoARHmSXGczeEb3AZtba2V4x0ku1caTdPk7cba5nhn1Mw3
+         hYkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cjSTi7hlF1/NelCXmbeNWnOnAcO/OjzgBK0nAtkVF1M=;
+        b=oCHQFWo9/CeYmde5RL7xiQClD3oiFv1UVYIQ3O3G9k/dvWUmjfBhEzS9F7KSQVCeYn
+         fFp6teUs6ge8OmAnH848Nfq7KXeD1h9teTWI9LrwJ0gvmVl1xBIM2HQ1rCKlRHvmJ+2V
+         b4lw/Q+Qxd/aw5XZ4tW74HiZfXov/qo7T5T/Z3VnkGxlMF6V4Bk7UPcQohvZk8kkhMmK
+         b3bwUf9iTy3vKmx4srDyCzWsJL7mF7mXqnfheSqdxbLxXpRlRii+0YgkxX6xpn94ieIU
+         aGoMMtxCyqNCASc0CfuSyUssfL/8woZQ8WLQCr4YjBeT8dI+BK3FmsfGIpNXgOvGulmV
+         EvxA==
+X-Gm-Message-State: AGi0PubJvgD6GgKLOZbF/6AvPWX7OBDj9vKh1qI7/hM9S2hK+8WaTgHm
+        rJZPeUJIHmmcrtXuBzWzxMNev59chdo1E0feBkBtM4FiKQ0=
+X-Google-Smtp-Source: APiQypIpUMoiM4pLlpvoneXnVmUpQwIHtS5zEdjT4qynaypGLsgcvfd5TCUNGVuboXjX5mw49Gl/fP8JXcB430T44RI=
+X-Received: by 2002:ac2:519c:: with SMTP id u28mr15656394lfi.17.1587526723542;
+ Tue, 21 Apr 2020 20:38:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <57b725ed-f705-b5e1-0da6-3d16801c7c85@web.de>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFJsWRmVeSWpSXmKPExsWy7bCmri7z7vlxBiufWFn0njvJZPF/20Rm
-        iytf37NZvLh3kcVi6y1pi/7Hr5ktzp/fwG5xtukNu8Wmx9dYLS7vmsNmMeP8PqCGWc9ZLWZM
-        fslm8fF/M7MDn8f56b1sHnu/LWDx2LSqk81j+7cHrB73u48zeWxeUu/Rt2UVo8fnTXIet59t
-        YwngjMq2yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAG6
-        XUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYFmgV5yYW1yal66XnJ9rZWhgYGQK
-        VJiQnbHu/HTWgjsiFWvf5TYwNgp2MXJySAiYSDy79p21i5GLQ0hgB6PEmtmT2CCcT4wSCw7+
-        ZodwvjFKPNx1jA2mpamrBaplL6PE3GlTWUASQgLvGSWOH6oGsYUFvCWmr5kE1i0isJhZYtG2
-        vYwgCWaBYoneo0tYQWw2AVWJiSvug03lFbCT+NS7iB3EZgGKXzw8DSjOwSEqECFx+msiRImg
-        xMmZT8B2cQpYScycvJgNYqS4xK0n85kgbHmJ5q2zmUH2SgisY5c4cfULI8TVLhK9C7ewQtjC
-        Eq+Ob2GHsKUkPr/bywbR0MwoMXHGaSYIp4NR4u7j6ywQVcYS+5dOZgK5iFlAU2L9Ln2IsKLE
-        zt9zoR7jk3j3tYcVpERCgFeio00IokRJ4tjFG1A3SEhcWDIRGooeEqsv7mGawKg4C8lvs5D8
-        MwvJP7MQFi9gZFnFKJZaUJybnlpsWGCCHNubGMHpWstiB+Oecz6HGAU4GJV4eG+cnxcnxJpY
-        VlyZe4hRgoNZSYR3w0OgEG9KYmVValF+fFFpTmrxIUZTYMhPZJYSTc4H5pK8knhDUyNjY2ML
-        E0MzU0NDJXHeqddz4oQE0hNLUrNTUwtSi2D6mDg4pRoYm35a2nlOX2d4b3XLglmXJc+XFZmE
-        PJ16aotNdoXlkZ+Od0s2tCl/uL4qZRbr7wDbG0tbtq15ITOVTdN/esVck0DBkK+H3Lpb93jH
-        eXmdOmOgsqXg+mmhMrt3K+P2W3Bfnrjv0Q7f0Ltf9C6xm06dks9gNvP5078rq1v6py1aZM52
-        5cv2R/p33yqxFGckGmoxFxUnAgDVZBnj7QMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsWy7bCSvC7z7vlxBrcuylj0njvJZPF/20Rm
-        iytf37NZvLh3kcVi6y1pi/7Hr5ktzp/fwG5xtukNu8Wmx9dYLS7vmsNmMeP8PqCGWc9ZLWZM
-        fslm8fF/M7MDn8f56b1sHnu/LWDx2LSqk81j+7cHrB73u48zeWxeUu/Rt2UVo8fnTXIet59t
-        YwngjOKySUnNySxLLdK3S+DKWHd+OmvBHZGKte9yGxgbBbsYOTkkBEwkmrpaWLsYuTiEBHYz
-        Shx59oOxi5EDKCEhsWUrB4QpLHH4cDFEyVtGib39rawgvcIC3hLT10xiB0mICCxllph8+B07
-        SIJZoFhi24c17BAdvYwSR4/vZwJJsAmoSkxccZ8NxOYVsJP41LsIrIEFKH7x8DSwuKhAhMTz
-        7TcYIWoEJU7OfMICYnMKWEnMnLyYDWKBusSfeZeYIWxxiVtP5jNB2PISzVtnM09gFJqFpH0W
-        kpZZSFpmIWlZwMiyilEytaA4Nz232LDAMC+1XK84Mbe4NC9dLzk/dxMjOD61NHcwXl4Sf4hR
-        gINRiYf3xvl5cUKsiWXFlbmHGCU4mJVEeDc8BArxpiRWVqUW5ccXleakFh9ilOZgURLnfZp3
-        LFJIID2xJDU7NbUgtQgmy8TBKdXAuOxgZ6v0sZ1rZI+X7Mo5fi7uZd2DKc9TllrwlWRGiZz+
-        dO9hatZP3dqVU7um5DQvXbbbI/nGGgEzjnVXC/wsSjo39ifKtzn5bNl019SwVzd5d+X/fyHW
-        n20dpI22r5yh9kx7qkn7DbfNzsVhIcbCyn79M+apCK3bu/HBwqm7fv1YeOPY9pdC35VYijMS
-        DbWYi4oTAd2g5qjLAgAA
-X-CMS-MailID: 20200422033323epcas1p173c1775e4f262ad67fd6cf5b3c03e48d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200405121842epcas1p4c947a40c70881e72c38d6c9cc75c60d5
-References: <CGME20200405121842epcas1p4c947a40c70881e72c38d6c9cc75c60d5@epcas1p4.samsung.com>
-        <57b725ed-f705-b5e1-0da6-3d16801c7c85@web.de>
+References: <20200420071548.62112-1-nate.karstens@garmin.com>
+ <20200420071548.62112-2-nate.karstens@garmin.com> <36dce9b4-a0bf-0015-f6bc-1006938545b1@gmail.com>
+In-Reply-To: <36dce9b4-a0bf-0015-f6bc-1006938545b1@gmail.com>
+From:   Changli Gao <xiaosuo@gmail.com>
+Date:   Wed, 22 Apr 2020 11:38:32 +0800
+Message-ID: <CABa6K_HWsy9DdjsKXE2d_JrC+OsNuW+OALS+-_HiV3r2XgC1bw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] fs: Implement close-on-fork
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Nate Karstens <nate.karstens@garmin.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Markus Elfring,
+On Mon, Apr 20, 2020 at 6:25 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+>
+>
+> On 4/20/20 12:15 AM, Nate Karstens wrote:
+> > The close-on-fork flag causes the file descriptor to be closed
+> > atomically in the child process before the child process returns
+> > from fork(). Implement this feature and provide a method to
+> > get/set the close-on-fork flag using fcntl(2).
+> >
+> > This functionality was approved by the Austin Common Standards
+> > Revision Group for inclusion in the next revision of the POSIX
+> > standard (see issue 1318 in the Austin Group Defect Tracker).
+>
+> Oh well... yet another feature slowing down a critical path.
+>
+> >
+> > Co-developed-by: Changli Gao <xiaosuo@gmail.com>
+> > Signed-off-by: Changli Gao <xiaosuo@gmail.com>
+> > Signed-off-by: Nate Karstens <nate.karstens@garmin.com>
+> > ---
+> >  fs/fcntl.c                             |  2 ++
+> >  fs/file.c                              | 50 +++++++++++++++++++++++++-
+> >  include/linux/fdtable.h                |  7 ++++
+> >  include/linux/file.h                   |  2 ++
+> >  include/uapi/asm-generic/fcntl.h       |  5 +--
+> >  tools/include/uapi/asm-generic/fcntl.h |  5 +--
+> >  6 files changed, 66 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/fs/fcntl.c b/fs/fcntl.c
+> > index 2e4c0fa2074b..23964abf4a1a 100644
+> > --- a/fs/fcntl.c
+> > +++ b/fs/fcntl.c
+> > @@ -335,10 +335,12 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+> >               break;
+> >       case F_GETFD:
+> >               err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
+> > +             err |= get_close_on_fork(fd) ? FD_CLOFORK : 0;
+> >               break;
+> >       case F_SETFD:
+> >               err = 0;
+> >               set_close_on_exec(fd, arg & FD_CLOEXEC);
+> > +             set_close_on_fork(fd, arg & FD_CLOFORK);
+> >               break;
+> >       case F_GETFL:
+> >               err = filp->f_flags;
+> > diff --git a/fs/file.c b/fs/file.c
+> > index c8a4e4c86e55..de7260ba718d 100644
+> > --- a/fs/file.c
+> > +++ b/fs/file.c
+> > @@ -57,6 +57,8 @@ static void copy_fd_bitmaps(struct fdtable *nfdt, struct fdtable *ofdt,
+> >       memset((char *)nfdt->open_fds + cpy, 0, set);
+> >       memcpy(nfdt->close_on_exec, ofdt->close_on_exec, cpy);
+> >       memset((char *)nfdt->close_on_exec + cpy, 0, set);
+> > +     memcpy(nfdt->close_on_fork, ofdt->close_on_fork, cpy);
+> > +     memset((char *)nfdt->close_on_fork + cpy, 0, set);
+> >
+>
+> I suggest we group the two bits of a file (close_on_exec, close_on_fork) together,
+> so that we do not have to dirty two separate cache lines.
+>
+> Otherwise we will add yet another cache line miss at every file opening/closing for processes
+> with big file tables.
+>
+> Ie having a _single_ bitmap array, even bit for close_on_exec, odd bit for close_on_fork
+>
+> static inline void __set_close_on_exec(unsigned int fd, struct fdtable *fdt)
+> {
+>         __set_bit(fd * 2, fdt->close_on_fork_exec);
+> }
+>
+> static inline void __set_close_on_fork(unsigned int fd, struct fdtable *fdt)
+> {
+>         __set_bit(fd * 2 + 1, fdt->close_on_fork_exec);
+> }
+>
+> Also the F_GETFD/F_SETFD implementation must use a single function call,
+> to not acquire the spinlock twice.
+>
 
-20. 4. 5. 오후 9:18에 Markus Elfring 이(가) 쓴 글:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sun, 5 Apr 2020 14:10:09 +0200
-> 
-> The function “platform_get_irq” can log an error already.
-> Thus omit redundant messages for the exception handling in the
-> calling functions.
-> 
-> This issue was detected by using the Coccinelle software.
+Good suggestions.
 
-Picked it up.
+At the same time, we'd better extend other syscalls, which set the
+FD_CLOEXEC when  creating FDs. i.e. open, pipe3...
 
-Thanks,
-Inki Dae.
 
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  drivers/gpu/drm/exynos/exynos_drm_dsi.c     | 4 +---
->  drivers/gpu/drm/exynos/exynos_drm_rotator.c | 4 +---
->  drivers/gpu/drm/exynos/exynos_drm_scaler.c  | 4 +---
->  3 files changed, 3 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> index e080aa92338c..a00c6dd16c8a 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> @@ -1813,10 +1813,8 @@ static int exynos_dsi_probe(struct platform_device *pdev)
->  	}
-> 
->  	dsi->irq = platform_get_irq(pdev, 0);
-> -	if (dsi->irq < 0) {
-> -		dev_err(dev, "failed to request dsi irq resource\n");
-> +	if (dsi->irq < 0)
->  		return dsi->irq;
-> -	}
-> 
->  	irq_set_status_flags(dsi->irq, IRQ_NOAUTOEN);
->  	ret = devm_request_threaded_irq(dev, dsi->irq, NULL,
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_rotator.c b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-> index dafa87b82052..2d94afba031e 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-> @@ -293,10 +293,8 @@ static int rotator_probe(struct platform_device *pdev)
->  		return PTR_ERR(rot->regs);
-> 
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0) {
-> -		dev_err(dev, "failed to get irq\n");
-> +	if (irq < 0)
->  		return irq;
-> -	}
-> 
->  	ret = devm_request_irq(dev, irq, rotator_irq_handler, 0, dev_name(dev),
->  			       rot);
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_scaler.c b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-> index 93c43c8d914e..ce1857138f89 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-> @@ -502,10 +502,8 @@ static int scaler_probe(struct platform_device *pdev)
->  		return PTR_ERR(scaler->regs);
-> 
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0) {
-> -		dev_err(dev, "failed to get irq\n");
-> +	if (irq < 0)
->  		return irq;
-> -	}
-> 
->  	ret = devm_request_threaded_irq(dev, irq, NULL,	scaler_irq_handler,
->  					IRQF_ONESHOT, "drm_scaler", scaler);
-> --
-> 2.26.0
-> 
-> 
-> 
+-- 
+Regards,
+Changli Gao(xiaosuo@gmail.com)
