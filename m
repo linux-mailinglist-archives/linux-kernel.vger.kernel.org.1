@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AED1B3D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5972E1B3DB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgDVKKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
+        id S1729871AbgDVKRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:17:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726799AbgDVKKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:12 -0400
+        id S1726599AbgDVKQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:16:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84CCB20575;
-        Wed, 22 Apr 2020 10:10:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7E212076E;
+        Wed, 22 Apr 2020 10:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550212;
-        bh=EK/Cuxjn3w46ZMpO2v2XOHxAZrlG7GWtQElkScPysAM=;
+        s=default; t=1587550598;
+        bh=J1JkjCc5mTHrf38+AhcltY41zhe8rWp5/agC1s7A4H4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCWl/A8Dr8PtfE5Li3/xlIgQTRsIhT+gaQa3J0DKZOOC/Z5j1gkEq6b0SO9uyHknB
-         ESxbnZm3NBQGxbfD3IRKLFam2N8u9odzloUsf4bXuMlFhpgzmrdkV+kixziuLuPiXv
-         PAGJJXgEB34hFpUJuGV7ARHaalzKOmNfl5UVHWOk=
+        b=G7rh7bmfOSICT+NAAgoM3ZQgiIEkNlIbOYZHWxeY/1aeaxGCarT5Ob2V4ZlFNv4H0
+         bhR97ZfIJXz44CPv+lZHKeEF39vB5I6a6psty1S/8oVqMDKCG7QWwLvQa0dkaEhAcb
+         xhy6RNxnH7k0juchnHYqvZwBE9ZPadvfuC1ZYjVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sungbo Eo <mans0n@gorani.run>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.14 052/199] irqchip/versatile-fpga: Apply clear-mask earlier
+        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
+        Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.4 017/118] of: unittest: kmemleak in of_unittest_overlay_high_level()
 Date:   Wed, 22 Apr 2020 11:56:18 +0200
-Message-Id: <20200422095103.428338163@linuxfoundation.org>
+Message-Id: <20200422095034.404330418@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sungbo Eo <mans0n@gorani.run>
+From: Frank Rowand <frank.rowand@sony.com>
 
-commit 6a214a28132f19ace3d835a6d8f6422ec80ad200 upstream.
+commit 145fc138f9aae4f9e1331352e301df28e16aed35 upstream.
 
-Clear its own IRQs before the parent IRQ get enabled, so that the
-remaining IRQs do not accidentally interrupt the parent IRQ controller.
+kmemleak reports several memory leaks from devicetree unittest.
+This is the fix for problem 3 of 5.
 
-This patch also fixes a reboot bug on OX820 SoC, where the remaining
-rps-timer IRQ raises a GIC interrupt that is left pending. After that,
-the rps-timer IRQ is cleared during driver initialization, and there's
-no IRQ left in rps-irq when local_irq_enable() is called, which evokes
-an error message "unexpected IRQ trap".
+of_unittest_overlay_high_level() failed to kfree the newly created
+property when the property named 'name' is skipped.
 
-Fixes: bdd272cbb97a ("irqchip: versatile FPGA: support cascaded interrupts from DT")
-Signed-off-by: Sungbo Eo <mans0n@gorani.run>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200321133842.2408823-1-mans0n@gorani.run
+Fixes: 39a751a4cb7e ("of: change overlay apply input data from unflattened to FDT")
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/irqchip/irq-versatile-fpga.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/of/unittest.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/irqchip/irq-versatile-fpga.c
-+++ b/drivers/irqchip/irq-versatile-fpga.c
-@@ -212,6 +212,9 @@ int __init fpga_irq_of_init(struct devic
- 	if (of_property_read_u32(node, "valid-mask", &valid_mask))
- 		valid_mask = 0;
- 
-+	writel(clear_mask, base + IRQ_ENABLE_CLEAR);
-+	writel(clear_mask, base + FIQ_ENABLE_CLEAR);
-+
- 	/* Some chips are cascaded from a parent IRQ */
- 	parent_irq = irq_of_parse_and_map(node, 0);
- 	if (!parent_irq) {
-@@ -221,9 +224,6 @@ int __init fpga_irq_of_init(struct devic
- 
- 	fpga_irq_init(base, node->name, 0, parent_irq, valid_mask, node);
- 
--	writel(clear_mask, base + IRQ_ENABLE_CLEAR);
--	writel(clear_mask, base + FIQ_ENABLE_CLEAR);
--
- 	/*
- 	 * On Versatile AB/PB, some secondary interrupts have a direct
- 	 * pass-thru to the primary controller for IRQs 20 and 22-31 which need
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -2481,8 +2481,11 @@ static __init void of_unittest_overlay_h
+ 				goto err_unlock;
+ 			}
+ 			if (__of_add_property(of_symbols, new_prop)) {
++				kfree(new_prop->name);
++				kfree(new_prop->value);
++				kfree(new_prop);
+ 				/* "name" auto-generated by unflatten */
+-				if (!strcmp(new_prop->name, "name"))
++				if (!strcmp(prop->name, "name"))
+ 					continue;
+ 				unittest(0, "duplicate property '%s' in overlay_base node __symbols__",
+ 					 prop->name);
 
 
