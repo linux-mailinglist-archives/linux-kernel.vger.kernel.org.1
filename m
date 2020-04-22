@@ -2,128 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E261B3481
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 03:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812391B34A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 03:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgDVB2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 21:28:39 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:45477 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726228AbgDVB2i (ORCPT
+        id S1726398AbgDVBrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 21:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgDVBrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 21:28:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587518917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZNdcG+TmbSTCG4vzT43nnQ/z4sik6/PtNUHfENZbww=;
-        b=E/ZfrFgga2yMGaMdqh22JUqS080raUX/OAOY/sxBEf2i5amCNa0dS7jcOAwTkr1Z6fpdNk
-        Vb9EUiw0KfXiXYuKpnR3Q47tiku1m+x6ggKpN5bgiiQtvU3MK+TTq4AAtajyi3/yamYSCl
-        M/a2faC4OBeQz3BAfCUvRQMh1VW2mvs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-j52Xm2bOMByNiHx8lGjYwg-1; Tue, 21 Apr 2020 21:28:32 -0400
-X-MC-Unique: j52Xm2bOMByNiHx8lGjYwg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15EF2800D5B;
-        Wed, 22 Apr 2020 01:28:30 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4818EB3A7E;
-        Wed, 22 Apr 2020 01:28:19 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 09:28:14 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, bvanassche@acm.org, hare@suse.de,
-        mikelley@microsoft.com, longli@microsoft.com,
-        linux-hyperv@vger.kernel.org, wei.liu@kernel.org,
-        sthemmin@microsoft.com, haiyangz@microsoft.com, kys@microsoft.com
-Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
-Message-ID: <20200422012814.GB299948@T590>
-References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
+        Tue, 21 Apr 2020 21:47:47 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D259C0610D6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 18:47:47 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x77so269676pfc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 18:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fCEr6pXIIH8a6wvkqNzUF108BpUBYKo9yQQ8CIUa6jU=;
+        b=EQfvQRYkh1XrsrAz+l9+x0k+vOSp/UM4fgbCnYQ64D1Dq8B1FWcLG+ca/ZEvrLDjeK
+         Lh2aJ9ttT5kKR1+EZokWVRzp6P4jAQiExqYM9Uq7+iSd8vkAer6L1ObRJBmwUbr+Saq+
+         DKZprigLH+OXKegSJ60ezTDhpCv/UN11QS9qQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fCEr6pXIIH8a6wvkqNzUF108BpUBYKo9yQQ8CIUa6jU=;
+        b=jrVp0nw0/QwVAQlx9Fbld9g/GoxH3hCI0I880BnqMQvkrBjmtTGvI/bBUEJf435N3U
+         GM6ziNisbBsuVq0wrQnxeREfjBA3zYz5prSz33TT8skkwSw0CRBsFkV3lyGukVPiYq9n
+         nXnTTr4Z8+uZLCQuXR8Ti+lkVYhO787UbOBSS/mcA8w0iTvS48qTUFtJZjuGoMxUqJxY
+         92LmHBKovJf81ShuMzwgTM/aS0thYeSNpVE86W403c/ctrUCM3hgTTsOnnSLJAT7qPxW
+         AhnQ8LYL1u4gn0fg8LZZ21eiuIpQQynyqvtGQFK8QL9vwQ+HzeYfRcql1E7MGlhpa8Fo
+         yyCQ==
+X-Gm-Message-State: AGi0PuYNc/8JBgnPfej3NsqPyHDtjVvW21lQHG26POcmq+stwItXTeEY
+        IxtgRjz6N0TCFGSbF6f2sbgCfDYcQtc=
+X-Google-Smtp-Source: APiQypKgi8OJ1mX+/HuwapaKLjl2kzCZ/sRFYkride4RhJDFkaVtcRpFwO+cu5rdBhyo9Ui5Zyzrvg==
+X-Received: by 2002:a63:4e21:: with SMTP id c33mr25258011pgb.305.1587520066806;
+        Tue, 21 Apr 2020 18:47:46 -0700 (PDT)
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com. [209.85.216.47])
+        by smtp.gmail.com with ESMTPSA id p65sm3489114pgp.51.2020.04.21.18.47.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Apr 2020 18:47:46 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id hi11so173489pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 18:47:46 -0700 (PDT)
+X-Received: by 2002:a67:907:: with SMTP id 7mr17409548vsj.42.1587519611840;
+ Tue, 21 Apr 2020 18:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587514644-47058-1-git-send-email-decui@microsoft.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200421110520.197930-1-evanbenn@chromium.org>
+ <20200421210403.v2.2.Ia92bb4d4ce84bcefeba1d00aaa1c1e919b6164ef@changeid> <CAODwPW9MtDLSL_up9W0TO1PcjyA_9cUtNo3No7XXusiwqKBLDw@mail.gmail.com>
+In-Reply-To: <CAODwPW9MtDLSL_up9W0TO1PcjyA_9cUtNo3No7XXusiwqKBLDw@mail.gmail.com>
+From:   Evan Benn <evanbenn@chromium.org>
+Date:   Wed, 22 Apr 2020 11:39:44 +1000
+X-Gmail-Original-Message-ID: <CAKz_xw3-tvYoCDs07xEUBBMf024aezGMoZ35LsTN+_dXT9nC2Q@mail.gmail.com>
+Message-ID: <CAKz_xw3-tvYoCDs07xEUBBMf024aezGMoZ35LsTN+_dXT9nC2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] watchdog: Add new arm_smc_wdt watchdog driver
+To:     Julius Werner <jwerner@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Xingyu Chen <xingyu.chen@amlogic.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Olof Johansson <olof@lixom.net>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 05:17:24PM -0700, Dexuan Cui wrote:
-> During hibernation, the sdevs are suspended automatically in
-> drivers/scsi/scsi_pm.c before storvsc_suspend(), so after
-> storvsc_suspend(), there is no disk I/O from the file systems, but there
-> can still be disk I/O from the kernel space, e.g. disk_check_events() ->
-> sr_block_check_events() -> cdrom_check_events() can still submit I/O
-> to the storvsc driver, which causes a paic of NULL pointer dereference,
-> since storvsc has closed the vmbus channel in storvsc_suspend(): refer
-> to the below links for more info:
->   https://lkml.org/lkml/2020/4/10/47
->   https://lkml.org/lkml/2020/4/17/1103
-> 
-> Fix the panic by blocking/unblocking all the I/O queues properly.
-> 
-> Note: this patch depends on another patch "scsi: core: Allow the state
-> change from SDEV_QUIESCE to SDEV_BLOCK" (refer to the second link above).
-> 
-> Fixes: 56fb10585934 ("scsi: storvsc: Add the support of hibernation")
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> ---
->  drivers/scsi/storvsc_drv.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> index fb41636519ee..fd51d2f03778 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -1948,6 +1948,11 @@ static int storvsc_suspend(struct hv_device *hv_dev)
->  	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
->  	struct Scsi_Host *host = stor_device->host;
->  	struct hv_host_device *host_dev = shost_priv(host);
-> +	int ret;
-> +
-> +	ret = scsi_host_block(host);
-> +	if (ret)
-> +		return ret;
->  
->  	storvsc_wait_to_drain(stor_device);
->  
-> @@ -1968,10 +1973,15 @@ static int storvsc_suspend(struct hv_device *hv_dev)
->  
->  static int storvsc_resume(struct hv_device *hv_dev)
->  {
-> +	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-> +	struct Scsi_Host *host = stor_device->host;
->  	int ret;
->  
->  	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
->  				     hv_dev_is_fc(hv_dev));
-> +	if (!ret)
-> +		ret = scsi_host_unblock(host, SDEV_RUNNING);
-> +
->  	return ret;
->  }
+On Wed, Apr 22, 2020 at 6:31 AM Julius Werner <jwerner@chromium.org> wrote:
+>
+> > +static int smcwd_call(unsigned long smc_func_id, enum smcwd_call call,
+> > +                     unsigned long arg, struct arm_smccc_res *res)
+>
+> I think you should just take a struct watchdog_device* here and do the
+> drvdata unpacking inside the function.
 
-scsi_host_block() is actually too heavy for just avoiding
-scsi internal command, which can be done simply by one atomic
-variable.
+That makes sense, I avoided it because smcwd_call's are made during
+'probe', ~while
+we are 'constructing' the wdd. But this is C, so I think I have
+permission to do this!
 
-Not mention scsi_host_block() is implemented too clumsy because
-nr_luns * synchronize_rcu() are required in scsi_host_block(),
-which should have been optimized to just one.
+> > +static int smcwd_probe(struct platform_device *pdev)
+> > +{
+> > +       struct watchdog_device *wdd;
+> > +       int err;
+> > +       struct arm_smccc_res res;
+> > +       u32 *smc_func_id;
+> > +
+> > +       smc_func_id =
+> > +               devm_kzalloc(&pdev->dev, sizeof(*smc_func_id), GFP_KERNEL);
+> > +       if (!smc_func_id)
+> > +               return -ENOMEM;
+>
+> nit: Could save the allocation by just casting the value itself to a
+> pointer? Or is that considered too hacky?
 
-Also scsi_device_quiesce() is heavy too, still takes 2
-synchronize_rcu() for one LUN.
+I am not yet used to what hacks are allowed in the kernel.
+Where I learned C that would not be allowed.
+I assumed the kernel allocator has fast paths for tiny sizes though.
 
-That is said SCSI suspend may take (3 * nr_luns) sysnchronize_rcu() in
-case that the HBA's suspend handler needs scsi_host_block().
+> > +static const struct of_device_id smcwd_dt_ids[] = {
+> > +       { .compatible = "mediatek,mt8173-smc-wdt" },
+> > +       {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, smcwd_dt_ids);
+>
+> So I'm a bit confused about this... I thought the plan was to either
+> use arm,smc-id and then there'll be no reason to put platform-specific
+> quirks into the driver, so we can just use a generic "arm,smc-wdt"
+> compatible string on all platforms; or we put individual compatible
+> strings for each platform and use them to hardcode platform-specific
+> differences (like the SMC ID) in the driver. But now you're kinda
+> doing both by making the driver code platform-independent but still
+> using a platform-specific compatible string, that doesn't seem to fit
+> together. (If the driver can be platform independent, I think it's
+> nicer to have a generic compatible string so that future platforms
+> which support the same interface don't have to land code changes in
+> order to just use the driver.)
 
-Thanks,
-Ming
+Yes I think you are correct. I got some reviews about the compatible name,
+but I think I misinterpreted those, and arm,smc-wdt would work. I did wonder
+if Xingyu from amlogic needed to modify the driver more, EG with different
+SMCWD_enum values for the amlogic chip, he could then just add an
+amlogic compatible
+and keep our devices running with the other compatible. Although of
+course it would be nicer if
+the amlogic firmware could copy the values here.
 
+Thanks
+
+Evan
