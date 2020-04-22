@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF141B4E86
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78771B4E84
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgDVUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 16:47:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13912 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726641AbgDVUre (ORCPT
+        id S1726760AbgDVUro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 16:47:44 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49406 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726589AbgDVUra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:47:34 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03MKinBs002576
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:31 -0700
+        Wed, 22 Apr 2020 16:47:30 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MKi5EV011539
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:28 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=2KAgJutDZrZk7Fq//ArUwoEi01ypyH6I3tONCz/cRmk=;
- b=LmXl5X0ZldtPDdlxfJH/rlM9NEIf9zxS/ngiGO5S2i/v9PulWShMGkyoLUo4g10yqSch
- zRYxi/GnLt7LnKKIA1nUsBPMJ0UPjoEXpMqUuwd7Cm5k2zmTFTzlw5wE/pxAO5KtIzJv
- 68VgNTR5rA4uag5CnEqfliAqC6NNPfVR4W8= 
+ bh=36iL6fcUyzzyk2uQxjMSUmOSX6/ONuAh4DixC9KKRUY=;
+ b=XoB0vG6nnJZPep0lAuBlXxhRrkYyKUAV5hW41YjDa5aPsk1AQ8Le905H+ndRq1ykw9c3
+ l7ubrzSQX1iNmjLnHtWAGE425jvPAptbQIfR5ThLnl9GY+5SLjGT1ha0w/3Wk7diYUek
+ c2YY9gjHBk1EB0OV3H9kDNh8rFOfqHuHFfc= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 30g36d8bj0-7
+        by mx0a-00082601.pphosted.com with ESMTP id 30jtc5h1xt-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:31 -0700
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:28 -0700
+Received: from intmgw003.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 22 Apr 2020 13:47:26 -0700
+ 15.1.1847.3; Wed, 22 Apr 2020 13:47:27 -0700
 Received: by devvm4439.prn2.facebook.com (Postfix, from userid 111017)
-        id 0ADA72293581B; Wed, 22 Apr 2020 13:47:17 -0700 (PDT)
+        id 0EC542293581D; Wed, 22 Apr 2020 13:47:17 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm4439.prn2.facebook.com
@@ -39,11 +39,12 @@ To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
         <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
+        Roman Gushchin <guro@fb.com>, Waiman Long <longman@redhat.com>,
+        "Tobin C . Harding" <tobin@kernel.org>, Tejun Heo <tj@kernel.org>
 Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 18/19] kselftests: cgroup: add kernel memory accounting tests
-Date:   Wed, 22 Apr 2020 13:47:07 -0700
-Message-ID: <20200422204708.2176080-19-guro@fb.com>
+Subject: [PATCH v3 19/19] tools/cgroup: add memcg_slabinfo.py tool
+Date:   Wed, 22 Apr 2020 13:47:08 -0700
+Message-ID: <20200422204708.2176080-20-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200422204708.2176080-1-guro@fb.com>
 References: <20200422204708.2176080-1-guro@fb.com>
@@ -53,471 +54,333 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-22_07:2020-04-22,2020-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=2
- impostorscore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
- mlxscore=0 bulkscore=0 spamscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004220158
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1015 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220158
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some tests to cover the kernel memory accounting functionality.
-These are covering some issues (and changes) we had recently.
+Add a drgn-based tool to display slab information for a given memcg.
+Can replace cgroup v1 memory.kmem.slabinfo interface on cgroup v2,
+but in a more flexiable way.
 
-1) A test which allocates a lot of negative dentries, checks memcg
-slab statistics, creates memory pressure by setting memory.max
-to some low value and checks that some number of slabs was reclaimed.
+Currently supports only SLUB configuration, but SLAB can be trivially
+added later.
 
-2) A test which covers side effects of memcg destruction: it creates
-and destroys a large number of sub-cgroups, each containing a
-multi-threaded workload which allocates and releases some kernel
-memory. Then it checks that the charge ans memory.stats do add up
-on the parent level.
-
-3) A test which reads /proc/kpagecgroup and implicitly checks that it
-doesn't crash the system.
-
-4) A test which spawns a large number of threads and checks that
-the kernel stacks accounting works as expected.
-
-5) A test which checks that living charged slab objects are not
-preventing the memory cgroup from being released after being deleted
-by a user.
+Output example:
+$ sudo ./tools/cgroup/memcg_slabinfo.py /sys/fs/cgroup/user.slice/user-11=
+1017.slice/user\@111017.service
+shmem_inode_cache     92     92    704   46    8 : tunables    0    0    =
+0 : slabdata      2      2      0
+eventpoll_pwq         56     56     72   56    1 : tunables    0    0    =
+0 : slabdata      1      1      0
+eventpoll_epi         32     32    128   32    1 : tunables    0    0    =
+0 : slabdata      1      1      0
+kmalloc-8              0      0      8  512    1 : tunables    0    0    =
+0 : slabdata      0      0      0
+kmalloc-96             0      0     96   42    1 : tunables    0    0    =
+0 : slabdata      0      0      0
+kmalloc-2048           0      0   2048   16    8 : tunables    0    0    =
+0 : slabdata      0      0      0
+kmalloc-64           128    128     64   64    1 : tunables    0    0    =
+0 : slabdata      2      2      0
+mm_struct            160    160   1024   32    8 : tunables    0    0    =
+0 : slabdata      5      5      0
+signal_cache          96     96   1024   32    8 : tunables    0    0    =
+0 : slabdata      3      3      0
+sighand_cache         45     45   2112   15    8 : tunables    0    0    =
+0 : slabdata      3      3      0
+files_cache          138    138    704   46    8 : tunables    0    0    =
+0 : slabdata      3      3      0
+task_delay_info      153    153     80   51    1 : tunables    0    0    =
+0 : slabdata      3      3      0
+task_struct           27     27   3520    9    8 : tunables    0    0    =
+0 : slabdata      3      3      0
+radix_tree_node       56     56    584   28    4 : tunables    0    0    =
+0 : slabdata      2      2      0
+btrfs_inode          140    140   1136   28    8 : tunables    0    0    =
+0 : slabdata      5      5      0
+kmalloc-1024          64     64   1024   32    8 : tunables    0    0    =
+0 : slabdata      2      2      0
+kmalloc-192           84     84    192   42    2 : tunables    0    0    =
+0 : slabdata      2      2      0
+inode_cache           54     54    600   27    4 : tunables    0    0    =
+0 : slabdata      2      2      0
+kmalloc-128            0      0    128   32    1 : tunables    0    0    =
+0 : slabdata      0      0      0
+kmalloc-512           32     32    512   32    4 : tunables    0    0    =
+0 : slabdata      1      1      0
+skbuff_head_cache     32     32    256   32    2 : tunables    0    0    =
+0 : slabdata      1      1      0
+sock_inode_cache      46     46    704   46    8 : tunables    0    0    =
+0 : slabdata      1      1      0
+cred_jar             378    378    192   42    2 : tunables    0    0    =
+0 : slabdata      9      9      0
+proc_inode_cache      96     96    672   24    4 : tunables    0    0    =
+0 : slabdata      4      4      0
+dentry               336    336    192   42    2 : tunables    0    0    =
+0 : slabdata      8      8      0
+filp                 697    864    256   32    2 : tunables    0    0    =
+0 : slabdata     27     27      0
+anon_vma             644    644     88   46    1 : tunables    0    0    =
+0 : slabdata     14     14      0
+pid                 1408   1408     64   64    1 : tunables    0    0    =
+0 : slabdata     22     22      0
+vm_area_struct      1200   1200    200   40    2 : tunables    0    0    =
+0 : slabdata     30     30      0
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Tobin C. Harding <tobin@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
 ---
- tools/testing/selftests/cgroup/.gitignore  |   1 +
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_kmem.c | 382 +++++++++++++++++++++
- 3 files changed, 385 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
+ tools/cgroup/memcg_slabinfo.py | 226 +++++++++++++++++++++++++++++++++
+ 1 file changed, 226 insertions(+)
+ create mode 100755 tools/cgroup/memcg_slabinfo.py
 
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/se=
-lftests/cgroup/.gitignore
-index aa6de65b0838..84cfcabea838 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -2,3 +2,4 @@
- test_memcontrol
- test_core
- test_freezer
-+test_kmem
-\ No newline at end of file
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/self=
-tests/cgroup/Makefile
-index 967f268fde74..4794844a228e 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -6,11 +6,13 @@ all:
- TEST_FILES     :=3D with_stress.sh
- TEST_PROGS     :=3D test_stress.sh
- TEST_GEN_PROGS =3D test_memcontrol
-+TEST_GEN_PROGS =3D test_kmem
- TEST_GEN_PROGS +=3D test_core
- TEST_GEN_PROGS +=3D test_freezer
-=20
- include ../lib.mk
-=20
- $(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
-+$(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/s=
-elftests/cgroup/test_kmem.c
-new file mode 100644
-index 000000000000..5bc1132fec6b
+diff --git a/tools/cgroup/memcg_slabinfo.py b/tools/cgroup/memcg_slabinfo=
+.py
+new file mode 100755
+index 000000000000..c4225ed63565
 --- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -0,0 +1,382 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <linux/limits.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <sys/sysinfo.h>
-+#include <pthread.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+
-+static int alloc_dcache(const char *cgroup, void *arg)
-+{
-+	unsigned long i;
-+	struct stat st;
-+	char buf[128];
-+
-+	for (i =3D 0; i < (unsigned long)arg; i++) {
-+		snprintf(buf, sizeof(buf),
-+			"/something-non-existent-with-a-long-name-%64lu-%d",
-+			 i, getpid());
-+		stat(buf, &st);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This test allocates 100000 of negative dentries with long names.
-+ * Then it checks that "slab" in memory.stat is larger than 1M.
-+ * Then it sets memory.high to 1M and checks that at least 1/2
-+ * of slab memory has been reclaimed.
-+ */
-+static int test_kmem_basic(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+	long slab0, slab1, current;
-+
-+	cg =3D cg_name(root, "kmem_basic_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, alloc_dcache, (void *)100000))
-+		goto cleanup;
-+
-+	slab0 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab0 < (1 >> 20))
-+		goto cleanup;
-+
-+	cg_write(cg, "memory.high", "1M");
-+	slab1 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab1 <=3D 0)
-+		goto cleanup;
-+
-+	current =3D cg_read_long(cg, "memory.current");
-+	if (current <=3D 0)
-+		goto cleanup;
-+
-+	if (slab1 < slab0 / 2 && current < slab0 / 2)
-+		ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+static void *alloc_kmem_fn(void *arg)
-+{
-+	alloc_dcache(NULL, (void *)100);
-+	return NULL;
-+}
-+
-+static int alloc_kmem_smp(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 2 * get_nprocs();
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &alloc_kmem_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return -1;
-+		}
-+	}
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		ret =3D pthread_join(tinfo[i], NULL);
-+		if (ret)
-+			break;
-+	}
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+static int cg_run_in_subcgroups(const char *parent,
-+				int (*fn)(const char *cgroup, void *arg),
-+				void *arg, int times)
-+{
-+	char *child;
-+	int i;
-+
-+	for (i =3D 0; i < times; i++) {
-+		child =3D cg_name_indexed(parent, "child", i);
-+		if (!child)
-+			return -1;
-+
-+		if (cg_create(child)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		if (cg_run(child, fn, NULL)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		cg_destroy(child);
-+		free(child);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * The test creates and destroys a large number of cgroups. In each cgro=
-up it
-+ * allocates some slab memory (mostly negative dentries) using 2 * NR_CP=
-US
-+ * threads. Then it checks the sanity of numbers on the parent level:
-+ * the total size of the cgroups should be roughly equal to
-+ * anon + file + slab + kernel_stack.
-+ */
-+static int test_kmem_memcg_deletion(const char *root)
-+{
-+	long current, slab, anon, file, kernel_stack, sum;
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+
-+	parent =3D cg_name(root, "kmem_memcg_deletion_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_kmem_smp, NULL, 100))
-+		goto cleanup;
-+
-+	current =3D cg_read_long(parent, "memory.current");
-+	slab =3D cg_read_key_long(parent, "memory.stat", "slab ");
-+	anon =3D cg_read_key_long(parent, "memory.stat", "anon ");
-+	file =3D cg_read_key_long(parent, "memory.stat", "file ");
-+	kernel_stack =3D cg_read_key_long(parent, "memory.stat", "kernel_stack =
-");
-+	if (current < 0 || slab < 0 || anon < 0 || file < 0 ||
-+	    kernel_stack < 0)
-+		goto cleanup;
-+
-+	sum =3D slab + anon + file + kernel_stack;
-+	if (abs(sum - current) < 4096 * 32 * 2 * get_nprocs()) {
-+		ret =3D KSFT_PASS;
-+	} else {
-+		printf("memory.current =3D %ld\n", current);
-+		printf("slab + anon + file + kernel_stack =3D %ld\n", sum);
-+		printf("slab =3D %ld\n", slab);
-+		printf("anon =3D %ld\n", anon);
-+		printf("file =3D %ld\n", file);
-+		printf("kernel_stack =3D %ld\n", kernel_stack);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+/*
-+ * The test reads the entire /proc/kpagecgroup. If the operation went
-+ * successfully (and the kernel didn't panic), the test is treated as pa=
-ssed.
-+ */
-+static int test_kmem_proc_kpagecgroup(const char *root)
-+{
-+	unsigned long buf[128];
-+	int ret =3D KSFT_FAIL;
-+	ssize_t len;
-+	int fd;
-+
-+	fd =3D open("/proc/kpagecgroup", O_RDONLY);
-+	if (fd < 0)
-+		return ret;
-+
-+	do {
-+		len =3D read(fd, buf, sizeof(buf));
-+	} while (len > 0);
-+
-+	if (len =3D=3D 0)
-+		ret =3D KSFT_PASS;
-+
-+	close(fd);
-+	return ret;
-+}
-+
-+static void *pthread_wait_fn(void *arg)
-+{
-+	sleep(100);
-+	return NULL;
-+}
-+
-+static int spawn_1000_threads(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 1000;
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	long stack;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &pthread_wait_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return(-1);
-+		}
-+	}
-+
-+	stack =3D cg_read_key_long(cgroup, "memory.stat", "kernel_stack ");
-+	if (stack >=3D 4096 * 1000)
-+		ret =3D 0;
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+/*
-+ * The test spawns a process, which spawns 1000 threads. Then it checks
-+ * that memory.stat's kernel_stack is at least 1000 pages large.
-+ */
-+static int test_kmem_kernel_stacks(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+
-+	cg =3D cg_name(root, "kmem_kernel_stacks_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, spawn_1000_threads, NULL))
-+		goto cleanup;
-+
-+	ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test sequentionally creates 30 child cgroups, allocates some
-+ * kernel memory in each of them, and deletes them. Then it checks
-+ * that the number of dying cgroups on the parent level is 0.
-+ */
-+static int test_kmem_dead_cgroups(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+	long dead;
-+	int i;
-+
-+	parent =3D cg_name(root, "kmem_dead_cgroups_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_dcache, (void *)100, 30))
-+		goto cleanup;
-+
-+	for (i =3D 0; i < 5; i++) {
-+		dead =3D cg_read_key_long(parent, "cgroup.stat",
-+					"nr_dying_descendants ");
-+		if (dead =3D=3D 0) {
-+			ret =3D KSFT_PASS;
-+			break;
-+		}
-+		/*
-+		 * Reclaiming cgroups might take some time,
-+		 * let's wait a bit and repeat.
-+		 */
-+		sleep(1);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+#define T(x) { x, #x }
-+struct kmem_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] =3D {
-+	T(test_kmem_basic),
-+	T(test_kmem_memcg_deletion),
-+	T(test_kmem_proc_kpagecgroup),
-+	T(test_kmem_kernel_stacks),
-+	T(test_kmem_dead_cgroups),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int i, ret =3D EXIT_SUCCESS;
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that memory controller is available:
-+	 * memory is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "memory"))
-+		ksft_exit_skip("memory controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
-+		if (cg_write(root, "cgroup.subtree_control", "+memory"))
-+			ksft_exit_skip("Failed to set memory controller\n");
-+
-+	for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ret =3D EXIT_FAILURE;
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
++++ b/tools/cgroup/memcg_slabinfo.py
+@@ -0,0 +1,226 @@
++#!/usr/bin/env drgn
++#
++# Copyright (C) 2020 Roman Gushchin <guro@fb.com>
++# Copyright (C) 2020 Facebook
++
++from os import stat
++import argparse
++import sys
++
++from drgn.helpers.linux import list_for_each_entry, list_empty
++from drgn.helpers.linux import for_each_page
++from drgn.helpers.linux.cpumask import for_each_online_cpu
++from drgn.helpers.linux.percpu import per_cpu_ptr
++from drgn import container_of, FaultError, Object
++
++
++DESC =3D """
++This is a drgn script to provide slab statistics for memory cgroups.
++It supports cgroup v2 and v1 and can emulate memory.kmem.slabinfo
++interface of cgroup v1.
++For drgn, visit https://github.com/osandov/drgn.
++"""
++
++
++MEMCGS =3D {}
++
++OO_SHIFT =3D 16
++OO_MASK =3D ((1 << OO_SHIFT) - 1)
++
++
++def err(s):
++    print('slabinfo.py: error: %s' % s, file=3Dsys.stderr, flush=3DTrue)
++    sys.exit(1)
++
++
++def find_memcg_ids(css=3Dprog['root_mem_cgroup'].css, prefix=3D''):
++    if not list_empty(css.children.address_of_()):
++        for css in list_for_each_entry('struct cgroup_subsys_state',
++                                       css.children.address_of_(),
++                                       'sibling'):
++            name =3D prefix + '/' + css.cgroup.kn.name.string_().decode(=
+'utf-8')
++            memcg =3D container_of(css, 'struct mem_cgroup', 'css')
++            MEMCGS[css.cgroup.kn.id.value_()] =3D memcg
++            find_memcg_ids(css, name)
++
++
++def is_root_cache(s):
++    try:
++        return False if s.memcg_params.root_cache else True
++    except AttributeError:
++        return True
++
++
++def cache_name(s):
++    if is_root_cache(s):
++        return s.name.string_().decode('utf-8')
++    else:
++        return s.memcg_params.root_cache.name.string_().decode('utf-8')
++
++
++# SLUB
++
++def oo_order(s):
++    return s.oo.x >> OO_SHIFT
++
++
++def oo_objects(s):
++    return s.oo.x & OO_MASK
++
++
++def count_partial(n, fn):
++    nr_pages =3D 0
++    for page in list_for_each_entry('struct page', n.partial.address_of_=
+(),
++                                    'lru'):
++         nr_pages +=3D fn(page)
++    return nr_pages
++
++
++def count_free(page):
++    return page.objects - page.inuse
++
++
++def slub_get_slabinfo(s, cfg):
++    nr_slabs =3D 0
++    nr_objs =3D 0
++    nr_free =3D 0
++
++    for node in range(cfg['nr_nodes']):
++        n =3D s.node[node]
++        nr_slabs +=3D n.nr_slabs.counter.value_()
++        nr_objs +=3D n.total_objects.counter.value_()
++        nr_free +=3D count_partial(n, count_free)
++
++    return {'active_objs': nr_objs - nr_free,
++            'num_objs': nr_objs,
++            'active_slabs': nr_slabs,
++            'num_slabs': nr_slabs,
++            'objects_per_slab': oo_objects(s),
++            'cache_order': oo_order(s),
++            'limit': 0,
++            'batchcount': 0,
++            'shared': 0,
++            'shared_avail': 0}
++
++
++def cache_show(s, cfg, objs):
++    if cfg['allocator'] =3D=3D 'SLUB':
++        sinfo =3D slub_get_slabinfo(s, cfg)
++    else:
++        err('SLAB isn\'t supported yet')
++
++    if cfg['shared_slab_pages']:
++        sinfo['active_objs'] =3D objs
++        sinfo['num_objs'] =3D objs
++
++    print('%-17s %6lu %6lu %6u %4u %4d'
++          ' : tunables %4u %4u %4u'
++          ' : slabdata %6lu %6lu %6lu' % (
++              cache_name(s), sinfo['active_objs'], sinfo['num_objs'],
++              s.size, sinfo['objects_per_slab'], 1 << sinfo['cache_order=
+'],
++              sinfo['limit'], sinfo['batchcount'], sinfo['shared'],
++              sinfo['active_slabs'], sinfo['num_slabs'],
++              sinfo['shared_avail']))
++
++
++def detect_kernel_config():
++    cfg =3D {}
++
++    cfg['nr_nodes'] =3D prog['nr_online_nodes'].value_()
++
++    if prog.type('struct kmem_cache').members[1][1] =3D=3D 'flags':
++        cfg['allocator'] =3D 'SLUB'
++    elif prog.type('struct kmem_cache').members[1][1] =3D=3D 'batchcount=
+':
++        cfg['allocator'] =3D 'SLAB'
++    else:
++        err('Can\'t determine the slab allocator')
++
++    cfg['shared_slab_pages'] =3D False
++    try:
++        if prog.type('struct obj_cgroup'):
++            cfg['shared_slab_pages'] =3D True
++    except:
++        pass
++
++    return cfg
++
++
++def for_each_slab_page(prog):
++    PGSlab =3D 1 << prog.constant('PG_slab')
++    PGHead =3D 1 << prog.constant('PG_head')
++
++    for page in for_each_page(prog):
++        try:
++            if page.flags.value_() & PGSlab:
++                yield page
++        except FaultError:
++            pass
++
++
++def main():
++    parser =3D argparse.ArgumentParser(description=3DDESC,
++                                     formatter_class=3D
++                                     argparse.RawTextHelpFormatter)
++    parser.add_argument('cgroup', metavar=3D'CGROUP',
++                        help=3D'Target memory cgroup')
++    args =3D parser.parse_args()
++
++    try:
++        cgroup_id =3D stat(args.cgroup).st_ino
++        find_memcg_ids()
++        memcg =3D MEMCGS[cgroup_id]
++    except KeyError:
++        err('Can\'t find the memory cgroup')
++
++    cfg =3D detect_kernel_config()
++
++    print('# name            <active_objs> <num_objs> <objsize> <objpers=
+lab> <pagesperslab>'
++          ' : tunables <limit> <batchcount> <sharedfactor>'
++          ' : slabdata <active_slabs> <num_slabs> <sharedavail>')
++
++    if cfg['shared_slab_pages']:
++        obj_cgroups =3D set()
++        stats =3D {}
++        caches =3D {}
++
++        # find memcg pointers belonging to the specified cgroup
++        obj_cgroups.add(memcg.objcg.value_())
++        for ptr in list_for_each_entry('struct obj_cgroup',
++                                       memcg.objcg_list.address_of_(),
++                                       'list'):
++            obj_cgroups.add(ptr.value_())
++
++        # look over all slab pages, belonging to non-root memcgs
++        # and look for objects belonging to the given memory cgroup
++        for page in for_each_slab_page(prog):
++            objcg_vec_raw =3D page.obj_cgroups.value_()
++            if objcg_vec_raw =3D=3D 0:
++                continue
++            cache =3D page.slab_cache
++            if not cache:
++                continue
++            addr =3D cache.value_()
++            caches[addr] =3D cache
++            # clear the lowest bit to get the true obj_cgroups
++            objcg_vec =3D Object(prog, page.obj_cgroups.type_,
++                               value=3Dobjcg_vec_raw & ~1)
++
++            if addr not in stats:
++                stats[addr] =3D 0
++
++            for i in range(oo_objects(cache)):
++                if objcg_vec[i].value_() in obj_cgroups:
++                    stats[addr] +=3D 1
++
++        for addr in caches:
++            if stats[addr] > 0:
++                cache_show(caches[addr], cfg, stats[addr])
++
++    else:
++        for s in list_for_each_entry('struct kmem_cache',
++                                     memcg.kmem_caches.address_of_(),
++                                     'memcg_params.kmem_caches_node'):
++            cache_show(s, cfg, None)
++
++
++main()
 --=20
 2.25.3
 
