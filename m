@@ -2,147 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E7F1B33E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332241B33EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgDVASD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:18:03 -0400
-Received: from mail-dm6nam10on2133.outbound.protection.outlook.com ([40.107.93.133]:6881
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726039AbgDVASC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:18:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mFoDcc7DQDzJzNWArBiNmmAKmQ0+0T8BM7DO9UhCzZW5aNfnW6e3M/NSNBUBndJrtlQFnYvoiU1oMImD8Wjt2kn4+VgJQAm26iAJsKZCOVIzE6NOn2Km7Ssi0Ickg/BQhggZJ2tB+z7okIQg/Y4CisZux0pUnDG8jgoFeb9hRnFixzwASgq/sNMHQHV9hr48ouJ4oTAwjmXUjYOecBCst5Ilannre4iTdrGiXKF8mBFZztSAa5XEpQzYiyQ9Gh1x29RU6QqstMlAJOuyHxLUHE9r5xEzi6ys5rIZxIGhZTl65N8I1ePqgE0WgBFWMn3+l4p8ei/qQRsl82zGW0HGfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E4caw7Xgo2COSQKj4uL05+8SqQMchdBV2Ke6WgO2PPA=;
- b=PdYk2z8mosJINY4fF6PfYDwUGQS2eS31xY7DeMdVaDbFi7uXucJxOoEaduchmO/dk1e07w7TzqteMbO/Kq4e5cBtro34djvtVp0cpsrRluq8QjLqzKIhd6hAxTYlGMpu/Jqk2C0DShkVriBFaTIEGfUB8z7eg/l0+mp94QQcLqsyehriiJeBjyyASbj7FjSDLG8IUSagTZK5SlmvvQAn5O6qaSnYNm80iYgcj2fftPN296VivWRQzEDfEgGS9ABVlIPV8m9Q4pASUW1eGLRHFb3M6kF0QH6AGuCFUDAgz3hvCu7Mi9lNeEabUZUH5+unujmnt4tAzKQr6WA9hqX0JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E4caw7Xgo2COSQKj4uL05+8SqQMchdBV2Ke6WgO2PPA=;
- b=iYrM4AFhpvfGTQEYU5OgY4wSxnGFYT8BlZsGeLkSuvNK3GePxDLZ7+gzLJ1KKrJgwT1S11LMhmD9fTAUWmmfgcc9H95p+DK9eWb/bbu6i8pPeFpXTDdU8A18inUb7Gkgr5rTip4h3vkQcNDl1YXAvV7YGqlDrj80mgOWTi06png=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=decui@microsoft.com; 
-Received: from BN6PR21MB0161.namprd21.prod.outlook.com (2603:10b6:404:94::7)
- by BN6PR21MB0849.namprd21.prod.outlook.com (2603:10b6:404:9e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.3; Wed, 22 Apr
- 2020 00:17:59 +0000
-Received: from BN6PR21MB0161.namprd21.prod.outlook.com
- ([fe80::171:e82f:b9f2:3a68]) by BN6PR21MB0161.namprd21.prod.outlook.com
- ([fe80::171:e82f:b9f2:3a68%13]) with mapi id 15.20.2958.001; Wed, 22 Apr 2020
- 00:17:59 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, bvanassche@acm.org, hare@suse.de,
-        mikelley@microsoft.com, longli@microsoft.com, ming.lei@redhat.com
-Cc:     linux-hyperv@vger.kernel.org, wei.liu@kernel.org,
-        sthemmin@microsoft.com, haiyangz@microsoft.com, kys@microsoft.com,
-        Dexuan Cui <decui@microsoft.com>
-Subject: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
-Date:   Tue, 21 Apr 2020 17:17:24 -0700
-Message-Id: <1587514644-47058-1-git-send-email-decui@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Reply-To: decui@microsoft.com
-Content-Type: text/plain
-X-ClientProxiedBy: MWHPR03CA0015.namprd03.prod.outlook.com
- (2603:10b6:300:117::25) To BN6PR21MB0161.namprd21.prod.outlook.com
- (2603:10b6:404:94::7)
+        id S1726363AbgDVAVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgDVAVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 20:21:48 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705EDC0610D6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:21:48 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id x8so300288qtp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOrXrBA8QTub/2t4P8iuXJjEm4ygMvU/FqA4XiW8uMI=;
+        b=QqRL1zP89wuwpYO4tjdu5tQyhiJKZz+123CtN7/lSOHBgi0BEsWgVLQtWqFkF0Hxyv
+         i3YnSB79YQLqZfUqs5VQ7ORnBAyiLhFYAln1p5Tnm/66Ok8O2embqN8L6iR1Sj0Ort0y
+         NiL7//AOzryih+UFlmGnfx6bobjRIrul/aI3C+e5/SiAT+H7LGnV5wHUTpPuLEv055M1
+         uMHLaK7/BuqPaleUtPgV4/1Ef1uoO3rlJPwt0B/OnMxSwsCx6SyQqweIoXubAzBYVdiU
+         hAM6PcjZ4PVCa1LC7dZTxqVcSv+QUxA3OnGMRz1ddHlWleWeR0SrIXcEJ0Gh53ILWxgL
+         YmMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOrXrBA8QTub/2t4P8iuXJjEm4ygMvU/FqA4XiW8uMI=;
+        b=jCSe538jumM+DH8OcvUS8ZMym6UOLpIOA8v5McyNR0OHpeNLI88+go+25qvQHqsE4y
+         0pBqM+g8FpDxzKOBvt2Y90CldfNA7HycSNabN1/eJ+35qaDyOlVoZdnHAPAUnuRocfFC
+         SranrEFSGyo0HidBX8qVUK9rbMVcLCCTL5I23QgWHH9WQI+TLHl+ANgU3UKiV8Yd3qEb
+         IAGdWHpERbMGGBb3oYqXHk48CxYNN9JtGGTB8E0JDtIAWP2+Ol3KPwgE9xu/kF3v92Y2
+         8JaCFgYNncj8hp8sVgG3TVW051iTlhsUwm5XQmsu34DSKZ6ORh2bW64SDiGab3W9GsyK
+         0TAg==
+X-Gm-Message-State: AGi0PuY4iNT6yN3+lw4lyWkYSeoeLs11RfJnmcKuZzT5TEZKqS/jMTUr
+        BvXwd45N/6jc5dZmZidFbjr3yQ==
+X-Google-Smtp-Source: APiQypI+VXdJnBmgFU/RD6dwwKcyUmh89IKsfPkwPYI8eruL612VHTCsM8nTWqECUcuFa61w7n1eEg==
+X-Received: by 2002:ac8:31e1:: with SMTP id i30mr23775526qte.74.1587514907550;
+        Tue, 21 Apr 2020 17:21:47 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id u190sm2815110qkb.102.2020.04.21.17.21.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Apr 2020 17:21:46 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jR398-0000As-9O; Tue, 21 Apr 2020 21:21:46 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-mm@kvack.org, Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        intel-gfx@lists.freedesktop.org,
+        =?utf-8?b?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH hmm 0/5] Adjust hmm_range_fault() API
+Date:   Tue, 21 Apr 2020 21:21:41 -0300
+Message-Id: <0-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (13.77.154.182) by MWHPR03CA0015.namprd03.prod.outlook.com (2603:10b6:300:117::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Wed, 22 Apr 2020 00:17:57 +0000
-X-Mailer: git-send-email 1.8.3.1
-X-Originating-IP: [13.77.154.182]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8fa28811-c28d-42cf-d9e4-08d7e6529ca2
-X-MS-TrafficTypeDiagnostic: BN6PR21MB0849:|BN6PR21MB0849:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR21MB0849E96B26A84333FCFDC13CBFD20@BN6PR21MB0849.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 03818C953D
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR21MB0161.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(376002)(346002)(366004)(396003)(966005)(8676002)(107886003)(956004)(2616005)(2906002)(16526019)(81156014)(8936002)(186003)(26005)(6486002)(5660300002)(478600001)(6506007)(52116002)(6512007)(316002)(10290500003)(7416002)(6666004)(66556008)(86362001)(3450700001)(66476007)(36756003)(66946007)(82950400001)(82960400001)(4326008)(921003);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2ZgYcfz9929uv7+8xzbBpV+16JywUNYH8rMjdV/b4RcEKlHtjXN8yWkt55uYO+PhajEL1tiY9XvwAZ4rvBNhU/Ue8qLRHOTOzldooj4RbM+nmaaUYA+t33T7FWfeumK4TEfVTqw0Mgfqs4OkGdn/D1kohvjcWXK6O1gpqR028AG7X3d11IHTM6nKffOthLV4FahmWfctLrNjfLEeHVG91N4WE0A2/964NUDIENoySHi0olnlxi29FbidXrNWsJ9XHFHXPgAlMWCUoN3F0ISG9AZ2STTCsDgLjsq/VtjTAOWasc00mKhTTs4ZfL0WBN3ynAiSYQkStLheIWnh4kYRRZlS7+zreQmcO4cCFcUQXSi3mMRIjG/FX3eIBmb44uK+0/rW3u7TQGYuS+5BcwODvm/QnRB5TlYplZzJYmO1757h/EFJ6T+erTnu4kzQmAEKI0pru2QnUMGbbW7ezRhQ+M5QLGqJ++/IeE/nWG3gIXo1XJDEA8l+sMYjIjP5tuj0N1Cj4vjFusdQz105fwzVczafgjkw6y0EKMbVjEx+IC/SUEGG3yKyjd7fcnZUAuYu
-X-MS-Exchange-AntiSpam-MessageData: kQV/kEjx9fe/dEJjC7zZyAp4s29ymf+liRUNj7xaS8tUFk7nUcG20iZPV/9jUUezSjOlChp0LxqQjIK1JyIiLGnomfzj93oMJPv6PPxiL5VxEr+7Ip9zeWb12c/LiZ/J7fEeUSjOdxA5tdT0dDvccydoBIQB/FiagBGQU3vVFaHvBZlv6EdXMNR/Oqx32cjJVPoXuKvGbv4bUKModlSyN+8tSnPFmkAhxXwZufavySyE0hbAEpNy4PHG4xytzdkwXyhoO+zFQBXcZUfkaFLWQgmY3oQ0DrNyV0carub8E8QeBxOj+3+3oEGdn0MYdGVz0QhbpXP8BJoUi5/qf+rFCDCLHxzZ3xVsQs9bsrP+p1DElkltniDhdtWONZKprITWUBqoATJeDiDtD3Otw2d79XI9sMPWQCiBIdCR67EGN7WlhnB648NzrY8xSlyCyQXQruR9ujCU5EAU+NZ/CRkpvN5QLYa12nrG8IFhzmD+bMwX6/4/9XXC3Gc7yBO2l1lhFYAyetlTyBQwSKd+hdK600VwbTrw+7pQQjapJhLT61epupam2b+NDeDvX8MrPPcFzDxfIcjoVkWzGFyZYdOTH34YTcoXpQT45klfOi2vJGXgmHyRYMGF3AvYkD+qN1GFnKFk0ibOUmMxtyX/YkMjAQGo8O9960byhseJ2fSQp0/vOYbmXw2/lfVNSuFWuNCOo7qeM07Z67c63ShjpvBN8zRFzwHEvZGgnWaOsgmm3yBu3H2HGv9zL8PtdqIvjM219mAKo47VA1BXxuKicUUGQH5q5NJhtNQEe7y2PdRaIGo=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fa28811-c28d-42cf-d9e4-08d7e6529ca2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 00:17:59.1437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WyYNYErjZBpFSJXChEtxLe8xBSHSgljRnWEEBoMIdRmIlDos4kQiF1sxmyGXzbSrHQHItmVfrNtcXUEvPltN7g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR21MB0849
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During hibernation, the sdevs are suspended automatically in
-drivers/scsi/scsi_pm.c before storvsc_suspend(), so after
-storvsc_suspend(), there is no disk I/O from the file systems, but there
-can still be disk I/O from the kernel space, e.g. disk_check_events() ->
-sr_block_check_events() -> cdrom_check_events() can still submit I/O
-to the storvsc driver, which causes a paic of NULL pointer dereference,
-since storvsc has closed the vmbus channel in storvsc_suspend(): refer
-to the below links for more info:
-  https://lkml.org/lkml/2020/4/10/47
-  https://lkml.org/lkml/2020/4/17/1103
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-Fix the panic by blocking/unblocking all the I/O queues properly.
+The API is a bit complicated for the uses we actually have, and
+disucssions for simplifying have come up a number of times.
 
-Note: this patch depends on another patch "scsi: core: Allow the state
-change from SDEV_QUIESCE to SDEV_BLOCK" (refer to the second link above).
+This small series removes the customizable pfn format and simplifies the
+return code of hmm_range_fault()
 
-Fixes: 56fb10585934 ("scsi: storvsc: Add the support of hibernation")
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+All the drivers are adjusted to process in the simplified format.
+I would appreciated tested-by's for the two drivers, thanks!
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index fb41636519ee..fd51d2f03778 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1948,6 +1948,11 @@ static int storvsc_suspend(struct hv_device *hv_dev)
- 	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
- 	struct Scsi_Host *host = stor_device->host;
- 	struct hv_host_device *host_dev = shost_priv(host);
-+	int ret;
-+
-+	ret = scsi_host_block(host);
-+	if (ret)
-+		return ret;
+This passes the hmm tester with the following diff:
+
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index d75e18f2ffd245..a2442efa038c41 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -47,23 +47,8 @@ struct dmirror_bounce {
+ 	unsigned long		cpages;
+ };
  
- 	storvsc_wait_to_drain(stor_device);
+-#define DPT_SHIFT PAGE_SHIFT
+-#define DPT_VALID (1UL << 0)
+-#define DPT_WRITE (1UL << 1)
+-
+ #define DPT_XA_TAG_WRITE 3UL
  
-@@ -1968,10 +1973,15 @@ static int storvsc_suspend(struct hv_device *hv_dev)
+-static const uint64_t dmirror_hmm_flags[HMM_PFN_FLAG_MAX] = {
+-	[HMM_PFN_VALID] = DPT_VALID,
+-	[HMM_PFN_WRITE] = DPT_WRITE,
+-};
+-
+-static const uint64_t dmirror_hmm_values[HMM_PFN_VALUE_MAX] = {
+-	[HMM_PFN_NONE]    = 0,
+-	[HMM_PFN_ERROR]   = 0x10,
+-	[HMM_PFN_SPECIAL] = 0x10,
+-};
+-
+ /*
+  * Data structure to track address ranges and register for mmu interval
+  * notifier updates.
+@@ -175,7 +160,7 @@ static inline struct dmirror_device *dmirror_page_to_device(struct page *page)
  
- static int storvsc_resume(struct hv_device *hv_dev)
+ static int dmirror_do_fault(struct dmirror *dmirror, struct hmm_range *range)
  {
-+	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-+	struct Scsi_Host *host = stor_device->host;
+-	uint64_t *pfns = range->pfns;
++	unsigned long *pfns = range->hmm_pfns;
+ 	unsigned long pfn;
+ 
+ 	for (pfn = (range->start >> PAGE_SHIFT);
+@@ -188,15 +173,16 @@ static int dmirror_do_fault(struct dmirror *dmirror, struct hmm_range *range)
+ 		 * Since we asked for hmm_range_fault() to populate pages,
+ 		 * it shouldn't return an error entry on success.
+ 		 */
+-		WARN_ON(*pfns == range->values[HMM_PFN_ERROR]);
++		WARN_ON(*pfns & HMM_PFN_ERROR);
++		WARN_ON(!(*pfns & HMM_PFN_VALID));
+ 
+-		page = hmm_device_entry_to_page(range, *pfns);
++		page = hmm_pfn_to_page(*pfns);
+ 		WARN_ON(!page);
+ 
+ 		entry = page;
+-		if (*pfns & range->flags[HMM_PFN_WRITE])
++		if (*pfns & HMM_PFN_WRITE)
+ 			entry = xa_tag_pointer(entry, DPT_XA_TAG_WRITE);
+-		else if (range->default_flags & range->flags[HMM_PFN_WRITE])
++		else if (WARN_ON(range->default_flags & HMM_PFN_WRITE))
+ 			return -EFAULT;
+ 		entry = xa_store(&dmirror->pt, pfn, entry, GFP_ATOMIC);
+ 		if (xa_is_err(entry))
+@@ -260,8 +246,6 @@ static int dmirror_range_fault(struct dmirror *dmirror,
  	int ret;
  
- 	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
- 				     hv_dev_is_fc(hv_dev));
-+	if (!ret)
-+		ret = scsi_host_unblock(host, SDEV_RUNNING);
-+
- 	return ret;
+ 	while (true) {
+-		long count;
+-
+ 		if (time_after(jiffies, timeout)) {
+ 			ret = -EBUSY;
+ 			goto out;
+@@ -269,12 +253,11 @@ static int dmirror_range_fault(struct dmirror *dmirror,
+ 
+ 		range->notifier_seq = mmu_interval_read_begin(range->notifier);
+ 		down_read(&mm->mmap_sem);
+-		count = hmm_range_fault(range);
++		ret = hmm_range_fault(range);
+ 		up_read(&mm->mmap_sem);
+-		if (count <= 0) {
+-			if (count == 0 || count == -EBUSY)
++		if (ret) {
++			if (ret == -EBUSY)
+ 				continue;
+-			ret = count;
+ 			goto out;
+ 		}
+ 
+@@ -299,16 +282,13 @@ static int dmirror_fault(struct dmirror *dmirror, unsigned long start,
+ {
+ 	struct mm_struct *mm = dmirror->notifier.mm;
+ 	unsigned long addr;
+-	uint64_t pfns[64];
++	unsigned long pfns[64];
+ 	struct hmm_range range = {
+ 		.notifier = &dmirror->notifier,
+-		.pfns = pfns,
+-		.flags = dmirror_hmm_flags,
+-		.values = dmirror_hmm_values,
+-		.pfn_shift = DPT_SHIFT,
++		.hmm_pfns = pfns,
+ 		.pfn_flags_mask = 0,
+-		.default_flags = dmirror_hmm_flags[HMM_PFN_VALID] |
+-				(write ? dmirror_hmm_flags[HMM_PFN_WRITE] : 0),
++		.default_flags =
++			HMM_PFN_REQ_FAULT | (write ? HMM_PFN_REQ_WRITE : 0),
+ 		.dev_private_owner = dmirror->mdevice,
+ 	};
+ 	int ret = 0;
+@@ -754,19 +734,20 @@ static int dmirror_migrate(struct dmirror *dmirror,
  }
  
+ static void dmirror_mkentry(struct dmirror *dmirror, struct hmm_range *range,
+-			    unsigned char *perm, uint64_t entry)
++			    unsigned char *perm, unsigned long entry)
+ {
+ 	struct page *page;
+ 
+-	if (entry == range->values[HMM_PFN_ERROR]) {
++	if (entry & HMM_PFN_ERROR) {
+ 		*perm = HMM_DMIRROR_PROT_ERROR;
+ 		return;
+ 	}
+-	page = hmm_device_entry_to_page(range, entry);
+-	if (!page) {
++	if (!(entry & HMM_PFN_VALID)) {
+ 		*perm = HMM_DMIRROR_PROT_NONE;
+ 		return;
+ 	}
++
++	page = hmm_pfn_to_page(entry);
+ 	if (is_device_private_page(page)) {
+ 		/* Is the page migrated to this device or some other? */
+ 		if (dmirror->mdevice == dmirror_page_to_device(page))
+@@ -777,7 +758,7 @@ static void dmirror_mkentry(struct dmirror *dmirror, struct hmm_range *range,
+ 		*perm = HMM_DMIRROR_PROT_ZERO;
+ 	else
+ 		*perm = HMM_DMIRROR_PROT_NONE;
+-	if (entry & range->flags[HMM_PFN_WRITE])
++	if (entry & HMM_PFN_WRITE)
+ 		*perm |= HMM_DMIRROR_PROT_WRITE;
+ 	else
+ 		*perm |= HMM_DMIRROR_PROT_READ;
+@@ -832,8 +813,6 @@ static int dmirror_range_snapshot(struct dmirror *dmirror,
+ 		return ret;
+ 
+ 	while (true) {
+-		long count;
+-
+ 		if (time_after(jiffies, timeout)) {
+ 			ret = -EBUSY;
+ 			goto out;
+@@ -842,12 +821,11 @@ static int dmirror_range_snapshot(struct dmirror *dmirror,
+ 		range->notifier_seq = mmu_interval_read_begin(range->notifier);
+ 
+ 		down_read(&mm->mmap_sem);
+-		count = hmm_range_fault(range);
++		ret = hmm_range_fault(range);
+ 		up_read(&mm->mmap_sem);
+-		if (count <= 0) {
+-			if (count == 0 || count == -EBUSY)
++		if (ret) {
++			if (ret == -EBUSY)
+ 				continue;
+-			ret = count;
+ 			goto out;
+ 		}
+ 
+@@ -862,7 +840,7 @@ static int dmirror_range_snapshot(struct dmirror *dmirror,
+ 
+ 	n = (range->end - range->start) >> PAGE_SHIFT;
+ 	for (i = 0; i < n; i++)
+-		dmirror_mkentry(dmirror, range, perm + i, range->pfns[i]);
++		dmirror_mkentry(dmirror, range, perm + i, range->hmm_pfns[i]);
+ 
+ 	mutex_unlock(&dmirror->mutex);
+ out:
+@@ -878,15 +856,11 @@ static int dmirror_snapshot(struct dmirror *dmirror,
+ 	unsigned long size = cmd->npages << PAGE_SHIFT;
+ 	unsigned long addr;
+ 	unsigned long next;
+-	uint64_t pfns[64];
++	unsigned long pfns[64];
+ 	unsigned char perm[64];
+ 	char __user *uptr;
+ 	struct hmm_range range = {
+-		.pfns = pfns,
+-		.flags = dmirror_hmm_flags,
+-		.values = dmirror_hmm_values,
+-		.pfn_shift = DPT_SHIFT,
+-		.pfn_flags_mask = 0,
++		.hmm_pfns = pfns,
+ 		.dev_private_owner = dmirror->mdevice,
+ 	};
+ 	int ret = 0;
+@@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
+ 	spin_lock_init(&mdevice->lock);
+ 
+ 	cdev_init(&mdevice->cdevice, &dmirror_fops);
++	mdevice->cdevice.owner = THIS_MODULE;
+ 	ret = cdev_add(&mdevice->cdevice, dev, 1);
+ 	if (ret)
+ 		return ret;
+diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
+index 033a12c7ab5b6d..da15471a2bbf9a 100644
+--- a/tools/testing/selftests/vm/hmm-tests.c
++++ b/tools/testing/selftests/vm/hmm-tests.c
+@@ -1274,7 +1274,7 @@ TEST_F(hmm2, snapshot)
+ 	/* Check what the device saw. */
+ 	m = buffer->mirror;
+ 	ASSERT_EQ(m[0], HMM_DMIRROR_PROT_ERROR);
+-	ASSERT_EQ(m[1], HMM_DMIRROR_PROT_NONE);
++	ASSERT_EQ(m[1], HMM_DMIRROR_PROT_ERROR);
+ 	ASSERT_EQ(m[2], HMM_DMIRROR_PROT_ZERO | HMM_DMIRROR_PROT_READ);
+ 	ASSERT_EQ(m[3], HMM_DMIRROR_PROT_READ);
+ 	ASSERT_EQ(m[4], HMM_DMIRROR_PROT_WRITE);
+
+Jason Gunthorpe (5):
+  mm/hmm: make CONFIG_DEVICE_PRIVATE into a select
+  mm/hmm: make hmm_range_fault return 0 or -1
+  drm/amdgpu: remove dead code after hmm_range_fault()
+  mm/hmm: remove HMM_PFN_SPECIAL
+  mm/hmm: remove the customizable pfn format from hmm_range_fault
+
+ Documentation/vm/hmm.rst                |  28 ++--
+ arch/powerpc/Kconfig                    |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |  56 +++----
+ drivers/gpu/drm/nouveau/Kconfig         |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_dmem.c  |  60 ++++++--
+ drivers/gpu/drm/nouveau/nouveau_dmem.h  |   4 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c   |  59 ++++----
+ include/linux/hmm.h                     | 109 +++++---------
+ mm/Kconfig                              |   7 +-
+ mm/hmm.c                                | 185 +++++++++++-------------
+ 10 files changed, 229 insertions(+), 283 deletions(-)
+
 -- 
-2.19.1
+2.26.0
 
