@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FBC1B4118
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F001B1B4032
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731921AbgDVKuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
+        id S1731826AbgDVKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728754AbgDVKMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:32 -0400
+        id S1729719AbgDVKTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:19:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3374C2070B;
-        Wed, 22 Apr 2020 10:12:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EF672075A;
+        Wed, 22 Apr 2020 10:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550351;
-        bh=zqEIafLdABW1ykFZi1ROD4+wSZHXs3eWhQzSHPhb3iE=;
+        s=default; t=1587550753;
+        bh=yaliotJxvLNaSp02wuihbJu/1ZddBCwFTwSf8FxJC0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aeJ42B0RbxEvxe+QFVAYfr9FY5o9cCVBoHoM9NmtR43IQEpasULG4L1cH/4oHHIJJ
-         aEwkxECqiYrf55qczvbx8aiPeni83PqwmMMfGJoQVxes6Rf/9YeSjsGoVHFGXxBtn2
-         VlQpZ35tfkKsyNtVdBdowa5K5cY79lw7fis4wn1g=
+        b=UrhN0JszQdwiNvO4AdjCeEtuAhX6j/HV0XyIdp2AISnfoMcybtNI5p2bzx8wpie+o
+         huHuGnO/bI9Jb98xee3tzJbvq2610mi43tgnkRFzs+123GQvv+WcedzO6D0d01UeFn
+         Z2u9DJX3S2PMpOky+aUZirS8aTN3OfAzdKH56Mxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 112/199] net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes
+        stable@vger.kernel.org,
+        Ricardo Ribalda Delgado <ribalda@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 077/118] leds: core: Fix warning message when init_data
 Date:   Wed, 22 Apr 2020 11:57:18 +0200
-Message-Id: <20200422095108.876080084@linuxfoundation.org>
+Message-Id: <20200422095044.312629308@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Ricardo Ribalda Delgado <ribalda@kernel.org>
 
-[ Upstream commit 806fd188ce2a4f8b587e83e73c478e6484fbfa55 ]
+[ Upstream commit 64ed6588c2ea618d3f9ca9d8b365ae4c19f76225 ]
 
-After commit bfcb813203e619a8960a819bf533ad2a108d8105 ("net: dsa:
-configure the MTU for switch ports") my Lamobo R1 platform which uses
-an allwinner,sun7i-a20-gmac compatible Ethernet MAC started to fail
-by rejecting a MTU of 1536. The reason for that is that the DMA
-capabilities are not readable on this version of the IP, and there
-is also no 'tx-fifo-depth' property being provided in Device Tree. The
-property is documented as optional, and is not provided.
+The warning message when a led is renamed due to name collition can fail
+to show proper original name if init_data is used. Eg:
 
-Chen-Yu indicated that the FIFO sizes are 4KB for TX and 16KB for RX, so
-provide these values through platform data as an immediate fix until
-various Device Tree sources get updated accordingly.
+[    9.073996] leds-gpio a0040000.leds_0: Led (null) renamed to red_led_1 due to name collision
 
-Fixes: eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
-Suggested-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bb4e9af0348d ("leds: core: Add support for composing LED class device names")
+Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/leds/led-class.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-@@ -155,6 +155,8 @@ static int sun7i_gmac_probe(struct platf
- 	plat_dat->init = sun7i_gmac_init;
- 	plat_dat->exit = sun7i_gmac_exit;
- 	plat_dat->fix_mac_speed = sun7i_fix_speed;
-+	plat_dat->tx_fifo_size = 4096;
-+	plat_dat->rx_fifo_size = 16384;
+diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+index 647b1263c5794..d3e83c33783e5 100644
+--- a/drivers/leds/led-class.c
++++ b/drivers/leds/led-class.c
+@@ -281,7 +281,7 @@ int led_classdev_register_ext(struct device *parent,
  
- 	ret = sun7i_gmac_init(pdev, plat_dat->bsp_priv);
  	if (ret)
+ 		dev_warn(parent, "Led %s renamed to %s due to name collision",
+-				led_cdev->name, dev_name(led_cdev->dev));
++				proposed_name, dev_name(led_cdev->dev));
+ 
+ 	if (led_cdev->flags & LED_BRIGHT_HW_CHANGED) {
+ 		ret = led_add_brightness_hw_changed(led_cdev);
+-- 
+2.20.1
+
 
 
