@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5511B41AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FB61B3D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729836AbgDVKyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:54:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33050 "EHLO mail.kernel.org"
+        id S1729676AbgDVKPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:15:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728631AbgDVKIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:05 -0400
+        id S1729708AbgDVKP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:15:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4AB62075A;
-        Wed, 22 Apr 2020 10:08:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 402F12075A;
+        Wed, 22 Apr 2020 10:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550084;
-        bh=RR9zuGd6KTiQ3TJQe/mCK7ogA8Sh/pMX/GIsvBdcKGs=;
+        s=default; t=1587550526;
+        bh=jlCOKvLmCY4J1mQYSp+GJ52kQPnp+v36+Lyr6EuYj8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WLLoHpnLWc0lAH6DLzRCwFeYRwT/H5+YW/Pzo1oTaelJbeGsMKUeuvH0chKzKR6i0
-         N6ViHzV+8Yw5vw5Zt+NPK11n+cuwsvTc5ur5cd77TF8sDpXPzrTrnIU9R2pltGErBS
-         IVvj6GhauebDK4hdQmXAoSRlDDmJ3cUPaUP4RHUo=
+        b=oqbpzjOdX5CMXf+LD7XndGN1ZaMx7Yoe7+uzos2wJqdo2Ql5J6pmfab7VG+NKnQoU
+         vyLU8XlcjSej0fAskW/5K/v0Kpi40w4yT4yW6oNMj7s04HSvljO/hahEfQTwgDZawy
+         NdJuXqsZa04uRiAkE+12nZuqrCjzXdjx4SBRvQMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 102/125] of: unittest: kmemleak in of_unittest_platform_populate()
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 4.19 15/64] x86/Hyper-V: Report crash register data or kmsg before running crash kernel
 Date:   Wed, 22 Apr 2020 11:56:59 +0200
-Message-Id: <20200422095049.485814025@linuxfoundation.org>
+Message-Id: <20200422095015.598699528@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-[ Upstream commit 216830d2413cc61be3f76bc02ffd905e47d2439e ]
+commit a11589563e96bf262767294b89b25a9d44e7303b upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 2 of 5.
+We want to notify Hyper-V when a Linux guest VM crash occurs, so
+there is a record of the crash even when kdump is enabled.   But
+crash_kexec_post_notifiers defaults to "false", so the kdump kernel
+runs before the notifiers and Hyper-V never gets notified.  Fix this by
+always setting crash_kexec_post_notifiers to be true for Hyper-V VMs.
 
-of_unittest_platform_populate() left an elevated reference count for
-grandchild nodes (which are platform devices).  Fix the platform
-device reference counts so that the memory will be freed.
+Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Link: https://lore.kernel.org/r/20200406155331.2105-5-Tianyu.Lan@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: fb2caa50fbac ("of/selftest: add testcase for nodes with same name and address")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/unittest.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/mshyperv.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 40d170c1ecd50..144d123f6ea4f 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -825,10 +825,13 @@ static void __init of_unittest_platform_populate(void)
- 
- 	of_platform_populate(np, match, NULL, &test_bus->dev);
- 	for_each_child_of_node(np, child) {
--		for_each_child_of_node(child, grandchild)
--			unittest(of_find_device_by_node(grandchild),
-+		for_each_child_of_node(child, grandchild) {
-+			pdev = of_find_device_by_node(grandchild);
-+			unittest(pdev,
- 				 "Could not create device for node '%s'\n",
- 				 grandchild->name);
-+			of_dev_put(pdev);
-+		}
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -250,6 +250,16 @@ static void __init ms_hyperv_init_platfo
+ 			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
  	}
  
- 	of_platform_depopulate(&test_bus->dev);
--- 
-2.20.1
-
++	/*
++	 * Hyper-V expects to get crash register data or kmsg when
++	 * crash enlightment is available and system crashes. Set
++	 * crash_kexec_post_notifiers to be true to make sure that
++	 * calling crash enlightment interface before running kdump
++	 * kernel.
++	 */
++	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE)
++		crash_kexec_post_notifiers = true;
++
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
+ 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
 
 
