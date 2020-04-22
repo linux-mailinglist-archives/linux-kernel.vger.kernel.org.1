@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146641B3BE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EF31B3F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgDVJ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 05:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46590 "EHLO mail.kernel.org"
+        id S1730310AbgDVKfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726503AbgDVJ7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:59:47 -0400
+        id S1730378AbgDVKXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 003842077D;
-        Wed, 22 Apr 2020 09:59:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5D682076B;
+        Wed, 22 Apr 2020 10:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549587;
-        bh=8YW+VL7Rvwrp7w43VNwJQAPZ6cUavhUrP+7m41VNnqg=;
+        s=default; t=1587551027;
+        bh=dAFfcstJg00S/Bt0ciKcvKr/afc1DBg6KrevEqRtYpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xKACA+05Ds2j9K2sHXoJwMdaHDiVd8iScKSjPlqSXsT7ph5WqlzfQu9y2MIUEK6sz
-         hekd06sthPqBVBAxmM2XmVkTdJtSxyDmeff0chXMuhisSycNh9hLiJYwcHozPsxGjD
-         ropTI0DNvZU+pwp10NNOsflXWATRJE+Jz/zGSvlU=
+        b=TMz72UTyUfRnVEq6syS7ChY4mc1NI56XK7hHFoUZ+mWABp1QblhfU075BaRrPHpkl
+         9j4LybvS9LAaIK+Dyl/unL+rvMzSV5NsdqPENc0yrT9FBjTttkNH2tBpYNxwa9A6Qt
+         alNENw02yy4So3K/e/5v8eaiMXxZ+G5254LFeyPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.4 025/100] acpi/x86: ignore unspecified bit positions in the ACPI global lock field
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 5.6 028/166] x86/Hyper-V: Report crash register data or kmsg before running crash kernel
 Date:   Wed, 22 Apr 2020 11:55:55 +0200
-Message-Id: <20200422095027.301714732@linuxfoundation.org>
+Message-Id: <20200422095051.698755510@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Engelhardt <jengelh@inai.de>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-commit ecb9c790999fd6c5af0f44783bd0217f0b89ec2b upstream.
+commit a11589563e96bf262767294b89b25a9d44e7303b upstream.
 
-The value in "new" is constructed from "old" such that all bits defined
-as reserved by the ACPI spec[1] are left untouched. But if those bits
-do not happen to be all zero, "new < 3" will not evaluate to true.
+We want to notify Hyper-V when a Linux guest VM crash occurs, so
+there is a record of the crash even when kdump is enabled.   But
+crash_kexec_post_notifiers defaults to "false", so the kdump kernel
+runs before the notifiers and Hyper-V never gets notified.  Fix this by
+always setting crash_kexec_post_notifiers to be true for Hyper-V VMs.
 
-The firmware of the laptop(s) Medion MD63490 / Akoya P15648 comes with
-garbage inside the "FACS" ACPI table. The starting value is
-old=0x4944454d, therefore new=0x4944454e, which is >= 3. Mask off
-the reserved bits.
-
-[1] https://uefi.org/sites/default/files/resources/ACPI_6_2.pdf
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206553
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Jan Engelhardt <jengelh@inai.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Link: https://lore.kernel.org/r/20200406155331.2105-5-Tianyu.Lan@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/acpi/boot.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/mshyperv.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -1708,7 +1708,7 @@ int __acpi_acquire_global_lock(unsigned
- 		new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
- 		val = cmpxchg(lock, old, new);
- 	} while (unlikely (val != old));
--	return (new < 3) ? -1 : 0;
-+	return ((new & 0x3) < 3) ? -1 : 0;
- }
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -263,6 +263,16 @@ static void __init ms_hyperv_init_platfo
+ 			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
+ 	}
  
- int __acpi_release_global_lock(unsigned int *lock)
++	/*
++	 * Hyper-V expects to get crash register data or kmsg when
++	 * crash enlightment is available and system crashes. Set
++	 * crash_kexec_post_notifiers to be true to make sure that
++	 * calling crash enlightment interface before running kdump
++	 * kernel.
++	 */
++	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE)
++		crash_kexec_post_notifiers = true;
++
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
+ 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
 
 
