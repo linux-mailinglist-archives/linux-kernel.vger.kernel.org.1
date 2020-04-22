@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5F21B4335
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAEE1B4359
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgDVL2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725808AbgDVL2g (ORCPT
+        id S1726665AbgDVLfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:35:52 -0400
+Received: from smtp1.lauterbach.com ([62.154.241.196]:51883 "EHLO
+        smtp1.lauterbach.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgDVLfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:28:36 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7697AC03C1A8;
-        Wed, 22 Apr 2020 04:28:36 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jRDYN-0006fw-5o; Wed, 22 Apr 2020 13:28:31 +0200
-Date:   Wed, 22 Apr 2020 13:28:31 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-rt-users@vger.kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH crypto-stable] crypto: arch/lib - limit simd usage to
- PAGE_SIZE chunks
-Message-ID: <20200422112831.5352gcpo42jgz2dj@linutronix.de>
-References: <20200420075711.2385190-1-Jason@zx2c4.com>
- <20200422040415.GA2881@sol.localdomain>
- <CAMj1kXGRNCEkTFPGM03h1N+HtOiLVMcm89UJYMZcuWjyFAp5Ag@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGRNCEkTFPGM03h1N+HtOiLVMcm89UJYMZcuWjyFAp5Ag@mail.gmail.com>
+        Wed, 22 Apr 2020 07:35:52 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 07:35:51 EDT
+Received: (qmail 23104 invoked by uid 484); 22 Apr 2020 11:29:09 -0000
+X-Qmail-Scanner-Diagnostics: from 10.2.10.44 by smtp1.lauterbach.com (envelope-from <ingo.rohloff@lauterbach.com>, uid 484) with qmail-scanner-2.11 
+ (mhr: 1.0. clamdscan: 0.99/21437. spamassassin: 3.4.0.  
+ Clear:RC:1(10.2.10.44):. 
+ Processed in 0.084966 secs); 22 Apr 2020 11:29:09 -0000
+Received: from unknown (HELO ingpc2.intern.lauterbach.com) (Authenticated_SSL:irohloff@[10.2.10.44])
+          (envelope-sender <ingo.rohloff@lauterbach.com>)
+          by smtp1.lauterbach.com (qmail-ldap-1.03) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <maz@kernel.org>; 22 Apr 2020 11:29:08 -0000
+From:   Ingo Rohloff <ingo.rohloff@lauterbach.com>
+To:     maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ingo Rohloff <ingo.rohloff@lauterbach.com>
+Subject: [PATCH] irqchip/gic-v3: fix missing "__init" for gic_smp_init()
+Date:   Wed, 22 Apr 2020 13:28:57 +0200
+Message-Id: <20200422112857.4300-1-ingo.rohloff@lauterbach.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-22 09:23:34 [+0200], Ard Biesheuvel wrote:
-> My memory is a bit fuzzy here. I remember talking to the linux-rt guys
-> about what delay is actually acceptable, which was a lot higher than I
-> had thought based on their initial reports about scheduling blackouts
-> on arm64 due to preemption remaining disabled for too long. I intended
-> to revisit this with more accurate bounds but then I apparently
-> forgot.
-> 
-> So SIMD chacha20 and SIMD poly1305 both run in <5 cycles per bytes,
-> both on x86 and ARM. If we take 20 microseconds as a ballpark upper
-> bound for how long preemption may be disabled, that gives us ~4000
-> bytes of ChaCha20 or Poly1305 on a hypothetical 1 GHz core.
-> 
-> So I think 4 KB is indeed a reasonable quantum of work here. Only
-> PAGE_SIZE is not necessarily equal to 4 KB on arm64, so we should use
-> SZ_4K instead.
-> 
-> *However*, at the time, the report was triggered by the fact that we
-> were keeping SIMD enabled across calls into the scatterwalk API, which
-> may call kmalloc()/kfree() etc. There is no need for that anymore, now
-> that the FPU begin/end routines all have been optimized to restore the
-> userland SIMD state lazily.
+With an SMP configuration, gic_smp_init() calls set_smp_cross_call().
+set_smp_cross_call() is marked with "__init".
+So gic_smp_init() should also be marked with "__init".
+gic_smp_init() is only called from gic_init_bases().
+gic_init_bases() is also marked with "__init";
+So marking gic_smp_init() with "__init" is fine.
 
-The 20usec sound reasonable. The other concern was memory allocation
-within the preempt-disable section. If this is no longer the case,
-perfect.
+Signed-off-by: Ingo Rohloff <ingo.rohloff@lauterbach.com>
+---
+ drivers/irqchip/irq-gic-v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sebastian
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index d7006ef18a0d..98c886dab02d 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1150,7 +1150,7 @@ static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
+ 	isb();
+ }
+ 
+-static void gic_smp_init(void)
++static void __init gic_smp_init(void)
+ {
+ 	set_smp_cross_call(gic_raise_softirq);
+ 	cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_GIC_STARTING,
+-- 
+2.17.1
+
