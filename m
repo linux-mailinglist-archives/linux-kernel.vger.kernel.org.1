@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC101B3D4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DED31B3C21
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgDVKNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
+        id S1727047AbgDVKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726240AbgDVKNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:36 -0400
+        id S1727034AbgDVKCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:02:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60D9E20781;
-        Wed, 22 Apr 2020 10:13:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3140320787;
+        Wed, 22 Apr 2020 10:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550415;
-        bh=Oif0qUeXDeEDFaVTAP0jQaj1zg1uJCGeVivjc+F1Zp4=;
+        s=default; t=1587549761;
+        bh=8W1vFSWViNeHhEhT1gm4IAWUjpSWJW1aRrND3K87PAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OmAUQN/QGv5BMSxrLER4/M0/v1VoEEEXIKRH3arrf6B9BHg6zbMmp41X/mnZ4tKAp
-         hxY1tJY0DWFiqB/le3QfL2rmGhA9Tvxi6sO0vvuQqSPBAgInzx/3bXfNsp81KRKKX9
-         bOfhPetcL8nV9Ndb1Te7XrLfdR4QNZB21qvWKnYE=
+        b=xzNZokm1Za+Azl4pahFDePvsuYuqxKmQwva2LgTGc+K9LjPMzLWOMww/LWHJjGW27
+         mVYQZVj4zUMZDLcVb+gJSyNW82/Psq6SqdiwUvCAvd6TFq51suk7kg5Zv4No0EHyxt
+         46JnY0T4/TlPjAyk3blu20YU1N6dAI7CXl+1j+q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Wayne Lin <Wayne.Lin@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 099/199] drm/dp_mst: Fix clearing payload state on topology disable
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 4.4 095/100] locktorture: Print ratio of acquisitions, not failures
 Date:   Wed, 22 Apr 2020 11:57:05 +0200
-Message-Id: <20200422095107.842999382@linuxfoundation.org>
+Message-Id: <20200422095040.045537728@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,91 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
+commit 80c503e0e68fbe271680ab48f0fe29bc034b01b7 upstream.
 
-The issues caused by:
+The __torture_print_stats() function in locktorture.c carefully
+initializes local variable "min" to statp[0].n_lock_acquired, but
+then compares it to statp[i].n_lock_fail.  Given that the .n_lock_fail
+field should normally be zero, and given the initialization, it seems
+reasonable to display the maximum and minimum number acquisitions
+instead of miscomputing the maximum and minimum number of failures.
+This commit therefore switches from failures to acquisitions.
 
-commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
-mgr")
+And this turns out to be not only a day-zero bug, but entirely my
+own fault.  I hate it when that happens!
 
-Prompted me to take a closer look at how we clear the payload state in
-general when disabling the topology, and it turns out there's actually
-two subtle issues here.
+Fixes: 0af3fe1efa53 ("locktorture: Add a lock-torture kernel module")
+Reported-by: Will Deacon <will@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The first is that we're not grabbing &mgr.payload_lock when clearing the
-payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
-lock order is &mgr.payload_lock -> &mgr.lock (because we always want
-&mgr.lock to be the inner-most lock so topology validation always
-works), this makes perfect sense. It also means that -technically- there
-could be racing between someone calling
-drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
-modeset occurring that's modifying the payload state at the same time.
-
-The second is the more obvious issue that Wayne Lin discovered, that
-we're not clearing proposed_payloads when disabling the topology.
-
-I actually can't see any obvious places where the racing caused by the
-first issue would break something, and it could be that some of our
-higher-level locks already prevent this by happenstance, but better safe
-then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
-first grabs &mgr.payload_lock followed by &mgr.lock so that we never
-race when modifying the payload state. Then, we also clear
-proposed_payloads to fix the original issue of enabling a new topology
-with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
-structures, but those are getting destroyed along with the ports anyway.
-
-Changes since v1:
-* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
-  vsyrjala
-
-Cc: Sean Paul <sean@poorly.run>
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.4+
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ kernel/locking/locktorture.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index f0d819fc16cd7..db0e9ce57e29a 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2038,6 +2038,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 	int ret = 0;
- 	struct drm_dp_mst_branch *mstb = NULL;
- 
-+	mutex_lock(&mgr->payload_lock);
- 	mutex_lock(&mgr->lock);
- 	if (mst_state == mgr->mst_state)
- 		goto out_unlock;
-@@ -2096,7 +2097,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		/* this can fail if the device is gone */
- 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
- 		ret = 0;
--		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
-+		memset(mgr->payloads, 0,
-+		       mgr->max_payloads * sizeof(mgr->payloads[0]));
-+		memset(mgr->proposed_vcpis, 0,
-+		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
- 		mgr->payload_mask = 0;
- 		set_bit(0, &mgr->payload_mask);
- 		mgr->vcpi_mask = 0;
-@@ -2104,6 +2108,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 
- out_unlock:
- 	mutex_unlock(&mgr->lock);
-+	mutex_unlock(&mgr->payload_lock);
- 	if (mstb)
- 		drm_dp_put_mst_branch_device(mstb);
- 	return ret;
--- 
-2.20.1
-
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -655,10 +655,10 @@ static void __torture_print_stats(char *
+ 		if (statp[i].n_lock_fail)
+ 			fail = true;
+ 		sum += statp[i].n_lock_acquired;
+-		if (max < statp[i].n_lock_fail)
+-			max = statp[i].n_lock_fail;
+-		if (min > statp[i].n_lock_fail)
+-			min = statp[i].n_lock_fail;
++		if (max < statp[i].n_lock_acquired)
++			max = statp[i].n_lock_acquired;
++		if (min > statp[i].n_lock_acquired)
++			min = statp[i].n_lock_acquired;
+ 	}
+ 	page += sprintf(page,
+ 			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
 
 
