@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5864C1B44DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1FC1B4496
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgDVMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        id S1728812AbgDVMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728539AbgDVMRc (ORCPT
+        by vger.kernel.org with ESMTP id S1728202AbgDVMRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:17:32 -0400
+        Wed, 22 Apr 2020 08:17:30 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45108C03C1A9;
-        Wed, 22 Apr 2020 05:17:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD05C03C1A9;
+        Wed, 22 Apr 2020 05:17:30 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jREJi-0007kX-RQ; Wed, 22 Apr 2020 14:17:26 +0200
+        id 1jREJg-0007lQ-L1; Wed, 22 Apr 2020 14:17:24 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 80AB31C0450;
-        Wed, 22 Apr 2020 14:17:21 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 12:17:21 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 692781C0809;
+        Wed, 22 Apr 2020 14:17:22 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 12:17:22 -0000
 From:   "tip-bot2 for Adrian Hunter" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf evsel: Move and globalize
- perf_evsel__find_pmu() and perf_evsel__is_aux_event()
+Subject: [tip: perf/core] perf evsel: Add support for synthesized sample type
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200401101613.6201-13-adrian.hunter@intel.com>
-References: <20200401101613.6201-13-adrian.hunter@intel.com>
+In-Reply-To: <20200401101613.6201-11-adrian.hunter@intel.com>
+References: <20200401101613.6201-11-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Message-ID: <158755784113.28353.8279230622097729365.tip-bot2@tip-bot2>
+Message-ID: <158755784205.28353.2280122449890986259.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,109 +51,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     e12ee9f7513cb5dbe8b12aac030dfbeff35b3766
-Gitweb:        https://git.kernel.org/tip/e12ee9f7513cb5dbe8b12aac030dfbeff35b3766
+Commit-ID:     e11869a065e36f3d22a575ccfb1097c262bb4f6e
+Gitweb:        https://git.kernel.org/tip/e11869a065e36f3d22a575ccfb1097c262bb4f6e
 Author:        Adrian Hunter <adrian.hunter@intel.com>
-AuthorDate:    Wed, 01 Apr 2020 13:16:09 +03:00
+AuthorDate:    Wed, 01 Apr 2020 13:16:07 +03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Sat, 18 Apr 2020 09:04:32 -03:00
+CommitterDate: Thu, 16 Apr 2020 12:19:17 -03:00
 
-perf evsel: Move and globalize perf_evsel__find_pmu() and perf_evsel__is_aux_event()
+perf evsel: Add support for synthesized sample type
 
-Move and globalize 2 functions from the auxtrace specific sources so
-that they can be reused.
+For reporting purposes, an evsel sample can have a callchain synthesized
+from AUX area data. Add support for keeping track of synthesized sample
+types. Note, the recorded sample_type cannot be changed because it is
+needed to continue to parse events.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: http://lore.kernel.org/lkml/20200401101613.6201-13-adrian.hunter@intel.com
-[ Move to pmu.c, as moving to evsel.h breaks the python binding ]
+Link: http://lore.kernel.org/lkml/20200401101613.6201-11-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/auxtrace.c | 19 -------------------
- tools/perf/util/evsel.h    |  3 +++
- tools/perf/util/pmu.c      | 20 ++++++++++++++++++++
- 3 files changed, 23 insertions(+), 19 deletions(-)
+ tools/perf/util/evsel.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 809a09e..33ad333 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -58,25 +58,6 @@
- #include "symbol/kallsyms.h"
- #include <internal/lib.h>
- 
--static struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
--{
--	struct perf_pmu *pmu = NULL;
--
--	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
--		if (pmu->type == evsel->core.attr.type)
--			break;
--	}
--
--	return pmu;
--}
--
--static bool perf_evsel__is_aux_event(struct evsel *evsel)
--{
--	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
--
--	return pmu && pmu->auxtrace;
--}
--
- /*
-  * Make a group from 'leader' to 'last', requiring that the events were not
-  * already grouped to a different leader.
 diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index e64ed42..a463bc6 100644
+index 53187c5..e64ed42 100644
 --- a/tools/perf/util/evsel.h
 +++ b/tools/perf/util/evsel.h
-@@ -158,6 +158,9 @@ int perf_evsel__object_config(size_t object_size,
- 			      int (*init)(struct evsel *evsel),
- 			      void (*fini)(struct evsel *evsel));
+@@ -104,6 +104,14 @@ struct evsel {
+ 		perf_evsel__sb_cb_t	*cb;
+ 		void			*data;
+ 	} side_band;
++	/*
++	 * For reporting purposes, an evsel sample can have a callchain
++	 * synthesized from AUX area data. Keep track of synthesized sample
++	 * types here. Note, the recorded sample_type cannot be changed because
++	 * it is needed to continue to parse events.
++	 * See also evsel__has_callchain().
++	 */
++	__u64			synth_sample_type;
+ };
  
-+struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel);
-+bool perf_evsel__is_aux_event(struct evsel *evsel);
-+
- struct evsel *perf_evsel__new_idx(struct perf_event_attr *attr, int idx);
+ struct perf_missing_features {
+@@ -398,7 +406,12 @@ static inline bool perf_evsel__has_branch_hw_idx(const struct evsel *evsel)
  
- static inline struct evsel *evsel__new(struct perf_event_attr *attr)
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index ef6a63f..bc912a8 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -18,6 +18,7 @@
- #include <regex.h>
- #include <perf/cpumap.h>
- #include "debug.h"
-+#include "evsel.h"
- #include "pmu.h"
- #include "parse-events.h"
- #include "header.h"
-@@ -884,6 +885,25 @@ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
- 	return NULL;
+ static inline bool evsel__has_callchain(const struct evsel *evsel)
+ {
+-	return (evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN) != 0;
++	/*
++	 * For reporting purposes, an evsel sample can have a recorded callchain
++	 * or a callchain synthesized from AUX area data.
++	 */
++	return evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN ||
++	       evsel->synth_sample_type & PERF_SAMPLE_CALLCHAIN;
  }
  
-+struct perf_pmu *perf_evsel__find_pmu(struct evsel *evsel)
-+{
-+	struct perf_pmu *pmu = NULL;
-+
-+	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-+		if (pmu->type == evsel->core.attr.type)
-+			break;
-+	}
-+
-+	return pmu;
-+}
-+
-+bool perf_evsel__is_aux_event(struct evsel *evsel)
-+{
-+	struct perf_pmu *pmu = perf_evsel__find_pmu(evsel);
-+
-+	return pmu && pmu->auxtrace;
-+}
-+
- struct perf_pmu *perf_pmu__find(const char *name)
- {
- 	struct perf_pmu *pmu;
+ struct perf_env *perf_evsel__env(struct evsel *evsel);
