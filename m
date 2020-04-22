@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C1F1B4271
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D7E1B4220
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgDVKBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:01:11 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:39389 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgDVKBD (ORCPT
+        id S1731959AbgDVK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728021AbgDVKE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:03 -0400
-Received: by mail-wr1-f68.google.com with SMTP id b11so1650262wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:01:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hv49bv5UUTZ3NDUvU3H6y8LABTtvq3abK5gLpfIazmY=;
-        b=DZT65FdFVfLmnjdh9+jur5HmgX7lcvrMWPTtr3dYYKLvTtWiWYBIO+jsJ9QqNfNUT3
-         FmFNFb9KFnnoh4OacSoc4DZjUNBhfPT4pFwj9xIZUCKM27XVBa+s10ReVgjyLqsQCel/
-         +On8uxECOh08q3vpX1CnniNsC99q/N6MxgkawrC3blLYMDu1ErTudKP89actNpVYG+Kk
-         7UbaX//Yu9b1JqBn5Qyp6BIICRE7g0g8dDaBFlUnf/Kp/mlnzptAwPRgv6duqXdnWr0l
-         1GNqOPdXO+Els5jSFfjBchs4yAmBXXv9JuSF1i3TplFYqkRA4gu86lZPdH9Q+p0E5FCH
-         +wyg==
-X-Gm-Message-State: AGi0PubUa75XUMSm1eI2AXehzh4cKrJtkD6bDX9rQqK+1m7/5vqZW+xq
-        e6BhaFskrUrpibIFepEf5t4=
-X-Google-Smtp-Source: APiQypIiuScS/JZozmSeu0q3j07Jq+Yay5SsoEJb1EVPXRrptCpSf5QiTX3hMatiXu1EWNZIs5DVag==
-X-Received: by 2002:a5d:4109:: with SMTP id l9mr27977934wrp.300.1587549661685;
-        Wed, 22 Apr 2020 03:01:01 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id q143sm7479880wme.31.2020.04.22.03.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 03:01:00 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 12:00:59 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: Re: [PATCH RFC 1/2] mm/memory_hotplug: no need to init new pgdat
- with node_start_pfn
-Message-ID: <20200422100059.GD30312@dhcp22.suse.cz>
-References: <20200416104707.20219-1-david@redhat.com>
- <20200416104707.20219-2-david@redhat.com>
- <20200421123011.GE27314@dhcp22.suse.cz>
- <ac246ba8-9a61-0e0b-3aff-caf78743e81f@redhat.com>
- <20200421125250.GG27314@dhcp22.suse.cz>
- <c5b693e0-61b7-ca05-68b5-eb19c517759f@redhat.com>
- <20200422082101.GC30312@dhcp22.suse.cz>
- <47046122-ddf7-7a96-28f6-e8d57b356697@redhat.com>
+        Wed, 22 Apr 2020 06:04:29 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AECC03C1A8;
+        Wed, 22 Apr 2020 03:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xjPeTaJb6fDrWwRoeW49VkZts+eKBc+WVFAQnP6cFZM=; b=Wt31SlMc19Z0O6lY8IZJYheFde
+        oPfDUlaW46nJbFfm3gQ0kbJkR1RuLcrCT2GDTLcFfYwReBZFcSosQ40yi3chPXHqvXSrCdY8aX6xC
+        b6DkCSwnw6Aaeh+/fMad49xxZbNFRpCe07fN8+c2vc9QePrybW79oDED6Dl2FaJ5UBZI=;
+Received: from p200300ccff0a5d001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:5d00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1jRCEt-0004YJ-At; Wed, 22 Apr 2020 12:04:19 +0200
+Date:   Wed, 22 Apr 2020 12:04:18 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime
+ autosuspend
+Message-ID: <20200422120418.49a40c75@aktux>
+In-Reply-To: <D3E40A6A-39B8-4F3F-9ABC-28EAE8D623A6@goldelico.com>
+References: <3197C3F0-DEB9-4221-AFBD-4F2A08C84C4C@goldelico.com>
+        <20200417164340.3d9043d1@aktux>
+        <6430AF54-849E-456B-8DB0-B4478BBDB78D@goldelico.com>
+        <20200417150721.GL37466@atomide.com>
+        <8E062482-5D5D-4837-9980-D6C708DD24D4@goldelico.com>
+        <20200420150802.GR37466@atomide.com>
+        <D1A77603-11FB-407F-B480-82C57E742C51@goldelico.com>
+        <20200421085336.32cf8ffe@aktux>
+        <20200421180220.GB37466@atomide.com>
+        <70F19A6E-7B36-4873-9364-F284A14EE3A0@goldelico.com>
+        <20200421182017.GC37466@atomide.com>
+        <D3E40A6A-39B8-4F3F-9ABC-28EAE8D623A6@goldelico.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47046122-ddf7-7a96-28f6-e8d57b356697@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-04-20 10:32:32, David Hildenbrand wrote:
-> On 22.04.20 10:21, Michal Hocko wrote:
-> > On Tue 21-04-20 15:06:20, David Hildenbrand wrote:
-> >> On 21.04.20 14:52, Michal Hocko wrote:
-> >>> On Tue 21-04-20 14:35:12, David Hildenbrand wrote:
-> >>>> On 21.04.20 14:30, Michal Hocko wrote:
-> >>>>> Sorry for the late reply
-> >>>>>
-> >>>>> On Thu 16-04-20 12:47:06, David Hildenbrand wrote:
-> >>>>>> A hotadded node/pgdat will span no pages at all, until memory is moved to
-> >>>>>> the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
-> >>>>>> when onlining memory blocks. We don't have to initialize the
-> >>>>>> node_start_pfn to the memory we are adding.
-> >>>>>
-> >>>>> You are right that the node is empty at this phase but that is already
-> >>>>> reflected by zero present pages (hmm, I do not see spanned pages to be
-> >>>>> set 0 though). What I am missing here is why this is an improvement. The
-> >>>>> new node is already visible here and I do not see why we hide the
-> >>>>> information we already know.
-> >>>>
-> >>>> "information we already know" - no, not before we online the memory.
-> >>>
-> >>> Is this really the case? All add_memory_resource users operate on a
-> >>> physical memory range.
-> >>
-> >> Having the first add_memory() to magically set node_start_pfn of a hotplugged
-> >> node isn't dangerous, I think we agree on that. It's just completely
-> >> unnecessary here and at least left me confused why this is needed at all-
-> >> because the node start/end pfn is only really touched when
-> >> onlining/offlining memory (when resizing the zone and the pgdat).
+On Tue, 21 Apr 2020 22:40:39 +0200
+"H. Nikolaus Schaller" <hns@goldelico.com> wrote:
+
+> Hi Tony,
+> 
+> > Am 21.04.2020 um 20:20 schrieb Tony Lindgren <tony@atomide.com>:
+> >   
+> >> Well, what helps is reverting the patch and using the old driver
+> >> (which did work for several years). So I would not assume that
+> >> there is a hardware influence. It seems to be something the new
+> >> driver is doing differently.  
 > > 
-> > I do not see any specific problem. It just feels odd to
-> > ignore the start pfn when we have that information. I am little bit
-> > worried that this might kick back. E.g. say we start using the memmaps
-> > from the hotplugged memory then the initial part of the node will never> get online and we would have memmaps outside of the node span. I do not
+> > Well earlier hdq1w.c did not idle, now it does.  
 > 
-> That's a general issue, which I pointed out as response to Oscars last
-> series. This needs more thought and reworks, especially how
-> node_start_pfn/node_spanned_pages are glued to memory onlining/offlining
-> today.
+> Ah, I see!
 > 
-> > see an immediate problem except for the feeling this is odd.
+> > If you just want to keep it enabled like earlier, you can just add something like:  
 > 
-> I think it's inconsistent. E.g., start with memory-less/cpu-less node
-> and don't online memory from the kernel immediately.
-> 
-> Hotplug CPU. PGDAT initialized with node_start_pfn=0. Hotplug memory.
-> -> node_start_pfn=0 until memory is actually onlined.
-> 
-> Hotplug memory. PGDAT initialized with node_start_pfn=$VALUE. Hotplug CPU.
-> -> node_start_pfn=$VALUE
-> 
-> Hotplug memory. PGDAT initialized with node_start_pfn=$VALUE. Hotplug
-> CPU. Hotunplug memory.
-> -> node_start_pfn=$VALUE, although there is no memory anymore.
-> 
-> Hotplug memory 1. PGDAT initialized with node_start_pfn=$VALUE. Hotplug
-> memory 2. Hotunplug memory 2.
-> -> node_start_pfn=$VALUE1 instead of $VALUE2.
-> 
-> 
-> Again, because node_start_pfn has absolutely no meaning until memory is
-> actually onlined - today.
+> Well, I don't want it enabled, it just should work as before.
+> Ideally including all improvements :)
 > 
 > > 
-> > That being said I will shut up now and leave it alone.
+> > &hdqw1w {
+> > 	ti,no-idle;
+> > };  
 > 
-> Is that a nack?
+> I have added that and there might be a slightly different pattern
+> (unless that is just by luck): the first two or three attempts to
+> read the bq27xx/uevent did still time out. But then the next ones
+> worked fine (with a response time of ca. 65 .. 230 ms).
+> 
+> So as if something needs to be shaken into the right position after
+> boot until it works.
+> 
 
-No it's not. Nor I am going to ack this but I will not stand in the
-way. I would just urge to have as many assumptions you are making and as
-much information in the changelog as possible.
+What about reading battery with just omap_hdq loaded and then continue
+booting as usual, e.g. something like:
 
--- 
-Michal Hocko
-SUSE Labs
+have script init-bat.sh
+#!/bin/sh
+modprobe omap_hdq
+cat /sys/class/power_supply/bq27000_battery/uevent
+exec /sbin/init "$@"
+
+and then append to kernel parameters init=/init-bat.sh
+
+Regards,
+Andreas
