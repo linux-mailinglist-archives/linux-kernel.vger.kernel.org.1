@@ -2,192 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5871B39ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172611B39F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgDVIUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 04:20:32 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:33985 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgDVIUb (ORCPT
+        id S1726447AbgDVIVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 04:21:06 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40301 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgDVIVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 04:20:31 -0400
-Received: by mail-lf1-f65.google.com with SMTP id x23so923653lfq.1;
-        Wed, 22 Apr 2020 01:20:27 -0700 (PDT)
+        Wed, 22 Apr 2020 04:21:05 -0400
+Received: by mail-wm1-f68.google.com with SMTP id u16so1254378wmc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 01:21:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Uyk+uICGnp6D8nQZ0Jii8T20Qhw16Iodx99VvAMvM10=;
-        b=iSbMDln03EjxzajPF5EllZvU5Zrx654EaoL2el8WPmyhU5FXGBBL5OybJnn7IkX6MX
-         nqY+/bHhdn6LCfAQkWBLNOjFmrf+lpA3JI7OWuZPPF4zR/IPg5VsHayjychjIPpxX4hW
-         zoT/iy7rbrFm6kx0Wnr9M4bRDdBA0X4KWt4YHQO9OaXgCxN5y7ZOLmy1edlVsWuVTGO6
-         LcMbi4S0kCnsgrzoeQeCxdZfShP5C4OGbwSNMYKzXMmi0W4ue4DhSm7aSsitXJ/66aws
-         UV+aRtb+iBPwUNow7wxsREKvWL0cCBra5fv/WJNSaPr8wGDMjvcpiEZwp3lFqJXIESsc
-         wS6w==
-X-Gm-Message-State: AGi0PuaEytgWi7w0Vl+0FIrfqgjjHxG2rEL9bAocJ2kGAeSMTZD0D9UW
-        D5odVAjnRIwNrCY2Yd3GfIELFbuvQTI=
-X-Google-Smtp-Source: APiQypJDtj9yig0Qaw6L+/QwF0wXE7G1FJkhC83/sOafqBSEczDe6T2JBnx0Dufn+EFolkKepxREbA==
-X-Received: by 2002:ac2:4836:: with SMTP id 22mr15976628lft.52.1587543626859;
-        Wed, 22 Apr 2020 01:20:26 -0700 (PDT)
-Received: from [192.168.8.103] ([213.87.162.215])
-        by smtp.gmail.com with ESMTPSA id w9sm779114ljj.88.2020.04.22.01.20.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 01:20:26 -0700 (PDT)
-To:     Willy Tarreau <w@1wt.eu>, Christoph Hellwig <hch@infradead.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200421125722.58959-1-efremov@linux.com>
- <20200421125722.58959-4-efremov@linux.com>
- <20200422070921.GA19116@infradead.org> <20200422071756.GA16814@1wt.eu>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Subject: Re: [PATCH 3/3] floppy: suppress UBSAN warning in setup_rw_floppy()
-Message-ID: <c2cc742d-23f9-ce03-c326-7df648161427@linux.com>
-Date:   Wed, 22 Apr 2020 11:20:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5NU5ZhAJHq6ciQrPGIfc8KggoL6wwkS48uukTc3+gvE=;
+        b=pBtTMX6urHD3zMpTlI7A33CIycrah7Sp0vaZWZsjV8IcX3CoV2ImfbFtP3YJeHQfS4
+         t4PEc+HE9xRbgfOZvhfx8Hv71vOSsesmdvSS9ZXAumQca/tob1QjqNVdnKVp/HqMtATW
+         AiFP3naqJBItvtdYLwhl6fpFBxxRvATIouHqOz1UmyqxtULPYcVBy6oEpsnuJ6wiZq2H
+         h4gyGQskghYTpkufjx0w0BXyo2HcBsdM2JCpoY6aQNhQ+oeIbrz2r9aAmrPlmxTqk0lF
+         hw5TkNX1D80oB4/imsMbC/AqAac4su75EMbBOVbsxLGuy1MU3ie+47nfE6w8O8V8DM3E
+         04/g==
+X-Gm-Message-State: AGi0Pubtg07Oedn81wbuIurVNjjynPQaLG/388F6nDa2noAzZZ3XzXf0
+        rnApplpG1v1oudBTK4z2Img=
+X-Google-Smtp-Source: APiQypIahp8XtYzcQptvFeNTn34PdqiiYT9KTGBHLyPfNL1QcREQrptbYD4Ao0S0wxPn6ghGhgl8KQ==
+X-Received: by 2002:a1c:4346:: with SMTP id q67mr9023354wma.162.1587543663505;
+        Wed, 22 Apr 2020 01:21:03 -0700 (PDT)
+Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
+        by smtp.gmail.com with ESMTPSA id f7sm7011365wrt.10.2020.04.22.01.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 01:21:02 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 10:21:01 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH RFC 1/2] mm/memory_hotplug: no need to init new pgdat
+ with node_start_pfn
+Message-ID: <20200422082101.GC30312@dhcp22.suse.cz>
+References: <20200416104707.20219-1-david@redhat.com>
+ <20200416104707.20219-2-david@redhat.com>
+ <20200421123011.GE27314@dhcp22.suse.cz>
+ <ac246ba8-9a61-0e0b-3aff-caf78743e81f@redhat.com>
+ <20200421125250.GG27314@dhcp22.suse.cz>
+ <c5b693e0-61b7-ca05-68b5-eb19c517759f@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200422071756.GA16814@1wt.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5b693e0-61b7-ca05-68b5-eb19c517759f@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/22/20 10:17 AM, Willy Tarreau wrote:
-> On Wed, Apr 22, 2020 at 12:09:21AM -0700, Christoph Hellwig wrote:
->> On Tue, Apr 21, 2020 at 03:57:22PM +0300, Denis Efremov wrote:
->>> UBSAN: array-index-out-of-bounds in drivers/block/floppy.c:1521:45
->>> index 16 is out of range for type 'unsigned char [16]'
->>> Call Trace:
->>> ...
->>>  setup_rw_floppy+0x5c3/0x7f0
->>>  floppy_ready+0x2be/0x13b0
->>>  process_one_work+0x2c1/0x5d0
->>>  worker_thread+0x56/0x5e0
->>>  kthread+0x122/0x170
->>>  ret_from_fork+0x35/0x40
->>>
->>> >From include/uapi/linux/fd.h:
->>> struct floppy_raw_cmd {
->>> 	...
->>> 	unsigned char cmd_count;
->>> 	unsigned char cmd[16];
->>> 	unsigned char reply_count;
->>> 	unsigned char reply[16];
->>> 	...
->>> }
->>>
->>> This out-of-bounds access is intentional. The command in struct
->>> floppy_raw_cmd may take up the space initially intended for the reply
->>> and the reply count. It is needed for long 82078 commands such as
->>> RESTORE, which takes 17 command bytes. Initial cmd size is not enough
->>> and since struct setup_rw_floppy is a part of uapi we check that
->>> cmd_count is in [0:16+1+16] in raw_cmd_copyin().
->>>
->>> The patch replaces array subscript with pointer arithetic to suppress
->>> UBSAN warning.
->>
+On Tue 21-04-20 15:06:20, David Hildenbrand wrote:
+> On 21.04.20 14:52, Michal Hocko wrote:
+> > On Tue 21-04-20 14:35:12, David Hildenbrand wrote:
+> >> On 21.04.20 14:30, Michal Hocko wrote:
+> >>> Sorry for the late reply
+> >>>
+> >>> On Thu 16-04-20 12:47:06, David Hildenbrand wrote:
+> >>>> A hotadded node/pgdat will span no pages at all, until memory is moved to
+> >>>> the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
+> >>>> when onlining memory blocks. We don't have to initialize the
+> >>>> node_start_pfn to the memory we are adding.
+> >>>
+> >>> You are right that the node is empty at this phase but that is already
+> >>> reflected by zero present pages (hmm, I do not see spanned pages to be
+> >>> set 0 though). What I am missing here is why this is an improvement. The
+> >>> new node is already visible here and I do not see why we hide the
+> >>> information we already know.
+> >>
+> >> "information we already know" - no, not before we online the memory.
+> > 
+> > Is this really the case? All add_memory_resource users operate on a
+> > physical memory range.
 > 
-> But isn't it a problem if struct floppy_raw_cmd is exposed to uapi ?
-> That said I remember a discussion with Linus who said that most if not
-> all of the floppy parts leaking to uapi were more of a side effect of
-> the include files reordering than a deliberate decision to expose it.
-> So maybe that could remain the best solution indeed.
+> Having the first add_memory() to magically set node_start_pfn of a hotplugged
+> node isn't dangerous, I think we agree on that. It's just completely
+> unnecessary here and at least left me confused why this is needed at all-
+> because the node start/end pfn is only really touched when
+> onlining/offlining memory (when resizing the zone and the pgdat).
 
-struct floppy_raw_cmd is input/output structure for FDRAWCMD ioctl.
+I do not see any specific problem. It just feels odd to
+ignore the start pfn when we have that information. I am little bit
+worried that this might kick back. E.g. say we start using the memmaps
+from the hotplugged memory then the initial part of the node will never
+get online and we would have memmaps outside of the node span. I do not
+see an immediate problem except for the feeling this is odd.
 
+That being said I will shut up now and leave it alone.
+
+[...]
+> > Btw. one thing that I have in my notes, I was never able to actually
+> > test the no numa node case. Because I have always been testing with node
+> > being allocated during the boot. Do you have any way to trigger this
+> > path?
 > 
-> I must say I don't feel very comfortable either with replacing p[i]
-> with *(p+i) given that they are all supposed to be interchangeable and
-> equivalent (as well as i[p] as strange as it can look). So we're not
-> really protected against a later mechanical change or cleanup that
-> reintroduces it :-/
+> Sure, here is my test case
+> 
+> #! /bin/bash
+> sudo qemu-system-x86_64 \
+>     --enable-kvm \
+>     -m 4G,maxmem=20G,slots=2 \
+>     -smp sockets=2,cores=2 \
+>     -numa node,nodeid=0,cpus=0-1,mem=4G -numa node,nodeid=1,mem=0G \
 
->> Urghh.  I think the better way would be to use a union that creates
->> a larger cmd field, or something like:
->>
->> struct floppy_raw_cmd {
->> 	...
->> 	u8 buf[34];
->>
->> #define BUF_CMD_COUNT	0
->> #define BUF_CMD		1
->> #define BUF_REPLY_COUNT	17
->> #define BUF_REPLY	18
->>
->> and use addressing based on that.
+I have been using a similar command line
+NUMA_ONE_MEMORY_LESS_NODE="-numa node,mem=2G -numa node,mem=0G"
+which gets appended to the qemu cmdline. I have always thought that this
+would allocate pgdat for node 1 though. I have checked that again now
+and dmesg doesn't point to node 1 anywhere.
 
+Thanks!
 
-What do you think about changing it this way?
-
-struct floppy_raw_cmd {
- 
-        unsigned char rate;
- 
--#define FD_RAW_CMD_SIZE 16
-+#define FD_RAW_CMD_SIZE 33
- #define FD_RAW_REPLY_SIZE 16
- 
-        unsigned char cmd_count;
--       unsigned char cmd[FD_RAW_CMD_SIZE];
--       unsigned char reply_count;
--       unsigned char reply[FD_RAW_REPLY_SIZE];
-+       union {
-+               struct {
-+                       unsigned char reserved[16];
-+                       unsigned char reply_count;
-+                       unsigned char reply[FD_RAW_REPLY_SIZE];
-+               };
-+               unsigned char cmd[FD_RAW_CMD_SIZE];
-+       };
-        int track;
-
-Denis
+-- 
+Michal Hocko
+SUSE Labs
