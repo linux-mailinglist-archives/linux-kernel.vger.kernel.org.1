@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7181B3FC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6721B3D38
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgDVKke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:40:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56980 "EHLO mail.kernel.org"
+        id S1729432AbgDVKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:13:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730134AbgDVKVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:21:12 -0400
+        id S1728880AbgDVKM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:12:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9ACA21655;
-        Wed, 22 Apr 2020 10:20:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4863D2076E;
+        Wed, 22 Apr 2020 10:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550859;
-        bh=QSO+MTYLOIEKsq08PJYUz+Ls1m/XYejmU5s/QbqlFiI=;
+        s=default; t=1587550378;
+        bh=cNrBRcbbb935JBFxASk4tMSY3/ssx73m65BupJ79jDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOaJdn+6UqDBXw+GwtxUFXJD8REWzhk7XaOwaU7xzN9LsHrs6O/GArsf12LHDw1YA
-         K9jGU4dEJRdLynD1XkPqTHJT97+wg1rXKFbw3DlHxpiKJhKAQEy1caHReAgykwLC8Y
-         G7R4xe9FBvVued7ZS+rT4Lw+p9/2b6g3J0tO13EU=
+        b=OD4Zug0hM6TuD70bQ2Gy/iio/mgD3CzRNd74Ws1mv6a1NYiojyDWZguvJk/+477KW
+         7IqerLlOvfvVaWnxMpoed2WZh+zlTipbHiGFscZYyMwXYexEAZNtG07sAK+mZfAMII
+         rwo0cwmgQiRL8/R9Or5aAic5jM6AQQSHBE/zy9to=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/118] iommu/virtio: Fix freeing of incomplete domains
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.14 122/199] btrfs: check commit root generation in should_ignore_root
 Date:   Wed, 22 Apr 2020 11:57:28 +0200
-Message-Id: <20200422095045.718172898@linuxfoundation.org>
+Message-Id: <20200422095109.746774152@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 7062af3ed2ba451029e3733d9f677c68f5ea9e77 ]
+commit 4d4225fc228e46948486d8b8207955f0c031b92e upstream.
 
-Calling viommu_domain_free() on a domain that hasn't been finalised (not
-attached to any device, for example) can currently cause an Oops,
-because we attempt to call ida_free() on ID 0, which may either be
-unallocated or used by another domain.
+Previously we would set the reloc root's last snapshot to transid - 1.
+However there was a problem with doing this, and we changed it to
+setting the last snapshot to the generation of the commit node of the fs
+root.
 
-Only initialise the vdomain->viommu pointer, which denotes a finalised
-domain, at the end of a successful viommu_domain_finalise().
+This however broke should_ignore_root().  The assumption is that if we
+are in a generation newer than when the reloc root was created, then we
+would find the reloc root through normal backref lookups, and thus can
+ignore any fs roots we find with an old enough reloc root.
 
-Fixes: edcd69ab9a32 ("iommu: Add virtio-iommu driver")
-Reported-by: Eric Auger <eric.auger@redhat.com>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/20200326093558.2641019-3-jean-philippe@linaro.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Now that the last snapshot could be considerably further in the past
+than before, we'd end up incorrectly ignoring an fs root.  Thus we'd
+find no nodes for the bytenr we were searching for, and we'd fail to
+relocate anything.  We'd loop through the relocate code again and see
+that there were still used space in that block group, attempt to
+relocate those bytenr's again, fail in the same way, and just loop like
+this forever.  This is tricky in that we have to not modify the fs root
+at all during this time, so we need to have a block group that has data
+in this fs root that is not shared by any other root, which is why this
+has been difficult to reproduce.
+
+Fixes: 054570a1dc94 ("Btrfs: fix relocation incorrectly dropping data references")
+CC: stable@vger.kernel.org # 4.9+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/iommu/virtio-iommu.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ fs/btrfs/relocation.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 3ea9d76829995..6c340a4f4fd28 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -614,18 +614,20 @@ static int viommu_domain_finalise(struct viommu_dev *viommu,
- 	int ret;
- 	struct viommu_domain *vdomain = to_viommu_domain(domain);
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -538,8 +538,8 @@ static int should_ignore_root(struct btr
+ 	if (!reloc_root)
+ 		return 0;
  
--	vdomain->viommu		= viommu;
--	vdomain->map_flags	= viommu->map_flags;
-+	ret = ida_alloc_range(&viommu->domain_ids, viommu->first_domain,
-+			      viommu->last_domain, GFP_KERNEL);
-+	if (ret < 0)
-+		return ret;
-+
-+	vdomain->id		= (unsigned int)ret;
- 
- 	domain->pgsize_bitmap	= viommu->pgsize_bitmap;
- 	domain->geometry	= viommu->geometry;
- 
--	ret = ida_alloc_range(&viommu->domain_ids, viommu->first_domain,
--			      viommu->last_domain, GFP_KERNEL);
--	if (ret >= 0)
--		vdomain->id = (unsigned int)ret;
-+	vdomain->map_flags	= viommu->map_flags;
-+	vdomain->viommu		= viommu;
- 
--	return ret > 0 ? 0 : ret;
-+	return 0;
- }
- 
- static void viommu_domain_free(struct iommu_domain *domain)
--- 
-2.20.1
-
+-	if (btrfs_root_last_snapshot(&reloc_root->root_item) ==
+-	    root->fs_info->running_transaction->transid - 1)
++	if (btrfs_header_generation(reloc_root->commit_root) ==
++	    root->fs_info->running_transaction->transid)
+ 		return 0;
+ 	/*
+ 	 * if there is reloc tree and it was created in previous
 
 
