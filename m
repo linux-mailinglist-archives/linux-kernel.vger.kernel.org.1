@@ -2,120 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4AC1B4F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 23:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1940F1B4F6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 23:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgDVVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 17:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
+        id S1726359AbgDVVgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 17:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgDVVcE (ORCPT
+        with ESMTP id S1726112AbgDVVgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 17:32:04 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEB5C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:32:03 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id t3so4195539qkg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:32:03 -0700 (PDT)
+        Wed, 22 Apr 2020 17:36:47 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACC1C03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:36:46 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id w4so4138463ioc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 14:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=+WYIg4RAMlWM7Kf2aYaI6IHSuB8btJKPWzUnEhkHm4Y=;
-        b=NdOunxgYBVAoc59q9VgeWd76PGFtMQcwOs4ul9C8PcoLGV8am3yrxBpSEBL4XGYCVE
-         WOX11uH1cmX2e5VPgB3U/cmwikvHNpSpboh6qd82m2xlaQus59tccoLJ6ESovohjwYPV
-         /t4m9MhXdZ3O8DmNgTzg7CaZFD8VWBpDdP2x8aLHiu8A6O3FztvSL8WJqBtBB2YRmUf1
-         nXmrFWKg9bLs4KaDPCVIU9KABkVfzmA5M3+zj10yazmoN4RpuhR7gq7bmRrYyh3RYPPU
-         WHmjtxcpl7A0kXvI63CFQqjGMlqqparMLZ0rycI9OBafn/P83tIenmV8NfdoxKkpPPbF
-         V/yQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D1Uf2oovzVOLF+H0FK/R7k1uZv64JouEaR0IvZuYAO0=;
+        b=AWNK0e4f4ZtajDEbk2/zgMrdrjvYWreWbrmP+jYQoma+bpFMddRrYwLb1lVgenXMSN
+         4Sg7vvm3HXmFG8vHJQvySKT+OxKKJNrsYx0LYzKhtW4UmKzNudfvBoYdW3pJRKFcLZBJ
+         Oizuhv/uo5pdxctcnFPhmGVKBcMVBD+BryCGXprm2AQV8irqoaq5eyidRv90zd7bPwhS
+         csCupTj9f2Z4PbtONJzny0DsRlds67mFNFa49bPLzVl4K5g4bXL4ZnoSl9dtZzg5rzGt
+         A6OJbofuIsYGb8EBUZqhtGJlo7T9EUBb+15VDoJO/qBHBgWpijoSzAo0mK2OCqyDHL1q
+         /+DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=+WYIg4RAMlWM7Kf2aYaI6IHSuB8btJKPWzUnEhkHm4Y=;
-        b=OWjvMvaCnfFBaQpbGgllSiiDdNYDa5UXmosyl+bi4t8Trj+SGSmwSImOZbaIyn7nfN
-         Hmmg0grYDUwomnJuaRWeDHtI6EO1i4B8zTFRlFt5wIoTdztz2SaiPZbaw5tsDfA6ORCk
-         gNiFwCqFSx6CSzvyBAFt8YyD6ZpmkuUUw2561kNxvAj9RKnzqW1/rwNBnJfTRj2hKBBd
-         w50TxRKwbCyVnqPK7uEpjb8URPaSks3Jrv7KpnJi5zqz0fm7KSvZMM5YC28EKQCvc4qh
-         4Q4StSSDt1qF/6fkycX93gBTPuYvO4kf4MZnfYAoRUs5PlgLqqHccFpCKlxv/Kj4c9Gr
-         2txQ==
-X-Gm-Message-State: AGi0PubU6VBQqrlOuwR9bbStWzd8c4WuzJdh13fi6z6AuwQKgM/Wccmt
-        e/vrVuopkbvgBJgF3Ky+1HW5tw==
-X-Google-Smtp-Source: APiQypILa2U97Y/gU88kX5KS8gFWKZMZ2UPxxDl29LseCwfEixTbGseUfJRdvuxdHsQJmv+i9tryTQ==
-X-Received: by 2002:a37:6754:: with SMTP id b81mr343164qkc.129.1587591122484;
-        Wed, 22 Apr 2020 14:32:02 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id l13sm362769qtj.17.2020.04.22.14.32.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 14:32:01 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: AMD boot woe due to "x86/mm: Cleanup pgprot_4k_2_large() and
- pgprot_large_2_4k()"
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200422170116.GA28345@lst.de>
-Date:   Wed, 22 Apr 2020 17:32:00 -0400
-Cc:     Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2568586B-B1F7-47F9-8B6F-6A4C0E5280A8@lca.pw>
-References: <1ED37D02-125F-4919-861A-371981581D9E@lca.pw>
- <20200422170116.GA28345@lst.de>
-To:     Christoph Hellwig <hch@lst.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D1Uf2oovzVOLF+H0FK/R7k1uZv64JouEaR0IvZuYAO0=;
+        b=RDrU2Oa1XVcrF2rGJLzaKmVvOnK/vJD908kgC/tm35PRNe54qr59PzP4je3IK7Eb8F
+         1nankMp/V/xaYIGv2PmH6mpWkUAi5MCswiX2lOC2Txn2cCMz5WlTkTA393NRWnAwkzQz
+         cBKotKSEEyXTAF/t8TZO72UgwEouRQkrvbS7TSarPl91Eu7bjc20gEjiT2J7B/UbU2b+
+         K2R9Obfv9OufmNGm77R+9YxFjxsYtyZQp5/Zfu+tAvwsU+uvAuSSwzBjaInwFiXZa4cE
+         +NMvcPGQ0kiioPWQzgTQSYRUGdhWxSRq2yM7eLrhj6cnTu+ZlkieUFoWHKxxxQyWsJOS
+         2zCg==
+X-Gm-Message-State: AGi0PuZTpzKmiAWImHFrAmt7Cy4Zas2Fee3RgPbm5UhmuexfSgbl4wbm
+        Hg4QxIZqOGzAdB/9IhIqpAsOiOD1R5lWWYl5KPq7Qg==
+X-Google-Smtp-Source: APiQypJEe8pwxASOXnaq0f6ETsUIkVm4W9ywGv6vpECQoSEbZM2EQv87mkdBioXyZc1+2xxm2ivj7QJwlssdDDFXaBE=
+X-Received: by 2002:a6b:91d4:: with SMTP id t203mr845837iod.70.1587591405906;
+ Wed, 22 Apr 2020 14:36:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200417221446.108733-1-jcargill@google.com> <87d083td9f.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87d083td9f.fsf@vitty.brq.redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 22 Apr 2020 14:36:34 -0700
+Message-ID: <CALMp9eREdS=nfdtvfNhW87G20Tfdwy69Phdbdmo=NzAw_tavzw@mail.gmail.com>
+Subject: Re: [PATCH] kvm: add capability for halt polling
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Jon Cargille <jcargill@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Apr 19, 2020 at 1:46 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> Jon Cargille <jcargill@google.com> writes:
+>
+> > From: David Matlack <dmatlack@google.com>
+> >
+> > KVM_CAP_HALT_POLL is a per-VM capability that lets userspace
+> > control the halt-polling time, allowing halt-polling to be tuned or
+> > disabled on particular VMs.
+> >
+> > With dynamic halt-polling, a VM's VCPUs can poll from anywhere from
+> > [0, halt_poll_ns] on each halt. KVM_CAP_HALT_POLL sets the
+> > upper limit on the poll time.
+>
+> Out of pure curiosity, why is this a per-VM and not a per-VCPU property?
 
+It didn't seem to be worth doing the plumbing for an
+architecture-agnostic per-vCPU property (which doesn't exist today).
 
-> On Apr 22, 2020, at 1:01 PM, Christoph Hellwig <hch@lst.de> wrote:
->=20
-> On Wed, Apr 22, 2020 at 11:55:54AM -0400, Qian Cai wrote:
->> Reverted the linux-next commit and its dependency,
->>=20
->> a85573f7e741 ("x86/mm: Unexport __cachemode2pte_tbl=E2=80=9D)
->> 9e294786c89a (=E2=80=9Cx86/mm: Cleanup pgprot_4k_2_large() and =
-pgprot_large_2_4k()=E2=80=9D)
->>=20
->> fixed crashes or hard reset on AMD machines during boot that have =
-been flagged by
->> KASAN in different forms indicating some sort of memory corruption =
-with this config,
->=20
-> Interesting.  Your config seems to boot fine in my VM until the point
-> where the lack of virtio-blk support stops it from mounting the root
-> file system.
->=20
-> Looking at the patch I found one bug, although that should not affect
-> your config (it should use the pgprotval_t type), and one difference
-> that could affect code generation, although I prefer the new version
-> (use of __pgprot vs a local variable + pgprot_val()).
->=20
-> Two patches attached, can you try them?
-> =
-<0001-x86-Use-pgprotval_t-in-protval_4k_2_large-and-pgprot.patch><0002-foo=
-.patch>
+> >
+> > Signed-off-by: David Matlack <dmatlack@google.com>
+> > Signed-off-by: Jon Cargille <jcargill@google.com>
+> > Reviewed-by: Jim Mattson <jmattson@google.com>
+> > ---
+> >  Documentation/virt/kvm/api.rst | 17 +++++++++++++++++
+> >  include/linux/kvm_host.h       |  1 +
+> >  include/uapi/linux/kvm.h       |  1 +
+> >  virt/kvm/kvm_main.c            | 19 +++++++++++++++----
+> >  4 files changed, 34 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> > index efbbe570aa9b7b..d871dacb984e98 100644
+> > --- a/Documentation/virt/kvm/api.rst
+> > +++ b/Documentation/virt/kvm/api.rst
+> > @@ -5802,6 +5802,23 @@ If present, this capability can be enabled for a VM, meaning that KVM
+> >  will allow the transition to secure guest mode.  Otherwise KVM will
+> >  veto the transition.
+> >
+> > +7.20 KVM_CAP_HALT_POLL
+> > +----------------------
+> > +
+> > +:Architectures: all
+> > +:Target: VM
+> > +:Parameters: args[0] is the maximum poll time in nanoseconds
+> > +:Returns: 0 on success; -1 on error
+> > +
+> > +This capability overrides the kvm module parameter halt_poll_ns for the
+> > +target VM.
+> > +
+> > +VCPU polling allows a VCPU to poll for wakeup events instead of immediately
+> > +scheduling during guest halts. The maximum time a VCPU can spend polling is
+> > +controlled by the kvm module parameter halt_poll_ns. This capability allows
+> > +the maximum halt time to specified on a per-VM basis, effectively overriding
+> > +the module parameter for the target VM.
+> > +
+> >  8. Other capabilities.
+> >  ======================
+> >
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index 6d58beb65454f7..922b24ce5e7297 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -503,6 +503,7 @@ struct kvm {
+> >       struct srcu_struct srcu;
+> >       struct srcu_struct irq_srcu;
+> >       pid_t userspace_pid;
+> > +     unsigned int max_halt_poll_ns;
+> >  };
+> >
+> >  #define kvm_err(fmt, ...) \
+> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > index 428c7dde6b4b37..ac9eba0289d1b6 100644
+> > --- a/include/uapi/linux/kvm.h
+> > +++ b/include/uapi/linux/kvm.h
+> > @@ -1017,6 +1017,7 @@ struct kvm_ppc_resize_hpt {
+> >  #define KVM_CAP_S390_VCPU_RESETS 179
+> >  #define KVM_CAP_S390_PROTECTED 180
+> >  #define KVM_CAP_PPC_SECURE_GUEST 181
+> > +#define KVM_CAP_HALT_POLL 182
+> >
+> >  #ifdef KVM_CAP_IRQ_ROUTING
+> >
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 74bdb7bf32952e..ec038a9e60a275 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -710,6 +710,8 @@ static struct kvm *kvm_create_vm(unsigned long type)
+> >                       goto out_err_no_arch_destroy_vm;
+> >       }
+> >
+> > +     kvm->max_halt_poll_ns = halt_poll_ns;
+> > +
+> >       r = kvm_arch_init_vm(kvm, type);
+> >       if (r)
+> >               goto out_err_no_arch_destroy_vm;
+> > @@ -2716,15 +2718,16 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> >       if (!kvm_arch_no_poll(vcpu)) {
+> >               if (!vcpu_valid_wakeup(vcpu)) {
+> >                       shrink_halt_poll_ns(vcpu);
+> > -             } else if (halt_poll_ns) {
+> > +             } else if (vcpu->kvm->max_halt_poll_ns) {
+> >                       if (block_ns <= vcpu->halt_poll_ns)
+> >                               ;
+> >                       /* we had a long block, shrink polling */
+> > -                     else if (vcpu->halt_poll_ns && block_ns > halt_poll_ns)
+> > +                     else if (vcpu->halt_poll_ns &&
+> > +                                     block_ns > vcpu->kvm->max_halt_poll_ns)
+> >                               shrink_halt_poll_ns(vcpu);
+> >                       /* we had a short halt and our poll time is too small */
+> > -                     else if (vcpu->halt_poll_ns < halt_poll_ns &&
+> > -                             block_ns < halt_poll_ns)
+> > +                     else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
+> > +                                     block_ns < vcpu->kvm->max_halt_poll_ns)
+> >                               grow_halt_poll_ns(vcpu);
+> >               } else {
+> >                       vcpu->halt_poll_ns = 0;
+> > @@ -3516,6 +3519,7 @@ static long kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+> >       case KVM_CAP_IOEVENTFD_ANY_LENGTH:
+> >       case KVM_CAP_CHECK_EXTENSION_VM:
+> >       case KVM_CAP_ENABLE_CAP_VM:
+> > +     case KVM_CAP_HALT_POLL:
+> >               return 1;
+> >  #ifdef CONFIG_KVM_MMIO
+> >       case KVM_CAP_COALESCED_MMIO:
+> > @@ -3566,6 +3570,13 @@ static int kvm_vm_ioctl_enable_cap_generic(struct kvm *kvm,
+> >               return 0;
+> >       }
+> >  #endif
+> > +     case KVM_CAP_HALT_POLL: {
+> > +             if (cap->flags || cap->args[0] != (unsigned int)cap->args[0])
+> > +                     return -EINVAL;
+> > +
+> > +             kvm->max_halt_poll_ns = cap->args[0];
+>
+> Is it safe to allow any value from userspace here or would it maybe make
+> sense to only allow [0, global halt_poll_ns]?
 
-This fixed the sucker,
+Would that restriction help to get this change accepted?
 
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index edf9cea4871f..c54d1d0a8e3b 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -708,7 +708,7 @@ int pud_set_huge(pud_t *pud, phys_addr_t addr, =
-pgprot_t prot)
-=20
-        set_pte((pte_t *)pud, pfn_pte(
-                (u64)addr >> PAGE_SHIFT,
--               __pgprot(protval_4k_2_large(pgprot_val(prot) | =
-_PAGE_PSE))));
-+               __pgprot(protval_4k_2_large(pgprot_val(prot)) | =
-_PAGE_PSE)));
-=20
-        return 1;
- }=
+> > +             return 0;
+> > +     }
+> >       default:
+> >               return kvm_vm_ioctl_enable_cap(kvm, cap);
+> >       }
+>
+> --
+> Vitaly
+>
