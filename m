@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C793C1B426E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0808B1B3EE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgDVLB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49402 "EHLO mail.kernel.org"
+        id S1730394AbgDVKYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:24:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbgDVKBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:12 -0400
+        id S1730273AbgDVKXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7BA52076C;
-        Wed, 22 Apr 2020 10:01:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F2862084D;
+        Wed, 22 Apr 2020 10:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549672;
-        bh=kB0zo3lBetf32IQvgyhg8RPLDDwuy69y9bOMl2+zrh8=;
+        s=default; t=1587551004;
+        bh=uHb5jBjIoswJZxzBsYgMUJiHR8BPe/xFo1UMnp0/+P8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQ9KyerjEKa65IqufONB93QG3eJosn5pNBe+pk6o09BZ4gKKmZ88JuNHBAY4ySZRZ
-         rleB34kFebVKEQuQJoH8vmuANARz39OXM7xcQjLNCHtwGolws1cw22YDNU2VmGn5A8
-         TqGZGFzpm5AVqA7loZEbAk1BgP5rqG/eenTeeRKY=
+        b=JKbaVX0GNT3c/L5dqV4E5YCZuZWliT/E+0hEbxrGbpPiYiK/97sLobWg6H6GumwJy
+         K8YRD/zXJMIOgui48NceCZdVzzjmGYlqGuYZS0w/eKTWQ0RNbFUgfswXpPnAXqXVLc
+         G6+XXEBsYcod53IV0LNtpUnZi9OeLpHmeTh5mwOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Stallard <code@timstallard.me.uk>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 057/100] net: ipv6: do not consider routes via gateways for anycast address check
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 060/166] clk: tegra: Fix Tegra PMC clock out parents
 Date:   Wed, 22 Apr 2020 11:56:27 +0200
-Message-Id: <20200422095033.383951683@linuxfoundation.org>
+Message-Id: <20200422095055.277409896@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Stallard <code@timstallard.me.uk>
+From: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-[ Upstream commit 03e2a984b6165621f287fadf5f4b5cd8b58dcaba ]
+[ Upstream commit 6fe38aa8cac3a5db38154331742835a4d9740788 ]
 
-The behaviour for what is considered an anycast address changed in
-commit 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after
-encountering pmtu exception"). This now considers the first
-address in a subnet where there is a route via a gateway
-to be an anycast address.
+Tegra PMC clocks clk_out_1, clk_out_2, and clk_out_3 supported parents
+are osc, osc_div2, osc_div4 and extern clock.
 
-This breaks path MTU discovery and traceroutes when a host in a
-remote network uses the address at the start of a prefix
-(eg 2600:: advertised as 2600::/48 in the DFZ) as ICMP errors
-will not be sent to anycast addresses.
+Clock driver is using incorrect parents clk_m, clk_m_div2, clk_m_div4
+for PMC clocks.
 
-This patch excludes any routes with a gateway, or via point to
-point links, like the behaviour previously from
-rt6_is_gw_or_nonexthop in net/ipv6/route.c.
+This patch fixes this.
 
-This can be tested with:
-ip link add v1 type veth peer name v2
-ip netns add test
-ip netns exec test ip link set lo up
-ip link set v2 netns test
-ip link set v1 up
-ip netns exec test ip link set v2 up
-ip addr add 2001:db8::1/64 dev v1 nodad
-ip addr add 2001:db8:100:: dev lo nodad
-ip netns exec test ip addr add 2001:db8::2/64 dev v2 nodad
-ip netns exec test ip route add unreachable 2001:db8:1::1
-ip netns exec test ip route add 2001:db8:100::/64 via 2001:db8::1
-ip netns exec test sysctl net.ipv6.conf.all.forwarding=1
-ip route add 2001:db8:1::1 via 2001:db8::2
-ping -I 2001:db8::1 2001:db8:1::1 -c1
-ping -I 2001:db8:100:: 2001:db8:1::1 -c1
-ip addr delete 2001:db8:100:: dev lo
-ip netns delete test
-
-Currently the first ping will get back a destination unreachable ICMP
-error, but the second will never get a response, with "icmp6_send:
-acast source" logged. After this patch, both get destination
-unreachable ICMP replies.
-
-Fixes: 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after encountering pmtu exception")
-Signed-off-by: Tim Stallard <code@timstallard.me.uk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/ip6_route.h |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/tegra/clk-tegra-pmc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -171,6 +171,7 @@ static inline bool ipv6_anycast_destinat
+diff --git a/drivers/clk/tegra/clk-tegra-pmc.c b/drivers/clk/tegra/clk-tegra-pmc.c
+index bec3e008335f3..5e044ba1ae364 100644
+--- a/drivers/clk/tegra/clk-tegra-pmc.c
++++ b/drivers/clk/tegra/clk-tegra-pmc.c
+@@ -49,16 +49,16 @@ struct pmc_clk_init_data {
  
- 	return rt->rt6i_flags & RTF_ANYCAST ||
- 		(rt->rt6i_dst.plen != 128 &&
-+		 !(rt->rt6i_flags & (RTF_GATEWAY | RTF_NONEXTHOP)) &&
- 		 ipv6_addr_equal(&rt->rt6i_dst.addr, daddr));
- }
+ static DEFINE_SPINLOCK(clk_out_lock);
  
+-static const char *clk_out1_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern1",
++static const char *clk_out1_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern1",
+ };
+ 
+-static const char *clk_out2_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern2",
++static const char *clk_out2_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern2",
+ };
+ 
+-static const char *clk_out3_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern3",
++static const char *clk_out3_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern3",
+ };
+ 
+ static struct pmc_clk_init_data pmc_clks[] = {
+-- 
+2.20.1
+
 
 
