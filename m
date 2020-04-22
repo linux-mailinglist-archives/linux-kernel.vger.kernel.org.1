@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAEE1B4359
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B851B4353
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgDVLfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:35:52 -0400
-Received: from smtp1.lauterbach.com ([62.154.241.196]:51883 "EHLO
-        smtp1.lauterbach.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgDVLfw (ORCPT
+        id S1726454AbgDVLde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725808AbgDVLdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:35:52 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 07:35:51 EDT
-Received: (qmail 23104 invoked by uid 484); 22 Apr 2020 11:29:09 -0000
-X-Qmail-Scanner-Diagnostics: from 10.2.10.44 by smtp1.lauterbach.com (envelope-from <ingo.rohloff@lauterbach.com>, uid 484) with qmail-scanner-2.11 
- (mhr: 1.0. clamdscan: 0.99/21437. spamassassin: 3.4.0.  
- Clear:RC:1(10.2.10.44):. 
- Processed in 0.084966 secs); 22 Apr 2020 11:29:09 -0000
-Received: from unknown (HELO ingpc2.intern.lauterbach.com) (Authenticated_SSL:irohloff@[10.2.10.44])
-          (envelope-sender <ingo.rohloff@lauterbach.com>)
-          by smtp1.lauterbach.com (qmail-ldap-1.03) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <maz@kernel.org>; 22 Apr 2020 11:29:08 -0000
-From:   Ingo Rohloff <ingo.rohloff@lauterbach.com>
-To:     maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ingo Rohloff <ingo.rohloff@lauterbach.com>
-Subject: [PATCH] irqchip/gic-v3: fix missing "__init" for gic_smp_init()
-Date:   Wed, 22 Apr 2020 13:28:57 +0200
-Message-Id: <20200422112857.4300-1-ingo.rohloff@lauterbach.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 22 Apr 2020 07:33:33 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994FFC03C1A8;
+        Wed, 22 Apr 2020 04:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TvSrnbry2EaNGIReXKuYBNE6jfhcSFlv+Vxlnn4f+8k=; b=h5o11Cvonxs0Dq7WLqdvO0qcXa
+        EMAVNUNDE22MzBUxBd/Y8IYUC/zrxEUnyrgMWhkvSMa140lbtBkl1sDuqvQkH7/iSbLUwFyFnrIM5
+        9FmsLqgteFSgQCUDGUbuiVpffwjqbYRcyYAQNDGBdMU3FzBEJhCfVk62N1l4UwSNsMRatblZi+VyH
+        aWMlrfK9vRAx9XqrP5efC/ovGw4gL2Lnwg1FT+eNeCvzLrueMP+/WRkUAT908gufqVi5fKN2dp6xy
+        3fSdtij9ctFKv683guef0TFyr0O94YiGOpv3b6+fknATnHFkfb5y0Oo8TjlG8RYJS1E5lWaXUZIeN
+        cQdZa5DA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRDcn-000708-MQ; Wed, 22 Apr 2020 11:33:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 226E0304CFD;
+        Wed, 22 Apr 2020 13:33:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E236F202801A5; Wed, 22 Apr 2020 13:33:03 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 13:33:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     tglx@linutronix.de, pbonzini@redhat.com, bigeasy@linutronix.de,
+        rostedt@goodmis.org, torvalds@linux-foundation.org,
+        will@kernel.org, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 -tip 0/5] kvm: Use rcuwait for vcpu blocking
+Message-ID: <20200422113303.GZ20730@hirez.programming.kicks-ass.net>
+References: <20200422040739.18601-1-dave@stgolabs.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422040739.18601-1-dave@stgolabs.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With an SMP configuration, gic_smp_init() calls set_smp_cross_call().
-set_smp_cross_call() is marked with "__init".
-So gic_smp_init() should also be marked with "__init".
-gic_smp_init() is only called from gic_init_bases().
-gic_init_bases() is also marked with "__init";
-So marking gic_smp_init() with "__init" is fine.
+On Tue, Apr 21, 2020 at 09:07:34PM -0700, Davidlohr Bueso wrote:
+> Davidlohr Bueso (5):
+>   rcuwait: Fix stale wake call name in comment
+>   rcuwait: Let rcuwait_wake_up() return whether or not a task was awoken
+>   rcuwait: Introduce prepare_to and finish_rcuwait
+>   kvm: Replace vcpu->swait with rcuwait
+>   sched/swait: Reword some of the main description
 
-Signed-off-by: Ingo Rohloff <ingo.rohloff@lauterbach.com>
----
- drivers/irqchip/irq-gic-v3.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index d7006ef18a0d..98c886dab02d 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -1150,7 +1150,7 @@ static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
- 	isb();
- }
- 
--static void gic_smp_init(void)
-+static void __init gic_smp_init(void)
- {
- 	set_smp_cross_call(gic_raise_softirq);
- 	cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_GIC_STARTING,
--- 
-2.17.1
-
+Thanks Dave!
