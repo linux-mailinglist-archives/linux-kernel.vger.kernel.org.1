@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AE41B442D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544CB1B44B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbgDVMSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
+        id S1728413AbgDVMVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728716AbgDVMRk (ORCPT
+        by vger.kernel.org with ESMTP id S1728566AbgDVMRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:17:40 -0400
+        Wed, 22 Apr 2020 08:17:32 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CDBC03C1A9;
-        Wed, 22 Apr 2020 05:17:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00F3C03C1AB;
+        Wed, 22 Apr 2020 05:17:32 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jREJo-0007nH-6v; Wed, 22 Apr 2020 14:17:32 +0200
+        id 1jREJi-0007m0-BS; Wed, 22 Apr 2020 14:17:26 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6804F1C0483;
-        Wed, 22 Apr 2020 14:17:23 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id DB6F11C0813;
+        Wed, 22 Apr 2020 14:17:22 +0200 (CEST)
 Date:   Wed, 22 Apr 2020 12:17:22 -0000
 From:   "tip-bot2 for Adrian Hunter" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf thread-stack: Add thread_stack__sample_late()
+Subject: [tip: perf/core] perf evsel: Be consistent when looking which evsel
+ PERF_SAMPLE_ bits are set
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200401101613.6201-10-adrian.hunter@intel.com>
-References: <20200401101613.6201-10-adrian.hunter@intel.com>
+In-Reply-To: <20200401101613.6201-11-adrian.hunter@intel.com>
+References: <20200401101613.6201-11-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Message-ID: <158755784297.28353.7627391855107279620.tip-bot2@tip-bot2>
+Message-ID: <158755784249.28353.1495404549077332838.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,107 +52,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     4fef41bfb1d8d2ada4a18eb3ab80c2682bcbae12
-Gitweb:        https://git.kernel.org/tip/4fef41bfb1d8d2ada4a18eb3ab80c2682bcbae12
+Commit-ID:     8e94b3243a9af2c49a38fd0d6f2f9beb542e41a4
+Gitweb:        https://git.kernel.org/tip/8e94b3243a9af2c49a38fd0d6f2f9beb542e41a4
 Author:        Adrian Hunter <adrian.hunter@intel.com>
-AuthorDate:    Wed, 01 Apr 2020 13:16:06 +03:00
+AuthorDate:    Wed, 01 Apr 2020 13:16:07 +03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Thu, 16 Apr 2020 12:19:15 -03:00
+CommitterDate: Thu, 16 Apr 2020 12:19:17 -03:00
 
-perf thread-stack: Add thread_stack__sample_late()
+perf evsel: Be consistent when looking which evsel PERF_SAMPLE_ bits are set
 
-Add a thread stack function to create a call chain for hardware events
-where the sample records get created some time after the event occurred.
+Using 'type' variable for checking for callchains is equivalent to using
+evsel__has_callchain(evsel) and is how the other PERF_SAMPLE_ bits are checked
+in this function, so use it to be consistent.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: http://lore.kernel.org/lkml/20200401101613.6201-10-adrian.hunter@intel.com
+Link: http://lore.kernel.org/lkml/20200401101613.6201-11-adrian.hunter@intel.com
+[ split from a larger patch ]
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/thread-stack.c | 57 +++++++++++++++++++++++++++++++++-
- tools/perf/util/thread-stack.h |  3 ++-
- 2 files changed, 60 insertions(+)
+ tools/perf/util/evsel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/thread-stack.c b/tools/perf/util/thread-stack.c
-index 0885967..83f6c83 100644
---- a/tools/perf/util/thread-stack.c
-+++ b/tools/perf/util/thread-stack.c
-@@ -497,6 +497,63 @@ void thread_stack__sample(struct thread *thread, int cpu,
- 	chain->nr = i;
- }
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index d23db67..f320ada 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2136,7 +2136,7 @@ int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 		}
+ 	}
  
-+/*
-+ * Hardware sample records, created some time after the event occurred, need to
-+ * have subsequent addresses removed from the call chain.
-+ */
-+void thread_stack__sample_late(struct thread *thread, int cpu,
-+			       struct ip_callchain *chain, size_t sz,
-+			       u64 sample_ip, u64 kernel_start)
-+{
-+	struct thread_stack *ts = thread__stack(thread, cpu);
-+	u64 sample_context = callchain_context(sample_ip, kernel_start);
-+	u64 last_context, context, ip;
-+	size_t nr = 0, j;
-+
-+	if (sz < 2) {
-+		chain->nr = 0;
-+		return;
-+	}
-+
-+	if (!ts)
-+		goto out;
-+
-+	/*
-+	 * When tracing kernel space, kernel addresses occur at the top of the
-+	 * call chain after the event occurred but before tracing stopped.
-+	 * Skip them.
-+	 */
-+	for (j = 1; j <= ts->cnt; j++) {
-+		ip = ts->stack[ts->cnt - j].ret_addr;
-+		context = callchain_context(ip, kernel_start);
-+		if (context == PERF_CONTEXT_USER ||
-+		    (context == sample_context && ip == sample_ip))
-+			break;
-+	}
-+
-+	last_context = sample_ip; /* Use sample_ip as an invalid context */
-+
-+	for (; nr < sz && j <= ts->cnt; nr++, j++) {
-+		ip = ts->stack[ts->cnt - j].ret_addr;
-+		context = callchain_context(ip, kernel_start);
-+		if (context != last_context) {
-+			if (nr >= sz - 1)
-+				break;
-+			chain->ips[nr++] = context;
-+			last_context = context;
-+		}
-+		chain->ips[nr] = ip;
-+	}
-+out:
-+	if (nr) {
-+		chain->nr = nr;
-+	} else {
-+		chain->ips[0] = sample_context;
-+		chain->ips[1] = sample_ip;
-+		chain->nr = 2;
-+	}
-+}
-+
- struct call_return_processor *
- call_return_processor__new(int (*process)(struct call_return *cr, u64 *parent_db_id, void *data),
- 			   void *data)
-diff --git a/tools/perf/util/thread-stack.h b/tools/perf/util/thread-stack.h
-index e1ec5a5..8962ddc 100644
---- a/tools/perf/util/thread-stack.h
-+++ b/tools/perf/util/thread-stack.h
-@@ -85,6 +85,9 @@ int thread_stack__event(struct thread *thread, int cpu, u32 flags, u64 from_ip,
- void thread_stack__set_trace_nr(struct thread *thread, int cpu, u64 trace_nr);
- void thread_stack__sample(struct thread *thread, int cpu, struct ip_callchain *chain,
- 			  size_t sz, u64 ip, u64 kernel_start);
-+void thread_stack__sample_late(struct thread *thread, int cpu,
-+			       struct ip_callchain *chain, size_t sz, u64 ip,
-+			       u64 kernel_start);
- int thread_stack__flush(struct thread *thread);
- void thread_stack__free(struct thread *thread);
- size_t thread_stack__depth(struct thread *thread, int cpu);
+-	if (evsel__has_callchain(evsel)) {
++	if (type & PERF_SAMPLE_CALLCHAIN) {
+ 		const u64 max_callchain_nr = UINT64_MAX / sizeof(u64);
+ 
+ 		OVERFLOW_CHECK_u64(array);
