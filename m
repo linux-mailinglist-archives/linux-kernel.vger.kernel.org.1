@@ -2,68 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D54F1B4498
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350941B44A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgDVMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S1728163AbgDVMUa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Apr 2020 08:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728825AbgDVMRu (ORCPT
+        by vger.kernel.org with ESMTP id S1728758AbgDVMRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:17:50 -0400
+        Wed, 22 Apr 2020 08:17:42 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F9DC03C1A8;
-        Wed, 22 Apr 2020 05:17:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36251C03C1A9;
+        Wed, 22 Apr 2020 05:17:42 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jREJe-0007gJ-VM; Wed, 22 Apr 2020 14:17:23 +0200
+        id 1jREJg-0007h7-0q; Wed, 22 Apr 2020 14:17:24 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8B9951C0483;
-        Wed, 22 Apr 2020 14:17:17 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 12:17:17 -0000
-From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 831F41C04CD;
+        Wed, 22 Apr 2020 14:17:18 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 12:17:18 -0000
+From:   "tip-bot2 for He Zhe" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf doc: allow ASCIIDOC_EXTRA to be an argument
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, yuzhoujian <yuzhoujian@didichuxing.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+Subject: [tip: perf/core] tools lib traceevent: Take care of return value of asprintf
+Cc:     He Zhe <zhe.he@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        hewenliang4@huawei.com, Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200416162058.201954-2-irogers@google.com>
-References: <20200416162058.201954-2-irogers@google.com>
+In-Reply-To: <1582163930-233692-1-git-send-email-zhe.he@windriver.com>
+References: <1582163930-233692-1-git-send-email-zhe.he@windriver.com>
 MIME-Version: 1.0
-Message-ID: <158755783715.28353.14013762798615075637.tip-bot2@tip-bot2>
+Message-ID: <158755783812.28353.15619168475108123026.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
 X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
@@ -74,69 +52,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     e9cfa47e687d77d256610b7124d736776f137ea0
-Gitweb:        https://git.kernel.org/tip/e9cfa47e687d77d256610b7124d736776f137ea0
-Author:        Ian Rogers <irogers@google.com>
-AuthorDate:    Thu, 16 Apr 2020 09:20:55 -07:00
+Commit-ID:     f8ff18be1f5c6ba1c2befb043bea6e7eaf9f8987
+Gitweb:        https://git.kernel.org/tip/f8ff18be1f5c6ba1c2befb043bea6e7eaf9f8987
+Author:        He Zhe <zhe.he@windriver.com>
+AuthorDate:    Thu, 20 Feb 2020 09:58:50 +08:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Sat, 18 Apr 2020 09:05:00 -03:00
 
-perf doc: allow ASCIIDOC_EXTRA to be an argument
+tools lib traceevent: Take care of return value of asprintf
 
-This will allow parent makefiles to pass values to asciidoc.
+According to the API, if memory allocation wasn't possible, or some
+other error occurs, asprintf will return -1, and the contents of strp
+below are undefined.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Igor Lubashev <ilubashe@akamai.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Jiwei Sun <jiwei.sun@windriver.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: yuzhoujian <yuzhoujian@didichuxing.com>
-Link: http://lore.kernel.org/lkml/20200416162058.201954-2-irogers@google.com
+  int asprintf(char **strp, const char *fmt, ...);
+
+This patch takes care of return value of asprintf to make it less error
+prone and prevent the following build warning.
+
+  ignoring return value of ‘asprintf’, declared with attribute warn_unused_result [-Wunused-result]
+
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Tzvetomir Stoyanov <tstoyanov@vmware.com>
+Cc: hewenliang4@huawei.com
+Link: http://lore.kernel.org/lkml/1582163930-233692-1-git-send-email-zhe.he@windriver.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Documentation/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/lib/traceevent/parse-filter.c | 29 ++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
-index 31824d5..6e54979 100644
---- a/tools/perf/Documentation/Makefile
-+++ b/tools/perf/Documentation/Makefile
-@@ -48,7 +48,7 @@ man5dir=$(mandir)/man5
- man7dir=$(mandir)/man7
+diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
+index 20eed71..c271aee 100644
+--- a/tools/lib/traceevent/parse-filter.c
++++ b/tools/lib/traceevent/parse-filter.c
+@@ -1958,7 +1958,8 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
+ 				default:
+ 					break;
+ 				}
+-				asprintf(&str, val ? "TRUE" : "FALSE");
++				if (asprintf(&str, val ? "TRUE" : "FALSE") < 0)
++					str = NULL;
+ 				break;
+ 			}
+ 		}
+@@ -1976,7 +1977,8 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
+ 			break;
+ 		}
  
- ASCIIDOC=asciidoc
--ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
-+ASCIIDOC_EXTRA += --unsafe -f asciidoc.conf
- ASCIIDOC_HTML = xhtml11
- MANPAGE_XSL = manpage-normal.xsl
- XMLTO_EXTRA =
-@@ -59,7 +59,7 @@ HTML_REF = origin/html
+-		asprintf(&str, "(%s) %s (%s)", left, op, right);
++		if (asprintf(&str, "(%s) %s (%s)", left, op, right) < 0)
++			str = NULL;
+ 		break;
  
- ifdef USE_ASCIIDOCTOR
- ASCIIDOC = asciidoctor
--ASCIIDOC_EXTRA = -a compat-mode
-+ASCIIDOC_EXTRA += -a compat-mode
- ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
- ASCIIDOC_EXTRA += -a mansource="perf" -a manmanual="perf Manual"
- ASCIIDOC_HTML = xhtml5
+ 	case TEP_FILTER_OP_NOT:
+@@ -1992,10 +1994,12 @@ static char *op_to_str(struct tep_event_filter *filter, struct tep_filter_arg *a
+ 			right_val = 0;
+ 		if (right_val >= 0) {
+ 			/* just return the opposite */
+-			asprintf(&str, right_val ? "FALSE" : "TRUE");
++			if (asprintf(&str, right_val ? "FALSE" : "TRUE") < 0)
++				str = NULL;
+ 			break;
+ 		}
+-		asprintf(&str, "%s(%s)", op, right);
++		if (asprintf(&str, "%s(%s)", op, right) < 0)
++			str = NULL;
+ 		break;
+ 
+ 	default:
+@@ -2011,7 +2015,8 @@ static char *val_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
+ {
+ 	char *str = NULL;
+ 
+-	asprintf(&str, "%lld", arg->value.val);
++	if (asprintf(&str, "%lld", arg->value.val) < 0)
++		str = NULL;
+ 
+ 	return str;
+ }
+@@ -2069,7 +2074,8 @@ static char *exp_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
+ 		break;
+ 	}
+ 
+-	asprintf(&str, "%s %s %s", lstr, op, rstr);
++	if (asprintf(&str, "%s %s %s", lstr, op, rstr) < 0)
++		str = NULL;
+ out:
+ 	free(lstr);
+ 	free(rstr);
+@@ -2113,7 +2119,8 @@ static char *num_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
+ 		if (!op)
+ 			op = "<=";
+ 
+-		asprintf(&str, "%s %s %s", lstr, op, rstr);
++		if (asprintf(&str, "%s %s %s", lstr, op, rstr) < 0)
++			str = NULL;
+ 		break;
+ 
+ 	default:
+@@ -2148,8 +2155,9 @@ static char *str_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
+ 		if (!op)
+ 			op = "!~";
+ 
+-		asprintf(&str, "%s %s \"%s\"",
+-			 arg->str.field->name, op, arg->str.val);
++		if (asprintf(&str, "%s %s \"%s\"",
++			 arg->str.field->name, op, arg->str.val) < 0)
++			str = NULL;
+ 		break;
+ 
+ 	default:
+@@ -2165,7 +2173,8 @@ static char *arg_to_str(struct tep_event_filter *filter, struct tep_filter_arg *
+ 
+ 	switch (arg->type) {
+ 	case TEP_FILTER_ARG_BOOLEAN:
+-		asprintf(&str, arg->boolean.value ? "TRUE" : "FALSE");
++		if (asprintf(&str, arg->boolean.value ? "TRUE" : "FALSE") < 0)
++			str = NULL;
+ 		return str;
+ 
+ 	case TEP_FILTER_ARG_OP:
