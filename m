@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32001B41B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BBC1B3D60
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbgDVKy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60010 "EHLO mail.kernel.org"
+        id S1729527AbgDVKOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727941AbgDVKH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:26 -0400
+        id S1728480AbgDVKOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE9862076C;
-        Wed, 22 Apr 2020 10:07:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C75BF2071E;
+        Wed, 22 Apr 2020 10:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550045;
-        bh=GaNAlxoIcuufHCy0GFgNzN8L5z5nlk6PDPiyXYSP6Ag=;
+        s=default; t=1587550460;
+        bh=S6wAKXdXmDJgv7u1+X6ARKowSlSQupWIYsmGHU1DPC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zq9ZscQS4tVvYQuLd8w7W2OdvWVWN+JkJJVTVwMCRHjn3rrrxjoF/UwPQIM4bFR/e
-         ZYhd7iHRYT6eAugxes06vjWRHpGf0rmQb9iUzJKtL5Ka6G5X2Sb1O7SPDN6JmlE+Pu
-         3kOwSl9CYnX7jwatBQlbZkDFzkcudCRzmMakGQAE=
+        b=UXd4ViGOuBcau4MOwRzC1ytBcp5jo1wXO78JBWTqVgM7N+3dtUQBmLjUnu4uwU1JD
+         xPX0ZwPOdR7SZRM9t64cl1oVQxtdsNE8XWpre3SE/YGhyJN/GGw53YlYMH9LIfLT10
+         EWs6Zao53Mo+2y50NGVJdZigyqDNhDb2w2hUM3u4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 113/125] NFS: Fix memory leaks in nfs_pageio_stop_mirroring()
+Subject: [PATCH 4.19 26/64] clk: at91: usb: continue if clk_hw_round_rate() return zero
 Date:   Wed, 22 Apr 2020 11:57:10 +0200
-Message-Id: <20200422095050.951605808@linuxfoundation.org>
+Message-Id: <20200422095017.682191538@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 862f35c94730c9270833f3ad05bd758a29f204ed ]
+[ Upstream commit b0ecf1c6c6e82da4847900fad0272abfd014666d ]
 
-If we just set the mirror count to 1 without first clearing out
-the mirrors, we can leak queued up requests.
+clk_hw_round_rate() may call round rate function of its parents. In case
+of SAM9X60 two of USB parrents are PLLA and UPLL. These clocks are
+controlled by clk-sam9x60-pll.c driver. The round rate function for this
+driver is sam9x60_pll_round_rate() which call in turn
+sam9x60_pll_get_best_div_mul(). In case the requested rate is not in the
+proper range (rate < characteristics->output[0].min &&
+rate > characteristics->output[0].max) the sam9x60_pll_round_rate() will
+return a negative number to its caller (called by
+clk_core_round_rate_nolock()). clk_hw_round_rate() will return zero in
+case a negative number is returned by clk_core_round_rate_nolock(). With
+this, the USB clock will continue its rate computation even caller of
+clk_hw_round_rate() returned an error. With this, the USB clock on SAM9X60
+may not chose the best parent. I detected this after a suspend/resume
+cycle on SAM9X60.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lkml.kernel.org/r/1579261009-4573-2-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pagelist.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/clk/at91/clk-usb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
-index b6e25126a0b0f..529f3a5762637 100644
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -851,15 +851,6 @@ static int nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
- 	return 0;
- }
- 
--/*
-- * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
-- */
--void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
--{
--	pgio->pg_mirror_count = 1;
--	pgio->pg_mirror_idx = 0;
--}
--
- static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
- {
- 	pgio->pg_mirror_count = 1;
-@@ -1285,6 +1276,14 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
- 	}
- }
- 
-+/*
-+ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
-+ */
-+void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
-+{
-+	nfs_pageio_complete(pgio);
-+}
+diff --git a/drivers/clk/at91/clk-usb.c b/drivers/clk/at91/clk-usb.c
+index 791770a563fcc..6fac6383d024e 100644
+--- a/drivers/clk/at91/clk-usb.c
++++ b/drivers/clk/at91/clk-usb.c
+@@ -78,6 +78,9 @@ static int at91sam9x5_clk_usb_determine_rate(struct clk_hw *hw,
+ 			tmp_parent_rate = req->rate * div;
+ 			tmp_parent_rate = clk_hw_round_rate(parent,
+ 							   tmp_parent_rate);
++			if (!tmp_parent_rate)
++				continue;
 +
- int __init nfs_init_nfspagecache(void)
- {
- 	nfs_page_cachep = kmem_cache_create("nfs_page",
+ 			tmp_rate = DIV_ROUND_CLOSEST(tmp_parent_rate, div);
+ 			if (tmp_rate < req->rate)
+ 				tmp_diff = req->rate - tmp_rate;
 -- 
 2.20.1
 
