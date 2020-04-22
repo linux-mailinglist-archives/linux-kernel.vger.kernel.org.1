@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F09F1B41A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F411B40D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgDVKH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60498 "EHLO mail.kernel.org"
+        id S1729571AbgDVKOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728564AbgDVKHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:44 -0400
+        id S1729554AbgDVKOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04AF32076C;
-        Wed, 22 Apr 2020 10:07:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0D722071E;
+        Wed, 22 Apr 2020 10:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550062;
-        bh=zGC4dr+ld+nnucTsreo0JbDdkNckR7Sp2tOzN775+C0=;
+        s=default; t=1587550477;
+        bh=6Qusnb+hvblgVvgzQUKkQ1ZP7XGAWG225QsbQDOykRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P83ZHGInT3Cesn5dQQVIz1TVZPfyGqfSOvGogrSxzJVr5keA1MxcHhMLBznyPtd64
-         tOWoVmam+yUC6Kk1kLKAFw3k3P0if7bV3z+KHlIuuc903P5J2+td+6W4zb+ni6VK44
-         ZxpcmMbfAwWLjJW9GS1+Dq1sgJ39OH6Fx3g/24mk=
+        b=oOedRFQAS9OWDvbzOLwI8qphUiUPhNv8H8FoSQA8klJ1LJjBVBqVKKdtVjEET2JQT
+         hNmWZNi2+r/RD7R4BOBKkxW9ocDP4gdZicC60G43uhJ5SYjwE9ndWYSyT6ZbiZRMBI
+         GY4fjvyDHqLWgQRDSwCFLfPMTOQ25idYjSPNqZ7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.9 119/125] tty: evh_bytechan: Fix out of bounds accesses
+        stable@vger.kernel.org,
+        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 32/64] NFS: direct.c: Fix memory leak of dreq when nfs_get_lock_context fails
 Date:   Wed, 22 Apr 2020 11:57:16 +0200
-Message-Id: <20200422095051.784717539@linuxfoundation.org>
+Message-Id: <20200422095018.683178013@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,108 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+From: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
 
-commit 3670664b5da555a2a481449b3baafff113b0ac35 upstream.
+[ Upstream commit 8605cf0e852af3b2c771c18417499dc4ceed03d5 ]
 
-ev_byte_channel_send() assumes that its third argument is a 16 byte
-array. Some places where it is called it may not be (or we can't
-easily tell if it is). Newer compilers have started producing warnings
-about this, so make sure we actually pass a 16 byte array.
+When dreq is allocated by nfs_direct_req_alloc(), dreq->kref is
+initialized to 2. Therefore we need to call nfs_direct_req_release()
+twice to release the allocated dreq. Usually it is called in
+nfs_file_direct_{read, write}() and nfs_direct_complete().
 
-There may be more elegant solutions to this, but the driver is quite
-old and hasn't been updated in many years.
+However, current code only calls nfs_direct_req_relese() once if
+nfs_get_lock_context() fails in nfs_file_direct_{read, write}().
+So, that case would result in memory leak.
 
-The warnings (from a powerpc allyesconfig build) are:
+Fix this by adding the missing call.
 
-  In file included from include/linux/byteorder/big_endian.h:5,
-                   from arch/powerpc/include/uapi/asm/byteorder.h:14,
-                   from include/asm-generic/bitops/le.h:6,
-                   from arch/powerpc/include/asm/bitops.h:250,
-                   from include/linux/bitops.h:29,
-                   from include/linux/kernel.h:12,
-                   from include/asm-generic/bug.h:19,
-                   from arch/powerpc/include/asm/bug.h:109,
-                   from include/linux/bug.h:5,
-                   from include/linux/mmdebug.h:5,
-                   from include/linux/gfp.h:5,
-                   from include/linux/slab.h:15,
-                   from drivers/tty/ehv_bytechan.c:24:
-  drivers/tty/ehv_bytechan.c: In function ‘ehv_bc_udbg_putc’:
-  arch/powerpc/include/asm/epapr_hcalls.h:298:20: warning: array subscript 1 is outside array bounds of ‘const char[1]’ [-Warray-bounds]
-    298 |  r6 = be32_to_cpu(p[1]);
-  include/uapi/linux/byteorder/big_endian.h:40:51: note: in definition of macro ‘__be32_to_cpu’
-     40 | #define __be32_to_cpu(x) ((__force __u32)(__be32)(x))
-        |                                                   ^
-  arch/powerpc/include/asm/epapr_hcalls.h:298:7: note: in expansion of macro ‘be32_to_cpu’
-    298 |  r6 = be32_to_cpu(p[1]);
-        |       ^~~~~~~~~~~
-  drivers/tty/ehv_bytechan.c:166:13: note: while referencing ‘data’
-    166 | static void ehv_bc_udbg_putc(char c)
-        |             ^~~~~~~~~~~~~~~~
-
-Fixes: dcd83aaff1c8 ("tty/powerpc: introduce the ePAPR embedded hypervisor byte channel driver")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Tested-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-[mpe: Trim warnings from change log]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200109183912.5fcb52aa@canb.auug.org.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/ehv_bytechan.c |   21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ fs/nfs/direct.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/tty/ehv_bytechan.c
-+++ b/drivers/tty/ehv_bytechan.c
-@@ -139,6 +139,21 @@ static int find_console_handle(void)
- 	return 1;
- }
- 
-+static unsigned int local_ev_byte_channel_send(unsigned int handle,
-+					       unsigned int *count,
-+					       const char *p)
-+{
-+	char buffer[EV_BYTE_CHANNEL_MAX_BYTES];
-+	unsigned int c = *count;
-+
-+	if (c < sizeof(buffer)) {
-+		memcpy(buffer, p, c);
-+		memset(&buffer[c], 0, sizeof(buffer) - c);
-+		p = buffer;
-+	}
-+	return ev_byte_channel_send(handle, count, p);
-+}
-+
- /*************************** EARLY CONSOLE DRIVER ***************************/
- 
- #ifdef CONFIG_PPC_EARLY_DEBUG_EHV_BC
-@@ -157,7 +172,7 @@ static void byte_channel_spin_send(const
- 
- 	do {
- 		count = 1;
--		ret = ev_byte_channel_send(CONFIG_PPC_EARLY_DEBUG_EHV_BC_HANDLE,
-+		ret = local_ev_byte_channel_send(CONFIG_PPC_EARLY_DEBUG_EHV_BC_HANDLE,
- 					   &count, &data);
- 	} while (ret == EV_EAGAIN);
- }
-@@ -224,7 +239,7 @@ static int ehv_bc_console_byte_channel_s
- 	while (count) {
- 		len = min_t(unsigned int, count, EV_BYTE_CHANNEL_MAX_BYTES);
- 		do {
--			ret = ev_byte_channel_send(handle, &len, s);
-+			ret = local_ev_byte_channel_send(handle, &len, s);
- 		} while (ret == EV_EAGAIN);
- 		count -= len;
- 		s += len;
-@@ -404,7 +419,7 @@ static void ehv_bc_tx_dequeue(struct ehv
- 			    CIRC_CNT_TO_END(bc->head, bc->tail, BUF_SIZE),
- 			    EV_BYTE_CHANNEL_MAX_BYTES);
- 
--		ret = ev_byte_channel_send(bc->handle, &len, bc->buf + bc->tail);
-+		ret = local_ev_byte_channel_send(bc->handle, &len, bc->buf + bc->tail);
- 
- 		/* 'len' is valid only if the return code is 0 or EV_EAGAIN */
- 		if (!ret || (ret == EV_EAGAIN))
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index c61bd3fc723ee..e5da9d7fb69e9 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -600,6 +600,7 @@ ssize_t nfs_file_direct_read(struct kiocb *iocb, struct iov_iter *iter)
+ 	l_ctx = nfs_get_lock_context(dreq->ctx);
+ 	if (IS_ERR(l_ctx)) {
+ 		result = PTR_ERR(l_ctx);
++		nfs_direct_req_release(dreq);
+ 		goto out_release;
+ 	}
+ 	dreq->l_ctx = l_ctx;
+@@ -1023,6 +1024,7 @@ ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
+ 	l_ctx = nfs_get_lock_context(dreq->ctx);
+ 	if (IS_ERR(l_ctx)) {
+ 		result = PTR_ERR(l_ctx);
++		nfs_direct_req_release(dreq);
+ 		goto out_release;
+ 	}
+ 	dreq->l_ctx = l_ctx;
+-- 
+2.20.1
+
 
 
