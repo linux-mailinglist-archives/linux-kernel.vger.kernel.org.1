@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4711B3D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F351B3D28
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgDVKQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
+        id S1729323AbgDVKMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728853AbgDVKPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:52 -0400
+        id S1729293AbgDVKMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:12:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EADE52076B;
-        Wed, 22 Apr 2020 10:15:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6398E20575;
+        Wed, 22 Apr 2020 10:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550551;
-        bh=H6Jz1gPFvJZTTN9HpqV/4O7COMP3h5MT2YQATGXcV4Q=;
+        s=default; t=1587550324;
+        bh=LXKQwvFWUniCO3VnH82i0jaIepvlbjO4e0EQ0nwEHtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=POoC5iMUPL5IQAHCJfjZ1joRP1ILHp7Vj27wHwZBKPsDIPWJGb3TjPmCBd3Fyojeu
-         4IXVXlZP2GO9GIVZ8/A4BmG9Mrif2WYthSyAT1zNM6uP32JXQWHNTAf1PyQ6/DdTBg
-         PfsXYGDS8QuEGfzsIUhevKgQIW8+M/IqmiojkFM0=
+        b=dOl2vLITSFs6WEG8TLvNFbqQM3MEYzKH0icHNKG7GxlTpH5x+e+oqp9oxNPnh/71J
+         sJ/o2PzFElkLSOBMT3dnILsw+i18wUoyO1caeHGcfgdModB3LpXNLP2WcXR53M/d4u
+         uIt/4jBaZVE0Oge3o1KKcOBMm/wg5Cq07+uUy/A4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bui Quang Minh <minhquangbui99@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Andrei Botila <andrei.botila@nxp.com>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/64] xsk: Add missing check on user supplied headroom size
+Subject: [PATCH 4.14 098/199] crypto: caam - update xts sector size for large input length
 Date:   Wed, 22 Apr 2020 11:57:04 +0200
-Message-Id: <20200422095016.685614794@linuxfoundation.org>
+Message-Id: <20200422095107.769628964@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Andrei Botila <andrei.botila@nxp.com>
 
-[ Upstream commit 99e3a236dd43d06c65af0a2ef9cb44306aef6e02 ]
+[ Upstream commit 3f142b6a7b573bde6cff926f246da05652c61eb4 ]
 
-Add a check that the headroom cannot be larger than the available
-space in the chunk. In the current code, a malicious user can set the
-headroom to a value larger than the chunk size minus the fixed XDP
-headroom. That way packets with a length larger than the supported
-size in the umem could get accepted and result in an out-of-bounds
-write.
+Since in the software implementation of XTS-AES there is
+no notion of sector every input length is processed the same way.
+CAAM implementation has the notion of sector which causes different
+results between the software implementation and the one in CAAM
+for input lengths bigger than 512 bytes.
+Increase sector size to maximum value on 16 bits.
 
-Fixes: c0c77d8fb787 ("xsk: add user memory registration support sockopt")
-Reported-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=207225
-Link: https://lore.kernel.org/bpf/1586849715-23490-1-git-send-email-magnus.karlsson@intel.com
+Fixes: c6415a6016bf ("crypto: caam - add support for acipher xts(aes)")
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xdp/xdp_umem.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/crypto/caam/caamalg_desc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 556a649512b60..706fad12f22cf 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -260,7 +260,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
- 	unsigned int chunks, chunks_per_page;
- 	u64 addr = mr->addr, size = mr->len;
--	int size_chk, err, i;
-+	int err, i;
+diff --git a/drivers/crypto/caam/caamalg_desc.c b/drivers/crypto/caam/caamalg_desc.c
+index b23c7b72525c0..a3d507fb9ea5a 100644
+--- a/drivers/crypto/caam/caamalg_desc.c
++++ b/drivers/crypto/caam/caamalg_desc.c
+@@ -1280,7 +1280,13 @@ EXPORT_SYMBOL(cnstr_shdsc_ablkcipher_givencap);
+  */
+ void cnstr_shdsc_xts_ablkcipher_encap(u32 * const desc, struct alginfo *cdata)
+ {
+-	__be64 sector_size = cpu_to_be64(512);
++	/*
++	 * Set sector size to a big value, practically disabling
++	 * sector size segmentation in xts implementation. We cannot
++	 * take full advantage of this HW feature with existing
++	 * crypto API / dm-crypt SW architecture.
++	 */
++	__be64 sector_size = cpu_to_be64(BIT(15));
+ 	u32 *key_jump_cmd;
  
- 	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
- 		/* Strictly speaking we could support this, if:
-@@ -295,8 +295,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
+@@ -1332,7 +1338,13 @@ EXPORT_SYMBOL(cnstr_shdsc_xts_ablkcipher_encap);
+  */
+ void cnstr_shdsc_xts_ablkcipher_decap(u32 * const desc, struct alginfo *cdata)
+ {
+-	__be64 sector_size = cpu_to_be64(512);
++	/*
++	 * Set sector size to a big value, practically disabling
++	 * sector size segmentation in xts implementation. We cannot
++	 * take full advantage of this HW feature with existing
++	 * crypto API / dm-crypt SW architecture.
++	 */
++	__be64 sector_size = cpu_to_be64(BIT(15));
+ 	u32 *key_jump_cmd;
  
- 	headroom = ALIGN(headroom, 64);
- 
--	size_chk = chunk_size - headroom - XDP_PACKET_HEADROOM;
--	if (size_chk < 0)
-+	if (headroom >= chunk_size - XDP_PACKET_HEADROOM)
- 		return -EINVAL;
- 
- 	umem->address = (unsigned long)addr;
+ 	init_sh_desc(desc, HDR_SHARE_SERIAL | HDR_SAVECTX);
 -- 
 2.20.1
 
