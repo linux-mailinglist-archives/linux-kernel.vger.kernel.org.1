@@ -2,188 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4458E1B3F74
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136DC1B3FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731419AbgDVKhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:37:42 -0400
-Received: from mail-db8eur05on2048.outbound.protection.outlook.com ([40.107.20.48]:6046
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731407AbgDVKhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:37:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GhTnVoSdfWnzJOWfX2LANJpfpVFruZgqZMi2/7DKYg=;
- b=FH/gP0kDHpA7+jFsn3YPn9pAgdASHqj33+O9G02wuGrUsivmIGcZUXldFHURYIm919H37jE9V3VqeC9PJ+j6vJXKJwGUvYK9jJGpMaVAQR6R9JCJycEFDuI3Um1Y0cNw+sgdJ8fUUuZkYNfVUia9N1sLB3Gl7ttmAVewtbXKECE=
-Received: from AM6P194CA0015.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:90::28)
- by AM6PR08MB3863.eurprd08.prod.outlook.com (2603:10a6:20b:8b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Wed, 22 Apr
- 2020 10:37:34 +0000
-Received: from AM5EUR03FT059.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:209:90:cafe::f7) by AM6P194CA0015.outlook.office365.com
- (2603:10a6:209:90::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend
- Transport; Wed, 22 Apr 2020 10:37:34 +0000
-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=bestguesspass
- action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM5EUR03FT059.mail.protection.outlook.com (10.152.17.193) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.15 via Frontend Transport; Wed, 22 Apr 2020 10:37:33 +0000
-Received: ("Tessian outbound 76e9a4cf1540:v53"); Wed, 22 Apr 2020 10:37:32 +0000
-X-CR-MTA-TID: 64aa7808
-Received: from 4d0aa9211465.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id FE232943-C2D7-41FD-8A3B-E7FDDC1FAC0A.1;
-        Wed, 22 Apr 2020 10:37:27 +0000
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 4d0aa9211465.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Wed, 22 Apr 2020 10:37:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oVUvlQCKaHJ75Z0UhcTB7gOPvfw3vw+a7s7oJOKJ+ydpE8ROjRTZskejeCrqnWSjVRHdbbqbjIUURt+Ps3b4Z3tjA8rhC0ghITPxuOHbYDbyckVtcZNub0GSLFhA2F3CZFi/5NkGisJiopNP0vcUASjG0SKnpAGnuXPutzbNii4tPFQb+fPUuzI6fbSDJ1aWyqXgrkeWNUMSM4etyDDaOzEXf/lF/vQe12/Z22kXw+B7xikoDfxyHwsqfwNKD7YiIBi72Xw3zq9YbhMnzq7dfsAsxudrvT2x/4K1jOvTb/3JIwRPNkaiqc0GsuN7pdsLoVZEYXULCBf5hPDDAJz+pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GhTnVoSdfWnzJOWfX2LANJpfpVFruZgqZMi2/7DKYg=;
- b=RQL5GMXOpGF4r7l3K5BrBASyjmYWCr4GfXDYx55Y8P+z6VmumVpVAKaXiRyyThp80ohc1Ho1qeByE9wttslfFfOM5syzwbNSxJ5OmRdrCX9kdc0bJkp/APyiwOp8ztxZCkb0rZTymoN3kyBMNpplnuQCojz0M5Icn11S/jvy9kYe69NQgrow/X0HhTFyVJ2eSpwiK6o1i1zsJnVz10/aMktiHlzw730u68lQhZtdxANHaBczvgmc+nn42qrioLR/y0ts0x/+y1g1us/BRQndsDgbFUW2rEOgOngdzzfXIwcbV6GdU8mXbzIEyiLFt2dT4MSr8PIh7FMp1Df+k9Yj2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GhTnVoSdfWnzJOWfX2LANJpfpVFruZgqZMi2/7DKYg=;
- b=FH/gP0kDHpA7+jFsn3YPn9pAgdASHqj33+O9G02wuGrUsivmIGcZUXldFHURYIm919H37jE9V3VqeC9PJ+j6vJXKJwGUvYK9jJGpMaVAQR6R9JCJycEFDuI3Um1Y0cNw+sgdJ8fUUuZkYNfVUia9N1sLB3Gl7ttmAVewtbXKECE=
-Received: from DB6PR0802MB2533.eurprd08.prod.outlook.com (2603:10a6:4:a0::12)
- by DB6PR0802MB2168.eurprd08.prod.outlook.com (2603:10a6:4:84::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Wed, 22 Apr
- 2020 10:37:23 +0000
-Received: from DB6PR0802MB2533.eurprd08.prod.outlook.com
- ([fe80::b959:1879:c050:3117]) by DB6PR0802MB2533.eurprd08.prod.outlook.com
- ([fe80::b959:1879:c050:3117%8]) with mapi id 15.20.2921.030; Wed, 22 Apr 2020
- 10:37:23 +0000
-From:   Hadar Gat <Hadar.Gat@arm.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
-Subject: RE: [PATCH v7 2/3] hw_random: cctrng: introduce Arm CryptoCell driver
-Thread-Topic: [PATCH v7 2/3] hw_random: cctrng: introduce Arm CryptoCell
- driver
-Thread-Index: AQHWA/5/37ByIllroUeQ0w3cVWDDJKiCK72AgABugaCAASDNgIAAFS7QgAAbIgCAAS6MQA==
-Date:   Wed, 22 Apr 2020 10:37:22 +0000
-Message-ID: <DB6PR0802MB253305028DB2B89F9BE09E5CE9D20@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-References: <1585289423-18440-1-git-send-email-hadar.gat@arm.com>
- <1585289423-18440-3-git-send-email-hadar.gat@arm.com>
- <CAMuHMdV6Uce79MPs7jfJfX3WOqAMH22vf2V_=Ui0zLHYqsJ+Xg@mail.gmail.com>
- <DB6PR0802MB25338BD19DD2F7E662BB1065E9D50@DB6PR0802MB2533.eurprd08.prod.outlook.com>
- <CAMuHMdWujabV8dr=EojXFBVD0TcUuZ2kCGjjo93u=PE-AmzVHA@mail.gmail.com>
- <DB6PR0802MB2533347A35A466B99ADD4D23E9D50@DB6PR0802MB2533.eurprd08.prod.outlook.com>
- <CAMuHMdVGwLQxDj9dtF02L3P5MxBCZAiJ1_4OyK3Yomn9y-nPzQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVGwLQxDj9dtF02L3P5MxBCZAiJ1_4OyK3Yomn9y-nPzQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: 6c7a9fd2-af90-4d13-9723-347aa36bc933.1
-x-checkrecipientchecked: true
-Authentication-Results-Original: spf=none (sender IP is )
- smtp.mailfrom=Hadar.Gat@arm.com; 
-x-originating-ip: [84.109.179.203]
-x-ms-publictraffictype: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ae8e0780-b021-49fe-59f7-08d7e6a92af4
-x-ms-traffictypediagnostic: DB6PR0802MB2168:|DB6PR0802MB2168:|AM6PR08MB3863:
-x-ms-exchange-transport-forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR08MB3863A069B0623315996E6C84E9D20@AM6PR08MB3863.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-oob-tlc-oobclassifiers: OLM:8273;OLM:8273;
-x-forefront-prvs: 03818C953D
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0802MB2533.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(7416002)(33656002)(71200400001)(478600001)(5660300002)(26005)(316002)(2906002)(54906003)(55016002)(6916009)(9686003)(86362001)(66946007)(4326008)(6506007)(7696005)(66446008)(76116006)(64756008)(66556008)(8936002)(52536014)(81156014)(66476007)(8676002)(186003);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: arm.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: gv0BEIouMUpq5EHyNNcCvj+c6WRsETHUaQd4zATEv/HUczPoe3blr6yvV27l9dQpEEg/U9ukuMRWFSHW3OQQ3zILxGnlWqmz21NNgOWAF+3v2P1NaHDJ+5fKGttfgFqfH35IEnJHCAwJlYCngseO6X+d/gaeRUGU/S/RNdSBmTILuZW6BLwpp/dNfrh5teLoT7evvA9knvjerX4Rqw6Ox2VT++ILDyJjEnv5jLtMGrTOgo/h323Pxad+crOn5Gp/w2BoGuvPikfJ569UEFmNL6dRztWZxdOPEcvXTLV1QJKj8tfzPRwlfRtmTdWMrtDQP+JIMd7r1Y6Ay1aJ7qSYPSFe4SIQaP8murdBzOs4LyHTPzykSD6K/LxRhKxtZzHUpyCrADPcUZCW/aWYV18hxkt7p56uHx0SgSYNvpU6wlfiwlJlViT+09QqSqWNPmvI
-x-ms-exchange-antispam-messagedata: aJodZEcJC1+TGw8E1TRAMlSOa5bVrftJEM7eMr05EAXlICqwv6tcexczRh4qfrIgg+Y1bU2FEeKmS/6NAXQlRwnIgCemam89OFhIfUNA5g07w7czWgR8L4uWlM4XYyR/y0/3b+5Xs71lPomdbDXi+A==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731549AbgDVKjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730195AbgDVKjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:39:37 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D3DC03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:39:37 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id y10so1069290uao.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VHT7Mk3BzDO0gyW1iwYfsy8IG0PJGK/2+QKrpnZX3QU=;
+        b=UooOANnkncazrjwT6A5IIVWXx3TaevD8levmFwktxmkLRtC+jYIawEY8VaMp9I4ome
+         MhywIVZGwaoUBGPY2nmynUgZLZD81R8ok0ftRCcAW+neSqf3vEfUeVAeyA/GUeeumg7P
+         L6ILsJb2XCIn45d8r+UvPw1okUg71V8TyiPjv4fC1fW0VKrExn9ARhgnMb3ZdG/83MDd
+         xQgdiafbDTuwRkn0Yl97Ukuzw1I+VXvJUUiTW496N/uhyINL2t2sW9sYMaDS7sCPrRMH
+         4yOPaYEUMVQ2YQKIRv18eAvijqXFHMfBZ2hCpbxedUO7XU1eeiY/wb5Dk6mFCxElL9lw
+         JlFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VHT7Mk3BzDO0gyW1iwYfsy8IG0PJGK/2+QKrpnZX3QU=;
+        b=hWAw+sBRRVwAKbYVoPzyqaj3clEflxo+k+ucqKC1WkrLzF/QptfIwhtTqdgbgfw9Je
+         gvUUx5UeuvSEaD35Yqsv2WMBQ6SupoGIdPgFvT/hLbIKUrAYz2KVo+Dq6mcBrjC5g2pL
+         xFeok4Q5ooiTNUxb9V/VyEZDFvnDgvMA4HS3XPt67IY86z6ApzeAA24+0oH47Sx5fLv4
+         K+3UBJwJtFXJwPjnpZU00QbvT/MRGmBTK57QLUukBXqhkYTZ5k6IZiQP5FhjhRGAAX/v
+         oX7hh8Ur4TSBDIFXc/1NNTKm8f5KTpr88Hch0mibNP1AA9FyCMFvwbU8LvwwAj7ym3Bt
+         0UZA==
+X-Gm-Message-State: AGi0PubmVb7HfEInMi9CFOo7N5EA5d57BdRNJ9AJKfqG+ONPdZ/mV5EZ
+        qURK1UCMDWX5stnZxnQOu06y+E53fx6ipy6CBbC7SQ==
+X-Google-Smtp-Source: APiQypKbq2XGjzlmevXUc1yOHOUstc2Fw4sHPY9uc/yPKfLYTlRgn/XYeQqIlHCt8Ee7WqRUnRo8oGo4FnJUwdd8B7E=
+X-Received: by 2002:a67:8b46:: with SMTP id n67mr8244570vsd.35.1587551976321;
+ Wed, 22 Apr 2020 03:39:36 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0802MB2168
-Original-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Hadar.Gat@arm.com; 
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT059.eop-EUR03.prod.protection.outlook.com
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(376002)(396003)(39860400002)(136003)(46966005)(4326008)(47076004)(82740400003)(9686003)(316002)(8676002)(86362001)(52536014)(8936002)(356005)(2906002)(6506007)(70206006)(81156014)(81166007)(70586007)(55016002)(7696005)(26005)(5660300002)(478600001)(450100002)(6862004)(33656002)(54906003)(36906005)(186003)(336012)(82310400002);DIR:OUT;SFP:1101;
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 5a9c88fa-b9fa-4933-0373-08d7e6a92476
-X-Forefront-PRVS: 03818C953D
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PPO0TJRcAxjMhdMsl/4vEXYPUxIU1PzjwVxCHrBRYt5aorYhizIJ1Pk7o39xigXaHuXTVkqnSKt6MvucJBLuUZwa/y5wUJcBM4OptTQpwY4JQpER+GGIW0r9WsWUFmTUW5bgr5bvmS3bdV/sYmYEMT/imGzHJKGMsos+18+TGbziG8LXuJEoRMSZ6Leo4EHUSDuImdkkORGelGEAuiGFAS7FmFteoppg/3R8z2WA6g0elHITQCWgB2m+zwldaq0NP+au9Dc5B+7QBud0MkNKA4Nnu+xuVxWFjpFVOotjc483/1tnQmUcOdCOG9+sLRsv6XBJjYrQ+8U+ugUTxniD4qEjfwR9R0H2n4Axn5vSu8K5zPBNdUHhYutphM/QmdDdP+CMcL09GKHmuinvZ5ccjD+cnBj8r7mBGjGtFL3VEtmceTlEl+G9MGjV5qa6uPZRVq9rZES2IPLbkp2Hgzwqy3PXbOhts/awSPyCpq7J4t0efrXrSxdi6xydjg580V4+RmFDe2dsZ4eaG1pYfIoeIw==
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 10:37:33.9652
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae8e0780-b021-49fe-59f7-08d7e6a92af4
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3863
+References: <20200409064416.83340-1-sboyd@kernel.org> <20200409064416.83340-7-sboyd@kernel.org>
+ <CAPDyKFqpS=wke5Y=rTeq3+8bQyacVHcbWnBwG5pxsJ4hPys+9g@mail.gmail.com> <158755046077.159702.10648240040343779828@swboyd.mtv.corp.google.com>
+In-Reply-To: <158755046077.159702.10648240040343779828@swboyd.mtv.corp.google.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 22 Apr 2020 12:39:00 +0200
+Message-ID: <CAPDyKFoSe4fOiHAfyX=hW9arx1LVvjouoPeSFOZ=hKg5d_qrSA@mail.gmail.com>
+Subject: Re: [PATCH v2 06/10] mmc: meson-mx-sdio: Depend on OF_ADDRESS and not
+ just OF
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ID4gPiA+ID4gK3N0YXRpYyBpbnQgY2N0cm5nX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpIHsNCj4gDQo+ID4gPiA+ID4gPiArICAgICAgIC8qIHJlZ2lzdGVyIHRoZSBkcml2
-ZXIgaXNyIGZ1bmN0aW9uICovDQo+ID4gPiA+ID4gPiArICAgICAgIHJjID0gZGV2bV9yZXF1ZXN0
-X2lycShkZXYsIGlycSwgY2NfaXNyLCBJUlFGX1NIQVJFRCwNCj4gPiA+ID4gPiA+ICsgImNjdHJu
-ZyIsIGRydmRhdGEpOw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gU2hvdWRuJ3QgdGhpcyBiZSBkb25l
-IGFmdGVyIGNsZWFyaW5nIHRoZSBwZW5kaW5nIGludGVycnVwdHMgYmVsb3c/DQo+ID4gPiA+DQo+
-ID4gPiA+IEknbSBub3Qgc3VyZSB3aGF0IGRvIHlvdSBtZWFuIGluIHlvdXIgcXVlc3Rpb24uLi4N
-Cj4gPiA+ID4gSSBhc3N1bWUgeW91J3JlIHN1Z2dlc3RpbmcgdGhhdCB0aGUgcmVnaXN0cmF0aW9u
-IG9mIHRoZSBkcml2ZXIgSVNSDQo+ID4gPiA+IGZ1bmN0aW9uDQo+ID4gPiBzaG91bGQgYmUgZG9u
-ZSBvbmx5IGFmdGVyIGNsZWFyaW5nIHRoZSBwZW5kaW5nIGludGVycnVwdHM/IQ0KPiA+ID4NCj4g
-PiA+IEluZGVlZC4NCj4gPiA+DQo+ID4gPiA+IEFueXdheSwgYW55IHBlbmRpbmcgaW50ZXJydXB0
-IHRoYXQgbWlnaHQgZXhpc3QgaXMgaXJyZWxldmFudCB0bw0KPiA+ID4gPiB0aGUgY3VycmVudCBj
-Y3RybmcgZHJpdmVyIHdoaWNoIGp1c3Qgc3RhcnRlZCAod2UncmUgaW4gdGhlIHByb2JlDQo+ID4g
-PiA+IGZ1bmN0aW9uKQ0KPiA+ID4NCj4gPiA+IElmIHRoZXJlIGlzIGEgcGVuZGluZyBpbnRlcnJ1
-cHQsIHlvdXIgaW50ZXJydXB0IGhhbmRsZXIgKHdoaWNoDQo+ID4gPiByZXR1cm5zIElSUV9OT05F
-IGluIHRoaXMgY2FzZSkgd2lsbCBiZSBjYWxsZWQgcmVwZWF0ZWRseSwgdW50aWwgdGhlDQo+ID4g
-PiBkcml2ZXIgZ2V0cyB0byBjbGVhcmluZyB0aGUgcGVuZGluZyBpbnRlcnJ1cHRzIGJlbG93LCBv
-ciB1bnRpbCB0aGUNCj4gPiA+IGludGVycnVwdCBjb3JlIGRlY2lkZXMgdG8gZ2l2ZSB1cCwgYW5k
-IGRpc2FibGUgaXQgZm9yIGdvb2QuDQo+ID4NCj4gPiBPaywgSSBnZXQgeW91ciBwb2ludCBub3cu
-DQo+ID4gQnV0IG5vdGUgdGhhdCB3aGVuIHRoZSBjY3RybmcgSFcgYm9vdHMsIHRoZSBkZWZhdWx0
-IGlzIHRoYXQgYWxsIGludGVycnVwdHMNCj4gYXJlIG1hc2tlZCwgaGVuY2UgdGhlIGludGVycnVw
-dCBoYW5kbGVyIHdpbGwgbm90IGJlIGNhbGxlZC4NCj4gDQo+IElzIHRoYXQgYWxzbyB0aGUgY2Fz
-ZSB3aGVuIGJvb3RpbmcgaW50byBhIG5ldyBrZXJuZWwgdXNpbmcga2V4ZWM/DQoNCldlbGwuLiBu
-by4g4pi5DQpBIGZpeCBpcyBuZWVkZWQgaGVyZSB0byBjb25zaWRlciBhbHNvIHRoZSBjYXNlIG9m
-IGtleGVjLg0KSSdsbCBmaXggdGhhdCBpbiBhbm90aGVyIHBhdGNoLg0KVGhhbmtzIQ0K
+On Wed, 22 Apr 2020 at 12:14, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Ulf Hansson (2020-04-21 07:04:54)
+> > On Thu, 9 Apr 2020 at 08:44, Stephen Boyd <sboyd@kernel.org> wrote:
+> > >
+> > > Making COMMON_CLK a visible option causes the sparc allyesconfig to fail
+> > > to build like so:
+> > >
+> > >    sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_remove':
+> > >    meson-mx-sdio.c:(.text+0x70): undefined reference to `of_platform_device_destroy'
+> > >    sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_probe':
+> > >    meson-mx-sdio.c:(.text+0x9e4): undefined reference to `of_platform_device_create'
+> > >    sparc64-linux-ld: meson-mx-sdio.c:(.text+0xdd4): undefined reference to `of_platform_device_destroy'
+> > >
+> > > This is because the implementation of of_platform_device_destroy() is
+> > > inside an #ifdef CONFIG_OF_ADDRESS section of drivers/of/platform.c.
+> > > This driver already depends on OF being enabled, so let's tighten that
+> > > constrain a little more so that it depends on OF_ADDRESS instead. This
+> > > way we won't try to build this driver on platforms that don't have this
+> > > function.
+> > >
+> > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > Cc: Neil Armstrong <narmstrong@baylibre.com>
+> > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> >
+> > I don't have the complete picture here, can I just apply this a fix to
+> > my mmc tree?
+> >
+>
+> If this patch stays in the series then I can avoid a bisection hole. And
+> it also doesn't matter until COMMON_CLK config becomes selectable. Maybe
+> just ack and let it go through clk tree? Unless there's something
+> changing here in the mmc tree?
+
+This file is likely to change in my mmc-tree. However, let's deal with
+the conflict, if/when that happens. So, please pick it through your
+clock tree.
+
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
