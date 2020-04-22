@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF0E1B406C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C93D1B3C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731940AbgDVKqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53586 "EHLO mail.kernel.org"
+        id S1726669AbgDVKGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729829AbgDVKRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:25 -0400
+        id S1728281AbgDVKGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C55352070B;
-        Wed, 22 Apr 2020 10:17:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1D1B20774;
+        Wed, 22 Apr 2020 10:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550645;
-        bh=OB6uo/HCyFxTsaJ3MtSPMJJb5ck8q2hYb6nWW83YjS4=;
+        s=default; t=1587549962;
+        bh=PRGD0wRBw8Ttc2ii2QSsMJutMXrZHYgDAb7KrM8IUUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yrHhI+1uBi6QJB7871pwDdLc66nbI8NDM8uVOI/e25eY4vRdQcito0PCT7951zrOt
-         EqiUvpyxLA3XYLW8ky22E96zuyBzQlHMTfPyAGn/+fV48oDYEGKYPwG0ZgxcbcpPge
-         Yh03RJS6RKovdoqmQO18dw+5tZA+XF1h44IAEih0=
+        b=hMnG0+LkhakrS7eF6F9LYuViJqvULXYiAdT6ZTq0/N8/wNJIuv1LTMh+Cl2mE8U8D
+         N6dHgdKLhWY1pS64nQYvNzyBoSnxar8EWW88UrAPgVYrgJf7L0DUsxQzexT1Vned57
+         LHzZrbLP4LBDhR6Ia3/LWF+1Smh7U0VHby+zhkC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 034/118] x86/Hyper-V: Free hv_panic_page when fail to register kmsg dump
+        stable@vger.kernel.org,
+        syzbot+6693adf1698864d21734@syzkaller.appspotmail.com,
+        syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com,
+        stable@kernel.org, Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 078/125] mac80211_hwsim: Use kstrndup() in place of kasprintf()
 Date:   Wed, 22 Apr 2020 11:56:35 +0200
-Message-Id: <20200422095037.497701884@linuxfoundation.org>
+Message-Id: <20200422095045.694170562@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+From: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
 
-[ Upstream commit 7f11a2cc10a4ae3a70e2c73361f4a9a33503539b ]
+commit 7ea862048317aa76d0f22334202779a25530980c upstream.
 
-If kmsg_dump_register() fails, hv_panic_page will not be used
-anywhere.  So free and reset it.
+syzbot reports a warning:
 
-Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Link: https://lore.kernel.org/r/20200406155331.2105-3-Tianyu.Lan@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+precision 33020 too large
+WARNING: CPU: 0 PID: 9618 at lib/vsprintf.c:2471 set_precision+0x150/0x180 lib/vsprintf.c:2471
+ vsnprintf+0xa7b/0x19a0 lib/vsprintf.c:2547
+ kvasprintf+0xb2/0x170 lib/kasprintf.c:22
+ kasprintf+0xbb/0xf0 lib/kasprintf.c:59
+ hwsim_del_radio_nl+0x63a/0x7e0 drivers/net/wireless/mac80211_hwsim.c:3625
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:672 [inline]
+ ...
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Thus it seems that kasprintf() with "%.*s" format can not be used for
+duplicating a string with arbitrary length. Replace it with kstrndup().
+
+Note that later this string is limited to NL80211_WIPHY_NAME_MAXLEN == 64,
+but the code is simpler this way.
+
+Reported-by: syzbot+6693adf1698864d21734@syzkaller.appspotmail.com
+Reported-by: syzbot+a4aee3f42d7584d76761@syzkaller.appspotmail.com
+Cc: stable@kernel.org
+Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+Link: https://lore.kernel.org/r/20200410123257.14559-1-tuomas.tynkkynen@iki.fi
+[johannes: add note about length limit]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/hv/vmbus_drv.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mac80211_hwsim.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 593107c20e977..40f6b73dae940 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1401,9 +1401,13 @@ static int vmbus_bus_init(void)
- 			hv_panic_page = (void *)get_zeroed_page(GFP_KERNEL);
- 			if (hv_panic_page) {
- 				ret = kmsg_dump_register(&hv_kmsg_dumper);
--				if (ret)
-+				if (ret) {
- 					pr_err("Hyper-V: kmsg dump register "
- 						"error 0x%x\n", ret);
-+					hv_free_hyperv_page(
-+					    (unsigned long)hv_panic_page);
-+					hv_panic_page = NULL;
-+				}
- 			} else
- 				pr_err("Hyper-V: panic message page memory "
- 					"allocation failed");
-@@ -1433,7 +1437,6 @@ static int vmbus_bus_init(void)
- 	hv_remove_vmbus_irq();
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -3060,9 +3060,9 @@ static int hwsim_new_radio_nl(struct sk_
+ 		param.no_vif = true;
  
- 	bus_unregister(&hv_bus);
--	free_page((unsigned long)hv_panic_page);
- 	unregister_sysctl_table(hv_ctl_table_hdr);
- 	hv_ctl_table_hdr = NULL;
- 	return ret;
--- 
-2.20.1
-
+ 	if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
+-		hwname = kasprintf(GFP_KERNEL, "%.*s",
+-				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
+-				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
++		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  GFP_KERNEL);
+ 		if (!hwname)
+ 			return -ENOMEM;
+ 		param.hwname = hwname;
+@@ -3101,9 +3101,9 @@ static int hwsim_del_radio_nl(struct sk_
+ 	if (info->attrs[HWSIM_ATTR_RADIO_ID]) {
+ 		idx = nla_get_u32(info->attrs[HWSIM_ATTR_RADIO_ID]);
+ 	} else if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
+-		hwname = kasprintf(GFP_KERNEL, "%.*s",
+-				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
+-				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
++		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  GFP_KERNEL);
+ 		if (!hwname)
+ 			return -ENOMEM;
+ 	} else
 
 
