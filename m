@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932BD1B41A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DDB1B3C17
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgDVKII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
+        id S1727000AbgDVKCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:02:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728623AbgDVKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:02 -0400
+        id S1726984AbgDVKCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:02:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E7BC2077D;
-        Wed, 22 Apr 2020 10:08:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C77A215A4;
+        Wed, 22 Apr 2020 10:02:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550081;
-        bh=W5iQkxgtxVfawB7TEp41JwyAqy+uC8RmFSlbEstYjkI=;
+        s=default; t=1587549742;
+        bh=uKXv3sNvVy46P0r1i0/Dj6wNaleBNcC/QD5M1GPVccs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=REgUMFKLtQ4FG65y3rRN7bv0sN3/7sHmMKnGNmoxXezubXbwJFNJUWzqRlWNrz0JP
-         fAd0pIV3ZGEblsyds6LohCjCH347f0vqG8xCRZTTDXJ/ZcVSvA5Peh3QfIcwmg/rHl
-         QHAQt6SxjlQxonFnG/0mdc3+Mcr/ij/8zkfD+iTs=
+        b=SysHwp/6HsKwhfy65RNS1uXEAW8oU6SyQTJXADBwFmg5QGXddMuVfGZnWA9WafMWT
+         OEUUqG+Qcfy4iMzJkXEEyO4msRVa/ecgZi5enxagWfVJ3c+3xfOgxsoOz8leUIhvJG
+         nyhe/NTA9sAMiT+HwL67mrFaVolueLmTDKBYlS8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 4.9 101/125] arm64: cpu_errata: include required headers
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 088/100] percpu_counter: fix a data race at vm_committed_as
 Date:   Wed, 22 Apr 2020 11:56:58 +0200
-Message-Id: <20200422095049.344784619@linuxfoundation.org>
+Message-Id: <20200422095038.861081230@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Qian Cai <cai@lca.pw>
 
-commit 94a5d8790e79ab78f499d2d9f1ff2cab63849d9f upstream.
+[ Upstream commit 7e2345200262e4a6056580f0231cccdaffc825f3 ]
 
-Without including psci.h and arm-smccc.h, we now get a build failure in
-some configurations:
+"vm_committed_as.count" could be accessed concurrently as reported by
+KCSAN,
 
-arch/arm64/kernel/cpu_errata.c: In function 'arm64_update_smccc_conduit':
-arch/arm64/kernel/cpu_errata.c:278:10: error: 'psci_ops' undeclared (first use in this function); did you mean 'sysfs_ops'?
+ BUG: KCSAN: data-race in __vm_enough_memory / percpu_counter_add_batch
 
-arch/arm64/kernel/cpu_errata.c: In function 'arm64_set_ssbd_mitigation':
-arch/arm64/kernel/cpu_errata.c:311:3: error: implicit declaration of function 'arm_smccc_1_1_hvc' [-Werror=implicit-function-declaration]
-   arm_smccc_1_1_hvc(ARM_SMCCC_ARCH_WORKAROUND_2, state, NULL);
+ write to 0xffffffff9451c538 of 8 bytes by task 65879 on cpu 35:
+  percpu_counter_add_batch+0x83/0xd0
+  percpu_counter_add_batch at lib/percpu_counter.c:91
+  __vm_enough_memory+0xb9/0x260
+  dup_mm+0x3a4/0x8f0
+  copy_process+0x2458/0x3240
+  _do_fork+0xaa/0x9f0
+  __do_sys_clone+0x125/0x160
+  __x64_sys_clone+0x70/0x90
+  do_syscall_64+0x91/0xb05
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ read to 0xffffffff9451c538 of 8 bytes by task 66773 on cpu 19:
+  __vm_enough_memory+0x199/0x260
+  percpu_counter_read_positive at include/linux/percpu_counter.h:81
+  (inlined by) __vm_enough_memory at mm/util.c:839
+  mmap_region+0x1b2/0xa10
+  do_mmap+0x45c/0x700
+  vm_mmap_pgoff+0xc0/0x130
+  ksys_mmap_pgoff+0x6e/0x300
+  __x64_sys_mmap+0x33/0x40
+  do_syscall_64+0x91/0xb05
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
+The read is outside percpu_counter::lock critical section which results in
+a data race.  Fix it by adding a READ_ONCE() in
+percpu_counter_read_positive() which could also service as the existing
+compiler memory barrier.
+
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Marco Elver <elver@google.com>
+Link: http://lkml.kernel.org/r/1582302724-2804-1-git-send-email-cai@lca.pw
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/cpu_errata.c |    2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/percpu_counter.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -16,6 +16,8 @@
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
+index 84a1094496100..b6332cb761a4c 100644
+--- a/include/linux/percpu_counter.h
++++ b/include/linux/percpu_counter.h
+@@ -76,9 +76,9 @@ static inline s64 percpu_counter_read(struct percpu_counter *fbc)
   */
+ static inline s64 percpu_counter_read_positive(struct percpu_counter *fbc)
+ {
+-	s64 ret = fbc->count;
++	/* Prevent reloads of fbc->count */
++	s64 ret = READ_ONCE(fbc->count);
  
-+#include <linux/arm-smccc.h>
-+#include <linux/psci.h>
- #include <linux/types.h>
- #include <asm/cachetype.h>
- #include <asm/cpu.h>
+-	barrier();		/* Prevent reloads of fbc->count */
+ 	if (ret >= 0)
+ 		return ret;
+ 	return 0;
+-- 
+2.20.1
+
 
 
