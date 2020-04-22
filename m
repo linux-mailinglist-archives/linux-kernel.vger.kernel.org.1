@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299B81B3F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E741B3F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731426AbgDVKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:37:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
+        id S1731395AbgDVKha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729963AbgDVKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:25 -0400
+        id S1726833AbgDVKW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4E6D215A4;
-        Wed, 22 Apr 2020 10:22:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6156521655;
+        Wed, 22 Apr 2020 10:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550943;
-        bh=diEZJSbSIO+MnsYSZTyrg2M3dM6CyjSD/7Ket4healQ=;
+        s=default; t=1587550945;
+        bh=ic5MMHZntN33IMBrTIWsQVmdcrIefTFAyiQjjyVZ7jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5S7A6OjCjHt2Xt19ej47wT3qHZS+Z14XJDksI0JQa/O+f3pG1AORGqUsOH88EjZP
-         vHowtEB4oLlN3kZCOc4/538jUGOYl/JM1CfWaq0ed6elIAYD0XjVkMUcfTLG5mnIyX
-         ZDiuH2ZkMo37aqOAU9KZ3R5nGY0GCUtu/bJrVd2Y=
+        b=FncPvH3lz6DOdZ/8+gCoVafD8iPvctaFHLeGMVYRpMzXRW9uAigEGpmMugUe6xB/T
+         IsITaeogQoZ9TWqyD1mqMjNH5kz0ikelHbU7OAZ3bor4RZokWJa9ujcqNityx3sGgA
+         416qSdPqge1DsXTIxDTyer6dO+dc+4fH8aMrEntk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, cki-project@redhat.com,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 038/166] block, bfq: invoke flush_idle_tree after reparent_active_queues in pd_offline
-Date:   Wed, 22 Apr 2020 11:56:05 +0200
-Message-Id: <20200422095052.959030321@linuxfoundation.org>
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 039/166] drm/ttm: flush the fence on the bo after we individualize the reservation object
+Date:   Wed, 22 Apr 2020 11:56:06 +0200
+Message-Id: <20200422095053.101066297@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
 References: <20200422095047.669225321@linuxfoundation.org>
@@ -44,65 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: xinhui pan <xinhui.pan@amd.com>
 
-commit 4d38a87fbb77fb9ff2ff4e914162a8ae6453eff5 upstream.
+[ Upstream commit 1bbcf69e42fe7fd49b6f4339c970729d0e343753 ]
 
-In bfq_pd_offline(), the function bfq_flush_idle_tree() is invoked to
-flush the rb tree that contains all idle entities belonging to the pd
-(cgroup) being destroyed. In particular, bfq_flush_idle_tree() is
-invoked before bfq_reparent_active_queues(). Yet the latter may happen
-to add some entities to the idle tree. It happens if, in some of the
-calls to bfq_bfqq_move() performed by bfq_reparent_active_queues(),
-the queue to move is empty and gets expired.
+As we move the ttm_bo_individualize_resv() upwards, we need flush the
+copied fence too. Otherwise the driver keeps waiting for fence.
 
-This commit simply reverses the invocation order between
-bfq_flush_idle_tree() and bfq_reparent_active_queues().
+run&Kill kfdtest, then perf top.
 
-Tested-by: cki-project@redhat.com
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  25.53%  [ttm]                     [k] ttm_bo_delayed_delete
+  24.29%  [kernel]                  [k] dma_resv_test_signaled_rcu
+  19.72%  [kernel]                  [k] ww_mutex_lock
 
+Fix: 378e2d5b("drm/ttm: fix ttm_bo_cleanup_refs_or_queue once more")
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/series/72339/
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-cgroup.c |   20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -894,13 +894,6 @@ static void bfq_pd_offline(struct blkg_p
- 		st = bfqg->sched_data.service_tree + i;
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 5df596fb0280c..fe420ca454e0a 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -498,8 +498,10 @@ static void ttm_bo_cleanup_refs_or_queue(struct ttm_buffer_object *bo)
  
- 		/*
--		 * The idle tree may still contain bfq_queues belonging
--		 * to exited task because they never migrated to a different
--		 * cgroup from the one being destroyed now.
--		 */
--		bfq_flush_idle_tree(st);
--
--		/*
- 		 * It may happen that some queues are still active
- 		 * (busy) upon group destruction (if the corresponding
- 		 * processes have been forced to terminate). We move
-@@ -913,6 +906,19 @@ static void bfq_pd_offline(struct blkg_p
- 		 * scheduler has taken no reference.
- 		 */
- 		bfq_reparent_active_queues(bfqd, bfqg, st, i);
-+
-+		/*
-+		 * The idle tree may still contain bfq_queues
-+		 * belonging to exited task because they never
-+		 * migrated to a different cgroup from the one being
-+		 * destroyed now. In addition, even
-+		 * bfq_reparent_active_queues() may happen to add some
-+		 * entities to the idle tree. It happens if, in some
-+		 * of the calls to bfq_bfqq_move() performed by
-+		 * bfq_reparent_active_queues(), the queue to move is
-+		 * empty and gets expired.
-+		 */
-+		bfq_flush_idle_tree(st);
+ 		dma_resv_unlock(bo->base.resv);
  	}
+-	if (bo->base.resv != &bo->base._resv)
++	if (bo->base.resv != &bo->base._resv) {
++		ttm_bo_flush_all_fences(bo);
+ 		dma_resv_unlock(&bo->base._resv);
++	}
  
- 	__bfq_deactivate_entity(entity, false);
+ error:
+ 	kref_get(&bo->list_kref);
+-- 
+2.20.1
+
 
 
