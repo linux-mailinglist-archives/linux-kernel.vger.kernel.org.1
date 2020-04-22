@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594D11B426D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1571B4206
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgDVLBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:01:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49790 "EHLO mail.kernel.org"
+        id S1728010AbgDVKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgDVKBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:22 -0400
+        id S1727996AbgDVKEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:04:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79EB92076C;
-        Wed, 22 Apr 2020 10:01:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 015EA20575;
+        Wed, 22 Apr 2020 10:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549681;
-        bh=/3LBLbFaskxzFJjgyhptmFt7VqVQH1RAEmwmXCB/9dg=;
+        s=default; t=1587549858;
+        bh=Mt0JTdcemgB9LdS8YtQXlFe2GR/72wNdkTdLUMca8OE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RyULcM7umYbVo+UputciKW3darAvMwzr2tYvFfWRJeIKDUwdjj6rqSF7X2VgsYCKI
-         2Yv12Hjm0uF4KyP1k27cZIPcs0ltCca/E3sWGneU6yvfQOddnGE1tvOk/5kl+Fq0JL
-         HfEyDH3W07PEVmqqEiLVnMLMOsWjlkwOsCn8+PL8=
+        b=CDxgg3nzG/f2+j9FCI0zqs++y9WCqx5ivQA9j5Vj+fOpSyFnThbDbjS1F5R/grtf/
+         tbj/lmnrNlrKBfhTm08J9hunjkUgrT6hx6BKF4t9i0ziTeC/f1tM7H4laltrPogtoY
+         TNl3oRcUqQ07uDYemulQO6DwkEOwYgArHUw13OQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 022/100] ALSA: hda: Fix potential access overflow in beep helper
+        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 4.9 035/125] KVM: s390: vsie: Fix region 1 ASCE sanity shadow address checks
 Date:   Wed, 22 Apr 2020 11:55:52 +0200
-Message-Id: <20200422095026.825310678@linuxfoundation.org>
+Message-Id: <20200422095039.116055186@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: David Hildenbrand <david@redhat.com>
 
-commit 0ad3f0b384d58f3bd1f4fb87d0af5b8f6866f41a upstream.
+commit a1d032a49522cb5368e5dfb945a85899b4c74f65 upstream.
 
-The beep control helper function blindly stores the values in two
-stereo channels no matter whether the actual control is mono or
-stereo.  This is practically harmless, but it annoys the recently
-introduced sanity check, resulting in an error when the checker is
-enabled.
+In case we have a region 1 the following calculation
+(31 + ((gmap->asce & _ASCE_TYPE_MASK) >> 2)*11)
+results in 64. As shifts beyond the size are undefined the compiler is
+free to use instructions like sllg. sllg will only use 6 bits of the
+shift value (here 64) resulting in no shift at all. That means that ALL
+addresses will be rejected.
 
-This patch corrects the behavior to store only on the defined array
-member.
+The can result in endless loops, e.g. when prefix cannot get mapped.
 
-Fixes: 0401e8548eac ("ALSA: hda - Move beep helper functions to hda_beep.c")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207139
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200407084402.25589-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 4be130a08420 ("s390/mm: add shadow gmap support")
+Tested-by: Janosch Frank <frankja@linux.ibm.com>
+Reported-by: Janosch Frank <frankja@linux.ibm.com>
+Cc: <stable@vger.kernel.org> # v4.8+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200403153050.20569-2-david@redhat.com
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+[borntraeger@de.ibm.com: fix patch description, remove WARN_ON_ONCE]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_beep.c |    6 +++++-
+ arch/s390/mm/gmap.c |    6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_beep.c
-+++ b/sound/pci/hda/hda_beep.c
-@@ -310,8 +310,12 @@ int snd_hda_mixer_amp_switch_get_beep(st
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -759,14 +759,18 @@ static void gmap_call_notifier(struct gm
+ static inline unsigned long *gmap_table_walk(struct gmap *gmap,
+ 					     unsigned long gaddr, int level)
  {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_beep *beep = codec->beep;
-+	int chs = get_amp_channels(kcontrol);
++	const int asce_type = gmap->asce & _ASCE_TYPE_MASK;
+ 	unsigned long *table;
+ 
+ 	if ((gmap->asce & _ASCE_TYPE_MASK) + 4 < (level * 4))
+ 		return NULL;
+ 	if (gmap_is_shadow(gmap) && gmap->removed)
+ 		return NULL;
+-	if (gaddr & (-1UL << (31 + ((gmap->asce & _ASCE_TYPE_MASK) >> 2)*11)))
 +
- 	if (beep && (!beep->enabled || !ctl_has_mute(kcontrol))) {
--		ucontrol->value.integer.value[0] =
-+		if (chs & 1)
-+			ucontrol->value.integer.value[0] = beep->enabled;
-+		if (chs & 2)
- 			ucontrol->value.integer.value[1] = beep->enabled;
- 		return 0;
- 	}
++	if (asce_type != _ASCE_TYPE_REGION1 &&
++	    gaddr & (-1UL << (31 + (asce_type >> 2) * 11)))
+ 		return NULL;
++
+ 	table = gmap->table;
+ 	switch (gmap->asce & _ASCE_TYPE_MASK) {
+ 	case _ASCE_TYPE_REGION1:
 
 
