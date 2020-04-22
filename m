@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F4C1B42BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50281B3C60
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732514AbgDVLDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
+        id S1728138AbgDVKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgDVJ7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:59:23 -0400
+        id S1728132AbgDVKFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DA4820735;
-        Wed, 22 Apr 2020 09:59:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A21072076C;
+        Wed, 22 Apr 2020 10:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549562;
-        bh=CaI+v9D1Ksy/IQA5snBLD83O5DgBFgJMn4PiWZLu3jI=;
+        s=default; t=1587549909;
+        bh=U3hm7SiGMK2dMDjRBbZZI0DRkBM9O1aZDKQ7XAcyxFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TLJkN2azZHaBkN5B7WzlFDMz4HKRqic+mGceYhHQEUC6DLBq4tOvjnlDtNfL0HtXI
-         5JdhQStyTFodTZo0tJeDrRWHnDMFSv5t+B5zQItlC02zIwoEu4N3Gbv+VQWDohglyr
-         IM47MFQb7YMcxXIF1qOOPNJRcYt+DOk1SpAZ2fIQ=
+        b=GUVMQlzADaY0+4ZgblVlP6sbN19B0ePNhv9gMAcLRoQdZO1b2N/2jKKzS0+PmF4kW
+         wq8+oaKCWNKeZv092vZ/eK1riVfg5Lspy8Qcp7h/RF712b962uqojfzS1MvrDVi3P1
+         nHKEVBiA037FQltVzprcaMqmZqvQO32cA3H7I6QU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Wei <wei.zheng@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 002/100] net: vxge: fix wrong __VA_ARGS__ usage
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 015/125] ASoC: fix regwmask
 Date:   Wed, 22 Apr 2020 11:55:32 +0200
-Message-Id: <20200422095022.984933248@linuxfoundation.org>
+Message-Id: <20200422095035.578113486@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,98 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Wei <wei.zheng@vivo.com>
+From: 이경택 <gt82.lee@samsung.com>
 
-[ Upstream commit b317538c47943f9903860d83cc0060409e12d2ff ]
+commit 0ab070917afdc93670c2d0ea02ab6defb6246a7c upstream.
 
-printk in macro vxge_debug_ll uses __VA_ARGS__ without "##" prefix,
-it causes a build error when there is no variable
-arguments(e.g. only fmt is specified.).
+If regwshift is 32 and the selected architecture compiles '<<' operator
+for signed int literal into rotating shift, '1<<regwshift' became 1 and
+it makes regwmask to 0x0.
+The literal is set to unsigned long to get intended regwmask.
 
-Signed-off-by: Zheng Wei <wei.zheng@vivo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/001001d60665$db7af3e0$9270dba0$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/neterion/vxge/vxge-config.h |  2 +-
- drivers/net/ethernet/neterion/vxge/vxge-main.h   | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/soc-ops.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-config.h b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-index 6ce4412fcc1ad..380e841fdd957 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-config.h
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-@@ -2065,7 +2065,7 @@ vxge_hw_vpath_strip_fcs_check(struct __vxge_hw_device *hldev, u64 vpath_mask);
- 	if ((level >= VXGE_ERR && VXGE_COMPONENT_LL & VXGE_DEBUG_ERR_MASK) ||  \
- 	    (level >= VXGE_TRACE && VXGE_COMPONENT_LL & VXGE_DEBUG_TRACE_MASK))\
- 		if ((mask & VXGE_DEBUG_MASK) == mask)			       \
--			printk(fmt "\n", __VA_ARGS__);			       \
-+			printk(fmt "\n", ##__VA_ARGS__);		       \
- } while (0)
- #else
- #define vxge_debug_ll(level, mask, fmt, ...)
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.h b/drivers/net/ethernet/neterion/vxge/vxge-main.h
-index 3a79d93b84453..5b535aa10d23e 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-main.h
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-main.h
-@@ -454,49 +454,49 @@ int vxge_fw_upgrade(struct vxgedev *vdev, char *fw_name, int override);
- 
- #if (VXGE_DEBUG_LL_CONFIG & VXGE_DEBUG_MASK)
- #define vxge_debug_ll_config(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_ll_config(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_INIT & VXGE_DEBUG_MASK)
- #define vxge_debug_init(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_init(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_TX & VXGE_DEBUG_MASK)
- #define vxge_debug_tx(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_tx(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_RX & VXGE_DEBUG_MASK)
- #define vxge_debug_rx(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_rx(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_MEM & VXGE_DEBUG_MASK)
- #define vxge_debug_mem(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_mem(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_ENTRYEXIT & VXGE_DEBUG_MASK)
- #define vxge_debug_entryexit(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_entryexit(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_INTR & VXGE_DEBUG_MASK)
- #define vxge_debug_intr(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_intr(level, fmt, ...)
- #endif
--- 
-2.20.1
-
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -837,7 +837,7 @@ int snd_soc_get_xr_sx(struct snd_kcontro
+ 	unsigned int regbase = mc->regbase;
+ 	unsigned int regcount = mc->regcount;
+ 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
+-	unsigned int regwmask = (1<<regwshift)-1;
++	unsigned int regwmask = (1UL<<regwshift)-1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned long mask = (1UL<<mc->nbits)-1;
+ 	long min = mc->min;
+@@ -886,7 +886,7 @@ int snd_soc_put_xr_sx(struct snd_kcontro
+ 	unsigned int regbase = mc->regbase;
+ 	unsigned int regcount = mc->regcount;
+ 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
+-	unsigned int regwmask = (1<<regwshift)-1;
++	unsigned int regwmask = (1UL<<regwshift)-1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned long mask = (1UL<<mc->nbits)-1;
+ 	long max = mc->max;
 
 
