@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414ED1B4C65
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F57B1B4C6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 20:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgDVSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 14:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgDVSCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 14:02:00 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 824A1214AF;
-        Wed, 22 Apr 2020 18:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587578520;
-        bh=FzQTGQ2Ix7C7yR7IfBH/DXbB5Ch65ICfo4tHoOW7nnI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0A/YQX2JzsYbuIiD4/c6g+qjcG+aB9pdJitG9h83SJHB7+jTxNwY5IDmnL47zNJ6V
-         qkPfXvBBgDtNOmFzFEVREiwbBFjVhVldeCzCnsxfJ4wJIjmCpYs/DAm781XyRGitZZ
-         7lfgUik1elBgd5oRg2rtr0BDR5SgI2rZBf6TZ7fc=
-Date:   Wed, 22 Apr 2020 19:01:53 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 01/12] add support for Clang's Shadow Call Stack (SCS)
-Message-ID: <20200422180153.GD3121@willie-the-truck>
-References: <20191018161033.261971-1-samitolvanen@google.com>
- <20200416161245.148813-1-samitolvanen@google.com>
- <20200416161245.148813-2-samitolvanen@google.com>
- <20200420171727.GB24386@willie-the-truck>
- <20200420211830.GA5081@google.com>
- <20200422173938.GA3069@willie-the-truck>
- <202004221047.3AEAECC1@keescook>
+        id S1726918AbgDVSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 14:02:22 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:5294 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726476AbgDVSCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 14:02:20 -0400
+X-UUID: ffaa157022074406a23ae358582cbbb0-20200423
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Wd/MOGLi3v8IcIouicrcERfGp8lHo02kJWYXWlv+S1A=;
+        b=dEkvVyeidV4pAvuX74tJ5sxMxMUhqa/vNIPLbHk3HKgyaqsGFelkmcyzogkGqgs5DwOCa67/MULKBy0Yud3tcsxqupahgtlGjnl3kyUvqoUvTnBBF0hbA4ZpqiapDhNWHRXHdL/cjqKT+GGxk1zdXAfRLFAPZaxZ50kivUappgw=;
+X-UUID: ffaa157022074406a23ae358582cbbb0-20200423
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1603115986; Thu, 23 Apr 2020 02:02:16 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Apr 2020 02:02:06 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Apr 2020 02:02:05 +0800
+From:   <sean.wang@mediatek.com>
+To:     <gregkh@linuxfoundation.org>, <jslaby@suse.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <sr@denx.de>, <arnd@arndb.de>,
+        <matthias.bgg@gmail.com>, <tthayer@opensource.altera.com>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@mediatek.com>,
+        Steven Liu <steven.liu@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH v3] tty: serial: don't do termios for BTIF
+Date:   Thu, 23 Apr 2020 02:02:08 +0800
+Message-ID: <cc41ea10be9ab96568f0371784e3b9f8d9f434b9.1587577548.git.sean.wang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202004221047.3AEAECC1@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:51:02AM -0700, Kees Cook wrote:
-> On Wed, Apr 22, 2020 at 06:39:47PM +0100, Will Deacon wrote:
-> > On Mon, Apr 20, 2020 at 02:18:30PM -0700, Sami Tolvanen wrote:
-> > > On Mon, Apr 20, 2020 at 06:17:28PM +0100, Will Deacon wrote:
-> > > > > +	 * The shadow call stack is aligned to SCS_SIZE, and grows
-> > > > > +	 * upwards, so we can mask out the low bits to extract the base
-> > > > > +	 * when the task is not running.
-> > > > > +	 */
-> > > > > +	return (void *)((unsigned long)task_scs(tsk) & ~(SCS_SIZE - 1));
-> > > > 
-> > > > Could we avoid forcing this alignment it we stored the SCS pointer as a
-> > > > (base,offset) pair instead? That might be friendlier on the allocations
-> > > > later on.
-> > > 
-> > > The idea is to avoid storing the current task's shadow stack address in
-> > > memory, which is why I would rather not store the base address either.
-> > 
-> > What I mean is that, instead of storing the current shadow stack pointer,
-> > we instead store a base and an offset. We can still clear the base, as you
-> > do with the pointer today, and I don't see that the offset is useful to
-> > an attacker on its own.
-> > 
-> > But more generally, is it really worthwhile to do this clearing at all? Can
-> > you (or Kees?) provide some justification for it, please? We don't do it
-> > for anything else, e.g. the pointer authentication keys, so something
-> > feels amiss here.
-> 
-> It's a hardening step to just reduce the lifetime of a valid address
-> exposed in memory. In fact, since there is a cache, I think it should be
-> wiped even in scs_release().
+RnJvbTogU2VhbiBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpCbHVldG9vdGggSW50
+ZXJmYWNlIChCVElGKSBpcyBkZXNpZ25lZCBkZWRpY2F0ZWRseSBmb3IgTWVkaWFUZWsgU09DIHdp
+dGgNCkJUIGluIG9yZGVyIHRvIGJlIGluc3RlYWQgb2YgdGhlIFVBUlQgaW50ZXJmYWNlIGJldHdl
+ZW4gQlQgbW9kdWxlIGFuZCBIb3N0DQpDUFUsIGFuZCBub3QgZXhwb3J0ZWQgdG8gdXNlciBzcGFj
+ZSB0byBhY2Nlc3MuDQoNCkFzIHRoZSBVQVJUIGRlc2lnbiwgQlRJRiB3aWxsIGJlIGFuIEFQQiBz
+bGF2ZSBhbmQgY2FuIHRyYW5zbWl0IG9yIHJlY2VpdmUNCmRhdGEgYnkgTUNVIGFjY2VzcywgYnV0
+IGRvZXNuJ3QgcHJvdmlkZSB0ZXJtaW9zIGZ1bmN0aW9uIGxpa2UgYmF1ZHJhdGUgYW5kDQpmbG93
+IGNvbnRyb2wgc2V0dXAuDQoNCkV2ZW4gTENSIG9uIG9mZnNldCAweEMgdGhhdCBpcyBqdXN0IGEg
+RkFLRUxDUg0KYS4gSWYgRkFLRUxDUls3XSBpcyBlcXVhbGVkIHRvIDEsIFJCUigweDAwKSwgVEhS
+KDB4MDApLCBJRVIoMHgwNCkNCiAgIHdpbGwgbm90IGJlIHJlYWRhYmxlL3dyaXRhYmxlLg0KDQpi
+LiBJZiBGQUtFTENSIGlzIGVxdWFsZWQgdG8gMHhCRiwgUkJSKDB4MDApLCBUSFIoMHgwMCksIElF
+UigweDA0KSwNCiAgIElJUigweDA4KSwgYW5kIExTUigweDE0KSB3aWxsIG5vdCBiZSByZWFkYWJs
+ZS93cml0YWJsZS4NCg0KU28gYWRkaW5nIGEgbmV3IGNhcGFiaWxpdHkgJ1VBUlRfQ0FQX05USU8n
+IGZvciB0aGUgdW51c3VhbCB1bnN1cHBvcnRlZA0KY2FzZS4NCg0KRml4ZXM6IDFjMTZhZTY1ZTI1
+MCAoInNlcmlhbDogODI1MDogb2Y6IEFkZCBuZXcgcG9ydCB0eXBlIGZvciBNZWRpYVRlayBCVElG
+IGNvbnRyb2xsZXIgb24gTVQ3NjIyLzIzIFNvQyIpDQpDYzogU3RldmVuIExpdSA8c3RldmVuLmxp
+dUBtZWRpYXRlay5jb20+DQpTdWdnZXN0ZWQtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNo
+ZXZjaGVua29AbGludXguaW50ZWwuY29tPg0KU2lnbmVkLW9mZi1ieTogU2VhbiBXYW5nIDxzZWFu
+LndhbmdAbWVkaWF0ZWsuY29tPg0KU2lnbmVkLW9mZi1ieTogUnlkZXIgTGVlIDxyeWRlci5sZWVA
+bWVkaWF0ZWsuY29tPg0KDQotLQ0KdjEtPnYyOg0Kbm8gY2hhbmdlIG9uIHRlcm1pb3MtPmNfY2Zs
+YWcgYW5kIHJlZmluZSBjb21taXQgbWVzc2FnZQ0KDQp2Mi0+djM6DQpjaGFuZ2UgdGhlIG5hbWlu
+ZyBmcm9tIE5NT0QgdG8gTlRJTyBhcyBUSU8gaXMgYSB3ZWxsIGVzdGFibGlzaGVkIHByZWZpeA0K
+Zm9yIHRlcm1pb3MgSU9DVExzLg0KLS0tDQogZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MC5o
+ICAgICAgfCAxICsNCiBkcml2ZXJzL3R0eS9zZXJpYWwvODI1MC84MjUwX3BvcnQuYyB8IDUgKysr
+Ky0NCiAyIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MC5oIGIvZHJpdmVycy90dHkv
+c2VyaWFsLzgyNTAvODI1MC5oDQppbmRleCAzM2FkOWQ2ZGU1MzIuLjIzNGQ4ZGI0NzBjMCAxMDA2
+NDQNCi0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTAuaA0KKysrIGIvZHJpdmVycy90
+dHkvc2VyaWFsLzgyNTAvODI1MC5oDQpAQCAtODIsNiArODIsNyBAQCBzdHJ1Y3Qgc2VyaWFsODI1
+MF9jb25maWcgew0KICNkZWZpbmUgVUFSVF9DQVBfTUlOSQkoMSA8PCAxNykJLyogTWluaSBVQVJU
+IG9uIEJDTTI4M1ggZmFtaWx5IGxhY2tzOg0KIAkJCQkJICogU1RPUCBQQVJJVFkgRVBBUiBTUEFS
+IFdMRU41IFdMRU42DQogCQkJCQkgKi8NCisjZGVmaW5lIFVBUlRfQ0FQX05USU8JKDEgPDwgMTgp
+CS8qIFVBUlQgZG9lc24ndCBkbyB0ZXJtaW9zICovDQogDQogI2RlZmluZSBVQVJUX0JVR19RVU9U
+CSgxIDw8IDApCS8qIFVBUlQgaGFzIGJ1Z2d5IHF1b3QgTFNCICovDQogI2RlZmluZSBVQVJUX0JV
+R19UWEVOCSgxIDw8IDEpCS8qIFVBUlQgaGFzIGJ1Z2d5IFRYIElJUiBzdGF0dXMgKi8NCmRpZmYg
+LS1naXQgYS9kcml2ZXJzL3R0eS9zZXJpYWwvODI1MC84MjUwX3BvcnQuYyBiL2RyaXZlcnMvdHR5
+L3NlcmlhbC84MjUwLzgyNTBfcG9ydC5jDQppbmRleCAwMzI1ZjJlNTNiNzQuLmFiYzk3NGI0MTEz
+ZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfcG9ydC5jDQorKysg
+Yi9kcml2ZXJzL3R0eS9zZXJpYWwvODI1MC84MjUwX3BvcnQuYw0KQEAgLTI4Niw3ICsyODYsNyBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IHNlcmlhbDgyNTBfY29uZmlnIHVhcnRfY29uZmlnW10gPSB7
+DQogCQkudHhfbG9hZHN6CT0gMTYsDQogCQkuZmNyCQk9IFVBUlRfRkNSX0VOQUJMRV9GSUZPIHwN
+CiAJCQkJICBVQVJUX0ZDUl9DTEVBUl9SQ1ZSIHwgVUFSVF9GQ1JfQ0xFQVJfWE1JVCwNCi0JCS5m
+bGFncwkJPSBVQVJUX0NBUF9GSUZPLA0KKwkJLmZsYWdzCQk9IFVBUlRfQ0FQX0ZJRk8gfCBVQVJU
+X0NBUF9OVElPLA0KIAl9LA0KIAlbUE9SVF9OUENNXSA9IHsNCiAJCS5uYW1lCQk9ICJOdXZvdG9u
+IDE2NTUwIiwNCkBAIC0yNTQ0LDYgKzI1NDQsOSBAQCBzZXJpYWw4MjUwX2RvX3NldF90ZXJtaW9z
+KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlvcyAqdGVybWlvcywNCiAJdW5z
+aWduZWQgbG9uZyBmbGFnczsNCiAJdW5zaWduZWQgaW50IGJhdWQsIHF1b3QsIGZyYWMgPSAwOw0K
+IA0KKwlpZiAodXAtPmNhcGFiaWxpdGllcyAmIFVBUlRfQ0FQX05USU8pDQorCQlyZXR1cm47DQor
+DQogCWlmICh1cC0+Y2FwYWJpbGl0aWVzICYgVUFSVF9DQVBfTUlOSSkgew0KIAkJdGVybWlvcy0+
+Y19jZmxhZyAmPSB+KENTVE9QQiB8IFBBUkVOQiB8IFBBUk9ERCB8IENNU1BBUik7DQogCQlpZiAo
+KHRlcm1pb3MtPmNfY2ZsYWcgJiBDU0laRSkgPT0gQ1M1IHx8DQotLSANCjIuMjUuMQ0K
 
-But we don't do this for /anything/ else and it forces alignment
-restrictions on the SCS allocation. Please either do it consistently, or
-not at all.
-
-Will
