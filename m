@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183C71B3F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932BD1B41A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731046AbgDVKdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33010 "EHLO mail.kernel.org"
+        id S1728069AbgDVKII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:08:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730436AbgDVKYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:24:37 -0400
+        id S1728623AbgDVKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:08:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DC3A2071E;
-        Wed, 22 Apr 2020 10:24:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7BC2077D;
+        Wed, 22 Apr 2020 10:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551076;
-        bh=yq30A9vqJkbH6ukTYjE1PX100A2RCzQdapYKRI6/qVI=;
+        s=default; t=1587550081;
+        bh=W5iQkxgtxVfawB7TEp41JwyAqy+uC8RmFSlbEstYjkI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=abhs4m5evGEJx/jChiLvEgFZgIBTzyPtLDm1rzAAdrNxU52Z4R5B0FU+eGytBvZ4o
-         st6Cn3QD6UmC5si4yFFF09HBgG4LHs2ks1/vdS1lFiBtWn3W1uUP2iJYi0gZf+seZV
-         ZiF0IiIIcsJaCbPeLtiIijTuy6hi9RbLE0PwSUik=
+        b=REgUMFKLtQ4FG65y3rRN7bv0sN3/7sHmMKnGNmoxXezubXbwJFNJUWzqRlWNrz0JP
+         fAd0pIV3ZGEblsyds6LohCjCH347f0vqG8xCRZTTDXJ/ZcVSvA5Peh3QfIcwmg/rHl
+         QHAQt6SxjlQxonFnG/0mdc3+Mcr/ij/8zkfD+iTs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 091/166] s390/cpum_sf: Fix wrong page count in error message
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH 4.9 101/125] arm64: cpu_errata: include required headers
 Date:   Wed, 22 Apr 2020 11:56:58 +0200
-Message-Id: <20200422095058.435527979@linuxfoundation.org>
+Message-Id: <20200422095049.344784619@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Richter <tmricht@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 4141b6a5e9f171325effc36a22eb92bf961e7a5c ]
+commit 94a5d8790e79ab78f499d2d9f1ff2cab63849d9f upstream.
 
-When perf record -e SF_CYCLES_BASIC_DIAG runs with very high
-frequency, the samples arrive faster than the perf process can
-save them to file. Eventually, for longer running processes, this
-leads to the siutation where the trace buffers allocated by perf
-slowly fills up. At one point the auxiliary trace buffer is full
-and  the CPU Measurement sampling facility is turned off. Furthermore
-a warning is printed to the kernel log buffer:
+Without including psci.h and arm-smccc.h, we now get a build failure in
+some configurations:
 
-cpum_sf: The AUX buffer with 0 pages for the diagnostic-sampling
-	mode is full
+arch/arm64/kernel/cpu_errata.c: In function 'arm64_update_smccc_conduit':
+arch/arm64/kernel/cpu_errata.c:278:10: error: 'psci_ops' undeclared (first use in this function); did you mean 'sysfs_ops'?
 
-The number of allocated pages for the auxiliary trace buffer is shown
-as zero pages. That is wrong.
+arch/arm64/kernel/cpu_errata.c: In function 'arm64_set_ssbd_mitigation':
+arch/arm64/kernel/cpu_errata.c:311:3: error: implicit declaration of function 'arm_smccc_1_1_hvc' [-Werror=implicit-function-declaration]
+   arm_smccc_1_1_hvc(ARM_SMCCC_ARCH_WORKAROUND_2, state, NULL);
 
-Fix this by saving the number of allocated pages before entering the
-work loop in the interrupt handler. When the interrupt handler processes
-the samples, it may detect the buffer full condition and stop sampling,
-reducing the buffer size to zero.
-Print the correct value in the error message:
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-cpum_sf: The AUX buffer with 256 pages for the diagnostic-sampling
-	mode is full
-
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/perf_cpum_sf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/cpu_errata.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/s390/kernel/perf_cpum_sf.c b/arch/s390/kernel/perf_cpum_sf.c
-index b095b1c78987d..05b908b3a6b38 100644
---- a/arch/s390/kernel/perf_cpum_sf.c
-+++ b/arch/s390/kernel/perf_cpum_sf.c
-@@ -1576,6 +1576,7 @@ static void hw_collect_aux(struct cpu_hw_sf *cpuhw)
- 	unsigned long range = 0, size;
- 	unsigned long long overflow = 0;
- 	struct perf_output_handle *handle = &cpuhw->handle;
-+	unsigned long num_sdb;
+--- a/arch/arm64/kernel/cpu_errata.c
++++ b/arch/arm64/kernel/cpu_errata.c
+@@ -16,6 +16,8 @@
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
  
- 	aux = perf_get_aux(handle);
- 	if (WARN_ON_ONCE(!aux))
-@@ -1587,13 +1588,14 @@ static void hw_collect_aux(struct cpu_hw_sf *cpuhw)
- 			    size >> PAGE_SHIFT);
- 	perf_aux_output_end(handle, size);
- 
-+	num_sdb = aux->sfb.num_sdb;
- 	while (!done) {
- 		/* Get an output handle */
- 		aux = perf_aux_output_begin(handle, cpuhw->event);
- 		if (handle->size == 0) {
- 			pr_err("The AUX buffer with %lu pages for the "
- 			       "diagnostic-sampling mode is full\n",
--				aux->sfb.num_sdb);
-+				num_sdb);
- 			debug_sprintf_event(sfdbg, 1,
- 					    "%s: AUX buffer used up\n",
- 					    __func__);
--- 
-2.20.1
-
++#include <linux/arm-smccc.h>
++#include <linux/psci.h>
+ #include <linux/types.h>
+ #include <asm/cachetype.h>
+ #include <asm/cpu.h>
 
 
