@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AA61B47B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D840F1B47BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgDVOyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgDVOyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:54:04 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CB5C03C1A9;
-        Wed, 22 Apr 2020 07:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C/y0MT4RUP0Ak6RuYzOz+uq54Hlm5rIbVfYvdumz+DM=; b=UUrQV2YDRusF3q4mtsyE/OglW+
-        U6JQFBF+3KcYfY7tjK+1QSbpmnSpKbp0FQEukWKyUX5k1kTTlBNKnSHilBSlB3pqEDAVNJZ/pHo4a
-        zYgNUSBw8W/iY24GB0zmPhRnlYzY+nDJE/wb167ntBElVK2e5ENkXqzpxo6dWG6pnauv1YaZFu48A
-        kzkSovg89bUxZz5vghqkSykuvsyd2vKZjRiE4udPWELuOoPACF7LwCTxdaVgiMZAZPW0sv2RHGs/s
-        qNhCOEWrh95kiNuxy8LDPyIhj1cL/HyP6dkVzmx82qtF5inj36eqJfFWCCsKHhaKI+YjcVHe6A1fh
-        kv0SMH1A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRGkr-0002YT-JX; Wed, 22 Apr 2020 14:53:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1726901AbgDVOyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:54:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgDVOyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 10:54:19 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E49C3010C4;
-        Wed, 22 Apr 2020 16:53:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30D18203AA838; Wed, 22 Apr 2020 16:53:34 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 16:53:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC2C12076E;
+        Wed, 22 Apr 2020 14:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587567259;
+        bh=q1QpVW6R7DMlsVtoi6fRF4m0TaPDKuXFC4jOXuBXoD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z5MysEaWg9+tyCG9nVbar+7g34DLzyfJ3nI6H/b2OkRe/Xa85WxmFmFixOkCA6Nbo
+         fYPqv5oxT6HRJSEzSK8devspKpRevMzpxn2Z0rhv1O5StFK0PHnCiPij0LxuHvLgWB
+         I+EjvieYE0IsgZqZ4bEdZA5Qr1dd/FTO1t6lO/jc=
+Date:   Wed, 22 Apr 2020 15:54:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org, kernel-team@android.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH] x86, sched: Prevent divisions by zero in frequency
- invariant accounting
-Message-ID: <20200422145334.GM20730@hirez.programming.kicks-ass.net>
-References: <20200422144055.18171-1-ggherdovich@suse.cz>
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v4 08/11] READ_ONCE: Drop pointer qualifiers when reading
+ from scalar types
+Message-ID: <20200422145412.GD676@willie-the-truck>
+References: <20200421151537.19241-1-will@kernel.org>
+ <20200421151537.19241-9-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422144055.18171-1-ggherdovich@suse.cz>
+In-Reply-To: <20200421151537.19241-9-will@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 04:40:55PM +0200, Giovanni Gherdovich wrote:
-> The product mcnt * arch_max_freq_ratio could be zero if it overflows u64.
-> 
-> For context, a large value for arch_max_freq_ratio would be 5000,
-> corresponding to a turbo_freq/base_freq ratio of 5 (normally it's more like
-> 1500-2000). A large increment frequency for the MPERF counter would be 5GHz
-> (the base clock of all CPUs on the market today is less than that). With
-> these figures, a CPU would need to go without a scheduler tick for around 8
-> days for the u64 overflow to happen. It is unlikely, but the check is
-> warranted.
-> 
-> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
-> ---
->  arch/x86/kernel/smpboot.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index 8c89e4d9ad28..fb71395cbcad 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -2055,14 +2055,14 @@ void arch_scale_freq_tick(void)
+On Tue, Apr 21, 2020 at 04:15:34PM +0100, Will Deacon wrote:
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index e970f97a7fcb..233066c92f6f 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -210,6 +210,27 @@ struct ftrace_likely_data {
+>  /* Are two types/vars the same type (ignoring qualifiers)? */
+>  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
 >  
->  	acnt = aperf - this_cpu_read(arch_prev_aperf);
->  	mcnt = mperf - this_cpu_read(arch_prev_mperf);
-> -	if (!mcnt)
-> -		return;
->  
->  	this_cpu_write(arch_prev_aperf, aperf);
->  	this_cpu_write(arch_prev_mperf, mperf);
->  
->  	acnt <<= 2*SCHED_CAPACITY_SHIFT;
->  	mcnt *= arch_max_freq_ratio;
-> +	if (!mcnt)
-> +		return;
+> +/*
+> + * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
+> + *			       non-scalar types unchanged.
+> + *
+> + * We build this out of a couple of helper macros in a vain attempt to
+> + * help you keep your lunch down while reading it.
+> + */
+> +#define __pick_scalar_type(x, type, otherwise)					\
+> +	__builtin_choose_expr(__same_type(x, type), (type)0, otherwise)
+> +
+> +#define __pick_integer_type(x, type, otherwise)					\
+> +	__pick_scalar_type(x, unsigned type,					\
+> +		__pick_scalar_type(x, signed type, otherwise))
+> +
+> +#define __unqual_scalar_typeof(x) typeof(					\
+> +	__pick_integer_type(x, char,						\
 
-Should we not pr_warn() and disable the whole thing when this happens?
+Rasmus pointed out to me that 'char' is not __builtin_types_compatible_p()
+with either 'signed char' or 'unsigned char', so I'll roll in the diff below
+to handle this case.
+
+Will
+
+--->8
+
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 233066c92f6f..6ed0612bc143 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -220,9 +220,14 @@ struct ftrace_likely_data {
+ #define __pick_scalar_type(x, type, otherwise)					\
+ 	__builtin_choose_expr(__same_type(x, type), (type)0, otherwise)
+ 
++/*
++ * 'char' is not type-compatible with either 'signed char' or 'unsigned char',
++ * so we include the naked type here as well as the signed/unsigned variants.
++ */
+ #define __pick_integer_type(x, type, otherwise)					\
+-	__pick_scalar_type(x, unsigned type,					\
+-		__pick_scalar_type(x, signed type, otherwise))
++	__pick_scalar_type(x, type,						\
++		__pick_scalar_type(x, unsigned type,				\
++			__pick_scalar_type(x, signed type, otherwise)))
+ 
+ #define __unqual_scalar_typeof(x) typeof(					\
+ 	__pick_integer_type(x, char,						\
