@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0B71B3CF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38641B4287
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgDVKKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
+        id S1732418AbgDVLCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728955AbgDVKKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:10 -0400
+        id S1726650AbgDVKAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 130D12077D;
-        Wed, 22 Apr 2020 10:10:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE2A720780;
+        Wed, 22 Apr 2020 10:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550209;
-        bh=s2KdDNJtF0qnO4d32B5YxCq8JiwYZ0+8BfvcQJBlUoM=;
+        s=default; t=1587549648;
+        bh=B8gJjDgNfO030o6GTT5ZleoRRIawVbH5PA9xnbNJMpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y6jBgjfW/pC+cCl0J1iPBHsmVCaDkxyJPjlYKZM1WENMCEE21+IVa4xPiCFuzDTph
-         dbJiyed0eFCWIJzfeunEMIH5UOVMCxIouVcKNizWbD9Dg0NHqkPDFYkduQHXoU0+8k
-         1rFk4FUjqJcVqrAgiXMFf6YwjowCD02Sak1I5ivQ=
+        b=yp+R9gtxILTX5qejnIOcKzIgZGPrluDYv/3S3FXveyCWV2bPlkS2ajtZH73My16K8
+         hdQ546Xve5npEpQX1a0g//j8v3vZWBz+RzsGE8gbhj21w8hc+1sU9qcjcK+29BNQVG
+         7s5eQnB0+Axobx8i8vjoRN9O9OWpWJ4/s1hswiZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 4.14 051/199] KEYS: reaching the keys quotas correctly
-Date:   Wed, 22 Apr 2020 11:56:17 +0200
-Message-Id: <20200422095103.301623069@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.4 048/100] libata: Return correct status in sata_pmp_eh_recover_pm() when ATA_DFLAG_DETACH is set
+Date:   Wed, 22 Apr 2020 11:56:18 +0200
+Message-Id: <20200422095031.110416210@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 2e356101e72ab1361821b3af024d64877d9a798d upstream.
+commit 8305f72f952cff21ce8109dc1ea4b321c8efc5af upstream.
 
-Currently, when we add a new user key, the calltrace as below:
+During system resume from suspend, this can be observed on ASM1062 PMP
+controller:
 
-add_key()
-  key_create_or_update()
-    key_alloc()
-    __key_instantiate_and_link
-      generic_key_instantiate
-        key_payload_reserve
-          ......
+ata10.01: SATA link down (SStatus 0 SControl 330)
+ata10.02: hard resetting link
+ata10.02: SATA link down (SStatus 0 SControl 330)
+ata10.00: configured for UDMA/133
+Kernel panic - not syncing: stack-protector: Kernel
+ in: sata_pmp_eh_recover+0xa2b/0xa40
 
-Since commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly"),
-we can reach max bytes/keys in key_alloc, but we forget to remove this
-limit when we reserver space for payload in key_payload_reserve. So we
-can only reach max keys but not max bytes when having delta between plen
-and type->def_datalen. Remove this limit when instantiating the key, so we
-can keep consistent with key_alloc.
+CPU: 2 PID: 230 Comm: scsi_eh_9 Tainted: P OE
+#49-Ubuntu
+Hardware name: System manufacturer System Product
+ 1001 12/10/2017
+Call Trace:
+dump_stack+0x63/0x8b
+panic+0xe4/0x244
+? sata_pmp_eh_recover+0xa2b/0xa40
+__stack_chk_fail+0x19/0x20
+sata_pmp_eh_recover+0xa2b/0xa40
+? ahci_do_softreset+0x260/0x260 [libahci]
+? ahci_do_hardreset+0x140/0x140 [libahci]
+? ata_phys_link_offline+0x60/0x60
+? ahci_stop_engine+0xc0/0xc0 [libahci]
+sata_pmp_error_handler+0x22/0x30
+ahci_error_handler+0x45/0x80 [libahci]
+ata_scsi_port_error_handler+0x29b/0x770
+? ata_scsi_cmd_error_handler+0x101/0x140
+ata_scsi_error+0x95/0xd0
+? scsi_try_target_reset+0x90/0x90
+scsi_error_handler+0xd0/0x5b0
+kthread+0x121/0x140
+? scsi_eh_get_sense+0x200/0x200
+? kthread_create_worker_on_cpu+0x70/0x70
+ret_from_fork+0x22/0x40
+Kernel Offset: 0xcc00000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-Also, fix the similar problem in keyctl_chown_key().
+Since sata_pmp_eh_recover_pmp() doens't set rc when ATA_DFLAG_DETACH is
+set, sata_pmp_eh_recover() continues to run. During retry it triggers
+the stack protector.
 
-Fixes: 0b77f5bfb45c ("keys: make the keyring quotas controllable through /proc/sys")
-Fixes: a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly")
-Cc: stable@vger.kernel.org # 5.0.x
-Cc: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Set correct rc in sata_pmp_eh_recover_pmp() to let sata_pmp_eh_recover()
+jump to pmp_fail directly.
+
+BugLink: https://bugs.launchpad.net/bugs/1821434
+Cc: stable@vger.kernel.org
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/keys/key.c    |    2 +-
- security/keys/keyctl.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/ata/libata-pmp.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -383,7 +383,7 @@ int key_payload_reserve(struct key *key,
- 		spin_lock(&key->user->lock);
+--- a/drivers/ata/libata-pmp.c
++++ b/drivers/ata/libata-pmp.c
+@@ -764,6 +764,7 @@ static int sata_pmp_eh_recover_pmp(struc
  
- 		if (delta > 0 &&
--		    (key->user->qnbytes + delta >= maxbytes ||
-+		    (key->user->qnbytes + delta > maxbytes ||
- 		     key->user->qnbytes + delta < key->user->qnbytes)) {
- 			ret = -EDQUOT;
- 		}
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -882,8 +882,8 @@ long keyctl_chown_key(key_serial_t id, u
- 				key_quota_root_maxbytes : key_quota_maxbytes;
+ 	if (dev->flags & ATA_DFLAG_DETACH) {
+ 		detach = 1;
++		rc = -ENODEV;
+ 		goto fail;
+ 	}
  
- 			spin_lock(&newowner->lock);
--			if (newowner->qnkeys + 1 >= maxkeys ||
--			    newowner->qnbytes + key->quotalen >= maxbytes ||
-+			if (newowner->qnkeys + 1 > maxkeys ||
-+			    newowner->qnbytes + key->quotalen > maxbytes ||
- 			    newowner->qnbytes + key->quotalen <
- 			    newowner->qnbytes)
- 				goto quota_overrun;
 
 
