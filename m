@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A11B3B6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3BE1B3B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgDVJdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 05:33:51 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:43450 "EHLO a.mx.secunet.com"
+        id S1726060AbgDVJgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 05:36:48 -0400
+Received: from sauhun.de ([88.99.104.3]:45202 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgDVJdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:33:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id E428120519;
-        Wed, 22 Apr 2020 11:33:48 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uKgNb0ZKKV0r; Wed, 22 Apr 2020 11:33:45 +0200 (CEST)
-Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 94ADC2009B;
-        Wed, 22 Apr 2020 11:33:45 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Apr 2020 11:33:45 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 22 Apr
- 2020 11:33:45 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id BFE703180096; Wed, 22 Apr 2020 11:33:44 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 11:33:44 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lucien.xin@gmail.com>
-Subject: Re: [PATCH] xfrm: policy: Only use mark as policy lookup key
-Message-ID: <20200422093344.GY13121@gauss3.secunet.de>
-References: <20200421143149.45108-1-yuehaibing@huawei.com>
+        id S1725912AbgDVJgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 05:36:47 -0400
+Received: from localhost (p5486CD65.dip0.t-ipconnect.de [84.134.205.101])
+        by pokefinder.org (Postfix) with ESMTPSA id 5DEDB2C1F8B;
+        Wed, 22 Apr 2020 11:36:45 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 11:36:42 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Bjorn Ardo <bjorn.ardo@axis.com>
+Cc:     Patrick Williams <patrick@stwcx.xyz>,
+        =?utf-8?B?QmrDtnJuIEFyZMO2?= <bjornar@axis.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] i2c: slave-eeprom: initialize empty eeprom properly
+Message-ID: <20200422093642.GA1245@ninjato>
+References: <20191001164009.21610-1-alpawi@amazon.com>
+ <150599be-9125-4ab9-e2a6-e792b41910e6@axis.com>
+ <20200420164349.GD3721@ninjato>
+ <20200420203146.GC95151@heinlein.lan.stwcx.xyz>
+ <20200420205325.GA1693@ninjato>
+ <adb03545-88db-689c-dbf7-9f746236adb4@axis.com>
+ <20200421121659.GE1241@ninjato>
+ <47891236-f1df-c130-0bce-d114523880cb@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
 Content-Disposition: inline
-In-Reply-To: <20200421143149.45108-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <47891236-f1df-c130-0bce-d114523880cb@axis.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:31:49PM +0800, YueHaibing wrote:
-> While update xfrm policy as follow:
-> 
-> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->  priority 1 mark 0 mask 0x10
-> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->  priority 2 mark 0 mask 0x00
-> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->  priority 2 mark 0 mask 0x10
-> 
-> We get this warning:
-> 
-> WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
-> Call Trace:
-> RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
->  xfrm_policy_inexact_insert+0x70/0x330
->  xfrm_policy_insert+0x1df/0x250
->  xfrm_add_policy+0xcc/0x190 [xfrm_user]
->  xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
->  netlink_rcv_skb+0x4c/0x120
->  xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
->  netlink_unicast+0x1b3/0x270
->  netlink_sendmsg+0x350/0x470
->  sock_sendmsg+0x4f/0x60
-> 
-> Policy C and policy A has the same mark.v and mark.m, so policy A is
-> matched in first round lookup while updating C. However policy C and
-> policy B has same mark and priority, which also leads to matched. So
-> the WARN_ON is triggered.
-> 
-> xfrm policy lookup should only be matched when the found policy has the
-> same lookup keys (mark.v & mark.m) no matter priority.
-> 
-> Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  net/xfrm/xfrm_policy.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-> index 297b2fd..67d0469 100644
-> --- a/net/xfrm/xfrm_policy.c
-> +++ b/net/xfrm/xfrm_policy.c
-> @@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
->  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->  				   struct xfrm_policy *pol)
->  {
-> -	u32 mark = policy->mark.v & policy->mark.m;
-> -
-> -	if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> -		return true;
-> -
-> -	if ((mark & pol->mark.m) == pol->mark.v &&
-> -	    policy->priority == pol->priority)
 
-If you remove the priority check, you can't insert policies with matching
-mark and different priorities anymore. This brings us back the old bug.
+--mYCpIKhGyMATD0i+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I plan to apply the patch from Xin Long, this seems to be the right way
-to address this problem.
+
+> I did like this now: If device_property_read_string() returns a firmware
+> name, I use that, otherwise init to 0xFF. But if it returns a firmware na=
+me,
+> and for some reason I get an error when trying to load that firmware I wi=
+ll
+> not default to 0xFF, but rather fail the probe. The logic in that is that=
+ if
+> you actively supply a firmware name, you should not silently get 0xFF in
+> your eeprom. Does that sound good?
+
+Sounds perfect to me.
+
+> > Yes, that is my idea. You also need to replace checking for an of_node
+> > with some equivalent for device properties maybe, but that should be
+> > easy to find out.
+>=20
+> It appears to me that those kind of checks are done inside
+> device_property_read_string() so I can just remove them and only look at =
+the
+> return value of that function.
+
+Even better!
+
+> I have a patch now working on 4.14, will run some tests on it and then try
+> to forward-port to latest kernel och see if it works there as well.
+
+Looking forward to it. I will look at it right away then!
+
+
+--mYCpIKhGyMATD0i+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6gECcACgkQFA3kzBSg
+KbaO7BAAkprmKCeDTpWumgvr++hxiBy8n6EaGLoCdbstru5jztnA/eZZ2EvEpezF
+dGqIT0FWgVeGLNTedXxSTDLyW/068hFfLSMhYacSBakHe1WsSnf7vteIq61fgxuZ
+g2NamfOadsE8zlZjVTpd2WQvb8QkCLji9HvBfYSd1qV5EGmUsMelRbjeL6BNEleK
+h5/b6yIbHhCZWnmlke60cxWV9BTd3xu6iuwyQqW14I+QTKLd5A2wg062T62moocu
+QoBvLfH3/BoD6mjAb+9Q9F9n5A3pDh90pCWwWvFx/Xvsn4rihPGumjw5Mu7mfdCs
+OcNgMdxXxbuQ17aEAuFSdv/K3Ve+TKFaksc9JriAFcxVZ1w5m8D4QpA4dk0mE7qs
+XJURvjoSEBhQboadPZYn8DSjr+YJ26W1rqkhBfMIh1ODhnU1H9Mz+WESt8xFSV4c
+fEuUQJxgJGSLqzbPhkwgqdU8dK0EZi2ETW9cClbzswzb7JJVqlSpIRAtC4AaJN2y
+1yutxyIa+Me52tl9zR5MSqJgL6ylBIlWM1iXg7aaer5lT/74eGimTn7Tk1eHZPm8
+Dj9iJ4jFqPhB1g3tHgwYYFVriDIP6X82ft89aGIHq9SPX2P0AfnbMpcEh7CMPGDD
+acWjoHmq4uMmD96Md8ZmS0iPAgre14MQgHBbdLUoFaTjs3V0gGs=
+=Pfci
+-----END PGP SIGNATURE-----
+
+--mYCpIKhGyMATD0i+--
