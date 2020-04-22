@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7CD1B3D27
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C951B40B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgDVKMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
+        id S1732009AbgDVKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:47:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729279AbgDVKMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:01 -0400
+        id S1729698AbgDVKPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:15:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A427320575;
-        Wed, 22 Apr 2020 10:11:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DD8D20575;
+        Wed, 22 Apr 2020 10:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550320;
-        bh=hXcckUw8SWYVjxzLptV0zh/8I4jsnpWi6/p0ftXNo/c=;
+        s=default; t=1587550546;
+        bh=qwP/aml+68At3JuRWA+ve+n6C4x2vOF43l2/Fj5sHlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a6mzPUhoeXaCTuv4DqGPIs6nLPV4zdLP7OBgRYr8SiYciNL0G3iHa37+5P+avFoZp
-         SSnuK5wh8E+3wqMAuv3gWteaVaNpoZ7rcoQe0QKEnUA9TJ172PsTRRNPQw41kYRWIC
-         i7Dz7/StK+O9lH2n0dgzhPD5KH/sGZzeQn7DwQIo=
+        b=Xcdm4nxiDsZ3nAOw3opN+2wRqvyQBYXwXgtJQXGBXUVK3V9WYR8NrM2QX+G+mtftK
+         L0y2ruE6QYZn4tKTzLeJoVhJDZ1bxFlL0c9TXrnWn9Dqjgrrt1azMluIm2bE9UQv9z
+         BBUMPm9MFKKtDxn+SwNR0pTHcZx0/DY/9Ox0PESU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jason Dillaman <dillaman@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 096/199] btrfs: use nofs allocations for running delayed items
+Subject: [PATCH 4.19 18/64] rbd: avoid a deadlock on header_rwsem when flushing notifies
 Date:   Wed, 22 Apr 2020 11:57:02 +0200
-Message-Id: <20200422095107.617901922@linuxfoundation.org>
+Message-Id: <20200422095016.290485975@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,234 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-[ Upstream commit 351cbf6e4410e7ece05e35d0a07320538f2418b4 ]
+[ Upstream commit 0e4e1de5b63fa423b13593337a27fd2d2b0bcf77 ]
 
-Zygo reported the following lockdep splat while testing the balance
-patches
+rbd_unregister_watch() flushes notifies and therefore cannot be called
+under header_rwsem because a header update notify takes header_rwsem to
+synchronize with "rbd map".  If mapping an image fails after the watch
+is established and a header update notify sneaks in, we deadlock when
+erroring out from rbd_dev_image_probe().
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.6.0-c6f0579d496a+ #53 Not tainted
-------------------------------------------------------
-kswapd0/1133 is trying to acquire lock:
-ffff888092f622c0 (&delayed_node->mutex){+.+.}, at: __btrfs_release_delayed_node+0x7c/0x5b0
+Move watch registration and unregistration out of the critical section.
+The only reason they were put there was to make header_rwsem management
+slightly more obvious.
 
-but task is already holding lock:
-ffffffff8fc5f860 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x5/0x30
-
-which lock already depends on the new lock.
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (fs_reclaim){+.+.}:
-       fs_reclaim_acquire.part.91+0x29/0x30
-       fs_reclaim_acquire+0x19/0x20
-       kmem_cache_alloc_trace+0x32/0x740
-       add_block_entry+0x45/0x260
-       btrfs_ref_tree_mod+0x6e2/0x8b0
-       btrfs_alloc_tree_block+0x789/0x880
-       alloc_tree_block_no_bg_flush+0xc6/0xf0
-       __btrfs_cow_block+0x270/0x940
-       btrfs_cow_block+0x1ba/0x3a0
-       btrfs_search_slot+0x999/0x1030
-       btrfs_insert_empty_items+0x81/0xe0
-       btrfs_insert_delayed_items+0x128/0x7d0
-       __btrfs_run_delayed_items+0xf4/0x2a0
-       btrfs_run_delayed_items+0x13/0x20
-       btrfs_commit_transaction+0x5cc/0x1390
-       insert_balance_item.isra.39+0x6b2/0x6e0
-       btrfs_balance+0x72d/0x18d0
-       btrfs_ioctl_balance+0x3de/0x4c0
-       btrfs_ioctl+0x30ab/0x44a0
-       ksys_ioctl+0xa1/0xe0
-       __x64_sys_ioctl+0x43/0x50
-       do_syscall_64+0x77/0x2c0
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
--> #0 (&delayed_node->mutex){+.+.}:
-       __lock_acquire+0x197e/0x2550
-       lock_acquire+0x103/0x220
-       __mutex_lock+0x13d/0xce0
-       mutex_lock_nested+0x1b/0x20
-       __btrfs_release_delayed_node+0x7c/0x5b0
-       btrfs_remove_delayed_node+0x49/0x50
-       btrfs_evict_inode+0x6fc/0x900
-       evict+0x19a/0x2c0
-       dispose_list+0xa0/0xe0
-       prune_icache_sb+0xbd/0xf0
-       super_cache_scan+0x1b5/0x250
-       do_shrink_slab+0x1f6/0x530
-       shrink_slab+0x32e/0x410
-       shrink_node+0x2a5/0xba0
-       balance_pgdat+0x4bd/0x8a0
-       kswapd+0x35a/0x800
-       kthread+0x1e9/0x210
-       ret_from_fork+0x3a/0x50
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&delayed_node->mutex);
-                               lock(fs_reclaim);
-  lock(&delayed_node->mutex);
-
- *** DEADLOCK ***
-
-3 locks held by kswapd0/1133:
- #0: ffffffff8fc5f860 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x5/0x30
- #1: ffffffff8fc380d8 (shrinker_rwsem){++++}, at: shrink_slab+0x1e8/0x410
- #2: ffff8881e0e6c0e8 (&type->s_umount_key#42){++++}, at: trylock_super+0x1b/0x70
-
-stack backtrace:
-CPU: 2 PID: 1133 Comm: kswapd0 Not tainted 5.6.0-c6f0579d496a+ #53
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-Call Trace:
- dump_stack+0xc1/0x11a
- print_circular_bug.isra.38.cold.57+0x145/0x14a
- check_noncircular+0x2a9/0x2f0
- ? print_circular_bug.isra.38+0x130/0x130
- ? stack_trace_consume_entry+0x90/0x90
- ? save_trace+0x3cc/0x420
- __lock_acquire+0x197e/0x2550
- ? btrfs_inode_clear_file_extent_range+0x9b/0xb0
- ? register_lock_class+0x960/0x960
- lock_acquire+0x103/0x220
- ? __btrfs_release_delayed_node+0x7c/0x5b0
- __mutex_lock+0x13d/0xce0
- ? __btrfs_release_delayed_node+0x7c/0x5b0
- ? __asan_loadN+0xf/0x20
- ? pvclock_clocksource_read+0xeb/0x190
- ? __btrfs_release_delayed_node+0x7c/0x5b0
- ? mutex_lock_io_nested+0xc20/0xc20
- ? __kasan_check_read+0x11/0x20
- ? check_chain_key+0x1e6/0x2e0
- mutex_lock_nested+0x1b/0x20
- ? mutex_lock_nested+0x1b/0x20
- __btrfs_release_delayed_node+0x7c/0x5b0
- btrfs_remove_delayed_node+0x49/0x50
- btrfs_evict_inode+0x6fc/0x900
- ? btrfs_setattr+0x840/0x840
- ? do_raw_spin_unlock+0xa8/0x140
- evict+0x19a/0x2c0
- dispose_list+0xa0/0xe0
- prune_icache_sb+0xbd/0xf0
- ? invalidate_inodes+0x310/0x310
- super_cache_scan+0x1b5/0x250
- do_shrink_slab+0x1f6/0x530
- shrink_slab+0x32e/0x410
- ? do_shrink_slab+0x530/0x530
- ? do_shrink_slab+0x530/0x530
- ? __kasan_check_read+0x11/0x20
- ? mem_cgroup_protected+0x13d/0x260
- shrink_node+0x2a5/0xba0
- balance_pgdat+0x4bd/0x8a0
- ? mem_cgroup_shrink_node+0x490/0x490
- ? _raw_spin_unlock_irq+0x27/0x40
- ? finish_task_switch+0xce/0x390
- ? rcu_read_lock_bh_held+0xb0/0xb0
- kswapd+0x35a/0x800
- ? _raw_spin_unlock_irqrestore+0x4c/0x60
- ? balance_pgdat+0x8a0/0x8a0
- ? finish_wait+0x110/0x110
- ? __kasan_check_read+0x11/0x20
- ? __kthread_parkme+0xc6/0xe0
- ? balance_pgdat+0x8a0/0x8a0
- kthread+0x1e9/0x210
- ? kthread_create_worker_on_cpu+0xc0/0xc0
- ret_from_fork+0x3a/0x50
-
-This is because we hold that delayed node's mutex while doing tree
-operations.  Fix this by just wrapping the searches in nofs.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 811c66887746 ("rbd: fix rbd map vs notify races")
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reviewed-by: Jason Dillaman <dillaman@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/delayed-inode.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/block/rbd.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 87414fc9e268f..416fb50a5378c 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -18,6 +18,7 @@
+diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+index d3ad1b8c133e6..8e2df524494cb 100644
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -3427,6 +3427,10 @@ static void cancel_tasks_sync(struct rbd_device *rbd_dev)
+ 	cancel_work_sync(&rbd_dev->unlock_work);
+ }
+ 
++/*
++ * header_rwsem must not be held to avoid a deadlock with
++ * rbd_dev_refresh() when flushing notifies.
++ */
+ static void rbd_unregister_watch(struct rbd_device *rbd_dev)
+ {
+ 	WARN_ON(waitqueue_active(&rbd_dev->lock_waitq));
+@@ -5732,6 +5736,9 @@ static void rbd_dev_image_release(struct rbd_device *rbd_dev)
+  * device.  If this image is the one being mapped (i.e., not a
+  * parent), initiate a watch on its header object before using that
+  * object to get detailed information about the rbd image.
++ *
++ * On success, returns with header_rwsem held for write if called
++ * with @depth == 0.
   */
- 
- #include <linux/slab.h>
-+#include <linux/sched/mm.h>
- #include "delayed-inode.h"
- #include "disk-io.h"
- #include "transaction.h"
-@@ -833,11 +834,14 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
  {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct extent_buffer *leaf;
-+	unsigned int nofs_flag;
- 	char *ptr;
- 	int ret;
+@@ -5764,6 +5771,9 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
+ 		}
+ 	}
  
-+	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_insert_empty_item(trans, root, path, &delayed_item->key,
- 				      delayed_item->data_len);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (ret < 0 && ret != -EEXIST)
- 		return ret;
- 
-@@ -966,6 +970,7 @@ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
- 				      struct btrfs_delayed_node *node)
- {
- 	struct btrfs_delayed_item *curr, *prev;
-+	unsigned int nofs_flag;
- 	int ret = 0;
- 
- do_again:
-@@ -974,7 +979,9 @@ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
- 	if (!curr)
- 		goto delete_fail;
- 
-+	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_search_slot(trans, root, &curr->key, path, -1, 1);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (ret < 0)
- 		goto delete_fail;
- 	else if (ret > 0) {
-@@ -1041,6 +1048,7 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	struct btrfs_key key;
- 	struct btrfs_inode_item *inode_item;
- 	struct extent_buffer *leaf;
-+	unsigned int nofs_flag;
- 	int mod;
- 	int ret;
- 
-@@ -1053,7 +1061,9 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	else
- 		mod = 1;
- 
-+	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (ret > 0) {
- 		btrfs_release_path(path);
- 		return -ENOENT;
-@@ -1104,7 +1114,10 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 
- 	key.type = BTRFS_INODE_EXTREF_KEY;
- 	key.offset = -1;
++	if (!depth)
++		down_write(&rbd_dev->header_rwsem);
 +
-+	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (ret < 0)
- 		goto err_out;
- 	ASSERT(ret);
+ 	ret = rbd_dev_header_info(rbd_dev);
+ 	if (ret)
+ 		goto err_out_watch;
+@@ -5814,6 +5824,8 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
+ err_out_probe:
+ 	rbd_dev_unprobe(rbd_dev);
+ err_out_watch:
++	if (!depth)
++		up_write(&rbd_dev->header_rwsem);
+ 	if (!depth)
+ 		rbd_unregister_watch(rbd_dev);
+ err_out_format:
+@@ -5872,12 +5884,9 @@ static ssize_t do_rbd_add(struct bus_type *bus,
+ 		goto err_out_rbd_dev;
+ 	}
+ 
+-	down_write(&rbd_dev->header_rwsem);
+ 	rc = rbd_dev_image_probe(rbd_dev, 0);
+-	if (rc < 0) {
+-		up_write(&rbd_dev->header_rwsem);
++	if (rc < 0)
+ 		goto err_out_rbd_dev;
+-	}
+ 
+ 	/* If we are mapping a snapshot it must be marked read-only */
+ 	if (rbd_dev->spec->snap_id != CEPH_NOSNAP)
 -- 
 2.20.1
 
