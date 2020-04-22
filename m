@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19D61B3D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CF61B3E2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729721AbgDVKPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50640 "EHLO mail.kernel.org"
+        id S1730669AbgDVK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:26:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgDVKPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:22 -0400
+        id S1730637AbgDVK0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:26:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 358C820781;
-        Wed, 22 Apr 2020 10:15:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38BAC20784;
+        Wed, 22 Apr 2020 10:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550521;
-        bh=RxG7sT2TZaY9cUwBJw2sOGIMMnDdQK0IvDqDfreJGso=;
+        s=default; t=1587551160;
+        bh=VyeAYrSuj5Nu9IZdaUdo5Y5eQ7ucFMmf8JRnu3917n8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EezFReuAf88KI+hHAHNB5lcFzMJiKrxltlKq9RppOZPJzYjzXR4Gq+a4Ll/2xJT33
-         h4/JwJHFoZubKenLw1Bnqk8F9kSsDcxIwjCKuhLcVRA+m6u/AlDugNo/cqEbfmlp+1
-         nQPqmAUjThekgUfDufxnuz9jP/tMvBPcQ9e+JoHM=
+        b=zcNl0b1BAO6BPFRCxURBvYnr6/PNvR1e8A8H9yudmnjlQFtusXPKWfAz6AF6QWvsw
+         ome5FKjClT1PRa5hBQHDQRC5wtIgCRiohCHYwqhEOyTnI1BtvpZzDLsCcc1qL1DstW
+         UU79Zzb+7ajBMy7F+pvYvwKRe3zyQqHd9qgag/9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 49/64] ext2: fix empty body warnings when -Wextra is used
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 126/166] iommu/virtio: Fix freeing of incomplete domains
 Date:   Wed, 22 Apr 2020 11:57:33 +0200
-Message-Id: <20200422095021.673973807@linuxfoundation.org>
+Message-Id: <20200422095102.034165688@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-[ Upstream commit 44a52022e7f15cbaab957df1c14f7a4f527ef7cf ]
+[ Upstream commit 7062af3ed2ba451029e3733d9f677c68f5ea9e77 ]
 
-When EXT2_ATTR_DEBUG is not defined, modify the 2 debug macros
-to use the no_printk() macro instead of <nothing>.
-This fixes gcc warnings when -Wextra is used:
+Calling viommu_domain_free() on a domain that hasn't been finalised (not
+attached to any device, for example) can currently cause an Oops,
+because we attempt to call ida_free() on ID 0, which may either be
+unallocated or used by another domain.
 
-../fs/ext2/xattr.c:252:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:258:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:330:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:872:45: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+Only initialise the vdomain->viommu pointer, which denotes a finalised
+domain, at the end of a successful viommu_domain_finalise().
 
-I have verified that the only object code change (with gcc 7.5.0) is
-the reversal of some instructions from 'cmp a,b' to 'cmp b,a'.
-
-Link: https://lore.kernel.org/r/e18a7395-61fb-2093-18e8-ed4f8cf56248@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+Fixes: edcd69ab9a32 ("iommu: Add virtio-iommu driver")
+Reported-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/20200326093558.2641019-3-jean-philippe@linaro.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/iommu/virtio-iommu.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index dd8f10db82e99..4439bfaf1c57f 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -56,6 +56,7 @@
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index cce329d71fbad..5eed75cd121f1 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -613,18 +613,20 @@ static int viommu_domain_finalise(struct viommu_dev *viommu,
+ 	int ret;
+ 	struct viommu_domain *vdomain = to_viommu_domain(domain);
  
- #include <linux/buffer_head.h>
- #include <linux/init.h>
-+#include <linux/printk.h>
- #include <linux/slab.h>
- #include <linux/mbcache.h>
- #include <linux/quotaops.h>
-@@ -84,8 +85,8 @@
- 		printk("\n"); \
- 	} while (0)
- #else
--# define ea_idebug(f...)
--# define ea_bdebug(f...)
-+# define ea_idebug(inode, f...)	no_printk(f)
-+# define ea_bdebug(bh, f...)	no_printk(f)
- #endif
+-	vdomain->viommu		= viommu;
+-	vdomain->map_flags	= viommu->map_flags;
++	ret = ida_alloc_range(&viommu->domain_ids, viommu->first_domain,
++			      viommu->last_domain, GFP_KERNEL);
++	if (ret < 0)
++		return ret;
++
++	vdomain->id		= (unsigned int)ret;
  
- static int ext2_xattr_set2(struct inode *, struct buffer_head *,
+ 	domain->pgsize_bitmap	= viommu->pgsize_bitmap;
+ 	domain->geometry	= viommu->geometry;
+ 
+-	ret = ida_alloc_range(&viommu->domain_ids, viommu->first_domain,
+-			      viommu->last_domain, GFP_KERNEL);
+-	if (ret >= 0)
+-		vdomain->id = (unsigned int)ret;
++	vdomain->map_flags	= viommu->map_flags;
++	vdomain->viommu		= viommu;
+ 
+-	return ret > 0 ? 0 : ret;
++	return 0;
+ }
+ 
+ static void viommu_domain_free(struct iommu_domain *domain)
 -- 
 2.20.1
 
