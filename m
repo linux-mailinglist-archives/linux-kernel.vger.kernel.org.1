@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C131B361F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA361B361B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgDVEUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:20:11 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:43563 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726442AbgDVEUG (ORCPT
+        id S1726448AbgDVEUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:20:03 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:18549 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725811AbgDVEUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:20:06 -0400
+        Wed, 22 Apr 2020 00:20:01 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587529205; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=0Ok93GJWyrMcrmPIyqLBZtZS7FS1V8QUfQQLkNG7V8I=; b=bTFzpXItujPgt+RoU4zECn9Ov5SyDcx5iQLxTccZaibML88OcCM+F8ESpRsLxRLg9LvG0aKT
- X2240i/F0gonrnhxWWi66lUobKTzr9z6SLUvxlInvlaFq4cdd/k7Etn66rpdfodmpn112hgJ
- mn/p92+fBxNdz7dQ2/SVtmjjAP0=
-X-Mailgun-Sending-Ip: 104.130.122.27
+ s=smtp; t=1587529200; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=9ajINjyxVnZz0xrqD52l756TPDsznJMo9dg0aqFR6yM=; b=qy7iQExjREr2AxZ/Gd4BG6xJUE5pf03dTdLkXNeDLNy1S4rxGcozoPpgM3vcPxUeXW96zoL8
+ 3DUi6CTu5yD3qv+Ic41u6G2Op449fnH+N2vXcPIJ5hzPWN7Wmi+TtHUI7YjfQsHlFwL/kAyj
+ jZtfR5l9aEf7KhlszR0si5lz2pc=
+X-Mailgun-Sending-Ip: 104.130.122.26
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e9fc5e6.7f621f9a6110-smtp-out-n01;
+ by mxa.mailgun.org with ESMTP id 5e9fc5e6.7fc3729ee8f0-smtp-out-n03;
  Wed, 22 Apr 2020 04:19:50 -0000 (UTC)
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3148C433F2; Wed, 22 Apr 2020 04:19:49 +0000 (UTC)
+        id 548A7C433F2; Wed, 22 Apr 2020 04:19:50 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
+        autolearn=ham autolearn_force=no version=3.4.0
 Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 688A9C433BA;
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9DE9C433D2;
         Wed, 22 Apr 2020 04:19:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 688A9C433BA
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B9DE9C433D2
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
 From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
 To:     linux-arm-msm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 0/8] Bug fixes and improved logging in MHI
-Date:   Tue, 21 Apr 2020 21:19:27 -0700
-Message-Id: <1587529175-27778-1-git-send-email-bbhatt@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v1 1/8] bus: mhi: core: Cache intmod from mhi event to mhi channel
+Date:   Tue, 21 Apr 2020 21:19:28 -0700
+Message-Id: <1587529175-27778-2-git-send-email-bbhatt@codeaurora.org>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1587529175-27778-1-git-send-email-bbhatt@codeaurora.org>
+References: <1587529175-27778-1-git-send-email-bbhatt@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A set of patches for bug fixes and improved logging in mhi/core/boot.c.
-Verified on x86 and arm64 platforms.
+From: Hemant Kumar <hemantk@codeaurora.org>
 
-Bhaumik Bhatt (5):
-  bus: mhi: core: Handle firmware load using state worker
-  bus: mhi: core: WARN_ON for malformed vector table
-  bus: mhi: core: Return appropriate error codes for AMSS load failure
-  bus: mhi: core: Improve debug logs for loading firmware
-  bus: mhi: core: Ensure non-zero session or sequence ID values
+Driver is using zero initialized intmod value from mhi channel when
+configuring TRE for bei field. This prevents interrupt moderation to
+take effect in case it is supported by an event ring. Fix this by
+copying intmod value from associated event ring to mhi channel upon
+registering mhi controller.
 
-Hemant Kumar (3):
-  bus: mhi: core: Cache intmod from mhi event to mhi channel
-  bus: mhi: core: Add range check for channel id received in event ring
-  bus: mhi: core: Read transfer length from an event properly
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+ drivers/bus/mhi/core/init.c | 4 ++++
+ drivers/bus/mhi/core/main.c | 9 ++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
- drivers/bus/mhi/core/boot.c     | 74 +++++++++++++++++++++++++----------------
- drivers/bus/mhi/core/init.c     |  5 ++-
- drivers/bus/mhi/core/internal.h |  1 +
- drivers/bus/mhi/core/main.c     | 15 ++++++---
- drivers/bus/mhi/core/pm.c       |  6 +---
- include/linux/mhi.h             |  2 --
- 6 files changed, 62 insertions(+), 41 deletions(-)
-
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index b38359c..4dc7f22 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -864,6 +864,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 		mutex_init(&mhi_chan->mutex);
+ 		init_completion(&mhi_chan->completion);
+ 		rwlock_init(&mhi_chan->lock);
++
++		/* used in setting bei field of TRE */
++		mhi_event = &mhi_cntrl->mhi_event[mhi_chan->er_index];
++		mhi_chan->intmod = mhi_event->intmod;
+ 	}
+ 
+ 	if (mhi_cntrl->bounce_buf) {
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index eb4256b..23154f1 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -929,7 +929,7 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, enum dma_data_direction dir,
+ 	struct mhi_ring *buf_ring = &mhi_chan->buf_ring;
+ 	struct mhi_buf_info *buf_info;
+ 	struct mhi_tre *mhi_tre;
+-	int ret;
++	int ret, bei;
+ 
+ 	/* If MHI host pre-allocates buffers then client drivers cannot queue */
+ 	if (mhi_chan->pre_alloc)
+@@ -966,10 +966,11 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, enum dma_data_direction dir,
+ 		goto map_error;
+ 
+ 	mhi_tre = tre_ring->wp;
++	bei = !!(mhi_chan->intmod);
+ 
+ 	mhi_tre->ptr = MHI_TRE_DATA_PTR(buf_info->p_addr);
+ 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(buf_info->len);
+-	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(1, 1, 0, 0);
++	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, 1, 0, 0);
+ 
+ 	/* increment WP */
+ 	mhi_add_ring_element(mhi_cntrl, tre_ring);
+@@ -1006,6 +1007,7 @@ int mhi_queue_dma(struct mhi_device *mhi_dev, enum dma_data_direction dir,
+ 	struct mhi_ring *buf_ring = &mhi_chan->buf_ring;
+ 	struct mhi_buf_info *buf_info;
+ 	struct mhi_tre *mhi_tre;
++	int bei;
+ 
+ 	/* If MHI host pre-allocates buffers then client drivers cannot queue */
+ 	if (mhi_chan->pre_alloc)
+@@ -1043,10 +1045,11 @@ int mhi_queue_dma(struct mhi_device *mhi_dev, enum dma_data_direction dir,
+ 	buf_info->len = len;
+ 
+ 	mhi_tre = tre_ring->wp;
++	bei = !!(mhi_chan->intmod);
+ 
+ 	mhi_tre->ptr = MHI_TRE_DATA_PTR(buf_info->p_addr);
+ 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(buf_info->len);
+-	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(1, 1, 0, 0);
++	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, 1, 0, 0);
+ 
+ 	/* increment WP */
+ 	mhi_add_ring_element(mhi_cntrl, tre_ring);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
