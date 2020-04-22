@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963C71B4272
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08651B4283
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgDVLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:01:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49028 "EHLO mx2.suse.de"
+        id S1732404AbgDVLCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:02:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:47618 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgDVLB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:01:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 30876ABD6;
-        Wed, 22 Apr 2020 11:01:25 +0000 (UTC)
-Message-ID: <1587553284.9537.96.camel@suse.cz>
-Subject: Re: [BISECTED]: Kernel panic (was: Linux 5.7-rc2)
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Harald Arnesen <harald@skogtun.org>,
+        id S1732384AbgDVLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 07:01:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBF8A31B;
+        Wed, 22 Apr 2020 04:01:58 -0700 (PDT)
+Received: from [10.57.33.63] (unknown [10.57.33.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C7E03F6CF;
+        Wed, 22 Apr 2020 04:01:55 -0700 (PDT)
+Subject: Re: [PATCH v4 05/11] arm64: csum: Disable KASAN for do_csum()
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com, Michael Ellerman <mpe@ellerman.id.au>,
         Peter Zijlstra <peterz@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 22 Apr 2020 13:01:24 +0200
-In-Reply-To: <ecdc6ffa-0137-4ca0-3bdb-cf37178ba4ff@skogtun.org>
-References: <CAHk-=wiQsJu-ZFjt7+c9FVD5R40khtZiihrT+7O3UaVvHYz=HQ@mail.gmail.com>
-         <428bac87-b6dd-0867-c8f8-622cd606de3e@skogtun.org>
-         <CAHk-=wiX+NT2yxtdPszH9U_S96MCNQA56GJFXY45mZc47yG5KQ@mail.gmail.com>
-         <20200421212347.GV2483@worktop.programming.kicks-ass.net>
-         <1587546150.9537.84.camel@suse.cz>
-         <aec3c60e-2794-7eb2-eb11-ff2781223e90@skogtun.org>
-         <ecdc6ffa-0137-4ca0-3bdb-cf37178ba4ff@skogtun.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20200421151537.19241-1-will@kernel.org>
+ <20200421151537.19241-6-will@kernel.org>
+ <20200422094951.GA54428@lakrids.cambridge.arm.com>
+ <20200422104138.GA30265@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6efa0cc1-bd3e-b9b6-4e69-7ac05e6efe35@arm.com>
+Date:   Wed, 22 Apr 2020 12:01:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200422104138.GA30265@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-22 at 12:22 +0200, Harald Arnesen wrote:
-> Harald Arnesen [22.04.2020 11:37]:
+On 2020-04-22 11:41 am, Will Deacon wrote:
+> On Wed, Apr 22, 2020 at 10:49:52AM +0100, Mark Rutland wrote:
+>> On Tue, Apr 21, 2020 at 04:15:31PM +0100, Will Deacon wrote:
+>>> do_csum() over-reads the source buffer and therefore abuses
+>>> READ_ONCE_NOCHECK() to avoid tripping up KASAN. In preparation for
+>>> READ_ONCE_NOCHECK() becoming a macro, and therefore losing its
+>>> '__no_sanitize_address' annotation, just annotate do_csum() explicitly
+>>> and fall back to normal loads.
+>>>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Robin Murphy <robin.murphy@arm.com>
+>>> Signed-off-by: Will Deacon <will@kernel.org>
+>>
+>>  From a functional perspective:
+>>
+>> Acked-by: Mark Rutland <mark.rutland@arm.com>
 > 
-> > Giovanni Gherdovich [22.04.2020 11:02]:
-> > > 
-> > > Harald:
-> > > 
-> > > I'll echo Linus' request of testing that the patch series linked above fixes
-> > > the problem on your machine. Since you're testing -rc kernels and bisecting
-> > > bugs I assume you're comfortable with patching and compiling kernels, but if
-> > > that is not the case I am more than happy to assist by providing either an RPM
-> > > or a DEB package, depending on the distribution you're running. Let me know.
-> > Will try patching first, if I'm not successful, you may compile a DEB
-> > package for me.
+> Thanks.
 > 
-> I can confirm that my Thinkpad T510i boots normally with the four
-> patches added.
+>> I know that Robin had a concern w.r.t. how this would affect the
+>> codegen, but I think we can follow that up after the series as a whole
+>> is merged.
 > 
-> Thanks!
+> Makes sense. I did look at the codegen, fwiw, and it didn't seem especially
+> bad. One of the LDP's gets cracked in the unlikely() path, but it didn't
+> look like it would be a disaster (and sprinkling barrier() around to force
+> the LDP felt really fragile!).
 
-That's awesome, thank you for testing.
+Sure - I have a nagging feeling that it could still do better WRT 
+pipelining the loads anyway, so I'm happy to come back and reconsider 
+the local codegen later. It certainly doesn't deserve to stand in the 
+way of cross-arch rework.
 
-Regarding the turbostat output you attached to an earlier email, it confirms
-the suspicion that the 4C turbo is reported as zero (being a 2 cores / 4 threads
-machine), explaining why the fix works:
+Other than dereferencing the ptr argument, this code has no cause to 
+make any explicit memory accesses of its own, so I don't think we lose 
+any practical KASAN coverage by moving the annotation to function level. 
+Given all that,
 
-  cpu2: MSR_TURBO_RATIO_LIMIT: 0x00001313
-  19 * 133.3 = 2533.3 MHz max turbo 2 active cores
-  19 * 133.3 = 2533.3 MHz max turbo 1 active cores
+Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-In the above, bits 31:24 are zero. It's not a universal rule, though: my laptop
-also has a 2 cores / 4 threads cpu, and that same MSR says:
-
-  cpu3: MSR_TURBO_RATIO_LIMIT: 0x1b1b1b1b1b1d
-  27 * 100.0 = 2700.0 MHz max turbo 6 active cores
-  27 * 100.0 = 2700.0 MHz max turbo 5 active cores
-  27 * 100.0 = 2700.0 MHz max turbo 4 active cores
-  27 * 100.0 = 2700.0 MHz max turbo 3 active cores
-  27 * 100.0 = 2700.0 MHz max turbo 2 active cores
-  29 * 100.0 = 2900.0 MHz max turbo 1 active cores
-
-So despite my CPU being similar to yours, it wouldn't show the bug. There is
-even more: the bug can show on large core counts too, as seen in
-https://lore.kernel.org/lkml/bf43772d-48e5-01d4-dd03-330110e487fa@linux.intel.com/
-Like Xu from Intel has an Atom P-Series with 24 physical cores, yet their
-MSR goes like:
-
-  MSR_TURBO_RATIO_LIMIT: 0x00000016
-
-which means only the 1C turbo is reported non-zero (that machine doesn't have
-turbo at all, 1C turbo is the same as base frequency).
-
-
-Thanks,
-Giovanni
+Cheers,
+Robin.
