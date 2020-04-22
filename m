@@ -2,152 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9376C1B40B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781681B3D6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgDVKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729738AbgDVKPv (ORCPT
+        id S1729581AbgDVKOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:47 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43946 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729085AbgDVKOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:51 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE03C03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:15:51 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id y10so1016289uao.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ent6+GWTAd1CN2cQFL7owIeVj6EL283gNxioSTs4l5o=;
-        b=F32QzgthXD2jgAuQ+ulZ7jjKUc5cEILBetXy1JuSILGE0igdjC2J+lnu2jSNRH5O+P
-         iUF47dndUkLlazROwjFbGHDTMtiDDzdTJikSM1TF/CvtD9WvqW2VEQhu2wAO7wiglWL6
-         MMekwxK9vV8suAiRek8nAFqL0lJwXKAZSg3US0Bj/E8at5iKP/lc/QmsNULdHi2kp33H
-         l7srBJ5x4usVwd4oulnyViwGb5/3CGCvs0VwhB5f6oXkQD2pcAy+Y2XagtstUjUHbi+e
-         4bHO8GzDRl86l2mdjcRT43iujjarSg946/pa9aUENTDs7od6CaGTzGwAuHdVlQUIjgtm
-         v/yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ent6+GWTAd1CN2cQFL7owIeVj6EL283gNxioSTs4l5o=;
-        b=sey+Go+j5bRbein0JCBtuAO9N6/prJFIApMI+wDFvVU0h1PT016wXCyR2ak+KFap7Z
-         E25kbVng6RGb9FlzHNe6O1dQu1vfyR0NSgO+/0fAKblwbhv8LW0ONhXDRa0QLvT9r3pX
-         EVkU+h/yjdimcnTzd2px/CUk7zwmqrQNde4n6A1WGKW91R6ZdJiCitJohrLyNS0SEkxw
-         YgK3xtpjn3UbvVykny8n+fOHjq5XKNxPGXhlhpkn/bTmbSs01xHs1eFMMAz9FyO7XzMM
-         edoXo7VAJpBWOi6Bp1GLw4y3IwiuXHySFrI/3AC6MzzhChQTqwNW9k0/D7PxFCFew2YX
-         4Unw==
-X-Gm-Message-State: AGi0PubAChVQRHYe+IaotIhRUyma6HjV1FYhwrS1cBRdpwCus6GTsg7Y
-        p8KJ5NCEa3BpnVodLFRFxfWyRcRxylo6QyePpkAkVQ==
-X-Google-Smtp-Source: APiQypLkLgLmjx37u5zwjtD+wcJhoFaiBukTOUSNTmPHeMUtYrDFKBnEw8llvD54u+Y56sM/sAqQ1C17tA2NQVE11MY=
-X-Received: by 2002:ab0:2ea:: with SMTP id 97mr15760020uah.129.1587550548143;
- Wed, 22 Apr 2020 03:15:48 -0700 (PDT)
+        Wed, 22 Apr 2020 06:14:39 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 87A342A1A72
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Andrzej Hajda <a.hajda@samsung.com>, kernel@collabora.com,
+        linux-stm32@st-md-mailman.stormreply.com, linux-imx@nxp.com,
+        Rob Herring <robh@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Adrian Pop <pop.adrian61@gmail.com>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        Sjoerd Simons <sjoerd.simons@collabora.com>,
+        Martyn Welch <martyn.welch@collabora.com>
+Subject: Re: [PATCH v7 5/8] dt-bindings: display: add i.MX6 MIPI DSI host
+ controller doc
+In-Reply-To: <20200422010155.GL5983@pendragon.ideasonboard.com>
+References: <20200421161610.1501827-1-adrian.ratiu@collabora.com>
+ <20200421161610.1501827-6-adrian.ratiu@collabora.com>
+ <20200422005832.GK5983@pendragon.ideasonboard.com>
+ <20200422010155.GL5983@pendragon.ideasonboard.com>
+Date:   Wed, 22 Apr 2020 13:15:41 +0300
+Message-ID: <877dy7ker6.fsf@collabora.com>
 MIME-Version: 1.0
-References: <20200417145017.3932443d@canb.auug.org.au> <995a958c-15a1-cb05-e276-065c7f6e57fd@infradead.org>
- <CAPDyKFqE7zfaKSbpBoBbrSCEnx+70dOrWs+=QG_x2G-Fpt6=ng@mail.gmail.com>
- <ce11a0b5-22a6-dd18-f858-5d30f43e1128@intel.com> <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
-In-Reply-To: <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 22 Apr 2020 12:15:12 +0200
-Message-ID: <CAPDyKFqCnUzHQ9+FKH-w_VLRNQ_UvK4nmxw+hROwXkxucjzrUw@mail.gmail.com>
-Subject: Re: linux-next: Tree for Apr 17 (mmc/host/sdhci-of-at91.c)
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ludovic Desroches <ludovic.desroches@atmel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 at 14:28, Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Wed, 22 Apr 2020, Laurent Pinchart 
+<laurent.pinchart@ideasonboard.com> wrote:
+> Hi Adrian, 
 >
-> On Mon, Apr 20, 2020 at 7:28 PM Adrian Hunter <adrian.hunter@intel.com> w=
-rote:
-> >
-> > On 20/04/20 12:12 pm, Ulf Hansson wrote:
-> > > + Masahiro Yamada, Adrian Hunter
-> > >
-> > > On Fri, 17 Apr 2020 at 16:48, Randy Dunlap <rdunlap@infradead.org> wr=
-ote:
-> > >>
-> > >> On 4/16/20 9:50 PM, Stephen Rothwell wrote:
-> > >>> Hi all,
-> > >>>
-> > >>> Changes since 20200416:
-> > >>>
-> > >>
-> > >> on i386:
-> > >>
-> > >>   CC      drivers/mmc/host/sdhci-of-at91.o
-> > >> In file included from ../include/linux/build_bug.h:5:0,
-> > >>                  from ../include/linux/bitfield.h:10,
-> > >>                  from ../drivers/mmc/host/sdhci-of-at91.c:9:
-> > >> ../drivers/mmc/host/sdhci-of-at91.c: In function =E2=80=98sdhci_at91=
-_set_clks_presets=E2=80=99:
-> > >> ../include/linux/compiler.h:394:38: error: call to =E2=80=98__compil=
-etime_assert_63=E2=80=99 declared with attribute error: FIELD_PREP: value t=
-oo large for the field
-> > >>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
-ER__)
-> > >>                                       ^
-> > >> ../include/linux/compiler.h:375:4: note: in definition of macro =E2=
-=80=98__compiletime_assert=E2=80=99
-> > >>     prefix ## suffix();    \
-> > >>     ^~~~~~
-> > >> ../include/linux/compiler.h:394:2: note: in expansion of macro =E2=
-=80=98_compiletime_assert=E2=80=99
-> > >>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
-ER__)
-> > >>   ^~~~~~~~~~~~~~~~~~~
-> > >> ../include/linux/build_bug.h:39:37: note: in expansion of macro =E2=
-=80=98compiletime_assert=E2=80=99
-> > >>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg=
-)
-> > >>                                      ^~~~~~~~~~~~~~~~~~
-> > >> ../include/linux/bitfield.h:49:3: note: in expansion of macro =E2=80=
-=98BUILD_BUG_ON_MSG=E2=80=99
-> > >>    BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?  \
-> > >>    ^~~~~~~~~~~~~~~~
-> > >> ../include/linux/bitfield.h:94:3: note: in expansion of macro =E2=80=
-=98__BF_FIELD_CHECK=E2=80=99
-> > >>    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
-> > >>    ^~~~~~~~~~~~~~~~
-> > >> ../drivers/mmc/host/sdhci-of-at91.c:185:11: note: in expansion of ma=
-cro =E2=80=98FIELD_PREP=E2=80=99
-> > >>   caps1 |=3D FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
-> >
-> > My guess is the compiler has decided clk_mul is constant (probably (uns=
-igned
-> > int)-1) because there is no CONFIG_COMMON_CLK i.e. clk_get_rate() is 0
-> >
-> > So maybe add to config MMC_SDHCI_OF_AT91
-> >
-> >         depends on COMMON_CLK
-> >
-> > >>            ^~~~~~~~~~
->
->
->
-> I checked include/linux/clk.h
->
->
-> clk_get_rate() is guarded by CONFIG_HAVE_CLK.
->
-> I think
->
->     depends on HAVE_CLK
 
-Do you have the possibility of sending a patch, asap. Otherwise I can
-help to do it!?
+Hi Laurent,
+ 
+> On Wed, Apr 22, 2020 at 03:58:33AM +0300, Laurent Pinchart 
+> wrote: 
+>> On Tue, Apr 21, 2020 at 07:16:07PM +0300, Adrian Ratiu wrote: 
+>> > This provides an example DT binding for the MIPI DSI host 
+>> > controller present on the i.MX6 SoC based on Synopsis 
+>> > DesignWare v1.01 IP.   Cc: Rob Herring <robh@kernel.org> Cc: 
+>> > Neil Armstrong <narmstrong@baylibre.com> Cc: Fabio Estevam 
+>> > <festevam@gmail.com> Cc: Laurent Pinchart 
+>> > <laurent.pinchart@ideasonboard.com> Cc: 
+>> > devicetree@vger.kernel.org Tested-by: Adrian Pop 
+>> > <pop.adrian61@gmail.com> Tested-by: Arnaud Ferraris 
+>> > <arnaud.ferraris@collabora.com> Signed-off-by: Sjoerd Simons 
+>> > <sjoerd.simons@collabora.com> Signed-off-by: Martyn Welch 
+>> > <martyn.welch@collabora.com> Signed-off-by: Adrian Ratiu 
+>> > <adrian.ratiu@collabora.com> --- Changes since v6: 
+>> >   - Added ref to the newly created snps,dw-mipi-dsi.yaml 
+>> >   (Laurent) - Moved *-cells properties outside 
+>> >   patternProperties (Laurent) - Removed the panel port 
+>> >   documentation (Laurent) - Wrapped lines at 80 chars, typo 
+>> >   fixes, sort includes (Laurent) 
+>> >  Changes since v5: 
+>> >   - Fixed missing reg warning (Fabio) - Updated dt-schema and 
+>> >   fixed warnings (Rob) 
+>> >  Changes since v4: 
+>> >   - Fixed yaml binding to pass `make dt_binding_check 
+>> >   dtbs_check` and addressed received binding feedback (Rob) 
+>> >  Changes since v3: 
+>> >   - Added commit message (Neil) - Converted to yaml format 
+>> >   (Neil) - Minor dt node + driver fixes (Rob) - Added small 
+>> >   panel example to the host controller binding 
+>> >  Changes since v2: 
+>> >   - Fixed commit tags (Emil) 
+>> > --- 
+>> >  .../display/imx/fsl,mipi-dsi-imx6.yaml        | 135 
+>> >  ++++++++++++++++++ 1 file changed, 135 insertions(+) create 
+>> >  mode 100644 
+>> >  Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
+>> >  diff --git 
+>> > a/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
+>> > b/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
+>> > new file mode 100644 index 0000000000000..b73e3ae33a852 --- 
+>> > /dev/null +++ 
+>> > b/Documentation/devicetree/bindings/display/imx/fsl,mipi-dsi-imx6.yaml 
+>> > @@ -0,0 +1,135 @@ +# SPDX-License-Identifier: (GPL-2.0-only 
+>> > OR BSD-2-Clause) +%YAML 1.2 +--- +$id: 
+>> > http://devicetree.org/schemas/display/imx/fsl,mipi-dsi-imx6.yaml# 
+>> > +$schema: http://devicetree.org/meta-schemas/core.yaml# + 
+>> > +title: Freescale i.MX6 DW MIPI DSI Host Controller + 
+>> > +maintainers: +  - Adrian Ratiu <adrian.ratiu@collabora.com> 
+>> > + +description: | +  The i.MX6 DSI host controller is a 
+>> > Synopsys DesignWare MIPI DSI v1.01 +  IP block with a 
+>> > companion PHY IP. 
+> 
+> I forgot to mention, if there's a companion PHY, shouldn't it be 
+> referenced from the DT bindings ? 
+>
 
-Kind regards
-Uffe
+I don't think so, that description was copied verbatim from the 
+imx6 ref manual IIRC, the physical layer is the same for MIPI DSI 
+which does TX as for MIPI CSI which does RX, but looking at the 
+ref manual and how drivers are written I don't think it's 
+necessary.
+
+This might change if we wanted to unify the DSI and CSI drivers a 
+bit, but considering the scope already associated with this patch 
+series I'm a bit afraid to open a subject like that =)
+
+>> > +
+>> > +  These DT bindings follow the Synopsys DW MIPI DSI bindings defined in
+>> > +  Documentation/devicetree/bindings/display/bridge/dw_mipi_dsi.txt with
+>> > +  the following device-specific properties.
+>> > +
+>> > +allOf:
+>> > +  - $ref: ../bridge/snps,dw-mipi-dsi.yaml#
+>> > +
+>> > +properties:
+>> > +  '#address-cells':
+>> > +    const: 1
+>> > +
+>> > +  '#size-cells':
+>> > +    const: 0
+>> > +
+>> > +  compatible:
+>> > +    items:
+>> > +      - const: fsl,imx6q-mipi-dsi
+>> > +      - const: snps,dw-mipi-dsi
+>> > +
+>> > +  reg:
+>> > +    maxItems: 1
+>> > +
+>> > +  interrupts:
+>> > +    maxItems: 1
+>> > +
+>> > +  clocks:
+>> > +    items:
+>> > +      - description: Module Clock
+>> > +      - description: DSI bus clock
+>> > +
+>> > +  clock-names:
+>> > +    items:
+>> > +      - const: ref
+>> > +      - const: pclk
+>> > +
+>> > +  fsl,gpr:
+>> > +    description:
+>> > +      Phandle to the iomuxc-gpr region containing the multiplexer ctrl register.
+>> > +    $ref: /schemas/types.yaml#/definitions/phandle
+>> > +
+>> > +  ports:
+>> > +    type: object
+>> > +    description: |
+>> > +      A node containing DSI input & output port nodes with endpoint
+>> > +      definitions as documented in
+>> > +      Documentation/devicetree/bindings/media/video-interfaces.txt
+>> > +      Documentation/devicetree/bindings/graph.txt
+>> > +    properties:
+>> > +      port@0:
+>> > +        type: object
+>> > +        description:
+>> > +          DSI input port node, connected to the ltdc rgb output port.
+>> > +
+>> > +      port@1:
+>> > +        type: object
+>> > +        description:
+>> > +          RGB output port node, connected to a panel or a bridge input port.
+>> 
+>> Isn't it the other way around, doesn't the bridge take RGB input and
+>> output DSI ? And to be precise, it's not about RGB, but about the input
+>> being parallel interface (DSI will also carry RGB).
+>> 
+>> I would add
+>> 
+>>     required:
+>>       - port@0
+>>       - port@1
+>> 
+>> > +
+>> > +additionalProperties: false
+>> > +
+>> > +patternProperties:
+>> > +  "^panel@[0-3]$":
+>> > +    type: object
+>> > +
+>> > +required:
+>> > +  - "#address-cells"
+>> > +  - "#size-cells"
+>> > +  - compatible
+>> > +  - reg
+>> > +  - interrupts
+>> > +  - clocks
+>> > +  - clock-names
+>> > +  - ports
+>> > +
+>> > +examples:
+>> > +  - |+
+>> > +    #include <dt-bindings/clock/imx6qdl-clock.h>
+>> > +    #include <dt-bindings/gpio/gpio.h>
+>> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> > +
+>> > +    dsi: dsi@21e0000 {
+>> > +        #address-cells = <1>;
+>> > +        #size-cells = <0>;
+>> > +        compatible = "fsl,imx6q-mipi-dsi", "snps,dw-mipi-dsi";
+>> > +        reg = <0x021e0000 0x4000>;
+>> > +        interrupts = <0 102 IRQ_TYPE_LEVEL_HIGH>;
+>> > +        fsl,gpr = <&gpr>;
+>> > +        clocks = <&clks IMX6QDL_CLK_MIPI_CORE_CFG>,
+>> > +                 <&clks IMX6QDL_CLK_MIPI_IPG>;
+>> > +        clock-names = "ref", "pclk";
+>> > +
+>> > +        ports {
+>> > +            #address-cells = <1>;
+>> > +            #size-cells = <0>;
+>> 
+>> port@0 is missing.
+>> 
+>> > +            port@1 {
+>> > +                reg = <1>;
+>> > +                dsi_out: endpoint {
+>> > +                    remote-endpoint = <&panel_in>;
+>> > +                };
+>> > +            };
+>> > +        };
+>> > +
+>> > +        panel@0 {
+>> > +            compatible = "sharp,ls032b3sx01";
+>> > +            reg = <0>;
+>> > +            reset-gpios = <&gpio6 8 GPIO_ACTIVE_LOW>;
+>> > +            ports {
+>> > +                #address-cells = <1>;
+>> > +                #size-cells = <0>;
+>> > +                port@0 {
+>> > +                    reg = <0>;
+>> > +                    panel_in: endpoint {
+>> > +                        remote-endpoint = <&dsi_out>;
+>> > +                    };
+>> > +                };
+>> > +            };
+>> > +        };
+>> > +    };
+>> > +
+>> > +...
+>
+> -- 
+> Regards,
+>
+> Laurent Pinchart
