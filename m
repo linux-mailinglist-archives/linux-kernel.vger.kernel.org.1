@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973811B3CB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419E21B40D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgDVKHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60602 "EHLO mail.kernel.org"
+        id S1731876AbgDVKs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728572AbgDVKHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:45 -0400
+        id S1729558AbgDVKOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60DC320774;
-        Wed, 22 Apr 2020 10:07:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 743DE20775;
+        Wed, 22 Apr 2020 10:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550064;
-        bh=nCa1oM8XT517eLWFGFsYd+m5KajbIUI2sv+i1okp1tE=;
+        s=default; t=1587550479;
+        bh=smI26Thxjv2e0tMx0kjMXubhh1q/+1ZeAOE/x4BuRko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FN7cwchqOcT23rLt3Qbdr7ARjz7U30/uBI9OuGKBki6e2B8cTiqoTxXrqVwnKNEtt
-         d+Ru693W9e+YXmOQRvqr8UhxWUUkmmHxu0Ht8Gp5GripqEkr1AvHZ5/yH1bfZkRRiP
-         R4QZSuBxYJRpG0Eu7dNwtjhKvrTyjx7604tldmOI=
+        b=PyHjPA7IgVd0Q7TPUpzW99D8kMC0glG9eGbxGx37uYPmWARhQ2i1wYcqM8NozonoG
+         v7TPOy8ZbEsVowPLwjHBCxLi17HU8A/OGyiCF8XJUVmKUvHjtFf9mrjg5e+IByiYkO
+         NwS6G63TLdfILNmtpuFUFTWAVCudTc7VVcAHTaUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4.9 120/125] locktorture: Print ratio of acquisitions, not failures
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 33/64] s390/cpuinfo: fix wrong output when CPU0 is offline
 Date:   Wed, 22 Apr 2020 11:57:17 +0200
-Message-Id: <20200422095051.906433563@linuxfoundation.org>
+Message-Id: <20200422095018.866565980@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-commit 80c503e0e68fbe271680ab48f0fe29bc034b01b7 upstream.
+[ Upstream commit 872f27103874a73783aeff2aac2b41a489f67d7c ]
 
-The __torture_print_stats() function in locktorture.c carefully
-initializes local variable "min" to statp[0].n_lock_acquired, but
-then compares it to statp[i].n_lock_fail.  Given that the .n_lock_fail
-field should normally be zero, and given the initialization, it seems
-reasonable to display the maximum and minimum number acquisitions
-instead of miscomputing the maximum and minimum number of failures.
-This commit therefore switches from failures to acquisitions.
+/proc/cpuinfo should not print information about CPU 0 when it is offline.
 
-And this turns out to be not only a day-zero bug, but entirely my
-own fault.  I hate it when that happens!
-
-Fixes: 0af3fe1efa53 ("locktorture: Add a lock-torture kernel module")
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 281eaa8cb67c ("s390/cpuinfo: simplify locking and skip offline cpus early")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+[heiko.carstens@de.ibm.com: shortened commit message]
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/locktorture.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/s390/kernel/processor.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -649,10 +649,10 @@ static void __torture_print_stats(char *
- 		if (statp[i].n_lock_fail)
- 			fail = true;
- 		sum += statp[i].n_lock_acquired;
--		if (max < statp[i].n_lock_fail)
--			max = statp[i].n_lock_fail;
--		if (min > statp[i].n_lock_fail)
--			min = statp[i].n_lock_fail;
-+		if (max < statp[i].n_lock_acquired)
-+			max = statp[i].n_lock_acquired;
-+		if (min > statp[i].n_lock_acquired)
-+			min = statp[i].n_lock_acquired;
- 	}
- 	page += sprintf(page,
- 			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
+diff --git a/arch/s390/kernel/processor.c b/arch/s390/kernel/processor.c
+index 6fe2e1875058b..675d4be0c2b77 100644
+--- a/arch/s390/kernel/processor.c
++++ b/arch/s390/kernel/processor.c
+@@ -157,8 +157,9 @@ static void show_cpu_mhz(struct seq_file *m, unsigned long n)
+ static int show_cpuinfo(struct seq_file *m, void *v)
+ {
+ 	unsigned long n = (unsigned long) v - 1;
++	unsigned long first = cpumask_first(cpu_online_mask);
+ 
+-	if (!n)
++	if (n == first)
+ 		show_cpu_summary(m, v);
+ 	if (!machine_has_cpu_mhz)
+ 		return 0;
+@@ -171,6 +172,8 @@ static inline void *c_update(loff_t *pos)
+ {
+ 	if (*pos)
+ 		*pos = cpumask_next(*pos - 1, cpu_online_mask);
++	else
++		*pos = cpumask_first(cpu_online_mask);
+ 	return *pos < nr_cpu_ids ? (void *)*pos + 1 : NULL;
+ }
+ 
+-- 
+2.20.1
+
 
 
