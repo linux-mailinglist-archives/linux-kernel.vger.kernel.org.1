@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437331B40B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E816E1B3FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731693AbgDVKrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51538 "EHLO mail.kernel.org"
+        id S1731710AbgDVKmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729010AbgDVKP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:15:57 -0400
+        id S1730073AbgDVKUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:20:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE3052075A;
-        Wed, 22 Apr 2020 10:15:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7766520882;
+        Wed, 22 Apr 2020 10:20:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550556;
-        bh=SbJ/jaCJ3OrrVtjET4HQ68htaBYLYMg22O0Pj/OIO/Q=;
+        s=default; t=1587550802;
+        bh=L3diuykomXJM438VUcko/Yv/Xh1FBjaJwA6TmB8vDSM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b0d98bbJWDe6pSD+pC0m3Hos7K4lFCTdmU4ucIT3vu+0fNg8yrbnGF/OYSOhbC5FJ
-         5p5JUjhHSwj2fCD8DEvlyo57YiCkJ6mTkWYpi0EwsODuz+UUCodL2UkT6dLS3kzhzn
-         NLByAF/Ku/vpVpyeXJV+ANx3lOBcw2puFZ4PWmRQ=
+        b=pCVBvBC8kiGEn7lKw48NiqfaTC6/0jnScXD6z9iYFD8SW7CvtuIJtjPYQKqSsVSeX
+         ALin+qwlCwC8X6ForqAvy0lZxGK905V16EbBGnBq0R4rMy56+AiQUUJjY+0H+z3Xk1
+         Whua5sA2PLHqa/Prfi1uQ01xx9pZ9Bv2YHIMa7Cs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Goyette <simon.goyette@gmail.com>,
-        =?UTF-8?q?Maxime=20Roussin-B=C3=A9langer?= 
-        <maxime.roussinbelanger@gmail.com>,
-        Guillaume Champagne <champagne.guillaume.c@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 57/64] iio: si1133: read 24-bit signed integer for measurement
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 100/118] drm/nouveau/gr/gp107,gp108: implement workaround for HW hanging during init
 Date:   Wed, 22 Apr 2020 11:57:41 +0200
-Message-Id: <20200422095023.323074129@linuxfoundation.org>
+Message-Id: <20200422095047.653781978@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,127 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Roussin-Bélanger <maxime.roussinbelanger@gmail.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit 328b50e9a0ad1fe8accdf8c19923deebab5e0c01 upstream.
+[ Upstream commit 028a12f5aa829b4ba6ac011530b815eda4960e89 ]
 
-The chip is configured in 24 bit mode. The values read from
-it must always be treated as is. This fixes the issue by
-replacing the previous 16 bits value by a 24 bits buffer.
+Certain boards with GP107/GP108 chipsets hang (often, but randomly) for
+unknown reasons during GR initialisation.
 
-This changes affects the value output by previous version of
-the driver, since the least significant byte was missing.
-The upper half of 16 bit values previously output are now
-the upper half of a 24 bit value.
+The first tell-tale symptom of this issue is:
 
-Fixes: e01e7eaf37d8 ("iio: light: introduce si1133")
+nouveau 0000:01:00.0: bus: MMIO read of 00000000 FAULT at 409800 [ TIMEOUT ]
 
-Reported-by: Simon Goyette <simon.goyette@gmail.com>
-Co-authored-by: Guillaume Champagne <champagne.guillaume.c@gmail.com>
-Signed-off-by: Maxime Roussin-Bélanger <maxime.roussinbelanger@gmail.com>
-Signed-off-by: Guillaume Champagne <champagne.guillaume.c@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+appearing in dmesg, likely followed by many other failures being logged.
 
+Karol found this WAR for the issue a while back, but efforts to isolate
+the root cause and proper fix have not yielded success so far.  I've
+modified the original patch to include a few more details, limit it to
+GP107/GP108 by default, and added a config option to override this choice.
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/si1133.c |   37 ++++++++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
---- a/drivers/iio/light/si1133.c
-+++ b/drivers/iio/light/si1133.c
-@@ -102,6 +102,9 @@
- #define SI1133_INPUT_FRACTION_LOW	15
- #define SI1133_LUX_OUTPUT_FRACTION	12
- #define SI1133_LUX_BUFFER_SIZE		9
-+#define SI1133_MEASURE_BUFFER_SIZE	3
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+index c578deb5867a8..c71606a45d1de 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+@@ -1988,8 +1988,34 @@ gf100_gr_init_(struct nvkm_gr *base)
+ {
+ 	struct gf100_gr *gr = gf100_gr(base);
+ 	struct nvkm_subdev *subdev = &base->engine.subdev;
++	struct nvkm_device *device = subdev->device;
++	bool reset = device->chipset == 0x137 || device->chipset == 0x138;
+ 	u32 ret;
+ 
++	/* On certain GP107/GP108 boards, we trigger a weird issue where
++	 * GR will stop responding to PRI accesses after we've asked the
++	 * SEC2 RTOS to boot the GR falcons.  This happens with far more
++	 * frequency when cold-booting a board (ie. returning from D3).
++	 *
++	 * The root cause for this is not known and has proven difficult
++	 * to isolate, with many avenues being dead-ends.
++	 *
++	 * A workaround was discovered by Karol, whereby putting GR into
++	 * reset for an extended period right before initialisation
++	 * prevents the problem from occuring.
++	 *
++	 * XXX: As RM does not require any such workaround, this is more
++	 *      of a hack than a true fix.
++	 */
++	reset = nvkm_boolopt(device->cfgopt, "NvGrResetWar", reset);
++	if (reset) {
++		nvkm_mask(device, 0x000200, 0x00001000, 0x00000000);
++		nvkm_rd32(device, 0x000200);
++		msleep(50);
++		nvkm_mask(device, 0x000200, 0x00001000, 0x00001000);
++		nvkm_rd32(device, 0x000200);
++	}
 +
-+#define SI1133_SIGN_BIT_INDEX 23
+ 	nvkm_pmu_pgob(gr->base.engine.subdev.device->pmu, false);
  
- static const int si1133_scale_available[] = {
- 	1, 2, 4, 8, 16, 32, 64, 128};
-@@ -234,13 +237,13 @@ static const struct si1133_lux_coeff lux
- 	}
- };
- 
--static int si1133_calculate_polynomial_inner(u32 input, u8 fraction, u16 mag,
-+static int si1133_calculate_polynomial_inner(s32 input, u8 fraction, u16 mag,
- 					     s8 shift)
- {
- 	return ((input << fraction) / mag) << shift;
- }
- 
--static int si1133_calculate_output(u32 x, u32 y, u8 x_order, u8 y_order,
-+static int si1133_calculate_output(s32 x, s32 y, u8 x_order, u8 y_order,
- 				   u8 input_fraction, s8 sign,
- 				   const struct si1133_coeff *coeffs)
- {
-@@ -276,7 +279,7 @@ static int si1133_calculate_output(u32 x
-  * The algorithm is from:
-  * https://siliconlabs.github.io/Gecko_SDK_Doc/efm32zg/html/si1133_8c_source.html#l00716
-  */
--static int si1133_calc_polynomial(u32 x, u32 y, u8 input_fraction, u8 num_coeff,
-+static int si1133_calc_polynomial(s32 x, s32 y, u8 input_fraction, u8 num_coeff,
- 				  const struct si1133_coeff *coeffs)
- {
- 	u8 x_order, y_order;
-@@ -614,7 +617,7 @@ static int si1133_measure(struct si1133_
- {
- 	int err;
- 
--	__be16 resp;
-+	u8 buffer[SI1133_MEASURE_BUFFER_SIZE];
- 
- 	err = si1133_set_adcmux(data, 0, chan->channel);
- 	if (err)
-@@ -625,12 +628,13 @@ static int si1133_measure(struct si1133_
- 	if (err)
- 		return err;
- 
--	err = si1133_bulk_read(data, SI1133_REG_HOSTOUT(0), sizeof(resp),
--			       (u8 *)&resp);
-+	err = si1133_bulk_read(data, SI1133_REG_HOSTOUT(0), sizeof(buffer),
-+			       buffer);
- 	if (err)
- 		return err;
- 
--	*val = be16_to_cpu(resp);
-+	*val = sign_extend32((buffer[0] << 16) | (buffer[1] << 8) | buffer[2],
-+			     SI1133_SIGN_BIT_INDEX);
- 
- 	return err;
- }
-@@ -704,9 +708,9 @@ static int si1133_get_lux(struct si1133_
- {
- 	int err;
- 	int lux;
--	u32 high_vis;
--	u32 low_vis;
--	u32 ir;
-+	s32 high_vis;
-+	s32 low_vis;
-+	s32 ir;
- 	u8 buffer[SI1133_LUX_BUFFER_SIZE];
- 
- 	/* Activate lux channels */
-@@ -719,9 +723,16 @@ static int si1133_get_lux(struct si1133_
- 	if (err)
- 		return err;
- 
--	high_vis = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
--	low_vis = (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
--	ir = (buffer[6] << 16) | (buffer[7] << 8) | buffer[8];
-+	high_vis =
-+		sign_extend32((buffer[0] << 16) | (buffer[1] << 8) | buffer[2],
-+			      SI1133_SIGN_BIT_INDEX);
-+
-+	low_vis =
-+		sign_extend32((buffer[3] << 16) | (buffer[4] << 8) | buffer[5],
-+			      SI1133_SIGN_BIT_INDEX);
-+
-+	ir = sign_extend32((buffer[6] << 16) | (buffer[7] << 8) | buffer[8],
-+			   SI1133_SIGN_BIT_INDEX);
- 
- 	if (high_vis > SI1133_ADC_THRESHOLD || ir > SI1133_ADC_THRESHOLD)
- 		lux = si1133_calc_polynomial(high_vis, ir,
+ 	ret = nvkm_falcon_get(gr->fecs.falcon, subdev);
+-- 
+2.20.1
+
 
 
