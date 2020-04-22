@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37561B394A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E3C1B3952
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgDVHqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S1726502AbgDVHsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725907AbgDVHqt (ORCPT
+        by vger.kernel.org with ESMTP id S1725842AbgDVHsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:46:49 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EBFC03C1A6;
-        Wed, 22 Apr 2020 00:46:48 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id g4so1235895ljl.2;
-        Wed, 22 Apr 2020 00:46:48 -0700 (PDT)
+        Wed, 22 Apr 2020 03:48:14 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17431C03C1A6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:14 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id c190so1363197pfc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7SXxu2vf3SSgVcaedvI6jG4d6yjlJE+FjFpfJQ4jnEw=;
-        b=Uiq4AiFsLfTfDqahAyC38SQf4LZ9ewifZ4YN8XMGKiOpWXnn60eoh2ES+Khfx3DDqg
-         tzIBhQXx2HaS1nRNBy5vweYDuoYV0/rC9yOFLp3rsLxlwDyR52jBF3EiKZ+58/Y4Fwt0
-         FOjr6LgdiucnzUN5KV3Zamft6d5xHXNTEwXJU31X7tN8+FBY+20PObfeO0tvAFSAe6Ut
-         VIfl9Q211/HitXhnA906GqCn3GwbIF+duEz3LLg223cxo+AVg0e1MeYJjKi4LtrMroHH
-         gj7ep0UPKcr0IsMwl92Ni8b4kTctakpGIhs4y3MjZGLydMuMjwzJa2Q4vKIQ/hd4cIyA
-         FxWA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9HUq00N6jmzIo0+nRmNO3NIJIF03YhOq9io6sQiHkEA=;
+        b=Ayqn1vfEmsn47YwBswhWoVXmXdRP/hQR9tPrzb9dQTfMlPK5PWPROXnwuzjTnrLeqF
+         uVOPdSYVquV3+hwARpMVKcvEb1Y9D7P4H/b7RfnpksCrA+wpMtZg7hLNCMkC3IPrgFMv
+         rPesoFKWyvLpFvxjdLf/4XTD7A7XNqwLUiM7ifqvcPlWJmHsDMV8hAYjcSUn3zEdHCIQ
+         Gg3SzoZ+fs8Xs86EM/9LlxtAtft3U2ZS1TSBciZLJpKlbbwSnIgKTI5BGjoA4UQuYNYg
+         X5/+27Lno7soggC2PcGeSO5aR30P204PSdNUlzzbeRL9xjtwpsx7SBdnoZ0J5I4iIdBp
+         kLQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7SXxu2vf3SSgVcaedvI6jG4d6yjlJE+FjFpfJQ4jnEw=;
-        b=SeEwVg31VY0uvsQMA+A2xP+mJBM7PZmCkIRXGWtfP0FB+GzxJSPIqqpm1rr6U5cVpk
-         Vo8IigoaBlMYMCQjCKvqAldySbDCNzcIqjvsLua0m6u8Uh+sdOULftQYNjCn/eGXzZGZ
-         P9EaEDteMlRIdNHN2oiZ2QjuR5eBFbrR/74l1f77xF7BfmKaHWpgDCSV5hv8J3mE8rSW
-         R7cZyprqFQKibldPoIvaNREviyADZqrbvcxwNBElMeteP0o7horisrSe7cn7t+GTT5lV
-         DqrirWOvA8tvbnTvRpf7z0EpmhczOJVlZuhhlD+LqnReHMOjyZLCIkd71d1uc4XhSX8c
-         BVXg==
-X-Gm-Message-State: AGi0PubCR9GI1I3GYHLgUZ5wq9QkdN4zorIBeP6RgXR5esmMjMWg7L35
-        aGQDGO4Gz+jLlzvZ5KcjFX8=
-X-Google-Smtp-Source: APiQypJmSxI80bak8V4LpFM6NnEw/JYrdLaHdXGosrwksyhWtydwWX4UxaU5VQPUCWbMLCaGCeHJpg==
-X-Received: by 2002:a2e:9048:: with SMTP id n8mr4527444ljg.122.1587541607251;
-        Wed, 22 Apr 2020 00:46:47 -0700 (PDT)
-Received: from luk-pc.lan (host-46-186-7-151.dynamic.mm.pl. [46.186.7.151])
-        by smtp.googlemail.com with ESMTPSA id t12sm4051345lfq.71.2020.04.22.00.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 00:46:46 -0700 (PDT)
-From:   LuK1337 <priv.luk@gmail.com>
-Cc:     Cameron Gutman <aicommander@gmail.com>,
-        =?UTF-8?q?=C5=81ukasz=20Patron?= <priv.luk@gmail.com>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Richard Fontana <rfontana@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: xpad - Add custom init packet for Xbox One S controllers
-Date:   Wed, 22 Apr 2020 09:46:39 +0200
-Message-Id: <20200422074641.15839-1-priv.luk@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <92b71dc5-ddd5-7ffd-65f8-65a6610dfe43@gmail.com>
-References: <92b71dc5-ddd5-7ffd-65f8-65a6610dfe43@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9HUq00N6jmzIo0+nRmNO3NIJIF03YhOq9io6sQiHkEA=;
+        b=OPJaEZiakeYo189A+MnxH2MnBqqowHTjhGN48dM6B6QLj7LYaCJj0AbRlLVFgF2Dwl
+         9VeKQYTu3rKOOGKIC9rK1ro7ZxFxYHNTJdGnLw0VKj/hpq/0vSUUofc2ihfiKzr8xmY1
+         6HuwwclPqshFsZoKhkZsIwzMxcsOXH5jY/CL1e1Yw6lqfRYwSPxpsSDYeSXbcszIJGaf
+         /uMlAfFf243Y63YEcmckMcMOI8iLfQB1kRUJazTmDK10EmnZLmbAAf/zFr0FEIr7yMow
+         hy35bBsQv2TjxPF1vl76LI95DKL1+p8NKeGexdyD0+De6L/ZnjjeDea6P4QVYNvPE2a6
+         pB4g==
+X-Gm-Message-State: AGi0PuYgdKyBIYIg0+Xsza6yREzIl59KLkIY+IvlmcZRQmg5jk0coRNW
+        IeoRLPdGxb+G2YSok6b53NDJH+UMIk28
+X-Google-Smtp-Source: APiQypJnukvej9k6sd3XOrpco3hQ6FbAtq2B4ko4qEepnvdy7OGC67aq8C+c1CGuV9g+Qx1361EfZcEz0RTD
+X-Received: by 2002:a17:90a:65c5:: with SMTP id i5mr10189197pjs.18.1587541693454;
+ Wed, 22 Apr 2020 00:48:13 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 00:48:01 -0700
+Message-Id: <20200422074809.160248-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH 0/8] perf metric fixes and test
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Łukasz Patron <priv.luk@gmail.com>
+Add a test that all perf metrics (for your architecture) are
+parsable. Fix bugs in the expr parser and in x86 metrics. Untested on
+architectures other than x86.
 
-Sending [ 0x05, 0x20, 0x02, 0x0f, 0x06 ] packet for
-Xbox One S controllers fixes an issue where controller
-is stuck in Bluetooth mode and not sending any inputs.
+Ian Rogers (8):
+  perf expr: unlimited escaped characters in a symbol
+  perf metrics: fix parse errors in cascade lake metrics
+  perf metrics: fix parse errors in skylake metrics
+  perf expr: allow ',' to be an other token
+  perf expr: increase max other
+  perf expr: parse numbers as doubles
+  perf expr: debug lex if debugging yaxx
+  perf test: add expr test for pmu metrics
 
-Signed-off-by: Łukasz Patron <priv.luk@gmail.com>
-Cc: stable@vger.kernel.org
----
- drivers/input/joystick/xpad.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../arch/x86/cascadelakex/clx-metrics.json    | 10 +-
+ .../arch/x86/skylakex/skx-metrics.json        |  4 +-
+ tools/perf/tests/builtin-test.c               |  5 +
+ tools/perf/tests/expr.c                       | 91 ++++++++++++++++++-
+ tools/perf/tests/tests.h                      |  2 +
+ tools/perf/util/expr.c                        |  1 +
+ tools/perf/util/expr.h                        |  2 +-
+ tools/perf/util/expr.l                        | 16 ++--
+ tools/perf/util/expr.y                        |  2 +-
+ 9 files changed, 115 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 6b40a1c68f9f..c77cdb3b62b5 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -458,6 +458,16 @@ static const u8 xboxone_fw2015_init[] = {
- 	0x05, 0x20, 0x00, 0x01, 0x00
- };
- 
-+/*
-+ * This packet is required for Xbox One S (0x045e:0x02ea)
-+ * and Xbox One Elite Series 2 (0x045e:0x0b00) pads to
-+ * initialize the controller that was previously used in
-+ * Bluetooth mode.
-+ */
-+static const u8 xboxone_s_init[] = {
-+	0x05, 0x20, 0x00, 0x0f, 0x06
-+};
-+
- /*
-  * This packet is required for the Titanfall 2 Xbox One pads
-  * (0x0e6f:0x0165) to finish initialization and for Hori pads
-@@ -516,6 +526,8 @@ static const struct xboxone_init_packet xboxone_init_packets[] = {
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0165, xboxone_hori_init),
- 	XBOXONE_INIT_PKT(0x0f0d, 0x0067, xboxone_hori_init),
- 	XBOXONE_INIT_PKT(0x0000, 0x0000, xboxone_fw2015_init),
-+	XBOXONE_INIT_PKT(0x045e, 0x02ea, xboxone_s_init),
-+	XBOXONE_INIT_PKT(0x045e, 0x0b00, xboxone_s_init),
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init1),
- 	XBOXONE_INIT_PKT(0x0e6f, 0x0000, xboxone_pdp_init2),
- 	XBOXONE_INIT_PKT(0x24c6, 0x541a, xboxone_rumblebegin_init),
 -- 
-2.26.0
+2.26.2.303.gf8c07b1a785-goog
 
