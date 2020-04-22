@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D321B3CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B65C1B3EFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgDVKIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
+        id S1731185AbgDVKdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728659AbgDVKIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:12 -0400
+        id S1730469AbgDVKYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25AC22076C;
-        Wed, 22 Apr 2020 10:08:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C8612075A;
+        Wed, 22 Apr 2020 10:24:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550091;
-        bh=diZCH/Mg8n9hXnJ0WhmZgAaGP/vFOO2uGKOad9Enxpw=;
+        s=default; t=1587551091;
+        bh=Le5r4ZEgqHViB7UDMuTUHMRwchWcpxKe6N8tGPIdKdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=At5yPSyWNiQ/lWkGyZOtncWFFSawMrTX16DvmKg1aHAM+6BpEk1+TDg6BKjbHAzaY
-         wpfhgzjGg+jbU3GlYEcJfPTyd5K3FC+/ltQ2plccVOB70VYuq40QCm4bJRohuINXeW
-         hq+amkIhwkKbNRa7hO4RIAEIX1/Qf6a6Sb4UbMCo=
+        b=WMBB5Wk/NxtyZGcGww71Ovn1Wkr74v+XaZLc7PRzfpIHNpVrMSDLahM8JBjKJMssP
+         SG3hwdX4Zx/lQ4w0IYnDEqj+0hVErXKyTiVX9Yd2vA5aKvOHSPX/bbndZ+Bkc5GYJD
+         krLTO2cEASTCSRt0Zmg9uK99PHerdyDLmbKyKRk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/125] clk: tegra: Fix Tegra PMC clock out parents
-Date:   Wed, 22 Apr 2020 11:57:02 +0200
-Message-Id: <20200422095049.865207195@linuxfoundation.org>
+Subject: [PATCH 5.6 096/166] x86/xen: Make the boot CPU idle task reliable
+Date:   Wed, 22 Apr 2020 11:57:03 +0200
+Message-Id: <20200422095059.319186761@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sowjanya Komatineni <skomatineni@nvidia.com>
+From: Miroslav Benes <mbenes@suse.cz>
 
-[ Upstream commit 6fe38aa8cac3a5db38154331742835a4d9740788 ]
+[ Upstream commit 2f62f36e62daec43aa7b9633ef7f18e042a80bed ]
 
-Tegra PMC clocks clk_out_1, clk_out_2, and clk_out_3 supported parents
-are osc, osc_div2, osc_div4 and extern clock.
+The unwinder reports the boot CPU idle task's stack on XEN PV as
+unreliable, which affects at least live patching. There are two reasons
+for this. First, the task does not follow the x86 convention that its
+stack starts at the offset right below saved pt_regs. It allows the
+unwinder to easily detect the end of the stack and verify it. Second,
+startup_xen() function does not store the return address before jumping
+to xen_start_kernel() which confuses the unwinder.
 
-Clock driver is using incorrect parents clk_m, clk_m_div2, clk_m_div4
-for PMC clocks.
+Amend both issues by moving the starting point of initial stack in
+startup_xen() and storing the return address before the jump, which is
+exactly what call instruction does.
 
-This patch fixes this.
-
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/tegra/clk-tegra-pmc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/xen/xen-head.S | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/tegra/clk-tegra-pmc.c b/drivers/clk/tegra/clk-tegra-pmc.c
-index 91377abfefa19..17a04300f93bf 100644
---- a/drivers/clk/tegra/clk-tegra-pmc.c
-+++ b/drivers/clk/tegra/clk-tegra-pmc.c
-@@ -60,16 +60,16 @@ struct pmc_clk_init_data {
+diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+index 1d0cee3163e41..d63806e1ff7ae 100644
+--- a/arch/x86/xen/xen-head.S
++++ b/arch/x86/xen/xen-head.S
+@@ -35,7 +35,11 @@ SYM_CODE_START(startup_xen)
+ 	rep __ASM_SIZE(stos)
  
- static DEFINE_SPINLOCK(clk_out_lock);
+ 	mov %_ASM_SI, xen_start_info
+-	mov $init_thread_union+THREAD_SIZE, %_ASM_SP
++#ifdef CONFIG_X86_64
++	mov initial_stack(%rip), %rsp
++#else
++	mov pa(initial_stack), %esp
++#endif
  
--static const char *clk_out1_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern1",
-+static const char *clk_out1_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern1",
- };
+ #ifdef CONFIG_X86_64
+ 	/* Set up %gs.
+@@ -51,7 +55,7 @@ SYM_CODE_START(startup_xen)
+ 	wrmsr
+ #endif
  
--static const char *clk_out2_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern2",
-+static const char *clk_out2_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern2",
- };
- 
--static const char *clk_out3_parents[] = { "clk_m", "clk_m_div2",
--	"clk_m_div4", "extern3",
-+static const char *clk_out3_parents[] = { "osc", "osc_div2",
-+	"osc_div4", "extern3",
- };
- 
- static struct pmc_clk_init_data pmc_clks[] = {
+-	jmp xen_start_kernel
++	call xen_start_kernel
+ SYM_CODE_END(startup_xen)
+ 	__FINIT
+ #endif
 -- 
 2.20.1
 
