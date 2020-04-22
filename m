@@ -2,248 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB341B33BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E601B33CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgDVABg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        id S1726316AbgDVAO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgDVABb (ORCPT
+        with ESMTP id S1726012AbgDVAO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:01:31 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1D0C0610D5;
-        Tue, 21 Apr 2020 17:01:31 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l11so164974lfc.5;
-        Tue, 21 Apr 2020 17:01:31 -0700 (PDT)
+        Tue, 21 Apr 2020 20:14:27 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE457C0610D5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:25 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id q142so521437pfc.21
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=OVaGmLcumY9gk+DVW7uXmoh9als5DVTBQ/jAaCWT93E7eWwHHhk5gafi1NezNl4wAb
-         Y3QqpXyvPa4LXFN/yT1p1E1P0PhAQ0vnDTTo1iutM5+bH8LBMvAcB2sgdlTki+ts/hpL
-         C1OYZVHMnsJZwbXPxOg6gk2eoAnbQMFlRGnfjYdfp49XUEZZnDuzINlBsvMMk4ABbUKo
-         y1P1XloYVYC67tzpga1fBbXLGec7qe6p/oFrBnFzO91L4txsLK0GraI01CjPkU9Ldlou
-         oO0kPyFtarROCccA4rMvAl+uLYUkfVZP4HZvchZ3GYX31i67k97xttlthgARCvsdpZLI
-         1Osw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bjS7pKjW7i4kMVoZWIx/6+vfkO06Rxr0/XWr9RESCLE=;
+        b=aJkRjktkcTWkT+Lg7eUMVvE1yeUx0kMwgGGAhYrROgyF4sTacHbeXHHvNDDC7kWqlA
+         +Cc+5h16PUXg8ycd8QN5vy/m6CcPRGDPHFwXXtBxm7sIWrXe4rOg0Qy73ip8l4RMZqrw
+         GkOnUHCYrZ6q5HKCOZZplbnF041Pg9ZRJ1NaYpzmd1c2MDxkx+LNfRGcZ2jH1BHE8M2H
+         dr6YXGfvWNV8eY5oGViEcgOvY5+IDSKXTsHvXbgxaOTO9axCGvKDrqZ//7Bjrz0Iakl+
+         nBUyPA8iM8l/0rruoKS0AU0fruLuIs20b4x5aoGNf+yvHkPmCE2eTk8EiplWpBgGC3Bm
+         EU4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=lE+bxJe8F0J1GRBvXC6bH3IhM4bPR09R1AYfPfzThHE7dWPxGLE7JcGo4ygNVkjQqC
-         TAibTgd16rXVNfnv+OOT/D3FM51MzH/bhOuux5a4aVvIyIHMuaMhapW3mqmeNyZT+cW6
-         oLd4LFdSLq9Hiv8CyqIMTQobOxAaP/oK3njfPcJ310hmzCvP0abN/kmhRn0ESNGRCt5I
-         nm+/MfYt+H1yBnj0R72vsR+MX0IzOTRQWJCLqGJG0GgLIoLtev5QlEMviNHwyor4LCoa
-         PRnOdJEeCmO5MkvW7trLKRdx9WfoFxTtU4Mukb2+7XmAGn/fIm86hw/FS/7otVXmioaR
-         htqw==
-X-Gm-Message-State: AGi0PubHcAaW5Jt32mnP0/bHlLZSTIXcu+xng6GuZKJGuC5mhjjmapJF
-        yQUn1gQr3GTgPd7aMHaEoAg=
-X-Google-Smtp-Source: APiQypJe7QvKvXBc8avbSzxkqC9d0YmeQQKHyqG3dZIqfCdRGTOT8BXkV2J8zNLZx0Mrs8fOrkGZsQ==
-X-Received: by 2002:ac2:5e86:: with SMTP id b6mr15091943lfq.65.1587513689717;
-        Tue, 21 Apr 2020 17:01:29 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id y9sm2933425ljm.11.2020.04.21.17.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 17:01:29 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
-Date:   Wed, 22 Apr 2020 02:59:43 +0300
-Message-Id: <20200421235943.13627-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200421235943.13627-1-digetx@gmail.com>
-References: <20200421235943.13627-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bjS7pKjW7i4kMVoZWIx/6+vfkO06Rxr0/XWr9RESCLE=;
+        b=DA7ZES/TZubaIJ1+7uZ8s2Q9QzM5dNj4dL6pgPIPAxzRbcEU7o5QuiFnrOEyDhTS9L
+         4cvrgeNhWWVTz6vSuSbHRARxwvhPGQdH0FtogN0dKn73bwHNEeNcaKTn1j0DDqRb0/vi
+         AAqEN2S9zIS+niOhcQdJYELl95/sEZdMp8t0vZ5Twq42QHzRDkTGjvMgga/jolKS1YmN
+         VdLSiraY8CLNmTMmZmDzet2OjSZkMqTcoAzgAW6fon8QKX9m+Gmsw9T17Qz0BNw0wkS2
+         58jb9kgbbUoRDFbKzmm1UWNRQqJsDae+Z00GyswxCkCMGMhZyySRwFePRicZ3n8g6zy3
+         G7dQ==
+X-Gm-Message-State: AGi0PuY9mRhpNRoJiQb7LGJ2S3o3lcQ07KgIJb9EpiqBRcaXL5PIBRlj
+        LoiK6rGr92OcUfx0IrkfGdl6hmDeGLY=
+X-Google-Smtp-Source: APiQypLX6E3DeJUU9oSYaEho70+3A4+FNKaXoJEPCFmRrx7prMaa6lFk5w9yvZH5HPHOPcCwnfWmqekv4GQ=
+X-Received: by 2002:a63:1506:: with SMTP id v6mr24921841pgl.365.1587514464984;
+ Tue, 21 Apr 2020 17:14:24 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 17:14:12 -0700
+Message-Id: <20200422001422.232330-1-walken@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+Subject: [PATCH v5 00/10] Add a new mmap locking API wrapping mmap_sem calls
+From:   Michel Lespinasse <walken@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable several very useful options and drivers for hardware that is found
-on Nexus 7 and Acer A500 tablet devices. Please note that some drivers may
-require firmware files extracted from original Android image.
+Reposting this patch series on top of v5.7-rc2. I think this would be
+a good time for the series to be picked up in -mm tree for integration
+into v5.8. I also made minor changes to patches 6 and 7 based on
+reviewer feedback on the previous revisions.
 
-Link: https://github.com/digetx/linux-firmware
-Link: https://github.com/digetx/alsa-ucm-conf
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/configs/tegra_defconfig | 42 ++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 0029259a6bf5..b382f06f835b 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -10,6 +10,8 @@ CONFIG_RT_GROUP_SCHED=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_DEBUG=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
- CONFIG_BLK_DEV_INITRD=y
- # CONFIG_ELF_CORE is not set
- CONFIG_EMBEDDED=y
-@@ -18,6 +20,7 @@ CONFIG_SLAB=y
- CONFIG_ARCH_TEGRA=y
- CONFIG_SMP=y
- CONFIG_HIGHMEM=y
-+CONFIG_SECCOMP=y
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
- CONFIG_KEXEC=y
-@@ -63,11 +66,17 @@ CONFIG_BT_RFCOMM=y
- CONFIG_BT_BNEP=y
- CONFIG_BT_HIDP=y
- CONFIG_BT_HCIBTUSB=m
-+CONFIG_BT_HCIUART=y
-+CONFIG_BT_HCIUART_BCM=y
- CONFIG_CFG80211=y
- CONFIG_MAC80211=y
- CONFIG_RFKILL=y
- CONFIG_RFKILL_INPUT=y
- CONFIG_RFKILL_GPIO=y
-+CONFIG_NFC=y
-+CONFIG_NFC_HCI=y
-+CONFIG_NFC_SHDLC=y
-+CONFIG_NFC_PN544_I2C=y
- CONFIG_PCI=y
- CONFIG_PCIEPORTBUS=y
- CONFIG_PCI_MSI=y
-@@ -106,20 +115,24 @@ CONFIG_INPUT_JOYDEV=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_KEYBOARD_GPIO=y
- CONFIG_KEYBOARD_TEGRA=y
-+CONFIG_KEYBOARD_CAP11XX=y
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_MOUSE_PS2_ELANTECH=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=y
-+CONFIG_TOUCHSCREEN_ELAN=y
- CONFIG_TOUCHSCREEN_WM97XX=y
- # CONFIG_TOUCHSCREEN_WM9705 is not set
- # CONFIG_TOUCHSCREEN_WM9713 is not set
- CONFIG_TOUCHSCREEN_STMPE=y
- CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_GPIO_VIBRA=y
- # CONFIG_LEGACY_PTYS is not set
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_TEGRA=y
-+CONFIG_SERIAL_DEV_BUS=y
- # CONFIG_HW_RANDOM is not set
- # CONFIG_I2C_COMPAT is not set
- CONFIG_I2C_CHARDEV=y
-@@ -131,10 +144,12 @@ CONFIG_SPI_TEGRA114=y
- CONFIG_SPI_TEGRA20_SFLASH=y
- CONFIG_SPI_TEGRA20_SLINK=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MAX77620=y
- CONFIG_PINCTRL_PALMAS=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
-+CONFIG_GPIO_MAX77620=y
- CONFIG_GPIO_PALMAS=y
- CONFIG_GPIO_TPS6586X=y
- CONFIG_GPIO_TPS65910=y
-@@ -142,13 +157,21 @@ CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_AS3722=y
- CONFIG_POWER_RESET_GPIO=y
- CONFIG_BATTERY_SBS=y
-+CONFIG_BATTERY_BQ27XXX=y
-+CONFIG_CHARGER_GPIO=y
-+CONFIG_CHARGER_SMB347=y
- CONFIG_CHARGER_TPS65090=y
- CONFIG_SENSORS_LM90=y
- CONFIG_SENSORS_LM95245=y
-+CONFIG_THERMAL=y
-+CONFIG_THERMAL_STATISTICS=y
-+CONFIG_CPU_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
- CONFIG_MFD_AS3722=y
- CONFIG_MFD_CROS_EC=y
-+CONFIG_MFD_MAX77620=y
- CONFIG_MFD_MAX8907=y
- CONFIG_MFD_STMPE=y
- CONFIG_MFD_PALMAS=y
-@@ -159,6 +182,7 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- CONFIG_REGULATOR_AS3722=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8907=y
- CONFIG_REGULATOR_PALMAS=y
- CONFIG_REGULATOR_TPS51632=y
-@@ -174,7 +198,10 @@ CONFIG_USB_GSPCA=y
- CONFIG_DRM=y
- CONFIG_DRM_NOUVEAU=m
- CONFIG_DRM_TEGRA=y
-+CONFIG_DRM_TEGRA_STAGING=y
-+CONFIG_DRM_PANEL_LVDS=y
- CONFIG_DRM_PANEL_SIMPLE=y
-+CONFIG_DRM_LVDS_CODEC=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- # CONFIG_BACKLIGHT_GENERIC is not set
-@@ -238,6 +265,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_AS3722=y
- CONFIG_RTC_DRV_DS1307=y
- CONFIG_RTC_DRV_MAX8907=y
-+CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_PALMAS=y
- CONFIG_RTC_DRV_TPS6586X=y
- CONFIG_RTC_DRV_TPS65910=y
-@@ -259,11 +287,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
- CONFIG_ARCH_TEGRA_3x_SOC=y
- CONFIG_ARCH_TEGRA_114_SOC=y
- CONFIG_ARCH_TEGRA_124_SOC=y
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_ARM_TEGRA_DEVFREQ=y
-+CONFIG_ARM_TEGRA20_DEVFREQ=y
- CONFIG_MEMORY=y
- CONFIG_IIO=y
-+CONFIG_KXCJK1013=y
- CONFIG_MPU3050_I2C=y
-+CONFIG_INV_MPU6050_I2C=y
-+CONFIG_AL3010=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_SENSORS_ISL29028=y
-+CONFIG_AK8974=y
- CONFIG_AK8975=y
- CONFIG_PWM=y
- CONFIG_PWM_TEGRA=y
-@@ -283,6 +318,13 @@ CONFIG_TMPFS_POSIX_ACL=y
- CONFIG_SQUASHFS=y
- CONFIG_SQUASHFS_LZO=y
- CONFIG_SQUASHFS_XZ=y
-+CONFIG_PSTORE=y
-+CONFIG_PSTORE_LZO_COMPRESS=y
-+CONFIG_PSTORE_LZ4_COMPRESS=y
-+CONFIG_PSTORE_LZ4HC_COMPRESS=y
-+CONFIG_PSTORE_842_COMPRESS=y
-+CONFIG_PSTORE_CONSOLE=y
-+CONFIG_PSTORE_RAM=y
- CONFIG_NFS_FS=y
- CONFIG_NFS_V4=y
- CONFIG_ROOT_NFS=y
+This patch series adds a new mmap locking API replacing the existing
+mmap_sem lock and unlocks. Initially the API is just implemente in terms
+of inlined rwsem calls, so it doesn't provide any new functionality.
+
+There are two justifications for the new API:
+
+- At first, it provides an easy hooking point to instrument mmap_sem
+  locking latencies independently of any other rwsems.
+
+- In the future, it may be a starting point for replacing the rwsem
+  implementation with a different one, such as range locks. This is
+  something that is being explored, even though there is no wide concensus
+  about this possible direction yet.
+  (see https://patchwork.kernel.org/cover/11401483/)
+
+
+Changes since v4 of the patchset:
+
+- Applied the changes on top of v5.7-rc2. This was a straight rebase
+  except for changes noted here.
+
+- Patch 01/10: renamed the mmap_write_downgrade API
+  (as suggested by Davidlohr Bueso).
+
+- Patch 05/10: added arch/riscv/mm/pageattr.c changes that had been
+  previously missed, as found by the kbuild bot.
+
+- Patch 06/10: use SINGLE_DEPTH_NESTING as suggested by Matthew Wilcox.
+
+- Patch 08/10: change MMAP_LOCK_INITIALIZER definition
+  as suggested by Matthew Wilcox.
+
+- Patch 09/10: add mm_assert_locked API as suggested by Matthew Wilcox.
+
+
+Changes since v3 of the patchset:
+
+- The changes now apply on top of v5.7-rc1. This was a straight rebase
+  except for changes noted here.
+
+- Re-generated the coccinelle changes (patch 04/10).
+
+- Patch 06/10: removed the mmap_write_unlock_nested API;
+  mmap_write_lock_nested() calls now pair with the regular mmap_write_unlock()
+  as was suggested by many people.
+
+- Patch 07/10: removed the mmap_read_release API; this is replaced with
+  mmap_read_trylock_non_owner() which pairs with mmap_read_unlock_non_owner()
+  Thanks to Peter Zijlstra for the suggestion.
+
+
+Changes since v2 of the patchset:
+
+- Removed the mmap_is_locked API - v2 had removed all uses of it,
+  but the actual function definition was still there unused.
+  Thanks to Jason Gunthorpe for noticing the unused mmap_is_locked function.
+
+
+Changes since v1 of the patchset:
+
+- Manually convert drivers/dma-buf/dma-resv.c ahead of the automated
+  coccinelle conversion as this file requires a new include statement.
+  Thanks to Intel's kbuild test bot for finding the issue.
+
+- In coccinelle automated conversion, apply a single coccinelle rule
+  as suggested by Markus Elfring.
+
+- In manual conversion of sites missed by coccinelle, fix an issue where
+  I had used mm_read_unlock (from an older version of my patchset) instead
+  of mmap_read_unlock in some arch/mips code.
+  This was also identified by Intel's kbuild test bot.
+
+- Do not add a new mmap_is_locked API, and use lockdep_assert_held instead.
+  Thanks to Jason Gunthorpe and Matthew Wilcox for the suggestion.
+
+
+The changes apply on top of v5.7-rc2.
+
+I think these changes are ready for integration into the -mm tree now
+(for integration into v5.8). The coccinelle part of the change is
+relatively invasive, but can be skipped over on a file by file basis
+if it causes any conflicts with other pending changes. The new mmap
+locking API can interoperate with new code that is still using direct
+rwsem calls, until the last patch in the series which renames mmap_sem
+to enforce using the new API. Maybe that last patch could be delayed for
+a bit, so that we'd get a chance to convert any new code that locks
+mmap_sem in the -rc1 release before applying that last patch.
+
+
+Michel Lespinasse (10):
+  mmap locking API: initial implementation as rwsem wrappers
+  MMU notifier: use the new mmap locking API
+  DMA  reservations: use the new mmap locking API
+  mmap locking API: use coccinelle to convert mmap_sem rwsem call sites
+  mmap locking API: convert mmap_sem call sites missed by coccinelle
+  mmap locking API: convert nested write lock sites
+  mmap locking API: add mmap_read_trylock_non_owner()
+  mmap locking API: add MMAP_LOCK_INITIALIZER
+  mmap locking API: use lockdep_assert_held
+  mmap locking API: rename mmap_sem to mmap_lock
+
+ arch/alpha/kernel/traps.c                     |  4 +-
+ arch/alpha/mm/fault.c                         | 10 +--
+ arch/arc/kernel/process.c                     |  4 +-
+ arch/arc/kernel/troubleshoot.c                |  4 +-
+ arch/arc/mm/fault.c                           |  4 +-
+ arch/arm/kernel/process.c                     |  4 +-
+ arch/arm/kernel/swp_emulate.c                 |  4 +-
+ arch/arm/lib/uaccess_with_memcpy.c            | 16 ++--
+ arch/arm/mm/fault.c                           |  6 +-
+ arch/arm64/kernel/traps.c                     |  4 +-
+ arch/arm64/kernel/vdso.c                      |  8 +-
+ arch/arm64/mm/fault.c                         |  8 +-
+ arch/csky/kernel/vdso.c                       |  4 +-
+ arch/csky/mm/fault.c                          |  8 +-
+ arch/hexagon/kernel/vdso.c                    |  4 +-
+ arch/hexagon/mm/vm_fault.c                    |  8 +-
+ arch/ia64/kernel/perfmon.c                    |  8 +-
+ arch/ia64/mm/fault.c                          | 12 +--
+ arch/ia64/mm/init.c                           | 12 +--
+ arch/m68k/kernel/sys_m68k.c                   | 14 +--
+ arch/m68k/mm/fault.c                          |  8 +-
+ arch/microblaze/mm/fault.c                    | 12 +--
+ arch/mips/kernel/traps.c                      |  4 +-
+ arch/mips/kernel/vdso.c                       |  4 +-
+ arch/mips/mm/fault.c                          | 10 +--
+ arch/nds32/kernel/vdso.c                      |  6 +-
+ arch/nds32/mm/fault.c                         | 12 +--
+ arch/nios2/mm/fault.c                         | 12 +--
+ arch/nios2/mm/init.c                          |  4 +-
+ arch/openrisc/mm/fault.c                      | 10 +--
+ arch/parisc/kernel/traps.c                    |  6 +-
+ arch/parisc/mm/fault.c                        |  8 +-
+ arch/powerpc/kernel/vdso.c                    |  6 +-
+ arch/powerpc/kvm/book3s_hv.c                  |  6 +-
+ arch/powerpc/kvm/book3s_hv_uvmem.c            | 12 +--
+ arch/powerpc/kvm/e500_mmu_host.c              |  4 +-
+ arch/powerpc/mm/book3s64/iommu_api.c          |  4 +-
+ arch/powerpc/mm/book3s64/subpage_prot.c       | 12 +--
+ arch/powerpc/mm/copro_fault.c                 |  4 +-
+ arch/powerpc/mm/fault.c                       | 12 +--
+ arch/powerpc/oprofile/cell/spu_task_sync.c    |  6 +-
+ arch/powerpc/platforms/cell/spufs/file.c      |  4 +-
+ arch/riscv/kernel/vdso.c                      |  4 +-
+ arch/riscv/mm/fault.c                         | 10 +--
+ arch/riscv/mm/pageattr.c                      |  4 +-
+ arch/s390/kernel/uv.c                         |  4 +-
+ arch/s390/kernel/vdso.c                       |  4 +-
+ arch/s390/kvm/gaccess.c                       |  4 +-
+ arch/s390/kvm/interrupt.c                     |  4 +-
+ arch/s390/kvm/kvm-s390.c                      | 28 +++---
+ arch/s390/kvm/priv.c                          | 32 +++----
+ arch/s390/mm/fault.c                          | 14 +--
+ arch/s390/mm/gmap.c                           | 44 +++++-----
+ arch/s390/pci/pci_mmio.c                      |  4 +-
+ arch/sh/kernel/sys_sh.c                       |  6 +-
+ arch/sh/kernel/vsyscall/vsyscall.c            |  4 +-
+ arch/sh/mm/fault.c                            | 10 +--
+ arch/sparc/mm/fault_32.c                      | 18 ++--
+ arch/sparc/mm/fault_64.c                      | 12 +--
+ arch/sparc/vdso/vma.c                         |  4 +-
+ arch/um/include/asm/mmu_context.h             |  5 +-
+ arch/um/kernel/tlb.c                          |  2 +-
+ arch/um/kernel/trap.c                         |  6 +-
+ arch/unicore32/mm/fault.c                     |  6 +-
+ arch/x86/entry/vdso/vma.c                     | 14 +--
+ arch/x86/events/core.c                        |  4 +-
+ arch/x86/kernel/tboot.c                       |  2 +-
+ arch/x86/kernel/vm86_32.c                     |  4 +-
+ arch/x86/kvm/mmu/paging_tmpl.h                |  8 +-
+ arch/x86/mm/fault.c                           | 10 +--
+ arch/x86/um/vdso/vma.c                        |  4 +-
+ arch/xtensa/mm/fault.c                        | 10 +--
+ drivers/android/binder_alloc.c                | 10 +--
+ drivers/dma-buf/dma-resv.c                    |  5 +-
+ drivers/firmware/efi/efi.c                    |  2 +-
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |  4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       | 10 +--
+ drivers/gpu/drm/amd/amdkfd/kfd_events.c       |  4 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c         |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_mman.c      |  4 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c   |  8 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 22 ++---
+ drivers/gpu/drm/radeon/radeon_cs.c            |  4 +-
+ drivers/gpu/drm/radeon/radeon_gem.c           |  6 +-
+ drivers/gpu/drm/ttm/ttm_bo_vm.c               |  4 +-
+ drivers/infiniband/core/umem_odp.c            |  4 +-
+ drivers/infiniband/core/uverbs_main.c         |  4 +-
+ drivers/infiniband/hw/mlx4/mr.c               |  4 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c    |  6 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c      |  4 +-
+ drivers/infiniband/sw/siw/siw_mem.c           |  4 +-
+ drivers/iommu/amd_iommu_v2.c                  |  4 +-
+ drivers/iommu/intel-svm.c                     |  4 +-
+ drivers/media/v4l2-core/videobuf-core.c       |  4 +-
+ drivers/media/v4l2-core/videobuf-dma-contig.c |  4 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c     |  4 +-
+ drivers/misc/cxl/cxllib.c                     |  4 +-
+ drivers/misc/cxl/fault.c                      |  4 +-
+ drivers/misc/sgi-gru/grufault.c               | 16 ++--
+ drivers/misc/sgi-gru/grufile.c                |  4 +-
+ drivers/oprofile/buffer_sync.c                | 10 +--
+ drivers/staging/kpc2000/kpc_dma/fileops.c     |  4 +-
+ drivers/tee/optee/call.c                      |  4 +-
+ drivers/vfio/vfio_iommu_type1.c               |  8 +-
+ drivers/vhost/vdpa.c                          |  4 +-
+ drivers/xen/gntdev.c                          |  4 +-
+ drivers/xen/privcmd.c                         | 14 +--
+ fs/aio.c                                      |  4 +-
+ fs/coredump.c                                 |  4 +-
+ fs/exec.c                                     | 16 ++--
+ fs/io_uring.c                                 |  4 +-
+ fs/proc/base.c                                | 18 ++--
+ fs/proc/task_mmu.c                            | 28 +++---
+ fs/proc/task_nommu.c                          | 18 ++--
+ fs/userfaultfd.c                              | 26 +++---
+ include/linux/mm.h                            |  1 +
+ include/linux/mm_types.h                      |  2 +-
+ include/linux/mmap_lock.h                     | 86 +++++++++++++++++++
+ include/linux/mmu_notifier.h                  |  5 +-
+ ipc/shm.c                                     |  8 +-
+ kernel/acct.c                                 |  4 +-
+ kernel/bpf/stackmap.c                         | 17 ++--
+ kernel/events/core.c                          |  4 +-
+ kernel/events/uprobes.c                       | 16 ++--
+ kernel/exit.c                                 |  8 +-
+ kernel/fork.c                                 | 14 +--
+ kernel/futex.c                                |  4 +-
+ kernel/sched/fair.c                           |  4 +-
+ kernel/sys.c                                  | 18 ++--
+ kernel/trace/trace_output.c                   |  4 +-
+ lib/test_lockup.c                             |  8 +-
+ mm/filemap.c                                  |  6 +-
+ mm/frame_vector.c                             |  4 +-
+ mm/gup.c                                      | 20 ++---
+ mm/hmm.c                                      |  2 +-
+ mm/init-mm.c                                  |  2 +-
+ mm/internal.h                                 |  2 +-
+ mm/khugepaged.c                               | 36 ++++----
+ mm/ksm.c                                      | 34 ++++----
+ mm/madvise.c                                  | 18 ++--
+ mm/memcontrol.c                               |  8 +-
+ mm/memory.c                                   | 16 ++--
+ mm/mempolicy.c                                | 22 ++---
+ mm/migrate.c                                  |  8 +-
+ mm/mincore.c                                  |  4 +-
+ mm/mlock.c                                    | 16 ++--
+ mm/mmap.c                                     | 36 ++++----
+ mm/mmu_notifier.c                             | 22 ++---
+ mm/mprotect.c                                 | 12 +--
+ mm/mremap.c                                   |  6 +-
+ mm/msync.c                                    |  8 +-
+ mm/nommu.c                                    | 16 ++--
+ mm/oom_kill.c                                 |  4 +-
+ mm/pagewalk.c                                 | 15 ++--
+ mm/process_vm_access.c                        |  4 +-
+ mm/ptdump.c                                   |  4 +-
+ mm/swapfile.c                                 |  4 +-
+ mm/userfaultfd.c                              | 18 ++--
+ mm/util.c                                     | 12 +--
+ net/ipv4/tcp.c                                |  4 +-
+ net/xdp/xdp_umem.c                            |  4 +-
+ virt/kvm/arm/mmu.c                            | 14 +--
+ virt/kvm/async_pf.c                           |  4 +-
+ virt/kvm/kvm_main.c                           |  8 +-
+ 164 files changed, 801 insertions(+), 717 deletions(-)
+ create mode 100644 include/linux/mmap_lock.h
+
+
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+
 -- 
-2.26.0
+2.26.1.301.g55bc3eb7cb9-goog
 
