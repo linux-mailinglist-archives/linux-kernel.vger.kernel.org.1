@@ -2,202 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ACE1B495D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76DA1B496C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgDVQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:03:00 -0400
-Received: from mail-bn8nam11on2125.outbound.protection.outlook.com ([40.107.236.125]:47232
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725980AbgDVQC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:02:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hozb55Mf9KCiSGwmvZnMV4bSAG97UBEQmLCd+t8ZuG3Kc0FfmZrkND68uOqX9dTFZCeSwaWS5q7hUjWCRo3YnoK/+qrobnp2wCdkgMZW1wqgALUL0mRCB+kn7Fcn8+tueSzHsdCQ2egH1732CJjn+mLkizuu4c460OfScvCcS5F9w87QG289Hhk6yntYm30nFZ2pygPKJ7FJPYVYqMNBBm/MdMLdsI2d8Kb5lKjVz5AU5/9tSznHo+lKNSwemUB5Dufwu6ZgUhLQ5EiSs0LFodf6iNqcwSaF486iMmp+NN7nbyUS09AIXaYVySD7YBtFZzHccJLgKCHKyQyIpx/vHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sPQ7p17HjjFh4gqCMU5jLeGYW0dkPPxdhAT/gmHhxAk=;
- b=C8J2DsOWq5SJje1MPyNE0/y3GGPm4HZzifRPCgPbFqg1tL6HBN3SKkU5yzVFGp6ZzUK5tig7iJpg7Lc1Fxz8fdWMvfePyWQ9QJTc27/K+iw5FNFpAcBC3r8VZoPZ2LW0SayS7zeXpdyaQjR1xiyTvUitnj6jZw6XCCifhy54K6tHTtvh/95622tFkpfEJEUpDpXmvXuspOLYhydEDNo+kOxuJa52L8oFI/Y5A0mmzXrBc/GygR7LgsXvMDH1p6FTMZMkvj1akUNYb49rIVusJrIaqP9Btfn5i7qVzwKH3JfTkhdoJcryw//jW8BghjaUMypWaKi0kImurLDinmyFlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 204.77.163.244) smtp.rcpttodomain=infradead.org smtp.mailfrom=garmin.com;
- dmarc=pass (p=quarantine sp=quarantine pct=40) action=none
- header.from=garmin.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sPQ7p17HjjFh4gqCMU5jLeGYW0dkPPxdhAT/gmHhxAk=;
- b=BITHIsW0zePFjyaFfFOFFrO+u2T0qvsuAclpu1gkYBs38DNGXTup6Slr1Gtu30bOwCzYJHpFMPfph+5O984KZNzJP+skWU/0TviZmY8v7bgwhc+fHAMoylSD2zvhIklpBm0As2q+FNmTBUyFb4XBlTyuZ4MPgy8MFV8funiEQG0Vb+33HDvCe5F/APdPHULkXI1yXiogyenw/Op6OFxnDpGF+UBPtLH0EcDjpNKJsckCMjRHj0U2S/peuNwKNb92F1nnQrM12WMpUd+n4yDcELOM93pZz7HWFMiHhlJVlGLaB9H+IwJQoxe5NR86Hr68XrPJfC9JH9J85vdwOpXZYQ==
-Received: from MWHPR12CA0034.namprd12.prod.outlook.com (2603:10b6:301:2::20)
- by SN6PR04MB4319.namprd04.prod.outlook.com (2603:10b6:805:31::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.30; Wed, 22 Apr
- 2020 16:02:53 +0000
-Received: from MW2NAM10FT013.eop-nam10.prod.protection.outlook.com
- (2603:10b6:301:2:cafe::6d) by MWHPR12CA0034.outlook.office365.com
- (2603:10b6:301:2::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend
- Transport; Wed, 22 Apr 2020 16:02:53 +0000
-Authentication-Results: spf=pass (sender IP is 204.77.163.244)
- smtp.mailfrom=garmin.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=garmin.com;
-Received-SPF: Pass (protection.outlook.com: domain of garmin.com designates
- 204.77.163.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=204.77.163.244; helo=edgetransport.garmin.com;
-Received: from edgetransport.garmin.com (204.77.163.244) by
- MW2NAM10FT013.mail.protection.outlook.com (10.13.155.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2937.15 via Frontend Transport; Wed, 22 Apr 2020 16:02:52 +0000
-Received: from OLAWPA-EXMB10.ad.garmin.com (10.5.144.12) by
- olawpa-edge5.garmin.com (10.60.4.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1466.3; Wed, 22 Apr 2020 11:02:50 -0500
-Received: from OLAWPA-EXMB7.ad.garmin.com (10.5.144.21) by
- OLAWPA-EXMB10.ad.garmin.com (10.5.144.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 22 Apr 2020 11:02:49 -0500
-Received: from OLAWPA-EXMB7.ad.garmin.com ([fe80::68cc:dab9:e96a:c89]) by
- OLAWPA-EXMB7.ad.garmin.com ([fe80::68cc:dab9:e96a:c89%23]) with mapi id
- 15.01.1913.007; Wed, 22 Apr 2020 11:02:49 -0500
-From:   "Karstens, Nate" <Nate.Karstens@garmin.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Changli Gao <xiaosuo@gmail.com>
-Subject: RE: [PATCH 1/4] fs: Implement close-on-fork
-Thread-Topic: [PATCH 1/4] fs: Implement close-on-fork
-Thread-Index: AQHWFuOUNQrmUX2/BU6CQ6OUTp2yNKiFQqwQgABdCAD//650EA==
-Date:   Wed, 22 Apr 2020 16:02:49 +0000
-Message-ID: <6ed7bd08892b4311b70636658321904f@garmin.com>
-References: <20200420071548.62112-1-nate.karstens@garmin.com>
- <20200420071548.62112-2-nate.karstens@garmin.com>
- <fa6c5c9c7c434f878c94a7c984cd43ba@garmin.com>
- <20200422154356.GU5820@bombadil.infradead.org>
-In-Reply-To: <20200422154356.GU5820@bombadil.infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.50.4.7]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726636AbgDVQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726358AbgDVQE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 12:04:26 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D581C03C1AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:26 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id y10so2184929uao.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=R6uBiNfit5YCO191/wwIsaUUqzxSLO/g5l1s37v3Z3w=;
+        b=Q91bHmJwQtHKONLOIZVoVWCWA8wv4FJ6D+5JbGFlH88Y+/P8I6LlZJbyat1zNpYnaf
+         r9JaIC2uFsoEs8V9fc21pNnrEnBTY0z4mPbLva9ly4DlnJCI1pxsfQi5Qf874n/YBWXp
+         P6OzTz4nF2sutRlKNThQUqe+3ohrfIMiGWGbk/+l+YxGCV+2ATZ8bK8jV/D6rCN/17ja
+         05VW2Ria5KGkfQS3EngD394SpfJwwdv2/Ps+LXsLN29JPBGNyGewMdFTTABE14T4A4yC
+         4FASMLFN6kKn19Mg17U9anWakRdEGFgCyYqTvdEdi8pWvqQQpmzFhTBHb+r8UUDTIxGJ
+         nqMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=R6uBiNfit5YCO191/wwIsaUUqzxSLO/g5l1s37v3Z3w=;
+        b=eRwNH1L2+IhEwzb1Rc42EU7sgsjeIwSnl5P/wkCWSS4nflznnGTkEWa5RAVFFAHI6F
+         J9SsN1CvvJcrX+FSpdhRAVfKgGBhWO4Cw6pD3pCTfifvxfLNPPlmXsmRCJp5x0aakb3q
+         pAL+SZTufuCHMwXzqP+8nLTz1YrFCBYaS+XkSQ7XysSo4R+R042vC+B1qfc42tMmisN0
+         TV9YIKBuLJIkq/LS1wxPOebtd9YJf6ds/YhbF7ctU6GwU7q50aZ3GyzLk2uRt0FmVLGn
+         vep5cZa/+Ef/xwPuqrCBwBW5adbGthazf5znfc2/d3YREQqeZmfgWGXQjfFzFGUTEM23
+         T6bw==
+X-Gm-Message-State: AGi0Puanp0V3Dgz8l6W7eL9JXc93LrV10LcghmrqPrchS9quZlcpzKts
+        sMMnU7gBhbLtx1qUsUciWEBvAAhBOd9+vbOw1h2B3Q==
+X-Google-Smtp-Source: APiQypLRD/Imtj1vYufqpjP3oiW2KCXvoVlKWsNAdbd7j7U51hZYh0PP2WQvQ0URi1Cr71o91VK7Yv/5O96ZLwzvEtY=
+X-Received: by 2002:a67:ead1:: with SMTP id s17mr20427811vso.200.1587571464862;
+ Wed, 22 Apr 2020 09:04:24 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25372.001
-X-TM-AS-Result: No-20.492900-8.000000-10
-X-TMASE-MatchedRID: Rp71wniPtoM4HKI/yaqRm/KR06Kw3DzKRiPTMMc/MmlOyROmWLBZSuNb
-        0aTvicGvSTuOLEQgmVbhVp16EZAE1e34OOTGEFTiB/XUnmGGOOr4qCLIu0mtIDyC5ddG2JcgDsh
-        HkVWp6Z/gF59qS0/NMzzsW2Cgd3ClR0noGmyTNMsHz0YoejTedhlKjo8zguyKSX8n1Gj4wAExhE
-        xXq6zLI1oWex3m0IGtG8983J7kkbz4Z8QQieNUXszWN98iBBeG+PgcXG6KFc5sMPuLZB/IR/hTn
-        o/hWfnfwPb5NDq94CD80wK+80FbY2+4O3SBmLlWHmtCXih7f9P3N59hBwdmnyiCVsScJChxrk+q
-        psJ8hQ9MAraxXAQN9j1Z6/6pkvauPWKLA6/g//v0VCHd+VQiHpRy1HDTPOXaT7zqZowzdpKXD5/
-        te2xRDy6Ogi9NiuirBEmpoGQQfL5yOVk+FPzL1wYtEovY17GN9pLnYtQ99xIAZTQQTIkkcywmNV
-        NFRFysdzi+MT2hFg7/6J39gwEM6MGfi/dxL5nubMGKOuLn5FURO65VAx9xehRnkhLZOCK9G88rs
-        ck3r8QvJ+I7jC1cP1Mtpl6RMI3caTNicKv7gx9+AWdjDjY8Xfy0wgIDXBCTwUqLhUY4dAI4ULAZ
-        wl+oC+LzNWBegCW2ak1q2nxhDrwLbigRnpKlKSBuGJWwgxArFnn7zLfna4I=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--20.492900-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25372.001
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFTY:;SFS:(10019020)(376002)(39860400002)(136003)(346002)(396003)(46966005)(4326008)(8936002)(47076004)(86362001)(6916009)(26005)(36756003)(5660300002)(108616005)(2616005)(966005)(53546011)(7416002)(478600001)(7696005)(186003)(336012)(82740400003)(426003)(316002)(8676002)(24736004)(70206006)(7636003)(70586007)(54906003)(356005)(2906002)(246002)(82310400002);DIR:OUT;SFP:1102;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6cf3a271-9485-4c7d-0011-08d7e6d69cf6
-X-MS-TrafficTypeDiagnostic: SN6PR04MB4319:
-X-Microsoft-Antispam-PRVS: <SN6PR04MB43190D1D02FF28B2CD5DC6309CD20@SN6PR04MB4319.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 03818C953D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vlc2198EXg971jw/ZYN4GoYLruk06VPCw5NT/ZH3gpL7jR8D+aQMyuVPr/nqhyJnFmklnyZGFZzW6YX0H5nrIDDKbDLMC+HZ2Zu7xFR/ALAAR7o8VgH0rUukhaOpdhghL2ESsuT7usZnyPXwdmPty2eYXmcAowdTnSLDJWb+ItiAA+UirHKSU9HUFPh41nf5kj8FDfqsQB0CufVpcMoh5RCR5QsEGXtykxF2ZGm1cEEgL/rd609sL8ozflcGDRb7Gs6OOPTOPxyI9crDZekRsi3BwUH4+QCBrt6FQ2JyMTA9239mQmUtoZ4WytnqHgmbC1/SrF63M9yzVgJrDzNXwsHZgVQCmRH+tZjfbRkk9p5lcK6TXY7wxqSnDqHvhbE7JQ5oPRcGZ1OWNcpSAGPx+ArBrlLXoL4EFWUpKzYojSKq8aBIaxuKcagGUPT1o4sJSY6LtHjpzeg3VlNPqL9E6y2kd+3k3vohhL+cEGuGI4qG+jHeEXfC6IYAD3Ouywe08EKgPY0Y9NbhoahnLkRxX/Cm5JllkW/XS2dzjUqDPxE9qmUlo0+m8kDu9VpzAZBBVdP60XoSjtM+RqP/tg4ZGA==
-X-OriginatorOrg: garmin.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 16:02:52.5232
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6cf3a271-9485-4c7d-0011-08d7e6d69cf6
-X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4319
+References: <20200420161831.5043-1-ludovic.barre@st.com> <CAPDyKFqC3fdnQ9CMYhS-=5MiCET=r5Az2S5oFoA2v1gdDeGO3w@mail.gmail.com>
+ <CAPDyKFrHcoVd=GKPB70gOFE8STOnTJrJbcZzE_DEgFWh1Vhszg@mail.gmail.com> <1d9cefd1-aaed-1eb5-92f2-b1f45b4da2ac@st.com>
+In-Reply-To: <1d9cefd1-aaed-1eb5-92f2-b1f45b4da2ac@st.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 22 Apr 2020 18:03:48 +0200
+Message-ID: <CAPDyKFpri4VBnH9nbqUa4L=3o_h+fSZ052v7AG_9MhJX2gKgCQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mmci_sdmmc: fix power on issue due to pwr_reg initialization
+To:     Ludovic BARRE <ludovic.barre@st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It's not safe to call system() from a threaded app.  That's all.  It's ri=
-ght there in the DESCRIPTION:
+On Wed, 22 Apr 2020 at 15:40, Ludovic BARRE <ludovic.barre@st.com> wrote:
+>
+> hi Ulf
+>
+> Le 4/21/20 =C3=A0 11:38 AM, Ulf Hansson a =C3=A9crit :
+> > On Tue, 21 Apr 2020 at 11:25, Ulf Hansson <ulf.hansson@linaro.org> wrot=
+e:
+> >>
+> >> On Mon, 20 Apr 2020 at 18:18, Ludovic Barre <ludovic.barre@st.com> wro=
+te:
+> >>>
+> >>> This patch fix a power-on issue, and avoid to retry the power sequenc=
+e.
+> >>>
+> >>> In power off sequence: sdmmc must set pwr_reg in "power-cycle" state
+> >>> (value 0x2), to prevent the card from being supplied through the sign=
+al
+> >>> lines (all the lines are driven low).
+> >>>
+> >>> In power on sequence: when the power is stable, sdmmc must set pwr_re=
+g
+> >>> in "power-off" state (value 0x0) to drive all signal to high before t=
+o
+> >>> set "power-on".
+> >>
+> >> Just a question to gain further understanding.
+> >>
+> >> Let's assume that the controller is a power-on state, because it's
+> >> been initialized by the boot loader. When the mmc core then starts the
+> >> power-on sequence (not doing a power-off first), would $subject patch
+> >> then cause the
+> >> MMCIPOWER to remain as is, or is it going to be overwritten?
+>
+> On sdmmc controller, the PWRCTRL[1:0] field of MMCIPOWER register allow
+> to manage sd lines and has a specific bahavior.
+>
+> PWRCTRL value:
+>   - 0x0: After reset, Reset: the SDMMC is disabled and the clock to the
+>          Card is stopped, SDMMC_D[7:0], and SDMMC_CMD are HiZ and
+>          SDMMC_CK is driven low.
+>          When written 00, power-off: the SDMMC is disabled and the clock
+>          to the card is stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK
+>          are driven high.
+>
+>   - 0x2: Power-cycle, the SDMMC is disabled and the clock to the card is
+>          stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are driven low.
+>
+>   - 0x3: Power-on: the card is clocked, The first 74 SDMMC_CK cycles the
+>          SDMMC is still disabled. After the 74 cycles the SDMMC is
+>          enabled and the SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are
+>          controlled according the SDMMC operation.
+>          **Any further write will be ignored, PWRCTRL value
+>          will keep 0x3**. when the SDMMC is ON (0x3) only a reset could
+>          change pwrctrl value and the state of sdmmc lines.
+>
+> So if the lines are already "ON", the power-on sequence (decribed in
+> commit message) not overwrite the pwctrl field and not disturb the sdmmc
+> lines.
 
-That is true, but that description is missing from both the Linux man page =
-and the glibc documentation (https://www.gnu.org/software/libc/manual/html_=
-mono/libc.html#Running-a-Command). It seems like a minor point that won't b=
-e noticed until it causes a problem, and problems are rare enough they migh=
-t go unnoticed for a while. We have removed system() from our application, =
-but we're also concerned that libraries we integrate will use system() with=
-out our knowledge.
+Thanks for the detailed information, much appreciated!
 
------Original Message-----
-From: Matthew Wilcox <willy@infradead.org>
-Sent: Wednesday, April 22, 2020 10:44
-To: Karstens, Nate <Nate.Karstens@garmin.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>; Jeff Layton <jlayton@kernel.o=
-rg>; J. Bruce Fields <bfields@fieldses.org>; Arnd Bergmann <arnd@arndb.de>;=
- Richard Henderson <rth@twiddle.net>; Ivan Kokshaysky <ink@jurassic.park.ms=
-u.ru>; Matt Turner <mattst88@gmail.com>; James E.J. Bottomley <James.Bottom=
-ley@hansenpartnership.com>; Helge Deller <deller@gmx.de>; David S. Miller <=
-davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-fsdevel@vger.=
-kernel.org; linux-arch@vger.kernel.org; linux-alpha@vger.kernel.org; linux-=
-parisc@vger.kernel.org; sparclinux@vger.kernel.org; netdev@vger.kernel.org;=
- linux-kernel@vger.kernel.org; David Laight <David.Laight@aculab.com>; Chan=
-gli Gao <xiaosuo@gmail.com>
-Subject: Re: [PATCH 1/4] fs: Implement close-on-fork
+>
+> >>
+> >> I am a little worried that we may start to rely on boot loader
+> >> conditions, which isn't really what we want either...
+> >>
+>
+> We not depend of boot loader conditions.
+>
+> This patch simply allows to drive high the sd lines before to set
+> "power-on" value (no effect if already power ON).
 
-CAUTION - EXTERNAL EMAIL: Do not click any links or open any attachments un=
-less you trust the sender and know the content is safe.
+Yep, thanks!
 
+>
+> >>>
+> >>> To avoid writing the same value to the power register several times, =
+this
+> >>> register is cached by the pwr_reg variable. At probe pwr_reg is initi=
+alized
+> >>> to 0 by kzalloc of mmc_alloc_host.
+> >>>
+> >>> Like pwr_reg value is 0 at probing, the power on sequence fail becaus=
+e
+> >>> the "power-off" state is not writes (value 0x0) and the lines
+> >>> remain drive to low.
+> >>>
+> >>> This patch initializes "pwr_reg" variable with power register value.
+> >>> This it done in sdmmc variant init to not disturb default mmci behavi=
+or.
+> >>>
+> >>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+> >>
+> >> Besides the comment, the code and the approach seems reasonable to me.
+> >
+> > Another related question. I just realized why you probably haven't set
+> > .pwrreg_nopower for the variant_stm32_sdmmc and variant_stm32_sdmmcv2.
+> >
+> > I guess it's because you need a slightly different way to restore the
+> > context of MMCIPOWER register at ->runtime_resume(), rather than just
+> > re-writing it with the saved register values. Is this something that
+> > you are looking into as well?
+>
+> Yes exactly, the sequence is slightly different. I can't write 0 on
+> mmci_runtime_suspend, and can't just re-writing the saved register.
 
-On Wed, Apr 22, 2020 at 03:36:09PM +0000, Karstens, Nate wrote:
-> There was some skepticism about whether our practice of
-> closing/reopening sockets was advisable. Regardless, it does expose
-> what I believe to be something that was overlooked in the forking
-> process model. We posted two solutions to the Austin Group defect tracker=
-:
+So, it seems like you need to use the ->set_ios() callback, to
+re-configure the controller correctly.
 
-I don't think it was "overlooked" at all.  It's not safe to call system() f=
-rom a threaded app.  That's all.  It's right there in the DESCRIPTION:
+Just tell if you need more help to make that work, otherwise I am here
+to review your patches.
 
-   The system() function need not be thread-safe.
-https://pubs.opengroup.org/onlinepubs/9699919799/functions/system.html
+In regards to $subject patch, I have applied it for next, thanks!
 
-> Ultimately the Austin Group felt that close-on-fork was the preferred
-> approach. I think it's also worth pointing that out Solaris reportedly
-> has this feature
-> (https://www.mail-archive.com/austin-group-l@opengroup.org/msg05359.html)=
-.
-
-I am perplexed that the Austin Group thought this was a good idea.
-
-________________________________
-
-CONFIDENTIALITY NOTICE: This email and any attachments are for the sole use=
- of the intended recipient(s) and contain information that may be Garmin co=
-nfidential and/or Garmin legally privileged. If you have received this emai=
-l in error, please notify the sender by reply email and delete the message.=
- Any disclosure, copying, distribution or use of this communication (includ=
-ing attachments) by someone other than the intended recipient is prohibited=
-. Thank you.
+Kind regards
+Uffe
