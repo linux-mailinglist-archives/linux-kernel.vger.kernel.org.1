@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060B61B3DAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AD11B41DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgDVKRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:17:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52242 "EHLO mail.kernel.org"
+        id S1732297AbgDVKzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729761AbgDVKQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:28 -0400
+        id S1728446AbgDVKG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0080520775;
-        Wed, 22 Apr 2020 10:16:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E772F20774;
+        Wed, 22 Apr 2020 10:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550588;
-        bh=7ekGnQwcskQsAvXyxVhU+OYSAugtcgiQWwJ33Cjr7c0=;
+        s=default; t=1587550018;
+        bh=nlNAtfmE+7sDz1jRnaVYI4GkYHewHV8jPnDsjl9aIu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKNvgbuBBHnaW1ikZ6XhLqb8n8WK27s/THaEJHDA1djKoFERieaYsGahuYT0L/HXM
-         0xjaRu8Lnnx1A0ieA9xIcf2D/1un94eHtREwfk68hkTRiPyZvk3BV3L9RA1Me3V25H
-         ZjUKlC5mXMb7BPg98M6CSHdEnRojOh5e0BES+Jo4=
+        b=RVkMQgnvUq4PSv7WZxKXB85tUOfkVdFzBmaO14tHfNxLNzQx2iq7QWFfHkyl+48Sf
+         crOwsJ4swZu/CnKYw+fKqFyYF38Esx0xqVT4NrYS/f+h56DTNzc/gRQH4NTl/pIHn1
+         rukXEH3zdSmNSMKIcIDf0NyvjFj2BlAUwOzMYl0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 013/118] ALSA: hda: Dont release card at firmware loading error
-Date:   Wed, 22 Apr 2020 11:56:14 +0200
-Message-Id: <20200422095033.716915406@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 058/125] powerpc/64/tm: Dont let userspace set regs->trap via sigreturn
+Date:   Wed, 22 Apr 2020 11:56:15 +0200
+Message-Id: <20200422095042.826990528@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 25faa4bd37c10f19e4b848b9032a17a3d44c6f09 upstream.
+commit c7def7fbdeaa25feaa19caf4a27c5d10bd8789e4 upstream.
 
-At the error path of the firmware loading error, the driver tries to
-release the card object and set NULL to drvdata.  This may be referred
-badly at the possible PM action, as the driver itself is still bound
-and the PM callbacks read the card object.
+In restore_tm_sigcontexts() we take the trap value directly from the
+user sigcontext with no checking:
 
-Instead, we continue the probing as if it were no option set.  This is
-often a better choice than the forced abort, too.
+	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
 
-Fixes: 5cb543dba986 ("ALSA: hda - Deferred probing with request_firmware_nowait()")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This means we can be in the kernel with an arbitrary regs->trap value.
+
+Although that's not immediately problematic, there is a risk we could
+trigger one of the uses of CHECK_FULL_REGS():
+
+	#define CHECK_FULL_REGS(regs)	BUG_ON(regs->trap & 1)
+
+It can also cause us to unnecessarily save non-volatile GPRs again in
+save_nvgprs(), which shouldn't be problematic but is still wrong.
+
+It's also possible it could trick the syscall restart machinery, which
+relies on regs->trap not being == 0xc00 (see 9a81c16b5275 ("powerpc:
+fix double syscall restarts")), though I haven't been able to make
+that happen.
+
+Finally it doesn't match the behaviour of the non-TM case, in
+restore_sigcontext() which zeroes regs->trap.
+
+So change restore_tm_sigcontexts() to zero regs->trap.
+
+This was discovered while testing Nick's upcoming rewrite of the
+syscall entry path. In that series the call to save_nvgprs() prior to
+signal handling (do_notify_resume()) is removed, which leaves the
+low-bit of regs->trap uncleared which can then trigger the FULL_REGS()
+WARNs in setup_tm_sigcontexts().
+
+Fixes: 2b0a576d15e0 ("powerpc: Add new transactional memory state to the signal context")
+Cc: stable@vger.kernel.org # v3.9+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200401023836.3286664-1-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_intel.c |   19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ arch/powerpc/kernel/signal_64.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1980,24 +1980,15 @@ static void azx_firmware_cb(const struct
- {
- 	struct snd_card *card = context;
- 	struct azx *chip = card->private_data;
--	struct pci_dev *pci = chip->pci;
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -469,8 +469,10 @@ static long restore_tm_sigcontexts(struc
+ 	err |= __get_user(tsk->thread.ckpt_regs.ccr,
+ 			  &sc->gp_regs[PT_CCR]);
  
--	if (!fw) {
--		dev_err(card->dev, "Cannot load firmware, aborting\n");
--		goto error;
--	}
--
--	chip->fw = fw;
-+	if (fw)
-+		chip->fw = fw;
-+	else
-+		dev_err(card->dev, "Cannot load firmware, continue without patching\n");
- 	if (!chip->disabled) {
- 		/* continue probing */
--		if (azx_probe_continue(chip))
--			goto error;
-+		azx_probe_continue(chip);
- 	}
--	return; /* OK */
--
-- error:
--	snd_card_free(card);
--	pci_set_drvdata(pci, NULL);
- }
- #endif
- 
++	/* Don't allow userspace to set the trap value */
++	regs->trap = 0;
++
+ 	/* These regs are not checkpointed; they can go in 'regs'. */
+-	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
+ 	err |= __get_user(regs->dar, &sc->gp_regs[PT_DAR]);
+ 	err |= __get_user(regs->dsisr, &sc->gp_regs[PT_DSISR]);
+ 	err |= __get_user(regs->result, &sc->gp_regs[PT_RESULT]);
 
 
