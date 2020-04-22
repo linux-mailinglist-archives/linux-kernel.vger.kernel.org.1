@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE871B4BFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5031B4C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgDVRmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726100AbgDVRmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:42:31 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC945C03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:42:31 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id l13so2370801qtr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cjTwD6uKqnZZSCCcyV16R+WZpCxCW7qEmnrNY09I9TU=;
-        b=SXe+TpnWHooh9QOLTZ6dPrc+kEXDChrdMWSwPBBvrbiuRWeGWW4hR03UNURAOWyCOp
-         A1ivM3w+kYgYiUu+raGzagTVxzAhGDXYZcsTCw6/tsVAY3o4o96oA/5u0oHg7RjjMTq9
-         tgPnfshzSvCpYaPzIkCLITPjO6AAJIMqP3Wky3w89IvCWzujBOauLENhuaU/X8CuKuFB
-         8EledqZQwjMwAG0LDDP2CO649rhMDeXWU9lcZdD6RFJtGFZVkWheR2JO6HN7ol45mBUs
-         vSj0lAKRCmXtbhp4BRu1PeJvtSagZIOT3/OIgRyEa/DVVTdkukHbVZO6fwxvfFVXDdCc
-         7YlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cjTwD6uKqnZZSCCcyV16R+WZpCxCW7qEmnrNY09I9TU=;
-        b=rp9bqRvhG7k2POv2Wd8kVJEIPieSk56AaGViNMF2avAhZ837odxOTr9dXKcF74FKt1
-         Jtpl3XQNjlSW6Td/jluK24qM6fQ0pqg15IdvZiCjpiCqwRwRgqvdUtHXk/zIEozMP/Qs
-         Q3YoBG6d+ocX9cthXJj08Yi+nmxndAlqwRt5WS3urNvtBG2GyOQZZGuG6KQnuxRNx7sA
-         HUpc/JPyUn1FoGIYl1L5jYkitphjmNC2Z/8vmvqvF0T9xuvAcZKvdhaAtCfFlKQtPOMx
-         duO3FhCqXuMSQ6Qci2Sq2exbJ23bxlkQ/jJk2lUdZt1MfTtwcA+YJSi/NAA2Z11jPirK
-         Ko2g==
-X-Gm-Message-State: AGi0PubzCGgZdAFE/0J9xVulKDfY/ksx9GCwMzA7SAQZpNJyGrzaekHn
-        sLIoFGoIJSgtBMN35DuyVg2Srg==
-X-Google-Smtp-Source: APiQypLCRW4f/+7KFXIOLDocHwtHxj9EaXuX28tZn0XEH0wFojEsxjsXdo/ovxx6ossCISYPdzFDOQ==
-X-Received: by 2002:ac8:23e3:: with SMTP id r32mr28222389qtr.268.1587577350782;
-        Wed, 22 Apr 2020 10:42:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::921])
-        by smtp.gmail.com with ESMTPSA id w42sm4577463qtj.63.2020.04.22.10.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 10:42:30 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 13:42:29 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Joonsoo Kim <js1304@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH 02/18] mm: memcontrol: fix theoretical race in charge
- moving
-Message-ID: <20200422174229.GD362484@cmpxchg.org>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-3-hannes@cmpxchg.org>
- <CALvZod4gFC1TDo8dtdaeQKj_ZEoOnQvRnw_dZANH7qQYCmnnGA@mail.gmail.com>
+        id S1726797AbgDVRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726100AbgDVRne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:43:34 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF5C02076E;
+        Wed, 22 Apr 2020 17:43:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587577413;
+        bh=GKVeRNovN7Obk0/QIZ5ZrkitdmSCkes/oP/yb8NxlYI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ElNvhNTfCskVw6AaK9v+WlfpKssxKenLa3m1DmDTw4TqDUbQh+iCxY1wYHWhNgrgU
+         Vlx/Xx0LKMTw5ZJdupehMz598ahh2mcR867bVsF5vs6oio7Vyk36GE9ZV2ATk2O5s9
+         567isgI4CNdFQyeLZGcIBhgxm+6d9fUHAXgy6Go0=
+Date:   Wed, 22 Apr 2020 18:43:26 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jann Horn <jannh@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 02/12] scs: add accounting
+Message-ID: <20200422174326.GA3121@willie-the-truck>
+References: <20191018161033.261971-1-samitolvanen@google.com>
+ <20200421021453.198187-1-samitolvanen@google.com>
+ <20200421021453.198187-3-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod4gFC1TDo8dtdaeQKj_ZEoOnQvRnw_dZANH7qQYCmnnGA@mail.gmail.com>
+In-Reply-To: <20200421021453.198187-3-samitolvanen@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 09:51:20AM -0700, Shakeel Butt wrote:
-> On Mon, Apr 20, 2020 at 3:11 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > @@ -5426,15 +5420,23 @@ static int mem_cgroup_move_account(struct page *page,
-> >         }
-> >
-> >         /*
-> > +        * All state has been migrated, let's switch to the new memcg.
-> > +        *
-> >          * It is safe to change page->mem_cgroup here because the page
-> > -        * is referenced, charged, and isolated - we can't race with
-> > -        * uncharging, charging, migration, or LRU putback.
-> > +        * is referenced, charged, isolated, and locked: we can't race
-> > +        * with (un)charging, migration, LRU putback, or anything else
-> > +        * that would rely on a stable page->mem_cgroup.
-> > +        *
-> > +        * Note that lock_page_memcg is a memcg lock, not a page lock,
-> > +        * to save space. As soon as we switch page->mem_cgroup to a
-> > +        * new memcg that isn't locked, the above state can change
-> > +        * concurrently again. Make sure we're truly done with it.
-> >          */
-> > +       smp_mb();
+On Mon, Apr 20, 2020 at 07:14:43PM -0700, Sami Tolvanen wrote:
+> This change adds accounting for the memory allocated for shadow stacks.
 > 
-> You said theoretical race in the subject but the above comment
-> convinced me that smp_mb() is required. So, why is the race still
-> theoretical?
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/base/node.c    |  6 ++++++
+>  fs/proc/meminfo.c      |  4 ++++
+>  include/linux/mmzone.h |  3 +++
+>  kernel/scs.c           | 16 ++++++++++++++++
+>  mm/page_alloc.c        |  6 ++++++
+>  mm/vmstat.c            |  3 +++
+>  6 files changed, 38 insertions(+)
 
-Sorry about the confusion.
+Acked-by: Will Deacon <will@kernel.org>
 
-I said theoretical because I spotted it while thinking about the
-code. I'm not aware of any real users that suffered the consequences
-of this race condition. But they could exist in theory :-)
+Thanks!
 
-I think it's a real bug that needs fixing.
+Will
