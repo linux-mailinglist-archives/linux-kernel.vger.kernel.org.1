@@ -2,101 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DA31B4B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62461B4B2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgDVRBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgDVRBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:01:04 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E02C03C1AB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:01:04 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id o198so1531801ybg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ym89dv4PATS6R8YX5+GarohHF4cUWXJsipMHJDzTn2c=;
-        b=dv99oNKcCWx2NDVer2ZW48pSkY5pnU+bOeE4MXSJsO/OXoGgjWMf0iRWstcqH+3QpF
-         IfnvBI8vMvP+tDcF2XE2L1nQo5i8Rx36ledHel+AsEv3j5vJHhbJoc0hOYuZhr93YGA7
-         4zmNmaTZw2WmH8dSOhheia3/wQxrHZutmU7XqpV+LqCZ9R7z4Qy/KAePxv51ZVTFN/z1
-         zR2muYvf6iLKPICipD7g6d5gYjouEYots4IM9PiVY+DcBefxG8s6jDuWtVRGVc1J+6I9
-         F3RIqFtMIDweCuHN8xvxQZe6mKckNRHPZ6BbLz3dfhOLhYMwnqzRQ/gcJkFPRIYvm3DP
-         NSog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ym89dv4PATS6R8YX5+GarohHF4cUWXJsipMHJDzTn2c=;
-        b=YB9MSPZrzItwtkHJ0FZMZE8vvjudyWjevFXM8Bn4Mr6c+OsAQVN0sT35AACbCqjIBV
-         t27IhzGUIwME9UrcxJFR7tSOnsyuaJ5GZg4QiGZz1OPkcM4iKgXPt3ieCbtiMpft0agl
-         55Mk2LGZmKdeAgEkGP2KEQXGNx8zjUTRjp4YKApOIlBwAAzZZqktzrW6gdfEupyuCmaB
-         aYwOIj60HP69ktVZA6FF9F3NnSak3L5eNuGnRJMmQZYYFZ+NR89T2noFtbEf19vOWGnI
-         ppyphqNicztNoCUEnY5dB9p/8t1HPp8sBMI1l+0JXkHFhOqnrbPCbzN3fdbSeF1C8+1x
-         Gv1g==
-X-Gm-Message-State: AGi0PuYZ02CDs+UTd+g3KegYCnl9fKujcZjo3mA0sV1tUcnBYipHLdAN
-        jk2pmYftbicJkFB1fNtCt++rbfazJWMH/edbyLM=
-X-Google-Smtp-Source: APiQypKGzAp0vsTy91EG18QXjH4JD7KD1RR157tvuuO183Nfgz21dA5WaKfDdj9qHEaZODgm9kHNKuDthuZmT2IvrEk=
-X-Received: by 2002:a25:db42:: with SMTP id g63mr13516882ybf.201.1587574863586;
- Wed, 22 Apr 2020 10:01:03 -0700 (PDT)
+        id S1726787AbgDVRBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:01:20 -0400
+Received: from verein.lst.de ([213.95.11.211]:53665 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbgDVRBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:01:20 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 485BF68C4E; Wed, 22 Apr 2020 19:01:16 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 19:01:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: AMD boot woe due to "x86/mm: Cleanup pgprot_4k_2_large() and
+ pgprot_large_2_4k()"
+Message-ID: <20200422170116.GA28345@lst.de>
+References: <1ED37D02-125F-4919-861A-371981581D9E@lca.pw>
 MIME-Version: 1.0
-Received: by 2002:a26:6942:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 10:01:03
- -0700 (PDT)
-Reply-To: em102ro@gmail.com
-From:   "Mrs. Tash Alfred" <mrsalimaculu@gmail.com>
-Date:   Wed, 22 Apr 2020 10:01:03 -0700
-Message-ID: <CALpC2+JBN=nVsA_bNX6awz1JheeRCwkZhQbETNdgm87VOBTuZg@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ED37D02-125F-4919-861A-371981581D9E@lca.pw>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-I am Mrs. Tash  Alfred a citizen of the united state of America 41 old
-,  I work in HSBC Bank in Madrid Spain as a Telex Manager charge of
-wire transfer department.
+On Wed, Apr 22, 2020 at 11:55:54AM -0400, Qian Cai wrote:
+> Reverted the linux-next commit and its dependency,
+> 
+> a85573f7e741 ("x86/mm: Unexport __cachemode2pte_tbl”)
+> 9e294786c89a (“x86/mm: Cleanup pgprot_4k_2_large() and pgprot_large_2_4k()”)
+> 
+> fixed crashes or hard reset on AMD machines during boot that have been flagged by
+> KASAN in different forms indicating some sort of memory corruption with this config,
 
-I want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese   Politicians who  died on Corona Virus disease  in March 17th
-2020,  he used our bank to launder money overseas through the help of
-their Political advisers. Most of the funds which they transferred out
-of the shores of Chinese were gold and oil money that was supposed to
-have been used to develop the continent.
+Interesting.  Your config seems to boot fine in my VM until the point
+where the lack of virtio-blk support stops it from mounting the root
+file system.
 
-Can you invest this money and also help the poor ? The amount value at
-($22.5million Dollars), left in his account still unclaimed, if you
-know that you are capable to invest this fund into any   profitable
-business in your country kindly send me your details information as
-listed below to enable me draft you an application form of claim along
-with the deposit certificate which you are going to fill with your
-bank account detail necessary and contact the HSBC Bank in Madrid
-Spain for immediate transfer of the Amount into your bank account
-direct.
+Looking at the patch I found one bug, although that should not affect
+your config (it should use the pgprotval_t type), and one difference
+that could affect code generation, although I prefer the new version
+(use of __pgprot vs a local variable + pgprot_val()).
 
-Percentage share will be 60,for me/ 40, for you.
+Two patches attached, can you try them?
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
+--LQksG6bCIzRHxTLp
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-x86-Use-pgprotval_t-in-protval_4k_2_large-and-pgprot.patch"
 
-Thanks with my best regards.
-Mrs. Tash Alfred
-Telex Manager
-Spain Madrid (H.S.B.C)
+From 71829ed28a4f3d616382e7a362d501eb9ea7dc13 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 22 Apr 2020 18:53:08 +0200
+Subject: x86: Use pgprotval_t in protval_4k_2_large and pgprot_4k_2_large
+
+Use the proper type for "raw" page table values.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/x86/include/asm/pgtable_types.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 567abdbd64d3..7b6ddcf77d70 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -478,7 +478,7 @@ static inline pteval_t pte_flags(pte_t pte)
+ 
+ unsigned long cachemode2protval(enum page_cache_mode pcm);
+ 
+-static inline unsigned long protval_4k_2_large(unsigned long val)
++static inline pgprotval_t protval_4k_2_large(pgprotval_t val)
+ {
+ 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
+ 		((val & _PAGE_PAT) << (_PAGE_BIT_PAT_LARGE - _PAGE_BIT_PAT));
+@@ -487,7 +487,7 @@ static inline pgprot_t pgprot_4k_2_large(pgprot_t pgprot)
+ {
+ 	return __pgprot(protval_4k_2_large(pgprot_val(pgprot)));
+ }
+-static inline unsigned long protval_large_2_4k(unsigned long val)
++static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
+ {
+ 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
+ 		((val & _PAGE_PAT_LARGE) >>
+-- 
+2.26.1
+
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0002-foo.patch"
+
+From e5a6c2e84accad3d528c5c90c74071d10079db9a Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 22 Apr 2020 18:54:45 +0200
+Subject: foo
+
+---
+ arch/x86/include/asm/pgtable_types.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 7b6ddcf77d70..c6d4725269bb 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -485,7 +485,10 @@ static inline pgprotval_t protval_4k_2_large(pgprotval_t val)
+ }
+ static inline pgprot_t pgprot_4k_2_large(pgprot_t pgprot)
+ {
+-	return __pgprot(protval_4k_2_large(pgprot_val(pgprot)));
++	pgprot_t new;
++
++	pgprot_val(new) = protval_4k_2_large(pgprot_val(pgprot));
++	return new;
+ }
+ static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
+ {
+@@ -495,9 +498,11 @@ static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
+ }
+ static inline pgprot_t pgprot_large_2_4k(pgprot_t pgprot)
+ {
+-	return __pgprot(protval_large_2_4k(pgprot_val(pgprot)));
+-}
++	pgprot_t new;
+ 
++	pgprot_val(new) = protval_large_2_4k(pgprot_val(pgprot));
++	return new;
++}
+ 
+ typedef struct page *pgtable_t;
+ 
+-- 
+2.26.1
+
+
+--LQksG6bCIzRHxTLp--
