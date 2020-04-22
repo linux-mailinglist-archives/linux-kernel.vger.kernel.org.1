@@ -2,149 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F0F1B3AC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6123E1B3AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgDVJHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 05:07:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57664 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbgDVJHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:07:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7086FAEED;
-        Wed, 22 Apr 2020 09:07:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6DCF91E125C; Wed, 22 Apr 2020 11:07:46 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 11:07:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, hdegoede@redhat.com,
-        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] bdi: use bdi_dev_name() to get device name
-Message-ID: <20200422090746.GD8775@quack2.suse.cz>
-References: <20200422073851.303714-1-hch@lst.de>
- <20200422073851.303714-4-hch@lst.de>
+        id S1726666AbgDVJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 05:08:50 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:10048 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725924AbgDVJIs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 05:08:48 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03M8wB7n011347;
+        Wed, 22 Apr 2020 11:08:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=Ps7TvwTK/0SEKTWJDXvtpJV0GLq5jnv18Nnlhcp4Kx8=;
+ b=TcD0zJerMIjUUHkkZn3jX9sw9yQukoX0mUJx29wBmDDP7x7W8vh2fL7gE1wfUI6eTmJZ
+ D9rkMmTbkYSocZCkGDmXWFv1Ogjk8qfHGBbp49WFeyJh0TNIVjuww3XMVmGuY9jfJQqZ
+ bSYz6Nw/7QID6U+pUtlbn8hsWnavvWx5ZnQGdA9brMrEiejTNZBYpXbrYed1+bJhuj+t
+ leCA1x4jro7K+BccK8+BdqqTIQSGCq4G31OcrDz5kjTl3QKZcNfEcNeyMmAIh2Ez84v5
+ 2WFps4uf7iSIv9T164oENzsixFepdm/Xb2xkwyzwjolYszuV3hP4lPpGZSb85kiarWFE OQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fq11nbvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Apr 2020 11:08:38 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 625F410002A;
+        Wed, 22 Apr 2020 11:08:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 55FCC2A4D94;
+        Wed, 22 Apr 2020 11:08:38 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 22 Apr 2020 11:08:37
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>
+Subject: [PATCH 0/3] STMFX power related fixes
+Date:   Wed, 22 Apr 2020 11:08:30 +0200
+Message-ID: <20200422090833.9743-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422073851.303714-4-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_03:2020-04-21,2020-04-22 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-04-20 09:38:45, Christoph Hellwig wrote:
-> From: Yufen Yu <yuyufen@huawei.com>
-> 
-> Use the common interface bdi_dev_name() to get device name.
-> 
-> Signed-off-by: Yufen Yu <yuyufen@huawei.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+With suspend/resume tests on STM32MP157C-EV1 board, on which STMFX is used by
+several devices, some errors could occurred: -6 when trying to restore STMFX
+registers, spurious interrupts after disabling supply...
+This patchset fixes all these issues and cleans IRQ init error path.
 
-Looks good to me. You can add:
+Amelie Delaunay (3):
+  mfd: stmfx: reset chip on resume as supply was disabled
+  mfd: stmfx: fix stmfx_irq_init error path
+  mfd: stmfx: disable irq in suspend to avoid spurious interrupt
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+ drivers/mfd/stmfx.c       | 22 ++++++++++++++++++++--
+ include/linux/mfd/stmfx.h |  1 +
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-								Honza
-
-> ---
->  block/bfq-iosched.c        | 5 +++--
->  block/blk-cgroup.c         | 2 +-
->  fs/ceph/debugfs.c          | 2 +-
->  include/trace/events/wbt.h | 8 ++++----
->  4 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 78ba57efd16b..4d4fe44a9eea 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -4976,8 +4976,9 @@ bfq_set_next_ioprio_data(struct bfq_queue *bfqq, struct bfq_io_cq *bic)
->  	ioprio_class = IOPRIO_PRIO_CLASS(bic->ioprio);
->  	switch (ioprio_class) {
->  	default:
-> -		dev_err(bfqq->bfqd->queue->backing_dev_info->dev,
-> -			"bfq: bad prio class %d\n", ioprio_class);
-> +		pr_err("bdi %s: bfq: bad prio class %d\n",
-> +				bdi_dev_name(bfqq->bfqd->queue->backing_dev_info),
-> +				ioprio_class);
->  		/* fall through */
->  	case IOPRIO_CLASS_NONE:
->  		/*
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index c5dc833212e1..930212c1a512 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -496,7 +496,7 @@ const char *blkg_dev_name(struct blkcg_gq *blkg)
->  {
->  	/* some drivers (floppy) instantiate a queue w/o disk registered */
->  	if (blkg->q->backing_dev_info->dev)
-> -		return dev_name(blkg->q->backing_dev_info->dev);
-> +		return bdi_dev_name(blkg->q->backing_dev_info);
->  	return NULL;
->  }
->  
-> diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> index 481ac97b4d25..dcaed75de9e6 100644
-> --- a/fs/ceph/debugfs.c
-> +++ b/fs/ceph/debugfs.c
-> @@ -271,7 +271,7 @@ void ceph_fs_debugfs_init(struct ceph_fs_client *fsc)
->  				    &congestion_kb_fops);
->  
->  	snprintf(name, sizeof(name), "../../bdi/%s",
-> -		 dev_name(fsc->sb->s_bdi->dev));
-> +		 bdi_dev_name(fsc->sb->s_bdi));
->  	fsc->debugfs_bdi =
->  		debugfs_create_symlink("bdi",
->  				       fsc->client->debugfs_dir,
-> diff --git a/include/trace/events/wbt.h b/include/trace/events/wbt.h
-> index 784814160197..9c66e59d859c 100644
-> --- a/include/trace/events/wbt.h
-> +++ b/include/trace/events/wbt.h
-> @@ -33,7 +33,7 @@ TRACE_EVENT(wbt_stat,
->  	),
->  
->  	TP_fast_assign(
-> -		strlcpy(__entry->name, dev_name(bdi->dev),
-> +		strlcpy(__entry->name, bdi_dev_name(bdi),
->  			ARRAY_SIZE(__entry->name));
->  		__entry->rmean		= stat[0].mean;
->  		__entry->rmin		= stat[0].min;
-> @@ -68,7 +68,7 @@ TRACE_EVENT(wbt_lat,
->  	),
->  
->  	TP_fast_assign(
-> -		strlcpy(__entry->name, dev_name(bdi->dev),
-> +		strlcpy(__entry->name, bdi_dev_name(bdi),
->  			ARRAY_SIZE(__entry->name));
->  		__entry->lat = div_u64(lat, 1000);
->  	),
-> @@ -105,7 +105,7 @@ TRACE_EVENT(wbt_step,
->  	),
->  
->  	TP_fast_assign(
-> -		strlcpy(__entry->name, dev_name(bdi->dev),
-> +		strlcpy(__entry->name, bdi_dev_name(bdi),
->  			ARRAY_SIZE(__entry->name));
->  		__entry->msg	= msg;
->  		__entry->step	= step;
-> @@ -141,7 +141,7 @@ TRACE_EVENT(wbt_timer,
->  	),
->  
->  	TP_fast_assign(
-> -		strlcpy(__entry->name, dev_name(bdi->dev),
-> +		strlcpy(__entry->name, bdi_dev_name(bdi),
->  			ARRAY_SIZE(__entry->name));
->  		__entry->status		= status;
->  		__entry->step		= step;
-> -- 
-> 2.26.1
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
