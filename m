@@ -2,44 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBF91B4BF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791C61B4BF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgDVRlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:41:05 -0400
-Received: from verein.lst.de ([213.95.11.211]:53925 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgDVRlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:41:04 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 122D068C4E; Wed, 22 Apr 2020 19:41:03 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 19:41:02 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Martijn Coenen <maco@android.com>
-Cc:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com,
-        narayan@google.com, zezeozue@google.com, kernel-team@android.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@google.com, bvanassche@acm.org, Chaitanya.Kulkarni@wdc.com,
-        jaegeuk@kernel.org
-Subject: Re: [PATCH v2 4/5] loop: rework lo_ioctl() __user argument casting
-Message-ID: <20200422174102.GD30852@lst.de>
-References: <20200422100636.46357-1-maco@android.com> <20200422100636.46357-5-maco@android.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422100636.46357-5-maco@android.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1726967AbgDVRmL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Apr 2020 13:42:11 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34900 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgDVRmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:42:11 -0400
+Received: from [192.168.1.91] (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 46689CECFD;
+        Wed, 22 Apr 2020 19:51:47 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v1] Bluetooth: L2CAP: add support for waiting
+ disconnection resp
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200414160758.v1.1.Idab9dcdc7da549ed1fd5c66341fb8baffaee8d10@changeid>
+Date:   Wed, 22 Apr 2020 19:41:39 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <84DFB53F-C60A-48D3-AC01-2C9C87BA805D@holtmann.org>
+References: <20200414160758.v1.1.Idab9dcdc7da549ed1fd5c66341fb8baffaee8d10@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:06:35PM +0200, Martijn Coenen wrote:
-> In preparation for a new ioctl that needs to copy_from_user(); makes the
-> code easier to read as well.
+Hi Archie,
+
+> Whenever we disconnect a L2CAP connection, we would immediately
+> report a disconnection event (EPOLLHUP) to the upper layer, without
+> waiting for the response of the other device.
 > 
-> Signed-off-by: Martijn Coenen <maco@android.com>
+> This patch offers an option to wait until we receive a disconnection
+> response before reporting disconnection event, by using the "how"
+> parameter in l2cap_sock_shutdown(). Therefore, upper layer can opt
+> to wait for disconnection response by shutdown(sock, SHUT_WR).
+> 
+> This can be used to enforce proper disconnection order in HID,
+> where the disconnection of the interrupt channel must be complete
+> before attempting to disconnect the control channel.
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> ---
+> 
+> net/bluetooth/l2cap_sock.c | 30 +++++++++++++++++++++++-------
+> 1 file changed, 23 insertions(+), 7 deletions(-)
 
-Looks good,
+the patch looks fine to me. Do we have something in l2cap-tester or l2test that we can verify this with before I apply it.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Regards
+
+Marcel
+
