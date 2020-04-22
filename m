@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF92E1B4162
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92C81B3DFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgDVKKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40348 "EHLO mail.kernel.org"
+        id S1730336AbgDVKX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:23:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728988AbgDVKKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:32 -0400
+        id S1729604AbgDVKXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 158FD20575;
-        Wed, 22 Apr 2020 10:10:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BA5B2076E;
+        Wed, 22 Apr 2020 10:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550231;
-        bh=Dd0mG1GMJcdGRJyGJoFduNfbabrP2iJc0jvKndSXVdg=;
+        s=default; t=1587550987;
+        bh=xnctP96IABKORGoIgvVEM+OiiZ2hWkTGMixUA2d1amo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jo3qPRyz/KuW34334FaxaTO50044zwWjamrTZvaqR/HDyEJW738T6a6ZhvMnd3/pH
-         3ooSPYfDuxqptgdou0n9EQArUM/2d0LadqNrtEz9tFIcj1ytauU/l7TPTjGYPisph4
-         dRK1XquWLRKToPZ8Vb8bGlzotz1Fl5R0HE95Ixr8=
+        b=lEuDxhOTvSAeGsGsjCWQs9au5nkYzqiNY9bMIuLqCr06TF+kW8F8VhLyaB1k90FiN
+         eEo6cmkHf01KugduOcbO27/L0lK6prAc49vWiqK6AMGHzkJH98L6W8DNeLtZ4DVrio
+         HUOtumm6e6y6fNMQzthWQdGdQ8C/ZvI8Jxjn7CEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 4.14 055/199] signal: Extend exec_id to 64bits
+        stable@vger.kernel.org, Yixin Zhang <yixin.zhang@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 054/166] dmaengine: idxd: reflect shadow copy of traffic class programming
 Date:   Wed, 22 Apr 2020 11:56:21 +0200
-Message-Id: <20200422095103.761468165@linuxfoundation.org>
+Message-Id: <20200422095054.762310621@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Dave Jiang <dave.jiang@intel.com>
 
-commit d1e7fd6462ca9fc76650fbe6ca800e35b24267da upstream.
+[ Upstream commit a1fcaf07ec718bb1f11e29e952c9a4cb733d57a5 ]
 
-Replace the 32bit exec_id with a 64bit exec_id to make it impossible
-to wrap the exec_id counter.  With care an attacker can cause exec_id
-wrap and send arbitrary signals to a newly exec'd parent.  This
-bypasses the signal sending checks if the parent changes their
-credentials during exec.
+The traffic class are set to -1 at initialization until the user programs
+them. If the user choose not to, the driver will program appropriate
+defaults. The driver also needs to update the shadowed copies of the values
+after doing the programming.
 
-The severity of this problem can been seen that in my limited testing
-of a 32bit exec_id it can take as little as 19s to exec 65536 times.
-Which means that it can take as little as 14 days to wrap a 32bit
-exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
-days.  Even my slower timing is in the uptime of a typical server.
-Which means self_exec_id is simply a speed bump today, and if exec
-gets noticably faster self_exec_id won't even be a speed bump.
-
-Extending self_exec_id to 64bits introduces a problem on 32bit
-architectures where reading self_exec_id is no longer atomic and can
-take two read instructions.  Which means that is is possible to hit
-a window where the read value of exec_id does not match the written
-value.  So with very lucky timing after this change this still
-remains expoiltable.
-
-I have updated the update of exec_id on exec to use WRITE_ONCE
-and the read of exec_id in do_notify_parent to use READ_ONCE
-to make it clear that there is no locking between these two
-locations.
-
-Link: https://lore.kernel.org/kernel-hardening/20200324215049.GA3710@pi3.com.pl
-Fixes: 2.3.23pre2
-Cc: stable@vger.kernel.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: c52ca478233c ("dmaengine: idxd: add configuration component of driver")
+Reported-by: Yixin Zhang <yixin.zhang@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Link: https://lore.kernel.org/r/158386263076.10898.4586509576813094559.stgit@djiang5-desk3.ch.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/exec.c             |    2 +-
- include/linux/sched.h |    4 ++--
- kernel/signal.c       |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/dma/idxd/device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1373,7 +1373,7 @@ void setup_new_exec(struct linux_binprm
+diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
+index ada69e722f84a..f6f49f0f6fae2 100644
+--- a/drivers/dma/idxd/device.c
++++ b/drivers/dma/idxd/device.c
+@@ -584,11 +584,11 @@ static void idxd_group_flags_setup(struct idxd_device *idxd)
+ 		struct idxd_group *group = &idxd->groups[i];
  
- 	/* An exec changes our domain. We are no longer part of the thread
- 	   group */
--	current->self_exec_id++;
-+	WRITE_ONCE(current->self_exec_id, current->self_exec_id + 1);
- 	flush_signal_handlers(current, 0);
- }
- EXPORT_SYMBOL(setup_new_exec);
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -839,8 +839,8 @@ struct task_struct {
- 	struct seccomp			seccomp;
- 
- 	/* Thread group tracking: */
--	u32				parent_exec_id;
--	u32				self_exec_id;
-+	u64				parent_exec_id;
-+	u64				self_exec_id;
- 
- 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
- 	spinlock_t			alloc_lock;
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1675,7 +1675,7 @@ bool do_notify_parent(struct task_struct
- 		 * This is only possible if parent == real_parent.
- 		 * Check if it has changed security domain.
- 		 */
--		if (tsk->parent_exec_id != tsk->parent->self_exec_id)
-+		if (tsk->parent_exec_id != READ_ONCE(tsk->parent->self_exec_id))
- 			sig = SIGCHLD;
- 	}
- 
+ 		if (group->tc_a == -1)
+-			group->grpcfg.flags.tc_a = 0;
++			group->tc_a = group->grpcfg.flags.tc_a = 0;
+ 		else
+ 			group->grpcfg.flags.tc_a = group->tc_a;
+ 		if (group->tc_b == -1)
+-			group->grpcfg.flags.tc_b = 1;
++			group->tc_b = group->grpcfg.flags.tc_b = 1;
+ 		else
+ 			group->grpcfg.flags.tc_b = group->tc_b;
+ 		group->grpcfg.flags.use_token_limit = group->use_token_limit;
+-- 
+2.20.1
+
 
 
