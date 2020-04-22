@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72591B3DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610AE1B3F66
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgDVKSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:18:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
+        id S1730890AbgDVKhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:37:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729862AbgDVKRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:38 -0400
+        id S1730209AbgDVKWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8941220776;
-        Wed, 22 Apr 2020 10:17:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36BE42075A;
+        Wed, 22 Apr 2020 10:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550658;
-        bh=M6ptCejwI31FoxbckhDkOLx2nSehW9/IaJ0HcvrgiMU=;
+        s=default; t=1587550955;
+        bh=u/HMnLGTaLSNri32SyqVZvXqm4KgTOgJ5AYusxzD3mA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URu+o84rE5OeWDfFzthA9TdJGBK8JxP71OvSn13SApg1vOi3YVOUvjikP0A8kfLI4
-         oHQmLG4KZbnM1jRSmb51OWru/nbpRvSAobi3DK8PgjDMAjzk9l9aOt16sUpyM0KNUI
-         auDvjN5tr784YVP9lyo73Mk6A02oniuf0CMMMlSU=
+        b=vFzgHEvUegU1hdph0a4+/p5Qm/AMUpNZ8ZSaq/GgoMC7Rva64vV8S5Zo2ck2jkO0J
+         Ln8K1tJTuQHQYXAZ3WPZpbGdcF5bdb7iN6mQ0jL6+21NeVpRY4JX/429jHGiqQ8rIm
+         Rs22N7zqxT4GJcSz8MBc2ZlCp7juA6A4ZZMafm8Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 008/118] ALSA: hda: Honor PM disablement in PM freeze and thaw_noirq ops
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 042/166] clk: at91: usb: continue if clk_hw_round_rate() return zero
 Date:   Wed, 22 Apr 2020 11:56:09 +0200
-Message-Id: <20200422095032.889229251@linuxfoundation.org>
+Message-Id: <20200422095053.550865792@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-commit 10db5bccc390e8e4bd9fcd1fbd4f1b23f271a405 upstream.
+[ Upstream commit b0ecf1c6c6e82da4847900fad0272abfd014666d ]
 
-freeze_noirq and thaw_noirq need to check the PM availability like
-other PM ops.  There are cases where the device got disabled due to
-the error, and the PM operation should be ignored for that.
+clk_hw_round_rate() may call round rate function of its parents. In case
+of SAM9X60 two of USB parrents are PLLA and UPLL. These clocks are
+controlled by clk-sam9x60-pll.c driver. The round rate function for this
+driver is sam9x60_pll_round_rate() which call in turn
+sam9x60_pll_get_best_div_mul(). In case the requested rate is not in the
+proper range (rate < characteristics->output[0].min &&
+rate > characteristics->output[0].max) the sam9x60_pll_round_rate() will
+return a negative number to its caller (called by
+clk_core_round_rate_nolock()). clk_hw_round_rate() will return zero in
+case a negative number is returned by clk_core_round_rate_nolock(). With
+this, the USB clock will continue its rate computation even caller of
+clk_hw_round_rate() returned an error. With this, the USB clock on SAM9X60
+may not chose the best parent. I detected this after a suspend/resume
+cycle on SAM9X60.
 
-Fixes: 3e6db33aaf1d ("ALSA: hda - Set SKL+ hda controller power at freeze() and thaw()")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Link: https://lkml.kernel.org/r/1579261009-4573-2-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/clk/at91/clk-usb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1068,6 +1068,8 @@ static int azx_freeze_noirq(struct devic
- 	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
- 
-+	if (!azx_is_pm_ready(card))
-+		return 0;
- 	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D3hot);
- 
-@@ -1080,6 +1082,8 @@ static int azx_thaw_noirq(struct device
- 	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
- 
-+	if (!azx_is_pm_ready(card))
-+		return 0;
- 	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D0);
- 
+diff --git a/drivers/clk/at91/clk-usb.c b/drivers/clk/at91/clk-usb.c
+index bda92980e0155..c0895c993cce2 100644
+--- a/drivers/clk/at91/clk-usb.c
++++ b/drivers/clk/at91/clk-usb.c
+@@ -75,6 +75,9 @@ static int at91sam9x5_clk_usb_determine_rate(struct clk_hw *hw,
+ 			tmp_parent_rate = req->rate * div;
+ 			tmp_parent_rate = clk_hw_round_rate(parent,
+ 							   tmp_parent_rate);
++			if (!tmp_parent_rate)
++				continue;
++
+ 			tmp_rate = DIV_ROUND_CLOSEST(tmp_parent_rate, div);
+ 			if (tmp_rate < req->rate)
+ 				tmp_diff = req->rate - tmp_rate;
+-- 
+2.20.1
+
 
 
