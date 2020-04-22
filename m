@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC591B408F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53DF1B3C6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731916AbgDVKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52952 "EHLO mail.kernel.org"
+        id S1728203AbgDVKFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728680AbgDVKQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:58 -0400
+        id S1728193AbgDVKFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B641E2070B;
-        Wed, 22 Apr 2020 10:16:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C0B020781;
+        Wed, 22 Apr 2020 10:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550618;
-        bh=USHL728CC5BpJX28A7ujeCdhKKJonWU+NgiTGWGo5VA=;
+        s=default; t=1587549935;
+        bh=PbbjQLGK7kVdc1c1pndJ6tVmcwajsjq5vId/JCF4hUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=awMgd1qHndXcdpyAdYbP7VYyGcI4x1CzlV1Mqe8QdnNPb0sYiDNw61q0AzTt8r2dU
-         vdZwZBa5tIjiiXAmq8DUeW/TV0Eon6JWlTR0YRBOqCSWSOZfEANI41f0fzsK9b7A0l
-         VYQXd4XmGGtbY9R1hEHzwVo5cb4QGZV6HY42xvFE=
+        b=LUXYIPPy8xrGu97h4IobsjIs3JWA4MuUttApUttEivc1JRJXV9BbOFaAXHzUpsMHj
+         Cu1lWsyXptYZewULQ/eQHsr7rxjwv9yJsrcbqiE1gx5whPJAr6HkwugKRGAedie4qb
+         Ywwbz4EeyaFie6woWUgQi+HTWj/9kzWdasG4i/eY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>
-Subject: [PATCH 5.4 024/118] afs: Fix missing XDR advance in xdr_decode_{AFS,YFS}FSFetchStatus()
+        stable@vger.kernel.org, Wang Wenhu <wenhu.wang@vivo.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 068/125] net: qrtr: send msgs from local of same id as broadcast
 Date:   Wed, 22 Apr 2020 11:56:25 +0200
-Message-Id: <20200422095035.778695497@linuxfoundation.org>
+Message-Id: <20200422095044.267838759@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,122 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Wang Wenhu <wenhu.wang@vivo.com>
 
-commit c72057b56f7e24865840a6961d801a7f21d30a5f upstream.
+[ Upstream commit 6dbf02acef69b0742c238574583b3068afbd227c ]
 
-If we receive a status record that has VNOVNODE set in the abort field,
-xdr_decode_AFSFetchStatus() and xdr_decode_YFSFetchStatus() don't advance
-the XDR pointer, thereby corrupting anything subsequent decodes from the
-same block of data.
+If the local node id(qrtr_local_nid) is not modified after its
+initialization, it equals to the broadcast node id(QRTR_NODE_BCAST).
+So the messages from local node should not be taken as broadcast
+and keep the process going to send them out anyway.
 
-This has the potential to affect AFS.InlineBulkStatus and
-YFS.InlineBulkStatus operation, but probably doesn't since the status
-records are extracted as individual blocks of data and the buffer pointer
-is reset between blocks.
+The definitions are as follow:
+static unsigned int qrtr_local_nid = NUMA_NO_NODE;
 
-It does affect YFS.RemoveFile2 operation, corrupting the volsync record -
-though that is not currently used.
-
-Other operations abort the entire operation rather than returning an error
-inline, in which case there is no decoding to be done.
-
-Fix this by unconditionally advancing the xdr pointer.
-
-Fixes: 684b0f68cf1c ("afs: Fix AFSFetchStatus decoder to provide OpenAFS compatibility")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Fixes: fdf5fd397566 ("net: qrtr: Broadcast messages only from control port")
+Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/afs/fsclient.c  |   14 +++++++++-----
- fs/afs/yfsclient.c |   12 ++++++++----
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ net/qrtr/qrtr.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/afs/fsclient.c
-+++ b/fs/afs/fsclient.c
-@@ -65,6 +65,7 @@ static int xdr_decode_AFSFetchStatus(con
- 	bool inline_error = (call->operation_ID == afs_FS_InlineBulkStatus);
- 	u64 data_version, size;
- 	u32 type, abort_code;
-+	int ret;
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -621,20 +621,21 @@ static int qrtr_sendmsg(struct socket *s
  
- 	abort_code = ntohl(xdr->abort_code);
- 
-@@ -78,7 +79,7 @@ static int xdr_decode_AFSFetchStatus(con
- 			 */
- 			status->abort_code = abort_code;
- 			scb->have_error = true;
--			return 0;
-+			goto good;
+ 	node = NULL;
+ 	if (addr->sq_node == QRTR_NODE_BCAST) {
+-		enqueue_fn = qrtr_bcast_enqueue;
+-		if (addr->sq_port != QRTR_PORT_CTRL) {
++		if (addr->sq_port != QRTR_PORT_CTRL &&
++		    qrtr_local_nid != QRTR_NODE_BCAST) {
+ 			release_sock(sk);
+ 			return -ENOTCONN;
  		}
- 
- 		pr_warn("Unknown AFSFetchStatus version %u\n", ntohl(xdr->if_version));
-@@ -87,7 +88,7 @@ static int xdr_decode_AFSFetchStatus(con
- 
- 	if (abort_code != 0 && inline_error) {
- 		status->abort_code = abort_code;
--		return 0;
-+		goto good;
++		enqueue_fn = qrtr_bcast_enqueue;
+ 	} else if (addr->sq_node == ipc->us.sq_node) {
+ 		enqueue_fn = qrtr_local_enqueue;
+ 	} else {
+-		enqueue_fn = qrtr_node_enqueue;
+ 		node = qrtr_node_lookup(addr->sq_node);
+ 		if (!node) {
+ 			release_sock(sk);
+ 			return -ECONNRESET;
+ 		}
++		enqueue_fn = qrtr_node_enqueue;
  	}
  
- 	type = ntohl(xdr->type);
-@@ -123,13 +124,16 @@ static int xdr_decode_AFSFetchStatus(con
- 	data_version |= (u64)ntohl(xdr->data_version_hi) << 32;
- 	status->data_version = data_version;
- 	scb->have_status = true;
--
-+good:
-+	ret = 0;
-+advance:
- 	*_bp = (const void *)*_bp + sizeof(*xdr);
--	return 0;
-+	return ret;
- 
- bad:
- 	xdr_dump_bad(*_bp);
--	return afs_protocol_error(call, -EBADMSG, afs_eproto_bad_status);
-+	ret = afs_protocol_error(call, -EBADMSG, afs_eproto_bad_status);
-+	goto advance;
- }
- 
- static time64_t xdr_decode_expiry(struct afs_call *call, u32 expiry)
---- a/fs/afs/yfsclient.c
-+++ b/fs/afs/yfsclient.c
-@@ -186,13 +186,14 @@ static int xdr_decode_YFSFetchStatus(con
- 	const struct yfs_xdr_YFSFetchStatus *xdr = (const void *)*_bp;
- 	struct afs_file_status *status = &scb->status;
- 	u32 type;
-+	int ret;
- 
- 	status->abort_code = ntohl(xdr->abort_code);
- 	if (status->abort_code != 0) {
- 		if (status->abort_code == VNOVNODE)
- 			status->nlink = 0;
- 		scb->have_error = true;
--		return 0;
-+		goto good;
- 	}
- 
- 	type = ntohl(xdr->type);
-@@ -220,13 +221,16 @@ static int xdr_decode_YFSFetchStatus(con
- 	status->size		= xdr_to_u64(xdr->size);
- 	status->data_version	= xdr_to_u64(xdr->data_version);
- 	scb->have_status	= true;
--
-+good:
-+	ret = 0;
-+advance:
- 	*_bp += xdr_size(xdr);
--	return 0;
-+	return ret;
- 
- bad:
- 	xdr_dump_bad(*_bp);
--	return afs_protocol_error(call, -EBADMSG, afs_eproto_bad_status);
-+	ret = afs_protocol_error(call, -EBADMSG, afs_eproto_bad_status);
-+	goto advance;
- }
- 
- /*
+ 	plen = (len + 3) & ~3;
 
 
