@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3A81B3FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960A1B3E4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgDVKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
+        id S1730819AbgDVK1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730120AbgDVKUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:20:40 -0400
+        id S1730805AbgDVK1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:27:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34B1D2070B;
-        Wed, 22 Apr 2020 10:20:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32CF32075A;
+        Wed, 22 Apr 2020 10:26:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550839;
-        bh=x9o356t3GFTMdLhsII0MkSSipdwmAm2zA7xCIh92LPE=;
+        s=default; t=1587551219;
+        bh=Fiy/C+hMDSiklLTNMwKsro5YSZ51P2tQcXoshYJOGXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m3pAkeymaBsVnfesVEKXIX8ILiViH6psaE7mV5deUWvRk0JM1K9TKZXa4Ih3HyEZX
-         8pQbyFFyZaDYCKB8nw9cJnAYr0/6x4kH411JWi5ghesT32QaCtW7kLRLAf5REDZTju
-         +ydp7wtRx7FGplTNSFOGxe42G5O+4v2T6FL2E2f8=
+        b=2CcMe7nD2cvWrKoOdXFftA4YRZ1uFd+zu1tKh+b6e8pcceQq0nKL3J/e5npqgfSn1
+         PzJ2meu9337p86HM/2VTaMduoT3Xg5LC9GgFif5sIT3lPdvsv+SmgRkdyF/1EzwltX
+         bgw/SIeCRfqbB4of2fhncc5lk53Kzs+Ifb4tDdiE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>,
-        Joern Engel <joern@lazybastard.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH 5.4 113/118] mtd: phram: fix a double free issue in error path
-Date:   Wed, 22 Apr 2020 11:57:54 +0200
-Message-Id: <20200422095049.379269957@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Steve French <stfrench@microsoft.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>
+Subject: [PATCH 5.6 148/166] cifs: ignore cached share root handle closing errors
+Date:   Wed, 22 Apr 2020 11:57:55 +0200
+Message-Id: <20200422095104.463905753@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,64 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Yang <wenyang@linux.alibaba.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit 49c64df880570034308e4a9a49c4bc95cf8cdb33 upstream.
+commit e79b0332ae06b4895dcecddf4bbc5d3917e9383c upstream.
 
-The variable 'name' is released multiple times in the error path,
-which may cause double free issues.
-This problem is avoided by adding a goto label to release the memory
-uniformly. And this change also makes the code a bit more cleaner.
+Fix tcon use-after-free and NULL ptr deref.
 
-Fixes: 4f678a58d335 ("mtd: fix memory leaks in phram_setup")
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Joern Engel <joern@lazybastard.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200318153156.25612-1-wenyang@linux.alibaba.com
+Customer system crashes with the following kernel log:
+
+[462233.169868] CIFS VFS: Cancelling wait for mid 4894753 cmd: 14       => a QUERY DIR
+[462233.228045] CIFS VFS: cifs_put_smb_ses: Session Logoff failure rc=-4
+[462233.305922] CIFS VFS: cifs_put_smb_ses: Session Logoff failure rc=-4
+[462233.306205] CIFS VFS: cifs_put_smb_ses: Session Logoff failure rc=-4
+[462233.347060] CIFS VFS: cifs_put_smb_ses: Session Logoff failure rc=-4
+[462233.347107] CIFS VFS: Close unmatched open
+[462233.347113] BUG: unable to handle kernel NULL pointer dereference at 0000000000000038
+...
+    [exception RIP: cifs_put_tcon+0xa0] (this is doing tcon->ses->server)
+ #6 [...] smb2_cancelled_close_fid at ... [cifs]
+ #7 [...] process_one_work at ...
+ #8 [...] worker_thread at ...
+ #9 [...] kthread at ...
+
+The most likely explanation we have is:
+
+* When we put the last reference of a tcon (refcount=0), we close the
+  cached share root handle.
+* If closing a handle is interrupted, SMB2_close() will
+  queue a SMB2_close() in a work thread.
+* The queued object keeps a tcon ref so we bump the tcon
+  refcount, jumping from 0 to 1.
+* We reach the end of cifs_put_tcon(), we free the tcon object despite
+  it now having a refcount of 1.
+* The queued work now runs, but the tcon, ses & server was freed in
+  the meantime resulting in a crash.
+
+THREAD 1
+========
+cifs_put_tcon                 => tcon refcount reach 0
+  SMB2_tdis
+   close_shroot_lease
+    close_shroot_lease_locked => if cached root has lease && refcount = 0
+     smb2_close_cached_fid    => if cached root valid
+      SMB2_close              => retry close in a thread if interrupted
+       smb2_handle_cancelled_close
+        __smb2_handle_cancelled_close    => !! tcon refcount bump 0 => 1 !!
+         INIT_WORK(&cancelled->work, smb2_cancelled_close_fid);
+         queue_work(cifsiod_wq, &cancelled->work) => queue work
+ tconInfoFree(tcon);    ==> freed!
+ cifs_put_smb_ses(ses); ==> freed!
+
+THREAD 2 (workqueue)
+========
+smb2_cancelled_close_fid
+  SMB2_close(0, cancelled->tcon, ...); => use-after-free of tcon
+  cifs_put_tcon(cancelled->tcon);      => tcon refcount reach 0 second time
+  *CRASH*
+
+Fixes: d9191319358d ("CIFS: Close cached root handle only if it has a lease")
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/devices/phram.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ fs/cifs/smb2misc.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -243,22 +243,25 @@ static int phram_setup(const char *val)
+--- a/fs/cifs/smb2misc.c
++++ b/fs/cifs/smb2misc.c
+@@ -766,6 +766,20 @@ smb2_handle_cancelled_close(struct cifs_
  
- 	ret = parse_num64(&start, token[1]);
- 	if (ret) {
--		kfree(name);
- 		parse_err("illegal start address\n");
-+		goto error;
- 	}
- 
- 	ret = parse_num64(&len, token[2]);
- 	if (ret) {
--		kfree(name);
- 		parse_err("illegal device length\n");
-+		goto error;
- 	}
- 
- 	ret = register_device(name, start, len);
--	if (!ret)
--		pr_info("%s device: %#llx at %#llx\n", name, len, start);
--	else
--		kfree(name);
-+	if (ret)
-+		goto error;
- 
-+	pr_info("%s device: %#llx at %#llx\n", name, len, start);
-+	return 0;
+ 	cifs_dbg(FYI, "%s: tc_count=%d\n", __func__, tcon->tc_count);
+ 	spin_lock(&cifs_tcp_ses_lock);
++	if (tcon->tc_count <= 0) {
++		struct TCP_Server_Info *server = NULL;
 +
-+error:
-+	kfree(name);
- 	return ret;
- }
++		WARN_ONCE(tcon->tc_count < 0, "tcon refcount is negative");
++		spin_unlock(&cifs_tcp_ses_lock);
++
++		if (tcon->ses)
++			server = tcon->ses->server;
++
++		cifs_server_dbg(FYI, "tid=%u: tcon is closing, skipping async close retry of fid %llu %llu\n",
++				tcon->tid, persistent_fid, volatile_fid);
++
++		return 0;
++	}
+ 	tcon->tc_count++;
+ 	spin_unlock(&cifs_tcp_ses_lock);
  
 
 
