@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD5D1B3D53
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F681B3D16
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgDVKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48128 "EHLO mail.kernel.org"
+        id S1729225AbgDVKLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726398AbgDVKN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:56 -0400
+        id S1729206AbgDVKLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 298BF2076E;
-        Wed, 22 Apr 2020 10:13:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD28F2075A;
+        Wed, 22 Apr 2020 10:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550435;
-        bh=ZIZwPWB9Q6NZv4fDKlr0cQJtBfcBFdOoZdqqJkEjXX4=;
+        s=default; t=1587550290;
+        bh=SoVqO3bK3jHNnFnqoHbBV+IZFxZYUJeXCaLy+Ihncvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TmKaAKiZ+KQlZo3Ti14Vrm62pYsj04UFaDWa/U+8ULOprmmttvH7BiKzDw2wkXVys
-         ZQLu7EI0ZqKA3Wr+tNjJl+Ehr49Mf38RS6CdxL98uy8FMJ3LHMbAA5gM8M8MhdOE7j
-         C37P7YozVvaEHcH237MshOQneJ8IqUS/a0NR6yMI=
+        b=lvn4vTwuWvVK6NBiQcgDW1fIS0ss+l5+m9+aT8JMtNskukyhLe3q5y82XCLbOVEqY
+         ADKKPxgZpWyHGskwOZQ/eQrhlaK1TYnPDCAeYAZdEZjfkuOxRo9wDVS+a9hD7CRntz
+         yQXvSZsZj9eV6h27lvcXQJpe+vZjwEUKtejPeRKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 07/64] ARM: dts: imx6: Use gpc for FEC interrupt controller to fix wake on LAN.
+        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 085/199] hfsplus: fix crash and filesystem corruption when deleting files
 Date:   Wed, 22 Apr 2020 11:56:51 +0200
-Message-Id: <20200422095013.710989670@linuxfoundation.org>
+Message-Id: <20200422095106.605369560@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Simon Gander <simon@tuxera.com>
 
-commit 4141f1a40fc0789f6fd4330e171e1edf155426aa upstream.
+commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
 
-In order to wake from suspend by ethernet magic packets the GPC
-must be used as intc does not have wakeup functionality.
+When removing files containing extended attributes, the hfsplus driver may
+remove the wrong entries from the attributes b-tree, causing major
+filesystem damage and in some cases even kernel crashes.
 
-But the FEC DT node currently uses interrupt-extended,
-specificying intc, thus breaking WoL.
+To remove a file, all its extended attributes have to be removed as well.
+The driver does this by looking up all keys in the attributes b-tree with
+the cnid of the file.  Each of these entries then gets deleted using the
+key used for searching, which doesn't contain the attribute's name when it
+should.  Since the key doesn't contain the name, the deletion routine will
+not find the correct entry and instead remove the one in front of it.  If
+parent nodes have to be modified, these become corrupt as well.  This
+causes invalid links and unsorted entries that not even macOS's fsck_hfs
+is able to fix.
 
-This problem is probably fallout from the stacked domain conversion
-as intc used to chain to GPC.
+To fix this, modify the search key before an entry is deleted from the
+attributes b-tree by copying the found entry's key into the search key,
+therefore ensuring that the correct entry gets removed from the tree.
 
-So replace "interrupts-extended" by "interrupts" to use the default
-parent which is GPC.
-
-Fixes: b923ff6af0d5 ("ARM: imx6: convert GPC to stacked domains")
-
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Simon Gander <simon@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx6qdl.dtsi |    5 ++---
- arch/arm/boot/dts/imx6qp.dtsi  |    1 -
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ fs/hfsplus/attributes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -1013,9 +1013,8 @@
- 				compatible = "fsl,imx6q-fec";
- 				reg = <0x02188000 0x4000>;
- 				interrupt-names = "int0", "pps";
--				interrupts-extended =
--					<&intc 0 118 IRQ_TYPE_LEVEL_HIGH>,
--					<&intc 0 119 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
-+					     <0 119 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX6QDL_CLK_ENET>,
- 					 <&clks IMX6QDL_CLK_ENET>,
- 					 <&clks IMX6QDL_CLK_ENET_REF>;
---- a/arch/arm/boot/dts/imx6qp.dtsi
-+++ b/arch/arm/boot/dts/imx6qp.dtsi
-@@ -77,7 +77,6 @@
- };
+--- a/fs/hfsplus/attributes.c
++++ b/fs/hfsplus/attributes.c
+@@ -292,6 +292,10 @@ static int __hfsplus_delete_attr(struct
+ 		return -ENOENT;
+ 	}
  
- &fec {
--	/delete-property/interrupts-extended;
- 	interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
- 		     <0 119 IRQ_TYPE_LEVEL_HIGH>;
- };
++	/* Avoid btree corruption */
++	hfs_bnode_read(fd->bnode, fd->search_key,
++			fd->keyoffset, fd->keylength);
++
+ 	err = hfs_brec_remove(fd);
+ 	if (err)
+ 		return err;
 
 
