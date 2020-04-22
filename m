@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485441B47C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AA61B47B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgDVOyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:54:52 -0400
-Received: from smtprelay0091.hostedemail.com ([216.40.44.91]:57008 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725934AbgDVOyw (ORCPT
+        id S1726718AbgDVOyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgDVOyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:54:52 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 31594181D3025;
-        Wed, 22 Apr 2020 14:54:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2559:2562:2691:2828:2903:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7903:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13184:13229:13311:13357:13439:14096:14097:14659:14721:21080:21433:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: beast64_2a3913899b22e
-X-Filterd-Recvd-Size: 2052
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 22 Apr 2020 14:54:50 +0000 (UTC)
-Message-ID: <5b413a379b8bba39fb75469699b7fd0d50d67e96.camel@perches.com>
-Subject: Re: [PATCH v4 4/7] kernel.h: Split out min()/max() et al helpers
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Apr 2020 07:52:32 -0700
-In-Reply-To: <20200422125201.37618-4-andriy.shevchenko@linux.intel.com>
-References: <20200422125201.37618-1-andriy.shevchenko@linux.intel.com>
-         <20200422125201.37618-4-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Wed, 22 Apr 2020 10:54:04 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CB5C03C1A9;
+        Wed, 22 Apr 2020 07:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C/y0MT4RUP0Ak6RuYzOz+uq54Hlm5rIbVfYvdumz+DM=; b=UUrQV2YDRusF3q4mtsyE/OglW+
+        U6JQFBF+3KcYfY7tjK+1QSbpmnSpKbp0FQEukWKyUX5k1kTTlBNKnSHilBSlB3pqEDAVNJZ/pHo4a
+        zYgNUSBw8W/iY24GB0zmPhRnlYzY+nDJE/wb167ntBElVK2e5ENkXqzpxo6dWG6pnauv1YaZFu48A
+        kzkSovg89bUxZz5vghqkSykuvsyd2vKZjRiE4udPWELuOoPACF7LwCTxdaVgiMZAZPW0sv2RHGs/s
+        qNhCOEWrh95kiNuxy8LDPyIhj1cL/HyP6dkVzmx82qtF5inj36eqJfFWCCsKHhaKI+YjcVHe6A1fh
+        kv0SMH1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRGkr-0002YT-JX; Wed, 22 Apr 2020 14:53:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E49C3010C4;
+        Wed, 22 Apr 2020 16:53:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30D18203AA838; Wed, 22 Apr 2020 16:53:34 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 16:53:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH] x86, sched: Prevent divisions by zero in frequency
+ invariant accounting
+Message-ID: <20200422145334.GM20730@hirez.programming.kicks-ass.net>
+References: <20200422144055.18171-1-ggherdovich@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422144055.18171-1-ggherdovich@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-22 at 15:51 +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out min()/max()
-> et al helpers.
+On Wed, Apr 22, 2020 at 04:40:55PM +0200, Giovanni Gherdovich wrote:
+> The product mcnt * arch_max_freq_ratio could be zero if it overflows u64.
+> 
+> For context, a large value for arch_max_freq_ratio would be 5000,
+> corresponding to a turbo_freq/base_freq ratio of 5 (normally it's more like
+> 1500-2000). A large increment frequency for the MPERF counter would be 5GHz
+> (the base clock of all CPUs on the market today is less than that). With
+> these figures, a CPU would need to go without a scheduler tick for around 8
+> days for the u64 overflow to happen. It is unlikely, but the check is
+> warranted.
+> 
+> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> Fixes: 1567c3e3467c ("x86, sched: Add support for frequency invariance")
+> ---
+>  arch/x86/kernel/smpboot.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index 8c89e4d9ad28..fb71395cbcad 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -2055,14 +2055,14 @@ void arch_scale_freq_tick(void)
+>  
+>  	acnt = aperf - this_cpu_read(arch_prev_aperf);
+>  	mcnt = mperf - this_cpu_read(arch_prev_mperf);
+> -	if (!mcnt)
+> -		return;
+>  
+>  	this_cpu_write(arch_prev_aperf, aperf);
+>  	this_cpu_write(arch_prev_mperf, mperf);
+>  
+>  	acnt <<= 2*SCHED_CAPACITY_SHIFT;
+>  	mcnt *= arch_max_freq_ratio;
+> +	if (!mcnt)
+> +		return;
 
-While adding organization into kernel.h by splitting
-out various bits into separate files is a fine idea,
-I believe removing the generic #include <linux/kernel.h>
-from various files and substituting the sub-includes
-is not a good idea.
-
-> At the same time convert users in header and lib folder to use new header.
-> Though for time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-
-Yeah, that's the difficult bit and it could make
-using precompiled headers very cumbersome.
-
-I'd rather make #include <linux/kernel.h>" _more_
-common or even used as the mandatory first #include
-for all kernel .c files.
-
-That would also ensure that common kernel facilities
-are not duplicated or have naming conflicts with other
-files.
-
-
+Should we not pr_warn() and disable the whole thing when this happens?
