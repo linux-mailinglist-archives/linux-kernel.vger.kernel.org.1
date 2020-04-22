@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2FA1B3FCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CB21B3E9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731635AbgDVKkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56818 "EHLO mail.kernel.org"
+        id S1730729AbgDVK3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730118AbgDVKUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:20:37 -0400
+        id S1730789AbgDVK05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:26:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA1CC2076B;
-        Wed, 22 Apr 2020 10:20:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB8732076B;
+        Wed, 22 Apr 2020 10:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550837;
-        bh=+xra3vEo1yIYNzhtiqLFGvu0By+bBWk/4gp6Caqkb1s=;
+        s=default; t=1587551217;
+        bh=CV4lsd8GFjskQ68BrjCsNHsoRiEhRicJFGhZqLBaR7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P6c3kO1Dv9vZhCzfPZEqsD/Ikdc4KfjRnCCu9tZovR10dIfGL+Asvx14dvfFT+EQR
-         aWWY9btIQvMDUhb5VWzZZMsiR8vQHf5s6q/t9Z5JT//1G3L2l2PFCFQmrdu6r6rXKx
-         kyakWy6n9QqCWiukqfyBCam9brRtb0QUzaRWfbWo=
+        b=QvWUy6fhoe4GPR7kt9Z1EES9dAvGrL6d3HM0rbZtrufQytoCm/8IdSj8cFQrth5cQ
+         3Qjzrfq1DteYx0CRooOKiRNCwNmh2wRmkvYE2ddtJgjSobZSKImu0ughTYx33H6dbb
+         MUXyfQjlcMyRncUGKdaVNxDwnseNUNezJBeh434U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.4 112/118] mtd: lpddr: Fix a double free in probe()
-Date:   Wed, 22 Apr 2020 11:57:53 +0200
-Message-Id: <20200422095049.257744225@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 147/166] net: dsa: bcm_sf2: Fix overflow checks
+Date:   Wed, 22 Apr 2020 11:57:54 +0200
+Message-Id: <20200422095104.361727106@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 4da0ea71ea934af18db4c63396ba2af1a679ef02 upstream.
+commit d0802dc411f469569a537283b6f3833af47aece9 upstream.
 
-This function is only called from lpddr_probe().  We free "lpddr" both
-here and in the caller, so it's a double free.  The best place to free
-"lpddr" is in lpddr_probe() so let's delete this one.
+Commit f949a12fd697 ("net: dsa: bcm_sf2: fix buffer overflow doing
+set_rxnfc") tried to fix the some user controlled buffer overflows in
+bcm_sf2_cfp_rule_set() and bcm_sf2_cfp_rule_del() but the fix was using
+CFP_NUM_RULES, which while it is correct not to overflow the bitmaps, is
+not representative of what the device actually supports. Correct that by
+using bcm_sf2_cfp_rule_size() instead.
 
-Fixes: 8dc004395d5e ("[MTD] LPDDR qinfo probing.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200228092554.o57igp3nqhyvf66t@kili.mountain
+The latter subtracts the number of rules by 1, so change the checks from
+greater than or equal to greater than accordingly.
+
+Fixes: f949a12fd697 ("net: dsa: bcm_sf2: fix buffer overflow doing set_rxnfc")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/lpddr/lpddr_cmds.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/dsa/bcm_sf2_cfp.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -68,7 +68,6 @@ struct mtd_info *lpddr_cmdset(struct map
- 	shared = kmalloc_array(lpddr->numchips, sizeof(struct flchip_shared),
- 						GFP_KERNEL);
- 	if (!shared) {
--		kfree(lpddr);
- 		kfree(mtd);
- 		return NULL;
- 	}
+--- a/drivers/net/dsa/bcm_sf2_cfp.c
++++ b/drivers/net/dsa/bcm_sf2_cfp.c
+@@ -882,17 +882,14 @@ static int bcm_sf2_cfp_rule_set(struct d
+ 	     fs->m_ext.data[1]))
+ 		return -EINVAL;
+ 
+-	if (fs->location != RX_CLS_LOC_ANY && fs->location >= CFP_NUM_RULES)
++	if (fs->location != RX_CLS_LOC_ANY &&
++	    fs->location > bcm_sf2_cfp_rule_size(priv))
+ 		return -EINVAL;
+ 
+ 	if (fs->location != RX_CLS_LOC_ANY &&
+ 	    test_bit(fs->location, priv->cfp.used))
+ 		return -EBUSY;
+ 
+-	if (fs->location != RX_CLS_LOC_ANY &&
+-	    fs->location > bcm_sf2_cfp_rule_size(priv))
+-		return -EINVAL;
+-
+ 	ret = bcm_sf2_cfp_rule_cmp(priv, port, fs);
+ 	if (ret == 0)
+ 		return -EEXIST;
+@@ -973,7 +970,7 @@ static int bcm_sf2_cfp_rule_del(struct b
+ 	struct cfp_rule *rule;
+ 	int ret;
+ 
+-	if (loc >= CFP_NUM_RULES)
++	if (loc > bcm_sf2_cfp_rule_size(priv))
+ 		return -EINVAL;
+ 
+ 	/* Refuse deleting unused rules, and those that are not unique since
 
 
