@@ -2,131 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741CF1B4033
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9CA1B404C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730217AbgDVKoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:44:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36152 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731500AbgDVKoF (ORCPT
+        id S1731858AbgDVKo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:44:59 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:52785 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731853AbgDVKo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:44:05 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MAYWdd060141;
-        Wed, 22 Apr 2020 06:43:02 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30jh8xp4ea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Apr 2020 06:43:02 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03MAdcXn070893;
-        Wed, 22 Apr 2020 06:43:01 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30jh8xp4dj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Apr 2020 06:43:01 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03MAeZbo005876;
-        Wed, 22 Apr 2020 10:42:59 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01dal.us.ibm.com with ESMTP id 30fs670rje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Apr 2020 10:42:59 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MAgumL56820100
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 10:42:56 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 99EC96E050;
-        Wed, 22 Apr 2020 10:42:56 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DCFE26E04C;
-        Wed, 22 Apr 2020 10:42:31 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.79.185.239])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Apr 2020 10:42:30 +0000 (GMT)
-X-Mailer: emacs 27.0.91 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Longpeng <longpeng2@huawei.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 3/4] hugetlbfs: remove hugetlb_add_hstate() warning
- for existing hstate
-In-Reply-To: <20200417185049.275845-4-mike.kravetz@oracle.com>
-References: <20200417185049.275845-1-mike.kravetz@oracle.com>
- <20200417185049.275845-4-mike.kravetz@oracle.com>
-Date:   Wed, 22 Apr 2020 16:12:26 +0530
-Message-ID: <87blnj4x9p.fsf@linux.ibm.com>
+        Wed, 22 Apr 2020 06:44:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587552294; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=X9RGF6DVDVLfxnPxoe5Yh8TPlAiL8319mi3nRhdPovs=; b=OQActlqC+V8qqn9g1ygbzCvwF41w17OcMbU24Zw54Xy0mo9mJgE1d5ZGnttamOQg4zZGaJo4
+ pHiqDgm0tWRUc7lxYvzg+8RLBXIgQLqkLgYZAdeB8CzDSaWOM/IqJrDl82nQXuZo+x9nwr+F
+ CDv/+NGQr/bMiBvv7NAbHkAIHiA=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea02019.7ff1f3af2500-smtp-out-n05;
+ Wed, 22 Apr 2020 10:44:41 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 05D28C433F2; Wed, 22 Apr 2020 10:44:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [49.207.137.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sivaprak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2CC38C433D2;
+        Wed, 22 Apr 2020 10:44:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2CC38C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sivaprak@codeaurora.org
+Subject: Re: [PATCH V3 3/8] clk: qcom: Add A53 PLL support for ipq6018 devices
+To:     Stephen Boyd <sboyd@kernel.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, robh+dt@kernel.org
+References: <1586832922-29191-1-git-send-email-sivaprak@codeaurora.org>
+ <1586832922-29191-4-git-send-email-sivaprak@codeaurora.org>
+ <158754602745.132238.14379194464345140559@swboyd.mtv.corp.google.com>
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Message-ID: <4025e5c3-b532-d235-f73b-2b86055bdde2@codeaurora.org>
+Date:   Wed, 22 Apr 2020 16:14:33 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-22_03:2020-04-22,2020-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxlogscore=935 spamscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1011
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220083
+In-Reply-To: <158754602745.132238.14379194464345140559@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Kravetz <mike.kravetz@oracle.com> writes:
+Hi Stephen,
 
-> The routine hugetlb_add_hstate prints a warning if the hstate already
-> exists.  This was originally done as part of kernel command line
-> parsing.  If 'hugepagesz=' was specified more than once, the warning
-> 	pr_warn("hugepagesz= specified twice, ignoring\n");
-> would be printed.
+On 4/22/2020 2:30 PM, Stephen Boyd wrote:
+> Quoting Sivaprakash Murugesan (2020-04-13 19:55:17)
+>> The CPUs on Qualcomm IPQ6018 platform is primarily clocked by A53 PLL.
+>> This patch adds support for the A53 PLL on IPQ6018 devices which can
+>> support CPU frequencies above 1Ghz.
+>>
+>> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+>> ---
+>>   drivers/clk/qcom/a53-pll.c | 136 ++++++++++++++++++++++++++++++++++++---------
+>>   1 file changed, 111 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/clk/qcom/a53-pll.c b/drivers/clk/qcom/a53-pll.c
+>> index 45cfc57..a95351c 100644
+>> --- a/drivers/clk/qcom/a53-pll.c
+>> +++ b/drivers/clk/qcom/a53-pll.c
+>> @@ -11,11 +11,40 @@
+>>   #include <linux/platform_device.h>
+>>   #include <linux/regmap.h>
+>>   #include <linux/module.h>
+>> +#include <linux/of_device.h>
+> Why does this driver need to change to use of_device APIs?
+we can use devm APIs and avoid this in next patch.
 >
-> Some architectures want to enable all huge page sizes.  They would
-> call hugetlb_add_hstate for all supported sizes.  However, this was
-> done after command line processing and as a result hstates could have
-> already been created for some sizes.  To make sure no warning were
-> printed, there would often be code like:
-> 	if (!size_to_hstate(size)
-> 		hugetlb_add_hstate(ilog2(size) - PAGE_SHIFT)
+>>   
+>>   #include "clk-pll.h"
+>>   #include "clk-regmap.h"
+>> +#include "clk-alpha-pll.h"
+>>   
+>> -static const struct pll_freq_tbl a53pll_freq[] = {
+>> +struct a53_alpha_pll {
+>> +       struct alpha_pll_config *pll_config;
+>> +       struct clk_alpha_pll *pll;
+>> +};
+>> +
+>> +union a53pll {
+>> +       struct clk_pll *pll;
+>> +       struct a53_alpha_pll alpha_pll;
+>> +};
+>> +
+>> +struct a53pll_data {
+>> +#define PLL_IS_ALPHA BIT(0)
+>> +       u8 flags;
+>> +       union a53pll a53pll;
+> Why is there a union? Can't we have different clk ops for the two types
+> of PLLs and then use container_of to get it from the clk ops?
+ok.
 >
-> The only time we want to print the warning is as the result of command
-> line processing.
-
-Does this patch break hugepages=x command line? I haven't tested this
-yet. But one of the details w.r.t. skipping that hugetlb_add_hstate is
-to make sure we can configure the max_huge_pages. 
-
-
->So, remove the warning from hugetlb_add_hstate and
-> add it to the single arch independent routine processing "hugepagesz=".
-> After this, calls to size_to_hstate() in arch specific code can be
-> removed and hugetlb_add_hstate can be called without worrying about
-> warning messages.
+>> +};
+>> +
+>> +static const u8 ipq_pll_offsets[] = {
+>> +       [PLL_OFF_L_VAL] = 0x08,
+>> +       [PLL_OFF_ALPHA_VAL] = 0x10,
+>> +       [PLL_OFF_USER_CTL] = 0x18,
+>> +       [PLL_OFF_CONFIG_CTL] = 0x20,
+>> +       [PLL_OFF_CONFIG_CTL_U] = 0x24,
+>> +       [PLL_OFF_STATUS] = 0x28,
+>> +       [PLL_OFF_TEST_CTL] = 0x30,
+>> +       [PLL_OFF_TEST_CTL_U] = 0x34,
+>> +};
+>> +
+>> +static const struct pll_freq_tbl msm8996_a53pll_freq[] = {
+>>          {  998400000, 52, 0x0, 0x1, 0 },
+>>          { 1094400000, 57, 0x0, 0x1, 0 },
+>>          { 1152000000, 62, 0x0, 0x1, 0 },
+>> @@ -26,6 +55,64 @@ static const struct pll_freq_tbl a53pll_freq[] = {
+>>          { }
+>>   };
+>>   
+>> +static struct clk_pll msm8996_pll = {
+>> +       .mode_reg = 0x0,
+>> +       .l_reg = 0x04,
+>> +       .m_reg = 0x08,
+>> +       .n_reg = 0x0c,
+>> +       .config_reg = 0x14,
+>> +       .status_reg = 0x1c,
+>> +       .status_bit = 16,
+>> +       .freq_tbl = msm8996_a53pll_freq,
+>> +       .clkr.hw.init = &(struct clk_init_data){
+>> +               .name = "a53pll",
+>> +               .flags = CLK_IS_CRITICAL,
+>> +               .parent_data = &(const struct clk_parent_data){
+>> +                       .fw_name = "xo",
+>> +                       .name = "xo",
+>> +               },
+>> +               .num_parents = 1,
+>> +               .ops = &clk_pll_sr2_ops,
+>> +       },
+>> +};
+>> +
+>> +static struct clk_alpha_pll ipq6018_pll = {
+>> +       .offset = 0x0,
+>> +       .regs = ipq_pll_offsets,
+>> +       .flags = SUPPORTS_DYNAMIC_UPDATE,
+>> +       .clkr = {
+>> +               .enable_reg = 0x0,
+>> +               .enable_mask = BIT(0),
+>> +               .hw.init = &(struct clk_init_data){
+>> +                       .name = "a53pll",
+>> +                       .flags = CLK_IS_CRITICAL,
+>> +                       .parent_data = &(const struct clk_parent_data){
+>> +                               .fw_name = "xo",
+>> +                       },
+>> +                       .num_parents = 1,
+>> +                       .ops = &clk_alpha_pll_huayra_ops,
+>> +               },
+>> +       },
+>> +};
+>> +
+>> +static struct alpha_pll_config ipq6018_pll_config = {
+> Can this be const?
+yeah it can be. will fix up in next patch.
 >
+>> +       .l = 0x37,
+>> +       .config_ctl_val = 0x04141200,
+>> +       .config_ctl_hi_val = 0x0,
+>> +       .early_output_mask = BIT(3),
+>> +       .main_output_mask = BIT(0),
+>> +};
+>> +
+>> +static struct a53pll_data msm8996pll_data = {
+>> +       .a53pll.pll = &msm8996_pll,
+>> +};
+>> +
+>> +static struct a53pll_data ipq6018pll_data = {
+>> +       .flags = PLL_IS_ALPHA,
+>> +       .a53pll.alpha_pll.pll = &ipq6018_pll,
+>> +       .a53pll.alpha_pll.pll_config = &ipq6018_pll_config,
+>> +};
+>> +
+>>   static const struct regmap_config a53pll_regmap_config = {
+>>          .reg_bits               = 32,
+>>          .reg_stride             = 4,
+>> @@ -39,14 +126,16 @@ static int qcom_a53pll_probe(struct platform_device *pdev)
+>>          struct device *dev = &pdev->dev;
+>>          struct regmap *regmap;
+>>          struct resource *res;
+>> -       struct clk_pll *pll;
+>> +       const struct a53pll_data *pll_data;
+>> +       struct clk_regmap *clkr;
+>>          void __iomem *base;
+>> -       struct clk_init_data init = { };
+>>          int ret;
+>>   
+>> -       pll = devm_kzalloc(dev, sizeof(*pll), GFP_KERNEL);
+>> -       if (!pll)
+>> -               return -ENOMEM;
+>> +       pll_data = of_device_get_match_data(dev);
+> Use device_get_match_data() please.
+ok.
+>
+>> +       if (!pll_data) {
+>> +               dev_err(dev, "failed to get platform data\n");
+> No error message please.
+ok.
+>
+>> +               return -ENODEV;
+>> +       }
+>>   
+>>          res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>          base = devm_ioremap_resource(dev, res);
+>> @@ -57,30 +146,26 @@ static int qcom_a53pll_probe(struct platform_device *pdev)
+>>          if (IS_ERR(regmap))
+>>                  return PTR_ERR(regmap);
+>>   
+>> -       pll->l_reg = 0x04;
+>> -       pll->m_reg = 0x08;
+>> -       pll->n_reg = 0x0c;
+>> -       pll->config_reg = 0x14;
+>> -       pll->mode_reg = 0x00;
+>> -       pll->status_reg = 0x1c;
+>> -       pll->status_bit = 16;
+>> -       pll->freq_tbl = a53pll_freq;
+>> -
+>> -       init.name = "a53pll";
+>> -       init.parent_names = (const char *[]){ "xo" };
+>> -       init.num_parents = 1;
+>> -       init.ops = &clk_pll_sr2_ops;
+>> -       init.flags = CLK_IS_CRITICAL;
+> Please document why a clk is critical.
+ok
+>
+>> -       pll->clkr.hw.init = &init;
+>> -
+>> -       ret = devm_clk_register_regmap(dev, &pll->clkr);
+>> +       if (pll_data->flags & PLL_IS_ALPHA) {
+>> +               struct clk_alpha_pll *alpha_pll =
+>> +                       pll_data->a53pll.alpha_pll.pll;
+>> +               struct alpha_pll_config *alpha_pll_config =
+>> +                       pll_data->a53pll.alpha_pll.pll_config;
+>> +
+>> +               clk_alpha_pll_configure(alpha_pll, regmap, alpha_pll_config);
+>> +               clkr = &pll_data->a53pll.alpha_pll.pll->clkr;
+>> +       } else {
+>> +               clkr = &pll_data->a53pll.pll->clkr;
+>> +       }
+> Sorry, the design is confusing.
 
--aneesh
+The basic idea is to add support for various PLLs available to clock the 
+A53 core.
+
+if this messing up the code, can the alpha pll support be moved to a 
+separate file?
+
+It would be very helpful if you provide your input on this.
