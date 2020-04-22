@@ -2,96 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4498D1B35F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D7A1B3612
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgDVELU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:11:20 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58539 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725808AbgDVELT (ORCPT
+        id S1726057AbgDVEQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:16:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30018 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725811AbgDVEQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:11:19 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4CB7D5C011D;
-        Wed, 22 Apr 2020 00:11:18 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 22 Apr 2020 00:11:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=F1dj2Jw3YDEgFV7WpVHDIIKM8X
-        ojVODpM5ZQVusEuJM=; b=MXYvLLEwShFV7Dm5T/etH8ddYFj7Rzkh6OZFhNMgCq
-        LVC7aVazTJhWfaIWGrgE4yyMA+cZEH9GO5xiBQmVYcBGbJNONh37rwp7edlihMnV
-        AGnZaycj22wMsimVKiNBN2GJQp/cVOy0FR/p2XFg9IIzMytq3wPvTW9HMu/6yLVd
-        0yI7b6DDnSjyoe/NyegEOpLaCE4PvFAHfqyD2yGtY4odM6dYmcl2bX2xXwc7v7IC
-        9p03Ypw+dKZ3Wiwg274J+je4nZ16f5Mh69iJE0aDjT3wSJ0YCBlk2KZO/XVT8ND3
-        /NySffPG2VvjNa925/VSnokPHri0gkofc3pdAWb/IhzQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=F1dj2Jw3YDEgFV7Wp
-        VHDIIKM8XojVODpM5ZQVusEuJM=; b=I6/lLaf6mN8ViDw9W6zmLNRPTP2Q7dBzW
-        O6vE0TjGDKeXifaidQVvkcn/gNr7l72X7Cp2Q2UDGScoLbfeqAMdaJz0ys+5VIMM
-        NA2jL0SKpSJZM4UDH9IMdsshomiOt3+MzsdNDOZnBxjmvaENaMZrE8+Sl7enDaJi
-        Js+gYZ3N7x0A7jtfRL45077iLACz+ZKOpE4s8oH6SXwcIKntcR8xpNB0KSVbwgBy
-        pdVW228l5Hn7hxjy8hW3yBqBYu84bYws9Rpjm6/+1IY7LJeo3+NcXQIK8lmcLtiQ
-        yiP8sw8qdmprHy8I4mCM5T7vcNR0MTdSdWl5i/s4ZSOgBYtCDxgqw==
-X-ME-Sender: <xms:5cOfXjAJUL0XNAkUOsRMfHSSZYhZmCVEDnDBIMCoZJtvm6MzklxdDA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeeigdejlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppeejtd
-    drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:5cOfXl32P132cVkl3p8G-YSPyd-dNlCGnZEITP4g0bN8QSoRbpxCFg>
-    <xmx:5cOfXhV9Tv7UVJ6_TU_WEwAEdP5It6mnWG5rTjxSu_cAKR6gjVenmg>
-    <xmx:5cOfXnm_uym1zKcNPPvObexA2m2AMC2QiS3txZa94y2myED_qTCbgA>
-    <xmx:5sOfXiYwIMKOhNpq-bw3eff8wf1T5dUZUrDfKhLjgow9PquBK5NoJw>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4FE5A3065CBF;
-        Wed, 22 Apr 2020 00:11:17 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] arm64: dts: allwinner: a64: Disable SPDIF by default
-Date:   Tue, 21 Apr 2020 23:15:02 -0500
-Message-Id: <20200422041502.7497-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.24.1
+        Wed, 22 Apr 2020 00:16:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587529013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p9oZHlLxelAK0c0X/Rqg4X+RsMzY/HC92T0R43tToZQ=;
+        b=gg+Lj6a1ysLMnTZl3HFaz+GXZtgHl31khOUlLIGOeKZUXwIYVASlTFrcoY1FCiGUDpLnfX
+        ScoBVFC9fOXAoIHw6xtQ+xWGXbN+r72p0R1NAzeummz8tUWiXr/uW1+LZ4IjXWF9YWRvzX
+        IcG0xklWcBeRprueWSD1YkokMofqWWM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-h3LPJ81NPFiow1jgO2OA6g-1; Wed, 22 Apr 2020 00:16:49 -0400
+X-MC-Unique: h3LPJ81NPFiow1jgO2OA6g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C02B107ACC4;
+        Wed, 22 Apr 2020 04:16:46 +0000 (UTC)
+Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D35EDB3A76;
+        Wed, 22 Apr 2020 04:16:34 +0000 (UTC)
+Date:   Wed, 22 Apr 2020 12:16:29 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "hare@suse.de" <hare@suse.de>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
+Message-ID: <20200422041629.GE299948@T590>
+References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
+ <20200422012814.GB299948@T590>
+ <HK0P153MB0273B954294B331E20AACB41BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+ <20200422020134.GC299948@T590>
+ <20200422030807.GK17661@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422030807.GK17661@paulmck-ThinkPad-P72>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of v5.7-rc2, Linux now prints the following message at boot:
+On Tue, Apr 21, 2020 at 08:08:07PM -0700, Paul E. McKenney wrote:
+> On Wed, Apr 22, 2020 at 10:01:34AM +0800, Ming Lei wrote:
+> > On Wed, Apr 22, 2020 at 01:48:25AM +0000, Dexuan Cui wrote:
+> > > > From: Ming Lei <ming.lei@redhat.com>
+> > > > Sent: Tuesday, April 21, 2020 6:28 PM
+> > > > To: Dexuan Cui <decui@microsoft.com>
+> > > > 
+> > > > On Tue, Apr 21, 2020 at 05:17:24PM -0700, Dexuan Cui wrote:
+> > > > > During hibernation, the sdevs are suspended automatically in
+> > > > > drivers/scsi/scsi_pm.c before storvsc_suspend(), so after
+> > > > > storvsc_suspend(), there is no disk I/O from the file systems, but there
+> > > > > can still be disk I/O from the kernel space, e.g. disk_check_events() ->
+> > > > > sr_block_check_events() -> cdrom_check_events() can still submit I/O
+> > > > > to the storvsc driver, which causes a paic of NULL pointer dereference,
+> > > > > since storvsc has closed the vmbus channel in storvsc_suspend(): refer
+> > > > > to the below links for more info:
+> > > > >
+> > > > > Fix the panic by blocking/unblocking all the I/O queues properly.
+> > > > >
+> > > > > Note: this patch depends on another patch "scsi: core: Allow the state
+> > > > > change from SDEV_QUIESCE to SDEV_BLOCK" (refer to the second link
+> > > > above).
+> > > > >
+> > > > > Fixes: 56fb10585934 ("scsi: storvsc: Add the support of hibernation")
+> > > > > Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> > > > > ---
+> > > > >  drivers/scsi/storvsc_drv.c | 10 ++++++++++
+> > > > >  1 file changed, 10 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+> > > > > index fb41636519ee..fd51d2f03778 100644
+> > > > > --- a/drivers/scsi/storvsc_drv.c
+> > > > > +++ b/drivers/scsi/storvsc_drv.c
+> > > > > @@ -1948,6 +1948,11 @@ static int storvsc_suspend(struct hv_device
+> > > > *hv_dev)
+> > > > >  	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
+> > > > >  	struct Scsi_Host *host = stor_device->host;
+> > > > >  	struct hv_host_device *host_dev = shost_priv(host);
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	ret = scsi_host_block(host);
+> > > > > +	if (ret)
+> > > > > +		return ret;
+> > > > >
+> > > > >  	storvsc_wait_to_drain(stor_device);
+> > > > >
+> > > > > @@ -1968,10 +1973,15 @@ static int storvsc_suspend(struct hv_device
+> > > > *hv_dev)
+> > > > >
+> > > > >  static int storvsc_resume(struct hv_device *hv_dev)
+> > > > >  {
+> > > > > +	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
+> > > > > +	struct Scsi_Host *host = stor_device->host;
+> > > > >  	int ret;
+> > > > >
+> > > > >  	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
+> > > > >  				     hv_dev_is_fc(hv_dev));
+> > > > > +	if (!ret)
+> > > > > +		ret = scsi_host_unblock(host, SDEV_RUNNING);
+> > > > > +
+> > > > >  	return ret;
+> > > > >  }
+> > > > 
+> > > > scsi_host_block() is actually too heavy for just avoiding
+> > > > scsi internal command, which can be done simply by one atomic
+> > > > variable.
+> > > > 
+> > > > Not mention scsi_host_block() is implemented too clumsy because
+> > > > nr_luns * synchronize_rcu() are required in scsi_host_block(),
+> > > > which should have been optimized to just one.
+> > > > 
+> > > > Also scsi_device_quiesce() is heavy too, still takes 2
+> > > > synchronize_rcu() for one LUN.
+> > > > 
+> > > > That is said SCSI suspend may take (3 * nr_luns) sysnchronize_rcu() in
+> > > > case that the HBA's suspend handler needs scsi_host_block().
+> > > > 
+> > > > Thanks,
+> > > > Ming
+> > > 
+> > > When we're in storvsc_suspend(), all the userspace processes have been
+> > > frozen and all the file systems have been flushed, and there should not
+> > > be too much I/O from the kernel space, so IMO scsi_host_block() should be
+> > > pretty fast here. 
+> > 
+> > I guess it depends on RCU's implementation, so CC RCU guys.
+> > 
+> > Hello Paul & Josh,
+> > 
+> > Could you clarify that if sysnchronize_rcu becomes quickly during
+> > system suspend?
+> 
+> Once you have all but one CPU offlined, it becomes extremely fast, as
+> in roughly a no-op (which is an idea of Josh's from back in the day).
+> But if there is more than one CPU online, then synchronize_rcu() still
+> takes on the order of several to several tens of jiffies.
+> 
+> So, yes, in some portions of system suspend, synchronize_rcu() becomes
+> very fast indeed.
 
-  [   33.848525] platform sound_spdif: deferred probe pending
+Hi Paul,
 
-This is because &sound_spdif is waiting on its DAI link component
-&spdif to probe, but &spdif is disabled in the DTS. Disable the
-audio card as well to match.
+Thanks for your clarification.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+In system suspend path, device is suspended before suspend_disable_secondary_cpus(), 
+so I guess synchronize_rcu() is not quick enough even though user space
+processes and some kernel threads are frozen.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 6f8c30d89b9b..6c233ff031c6 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -169,6 +169,7 @@ link0_codec: codec {
- 	sound_spdif {
- 		compatible = "simple-audio-card";
- 		simple-audio-card,name = "On-board SPDIF";
-+		status = "disabled";
- 
- 		simple-audio-card,cpu {
- 			sound-dai = <&spdif>;
--- 
-2.24.1
+Thanks,
+Ming
 
