@@ -2,182 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D7A1B3612
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C131B361F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgDVEQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:16:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30018 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725811AbgDVEQz (ORCPT
+        id S1726500AbgDVEUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:20:11 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:43563 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726442AbgDVEUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:16:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587529013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p9oZHlLxelAK0c0X/Rqg4X+RsMzY/HC92T0R43tToZQ=;
-        b=gg+Lj6a1ysLMnTZl3HFaz+GXZtgHl31khOUlLIGOeKZUXwIYVASlTFrcoY1FCiGUDpLnfX
-        ScoBVFC9fOXAoIHw6xtQ+xWGXbN+r72p0R1NAzeummz8tUWiXr/uW1+LZ4IjXWF9YWRvzX
-        IcG0xklWcBeRprueWSD1YkokMofqWWM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-h3LPJ81NPFiow1jgO2OA6g-1; Wed, 22 Apr 2020 00:16:49 -0400
-X-MC-Unique: h3LPJ81NPFiow1jgO2OA6g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 22 Apr 2020 00:20:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587529205; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=0Ok93GJWyrMcrmPIyqLBZtZS7FS1V8QUfQQLkNG7V8I=; b=bTFzpXItujPgt+RoU4zECn9Ov5SyDcx5iQLxTccZaibML88OcCM+F8ESpRsLxRLg9LvG0aKT
+ X2240i/F0gonrnhxWWi66lUobKTzr9z6SLUvxlInvlaFq4cdd/k7Etn66rpdfodmpn112hgJ
+ mn/p92+fBxNdz7dQ2/SVtmjjAP0=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9fc5e6.7f621f9a6110-smtp-out-n01;
+ Wed, 22 Apr 2020 04:19:50 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3148C433F2; Wed, 22 Apr 2020 04:19:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C02B107ACC4;
-        Wed, 22 Apr 2020 04:16:46 +0000 (UTC)
-Received: from T590 (ovpn-8-28.pek2.redhat.com [10.72.8.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D35EDB3A76;
-        Wed, 22 Apr 2020 04:16:34 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 12:16:29 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hare@suse.de" <hare@suse.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
-Message-ID: <20200422041629.GE299948@T590>
-References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
- <20200422012814.GB299948@T590>
- <HK0P153MB0273B954294B331E20AACB41BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
- <20200422020134.GC299948@T590>
- <20200422030807.GK17661@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422030807.GK17661@paulmck-ThinkPad-P72>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 688A9C433BA;
+        Wed, 22 Apr 2020 04:19:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 688A9C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v1 0/8] Bug fixes and improved logging in MHI
+Date:   Tue, 21 Apr 2020 21:19:27 -0700
+Message-Id: <1587529175-27778-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 08:08:07PM -0700, Paul E. McKenney wrote:
-> On Wed, Apr 22, 2020 at 10:01:34AM +0800, Ming Lei wrote:
-> > On Wed, Apr 22, 2020 at 01:48:25AM +0000, Dexuan Cui wrote:
-> > > > From: Ming Lei <ming.lei@redhat.com>
-> > > > Sent: Tuesday, April 21, 2020 6:28 PM
-> > > > To: Dexuan Cui <decui@microsoft.com>
-> > > > 
-> > > > On Tue, Apr 21, 2020 at 05:17:24PM -0700, Dexuan Cui wrote:
-> > > > > During hibernation, the sdevs are suspended automatically in
-> > > > > drivers/scsi/scsi_pm.c before storvsc_suspend(), so after
-> > > > > storvsc_suspend(), there is no disk I/O from the file systems, but there
-> > > > > can still be disk I/O from the kernel space, e.g. disk_check_events() ->
-> > > > > sr_block_check_events() -> cdrom_check_events() can still submit I/O
-> > > > > to the storvsc driver, which causes a paic of NULL pointer dereference,
-> > > > > since storvsc has closed the vmbus channel in storvsc_suspend(): refer
-> > > > > to the below links for more info:
-> > > > >
-> > > > > Fix the panic by blocking/unblocking all the I/O queues properly.
-> > > > >
-> > > > > Note: this patch depends on another patch "scsi: core: Allow the state
-> > > > > change from SDEV_QUIESCE to SDEV_BLOCK" (refer to the second link
-> > > > above).
-> > > > >
-> > > > > Fixes: 56fb10585934 ("scsi: storvsc: Add the support of hibernation")
-> > > > > Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> > > > > ---
-> > > > >  drivers/scsi/storvsc_drv.c | 10 ++++++++++
-> > > > >  1 file changed, 10 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> > > > > index fb41636519ee..fd51d2f03778 100644
-> > > > > --- a/drivers/scsi/storvsc_drv.c
-> > > > > +++ b/drivers/scsi/storvsc_drv.c
-> > > > > @@ -1948,6 +1948,11 @@ static int storvsc_suspend(struct hv_device
-> > > > *hv_dev)
-> > > > >  	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-> > > > >  	struct Scsi_Host *host = stor_device->host;
-> > > > >  	struct hv_host_device *host_dev = shost_priv(host);
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	ret = scsi_host_block(host);
-> > > > > +	if (ret)
-> > > > > +		return ret;
-> > > > >
-> > > > >  	storvsc_wait_to_drain(stor_device);
-> > > > >
-> > > > > @@ -1968,10 +1973,15 @@ static int storvsc_suspend(struct hv_device
-> > > > *hv_dev)
-> > > > >
-> > > > >  static int storvsc_resume(struct hv_device *hv_dev)
-> > > > >  {
-> > > > > +	struct storvsc_device *stor_device = hv_get_drvdata(hv_dev);
-> > > > > +	struct Scsi_Host *host = stor_device->host;
-> > > > >  	int ret;
-> > > > >
-> > > > >  	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
-> > > > >  				     hv_dev_is_fc(hv_dev));
-> > > > > +	if (!ret)
-> > > > > +		ret = scsi_host_unblock(host, SDEV_RUNNING);
-> > > > > +
-> > > > >  	return ret;
-> > > > >  }
-> > > > 
-> > > > scsi_host_block() is actually too heavy for just avoiding
-> > > > scsi internal command, which can be done simply by one atomic
-> > > > variable.
-> > > > 
-> > > > Not mention scsi_host_block() is implemented too clumsy because
-> > > > nr_luns * synchronize_rcu() are required in scsi_host_block(),
-> > > > which should have been optimized to just one.
-> > > > 
-> > > > Also scsi_device_quiesce() is heavy too, still takes 2
-> > > > synchronize_rcu() for one LUN.
-> > > > 
-> > > > That is said SCSI suspend may take (3 * nr_luns) sysnchronize_rcu() in
-> > > > case that the HBA's suspend handler needs scsi_host_block().
-> > > > 
-> > > > Thanks,
-> > > > Ming
-> > > 
-> > > When we're in storvsc_suspend(), all the userspace processes have been
-> > > frozen and all the file systems have been flushed, and there should not
-> > > be too much I/O from the kernel space, so IMO scsi_host_block() should be
-> > > pretty fast here. 
-> > 
-> > I guess it depends on RCU's implementation, so CC RCU guys.
-> > 
-> > Hello Paul & Josh,
-> > 
-> > Could you clarify that if sysnchronize_rcu becomes quickly during
-> > system suspend?
-> 
-> Once you have all but one CPU offlined, it becomes extremely fast, as
-> in roughly a no-op (which is an idea of Josh's from back in the day).
-> But if there is more than one CPU online, then synchronize_rcu() still
-> takes on the order of several to several tens of jiffies.
-> 
-> So, yes, in some portions of system suspend, synchronize_rcu() becomes
-> very fast indeed.
+A set of patches for bug fixes and improved logging in mhi/core/boot.c.
+Verified on x86 and arm64 platforms.
 
-Hi Paul,
+Bhaumik Bhatt (5):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: WARN_ON for malformed vector table
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values
 
-Thanks for your clarification.
+Hemant Kumar (3):
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
 
-In system suspend path, device is suspended before suspend_disable_secondary_cpus(), 
-so I guess synchronize_rcu() is not quick enough even though user space
-processes and some kernel threads are frozen.
+ drivers/bus/mhi/core/boot.c     | 74 +++++++++++++++++++++++++----------------
+ drivers/bus/mhi/core/init.c     |  5 ++-
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 15 ++++++---
+ drivers/bus/mhi/core/pm.c       |  6 +---
+ include/linux/mhi.h             |  2 --
+ 6 files changed, 62 insertions(+), 41 deletions(-)
 
-Thanks,
-Ming
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
