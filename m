@@ -2,65 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711681B4B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED6D1B46C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgDVRCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:02:50 -0400
-Received: from mailomta26-re.btinternet.com ([213.120.69.119]:10071 "EHLO
-        re-prd-fep-041.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725980AbgDVRCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:02:50 -0400
-X-Greylist: delayed 10752 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 13:02:49 EDT
-Received: from re-prd-rgout-003.btmx-prd.synchronoss.net ([10.2.54.6])
-          by re-prd-fep-048.btinternet.com with ESMTP
-          id <20200422140336.CRWR20795.re-prd-fep-048.btinternet.com@re-prd-rgout-003.btmx-prd.synchronoss.net>;
-          Wed, 22 Apr 2020 15:03:36 +0100
-Authentication-Results: btinternet.com;
-    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
-X-Originating-IP: [31.51.225.56]
-X-OWM-Source-IP: 31.51.225.56 (GB)
-X-OWM-Env-Sender: j.oldman998@btinternet.com
-X-VadeSecure-score: verdict=clean score=0/300, class=clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrgeejgdeijecutefuodetggdotefrodftvfcurfhrohhfihhlvgemuceutffkvffkuffjvffgnffgvefqofdpqfgfvfenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofestddtredtredttdenucfhrhhomheplfhohhhnucfqlhgumhgrnhcuoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqnecukfhppeefuddrhedurddvvdehrdehieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehhvghnrhihrdhhohhmvgdpihhnvghtpeefuddrhedurddvvdehrdehiedpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeorgigsghovgeskhgvrhhnvghlrdgukheqpdhrtghpthhtohepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoehlihhnuhigqdhiuggvsehvghgvrhdrkhgvrhhnvghlrdhorhhgqedprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from henry.home (31.51.225.56) by re-prd-rgout-003.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
-        id 5E3A16DE0C89880B; Wed, 22 Apr 2020 15:03:36 +0100
-From:   John Oldman <john.oldman@polehill.co.uk>
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        John Oldman <john.oldman@polehill.co.uk>
-Subject: [PATCH] Staging: ata: sata_inic162x fixed a spelling issue
-Date:   Wed, 22 Apr 2020 15:03:32 +0100
-Message-Id: <20200422140332.22923-1-john.oldman@polehill.co.uk>
-X-Mailer: git-send-email 2.17.1
+        id S1726790AbgDVOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgDVOEU (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 10:04:20 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C4DC03C1A9
+        for <Linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:04:18 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id s30so1709597qth.2
+        for <Linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bh27RuUyRhV8AIGHQuorNq+FDY+JRw2ft+WsGo9S2PI=;
+        b=R6QKWocKtb9dFpncU+LKcsCKqKjCId0CGi6owM5r0hmSdrJDN6Lr6NnuWqNDlmrUZN
+         vPT5wbx5z2oiEKyusKBMwC6yDOqVwBMJslApEBASlN2vc5MWb/AVv8vumtlTYwGZXQcj
+         MbRSOg+A79ml+eu016Fg5qHYd7eM1/Tw+q4BUjLK+PmnAfL4UoupSz8QaZhPdiudFgzO
+         sfRd4gWbVa4HNa0rZyjktMdU0in1GTBHmsat2t9mw8pS9n+SKK3tQ23qqZRX4StklBjU
+         mN+afKlBwDCwT25qzemYYpa+T9QnG+btHdp+OyvTgR9VAxU/frhBdyZSdTFNE/piqGli
+         nD6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bh27RuUyRhV8AIGHQuorNq+FDY+JRw2ft+WsGo9S2PI=;
+        b=pflf41O99oWBWydc3eY0mrwq786vrimcL5ep6BeXbTQyEiVnUL1fJLGgFmgcXjlo8r
+         fTS3CmNLqVDP7Qj4+crA5lEtnRqXCDeLjfeM8RJwU4eTl1WAVIhzHcTpNW1oE0HndvlG
+         2OrZakCWBBLeD6MQL6vI/+2vMkjTJSsEtcJDgZ9QYtkx/JzvQm/mcFvkwQByNOZddek1
+         ExoCbr93v0JxglxUlgsUqsWRC6kul1gqUanPiZettKATvix6k/k1to24p6xkYDLVvqvq
+         2D3C2g2ADpObyXqFUSBZsEURFdRfBMKKpBhy+HcraQlwsk6+z/+EHw4Y9PkwuSr7glYr
+         DGTA==
+X-Gm-Message-State: AGi0PuZESbkYuig0iZpWMuxmLZJr25dtmqHyTjZmQjDltTUEoqoEcJUU
+        nVStaJAweDXt4vDOfpq/NrMObltRiHY=
+X-Google-Smtp-Source: APiQypIT1dDrRzlZvOhQF5kZDTHoOkqENabH+LIvTQXsWoYNLOgiPqAATjNN9+1AzepKSkhbJNjecw==
+X-Received: by 2002:ac8:c8e:: with SMTP id n14mr27551123qti.340.1587564258100;
+        Wed, 22 Apr 2020 07:04:18 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id g25sm3864099qkl.50.2020.04.22.07.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 07:04:17 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 59B05409A3; Wed, 22 Apr 2020 11:04:15 -0300 (-03)
+Date:   Wed, 22 Apr 2020 11:04:15 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Zero ena and run for interval mode
+Message-ID: <20200422140415.GE20647@kernel.org>
+References: <20200409070755.17261-1-yao.jin@linux.intel.com>
+ <20200409154332.GD3309111@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200409154332.GD3309111@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a warning message spelling issue.
+Em Thu, Apr 09, 2020 at 05:43:32PM +0200, Jiri Olsa escreveu:
+> On Thu, Apr 09, 2020 at 03:07:55PM +0800, Jin Yao wrote:
+> > As the code comments in perf_stat_process_counter() say,
+> > we calculate counter's data every interval, and the display
+> > code shows ps->res_stats avg value. We need to zero the stats
+> > for interval mode.
+> > 
+> > But the current code only zeros the res_stats[0], it doesn't
+> > zero the res_stats[1] and res_stats[2], which are for ena
+> > and run of counter.
+> > 
+> > This patch zeros the whole res_stats[] for interval mode.
+> > 
+> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> 
+> nice catch ;-)
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
----
- drivers/ata/sata_inic162x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, applied, together with the:
 
-diff --git a/drivers/ata/sata_inic162x.c b/drivers/ata/sata_inic162x.c
-index a6b76cc12a66..e517bd8822a5 100644
---- a/drivers/ata/sata_inic162x.c
-+++ b/drivers/ata/sata_inic162x.c
-@@ -145,7 +145,7 @@ enum {
+51fd2df1e882 ("perf stat: Fix interval output values")
+
+you provided under private cover.
+
+- Arnaldo
  
- 	/* PORT_IDMA_CTL bits */
- 	IDMA_CTL_RST_ATA	= (1 << 2),  /* hardreset ATA bus */
--	IDMA_CTL_RST_IDMA	= (1 << 5),  /* reset IDMA machinary */
-+	IDMA_CTL_RST_IDMA	= (1 << 5),  /* reset IDMA machinery */
- 	IDMA_CTL_GO		= (1 << 7),  /* IDMA mode go */
- 	IDMA_CTL_ATA_NIEN	= (1 << 8),  /* ATA IRQ disable */
- 
+> thanks,
+> jirka
+> 
+> > ---
+> >  tools/perf/util/stat.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+> > index 5f26137b8d60..242476eb808c 100644
+> > --- a/tools/perf/util/stat.c
+> > +++ b/tools/perf/util/stat.c
+> > @@ -368,8 +368,10 @@ int perf_stat_process_counter(struct perf_stat_config *config,
+> >  	 * interval mode, otherwise overall avg running
+> >  	 * averages will be shown for each interval.
+> >  	 */
+> > -	if (config->interval)
+> > -		init_stats(ps->res_stats);
+> > +	if (config->interval) {
+> > +		for (i = 0; i < 3; i++)
+> > +			init_stats(&ps->res_stats[i]);
+> > +	}
+> >  
+> >  	if (counter->per_pkg)
+> >  		zero_per_pkg(counter);
+> > -- 
+> > 2.17.1
+> > 
+> 
+
 -- 
-2.17.1
 
+- Arnaldo
