@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659031B4718
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49E81B4725
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgDVOV1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Apr 2020 10:21:27 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:43250 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgDVOV0 (ORCPT
+        id S1727812AbgDVOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726720AbgDVOWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:21:26 -0400
-Received: by mail-oo1-f65.google.com with SMTP id d21so542414ook.10;
-        Wed, 22 Apr 2020 07:21:25 -0700 (PDT)
+        Wed, 22 Apr 2020 10:22:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0473AC03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:22:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g13so2607696wrb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ufnee/q97CC1CGBkoV1pipCbIwuaBK73Df12DK7GmQM=;
+        b=G/q6n0qYA2Zalko2hOs1fOAoBG23c4arPJ4/nR/mgJ9jIpO6v9X61ryrLtTzpQQA6M
+         +lH71mW+Kg7emKULTYSSiElVHDq9SnlUfgpRkmingJxKtgeO9jkIDkvnfe8Vo15Z9F/W
+         JB/Y0biRf6LaEP6sU/CRAHP8FZmgXkAkMaoSebj0zqEhSuXchgKhNm1WvWmIWKmMf67E
+         DAUUSYEZNHkM4tfVpWxMjEUJV6jV4TLlme9exaNphU7HZfM792GczQTrvn/0h6J5mU7H
+         O8a4LiUqKwHRhbkk4sA/VQxLm4FyFtPzBdoGrdDYCp1ZYqX79Bhhw/F4dAHIRN1hLfUT
+         KMwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zNjUnY94w0UWiXsubeBPALgzfBzt9q3zu5ENZfCjrts=;
-        b=kzMfRMWsG3VKy4zOrZ6AWWh9+VxDQgk3o7R3I3vJGxDuR2m3Ff55DR+qVGM/41INfc
-         SRqtTmc/SPtU898lTlfO6FVqElolwC0KBBORYM7S4V1cbGfEetXQV0rYvx6HEz8IcKAx
-         fnkceX6RjxM0RspmXFvC3Egn2exCU724l4mg5jW+dlVkaVBPkYSC0VQYUhQz9WjTQqgl
-         XCAFoVVwM7KGJ0MPdWtjWxisiIIxDM/j1HOh6pVxbdTWoUvcif6IyLX16jW9MUuK6N7a
-         51QK97T76ALtCwTqpex/TY4Xqy27+JlGFt/r1/muguVL9i5zzJAaqeqneCrgcPUCDniV
-         NiNw==
-X-Gm-Message-State: AGi0Pubq9OqcnWDWAWXiKuf0eaZhRasusOLnyNrvOdH+d8HrByKr4f3z
-        7YsAtydc9QV1gfSMCYBR050QY83CWVH4e4hsggN/cg==
-X-Google-Smtp-Source: APiQypLzDbS17kDo7l7U/QyP+cqX3xyR5zgbb/QPEQAJ3Y5SfI4zsMPbwN/toLIfmHzKulF8hMgy2GynWRg/ze+Lcak=
-X-Received: by 2002:a4a:a286:: with SMTP id h6mr15515496ool.38.1587565284215;
- Wed, 22 Apr 2020 07:21:24 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ufnee/q97CC1CGBkoV1pipCbIwuaBK73Df12DK7GmQM=;
+        b=Mvho7DNamEuIup3+zdYJAUu+DPBz/wNXtjoCQIZxYQcuSX91VzDlSXqB38E/DR246W
+         l6vf8CDAaz5q7H8JPtOcVOjRORwJ6lowW0DXcyoNzoIwcnjsyRpb03AlA4il2ux73e/X
+         hKXXTiygGIWJdkxMkbkqV4aKxlUT/p3YlBlBzdP955hHAQUK2ILEnGOdfLmyZDAlfHAr
+         GBK/1Y0pQAocfXZrhS5DRfNvpAOaaCyEEaxW8fZh6ZZjudQEnUtDKF5NFmEe1/Ihkx05
+         WsIPawTkHalo/wvsGaBvn2x1XnrMmWBhJvntP305X6U5OY/7mdFpGsEIFQKehYEygkp0
+         aVUw==
+X-Gm-Message-State: AGi0Puaaaz0naoIte+uPg2dY8n+tvAWggmFmeCJKRx1uZ4ucyVQEX3AU
+        NDQYi8pn5jU3flp0mTFKizE=
+X-Google-Smtp-Source: APiQypI7Ji2w+STU5RCXfOUCRhnwJ6IvSkfob35nBNPOrSZw/R9iM2Tj6zxzC0UkKIP1XK5+l7n9lQ==
+X-Received: by 2002:a5d:4b04:: with SMTP id v4mr31729231wrq.358.1587565357795;
+        Wed, 22 Apr 2020 07:22:37 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id b12sm9092431wro.18.2020.04.22.07.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 07:22:37 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 16:22:35 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/3] objtool: Rename elf_read() to elf_open_read()
+Message-ID: <20200422142235.GA2840@gmail.com>
+References: <20200422103205.61900-1-mingo@kernel.org>
+ <20200422103205.61900-3-mingo@kernel.org>
+ <20200422114342.GD20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200422051529.30757-1-zhang.lyra@gmail.com> <CAJZ5v0ikL3avFomZVqtBhfEjeauN-5ZUm9kZwzG=Vo+Ks0AiyA@mail.gmail.com>
- <CAAfSe-sVEEPOrq_ZzB1z59uXTfhmNh=+U_QvgaTcd4U1=9Tfvg@mail.gmail.com>
-In-Reply-To: <CAAfSe-sVEEPOrq_ZzB1z59uXTfhmNh=+U_QvgaTcd4U1=9Tfvg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 22 Apr 2020 16:21:12 +0200
-Message-ID: <CAJZ5v0jxnSUDqVpaHo6ECQdr6bpe2WHEhV+uDL_=BAJQC9fA9w@mail.gmail.com>
-Subject: Re: [PATCH] PM: sleep: call devfreq_suspend/resume and
- cpufreq_suspend/resume in pairs.
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Vincent Wang <vincent.wang@unisoc.com>,
-        Samer Xie <samer.xie@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422114342.GD20730@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 1:19 PM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
->
-> Hi Rafael,
->
-> (Behalf Of Vincent Wang)
->
-> Thanks for your comments, please see my answers below.
->
-> On Wed, 22 Apr 2020 at 17:05, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Wed, Apr 22, 2020 at 7:15 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> > >
-> > > From: Vincent Wang <vincent.wang@unisoc.com>
-> > >
-> > > If dpm_prepare() fails in dpm_suspend_start(), dpm_suspend() can't be
-> > > called.
-> >
-> > That's correct.
-> >
-> > > And then, devfreq_suspend() and cpufreq_suspend() will not be
-> > > called in the suspend flow.
-> >
-> > Right.
-> >
-> > > But in the resiume flow, devfreq_resume() and cpufreq_resume() will
-> > > be called.
-> >
-> > Right, and they are expected to cope with the situation.
-> >
-> > > This patch will ensure that devfreq_suspend/devfreq_resume and
-> > > cpufreq_suspend/cpufreq_resume are called in pairs.
-> >
-> > So why is it better to do this than to make devfreq_resume() meet the
-> > expectations?
->
-> Yes，we found an issue with cpufreq schedutil governor on kernel4.14,
-> and I think the issue should haven't been changed on the latest
-> version of kernel.
->
-> In the function dpm_suspend_start(), dpm_suspend() would not be
-> exceuted if return error from device_prepare() [1]. So
-> cpufreq_cpufreq() will not be called,
 
-I guess you mean cpufreq_suspend().
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
-That should be OK .
+> On Wed, Apr 22, 2020 at 12:32:04PM +0200, Ingo Molnar wrote:
+> > 'struct elf *' handling is an open/close paradigm, make sure the naming
+> > matches that:
+> > 
+> >    elf_open_read()
+> >    elf_write()
+> >    elf_close()
+> 
+> 
+> > diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> > index f2a84271e807..12e2aea42bb2 100644
+> > --- a/tools/objtool/check.c
+> > +++ b/tools/objtool/check.c
+> > @@ -2614,7 +2614,7 @@ int check(const char *_objname, bool orc)
+> >  
+> >  	objname = _objname;
+> >  
+> > -	file.elf = elf_read(objname, orc ? O_RDWR : O_RDONLY);
+> > +	file.elf = elf_open_read(objname, orc ? O_RDWR : O_RDONLY);
+> 
+> Note that I have a patch pending that makes that unconditionally O_RDWR,
+> which sort of seems to suggest elf_open() might be the better name.
 
-> then cpufreq_remove_update_util_hook() will not be called either, and so
-> cpufreq_update_util_data will not be NULL.
->
-> In the dpm resume flow, sugov_start() will be called, in which
-> sg_cpu.update_util will be set to 0.
+Ok, done!
 
-Which code patch does this?
+Thanks,
 
-Surely not cpufreq_resume(), because that checks cpufreq_suspended which
-cannot be set if cpufreq_suspend() has not been called (because it is the only
-place setting cpufreq_suspended).
+	Ingo
