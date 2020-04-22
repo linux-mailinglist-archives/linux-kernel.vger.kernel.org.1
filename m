@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2D11B379F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 08:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C751C1B37A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 08:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgDVGlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 02:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgDVGlN (ORCPT
+        id S1726544AbgDVGly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 02:41:54 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:40790 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726337AbgDVGlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 02:41:13 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFFAC03C1A6;
-        Tue, 21 Apr 2020 23:41:13 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mq3so480527pjb.1;
-        Tue, 21 Apr 2020 23:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FFXai4lc3A2Whp3tdpgUAfuzp8AdGL6AbM8bh1FKhoI=;
-        b=aI4nuWwFYpWsS6XMk0wXURr5G6Xw02o7k3duOBm1u+gFfd6YvOPycF2KeoevA0D2RK
-         DRoP8twmMMiHQSrfQT3OOXKpZhwn+UCkFN0U6C4rC6gX9mPO85rkRp2aATBkM5i3zVIX
-         SPAivrjIQHswt90xXmtCxNwbGg4GJGIkc3dLR9NqM8238/dWYqSJVaILrB5TRAQqgQEk
-         DVk6wig4C8alf433BjHDMXmdLyDmwAx6l0bFs0Z+HRUmslyho8mkVBlJoivHhEFu0NjB
-         VRHSgcNdxRzUkD7b/uU110jv81DkhGL6B+XOLvW3t6FstiE8e7TJteA3XP+3f9bzqit0
-         Hwvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FFXai4lc3A2Whp3tdpgUAfuzp8AdGL6AbM8bh1FKhoI=;
-        b=OciI+OscOgx1vzzu9OLkVMiDSYodgAb0frkzWiRYu7uVPft898LddSI0wY+SF6mBLg
-         AAkBZVOR4ADa3bAPytUyhwoJMf3nl49bjgbyY3SojowgIOnuM1jMwUDEFzaS7UAN68AJ
-         Fx2edQCgWv8gy7qSUsYdPrT+LDFhoVy7gT8q8LnAvanNS9+UKMAepx7Mvz0UIJF1rfCV
-         V8Xt725RiDxeZ0bbqzJVsKGgiMNWCMO5wqNeBy10Hby24Hyk7bYTKrLXzvo9syYD8WaH
-         krXUwoiSdzOKlgxP9D9ZgmF1mvnMhPbvl0uz14SCa6a7DtX7edW+PlB4xUMk6zc8jx4o
-         VyOw==
-X-Gm-Message-State: AGi0PuYvePc2h3Zg6v16qL/6onm5xNn6DZ+9S7geQ+ZJvHJ06F8g8dfp
-        ppz6XzcQo5SAwt/wdJM4Smk=
-X-Google-Smtp-Source: APiQypI1xYbgbSewLWPzAya/EKYVSEyVWI5wgtJNRZIgDV+apAtS1JvgPCAh7R/SoQRmn/OlZNWtvA==
-X-Received: by 2002:a17:902:8eca:: with SMTP id x10mr25871547plo.60.1587537673010;
-        Tue, 21 Apr 2020 23:41:13 -0700 (PDT)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id r23sm4488120pfr.64.2020.04.21.23.41.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Apr 2020 23:41:12 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:41:07 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 06/18] mm: memcontrol: prepare uncharging for removal of
- private page type counters
-Message-ID: <20200422064106.GF6780@js1304-desktop>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-7-hannes@cmpxchg.org>
+        Wed, 22 Apr 2020 02:41:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587537711; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=oKUumuQTcasIYWPCKuU4pWf17rQd2gOkZlK1vxrDvYQ=;
+ b=MikemGL5utPH/8MRVdW+eqTTj71xalOmcA8Fh9DBgv4VL3uUrPp3IMk0IV6zRI9OZIH8FI77
+ LocfhK7RiJgnIqPJhx3qWT84FvNu1hhx2XBbT8hn7W5BJW9nCzb774BIWWf5B9VcK2oybbhC
+ 6oXo9D4VSgks1TGhWmURJnUf2eg=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9fe718.7f0225d3f5e0-smtp-out-n03;
+ Wed, 22 Apr 2020 06:41:28 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 478D4C432C2; Wed, 22 Apr 2020 06:41:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAEFCC433BA;
+        Wed, 22 Apr 2020 06:41:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DAEFCC433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420221126.341272-7-hannes@cmpxchg.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath11k: remove conversion to bool in
+ ath11k_dp_rxdesc_mpdu_valid()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200420123718.3384-1-yanaijie@huawei.com>
+References: <20200420123718.3384-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <davem@davemloft.net>, <srirrama@codeaurora.org>,
+        <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jason Yan <yanaijie@huawei.com>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200422064128.478D4C432C2@smtp.codeaurora.org>
+Date:   Wed, 22 Apr 2020 06:41:28 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 06:11:14PM -0400, Johannes Weiner wrote:
-> The uncharge batching code adds up the anon, file, kmem counts to
-> determine the total number of pages to uncharge and references to
-> drop. But the next patches will remove the anon and file counters.
-> 
-> Maintain an aggregate nr_pages in the uncharge_gather struct.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Jason Yan <yanaijie@huawei.com> wrote:
 
-Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> The '==' expression itself is bool, no need to convert it to bool again.
+> This fixes the following coccicheck warning:
+> 
+> drivers/net/wireless/ath/ath11k/dp_rx.c:255:46-51: WARNING: conversion
+> to bool not needed here
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+8af40902f839 ath11k: remove conversion to bool in ath11k_dp_rxdesc_mpdu_valid()
+
+-- 
+https://patchwork.kernel.org/patch/11498781/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
