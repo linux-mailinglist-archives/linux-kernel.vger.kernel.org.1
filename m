@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5531B3CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4231B4245
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgDVKHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59928 "EHLO mail.kernel.org"
+        id S1732309AbgDVK70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728525AbgDVKHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:23 -0400
+        id S1727076AbgDVKC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:02:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 885F420575;
-        Wed, 22 Apr 2020 10:07:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A33F920774;
+        Wed, 22 Apr 2020 10:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550043;
-        bh=xcT1YsuOgI5uidNIy54b3aHgjDWF90fAtnZVm8UwVHE=;
+        s=default; t=1587549776;
+        bh=bjvnJTPPAmrWn7sTp40MNKJPn2kc6bhnn19g0wsb8I0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nkRHkkx9O2LLIo0cyOgXgITh+OauRx13vrH/mfp1EAXLpEiQLQYhto5Ni9MfCCqr+
-         VDU9cFbb6CEVOvAvWaK4rcaPdxqRBBVgfqkoW+ZGj2ooYUtN/CO0Rd7PHyw3ytg0I1
-         mEJD+mD7NZq7anz1iccI4g1Wj2znUzO0Bn9aoUo4=
+        b=16ycsSAgHz9vFCdBDZ36wYFRFrVQsDMiVqwrcyuzKHfbBLIfQhDvV0vNCSTlUsVGl
+         jsNLdZ/PZFfoYsmpb6h2aXRLItls05ZyHFfyRa3qmdU2vGzS7llomTmvUCjFZuYb9Z
+         hoCvzFcW+b92HtCqLhPuRheN2o5RFHn1m60l3soM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 112/125] KVM: s390: vsie: Fix possible race when shadowing region 3 tables
-Date:   Wed, 22 Apr 2020 11:57:09 +0200
-Message-Id: <20200422095050.827439508@linuxfoundation.org>
+        stable@vger.kernel.org, Samuel Neves <sneves@dei.uc.pt>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.4 100/100] x86/vdso: Fix lsl operand order
+Date:   Wed, 22 Apr 2020 11:57:10 +0200
+Message-Id: <20200422095040.834180030@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Samuel Neves <sneves@dei.uc.pt>
 
-[ Upstream commit 1493e0f944f3c319d11e067c185c904d01c17ae5 ]
+commit e78e5a91456fcecaa2efbb3706572fe043766f4d upstream.
 
-We have to properly retry again by returning -EINVAL immediately in case
-somebody else instantiated the table concurrently. We missed to add the
-goto in this function only. The code now matches the other, similar
-shadowing functions.
+In the __getcpu function, lsl is using the wrong target and destination
+registers. Luckily, the compiler tends to choose %eax for both variables,
+so it has been working so far.
 
-We are overwriting an existing region 2 table entry. All allocated pages
-are added to the crst_list to be freed later, so they are not lost
-forever. However, when unshadowing the region 2 table, we wouldn't trigger
-unshadowing of the original shadowed region 3 table that we replaced. It
-would get unshadowed when the original region 3 table is modified. As it's
-not connected to the page table hierarchy anymore, it's not going to get
-used anymore. However, for a limited time, this page table will stick
-around, so it's in some sense a temporary memory leak.
+Fixes: a582c540ac1b ("x86/vdso: Use RDPID in preference to LSL when available")
+Signed-off-by: Samuel Neves <sneves@dei.uc.pt>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20180901201452.27828-1-sneves@dei.uc.pt
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Identified by manual code inspection. I don't think this classifies as
-stable material.
-
-Fixes: 998f637cc4b9 ("s390/mm: avoid races on region/segment/page table shadowing")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Link: https://lore.kernel.org/r/20200403153050.20569-4-david@redhat.com
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/mm/gmap.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/vgtod.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 871a99dcf93e1..0195c3983f540 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -1684,6 +1684,7 @@ int gmap_shadow_r3t(struct gmap *sg, unsigned long saddr, unsigned long r3t,
- 		goto out_free;
- 	} else if (*table & _REGION_ENTRY_ORIGIN) {
- 		rc = -EAGAIN;		/* Race with shadow */
-+		goto out_free;
- 	}
- 	crst_table_init(s_r3t, _REGION3_ENTRY_EMPTY);
- 	/* mark as invalid as long as the parent table is not protected */
--- 
-2.20.1
-
+--- a/arch/x86/include/asm/vgtod.h
++++ b/arch/x86/include/asm/vgtod.h
+@@ -86,7 +86,7 @@ static inline unsigned int __getcpu(void
+ 	 *
+ 	 * If RDPID is available, use it.
+ 	 */
+-	alternative_io ("lsl %[p],%[seg]",
++	alternative_io ("lsl %[seg],%[p]",
+ 			".byte 0xf3,0x0f,0xc7,0xf8", /* RDPID %eax/rax */
+ 			X86_FEATURE_RDPID,
+ 			[p] "=a" (p), [seg] "r" (__PER_CPU_SEG));
 
 
