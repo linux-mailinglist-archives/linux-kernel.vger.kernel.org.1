@@ -2,172 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEF71B353F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33E61B3530
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgDVC4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 22:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726173AbgDVC4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 22:56:20 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60608206D5;
-        Wed, 22 Apr 2020 02:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587524179;
-        bh=uXktadkm7XuXT9daSgTz03SBn8FHZ34ecH0ouje4lq8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hAyf5PrQe6/18AAwtdCBy7/vTmkGHFGFWYcT0VucAZGK2avIiPxB3tdbXuKdsc1JX
-         fuuHheVQ6av9Fm1wTvsGGd5MVl+Nfvo/B8pgLXXwAlMz+qTt0aiF5K39+1gyc5D7ll
-         j7wFUiAvPfeCpk0eHH6W0COpcM9jSiPWX81GHpDg=
-Content-Type: text/plain; charset="utf-8"
+        id S1726440AbgDVCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 22:51:13 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2829 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726389AbgDVCvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 22:51:13 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5EDFA9E2B7CFECE1E29E;
+        Wed, 22 Apr 2020 10:51:11 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Apr 2020 10:51:01 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: aacraid: Use memdup_user() as a cleanup
+Date:   Wed, 22 Apr 2020 10:57:12 +0800
+Message-ID: <1587524232-118733-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200419121808.440780-4-bryan.odonoghue@linaro.org>
-References: <20200419121808.440780-1-bryan.odonoghue@linaro.org> <20200419121808.440780-4-bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH 3/3] clk: qcom: gcc-msm8939: Make silicon specific updates for msm8939
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, p.zabel@pengutronix.de,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org
-Date:   Tue, 21 Apr 2020 19:56:18 -0700
-Message-ID: <158752417863.132238.13958544237045504884@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bryan O'Donoghue (2020-04-19 05:18:08)
-> The msm8939 is based on the msm8916. It is compatible in several ways but,
-> has additional functional blocks added which require additional PLL
-> sources. In some cases functional blocks from the msm8916 have different
-> clock sources or different supported frequencies.
->=20
-> This patch encapsulates the conversion from msm8916 to msm8939.
->=20
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  drivers/clk/qcom/gcc-msm8939.c | 832 ++++++++++++++++++++++++++++-----
->  1 file changed, 709 insertions(+), 123 deletions(-)
->=20
+Fix coccicheck warning which recommends to use memdup_user().
 
-Please use the new way of specifying clk parents with the clk_hw and DT
-based way. Some qcom clk drivers have already migrated. If this is a
-copy of the other driver then perhaps also modify that one in the series
-so that git can find the copy still. Sigh I still haven't written the
-documentation about it!
+This patch fixes the following coccicheck warnings:
 
-Look for .parent_data in drivers/clk/qcom/gcc-sc7180.c for the best
-guidance.
+drivers/scsi/aacraid/commctrl.c:516:15-22: WARNING opportunity for memdup_user
 
-> @@ -1695,6 +1997,7 @@ static struct clk_branch gcc_blsp1_qup4_spi_apps_cl=
-k =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_blsp1_qup5_i2c_apps_clk =3D {
->         .halt_reg =3D 0x06020,
->         .clkr =3D {
-> @@ -1712,6 +2015,7 @@ static struct clk_branch gcc_blsp1_qup5_i2c_apps_cl=
-k =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_blsp1_qup5_spi_apps_clk =3D {
->         .halt_reg =3D 0x0601c,
->         .clkr =3D {
-> @@ -1729,6 +2033,7 @@ static struct clk_branch gcc_blsp1_qup5_spi_apps_cl=
-k =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_blsp1_qup6_i2c_apps_clk =3D {
->         .halt_reg =3D 0x07020,
->         .clkr =3D {
-> @@ -1746,6 +2051,7 @@ static struct clk_branch gcc_blsp1_qup6_i2c_apps_cl=
-k =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_blsp1_qup6_spi_apps_clk =3D {
->         .halt_reg =3D 0x0701c,
->         .clkr =3D {
-> @@ -1797,6 +2103,7 @@ static struct clk_branch gcc_blsp1_uart2_apps_clk =
-=3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_boot_rom_ahb_clk =3D {
->         .halt_reg =3D 0x1300c,
->         .halt_check =3D BRANCH_HALT_VOTED,
-> @@ -2341,6 +2648,7 @@ static struct clk_branch gcc_camss_vfe_axi_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_crypto_ahb_clk =3D {
->         .halt_reg =3D 0x16024,
->         .halt_check =3D BRANCH_HALT_VOTED,
-> @@ -2359,6 +2667,7 @@ static struct clk_branch gcc_crypto_ahb_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_crypto_axi_clk =3D {
->         .halt_reg =3D 0x16020,
->         .halt_check =3D BRANCH_HALT_VOTED,
-> @@ -2377,6 +2686,7 @@ static struct clk_branch gcc_crypto_axi_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_crypto_clk =3D {
->         .halt_reg =3D 0x1601c,
->         .halt_check =3D BRANCH_HALT_VOTED,
-> @@ -2650,6 +3011,7 @@ static struct clk_branch gcc_oxili_gfx3d_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_pdm2_clk =3D {
->         .halt_reg =3D 0x4400c,
->         .clkr =3D {
-> @@ -2667,6 +3029,7 @@ static struct clk_branch gcc_pdm2_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
->  static struct clk_branch gcc_pdm_ahb_clk =3D {
->         .halt_reg =3D 0x44004,
->         .clkr =3D {
-> @@ -2684,6 +3047,7 @@ static struct clk_branch gcc_pdm_ahb_clk =3D {
->         },
->  };
-> =20
-> +/* CBCR/halt_reg value derived from code only */
+Fixes: 4645df1035b3 ("[PATCH] aacraid: swapped kmalloc args.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/scsi/aacraid/commctrl.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-Drop these useless comments.
+diff --git a/drivers/scsi/aacraid/commctrl.c b/drivers/scsi/aacraid/commctrl.c
+index ffe41bc..1ce1620 100644
+--- a/drivers/scsi/aacraid/commctrl.c
++++ b/drivers/scsi/aacraid/commctrl.c
+@@ -513,17 +513,9 @@ static int aac_send_raw_srb(struct aac_dev* dev, void __user * arg)
+ 		goto cleanup;
+ 	}
+ 
+-	user_srbcmd = kmalloc(fibsize, GFP_KERNEL);
+-	if (!user_srbcmd) {
+-		dprintk((KERN_DEBUG"aacraid: Could not make a copy of the srb\n"));
+-		rcode = -ENOMEM;
+-		goto cleanup;
+-	}
+-	if(copy_from_user(user_srbcmd, user_srb,fibsize)){
+-		dprintk((KERN_DEBUG"aacraid: Could not copy srb from user\n"));
+-		rcode = -EFAULT;
+-		goto cleanup;
+-	}
++	user_srbcmd = memdup_user(user_srb, fibsize);
++	if (IS_ERR(user_srbcmd))
++		return PTR_ERR(user_srbcmd);
+ 
+ 	flags = user_srbcmd->flags; /* from user in cpu order */
+ 	switch (flags & (SRB_DataIn | SRB_DataOut)) {
+-- 
+2.6.2
+
