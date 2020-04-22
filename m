@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD3B1B35BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACCE1B35C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 05:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgDVDwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 23:52:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45171 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgDVDwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 23:52:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 496RMf0jKKz9sSg;
-        Wed, 22 Apr 2020 13:52:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587527535;
-        bh=Ht2B9g7UeZlkPJ4YAiu9xxmmZjmqQOON7qrTD5NTcWU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hjOwoZL8NY5GqqQy3WlTAEVSC6Wg14/fHs9eTRiMvv/1VK+5tc6+n2MtPYDrOTElp
-         CrAPYW15l3geQ8bIUqD/vs6PikvYN7C6TgQTKMgivh8VCyubg+hBHqO8MC8bL+KHbl
-         dM8L/HOpBofi9+GBvhm2xPpLNuxOOPNNrJf+8Z6fywTu8RoQrj0rWeoHPceqwkjfr5
-         qdp310u2SiyKsTrVGOrFv8ORtLZHIGRl40PkdiTDLtZ9xYnpN4qcvMb5QVQuxSC1GN
-         jen18EHpr84ZR0oNljWw/msC6clRakkhff6O2EP9ImF6Ce7ps4GfmSBAUdBrtXjTdA
-         nyB/GwC4ee7ZA==
-Date:   Wed, 22 Apr 2020 13:52:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Qian Cai <cai@lca.pw>, Wanpeng Li <wanpengli@tencent.com>
-Subject: linux-next: manual merge of the kvm tree with the rcu tree
-Message-ID: <20200422135212.74d72690@canb.auug.org.au>
+        id S1726457AbgDVDxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 23:53:43 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:46385 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726422AbgDVDxm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 23:53:42 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0053E5801C2;
+        Tue, 21 Apr 2020 23:53:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 21 Apr 2020 23:53:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=+EfqkUSWnK5oB5LHgnO1Rxb0VK
+        C+TbEqPBLo0jnqFfY=; b=Vv5txikFjhlLvXI1tIKdx81CnUOtqX04ItqrZd++y+
+        ylJ31YHwF9JMljYOhGIr0CzgOzvU/p2AtiHnJCBQO2aNv4D0S7Uo11jpZT9bzM3b
+        k9Zvk2D00RhMXhgO0bdcOTcL0p+VteTb9+w+O6Sp/bh5YUTvtDUw94xN+Kbl9sFL
+        kvMjh8pPqD7n9bVAdcJxSzMkKIbg3R4s/L249Gi4aYRjqieTpehR7x8+CvR+sok2
+        hEbvykXcCj1lGXw8kV2i4sfjkJw6GFykcqpRq45d/fwJVKQIDOp582m9frc+CYjD
+        rUBPqYpRaNU9Gl8V8XsQDtYHtXMP/LSu/peBI2yQRCQg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+EfqkUSWnK5oB5LHg
+        nO1Rxb0VKC+TbEqPBLo0jnqFfY=; b=nZ+ub6QOBaRpvVC0ToDUQ/DS9jU1jSut6
+        8xhF9m2WCT9D1g7LqyhyMWu+DMzvzYkRSfJVjb5hikK/Pg4rLuzPt+Rrp+DMnY/w
+        qqE2v6M3Shup8k2wJxpf5T38BgSprvn72s9eTAeZBgiBi70/05lEkh42UNOQTEUz
+        U3ZzTHD/xNt61V7THd04ZuTvHZgyWoV/kYz441BNOke/5wNGbtVtR0GL33p4ksRX
+        ljtf6iLNfKk1dSpy4V3hqBUg2X5vfYSQ4vq/8PYsJgJocah0GLKl1UEmnNoMWOeY
+        m6pe7yc3Ohrikuf93td82cEEmMDhnr3rL1+yGNIPymRV6neLJJ0xQ==
+X-ME-Sender: <xms:xL-fXtryYa-E56bp_MQzrv-ZweNWTYg05pQAnuoEmzx1HfOe41hu5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeeigdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
+    rghlihhsthgrihhrvdefrdhmvgeqnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdroh
+    hrghenucfkphepjeefrdelfedrkeegrddvtdeknecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishhtrghirhdvfe
+    drmhgv
+X-ME-Proxy: <xmx:xL-fXr8vh1tErFKMmMRrFOTVByOqqyMkfXEtEH26SDrz7EFWnS9uqA>
+    <xmx:xL-fXs_3hyJxHZuB3nFymkNYyhhsZBAf5w077Be9d4wkzft2tzpbUQ>
+    <xmx:xL-fXqsc8KlVQcN7vc5oQgLnA133RjHzuQpd1eKLFoSrVfeFhSkT9g>
+    <xmx:xL-fXhodnDceTjkOrAp2U-6b0io9GgFzDco_ANuCj-16ht-gxFtHhg>
+Received: from alistair-xps-14z.alistair23.me (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 15DD33280063;
+        Tue, 21 Apr 2020 23:53:39 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, mripard@kernel.org, wens@csie.org
+Cc:     anarsoul@gmail.com, devicetree@vger.kernel.org,
+        alistair23@gmail.com, linux-arm-kernel@lists.infradead.org,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v4 1/3] dt-bindings: net: bluetooth: Add rtl8723bs-bluetooth
+Date:   Tue, 21 Apr 2020 20:53:31 -0700
+Message-Id: <20200422035333.1118351-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5VSpAfQEKxH/B/sz0WWOHru";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5VSpAfQEKxH/B/sz0WWOHru
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Vasily Khoruzhick <anarsoul@gmail.com>
 
-Hi all,
+Add binding document for bluetooth part of RTL8723BS/RTL8723CS
 
-Today's linux-next merge of the kvm tree got a conflict in:
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+---
+ .../bindings/net/realtek-bluetooth.yaml       | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
 
-  arch/x86/kvm/svm/svm.c
+diff --git a/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
+new file mode 100644
+index 000000000000..4eb141b00fcb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/realtek,rtl8723bs-bt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: RTL8723BS/RTL8723CS/RTL8822CS Bluetooth Device Tree Bindings
++
++maintainers:
++  - Vasily Khoruzhick <anarsoul@gmail.com>
++  - Alistair Francis <alistair@alistair23.me>
++
++description:
++  RTL8723CS/RTL8723CS/RTL8822CS is WiFi + BT chip. WiFi part is connected over
++  SDIO, while BT is connected over serial. It speaks H5 protocol with few
++  extra commands to upload firmware and change module speed.
++
++properties:
++  compatible:
++    oneOf:
++      - const: "realtek,rtl8723bs-bt"
++      - const: "realtek,rtl8723cs-bt"
++      - const: "realtek,rtl8822cs-bt"
++
++  device-wake-gpios:
++    maxItems: 1
++    description: GPIO specifier, used to wakeup the BT module
++
++  enable-gpios:
++    maxItems: 1
++    description: GPIO specifier, used to enable the BT module
++
++  host-wake-gpios:
++    maxItems: 1
++    description: GPIO specifier, used to wakeup the host processor
++
++required:
++  - compatible
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    uart1 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
++        uart-has-rtscts = <1>;
++
++        bluetooth {
++            compatible = "realtek,rtl8723bs-bt";
++            device-wake-gpios = <&r_pio 0 5 GPIO_ACTIVE_HIGH>; /* PL5 */
++            host-wakeup-gpios = <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
++        };
++    };
+-- 
+2.26.0
 
-between commit:
-
-  c60e60a23f24 ("kvm/svm: Disable KCSAN for svm_vcpu_run()")
-
-from the rcu tree and commit:
-
-  a9ab13ff6e84 ("KVM: X86: Improve latency for single target IPI fastpath")
-
-from the kvm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/kvm/svm/svm.c
-index b303ae0803d2,a6f4e1bdb045..000000000000
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@@ -3276,10 -3299,21 +3299,21 @@@ static void svm_cancel_injection(struc
-  	svm_complete_interrupts(svm);
-  }
- =20
-+ static enum exit_fastpath_completion svm_exit_handlers_fastpath(struct kv=
-m_vcpu *vcpu)
-+ {
-+ 	if (!is_guest_mode(vcpu) &&
-+ 	    to_svm(vcpu)->vmcb->control.exit_code =3D=3D SVM_EXIT_MSR &&
-+ 	    to_svm(vcpu)->vmcb->control.exit_info_1)
-+ 		return handle_fastpath_set_msr_irqoff(vcpu);
-+=20
-+ 	return EXIT_FASTPATH_NONE;
-+ }
-+=20
-  void __svm_vcpu_run(unsigned long vmcb_pa, unsigned long *regs);
- =20
-- static __no_kcsan void svm_vcpu_run(struct kvm_vcpu *vcpu)
- -static enum exit_fastpath_completion svm_vcpu_run(struct kvm_vcpu *vcpu)
-++static __no_kcsan enum exit_fastpath_completion svm_vcpu_run(struct kvm_v=
-cpu *vcpu)
-  {
-+ 	enum exit_fastpath_completion exit_fastpath;
-  	struct vcpu_svm *svm =3D to_svm(vcpu);
- =20
-  	svm->vmcb->save.rax =3D vcpu->arch.regs[VCPU_REGS_RAX];
-
---Sig_/5VSpAfQEKxH/B/sz0WWOHru
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6fv2wACgkQAVBC80lX
-0GymtQf/U17yb+yHk4v+1jDTGDNXHyZnQZ2UUycoKCW7etIYYM4PP1XhDKPy5YBK
-VAywDItg71HdFtO33xKb9TkT1uiGFGIu6JTBoxnHsas5MBd0OYc/UyHo/5g8eMBF
-KACqYK0cIcPI/KlLP7pz+J4o4TUwmf5RSx796vNEmG5v7hfM9D8n7+UHmDtUSlno
-c+Uik1TxRJV3pPO/pfVNyovUoV8Og+aJVsRetWB5insLMZBK/GwcFUEFXHNVDkfV
-DkSm791vwVdN1Z6+nL/SfMIb07x5xtSM/ySmt8zpeE6/HlrgC/xwMKfOHq+Y7ppP
-vVUg8yMkH60eBdnoeoQzAVvqfXYuvQ==
-=6Vge
------END PGP SIGNATURE-----
-
---Sig_/5VSpAfQEKxH/B/sz0WWOHru--
