@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460CA1B4286
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CF81B41F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732414AbgDVLCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        id S1726957AbgDVKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:05:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726665AbgDVKAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:00:51 -0400
+        id S1728176AbgDVKFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE49020735;
-        Wed, 22 Apr 2020 10:00:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CB5720774;
+        Wed, 22 Apr 2020 10:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549650;
-        bh=0/uNQf6ZnvzsvbCpwz/QjbBLazFD+xwFMNPT4GXYeBg=;
+        s=default; t=1587549923;
+        bh=1wBsX03h36FiQnS3XC1J8G/JuRtRGfhMB4qHM++zCQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6fIxja+tF4emDf/veOOR55um0Tq6aX+CFVkePdcoZJmD3t994bwjCkIwi2Ys3BFS
-         ePjQO6JESIE3hbSW4d8h/5UvQvtx/xCuueLD1AkPLOtpEhclarI23rZ3rzLsy1ncik
-         aF3MRXb1tidPIHfcOKM1SWMFbAU4mAae9jzYeFNk=
+        b=CSBcaCHSsOtCv6UCd3aroKyjBw7l0b/A7wldVS/YVD0ihuoaCISQPFa6XRFHdOjKp
+         8szKwutqJ66KBNw6ZZ/BpKIyLsp0nefJsemRgXhdSCBBnvgq18DOKnE0eAZ9uEFmhm
+         gnYpboKGWbhejw8+p+xIlmpVWE7cPpmGafUoC3/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.4 049/100] powerpc/64/tm: Dont let userspace set regs->trap via sigreturn
-Date:   Wed, 22 Apr 2020 11:56:19 +0200
-Message-Id: <20200422095031.334888751@linuxfoundation.org>
+        stable@vger.kernel.org, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Scott Wood <oss@buserror.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 063/125] powerpc/fsl_booke: Avoid creating duplicate tlb1 entry
+Date:   Wed, 22 Apr 2020 11:56:20 +0200
+Message-Id: <20200422095043.529126957@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-commit c7def7fbdeaa25feaa19caf4a27c5d10bd8789e4 upstream.
+[ Upstream commit aa4113340ae6c2811e046f08c2bc21011d20a072 ]
 
-In restore_tm_sigcontexts() we take the trap value directly from the
-user sigcontext with no checking:
+In the current implementation, the call to loadcam_multi() is wrapped
+between switch_to_as1() and restore_to_as0() calls so, when it tries
+to create its own temporary AS=1 TLB1 entry, it ends up duplicating
+the existing one created by switch_to_as1(). Add a check to skip
+creating the temporary entry if already running in AS=1.
 
-	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
-
-This means we can be in the kernel with an arbitrary regs->trap value.
-
-Although that's not immediately problematic, there is a risk we could
-trigger one of the uses of CHECK_FULL_REGS():
-
-	#define CHECK_FULL_REGS(regs)	BUG_ON(regs->trap & 1)
-
-It can also cause us to unnecessarily save non-volatile GPRs again in
-save_nvgprs(), which shouldn't be problematic but is still wrong.
-
-It's also possible it could trick the syscall restart machinery, which
-relies on regs->trap not being == 0xc00 (see 9a81c16b5275 ("powerpc:
-fix double syscall restarts")), though I haven't been able to make
-that happen.
-
-Finally it doesn't match the behaviour of the non-TM case, in
-restore_sigcontext() which zeroes regs->trap.
-
-So change restore_tm_sigcontexts() to zero regs->trap.
-
-This was discovered while testing Nick's upcoming rewrite of the
-syscall entry path. In that series the call to save_nvgprs() prior to
-signal handling (do_notify_resume()) is removed, which leaves the
-low-bit of regs->trap uncleared which can then trigger the FULL_REGS()
-WARNs in setup_tm_sigcontexts().
-
-Fixes: 2b0a576d15e0 ("powerpc: Add new transactional memory state to the signal context")
-Cc: stable@vger.kernel.org # v3.9+
+Fixes: d9e1831a4202 ("powerpc/85xx: Load all early TLB entries at once")
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Acked-by: Scott Wood <oss@buserror.net>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200401023836.3286664-1-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200123111914.2565-1-laurentiu.tudor@nxp.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/signal_64.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/powerpc/mm/tlb_nohash_low.S | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -462,8 +462,10 @@ static long restore_tm_sigcontexts(struc
- 	err |= __get_user(current->thread.ckpt_regs.ccr,
- 			  &sc->gp_regs[PT_CCR]);
+diff --git a/arch/powerpc/mm/tlb_nohash_low.S b/arch/powerpc/mm/tlb_nohash_low.S
+index eabecfcaef7cf..204b4d9c44248 100644
+--- a/arch/powerpc/mm/tlb_nohash_low.S
++++ b/arch/powerpc/mm/tlb_nohash_low.S
+@@ -400,7 +400,7 @@ _GLOBAL(set_context)
+  * extern void loadcam_entry(unsigned int index)
+  *
+  * Load TLBCAM[index] entry in to the L2 CAM MMU
+- * Must preserve r7, r8, r9, and r10
++ * Must preserve r7, r8, r9, r10 and r11
+  */
+ _GLOBAL(loadcam_entry)
+ 	mflr	r5
+@@ -436,6 +436,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
+  */
+ _GLOBAL(loadcam_multi)
+ 	mflr	r8
++	/* Don't switch to AS=1 if already there */
++	mfmsr	r11
++	andi.	r11,r11,MSR_IS
++	bne	10f
  
-+	/* Don't allow userspace to set the trap value */
-+	regs->trap = 0;
+ 	/*
+ 	 * Set up temporary TLB entry that is the same as what we're
+@@ -461,6 +465,7 @@ _GLOBAL(loadcam_multi)
+ 	mtmsr	r6
+ 	isync
+ 
++10:
+ 	mr	r9,r3
+ 	add	r10,r3,r4
+ 2:	bl	loadcam_entry
+@@ -469,6 +474,10 @@ _GLOBAL(loadcam_multi)
+ 	mr	r3,r9
+ 	blt	2b
+ 
++	/* Don't return to AS=0 if we were in AS=1 at function start */
++	andi.	r11,r11,MSR_IS
++	bne	3f
 +
- 	/* These regs are not checkpointed; they can go in 'regs'. */
--	err |= __get_user(regs->trap, &sc->gp_regs[PT_TRAP]);
- 	err |= __get_user(regs->dar, &sc->gp_regs[PT_DAR]);
- 	err |= __get_user(regs->dsisr, &sc->gp_regs[PT_DSISR]);
- 	err |= __get_user(regs->result, &sc->gp_regs[PT_RESULT]);
+ 	/* Return to AS=0 and clear the temporary entry */
+ 	mfmsr	r6
+ 	rlwinm.	r6,r6,0,~(MSR_IS|MSR_DS)
+@@ -484,6 +493,7 @@ _GLOBAL(loadcam_multi)
+ 	tlbwe
+ 	isync
+ 
++3:
+ 	mtlr	r8
+ 	blr
+ #endif
+-- 
+2.20.1
+
 
 
