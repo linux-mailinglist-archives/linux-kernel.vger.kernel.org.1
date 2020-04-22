@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A504A1B3F43
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3281B3CEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730111AbgDVKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
+        id S1728913AbgDVKJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729189AbgDVKWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:32 -0400
+        id S1728901AbgDVKJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A7542075A;
-        Wed, 22 Apr 2020 10:22:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64B952070B;
+        Wed, 22 Apr 2020 10:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550950;
-        bh=+zmJyGvrrdIfyn9TObi/EYhZ7NOkSHIQw8OjpaQMXmI=;
+        s=default; t=1587550184;
+        bh=A+JHGKZKUO6n8kcbFBZ2WcxbjAzvhMT8qPdf+AdXM+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RNxNLylcMrCZL6EE2cZdyxxfed7PneGJUwQPXdjvRok70ZvQ8fJAIThiBCc0IhnEU
-         kag0L8MqvXqv6vaJib7VscBAY05CrEEuCu2+6eTEwjwUzpEu+9iHZkaxAKSEdiDQVK
-         MUfgQTvOa6AdTIIVvW6L/7bYvDAypvFPzDL4npLs=
+        b=SdyAkNUqs4vNWg2LMYyFFE0Or1asTGgGoZX2aFzQqJjLNM0BnmWy/NygrZ1rnNivZ
+         eBEotYMCGqVCQTd7oe8MfheSGB2DCk2mBz/7tuCyLxGkA9CSrXZe03evrn+a3ebA+W
+         tl+T6/isOSrKxsf59hqSlHskMRSV8f8RHH2fdOrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 040/166] gfs2: clear ail1 list when gfs2 withdraws
-Date:   Wed, 22 Apr 2020 11:56:07 +0200
-Message-Id: <20200422095053.254546289@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Jari Ruusu <jari.ruusu@gmail.com>
+Subject: [PATCH 4.14 042/199] ALSA: pcm: oss: Fix regression by buffer overflow fix
+Date:   Wed, 22 Apr 2020 11:56:08 +0200
+Message-Id: <20200422095102.174647171@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +43,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 30fe70a85a909a23dcbc2c628ca6655b2c85e7a1 ]
+commit ae769d3556644888c964635179ef192995f40793 upstream.
 
-This patch fixes a bug in which function gfs2_log_flush can get into
-an infinite loop when a gfs2 file system is withdrawn. The problem
-is the infinite loop "for (;;)" in gfs2_log_flush which would never
-finish because the io error and subsequent withdraw prevented the
-items from being taken off the ail list.
+The recent fix for the OOB access in PCM OSS plugins (commit
+f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
+regression on OSS applications.  The patch introduced the size check
+in client and slave size calculations to limit to each plugin's buffer
+size, but I overlooked that some code paths call those without
+allocating the buffer but just for estimation.
 
-This patch tries to clean up the mess by allowing withdraw situations
-to move not-in-flight buffer_heads to the ail2 list, where they will
-be dealt with later.
+This patch fixes the bug by skipping the size check for those code
+paths while keeping checking in the actual transfer calls.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200403072515.25539-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/gfs2/log.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ sound/core/oss/pcm_plugin.c |   32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 08dd6a4302344..60d911e293e68 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -104,16 +104,22 @@ __acquires(&sdp->sd_ail_lock)
- 		gfs2_assert(sdp, bd->bd_tr == tr);
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_p
+ 	return 0;
+ }
  
- 		if (!buffer_busy(bh)) {
--			if (!buffer_uptodate(bh) &&
--			    !test_and_set_bit(SDF_AIL1_IO_ERROR,
-+			if (buffer_uptodate(bh)) {
-+				list_move(&bd->bd_ail_st_list,
-+					  &tr->tr_ail2_list);
-+				continue;
-+			}
-+			if (!test_and_set_bit(SDF_AIL1_IO_ERROR,
- 					      &sdp->sd_flags)) {
- 				gfs2_io_error_bh(sdp, bh);
- 				*withdraw = true;
- 			}
--			list_move(&bd->bd_ail_st_list, &tr->tr_ail2_list);
--			continue;
+-snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
++static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t drv_frames,
++					  bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	int stream;
+@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
  		}
+@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	return drv_frames;
+ }
  
-+		if (gfs2_withdrawn(sdp)) {
-+			gfs2_remove_from_ail(bd);
-+			continue;
-+		}
- 		if (!buffer_dirty(bh))
- 			continue;
- 		if (gl == bd->bd_gl)
-@@ -862,6 +868,8 @@ void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl, u32 flags)
- 				if (gfs2_ail1_empty(sdp))
- 					break;
+-snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
++static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
++					 snd_pcm_uframes_t clt_frames,
++					 bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	snd_pcm_sframes_t frames;
+@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 				if (frames < 0)
+ 					return frames;
  			}
-+			if (gfs2_withdrawn(sdp))
-+				goto out;
- 			atomic_dec(&sdp->sd_log_blks_free); /* Adjust for unreserved buffer */
- 			trace_gfs2_log_blocks(sdp, -1);
- 			log_write_header(sdp, flags);
-@@ -874,6 +882,7 @@ void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl, u32 flags)
- 			atomic_set(&sdp->sd_freeze_state, SFS_FROZEN);
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 	return frames;
+ }
+ 
++snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
++					   snd_pcm_uframes_t drv_frames)
++{
++	return plug_client_size(plug, drv_frames, false);
++}
++
++snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t clt_frames)
++{
++	return plug_slave_size(plug, clt_frames, false);
++}
++
+ static int snd_pcm_plug_formats(const struct snd_mask *mask,
+ 				snd_pcm_format_t format)
+ {
+@@ -629,7 +645,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_tra
+ 		src_channels = dst_channels;
+ 		plugin = next;
  	}
+-	return snd_pcm_plug_client_size(plug, frames);
++	return plug_client_size(plug, frames, true);
+ }
  
-+out:
- 	trace_gfs2_log_flush(sdp, 0, flags);
- 	up_write(&sdp->sd_log_flush_lock);
+ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
+@@ -639,7 +655,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_tran
+ 	snd_pcm_sframes_t frames = size;
+ 	int err;
  
--- 
-2.20.1
-
+-	frames = snd_pcm_plug_slave_size(plug, frames);
++	frames = plug_slave_size(plug, frames, true);
+ 	if (frames < 0)
+ 		return frames;
+ 
 
 
