@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52881B46FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2741B4707
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgDVOQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:16:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35214 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgDVOQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:16:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 83D49ACF1;
-        Wed, 22 Apr 2020 14:16:54 +0000 (UTC)
-Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
-To:     Jakub Jelinek <jakub@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Matz <matz@suse.de>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <20200417085859.GU2424@tucnak> <20200417090909.GC7322@zn.tnic>
- <CAKwvOdnFXPBJsAUD++HtYS5JiR2KmX73M5GAUe-tvX-JYV7DaA@mail.gmail.com>
- <CAKwvOdmNwNwa6rMC27-QZq8VDrYdTQeQqss-bAwF1EMmnAHxdw@mail.gmail.com>
- <20200417190607.GY2424@tucnak>
- <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
- <alpine.LSU.2.21.2004201401120.11688@wotan.suse.de>
- <20200422102309.GA26846@zn.tnic>
- <20200422114007.GC20730@hirez.programming.kicks-ass.net>
- <20200422134924.GB26846@zn.tnic> <20200422135531.GM2424@tucnak>
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-Message-ID: <20a91f2e-0f25-8dba-e441-3233cc1ef398@suse.cz>
-Date:   Wed, 22 Apr 2020 16:16:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727118AbgDVOT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:19:29 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:64450 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726720AbgDVOT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 10:19:28 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 03MEIq6s003059;
+        Wed, 22 Apr 2020 23:18:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 03MEIq6s003059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587565133;
+        bh=05L0Y4K5hdMLe5DqDt78XEkJuAdMbS03xklsS80D7Zk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DyxCrGC9vbJk3WAzDPNWRUm5TW/6TBn/XNszLdLUySG+DlkgrEeyd2p25GpG475X5
+         Ns8AYwSr9Xo5JC94ZC/m/GNu5zne4CZl2onlRtCFyr2RiFN6hr3/hOvDgOztOxDhtt
+         03UobRstNyV6gNpiLIPx9wr7lV+aZh7JPApv/Xc9AQ/tfKV/7v7a1s50P/Gdrb9r6M
+         UrrfceNsdtesIk6C+5GBx2v6z7fJNM7gqa+k/04+yur6u7y9loB0DiGVw/48Zx6n5H
+         WNAxrcJiCrDKXSRC4cJflY3CsJ6DGDRvl4rJHHmUoSUnC05jryRdbh+v2CCHG+i1XW
+         q3voLqhQl5BHw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: at24: add microchip,24lc[0-9]+ to the compatible pattern
+Date:   Wed, 22 Apr 2020 23:18:36 +0900
+Message-Id: <20200422141836.1964676-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200422135531.GM2424@tucnak>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/20 3:55 PM, Jakub Jelinek wrote:
-> On Wed, Apr 22, 2020 at 03:49:24PM +0200, Borislav Petkov wrote:
->> On Wed, Apr 22, 2020 at 01:40:07PM +0200, Peter Zijlstra wrote:
->>> You haz a whitespace issue there.
->>
->> Fixed.
->>
->>> Also, can we get this in writing, signed in blood, from the various
->>> compiler teams ;-)
->>
->> Yah, I wouldn't want to go fix this again in gcc11 or so. That's why I
->> wanted the explicit marking but let's try this first - it is too simple
->> to pass over without having tested it.
-> 
-> If virtual blood is enough, AFAIK GCC has never tried to accept volatile
-> inline asm (asm ("") is such; non-volatile asm such as int x; asm ("" : "=r" (x));
-> could be e.g. dead code eliminated) in the statements between function call and
-> return when deciding about what function can be tail-called or can use
-> tail-recursion and there are no plans to change that.
-> 
-> 	Jakub
-> 
-> 
-> 
+arch/arm/boot/dts/uniphier-ref-daughter.dtsi has
 
-One possible solution can be usage of a GCC pragma that will disable the tail-call optimization:
+  compatible = "microchip,24lc128", "atmel,24c128";
 
-$ cat tail.c
-int foo(int);
+and 'make ARCH=arm dtbs_check' warns this:
 
-#pragma GCC push_options
-#pragma GCC optimize("-fno-optimize-sibling-calls")
-int baz(int a)
-{
-   int r = foo(a);
-   return r;
-}
-#pragma GCC pop_options
+  eeprom@50: compatible: ['microchip,24lc128', 'atmel,24c128'] is not valid under any of the given schemas (Possible causes of the failure)
 
-I'm not sure if clang provides something similar (the -foptimize-sibling-calls option
-is supported as well).
+Microchip 24LC128 is the device used on this board, and I see it in
+https://www.microchip.com/wwwproducts/en/24LC128
 
-And as I talked to Boris, I would recommend to come up with a "configure" check
-that a compiler does not optimize the key code sequence:
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-$ cat asm-detect.c
-int foo(int a);
-int bar(int a)
-{
-   int r = foo(a);
-   asm ("");
-   return r;
-}
+ Documentation/devicetree/bindings/eeprom/at24.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-$ gcc -O2 -c asm-detect.c -S -o/dev/stdout | grep jmp
-[no output]
+diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
+index a15787e504f0..2cd7a04cab7c 100644
+--- a/Documentation/devicetree/bindings/eeprom/at24.yaml
++++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
+@@ -34,7 +34,7 @@ properties:
+           - minItems: 1
+             maxItems: 2
+             items:
+-              - pattern: "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|mac)[0-9]+|spd)$"
++              - pattern: "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$"
+               - pattern: "^atmel,(24(c|cs|mac)[0-9]+|spd)$"
+           - oneOf:
+               - items:
+-- 
+2.25.1
 
-Martin
