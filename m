@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D04B1B456C
+	by mail.lfdr.de (Postfix) with ESMTP id DA9FD1B456D
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgDVMwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:52:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53033 "EHLO mga05.intel.com"
+        id S1726989AbgDVMwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:52:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:14544 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726863AbgDVMwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:52:08 -0400
-IronPort-SDR: TGyNWH8DNaP+qLpI2sjhMR2S9qATWlGBM+4nJ7lOT83pS7DPZbvNRtre5mFcAz2dYVhl9gCl6J
- FpnlFR7WdWPQ==
+        id S1726913AbgDVMwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:52:09 -0400
+IronPort-SDR: qF6TRgyjzOgeltMuNLlriR6h1aggkk4cNiqKlP2pDwvQsC5Ty1IldQ6TK+ZxuNgP2oGm5RhfEP
+ KK9oJCoMZCBw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 05:52:06 -0700
-IronPort-SDR: bojhQLZlfoN7lEIIhZM/o0uLGUKgb87y12nfBKWUFp8AVqr0HEvdUM6uig/9cK2FEFqCYk/J6+
- JgFxOGmZ5XcQ==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 05:52:09 -0700
+IronPort-SDR: XVfy5RVeVikMWBN9wW4aU8hHFd6TBhcaIz4OwSlXwIKp6JH3urB/5okv8Ps2mQRTLHk0iw62Dm
+ cVyhuI2+Rv3Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,414,1580803200"; 
-   d="scan'208";a="273872844"
+   d="scan'208";a="245966348"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 22 Apr 2020 05:52:04 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 22 Apr 2020 05:52:07 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A7BEC8AB; Wed, 22 Apr 2020 15:52:03 +0300 (EEST)
+        id B1D618D4; Wed, 22 Apr 2020 15:52:03 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Joe Perches <joe@perches.com>
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 5/7] kernel.h: Split out mathematical helpers
-Date:   Wed, 22 Apr 2020 15:51:59 +0300
-Message-Id: <20200422125201.37618-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 6/7] kernel.h: Split out panic and oops helpers
+Date:   Wed, 22 Apr 2020 15:52:00 +0300
+Message-Id: <20200422125201.37618-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200422125201.37618-1-andriy.shevchenko@linux.intel.com>
 References: <20200422125201.37618-1-andriy.shevchenko@linux.intel.com>
@@ -46,8 +46,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 kernel.h is being used as a dump for all kinds of stuff for a long time.
-Here is the attempt to start cleaning it up by splitting out mathematical
-helpers.
+Here is the attempt to start cleaning it up by splitting out panic and
+oops helpers.
 
 At the same time convert users in header and lib folder to use new header.
 Though for time being include new header back to kernel.h to avoid twisted
@@ -55,628 +55,354 @@ indirected includes for existing users.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v4: rebase on latest kernel
- fs/nfs/callback_proc.c        |   5 +
- include/linux/bitops.h        |  11 ++-
- include/linux/dcache.h        |   1 +
- include/linux/iommu-helper.h  |   4 +-
- include/linux/kernel.h        | 174 +--------------------------------
- include/linux/math.h          | 177 ++++++++++++++++++++++++++++++++++
- include/linux/rcu_node_tree.h |   2 +
- include/linux/units.h         |   2 +-
- lib/errname.c                 |   1 +
- lib/find_bit.c                |   3 +-
- lib/math/div64.c              |   3 +-
- lib/math/int_pow.c            |   2 +-
- lib/math/int_sqrt.c           |   3 +-
- lib/math/reciprocal_div.c     |   9 +-
- 14 files changed, 213 insertions(+), 184 deletions(-)
- create mode 100644 include/linux/math.h
+v4: new patch
+ arch/x86/include/asm/desc.h    |  1 +
+ arch/x86/kernel/setup.c        |  1 +
+ include/asm-generic/bug.h      |  3 +-
+ include/linux/kernel.h         | 67 +-----------------------------
+ include/linux/ktime.h          |  2 +
+ include/linux/panic.h          | 75 ++++++++++++++++++++++++++++++++++
+ include/linux/panic_notifier.h | 12 ++++++
+ include/linux/thread_info.h    |  1 +
+ kernel/kexec_core.c            |  1 +
+ kernel/panic.c                 |  1 +
+ kernel/rcu/tree.c              |  2 +
+ kernel/trace/trace.c           |  1 +
+ lib/errseq.c                   |  1 +
+ 13 files changed, 101 insertions(+), 67 deletions(-)
+ create mode 100644 include/linux/panic.h
+ create mode 100644 include/linux/panic_notifier.h
 
-diff --git a/fs/nfs/callback_proc.c b/fs/nfs/callback_proc.c
-index e61dbc9b86ae2..f7786e00a6a7f 100644
---- a/fs/nfs/callback_proc.c
-+++ b/fs/nfs/callback_proc.c
-@@ -6,10 +6,15 @@
-  *
-  * NFSv4 callback procedures
-  */
-+
-+#include <linux/errno.h>
-+#include <linux/math.h>
- #include <linux/nfs4.h>
- #include <linux/nfs_fs.h>
- #include <linux/slab.h>
- #include <linux/rcupdate.h>
-+#include <linux/types.h>
-+
- #include "nfs4_fs.h"
- #include "callback.h"
- #include "delegation.h"
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 9acf654f0b191..72c911779f45d 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -1,9 +1,12 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef _LINUX_BITOPS_H
- #define _LINUX_BITOPS_H
-+
- #include <asm/types.h>
- #include <linux/bits.h>
+diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
+index 68a99d2a5f335..ac3878ac07091 100644
+--- a/arch/x86/include/asm/desc.h
++++ b/arch/x86/include/asm/desc.h
+@@ -9,6 +9,7 @@
+ #include <asm/irq_vectors.h>
+ #include <asm/cpu_entry_area.h>
  
-+#include <uapi/linux/kernel.h>
-+
- /* Set bits in the first 'n' bytes when loaded from memory */
- #ifdef __LITTLE_ENDIAN
- #  define aligned_byte_mask(n) ((1UL << 8*(n))-1)
-@@ -12,10 +15,10 @@
++#include <linux/debug_locks.h>
+ #include <linux/smp.h>
+ #include <linux/percpu.h>
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index a3767e74c758c..821960a2b412d 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -13,6 +13,7 @@
+ #include <linux/initrd.h>
+ #include <linux/iscsi_ibft.h>
+ #include <linux/memblock.h>
++#include <linux/panic_notifier.h>
+ #include <linux/pci.h>
+ #include <linux/root_dev.h>
+ #include <linux/sfi.h>
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index 384b5c835ced3..d3ae3e5b3643e 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -16,7 +16,8 @@
  #endif
  
- #define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
--#define BITS_TO_LONGS(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
--#define BITS_TO_U64(nr)		DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
--#define BITS_TO_U32(nr)		DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
--#define BITS_TO_BYTES(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(char))
-+#define BITS_TO_LONGS(nr)	__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
-+#define BITS_TO_U64(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
-+#define BITS_TO_U32(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
-+#define BITS_TO_BYTES(nr)	__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(char))
- 
- extern unsigned int __sw_hweight8(unsigned int w);
- extern unsigned int __sw_hweight16(unsigned int w);
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index c1488cc84fd94..096e04b7f38dc 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/atomic.h>
- #include <linux/list.h>
-+#include <linux/math.h>
- #include <linux/rculist.h>
- #include <linux/rculist_bl.h>
- #include <linux/spinlock.h>
-diff --git a/include/linux/iommu-helper.h b/include/linux/iommu-helper.h
-index 70d01edcbf8be..74be34f3a20ac 100644
---- a/include/linux/iommu-helper.h
-+++ b/include/linux/iommu-helper.h
-@@ -3,7 +3,9 @@
- #define _LINUX_IOMMU_HELPER_H
- 
- #include <linux/bug.h>
+ #ifndef __ASSEMBLY__
 -#include <linux/kernel.h>
-+#include <linux/log2.h>
-+#include <linux/math.h>
-+#include <linux/types.h>
++#include <linux/panic.h>
++#include <linux/printk.h>
  
- static inline unsigned long iommu_device_max_index(unsigned long size,
- 						   unsigned long offset,
+ #ifdef CONFIG_BUG
+ 
 diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index cbdbfe81a535c..8a0e5ed1b905a 100644
+index 8a0e5ed1b905a..cd83a57c1b244 100644
 --- a/include/linux/kernel.h
 +++ b/include/linux/kernel.h
-@@ -2,7 +2,6 @@
- #ifndef _LINUX_KERNEL_H
- #define _LINUX_KERNEL_H
- 
--
- #include <stdarg.h>
- #include <linux/limits.h>
- #include <linux/linkage.h>
-@@ -11,14 +10,15 @@
- #include <linux/compiler.h>
- #include <linux/bitops.h>
- #include <linux/log2.h>
-+#include <linux/math.h>
+@@ -13,6 +13,7 @@
+ #include <linux/math.h>
  #include <linux/minmax.h>
  #include <linux/typecheck.h>
++#include <linux/panic.h>
  #include <linux/printk.h>
  #include <linux/build_bug.h>
-+
- #include <asm/byteorder.h>
--#include <asm/div64.h>
-+
- #include <uapi/linux/kernel.h>
--#include <asm/div64.h>
  
- #define STACK_MAGIC	0xdeadbeef
+@@ -76,7 +77,6 @@
+ #define lower_32_bits(n) ((u32)(n))
  
-@@ -54,125 +54,11 @@
- }					\
- )
+ struct completion;
+-struct pt_regs;
+ struct user;
  
--/*
-- * This looks more complex than it should be. But we need to
-- * get the type for the ~ right in round_down (it needs to be
-- * as wide as the result!), and we want to evaluate the macro
-- * arguments just once each.
-- */
--#define __round_mask(x, y) ((__typeof__(x))((y)-1))
--/**
-- * round_up - round up to next specified power of 2
-- * @x: the value to round
-- * @y: multiple to round up to (must be a power of 2)
-- *
-- * Rounds @x up to next multiple of @y (which must be a power of 2).
-- * To perform arbitrary rounding up, use roundup() below.
-- */
--#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
--/**
-- * round_down - round down to next specified power of 2
-- * @x: the value to round
-- * @y: multiple to round down to (must be a power of 2)
-- *
-- * Rounds @x down to next multiple of @y (which must be a power of 2).
-- * To perform arbitrary rounding down, use rounddown() below.
-- */
--#define round_down(x, y) ((x) & ~__round_mask(x, y))
--
- #define typeof_member(T, m)	typeof(((T*)0)->m)
- 
--#define DIV_ROUND_UP __KERNEL_DIV_ROUND_UP
--
--#define DIV_ROUND_DOWN_ULL(ll, d) \
--	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
--
--#define DIV_ROUND_UP_ULL(ll, d) \
--	DIV_ROUND_DOWN_ULL((unsigned long long)(ll) + (d) - 1, (d))
--
--#if BITS_PER_LONG == 32
--# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP_ULL(ll, d)
--#else
--# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP(ll,d)
--#endif
--
--/**
-- * roundup - round up to the next specified multiple
-- * @x: the value to up
-- * @y: multiple to round up to
-- *
-- * Rounds @x up to next multiple of @y. If @y will always be a power
-- * of 2, consider using the faster round_up().
-- */
--#define roundup(x, y) (					\
--{							\
--	typeof(y) __y = y;				\
--	(((x) + (__y - 1)) / __y) * __y;		\
--}							\
--)
--/**
-- * rounddown - round down to next specified multiple
-- * @x: the value to round
-- * @y: multiple to round down to
-- *
-- * Rounds @x down to next multiple of @y. If @y will always be a power
-- * of 2, consider using the faster round_down().
-- */
--#define rounddown(x, y) (				\
--{							\
--	typeof(x) __x = (x);				\
--	__x - (__x % (y));				\
--}							\
--)
--
--/*
-- * Divide positive or negative dividend by positive or negative divisor
-- * and round to closest integer. Result is undefined for negative
-- * divisors if the dividend variable type is unsigned and for negative
-- * dividends if the divisor variable type is unsigned.
-- */
--#define DIV_ROUND_CLOSEST(x, divisor)(			\
--{							\
--	typeof(x) __x = x;				\
--	typeof(divisor) __d = divisor;			\
--	(((typeof(x))-1) > 0 ||				\
--	 ((typeof(divisor))-1) > 0 ||			\
--	 (((__x) > 0) == ((__d) > 0))) ?		\
--		(((__x) + ((__d) / 2)) / (__d)) :	\
--		(((__x) - ((__d) / 2)) / (__d));	\
--}							\
--)
--/*
-- * Same as above but for u64 dividends. divisor must be a 32-bit
-- * number.
-- */
--#define DIV_ROUND_CLOSEST_ULL(x, divisor)(		\
--{							\
--	typeof(divisor) __d = divisor;			\
--	unsigned long long _tmp = (x) + (__d) / 2;	\
--	do_div(_tmp, __d);				\
--	_tmp;						\
--}							\
--)
--
--/*
-- * Multiplies an integer by a fraction, while avoiding unnecessary
-- * overflow or loss of precision.
-- */
--#define mult_frac(x, numer, denom)(			\
--{							\
--	typeof(x) quot = (x) / (denom);			\
--	typeof(x) rem  = (x) % (denom);			\
--	(quot * (numer)) + ((rem * (numer)) / (denom));	\
--}							\
--)
--
--
- #define _RET_IP_		(unsigned long)__builtin_return_address(0)
- #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
- 
--#define sector_div(a, b) do_div(a, b)
--
- /**
-  * upper_32_bits - return bits 32-63 of a number
-  * @n: the number we're accessing
-@@ -265,48 +151,6 @@ extern void __cant_sleep(const char *file, int line, int preempt_offset);
- # define cant_migrate()		do { } while (0)
+ #ifdef CONFIG_PREEMPT_VOLUNTARY
+@@ -159,15 +159,6 @@ void __might_fault(const char *file, int line);
+ static inline void might_fault(void) { }
  #endif
  
--/**
-- * abs - return absolute value of an argument
-- * @x: the value.  If it is unsigned type, it is converted to signed type first.
-- *     char is treated as if it was signed (regardless of whether it really is)
-- *     but the macro's return type is preserved as char.
-- *
-- * Return: an absolute value of x.
-- */
--#define abs(x)	__abs_choose_expr(x, long long,				\
--		__abs_choose_expr(x, long,				\
--		__abs_choose_expr(x, int,				\
--		__abs_choose_expr(x, short,				\
--		__abs_choose_expr(x, char,				\
--		__builtin_choose_expr(					\
--			__builtin_types_compatible_p(typeof(x), char),	\
--			(char)({ signed char __x = (x); __x<0?-__x:__x; }), \
--			((void)0)))))))
--
--#define __abs_choose_expr(x, type, other) __builtin_choose_expr(	\
--	__builtin_types_compatible_p(typeof(x),   signed type) ||	\
--	__builtin_types_compatible_p(typeof(x), unsigned type),		\
--	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
--
--/**
-- * reciprocal_scale - "scale" a value into range [0, ep_ro)
-- * @val: value
-- * @ep_ro: right open interval endpoint
-- *
-- * Perform a "reciprocal multiplication" in order to "scale" a value into
-- * range [0, @ep_ro), where the upper interval endpoint is right-open.
-- * This is useful, e.g. for accessing a index of an array containing
-- * @ep_ro elements, for example. Think of it as sort of modulus, only that
-- * the result isn't that of modulo. ;) Note that if initial input is a
-- * small value, then result will return 0.
-- *
-- * Return: a result based on @val in interval [0, @ep_ro).
-- */
--static inline u32 reciprocal_scale(u32 val, u32 ep_ro)
--{
--	return (u32)(((u64) val * ep_ro) >> 32);
--}
--
- #if defined(CONFIG_MMU) && \
- 	(defined(CONFIG_PROVE_LOCKING) || defined(CONFIG_DEBUG_ATOMIC_SLEEP))
- #define might_fault() __might_fault(__FILE__, __LINE__)
-@@ -509,18 +353,6 @@ extern int __kernel_text_address(unsigned long addr);
- extern int kernel_text_address(unsigned long addr);
- extern int func_ptr_is_kernel_text(void *ptr);
+-extern struct atomic_notifier_head panic_notifier_list;
+-extern long (*panic_blink)(int state);
+-__printf(1, 2)
+-void panic(const char *fmt, ...) __noreturn __cold;
+-void nmi_panic(struct pt_regs *regs, const char *msg);
+-extern void oops_enter(void);
+-extern void oops_exit(void);
+-void print_oops_end_marker(void);
+-extern int oops_may_print(void);
+ void do_exit(long error_code) __noreturn;
+ void complete_and_exit(struct completion *, long) __noreturn;
  
--u64 int_pow(u64 base, unsigned int exp);
--unsigned long int_sqrt(unsigned long);
+@@ -360,34 +351,7 @@ extern unsigned int sysctl_oops_all_cpu_backtrace;
+ #endif /* CONFIG_SMP */
+ 
+ extern void bust_spinlocks(int yes);
+-extern int panic_timeout;
+-extern unsigned long panic_print;
+-extern int panic_on_oops;
+-extern int panic_on_unrecovered_nmi;
+-extern int panic_on_io_nmi;
+-extern int panic_on_warn;
+-extern int sysctl_panic_on_rcu_stall;
+-extern int sysctl_panic_on_stackoverflow;
+ 
+-extern bool crash_kexec_post_notifiers;
 -
--#if BITS_PER_LONG < 64
--u32 int_sqrt64(u64 x);
--#else
--static inline u32 int_sqrt64(u64 x)
+-/*
+- * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
+- * holds a CPU number which is executing panic() currently. A value of
+- * PANIC_CPU_INVALID means no CPU has entered panic() or crash_kexec().
+- */
+-extern atomic_t panic_cpu;
+-#define PANIC_CPU_INVALID	-1
+-
+-/*
+- * Only to be used by arch init code. If the user over-wrote the default
+- * CONFIG_PANIC_TIMEOUT, honor it.
+- */
+-static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
 -{
--	return (u32)int_sqrt(x);
+-	if (panic_timeout == arch_default_timeout)
+-		panic_timeout = timeout;
 -}
--#endif
+ extern const char *print_tainted(void);
+ enum lockdep_ok {
+ 	LOCKDEP_STILL_OK,
+@@ -414,35 +378,6 @@ extern enum system_states {
+ 	SYSTEM_SUSPEND,
+ } system_state;
+ 
+-/* This cannot be an enum because some may be used in assembly source. */
+-#define TAINT_PROPRIETARY_MODULE	0
+-#define TAINT_FORCED_MODULE		1
+-#define TAINT_CPU_OUT_OF_SPEC		2
+-#define TAINT_FORCED_RMMOD		3
+-#define TAINT_MACHINE_CHECK		4
+-#define TAINT_BAD_PAGE			5
+-#define TAINT_USER			6
+-#define TAINT_DIE			7
+-#define TAINT_OVERRIDDEN_ACPI_TABLE	8
+-#define TAINT_WARN			9
+-#define TAINT_CRAP			10
+-#define TAINT_FIRMWARE_WORKAROUND	11
+-#define TAINT_OOT_MODULE		12
+-#define TAINT_UNSIGNED_MODULE		13
+-#define TAINT_SOFTLOCKUP		14
+-#define TAINT_LIVEPATCH			15
+-#define TAINT_AUX			16
+-#define TAINT_RANDSTRUCT		17
+-#define TAINT_FLAGS_COUNT		18
 -
- #ifdef CONFIG_SMP
- extern unsigned int sysctl_oops_all_cpu_backtrace;
- #else
-diff --git a/include/linux/math.h b/include/linux/math.h
+-struct taint_flag {
+-	char c_true;	/* character printed when tainted */
+-	char c_false;	/* character printed when not tainted */
+-	bool module;	/* also show as a per-module taint flag */
+-};
+-
+-extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
+-
+ extern const char hex_asc[];
+ #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
+ #define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index 42d2e6ac35f29..c7aa465a85f77 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -24,6 +24,8 @@
+ #include <linux/time.h>
+ #include <linux/jiffies.h>
+ 
++#include <asm/bug.h>
++
+ /* Nanosecond scalar representation for kernel time values */
+ typedef s64	ktime_t;
+ 
+diff --git a/include/linux/panic.h b/include/linux/panic.h
 new file mode 100644
-index 0000000000000..53674a327e39b
+index 0000000000000..a06e775a5c37f
 --- /dev/null
-+++ b/include/linux/math.h
-@@ -0,0 +1,177 @@
++++ b/include/linux/panic.h
+@@ -0,0 +1,75 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MATH_H
-+#define _LINUX_MATH_H
++#ifndef _LINUX_PANIC_H
++#define _LINUX_PANIC_H
 +
-+#include <asm/div64.h>
-+#include <uapi/linux/kernel.h>
-+
-+/*
-+ * This looks more complex than it should be. But we need to
-+ * get the type for the ~ right in round_down (it needs to be
-+ * as wide as the result!), and we want to evaluate the macro
-+ * arguments just once each.
-+ */
-+#define __round_mask(x, y) ((__typeof__(x))((y)-1))
-+
-+/**
-+ * round_up - round up to next specified power of 2
-+ * @x: the value to round
-+ * @y: multiple to round up to (must be a power of 2)
-+ *
-+ * Rounds @x up to next multiple of @y (which must be a power of 2).
-+ * To perform arbitrary rounding up, use roundup() below.
-+ */
-+#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
-+
-+/**
-+ * round_down - round down to next specified power of 2
-+ * @x: the value to round
-+ * @y: multiple to round down to (must be a power of 2)
-+ *
-+ * Rounds @x down to next multiple of @y (which must be a power of 2).
-+ * To perform arbitrary rounding down, use rounddown() below.
-+ */
-+#define round_down(x, y) ((x) & ~__round_mask(x, y))
-+
-+#define DIV_ROUND_UP __KERNEL_DIV_ROUND_UP
-+
-+#define DIV_ROUND_DOWN_ULL(ll, d) \
-+	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
-+
-+#define DIV_ROUND_UP_ULL(ll, d) \
-+	DIV_ROUND_DOWN_ULL((unsigned long long)(ll) + (d) - 1, (d))
-+
-+#if BITS_PER_LONG == 32
-+# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP_ULL(ll, d)
-+#else
-+# define DIV_ROUND_UP_SECTOR_T(ll,d) DIV_ROUND_UP(ll,d)
-+#endif
-+
-+/**
-+ * roundup - round up to the next specified multiple
-+ * @x: the value to up
-+ * @y: multiple to round up to
-+ *
-+ * Rounds @x up to next multiple of @y. If @y will always be a power
-+ * of 2, consider using the faster round_up().
-+ */
-+#define roundup(x, y) (					\
-+{							\
-+	typeof(y) __y = y;				\
-+	(((x) + (__y - 1)) / __y) * __y;		\
-+}							\
-+)
-+/**
-+ * rounddown - round down to next specified multiple
-+ * @x: the value to round
-+ * @y: multiple to round down to
-+ *
-+ * Rounds @x down to next multiple of @y. If @y will always be a power
-+ * of 2, consider using the faster round_down().
-+ */
-+#define rounddown(x, y) (				\
-+{							\
-+	typeof(x) __x = (x);				\
-+	__x - (__x % (y));				\
-+}							\
-+)
-+
-+/*
-+ * Divide positive or negative dividend by positive or negative divisor
-+ * and round to closest integer. Result is undefined for negative
-+ * divisors if the dividend variable type is unsigned and for negative
-+ * dividends if the divisor variable type is unsigned.
-+ */
-+#define DIV_ROUND_CLOSEST(x, divisor)(			\
-+{							\
-+	typeof(x) __x = x;				\
-+	typeof(divisor) __d = divisor;			\
-+	(((typeof(x))-1) > 0 ||				\
-+	 ((typeof(divisor))-1) > 0 ||			\
-+	 (((__x) > 0) == ((__d) > 0))) ?		\
-+		(((__x) + ((__d) / 2)) / (__d)) :	\
-+		(((__x) - ((__d) / 2)) / (__d));	\
-+}							\
-+)
-+/*
-+ * Same as above but for u64 dividends. divisor must be a 32-bit
-+ * number.
-+ */
-+#define DIV_ROUND_CLOSEST_ULL(x, divisor)(		\
-+{							\
-+	typeof(divisor) __d = divisor;			\
-+	unsigned long long _tmp = (x) + (__d) / 2;	\
-+	do_div(_tmp, __d);				\
-+	_tmp;						\
-+}							\
-+)
-+
-+/*
-+ * Multiplies an integer by a fraction, while avoiding unnecessary
-+ * overflow or loss of precision.
-+ */
-+#define mult_frac(x, numer, denom)(			\
-+{							\
-+	typeof(x) quot = (x) / (denom);			\
-+	typeof(x) rem  = (x) % (denom);			\
-+	(quot * (numer)) + ((rem * (numer)) / (denom));	\
-+}							\
-+)
-+
-+#define sector_div(a, b) do_div(a, b)
-+
-+/**
-+ * abs - return absolute value of an argument
-+ * @x: the value.  If it is unsigned type, it is converted to signed type first.
-+ *     char is treated as if it was signed (regardless of whether it really is)
-+ *     but the macro's return type is preserved as char.
-+ *
-+ * Return: an absolute value of x.
-+ */
-+#define abs(x)	__abs_choose_expr(x, long long,				\
-+		__abs_choose_expr(x, long,				\
-+		__abs_choose_expr(x, int,				\
-+		__abs_choose_expr(x, short,				\
-+		__abs_choose_expr(x, char,				\
-+		__builtin_choose_expr(					\
-+			__builtin_types_compatible_p(typeof(x), char),	\
-+			(char)({ signed char __x = (x); __x<0?-__x:__x; }), \
-+			((void)0)))))))
-+
-+#define __abs_choose_expr(x, type, other) __builtin_choose_expr(	\
-+	__builtin_types_compatible_p(typeof(x),   signed type) ||	\
-+	__builtin_types_compatible_p(typeof(x), unsigned type),		\
-+	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
-+
-+/**
-+ * reciprocal_scale - "scale" a value into range [0, ep_ro)
-+ * @val: value
-+ * @ep_ro: right open interval endpoint
-+ *
-+ * Perform a "reciprocal multiplication" in order to "scale" a value into
-+ * range [0, @ep_ro), where the upper interval endpoint is right-open.
-+ * This is useful, e.g. for accessing a index of an array containing
-+ * @ep_ro elements, for example. Think of it as sort of modulus, only that
-+ * the result isn't that of modulo. ;) Note that if initial input is a
-+ * small value, then result will return 0.
-+ *
-+ * Return: a result based on @val in interval [0, @ep_ro).
-+ */
-+static inline u32 reciprocal_scale(u32 val, u32 ep_ro)
-+{
-+	return (u32)(((u64) val * ep_ro) >> 32);
-+}
-+
-+u64 int_pow(u64 base, unsigned int exp);
-+unsigned long int_sqrt(unsigned long);
-+
-+#if BITS_PER_LONG < 64
-+u32 int_sqrt64(u64 x);
-+#else
-+static inline u32 int_sqrt64(u64 x)
-+{
-+	return (u32)int_sqrt(x);
-+}
-+#endif
-+
-+#endif	/* _LINUX_MATH_H */
-diff --git a/include/linux/rcu_node_tree.h b/include/linux/rcu_node_tree.h
-index b8e094b125ee6..78feb8ba73585 100644
---- a/include/linux/rcu_node_tree.h
-+++ b/include/linux/rcu_node_tree.h
-@@ -20,6 +20,8 @@
- #ifndef __LINUX_RCU_NODE_TREE_H
- #define __LINUX_RCU_NODE_TREE_H
- 
-+#include <linux/math.h>
-+
- /*
-  * Define shape of hierarchy based on NR_CPUS, CONFIG_RCU_FANOUT, and
-  * CONFIG_RCU_FANOUT_LEAF.
-diff --git a/include/linux/units.h b/include/linux/units.h
-index aaf716364ec34..5c115c809507f 100644
---- a/include/linux/units.h
-+++ b/include/linux/units.h
-@@ -2,7 +2,7 @@
- #ifndef _LINUX_UNITS_H
- #define _LINUX_UNITS_H
- 
--#include <linux/kernel.h>
-+#include <linux/math.h>
- 
- #define ABSOLUTE_ZERO_MILLICELSIUS -273150
- 
-diff --git a/lib/errname.c b/lib/errname.c
-index 0c4d3e66170e9..05cbf731545f0 100644
---- a/lib/errname.c
-+++ b/lib/errname.c
-@@ -3,6 +3,7 @@
- #include <linux/errno.h>
- #include <linux/errname.h>
- #include <linux/kernel.h>
-+#include <linux/math.h>
- 
- /*
-  * Ensure these tables do not accidentally become gigantic if some
-diff --git a/lib/find_bit.c b/lib/find_bit.c
-index 4a8751010d59f..f67f86fd2f620 100644
---- a/lib/find_bit.c
-+++ b/lib/find_bit.c
-@@ -15,8 +15,9 @@
- #include <linux/bitops.h>
- #include <linux/bitmap.h>
- #include <linux/export.h>
--#include <linux/kernel.h>
-+#include <linux/math.h>
- #include <linux/minmax.h>
-+#include <linux/swab.h>
- 
- #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
- 	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
-diff --git a/lib/math/div64.c b/lib/math/div64.c
-index 368ca7fd0d828..259303233610e 100644
---- a/lib/math/div64.c
-+++ b/lib/math/div64.c
-@@ -18,8 +18,9 @@
-  * or by defining a preprocessor macro in arch/include/asm/div64.h.
-  */
- 
-+#include <linux/bitops.h>
- #include <linux/export.h>
--#include <linux/kernel.h>
-+#include <linux/math.h>
- #include <linux/math64.h>
- 
- /* Not needed on 64bit architectures */
-diff --git a/lib/math/int_pow.c b/lib/math/int_pow.c
-index 622fc1ab3c745..0cf426e69bdaa 100644
---- a/lib/math/int_pow.c
-+++ b/lib/math/int_pow.c
-@@ -6,7 +6,7 @@
-  */
- 
- #include <linux/export.h>
--#include <linux/kernel.h>
-+#include <linux/math.h>
- #include <linux/types.h>
- 
- /**
-diff --git a/lib/math/int_sqrt.c b/lib/math/int_sqrt.c
-index 30e0f9770f88c..a8170bb9142f3 100644
---- a/lib/math/int_sqrt.c
-+++ b/lib/math/int_sqrt.c
-@@ -6,9 +6,10 @@
-  *  square root from Guy L. Steele.
-  */
- 
--#include <linux/kernel.h>
- #include <linux/export.h>
- #include <linux/bitops.h>
-+#include <linux/limits.h>
-+#include <linux/math.h>
- 
- /**
-  * int_sqrt - computes the integer square root
-diff --git a/lib/math/reciprocal_div.c b/lib/math/reciprocal_div.c
-index 32436dd4171e9..6cb4adbb81d27 100644
---- a/lib/math/reciprocal_div.c
-+++ b/lib/math/reciprocal_div.c
-@@ -1,10 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/bitops.h>
- #include <linux/bug.h>
--#include <linux/kernel.h>
--#include <asm/div64.h>
--#include <linux/reciprocal_div.h>
- #include <linux/export.h>
-+#include <linux/limits.h>
-+#include <linux/math.h>
- #include <linux/minmax.h>
 +#include <linux/types.h>
 +
-+#include <linux/reciprocal_div.h>
++struct pt_regs;
++
++extern long (*panic_blink)(int state);
++__printf(1, 2)
++void panic(const char *fmt, ...) __noreturn __cold;
++void nmi_panic(struct pt_regs *regs, const char *msg);
++extern void oops_enter(void);
++extern void oops_exit(void);
++void print_oops_end_marker(void);
++extern int oops_may_print(void);
++
++extern int panic_timeout;
++extern unsigned long panic_print;
++extern int panic_on_oops;
++extern int panic_on_unrecovered_nmi;
++extern int panic_on_io_nmi;
++extern int panic_on_warn;
++
++extern int sysctl_panic_on_rcu_stall;
++extern int sysctl_panic_on_stackoverflow;
++
++/*
++ * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
++ * holds a CPU number which is executing panic() currently. A value of
++ * PANIC_CPU_INVALID means no CPU has entered panic() or crash_kexec().
++ */
++extern atomic_t panic_cpu;
++#define PANIC_CPU_INVALID	-1
++
++/*
++ * Only to be used by arch init code. If the user over-wrote the default
++ * CONFIG_PANIC_TIMEOUT, honor it.
++ */
++static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
++{
++	if (panic_timeout == arch_default_timeout)
++		panic_timeout = timeout;
++}
++
++/* This cannot be an enum because some may be used in assembly source. */
++#define TAINT_PROPRIETARY_MODULE	0
++#define TAINT_FORCED_MODULE		1
++#define TAINT_CPU_OUT_OF_SPEC		2
++#define TAINT_FORCED_RMMOD		3
++#define TAINT_MACHINE_CHECK		4
++#define TAINT_BAD_PAGE			5
++#define TAINT_USER			6
++#define TAINT_DIE			7
++#define TAINT_OVERRIDDEN_ACPI_TABLE	8
++#define TAINT_WARN			9
++#define TAINT_CRAP			10
++#define TAINT_FIRMWARE_WORKAROUND	11
++#define TAINT_OOT_MODULE		12
++#define TAINT_UNSIGNED_MODULE		13
++#define TAINT_SOFTLOCKUP		14
++#define TAINT_LIVEPATCH			15
++#define TAINT_AUX			16
++#define TAINT_RANDSTRUCT		17
++#define TAINT_FLAGS_COUNT		18
++
++struct taint_flag {
++	char c_true;	/* character printed when tainted */
++	char c_false;	/* character printed when not tainted */
++	bool module;	/* also show as a per-module taint flag */
++};
++
++extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
++
++#endif	/* _LINUX_PANIC_H */
+diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
+new file mode 100644
+index 0000000000000..41e32483d7a7b
+--- /dev/null
++++ b/include/linux/panic_notifier.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_PANIC_NOTIFIERS_H
++#define _LINUX_PANIC_NOTIFIERS_H
++
++#include <linux/notifier.h>
++#include <linux/types.h>
++
++extern struct atomic_notifier_head panic_notifier_list;
++
++extern bool crash_kexec_post_notifiers;
++
++#endif	/* _LINUX_PANIC_NOTIFIERS_H */
+diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+index e93e249a4e9bf..7a3033aef28cd 100644
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -35,6 +35,7 @@ enum {
+ 	GOOD_STACK,
+ };
+ 
++#include <asm/bug.h>
+ #include <asm/thread_info.h>
+ 
+ #ifdef __KERNEL__
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index ba1d91e868ca7..077fcf31d5ce9 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -28,6 +28,7 @@
+ #include <linux/suspend.h>
+ #include <linux/device.h>
+ #include <linux/freezer.h>
++#include <linux/panic_notifier.h>
+ #include <linux/pfn.h>
+ #include <linux/pm.h>
+ #include <linux/cpu.h>
+diff --git a/kernel/panic.c b/kernel/panic.c
+index ec6d7d788ce75..f28a7478e0161 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -23,6 +23,7 @@
+ #include <linux/reboot.h>
+ #include <linux/delay.h>
+ #include <linux/kexec.h>
++#include <linux/panic_notifier.h>
+ #include <linux/sched.h>
+ #include <linux/sysrq.h>
+ #include <linux/init.h>
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6d39485f7f517..8611f400acd91 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -32,6 +32,8 @@
+ #include <linux/export.h>
+ #include <linux/completion.h>
+ #include <linux/moduleparam.h>
++#include <linux/panic.h>
++#include <linux/panic_notifier.h>
+ #include <linux/percpu.h>
+ #include <linux/notifier.h>
+ #include <linux/cpu.h>
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8d2b988126250..f23b6ae084b5c 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -39,6 +39,7 @@
+ #include <linux/slab.h>
+ #include <linux/ctype.h>
+ #include <linux/init.h>
++#include <linux/panic_notifier.h>
+ #include <linux/poll.h>
+ #include <linux/nmi.h>
+ #include <linux/fs.h>
+diff --git a/lib/errseq.c b/lib/errseq.c
+index 81f9e33aa7e72..93e9b94358dc6 100644
+--- a/lib/errseq.c
++++ b/lib/errseq.c
+@@ -3,6 +3,7 @@
+ #include <linux/bug.h>
+ #include <linux/atomic.h>
+ #include <linux/errseq.h>
++#include <linux/log2.h>
  
  /*
-  * For a description of the algorithm please have a look at
+  * An errseq_t is a way of recording errors in one place, and allowing any
 -- 
 2.26.1
 
