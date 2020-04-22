@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E821B3F75
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42411B4180
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731078AbgDVKht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:37:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58616 "EHLO mail.kernel.org"
+        id S1732072AbgDVKwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:52:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729971AbgDVKW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:22:26 -0400
+        id S1726788AbgDVKJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DA7121582;
-        Wed, 22 Apr 2020 10:22:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EB6720575;
+        Wed, 22 Apr 2020 10:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550940;
-        bh=qwp1kwgWdt0eV95GZl9VFWbIEj3NYzkRBOqFjzHMJ5A=;
+        s=default; t=1587550175;
+        bh=RTuKNnHXxFHiX6vH4QmoVgDE+3nYGNXMsr7ILpti56U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ivzU4h+nnKmEkkz8Uf3KSsJTbsN1/Ofa9X9U4g/8cpORVoGafrCGxHEof/rjKiiR7
-         x0rTY30k1E9UAL8dEr14LccwKglBMN0CaOi6vi48MbdNYej2UoZMM4CBqruJeuek6Q
-         VfVNdc+NzO0yYwLaEQRPtp/JYTcAOSLSaRL/d39o=
+        b=DWz2Af+JKtXS1iU6jicgFeGdTBQRNrQZi2OcBnzFTUFa/wDLHPEOCPB0c4ZbgKMHD
+         K6pZeiG5+25SqcGHAK2MMIZjtpQBMCzeV/UOdBLYvOjGJ3QSr295+sQEbA0e2aJSiy
+         j/MlMJouSxUNKZr5FOwJS1uoG940jIOE+xc8wSPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, cki-project@redhat.com,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 037/166] block, bfq: make reparent_leaf_entity actually work only on leaf entities
-Date:   Wed, 22 Apr 2020 11:56:04 +0200
-Message-Id: <20200422095052.823317575@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 039/199] ALSA: hda: Add driver blacklist
+Date:   Wed, 22 Apr 2020 11:56:05 +0200
+Message-Id: <20200422095101.915636767@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,113 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 576682fa52cbd95deb3773449566274f206acc58 upstream.
+commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab upstream.
 
-bfq_reparent_leaf_entity() reparents the input leaf entity (a leaf
-entity represents just a bfq_queue in an entity tree). Yet, the input
-entity is guaranteed to always be a leaf entity only in two-level
-entity trees. In this respect, because of the error fixed by
-commit 14afc5936197 ("block, bfq: fix overwrite of bfq_group pointer
-in bfq_find_set_group()"), all (wrongly collapsed) entity trees happened
-to actually have only two levels. After the latter commit, this does not
-hold any longer.
+The recent AMD platform exposes an HD-audio bus but without any actual
+codecs, which is internally tied with a USB-audio device, supposedly.
+It results in "no codecs" error of HD-audio bus driver, and it's
+nothing but a waste of resources.
 
-This commit fixes this problem by modifying
-bfq_reparent_leaf_entity(), so that it searches an active leaf entity
-down the path that stems from the input entity. Such a leaf entity is
-guaranteed to exist when bfq_reparent_leaf_entity() is invoked.
+This patch introduces a static blacklist table for skipping such a
+known bogus PCI SSID entry.  As of writing this patch, the known SSIDs
+are:
+* 1043:874f - ASUS ROG Zenith II / Strix
+* 1462:cb59 - MSI TRX40 Creator
+* 1462:cb60 - MSI TRX40
 
-Tested-by: cki-project@redhat.com
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206543
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200408140449.22319-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- block/bfq-cgroup.c |   48 +++++++++++++++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 17 deletions(-)
+ sound/pci/hda/hda_intel.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -815,39 +815,53 @@ static void bfq_flush_idle_tree(struct b
- /**
-  * bfq_reparent_leaf_entity - move leaf entity to the root_group.
-  * @bfqd: the device data structure with the root group.
-- * @entity: the entity to move.
-+ * @entity: the entity to move, if entity is a leaf; or the parent entity
-+ *	    of an active leaf entity to move, if entity is not a leaf.
-  */
- static void bfq_reparent_leaf_entity(struct bfq_data *bfqd,
--				     struct bfq_entity *entity)
-+				     struct bfq_entity *entity,
-+				     int ioprio_class)
- {
--	struct bfq_queue *bfqq = bfq_entity_to_bfqq(entity);
-+	struct bfq_queue *bfqq;
-+	struct bfq_entity *child_entity = entity;
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2177,6 +2177,17 @@ static const struct hdac_io_ops pci_hda_
+ 	.dma_free_pages = dma_free_pages,
+ };
  
-+	while (child_entity->my_sched_data) { /* leaf not reached yet */
-+		struct bfq_sched_data *child_sd = child_entity->my_sched_data;
-+		struct bfq_service_tree *child_st = child_sd->service_tree +
-+			ioprio_class;
-+		struct rb_root *child_active = &child_st->active;
++/* Blacklist for skipping the whole probe:
++ * some HD-audio PCI entries are exposed without any codecs, and such devices
++ * should be ignored from the beginning.
++ */
++static const struct snd_pci_quirk driver_blacklist[] = {
++	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
++	{}
++};
 +
-+		child_entity = bfq_entity_of(rb_first(child_active));
-+
-+		if (!child_entity)
-+			child_entity = child_sd->in_service_entity;
+ static const struct hda_controller_ops pci_hda_ops = {
+ 	.disable_msi_reset_irq = disable_msi_reset_irq,
+ 	.substream_alloc_pages = substream_alloc_pages,
+@@ -2196,6 +2207,11 @@ static int azx_probe(struct pci_dev *pci
+ 	bool schedule_probe;
+ 	int err;
+ 
++	if (snd_pci_quirk_lookup(pci, driver_blacklist)) {
++		dev_info(&pci->dev, "Skipping the blacklisted device\n");
++		return -ENODEV;
 +	}
 +
-+	bfqq = bfq_entity_to_bfqq(child_entity);
- 	bfq_bfqq_move(bfqd, bfqq, bfqd->root_group);
- }
- 
- /**
-- * bfq_reparent_active_entities - move to the root group all active
-- *                                entities.
-+ * bfq_reparent_active_queues - move to the root group all active queues.
-  * @bfqd: the device data structure with the root group.
-  * @bfqg: the group to move from.
-- * @st: the service tree with the entities.
-+ * @st: the service tree to start the search from.
-  */
--static void bfq_reparent_active_entities(struct bfq_data *bfqd,
--					 struct bfq_group *bfqg,
--					 struct bfq_service_tree *st)
-+static void bfq_reparent_active_queues(struct bfq_data *bfqd,
-+				       struct bfq_group *bfqg,
-+				       struct bfq_service_tree *st,
-+				       int ioprio_class)
- {
- 	struct rb_root *active = &st->active;
--	struct bfq_entity *entity = NULL;
--
--	if (!RB_EMPTY_ROOT(&st->active))
--		entity = bfq_entity_of(rb_first(active));
-+	struct bfq_entity *entity;
- 
--	for (; entity ; entity = bfq_entity_of(rb_first(active)))
--		bfq_reparent_leaf_entity(bfqd, entity);
-+	while ((entity = bfq_entity_of(rb_first(active))))
-+		bfq_reparent_leaf_entity(bfqd, entity, ioprio_class);
- 
- 	if (bfqg->sched_data.in_service_entity)
- 		bfq_reparent_leaf_entity(bfqd,
--			bfqg->sched_data.in_service_entity);
-+					 bfqg->sched_data.in_service_entity,
-+					 ioprio_class);
- }
- 
- /**
-@@ -898,7 +912,7 @@ static void bfq_pd_offline(struct blkg_p
- 		 * There is no need to put the sync queues, as the
- 		 * scheduler has taken no reference.
- 		 */
--		bfq_reparent_active_entities(bfqd, bfqg, st);
-+		bfq_reparent_active_queues(bfqd, bfqg, st, i);
- 	}
- 
- 	__bfq_deactivate_entity(entity, false);
+ 	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+ 	if (!enable[dev]) {
 
 
