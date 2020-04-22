@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6C71B506B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916841B507B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgDVWj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgDVWj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:39:27 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BE0B2074B;
-        Wed, 22 Apr 2020 22:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587595166;
-        bh=B1OMz7UfF+OAm1f+P6P94nyMDSYUzhidt60KZJsSkwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2ej6Ofj79uPkck7o02D/ClisI64VURrJUQ7lx87XI4EuhjurRaq88cM8IwT+JQ6Mf
-         t0YGDNMsLjXX1JjKnIpjkz5gFz0fELWKOOLN9JNrtsTWzKT3Xl6zYwXcYUfAeVaN2n
-         sriGlQW9SGPIrH1Lmwc+4Nkfqbovrf7e/hy8hzuw=
-Date:   Wed, 22 Apr 2020 15:39:25 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH crypto-stable v2] crypto: arch - limit simd usage to 4k
- chunks
-Message-ID: <20200422223925.GA96474@gmail.com>
-References: <20200420075711.2385190-1-Jason@zx2c4.com>
- <20200422200344.239462-1-Jason@zx2c4.com>
+        id S1726060AbgDVWqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725779AbgDVWqp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 18:46:45 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B77C03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:46:44 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i16so2090534ybq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=By0UsUhZVZtoAmBKjypfpeldZgKiGOA+PhJTwHcpY2A=;
+        b=hkmzhG0Szlk6dLqIhJVLMVYLOmN7+LIE+ltfsz3TBmwQ0istc0TU4Kn8uEZYceToYF
+         sGrCsdldeJLydgoV31c5Ib/g2VCiIgNIo7YMBQEUrieih2GPr3dP0F6uModcl49M7M/n
+         1d3oBQEwH6qMOgEEqHFyGrlbrBo4NnUG0uIsvvAtLb+c0igCJkrvaWh03nRUFaLbIJY+
+         QcrCEy4cDKY5k3hnspQ7bZieYNa/JI/Z9qJFAjjlv6ZqNGz1oGtpYgnMdzh7FtbS9eDp
+         dFRFRQGz/VGSdyxWzw+kjzaKr/1ex7unGcu6sSFfOKR/wr4c49ppkjLxodeaBamDJZD/
+         wvcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=By0UsUhZVZtoAmBKjypfpeldZgKiGOA+PhJTwHcpY2A=;
+        b=V2p9frCXjOc6+N+m2V1mA/31AO8P8HkaPgPG7xHQiGjdaEtIsj6rgaVwJzAPf0ipuf
+         xH3MEUq4pZFK+glnjAEaL0AObHlZt9vOKBgnwVPyVDEMEymAhaFDMvt2wwS40g9+cfAx
+         pjti0ZDEcrbK/fagvVdgqgjYjra4Ep3NhqH5JFTW2EbvVPeCg8qr0vW/101aRHpWVaqc
+         KALRrXptUCTH1Ph6C4vcLpMOc26EAbopeiLwrQTGq6CMGz+Pcl/bhpIbPmM953m46w1C
+         kG8+vlpHmM2DwDC5n2EQYXmOjRm1uGRDcbUp3MEvLEnvDA5Im+rCeW8Uq+ntQot7wrBm
+         QkiA==
+X-Gm-Message-State: AGi0PuZzoNN5D9Yp1YCwUORfI8dxjpQzwrUxIxpHzpmKEoW8HCFSTAmn
+        rDoJyJq6ZHTDKhbVHEjazaXBq+03bdiSczpA6u2r6A==
+X-Google-Smtp-Source: APiQypK5ZG4rSt40/22JbAmemrxcrOOyQGqL1jgTRfkhJ5lKdsHLv6oOSfcKyXtS6EVQC1tgwXvcbpBqmKJGLGR2TEY=
+X-Received: by 2002:a25:be81:: with SMTP id i1mr2097391ybk.184.1587595603400;
+ Wed, 22 Apr 2020 15:46:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422200344.239462-1-Jason@zx2c4.com>
+References: <20200422220430.254014-1-irogers@google.com> <20200422220430.254014-9-irogers@google.com>
+ <70bb1987-c8cd-ecc1-a6d8-61569a83494c@us.ibm.com>
+In-Reply-To: <70bb1987-c8cd-ecc1-a6d8-61569a83494c@us.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 22 Apr 2020 15:46:32 -0700
+Message-ID: <CAP-5=fVOPdFjthXuh1MZWuNzJbEATg0EnL946HBYo+vzdbiwVw@mail.gmail.com>
+Subject: Re: [PATCH v2 08/11] perf metrics: fix parse errors in power8 metrics
+To:     Paul Clarke <pc@us.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 02:03:44PM -0600, Jason A. Donenfeld wrote:
-> The initial Zinc patchset, after some mailing list discussion, contained
-> code to ensure that kernel_fpu_enable would not be kept on for more than
-> a 4k chunk, since it disables preemption. The choice of 4k isn't totally
-> scientific, but it's not a bad guess either, and it's what's used in
-> both the x86 poly1305, blake2s, and nhpoly1305 code already (in the form
-> of PAGE_SIZE, which this commit corrects to be explicitly 4k).
-> 
-> Ard did some back of the envelope calculations and found that
-> at 5 cycles/byte (overestimate) on a 1ghz processor (pretty slow), 4k
-> means we have a maximum preemption disabling of 20us, which Sebastian
-> confirmed was probably a good limit.
-> 
-> Unfortunately the chunking appears to have been left out of the final
-> patchset that added the glue code. So, this commit adds it back in.
-> 
-> Fixes: 84e03fa39fbe ("crypto: x86/chacha - expose SIMD ChaCha routine as library function")
-> Fixes: b3aad5bad26a ("crypto: arm64/chacha - expose arm64 ChaCha routine as library function")
-> Fixes: a44a3430d71b ("crypto: arm/chacha - expose ARM ChaCha routine as library function")
-> Fixes: d7d7b8535662 ("crypto: x86/poly1305 - wire up faster implementations for kernel")
-> Fixes: f569ca164751 ("crypto: arm64/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
-> Fixes: a6b803b3ddc7 ("crypto: arm/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
-> Fixes: 0f961f9f670e ("crypto: x86/nhpoly1305 - add AVX2 accelerated NHPoly1305")
-> Fixes: 012c82388c03 ("crypto: x86/nhpoly1305 - add SSE2 accelerated NHPoly1305")
-> Fixes: a00fa0c88774 ("crypto: arm64/nhpoly1305 - add NEON-accelerated NHPoly1305")
-> Fixes: 16aae3595a9d ("crypto: arm/nhpoly1305 - add NEON-accelerated NHPoly1305")
-> Fixes: ed0356eda153 ("crypto: blake2s - x86_64 SIMD implementation")
-> Cc: Eric Biggers <ebiggers@google.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
-> Changes v1->v2:
->  - [Ard] Use explicit 4k chunks instead of PAGE_SIZE.
->  - [Eric] Prefer do-while over for (;;).
-> 
->  arch/arm/crypto/chacha-glue.c            | 14 +++++++++++---
->  arch/arm/crypto/nhpoly1305-neon-glue.c   |  2 +-
->  arch/arm/crypto/poly1305-glue.c          | 15 +++++++++++----
->  arch/arm64/crypto/chacha-neon-glue.c     | 14 +++++++++++---
->  arch/arm64/crypto/nhpoly1305-neon-glue.c |  2 +-
->  arch/arm64/crypto/poly1305-glue.c        | 15 +++++++++++----
->  arch/x86/crypto/blake2s-glue.c           | 10 ++++------
->  arch/x86/crypto/chacha_glue.c            | 14 +++++++++++---
->  arch/x86/crypto/nhpoly1305-avx2-glue.c   |  2 +-
->  arch/x86/crypto/nhpoly1305-sse2-glue.c   |  2 +-
->  arch/x86/crypto/poly1305_glue.c          | 13 ++++++-------
->  11 files changed, 69 insertions(+), 34 deletions(-)
+On Wed, Apr 22, 2020 at 3:31 PM Paul Clarke <pc@us.ibm.com> wrote:
+>
+> On 4/22/20 5:04 PM, Ian Rogers wrote:
+> > Mismatched parentheses.
+> >
+> > Fixes: dd81eafacc52 (perf vendor events power8: Cpi_breakdown & estimated_dcache_miss_cpi metrics)
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
+> > index bffb2d4a6420..ad71486a38e3 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
+> > @@ -169,7 +169,7 @@
+> >      },
+> >      {
+> >          "BriefDescription": "Cycles GCT empty where dispatch was held",
+> > -        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL)",
+> > +        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL",
+>
+> OK. (Thank you!)
+>
+> >          "MetricGroup": "cpi_breakdown",
+> >          "MetricName": "gct_empty_disp_held_cpi"
+> >      },
+> > @@ -886,7 +886,7 @@
+> >      },
+> >      {
+> >          "BriefDescription": "GCT slot utilization (11 to 14) as a % of cycles this thread had atleast 1 slot valid",
+> > -        "MetricExpr": "PM_GCT_UTIL_11_14_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
+> > +        "MetricExpr": "PM_GCT_UTIL_11_14_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC ) * 100",
+>
+> I think this is just a whitespace change?  Is it necessary?
+> Curiosity, more than complaint.
 
-Can you split the nhpoly1305 changes into a separate patch?  They're a bit
-different from the rest of this patch, which is fixing up the crypto library
-interface that's new in v5.5.  The nhpoly1305 changes apply to v5.0 and don't
-have anything to do with the crypto library interface, and they're also a bit
-different since they replace PAGE_SIZE with 4K rather than unlimited with 4K.
+Sorry about that, the space isn't necessary and this doesn't need to
+change. For the curious, originally the parse test would make all
+metrics equal to 1.0 and this metric would trigger a divide by zero
+because of this. This motivated adding a debug print for this case.
 
-- Eric
+Thanks,
+Ian
+
+> >          "MetricGroup": "general",
+> >          "MetricName": "gct_util_11to14_slots_percent"
+> >      },
+>
+> Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
+>
+> PC
