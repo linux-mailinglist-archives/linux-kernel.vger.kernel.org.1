@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3397F1B4108
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B031B3FC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDVKuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:50:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46380 "EHLO mail.kernel.org"
+        id S1731308AbgDVKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729040AbgDVKM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:56 -0400
+        id S1730133AbgDVKVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C54702070B;
-        Wed, 22 Apr 2020 10:12:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 671FF21582;
+        Wed, 22 Apr 2020 10:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550376;
-        bh=Yq/4dSBQMcLbsy7yk8jjhK3ecu2E/bi+KFr3L6FhotQ=;
+        s=default; t=1587550856;
+        bh=FIPNM7KHXezPRFmRpolI3sdXFbEDJs3ESlzqr8tNr1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CHhIhVxLQ6xytfkxj9g7bHeba/3TcxI8LE4eoBncGEgcgs8rdel4YoYmFmCrOfjKP
-         mlE7zATKMqYdbENfO/QN9JYlxXw4qt2CQYiCMFqlzRulHAtJDVfIm/WDIeIW33BU7T
-         kMwINjW4sm3n4udVd8tjyDKiUO6k9004eNKqFnNs=
+        b=ZpYPpSYJJU+DTn0QGxNKUUoFgVCRmteE7B5lUMVG7G2V/J5B+WmV7gNr8+a4KKNUA
+         VQ4Elbv6SOEpGEySM/BrBcpCsLISRzBgfrKvKgxcrHGqZSk85hEIMv0Q2Wvn4ritzp
+         vw1cmK2PWWcU9apmk59yQhy7C4a84Eik8350EscA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Yang <yangx.jy@cn.fujitsu.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.14 121/199] tracing: Fix the race between registering snapshot event trigger and triggering snapshot operation
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/118] drm/vc4: Fix HDMI mode validation
 Date:   Wed, 22 Apr 2020 11:57:27 +0200
-Message-Id: <20200422095109.673056616@linuxfoundation.org>
+Message-Id: <20200422095045.567943245@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-commit 0bbe7f719985efd9adb3454679ecef0984cb6800 upstream.
+[ Upstream commit b1e7396a1d0e6af6806337fdaaa44098d6b3343c ]
 
-Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
-or snapshot_count_trigger()) when register_snapshot_trigger() has completed
-registration but doesn't allocate buffer for 'snapshot' event trigger.  In
-the rare case, 'snapshot' operation always detects the lack of allocated
-buffer so make register_snapshot_trigger() allocate buffer first.
+Current mode validation impedes setting up some video modes which should
+be supported otherwise. Namely 1920x1200@60Hz.
 
-trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
------------------------------------------------------------
-cat trace
-...
-ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
-     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
-     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
------------------------------------------------------------
+Fix this by lowering the minimum HDMI state machine clock to pixel clock
+ratio allowed.
 
-Link: http://lkml.kernel.org/r/20200414015145.66236-1-yangx.jy@cn.fujitsu.com
-
-Cc: stable@vger.kernel.org
-Fixes: 93e31ffbf417a ("tracing: Add 'snapshot' event trigger command")
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 32e823c63e90 ("drm/vc4: Reject HDMI modes with too high of clocks.")
+Reported-by: Stefan Wahren <stefan.wahren@i2se.com>
+Suggested-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200326122001.22215-1-nsaenzjulienne@suse.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_events_trigger.c |   10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -1075,14 +1075,10 @@ register_snapshot_trigger(char *glob, st
- 			  struct event_trigger_data *data,
- 			  struct trace_event_file *file)
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 0853b980bcb31..d5f5ba4105241 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -681,11 +681,23 @@ static enum drm_mode_status
+ vc4_hdmi_encoder_mode_valid(struct drm_encoder *crtc,
+ 			    const struct drm_display_mode *mode)
  {
--	int ret = register_trigger(glob, ops, data, file);
-+	if (tracing_alloc_snapshot_instance(file->tr) != 0)
-+		return 0;
+-	/* HSM clock must be 108% of the pixel clock.  Additionally,
+-	 * the AXI clock needs to be at least 25% of pixel clock, but
+-	 * HSM ends up being the limiting factor.
++	/*
++	 * As stated in RPi's vc4 firmware "HDMI state machine (HSM) clock must
++	 * be faster than pixel clock, infinitesimally faster, tested in
++	 * simulation. Otherwise, exact value is unimportant for HDMI
++	 * operation." This conflicts with bcm2835's vc4 documentation, which
++	 * states HSM's clock has to be at least 108% of the pixel clock.
++	 *
++	 * Real life tests reveal that vc4's firmware statement holds up, and
++	 * users are able to use pixel clocks closer to HSM's, namely for
++	 * 1920x1200@60Hz. So it was decided to have leave a 1% margin between
++	 * both clocks. Which, for RPi0-3 implies a maximum pixel clock of
++	 * 162MHz.
++	 *
++	 * Additionally, the AXI clock needs to be at least 25% of
++	 * pixel clock, but HSM ends up being the limiting factor.
+ 	 */
+-	if (mode->clock > HSM_CLOCK_FREQ / (1000 * 108 / 100))
++	if (mode->clock > HSM_CLOCK_FREQ / (1000 * 101 / 100))
+ 		return MODE_CLOCK_HIGH;
  
--	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
--		unregister_trigger(glob, ops, data, file);
--		ret = 0;
--	}
--
--	return ret;
-+	return register_trigger(glob, ops, data, file);
- }
- 
- static int
+ 	return MODE_OK;
+-- 
+2.20.1
+
 
 
