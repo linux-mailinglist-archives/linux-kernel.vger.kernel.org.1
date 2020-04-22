@@ -2,61 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531941B4A9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22071B4AA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgDVQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgDVQdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:33:35 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7A7820656;
-        Wed, 22 Apr 2020 16:33:32 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 12:33:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        qais.yousef@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, airlied@redhat.com,
-        alexander.deucher@amd.com, awalls@md.metrocast.net,
-        axboe@kernel.dk, broonie@kernel.org, daniel.lezcano@linaro.org,
-        gregkh@linuxfoundation.org, hannes@cmpxchg.org,
-        herbert@gondor.apana.org.au, hverkuil@xs4all.nl,
-        john.stultz@linaro.org, nico@fluxnic.net,
-        rafael.j.wysocki@intel.com, rmk+kernel@arm.linux.org.uk,
-        sudeep.holla@arm.com, ulf.hansson@linaro.org,
-        wim@linux-watchdog.org
-Subject: Re: [PATCH 01/23] sched: Provide sched_set_fifo()
-Message-ID: <20200422123331.30b00018@gandalf.local.home>
-In-Reply-To: <20200422155006.GR17661@paulmck-ThinkPad-P72>
-References: <20200422112719.826676174@infradead.org>
-        <20200422112831.266499893@infradead.org>
-        <20200422131138.GL17661@paulmck-ThinkPad-P72>
-        <20200422132648.GJ20730@hirez.programming.kicks-ass.net>
-        <20200422155006.GR17661@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726926AbgDVQdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgDVQdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 12:33:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC09CC03C1A9;
+        Wed, 22 Apr 2020 09:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=GhxXNkwIWL9QIK8tOJiZor+ArOGr/Ec9kz1wNtkTM0E=; b=YToNmTSoYuisnSyd35L7v7LRu0
+        A5ulwNzUkiUyT5V//tSQCKg2khb7bPmuUMiqHb9bvvdLhK74se9wL6GGnHREUs6ZxdcacCc/Jt5cZ
+        3TyV7N5ONiHlxAvsJAsIqc1u6QsqyNpK0Egy780p7nPsvnVUfYtVgG1j8QTN3EwIgoc98IDrjqgwU
+        0ru98OLbqxg6ReXMLvBZSL88XcJXoPvSH/LhVCa8WQw3BPjOQcj+cLFfeHv7HvBjjJuuHf3NlDXKV
+        5KXeivtJD1owtsgk0UiPbzAYMiL3vbmy+Nzq3hN3PaTeHRDWzU3OLI3KIKuVXNoooAki3uQon1big
+        X6OVO1/g==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRIJa-0000D2-4q; Wed, 22 Apr 2020 16:33:34 +0000
+Subject: Re: [PATCH] mmc: sdhci-of-at91: make MMC_SDHCI_OF_AT91 depend on
+ HAVE_CLK
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Takao Orito <orito.takao@socionext.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org
+References: <20200422153401.7913-1-yamada.masahiro@socionext.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <38b856aa-47a1-7957-ba96-32272aa404c0@infradead.org>
+Date:   Wed, 22 Apr 2020 09:33:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200422153401.7913-1-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Apr 2020 08:50:06 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On 4/22/20 8:34 AM, Masahiro Yamada wrote:
+> If sdhci-of-at91.c is compiled without CONFIG_HAVE_CLK, the line
+> 
+>   caps1 |= FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
+> 
+> ... emits "FIELD_PREP: value too large for the field" warning.
+> 
+> The compiler seems to decide clk_mul is constant (unsigned int)-1,
+> because clk_get_rate() returns 0 when CONFIG_HAVE_CLK is disabled.
+> 
+> Add HAVE_CLK to the depenency since this driver does not work without
+> the clock APIs anyway.
+> 
+> Link: https://lkml.org/lkml/2020/4/17/613
+> Fixes: linux-next ("mmc: sdhci: use FIELD_GET/PREP for capabilities bit masks")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-> Indeed, an extreme form of insanity would be required to try to make core
-> RCU be a module.  Not that such a form of insanity is a bad thing in and
-> of itself, but it might best be directed towards less futile ventures.  ;-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-That's like making the core of mutexes a module. How would that ever work
-(without becoming a microkernel).
+Thanks.
 
--- Steve
+> ---
+> 
+> Ulf,
+> 
+> I do not know how to fill the Fixes tag.
+> It is currently 8da1ff4f68a2 in linux-next, but I am not sure it is
+> stable. I just added 'linux-next'.
+> 
+> If you have a preferred way, please modify it.
+> 
+> 
+> 
+> 
+> 
+>  drivers/mmc/host/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 462b5352fea7..2aee844722d6 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -171,7 +171,7 @@ config MMC_SDHCI_OF_ASPEED
+>  config MMC_SDHCI_OF_AT91
+>  	tristate "SDHCI OF support for the Atmel SDMMC controller"
+>  	depends on MMC_SDHCI_PLTFM
+> -	depends on OF
+> +	depends on OF && HAVE_CLK
+>  	help
+>  	  This selects the Atmel SDMMC driver
+>  
+> 
+
+
+-- 
+~Randy
