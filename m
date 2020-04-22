@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076C01B3C72
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D601B3BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgDVKFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:05:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
+        id S1726696AbgDVKA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbgDVKFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:05:43 -0400
+        id S1726487AbgDVKA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82FA220781;
-        Wed, 22 Apr 2020 10:05:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0854F20781;
+        Wed, 22 Apr 2020 10:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549943;
-        bh=ipGa19nKKTFXIKRlrk5uJWMpFfYkR2QvtOVETI2Td8s=;
+        s=default; t=1587549626;
+        bh=XlQgfUFUJP4k8L2WBx4a9KrW5lNWt6JVS5ikBhX0mIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSfU+F8miE+Xdi28WazhQa69lnLHohN5VOQbPxgONprZDYxEfZGofqmEMii/JE/+U
-         BlLSU+Tp3+5HoOTr/8wSER27z1k/zu9c8hLFk0ep1fTYDYhegatWLifox80melMkgk
-         /Wv9V39gWOtljfKoxSvX3awRRuMMcz2kqftMor5s=
+        b=yJA1TTcLb2Sken75hE8MMoc6vKMIg5i4kp3CbusHEv7TpW/Pbn1yIda1M3PAxGEJG
+         W5A2ymQvJqgDfeiV74/rj3oNzforKdBE14VAGLzhNM4NqdhupqRS3dZjaM6t0LwNbC
+         3D+nFTD8ZdKZepMcQUzo5wNdxWvgBSDQbNsofk24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 053/125] Input: i8042 - add Acer Aspire 5738z to nomux list
+        stable@vger.kernel.org, Jens Remus <jremus@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.4 040/100] scsi: zfcp: fix missing erp_lock in port recovery trigger for point-to-point
 Date:   Wed, 22 Apr 2020 11:56:10 +0200
-Message-Id: <20200422095042.103805039@linuxfoundation.org>
+Message-Id: <20200422095029.732406211@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Steffen Maier <maier@linux.ibm.com>
 
-commit ebc68cedec4aead47d8d11623d013cca9bf8e825 upstream.
+commit 819732be9fea728623e1ed84eba28def7384ad1f upstream.
 
-The Acer Aspire 5738z has a button to disable (and re-enable) the
-touchpad next to the touchpad.
+v2.6.27 commit cc8c282963bd ("[SCSI] zfcp: Automatically attach remote
+ports") introduced zfcp automatic port scan.
 
-When this button is pressed a LED underneath indicates that the touchpad
-is disabled (and an event is send to userspace and GNOME shows its
-touchpad enabled / disable OSD thingie).
+Before that, the user had to use the sysfs attribute "port_add" of an FCP
+device (adapter) to add and open remote (target) ports, even for the remote
+peer port in point-to-point topology. That code path did a proper port open
+recovery trigger taking the erp_lock.
 
-So far so good, but after re-enabling the touchpad it no longer works.
+Since above commit, a new helper function zfcp_erp_open_ptp_port()
+performed an UNlocked port open recovery trigger. This can race with other
+parallel recovery triggers. In zfcp_erp_action_enqueue() this could corrupt
+e.g. adapter->erp_total_count or adapter->erp_ready_head.
 
-The laptop does not have an external ps2 port, so mux mode is not needed
-and disabling mux mode fixes the touchpad no longer working after toggling
-it off and back on again, so lets add this laptop model to the nomux list.
+As already found for fabric topology in v4.17 commit fa89adba1941 ("scsi:
+zfcp: fix infinite iteration on ERP ready list"), there was an endless loop
+during tracing of rport (un)block.  A subsequent v4.18 commit 9e156c54ace3
+("scsi: zfcp: assert that the ERP lock is held when tracing a recovery
+trigger") introduced a lockdep assertion for that case.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200331123947.318908-1-hdegoede@redhat.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+As a side effect, that lockdep assertion now uncovered the unlocked code
+path for PtP. It is from within an adapter ERP action:
+
+zfcp_erp_strategy[1479]  intentionally DROPs erp lock around
+                         zfcp_erp_strategy_do_action()
+zfcp_erp_strategy_do_action[1441]      NO erp lock
+zfcp_erp_adapter_strategy[876]         NO erp lock
+zfcp_erp_adapter_strategy_open[855]    NO erp lock
+zfcp_erp_adapter_strategy_open_fsf[806]NO erp lock
+zfcp_erp_adapter_strat_fsf_xconf[772]  erp lock only around
+                                       zfcp_erp_action_to_running(),
+                                       BUT *_not_* around
+                                       zfcp_erp_enqueue_ptp_port()
+zfcp_erp_enqueue_ptp_port[728]         BUG: *_not_* taking erp lock
+_zfcp_erp_port_reopen[432]             assumes to be called with erp lock
+zfcp_erp_action_enqueue[314]           assumes to be called with erp lock
+zfcp_dbf_rec_trig[288]                 _checks_ to be called with erp lock:
+	lockdep_assert_held(&adapter->erp_lock);
+
+It causes the following lockdep warning:
+
+WARNING: CPU: 2 PID: 775 at drivers/s390/scsi/zfcp_dbf.c:288
+                            zfcp_dbf_rec_trig+0x16a/0x188
+no locks held by zfcperp0.0.17c0/775.
+
+Fix this by using the proper locked recovery trigger helper function.
+
+Link: https://lore.kernel.org/r/20200312174505.51294-2-maier@linux.ibm.com
+Fixes: cc8c282963bd ("[SCSI] zfcp: Automatically attach remote ports")
+Cc: <stable@vger.kernel.org> #v2.6.27+
+Reviewed-by: Jens Remus <jremus@linux.ibm.com>
+Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
+Signed-off-by: Steffen Maier <maier@linux.ibm.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042-x86ia64io.h |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/s390/scsi/zfcp_erp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -534,6 +534,17 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo LaVie Z"),
- 		},
- 	},
-+	{
-+		/*
-+		 * Acer Aspire 5738z
-+		 * Touchpad stops working in mux mode when dis- + re-enabled
-+		 * with the touchpad enable/disable toggle hotkey
-+		 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
-+		},
-+	},
- 	{ }
- };
+--- a/drivers/s390/scsi/zfcp_erp.c
++++ b/drivers/s390/scsi/zfcp_erp.c
+@@ -747,7 +747,7 @@ static void zfcp_erp_enqueue_ptp_port(st
+ 				 adapter->peer_d_id);
+ 	if (IS_ERR(port)) /* error or port already attached */
+ 		return;
+-	_zfcp_erp_port_reopen(port, 0, "ereptp1");
++	zfcp_erp_port_reopen(port, 0, "ereptp1");
+ }
  
+ static int zfcp_erp_adapter_strat_fsf_xconf(struct zfcp_erp_action *erp_action)
 
 
