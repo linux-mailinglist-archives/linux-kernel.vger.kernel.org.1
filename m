@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7291B4929
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F3D1B492D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgDVPv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgDVPv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:51:58 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DFE620767;
-        Wed, 22 Apr 2020 15:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587570718;
-        bh=erYIPpCttlAKmVk7+ZuIu29yGQ+f83fJdaXrHXypskw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eV+ic6cqswM4lN5NJv1zQbMoM/AXh3IbzYdwfvkGqAONMViojH7CxDYQ9wtGoyHLM
-         iGSIP25KHmrOqCQNVHEJOhOpE+7obhFd5JbMZ3qkbsHPodNUtqLAyy4lL2lusUkAHY
-         cQTyl672L9aXMPGUP6UWAH0epvHiEDnE6hSyhaHk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6002335203BC; Wed, 22 Apr 2020 08:51:58 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 08:51:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, qais.yousef@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de
-Subject: Re: [PATCH 20/23] sched,rcutorture: Convert to sched_set_fifo_low()
-Message-ID: <20200422155158.GV17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200422112719.826676174@infradead.org>
- <20200422112832.403795265@infradead.org>
+        id S1726547AbgDVPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgDVPxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 11:53:09 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AF6C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:53:08 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id f8so2090267lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0udPE9EnePSlFarVuldYTggNRyQNC5Zk7MCG7l+KWZc=;
+        b=qUdGxncKjL48ifOV0XDyL0sTKyG/EZjKG5C8HIRjgDIX5h+Sh2a12dWMuHuy9PpLnj
+         +MnY47OTG88LNJIydi6UUAUuNCkpqpuz4NTmJf9XPDynqedL3FutsknAGPY0Fi0YRZTM
+         KkM+MalPiSWZbFzYonetaNIwfAzWWfxbjgbWnRdrmz+PlL/HvTCo4fmzSkzBOUu5kzfY
+         fN9A9QleyEhlQY+wFeHBbKYjzJz+d5+qV40tIiqYUajacYuhMVtnQBeZ6/eXkw23wZAy
+         jTV4wSkGt9QIr4PbESLQiOmcWk5zIuaCjZFfFc43kfpLNmtnqrs8SqgTMxifh5F7Rrmc
+         cr9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0udPE9EnePSlFarVuldYTggNRyQNC5Zk7MCG7l+KWZc=;
+        b=Je5inqYFd9ytoXdJSx0GrnvXMk6avAInACIw2gZFxh2O8UOIzPAHxHM/Bx1o+WETU8
+         81w0mBB7uHithtefVTPvpohQz1f+k2IfQ8PTJ5TKjpRWbRAJK/uHwKzNDCJGesmDFMnU
+         U//pU4YMIT1W+bR2IMb+XCGgSomRLTx8HBmCWgVF4YDpgJ3xh4DwsPGJkhntAD4WQRm8
+         3R29/5IzC3BRt3jqvufG4WSQg5cU8O36OFUJpiN57NP36ngEHR9krshCIYHkGRyd7ajX
+         AezJt4KalRmO8Jq7sldPQWPPCkdSVdaWLgJmvD9xMYOa8DCDu2Aovn3qVCkal0CFg1S3
+         w2/g==
+X-Gm-Message-State: AGi0PuaW29peVrkk1Nf15lV+lA0vzPmjI6vofNI0jOXLbqjeP4SBDCCY
+        B3KbhJ6GpXKirHpNl96RxiZVrlG/+QYhQkdQ8+bkmQ==
+X-Google-Smtp-Source: APiQypIWkemN+mKU8J8xU8e7NjHLXmqNFRLkAUOYPdZIndUBuIhsCmbdsuuurJVWWsy7/9khQfAjp49aoUagFcLxMGU=
+X-Received: by 2002:ac2:46f9:: with SMTP id q25mr17725719lfo.149.1587570787276;
+ Wed, 22 Apr 2020 08:53:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422112832.403795265@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200422112719.826676174@infradead.org> <20200422112831.988065598@infradead.org>
+ <CAKfTPtB8NiKqggZN3v6u=Rdwj4grzRwn1mW31ov0y5ZhDBcvuw@mail.gmail.com>
+ <20200422132923.GK20730@hirez.programming.kicks-ass.net> <CAKfTPtBsFDt8JyxjD39B2YP+kCN9nXWZxnaJys9sz2CjWzd1Zw@mail.gmail.com>
+ <20200422135921.GL20730@hirez.programming.kicks-ass.net> <CAKfTPtDa2JPtc2qPSe=d187u8pp7AdvV4wKJiUJsDiAvUTE9hg@mail.gmail.com>
+ <20200422153910.GN20730@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200422153910.GN20730@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 22 Apr 2020 17:52:55 +0200
+Message-ID: <CAKfTPtA=d6pnczmU8LFpV=d-9-KArO0qfQuvzod5xYo1pKjK5g@mail.gmail.com>
+Subject: Re: [PATCH 13/23] sched,ion: Convert to sched_set_normal()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 01:27:39PM +0200, Peter Zijlstra wrote:
-> Because SCHED_FIFO is a broken scheduler model (see previous patches)
-> take away the priority field, the kernel can't possibly make an
-> informed decision.
-> 
-> Effectively no change.
-> 
-> Cc: paulmck@kernel.org
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Ingo Molnar <mingo@kernel.org>
+On Wed, 22 Apr 2020 at 17:39, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Apr 22, 2020 at 05:09:15PM +0200, Vincent Guittot wrote:
+> > > It's not unbounded, like a true idle-time scheduler would be, but it can
+> > > still be pretty horrible. nice19 has some of that too of course, but
+> > > idle has it worse, esp. also because it begs others to preempt it.
+> >
+> > Yeah... you have to pay the benefit of letting other tasks to preempt
+> > faster. But both sched_idle and nice19 have the same weight
+>
+> #define WEIGHT_IDLEPRIO         3
+>
+>  /*  15 */        36,        29,        23,        18,        15,
+>
+> 15 != 3
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Good point
+Don't know why I thought they had same weight
 
-> ---
->  kernel/rcu/rcutorture.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -802,13 +802,11 @@ static int rcu_torture_boost(void *arg)
->  	unsigned long endtime;
->  	unsigned long oldstarttime;
->  	struct rcu_boost_inflight rbi = { .inflight = 0 };
-> -	struct sched_param sp;
->  
->  	VERBOSE_TOROUT_STRING("rcu_torture_boost started");
->  
->  	/* Set real-time priority. */
-> -	sp.sched_priority = 1;
-> -	if (sched_setscheduler(current, SCHED_FIFO, &sp) < 0) {
-> +	if (sched_set_fifo_low(current) < 0) {
->  		VERBOSE_TOROUT_STRING("rcu_torture_boost RT prio failed!");
->  		n_rcu_torture_boost_rterror++;
->  	}
-> 
-> 
+>
+> Also, like said elsewhere, idle is much more eager to let itself be
+> preempted.
