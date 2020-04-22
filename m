@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A531B38AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB60E1B38AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726041AbgDVHRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:17:22 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2867 "EHLO huawei.com"
+        id S1726294AbgDVHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:17:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2868 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725786AbgDVHRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:17:22 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C87CA4BAF0B0A7AC6E70;
-        Wed, 22 Apr 2020 15:17:13 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 22 Apr 2020
- 15:17:07 +0800
+        id S1725786AbgDVHRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 03:17:30 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1755546874DFF5CDF436;
+        Wed, 22 Apr 2020 15:17:26 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 22 Apr 2020
+ 15:17:17 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <yanaijie@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] net: caif: use true,false for bool variables
-Date:   Wed, 22 Apr 2020 15:16:36 +0800
-Message-ID: <20200422071636.48356-1-yanaijie@huawei.com>
+To:     <clemens@ladisch.de>, <perex@perex.cz>, <tiwai@suse.com>,
+        <tglx@linutronix.de>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] ALSA: oxygen: use true,false for bool variables
+Date:   Wed, 22 Apr 2020 15:16:46 +0800
+Message-ID: <20200422071646.48436-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,60 +38,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the following coccicheck warning:
 
-net/caif/caif_dev.c:410:2-13: WARNING: Assignment of 0/1 to bool
-variable
-net/caif/caif_dev.c:445:2-13: WARNING: Assignment of 0/1 to bool
-variable
-net/caif/caif_dev.c:145:1-12: WARNING: Assignment of 0/1 to bool
-variable
-net/caif/caif_dev.c:223:1-12: WARNING: Assignment of 0/1 to bool
-variable
+sound/pci/oxygen/xonar_pcm179x.c:463:1-17: WARNING: Assignment of 0/1 to
+bool variable
+sound/pci/oxygen/xonar_pcm179x.c:505:1-17: WARNING: Assignment of 0/1 to
+bool variable
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- net/caif/caif_dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/oxygen/xonar_pcm179x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/caif/caif_dev.c b/net/caif/caif_dev.c
-index 195d2d67be8a..c10e5a55758d 100644
---- a/net/caif/caif_dev.c
-+++ b/net/caif/caif_dev.c
-@@ -142,7 +142,7 @@ static void caif_flow_cb(struct sk_buff *skb)
+diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
+index 6a0520c4fb5a..cf801a235df9 100644
+--- a/sound/pci/oxygen/xonar_pcm179x.c
++++ b/sound/pci/oxygen/xonar_pcm179x.c
+@@ -460,7 +460,7 @@ static void xonar_st_init(struct oxygen *chip)
  
- 	spin_lock_bh(&caifd->flow_lock);
- 	send_xoff = caifd->xoff;
--	caifd->xoff = 0;
-+	caifd->xoff = false;
- 	dtor = caifd->xoff_skb_dtor;
+ 	data->generic.anti_pop_delay = 100;
+ 	data->h6 = chip->model.dac_channels_mixer > 2;
+-	data->has_cs2000 = 1;
++	data->has_cs2000 = true;
+ 	data->cs2000_regs[CS2000_FUN_CFG_1] = CS2000_REF_CLK_DIV_1;
+ 	data->broken_i2c = true;
  
- 	if (WARN_ON(caifd->xoff_skb != skb))
-@@ -220,7 +220,7 @@ static int transmit(struct cflayer *layer, struct cfpkt *pkt)
- 	pr_debug("queue has stopped(%d) or is full (%d > %d)\n",
- 			netif_queue_stopped(caifd->netdev),
- 			qlen, high);
--	caifd->xoff = 1;
-+	caifd->xoff = true;
- 	caifd->xoff_skb = skb;
- 	caifd->xoff_skb_dtor = skb->destructor;
- 	skb->destructor = caif_flow_cb;
-@@ -407,7 +407,7 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
- 			break;
- 		}
+@@ -502,7 +502,7 @@ static void xonar_xense_init(struct oxygen *chip)
+ 	xonar_init_ext_power(chip);
  
--		caifd->xoff = 0;
-+		caifd->xoff = false;
- 		cfcnfg_set_phy_state(cfg, &caifd->layer, true);
- 		rcu_read_unlock();
+ 	data->generic.anti_pop_delay = 100;
+-	data->has_cs2000 = 1;
++	data->has_cs2000 = true;
+ 	data->cs2000_regs[CS2000_FUN_CFG_1] = CS2000_REF_CLK_DIV_1;
  
-@@ -442,7 +442,7 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
- 		if (caifd->xoff_skb_dtor != NULL && caifd->xoff_skb != NULL)
- 			caifd->xoff_skb->destructor = caifd->xoff_skb_dtor;
- 
--		caifd->xoff = 0;
-+		caifd->xoff = false;
- 		caifd->xoff_skb_dtor = NULL;
- 		caifd->xoff_skb = NULL;
- 
+ 	oxygen_write16(chip, OXYGEN_I2S_A_FORMAT,
 -- 
 2.21.1
 
