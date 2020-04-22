@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8113F1B41F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF92E1B4162
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732238AbgDVK5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56574 "EHLO mail.kernel.org"
+        id S1728511AbgDVKKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728181AbgDVKF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:05:26 -0400
+        id S1728988AbgDVKKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:10:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 871632075A;
-        Wed, 22 Apr 2020 10:05:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 158FD20575;
+        Wed, 22 Apr 2020 10:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549925;
-        bh=RvU73F7tLB9ZFjTmEy3uFpOJCsNs03yV0YlJ8KnNps0=;
+        s=default; t=1587550231;
+        bh=Dd0mG1GMJcdGRJyGJoFduNfbabrP2iJc0jvKndSXVdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZflWg7IvEh2RkQHP/NWEKmZ3bRknlHLzWee9eVgm4ypsRmdVDd9QGCdu3zNaTyNvN
-         X/ikQt94yZSNOBh3AS1bz6jDKBqHRCklgDLGC7hJkgxALn9trU4+jf28NrUEml0P93
-         f1sCX8MJVqOhdEuj1otFYALM5EfJWnX15BnqXTFE=
+        b=Jo3qPRyz/KuW34334FaxaTO50044zwWjamrTZvaqR/HDyEJW738T6a6ZhvMnd3/pH
+         3ooSPYfDuxqptgdou0n9EQArUM/2d0LadqNrtEz9tFIcj1ytauU/l7TPTjGYPisph4
+         dRK1XquWLRKToPZ8Vb8bGlzotz1Fl5R0HE95Ixr8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 064/125] misc: echo: Remove unnecessary parentheses and simplify check for zero
+        stable@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 4.14 055/199] signal: Extend exec_id to 64bits
 Date:   Wed, 22 Apr 2020 11:56:21 +0200
-Message-Id: <20200422095043.664921958@linuxfoundation.org>
+Message-Id: <20200422095103.761468165@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-[ Upstream commit 85dc2c65e6c975baaf36ea30f2ccc0a36a8c8add ]
+commit d1e7fd6462ca9fc76650fbe6ca800e35b24267da upstream.
 
-Clang warns when multiple pairs of parentheses are used for a single
-conditional statement.
+Replace the 32bit exec_id with a 64bit exec_id to make it impossible
+to wrap the exec_id counter.  With care an attacker can cause exec_id
+wrap and send arbitrary signals to a newly exec'd parent.  This
+bypasses the signal sending checks if the parent changes their
+credentials during exec.
 
-drivers/misc/echo/echo.c:384:27: warning: equality comparison with
-extraneous parentheses [-Wparentheses-equality]
-        if ((ec->nonupdate_dwell == 0)) {
-             ~~~~~~~~~~~~~~~~~~~~^~~~
-drivers/misc/echo/echo.c:384:27: note: remove extraneous parentheses
-around the comparison to silence this warning
-        if ((ec->nonupdate_dwell == 0)) {
-            ~                    ^   ~
-drivers/misc/echo/echo.c:384:27: note: use '=' to turn this equality
-comparison into an assignment
-        if ((ec->nonupdate_dwell == 0)) {
-                                 ^~
-                                 =
-1 warning generated.
+The severity of this problem can been seen that in my limited testing
+of a 32bit exec_id it can take as little as 19s to exec 65536 times.
+Which means that it can take as little as 14 days to wrap a 32bit
+exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
+days.  Even my slower timing is in the uptime of a typical server.
+Which means self_exec_id is simply a speed bump today, and if exec
+gets noticably faster self_exec_id won't even be a speed bump.
 
-Remove them and while we're at it, simplify the zero check as '!var' is
-used more than 'var == 0'.
+Extending self_exec_id to 64bits introduces a problem on 32bit
+architectures where reading self_exec_id is no longer atomic and can
+take two read instructions.  Which means that is is possible to hit
+a window where the read value of exec_id does not match the written
+value.  So with very lucky timing after this change this still
+remains expoiltable.
 
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+I have updated the update of exec_id on exec to use WRITE_ONCE
+and the read of exec_id in do_notify_parent to use READ_ONCE
+to make it clear that there is no locking between these two
+locations.
+
+Link: https://lore.kernel.org/kernel-hardening/20200324215049.GA3710@pi3.com.pl
+Fixes: 2.3.23pre2
+Cc: stable@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/misc/echo/echo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/exec.c             |    2 +-
+ include/linux/sched.h |    4 ++--
+ kernel/signal.c       |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/echo/echo.c b/drivers/misc/echo/echo.c
-index 9597e9523cac4..fff13176f9b8b 100644
---- a/drivers/misc/echo/echo.c
-+++ b/drivers/misc/echo/echo.c
-@@ -454,7 +454,7 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
- 	 */
- 	ec->factor = 0;
- 	ec->shift = 0;
--	if ((ec->nonupdate_dwell == 0)) {
-+	if (!ec->nonupdate_dwell) {
- 		int p, logp, shift;
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1373,7 +1373,7 @@ void setup_new_exec(struct linux_binprm
  
- 		/* Determine:
--- 
-2.20.1
-
+ 	/* An exec changes our domain. We are no longer part of the thread
+ 	   group */
+-	current->self_exec_id++;
++	WRITE_ONCE(current->self_exec_id, current->self_exec_id + 1);
+ 	flush_signal_handlers(current, 0);
+ }
+ EXPORT_SYMBOL(setup_new_exec);
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -839,8 +839,8 @@ struct task_struct {
+ 	struct seccomp			seccomp;
+ 
+ 	/* Thread group tracking: */
+-	u32				parent_exec_id;
+-	u32				self_exec_id;
++	u64				parent_exec_id;
++	u64				self_exec_id;
+ 
+ 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
+ 	spinlock_t			alloc_lock;
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1675,7 +1675,7 @@ bool do_notify_parent(struct task_struct
+ 		 * This is only possible if parent == real_parent.
+ 		 * Check if it has changed security domain.
+ 		 */
+-		if (tsk->parent_exec_id != tsk->parent->self_exec_id)
++		if (tsk->parent_exec_id != READ_ONCE(tsk->parent->self_exec_id))
+ 			sig = SIGCHLD;
+ 	}
+ 
 
 
