@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F371B4D07
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 21:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3D21B4D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 21:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgDVTIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 15:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbgDVTIT (ORCPT
+        id S1726606AbgDVTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 15:09:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16119 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgDVTJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 15:08:19 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50664C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 12:08:19 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u127so3778243wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 12:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
-        b=sopfsph4Ox9cam1LRYncWs+ATliTvE3+yCH1/n3zC+PX+46tWteEs5pbbO09FpD9Ld
-         r/T8sQSTxn6hVmtEs5YuDM251mPwNVnwDPNvrrEdFtU/Ia5ZpYHG2mWVZp/WgoY7RzSf
-         2zcKZDO5Skbh8RJr81lsXpB7rciNEqJdeFtu7FyXpJj6pEdA+xmnQUJj4L/F1enZxBep
-         GJs7gobSR07T3i7GHMWgpHZec4chFv030zhxoWPVGqwYz9wZKBdv6ufhXypKqK87WOVS
-         A4sCOjXPpfzDVmpHQit1mR5bJuE1U0tQNOUWNYqhNDefBIPReC8am1RubNFKiXDTpUIW
-         w+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=+zDLeLkxWO2+hMNosAqgOgGEHIDnT4PWh0YVuszpFwo=;
-        b=NRmMNohgP0sCS1WbsVPP74Ps38HtpjuPoWBs3Y1KLrpBmBpNvRSLXCzrWiSjQ1J+th
-         pIxoo4kKXpzw6GIPd9AXhXl8X0w82/8/2gT9MFBVayFvOrTkmUdJ+xKd6u5bpnFhlRO6
-         7LUJudYIulmgwP7llJghhe/iW9aarrykhCAet/+tmc/s2k/GET0tncXHJUi+SgXQ7G99
-         ozVaBK8XCQdF0egTyF97Vnozz+UIMyDgyjcapUwrMmNAMh401sRT7fxJ+qddD1G3nuKu
-         R5rvJ8Rj+QVMzCqRzp3c8BqwM5StrUHKqCS76Cn0zRxn1xcDgBcOdG9u/0WgWH4JOx7X
-         Vf5g==
-X-Gm-Message-State: AGi0PubDLgz3th7fSWaXjbZjz6liNa3Cc7pbiZyzuiPASruSxGHghZUV
-        i6xFtBMn44YeI7N2cwCXsZY=
-X-Google-Smtp-Source: APiQypKKOtJHSktS3ZUja/AxftlJ/XBl/AguO72IhuFkq9dh8eOQNeBgIAM46126fomV+VYhlr96FA==
-X-Received: by 2002:a1c:5403:: with SMTP id i3mr12817772wmb.10.1587582497902;
-        Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
-Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id f8sm201837wrm.14.2020.04.22.12.08.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 12:08:17 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] soundwire: intel: Remove unused function
-Date:   Wed, 22 Apr 2020 20:08:15 +0100
-Message-Id: <20200422190815.5975-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Wed, 22 Apr 2020 15:09:11 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea095e20001>; Wed, 22 Apr 2020 12:07:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 22 Apr 2020 12:09:10 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 22 Apr 2020 12:09:10 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
+ 2020 19:09:10 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Wed, 22 Apr 2020 19:09:09 +0000
+Subject: Re: [PATCH hmm 0/5] Adjust hmm_range_fault() API
+To:     Jason Gunthorpe <jgg@ziepe.ca>, <linux-mm@kvack.org>
+CC:     Alex Deucher <alexander.deucher@amd.com>,
+        <amd-gfx@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        <dri-devel@lists.freedesktop.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        <intel-gfx@lists.freedesktop.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        <linux-kernel@vger.kernel.org>,
+        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        <nouveau@lists.freedesktop.org>
+References: <0-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <17ce2fdc-4f9f-7772-c10c-6f339a4183e8@nvidia.com>
+Date:   Wed, 22 Apr 2020 12:09:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <0-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587582434; bh=Ibr26mSSlFN5k8tPbVlsbPzYkk2ONJQVn8RAtNIyK9E=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=SYRCFRSghsuA1oPUGpaSrThd5bs4yjq3+gWlxe7OKwNdoqB2UOa004VsS8/Lr697y
+         CWlieyjD7XPQ253DIjhDdL01VtVsGtzGEvoQqDO6lPiZ5CYv0eWmptUvjs6CnBqvRa
+         4hoTO4QeEmS2vafuYzVQSMQMrQxnk3yoAyIRHCI99P9Mgj2uvXuKNUDzqFBGyVCZml
+         JGQm9m8ACFaaebFyqUIUXiOiwj4oGw/DQEJJc0XtF3If903YGzmV0z3IE+sqd6zM9+
+         KnxSL5/RF+iYX9gU+gjf3WtClWhx9GpAdGYAifxagOljqMjx/EX9krpg30i0tS21KU
+         UXh/u9XgjPkgw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function sdw_intel_init() is not used anywhere, remove it for now.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/soundwire/intel_init.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+On 4/21/20 5:21 PM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> The API is a bit complicated for the uses we actually have, and
+> disucssions for simplifying have come up a number of times.
+> 
+> This small series removes the customizable pfn format and simplifies the
+> return code of hmm_range_fault()
+> 
+> All the drivers are adjusted to process in the simplified format.
+> I would appreciated tested-by's for the two drivers, thanks!
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index ad7053463889..2f37dad06321 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -183,29 +183,6 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- }
- 
- /**
-- * sdw_intel_init() - SoundWire Intel init routine
-- * @parent_handle: ACPI parent handle
-- * @res: resource data
-- *
-- * This scans the namespace and creates SoundWire link controller devices
-- * based on the info queried.
-- */
--static void *sdw_intel_init(acpi_handle *parent_handle,
--			    struct sdw_intel_res *res)
--{
--	acpi_status status;
--
--	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
--				     parent_handle, 1,
--				     sdw_intel_acpi_cb,
--				     NULL, res, NULL);
--	if (ACPI_FAILURE(status))
--		return NULL;
--
--	return sdw_intel_add_controller(res);
--}
--
--/**
-  * sdw_intel_exit() - SoundWire Intel exit
-  * @arg: callback context
-  *
--- 
-2.11.0
-
+For nouveau you can add:
+Tested-by: Ralph Campbell <rcampbell@nvidia.com>
