@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D651B3876
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2081B3879
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgDVHJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
+        id S1726090AbgDVHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725786AbgDVHJR (ORCPT
+        by vger.kernel.org with ESMTP id S1725786AbgDVHJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:09:17 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28EBC03C1A6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:09:17 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id w20so1269776iob.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:09:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=8gqABnAnLZgYN8lMYsAQdzFJAijN2oFh62UC2JZ1AQ8=;
-        b=JqtqDOL7fOfJYsKBsLU7e+52hH9dQ6eTcIdRIKjZTEcua8pa91XBUdMCbTq6qyyEhv
-         gdfWSSoUzH0gkm2RzPwrZVa7mTZ3fbvCrVWnqF8SBcImUoeOThLF0AbcEqCZmX6HbhsV
-         KTbcPoI8ptqFAAZeStNihDjdKr6MAG5efHrn03wh1JpryUvDV1GS2B+TA7NgxDuRbCGZ
-         jn8HKKrrfDbgvOHaeQe1hzaL2VJCN3QkxEz6ilnW4UlbH6H5+JDwSK6zkGTlnAHM6FY+
-         89fDQBJIzr0hlQAPhh/ebCg883bwQ8VITjZdVMuMnmBOu0G6khYLgC/O++4b3Z9zP1oE
-         0BPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=8gqABnAnLZgYN8lMYsAQdzFJAijN2oFh62UC2JZ1AQ8=;
-        b=mrtXfzW2+dvoPGNTe9z4x8HsRT5o2uKxroaHX7k+XCwSLXV55CbMici4YqIzqcOwuu
-         jyNTlqEDd/zi0Uy2D87wJdzpIAi/0ECcHSe4fbPz28v2lV4Z1TP2hxqktpP9dXNyC4l8
-         8slvtCdn6yNgCRcpImsbUDBVWheReZGwHhkCIEUtVOGxCadRvFehwM9ufymIyj5l1Kqk
-         PB9jPCD3ruWTvCJ0rXYWK4/Y3t/3VsvuforQdp/v0Tjy9lQBQvcNS4NS6ePx6zNMlJb7
-         arwVMPRdHhdAC7a4q2STX4mPh2ceC+H2Walz5DR6pEC/KUMcFOi332vpB/d1dtEukXRO
-         JbxQ==
-X-Gm-Message-State: AGi0PuZ8c1/YuCrieL3sE4weHKtk19m4QSWGQjsDIdHjdtb8QJFn8OPq
-        wuyJeevtmsC9ZyOdhOfeZ3Ytqrg4qx/92iOocm8=
-X-Google-Smtp-Source: APiQypJrgyFwTVET2TUMvw8/kyd8vr6jDblXmAdiwTanpe1FhaPnrCqILr8Wr5KCkliR/1v8bp2SqW86MWxp27bvOlk=
-X-Received: by 2002:a5d:8946:: with SMTP id b6mr24078434iot.51.1587539356881;
- Wed, 22 Apr 2020 00:09:16 -0700 (PDT)
+        Wed, 22 Apr 2020 03:09:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C20C03C1A6;
+        Wed, 22 Apr 2020 00:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6CVFGqxG/v/g0amb7iSB8Lo9w38X6pIJaoEOXJitxb8=; b=gVVm4k47Cvu1PFJgzjX/SkUM/m
+        mvRKEQwrpXa1IE/gVbfgEUWuuszxNoovUJu15JMZgWzrCRfyN73Fck5PoKuWjMhziZZJeZtmIhaxY
+        D4ZhMQ9oFzhcYu4spFvEIFFTkOs8zS+lEk0iXcaFNb8clfGgk5iiWttuKWRtrkvh1jjpWOLOnOCkM
+        skr5o8kmUWltstkREV5B7RnSndEOMVodXnR3iEuodtYEgGoi/pDdLYb3jAP8o/MfPyhVf1naK9xc6
+        xttmP0m9qaXteU7GTEV2zMI4AMmS5+utVZfYJ/Djtjz51ZCC0wEZL2ca7Xd088t1j/QscM3h18l9J
+        HDXefL4w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jR9VZ-0001HQ-MH; Wed, 22 Apr 2020 07:09:21 +0000
+Date:   Wed, 22 Apr 2020 00:09:21 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     linux-block@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] floppy: suppress UBSAN warning in setup_rw_floppy()
+Message-ID: <20200422070921.GA19116@infradead.org>
+References: <20200421125722.58959-1-efremov@linux.com>
+ <20200421125722.58959-4-efremov@linux.com>
 MIME-Version: 1.0
-Received: by 2002:a5d:8947:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 00:09:16
- -0700 (PDT)
-Reply-To: ambrosecooker389@gmail.com
-From:   Ambrose Cooker <amoumouomanzongo@gmail.com>
-Date:   Wed, 22 Apr 2020 00:09:16 -0700
-Message-ID: <CAH4JTFmsSwi=T_2Ln8P8exJk4dzCxprR935QyvHs3PiKHWBVwQ@mail.gmail.com>
-Subject: Greetings to you my Dear!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421125722.58959-4-efremov@linux.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings My Dear Friend,
+On Tue, Apr 21, 2020 at 03:57:22PM +0300, Denis Efremov wrote:
+> UBSAN: array-index-out-of-bounds in drivers/block/floppy.c:1521:45
+> index 16 is out of range for type 'unsigned char [16]'
+> Call Trace:
+> ...
+>  setup_rw_floppy+0x5c3/0x7f0
+>  floppy_ready+0x2be/0x13b0
+>  process_one_work+0x2c1/0x5d0
+>  worker_thread+0x56/0x5e0
+>  kthread+0x122/0x170
+>  ret_from_fork+0x35/0x40
+> 
+> >From include/uapi/linux/fd.h:
+> struct floppy_raw_cmd {
+> 	...
+> 	unsigned char cmd_count;
+> 	unsigned char cmd[16];
+> 	unsigned char reply_count;
+> 	unsigned char reply[16];
+> 	...
+> }
+> 
+> This out-of-bounds access is intentional. The command in struct
+> floppy_raw_cmd may take up the space initially intended for the reply
+> and the reply count. It is needed for long 82078 commands such as
+> RESTORE, which takes 17 command bytes. Initial cmd size is not enough
+> and since struct setup_rw_floppy is a part of uapi we check that
+> cmd_count is in [0:16+1+16] in raw_cmd_copyin().
+> 
+> The patch replaces array subscript with pointer arithetic to suppress
+> UBSAN warning.
 
-On behalf of friendship and love i need your urgent assistance in
-transferring the sum of $10.5million immediately to your private
-account. The money has been here in our Bank lying dormant for years
-now without anybody coming for the claim of it.
+Urghh.  I think the better way would be to use a union that creates
+a larger cmd field, or something like:
 
-I also need you to corporate with me for the release of this money
-into your private bank account as the relative to our deceased
-customer (the account owner) who died on 2016 terrorist attack at
-Splendid Hotel Ouagadougou Burkina Faso,with her Wife.and i really
-need you to stand as the NEXT OF KIN to this family.that is why i
-contacted you and as soon as this money is been channel to your
-account i will come over to meet you in  your country for the share of
-the money and remember The money will be shared 60% for me and 40% for
-you.
+struct floppy_raw_cmd {
+	...
+	u8 buf[34];
 
-Check out the web; (https://www.bbc.com/news/world-africa-35332792)
-for more understanding, I shall send you more information and the bank
-details when I receive your positive response from you to follow
-up,therefore contact me with my private email.
+#define BUF_CMD_COUNT	0
+#define BUF_CMD		1
+#define BUF_REPLY_COUNT	17
+#define BUF_REPLY	18
 
-ambrosecooker389@gmail.com
-
-
-Thanks with my best regards.
-Mr.Ambrose Cooker.
-Telex Manager
-African Development Bank (ADB)
-Burkina Faso.
+and use addressing based on that.
