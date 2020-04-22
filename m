@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2091B3BF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055FD1B3F46
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgDVKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:01:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
+        id S1730418AbgDVKgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgDVKA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:00:58 -0400
+        id S1727806AbgDVKXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E6CF2076C;
-        Wed, 22 Apr 2020 10:00:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A264F2076B;
+        Wed, 22 Apr 2020 10:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549657;
-        bh=0XlszoyFMe59iSqgMh03FHzcv92v+WCoY0GZ3XGuGbw=;
+        s=default; t=1587550990;
+        bh=KYVbrnZQ7AJD/sDVMLkUCoghFt+lMHOAtPcsirwNruA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qem/+px26ycZXRAbBESLJ8xp065yMfcySIBzdeByiD7sXJLzEwdKxMz/bo9nOPvUc
-         bxaR3p5g22DqNWuUoBi5pxAhQFq6NBHfsIKlMG6eY7f0LpDmCMXt523SiJ9UVzuPgB
-         ndMBL/aMTAeDKZa0e4wV1D8n++dmhqz+Q4rujs84=
+        b=PkflgV9oHyUU+Es8k0vjicPnNkQkki/1Tfj8hrJxZS/pewnNGz8cnk2GA1Egxs40x
+         Pvf/dRky6eJAztBzVWJhL7Xs1V32z6m/pO8ZWfhnkDZrBEuzdbTyIGTR8stK5ngQod
+         ve4Zh4jKs0FPgXlgauzdYStzOilnE60E1Eok7Of4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>,
-        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
-        openipmi-developer@lists.sourceforge.net,
-        Corey Minyard <cminyard@mvista.com>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 052/100] ipmi: fix hung processes in __get_guid()
+Subject: [PATCH 5.6 055/166] memory: tegra: Correct debugfs clk rate-range on Tegra20
 Date:   Wed, 22 Apr 2020 11:56:22 +0200
-Message-Id: <20200422095032.319462835@linuxfoundation.org>
+Message-Id: <20200422095054.847251371@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,70 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Yang <wenyang@linux.alibaba.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 32830a0534700f86366f371b150b17f0f0d140d7 ]
+[ Upstream commit 2243af41115d0e36e6414df6dd2a0386e022d9f8 ]
 
-The wait_event() function is used to detect command completion.
-When send_guid_cmd() returns an error, smi_send() has not been
-called to send data. Therefore, wait_event() should not be used
-on the error path, otherwise it will cause the following warning:
+Correctly set clk rate-range if number of available timings is zero.
+This fixes noisy "invalid range [4294967295, 0]" error messages during
+boot.
 
-[ 1361.588808] systemd-udevd   D    0  1501   1436 0x00000004
-[ 1361.588813]  ffff883f4b1298c0 0000000000000000 ffff883f4b188000 ffff887f7e3d9f40
-[ 1361.677952]  ffff887f64bd4280 ffffc90037297a68 ffffffff8173ca3b ffffc90000000010
-[ 1361.767077]  00ffc90037297ad0 ffff887f7e3d9f40 0000000000000286 ffff883f4b188000
-[ 1361.856199] Call Trace:
-[ 1361.885578]  [<ffffffff8173ca3b>] ? __schedule+0x23b/0x780
-[ 1361.951406]  [<ffffffff8173cfb6>] schedule+0x36/0x80
-[ 1362.010979]  [<ffffffffa071f178>] get_guid+0x118/0x150 [ipmi_msghandler]
-[ 1362.091281]  [<ffffffff810d5350>] ? prepare_to_wait_event+0x100/0x100
-[ 1362.168533]  [<ffffffffa071f755>] ipmi_register_smi+0x405/0x940 [ipmi_msghandler]
-[ 1362.258337]  [<ffffffffa0230ae9>] try_smi_init+0x529/0x950 [ipmi_si]
-[ 1362.334521]  [<ffffffffa022f350>] ? std_irq_setup+0xd0/0xd0 [ipmi_si]
-[ 1362.411701]  [<ffffffffa0232bd2>] init_ipmi_si+0x492/0x9e0 [ipmi_si]
-[ 1362.487917]  [<ffffffffa0232740>] ? ipmi_pci_probe+0x280/0x280 [ipmi_si]
-[ 1362.568219]  [<ffffffff810021a0>] do_one_initcall+0x50/0x180
-[ 1362.636109]  [<ffffffff812231b2>] ? kmem_cache_alloc_trace+0x142/0x190
-[ 1362.714330]  [<ffffffff811b2ae1>] do_init_module+0x5f/0x200
-[ 1362.781208]  [<ffffffff81123ca8>] load_module+0x1898/0x1de0
-[ 1362.848069]  [<ffffffff811202e0>] ? __symbol_put+0x60/0x60
-[ 1362.913886]  [<ffffffff8130696b>] ? security_kernel_post_read_file+0x6b/0x80
-[ 1362.998514]  [<ffffffff81124465>] SYSC_finit_module+0xe5/0x120
-[ 1363.068463]  [<ffffffff81124465>] ? SYSC_finit_module+0xe5/0x120
-[ 1363.140513]  [<ffffffff811244be>] SyS_finit_module+0xe/0x10
-[ 1363.207364]  [<ffffffff81003c04>] do_syscall_64+0x74/0x180
-
-Fixes: 50c812b2b951 ("[PATCH] ipmi: add full sysfs support")
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Corey Minyard <minyard@acm.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # 2.6.17-
-Message-Id: <20200403090408.58745-1-wenyang@linux.alibaba.com>
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
+Fixes: 8209eefa3d37 ("memory: tegra: Implement EMC debugfs interface on Tegra20")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/memory/tegra/tegra20-emc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 5cb5e8ff02240..7b8c1a64a1009 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -2645,7 +2645,9 @@ get_guid(ipmi_smi_t intf)
- 	if (rv)
- 		/* Send failed, no GUID available. */
- 		intf->bmc->guid_set = 0;
--	wait_event(intf->waitq, intf->bmc->guid_set != 2);
-+	else
-+		wait_event(intf->waitq, intf->bmc->guid_set != 2);
-+
- 	intf->null_user_handler = NULL;
- }
+diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
+index 8ae474d9bfb90..b16715e9515d0 100644
+--- a/drivers/memory/tegra/tegra20-emc.c
++++ b/drivers/memory/tegra/tegra20-emc.c
+@@ -628,6 +628,11 @@ static void tegra_emc_debugfs_init(struct tegra_emc *emc)
+ 			emc->debugfs.max_rate = emc->timings[i].rate;
+ 	}
  
++	if (!emc->num_timings) {
++		emc->debugfs.min_rate = clk_get_rate(emc->clk);
++		emc->debugfs.max_rate = emc->debugfs.min_rate;
++	}
++
+ 	err = clk_set_rate_range(emc->clk, emc->debugfs.min_rate,
+ 				 emc->debugfs.max_rate);
+ 	if (err < 0) {
 -- 
 2.20.1
 
