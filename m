@@ -2,173 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310141B48D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319C21B48F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgDVPgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgDVPgq (ORCPT
+        id S1726441AbgDVPm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:42:59 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:26853 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbgDVPm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:36:46 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C02C03C1A9;
-        Wed, 22 Apr 2020 08:36:45 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id b11so2941271wrs.6;
-        Wed, 22 Apr 2020 08:36:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6E0ZwMhEkyIOFS7vsF8aXBJ+5W1xoavdwFkr6dPgnvY=;
-        b=Q1PsnhohiFBFpKKgWU1XNjCS8/QSLVpwLf648QJrZ9zko1pqsTC+ttb8CdT3wAijk9
-         b1ufPO5uRaYRSkEiZVOlUUxk74qhvQ+SVQ0qexFMhZzEB6rPoJD0QWAlOOhL7HJvzr/f
-         9Q+ukWTYEZzN2HD/DtT8IO0mdCmAQH7zo29942pmikD9jVD0/An40u8RzGD0i5qwtrzJ
-         RI4KbSdXqRWXnOLVdfgQ4gzU5P8c+OJC9wL6yU9MfDbP+fFUsYJckO7McwVx/+cB8kn4
-         RY+/Oc4afcNhR46DFI8JguIHT16eqOYBVxFbxRUIGCvqUOFeutuepWMKhh0nS88mB7hq
-         cL1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6E0ZwMhEkyIOFS7vsF8aXBJ+5W1xoavdwFkr6dPgnvY=;
-        b=HRQXvUbPviOsXYvHlKmO3z8FhqVN5xA7FSfhVl8hkUvTyFnTNGjUfKcU2im2Okc0yb
-         yIZWvvU8Q5sE9/skQihdOOeuCC/hZIXRxSbbwh8wGk9zSLqeqLzgKOOHBP8DUX7P8zFn
-         qKr0Il8/jq404Z8k/YfeC9/LsTdqUjv69yRHhLUGvUnscQDhVCx/X1aPvLMCNQuj5+xS
-         5AHUM5xyuANL9w/Z+EeWzMLo/glWMA4AzWRJGIZ7iYlAC/KBIxcAiBp3BK5574169H2b
-         U+CzAwdiKndgRg7/jzbJbLrVbbN6NYF1J0g9FcSYFAJbfA+s9enN9wgon1itXAgYNB4/
-         a4gA==
-X-Gm-Message-State: AGi0PuaZwnB4273qzKEgbYOtrFFak52p/hVUcZviyFuTw6wwZKz7bGH1
-        9ZF1iOVyraKUTFuxP4UIVKsewne15XEF07Rekeg=
-X-Google-Smtp-Source: APiQypKpPY0VOgyPQZ7BLuozETVyOdI/x49oIFbgggidw3KrWQtoSkPJ3pjwfjr6boM9CKLViYhmBLBTpN5RiWODlto=
-X-Received: by 2002:adf:cd0a:: with SMTP id w10mr29732306wrm.404.1587569804501;
- Wed, 22 Apr 2020 08:36:44 -0700 (PDT)
+        Wed, 22 Apr 2020 11:42:58 -0400
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 03MFgfIw011166;
+        Thu, 23 Apr 2020 00:42:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03MFgfIw011166
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587570162;
+        bh=QUCpK3WJm1ifLwVFUS1q0umABM4aGa5XtBHT0c2+mZI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SOeQtnnrdnb/eEUI0PFq3PB954a4LsBSyQbyKqpLffygtHqhcDuAo4i+OnV4+02Zs
+         Acl5Iw0lHqh+kcXXCeTZH/SqefvmZaygvWPSScOHx2D3aIULpkwax2jHJKwa/UqpJ4
+         uTFOUgog6GvdsWAWh7c3pmyXdQk/Ajcp2OLvLqfi0EuNr5GQr3aeVE/3+styyqFqnF
+         9WjVwezekrG9sppgUr2F54p207mqdYk1eEyoZX2fqT47qSf6DGj+f+nZC+lVAbZtHb
+         9vzLk2eYJY35Hz65QrMQmyh3MiRTkOHw+eg7qNoiFe/msC6WhJ8yZmAAaOAYDJFjpg
+         vawwuHBqHSneQ==
+X-Nifty-SrcIP: [209.85.222.54]
+Received: by mail-ua1-f54.google.com with SMTP id c24so2091094uap.13;
+        Wed, 22 Apr 2020 08:42:42 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYqtgv01NEyWzkzQUJam/OTOlm0SJzivg3WsIcjpuVluch5+qZ8
+        AHgvl0GEBK4/G292lzRCf/BZRhKyFHZPV8/A2Os=
+X-Google-Smtp-Source: APiQypJK53incbdlqtMV7txS87GEalFCanCE0tnP4L7TDOANgXMWvWbvu8aq1Ibl5jbYxROrMtBhknLCsbHyLbBk8fk=
+X-Received: by 2002:a67:3293:: with SMTP id y141mr21234308vsy.54.1587570161183;
+ Wed, 22 Apr 2020 08:42:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200421143149.45108-1-yuehaibing@huawei.com> <20200422093344.GY13121@gauss3.secunet.de>
- <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
-In-Reply-To: <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Wed, 22 Apr 2020 23:41:37 +0800
-Message-ID: <CADvbK_cEgKCEGRJU1v=FAdFNoh3TzD+cZLiKUtsMLHJh3JqOfg@mail.gmail.com>
-Subject: Re: [PATCH] xfrm: policy: Only use mark as policy lookup key
-To:     Yuehaibing <yuehaibing@huawei.com>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, kuba@kernel.org,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200422004844.53284-1-vitor@massaru.org>
+In-Reply-To: <20200422004844.53284-1-vitor@massaru.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 23 Apr 2020 00:42:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASNBqQfMS49C9z7=opXeGv8-Y2DCDDQ2JqZPvMVZ6XwZg@mail.gmail.com>
+Message-ID: <CAK7LNASNBqQfMS49C9z7=opXeGv8-Y2DCDDQ2JqZPvMVZ6XwZg@mail.gmail.com>
+Subject: Re: [PATCH v3] um: ensure `make ARCH=um mrproper` removes arch/$(SUBARCH)/include/generated/
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 8:18 PM Yuehaibing <yuehaibing@huawei.com> wrote:
+On Wed, Apr 22, 2020 at 9:48 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
 >
-> On 2020/4/22 17:33, Steffen Klassert wrote:
-> > On Tue, Apr 21, 2020 at 10:31:49PM +0800, YueHaibing wrote:
-> >> While update xfrm policy as follow:
-> >>
-> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
-> >>  priority 1 mark 0 mask 0x10
-> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
-> >>  priority 2 mark 0 mask 0x00
-> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
-> >>  priority 2 mark 0 mask 0x10
-> >>
-> >> We get this warning:
-> >>
-> >> WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
-> >> Kernel panic - not syncing: panic_on_warn set ...
-> >> CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
-> >> Call Trace:
-> >> RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
-> >>  xfrm_policy_inexact_insert+0x70/0x330
-> >>  xfrm_policy_insert+0x1df/0x250
-> >>  xfrm_add_policy+0xcc/0x190 [xfrm_user]
-> >>  xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
-> >>  netlink_rcv_skb+0x4c/0x120
-> >>  xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
-> >>  netlink_unicast+0x1b3/0x270
-> >>  netlink_sendmsg+0x350/0x470
-> >>  sock_sendmsg+0x4f/0x60
-> >>
-> >> Policy C and policy A has the same mark.v and mark.m, so policy A is
-> >> matched in first round lookup while updating C. However policy C and
-> >> policy B has same mark and priority, which also leads to matched. So
-> >> the WARN_ON is triggered.
-> >>
-> >> xfrm policy lookup should only be matched when the found policy has the
-> >> same lookup keys (mark.v & mark.m) no matter priority.
-> >>
-> >> Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
-> >> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> >> ---
-> >>  net/xfrm/xfrm_policy.c | 16 +++++-----------
-> >>  1 file changed, 5 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-> >> index 297b2fd..67d0469 100644
-> >> --- a/net/xfrm/xfrm_policy.c
-> >> +++ b/net/xfrm/xfrm_policy.c
-> >> @@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
-> >>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
-> >>                                 struct xfrm_policy *pol)
-> >>  {
-> >> -    u32 mark = policy->mark.v & policy->mark.m;
-> >> -
-> >> -    if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> >> -            return true;
-> >> -
-> >> -    if ((mark & pol->mark.m) == pol->mark.v &&
-> >> -        policy->priority == pol->priority)
-> >
-> > If you remove the priority check, you can't insert policies with matching
-> > mark and different priorities anymore. This brings us back the old bug.
+> In this workflow:
 >
-> Yes, this is true.
+> $ make ARCH=um defconfig && make ARCH=um -j8
+>   [snip]
+> $ make ARCH=um mrproper
+>   [snip]
+> $ make ARCH=um defconfig O=./build_um && make ARCH=um -j8 O=./build_um
+>   [snip]
+>   CC      scripts/mod/empty.o
+> In file included from ../include/linux/types.h:6,
+>                  from ../include/linux/mod_devicetable.h:12,
+>                  from ../scripts/mod/devicetable-offsets.c:3:
+> ../include/uapi/linux/types.h:5:10: fatal error: asm/types.h: No such file or directory
+>     5 | #include <asm/types.h>
+>       |          ^~~~~~~~~~~~~
+> compilation terminated.
+> make[2]: *** [../scripts/Makefile.build:100: scripts/mod/devicetable-offsets.s] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [/home/iha/sdb/opensource/lkmp/linux-kselftest.git/Makefile:1140: prepare0] Error 2
+> make[1]: Leaving directory '/home/iha/sdb/opensource/lkmp/linux-kselftest.git/build_um'
+> make: *** [Makefile:180: sub-make] Error 2
 >
-> >
-> > I plan to apply the patch from Xin Long, this seems to be the right way
-> > to address this problem.
+> The cause of the error was because arch/$(SUBARCH)/include/generated files
+> weren't properly cleaned by `make ARCH=um mrproper`.
 >
-> That still brings an issue, update like this:
->
-> policy A (mark.v = 1, mark.m = 0, priority = 1)
-> policy B (mark.v = 1, mark.m = 0, priority = 1)
->
-> A and B will all in the list.
-I think this is another issue even before:
-7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and
-different priorities")
+> Fixes: a788b2ed81ab ("kbuild: check arch/$(SRCARCH)/include/generated
+> before out-of-tree build").
+> Reported-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Link: https://groups.google.com/forum/#!msg/kunit-dev/QmA27YEgEgI/hvS1kiz2CwAJ
 
->
-> So should do this:
->
->  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->                                    struct xfrm_policy *pol)
->  {
-> -       u32 mark = policy->mark.v & policy->mark.m;
-> -
-> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> -               return true;
-> -
-> -       if ((mark & pol->mark.m) == pol->mark.v &&
-> +       if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m) &&
->             policy->priority == pol->priority)
->                 return true;
-"mark.v & mark.m" looks weird to me, it should be:
-((something & mark.m) == mark.v)
 
-So why should we just do this here?:
-(policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m &&
- policy->priority == pol->priority)
+Applied to linux-kbuild/fixes.
+Thanks.
 
+
+
+> ---
+> v2:
+>  * Explains what this PATCH does and the importance as suggested
+>    by Brendan Higgins.
+> v3:
+>  * This problem only affects ARCH=um builds then arch/um/Makefile has
+>    been changed as suggested by Masahiro Yamada;
+>  * And with that the description has also been changed, and also to explain
+>    missing points and correct the tags as suggested by Masahiro Yamada:
+>    - Fix missing command `make ARCH=um mrproper`;
+>    - Add build error message;
+>    - Add "Fixes" tag instead of "This bug was ...";
+>    - Add "Link" tag instead of "Related bug ...";
+>    - Add Reported-by and Suggested-by;
+> ---
+>  arch/um/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 >
+> diff --git a/arch/um/Makefile b/arch/um/Makefile
+> index d2daa206872d..275f5ffdf6f0 100644
+> --- a/arch/um/Makefile
+> +++ b/arch/um/Makefile
+> @@ -140,6 +140,7 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
+>  # When cleaning we don't include .config, so we don't include
+>  # TT or skas makefiles and don't clean skas_ptregs.h.
+>  CLEAN_FILES += linux x.i gmon.out
+> +MRPROPER_DIRS += arch/$(SUBARCH)/include/generated
 >
+>  archclean:
+>         @find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+> --
+> 2.25.1
 >
-> >
-> > .
-> >
->
+
+
+-- 
+Best Regards
+Masahiro Yamada
