@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90CB1B3D30
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5251B4036
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgDVKMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45504 "EHLO mail.kernel.org"
+        id S1731253AbgDVKoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729333AbgDVKM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:27 -0400
+        id S1730046AbgDVKTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:19:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 548E52071E;
-        Wed, 22 Apr 2020 10:12:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FFFB2075A;
+        Wed, 22 Apr 2020 10:19:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550346;
-        bh=ItN11y+WxepZrDCfpTynFPnBVdMVdz9XD8CthUf6dbE=;
+        s=default; t=1587550748;
+        bh=EmooAh3QNBEGdyK8oG4A8fdn5lpHulsc2cu+K0KzJrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CSMLX9AsiUBTDtMHy3hV31sh9JLiyeJ6NHQHoRHJt1a0+vqRZEywPTDi50z3rQtCt
-         tm41WKh48DjfGEtWFaKX6p6Lso+zvu0EUppzPFBYjuWDRpxicc5IwM9CIPgD4TbGQE
-         r6FfjMOKD5U6BDB8r6Nj0l7Hu5btX5gLJkgjWsPg=
+        b=Mu1LTowQk3wR3gfpdbSG65KQzCnjhZhG7JCpvP+mJB74pcmVo0arbd+OPjh239pID
+         K7G418g/njdW34uAp67ccRb6HEYIsYNAZIfJjoMmhXwF/z8JvJI2oB2p14PS3lDYug
+         USBE+QVNYxtHlk3/o+hLQsCelwpkuPPiM5qjrWoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Wenhu <wenhu.wang@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 110/199] net: qrtr: send msgs from local of same id as broadcast
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 075/118] KVM: s390: vsie: Fix possible race when shadowing region 3 tables
 Date:   Wed, 22 Apr 2020 11:57:16 +0200
-Message-Id: <20200422095108.702699277@linuxfoundation.org>
+Message-Id: <20200422095044.009700138@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wenhu <wenhu.wang@vivo.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit 6dbf02acef69b0742c238574583b3068afbd227c ]
+[ Upstream commit 1493e0f944f3c319d11e067c185c904d01c17ae5 ]
 
-If the local node id(qrtr_local_nid) is not modified after its
-initialization, it equals to the broadcast node id(QRTR_NODE_BCAST).
-So the messages from local node should not be taken as broadcast
-and keep the process going to send them out anyway.
+We have to properly retry again by returning -EINVAL immediately in case
+somebody else instantiated the table concurrently. We missed to add the
+goto in this function only. The code now matches the other, similar
+shadowing functions.
 
-The definitions are as follow:
-static unsigned int qrtr_local_nid = NUMA_NO_NODE;
+We are overwriting an existing region 2 table entry. All allocated pages
+are added to the crst_list to be freed later, so they are not lost
+forever. However, when unshadowing the region 2 table, we wouldn't trigger
+unshadowing of the original shadowed region 3 table that we replaced. It
+would get unshadowed when the original region 3 table is modified. As it's
+not connected to the page table hierarchy anymore, it's not going to get
+used anymore. However, for a limited time, this page table will stick
+around, so it's in some sense a temporary memory leak.
 
-Fixes: fdf5fd397566 ("net: qrtr: Broadcast messages only from control port")
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Identified by manual code inspection. I don't think this classifies as
+stable material.
+
+Fixes: 998f637cc4b9 ("s390/mm: avoid races on region/segment/page table shadowing")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200403153050.20569-4-david@redhat.com
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/s390/mm/gmap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -710,20 +710,21 @@ static int qrtr_sendmsg(struct socket *s
- 
- 	node = NULL;
- 	if (addr->sq_node == QRTR_NODE_BCAST) {
--		enqueue_fn = qrtr_bcast_enqueue;
--		if (addr->sq_port != QRTR_PORT_CTRL) {
-+		if (addr->sq_port != QRTR_PORT_CTRL &&
-+		    qrtr_local_nid != QRTR_NODE_BCAST) {
- 			release_sock(sk);
- 			return -ENOTCONN;
- 		}
-+		enqueue_fn = qrtr_bcast_enqueue;
- 	} else if (addr->sq_node == ipc->us.sq_node) {
- 		enqueue_fn = qrtr_local_enqueue;
- 	} else {
--		enqueue_fn = qrtr_node_enqueue;
- 		node = qrtr_node_lookup(addr->sq_node);
- 		if (!node) {
- 			release_sock(sk);
- 			return -ECONNRESET;
- 		}
-+		enqueue_fn = qrtr_node_enqueue;
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 9d9ab77d02dd3..364e3a89c0969 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -1844,6 +1844,7 @@ int gmap_shadow_r3t(struct gmap *sg, unsigned long saddr, unsigned long r3t,
+ 		goto out_free;
+ 	} else if (*table & _REGION_ENTRY_ORIGIN) {
+ 		rc = -EAGAIN;		/* Race with shadow */
++		goto out_free;
  	}
- 
- 	plen = (len + 3) & ~3;
+ 	crst_table_init(s_r3t, _REGION3_ENTRY_EMPTY);
+ 	/* mark as invalid as long as the parent table is not protected */
+-- 
+2.20.1
+
 
 
