@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F681B3D16
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB54E1B41E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgDVKLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43534 "EHLO mail.kernel.org"
+        id S1729726AbgDVK4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729206AbgDVKLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:11:30 -0400
+        id S1728392AbgDVKGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD28F2075A;
-        Wed, 22 Apr 2020 10:11:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C200C2075A;
+        Wed, 22 Apr 2020 10:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550290;
-        bh=SoVqO3bK3jHNnFnqoHbBV+IZFxZYUJeXCaLy+Ihncvo=;
+        s=default; t=1587550006;
+        bh=8cvQTWe3si+sePj6bWCOuMaFO2j/tQNZdvqhTtJ5L84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lvn4vTwuWvVK6NBiQcgDW1fIS0ss+l5+m9+aT8JMtNskukyhLe3q5y82XCLbOVEqY
-         ADKKPxgZpWyHGskwOZQ/eQrhlaK1TYnPDCAeYAZdEZjfkuOxRo9wDVS+a9hD7CRntz
-         yQXvSZsZj9eV6h27lvcXQJpe+vZjwEUKtejPeRKA=
+        b=fPXHZNqVqwIHCJzV5vql0HDLXBYM6sjzqDXbEBWz0FYDyu0yst9du/hKlYarsbK4F
+         Bq7FSXAAvDrt4EmM5waWCtS3lR7hX84aUSERZoMqjeVZv/LOS673W4C+q+hAAriJzs
+         upiiAsw6JtlCshzN37dtkPLgTZ4NzrObNQy/EGNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Gander <simon@tuxera.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 085/199] hfsplus: fix crash and filesystem corruption when deleting files
+        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Subhash Jadavani <subhashj@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 094/125] scsi: ufs: make sure all interrupts are processed
 Date:   Wed, 22 Apr 2020 11:56:51 +0200
-Message-Id: <20200422095106.605369560@linuxfoundation.org>
+Message-Id: <20200422095048.399890302@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Gander <simon@tuxera.com>
+From: Venkat Gopalakrishnan <venkatg@codeaurora.org>
 
-commit 25efb2ffdf991177e740b2f63e92b4ec7d310a92 upstream.
+[ Upstream commit 7f6ba4f12e6cbfdefbb95cfd8fc67ece6c15d799 ]
 
-When removing files containing extended attributes, the hfsplus driver may
-remove the wrong entries from the attributes b-tree, causing major
-filesystem damage and in some cases even kernel crashes.
+As multiple requests are submitted to the ufs host controller in
+parallel there could be instances where the command completion interrupt
+arrives later for a request that is already processed earlier as the
+corresponding doorbell was cleared when handling the previous
+interrupt. Read the interrupt status in a loop after processing the
+received interrupt to catch such interrupts and handle it.
 
-To remove a file, all its extended attributes have to be removed as well.
-The driver does this by looking up all keys in the attributes b-tree with
-the cnid of the file.  Each of these entries then gets deleted using the
-key used for searching, which doesn't contain the attribute's name when it
-should.  Since the key doesn't contain the name, the deletion routine will
-not find the correct entry and instead remove the one in front of it.  If
-parent nodes have to be modified, these become corrupt as well.  This
-causes invalid links and unsorted entries that not even macOS's fsck_hfs
-is able to fix.
-
-To fix this, modify the search key before an entry is deleted from the
-attributes b-tree by copying the found entry's key into the search key,
-therefore ensuring that the correct entry gets removed from the tree.
-
-Signed-off-by: Simon Gander <simon@tuxera.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200327155541.1521-1-simon@tuxera.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Venkat Gopalakrishnan <venkatg@codeaurora.org>
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+Reviewed-by: Subhash Jadavani <subhashj@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/hfsplus/attributes.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/ufs/ufshcd.c |   27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
---- a/fs/hfsplus/attributes.c
-+++ b/fs/hfsplus/attributes.c
-@@ -292,6 +292,10 @@ static int __hfsplus_delete_attr(struct
- 		return -ENOENT;
- 	}
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -4397,19 +4397,30 @@ static irqreturn_t ufshcd_intr(int irq,
+ 	u32 intr_status, enabled_intr_status;
+ 	irqreturn_t retval = IRQ_NONE;
+ 	struct ufs_hba *hba = __hba;
++	int retries = hba->nutrs;
  
-+	/* Avoid btree corruption */
-+	hfs_bnode_read(fd->bnode, fd->search_key,
-+			fd->keyoffset, fd->keylength);
+ 	spin_lock(hba->host->host_lock);
+ 	intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+-	enabled_intr_status =
+-		intr_status & ufshcd_readl(hba, REG_INTERRUPT_ENABLE);
+ 
+-	if (intr_status)
+-		ufshcd_writel(hba, intr_status, REG_INTERRUPT_STATUS);
++	/*
++	 * There could be max of hba->nutrs reqs in flight and in worst case
++	 * if the reqs get finished 1 by 1 after the interrupt status is
++	 * read, make sure we handle them by checking the interrupt status
++	 * again in a loop until we process all of the reqs before returning.
++	 */
++	do {
++		enabled_intr_status =
++			intr_status & ufshcd_readl(hba, REG_INTERRUPT_ENABLE);
++		if (intr_status)
++			ufshcd_writel(hba, intr_status, REG_INTERRUPT_STATUS);
++		if (enabled_intr_status) {
++			ufshcd_sl_intr(hba, enabled_intr_status);
++			retval = IRQ_HANDLED;
++		}
 +
- 	err = hfs_brec_remove(fd);
- 	if (err)
- 		return err;
++		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
++	} while (intr_status && --retries);
+ 
+-	if (enabled_intr_status) {
+-		ufshcd_sl_intr(hba, enabled_intr_status);
+-		retval = IRQ_HANDLED;
+-	}
+ 	spin_unlock(hba->host->host_lock);
+ 	return retval;
+ }
 
 
