@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104D41B3CD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66A21B418B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgDVKJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:09:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35706 "EHLO mail.kernel.org"
+        id S1732029AbgDVKxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728814AbgDVKJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:14 -0400
+        id S1728842AbgDVKJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B43520776;
-        Wed, 22 Apr 2020 10:09:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E12CE2166E;
+        Wed, 22 Apr 2020 10:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550152;
-        bh=Ah1phaatKWQi3TK8AmYCuGygrGtfYztTNYjAIJTHsNw=;
+        s=default; t=1587550155;
+        bh=SNp5Cfh7breCq57LI8vZEAzmEX05Q+IiYdGzMs2VsjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WaivvUGds2k9bNw98UBmASBVfSj5sqt9G4PtzNydQWdNdQzUDsiNdAcN80FEQmkDK
-         +WJjBuJ5oF4ed61jP6ubvBYUAvBWoEOyPJpXUTT11uumDDzfc6KMbKuHWtFHDUC5fj
-         5fC7ztyQt6ZE/ojJc2AtBWcTP7uq2FEAhq5ODXXE=
+        b=ozs3bRKde9n5OJRtvrzGbgY9kgLkYcF8QUYEmGSdh7g45LTxcE0GOdI4l/OZb24I6
+         vM1umhgW7PzAZbYWdqBUeiM2G0owM4KeFnSBEMdf9PUs0g0pW3dHNP45NzSIt3Txww
+         sjOrhXC1T/5/EQcXP3mAKxgrxrtDfO2JwETWdMcE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 030/199] misc: rtsx: set correct pcr_ops for rts522A
-Date:   Wed, 22 Apr 2020 11:55:56 +0200
-Message-Id: <20200422095101.092618537@linuxfoundation.org>
+        stable@vger.kernel.org, Silvio Cesare <silvio.cesare@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 031/199] slub: improve bit diffusion for freelist ptr obfuscation
+Date:   Wed, 22 Apr 2020 11:55:57 +0200
+Message-Id: <20200422095101.178110516@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
 References: <20200422095057.806111593@linuxfoundation.org>
@@ -43,37 +49,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 10cea23b6aae15e8324f4101d785687f2c514fe5 ]
+commit 1ad53d9fa3f6168ebcf48a50e08b170432da2257 upstream.
 
-rts522a should use rts522a_pcr_ops, which is
-diffrent with rts5227 in phy/hw init setting.
+Under CONFIG_SLAB_FREELIST_HARDENED=y, the obfuscation was relatively weak
+in that the ptr and ptr address were usually so close that the first XOR
+would result in an almost entirely 0-byte value[1], leaving most of the
+"secret" number ultimately being stored after the third XOR.  A single
+blind memory content exposure of the freelist was generally sufficient to
+learn the secret.
 
-Fixes: ce6a5acc9387 ("mfd: rtsx: Add support for rts522A")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200326032618.20472-1-yuehaibing@huawei.com
+Add a swab() call to mix bits a little more.  This is a cheap way (1
+cycle) to make attacks need more than a single exposure to learn the
+secret (or to know _where_ the exposure is in memory).
+
+kmalloc-32 freelist walk, before:
+
+ptr              ptr_addr            stored value      secret
+ffff90c22e019020@ffff90c22e019000 is 86528eb656b3b5bd (86528eb656b3b59d)
+ffff90c22e019040@ffff90c22e019020 is 86528eb656b3b5fd (86528eb656b3b59d)
+ffff90c22e019060@ffff90c22e019040 is 86528eb656b3b5bd (86528eb656b3b59d)
+ffff90c22e019080@ffff90c22e019060 is 86528eb656b3b57d (86528eb656b3b59d)
+ffff90c22e0190a0@ffff90c22e019080 is 86528eb656b3b5bd (86528eb656b3b59d)
+...
+
+after:
+
+ptr              ptr_addr            stored value      secret
+ffff9eed6e019020@ffff9eed6e019000 is 793d1135d52cda42 (86528eb656b3b59d)
+ffff9eed6e019040@ffff9eed6e019020 is 593d1135d52cda22 (86528eb656b3b59d)
+ffff9eed6e019060@ffff9eed6e019040 is 393d1135d52cda02 (86528eb656b3b59d)
+ffff9eed6e019080@ffff9eed6e019060 is 193d1135d52cdae2 (86528eb656b3b59d)
+ffff9eed6e0190a0@ffff9eed6e019080 is f93d1135d52cdac2 (86528eb656b3b59d)
+
+[1] https://blog.infosectcbr.com.au/2020/03/weaknesses-in-linux-kernel-heap.html
+
+Fixes: 2482ddec670f ("mm: add SLUB free list pointer obfuscation")
+Reported-by: Silvio Cesare <silvio.cesare@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/202003051623.AF4F8CB@keescook
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[kees: Backport to v4.19 which doesn't call kasan_reset_untag()]
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/mfd/rts5227.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/rts5227.c b/drivers/mfd/rts5227.c
-index ff296a4bf3d23..dc6a9432a4b65 100644
---- a/drivers/mfd/rts5227.c
-+++ b/drivers/mfd/rts5227.c
-@@ -369,6 +369,7 @@ static const struct pcr_ops rts522a_pcr_ops = {
- void rts522a_init_params(struct rtsx_pcr *pcr)
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -248,7 +248,7 @@ static inline void *freelist_ptr(const s
+ 				 unsigned long ptr_addr)
  {
- 	rts5227_init_params(pcr);
-+	pcr->ops = &rts522a_pcr_ops;
- 
- 	pcr->reg_pm_ctrl3 = RTS522A_PM_CTRL3;
- }
--- 
-2.20.1
-
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+-	return (void *)((unsigned long)ptr ^ s->random ^ ptr_addr);
++	return (void *)((unsigned long)ptr ^ s->random ^ swab(ptr_addr));
+ #else
+ 	return ptr;
+ #endif
 
 
