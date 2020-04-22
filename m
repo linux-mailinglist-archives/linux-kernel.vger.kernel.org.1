@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2071B3533
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F2E1B353C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgDVCvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 22:51:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33094 "EHLO mail.kernel.org"
+        id S1726420AbgDVCzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 22:55:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:34107 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726389AbgDVCvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 22:51:18 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726173AbgDVCzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 22:55:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CF7D206D5;
-        Wed, 22 Apr 2020 02:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587523878;
-        bh=I46/5F1aUhtPqz6RdGMRl7ho5eerZkpYwLtKJ6Bog4s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=n8zLV8et2rtyCIgt8Kb8RALMswehb3MEUvs1roN3a+0v1+uL6/JuBG9snFRzdmd50
-         lUxE1L73AcX7dBbg57T/lC5fdwvoehLifnatAmciOmrzqvhHu+MABoTVYjvfR21dZh
-         p6BhyTQzp8DP3vsCtztdxlW9SoLtNDLk879kfIzA=
-Content-Type: text/plain; charset="utf-8"
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 496Q5Z1Pblz9sSm;
+        Wed, 22 Apr 2020 12:54:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1587524098;
+        bh=T8qV6w7B9lBd+fsLege8VP5ioZ0Edf4sm2JMw8Hx1IM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eZUdjEYlpde+MRRLfX11VgjRNJvS0x+a+/rEUa5c3Wy5B7Hgw6P/Ab0kHz5KhzidU
+         43pNy7l9Mfw8QU+Q1sIXf6UlsOVefRZppC7R/b5WobMmN1Av3uAWfTR6ni1qVfDSSA
+         RCwdKd1G2I358jJ22GHwiDirGE6eUq32CGNkfCJ5iiPkzsAbhHUKYPysssFRutrCmt
+         pYXZesKu6VohTaYhowRi6fONHDFuPoCSR0DVy26neys+5y7LgsE27Iq1ZkkDl9Ulwx
+         XpORvmaSw+DuBxwpShdMRViQIzzEw9QvCbRtepWCfDNemBQxR7CwXEp4dE2tnoRyD0
+         D9jMO7iwSjB0g==
+Date:   Wed, 22 Apr 2020 12:54:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alasdair G Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry_baryshkov@mentor.com>
+Subject: linux-next: build failure after merge of the device-mapper tree
+Message-ID: <20200422125453.2fa88c9f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200419121808.440780-3-bryan.odonoghue@linaro.org>
-References: <20200419121808.440780-1-bryan.odonoghue@linaro.org> <20200419121808.440780-3-bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH 2/3] clk: qcom: gcc-msm8939: Add gcc-msm8939 driver by copying gcc-msm8916
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, p.zabel@pengutronix.de,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org
-Date:   Tue, 21 Apr 2020 19:51:17 -0700
-Message-ID: <158752387776.132238.1325437671673808624@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: multipart/signed; boundary="Sig_/5yGH2uSSHj5jJy+4lHEyjU7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bryan O'Donoghue (2020-04-19 05:18:07)
-> From: Shawn Guo <shawn.guo@linaro.org>
->=20
-> It's a copy of following files with zero changes.
->=20
->  drivers/clk/qcom/gcc-msm8916.c
->  include/dt-bindings/clock/qcom,gcc-msm8916.h
->  include/dt-bindings/reset/qcom,gcc-msm8916.h
->=20
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+--Sig_/5yGH2uSSHj5jJy+4lHEyjU7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Squash this patch into the one after and generate the patch wit
-'git format-patch -C'. Does it find the copy? Probably would, and then
-we could figure out what changed.
+Hi all,
+
+After merging the device-mapper tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+ERROR: modpost: "key_type_encrypted" [drivers/md/dm-crypt.ko] undefined!
+
+Caused by commit
+
+  5cacab0334b9 ("dm crypt: support using encrypted keys")
+
+CONFIG_ENCRYPTED_KEYS is not set for this build.
+
+I have used the device-mapper tree from next-20200421 fot today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5yGH2uSSHj5jJy+4lHEyjU7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6fsf0ACgkQAVBC80lX
+0GyNaAf+PJZU/6KC9mVuXUASOLXduHbynXjRruymtnmzoSgF2br4AI+VW27V1X0V
+5eSptr/S5Z46SlR+G5Se5gN/ng8i6GHD2zvu+TECxGVZG3ylMTJ2qWsRfTWR34VV
+77nze1NUXuF7ClY4d2oGvMi/TMhsdGa9jU29foaDv7SybeLstt6wdR1Mub6ZHWzB
+khA0kRyPOTyUykfrt3j26cO72ONt3HUHdi2SUNff1mfDoRgsXR8HxhD31jUWlIFF
+FD7mj5R4NPBkw0bTXY17eOtJ48FelucbTAV9Upt+uxdrl45gPFefc/0QbxR6G02u
+Wtq+xl28saiXtildBXRKEfnC2hqgxg==
+=C2wQ
+-----END PGP SIGNATURE-----
+
+--Sig_/5yGH2uSSHj5jJy+4lHEyjU7--
