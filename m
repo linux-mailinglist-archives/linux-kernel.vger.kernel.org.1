@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB5D1B4910
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9051B491A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgDVPss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgDVPss (ORCPT
+        id S1726696AbgDVPuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:50:14 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:14973 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726641AbgDVPuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:48:48 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F314C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:48 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id 19so2858421ioz.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:48 -0700 (PDT)
+        Wed, 22 Apr 2020 11:50:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
-        b=IHgysYIq24+pV57RDzMKsWqwRemNhSOmnkA+c9xwPFoMr14zb0L25nCfetAJrOO9LX
-         XU6/RKe2oHFpBddV56iqvcWM19Q7KrGgPhd/4yI+yZZkumzcC2gr00v3p/uQ3V7d+fPc
-         mGUFUUbbGM43yRr3Tcl7f6jR3XH39NejxHYYlBKDRuTAohIKYFYxkUu4J83nQftcOwmb
-         sTew3PtnKQEdHEXHhcadN0RYDygB4C3DzdoIb8rCx1ba5xsqul/RaiXWNnsOt4Eq0c28
-         mIip5oSs52bfIBbFUP5p8sowqzW56G4bi5EFurL6zDGgM6hx8b0uAwPvpW1MJ5DbOskh
-         XbdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
-        b=ZA7dFvOmfCxWO8VEuYwT0ziz6q3Par922XUd9vCx+XYf4T8+3bNfY4qfBNfYhDwUap
-         hVFA0iP/VizwsIN1GpGLTern5vSR38x1irIautlAVSnIgVsMXFFUBKUApO0jDkHa7mmi
-         fdSecGV1wXB+3MqYHeEMQDtEoCggwpgrLLybXo+TJbTwWOicvBDP9Ezzule1WVJyn35f
-         0fGFXN8Ae8MxokIGJfxAWcvlK17APG79CSwFPcYcljOJi68gOj05APh+civBjOEN6qk3
-         bir9qmYVBlXvIiFt3Mr/k9Rp+TwG3FkP7DT135t6hDofu9017tun8IUf8d5wguDIustN
-         ra4g==
-X-Gm-Message-State: AGi0PuYnywsa+9qrCxIeUMmseCXgPfEqfbxXKlbnErcLs+5Gb3ejwuGi
-        dUYiTTIJQpKXmX5Ndic82J2MUTnoWpx3Mbn7Puw=
-X-Google-Smtp-Source: APiQypKY3AO6yK/CfuFD36vl3wV8QUAM5oqZpioPjafI3ST0oK0Vz93IomDtdYcbvItzVzXWTRLUE4wF3bbs3NSIgWw=
-X-Received: by 2002:a5d:8f98:: with SMTP id l24mr26561428iol.172.1587570527473;
- Wed, 22 Apr 2020 08:48:47 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587570613; x=1619106613;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=hDChm5isPAPEd65CcrlezjVWCRg1aImUyTNZ8pXg5oA=;
+  b=hSq7erkh0UcHcaWasn2zMC6yyQRuTpHHbyuxcqL9cGrGLe/Fc20y86+9
+   uktV3neDmNmk3h+aEo1Oxxj0Zad1E2LJL2KJ0tnZI8Bi17Y5eTwhFH8T3
+   LoEi3UviUNEQ3Rjw3buyO0Cb7po1dkG4BBajYAzZF/TQQnUAHVY78O26D
+   0=;
+IronPort-SDR: qyRT4HQqGjKUlgTHtQ18PQBLmHMmiKq/AyUKZT2Yv9wkvYewTT0iTRrkV/ZQFPAQHr8RByOCIX
+ koMWQMVsQ0/w==
+X-IronPort-AV: E=Sophos;i="5.73,414,1583193600"; 
+   d="scan'208";a="30459560"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Apr 2020 15:50:11 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 43B991416AE;
+        Wed, 22 Apr 2020 15:50:08 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Apr 2020 15:50:08 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.52) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Apr 2020 15:50:00 +0000
+Subject: Re: [PATCH v1 01/15] nitro_enclaves: Add ioctl interface definition
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <20200421184150.68011-2-andraprs@amazon.com>
+ <7e0cb729-60ca-3b2e-909b-8883b24908a8@infradead.org>
+ <716e0cfb-fa4a-5fc5-f198-6574fa8dc046@redhat.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <c70e18f1-bd3d-1d6d-7675-cac3566fb0ab@amazon.com>
+Date:   Wed, 22 Apr 2020 18:49:54 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:ad5:4290:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 08:48:47
- -0700 (PDT)
-Reply-To: mr_abou.sangoule00@yahoo.com
-From:   Mr Aboubacar Sangoule <mr.buchi.2014@gmail.com>
-Date:   Wed, 22 Apr 2020 16:48:47 +0100
-Message-ID: <CAOiunmEuEsoQiB3+12CZrHH--f49HvtiopsC3gX7S+rRWSmAuQ@mail.gmail.com>
-Subject: Hello My Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <716e0cfb-fa4a-5fc5-f198-6574fa8dc046@redhat.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.52]
+X-ClientProxiedBy: EX13d09UWA002.ant.amazon.com (10.43.160.186) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dear Friend,
+CgpPbiAyMi8wNC8yMDIwIDAwOjQ1LCBQYW9sbyBCb256aW5pIHdyb3RlOgo+IE9uIDIxLzA0LzIw
+IDIwOjQ3LCBSYW5keSBEdW5sYXAgd3JvdGU6Cj4+PiArCj4+PiArLyoqCj4+PiArICogVGhlIGNv
+bW1hbmQgaXMgdXNlZCB0byB0cmlnZ2VyIGVuY2xhdmUgc3RhcnQgYWZ0ZXIgdGhlIGVuY2xhdmUg
+cmVzb3VyY2VzLAo+Pj4gKyAqIHN1Y2ggYXMgbWVtb3J5IGFuZCBDUFUsIGhhdmUgYmVlbiBzZXQu
+Cj4+PiArICoKPj4+ICsgKiBUaGUgZW5jbGF2ZSBzdGFydCBtZXRhZGF0YSBpcyBhbiBpbiAvIG91
+dCBkYXRhIHN0cnVjdHVyZS4gSXQgaW5jbHVkZXMKPj4+ICsgKiBwcm92aWRlZCBpbmZvIGJ5IHRo
+ZSBjYWxsZXIgLSBlbmNsYXZlIGNpZCBhbmQgZmxhZ3MgLSBhbmQgcmV0dXJucyB0aGUKPj4+ICsg
+KiBzbG90IHVpZCBhbmQgdGhlIGNpZCAoaWYgaW5wdXQgY2lkIGlzIDApLgo+Pj4gKyAqLwo+Pj4g
+KyNkZWZpbmUgTkVfRU5DTEFWRV9TVEFSVCBfSU9XUignQicsIDB4MSwgc3RydWN0IGVuY2xhdmVf
+c3RhcnRfbWV0YWRhdGEpCj4+IFBsZWFzZSBkb2N1bWVudCBpb2N0bCBtYWpvciAoJ0InIGluIHRo
+aXMgY2FzZSkgYW5kIHJhbmdlIHVzZWQgaW4KPj4gRG9jdW1lbnRhdGlvbi91c2Vyc3BhY2UtYXBp
+L2lvY3RsL2lvY3RsLW51bWJlci5yc3QuCj4+Cj4gU2luY2UgaXQncyByZWFsbHkganVzdCBhIGNv
+dXBsZSBpb2N0bHMsIEkgY2FuICJkb25hdGUiIHBhcnQgb2YgdGhlIEtWTQo+IHNwYWNlLCBmb3Ig
+ZXhhbXBsZSBtYWpvciAweEFFIG1pbm9yIDB4MjAtMHgzZi4KClJhbmR5LCB0aGFua3MgZm9yIHRo
+ZSBpb2N0bCBkb2MgcmVmcy4KCkkgY2FuIHVwZGF0ZSB0aGUgaW9jdGwtbnVtYmVyIGRvYyB0byBh
+ZGQgYW4gZW50cnkgZm9yIHRoZSB0aGUgTml0cm8gCkVuY2xhdmVzIHVhcGkgd2l0aCAweEFFIGFu
+ZCAweDIwLTB4M2YgcmFuZ2UgKyB1cGRhdGUgdGhlIEtWTSBlbnRyeSB0byAKaGF2ZSAweEFFIDB4
+MDAtMHgxZiBhbmQgMHg0MC0weGZmLgoKV2lsbCB0aGVuIHVzZSAweEFFIGFuZCAweDIwIGZvciBO
+RV9FTkNMQVZFX1NUQVJULgoKUGFvbG8sIGxldCBtZSBrbm93IGlmIHdlIHNob3VsZCBkbyB0aGlz
+IGlvY3RsIG51bWJlciB1cGRhdGUgb3RoZXIgd2F5LiAKQW5kIHRoYW5rcyBmb3IgdGhlIHByb3Bv
+c2FsLiA6KQoKVGhhbmtzLApBbmRyYQoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9t
+YW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJD
+NSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJl
+ZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
 
-Good morning, how are you? Hope fine,
-I just want to know if you can help me to transfer this discovered
-abandon amount of ($6.5 Million us dollars) into any foreign bank
-account of your choice. After the transfer we have to share it, 50%
-for me, and 50% for you. Please let me know if you can handle this
-transfer. For more information regarding the transfer. I hope you will
-work with me honestly? Because this transaction is confidential.
-
-Kindly Update me with your personal information such as;
-
-1. Your name in Full:
-2. Your House Address:
-3. Your Occupation:
-4. Your Age:
-5. Your direct phone number;
-6. Your Identity card or international passport:
-
-I want to hear from you as soon as possible, this transaction will be
-finalize before one week which is seven 7 bank working days. Hope you
-understood.I am waiting for your urgent positive response soon.Please
-send the following: Reply To This E-mail Address
-mr_abou.sangoule00@yahoo.com
-
-1)your full name.....
-
-God bless you.
-
-Yours Faithfully.
-
-Mr Aboubacar Sangoule
