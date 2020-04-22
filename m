@@ -2,153 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2726B1B3424
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7661B3429
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgDVAtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726012AbgDVAtF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:49:05 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26640C0610D5;
-        Tue, 21 Apr 2020 17:49:05 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id t199so447505oif.7;
-        Tue, 21 Apr 2020 17:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fyWIvNsFDIbDhj5AHIg5Xemvwg92lR3Mt2pRS9IX/eY=;
-        b=ZRepC3bJo7TngfHSxmUTuuwFth5NE423gQHfzhrwqKOW/rG5flMB9dP4weA4JGtEHy
-         UOBQ4Lf1S1PdyWACh3vfJi+ahA2GTwmdqRTMkpI2odZ1aVL0cmeI4P3R+JuMjM6MgytQ
-         BBqEyteRb5uhGwjNUkbcjf0X/8GMIgRTWOgHzd70a+ST/Ejez9ptO9rYQk/v71Xf42Yw
-         5YsUN63ngS+fYMnpRva8OJhT/fudkSJYWu0RBS6xqRLaXVBKgoYt48ip6j8vFF82b0c1
-         kVJaUDUc9DIjdq5gzUf2jw/IG4Fcq1OEV6pL8Zt6C2WhiSUTp0gE5zargeJiJLOLexqp
-         F8ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fyWIvNsFDIbDhj5AHIg5Xemvwg92lR3Mt2pRS9IX/eY=;
-        b=gwQakFJCVVSkmXm8oGpNBnINI2anJVUX5YPDcId0V15c/pmqZ31LOHBCHbFhYfliek
-         wgkezHM8fvUyEZXLfT0YN48D6YZ09iyf6dn5nsSqpWMMrjjUqih2UHV1p6V1XH4lrZDs
-         kUU8HmI60nSHGpvg1CdAh1zbvmf91/sPe2WDtX7g1fh+SZmt3JDeXcua0Rh+6dUocdLr
-         vTDviTJHdBU+JqFcnodDj3nZd2BdnkEwy/nP419ER8hGyG2HnoLabCVmCX+GJUB2AUgQ
-         KdipwNXEcsIlWIrVN96HfQJWHipE/b85dAHIp1hTnO/eiYJ6MDNbaeVJujB4woZj+Em3
-         JENg==
-X-Gm-Message-State: AGi0Pub4UlEXzEZa4xixzgiXi0GShIUZR7K+kROMdt5J+cV9763+HSnd
-        zpEtsFqg13p3PzYZWUlbC86FtmOgJBzSqdxBBWU=
-X-Google-Smtp-Source: APiQypLD9AwSNYzuxvfQfpcQ099bZV8Nz8y3kuAYm1wHcLyTZkfVBsJCzZstjc+PvCkJN1SfCN9lsgMQMrz02HpXq8w=
-X-Received: by 2002:aca:2801:: with SMTP id 1mr4840905oix.141.1587516544513;
- Tue, 21 Apr 2020 17:49:04 -0700 (PDT)
+        id S1726430AbgDVAuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:50:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726061AbgDVAuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 20:50:08 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 087D02070B;
+        Wed, 22 Apr 2020 00:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587516608;
+        bh=bF7X9h26ISAZy0y8EdjOKnsOs24egAoS183uGUzNkmw=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=FHKSEzZYJriFNaeXlgiLofnNxLG2IBj7Y9yYcZbdKeX0pJ5Kg13MuZPPih3jeRgWT
+         L52QEt9VbtHWQuRPpT/r9Jc6+tNVwpodXMREih72C0twWl2KdifAQddOp4hEjASf+i
+         g4tyJwyHpZCNzF7xBGwqMiFTTzr6CwQIZviWIFEM=
+Date:   Tue, 21 Apr 2020 20:50:06 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.6 051/129] btrfs: handle NULL roots in
+ btrfs_put/btrfs_grab_fs_root
+Message-ID: <20200422005006.GU1809@sasha-vm>
+References: <20200415113445.11881-1-sashal@kernel.org>
+ <20200415113445.11881-51-sashal@kernel.org>
+ <20200415132224.GB5920@suse.cz>
 MIME-Version: 1.0
-References: <1587468026-15753-1-git-send-email-wanpengli@tencent.com>
- <1587468026-15753-2-git-send-email-wanpengli@tencent.com> <ed968729-5d2a-a318-1d8f-db39e6ee72cb@redhat.com>
-In-Reply-To: <ed968729-5d2a-a318-1d8f-db39e6ee72cb@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 22 Apr 2020 08:48:53 +0800
-Message-ID: <CANRm+CxzROx=eawemmzh==2Mz-DxKSyYFSxHqLxUiGFFnWkAYw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: X86: TSCDEADLINE MSR emulation fastpath
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200415132224.GB5920@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020 at 19:37, Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Wed, Apr 15, 2020 at 03:22:24PM +0200, David Sterba wrote:
+>On Wed, Apr 15, 2020 at 07:33:26AM -0400, Sasha Levin wrote:
+>> From: Josef Bacik <josef@toxicpanda.com>
+>>
+>> [ Upstream commit 4cdfd93002cb84471ed85b4999cd38077a317873 ]
+>>
+>> We want to use this for dropping all roots, and in some error cases we
+>> may not have a root, so handle this to make the cleanup code easier.
+>> Make btrfs_grab_fs_root the same so we can use it in cases where the
+>> root may not exist (like the quota root).
 >
-> On 21/04/20 13:20, Wanpeng Li wrote:
-> > +     case MSR_IA32_TSCDEADLINE:
-> > +             if (!kvm_x86_ops.event_needs_reinjection(vcpu)) {
-> > +                     data = kvm_read_edx_eax(vcpu);
-> > +                     if (!handle_fastpath_set_tscdeadline(vcpu, data))
-> > +                             ret = EXIT_FASTPATH_CONT_RUN;
-> > +             }
-> >               break;
->
-> Can you explain the event_needs_reinjection case?  Also, does this break
+>This is another patch from the preparatory series, not needed for
+>stable. Please drop it, thanks.
 
-This is used to catch the case vmexit occurred while another event was
-being delivered to guest software, I move the
-vmx_exit_handlers_fastpath() call after vmx_complete_interrupts()
-which will decode such event and make kvm_event_needs_reinjection
-return true.
+Dropped, thanks!
 
-> AMD which does not implement the callback?
-
-Now I add the tscdeadline msr emulation and vmx-preemption timer
-fastpath pair for Intel platform.
-
->
-> > +
-> > +     reg = kvm_lapic_get_reg(apic, APIC_LVTT);
-> > +     if (kvm_apic_hw_enabled(apic) && !(reg & APIC_LVT_MASKED)) {
-> > +             vector = reg & APIC_VECTOR_MASK;
-> > +             kvm_lapic_clear_vector(vector, apic->regs + APIC_TMR);
-> > +
-> > +             if (vcpu->arch.apicv_active) {
-> > +                     if (pi_test_and_set_pir(vector, &vmx->pi_desc))
-> > +                             return;
-> > +
-> > +                     if (pi_test_and_set_on(&vmx->pi_desc))
-> > +                             return;
-> > +
-> > +                     vmx_sync_pir_to_irr(vcpu);
-> > +             } else {
-> > +                     kvm_lapic_set_irr(vector, apic);
-> > +                     kvm_queue_interrupt(vcpu, kvm_cpu_get_interrupt(vcpu), false);
-> > +                     vmx_inject_irq(vcpu);
-> > +             }
-> > +     }
->
-> This is mostly a copy of
->
->                if (kvm_x86_ops.deliver_posted_interrupt(vcpu, vector)) {
->                         kvm_lapic_set_irr(vector, apic);
->                         kvm_make_request(KVM_REQ_EVENT, vcpu);
->                         kvm_vcpu_kick(vcpu);
->                 }
->                 break;
->
-> (is it required to do vmx_sync_pir_to_irr?).  So you should not special
-
-I observe send notification vector as in
-kvm_x86_ops.deliver_posted_interrupt() is ~900 cycles worse than
-vmx_sync_pir_to_irr in my case. It needs to wait guest vmentry, then
-the physical cpu ack the notification vector, read posted-interrupt
-desciptor etc. For the non-APICv part, original copy needs to wait
-inject_pending_event to do these stuff.
-
-> case LVTT and move this code to lapic.c instead.  But even before that...
->
-> >
-> > +
-> > +     if (kvm_start_hv_timer(apic)) {
-> > +             if (kvm_check_request(KVM_REQ_PENDING_TIMER, vcpu)) {
-> > +                     if (kvm_x86_ops.interrupt_allowed(vcpu)) {
-> > +                             kvm_clear_request(KVM_REQ_PENDING_TIMER, vcpu);
-> > +                             kvm_x86_ops.fast_deliver_interrupt(vcpu);
-> > +                             atomic_set(&apic->lapic_timer.pending, 0);
-> > +                             apic->lapic_timer.tscdeadline = 0;
-> > +                             return 0;
-> > +                     }
-> > +                     return 1;
->
->
-> Is it actually common that the timer is set back in time and therefore
-> this code is executed?
-
-It is used to handle the already-expired timer.
-
-    Wanpeng
+-- 
+Thanks,
+Sasha
