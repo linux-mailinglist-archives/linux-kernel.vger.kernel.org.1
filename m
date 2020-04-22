@@ -2,186 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2931E1B4A5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D601B4A18
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgDVQWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:22:42 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:26247 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726975AbgDVQWO (ORCPT
+        id S1726670AbgDVQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgDVQTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:22:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1587572534; x=1619108534;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=TRDzYTTkszQZoBi8scNuBHRjQdUT5FUctOqTVt7xLgw=;
-  b=U1IeZUUtYwpboci7qpjyul7AyKw9qX0VG538iccZtDNPgMLQIeAZB3Nv
-   XEp55RlqjJ3nHX7b3Yh+iomHqVuw5mUcvqjp+NZgnRFYimIIHExWtY3XD
-   25aQ20Ay2TvkZlEZBOjPhUwe2jiGQ9rZk9/oqtuLwz9yl/cVwu8QjFgdS
-   CPWKkUns6H4vJolP9S8TA6UVgbBVSJV5jn/sHpQPwnUc7jAKcsvzkHs/z
-   zzVelXFe/NrqxYMTBsbWe5QO8KzvYjo5AYeQxP/2YcPE8jnURB/cKJuSL
-   +FyDPS/56fPr60xt4MSk/Z4gVjo5yMqjtAEvke9i+E7cAMzpiUVLNw+L0
-   A==;
-IronPort-SDR: 3vqZ3NXJ69fiJBmI0T8thEi5Gc87e1QRZjTNTHvQo562wMKLGKcLtPg41KrWgoJi5MKMR54vof
- qzn/oWxxkKCHUEpwXdUncRLzaGwprbLBzP5HeTXppkW5IzWHkjzMLtbRfxkfSXTALk6arAlgFV
- 9ybxFzZ/w94I7kBNvJSFhKSfPU8VHeS06cSUFQeAReZtL5Kx2use0iBFpal51LT3nTtR9zG4Sy
- 2QWbP6TUNCdXey8/079eNA2bM4UzReCUQD9X8rN8vepPTBei+Jjt3mpG7zBMBrCufH5/obY2Db
- HJE=
-X-IronPort-AV: E=Sophos;i="5.73,304,1583218800"; 
-   d="scan'208";a="71205674"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Apr 2020 09:22:13 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 22 Apr 2020 09:22:15 -0700
-Received: from soft-dev3.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Wed, 22 Apr 2020 09:22:12 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <davem@davemloft.net>,
-        <jiri@resnulli.us>, <ivecera@redhat.com>, <kuba@kernel.org>,
-        <roopa@cumulusnetworks.com>, <olteanv@gmail.com>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v3 11/11] net: bridge: Add checks for enabling the STP.
-Date:   Wed, 22 Apr 2020 18:18:33 +0200
-Message-ID: <20200422161833.1123-12-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200422161833.1123-1-horatiu.vultur@microchip.com>
-References: <20200422161833.1123-1-horatiu.vultur@microchip.com>
+        Wed, 22 Apr 2020 12:19:09 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80D7C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:19:09 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id f13so1465520ybk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MdFV6oxCT5U94DDUA8tMXvti7DUCxcfVIn4legiry/M=;
+        b=RHKYJuvZpmyAPj3eqmYkeJwOcFp+ks7i8s+GO2DeBExw8MhxvzCBuz1k/2M9wn1MMc
+         SBwb7m6dnbOh7Vq5Hot90q92Ypnx8ZdHgD3rpNJB4dSZmd2BTLIo0y+vElsYinww1uIt
+         xfjKIFwVggOF68sLw+CHknIEK8zxF9VhHXxdH7Vxcl7LdzOJj5m0WI/8r3FpO1vQUgK2
+         hZo7xEoiHiiMbscFsbHa0lbjZaEKlY0rVKDcQh3BL1NXlQ+Q9Vm0KEObmY9CZOgdv2Fn
+         84AzYAtBQ5+ROkWXKF5dXXi8PBXPFaerd+4yvRxz5sGmbgu1gTWDOVPiJi5r3cdJMn+l
+         6Inw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MdFV6oxCT5U94DDUA8tMXvti7DUCxcfVIn4legiry/M=;
+        b=TcAjUq5mk0aGWe5ntD4qOEJVs5Vq3TNIW9QxjJLWikSCSWB6VUmjHvwDSVcVvvUZqN
+         dQWaITjFrG6/UUv7aBYdbNAArGf4sqD+aKWTH24PD7543UAjxcH6VpGb17tLU6yG+qH2
+         Y/+zyn1e8xbKKAXWk1Sbjv4cCxzMf3fKXUiVxT4lhz9cD38kTFVoCIB/Y9ajrw8nRTNa
+         ujeZ0z3OTXWjhaodEStp127D+qz1ZXCJmUrqh8O7tjyn7scRktznY91pcNyrU+8ilxJv
+         v5OCp89g5gnt30gEpphHB3NaNrDlmXADzxymWuoSpiaXB1Y46M1thEpHhMv8DCd5uqM+
+         u3+g==
+X-Gm-Message-State: AGi0PuY/aoH30O493mr2O2ZO2K5arWL+ueZG/ajTWLAxz1yjAYhZTcMd
+        pKuutucS/B5d8Pnag3bUx0R1ZfLrSPjoK2iVaYaI3A==
+X-Google-Smtp-Source: APiQypL/pYUKxSIInGr9Pqzne3qLZ830PwfqHGoOwDaRvdCHGewpfdrvXjb8ZABUQp4uhepnIU21Yu0TdhJzl5iJfI0=
+X-Received: by 2002:a5b:9cb:: with SMTP id y11mr38625798ybq.177.1587572348432;
+ Wed, 22 Apr 2020 09:19:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200422074809.160248-1-irogers@google.com> <20200422074809.160248-3-irogers@google.com>
+ <20200422143840.GJ608746@tassilo.jf.intel.com> <CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com>
+In-Reply-To: <CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 22 Apr 2020 09:18:57 -0700
+Message-ID: <CAP-5=fUMFqiSFLbKA-XWStrePwxiYfq7Jk6mS9=F56Q9y-KVsA@mail.gmail.com>
+Subject: Re: [PATCH 2/8] perf metrics: fix parse errors in cascade lake metrics
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not possible to have the MRP and STP running at the same time on the
-bridge, therefore add check when enabling the STP to check if MRP is already
-enabled. In that case return error.
+On Wed, Apr 22, 2020 at 8:34 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Apr 22, 2020 at 7:38 AM Andi Kleen <ak@linux.intel.com> wrote:
+> >
+> > On Wed, Apr 22, 2020 at 12:48:03AM -0700, Ian Rogers wrote:
+> > > Remove over escaping with \\.
+> > > Remove extraneous if 1 if 0 == 1 else 0 else 0.
+> >
+> > So where do these parse errors happen exactly? Some earlier
+> > patches introduced them as regressions?
+>
+> I'll work to track down a Fixes tag. I can repro the Skylakex errors
+> without the test in this series, by doing:
+>
+> $ perf stat -M DRAM_Read_Latency sleep 1
+> Error:
+> The sys_perf_event_open() syscall returned with 22 (Invalid argument)
+> for event (cha/event=0x36\,uma
+> sk=0x21/).
+> /bin/dmesg | grep -i perf may provide additional information.
+>
+> This was just the escaping issue. I'm less clear on the other cascade
+> lake issue, and it is a bit more work for me to test on cascade lake.
+> What is "if 1 if 0 == 1 else 0 else 0" trying to do? Perhaps hunting
+> for the Fixes will let me know, but it looks like a copy-paste error.
+>
+> > The original metrics worked without parse errors as far as I know.
+>
+> The skylake issue above repros on 5.2.17 and so it seems like it is
+> broken for a while. The test in this series will prevent this in the
+> future, but without this patch that test fails.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_ioctl.c    |  3 +--
- net/bridge/br_netlink.c  |  4 +++-
- net/bridge/br_private.h  |  3 ++-
- net/bridge/br_stp.c      |  6 ++++++
- net/bridge/br_stp_if.c   | 11 ++++++++++-
- net/bridge/br_sysfs_br.c |  4 +---
- 6 files changed, 23 insertions(+), 8 deletions(-)
+The parse errors were introduced with the metrics, so they've never worked:
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=fd5500989c8f3c3944ac0a144be04bae2506f7ba
 
-diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
-index ae22d784b88a..5e71fc8b826f 100644
---- a/net/bridge/br_ioctl.c
-+++ b/net/bridge/br_ioctl.c
-@@ -242,8 +242,7 @@ static int old_dev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
- 		if (!ns_capable(dev_net(dev)->user_ns, CAP_NET_ADMIN))
- 			return -EPERM;
- 
--		br_stp_set_enabled(br, args[1]);
--		ret = 0;
-+		ret = br_stp_set_enabled(br, args[1], NULL);
- 		break;
- 
- 	case BRCTL_SET_BRIDGE_PRIORITY:
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 1a5e681a626a..a774e19c41bb 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1109,7 +1109,9 @@ static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
- 	if (data[IFLA_BR_STP_STATE]) {
- 		u32 stp_enabled = nla_get_u32(data[IFLA_BR_STP_STATE]);
- 
--		br_stp_set_enabled(br, stp_enabled);
-+		err = br_stp_set_enabled(br, stp_enabled, extack);
-+		if (err)
-+			return err;
- 	}
- 
- 	if (data[IFLA_BR_PRIORITY]) {
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 5835828320b6..c35647cb138a 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -1283,7 +1283,8 @@ int br_set_ageing_time(struct net_bridge *br, clock_t ageing_time);
- /* br_stp_if.c */
- void br_stp_enable_bridge(struct net_bridge *br);
- void br_stp_disable_bridge(struct net_bridge *br);
--void br_stp_set_enabled(struct net_bridge *br, unsigned long val);
-+int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
-+		       struct netlink_ext_ack *extack);
- void br_stp_enable_port(struct net_bridge_port *p);
- void br_stp_disable_port(struct net_bridge_port *p);
- bool br_stp_recalculate_bridge_id(struct net_bridge *br);
-diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
-index 1f14b8455345..3e88be7aa269 100644
---- a/net/bridge/br_stp.c
-+++ b/net/bridge/br_stp.c
-@@ -36,6 +36,12 @@ void br_set_state(struct net_bridge_port *p, unsigned int state)
- 	};
- 	int err;
- 
-+	/* Don't change the state of the ports if they are driven by a different
-+	 * protocol.
-+	 */
-+	if (p->flags & BR_MRP_AWARE)
-+		return;
-+
- 	p->state = state;
- 	err = switchdev_port_attr_set(p->dev, &attr);
- 	if (err && err != -EOPNOTSUPP)
-diff --git a/net/bridge/br_stp_if.c b/net/bridge/br_stp_if.c
-index d174d3a566aa..a42850b7eb9a 100644
---- a/net/bridge/br_stp_if.c
-+++ b/net/bridge/br_stp_if.c
-@@ -196,10 +196,17 @@ static void br_stp_stop(struct net_bridge *br)
- 	br->stp_enabled = BR_NO_STP;
- }
- 
--void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
-+int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
-+		       struct netlink_ext_ack *extack)
- {
- 	ASSERT_RTNL();
- 
-+	if (br_mrp_enabled(br)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "STP can't be enabled if MRP is already enabled\n");
-+		return -EINVAL;
-+	}
-+
- 	if (val) {
- 		if (br->stp_enabled == BR_NO_STP)
- 			br_stp_start(br);
-@@ -207,6 +214,8 @@ void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
- 		if (br->stp_enabled != BR_NO_STP)
- 			br_stp_stop(br);
- 	}
-+
-+	return 0;
- }
- 
- /* called under bridge lock */
-diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
-index 9ab0f00b1081..7db06e3f642a 100644
---- a/net/bridge/br_sysfs_br.c
-+++ b/net/bridge/br_sysfs_br.c
-@@ -126,9 +126,7 @@ static ssize_t stp_state_show(struct device *d,
- 
- static int set_stp_state(struct net_bridge *br, unsigned long val)
- {
--	br_stp_set_enabled(br, val);
--
--	return 0;
-+	return br_stp_set_enabled(br, val, NULL);
- }
- 
- static ssize_t stp_state_store(struct device *d,
--- 
-2.17.1
+I will send out a v2 with Fixes in the commit message but wanted to
+wait in case there was any more feedback. In particular the fixes to
+the new test and expr parser lex code. The lex code wasn't broken at
+the time the metrics were added and should be working again after this
+patch set.
 
+Thanks,
+Ian
+
+> > If it fixes something earlier it would need Fixes: tags.
+>
+> Working on it. Thanks for the input!
+>
+> Ian
+>
+> > -Andi
