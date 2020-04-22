@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6C81B3DBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D4F1B41CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbgDVKSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:18:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
+        id S1727016AbgDVKF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:05:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729806AbgDVKRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:11 -0400
+        id S1728237AbgDVKFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E376E2076B;
-        Wed, 22 Apr 2020 10:17:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD4632075A;
+        Wed, 22 Apr 2020 10:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550630;
-        bh=EMQFBZd/o/wVk1UPIuwifXdCv5bHQAgdbB6BPa+Uwws=;
+        s=default; t=1587549950;
+        bh=2ljXkslZOpMp5BLxMzDGaoSB4iFl8kKSsg9LYxSJrPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WmvfXzU+5FSQzYoUFRzPKXvhrvIq1rTbzgZ5PrtL0FpZd5Ut+a8z3FDD5jPv9bRUz
-         PktFLDQilNZWqh1ipajq+OwP73jKdJWhQowpqkGeujedYQpOzVHwOqnDaLUhvltwnV
-         a8/m7nmrD8P7RlwOp4lIymcPOhTQU/oq7wV19Ng8=
+        b=YoECw+2QXNL5/8PkCOiisnbfd0zCtPmZ93DG60enIux9mPI6oPZXfozCPESLUoUBB
+         dU6cmpyuCeR1cqV4DMs9y2pZaDotkQ+E6pD/VZPxga2z2Ufy93ROmcrVBiuQCtUsba
+         6PXmP9GR6rNzm9AjT0E9NBHkWJVTIm/NEydH37Qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, cki-project@redhat.com,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 029/118] block, bfq: turn put_queue into release_process_ref in __bfq_bic_change_cgroup
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.9 073/125] ext4: fix incorrect inodes per group in error message
 Date:   Wed, 22 Apr 2020 11:56:30 +0200
-Message-Id: <20200422095036.658767293@linuxfoundation.org>
+Message-Id: <20200422095045.028958463@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: Josh Triplett <josh@joshtriplett.org>
 
-commit c8997736650060594845e42c5d01d3118aec8d25 upstream.
+commit b9c538da4e52a7b79dfcf4cfa487c46125066dfb upstream.
 
-A bfq_put_queue() may be invoked in __bfq_bic_change_cgroup(). The
-goal of this put is to release a process reference to a bfq_queue. But
-process-reference releases may trigger also some extra operation, and,
-to this goal, are handled through bfq_release_process_ref(). So, turn
-the invocation of bfq_put_queue() into an invocation of
-bfq_release_process_ref().
+If ext4_fill_super detects an invalid number of inodes per group, the
+resulting error message printed the number of blocks per group, rather
+than the number of inodes per group. Fix it to print the correct value.
 
-Tested-by: cki-project@redhat.com
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: cd6bb35bf7f6d ("ext4: use more strict checks for inodes_per_block on mount")
+Link: https://lore.kernel.org/r/8be03355983a08e5d4eed480944613454d7e2550.1585434649.git.josh@joshtriplett.org
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- block/bfq-cgroup.c  |    5 +----
- block/bfq-iosched.c |    2 --
- block/bfq-iosched.h |    1 +
- 3 files changed, 2 insertions(+), 6 deletions(-)
+ fs/ext4/super.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -697,10 +697,7 @@ static struct bfq_group *__bfq_bic_chang
- 
- 		if (entity->sched_data != &bfqg->sched_data) {
- 			bic_set_bfqq(bic, NULL, 0);
--			bfq_log_bfqq(bfqd, async_bfqq,
--				     "bic_change_group: %p %d",
--				     async_bfqq, async_bfqq->ref);
--			bfq_put_queue(async_bfqq);
-+			bfq_release_process_ref(bfqd, async_bfqq);
- 		}
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3820,7 +3820,7 @@ static int ext4_fill_super(struct super_
+ 	if (sbi->s_inodes_per_group < sbi->s_inodes_per_block ||
+ 	    sbi->s_inodes_per_group > blocksize * 8) {
+ 		ext4_msg(sb, KERN_ERR, "invalid inodes per group: %lu\n",
+-			 sbi->s_blocks_per_group);
++			 sbi->s_inodes_per_group);
+ 		goto failed_mount;
  	}
- 
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2717,8 +2717,6 @@ static void bfq_bfqq_save_state(struct b
- 	}
- }
- 
--
--static
- void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq)
- {
- 	/*
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -950,6 +950,7 @@ void bfq_bfqq_expire(struct bfq_data *bf
- 		     bool compensate, enum bfqq_expiration reason);
- void bfq_put_queue(struct bfq_queue *bfqq);
- void bfq_end_wr_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
-+void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq);
- void bfq_schedule_dispatch(struct bfq_data *bfqd);
- void bfq_put_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
- 
+ 	sbi->s_itb_per_group = sbi->s_inodes_per_group /
 
 
