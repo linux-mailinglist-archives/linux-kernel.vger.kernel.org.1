@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A151B405C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEC31B3F19
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731931AbgDVKpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:45:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54434 "EHLO mail.kernel.org"
+        id S1731277AbgDVKe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729798AbgDVKSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:18:00 -0400
+        id S1730407AbgDVKYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B282D2076B;
-        Wed, 22 Apr 2020 10:17:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CDA22071E;
+        Wed, 22 Apr 2020 10:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550680;
-        bh=YXatwA0IzgcsJ9gEYbMuYDXR5EsegBs5QetUF828Olk=;
+        s=default; t=1587551056;
+        bh=5nkV7eDi5Bx2nfm80C2yfyXLGRKXoar9TVzuNHHDrnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qzrtfaLsliK47K3DPyA0gXiqdgJa2AOOL9dfBnJ841rMNs+dq20fgoH3EJyXTOwGV
-         prxtcoqHAmWtCO0zTZzxMRd6QvPskzIva+27I1iPQDJxW6Z7MQD9B6KRSHB+86vtqn
-         cmoFh89t7m0ILFfAE5UwFtydL4NxIbXEgT/+XU88=
+        b=aE1+Q71iAjfUZC3ceusuCwHBIapfJGWNeJxzAj94mMcwi+AqhrEL4SeCqTpiikE5S
+         J90FIgC6iID4Lacqnxg877br//a4KfQL+LUtraEchaPCGOq0Fo00DreX5KUY/JAzl3
+         noXr+Peag7QTXZORgPOWlJzcmC4xovhop/FD7V/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/118] NFS: alloc_nfs_open_context() must use the file cred when available
+Subject: [PATCH 5.6 084/166] s390/cpuinfo: fix wrong output when CPU0 is offline
 Date:   Wed, 22 Apr 2020 11:56:51 +0200
-Message-Id: <20200422095040.243072668@linuxfoundation.org>
+Message-Id: <20200422095057.753892618@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-[ Upstream commit 1d179d6bd67369a52edea8562154b31ee20be1cc ]
+[ Upstream commit 872f27103874a73783aeff2aac2b41a489f67d7c ]
 
-If we're creating a nfs_open_context() for a specific file pointer,
-we must use the cred assigned to that file.
+/proc/cpuinfo should not print information about CPU 0 when it is offline.
 
-Fixes: a52458b48af1 ("NFS/NFSD/SUNRPC: replace generic creds with 'struct cred'.")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 281eaa8cb67c ("s390/cpuinfo: simplify locking and skip offline cpus early")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+[heiko.carstens@de.ibm.com: shortened commit message]
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/s390/kernel/processor.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 2a03bfeec10a4..3802c88e83720 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -959,16 +959,16 @@ struct nfs_open_context *alloc_nfs_open_context(struct dentry *dentry,
- 						struct file *filp)
+diff --git a/arch/s390/kernel/processor.c b/arch/s390/kernel/processor.c
+index 6ebc2117c66c7..91b9b3f73de6e 100644
+--- a/arch/s390/kernel/processor.c
++++ b/arch/s390/kernel/processor.c
+@@ -165,8 +165,9 @@ static void show_cpu_mhz(struct seq_file *m, unsigned long n)
+ static int show_cpuinfo(struct seq_file *m, void *v)
  {
- 	struct nfs_open_context *ctx;
--	const struct cred *cred = get_current_cred();
+ 	unsigned long n = (unsigned long) v - 1;
++	unsigned long first = cpumask_first(cpu_online_mask);
  
- 	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
--	if (!ctx) {
--		put_cred(cred);
-+	if (!ctx)
- 		return ERR_PTR(-ENOMEM);
--	}
- 	nfs_sb_active(dentry->d_sb);
- 	ctx->dentry = dget(dentry);
--	ctx->cred = cred;
-+	if (filp)
-+		ctx->cred = get_cred(filp->f_cred);
+-	if (!n)
++	if (n == first)
+ 		show_cpu_summary(m, v);
+ 	if (!machine_has_cpu_mhz)
+ 		return 0;
+@@ -179,6 +180,8 @@ static inline void *c_update(loff_t *pos)
+ {
+ 	if (*pos)
+ 		*pos = cpumask_next(*pos - 1, cpu_online_mask);
 +	else
-+		ctx->cred = get_current_cred();
- 	ctx->ll_cred = NULL;
- 	ctx->state = NULL;
- 	ctx->mode = f_mode;
++		*pos = cpumask_first(cpu_online_mask);
+ 	return *pos < nr_cpu_ids ? (void *)*pos + 1 : NULL;
+ }
+ 
 -- 
 2.20.1
 
