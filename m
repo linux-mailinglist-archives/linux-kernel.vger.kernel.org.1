@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191111B35EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320E61B3609
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgDVEJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:09:04 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60900 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbgDVEJE (ORCPT
+        id S1726551AbgDVEMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:12:51 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2939 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgDVEMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:09:04 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M48RdH093049;
-        Wed, 22 Apr 2020 04:08:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=01vLL2jYGublTFwRnmBzxo+s/SGncI6ZQf2jugxAYto=;
- b=yZaFU/XUDZWK/fAPzb0mNSaNhmOBN1uRs0vtFftJ4dc6rHe0iz2CfLwQMa3xTLgqhdTr
- dCWnIieBz8cb7JKRebKtDsz9W/l/2rK2XVtpi70KZi6a4craCeruiQfs1kqfMCTklvJH
- NqvBtHBd4z3xEib2agRPhIvnJNyL7aDYBdGJyzBiUs3ocpwqwa4IqaYIJvMvs/nz2vM8
- DOp8Ktwi7i8dGGVCKc3+xscgNFN1V458aXTu96jEoLcphURDk/Isg0My2ScBexJdEed3
- mnzl96qTouky/J0z999TWBkyVdD3x4tdOqkEK8hBS09KybxSW+6yIF/pCNbaJ9p/ry9O Fw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30fsgm0byd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 04:08:56 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M48MVT174286;
-        Wed, 22 Apr 2020 04:08:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30gb1hhxs0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 04:08:55 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03M48sTB032389;
-        Wed, 22 Apr 2020 04:08:55 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 Apr 2020 21:08:54 -0700
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <sathya.prakash@broadcom.com>, <chaitra.basappa@broadcom.com>,
-        <suganath-prabu.subramani@broadcom.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <sreekanth.reddy@broadcom.com>,
-        <MPT-FusionLinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: mpt3sas: use true,false for bool variables
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <20200421034101.28273-1-yanaijie@huawei.com>
-Date:   Wed, 22 Apr 2020 00:08:51 -0400
-In-Reply-To: <20200421034101.28273-1-yanaijie@huawei.com> (Jason Yan's message
-        of "Tue, 21 Apr 2020 11:41:01 +0800")
-Message-ID: <yq1v9lsgo18.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+        Wed, 22 Apr 2020 00:12:50 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9fc4350001>; Tue, 21 Apr 2020 21:12:37 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 21 Apr 2020 21:12:50 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 21 Apr 2020 21:12:50 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
+ 2020 04:12:49 +0000
+Received: from [10.2.165.49] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
+ 2020 04:12:48 +0000
+Subject: Re: Re: [RFC PATCH v8 0/9] Add Tegra driver for video capture
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+CC:     <jonathanh@nvidia.com>, <frankc@nvidia.com>, <sakari.ailus@iki.fi>,
+        <helen.koike@collabora.com>, <digetx@gmail.com>,
+        <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1587427874-3291-1-git-send-email-skomatineni@nvidia.com>
+ <5c44beca-4016-6e4f-01bb-e38480bfc34b@xs4all.nl>
+ <20200421205032.GD3233341@ulmo>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <cfbd9954-6a89-3973-55f5-920b7a807774@nvidia.com>
+Date:   Tue, 21 Apr 2020 21:12:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004220031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220031
+In-Reply-To: <20200421205032.GD3233341@ulmo>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587528757; bh=e1UDRc9LEWdDQqaH6RNlYU5o4VaoyIvF1ybwOVa69Y0=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=J4tOajztaOIXIOdr2cQJxAyPjXsnlchY3FCd7y0FRaKBWMCKFzfzbEFSh4uf6AbID
+         3zIouYXEl2IZ4TXHwg2+hlnhxjsfQe9J2Uu6do5hnn+FoofcNvcR2tB5FFyYcPrKO9
+         aycILuMg9uvUPxG647Kb082qLwc94hTDyznYVHQab4Fd6ti+s5RDenr52//WmL+g5K
+         kVy+cC29xWw5zT15mnze/LZnq72S6Hazek0o+k2FJuzSrBz0jAReohMGN87jqUo0gq
+         KtKQQr5zsAfMEb5eSr+Z7Z2YxNeOwEBUcCesIeDlNizzSdrtfLQjvxTxOGyNcI/U7z
+         dE7AH2VqS0NTg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Jason,
-
-> Fix the following coccicheck warning:
+On 4/21/20 1:50 PM, Thierry Reding wrote:
+> On Tue, Apr 21, 2020 at 01:09:50PM +0200, Hans Verkuil wrote:
+>> Hi Sowjanya,
+>>
+>> On 21/04/2020 02:11, Sowjanya Komatineni wrote:
+>>> This series adds Tegra210 VI and CSI driver for built-in test pattern
+>>> generator (TPG) capture.
+>>>
+>>> Tegra210 supports max 6 channels on VI and 6 ports on CSI where each
+>>> CSI port is one-to-one mapped to VI channel for video capture.
+>>>
+>>> This series has TPG support only where it creates hard media links
+>>> between CSI subdevice and VI video device without device graphs.
+>>>
+>>> v4l2-compliance results are available below the patch diff.
+>> I'm ready to merge this v8. Looking at the series I should only merge
+>> patches 6 and 7, all other patches go through different subsystems, right?
+> You could also pick up patch 5 because it adds the bindings that are
+> implemented by the driver in patch 6. But I can also pick that up into
+> the Tegra tree. In fact, I do have a set of patches to convert some
+> Tegra bindings to the new json-schema format and the host1x file is
+> among them. If I do get around to finish those up for v5.8 it might be
+> better for me to pick up patch 5 so that I can base my conversion patch
+> on top of that.
 >
-> drivers/scsi/mpt3sas/mpt3sas_base.c:416:6-14: WARNING: Assignment of 0/1
-> to bool variable
-> drivers/scsi/mpt3sas/mpt3sas_base.c:485:2-10: WARNING: Assignment of 0/1
-> to bool variable
+> Either way is fine with me, so I've acked the three patches. Take which
+> ones you want and I'll pick up the rest.
+>
+> Thanks again for your guidance on this patch set!
+>
+> Thierry
 
-Applied to 5.8/scsi-queue, thanks!
+Hi Hans,
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Would like to add a small fix to the driver for explicit check for vi 
+and csi availability before TPG setup and cleanup in case if video 
+driver is enabled without device tree support where vi and csi drivers 
+does not register.
+
+Although we are not enabling driver by default now, would be good to 
+have this in this series itself.
+
+Will send out the updated version, please pick v9.
+
+Thanks
+
+Sowjanya
+
+
