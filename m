@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251CF1B3DAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5D61B3DBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgDVKRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:17:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52016 "EHLO mail.kernel.org"
+        id S1729888AbgDVKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729130AbgDVKQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:19 -0400
+        id S1729776AbgDVKQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:16:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F51F2076B;
-        Wed, 22 Apr 2020 10:16:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5590120776;
+        Wed, 22 Apr 2020 10:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550578;
-        bh=5na/WFwDdrK9PJ7DFInLy3mYcZl0aIp9tPAA67PlMvo=;
+        s=default; t=1587550605;
+        bh=LXPWYG4z5+vvrhoERwmekrRYM9JEuLFtWYJbqt8j26E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2nhMToSPz9LUYdaE3hBSRy5UrFI/kcAHHLlxPfbiaWjYTHNkptW5Btocmx6Kn5KOS
-         L8sPjTKPO7/Yd2Z1KRMvXXIRSDz50sMKFzvEGsRidDauM9qXiIzZVx1YkXQqysJSbW
-         Wy5ZSBS2yMyntoqCty5xwm0cjZWUa7IxlYpaeA18=
+        b=AOi4x8gXhn24bCR04I2SL/Ylttqks707xg+Kk5+q0JX9qYXWInn0G9GxBrgpsdH4n
+         d5u1eygxNcle+2adHD3MnRdmEVKUdo0ncxj/+pYcwhFkQ2kMwzkhEqNSJ7jsGb8kp+
+         NZ/StNLXMExzkN9s/yPgXrrBfdJemwB3RiI5/D8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
-        Roman Gushchin <guro@fb.com>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 001/118] ext4: use non-movable memory for superblock readahead
-Date:   Wed, 22 Apr 2020 11:56:02 +0200
-Message-Id: <20200422095031.716688980@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.4 002/118] watchdog: sp805: fix restart handler
+Date:   Wed, 22 Apr 2020 11:56:03 +0200
+Message-Id: <20200422095031.891914693@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
 References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,107 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Gushchin <guro@fb.com>
+From: Michael Walle <michael@walle.cc>
 
-commit d87f639258a6a5980183f11876c884931ad93da2 upstream.
+commit ea104a9e4d3e9ebc26fb78dac35585b142ee288b upstream.
 
-Since commit a8ac900b8163 ("ext4: use non-movable memory for the
-superblock") buffers for ext4 superblock were allocated using
-the sb_bread_unmovable() helper which allocated buffer heads
-out of non-movable memory blocks. It was necessarily to not block
-page migrations and do not cause cma allocation failures.
+The restart handler is missing two things, first, the registers
+has to be unlocked and second there is no synchronization for the
+write_relaxed() calls.
 
-However commit 85c8f176a611 ("ext4: preload block group descriptors")
-broke this by introducing pre-reading of the ext4 superblock.
-The problem is that __breadahead() is using __getblk() underneath,
-which allocates buffer heads out of movable memory.
+This was tested on a custom board with the NXP LS1028A SoC.
 
-It resulted in page migration failures I've seen on a machine
-with an ext4 partition and a preallocated cma area.
-
-Fix this by introducing sb_breadahead_unmovable() and
-__breadahead_gfp() helpers which use non-movable memory for buffer
-head allocations and use them for the ext4 superblock readahead.
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Fixes: 85c8f176a611 ("ext4: preload block group descriptors")
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Link: https://lore.kernel.org/r/20200229001411.128010-1-guro@fb.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: 6c5c0d48b686c ("watchdog: sp805: add restart handler")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200327162450.28506-1-michael@walle.cc
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/buffer.c                 |   11 +++++++++++
- fs/ext4/inode.c             |    2 +-
- fs/ext4/super.c             |    2 +-
- include/linux/buffer_head.h |    8 ++++++++
- 4 files changed, 21 insertions(+), 2 deletions(-)
+ drivers/watchdog/sp805_wdt.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1337,6 +1337,17 @@ void __breadahead(struct block_device *b
- }
- EXPORT_SYMBOL(__breadahead);
- 
-+void __breadahead_gfp(struct block_device *bdev, sector_t block, unsigned size,
-+		      gfp_t gfp)
-+{
-+	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp);
-+	if (likely(bh)) {
-+		ll_rw_block(REQ_OP_READ, REQ_RAHEAD, 1, &bh);
-+		brelse(bh);
-+	}
-+}
-+EXPORT_SYMBOL(__breadahead_gfp);
-+
- /**
-  *  __bread_gfp() - reads a specified block and returns the bh
-  *  @bdev: the block_device to read from
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4680,7 +4680,7 @@ make_io:
- 			if (end > table)
- 				end = table;
- 			while (b <= end)
--				sb_breadahead(sb, b++);
-+				sb_breadahead_unmovable(sb, b++);
- 		}
- 
- 		/*
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4283,7 +4283,7 @@ static int ext4_fill_super(struct super_
- 	/* Pre-read the descriptors into the buffer cache */
- 	for (i = 0; i < db_count; i++) {
- 		block = descriptor_loc(sb, logical_sb_block, i);
--		sb_breadahead(sb, block);
-+		sb_breadahead_unmovable(sb, block);
- 	}
- 
- 	for (i = 0; i < db_count; i++) {
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -189,6 +189,8 @@ struct buffer_head *__getblk_gfp(struct
- void __brelse(struct buffer_head *);
- void __bforget(struct buffer_head *);
- void __breadahead(struct block_device *, sector_t block, unsigned int size);
-+void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
-+		  gfp_t gfp);
- struct buffer_head *__bread_gfp(struct block_device *,
- 				sector_t block, unsigned size, gfp_t gfp);
- void invalidate_bh_lrus(void);
-@@ -319,6 +321,12 @@ sb_breadahead(struct super_block *sb, se
- 	__breadahead(sb->s_bdev, block, sb->s_blocksize);
- }
- 
-+static inline void
-+sb_breadahead_unmovable(struct super_block *sb, sector_t block)
-+{
-+	__breadahead_gfp(sb->s_bdev, block, sb->s_blocksize, 0);
-+}
-+
- static inline struct buffer_head *
- sb_getblk(struct super_block *sb, sector_t block)
+--- a/drivers/watchdog/sp805_wdt.c
++++ b/drivers/watchdog/sp805_wdt.c
+@@ -137,10 +137,14 @@ wdt_restart(struct watchdog_device *wdd,
  {
+ 	struct sp805_wdt *wdt = watchdog_get_drvdata(wdd);
+ 
++	writel_relaxed(UNLOCK, wdt->base + WDTLOCK);
+ 	writel_relaxed(0, wdt->base + WDTCONTROL);
+ 	writel_relaxed(0, wdt->base + WDTLOAD);
+ 	writel_relaxed(INT_ENABLE | RESET_ENABLE, wdt->base + WDTCONTROL);
+ 
++	/* Flush posted writes. */
++	readl_relaxed(wdt->base + WDTLOCK);
++
+ 	return 0;
+ }
+ 
 
 
