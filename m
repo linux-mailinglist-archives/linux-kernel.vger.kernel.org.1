@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB63F1B3C8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2498F1B417C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgDVKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58630 "EHLO mail.kernel.org"
+        id S1732106AbgDVKwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgDVKGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:36 -0400
+        id S1728910AbgDVKJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:09:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F40BD20575;
-        Wed, 22 Apr 2020 10:06:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40B1B20575;
+        Wed, 22 Apr 2020 10:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549996;
-        bh=HeZ2js+KmPU0Hq5F3zVKBWufn7QhadTQLVNesgLSsUg=;
+        s=default; t=1587550194;
+        bh=d8UWo6SKeOW35LSQGcKlXwP7KcTbSZkfYdD6nrP5TPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KzisTLVKcGOrPMb9ti8fz5lWrwYDXvmMnR5MCZj3CfW0DyGtNy7/vJDoKo6TbOBjF
-         wg9lDDmKd3wAM8Cwi420OstFRehcW3jXs1n0h0S5vbrjgyAB/CJU0aV67CMypPhixa
-         gpMLFqTaGkXDYmTkVTUrIOPVNX5EU7KXKZYjSBrQ=
+        b=iS9k72FfPDaT4Q327sV99HoFI4+hj7zntR2R+k4vxwDnlkRVU1AVCvDfxc7N7vsa6
+         nxrb3AG4BO0bQWwx8N447yXT8XwEidaQ4x15Nd6wMVhi1mIcW1xQNUWMCcLFik3P6A
+         Q3SJJn5+l13DbUT/nNxnq4iDA9gjzwO7ELl39o/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.9 055/125] cpufreq: powernv: Fix use-after-free
+        stable@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.14 046/199] acpi/x86: ignore unspecified bit positions in the ACPI global lock field
 Date:   Wed, 22 Apr 2020 11:56:12 +0200
-Message-Id: <20200422095042.391448899@linuxfoundation.org>
+Message-Id: <20200422095102.535352496@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver O'Halloran <oohall@gmail.com>
+From: Jan Engelhardt <jengelh@inai.de>
 
-commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
+commit ecb9c790999fd6c5af0f44783bd0217f0b89ec2b upstream.
 
-The cpufreq driver has a use-after-free that we can hit if:
+The value in "new" is constructed from "old" such that all bits defined
+as reserved by the ACPI spec[1] are left untouched. But if those bits
+do not happen to be all zero, "new < 3" will not evaluate to true.
 
-a) There's an OCC message pending when the notifier is registered, and
-b) The cpufreq driver fails to register with the core.
+The firmware of the laptop(s) Medion MD63490 / Akoya P15648 comes with
+garbage inside the "FACS" ACPI table. The starting value is
+old=0x4944454d, therefore new=0x4944454e, which is >= 3. Mask off
+the reserved bits.
 
-When a) occurs the notifier schedules a workqueue item to handle the
-message. The backing work_struct is located on chips[].throttle and
-when b) happens we clean up by freeing the array. Once we get to
-the (now free) queued item and the kernel crashes.
+[1] https://uefi.org/sites/default/files/resources/ACPI_6_2.pdf
 
-Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206553
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kernel/acpi/boot.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -955,6 +955,12 @@ static int init_chip_info(void)
- 
- static inline void clean_chip_info(void)
- {
-+	int i;
-+
-+	/* flush any pending work items */
-+	if (chips)
-+		for (i = 0; i < nr_chips; i++)
-+			cancel_work_sync(&chips[i].throttle);
- 	kfree(chips);
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -1738,7 +1738,7 @@ int __acpi_acquire_global_lock(unsigned
+ 		new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
+ 		val = cmpxchg(lock, old, new);
+ 	} while (unlikely (val != old));
+-	return (new < 3) ? -1 : 0;
++	return ((new & 0x3) < 3) ? -1 : 0;
  }
  
+ int __acpi_release_global_lock(unsigned int *lock)
 
 
