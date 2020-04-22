@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BECE1B3C87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7494D1B40EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgDVKGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58432 "EHLO mail.kernel.org"
+        id S1731731AbgDVKtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728354AbgDVKG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:26 -0400
+        id S1726794AbgDVKNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FE6620575;
-        Wed, 22 Apr 2020 10:06:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED8EF20776;
+        Wed, 22 Apr 2020 10:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549986;
-        bh=CgiWHZVCcyQWUaKc5iQgvL1E3E25p2lVHzwXT1qcaJk=;
+        s=default; t=1587550418;
+        bh=brI1eFVheBp82O1Mm9OtdOwC6ysMUp1xIN/FwyHk7UY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sIoI7C5MFDYFT4OXSUpktqCTMtJ5MNurW/SXws/SX2fS1IvKHMFKwBr2YHy2uB1dr
-         7trPA9DmlHnLmodA9qVEB5Pkp0rK3o+6zKVJfqsDZ3OCOfiSag+PHD9Q6bIE6EkCdl
-         dzexswCM/JHsvYP5KKdbNPlNsHuyyvjvUWPbfXIY=
+        b=dbVqB4dp5Fppz8q1STY5FEliXutVkIBDfecrzfYzhyjINMDCPgE7Hz1VMTDnuoPj8
+         RVK4MELGY2iGp0Hec6MspUsrehCCxeH0otas+XY0lidYaS/xgalvPZmiI2B0ucsymf
+         xW1f3Z/iXjB9z4hVrXByLwSMlhmHVzO/gI7SdLks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 087/125] ALSA: hda: Dont release card at firmware loading error
-Date:   Wed, 22 Apr 2020 11:56:44 +0200
-Message-Id: <20200422095047.068983960@linuxfoundation.org>
+        stable@vger.kernel.org, Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 4.19 01/64] arm, bpf: Fix offset overflow for BPF_MEM BPF_DW
+Date:   Wed, 22 Apr 2020 11:56:45 +0200
+Message-Id: <20200422095012.107035823@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,59 +46,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Luke Nelson <lukenels@cs.washington.edu>
 
-commit 25faa4bd37c10f19e4b848b9032a17a3d44c6f09 upstream.
+commit 4178417cc5359c329790a4a8f4a6604612338cca upstream.
 
-At the error path of the firmware loading error, the driver tries to
-release the card object and set NULL to drvdata.  This may be referred
-badly at the possible PM action, as the driver itself is still bound
-and the PM callbacks read the card object.
+This patch fixes an incorrect check in how immediate memory offsets are
+computed for BPF_DW on arm.
 
-Instead, we continue the probing as if it were no option set.  This is
-often a better choice than the forced abort, too.
+For BPF_LDX/ST/STX + BPF_DW, the 32-bit arm JIT breaks down an 8-byte
+access into two separate 4-byte accesses using off+0 and off+4. If off
+fits in imm12, the JIT emits a ldr/str instruction with the immediate
+and avoids the use of a temporary register. While the current check off
+<= 0xfff ensures that the first immediate off+0 doesn't overflow imm12,
+it's not sufficient for the second immediate off+4, which may cause the
+second access of BPF_DW to read/write the wrong address.
 
-Fixes: 5cb543dba986 ("ALSA: hda - Deferred probing with request_firmware_nowait()")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This patch fixes the problem by changing the check to
+off <= 0xfff - 4 for BPF_DW, ensuring off+4 will never overflow.
+
+A side effect of simplifying the check is that it now allows using
+negative immediate offsets in ldr/str. This means that small negative
+offsets can also avoid the use of a temporary register.
+
+This patch introduces no new failures in test_verifier or test_bpf.c.
+
+Fixes: c5eae692571d6 ("ARM: net: bpf: improve 64-bit store implementation")
+Fixes: ec19e02b343db ("ARM: net: bpf: fix LDX instructions")
+Co-developed-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20200409221752.28448-1-luke.r.nels@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_intel.c |   19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ arch/arm/net/bpf_jit_32.c |   40 ++++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1828,24 +1828,15 @@ static void azx_firmware_cb(const struct
- {
- 	struct snd_card *card = context;
- 	struct azx *chip = card->private_data;
--	struct pci_dev *pci = chip->pci;
- 
--	if (!fw) {
--		dev_err(card->dev, "Cannot load firmware, aborting\n");
--		goto error;
--	}
--
--	chip->fw = fw;
-+	if (fw)
-+		chip->fw = fw;
-+	else
-+		dev_err(card->dev, "Cannot load firmware, continue without patching\n");
- 	if (!chip->disabled) {
- 		/* continue probing */
--		if (azx_probe_continue(chip))
--			goto error;
-+		azx_probe_continue(chip);
- 	}
--	return; /* OK */
--
-- error:
--	snd_card_free(card);
--	pci_set_drvdata(pci, NULL);
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -993,21 +993,35 @@ static inline void emit_a32_mul_r64(cons
+ 	arm_bpf_put_reg32(dst_hi, rd[0], ctx);
  }
- #endif
  
++static bool is_ldst_imm(s16 off, const u8 size)
++{
++	s16 off_max = 0;
++
++	switch (size) {
++	case BPF_B:
++	case BPF_W:
++		off_max = 0xfff;
++		break;
++	case BPF_H:
++		off_max = 0xff;
++		break;
++	case BPF_DW:
++		/* Need to make sure off+4 does not overflow. */
++		off_max = 0xfff - 4;
++		break;
++	}
++	return -off_max <= off && off <= off_max;
++}
++
+ /* *(size *)(dst + off) = src */
+ static inline void emit_str_r(const s8 dst, const s8 src[],
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+-	s32 off_max;
+ 	s8 rd;
+ 
+ 	rd = arm_bpf_get_reg32(dst, tmp[1], ctx);
+ 
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
+-
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], rd), ctx);
+ 		rd = tmp[0];
+@@ -1036,18 +1050,12 @@ static inline void emit_str_r(const s8 d
+ 
+ /* dst = *(size*)(src + off) */
+ static inline void emit_ldx_r(const s8 dst[], const s8 src,
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+ 	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
+ 	s8 rm = src;
+-	s32 off_max;
+-
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
+ 
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+ 		rm = tmp[0];
 
 
