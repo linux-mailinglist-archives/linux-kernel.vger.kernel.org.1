@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7B1B467C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D441B4684
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725787AbgDVNpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 09:45:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726754AbgDVNpL (ORCPT
+        id S1726938AbgDVNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 09:46:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40180 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726917AbgDVNqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 09:45:11 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MD3tsL124182
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:45:10 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30gmv0v7gp-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:45:10 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <zohar@linux.ibm.com>;
-        Wed, 22 Apr 2020 14:44:14 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 22 Apr 2020 14:44:11 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MDj4OJ52691146
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 13:45:04 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11BA9AE065;
-        Wed, 22 Apr 2020 13:45:04 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30EBFAE059;
-        Wed, 22 Apr 2020 13:45:03 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.220.15])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Apr 2020 13:45:03 +0000 (GMT)
-Subject: Re: [PATCH 2/5] evm: Check also if *tfm is an error pointer in
- init_desc()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, krzysztof.struczynski@huawei.com,
-        silviu.vlasceanu@huawei.com, stable@vger.kernel.org
-Date:   Wed, 22 Apr 2020 09:45:02 -0400
-In-Reply-To: <20200325161116.7082-2-roberto.sassu@huawei.com>
-References: <20200325161116.7082-1-roberto.sassu@huawei.com>
-         <20200325161116.7082-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042213-0020-0000-0000-000003CC8FC6
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042213-0021-0000-0000-000022258C03
-Message-Id: <1587563102.5738.32.camel@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-22_06:2020-04-22,2020-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
- suspectscore=0 phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220104
+        Wed, 22 Apr 2020 09:46:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587563166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbzJ2c3Jbmfs6TXG5rybp4esqbXtRerCZxsEpCUlwvY=;
+        b=KSOhQROhKcxBad/BPbNTfeMl8xRSlUic5xcNuc6F3Ok0MJHrsXqm6W18Mrtprqd7H3KwoP
+        1jbQUeluMdwyIG+zRO9sk7vitQKV6H8AM3h/84PmxKe4ZxBI9V7f2e8ZLPksannDcUaeZo
+        tgp6yOjV7kDuCMX1WCETo6LmF7BatpI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-lh4Pzp_SOlKmSyI6QDWB7Q-1; Wed, 22 Apr 2020 09:46:04 -0400
+X-MC-Unique: lh4Pzp_SOlKmSyI6QDWB7Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D47C800FC7;
+        Wed, 22 Apr 2020 13:46:00 +0000 (UTC)
+Received: from gondolin (ovpn-112-195.ams2.redhat.com [10.36.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C266B5D706;
+        Wed, 22 Apr 2020 13:45:46 +0000 (UTC)
+Date:   Wed, 22 Apr 2020 15:45:43 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run'
+ parameters
+Message-ID: <20200422154543.2efba3dd.cohuck@redhat.com>
+In-Reply-To: <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
+References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
+        <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
+Organization: Red Hat GmbH
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto, Krzysztof,
+On Wed, 22 Apr 2020 20:58:04 +0800
+Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
 
-On Wed, 2020-03-25 at 17:11 +0100, Roberto Sassu wrote:
-> The mutex in init_desc(), introduced by commit 97426f985729 ("evm: prevent
-> racing during tfm allocation") prevents two tasks to concurrently set *tfm.
-> However, checking if *tfm is NULL is not enough, as crypto_alloc_shash()
-> can return an error pointer. The following sequence can happen:
+> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+> structure. Earlier than historical reasons, many kvm-related function
+
+s/Earlier than/For/ ?
+
+> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
+> This patch does a unified cleanup of these remaining redundant parameters.
 > 
-> Task A: *tfm = crypto_alloc_shash() <= error pointer
-> Task B: if (*tfm == NULL) <= *tfm is not NULL, use it
-> Task B: rc = crypto_shash_init(desc) <= panic
-> Task A: *tfm = NULL
-> 
-> This patch uses the IS_ERR_OR_NULL macro to determine whether or not a new
-> crypto context must be created.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 97426f985729 ("evm: prevent racing during tfm allocation")
-
-Thank you.  True, this commit introduced the mutex, but the actual
-problem is most likely the result of a crypto algorithm not being
-configured.  Depending on the kernel and which crypto algorithms are
-enabled, verifying an EVM signature might not be possible.  In the
-embedded environment, where the entire filesystem is updated, there
-shouldn't be any unknown EVM signature algorithms.
-
-In case Greg or Sasha decide this patch should be backported,
-including the context/motivation in the patch description (first
-paragraph) would be helpful.
-
-Mimi
-
-> Co-developed-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-> Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  security/integrity/evm/evm_crypto.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/s390/kvm/kvm-s390.c | 37 ++++++++++++++++++++++---------------
+>  1 file changed, 22 insertions(+), 15 deletions(-)
 > 
-> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-> index 35682852ddea..77ad1e5a93e4 100644
-> --- a/security/integrity/evm/evm_crypto.c
-> +++ b/security/integrity/evm/evm_crypto.c
-> @@ -91,7 +91,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
->  		algo = hash_algo_name[hash_algo];
->  	}
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index e335a7e5ead7..d7bb2e7a07ff 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
+>  	return rc;
+>  }
 >  
-> -	if (*tfm == NULL) {
-> +	if (IS_ERR_OR_NULL(*tfm)) {
->  		mutex_lock(&mutex);
->  		if (*tfm)
->  			goto out;
+> -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
+> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
+>  {
+> +	struct kvm_run *kvm_run = vcpu->run;
+>  	struct runtime_instr_cb *riccb;
+>  	struct gs_cb *gscb;
+>  
+> @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
+>  		}
+>  		if (vcpu->arch.gs_enabled) {
+>  			current->thread.gs_cb = (struct gs_cb *)
+> -						&vcpu->run->s.regs.gscb;
+> +						&kvm_run->s.regs.gscb;
+
+Not sure if these changes (vcpu->run-> => kvm_run->) are really worth
+it. (It seems they amount to at least as much as the changes advertised
+in the patch description.)
+
+Other opinions?
+
+>  			restore_gs_cb(current->thread.gs_cb);
+>  		}
+>  		preempt_enable();
 
