@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C021B413C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882171B414E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgDVKLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41842 "EHLO mail.kernel.org"
+        id S1732214AbgDVKvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729128AbgDVKLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:11:01 -0400
+        id S1729135AbgDVKLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6080D2076E;
-        Wed, 22 Apr 2020 10:11:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C558F208E4;
+        Wed, 22 Apr 2020 10:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550260;
-        bh=QWITxttuyJgnv8eHJIR5mfNp46l+sx7de2YyG1DNOb4=;
+        s=default; t=1587550263;
+        bh=PkqY5os02qCbo/HNGnzajYh6FNoNP4kntucX+B0/Sm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ybxtd6BHHAUxaLi8yfKGOs233SUqdNmU978aqckHyq0qY+6jOjZYHYt6DEy6Sd4Qh
-         gE6z6mT8oCdbPEYljRB7mjiC2/TbW772CeNvm+ewS4Q1Wt7tURnhEvd29FIHH2+B5P
-         xtGOh6Wt+HeOcswbtBz1dkR3isUTQxtWss4hRQwc=
+        b=mDGkMlVehUC3SkkuQTh+yp+9Oj+7y2yAoTQ1FXbgkBtlvH7bxftrzECpX8dicTH+G
+         3uJTDdyL1WgY01/qejdXXyxUD5ZB4XzgERTfzgstHNH0K9qXZSOFEXkoHId7250wCa
+         PAedLTWvkodp6qLG+MVoXYWBDDgt5veJj51PYwuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Fredrik Strupe <fredrik@strupe.net>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.14 074/199] arm64: armv8_deprecated: Fix undef_hook mask for thumb setend
-Date:   Wed, 22 Apr 2020 11:56:40 +0200
-Message-Id: <20200422095105.551989545@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 4.14 075/199] rtc: omap: Use define directive for PIN_CONFIG_ACTIVE_HIGH
+Date:   Wed, 22 Apr 2020 11:56:41 +0200
+Message-Id: <20200422095105.646780527@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
 References: <20200422095057.806111593@linuxfoundation.org>
@@ -44,53 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fredrik Strupe <fredrik@strupe.net>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit fc2266011accd5aeb8ebc335c381991f20e26e33 upstream.
+commit c50156526a2f7176b50134e3e5fb108ba09791b2 upstream.
 
-For thumb instructions, call_undef_hook() in traps.c first reads a u16,
-and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
-u16 is read, which then makes up the the lower half-word of a T32
-instruction. For T16 instructions, the second u16 is not read,
-which makes the resulting u32 opcode always have the upper half set to
-0.
+Clang warns when one enumerated type is implicitly converted to another:
 
-However, having the upper half of instr_mask in the undef_hook set to 0
-masks out the upper half of all thumb instructions - both T16 and T32.
-This results in trapped T32 instructions with the lower half-word equal
-to the T16 encoding of setend (b650) being matched, even though the upper
-half-word is not 0000 and thus indicates a T32 opcode.
+drivers/rtc/rtc-omap.c:574:21: warning: implicit conversion from
+enumeration type 'enum rtc_pin_config_param' to different enumeration
+type 'enum pin_config_param' [-Wenum-conversion]
+        {"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
+        ~                  ^~~~~~~~~~~~~~~~~~~~~~
+drivers/rtc/rtc-omap.c:579:12: warning: implicit conversion from
+enumeration type 'enum rtc_pin_config_param' to different enumeration
+type 'enum pin_config_param' [-Wenum-conversion]
+        PCONFDUMP(PIN_CONFIG_ACTIVE_HIGH, "input active high", NULL, false),
+        ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./include/linux/pinctrl/pinconf-generic.h:163:11: note: expanded from
+macro 'PCONFDUMP'
+        .param = a, .display = b, .format = c, .has_arg = d     \
+                 ^
+2 warnings generated.
 
-An example of such a T32 instruction is eaa0b650, which should raise a
-SIGILL since T32 instructions with an eaa prefix are unallocated as per
-Arm ARM, but instead works as a SETEND because the second half-word is set
-to b650.
+It is expected that pinctrl drivers can extend pin_config_param because
+of the gap between PIN_CONFIG_END and PIN_CONFIG_MAX so this conversion
+isn't an issue. Most drivers that take advantage of this define the
+PIN_CONFIG variables as constants, rather than enumerated values. Do the
+same thing here so that Clang no longer warns.
 
-This patch fixes the issue by extending instr_mask to include the
-upper u32 half, which will still match T16 instructions where the upper
-half is 0, but not T32 instructions.
-
-Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
-Cc: <stable@vger.kernel.org> # 4.0.x-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/144
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kernel/armv8_deprecated.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/rtc-omap.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/arch/arm64/kernel/armv8_deprecated.c
-+++ b/arch/arm64/kernel/armv8_deprecated.c
-@@ -607,7 +607,7 @@ static struct undef_hook setend_hooks[]
- 	},
- 	{
- 		/* Thumb mode */
--		.instr_mask	= 0x0000fff7,
-+		.instr_mask	= 0xfffffff7,
- 		.instr_val	= 0x0000b650,
- 		.pstate_mask	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_MASK),
- 		.pstate_val	= (COMPAT_PSR_T_BIT | COMPAT_PSR_MODE_USR),
+--- a/drivers/rtc/rtc-omap.c
++++ b/drivers/rtc/rtc-omap.c
+@@ -559,9 +559,7 @@ static const struct pinctrl_ops rtc_pinc
+ 	.dt_free_map = pinconf_generic_dt_free_map,
+ };
+ 
+-enum rtc_pin_config_param {
+-	PIN_CONFIG_ACTIVE_HIGH = PIN_CONFIG_END + 1,
+-};
++#define PIN_CONFIG_ACTIVE_HIGH		(PIN_CONFIG_END + 1)
+ 
+ static const struct pinconf_generic_params rtc_params[] = {
+ 	{"ti,active-high", PIN_CONFIG_ACTIVE_HIGH, 0},
 
 
