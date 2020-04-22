@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671BB1B33F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478CF1B33F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgDVAWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:22:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1638 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgDVAWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:22:11 -0400
-IronPort-SDR: t0dZwvw70O8a96s/2znUoZHIcw0rUUMG15J+lagSXsXxrqvaj33n7mfvJWndcAp7UJmzuvkbw6
- hW/85+G6/4wg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 17:22:10 -0700
-IronPort-SDR: ioLFI8Oies2tQceQHW5FhAPYccVYMPIQHLf3JYSTRcwhME9BmtM4uU0ts/eYrleZot+mcxiBVm
- K2j+PvoAXFuw==
-X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
-   d="scan'208";a="402360242"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.251.142.125])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 17:22:10 -0700
-Message-ID: <ec43c672a4a98729ee011f89168ec68d3d5185f5.camel@linux.intel.com>
-Subject: Re: [PATCH] intel-speed-select: Fix
- speed-select-base-freq-properties output on CLX-N
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Prarit Bhargava <prarit@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     platform-driver-x86@vger.kernel.org
-Date:   Tue, 21 Apr 2020 17:22:09 -0700
-In-Reply-To: <20200420141054.26173-1-prarit@redhat.com>
-References: <20200420141054.26173-1-prarit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
+        id S1726328AbgDVA3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgDVA3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 20:29:40 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7EBC0610D5;
+        Tue, 21 Apr 2020 17:29:40 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id s9so508692eju.1;
+        Tue, 21 Apr 2020 17:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=rO0w5gDPjA7Di4DEnXW21M0BN8vGySQ7BavhtWpb4aI=;
+        b=Ar4qoLHsVjygj/AZzcdesVckef3gGyVpLWvpQjGGGhdEl4GxuX8/GqVgmx3+0y6Yle
+         W93O9+1aDGws6MbB0PG8GvKNL5Vqjc/ReY79QToenRjQUcKLw7L6Cu63I1TI1WO43bbI
+         OTzjV5kPdpqjtiUwrqoX8LT2vA/kox2aOF9ogkzLrb+qiEBZkMk61YZgvjn11EvM2wpw
+         MJOyoFH73Sv7oyzniFoxWuphjOKV0ylSCcFLYR8SN+BQf+7VhEaBkJnIF8jFxPELFLvK
+         FS2/ATNe1x6j42Ynei0xxbF+XMH8Ol9ayiZrkAyK0OPmwyRM7Bw3hr6YhLQi2FvD4u0a
+         gFlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=rO0w5gDPjA7Di4DEnXW21M0BN8vGySQ7BavhtWpb4aI=;
+        b=X2ft7BQIc+hUG2ACmBUCMzc1XOc/Fj6UdPcFNSQsmifjUx496jCRTMDnvrHxVN922u
+         Utu6GgQkpznM4Mnpp/wu8KE5rbtX70EXTJVS1BsEvxRTc2pwBcAgT7Zyw4C6G4N6tzJK
+         keNozQ83gTtSd6NkMJK5zo+4a65BD+UvOaEyc+lSFGv+VPxYBbbK3M+Ku43H+fYd6ujn
+         fMPC8Nw02Qh9JMbxEI/+WD+fPa/B+1RmkMbvBdFzruQCnSoax7aSMhJgInIbbSI166Vg
+         ORi5Lql/dFtSp8bWsIvhG4B5bWt63JnTO0EwHralMk2MC0VVn2qx7YqFLoYBswrbL6z+
+         pm7A==
+X-Gm-Message-State: AGi0PuZ8NKocx45a9tjvAB4xcwqsNyNcDB9m/WRWrulSN/rNasQHB5ZE
+        IhL7xzffKw4kIDBmTKuZhf/y+ZgYn/VH4ShAyUwYFkft
+X-Google-Smtp-Source: APiQypKpFh0SuFktFFKa4v7aZo3TvtlKswa6pyWUf+0w5RB/snw0giBc5drN8AHPopivqyDXfK2TWSHKNE2pipMvEI4=
+X-Received: by 2002:a17:906:6441:: with SMTP id l1mr10792113ejn.148.1587515376516;
+ Tue, 21 Apr 2020 17:29:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From:   Joshua Abraham <j.abraham1776@gmail.com>
+Date:   Tue, 21 Apr 2020 20:29:25 -0400
+Message-ID: <CAMmOe3Q2cc_uzpKezojkNWFSdg+Pt+K6BqcijV46QRj5ZXod7g@mail.gmail.com>
+Subject: [RFC] unixmon virtual device for unix sockets
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-20 at 10:10 -0400, Prarit Bhargava wrote:
-> On CLX-N, the perf-profile-level's output is terminated before the
-> speed-select-base-freq-properties are output which results in a
-> corrupt
-> json file.
-> 
-> Adjust the output of speed-select-base-freq-properties by one on CLX-
-> N.
-Applied.
+There is currently no way to capture a connected unix domain socket
+without interrupting the connection. AF_UNIX socket transport is
+implemented in-kernel and enabling packet captures would require
+kernel support. This could be based on the design of the vsockmon and
+nlmon virtual devices.
 
-Thanks,
-Srinivas
+This would be very useful when debugging traffic traversing AF_UNIX
+sockets, such as DBUS traffic without modifying the user-space
+programs that are using the unix sockets.
 
-> 
-> Signed-off-by: Prarit Bhargava <prarit@redhat.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> ---
->  tools/power/x86/intel-speed-select/isst-display.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/power/x86/intel-speed-select/isst-display.c
-> b/tools/power/x86/intel-speed-select/isst-display.c
-> index 51dbaa5f02ec..f6e2ce181123 100644
-> --- a/tools/power/x86/intel-speed-select/isst-display.c
-> +++ b/tools/power/x86/intel-speed-select/isst-display.c
-> @@ -470,7 +470,7 @@ void isst_ctdp_display_information(int cpu, FILE
-> *outf, int tdp_level,
->  				_isst_pbf_display_information(cpu,
-> outf,
->  							      tdp_level
-> ,
->  							  &ctdp_level-
-> >pbf_info,
-> -							      level +
-> 1);
-> +							      level +
-> 2);
->  			continue;
->  		}
->  
+Is this a worthwhile feature to implement?
 
+-Josh
