@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F8D1B3F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6C81B3DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgDVKfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:35:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60068 "EHLO mail.kernel.org"
+        id S1729588AbgDVKSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgDVKXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:33 -0400
+        id S1729806AbgDVKRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:17:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E522A2071E;
-        Wed, 22 Apr 2020 10:23:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E376E2076B;
+        Wed, 22 Apr 2020 10:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551012;
-        bh=micotk57/YyCbC9O+mxgFISmiIDBkthE9XBBlTkxP7s=;
+        s=default; t=1587550630;
+        bh=EMQFBZd/o/wVk1UPIuwifXdCv5bHQAgdbB6BPa+Uwws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkhhVBNyMgjIVI6iepKoaDwSPCK6omcjzTXd8hbuHDNQBgq+u2Hh8ZD0ng4GzGsLl
-         +OFi3A3UO3Eh1PmSYa+GKI30qUO7DigJoTUEwC32en2H2e0qe4e3UQcw7raTnWr5yP
-         eP1/mikO/bOeDe4SMGxf0LL7vXir1F524hpcP2HA=
+        b=WmvfXzU+5FSQzYoUFRzPKXvhrvIq1rTbzgZ5PrtL0FpZd5Ut+a8z3FDD5jPv9bRUz
+         PktFLDQilNZWqh1ipajq+OwP73jKdJWhQowpqkGeujedYQpOzVHwOqnDaLUhvltwnV
+         a8/m7nmrD8P7RlwOp4lIymcPOhTQU/oq7wV19Ng8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 063/166] xfs: fix use-after-free when aborting corrupt attr inactivation
+        stable@vger.kernel.org, cki-project@redhat.com,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 029/118] block, bfq: turn put_queue into release_process_ref in __bfq_bic_change_cgroup
 Date:   Wed, 22 Apr 2020 11:56:30 +0200
-Message-Id: <20200422095055.594423338@linuxfoundation.org>
+Message-Id: <20200422095036.658767293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-[ Upstream commit 496b9bcd62b0b3a160be61e3265a086f97adcbd3 ]
+commit c8997736650060594845e42c5d01d3118aec8d25 upstream.
 
-Log the corrupt buffer before we release the buffer.
+A bfq_put_queue() may be invoked in __bfq_bic_change_cgroup(). The
+goal of this put is to release a process reference to a bfq_queue. But
+process-reference releases may trigger also some extra operation, and,
+to this goal, are handled through bfq_release_process_ref(). So, turn
+the invocation of bfq_put_queue() into an invocation of
+bfq_release_process_ref().
 
-Fixes: a5155b870d687 ("xfs: always log corruption errors")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: cki-project@redhat.com
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/xfs_attr_inactive.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/bfq-cgroup.c  |    5 +----
+ block/bfq-iosched.c |    2 --
+ block/bfq-iosched.h |    1 +
+ 3 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/fs/xfs/xfs_attr_inactive.c b/fs/xfs/xfs_attr_inactive.c
-index bbfa6ba84dcd7..fe8f60b59ec4d 100644
---- a/fs/xfs/xfs_attr_inactive.c
-+++ b/fs/xfs/xfs_attr_inactive.c
-@@ -145,8 +145,8 @@ xfs_attr3_node_inactive(
- 	 * Since this code is recursive (gasp!) we must protect ourselves.
- 	 */
- 	if (level > XFS_DA_NODE_MAXDEPTH) {
--		xfs_trans_brelse(*trans, bp);	/* no locks for later trans */
- 		xfs_buf_corruption_error(bp);
-+		xfs_trans_brelse(*trans, bp);	/* no locks for later trans */
- 		return -EFSCORRUPTED;
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -697,10 +697,7 @@ static struct bfq_group *__bfq_bic_chang
+ 
+ 		if (entity->sched_data != &bfqg->sched_data) {
+ 			bic_set_bfqq(bic, NULL, 0);
+-			bfq_log_bfqq(bfqd, async_bfqq,
+-				     "bic_change_group: %p %d",
+-				     async_bfqq, async_bfqq->ref);
+-			bfq_put_queue(async_bfqq);
++			bfq_release_process_ref(bfqd, async_bfqq);
+ 		}
  	}
  
--- 
-2.20.1
-
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2717,8 +2717,6 @@ static void bfq_bfqq_save_state(struct b
+ 	}
+ }
+ 
+-
+-static
+ void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq)
+ {
+ 	/*
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -950,6 +950,7 @@ void bfq_bfqq_expire(struct bfq_data *bf
+ 		     bool compensate, enum bfqq_expiration reason);
+ void bfq_put_queue(struct bfq_queue *bfqq);
+ void bfq_end_wr_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
++void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq);
+ void bfq_schedule_dispatch(struct bfq_data *bfqd);
+ void bfq_put_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
+ 
 
 
