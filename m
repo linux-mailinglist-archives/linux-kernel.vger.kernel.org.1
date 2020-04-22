@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2D31B38EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4001A1B38F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgDVH2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725899AbgDVH2A (ORCPT
+        id S1726496AbgDVH2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:28:04 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43961 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgDVH2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:28:00 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14A3C03C1A6;
-        Wed, 22 Apr 2020 00:27:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f13so1076019wrm.13;
-        Wed, 22 Apr 2020 00:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9931shIhpoLUFvoD3B+6cYUUTNoPgI67nwzQTsNwhrU=;
-        b=BOsjMS1LfeW058K4OjJyGcXb/owDcVYRrcxdC8QoRYU1HSmVnfqRH1PDTkibcmOPo5
-         WPdB0MinG2eqHnp+JKxrgsTOCJQ7HOh5qovVRwtHuGU4OH69rBRPOeYs4t/yqWbG7OUX
-         2KuGdGSlIh3+ckEETHUtTdUDlXswgziRFwj6v7ISt9TLb3Jq7BlslE96zGEZ6UspSkW+
-         gL3ZQA+DW6TerXz9vl3bWWg/sSHqqchiCYgQSbTt6CU+aLacFAwAoTzWYHPW1VD2lgiP
-         OvkqO4onGMElOISClpnELl4wVs+oQOICegsnaGersVaIbmadKxFJJ9p1jpJLXRXZm14u
-         UQdw==
+        Wed, 22 Apr 2020 03:28:02 -0400
+Received: by mail-lj1-f196.google.com with SMTP id l19so1139429lje.10;
+        Wed, 22 Apr 2020 00:28:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9931shIhpoLUFvoD3B+6cYUUTNoPgI67nwzQTsNwhrU=;
-        b=Zz2N+HHCX4+Ez4Ei+T6B6vK1kEo37oxkd2mP1db3lSWi04mgUchpmAr+JZQFt0IhXT
-         u2nfqhMKKIUqR/VuyMyqP7LEahG7LZHrPpPs5mzSeryAoqnIg09eMk+hrEIr+5kLOZJL
-         aaJzSK6nIVbKckudB9I2JvgnHFtwUHVEtfwSONBLOGNLljwB408qrqc9IrjHRalcz5W+
-         Jf+t3NCKGR4Ysr/f+PRqhAHwhnyg/VWKqxUE94QNOVafv1Zj8e9VNd+7KOUOhyHkzTzF
-         7jxG2i10tlYopqKEY0bF4Wvm5LaEZrlRHHvFwRzlep/3mf+h3q6jlJdr++p9GRaIweWi
-         XZNQ==
-X-Gm-Message-State: AGi0PuY9YT/tgvPX1Wk6qIrCq6kI9u8fV75cyqmZfkUPXyqwyDXtmwuF
-        EKZj960PjiDdzBgmI8J1hoVxWoZvzGWXJZdZhdM=
-X-Google-Smtp-Source: APiQypKINzEV7SYsxgJrmgOuhh0F/xiiwcnh8jeyiXqLpe/vrgCXa5ob9My0Ccs+1/KDQtU4HnNn1xHd9OHsnRDREDg=
-X-Received: by 2002:a5d:4dcb:: with SMTP id f11mr27614713wru.174.1587540478539;
- Wed, 22 Apr 2020 00:27:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HehvquyX/BRzMPyeN0mYBmeTubyfIaQMMH5cFq5I5DI=;
+        b=bmAqYHk8ujHz5xmp3geIJW/OrOZwFI1NQy587cIaT0i29v8Ua4SSe9l2+vUJ9bkq+9
+         I4vhIeLZDDH+/f14sUk3vQswcqkp4jJqqAdjs8nJrMhiZdC/x3gfLZsOzK3bqOYjg60g
+         ypal/SFqXVBm8IYpWJzH8cY9VUeFMEyCkIN4bnjxAvPDPrY3zjg3HPPNayUpMsGETmTu
+         yhjtUdtfnep/rdLgayzr79CprOdbO7XwYxyogMf7+gmJBQtadDjAHWeb7TBOOpMztrEq
+         Yn5xMdhwqaaoIz5CLSIHvlV1PlqwsobpDjKmlE9GJ8dLltoq+t6O/8dMHwmngwwUt5/y
+         VeQQ==
+X-Gm-Message-State: AGi0PuanC9NH9uTODRDI8uekT4YUNGRgRuLZQHGaLr/SqvIzjZAgIZ8q
+        6EU7nE/KOs8yvNOSlJcnWvuHg6I5
+X-Google-Smtp-Source: APiQypJWmeXOxbThP7lWWVqPFUutfBaFXA4CkU9Kv4i4mhtLv4m4EStWy0F4xu8GROYXPUuiTIyd7Q==
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr3615795ljc.88.1587540480435;
+        Wed, 22 Apr 2020 00:28:00 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id t24sm4310317lfk.90.2020.04.22.00.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 00:27:59 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.92.3)
+        (envelope-from <johan@kernel.org>)
+        id 1jR9ni-0003kI-GT; Wed, 22 Apr 2020 09:28:06 +0200
+Date:   Wed, 22 Apr 2020 09:28:06 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Nishad Kamdar <nishadkamdar@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Joe Perches <joe@perches.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: Use the correct style for SPDX License
+ Identifier
+Message-ID: <20200422072806.GH18608@localhost>
+References: <20200419130603.GA5763@nishad>
 MIME-Version: 1.0
-References: <20200416094111.3f37623f@canb.auug.org.au>
-In-Reply-To: <20200416094111.3f37623f@canb.auug.org.au>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Wed, 22 Apr 2020 10:27:47 +0300
-Message-ID: <CAEnQRZDb9N3jiVgHGpvv8Vn5z9LaFEymMqRCMzPUSrz8R3CXhQ@mail.gmail.com>
-Subject: Re: linux-next: Fixes tags needs some work in the sound-asoc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200419130603.GA5763@nishad>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 4:16 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> In commit
->
->   101001652ee7 ("ASoC: SOF: topology: fix: handle DAI widget connections properly with multiple CPU DAI's")
->
-> Fixes tag
->
->   Fixes: 4a7e26a4d833 ("ASoC: SOF: topology: connect dai widget to all
->
-> has these problem(s):
->
->   - Target SHA1 does not exist
->
-> Maybe you meant
->
-> Fixes: c59aca98c912 ("ASoC: SOF: topology: connect dai widget to all cpu-dais")
->
-> Also, please do not split Fixes tags over more than one line and keep
-> all the commit message tags together at the end of the commit message.
->
-> In commit
->
->   cb0312f61c3e ("ASoC: SOF: imx: fix undefined reference issue")
->
-> Fixes tag
->
->   Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF
->
-> has these problem(s):
->
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
->
-> Please do not split Fixes tags over more than one line.
+On Sun, Apr 19, 2020 at 06:36:07PM +0530, Nishad Kamdar wrote:
+> This patch corrects the SPDX License Identifier style in
+> header files related to USB Serial device configuration.
+> For C header files Documentation/process/license-rules.rst
+> mandates C-like comments (opposed to C source files where
+> C++ style should be used).
+> 
+> Changes made by using a script provided by Joe Perches here:
+> https://lkml.org/lkml/2019/2/7/46.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
 
-Sorry for that.
+Applied for -next, thanks.
 
-Mark, how should I fix this. Should I resend the entire series?
+Johan
