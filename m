@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CD31B3C8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9223A1B40E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgDVKGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:06:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58738 "EHLO mail.kernel.org"
+        id S1732082AbgDVKtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgDVKGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:41 -0400
+        id S1729442AbgDVKNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAAC820575;
-        Wed, 22 Apr 2020 10:06:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DAE92071E;
+        Wed, 22 Apr 2020 10:13:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550001;
-        bh=1E9u5VFOzgJ/cOij6J0Pk+XqwsuH2wpFjhlyOy2JwUg=;
+        s=default; t=1587550430;
+        bh=LXPWYG4z5+vvrhoERwmekrRYM9JEuLFtWYJbqt8j26E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FoCLsmFOt7cMtIDYy1QsF7wUMCnL/hY091ZjjOJBLgyha361IlKrssGPHptv6qHs9
-         wWNnJddv9V3hO6xMBTyA0BX/lQ15j96/g36/9cReXLGhcYr5OHRf9oDVAjNffn6dxo
-         6Rh4bPGlh1Rz45PWhRsYy+I9bavdDMITbV6ck3EU=
+        b=wjjKUA1V5I64t8yLb/fcs5uSpUQRJiati7mY8XF/9LnBbWVl30a+vy2rlCz4+wjp0
+         nKlC/E29h7YoUqVHciK2v42+jNAy/XnvnMPo1z719hZEsp24sxlZGwuMtKWSd/5tXq
+         HTNEF5nHbkhV8dNwjogeZ4rXZu/KUCQ6+Q5W8+cI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hamad Kadmany <hkadmany@codeaurora.org>,
-        Maya Erez <merez@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 092/125] wil6210: increase firmware ready timeout
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 4.19 05/64] watchdog: sp805: fix restart handler
 Date:   Wed, 22 Apr 2020 11:56:49 +0200
-Message-Id: <20200422095048.145149324@linuxfoundation.org>
+Message-Id: <20200422095013.224193329@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamad Kadmany <hkadmany@codeaurora.org>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 6ccae584014ef7074359eb4151086beef66ecfa9 ]
+commit ea104a9e4d3e9ebc26fb78dac35585b142ee288b upstream.
 
-Firmware ready event may take longer than
-current timeout in some scenarios, for example
-with multiple RFs connected where each
-requires an initial calibration.
+The restart handler is missing two things, first, the registers
+has to be unlocked and second there is no synchronization for the
+write_relaxed() calls.
 
-Increase the timeout to support these scenarios.
+This was tested on a custom board with the NXP LS1028A SoC.
 
-Signed-off-by: Hamad Kadmany <hkadmany@codeaurora.org>
-Signed-off-by: Maya Erez <merez@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 6c5c0d48b686c ("watchdog: sp805: add restart handler")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200327162450.28506-1-michael@walle.cc
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/wireless/ath/wil6210/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/ath/wil6210/main.c
-+++ b/drivers/net/wireless/ath/wil6210/main.c
-@@ -803,7 +803,7 @@ static void wil_bl_crash_info(struct wil
- 
- static int wil_wait_for_fw_ready(struct wil6210_priv *wil)
+---
+ drivers/watchdog/sp805_wdt.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/watchdog/sp805_wdt.c
++++ b/drivers/watchdog/sp805_wdt.c
+@@ -137,10 +137,14 @@ wdt_restart(struct watchdog_device *wdd,
  {
--	ulong to = msecs_to_jiffies(1000);
-+	ulong to = msecs_to_jiffies(2000);
- 	ulong left = wait_for_completion_timeout(&wil->wmi_ready, to);
+ 	struct sp805_wdt *wdt = watchdog_get_drvdata(wdd);
  
- 	if (0 == left) {
++	writel_relaxed(UNLOCK, wdt->base + WDTLOCK);
+ 	writel_relaxed(0, wdt->base + WDTCONTROL);
+ 	writel_relaxed(0, wdt->base + WDTLOAD);
+ 	writel_relaxed(INT_ENABLE | RESET_ENABLE, wdt->base + WDTCONTROL);
+ 
++	/* Flush posted writes. */
++	readl_relaxed(wdt->base + WDTLOCK);
++
+ 	return 0;
+ }
+ 
 
 
