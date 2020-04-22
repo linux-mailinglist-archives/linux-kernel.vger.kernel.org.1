@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EC41B4113
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F081B41B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgDVKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
+        id S1729906AbgDVKyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729042AbgDVKMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:40 -0400
+        id S1728598AbgDVKHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:07:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8674320575;
-        Wed, 22 Apr 2020 10:12:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 281C520857;
+        Wed, 22 Apr 2020 10:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550359;
-        bh=h8Z/dkCxk8TLX9dyat7PhY4hg5Vbo3TN2LqGCyokX2o=;
+        s=default; t=1587550074;
+        bh=6+NsNGoBUYGgDTpE49zA7NtHeO3p2XYxUzXYSEYUNOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WS0SFP8QnvJ5KkrzKkhj6+lYYO/EOw9j68N8W+uRYhTWBSa0q0b1lenWI02WxI7Hv
-         1RqheLMxH6RI/FjAEsVqilM1yQMTVEQaPV3cOWfRJ23mkcVsTgPvpBRdZ0Vso6UEOi
-         cOVpFw/l5vsD/br2XEwIFDSrced1fUk3TQz7wEVc=
+        b=mMAUWeEY+iAAFckZ0EEO5sJAU4uaHgFb3lz+3tCY2/Bvjnyz40miTlV2OWU+9rrCd
+         nih58SOqW2J08Ql1QzB5wUzeepPqY8uDkurTq6jU5ua9epHYph/2Br3qFnDed7L1CK
+         0/wmaos2wzPRjJhNrq1/cfF8M3afxsdKAgzwO3yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH 4.14 115/199] pwm: pca9685: Fix PWM/GPIO inter-operation
+        stable@vger.kernel.org,
+        Evalds Iodzevics <evalds.iodzevics@gmail.com>
+Subject: [PATCH 4.9 124/125] x86/microcode/intel: replace sync_core() with native_cpuid_reg(eax)
 Date:   Wed, 22 Apr 2020 11:57:21 +0200
-Message-Id: <20200422095109.145807829@linuxfoundation.org>
+Message-Id: <20200422095052.422785226@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,201 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <TheSven73@gmail.com>
+From: Evalds Iodzevics <evalds.iodzevics@gmail.com>
 
-commit 9cc5f232a4b6a0ef6e9b57876d61b88f61bdd7c2 upstream.
+On Intel it is required to do CPUID(1) before reading the microcode
+revision MSR. Current code in 4.4 an 4.9 relies on sync_core() to call
+CPUID, unfortunately on 32 bit machines code inside sync_core() always
+jumps past CPUID instruction as it depends on data structure boot_cpu_data
+witch are not populated correctly so early in boot sequence.
 
-This driver allows pwms to be requested as gpios via gpiolib. Obviously,
-it should not be allowed to request a GPIO when its corresponding PWM is
-already requested (and vice versa). So it requires some exclusion code.
+It depends on:
+commit 5dedade6dfa2 ("x86/CPU: Add native CPUID variants returning a single
+datum")
 
-Given that the PWMm and GPIO cores are not synchronized with respect to
-each other, this exclusion code will also require proper
-synchronization.
+This patch is for 4.4 but also should apply to 4.9
 
-Such a mechanism was in place, but was inadvertently removed by Uwe's
-clean-up in commit e926b12c611c ("pwm: Clear chip_data in pwm_put()").
-
-Upon revisiting the synchronization mechanism, we found that
-theoretically, it could allow two threads to successfully request
-conflicting PWMs/GPIOs.
-
-Replace with a bitmap which tracks PWMs in-use, plus a mutex. As long as
-PWM and GPIO's respective request/free functions modify the in-use
-bitmap while holding the mutex, proper synchronization will be
-guaranteed.
-
-Reported-by: YueHaibing <yuehaibing@huawei.com>
-Fixes: e926b12c611c ("pwm: Clear chip_data in pwm_put()")
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: YueHaibing <yuehaibing@huawei.com>
-Link: https://lkml.org/lkml/2019/5/31/963
-Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-[cg: Tested on an i.MX6Q board with two NXP PCA9685 chips]
-Tested-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Reviewed-by: Sven Van Asbroeck <TheSven73@gmail.com> # cg's rebase
-Link: https://lore.kernel.org/lkml/20200330160238.GD2817345@ulmo/
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Evalds Iodzevics <evalds.iodzevics@gmail.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pwm/pwm-pca9685.c |   85 +++++++++++++++++++++++++---------------------
- 1 file changed, 48 insertions(+), 37 deletions(-)
+ arch/x86/include/asm/microcode_intel.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -31,6 +31,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/pm_runtime.h>
-+#include <linux/bitmap.h>
+--- a/arch/x86/include/asm/microcode_intel.h
++++ b/arch/x86/include/asm/microcode_intel.h
+@@ -59,7 +59,7 @@ static inline u32 intel_get_microcode_re
+ 	native_wrmsrl(MSR_IA32_UCODE_REV, 0);
  
- /*
-  * Because the PCA9685 has only one prescaler per chip, changing the period of
-@@ -85,6 +86,7 @@ struct pca9685 {
- #if IS_ENABLED(CONFIG_GPIOLIB)
- 	struct mutex lock;
- 	struct gpio_chip gpio;
-+	DECLARE_BITMAP(pwms_inuse, PCA9685_MAXCHAN + 1);
- #endif
- };
+ 	/* As documented in the SDM: Do a CPUID 1 here */
+-	sync_core();
++	native_cpuid_eax(1);
  
-@@ -94,51 +96,51 @@ static inline struct pca9685 *to_pca(str
- }
- 
- #if IS_ENABLED(CONFIG_GPIOLIB)
--static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
-+static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, int pwm_idx)
- {
--	struct pca9685 *pca = gpiochip_get_data(gpio);
--	struct pwm_device *pwm;
-+	bool is_inuse;
- 
- 	mutex_lock(&pca->lock);
--
--	pwm = &pca->chip.pwms[offset];
--
--	if (pwm->flags & (PWMF_REQUESTED | PWMF_EXPORTED)) {
--		mutex_unlock(&pca->lock);
--		return -EBUSY;
-+	if (pwm_idx >= PCA9685_MAXCHAN) {
-+		/*
-+		 * "all LEDs" channel:
-+		 * pretend already in use if any of the PWMs are requested
-+		 */
-+		if (!bitmap_empty(pca->pwms_inuse, PCA9685_MAXCHAN)) {
-+			is_inuse = true;
-+			goto out;
-+		}
-+	} else {
-+		/*
-+		 * regular channel:
-+		 * pretend already in use if the "all LEDs" channel is requested
-+		 */
-+		if (test_bit(PCA9685_MAXCHAN, pca->pwms_inuse)) {
-+			is_inuse = true;
-+			goto out;
-+		}
- 	}
--
--	pwm_set_chip_data(pwm, (void *)1);
--
-+	is_inuse = test_and_set_bit(pwm_idx, pca->pwms_inuse);
-+out:
- 	mutex_unlock(&pca->lock);
--	pm_runtime_get_sync(pca->chip.dev);
--	return 0;
-+	return is_inuse;
- }
- 
--static bool pca9685_pwm_is_gpio(struct pca9685 *pca, struct pwm_device *pwm)
-+static void pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
- {
--	bool is_gpio = false;
--
- 	mutex_lock(&pca->lock);
-+	clear_bit(pwm_idx, pca->pwms_inuse);
-+	mutex_unlock(&pca->lock);
-+}
- 
--	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
--		unsigned int i;
--
--		/*
--		 * Check if any of the GPIOs are requested and in that case
--		 * prevent using the "all LEDs" channel.
--		 */
--		for (i = 0; i < pca->gpio.ngpio; i++)
--			if (gpiochip_is_requested(&pca->gpio, i)) {
--				is_gpio = true;
--				break;
--			}
--	} else if (pwm_get_chip_data(pwm)) {
--		is_gpio = true;
--	}
-+static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
-+{
-+	struct pca9685 *pca = gpiochip_get_data(gpio);
- 
--	mutex_unlock(&pca->lock);
--	return is_gpio;
-+	if (pca9685_pwm_test_and_set_inuse(pca, offset))
-+		return -EBUSY;
-+	pm_runtime_get_sync(pca->chip.dev);
-+	return 0;
- }
- 
- static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned int offset)
-@@ -173,6 +175,7 @@ static void pca9685_pwm_gpio_free(struct
- 
- 	pca9685_pwm_gpio_set(gpio, offset, 0);
- 	pm_runtime_put(pca->chip.dev);
-+	pca9685_pwm_clear_inuse(pca, offset);
- }
- 
- static int pca9685_pwm_gpio_get_direction(struct gpio_chip *chip,
-@@ -224,12 +227,17 @@ static int pca9685_pwm_gpio_probe(struct
- 	return devm_gpiochip_add_data(dev, &pca->gpio, pca);
- }
- #else
--static inline bool pca9685_pwm_is_gpio(struct pca9685 *pca,
--				       struct pwm_device *pwm)
-+static inline bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca,
-+						  int pwm_idx)
- {
- 	return false;
- }
- 
-+static inline void
-+pca9685_pwm_clear_inuse(struct pca9685 *pca, int pwm_idx)
-+{
-+}
-+
- static inline int pca9685_pwm_gpio_probe(struct pca9685 *pca)
- {
- 	return 0;
-@@ -413,7 +421,7 @@ static int pca9685_pwm_request(struct pw
- {
- 	struct pca9685 *pca = to_pca(chip);
- 
--	if (pca9685_pwm_is_gpio(pca, pwm))
-+	if (pca9685_pwm_test_and_set_inuse(pca, pwm->hwpwm))
- 		return -EBUSY;
- 	pm_runtime_get_sync(chip->dev);
- 
-@@ -422,8 +430,11 @@ static int pca9685_pwm_request(struct pw
- 
- static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
- {
-+	struct pca9685 *pca = to_pca(chip);
-+
- 	pca9685_pwm_disable(chip, pwm);
- 	pm_runtime_put(chip->dev);
-+	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
- }
- 
- static const struct pwm_ops pca9685_pwm_ops = {
+ 	/* get the current revision from MSR 0x8B */
+ 	native_rdmsr(MSR_IA32_UCODE_REV, dummy, rev);
 
 
