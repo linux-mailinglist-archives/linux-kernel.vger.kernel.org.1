@@ -2,78 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2741B4707
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E3C1B4703
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgDVOT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:19:29 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:64450 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726720AbgDVOT2 (ORCPT
+        id S1727101AbgDVOT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:19:27 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46408 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgDVOT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:19:28 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 03MEIq6s003059;
-        Wed, 22 Apr 2020 23:18:53 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 03MEIq6s003059
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587565133;
-        bh=05L0Y4K5hdMLe5DqDt78XEkJuAdMbS03xklsS80D7Zk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DyxCrGC9vbJk3WAzDPNWRUm5TW/6TBn/XNszLdLUySG+DlkgrEeyd2p25GpG475X5
-         Ns8AYwSr9Xo5JC94ZC/m/GNu5zne4CZl2onlRtCFyr2RiFN6hr3/hOvDgOztOxDhtt
-         03UobRstNyV6gNpiLIPx9wr7lV+aZh7JPApv/Xc9AQ/tfKV/7v7a1s50P/Gdrb9r6M
-         UrrfceNsdtesIk6C+5GBx2v6z7fJNM7gqa+k/04+yur6u7y9loB0DiGVw/48Zx6n5H
-         WNAxrcJiCrDKXSRC4cJflY3CsJ6DGDRvl4rJHHmUoSUnC05jryRdbh+v2CCHG+i1XW
-         q3voLqhQl5BHw==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-i2c@vger.kernel.org
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: at24: add microchip,24lc[0-9]+ to the compatible pattern
-Date:   Wed, 22 Apr 2020 23:18:36 +0900
-Message-Id: <20200422141836.1964676-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Apr 2020 10:19:27 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 7BCB82A1EA1
+Message-ID: <c61815a2872c5092c72ccbf9656a2bd6501810a4.camel@collabora.com>
+Subject: Re: [PATCH] media: MAINTAINERS: Fix Hantro, Rga and Rkvdec entries
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>, kernel@collabora.com,
+        Heiko Stuebner <heiko@sntech.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Date:   Wed, 22 Apr 2020 11:19:17 -0300
+In-Reply-To: <20200422160631.74390a06@coco.lan>
+References: <20200422111403.19114-1-ezequiel@collabora.com>
+         <73d3d8c1-1952-aeb1-5bc0-829503cf29bd@gmail.com>
+         <20200422160631.74390a06@coco.lan>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/arm/boot/dts/uniphier-ref-daughter.dtsi has
+On Wed, 2020-04-22 at 16:06 +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 22 Apr 2020 14:01:41 +0200
+> Johan Jonker <jbx6244@gmail.com> escreveu:
+> 
+> > Hi Ezequiel,
+> > 
+> > On 4/22/20 1:14 PM, Ezequiel Garcia wrote:
+> > > It seems recent merges introduced a couple issues
+> > > here, so let's fix them all. Also, reorder Rockchip
+> > > video decoder as per parse-maintainers.pl script
+> > > and add linux-rockchip mailing list.
+> > > 
+> > > Reported-by: Johan Jonker <jbx6244@gmail.com>
+> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > > ---
+> > >  MAINTAINERS | 20 ++++++++++----------
+> > >  1 file changed, 10 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 09e0137df61d..4d5b06c6fe0f 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -7460,7 +7460,7 @@ L:	linux-media@vger.kernel.org
+> > >  L:	linux-rockchip@lists.infradead.org
+> > >  S:	Maintained
+> > >  F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> > > -F:	Documentation/devicetree/bindings/media/rockchip-vpu.txt
+> > > +F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> > >  F:	drivers/staging/media/hantro/
+> > >  
+> > >  HARD DRIVE ACTIVE PROTECTION SYSTEM (HDAPS) DRIVER
+> > > @@ -14465,13 +14465,6 @@ F:	Documentation/ABI/*/sysfs-driver-hid-roccat*
+> > >  F:	drivers/hid/hid-roccat*
+> > >  F:	include/linux/hid-roccat*
+> > >  
+> > > -ROCKCHIP VIDEO DECODER DRIVER
+> > > -M:	Ezequiel Garcia <ezequiel@collabora.com>
+> > > -L:	linux-media@vger.kernel.org
+> > > -S:	Maintained
+> > > -F:	drivers/staging/media/rkvdec/
+> > > -F:	Documentation/devicetree/bindings/media/rockchip,vdec.yaml
+> > > -
+> > >  ROCKCHIP ISP V1 DRIVER
+> > >  M:	Helen Koike <helen.koike@collabora.com>
+> > >  L:	linux-media@vger.kernel.org  
+> > 
+> > L:	linux-rockchip@lists.infradead.org
+> > 
+> > > @@ -14483,12 +14476,19 @@ ROCKCHIP RASTER 2D GRAPHIC ACCELERATION UNIT DRIVER
+> > >  M:	Jacob Chen <jacob-chen@iotwrt.com>
+> > >  M:	Ezequiel Garcia <ezequiel@collabora.com>
+> > >  L:	linux-media@vger.kernel.org
+> > > +L:	linux-rockchip@lists.infradead.org
+> > >  S:	Maintained
+> > > -F:	Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> > >  F:	Documentation/devicetree/bindings/media/rockchip-rga.yaml
+> > > -F:	Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> > >  F:	drivers/media/platform/rockchip/rga/
+> > >  
+> > > +ROCKCHIP VIDEO DECODER DRIVER
+> > > +M:	Ezequiel Garcia <ezequiel@collabora.com>
+> > > +L:	linux-media@vger.kernel.org
+> > > +L:	linux-rockchip@lists.infradead.org
+> > > +S:	Maintained  
+> > > +F:	drivers/staging/media/rkvdec/
+> > > +F:	Documentation/devicetree/bindings/media/rockchip,vdec.yaml  
+> > 
+> > When I look at the other entries 'drivers/' is sort below 'Documentation/'.
+> > 
+> > ./scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS
+> > --order
+> 
+> Good point. It would be cool if checkpatch.pl could call it in order
+> to verify if MAKEFILE changes are at the right order.
+> 
+> As I noticed other fields that are out of the order on media,
+> due to some changes that didn't arrive upstream yet, I'll fix
+> them all on a single patch.
+> 
 
-  compatible = "microchip,24lc128", "atmel,24c128";
+Thanks for taking care of this.
 
-and 'make ARCH=arm dtbs_check' warns this:
-
-  eeprom@50: compatible: ['microchip,24lc128', 'atmel,24c128'] is not valid under any of the given schemas (Possible causes of the failure)
-
-Microchip 24LC128 is the device used on this board, and I see it in
-https://www.microchip.com/wwwproducts/en/24LC128
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- Documentation/devicetree/bindings/eeprom/at24.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-index a15787e504f0..2cd7a04cab7c 100644
---- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-+++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-@@ -34,7 +34,7 @@ properties:
-           - minItems: 1
-             maxItems: 2
-             items:
--              - pattern: "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|mac)[0-9]+|spd)$"
-+              - pattern: "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$"
-               - pattern: "^atmel,(24(c|cs|mac)[0-9]+|spd)$"
-           - oneOf:
-               - items:
--- 
-2.25.1
+Ezequiel
 
