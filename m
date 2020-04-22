@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F70C1B3BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C671B3C42
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgDVJ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 05:59:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
+        id S1727930AbgDVKED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgDVJ7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:59:20 -0400
+        id S1727918AbgDVKD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:03:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AE0C20775;
-        Wed, 22 Apr 2020 09:59:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77D2A2076C;
+        Wed, 22 Apr 2020 10:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549560;
-        bh=U3hm7SiGMK2dMDjRBbZZI0DRkBM9O1aZDKQ7XAcyxFY=;
+        s=default; t=1587549838;
+        bh=fJ96WCz+iWlr15uyMV2Md/i5n39XXHJodgUn1hJAodo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AjcZ1iTkBklfMN/bOEvxrbwZ6XDxXRrbYmvkPZkr6VBLmgphGx5+CEzzCdesuF2+1
-         J8xOSFRuzxqW6uOn3NOSwl1nrCi8gWiHZPZWVLtvoi63Koz+4AWsFTTKMWu7WDz/PC
-         +PLNWTirqcQqpfJ9ScerkKU8Gs/J6fx/JZ3FP6e8=
+        b=H/WAoO79fPOBCL+2DEdpEeJSxBAJRifQz105yab9DEC3KJBNIPL7wsGH2hFt8xrcQ
+         IgXwX5KrZ3V0jXgFruKipu2aVPQoi0oSdAc2jYY6SaviJILIDXuP15HjrC3mQUgCwZ
+         WSCGZ0z4oQWnsBI5qUzh7yfcBmET2iGXzwJsJnkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 014/100] ASoC: fix regwmask
+        stable@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.9 027/125] acpi/x86: ignore unspecified bit positions in the ACPI global lock field
 Date:   Wed, 22 Apr 2020 11:55:44 +0200
-Message-Id: <20200422095025.481182118@linuxfoundation.org>
+Message-Id: <20200422095037.710919282@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 이경택 <gt82.lee@samsung.com>
+From: Jan Engelhardt <jengelh@inai.de>
 
-commit 0ab070917afdc93670c2d0ea02ab6defb6246a7c upstream.
+commit ecb9c790999fd6c5af0f44783bd0217f0b89ec2b upstream.
 
-If regwshift is 32 and the selected architecture compiles '<<' operator
-for signed int literal into rotating shift, '1<<regwshift' became 1 and
-it makes regwmask to 0x0.
-The literal is set to unsigned long to get intended regwmask.
+The value in "new" is constructed from "old" such that all bits defined
+as reserved by the ACPI spec[1] are left untouched. But if those bits
+do not happen to be all zero, "new < 3" will not evaluate to true.
 
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Link: https://lore.kernel.org/r/001001d60665$db7af3e0$9270dba0$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The firmware of the laptop(s) Medion MD63490 / Akoya P15648 comes with
+garbage inside the "FACS" ACPI table. The starting value is
+old=0x4944454d, therefore new=0x4944454e, which is >= 3. Mask off
+the reserved bits.
+
+[1] https://uefi.org/sites/default/files/resources/ACPI_6_2.pdf
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206553
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-ops.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/acpi/boot.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -837,7 +837,7 @@ int snd_soc_get_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long min = mc->min;
-@@ -886,7 +886,7 @@ int snd_soc_put_xr_sx(struct snd_kcontro
- 	unsigned int regbase = mc->regbase;
- 	unsigned int regcount = mc->regcount;
- 	unsigned int regwshift = component->val_bytes * BITS_PER_BYTE;
--	unsigned int regwmask = (1<<regwshift)-1;
-+	unsigned int regwmask = (1UL<<regwshift)-1;
- 	unsigned int invert = mc->invert;
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long max = mc->max;
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -1717,7 +1717,7 @@ int __acpi_acquire_global_lock(unsigned
+ 		new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
+ 		val = cmpxchg(lock, old, new);
+ 	} while (unlikely (val != old));
+-	return (new < 3) ? -1 : 0;
++	return ((new & 0x3) < 3) ? -1 : 0;
+ }
+ 
+ int __acpi_release_global_lock(unsigned int *lock)
 
 
