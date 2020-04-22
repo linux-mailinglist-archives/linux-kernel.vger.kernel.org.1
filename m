@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BBF1B4934
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F971B4936
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgDVPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:54:07 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21051 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726494AbgDVPyG (ORCPT
+        id S1726865AbgDVPyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:54:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54687 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726494AbgDVPyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:54:06 -0400
+        Wed, 22 Apr 2020 11:54:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587570844;
+        s=mimecast20190719; t=1587570849;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JCIBxqQ98eHRn3Mzi9AyOTGU0OOVL2DFdvaTq6bk3Hg=;
-        b=e0rWa/+C2Buhzlv6EMXS+uxJW2amnlcmgJR1DoGolrugVswOSmw1pO2+JahEiTokQZy7Q1
-        lZoeEVWR90R72dogyRoJHFmEw3KUrVKw7OtQC2rFlRXsgj9lYTfJJrJkvXwFLr1ghvnfRZ
-        LD315/ryZyOBiPihFY2yTtTxaVtvSlU=
+        bh=XvNOEzghjjU35z3Ri1gDht/p2r/zLVMYDB1agT7sxZk=;
+        b=DV1pbRiRIum94f+DqlULBAeX3/2AJ6RuJJpWdwguTd+4b/s/dap88xw/75VVXAxUAQe9h0
+        zLW7Foux2IY7JXBQZMwNpdfz91LHJipDiEipOWPnSYR4effvIraW1gnw6ueQwvg9LXKq1n
+        Vye49zq4a0ztTyni8lKr96DdVvHYA20=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-QZyRluTLNJel7kvn3BudXg-1; Wed, 22 Apr 2020 11:54:02 -0400
-X-MC-Unique: QZyRluTLNJel7kvn3BudXg-1
+ us-mta-439-I5CBHWstNcyRneaJNSv7Uw-1; Wed, 22 Apr 2020 11:54:05 -0400
+X-MC-Unique: I5CBHWstNcyRneaJNSv7Uw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACCF41084424;
-        Wed, 22 Apr 2020 15:54:01 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DE99801503;
+        Wed, 22 Apr 2020 15:54:04 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-57.ams2.redhat.com [10.36.114.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E64CC5D706;
-        Wed, 22 Apr 2020 15:53:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A89B5D706;
+        Wed, 22 Apr 2020 15:54:01 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v1 1/2] mm/memory_hotplug: set node_start_pfn of hotadded pgdat to 0
-Date:   Wed, 22 Apr 2020 17:53:52 +0200
-Message-Id: <20200422155353.25381-2-david@redhat.com>
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH v1 2/2] mm/memory_hotplug: handle memblocks only with CONFIG_ARCH_KEEP_MEMBLOCK
+Date:   Wed, 22 Apr 2020 17:53:53 +0200
+Message-Id: <20200422155353.25381-3-david@redhat.com>
 In-Reply-To: <20200422155353.25381-1-david@redhat.com>
 References: <20200422155353.25381-1-david@redhat.com>
 MIME-Version: 1.0
@@ -54,119 +57,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A hotadded node/pgdat will span no pages at all, until memory is moved to
-the zone/node via move_pfn_range_to_zone() -> resize_pgdat_range - e.g.,
-when onlining memory blocks. We don't have to initialize the
-node_start_pfn to the memory we are adding.
+The comment in add_memory_resource() is stale: hotadd_new_pgdat() will
+no longer call get_pfn_range_for_nid(), as a hotadded pgdat will simply
+span no pages at all, until memory is moved to the zone/node via
+move_pfn_range_to_zone() - e.g., when onlining memory blocks.
 
-Especially, there is an inconsistency:
-- Hotplugging memory to a memory-less node with cpus: node_start_pf =3D=3D=
- 0
-- Offlining and removing last memory from a node: node_start_pfn =3D=3D 0
-- Hotplugging memory to a memory-less node without cpus: node_start_pfn !=
-=3D0
+The only archs that care about memblocks for hotplugged memory (either
+for iterating over all system RAM or testing for memory validity) are
+arm64, s390x, and powerpc - due to CONFIG_ARCH_KEEP_MEMBLOCK. Without
+CONFIG_ARCH_KEEP_MEMBLOCK, we can simply stop messing with memblocks.
 
-As soon as memory is onlined, node_start_pfn is overwritten with the
-actual start. E.g., when adding two DIMMs but only onlining one of
-both, only that DIMM (with online memory blocks) is spanned by the
-node.
-
-Currently, the validity of node_start_pfn really is linked to
-node_spanned_pages !=3D 0. With node_spanned_pages =3D=3D 0 (e.g., before
-onlining memory), it has no meaning.
-
-So let's stop setting node_start_pfn, just to be overwritten via
-move_pfn_range_to_zone(). This avoids confusion when looking at the
-code, wondering which magic will be performed with the node_start_pfn
-in this function, when hotadding a pgdat.
-
-Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Baoquan He <bhe@redhat.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory_hotplug.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ mm/Kconfig          |  3 +++
+ mm/memory_hotplug.c | 20 ++++++++++----------
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 3af64646f343..db626b8d4fdb 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -133,6 +133,9 @@ config HAVE_FAST_GUP
+ 	depends on MMU
+ 	bool
+=20
++# Don't discard allocated memory used to track "memory" and "reserved" m=
+emblocks
++# after early boot, so it can still be used to test for validity of memo=
+ry.
++# Also, memblocks are updated with memory hot(un)plug.
+ config ARCH_KEEP_MEMBLOCK
+ 	bool
+=20
 diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index b65e0d1c9812..4dc263d2525a 100644
+index 4dc263d2525a..555137bd0882 100644
 --- a/mm/memory_hotplug.c
 +++ b/mm/memory_hotplug.c
-@@ -866,10 +866,9 @@ static void reset_node_present_pages(pg_data_t *pgda=
-t)
- }
-=20
- /* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLU=
-G */
--static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
-+static pg_data_t __ref *hotadd_new_pgdat(int nid)
- {
- 	struct pglist_data *pgdat;
--	unsigned long start_pfn =3D PFN_DOWN(start);
-=20
- 	pgdat =3D NODE_DATA(nid);
- 	if (!pgdat) {
-@@ -899,9 +898,8 @@ static pg_data_t __ref *hotadd_new_pgdat(int nid, u64=
- start)
- 	}
-=20
- 	/* we can use NODE_DATA(nid) from here */
--
- 	pgdat->node_id =3D nid;
--	pgdat->node_start_pfn =3D start_pfn;
-+	pgdat->node_start_pfn =3D 0;
-=20
- 	/* init node's zones as empty zones, we don't have any present pages.*/
- 	free_area_init_core_hotplug(nid);
-@@ -936,7 +934,6 @@ static void rollback_node_hotadd(int nid)
- /**
-  * try_online_node - online a node if offlined
-  * @nid: the node ID
-- * @start: start addr of the node
-  * @set_node_online: Whether we want to online the node
-  * called by cpu_up() to online a node without onlined memory.
-  *
-@@ -945,7 +942,7 @@ static void rollback_node_hotadd(int nid)
-  * 0 -> the node is already online
-  * -ENOMEM -> the node could not be allocated
-  */
--static int __try_online_node(int nid, u64 start, bool set_node_online)
-+static int __try_online_node(int nid, bool set_node_online)
- {
- 	pg_data_t *pgdat;
- 	int ret =3D 1;
-@@ -953,7 +950,7 @@ static int __try_online_node(int nid, u64 start, bool=
- set_node_online)
- 	if (node_online(nid))
- 		return 0;
-=20
--	pgdat =3D hotadd_new_pgdat(nid, start);
-+	pgdat =3D hotadd_new_pgdat(nid);
- 	if (!pgdat) {
- 		pr_err("Cannot online node %d due to NULL pgdat\n", nid);
- 		ret =3D -ENOMEM;
-@@ -977,7 +974,7 @@ int try_online_node(int nid)
- 	int ret;
+@@ -1025,13 +1025,8 @@ int __ref add_memory_resource(int nid, struct reso=
+urce *res)
 =20
  	mem_hotplug_begin();
--	ret =3D  __try_online_node(nid, 0, true);
-+	ret =3D  __try_online_node(nid, true);
+=20
+-	/*
+-	 * Add new range to memblock so that when hotadd_new_pgdat() is called
+-	 * to allocate new pgdat, get_pfn_range_for_nid() will be able to find
+-	 * this new range and calculate total pages correctly.  The range will
+-	 * be removed at hot-remove time.
+-	 */
+-	memblock_add_node(start, size, nid);
++	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
++		memblock_add_node(start, size, nid);
+=20
+ 	ret =3D __try_online_node(nid, false);
+ 	if (ret < 0)
+@@ -1080,7 +1075,8 @@ int __ref add_memory_resource(int nid, struct resou=
+rce *res)
+ 	/* rollback pgdat allocation and others */
+ 	if (new_node)
+ 		rollback_node_hotadd(nid);
+-	memblock_remove(start, size);
++	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
++		memblock_remove(start, size);
  	mem_hotplug_done();
  	return ret;
  }
-@@ -1036,7 +1033,7 @@ int __ref add_memory_resource(int nid, struct resou=
-rce *res)
- 	 */
- 	memblock_add_node(start, size, nid);
+@@ -1677,8 +1673,12 @@ static int __ref try_remove_memory(int nid, u64 st=
+art, u64 size)
+ 	mem_hotplug_begin();
 =20
--	ret =3D __try_online_node(nid, start, false);
-+	ret =3D __try_online_node(nid, false);
- 	if (ret < 0)
- 		goto error;
- 	new_node =3D ret;
+ 	arch_remove_memory(nid, start, size, NULL);
+-	memblock_free(start, size);
+-	memblock_remove(start, size);
++
++	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
++		memblock_free(start, size);
++		memblock_remove(start, size);
++	}
++
+ 	__release_memory_resource(start, size);
+=20
+ 	try_offline_node(nid);
 --=20
 2.25.3
 
