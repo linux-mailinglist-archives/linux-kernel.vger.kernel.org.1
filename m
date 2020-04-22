@@ -2,61 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0951B4B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7641B4B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgDVREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:04:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:53695 "EHLO verein.lst.de"
+        id S1726769AbgDVRLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:11:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:52966 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgDVREH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:04:07 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3F82568C4E; Wed, 22 Apr 2020 19:04:04 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 19:04:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vinod Koul <vkoul@kernel.org>, Haibo Chen <haibo.chen@nxp.com>,
-        Ludovic Barre <ludovic.barre@st.com>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 2/2] amba: Initialize dma_parms for amba
- devices
-Message-ID: <20200422170403.GB28781@lst.de>
-References: <20200422101013.31267-1-ulf.hansson@linaro.org>
+        id S1726006AbgDVRLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:11:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7CFA1FB;
+        Wed, 22 Apr 2020 10:11:32 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4581F3F6CF;
+        Wed, 22 Apr 2020 10:11:31 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 18:11:22 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Phong Tran <tranmanphong@gmail.com>, steve.capper@arm.com,
+        steven.price@arm.com, keescook@chromium.org, greg@kroah.com,
+        akpm@linux-foundation.org, alexios.zavras@intel.com,
+        broonie@kernel.org, kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH v2] arm64: add check_wx_pages debugfs for CHECK_WX
+Message-ID: <20200422171122.GA40812@lakrids.cambridge.arm.com>
+References: <20200307093926.27145-1-tranmanphong@gmail.com>
+ <20200421173557.10817-1-tranmanphong@gmail.com>
+ <20200422143526.GD54796@lakrids.cambridge.arm.com>
+ <20200422152656.GF676@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422101013.31267-1-ulf.hansson@linaro.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200422152656.GF676@willie-the-truck>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:10:13PM +0200, Ulf Hansson wrote:
-> It's currently the amba driver's responsibility to initialize the pointer,
-> dma_parms, for its corresponding struct device. The benefit with this
-> approach allows us to avoid the initialization and to not waste memory for
-> the struct device_dma_parameters, as this can be decided on a case by case
-> basis.
+On Wed, Apr 22, 2020 at 04:26:56PM +0100, Will Deacon wrote:
+> On Wed, Apr 22, 2020 at 03:35:27PM +0100, Mark Rutland wrote:
+> > Thanks,
+> > Marm.
 > 
-> However, it has turned out that this approach is not very practical. Not
-> only does it lead to open coding, but also to real errors. In principle
-> callers of dma_set_max_seg_size() doesn't check the error code, but just
-> assumes it succeeds.
-> 
-> For these reasons, let's do the initialization from the common amba bus at
-> the device registration point. This also follows the way the PCI devices
-> are being managed, see pci_device_add().
+> Wow, employee of the month!
 
-Looks good,
+Muscle-memory has finally defeated me...
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Marm.
