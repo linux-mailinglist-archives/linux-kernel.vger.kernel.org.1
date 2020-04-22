@@ -2,60 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F48E1B4337
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0ACE1B434A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgDVL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
+        id S1727846AbgDVLa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 07:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726112AbgDVL3Z (ORCPT
+        by vger.kernel.org with ESMTP id S1728072AbgDVLaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:29:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCB0C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 04:29:25 -0700 (PDT)
+        Wed, 22 Apr 2020 07:30:24 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33556C03C1A8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 04:30:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-Id:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Cg7TnfeMbVTc6R9MMQLUz/C06aiqu3W/Qg0iPfWUfeg=; b=FSh5B9kvUO5j16tClwcqwns7+A
-        G+6MWXoxXfSj8mogm5Ocnt9tJo+lvKe3Ttx9Fm5T83nMf2ReYvuQRp26Qxsq2Vlw8C6a9yCAjoYXj
-        OVg4xsBZyYzF7SOAYalk/s8HwNT5mHNnNKOlenwv8t0cwQcPPoOJi5m/UZMMtb5Z2e+PWH7Sir8OI
-        5U3wdba3YR4I0G+ebNSY+QwauDyDiUjbiKnnxnshpOVHXuBdnololVWcj1eF9Tk/DQK0Aa7N1Nus5
-        4iWtf91OyCu52BC6AmetzJvspS2BDgNh24nghkB3ZV4XkOGZOZQCLoeezD3G8bIe7pIfH7N6Iiitu
-        NP805C9g==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=9B5Wbnq6rCPK+M1cbgaMO7Im/waoMKu33EAwcoj+MK0=; b=bGb7bWj9h9ufPkqP+WynA7+1DL
+        bIFgFneW0iR08OGSKGurfb3heslztxCWUaK/s1eGIWHI30fxuIRRiVPk25REzyJ8lEFCnrFsEQ05j
+        HFsYmK4zIie6JhF2n6sQfleeuAPmw3ADYzzjHEJXvzmWaZps+HsfFd8JnCGhtab09rJmIDYFB+SbJ
+        j2EGl/edn8UjT63lQpuT5RPr1/zoO9Ljr3ANIljvklFB5h0zipfofmtEg6q5wXPj8BOJT79DaRDjq
+        L8yYUs0O7Hl27hYz8Iuj4ziliCB+qZCUAYhee01WwxN7OdxPbqWAWsliix/QnmqapyY+uG/8mPUH9
+        HW0hO7OA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRDYv-0003aW-3x; Wed, 22 Apr 2020 11:29:05 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRDYy-0006rH-I1; Wed, 22 Apr 2020 11:29:08 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5C5630746C;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AE20307773;
         Wed, 22 Apr 2020 13:29:02 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B1B5320195233; Wed, 22 Apr 2020 13:29:02 +0200 (CEST)
-Message-Id: <20200422112719.826676174@infradead.org>
+        id B4D64202801A5; Wed, 22 Apr 2020 13:29:02 +0200 (CEST)
+Message-Id: <20200422112831.266499893@infradead.org>
 User-Agent: quilt/0.65
-Date:   Wed, 22 Apr 2020 13:27:19 +0200
+Date:   Wed, 22 Apr 2020 13:27:20 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, rostedt@goodmis.org, qais.yousef@arm.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        peterz@infradead.org
-Subject: [PATCH 00/23] sched: Remove FIFO priorities from modules
+        peterz@infradead.org, airlied@redhat.com,
+        alexander.deucher@amd.com, awalls@md.metrocast.net,
+        axboe@kernel.dk, broonie@kernel.org, daniel.lezcano@linaro.org,
+        gregkh@linuxfoundation.org, hannes@cmpxchg.org,
+        herbert@gondor.apana.org.au, hverkuil@xs4all.nl,
+        john.stultz@linaro.org, nico@fluxnic.net, paulmck@kernel.org,
+        rafael.j.wysocki@intel.com, rmk+kernel@arm.linux.org.uk,
+        sudeep.holla@arm.com, ulf.hansson@linaro.org,
+        wim@linux-watchdog.org
+Subject: [PATCH 01/23] sched: Provide sched_set_fifo()
+References: <20200422112719.826676174@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After having seen yet another patch that adds a FIFO kernel thread at a random
-priority, I bit the bullet and implemented the suggestion done a while ago:
+SCHED_FIFO (or any static priority scheduler) is a broken scheduler
+model; it is fundamentally incapable of resource management, the one
+thing an OS is actually supposed to do.
 
-  Flat out remove the ability to set a specific FIFO priority
+It is impossible to compose static priority workloads. One cannot take
+two well designed and functional static priority workloads and mash
+them together and still expect them to work.
 
-As argued in the patches themselves, the kernel has no clue what actual
-priority it should use for various things, so it is useless (or worse, counter
-productive) to even try.
+Therefore it doesn't make sense to expose the priority field; the
+kernel is fundamentally incapable of setting a sensible value, it
+needs systems knowledge that it doesn't have.
+
+Take away sched_setschedule() / sched_setattr() from modules and
+replace them with:
+
+  - sched_set_fifo(p); create a FIFO task (at prio 50)
+  - sched_set_fifo_low(p); create a task higher than NORMAL,
+	which ends up being a FIFO task at prio 1.
+  - sched_set_normal(p, nice); (re)set the task to normal
+
+This stops the proliferation of randomly chosen, and irrelevant, FIFO
+priorities that dont't really mean anything anyway.
+
+The system administrator/integrator, whoever has insight into the
+actual system design and requirements (userspace) can set-up
+appropriate priorities if and when needed.
+
+Cc: airlied@redhat.com
+Cc: alexander.deucher@amd.com
+Cc: awalls@md.metrocast.net
+Cc: axboe@kernel.dk
+Cc: broonie@kernel.org
+Cc: daniel.lezcano@linaro.org
+Cc: gregkh@linuxfoundation.org
+Cc: hannes@cmpxchg.org
+Cc: herbert@gondor.apana.org.au
+Cc: hverkuil@xs4all.nl
+Cc: john.stultz@linaro.org
+Cc: nico@fluxnic.net
+Cc: paulmck@kernel.org
+Cc: rafael.j.wysocki@intel.com
+Cc: rmk+kernel@arm.linux.org.uk
+Cc: sudeep.holla@arm.com
+Cc: tglx@linutronix.de
+Cc: ulf.hansson@linaro.org
+Cc: wim@linux-watchdog.org
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/sched.h |    3 +++
+ kernel/sched/core.c   |   47 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
+
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1631,6 +1631,9 @@ extern int idle_cpu(int cpu);
+ extern int available_idle_cpu(int cpu);
+ extern int sched_setscheduler(struct task_struct *, int, const struct sched_param *);
+ extern int sched_setscheduler_nocheck(struct task_struct *, int, const struct sched_param *);
++extern int sched_set_fifo(struct task_struct *p);
++extern int sched_set_fifo_low(struct task_struct *p);
++extern int sched_set_normal(struct task_struct *p, int nice);
+ extern int sched_setattr(struct task_struct *, const struct sched_attr *);
+ extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
+ extern struct task_struct *idle_task(int cpu);
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5055,6 +5055,8 @@ static int _sched_setscheduler(struct ta
+  * @policy: new policy.
+  * @param: structure containing the new RT priority.
+  *
++ * Use sched_set_fifo(), read its comment.
++ *
+  * Return: 0 on success. An error code otherwise.
+  *
+  * NOTE that the task may be already dead.
+@@ -5097,6 +5099,51 @@ int sched_setscheduler_nocheck(struct ta
+ }
+ EXPORT_SYMBOL_GPL(sched_setscheduler_nocheck);
+ 
++/*
++ * SCHED_FIFO is a broken scheduler model; that is, it is fundamentally
++ * incapable of resource management, which is the one thing an OS really should
++ * be doing.
++ *
++ * This is of course the reason it is limited to privileged users only.
++ *
++ * Worse still; it is fundamentally impossible to compose static priority
++ * workloads. You cannot take two correctly working static prio workloads
++ * and smash them together and still expect them to work.
++ *
++ * For this reason 'all' FIFO tasks the kernel creates are basically at:
++ *
++ *   MAX_RT_PRIO / 2
++ *
++ * The administrator _MUST_ configure the system, the kernel simply doesn't
++ * know enough information to make a sensible choice.
++ */
++int sched_set_fifo(struct task_struct *p)
++{
++	struct sched_param sp = { .sched_priority = MAX_RT_PRIO / 2 };
++	return sched_setscheduler_nocheck(p, SCHED_FIFO, &sp);
++}
++EXPORT_SYMBOL_GPL(sched_set_fifo);
++
++/*
++ * For when you don't much care about FIFO, but want to be above SCHED_NORMAL.
++ */
++int sched_set_fifo_low(struct task_struct *p)
++{
++	struct sched_param sp = { .sched_priority = 1 };
++	return sched_setscheduler_nocheck(p, SCHED_FIFO, &sp);
++}
++EXPORT_SYMBOL_GPL(sched_set_fifo_low);
++
++int sched_set_normal(struct task_struct *p, int nice)
++{
++	struct sched_attr attr = {
++		.sched_policy = SCHED_NORMAL,
++		.sched_nice = nice,
++	};
++	return sched_setattr_nocheck(p, &attr);
++}
++EXPORT_SYMBOL_GPL(sched_set_normal);
++
+ static int
+ do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
+ {
+
 
