@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE171B4299
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060B61B3DAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732376AbgDVLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48092 "EHLO mail.kernel.org"
+        id S1729838AbgDVKRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbgDVKAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:00:38 -0400
+        id S1729761AbgDVKQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:16:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B47F02084D;
-        Wed, 22 Apr 2020 10:00:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0080520775;
+        Wed, 22 Apr 2020 10:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549636;
-        bh=RWLeXoutRgfPC7VgJhR9K9c937W8nDWYj2QA4fqneZI=;
+        s=default; t=1587550588;
+        bh=7ekGnQwcskQsAvXyxVhU+OYSAugtcgiQWwJ33Cjr7c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F58NecY7EKGUmiE2YLn9rGNpcUcEmR8Uv0PNgLBLUn8P5zWmFkHtCiF2uC3jo4qTp
-         vYUs+y3ae08BNNclT7WAf/ERpB/La5796osGg4iFsryhCwu2Hyuaab+ZYPxm5lJvT3
-         fa1dqTeLXtyTA4h6MMTRV2+8mW2VhexCWeMO/MMU=
+        b=mKNvgbuBBHnaW1ikZ6XhLqb8n8WK27s/THaEJHDA1djKoFERieaYsGahuYT0L/HXM
+         0xjaRu8Lnnx1A0ieA9xIcf2D/1un94eHtREwfk68hkTRiPyZvk3BV3L9RA1Me3V25H
+         ZjUKlC5mXMb7BPg98M6CSHdEnRojOh5e0BES+Jo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Mueller <mimu@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.4 044/100] s390/diag: fix display of diagnose call statistics
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 013/118] ALSA: hda: Dont release card at firmware loading error
 Date:   Wed, 22 Apr 2020 11:56:14 +0200
-Message-Id: <20200422095030.363196585@linuxfoundation.org>
+Message-Id: <20200422095033.716915406@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Mueller <mimu@linux.ibm.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 6c7c851f1b666a8a455678a0b480b9162de86052 upstream.
+commit 25faa4bd37c10f19e4b848b9032a17a3d44c6f09 upstream.
 
-Show the full diag statistic table and not just parts of it.
+At the error path of the firmware loading error, the driver tries to
+release the card object and set NULL to drvdata.  This may be referred
+badly at the possible PM action, as the driver itself is still bound
+and the PM callbacks read the card object.
 
-The issue surfaced in a KVM guest with a number of vcpus
-defined smaller than NR_DIAG_STAT.
+Instead, we continue the probing as if it were no option set.  This is
+often a better choice than the forced abort, too.
 
-Fixes: 1ec2772e0c3c ("s390/diag: add a statistic for diagnose calls")
-Cc: stable@vger.kernel.org
-Signed-off-by: Michael Mueller <mimu@linux.ibm.com>
-Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Fixes: 5cb543dba986 ("ALSA: hda - Deferred probing with request_firmware_nowait()")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
+Link: https://lore.kernel.org/r/20200413082034.25166-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/diag.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c |   19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
---- a/arch/s390/kernel/diag.c
-+++ b/arch/s390/kernel/diag.c
-@@ -76,7 +76,7 @@ static int show_diag_stat(struct seq_fil
- 
- static void *show_diag_stat_start(struct seq_file *m, loff_t *pos)
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1980,24 +1980,15 @@ static void azx_firmware_cb(const struct
  {
--	return *pos <= nr_cpu_ids ? (void *)((unsigned long) *pos + 1) : NULL;
-+	return *pos <= NR_DIAG_STAT ? (void *)((unsigned long) *pos + 1) : NULL;
- }
+ 	struct snd_card *card = context;
+ 	struct azx *chip = card->private_data;
+-	struct pci_dev *pci = chip->pci;
  
- static void *show_diag_stat_next(struct seq_file *m, void *v, loff_t *pos)
+-	if (!fw) {
+-		dev_err(card->dev, "Cannot load firmware, aborting\n");
+-		goto error;
+-	}
+-
+-	chip->fw = fw;
++	if (fw)
++		chip->fw = fw;
++	else
++		dev_err(card->dev, "Cannot load firmware, continue without patching\n");
+ 	if (!chip->disabled) {
+ 		/* continue probing */
+-		if (azx_probe_continue(chip))
+-			goto error;
++		azx_probe_continue(chip);
+ 	}
+-	return; /* OK */
+-
+- error:
+-	snd_card_free(card);
+-	pci_set_drvdata(pci, NULL);
+ }
+ #endif
+ 
 
 
