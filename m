@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A9D1B401E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3091B3F25
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731803AbgDVKne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:43:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56360 "EHLO mail.kernel.org"
+        id S1731305AbgDVKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:34:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730062AbgDVKTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:19:34 -0400
+        id S1730391AbgDVKYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2DA02075A;
-        Wed, 22 Apr 2020 10:19:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 945D42084D;
+        Wed, 22 Apr 2020 10:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550773;
-        bh=akMjQJ64mNR3wfa9mHacNmsGeQLx5+Kc0AWod/pu0pk=;
+        s=default; t=1587551042;
+        bh=G7KxnwoLgLdPJXOkgOpWzhaL/rwPD/wpMyKVXu5Bt9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t2fqbyJWMkKZNFjkNHK2cvVxO0Jhi9fr613dCmGWTXwLTxqvRXN61avkwGbKqJIL2
-         qWf0W2lDI35FeuCSJFXSdMR5MzsIFcaPvmvyvYpW9kd6BefvOzH9pl6QRgiQxO/niD
-         fhPYh3ZrE4VG2u7qov/QdjHJXyWkMUpbPE9O++cE=
+        b=SGOB7E+tpel/JkD1Fk8UE5XWAjHwB8ZRIk0OFnZzCGclGqdZcL/2xWXmsKzcHbDYr
+         y92vujsU/pKD/LBT367epuGIadECaEqyphCtWFpincgVY0IPi6ViQs/Znapws4H8Vd
+         XZenoM+K7c4uIQlicNHi9wEMzF9O9sr373jF0NrE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/118] arm64: tegra: Add PCIe endpoint controllers nodes for Tegra194
+Subject: [PATCH 5.6 078/166] drivers: thermal: tsens: Release device in success path
 Date:   Wed, 22 Apr 2020 11:56:45 +0200
-Message-Id: <20200422095039.168075761@linuxfoundation.org>
+Message-Id: <20200422095057.203705435@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,130 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vidya Sagar <vidyas@nvidia.com>
+From: Amit Kucheria <amit.kucheria@linaro.org>
 
-[ Upstream commit 0c988b731e6430f0081991fdb4f63f7fc837df9a ]
+[ Upstream commit f22a3bf0d2225fba438c46a25d3ab8823585a5e0 ]
 
-Add endpoint mode controllers nodes for the dual mode PCIe controllers
-present in Tegra194 SoC.
+We don't currently call put_device in case of successfully initialising
+the device. So we hold the reference and keep the device pinned forever.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Allow control to fall through so we can use same code for success and
+error paths to put_device.
+
+As a part of this fixup, change devm_ioremap_resource to act on the same
+device pointer as that used to allocate regmap memory. That ensures that
+we are free to release op->dev after examining its resources.
+
+Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/d3996667e9f976bb30e97e301585cb1023be422e.1584015867.git.amit.kucheria@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 99 ++++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
+ drivers/thermal/qcom/tsens-common.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 3c0cf54f0aab3..57adcbb7352d6 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -1430,6 +1430,105 @@
- 			  0x82000000 0x0  0x40000000 0x1f 0x40000000 0x0 0xc0000000>; /* non-prefetchable memory (3GB) */
- 	};
+diff --git a/drivers/thermal/qcom/tsens-common.c b/drivers/thermal/qcom/tsens-common.c
+index c8d57ee0a5bb2..2cc276cdfcdb1 100644
+--- a/drivers/thermal/qcom/tsens-common.c
++++ b/drivers/thermal/qcom/tsens-common.c
+@@ -602,7 +602,7 @@ int __init init_common(struct tsens_priv *priv)
+ 		/* DT with separate SROT and TM address space */
+ 		priv->tm_offset = 0;
+ 		res = platform_get_resource(op, IORESOURCE_MEM, 1);
+-		srot_base = devm_ioremap_resource(&op->dev, res);
++		srot_base = devm_ioremap_resource(dev, res);
+ 		if (IS_ERR(srot_base)) {
+ 			ret = PTR_ERR(srot_base);
+ 			goto err_put_device;
+@@ -620,7 +620,7 @@ int __init init_common(struct tsens_priv *priv)
+ 	}
  
-+	pcie_ep@14160000 {
-+		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX4A>;
-+		reg = <0x00 0x14160000 0x0 0x00020000   /* appl registers (128K)      */
-+		       0x00 0x36040000 0x0 0x00040000   /* iATU_DMA reg space (256K)  */
-+		       0x00 0x36080000 0x0 0x00040000   /* DBI reg space (256K)       */
-+		       0x14 0x00000000 0x4 0x00000000>; /* Address Space (16G)        */
-+		reg-names = "appl", "atu_dma", "dbi", "addr_space";
-+
-+		status = "disabled";
-+
-+		num-lanes = <4>;
-+		num-ib-windows = <2>;
-+		num-ob-windows = <8>;
-+
-+		clocks = <&bpmp TEGRA194_CLK_PEX0_CORE_4>;
-+		clock-names = "core";
-+
-+		resets = <&bpmp TEGRA194_RESET_PEX0_CORE_4_APB>,
-+			 <&bpmp TEGRA194_RESET_PEX0_CORE_4>;
-+		reset-names = "apb", "core";
-+
-+		interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;	/* controller interrupt */
-+		interrupt-names = "intr";
-+
-+		nvidia,bpmp = <&bpmp 4>;
-+
-+		nvidia,aspm-cmrt-us = <60>;
-+		nvidia,aspm-pwr-on-t-us = <20>;
-+		nvidia,aspm-l0s-entrance-latency-us = <3>;
-+	};
-+
-+	pcie_ep@14180000 {
-+		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8B>;
-+		reg = <0x00 0x14180000 0x0 0x00020000   /* appl registers (128K)      */
-+		       0x00 0x38040000 0x0 0x00040000   /* iATU_DMA reg space (256K)  */
-+		       0x00 0x38080000 0x0 0x00040000   /* DBI reg space (256K)       */
-+		       0x18 0x00000000 0x4 0x00000000>; /* Address Space (16G)        */
-+		reg-names = "appl", "atu_dma", "dbi", "addr_space";
-+
-+		status = "disabled";
-+
-+		num-lanes = <8>;
-+		num-ib-windows = <2>;
-+		num-ob-windows = <8>;
-+
-+		clocks = <&bpmp TEGRA194_CLK_PEX0_CORE_0>;
-+		clock-names = "core";
-+
-+		resets = <&bpmp TEGRA194_RESET_PEX0_CORE_0_APB>,
-+			 <&bpmp TEGRA194_RESET_PEX0_CORE_0>;
-+		reset-names = "apb", "core";
-+
-+		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;	/* controller interrupt */
-+		interrupt-names = "intr";
-+
-+		nvidia,bpmp = <&bpmp 0>;
-+
-+		nvidia,aspm-cmrt-us = <60>;
-+		nvidia,aspm-pwr-on-t-us = <20>;
-+		nvidia,aspm-l0s-entrance-latency-us = <3>;
-+	};
-+
-+	pcie_ep@141a0000 {
-+		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8A>;
-+		reg = <0x00 0x141a0000 0x0 0x00020000   /* appl registers (128K)      */
-+		       0x00 0x3a040000 0x0 0x00040000   /* iATU_DMA reg space (256K)  */
-+		       0x00 0x3a080000 0x0 0x00040000   /* DBI reg space (256K)       */
-+		       0x1c 0x00000000 0x4 0x00000000>; /* Address Space (16G)        */
-+		reg-names = "appl", "atu_dma", "dbi", "addr_space";
-+
-+		status = "disabled";
-+
-+		num-lanes = <8>;
-+		num-ib-windows = <2>;
-+		num-ob-windows = <8>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&clkreq_c5_bi_dir_state>;
-+
-+		clocks = <&bpmp TEGRA194_CLK_PEX1_CORE_5>;
-+		clock-names = "core";
-+
-+		resets = <&bpmp TEGRA194_RESET_PEX1_CORE_5_APB>,
-+			 <&bpmp TEGRA194_RESET_PEX1_CORE_5>;
-+		reset-names = "apb", "core";
-+
-+		interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;	/* controller interrupt */
-+		interrupt-names = "intr";
-+
-+		nvidia,bpmp = <&bpmp 5>;
-+
-+		nvidia,aspm-cmrt-us = <60>;
-+		nvidia,aspm-pwr-on-t-us = <20>;
-+		nvidia,aspm-l0s-entrance-latency-us = <3>;
-+	};
-+
- 	sysram@40000000 {
- 		compatible = "nvidia,tegra194-sysram", "mmio-sram";
- 		reg = <0x0 0x40000000 0x0 0x50000>;
+ 	res = platform_get_resource(op, IORESOURCE_MEM, 0);
+-	tm_base = devm_ioremap_resource(&op->dev, res);
++	tm_base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(tm_base)) {
+ 		ret = PTR_ERR(tm_base);
+ 		goto err_put_device;
+@@ -687,8 +687,6 @@ int __init init_common(struct tsens_priv *priv)
+ 	tsens_enable_irq(priv);
+ 	tsens_debug_init(op);
+ 
+-	return 0;
+-
+ err_put_device:
+ 	put_device(&op->dev);
+ 	return ret;
 -- 
 2.20.1
 
