@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6D71B3BFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE611B420B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgDVKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:01:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
+        id S1728046AbgDVKEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726799AbgDVKB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:27 -0400
+        id S1728015AbgDVKE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:04:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C2C32077D;
-        Wed, 22 Apr 2020 10:01:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3921320575;
+        Wed, 22 Apr 2020 10:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549686;
-        bh=Q1oyFjKzbrGphP40si7zC/EVZ5glG1t3TqYutsH/IvM=;
+        s=default; t=1587549865;
+        bh=eaTq/+OJ9pWfqKoNeJf9ogvNNbTuOGarSp3FuVQHadM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1edt9nyrwc+BTCfZYrm0BFeX1jXtc3VPGvDPnAvy/gwwxNidQwFHOvR1+7gl/airc
-         XV8oyTiCBBWvD43EvwYQynDGIN5/IId1jPWCxv8vK8mDxaqdgO/vTJl3opzT9GP5TW
-         2DFKtBkenQc7H2Z6eVyxO7Hies6ExFCLML55/JWA=
+        b=efFRr1rm3JndbgpSVy/cE9P5R71ZzJe4moilF+N4qY3owg18l+rsl5dsT+BFZ4K2l
+         P8QKRJR1EYtCwzEMfEWWGlNNoeRWq2J9e47tNs720R36CZ0n97IHEtmem0kLPzCLRD
+         YSZ9zI139i3If6Lq+/9DtiKORw7bAvr8hCQb6Y5A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Jari Ruusu <jari.ruusu@gmail.com>
-Subject: [PATCH 4.4 024/100] ALSA: pcm: oss: Fix regression by buffer overflow fix
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 037/125] KVM: x86: Allocate new rmap and large page tracking when moving memslot
 Date:   Wed, 22 Apr 2020 11:55:54 +0200
-Message-Id: <20200422095027.091141598@linuxfoundation.org>
+Message-Id: <20200422095039.488207824@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,126 +45,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit ae769d3556644888c964635179ef192995f40793 upstream.
+commit edd4fa37baa6ee8e44dc65523b27bd6fe44c94de upstream.
 
-The recent fix for the OOB access in PCM OSS plugins (commit
-f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
-regression on OSS applications.  The patch introduced the size check
-in client and slave size calculations to limit to each plugin's buffer
-size, but I overlooked that some code paths call those without
-allocating the buffer but just for estimation.
+Reallocate a rmap array and recalcuate large page compatibility when
+moving an existing memslot to correctly handle the alignment properties
+of the new memslot.  The number of rmap entries required at each level
+is dependent on the alignment of the memslot's base gfn with respect to
+that level, e.g. moving a large-page aligned memslot so that it becomes
+unaligned will increase the number of rmap entries needed at the now
+unaligned level.
 
-This patch fixes the bug by skipping the size check for those code
-paths while keeping checking in the actual transfer calls.
+Not updating the rmap array is the most obvious bug, as KVM accesses
+garbage data beyond the end of the rmap.  KVM interprets the bad data as
+pointers, leading to non-canonical #GPs, unexpected #PFs, etc...
 
-Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
-Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200403072515.25539-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+  general protection fault: 0000 [#1] SMP
+  CPU: 0 PID: 1909 Comm: move_memory_reg Not tainted 5.4.0-rc7+ #139
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:rmap_get_first+0x37/0x50 [kvm]
+  Code: <48> 8b 3b 48 85 ff 74 ec e8 6c f4 ff ff 85 c0 74 e3 48 89 d8 5b c3
+  RSP: 0018:ffffc9000021bbc8 EFLAGS: 00010246
+  RAX: ffff00617461642e RBX: ffff00617461642e RCX: 0000000000000012
+  RDX: ffff88827400f568 RSI: ffffc9000021bbe0 RDI: ffff88827400f570
+  RBP: 0010000000000000 R08: ffffc9000021bd00 R09: ffffc9000021bda8
+  R10: ffffc9000021bc48 R11: 0000000000000000 R12: 0030000000000000
+  R13: 0000000000000000 R14: ffff88827427d700 R15: ffffc9000021bce8
+  FS:  00007f7eda014700(0000) GS:ffff888277a00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f7ed9216ff8 CR3: 0000000274391003 CR4: 0000000000162eb0
+  Call Trace:
+   kvm_mmu_slot_set_dirty+0xa1/0x150 [kvm]
+   __kvm_set_memory_region.part.64+0x559/0x960 [kvm]
+   kvm_set_memory_region+0x45/0x60 [kvm]
+   kvm_vm_ioctl+0x30f/0x920 [kvm]
+   do_vfs_ioctl+0xa1/0x620
+   ksys_ioctl+0x66/0x70
+   __x64_sys_ioctl+0x16/0x20
+   do_syscall_64+0x4c/0x170
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f7ed9911f47
+  Code: <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 21 6f 2c 00 f7 d8 64 89 01 48
+  RSP: 002b:00007ffc00937498 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+  RAX: ffffffffffffffda RBX: 0000000001ab0010 RCX: 00007f7ed9911f47
+  RDX: 0000000001ab1350 RSI: 000000004020ae46 RDI: 0000000000000004
+  RBP: 000000000000000a R08: 0000000000000000 R09: 00007f7ed9214700
+  R10: 00007f7ed92149d0 R11: 0000000000000246 R12: 00000000bffff000
+  R13: 0000000000000003 R14: 00007f7ed9215000 R15: 0000000000000000
+  Modules linked in: kvm_intel kvm irqbypass
+  ---[ end trace 0c5f570b3358ca89 ]---
+
+The disallow_lpage tracking is more subtle.  Failure to update results
+in KVM creating large pages when it shouldn't, either due to stale data
+or again due to indexing beyond the end of the metadata arrays, which
+can lead to memory corruption and/or leaking data to guest/userspace.
+
+Note, the arrays for the old memslot are freed by the unconditional call
+to kvm_free_memslot() in __kvm_set_memory_region().
+
+Fixes: 05da45583de9b ("KVM: MMU: large page support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/oss/pcm_plugin.c |   32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ arch/x86/kvm/x86.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_p
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8319,6 +8319,13 @@ int kvm_arch_create_memslot(struct kvm *
+ {
+ 	int i;
+ 
++	/*
++	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
++	 * old arrays will be freed by __kvm_set_memory_region() if installing
++	 * the new memslot is successful.
++	 */
++	memset(&slot->arch, 0, sizeof(slot->arch));
++
+ 	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+ 		struct kvm_lpage_info *linfo;
+ 		unsigned long ugfn;
+@@ -8392,6 +8399,10 @@ int kvm_arch_prepare_memory_region(struc
+ 				const struct kvm_userspace_memory_region *mem,
+ 				enum kvm_mr_change change)
+ {
++	if (change == KVM_MR_MOVE)
++		return kvm_arch_create_memslot(kvm, memslot,
++					       mem->memory_size >> PAGE_SHIFT);
++
  	return 0;
  }
- 
--snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
-+static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
-+					  snd_pcm_uframes_t drv_frames,
-+					  bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
- 	int stream;
-@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		plugin = snd_pcm_plug_last(plug);
- 		while (plugin && drv_frames > 0) {
--			if (drv_frames > plugin->buf_frames)
-+			if (check_size && drv_frames > plugin->buf_frames)
- 				drv_frames = plugin->buf_frames;
- 			plugin_prev = plugin->prev;
- 			if (plugin->src_frames)
-@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 			plugin_next = plugin->next;
- 			if (plugin->dst_frames)
- 				drv_frames = plugin->dst_frames(plugin, drv_frames);
--			if (drv_frames > plugin->buf_frames)
-+			if (check_size && drv_frames > plugin->buf_frames)
- 				drv_frames = plugin->buf_frames;
- 			plugin = plugin_next;
- 		}
-@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
- 	return drv_frames;
- }
- 
--snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
-+static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
-+					 snd_pcm_uframes_t clt_frames,
-+					 bool check_size)
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
- 	snd_pcm_sframes_t frames;
-@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
- 				if (frames < 0)
- 					return frames;
- 			}
--			if (frames > plugin->buf_frames)
-+			if (check_size && frames > plugin->buf_frames)
- 				frames = plugin->buf_frames;
- 			plugin = plugin_next;
- 		}
- 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		plugin = snd_pcm_plug_last(plug);
- 		while (plugin) {
--			if (frames > plugin->buf_frames)
-+			if (check_size && frames > plugin->buf_frames)
- 				frames = plugin->buf_frames;
- 			plugin_prev = plugin->prev;
- 			if (plugin->src_frames) {
-@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
- 	return frames;
- }
- 
-+snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
-+					   snd_pcm_uframes_t drv_frames)
-+{
-+	return plug_client_size(plug, drv_frames, false);
-+}
-+
-+snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
-+					  snd_pcm_uframes_t clt_frames)
-+{
-+	return plug_slave_size(plug, clt_frames, false);
-+}
-+
- static int snd_pcm_plug_formats(struct snd_mask *mask, snd_pcm_format_t format)
- {
- 	struct snd_mask formats = *mask;
-@@ -628,7 +644,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_tra
- 		src_channels = dst_channels;
- 		plugin = next;
- 	}
--	return snd_pcm_plug_client_size(plug, frames);
-+	return plug_client_size(plug, frames, true);
- }
- 
- snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
-@@ -638,7 +654,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_tran
- 	snd_pcm_sframes_t frames = size;
- 	int err;
- 
--	frames = snd_pcm_plug_slave_size(plug, frames);
-+	frames = plug_slave_size(plug, frames, true);
- 	if (frames < 0)
- 		return frames;
  
 
 
