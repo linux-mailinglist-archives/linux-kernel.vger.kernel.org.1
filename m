@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ED51B40F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0B11B40D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731828AbgDVKtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
+        id S1732048AbgDVKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:48:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgDVKNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:34 -0400
+        id S1729541AbgDVKOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAECC20776;
-        Wed, 22 Apr 2020 10:13:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0C2E2070B;
+        Wed, 22 Apr 2020 10:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550413;
-        bh=RJLVCku9igORfpt5oVv3tIoCepU57wftd4+a8zsHa/g=;
+        s=default; t=1587550470;
+        bh=I2uUxjHtJ2Bl5V9iG8w5PAC575AFfnuGItHBb/Skifc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NmOiWFiBK5WknABTJid7dvMwY6hfkNre4ryrlKw4c/rsMUO18iH9RxhtIcV9JJlyG
-         FvaoDm+9FsvO1dmrFdgv6epAtDuxI1f87OzlZYuD+7uYcnjDp+Hv9xQ2QyvqRqTr1R
-         lBv0fZthGFcu0VV8Bvaq04Csgw1vGwoWP2mAfSqg=
+        b=LhxnLAN0gXAyW6akHRUfHsMwiEfMQdKJsrDyvqkIwBXxsM13l2kgrLsr0FyMNEDNJ
+         r65yz7SNVRL6FNVpIEh0Xc4lsNmdrsszD9sj33aogol/mR1Gk5qZAIDM0y/zItmaIu
+         v6p4CLId79BT9FHLIghA8/PY9Zn9ubD1Jy9WEZ1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 108/199] net: ipv4: devinet: Fix crash when add/del multicast IP with autojoin
+        stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/64] rtc: 88pm860x: fix possible race condition
 Date:   Wed, 22 Apr 2020 11:57:14 +0200
-Message-Id: <20200422095108.530696540@linuxfoundation.org>
+Message-Id: <20200422095018.322238837@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taras Chornyi <taras.chornyi@plvision.eu>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-[ Upstream commit 690cc86321eb9bcee371710252742fb16fe96824 ]
+[ Upstream commit 9cf4789e6e4673d0b2c96fa6bb0c35e81b43111a ]
 
-When CONFIG_IP_MULTICAST is not set and multicast ip is added to the device
-with autojoin flag or when multicast ip is deleted kernel will crash.
+The RTC IRQ is requested before the struct rtc_device is allocated,
+this may lead to a NULL pointer dereference in the IRQ handler.
 
-steps to reproduce:
+To fix this issue, allocating the rtc_device struct before requesting
+the RTC IRQ using devm_rtc_allocate_device, and use rtc_register_device
+to register the RTC device.
 
-ip addr add 224.0.0.0/32 dev eth0
-ip addr del 224.0.0.0/32 dev eth0
+Also remove the unnecessary error message as the core already prints the
+info.
 
-or
-
-ip addr add 224.0.0.0/32 dev eth0 autojoin
-
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000088
- pc : _raw_write_lock_irqsave+0x1e0/0x2ac
- lr : lock_sock_nested+0x1c/0x60
- Call trace:
-  _raw_write_lock_irqsave+0x1e0/0x2ac
-  lock_sock_nested+0x1c/0x60
-  ip_mc_config.isra.28+0x50/0xe0
-  inet_rtm_deladdr+0x1a8/0x1f0
-  rtnetlink_rcv_msg+0x120/0x350
-  netlink_rcv_skb+0x58/0x120
-  rtnetlink_rcv+0x14/0x20
-  netlink_unicast+0x1b8/0x270
-  netlink_sendmsg+0x1a0/0x3b0
-  ____sys_sendmsg+0x248/0x290
-  ___sys_sendmsg+0x80/0xc0
-  __sys_sendmsg+0x68/0xc0
-  __arm64_sys_sendmsg+0x20/0x30
-  el0_svc_common.constprop.2+0x88/0x150
-  do_el0_svc+0x20/0x80
- el0_sync_handler+0x118/0x190
-  el0_sync+0x140/0x180
-
-Fixes: 93a714d6b53d ("multicast: Extend ip address command to enable multicast group join/leave on")
-Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200311223956.51352-1-alexandre.belloni@bootlin.com
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/devinet.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/rtc/rtc-88pm860x.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -579,12 +579,15 @@ struct in_ifaddr *inet_ifa_byprefix(stru
- 	return NULL;
- }
+diff --git a/drivers/rtc/rtc-88pm860x.c b/drivers/rtc/rtc-88pm860x.c
+index 73697e4b18a9d..9d4a59aa29a1a 100644
+--- a/drivers/rtc/rtc-88pm860x.c
++++ b/drivers/rtc/rtc-88pm860x.c
+@@ -341,6 +341,10 @@ static int pm860x_rtc_probe(struct platform_device *pdev)
+ 	info->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, info);
  
--static int ip_mc_config(struct sock *sk, bool join, const struct in_ifaddr *ifa)
-+static int ip_mc_autojoin_config(struct net *net, bool join,
-+				 const struct in_ifaddr *ifa)
- {
-+#if defined(CONFIG_IP_MULTICAST)
- 	struct ip_mreqn mreq = {
- 		.imr_multiaddr.s_addr = ifa->ifa_address,
- 		.imr_ifindex = ifa->ifa_dev->dev->ifindex,
- 	};
-+	struct sock *sk = net->ipv4.mc_autojoin_sk;
- 	int ret;
- 
- 	ASSERT_RTNL();
-@@ -597,6 +600,9 @@ static int ip_mc_config(struct sock *sk,
- 	release_sock(sk);
- 
- 	return ret;
-+#else
-+	return -EOPNOTSUPP;
-+#endif
- }
- 
- static int inet_rtm_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh,
-@@ -638,7 +644,7 @@ static int inet_rtm_deladdr(struct sk_bu
- 			continue;
- 
- 		if (ipv4_is_multicast(ifa->ifa_address))
--			ip_mc_config(net->ipv4.mc_autojoin_sk, false, ifa);
-+			ip_mc_autojoin_config(net, false, ifa);
- 		__inet_del_ifa(in_dev, ifap, 1, nlh, NETLINK_CB(skb).portid);
- 		return 0;
++	info->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
++	if (IS_ERR(info->rtc_dev))
++		return PTR_ERR(info->rtc_dev);
++
+ 	ret = devm_request_threaded_irq(&pdev->dev, info->irq, NULL,
+ 					rtc_update_handler, IRQF_ONESHOT, "rtc",
+ 					info);
+@@ -382,13 +386,11 @@ static int pm860x_rtc_probe(struct platform_device *pdev)
+ 		}
  	}
-@@ -896,8 +902,7 @@ static int inet_rtm_newaddr(struct sk_bu
- 		 */
- 		set_ifa_lifetime(ifa, valid_lft, prefered_lft);
- 		if (ifa->ifa_flags & IFA_F_MCAUTOJOIN) {
--			int ret = ip_mc_config(net->ipv4.mc_autojoin_sk,
--					       true, ifa);
-+			int ret = ip_mc_autojoin_config(net, true, ifa);
  
- 			if (ret < 0) {
- 				inet_free_ifa(ifa);
+-	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "88pm860x-rtc",
+-					    &pm860x_rtc_ops, THIS_MODULE);
+-	ret = PTR_ERR(info->rtc_dev);
+-	if (IS_ERR(info->rtc_dev)) {
+-		dev_err(&pdev->dev, "Failed to register RTC device: %d\n", ret);
++	info->rtc_dev->ops = &pm860x_rtc_ops;
++
++	ret = rtc_register_device(info->rtc_dev);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	/*
+ 	 * enable internal XO instead of internal 3.25MHz clock since it can
+-- 
+2.20.1
+
 
 
