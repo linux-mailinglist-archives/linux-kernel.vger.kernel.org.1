@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0456B1B3FE7
+	by mail.lfdr.de (Postfix) with ESMTP id 755B91B3FE8
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731669AbgDVKlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:41:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
+        id S1731675AbgDVKlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730074AbgDVKUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:20:13 -0400
+        id S1730069AbgDVKUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:20:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61B45208E4;
-        Wed, 22 Apr 2020 10:20:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D65092070B;
+        Wed, 22 Apr 2020 10:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550807;
-        bh=CV4lsd8GFjskQ68BrjCsNHsoRiEhRicJFGhZqLBaR7M=;
+        s=default; t=1587550810;
+        bh=JqfIlilzAtnYw9GMvTatNQzCJGbLyz2Z0an4/12Cf7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QCQ0JxXzvLKxAe2hOJ0WUpgR4psir2T4VKXKfRNrJbFifgzpedsN649RaPAPIPl6w
-         5jjjd6UHgUkz/LgbAFZXztq1eX/s1kQLhU/5RdGorYNalcS0TQY8HNKMEKhSHt5mWy
-         jINg5Uk2ou5JXM8K5LSoUIg5ZC1vu3OhWhFRUPgw=
+        b=S149Y/beqSN6kNU/w3/nqG8+hYWFoUe6Q6k0OPniNhjokxENuVk+f5Upb+w0L7eA1
+         oOViojjHTy2D5HiU3p0ua/9yFVyMsCkxpnbOnhRdqqKPa3f53/Ces9wL88EQOxOUz/
+         aqlBJFimFXMvlmJx7v9FJ3J3gJ6nZc3LRsyJYGqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 101/118] net: dsa: bcm_sf2: Fix overflow checks
-Date:   Wed, 22 Apr 2020 11:57:42 +0200
-Message-Id: <20200422095047.845206568@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.4 102/118] dma-debug: fix displaying of dma allocation type
+Date:   Wed, 22 Apr 2020 11:57:43 +0200
+Message-Id: <20200422095047.991429728@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
 References: <20200422095031.522502705@linuxfoundation.org>
@@ -43,59 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit d0802dc411f469569a537283b6f3833af47aece9 upstream.
+commit 9bb50ed7470944238ec8e30a94ef096caf9056ee upstream.
 
-Commit f949a12fd697 ("net: dsa: bcm_sf2: fix buffer overflow doing
-set_rxnfc") tried to fix the some user controlled buffer overflows in
-bcm_sf2_cfp_rule_set() and bcm_sf2_cfp_rule_del() but the fix was using
-CFP_NUM_RULES, which while it is correct not to overflow the bitmaps, is
-not representative of what the device actually supports. Correct that by
-using bcm_sf2_cfp_rule_size() instead.
+The commit 2e05ea5cdc1a ("dma-mapping: implement dma_map_single_attrs using
+dma_map_page_attrs") removed "dma_debug_page" enum, but missed to update
+type2name string table. This causes incorrect displaying of dma allocation
+type.
+Fix it by removing "page" string from type2name string table and switch to
+use named initializers.
 
-The latter subtracts the number of rules by 1, so change the checks from
-greater than or equal to greater than accordingly.
+Before (dma_alloc_coherent()):
+k3-ringacc 4b800000.ringacc: scather-gather idx 2208 P=d1140000 N=d114 D=d1140000 L=40 DMA_BIDIRECTIONAL dma map error check not applicable
+k3-ringacc 4b800000.ringacc: scather-gather idx 2216 P=d1150000 N=d115 D=d1150000 L=40 DMA_BIDIRECTIONAL dma map error check not applicable
 
-Fixes: f949a12fd697 ("net: dsa: bcm_sf2: fix buffer overflow doing set_rxnfc")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+After:
+k3-ringacc 4b800000.ringacc: coherent idx 2208 P=d1140000 N=d114 D=d1140000 L=40 DMA_BIDIRECTIONAL dma map error check not applicable
+k3-ringacc 4b800000.ringacc: coherent idx 2216 P=d1150000 N=d115 D=d1150000 L=40 DMA_BIDIRECTIONAL dma map error check not applicable
+
+Fixes: 2e05ea5cdc1a ("dma-mapping: implement dma_map_single_attrs using dma_map_page_attrs")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/dsa/bcm_sf2_cfp.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ kernel/dma/debug.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/dsa/bcm_sf2_cfp.c
-+++ b/drivers/net/dsa/bcm_sf2_cfp.c
-@@ -882,17 +882,14 @@ static int bcm_sf2_cfp_rule_set(struct d
- 	     fs->m_ext.data[1]))
- 		return -EINVAL;
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -137,9 +137,12 @@ static const char *const maperr2str[] =
+ 	[MAP_ERR_CHECKED] = "dma map error checked",
+ };
  
--	if (fs->location != RX_CLS_LOC_ANY && fs->location >= CFP_NUM_RULES)
-+	if (fs->location != RX_CLS_LOC_ANY &&
-+	    fs->location > bcm_sf2_cfp_rule_size(priv))
- 		return -EINVAL;
+-static const char *type2name[5] = { "single", "page",
+-				    "scather-gather", "coherent",
+-				    "resource" };
++static const char *type2name[] = {
++	[dma_debug_single] = "single",
++	[dma_debug_sg] = "scather-gather",
++	[dma_debug_coherent] = "coherent",
++	[dma_debug_resource] = "resource",
++};
  
- 	if (fs->location != RX_CLS_LOC_ANY &&
- 	    test_bit(fs->location, priv->cfp.used))
- 		return -EBUSY;
- 
--	if (fs->location != RX_CLS_LOC_ANY &&
--	    fs->location > bcm_sf2_cfp_rule_size(priv))
--		return -EINVAL;
--
- 	ret = bcm_sf2_cfp_rule_cmp(priv, port, fs);
- 	if (ret == 0)
- 		return -EEXIST;
-@@ -973,7 +970,7 @@ static int bcm_sf2_cfp_rule_del(struct b
- 	struct cfp_rule *rule;
- 	int ret;
- 
--	if (loc >= CFP_NUM_RULES)
-+	if (loc > bcm_sf2_cfp_rule_size(priv))
- 		return -EINVAL;
- 
- 	/* Refuse deleting unused rules, and those that are not unique since
+ static const char *dir2name[4] = { "DMA_BIDIRECTIONAL", "DMA_TO_DEVICE",
+ 				   "DMA_FROM_DEVICE", "DMA_NONE" };
 
 
