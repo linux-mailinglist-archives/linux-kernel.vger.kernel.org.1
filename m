@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5045B1B4FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F7A1B4FD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgDVWEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
+        id S1726668AbgDVWFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726383AbgDVWEo (ORCPT
+        with ESMTP id S1726421AbgDVWEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:04:44 -0400
+        Wed, 22 Apr 2020 18:04:48 -0400
 Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730C2C03C1AB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:44 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id u137so3399598pfc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC19C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:46 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id r5so3358055pfh.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:04:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=OXZleKkWZzKKnBm05g6e7Gyf0CCs6T7oZwd1F3IVZx4=;
-        b=cYTg2umDQWeLFwrsYb3qGNYLJE3TMAeXJn+l+sHhOql+YRciViqc9brBZDd1iqajR0
-         Ws7+D4dooyfuwKytQAPColOWKkYcMTQDs0oniw/rtv4WK7PMwpd6pUnaqFci/n2+SzOk
-         CmATRt7LOrKZb0/iAMPToCChGezAAeeYTa8ptYxDhV/TSX8nS1PXi+ndHrvvN4xwu26G
-         fKJCRa+MSPhrxbL88kJAt3KkVAsAcvhireQwwx/TSw/ik2699UvHcS2LGi5raaWfYBrA
-         UOEIa2lXSBoOaR/OpTVg9S9GPyNki3xMMa3ewe3HTDCy8Y7QDTkJLDgMkze6c32TzQ8/
-         TV8Q==
+        bh=YbCEU+/XsZxx/Rjj0tjknUqMeudJ748gHpjse82lZTo=;
+        b=VHZAi+ZJH81bIozlbm71C7edrNvAp5QZNJqNVrOJ7Dzxrpnye4IbDj0qEbccql+ymj
+         sbiyw08NRsHUkj6CyiUIOVo+Ap+ttRH3SBBNjYdVjkp97+K6xGsLBBMkLQazwjhS2jOF
+         rquNBkBUOSFmZdNMpZz0j2EBPiY8qlaiSt5KBKVGOqBW7s7IoCIOpz7ctAZ4t8yujvGB
+         1Nz2A5zG5DeajIcJsQG7Iykp0k3lh7ztsPcLHiUqMYitYS/MCMy/PyocCmA9Sz2Uug5r
+         7uHaQyinbbT8d0Yu/jZPqQjOD7zVteSbyMk/Y0Q52WgN/NLiIH0VYWEIEel64+UwaUbH
+         Iniw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=OXZleKkWZzKKnBm05g6e7Gyf0CCs6T7oZwd1F3IVZx4=;
-        b=G4uL2K6HsFXnDJVGofbo4MWPsGmkbsv+EgcQCiVWvqHyEtp6i8T6QqhTnVY91KmsH0
-         sUkjaCJzKyh/UiK4ZPhyHU8K4vCMQmBMn9yhwHyIk3QFKTsjnXP0JGaa8CUa0M8jtMkQ
-         EragUaKMDrNFgqCsBztYDb5dhlKF8GbxN5sFscsW/YjEtnBa44X1d/k3XFlUFpTocvTq
-         gludJAi3V9R9vugYX9BjOBQbXeDvxlt8z9vPTPi+ojf6X+juXYp6gAspy5L/Pkqa50BJ
-         QHY1FyPxC/VepPHync1zmy/uJRP9JYrHqg3HFmkm5qXgna9yw3RIu2uB8THEZ5u8QIDd
-         P+MA==
-X-Gm-Message-State: AGi0PuZw8a8sGMccYK4D3EDk5maUVgvrOXc8F8tyWVVpgGUeKgkEzQlF
-        vDm6vwZiE0Q+qUJHfR+fTisdAuH2gW41
-X-Google-Smtp-Source: APiQypJhYEQke2Fp8ch2ZkmcZtiJ6fOz+khTT8e6JIhgqSawBO+CQmZC2zvuKDljcojdurFZy2IEJhDhKON3
-X-Received: by 2002:a17:90a:a113:: with SMTP id s19mr895836pjp.161.1587593083819;
- Wed, 22 Apr 2020 15:04:43 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:04:23 -0700
+        bh=YbCEU+/XsZxx/Rjj0tjknUqMeudJ748gHpjse82lZTo=;
+        b=r8aChNxv51zR4DKR6Hwkv8u/LSz0bsINlO6KDF7bT+nGEVPn2isojAyMbFqLHtmQBv
+         oSFoUB1StkokO/VQD1SqiJukJEliVCFM0XXGJkjwkL6p8iez7kNYrtPJJa6CbwcV3zcw
+         kZDz9ezIAr5J3ke6gCRWDLXzBNXbHOEPnhKdmHxC6jHsy73iZ9EzRxk56FgQ5X5rzqd5
+         EpioY1AyX0IB4ZqO9bgkZpuxf9nCx5LNTrtfO2dlBGSKBAGRw4dmt19hw6eUhmlWl2VV
+         +xOv0OvVcWVzfMafQpyI9WzW8cp2dTUFOnT2bH1uQD1vSRysrwebJmtYTOLxCzipDIsq
+         kV1w==
+X-Gm-Message-State: AGi0PuaKimt1AsPKi7zvT7Fq72SX58YKgYyVnTGnMIaAh05EEvp6XAd7
+        PtZB3OrDrVhUtRgbGK88xlZF9M7ATKAP
+X-Google-Smtp-Source: APiQypJf4M55jgWbdS4KNnw4aviYxSWTqAgDkHPlZk45DO69FbZJCyzkgcONOfz+xZ/lRd6usqLqYHBiRAoK
+X-Received: by 2002:a17:90a:1da6:: with SMTP id v35mr981521pjv.44.1587593086151;
+ Wed, 22 Apr 2020 15:04:46 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 15:04:24 -0700
 In-Reply-To: <20200422220430.254014-1-irogers@google.com>
-Message-Id: <20200422220430.254014-5-irogers@google.com>
+Message-Id: <20200422220430.254014-6-irogers@google.com>
 Mime-Version: 1.0
 References: <20200422220430.254014-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v2 04/11] perf expr: allow ',' to be an other token
+Subject: [PATCH v2 05/11] perf expr: increase max other
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,26 +78,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corrects parse errors in expr__find_other of expressions with min.
+Large metrics such as Branch_Misprediction_Cost_SMT on x86 broadwell
+need more space.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.y | 2 +-
+ tools/perf/util/expr.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index cd17486c1c5d..54260094b947 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -80,7 +80,7 @@ other: ID
- 	ctx->ids[ctx->num_ids++].name = $1;
- }
- |
--MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')'
-+MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+index 0938ad166ece..4938bfc608b7 100644
+--- a/tools/perf/util/expr.h
++++ b/tools/perf/util/expr.h
+@@ -2,7 +2,7 @@
+ #ifndef PARSE_CTX_H
+ #define PARSE_CTX_H 1
  
+-#define EXPR_MAX_OTHER 20
++#define EXPR_MAX_OTHER 64
+ #define MAX_PARSE_ID EXPR_MAX_OTHER
  
- all_expr: if_expr			{ *final_val = $1; }
+ struct expr_parse_id {
 -- 
 2.26.2.303.gf8c07b1a785-goog
 
