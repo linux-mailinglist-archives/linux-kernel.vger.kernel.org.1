@@ -2,192 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BC91B47BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86FE1B47C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgDVOy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgDVOy3 (ORCPT
+        id S1727857AbgDVOzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:55:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49607 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgDVOzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:54:29 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08A8C03C1A9;
-        Wed, 22 Apr 2020 07:54:28 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n6so2576659ljg.12;
-        Wed, 22 Apr 2020 07:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=j4IL19ri7V1Qm+D4j4fO28F9L9bRN2u0iPKVfin1/Rw=;
-        b=MQM7awQI4I8Q7+FDbZ8+5oYMV4mYTyFU7tIcXKIItc38paWyJYiMvDYUQIfuHMuSMZ
-         C/OIKvP4ooNyLGu/BAW/GOC8j57hJ1xor/l+npcNJz/+Zgj8fg2rB5/cPo0E5wi98hoi
-         igU7eLXrmQJxTsmy2Q5RG5anHy6szn4ncvdM3rQEpKG8018kbnuc4zomlLvJvX6/i1dY
-         /u0Osabm0g6LHVUvA8FDNKpqZBiuvQAWTnYMPwOQKBCHjOpSSQvSEzQrYI3fZk0j9av9
-         xzo9K6psHNRmjE5gS+yDmqjl6yx/X28ogwckVpiFIwRUAKbcqwngQ1MG/6ilwvV0L6QR
-         FIwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=j4IL19ri7V1Qm+D4j4fO28F9L9bRN2u0iPKVfin1/Rw=;
-        b=NBsBoALAsdv8DgNyy5/k7ekLNBd7ak+L80I1WXbbl8Wl2zaAIhte+/XhmUsrOBAC7K
-         d0q53PpgbP1z7SZv1y0g+TlMrdrowzDbXiN/pcb68Px+geZA3x1OhAmgZAB7WwMW7W4j
-         w3p7cLq9+MozYXlM6dTRldTkJynDZXXfDCQtY2TLSSXZs1UzpPBKjaLT0uk3oczWl32o
-         u25+AEryBHRlh+0D++d7R/LjDM2hVoyttYT2rcMw9NMBnCMimdlcZigRna71jWyBH8MU
-         HcSXfrNavwUYbMb39hk9eX5qXyz0f3EUPk3phjrFqADrnScGqPOHn0S6dQJDbEp4OG8T
-         b1oA==
-X-Gm-Message-State: AGi0PuZf94GnQBXXtzb6QimMTbQeBP7syievs3JhtDS7NA6XTKtX5DY8
-        S3Vbhwl/bwY9RbLzEQT5sx4=
-X-Google-Smtp-Source: APiQypLSg8w8M7YXAsS/Bs4hQLKGrRg2Z7PqvsNZ0sH2NFAriwwxv6Ts0Q5ZnxnHB6XTkvqUIMokhQ==
-X-Received: by 2002:a2e:7301:: with SMTP id o1mr10636181ljc.264.1587567267052;
-        Wed, 22 Apr 2020 07:54:27 -0700 (PDT)
-Received: from [172.16.20.20] ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id 4sm4302900ljf.79.2020.04.22.07.54.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 07:54:26 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: [v2] arm64: dts: meson: odroid-n2: extend cpu opp-points
-From:   Christian Hewitt <christianshewitt@gmail.com>
-In-Reply-To: <20200418214223.GA4484@imac>
-Date:   Wed, 22 Apr 2020 18:54:21 +0400
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        joy.cho@hardkernel.com, tobetter@gmail.com,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        mark.rutland@arm.com, robh+dt@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <52230ECA-EA47-499D-B71C-FFCD374B75C3@gmail.com>
-References: <20200418214223.GA4484@imac>
-To:     Tim Lewis <elatllat@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.14)
+        Wed, 22 Apr 2020 10:55:12 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jRGmI-0006CM-RD; Wed, 22 Apr 2020 14:55:06 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, Serge Hallyn <serge@hallyn.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        David Rheinsberg <david.rheinsberg@gmail.com>,
+        Tom Gundersen <teg@jklm.no>,
+        Christian Kellner <ckellner@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@ubuntu.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        Steve Barber <smbarber@google.com>,
+        Dylan Reid <dgreid@google.com>,
+        Filipe Brandenburger <filbranden@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Benjamin Elder <bentheelder@google.com>,
+        Akihiro Suda <suda.kyoto@gmail.com>
+Subject: [PATCH v2 0/7] loopfs
+Date:   Wed, 22 Apr 2020 16:54:30 +0200
+Message-Id: <20200422145437.176057-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey everyone,
 
-> On 19 Apr 2020, at 1:42 am, Tim Lewis <elatllat@gmail.com> wrote:
->=20
-> Odroid N2 has a large heatsink and HardKernel supports overclock
-> through the addition to extra opp points in their official kernel
-> sources [1]. Add these to the N2 dts only, as other S922X devices
-> may not have suitable heatsinks.
->=20
-> [1] =
-https://github.com/hardkernel/linux/commit/f86cd9487c7483b2a05f448b9ebacf6=
-bd5a2ad2f
-> Signed-off-by: Tim Lewis <elatllat@gmail.com>
+This is v2 of loopfs.
 
-Kodi is not a demanding workload, but the extra opp points are being =
-used:
+I've added a few more people to the Cc that want to make use of this and
+I've added the missing ucount part that David pointed out and expanded a
+little more on how this is used so this is used.
 
-N2:~ # cat /sys/devices/system/cpu/cpufreq/policy0/stats/trans_table=20
-   =46rom  :    To
-         :    100000    250000    500000    667000   1000000   1200000   =
-1398000   1512000   1608000   1704000   1896000   1992000=20
-   100000:         0     20465       294        81        47         0   =
-      1         0         0         0         0       183=20
-   250000:     20388         0       161        52        59         0   =
-      0         0         1         0         1       169=20
-   500000:       199       256         0         9        47         1   =
-      2         0         0         0         0        57=20
-   667000:       177        50        10         0       284         1   =
-      1         0         0         0         0       136=20
-  1000000:       230        12        15       284         0         1   =
-      2         0         0         0         0       285=20
-  1200000:         0         0         0         1         0         0   =
-      0         0         0         1         0         2=20
-  1398000:         1         1         0         2         0         0   =
-      0         0         1         1         0         3=20
-  1512000:         0         0         0         0         0         0   =
-      0         0         0         1         0         2=20
-  1608000:         0         0         0         0         0         0   =
-      0         1         0         0         0         2=20
-  1704000:         0         1         0         0         0         0   =
-      1         0         0         0         0         2=20
-  1896000:         0         0         1         0         0         0   =
-      0         0         0         0         0         1=20
-  1992000:        76        47        90       230       392         0   =
-      2         2         1         1         1         0=20
+This implements loopfs, a loop device filesystem. It takes inspiration
+from the binderfs filesystem I implemented about two years ago and with
+which we had overall good experiences so far. Parts of it are also
+based on [3] but it's mostly a new, imho cleaner approach.
 
-N2:~ # cat /sys/devices/system/cpu/cpufreq/policy2/stats/trans_table=20
-   =46rom  :    To
-         :    100000    250000    500000    667000   1000000   1200000   =
-1398000   1512000   1608000   1704000   1800000   1908000=20
-   100000:         0      1698       130        76        87         0   =
-      0         0         1         0         1       199=20
-   250000:      1655         0        25        15       357         1   =
-      2         0         1         0         0        12=20
-   500000:       258        54         0     50102        30         3   =
-      1         0         0         0         1        32=20
-   667000:       267       151     49708         0        77         3   =
-      0         0         0         0         0        11=20
-  1000000:         3         5       525        15         0         3   =
-      2         0         1         1         0         6=20
-  1200000:         0         2         1         2         2         0   =
-      3         0         0         0         1         4=20
-  1398000:         1         0         1         1         4         0   =
-      0         1         1         0         2         2=20
-  1512000:         0         0         0         0         0         0   =
-      1         0         0         0         0         1=20
-  1608000:         1         0         0         1         0         1   =
-      0         0         0         0         0         3=20
-  1704000:         0         0         0         0         0         1   =
-      0         1         0         0         0         1=20
-  1800000:         0         0         1         1         0         0   =
-      1         0         1         0         0         1=20
-  1908000:         8       158        90         4         3         3   =
-      3         0         1         2         0         0=20
+Loopfs allows to create private loop devices instances to applications
+for various use-cases. It covers the use-case that was expressed on-list
+and in-person to get programmatic access to private loop devices for
+image building in sandboxes. An illustration for this is provided in
+[4].
 
-Board boots in under 4 seconds, Kodi home-screen in about 7 seconds. I =
-haven=E2=80=99t seen the N2 rise over 44=C2=BAC.
+Also loopfs is intended to provide loop devices to privileged and
+unprivileged containers which has been a frequent request from various
+major tools (Chromium, Kubernetes, LXD, Moby/Docker, systemd). I'm
+providing a non-exhaustive list of issues and requests (cf. [5]) around
+this feature mainly to illustrate that I'm not making the use-cases up.
+Currently none of this can be done safely since handing a loop device
+from the host into a container means that the container can see anything
+that the host is doing with that loop device and what other containers
+are doing with that device too. And (bind-)mounting devtmpfs inside of
+containers is not secure at all so also not an option (though sometimes
+done out of despair apparently).
 
-I=E2=80=99ve also tested some S922X box devices (moving the change to =
-meson-g12b-s922x.dtsi) and no obvious issues.
+The workloads people run in containers are supposed to be indiscernible
+from workloads run on the host and the tools inside of the container are
+supposed to not be required to be aware that they are running inside a
+container apart from containerization tools themselves. This is
+especially true when running older distros in containers that did exist
+before containers were as ubiquitous as they are today. With loopfs user
+can call mount -o loop and in a correctly setup container things work
+the same way they would on the host. The filesystem representation
+allows us to do this in a very simple way. At container setup, a
+container manager can mount a private instance of loopfs somehwere, e.g.
+at /dev/loopfs and then bind-mount or symlink /dev/loopfs/loop-control
+to /dev/loop-control, pre allocate and symlink the number of standard
+devices into their standard location and have a service file or rules in
+place that symlink additionally allocated loop devices through losetup
+into place as well.
+With the new syscall interception logic this is also possible for
+unprivileged containers. In these cases when a user calls mount -o loop
+<image> <mountpoint> it will be possible to completely setup the loop
+device in the container. The final mount syscall is handled through
+syscall interception which we already implemented and released in
+earlier kernels (see [1] and [2]) and is actively used in production
+workloads. The mount is often rewritten to a fuse binary to provide safe
+access for unprivileged containers.
 
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+Loopfs also allows the creation of hidden/detached dynamic loop devices
+and associated mounts which also was a often issued request. With the
+old mount api this can be achieved by creating a temporary loopfs and
+stashing a file descriptor to the mount point and the loop-control
+device and immediately unmounting the loopfs instance.  With the new
+mount api a detached mount can be created directly (i.e. a mount not
+visible anywhere in the filesystem). New loop devices can then be
+allocated and configured. They can be mounted through
+/proc/self/<fd>/<nr> with the old mount api or by using the fd directly
+with the new mount api. Combined with a mount namespace this allows for
+fully auto-cleaned up loop devices on program crash. This ties back to
+various use-cases and is illustrated in [4].
 
-> ---
-> .../boot/dts/amlogic/meson-g12b-odroid-n2.dts | 19 +++++++++++++++++++
-> 1 file changed, 19 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts =
-b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
-> index 42f154057..6f32ac83f 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dts
-> @@ -260,6 +260,25 @@
-> 			};
-> 		};
-> 	};
-> +
-> +	cpu_opp_table_0: opp-table-0 {
-> +		opp-1992000000 {
-> +			opp-hz =3D /bits/ 64 <1992000000>;
-> +			opp-microvolt =3D <1001000>;
-> +		};
-> +	};
-> +
-> +	cpub_opp_table_1: opp-table-1 {
-> +		opp-1800000000 {
-> +			opp-hz =3D /bits/ 64 <1800000000>;
-> +			opp-microvolt =3D <981000>;
-> +		};
-> +
-> +		opp-1908000000 {
-> +			opp-hz =3D /bits/ 64 <1908000000>;
-> +			opp-microvolt =3D <1022000>;
-> +		};
-> +	};
-> };
->=20
-> &arb {
-> --=20
-> 2.17.1
->=20
+The filesystem representation requires the standard boilerplate
+filesystem code we know from other tiny filesystems. And all of
+the loopfs code is hidden under a config option that defaults to false.
+This specifically means, that none of the code even exists when users do
+not have any use-case for loopfs.
+In addition, the loopfs code does not alter how loop devices behave at
+all, i.e. there are no changes to any existing workloads and I've taken
+care to ifdef all loopfs specific things out.
+
+Each loopfs mount is a separate instance. As such loop devices created
+in one instance are independent of loop devices created in another
+instance. This specifically entails that loop devices are only visible
+in the loopfs instance they belong to.
+
+The number of loop devices available in loopfs instances are
+hierarchically limited through /proc/sys/user/max_loop_devices via the
+ucount infrastructure (Thanks to David Rheinsberg for pointing out that
+missing piece.). An administrator could e.g. set
+echo 3 > /proc/sys/user/max_loop_devices at which point any loopfs
+instance mounted by uid x can only create 3 loop devices no matter how
+many loopfs instances they mount. This limit applies hierarchically to
+all user namespaces.
+
+In addition, loopfs has a "max" mount option which allows to set a limit
+on the number of loop devices for a given loopfs instance. This is
+mainly to cover use-cases where a single loopfs mount is shared as a
+bind-mount between multiple parties that are prevented from creating
+other loopfs mounts and is equivalent to the semantics of the binderfs
+and devpts "max" mount option.
+
+Thanks!
+Christian
+
+[1]: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+[2]: fb3c5386b382 ("seccomp: add SECCOMP_USER_NOTIF_FLAG_CONTINUE")
+[3]: https://lore.kernel.org/lkml/1401227936-15698-1-git-send-email-seth.forshee@canonical.com
+[4]: https://gist.github.com/brauner/dcaf15e6977cc1bfadfb3965f126c02f
+[5]: https://github.com/kubernetes-sigs/kind/issues/1333
+     https://github.com/kubernetes-sigs/kind/issues/1248
+     https://lists.freedesktop.org/archives/systemd-devel/2017-August/039453.html
+     https://chromium.googlesource.com/chromiumos/docs/+/master/containers_and_vms.md#loop-mount
+     https://gitlab.com/gitlab-com/support-forum/issues/3732
+     https://github.com/moby/moby/issues/27886
+     https://twitter.com/_AkihiroSuda_/status/1249664478267854848
+     https://serverfault.com/questions/701384/loop-device-in-a-linux-container
+     https://discuss.linuxcontainers.org/t/providing-access-to-loop-and-other-devices-in-containers/1352
+     https://discuss.concourse-ci.org/t/exposing-dev-loop-devices-in-privileged-mode/813
+
+Christian Brauner (7):
+  kobject_uevent: remove unneeded netlink_ns check
+  loopfs: implement loopfs
+  loop: use ns_capable for some loop operations
+  kernfs: handle multiple namespace tags
+  loop: preserve sysfs backwards compatibility
+  loopfs: start attaching correct namespace during loop_add()
+  loopfs: only show devices in their correct instance
+
+ Documentation/filesystems/sysfs-tagging.txt |   1 -
+ MAINTAINERS                                 |   5 +
+ block/genhd.c                               |  79 ++++
+ drivers/base/devtmpfs.c                     |   4 +-
+ drivers/block/Kconfig                       |   4 +
+ drivers/block/Makefile                      |   1 +
+ drivers/block/loop.c                        | 226 +++++++--
+ drivers/block/loop.h                        |  12 +-
+ drivers/block/loopfs/Makefile               |   3 +
+ drivers/block/loopfs/loopfs.c               | 494 ++++++++++++++++++++
+ drivers/block/loopfs/loopfs.h               |  36 ++
+ fs/kernfs/dir.c                             |  38 +-
+ fs/kernfs/kernfs-internal.h                 |  33 +-
+ fs/kernfs/mount.c                           |  11 +-
+ fs/sysfs/mount.c                            |  14 +-
+ include/linux/device.h                      |   3 +
+ include/linux/genhd.h                       |   3 +
+ include/linux/kernfs.h                      |  44 +-
+ include/linux/kobject_ns.h                  |   7 +-
+ include/linux/sysfs.h                       |   8 +-
+ include/linux/user_namespace.h              |   3 +
+ include/uapi/linux/magic.h                  |   1 +
+ kernel/ucount.c                             |   3 +
+ lib/kobject.c                               |  17 +-
+ lib/kobject_uevent.c                        |   2 +-
+ net/core/net-sysfs.c                        |   6 -
+ 26 files changed, 953 insertions(+), 105 deletions(-)
+ create mode 100644 drivers/block/loopfs/Makefile
+ create mode 100644 drivers/block/loopfs/loopfs.c
+ create mode 100644 drivers/block/loopfs/loopfs.h
+
+
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+-- 
+2.26.1
 
