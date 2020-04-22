@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079D31B3E0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9F81B416C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbgDVKYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:24:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
+        id S1732058AbgDVKwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729949AbgDVKXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:55 -0400
+        id S1728141AbgDVKKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:10:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FC3220781;
-        Wed, 22 Apr 2020 10:23:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A4A920780;
+        Wed, 22 Apr 2020 10:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551034;
-        bh=2OzrXsnZI6VeFmjEUumNOJf3tK1Ls686mWfBeZijVvc=;
+        s=default; t=1587550243;
+        bh=y4RlWMVlN8oehwrTES2hNOCCguSeHdw5uT5nth+Xwdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/9OobrWSbwn+RcWdOsWyfZNV6StUPhx/yCvC6va1H2U4zg9fEYv1av+NzD2InmyK
-         jsE0uLl6ns9hEtugi+tA4W0d7jM2fXFqLjGwXXUFQCBRas2sLzspOegwxtw9E/LMCY
-         WB8SsF905o7XGMrdSTocEi0MRfFjBb4VVa83njBA=
+        b=rJVcS15d6uJSraH9e7NgGfg7i9678zPiFcAtl+xvWQF8z1SE4OpYHjlgtb2+7qRY6
+         2E3e5VlwUJCSwftHndV3wrGCk7QgYjfKShMsV+Ks6cxxzQWHUelhnwNv5i7Qi0yiCY
+         DbMy/llwlsUjrfTJrzCGdVkft/Rg6Yx4CV0kOqv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 067/166] arm64: dts: marvell: Fix cpu compatible for AP807-quad
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 068/199] powerpc/pseries: Drop pointless static qualifier in vpa_debugfs_init()
 Date:   Wed, 22 Apr 2020 11:56:34 +0200
-Message-Id: <20200422095056.093853715@linuxfoundation.org>
+Message-Id: <20200422095105.002965848@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,126 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Kucheria <amit.kucheria@linaro.org>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit d136d2588b21b1a07515632ed61120c9f262909b ]
+commit 11dd34f3eae5a468013bb161a1dcf1fecd2ca321 upstream.
 
-make -k ARCH=arm64 dtbs_check shows the following errors. Fix them by
-removing the "arm,armv8" compatible.
+There is no need to have the 'struct dentry *vpa_dir' variable static
+since new value always be assigned before use it.
 
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@0: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@0: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long CHECK
-arch/arm64/boot/dts/renesas/r8a774a1-hihope-rzg2m-ex.dt.yaml
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@1: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@1: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@100: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@100: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@101: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9130-db.dt.yaml:
-cpu@101: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
+Fixes: c6c26fb55e8e ("powerpc/pseries: Export raw per-CPU VPA data via debugfs")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20190218125644.87448-1-yuehaibing@huawei.com
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@0: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@0: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@1: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@1: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@100: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@100: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@101: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9131-db.dt.yaml:
-cpu@101: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@0: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@0: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@1: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@1: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@100: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@100: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@101: compatible: Additional items are not allowed ('arm,armv8' was
-unexpected)
-/home/amit/work/builds/build-check/arch/arm64/boot/dts/marvell/cn9132-db.dt.yaml:
-cpu@101: compatible: ['arm,cortex-a72', 'arm,armv8'] is too long
-
-Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/marvell/armada-ap807-quad.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/platforms/pseries/lpar.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-ap807-quad.dtsi b/arch/arm64/boot/dts/marvell/armada-ap807-quad.dtsi
-index 840466e143b47..68782f161f122 100644
---- a/arch/arm64/boot/dts/marvell/armada-ap807-quad.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-ap807-quad.dtsi
-@@ -17,7 +17,7 @@
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1060,7 +1060,7 @@ static int __init vpa_debugfs_init(void)
+ {
+ 	char name[16];
+ 	long i;
+-	static struct dentry *vpa_dir;
++	struct dentry *vpa_dir;
  
- 		cpu0: cpu@0 {
- 			device_type = "cpu";
--			compatible = "arm,cortex-a72", "arm,armv8";
-+			compatible = "arm,cortex-a72";
- 			reg = <0x000>;
- 			enable-method = "psci";
- 			#cooling-cells = <2>;
-@@ -32,7 +32,7 @@
- 		};
- 		cpu1: cpu@1 {
- 			device_type = "cpu";
--			compatible = "arm,cortex-a72", "arm,armv8";
-+			compatible = "arm,cortex-a72";
- 			reg = <0x001>;
- 			enable-method = "psci";
- 			#cooling-cells = <2>;
-@@ -47,7 +47,7 @@
- 		};
- 		cpu2: cpu@100 {
- 			device_type = "cpu";
--			compatible = "arm,cortex-a72", "arm,armv8";
-+			compatible = "arm,cortex-a72";
- 			reg = <0x100>;
- 			enable-method = "psci";
- 			#cooling-cells = <2>;
-@@ -62,7 +62,7 @@
- 		};
- 		cpu3: cpu@101 {
- 			device_type = "cpu";
--			compatible = "arm,cortex-a72", "arm,armv8";
-+			compatible = "arm,cortex-a72";
- 			reg = <0x101>;
- 			enable-method = "psci";
- 			#cooling-cells = <2>;
--- 
-2.20.1
-
+ 	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+ 		return 0;
 
 
