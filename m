@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225F71B504E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038821B503E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgDVW0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
+        id S1726867AbgDVWZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726701AbgDVWZD (ORCPT
+        by vger.kernel.org with ESMTP id S1726852AbgDVWZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:25:03 -0400
+        Wed, 22 Apr 2020 18:25:26 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFCBC03C1A9;
-        Wed, 22 Apr 2020 15:25:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A57C03C1A9;
+        Wed, 22 Apr 2020 15:25:26 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jRNnK-0001Nd-Bj; Thu, 23 Apr 2020 00:24:39 +0200
+        id 1jRNnM-0001OL-T1; Thu, 23 Apr 2020 00:24:41 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CF1631C04D1;
-        Thu, 23 Apr 2020 00:24:36 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 22:24:36 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BFC0B1C0178;
+        Thu, 23 Apr 2020 00:24:37 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 22:24:37 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86,ftrace: Shrink ftrace_regs_caller() by one byte
+Subject: [tip: objtool/core] x86,ftrace: Use SIZEOF_PTREGS
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200416115118.867411350@infradead.org>
-References: <20200416115118.867411350@infradead.org>
+In-Reply-To: <20200416115118.808485515@infradead.org>
+References: <20200416115118.808485515@infradead.org>
 MIME-Version: 1.0
-Message-ID: <158759427624.28353.12057979900259706863.tip-bot2@tip-bot2>
+Message-ID: <158759427704.28353.4897473371874838717.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,47 +53,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     fdf6101cab968605564f211ab03f396dde67785b
-Gitweb:        https://git.kernel.org/tip/fdf6101cab968605564f211ab03f396dde67785b
+Commit-ID:     fecf897dd09bdba49cdbe69f3defaab0f5f688fb
+Gitweb:        https://git.kernel.org/tip/fecf897dd09bdba49cdbe69f3defaab0f5f688fb
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 01 Apr 2020 16:51:11 +02:00
+AuthorDate:    Wed, 01 Apr 2020 16:50:40 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 22 Apr 2020 23:10:06 +02:00
 
-x86,ftrace: Shrink ftrace_regs_caller() by one byte
+x86,ftrace: Use SIZEOF_PTREGS
 
-'Optimize' ftrace_regs_caller. Instead of comparing against an
-immediate, the more natural way to test for zero on x86 is: 'test
-%r,%r'.
+There's a convenient macro for 'SS+8' called FRAME_SIZE. Use it to
+clarify things.
 
-  48 83 f8 00             cmp    $0x0,%rax
-  74 49                   je     226 <ftrace_regs_call+0xa3>
-
-  48 85 c0                test   %rax,%rax
-  74 49                   je     225 <ftrace_regs_call+0xa2>
+(entry/calling.h calls this SIZEOF_PTREGS but we're using
+asm/ptrace-abi.h)
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20200416115118.867411350@infradead.org
+Link: https://lkml.kernel.org/r/20200416115118.808485515@infradead.org
 ---
  arch/x86/kernel/ftrace_64.S | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index be9aff2..9738ed2 100644
+index 7657dc7..be9aff2 100644
 --- a/arch/x86/kernel/ftrace_64.S
 +++ b/arch/x86/kernel/ftrace_64.S
-@@ -240,8 +240,8 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
- 	 * See arch_ftrace_set_direct_caller().
- 	 */
- 	movq ORIG_RAX(%rsp), %rax
--	cmpq	$0, %rax
--	je	1f
-+	testq	%rax, %rax
-+	jz	1f
+@@ -23,7 +23,7 @@
+ #endif /* CONFIG_FRAME_POINTER */
  
- 	/* Swap the flags with orig_rax */
- 	movq MCOUNT_REG_SIZE(%rsp), %rdi
+ /* Size of stack used to save mcount regs in save_mcount_regs */
+-#define MCOUNT_REG_SIZE		(SS+8 + MCOUNT_FRAME_SIZE)
++#define MCOUNT_REG_SIZE		(FRAME_SIZE + MCOUNT_FRAME_SIZE)
+ 
+ /*
+  * gcc -pg option adds a call to 'mcount' in most functions.
+@@ -77,7 +77,7 @@
+ 	/*
+ 	 * We add enough stack to save all regs.
+ 	 */
+-	subq $(MCOUNT_REG_SIZE - MCOUNT_FRAME_SIZE), %rsp
++	subq $(FRAME_SIZE), %rsp
+ 	movq %rax, RAX(%rsp)
+ 	movq %rcx, RCX(%rsp)
+ 	movq %rdx, RDX(%rsp)
