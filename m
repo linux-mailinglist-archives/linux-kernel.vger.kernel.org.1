@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E47F1B3FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE3E1B3BCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 11:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731529AbgDVKj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
+        id S1726335AbgDVJ7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 05:59:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgDVKVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:21:22 -0400
+        id S1726023AbgDVJ7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 05:59:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26ED920776;
-        Wed, 22 Apr 2020 10:21:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB1A32073A;
+        Wed, 22 Apr 2020 09:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550881;
-        bh=NaUgTf5CoPckAeswaR8INBW8wgTIhdKbod2hpVowooM=;
+        s=default; t=1587549552;
+        bh=Zgh52tja4TFL+R6M6jixCYHmXQYeO4ljrNV4tqhwpK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fx5crBn+ageKeDJHkrWlKhHCwSylZiCVv1a4B2FmW623HG7uOfINvh+XZBx+3QmPq
-         Q+lhTQsu8V8JGlISHQCmf/09WZxoJ88G/ohs6IYR0xMPMzwNQrXiTv4xMx+gBoB6xj
-         IZ1TsdWEuGhcR07WuYGl7N4rcKrX5VLouSil7q+k=
+        b=Gpdh+ogu27gOs6Wu2PXTiJvgQFPIA3EySt7ghT73fLsd2boYJopDCNLf7JDiBsOGw
+         ZZ7iAN/U67lI3mYP+aZDV4P8+2xiFIA7cMUjBixwJaNF3doY5U8XbnBQDFcTqTx7ge
+         BHLrVg/XdH4tx31eDhGXAZqX092WUHwLKlIti/EM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Liu Yiding <liuyd.fnst@cn.fujitsu.com>,
-        Slava Bacherikov <slava@bacher09.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        KP Singh <kpsingh@google.com>, Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 5.6 013/166] kbuild, btf: Fix dependencies for DEBUG_INFO_BTF
-Date:   Wed, 22 Apr 2020 11:55:40 +0200
-Message-Id: <20200422095049.715550359@linuxfoundation.org>
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 011/100] btrfs: remove a BUG_ON() from merge_reloc_roots()
+Date:   Wed, 22 Apr 2020 11:55:41 +0200
+Message-Id: <20200422095025.024015272@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,42 +45,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Slava Bacherikov <slava@bacher09.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 7d32e69310d67e6b04af04f26193f79dfc2f05c7 upstream.
+[ Upstream commit 7b7b74315b24dc064bc1c683659061c3d48f8668 ]
 
-Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-enabled will produce invalid btf file, since gen_btf function in
-link-vmlinux.sh script doesn't handle *.dwo files.
+This was pretty subtle, we default to reloc roots having 0 root refs, so
+if we crash in the middle of the relocation they can just be deleted.
+If we successfully complete the relocation operations we'll set our root
+refs to 1 in prepare_to_merge() and then go on to merge_reloc_roots().
 
-Enabling DEBUG_INFO_REDUCED will also produce invalid btf file,
-and using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+At prepare_to_merge() time if any of the reloc roots have a 0 reference
+still, we will remove that reloc root from our reloc root rb tree, and
+then clean it up later.
 
-Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
-Reported-by: Jann Horn <jannh@google.com>
-Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: KP Singh <kpsingh@google.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200402204138.408021-1-slava@bacher09.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However this only happens if we successfully start a transaction.  If
+we've aborted previously we will skip this step completely, and only
+have reloc roots with a reference count of 0, but were never properly
+removed from the reloc control's rb tree.
 
+This isn't a problem per-se, our references are held by the list the
+reloc roots are on, and by the original root the reloc root belongs to.
+If we end up in this situation all the reloc roots will be added to the
+dirty_reloc_list, and then properly dropped at that point.  The reloc
+control will be free'd and the rb tree is no longer used.
+
+There were two options when fixing this, one was to remove the BUG_ON(),
+the other was to make prepare_to_merge() handle the case where we
+couldn't start a trans handle.
+
+IMO this is the cleaner solution.  I started with handling the error in
+prepare_to_merge(), but it turned out super ugly.  And in the end this
+BUG_ON() simply doesn't matter, the cleanup was happening properly, we
+were just panicing because this BUG_ON() only matters in the success
+case.  So I've opted to just remove it and add a comment where it was.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Kconfig.debug |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/relocation.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -241,6 +241,8 @@ config DEBUG_INFO_DWARF4
- config DEBUG_INFO_BTF
- 	bool "Generate BTF typeinfo"
- 	depends on DEBUG_INFO
-+	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
-+	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
- 	help
- 	  Generate deduplicated BTF type information from DWARF debug info.
- 	  Turning this on expects presence of pahole tool, which will convert
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index f38bac9456fd3..246754b31619e 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2440,7 +2440,21 @@ out:
+ 			free_reloc_roots(&reloc_roots);
+ 	}
+ 
+-	BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
++	/*
++	 * We used to have
++	 *
++	 * BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
++	 *
++	 * here, but it's wrong.  If we fail to start the transaction in
++	 * prepare_to_merge() we will have only 0 ref reloc roots, none of which
++	 * have actually been removed from the reloc_root_tree rb tree.  This is
++	 * fine because we're bailing here, and we hold a reference on the root
++	 * for the list that holds it, so these roots will be cleaned up when we
++	 * do the reloc_dirty_list afterwards.  Meanwhile the root->reloc_root
++	 * will be cleaned up on unmount.
++	 *
++	 * The remaining nodes will be cleaned up by free_reloc_control.
++	 */
+ }
+ 
+ static void free_block_list(struct rb_root *blocks)
+-- 
+2.20.1
+
 
 
