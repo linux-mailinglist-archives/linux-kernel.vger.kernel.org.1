@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E2A1B3D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0471B3CAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgDVKNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:13:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        id S1726510AbgDVKHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:07:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgDVKNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:32 -0400
+        id S1728525AbgDVKHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:07:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 601362071E;
-        Wed, 22 Apr 2020 10:13:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 490262076C;
+        Wed, 22 Apr 2020 10:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550410;
-        bh=qaL4iYj7C80HTLE18s9gZmgPRTetzxaDAONH7zHUwiM=;
+        s=default; t=1587550057;
+        bh=vqyA98ISkgtNizDCDh4+BfcOp+FH3LtWJpuHIiV0s3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lqQFISBtprNxXu8lqDccoH6bE1pP+M8f/6EbSRFvs+JP8UeV1B8UkFVHLZaG+fSqN
-         cgpECSGcUD5eq02JsgU/yuRBVcotWP164cx/8+evQwdCLQboOp8PTxsvCv5cVSe8X9
-         aUsIC2NHzPVJrnan+dEnbVkm4n/UJcqF5Kf9rYoI=
+        b=S/g43tI8Sgv5zEMd+lWsxPc1Kxl4dlUKsoSciTNkgrn7a8G5frHbjLHrk1srz+Sow
+         64jzf/R2Wzlk4kH2sgNA5C/6YK0587cRBa1AY4wVG/p4bJsjWsXzhhy7/2VkhWoPsH
+         SP8zmMrOliXpheA93SkKgTHNUi2I5LkaLdxyFCck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 107/199] hsr: check protocol version in hsr_newlink()
-Date:   Wed, 22 Apr 2020 11:57:13 +0200
-Message-Id: <20200422095108.457604759@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Huang <ahuang12@lenovo.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 117/125] iommu/amd: Fix the configuration of GCR3 table root pointer
+Date:   Wed, 22 Apr 2020 11:57:14 +0200
+Message-Id: <20200422095051.521279749@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Adrian Huang <ahuang12@lenovo.com>
 
-[ Upstream commit 4faab8c446def7667adf1f722456c2f4c304069c ]
+[ Upstream commit c20f36534666e37858a14e591114d93cc1be0d34 ]
 
-In the current hsr code, only 0 and 1 protocol versions are valid.
-But current hsr code doesn't check the version, which is received by
-userspace.
+The SPA of the GCR3 table root pointer[51:31] masks 20 bits. However,
+this requires 21 bits (Please see the AMD IOMMU specification).
+This leads to the potential failure when the bit 51 of SPA of
+the GCR3 table root pointer is 1'.
 
-Test commands:
-    ip link add dummy0 type dummy
-    ip link add dummy1 type dummy
-    ip link add hsr0 type hsr slave1 dummy0 slave2 dummy1 version 4
-
-In the test commands, version 4 is invalid.
-So, the command should be failed.
-
-After this patch, following error will occur.
-"Error: hsr: Only versions 0..1 are supported."
-
-Fixes: ee1c27977284 ("net/hsr: Added support for HSR v1")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+Fixes: 52815b75682e2 ("iommu/amd: Add support for IOMMUv2 domain mode")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/hsr/hsr_netlink.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/iommu/amd_iommu_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/hsr/hsr_netlink.c
-+++ b/net/hsr/hsr_netlink.c
-@@ -64,10 +64,16 @@ static int hsr_newlink(struct net *src_n
- 	else
- 		multicast_spec = nla_get_u8(data[IFLA_HSR_MULTICAST_SPEC]);
+diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
+index 0d91785ebdc34..da3fbf82d1cf4 100644
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -329,7 +329,7 @@
  
--	if (!data[IFLA_HSR_VERSION])
-+	if (!data[IFLA_HSR_VERSION]) {
- 		hsr_version = 0;
--	else
-+	} else {
- 		hsr_version = nla_get_u8(data[IFLA_HSR_VERSION]);
-+		if (hsr_version > 1) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "Only versions 0..1 are supported");
-+			return -EINVAL;
-+		}
-+	}
+ #define DTE_GCR3_VAL_A(x)	(((x) >> 12) & 0x00007ULL)
+ #define DTE_GCR3_VAL_B(x)	(((x) >> 15) & 0x0ffffULL)
+-#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0xfffffULL)
++#define DTE_GCR3_VAL_C(x)	(((x) >> 31) & 0x1fffffULL)
  
- 	return hsr_dev_finalize(dev, link, multicast_spec, hsr_version);
- }
+ #define DTE_GCR3_INDEX_A	0
+ #define DTE_GCR3_INDEX_B	1
+-- 
+2.20.1
+
 
 
