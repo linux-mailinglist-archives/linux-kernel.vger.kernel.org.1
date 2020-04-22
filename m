@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D4D1B3CD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4321B3FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgDVKJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35606 "EHLO mail.kernel.org"
+        id S1730194AbgDVKjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728824AbgDVKJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:11 -0400
+        id S1730161AbgDVKVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13C0C2071E;
-        Wed, 22 Apr 2020 10:09:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26B312076B;
+        Wed, 22 Apr 2020 10:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550150;
-        bh=7Wrp0PSfQ8AxYH33MglpUgdu3eVad235QHlg9qT66K0=;
+        s=default; t=1587550876;
+        bh=SN/5j2Okkn1eVrwRTaxVF3OLAi+cty+PbHxBtT3BDG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OmrcXvI685Sv5862kRIOO34mcG2A3CqHsdkX+1DYH8N3wrzT7M2jERJgIvWN2A5JI
-         dFIAVRFuetTFEYrSw1Dvj5DuJn4a2rVW3EeyIf2yv2Pdt9KFuTSJsvQohWcj4PXuRL
-         7PEL7AEUlrjQdUgr8//Ph57YZNumewL+zVG+zn+g=
+        b=WWNejAhca18lcqwuOGeh4ZCU26fk49NsQE8Gtz+2v3BbFzyM+HzYKEJXmk5kmH8dj
+         McQEWU9gDl2FxjDG17hQUXKtfZbTEXBNYIwS5aCwQZYnuMVsR7YUr3Ci2Oms0/OHRZ
+         nWPPVGnNj7/zOklXjYW+ujpF3ZnpwFqN1/xGSRWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Bob Liu <bob.liu@oracle.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 012/199] block: keep bdi->io_pages in sync with max_sectors_kb for stacked devices
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 5.6 011/166] bpf: Prevent re-mmap()ing BPF map as writable for initially r/o mapping
 Date:   Wed, 22 Apr 2020 11:55:38 +0200
-Message-Id: <20200422095059.423991176@linuxfoundation.org>
+Message-Id: <20200422095049.430771557@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,48 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit e74d93e96d721c4297f2a900ad0191890d2fc2b0 ]
+commit 1f6cb19be2e231fe092f40decb71f066eba090d7 upstream.
 
-Field bdi->io_pages added in commit 9491ae4aade6 ("mm: don't cap request
-size based on read-ahead setting") removes unneeded split of read requests.
+VM_MAYWRITE flag during initial memory mapping determines if already mmap()'ed
+pages can be later remapped as writable ones through mprotect() call. To
+prevent user application to rewrite contents of memory-mapped as read-only and
+subsequently frozen BPF map, remove VM_MAYWRITE flag completely on initially
+read-only mapping.
 
-Stacked drivers do not call blk_queue_max_hw_sectors(). Instead they set
-limits of their devices by blk_set_stacking_limits() + disk_stack_limits().
-Field bio->io_pages stays zero until user set max_sectors_kb via sysfs.
+Alternatively, we could treat any memory-mapping on unfrozen map as writable
+and bump writecnt instead. But there is little legitimate reason to map
+BPF map as read-only and then re-mmap() it as writable through mprotect(),
+instead of just mmap()'ing it as read/write from the very beginning.
 
-This patch updates io_pages after merging limits in disk_stack_limits().
+Also, at the suggestion of Jann Horn, drop unnecessary refcounting in mmap
+operations. We can just rely on VMA holding reference to BPF map's file
+properly.
 
-Commit c6d6e9b0f6b4 ("dm: do not allow readahead to limit IO size") fixed
-the same problem for device-mapper devices, this one fixes MD RAIDs.
+Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+Reported-by: Jann Horn <jannh@google.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Jann Horn <jannh@google.com>
+Link: https://lore.kernel.org/bpf/20200410202613.3679837-1-andriin@fb.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 9491ae4aade6 ("mm: don't cap request size based on read-ahead setting")
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Reviewed-by: Bob Liu <bob.liu@oracle.com>
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-settings.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/bpf/syscall.c |   16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 6c2faaa38cc1e..e0a744921ed3d 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -717,6 +717,9 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
- 		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
- 		       top, bottom);
- 	}
-+
-+	t->backing_dev_info->io_pages =
-+		t->limits.max_sectors >> (PAGE_SHIFT - 9);
- }
- EXPORT_SYMBOL(disk_stack_limits);
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -592,9 +592,7 @@ static void bpf_map_mmap_open(struct vm_
+ {
+ 	struct bpf_map *map = vma->vm_file->private_data;
  
--- 
-2.20.1
-
+-	bpf_map_inc_with_uref(map);
+-
+-	if (vma->vm_flags & VM_WRITE) {
++	if (vma->vm_flags & VM_MAYWRITE) {
+ 		mutex_lock(&map->freeze_mutex);
+ 		map->writecnt++;
+ 		mutex_unlock(&map->freeze_mutex);
+@@ -606,13 +604,11 @@ static void bpf_map_mmap_close(struct vm
+ {
+ 	struct bpf_map *map = vma->vm_file->private_data;
+ 
+-	if (vma->vm_flags & VM_WRITE) {
++	if (vma->vm_flags & VM_MAYWRITE) {
+ 		mutex_lock(&map->freeze_mutex);
+ 		map->writecnt--;
+ 		mutex_unlock(&map->freeze_mutex);
+ 	}
+-
+-	bpf_map_put_with_uref(map);
+ }
+ 
+ static const struct vm_operations_struct bpf_map_default_vmops = {
+@@ -641,14 +637,16 @@ static int bpf_map_mmap(struct file *fil
+ 	/* set default open/close callbacks */
+ 	vma->vm_ops = &bpf_map_default_vmops;
+ 	vma->vm_private_data = map;
++	vma->vm_flags &= ~VM_MAYEXEC;
++	if (!(vma->vm_flags & VM_WRITE))
++		/* disallow re-mapping with PROT_WRITE */
++		vma->vm_flags &= ~VM_MAYWRITE;
+ 
+ 	err = map->ops->map_mmap(map, vma);
+ 	if (err)
+ 		goto out;
+ 
+-	bpf_map_inc_with_uref(map);
+-
+-	if (vma->vm_flags & VM_WRITE)
++	if (vma->vm_flags & VM_MAYWRITE)
+ 		map->writecnt++;
+ out:
+ 	mutex_unlock(&map->freeze_mutex);
 
 
