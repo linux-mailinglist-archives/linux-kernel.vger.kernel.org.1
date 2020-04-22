@@ -2,99 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C441B4E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775B11B4E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgDVUqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 16:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgDVUqD (ORCPT
+        id S1726644AbgDVUrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 16:47:32 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32870 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726117AbgDVUrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:46:03 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31478C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:46:02 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id e26so3476626otr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3bCg8bvNmgUuam7hE8aERJSHaUoXzmzcb4svUaIW+Bg=;
-        b=j1svlTwB5CMoY1MWPNS26eCTOItSrWPJwu5Xirgfy9OmjsrI/8neRVSDltcQTuXssH
-         MKz+GnOG0Y1eAQQgMyuqetCTCISJVqcQrwB42hbxF90ynmaH4CceJJmDU9nYJxRnq8Wj
-         c2IaIf9FmYsh6iHTdd2N13fp3IZsFxL/GBgnn680ozcDRzM9JQbvyi4HxQlsLbh0ulgu
-         lJDzCie2CjVLMNTBlGpLCW1jZ8DWARb/Ksc+dKjlbV/9Jd9ZC9hWpSuqqBm3aRYnKSRu
-         MkE82Bm1SE4q0gTQA8LybxWDORjmjnd85NQtOLHxajqG7O11MxHgOi2Qou+qQ99VhbwB
-         NIDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3bCg8bvNmgUuam7hE8aERJSHaUoXzmzcb4svUaIW+Bg=;
-        b=NWehbz1+6jIBpniGx1pEjMuDPgSjYyRAl2GKkJ/jfC0cjXimhLxeuDKbBlV/hYaBwl
-         yGMU2Zm1QTE3Fvyg2DvnD9krbDMMe3LnVE45quPQF2rnAu7pcg1aU7WNdMFz/ZHO1tZg
-         XZYdxmsSjohqA35BD//KuiH7urUeB8S6socI0hX60ZC3J6rlXHcmvYRWzjAn6jK+UGaY
-         18nBRZQk94PhhNy8Zre313XnfPOdtOzZzU0Gx17nyjqFCKE+sqdJBwJrK2J2Da3fl6Go
-         0ggW3dvpyv9li5wdwh1sCpvIydD9hD1AlSutCNgXlw+XKhEqLL09cmnjBBM5QqnNx1J1
-         Mujw==
-X-Gm-Message-State: AGi0PuZNCjo/yCS/yKQyyVW6iwUePerQqjnDyi2HuPYDF281tMyyTF97
-        Rhvpgsk3cTDVA1+6+AdzEQkwVetro5Gt/rQvfgkMMw==
-X-Google-Smtp-Source: APiQypITlavDSzc4OSiUD5yDWrzXGkJyW5M+cDplprwAPZfSa72YOKqxb8R4uBmPFp3TN/4VifziBqcENPZT5t0ZvDM=
-X-Received: by 2002:a05:6830:22dc:: with SMTP id q28mr749663otc.221.1587588361411;
- Wed, 22 Apr 2020 13:46:01 -0700 (PDT)
+        Wed, 22 Apr 2020 16:47:21 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MKhRKC028348
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=bYXySgtA0glsWw22mN546qhTFN/cHgQM7XvI05NPNl0=;
+ b=Hs0BTxGLRAmGPqW4n8qUX47lQDmBBx2ISyhzRACb6/YWvcHgXsNzOQOPlMkO2HnfbR0l
+ Okx/IYcub3tHBHaVp9Hp1KTprjqr9Bxc/GkGENFl0dNsz9e0pMl4IqeO6qSzELDZPNOb
+ CWrvQSVpKyAQ+CH2F+b8p1LPSIuoyPT7trY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30ghfebmvp-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 13:47:21 -0700
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 22 Apr 2020 13:47:19 -0700
+Received: by devvm4439.prn2.facebook.com (Postfix, from userid 111017)
+        id BB5BB229357F7; Wed, 22 Apr 2020 13:47:16 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm4439.prn2.facebook.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 00/19] The new cgroup slab memory controller
+Date:   Wed, 22 Apr 2020 13:46:49 -0700
+Message-ID: <20200422204708.2176080-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200225050828.56458-1-john.stultz@linaro.org>
- <20200421235836.GA8319@lxhi-065.adit-jv.com> <CALAqxLXX455P0V0o11scc3-1MHvecnvcUoT=XBcwB+ma7Kyjqg@mail.gmail.com>
- <20200422075413.GB4898@sirena.org.uk>
-In-Reply-To: <20200422075413.GB4898@sirena.org.uk>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 22 Apr 2020 13:45:49 -0700
-Message-ID: <CALAqxLW13oA376bqj7uTR4E4zmnX5ASK=rpqw3HMr4yOWQGaOw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] driver core: Improve and cleanup driver_deferred_probe_check_state()
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Eugeniu Rosca <erosca@de.adit-jv.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_07:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ mlxscore=0 adultscore=0 clxscore=1015 malwarescore=0 spamscore=0
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004220158
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:54 AM Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Apr 21, 2020 at 06:16:31PM -0700, John Stultz wrote:
->
-> > The second reverts the default timeout back to 0:
-> >   https://lore.kernel.org/lkml/20200413204253.84991-1-john.stultz@linaro.org/
->
-> If you're reverting the timeout we should revert the regulator change
-> too I think.
+This is a third version of the slab cgroup controller rework.
 
-Maybe? The main issue for me was my change was clearly breaking users
-with dts with missing dependencies where their setup was working
-before. I sort of feel like having a dtb with missing dependencies is
-less valid than wanting to load module dependencies from userland, but
-they were working first, so we have to keep them happy :) And at least
-now the latter can add the timeout boot argument to make it work.
+The patchset moves the accounting from the page level to the object
+level. It allows to share slab pages between memory cgroups.
+This leads to a significant win in the slab utilization (up to 45%)
+and the corresponding drop in the total kernel memory footprint.
+The reduced number of unmovable slab pages should also have a positive
+effect on the memory fragmentation.
 
-For your case, I'm not sure if the timeout would run afoul on the nfs
-root mounting case this one tripped over.
+The patchset makes the slab accounting code simpler: there is no more
+need in the complicated dynamic creation and destruction of per-cgroup
+slab caches, all memory cgroups use a global set of shared slab caches.
+The lifetime of slab caches is not more connected to the lifetime
+of memory cgroups.
 
-thanks
--john
+The more precise accounting does require more CPU, however in practice
+the difference seems to be negligible. We've been using the new slab
+controller in Facebook production for several months with different
+workloads and haven't seen any noticeable regressions. What we've seen
+were memory savings in order of 1 GB per host (it varied heavily dependin=
+g
+on the actual workload, size of RAM, number of CPUs, memory pressure, etc=
+).
+
+The third version of the patchset added yet another step towards
+the simplification of the code: sharing of slab caches between
+accounted and non-accounted allocations. It comes with significant
+upsides (most noticeable, a complete elimination of dynamic slab caches
+creation) but not without some regression risks, so this change sits
+on top of the patchset and is not completely merged in. So in the unlikel=
+y
+event of a noticeable performance regression it can be reverted separatel=
+y.
+
+v3:
+  1) added a patch that switches to a global single set of kmem_caches
+  2) kmem API clean up dropped, because if has been already merged
+  3) byte-sized slab vmstat API over page-sized global counters and
+     bytes-sized memcg/lruvec counters
+  3) obj_cgroup refcounting simplifications and other minor fixes
+  4) other minor changes
+
+v2:
+  1) implemented re-layering and renaming suggested by Johannes,
+     added his patch to the set. Thanks!
+  2) fixed the issue discovered by Bharata B Rao. Thanks!
+  3) added kmem API clean up part
+  4) added slab/memcg follow-up clean up part
+  5) fixed a couple of issues discovered by internal testing on FB fleet.
+  6) added kselftests
+  7) included metadata into the charge calculation
+  8) refreshed commit logs, regrouped patches, rebased onto mm tree, etc
+
+v1:
+  1) fixed a bug in zoneinfo_show_print()
+  2) added some comments to the subpage charging API, a minor fix
+  3) separated memory.kmem.slabinfo deprecation into a separate patch,
+     provided a drgn-based replacement
+  4) rebased on top of the current mm tree
+
+RFC:
+  https://lwn.net/Articles/798605/
+
+
+Johannes Weiner (1):
+  mm: memcontrol: decouple reference counting from page accounting
+
+Roman Gushchin (18):
+  mm: memcg: factor out memcg- and lruvec-level changes out of
+    __mod_lruvec_state()
+  mm: memcg: prepare for byte-sized vmstat items
+  mm: memcg: convert vmstat slab counters to bytes
+  mm: slub: implement SLUB version of obj_to_index()
+  mm: memcg/slab: obj_cgroup API
+  mm: memcg/slab: allocate obj_cgroups for non-root slab pages
+  mm: memcg/slab: save obj_cgroup for non-root slab objects
+  mm: memcg/slab: charge individual slab objects instead of pages
+  mm: memcg/slab: deprecate memory.kmem.slabinfo
+  mm: memcg/slab: move memcg_kmem_bypass() to memcontrol.h
+  mm: memcg/slab: use a single set of kmem_caches for all accounted
+    allocations
+  mm: memcg/slab: simplify memcg cache creation
+  mm: memcg/slab: deprecate memcg_kmem_get_cache()
+  mm: memcg/slab: deprecate slab_root_caches
+  mm: memcg/slab: remove redundant check in memcg_accumulate_slabinfo()
+  mm: memcg/slab: use a single set of kmem_caches for all allocations
+  kselftests: cgroup: add kernel memory accounting tests
+  tools/cgroup: add memcg_slabinfo.py tool
+
+ drivers/base/node.c                        |   6 +-
+ fs/proc/meminfo.c                          |   4 +-
+ include/linux/memcontrol.h                 |  80 ++-
+ include/linux/mm_types.h                   |   5 +-
+ include/linux/mmzone.h                     |  19 +-
+ include/linux/slab.h                       |   5 -
+ include/linux/slab_def.h                   |   8 +-
+ include/linux/slub_def.h                   |  20 +-
+ include/linux/vmstat.h                     |  16 +-
+ kernel/power/snapshot.c                    |   2 +-
+ mm/memcontrol.c                            | 569 ++++++++++--------
+ mm/oom_kill.c                              |   2 +-
+ mm/page_alloc.c                            |   8 +-
+ mm/slab.c                                  |  39 +-
+ mm/slab.h                                  | 365 +++++-------
+ mm/slab_common.c                           | 643 +--------------------
+ mm/slob.c                                  |  12 +-
+ mm/slub.c                                  | 183 +-----
+ mm/vmscan.c                                |   3 +-
+ mm/vmstat.c                                |  33 +-
+ mm/workingset.c                            |   6 +-
+ tools/cgroup/memcg_slabinfo.py             | 226 ++++++++
+ tools/testing/selftests/cgroup/.gitignore  |   1 +
+ tools/testing/selftests/cgroup/Makefile    |   2 +
+ tools/testing/selftests/cgroup/test_kmem.c | 382 ++++++++++++
+ 25 files changed, 1322 insertions(+), 1317 deletions(-)
+ create mode 100755 tools/cgroup/memcg_slabinfo.py
+ create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
+
+--=20
+2.25.3
+
