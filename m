@@ -2,186 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76DA1B496C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6611B4977
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 18:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgDVQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 12:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S1726792AbgDVQEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 12:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgDVQE0 (ORCPT
+        with ESMTP id S1726750AbgDVQEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:04:26 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D581C03C1AB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:26 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id y10so2184929uao.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:26 -0700 (PDT)
+        Wed, 22 Apr 2020 12:04:39 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0339C03C1AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:39 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id f59so2183736uaf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 09:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R6uBiNfit5YCO191/wwIsaUUqzxSLO/g5l1s37v3Z3w=;
-        b=Q91bHmJwQtHKONLOIZVoVWCWA8wv4FJ6D+5JbGFlH88Y+/P8I6LlZJbyat1zNpYnaf
-         r9JaIC2uFsoEs8V9fc21pNnrEnBTY0z4mPbLva9ly4DlnJCI1pxsfQi5Qf874n/YBWXp
-         P6OzTz4nF2sutRlKNThQUqe+3ohrfIMiGWGbk/+l+YxGCV+2ATZ8bK8jV/D6rCN/17ja
-         05VW2Ria5KGkfQS3EngD394SpfJwwdv2/Ps+LXsLN29JPBGNyGewMdFTTABE14T4A4yC
-         4FASMLFN6kKn19Mg17U9anWakRdEGFgCyYqTvdEdi8pWvqQQpmzFhTBHb+r8UUDTIxGJ
-         nqMw==
+         :cc;
+        bh=/cP8XVqt/xrM6smjanv0aHXjrlwOSLxLfTMt/NqGVzE=;
+        b=Z4aMnoy/ZVB07dbXDok7KjZPOJ2h1vkz4objHI/15Tf4u+VtT5U3pH8FO5m92YjSDM
+         BH2cMUQL6fAX4FktgSRRayv0dQRUp4fEkBkCFEXbmgF5z339Qrd3xKfmvrRulaKSe6ld
+         /Cg9lCt/rg583e1+PlG9EtgIo/bJ5WcpZb2OJuJUULh6waljaWs7Vjyg7e9tbNG1zFkI
+         yMjVeXwV7bZ8FeKdD0TImiDWs6c1xYkt9omeqOvmTkITnoGFC61ZT411rj3CSVi53EXg
+         iusd4S1g62p+chlWNJpMRxByZl1vOpmxhwMToTNKJD5i6lurxWXQqPe6/xk53ahQrzyf
+         GT+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R6uBiNfit5YCO191/wwIsaUUqzxSLO/g5l1s37v3Z3w=;
-        b=eRwNH1L2+IhEwzb1Rc42EU7sgsjeIwSnl5P/wkCWSS4nflznnGTkEWa5RAVFFAHI6F
-         J9SsN1CvvJcrX+FSpdhRAVfKgGBhWO4Cw6pD3pCTfifvxfLNPPlmXsmRCJp5x0aakb3q
-         pAL+SZTufuCHMwXzqP+8nLTz1YrFCBYaS+XkSQ7XysSo4R+R042vC+B1qfc42tMmisN0
-         TV9YIKBuLJIkq/LS1wxPOebtd9YJf6ds/YhbF7ctU6GwU7q50aZ3GyzLk2uRt0FmVLGn
-         vep5cZa/+Ef/xwPuqrCBwBW5adbGthazf5znfc2/d3YREQqeZmfgWGXQjfFzFGUTEM23
-         T6bw==
-X-Gm-Message-State: AGi0Puanp0V3Dgz8l6W7eL9JXc93LrV10LcghmrqPrchS9quZlcpzKts
-        sMMnU7gBhbLtx1qUsUciWEBvAAhBOd9+vbOw1h2B3Q==
-X-Google-Smtp-Source: APiQypLRD/Imtj1vYufqpjP3oiW2KCXvoVlKWsNAdbd7j7U51hZYh0PP2WQvQ0URi1Cr71o91VK7Yv/5O96ZLwzvEtY=
-X-Received: by 2002:a67:ead1:: with SMTP id s17mr20427811vso.200.1587571464862;
- Wed, 22 Apr 2020 09:04:24 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=/cP8XVqt/xrM6smjanv0aHXjrlwOSLxLfTMt/NqGVzE=;
+        b=bp271jSuD2mJXLRBDFCpnqmawUPmA/S1YYchn78has21vVSCj0b0cNY1XFp7gCRtA/
+         aBxio2C8GgsZNrKDKt8spJEgciV77AQzIu2+O4zoKKW7SwqFhXL3oN1O8JZwjIrNyZd2
+         jbH+FMynvKMtwxwXEh4rqDu+HfVTVj7pf7EeIY1CxkOgXehJeTSUMOkS+GmMJJmROedr
+         qnx6MNRr+uNbMOIiaV+KHAHNoZl2XMicG6L35sOsyH7r4QIRgSUNCBX/mCOLUqQRO0mt
+         EuR57tUpBsIWta5XgeAV/us6QbSHeiYYT2mDLdsxoUS9pBk5NvybTROh9hB8yvgmRsT+
+         GTLQ==
+X-Gm-Message-State: AGi0PubouU1qIX/idOmZavgfKKQ8clqcHstNMSPW0Hthw6OZvijsaNKA
+        Z2xOM6xVmUDIxNujgcUlN+hGK6OeljmHEY5cnwsVmg==
+X-Google-Smtp-Source: APiQypJWMaZC4FSnpq5XwOmbJBjLbeyzLISOahTGgc/vgHCQqjQejfLQtbUxRUPnqG1L695riRbIRsjbHQWoF4zPu8M=
+X-Received: by 2002:ab0:544a:: with SMTP id o10mr16863075uaa.15.1587571478685;
+ Wed, 22 Apr 2020 09:04:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200420161831.5043-1-ludovic.barre@st.com> <CAPDyKFqC3fdnQ9CMYhS-=5MiCET=r5Az2S5oFoA2v1gdDeGO3w@mail.gmail.com>
- <CAPDyKFrHcoVd=GKPB70gOFE8STOnTJrJbcZzE_DEgFWh1Vhszg@mail.gmail.com> <1d9cefd1-aaed-1eb5-92f2-b1f45b4da2ac@st.com>
-In-Reply-To: <1d9cefd1-aaed-1eb5-92f2-b1f45b4da2ac@st.com>
+References: <20200422153401.7913-1-yamada.masahiro@socionext.com>
+In-Reply-To: <20200422153401.7913-1-yamada.masahiro@socionext.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 22 Apr 2020 18:03:48 +0200
-Message-ID: <CAPDyKFpri4VBnH9nbqUa4L=3o_h+fSZ052v7AG_9MhJX2gKgCQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmci_sdmmc: fix power on issue due to pwr_reg initialization
-To:     Ludovic BARRE <ludovic.barre@st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com
+Date:   Wed, 22 Apr 2020 18:04:02 +0200
+Message-ID: <CAPDyKFp3p7JMQG6fm_9FcNo=phE=bYfHqoOjVU83V8G5c_e7dw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-of-at91: make MMC_SDHCI_OF_AT91 depend on HAVE_CLK
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Takao Orito <orito.takao@socionext.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Apr 2020 at 15:40, Ludovic BARRE <ludovic.barre@st.com> wrote:
+On Wed, 22 Apr 2020 at 17:34, Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
 >
-> hi Ulf
+> If sdhci-of-at91.c is compiled without CONFIG_HAVE_CLK, the line
 >
-> Le 4/21/20 =C3=A0 11:38 AM, Ulf Hansson a =C3=A9crit :
-> > On Tue, 21 Apr 2020 at 11:25, Ulf Hansson <ulf.hansson@linaro.org> wrot=
-e:
-> >>
-> >> On Mon, 20 Apr 2020 at 18:18, Ludovic Barre <ludovic.barre@st.com> wro=
-te:
-> >>>
-> >>> This patch fix a power-on issue, and avoid to retry the power sequenc=
-e.
-> >>>
-> >>> In power off sequence: sdmmc must set pwr_reg in "power-cycle" state
-> >>> (value 0x2), to prevent the card from being supplied through the sign=
-al
-> >>> lines (all the lines are driven low).
-> >>>
-> >>> In power on sequence: when the power is stable, sdmmc must set pwr_re=
-g
-> >>> in "power-off" state (value 0x0) to drive all signal to high before t=
-o
-> >>> set "power-on".
-> >>
-> >> Just a question to gain further understanding.
-> >>
-> >> Let's assume that the controller is a power-on state, because it's
-> >> been initialized by the boot loader. When the mmc core then starts the
-> >> power-on sequence (not doing a power-off first), would $subject patch
-> >> then cause the
-> >> MMCIPOWER to remain as is, or is it going to be overwritten?
+>   caps1 |= FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
 >
-> On sdmmc controller, the PWRCTRL[1:0] field of MMCIPOWER register allow
-> to manage sd lines and has a specific bahavior.
+> ... emits "FIELD_PREP: value too large for the field" warning.
 >
-> PWRCTRL value:
->   - 0x0: After reset, Reset: the SDMMC is disabled and the clock to the
->          Card is stopped, SDMMC_D[7:0], and SDMMC_CMD are HiZ and
->          SDMMC_CK is driven low.
->          When written 00, power-off: the SDMMC is disabled and the clock
->          to the card is stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK
->          are driven high.
+> The compiler seems to decide clk_mul is constant (unsigned int)-1,
+> because clk_get_rate() returns 0 when CONFIG_HAVE_CLK is disabled.
 >
->   - 0x2: Power-cycle, the SDMMC is disabled and the clock to the card is
->          stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are driven low.
+> Add HAVE_CLK to the depenency since this driver does not work without
+> the clock APIs anyway.
 >
->   - 0x3: Power-on: the card is clocked, The first 74 SDMMC_CK cycles the
->          SDMMC is still disabled. After the 74 cycles the SDMMC is
->          enabled and the SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are
->          controlled according the SDMMC operation.
->          **Any further write will be ignored, PWRCTRL value
->          will keep 0x3**. when the SDMMC is ON (0x3) only a reset could
->          change pwrctrl value and the state of sdmmc lines.
->
-> So if the lines are already "ON", the power-on sequence (decribed in
-> commit message) not overwrite the pwctrl field and not disturb the sdmmc
-> lines.
+> Link: https://lkml.org/lkml/2020/4/17/613
+> Fixes: linux-next ("mmc: sdhci: use FIELD_GET/PREP for capabilities bit masks")
 
-Thanks for the detailed information, much appreciated!
+I don't know about these, but I just decided to drop them.
 
->
-> >>
-> >> I am a little worried that we may start to rely on boot loader
-> >> conditions, which isn't really what we want either...
-> >>
->
-> We not depend of boot loader conditions.
->
-> This patch simply allows to drive high the sd lines before to set
-> "power-on" value (no effect if already power ON).
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-Yep, thanks!
-
->
-> >>>
-> >>> To avoid writing the same value to the power register several times, =
-this
-> >>> register is cached by the pwr_reg variable. At probe pwr_reg is initi=
-alized
-> >>> to 0 by kzalloc of mmc_alloc_host.
-> >>>
-> >>> Like pwr_reg value is 0 at probing, the power on sequence fail becaus=
-e
-> >>> the "power-off" state is not writes (value 0x0) and the lines
-> >>> remain drive to low.
-> >>>
-> >>> This patch initializes "pwr_reg" variable with power register value.
-> >>> This it done in sdmmc variant init to not disturb default mmci behavi=
-or.
-> >>>
-> >>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-> >>
-> >> Besides the comment, the code and the approach seems reasonable to me.
-> >
-> > Another related question. I just realized why you probably haven't set
-> > .pwrreg_nopower for the variant_stm32_sdmmc and variant_stm32_sdmmcv2.
-> >
-> > I guess it's because you need a slightly different way to restore the
-> > context of MMCIPOWER register at ->runtime_resume(), rather than just
-> > re-writing it with the saved register values. Is this something that
-> > you are looking into as well?
->
-> Yes exactly, the sequence is slightly different. I can't write 0 on
-> mmci_runtime_suspend, and can't just re-writing the saved register.
-
-So, it seems like you need to use the ->set_ios() callback, to
-re-configure the controller correctly.
-
-Just tell if you need more help to make that work, otherwise I am here
-to review your patches.
-
-In regards to $subject patch, I have applied it for next, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
+
+> ---
+>
+> Ulf,
+>
+> I do not know how to fill the Fixes tag.
+> It is currently 8da1ff4f68a2 in linux-next, but I am not sure it is
+> stable. I just added 'linux-next'.
+
+...and there are no usefull commit hash to use from my tree either, as
+I am occasionally rebasing my next branch.
+
+
+>
+> If you have a preferred way, please modify it.
+>
+>
+>
+>
+>
+>  drivers/mmc/host/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 462b5352fea7..2aee844722d6 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -171,7 +171,7 @@ config MMC_SDHCI_OF_ASPEED
+>  config MMC_SDHCI_OF_AT91
+>         tristate "SDHCI OF support for the Atmel SDMMC controller"
+>         depends on MMC_SDHCI_PLTFM
+> -       depends on OF
+> +       depends on OF && HAVE_CLK
+>         help
+>           This selects the Atmel SDMMC driver
+>
+> --
+> 2.25.1
+>
