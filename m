@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1DB1B405D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33331B3E12
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbgDVKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:45:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54404 "EHLO mail.kernel.org"
+        id S1729936AbgDVKYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:24:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729907AbgDVKR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:58 -0400
+        id S1730405AbgDVKYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DA842075A;
-        Wed, 22 Apr 2020 10:17:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9C812077D;
+        Wed, 22 Apr 2020 10:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550677;
-        bh=0rcL6w+U3QxTPUxJYsUdrnHmbxHPVlcjvRNL/c8lbPI=;
+        s=default; t=1587551054;
+        bh=z2JrKhRoKKS+q6sD+25g7H8YHyXTUOaWkucZGm0Hnhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kp3r4S8eeF/nocpZT+J7g0gCtiFbK6FwgDWAVMvn0qJeHw64WBoLLIp8kfJb4X6i+
-         bPUveJi9rRnaAntu4CeH5LfMi8zkeOIi1D//dzvO/PLBSZsy9MMjjEmPA8QOlkznaZ
-         IhG3vejdPufwdewUduBoWEe3KICEBD9e5L88/xJI=
+        b=FLI86bYzxVhg6vbUhHz7I7qNsfq1qDDw9oXDKyYLLuT4lO/o+IEpFD08Fjh7RUMVK
+         Qha9MezAjPu3QmCj8uOsJAOkOWq2M67U8d94GA0zta25l7Y7Gsu4fCrFkYVTuhN6jh
+         zH+Xms+0T3CHjwooRvLRq6mAay8ChqZqYKxEGFnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Sahitya Tummala <stummala@codeaurora.org>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 049/118] rtc: 88pm860x: fix possible race condition
+Subject: [PATCH 5.6 083/166] f2fs: Add a new CP flag to help fsck fix resize SPO issues
 Date:   Wed, 22 Apr 2020 11:56:50 +0200
-Message-Id: <20200422095040.040537088@linuxfoundation.org>
+Message-Id: <20200422095057.648732392@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Sahitya Tummala <stummala@codeaurora.org>
 
-[ Upstream commit 9cf4789e6e4673d0b2c96fa6bb0c35e81b43111a ]
+[ Upstream commit c84ef3c5e65ccf99a7a91a4d731ebb5d6331a178 ]
 
-The RTC IRQ is requested before the struct rtc_device is allocated,
-this may lead to a NULL pointer dereference in the IRQ handler.
+Add and set a new CP flag CP_RESIZEFS_FLAG during
+online resize FS to help fsck fix the metadata mismatch
+that may happen due to SPO during resize, where SB
+got updated but CP data couldn't be written yet.
 
-To fix this issue, allocating the rtc_device struct before requesting
-the RTC IRQ using devm_rtc_allocate_device, and use rtc_register_device
-to register the RTC device.
+fsck errors -
+Info: CKPT version = 6ed7bccb
+        Wrong user_block_count(2233856)
+[f2fs_do_mount:3365] Checkpoint is polluted
 
-Also remove the unnecessary error message as the core already prints the
-info.
-
-Link: https://lore.kernel.org/r/20200311223956.51352-1-alexandre.belloni@bootlin.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-88pm860x.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/f2fs/checkpoint.c    | 8 ++++++--
+ include/linux/f2fs_fs.h | 1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-88pm860x.c b/drivers/rtc/rtc-88pm860x.c
-index 4743b16a8d849..1526402e126b2 100644
---- a/drivers/rtc/rtc-88pm860x.c
-+++ b/drivers/rtc/rtc-88pm860x.c
-@@ -336,6 +336,10 @@ static int pm860x_rtc_probe(struct platform_device *pdev)
- 	info->dev = &pdev->dev;
- 	dev_set_drvdata(&pdev->dev, info);
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 9c88fb3d255a2..79aaf06004f65 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1301,10 +1301,14 @@ static void update_ckpt_flags(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 	else
+ 		__clear_ckpt_flags(ckpt, CP_ORPHAN_PRESENT_FLAG);
  
-+	info->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
-+	if (IS_ERR(info->rtc_dev))
-+		return PTR_ERR(info->rtc_dev);
+-	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK) ||
+-		is_sbi_flag_set(sbi, SBI_IS_RESIZEFS))
++	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK))
+ 		__set_ckpt_flags(ckpt, CP_FSCK_FLAG);
+ 
++	if (is_sbi_flag_set(sbi, SBI_IS_RESIZEFS))
++		__set_ckpt_flags(ckpt, CP_RESIZEFS_FLAG);
++	else
++		__clear_ckpt_flags(ckpt, CP_RESIZEFS_FLAG);
 +
- 	ret = devm_request_threaded_irq(&pdev->dev, info->irq, NULL,
- 					rtc_update_handler, IRQF_ONESHOT, "rtc",
- 					info);
-@@ -377,13 +381,11 @@ static int pm860x_rtc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "88pm860x-rtc",
--					    &pm860x_rtc_ops, THIS_MODULE);
--	ret = PTR_ERR(info->rtc_dev);
--	if (IS_ERR(info->rtc_dev)) {
--		dev_err(&pdev->dev, "Failed to register RTC device: %d\n", ret);
-+	info->rtc_dev->ops = &pm860x_rtc_ops;
-+
-+	ret = rtc_register_device(info->rtc_dev);
-+	if (ret)
- 		return ret;
--	}
- 
- 	/*
- 	 * enable internal XO instead of internal 3.25MHz clock since it can
+ 	if (is_sbi_flag_set(sbi, SBI_CP_DISABLED))
+ 		__set_ckpt_flags(ckpt, CP_DISABLED_FLAG);
+ 	else
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index ac3f4888b3dfa..3c383ddd92ddd 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -125,6 +125,7 @@ struct f2fs_super_block {
+ /*
+  * For checkpoint
+  */
++#define CP_RESIZEFS_FLAG		0x00004000
+ #define CP_DISABLED_QUICK_FLAG		0x00002000
+ #define CP_DISABLED_FLAG		0x00001000
+ #define CP_QUOTA_NEED_FSCK_FLAG		0x00000800
 -- 
 2.20.1
 
