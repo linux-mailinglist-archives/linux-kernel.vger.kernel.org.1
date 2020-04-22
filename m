@@ -2,196 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1811B4E35
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BF61B4E1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 22:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgDVUON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 16:14:13 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:45442 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgDVUOK (ORCPT
+        id S1726828AbgDVUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 16:13:30 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:43457 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726714AbgDVUN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:14:10 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03MKE5EA066948;
-        Wed, 22 Apr 2020 15:14:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587586445;
-        bh=EobPuUYa4yhwwo8CjMb08fT7mp5vL7a+KqjjG21JZv8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=IRp3NZ5+soBtdUCaSUkKdBesLmH2lRAZJskPU4fVuVfwwWyg/6DTslcsLXHLE5rGd
-         i9PqidSta1KWUav/kGg7mfIav7pTUrd6xxlewU1gO+OMzNjIhqEBu2iFuqIxOAzyvB
-         +4zLNKtVHi4cTdXsXLDohDMCMcfISgQo7NWAWHVg=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKE53M086527;
-        Wed, 22 Apr 2020 15:14:05 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
- Apr 2020 15:14:05 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 22 Apr 2020 15:14:05 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKE4jj062851;
-        Wed, 22 Apr 2020 15:14:05 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        <linux-kernel@vger.kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next v4 10/10] net: ethernet: ti: cpsw: enable cpts irq
-Date:   Wed, 22 Apr 2020 23:12:54 +0300
-Message-ID: <20200422201254.15232-11-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200422201254.15232-1-grygorii.strashko@ti.com>
-References: <20200422201254.15232-1-grygorii.strashko@ti.com>
+        Wed, 22 Apr 2020 16:13:28 -0400
+Received: by mail-ot1-f68.google.com with SMTP id g14so3342847otg.10;
+        Wed, 22 Apr 2020 13:13:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FU28JBKGEW/8GQtu1EPA/t3igT0iC4W0GHS/U/6pah4=;
+        b=V7dCPC0ZpML8QoKAXcbyONXtvrMqpCN04mbrUtoPRrodX9gVxpT9KvhBHXGFH+3EH0
+         cGFrrvMOb0JRp8uKr78fX3M17qw/bI8C4i9qvc5vvXd/tUnvVIZ2m7n8FeV5IO2dIvcl
+         srgSBOQQPD+FGlYTAaVLX3PTspygSYz+PRRBHLkIC+s5vYM2lyghUTN7euBMs2aV9Hem
+         hg7aD36o2PpmhxjbmbTkpa8zVXZX+ni4yBAQIzTM+s9pf1f0cL/Z3oo13OjgoUyaMNCr
+         7Jk9ZEEXDBMhrvID86ZeIDcVZHRiPC3/06iM2M2I6HE7jADrm6zObIY0xJKamoVUdHNv
+         Pfjg==
+X-Gm-Message-State: AGi0PubZ7hK3Aw6jekBoOzXxRQz0lZjpnb/FTJqYW7GNTd7pVk82ZOlF
+        PDnM72NbSqzM3FnGVfUejyZ3S68=
+X-Google-Smtp-Source: APiQypLq1juXk3wkyAmmhugjQWskZwTMMSVHNWayyrQVPc7tVA60BLU67e9v/cwDx0dAkBMdlJyA5A==
+X-Received: by 2002:a9d:6b11:: with SMTP id g17mr712345otp.264.1587586407497;
+        Wed, 22 Apr 2020 13:13:27 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t26sm33325otl.71.2020.04.22.13.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 13:13:26 -0700 (PDT)
+Received: (nullmailer pid 20547 invoked by uid 1000);
+        Wed, 22 Apr 2020 20:13:25 -0000
+Date:   Wed, 22 Apr 2020 15:13:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au
+Subject: Re: [PATCH v10 1/7] dt-bindings: soc: Add Aspeed XDMA Engine
+Message-ID: <20200422201325.GA12023@bogus>
+References: <20200420202611.17776-1-eajames@linux.ibm.com>
+ <20200420202611.17776-2-eajames@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420202611.17776-2-eajames@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CPSW misc IRQ need be enabled for CPTS event_pend IRQs processing. This
-patch adds corresponding support to CPSW driver.
+On Mon, Apr 20, 2020 at 03:26:05PM -0500, Eddie James wrote:
+> Document the bindings for the Aspeed AST25XX and AST26XX XDMA engine.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  .../devicetree/bindings/soc/aspeed/xdma.yaml  | 108 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 114 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml b/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
+> new file mode 100644
+> index 000000000000..428a575da1be
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0-or-later)
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
----
- drivers/net/ethernet/ti/cpsw.c      | 21 +++++++++++++++++++++
- drivers/net/ethernet/ti/cpsw_new.c  | 20 ++++++++++++++++++++
- drivers/net/ethernet/ti/cpsw_priv.c | 12 ++++++++++++
- drivers/net/ethernet/ti/cpsw_priv.h |  2 ++
- 4 files changed, 55 insertions(+)
+Dual license new bindings please:
 
-diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
-index c2c5bf87da01..09f98fa2fb4e 100644
---- a/drivers/net/ethernet/ti/cpsw.c
-+++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -1569,6 +1569,12 @@ static int cpsw_probe(struct platform_device *pdev)
- 		return irq;
- 	cpsw->irqs_table[1] = irq;
- 
-+	/* get misc irq*/
-+	irq = platform_get_irq(pdev, 3);
-+	if (irq <= 0)
-+		return irq;
-+	cpsw->misc_irq = irq;
-+
- 	/*
- 	 * This may be required here for child devices.
- 	 */
-@@ -1703,6 +1709,21 @@ static int cpsw_probe(struct platform_device *pdev)
- 		goto clean_unregister_netdev_ret;
- 	}
- 
-+	if (!cpsw->cpts)
-+		goto skip_cpts;
-+
-+	ret = devm_request_irq(&pdev->dev, cpsw->misc_irq, cpsw_misc_interrupt,
-+			       0, dev_name(&pdev->dev), cpsw);
-+	if (ret < 0) {
-+		dev_err(dev, "error attaching misc irq (%d)\n", ret);
-+		goto clean_unregister_netdev_ret;
-+	}
-+
-+	/* Enable misc CPTS evnt_pend IRQ */
-+	cpts_set_irqpoll(cpsw->cpts, false);
-+	writel(0x10, &cpsw->wr_regs->misc_en);
-+
-+skip_cpts:
- 	cpsw_notice(priv, probe,
- 		    "initialized device (regs %pa, irq %d, pool size %d)\n",
- 		    &ss_res->start, cpsw->irqs_table[0], descs_pool_size);
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 9209e613257d..33c8dd686206 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1896,6 +1896,11 @@ static int cpsw_probe(struct platform_device *pdev)
- 		return irq;
- 	cpsw->irqs_table[1] = irq;
- 
-+	irq = platform_get_irq_byname(pdev, "misc");
-+	if (irq <= 0)
-+		return irq;
-+	cpsw->misc_irq = irq;
-+
- 	platform_set_drvdata(pdev, cpsw);
- 	/* This may be required here for child devices. */
- 	pm_runtime_enable(dev);
-@@ -1975,6 +1980,21 @@ static int cpsw_probe(struct platform_device *pdev)
- 		goto clean_unregister_netdev;
- 	}
- 
-+	if (!cpsw->cpts)
-+		goto skip_cpts;
-+
-+	ret = devm_request_irq(dev, cpsw->misc_irq, cpsw_misc_interrupt,
-+			       0, dev_name(&pdev->dev), cpsw);
-+	if (ret < 0) {
-+		dev_err(dev, "error attaching misc irq (%d)\n", ret);
-+		goto clean_unregister_netdev;
-+	}
-+
-+	/* Enable misc CPTS evnt_pend IRQ */
-+	cpts_set_irqpoll(cpsw->cpts, false);
-+	writel(0x10, &cpsw->wr_regs->misc_en);
-+
-+skip_cpts:
- 	ret = cpsw_register_notifiers(cpsw);
- 	if (ret)
- 		goto clean_unregister_netdev;
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index 099208927400..9d098c802c6d 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -114,6 +114,18 @@ irqreturn_t cpsw_rx_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
-+irqreturn_t cpsw_misc_interrupt(int irq, void *dev_id)
-+{
-+	struct cpsw_common *cpsw = dev_id;
-+
-+	writel(0, &cpsw->wr_regs->misc_en);
-+	cpdma_ctlr_eoi(cpsw->dma, CPDMA_EOI_MISC);
-+	cpts_misc_interrupt(cpsw->cpts);
-+	writel(0x10, &cpsw->wr_regs->misc_en);
-+
-+	return IRQ_HANDLED;
-+}
-+
- int cpsw_tx_mq_poll(struct napi_struct *napi_tx, int budget)
- {
- 	struct cpsw_common	*cpsw = napi_to_cpsw(napi_tx);
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.h b/drivers/net/ethernet/ti/cpsw_priv.h
-index b8d7b924ee3d..bf4e179b4ca4 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.h
-+++ b/drivers/net/ethernet/ti/cpsw_priv.h
-@@ -350,6 +350,7 @@ struct cpsw_common {
- 	bool				rx_irq_disabled;
- 	bool				tx_irq_disabled;
- 	u32 irqs_table[IRQ_NUM];
-+	int misc_irq;
- 	struct cpts			*cpts;
- 	struct devlink *devlink;
- 	int				rx_ch_num, tx_ch_num;
-@@ -442,6 +443,7 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 		 struct page *page, int port);
- irqreturn_t cpsw_tx_interrupt(int irq, void *dev_id);
- irqreturn_t cpsw_rx_interrupt(int irq, void *dev_id);
-+irqreturn_t cpsw_misc_interrupt(int irq, void *dev_id);
- int cpsw_tx_mq_poll(struct napi_struct *napi_tx, int budget);
- int cpsw_tx_poll(struct napi_struct *napi_tx, int budget);
- int cpsw_rx_mq_poll(struct napi_struct *napi_rx, int budget);
--- 
-2.17.1
+(GPL-2.0-only OR BSD-2-Clause)
 
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/aspeed/xdma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Aspeed AST25XX and AST26XX XDMA Engine
+> +
+> +maintainers:
+> + - Eddie James <eajames@linux.ibm.com>
+> +
+> +description: |
+> +  This binding describes the XDMA Engine embedded in the AST2500 and AST2600
+> +  SOCs. The XDMA engine can perform automatic DMA operations over PCI between
+> +  the SOC (acting as a BMC) and a host processor.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2500-xdma
+> +      - aspeed,ast2600-xdma
+> +
+> +  reg:
+> +    items:
+> +      - description: engine register space
+
+That's all 'reg' properties. You don't need a description for a 
+single entry. Just:
+
+reg:
+  maxItems: 1
+
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  reset-names:
+> +    maxItems: 2
+> +    items:
+> +      - const: device
+> +      - const: root-complex
+> +
+> +  interrupts-extended:
+
+Just use 'interrupts'. The tools fix things up so both work.
+
+> +    maxItems: 2
+> +    items:
+> +      - description: global interrupt for the XDMA engine
+> +      - description: PCI-E reset or PERST interrupt
+> +
+> +  aspeed,scu:
+> +    description: a reference to the System Control Unit node of the Aspeed SOC.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  aspeed,pcie-device:
+> +    description: describes which PCI-E device the XDMA engine should use
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/string
+> +      - oneOf:
+> +        - items:
+> +          - const: bmc
+> +        - items:
+> +          - const: vga
+
+The oneOf (inclusive) can be just:
+
+enum: [ bmc, vga ]
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - resets
+> +  - interrupts-extended
+> +  - aspeed,scu
+> +  - memory-region
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: aspeed,ast2600-xdma
+> +then:
+> +  required:
+> +    - reset-names
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
+> +    syscon: syscon@1e6e2000 {
+> +        reg = <0x1e6e2000 0x1000>;
+> +        ranges = <0 0x1e6e2000 0x1000>;
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        #clock-cells = <1>;
+> +        #reset-cells = <1>;
+> +        scu_ic0: interrupt-controller@560 {
+> +            reg = <0x560 0x4>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <1>;
+> +        };
+> +    };
+> +    xdma@1e6e7000 {
+> +        compatible = "aspeed,ast2600-xdma";
+> +        reg = <0x1e6e7000 0x100>;
+> +        clocks = <&syscon ASPEED_CLK_GATE_BCLK>;
+> +        resets = <&syscon ASPEED_RESET_DEV_XDMA>, <&syscon ASPEED_RESET_RC_XDMA>;
+> +        reset-names = "device", "root-complex";
+> +        interrupts-extended = <&gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+> +                              <&scu_ic0 ASPEED_AST2600_SCU_IC0_PCIE_PERST_LO_TO_HI>;
+> +        aspeed,scu = <&syscon>;
+> +        aspeed,pcie-device = "bmc";
+> +        memory-region = <&vga_memory>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ecd7def6ff4b..b1963e01a75e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2774,6 +2774,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/media/aspeed-video.txt
+>  F:	drivers/media/platform/aspeed-video.c
+>  
+> +ASPEED XDMA ENGINE DRIVER
+> +M:	Eddie James <eajames@linux.ibm.com>
+> +L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/soc/aspeed/xdma.yaml
+> +
+>  ASUS NOTEBOOKS AND EEEPC ACPI/WMI EXTRAS DRIVERS
+>  M:	Corentin Chary <corentin.chary@gmail.com>
+>  L:	acpi4asus-user@lists.sourceforge.net
+> -- 
+> 2.24.0
+> 
