@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B821B3E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451751B411C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730369AbgDVKXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
+        id S1731609AbgDVKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730320AbgDVKXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:23:20 -0400
+        id S1729307AbgDVKML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:12:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FEDC20780;
-        Wed, 22 Apr 2020 10:23:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42B8D2071E;
+        Wed, 22 Apr 2020 10:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551000;
-        bh=u+ZK0QjmPA3ERKqb6bXhhJqFb/fnt7rrc/MvdpraFAQ=;
+        s=default; t=1587550329;
+        bh=r9cPRRzUeSOgbRfR8rknZofdFTnT3oSAVu+UkQoNh2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rXb59OwfYnfUttjCtfvBgYXiZxjkA83GKnFxb+gb4B0hvO71uKW94gYCZodBxv2uH
-         /bMIiuFx7/MkrL+chNh62Pd6E5v6KPEZZ0HKsO8BfV7stv52LhYW0ZZoPNdZoc3bsg
-         uyaw+zgAuMrqW9PNO1JT4bzOF58HCqvNFpJh0OCU=
+        b=x5vIS32XvHfFQvS1538ChRL3wbW6wWihpj+o6ki8AHIrvJPLndQQtz1vfLS0mCDTe
+         fYqvQIJ2xSz8nx5NgFB1n2bU1OnYF+V04yGkLOS7OHU7TG68fZzKcEPe4ZwGlVvjKT
+         KTv3y+/d74N/I9vlXFqWL4uwOG2PaSMEI1QGIFCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        "Andrew F. Davis" <afd@ti.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 059/166] power: supply: bq27xxx_battery: Silence deferred-probe error
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.14 060/199] KVM: x86: Allocate new rmap and large page tracking when moving memslot
 Date:   Wed, 22 Apr 2020 11:56:26 +0200
-Message-Id: <20200422095055.188150785@linuxfoundation.org>
+Message-Id: <20200422095104.253905519@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,42 +45,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-[ Upstream commit 583b53ece0b0268c542a1eafadb62e3d4b0aab8c ]
+commit edd4fa37baa6ee8e44dc65523b27bd6fe44c94de upstream.
 
-The driver fails to probe with -EPROBE_DEFER if battery's power supply
-(charger driver) isn't ready yet and this results in a bit noisy error
-message in KMSG during kernel's boot up. Let's silence the harmless
-error message.
+Reallocate a rmap array and recalcuate large page compatibility when
+moving an existing memslot to correctly handle the alignment properties
+of the new memslot.  The number of rmap entries required at each level
+is dependent on the alignment of the memslot's base gfn with respect to
+that level, e.g. moving a large-page aligned memslot so that it becomes
+unaligned will increase the number of rmap entries needed at the now
+unaligned level.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Andrew F. Davis <afd@ti.com>
-Reviewed-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Not updating the rmap array is the most obvious bug, as KVM accesses
+garbage data beyond the end of the rmap.  KVM interprets the bad data as
+pointers, leading to non-canonical #GPs, unexpected #PFs, etc...
+
+  general protection fault: 0000 [#1] SMP
+  CPU: 0 PID: 1909 Comm: move_memory_reg Not tainted 5.4.0-rc7+ #139
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:rmap_get_first+0x37/0x50 [kvm]
+  Code: <48> 8b 3b 48 85 ff 74 ec e8 6c f4 ff ff 85 c0 74 e3 48 89 d8 5b c3
+  RSP: 0018:ffffc9000021bbc8 EFLAGS: 00010246
+  RAX: ffff00617461642e RBX: ffff00617461642e RCX: 0000000000000012
+  RDX: ffff88827400f568 RSI: ffffc9000021bbe0 RDI: ffff88827400f570
+  RBP: 0010000000000000 R08: ffffc9000021bd00 R09: ffffc9000021bda8
+  R10: ffffc9000021bc48 R11: 0000000000000000 R12: 0030000000000000
+  R13: 0000000000000000 R14: ffff88827427d700 R15: ffffc9000021bce8
+  FS:  00007f7eda014700(0000) GS:ffff888277a00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f7ed9216ff8 CR3: 0000000274391003 CR4: 0000000000162eb0
+  Call Trace:
+   kvm_mmu_slot_set_dirty+0xa1/0x150 [kvm]
+   __kvm_set_memory_region.part.64+0x559/0x960 [kvm]
+   kvm_set_memory_region+0x45/0x60 [kvm]
+   kvm_vm_ioctl+0x30f/0x920 [kvm]
+   do_vfs_ioctl+0xa1/0x620
+   ksys_ioctl+0x66/0x70
+   __x64_sys_ioctl+0x16/0x20
+   do_syscall_64+0x4c/0x170
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f7ed9911f47
+  Code: <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 21 6f 2c 00 f7 d8 64 89 01 48
+  RSP: 002b:00007ffc00937498 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+  RAX: ffffffffffffffda RBX: 0000000001ab0010 RCX: 00007f7ed9911f47
+  RDX: 0000000001ab1350 RSI: 000000004020ae46 RDI: 0000000000000004
+  RBP: 000000000000000a R08: 0000000000000000 R09: 00007f7ed9214700
+  R10: 00007f7ed92149d0 R11: 0000000000000246 R12: 00000000bffff000
+  R13: 0000000000000003 R14: 00007f7ed9215000 R15: 0000000000000000
+  Modules linked in: kvm_intel kvm irqbypass
+  ---[ end trace 0c5f570b3358ca89 ]---
+
+The disallow_lpage tracking is more subtle.  Failure to update results
+in KVM creating large pages when it shouldn't, either due to stale data
+or again due to indexing beyond the end of the metadata arrays, which
+can lead to memory corruption and/or leaking data to guest/userspace.
+
+Note, the arrays for the old memslot are freed by the unconditional call
+to kvm_free_memslot() in __kvm_set_memory_region().
+
+Fixes: 05da45583de9b ("KVM: MMU: large page support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/power/supply/bq27xxx_battery.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/kvm/x86.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 195c18c2f426e..664e50103eaaf 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -1885,7 +1885,10 @@ int bq27xxx_battery_setup(struct bq27xxx_device_info *di)
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8584,6 +8584,13 @@ int kvm_arch_create_memslot(struct kvm *
+ {
+ 	int i;
  
- 	di->bat = power_supply_register_no_ws(di->dev, psy_desc, &psy_cfg);
- 	if (IS_ERR(di->bat)) {
--		dev_err(di->dev, "failed to register battery\n");
-+		if (PTR_ERR(di->bat) == -EPROBE_DEFER)
-+			dev_dbg(di->dev, "failed to register battery, deferring probe\n");
-+		else
-+			dev_err(di->dev, "failed to register battery\n");
- 		return PTR_ERR(di->bat);
- 	}
++	/*
++	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
++	 * old arrays will be freed by __kvm_set_memory_region() if installing
++	 * the new memslot is successful.
++	 */
++	memset(&slot->arch, 0, sizeof(slot->arch));
++
+ 	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+ 		struct kvm_lpage_info *linfo;
+ 		unsigned long ugfn;
+@@ -8657,6 +8664,10 @@ int kvm_arch_prepare_memory_region(struc
+ 				const struct kvm_userspace_memory_region *mem,
+ 				enum kvm_mr_change change)
+ {
++	if (change == KVM_MR_MOVE)
++		return kvm_arch_create_memslot(kvm, memslot,
++					       mem->memory_size >> PAGE_SHIFT);
++
+ 	return 0;
+ }
  
--- 
-2.20.1
-
 
 
