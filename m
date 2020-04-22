@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F3B1B41BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC101B3D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgDVKHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
+        id S1728941AbgDVKNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:13:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728472AbgDVKHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:11 -0400
+        id S1726240AbgDVKNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 139D820774;
-        Wed, 22 Apr 2020 10:07:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60D9E20781;
+        Wed, 22 Apr 2020 10:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550030;
-        bh=OifP4P5hXxTkzT+ICeJO7lVltwiShd+rSRZd7Y6s+aI=;
+        s=default; t=1587550415;
+        bh=Oif0qUeXDeEDFaVTAP0jQaj1zg1uJCGeVivjc+F1Zp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tKrpPvh6xTwD9fhM+f/rdCiRvrWW/gwQFxY/U+OZWBEycr3epoEHldbETvS9kiSjm
-         4WVh3S/nO5UEM5eSCBEJgdh2qrF3z/WloL9pO3j1imjRIAouk5Jh2POMJ9KQze5Lzi
-         ZwBDZLD3OqWMSVqOe4CCafMK5lsHNcK4hX3R0HUA=
+        b=OmAUQN/QGv5BMSxrLER4/M0/v1VoEEEXIKRH3arrf6B9BHg6zbMmp41X/mnZ4tKAp
+         hxY1tJY0DWFiqB/le3QfL2rmGhA9Tvxi6sO0vvuQqSPBAgInzx/3bXfNsp81KRKKX9
+         bOfhPetcL8nV9Ndb1Te7XrLfdR4QNZB21qvWKnYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Sean Paul <sean@poorly.run>,
+        Wayne Lin <Wayne.Lin@amd.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Lyude Paul <lyude@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 107/125] s390/cpuinfo: fix wrong output when CPU0 is offline
-Date:   Wed, 22 Apr 2020 11:57:04 +0200
-Message-Id: <20200422095050.149825962@linuxfoundation.org>
+Subject: [PATCH 4.14 099/199] drm/dp_mst: Fix clearing payload state on topology disable
+Date:   Wed, 22 Apr 2020 11:57:05 +0200
+Message-Id: <20200422095107.842999382@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit 872f27103874a73783aeff2aac2b41a489f67d7c ]
+[ Upstream commit 8732fe46b20c951493bfc4dba0ad08efdf41de81 ]
 
-/proc/cpuinfo should not print information about CPU 0 when it is offline.
+The issues caused by:
 
-Fixes: 281eaa8cb67c ("s390/cpuinfo: simplify locking and skip offline cpus early")
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-[heiko.carstens@de.ibm.com: shortened commit message]
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+commit 64e62bdf04ab ("drm/dp_mst: Remove VCPI while disabling topology
+mgr")
+
+Prompted me to take a closer look at how we clear the payload state in
+general when disabling the topology, and it turns out there's actually
+two subtle issues here.
+
+The first is that we're not grabbing &mgr.payload_lock when clearing the
+payloads in drm_dp_mst_topology_mgr_set_mst(). Seeing as the canonical
+lock order is &mgr.payload_lock -> &mgr.lock (because we always want
+&mgr.lock to be the inner-most lock so topology validation always
+works), this makes perfect sense. It also means that -technically- there
+could be racing between someone calling
+drm_dp_mst_topology_mgr_set_mst() to disable the topology, along with a
+modeset occurring that's modifying the payload state at the same time.
+
+The second is the more obvious issue that Wayne Lin discovered, that
+we're not clearing proposed_payloads when disabling the topology.
+
+I actually can't see any obvious places where the racing caused by the
+first issue would break something, and it could be that some of our
+higher-level locks already prevent this by happenstance, but better safe
+then sorry. So, let's make it so that drm_dp_mst_topology_mgr_set_mst()
+first grabs &mgr.payload_lock followed by &mgr.lock so that we never
+race when modifying the payload state. Then, we also clear
+proposed_payloads to fix the original issue of enabling a new topology
+with a dirty payload state. This doesn't clear any of the drm_dp_vcpi
+structures, but those are getting destroyed along with the ports anyway.
+
+Changes since v1:
+* Use sizeof(mgr->payloads[0])/sizeof(mgr->proposed_vcpis[0]) instead -
+  vsyrjala
+
+Cc: Sean Paul <sean@poorly.run>
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200122194321.14953-1-lyude@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/processor.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kernel/processor.c b/arch/s390/kernel/processor.c
-index d856263fd7687..737e22cf09728 100644
---- a/arch/s390/kernel/processor.c
-+++ b/arch/s390/kernel/processor.c
-@@ -139,8 +139,9 @@ static void show_cpu_mhz(struct seq_file *m, unsigned long n)
- static int show_cpuinfo(struct seq_file *m, void *v)
- {
- 	unsigned long n = (unsigned long) v - 1;
-+	unsigned long first = cpumask_first(cpu_online_mask);
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index f0d819fc16cd7..db0e9ce57e29a 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2038,6 +2038,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 	int ret = 0;
+ 	struct drm_dp_mst_branch *mstb = NULL;
  
--	if (!n)
-+	if (n == first)
- 		show_cpu_summary(m, v);
- 	if (!machine_has_cpu_mhz)
- 		return 0;
-@@ -153,6 +154,8 @@ static inline void *c_update(loff_t *pos)
- {
- 	if (*pos)
- 		*pos = cpumask_next(*pos - 1, cpu_online_mask);
-+	else
-+		*pos = cpumask_first(cpu_online_mask);
- 	return *pos < nr_cpu_ids ? (void *)*pos + 1 : NULL;
- }
++	mutex_lock(&mgr->payload_lock);
+ 	mutex_lock(&mgr->lock);
+ 	if (mst_state == mgr->mst_state)
+ 		goto out_unlock;
+@@ -2096,7 +2097,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 		/* this can fail if the device is gone */
+ 		drm_dp_dpcd_writeb(mgr->aux, DP_MSTM_CTRL, 0);
+ 		ret = 0;
+-		memset(mgr->payloads, 0, mgr->max_payloads * sizeof(struct drm_dp_payload));
++		memset(mgr->payloads, 0,
++		       mgr->max_payloads * sizeof(mgr->payloads[0]));
++		memset(mgr->proposed_vcpis, 0,
++		       mgr->max_payloads * sizeof(mgr->proposed_vcpis[0]));
+ 		mgr->payload_mask = 0;
+ 		set_bit(0, &mgr->payload_mask);
+ 		mgr->vcpi_mask = 0;
+@@ -2104,6 +2108,7 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
  
+ out_unlock:
+ 	mutex_unlock(&mgr->lock);
++	mutex_unlock(&mgr->payload_lock);
+ 	if (mstb)
+ 		drm_dp_put_mst_branch_device(mstb);
+ 	return ret;
 -- 
 2.20.1
 
