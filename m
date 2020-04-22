@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB84F1B4053
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B31B3F0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbgDVKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
+        id S1730739AbgDVKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:34:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729933AbgDVKSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:18:15 -0400
+        id S1730175AbgDVKYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DC092070B;
-        Wed, 22 Apr 2020 10:18:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3183B2076B;
+        Wed, 22 Apr 2020 10:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550695;
-        bh=5SeT3hiRI9bcQ3mKwLYKdi/OeOWo9IX8PWvS3M83jsc=;
+        s=default; t=1587551071;
+        bh=wYLXLG27rnEwhy1UBlgPAvszNrYaMJ0woRo+YuC+rz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mFiufMcJf3SDP2Cb8+YrLHKoAJMaAXj8DNlv65cPi7bfmKmOTn56CP5ks1awpmvxg
-         2FEtZA6kJPzs4jfCB3kgnh9be9Yn7IKLe3NF1QLE3kHQkgfS0lktjnNTZ+qX1M+bca
-         5s6hTunfnw8kO3nWIKmekoWX7mLHkEoIjGinKNIg=
+        b=J48ecTvi2Rq3eIkjT3n4bC9RDBkfjfeNq05JwazVv/mOOU/DY2Os7pd46Aian3wDJ
+         XXEAy/Fqc2QonfEOH4rCezP0bgMSMAqMkh3t0wycAu+vXGiqXW/03izBG5ZlwSQj4+
+         U/Uji8dK99cWkfnL4h/ut6AIzcmYowNPBk0wWvSg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/118] f2fs: fix to show norecovery mount option
+Subject: [PATCH 5.6 089/166] powerpc/prom_init: Pass the "os-term" message to hypervisor
 Date:   Wed, 22 Apr 2020 11:56:56 +0200
-Message-Id: <20200422095041.064784796@linuxfoundation.org>
+Message-Id: <20200422095058.215171172@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-[ Upstream commit a9117eca1de6b738e713d2142126db2cfbf6fb36 ]
+[ Upstream commit 74bb84e5117146fa73eb9d01305975c53022b3c3 ]
 
-Previously, 'norecovery' mount option will be shown as
-'disable_roll_forward', fix to show original option name correctly.
+The "os-term" RTAS calls has one argument with a message address of OS
+termination cause. rtas_os_term() already passes it but the recently
+added prom_init's version of that missed it; it also does not fill
+args correctly.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+This passes the message address and initializes the number of arguments.
+
+Fixes: 6a9c930bd775 ("powerpc/prom_init: Add the ESM call to prom_init")
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200312074404.87293-1-aik@ozlabs.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h  | 1 +
- fs/f2fs/super.c | 7 +++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/prom_init.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 1a8b68ceaa62f..3edde3d6d089d 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -100,6 +100,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
- #define F2FS_MOUNT_INLINE_XATTR_SIZE	0x00800000
- #define F2FS_MOUNT_RESERVE_ROOT		0x01000000
- #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
-+#define F2FS_MOUNT_NORECOVERY		0x04000000
- 
- #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
- #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 28441f4971b8d..94caf26901e0b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -439,7 +439,7 @@ static int parse_options(struct super_block *sb, char *options)
- 			break;
- 		case Opt_norecovery:
- 			/* this option mounts f2fs with ro */
--			set_opt(sbi, DISABLE_ROLL_FORWARD);
-+			set_opt(sbi, NORECOVERY);
- 			if (!f2fs_readonly(sb))
- 				return -EINVAL;
- 			break;
-@@ -1348,6 +1348,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
- 	}
- 	if (test_opt(sbi, DISABLE_ROLL_FORWARD))
- 		seq_puts(seq, ",disable_roll_forward");
-+	if (test_opt(sbi, NORECOVERY))
-+		seq_puts(seq, ",norecovery");
- 	if (test_opt(sbi, DISCARD))
- 		seq_puts(seq, ",discard");
- 	else
-@@ -3488,7 +3490,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto reset_checkpoint;
- 
- 	/* recover fsynced data */
--	if (!test_opt(sbi, DISABLE_ROLL_FORWARD)) {
-+	if (!test_opt(sbi, DISABLE_ROLL_FORWARD) &&
-+			!test_opt(sbi, NORECOVERY)) {
- 		/*
- 		 * mount should be failed, when device has readonly mode, and
- 		 * previous checkpoint was not done by clean system shutdown.
+diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+index 577345382b23f..673f13b87db13 100644
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -1773,6 +1773,9 @@ static void __init prom_rtas_os_term(char *str)
+ 	if (token == 0)
+ 		prom_panic("Could not get token for ibm,os-term\n");
+ 	os_term_args.token = cpu_to_be32(token);
++	os_term_args.nargs = cpu_to_be32(1);
++	os_term_args.nret = cpu_to_be32(1);
++	os_term_args.args[0] = cpu_to_be32(__pa(str));
+ 	prom_rtas_hcall((uint64_t)&os_term_args);
+ }
+ #endif /* CONFIG_PPC_SVM */
 -- 
 2.20.1
 
