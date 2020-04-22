@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1EC1B3D35
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26D01B3E28
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgDVKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
+        id S1730620AbgDVKZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728471AbgDVKMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:12:37 -0400
+        id S1730593AbgDVKZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:25:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17F822070B;
-        Wed, 22 Apr 2020 10:12:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD6C120784;
+        Wed, 22 Apr 2020 10:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550356;
-        bh=Ys5RXvrrC1EnMRzQHHXyl4T21fdl1y6NreroSyuQrOg=;
+        s=default; t=1587551148;
+        bh=Zvt64snqt3uHyzChEK/2HaoW1LghaS7BJDekteEpWdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v9yswd7bq/GdPWR009dLNWz9rBQDu9MNa0XWyN1NJKrTsQ6fkCbQVwD5ZstbSpfUL
-         BAIhQg/O9ZpXeBBnH32+wuHvHsG34aL77+h4gUNOsYd+BA7DGRNav+JXDQQfJ7WQSp
-         jNcdtw4R0KGmGtGzj4GJEQplKUrHbc8+ChpG+qPE=
+        b=CLYzZLV666dzGuuILqPgeF34bo5NFeC3SuySc7Z0oaZgCWD8mNrqmednvpMjL5rtt
+         GeGXHXvKcDSJ8y9WZB5J8Te0FgpDZt7Hu9e0WBCadQhWN0tC7+s96+6lFJ7CWGwYA8
+         ZNWv1k2q6jDGO+S060+YQpaxx51zKHxeS9bVrJRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 114/199] jbd2: improve comments about freeing data buffers whose page mapping is NULL
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 113/166] NFS: Fix memory leaks in nfs_pageio_stop_mirroring()
 Date:   Wed, 22 Apr 2020 11:57:20 +0200
-Message-Id: <20200422095109.065097450@linuxfoundation.org>
+Message-Id: <20200422095100.853959379@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 780f66e59231fcf882f36c63f287252ee47cc75a upstream.
+[ Upstream commit 862f35c94730c9270833f3ad05bd758a29f204ed ]
 
-Improve comments in jbd2_journal_commit_transaction() to describe why
-we don't need to clear the buffer_mapped bit for freeing file mapping
-buffers whose page mapping is NULL.
+If we just set the mirror count to 1 without first clearing out
+the mirrors, we can leak queued up requests.
 
-Link: https://lore.kernel.org/r/20200217112706.20085-1-yi.zhang@huawei.com
-Fixes: c96dceeabf76 ("jbd2: do not clear the BH_Mapped flag when forgetting a metadata buffer")
-Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/commit.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/nfs/pagelist.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -994,9 +994,10 @@ restart_loop:
- 			 * journalled data) we need to unmap buffer and clear
- 			 * more bits. We also need to be careful about the check
- 			 * because the data page mapping can get cleared under
--			 * out hands, which alse need not to clear more bits
--			 * because the page and buffers will be freed and can
--			 * never be reused once we are done with them.
-+			 * our hands. Note that if mapping == NULL, we don't
-+			 * need to make buffer unmapped because the page is
-+			 * already detached from the mapping and buffers cannot
-+			 * get reused.
- 			 */
- 			mapping = READ_ONCE(bh->b_page->mapping);
- 			if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
+diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
+index 8b7c525dbbf7c..b736912098eee 100644
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -886,15 +886,6 @@ static void nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
+ 	pgio->pg_mirror_count = mirror_count;
+ }
+ 
+-/*
+- * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
+- */
+-void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
+-{
+-	pgio->pg_mirror_count = 1;
+-	pgio->pg_mirror_idx = 0;
+-}
+-
+ static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
+ {
+ 	pgio->pg_mirror_count = 1;
+@@ -1320,6 +1311,14 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
+ 	}
+ }
+ 
++/*
++ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
++ */
++void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
++{
++	nfs_pageio_complete(pgio);
++}
++
+ int __init nfs_init_nfspagecache(void)
+ {
+ 	nfs_page_cachep = kmem_cache_create("nfs_page",
+-- 
+2.20.1
+
 
 
