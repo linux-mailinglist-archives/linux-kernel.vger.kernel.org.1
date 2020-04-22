@@ -2,208 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537871B3950
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFAA1B3954
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgDVHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:48:06 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36660 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgDVHsG (ORCPT
+        id S1726534AbgDVHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726515AbgDVHsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:48:06 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g30so671510pfr.3;
-        Wed, 22 Apr 2020 00:48:05 -0700 (PDT)
+        Wed, 22 Apr 2020 03:48:18 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2996C03C1A7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:18 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id bc2so1320603plb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=xFdxuB5ylPzHM6fkfhgDwSZ4maHnp59tTnnEVkFTcBg=;
+        b=j/PFZhhfulCJZAOWX+vVV/gR+c2H11IPNzxNcGeM0hRRZ0gLWpVBBAyynqclZQguCR
+         59slB55fyVVANXI6U3xwwW7S1Kepum8UgsqfJnbko39eJUnA7xHjz4YBtcoVqeX6XdhO
+         2kDxHW3cL5+h+DdlWcDOVNSwStgKJ/YBQOF63qyK92zVQCvthwpLyw8P3MnGGhFY3D5s
+         ECLCvAAkUnFiOlsPlZvx61pyLrI+HFnt1DimXapGHRveF1md7pZhlaADWzES5wAX7gCN
+         b9pYoCiRdi9T1VxooN410oP6emJ1FObwjDfQ3wqTQ5QBjq97qnTsRnEQ8cYH+Ju/WKkz
+         XMqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+SMYq/4vJ74M0LfJtwun4BRKxfhWvtLo+wkfl9OYurc=;
-        b=aXiZj2rZEHQUVuS1IPtOwokWeWWRiskWQUgYfqeeF8bakjcUajCkH6RwRIMzjzFNXw
-         AvIfkFtHxgV3KLWzr0cXx0+U+o7atpgw40kGNFLCjqNWROrQdXM4sIBf/BHwdsT2Ymun
-         Cuk+K5FxNxnHVAHfN2nvI4uHAt6H5dUjzpsrJjW2ByTvpm1UDx5ZR3F1IIemSQH5S2mr
-         swCCIOAY3dkJhKdVxwL+0LC4KehjL4LmlAOyssagovXZ6gWA5xUN0pKxvHqoYunFFd7l
-         4DzHLjeYD02OB4YiG+pnROz01vkanXtGYUKf3B9r2ovAdO/4WFSv+/6Ci7R+4pqB++3y
-         JsmA==
-X-Gm-Message-State: AGi0PubOvXnSfmfOnPltDzmoH8XPU5yiK502xUeQeErw7pkL0d6wBozu
-        ilpbappA6Ru6AImLcSapfLA=
-X-Google-Smtp-Source: APiQypLRQPdTJrBV6I/vZtyxwxFN1GzQ0y7RzxhSMbXI2z5hooPeifS431qso2u8rbsgVBHwKEY4Bw==
-X-Received: by 2002:a63:6f07:: with SMTP id k7mr26600891pgc.274.1587541684638;
-        Wed, 22 Apr 2020 00:48:04 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id fh18sm16882435pjb.0.2020.04.22.00.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 00:48:03 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id D50C1402A1; Wed, 22 Apr 2020 07:48:02 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 07:48:02 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 03/10] blktrace: fix debugfs use after free
-Message-ID: <20200422074802.GS11244@42.do-not-panic.com>
-References: <20200419194529.4872-1-mcgrof@kernel.org>
- <20200419194529.4872-4-mcgrof@kernel.org>
- <20200422072715.GC19116@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422072715.GC19116@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=xFdxuB5ylPzHM6fkfhgDwSZ4maHnp59tTnnEVkFTcBg=;
+        b=RHUlhOyPi6Mvgwqz7IwSv9+N5A/g0qoYYpWt8V1QQp+ZWZhFODSrjpwNYtuOy+eXY5
+         lAHfbju+PaMEFFUdKDGwG4Qlwr29oCy75lDy9u+U3BMl66KBqIylwiiiPtTpoZ2nEYqa
+         rL+UqmkmNCKlUbAKMr+K9x4Qn7bSzSlQaYKuLkMJKWf4hV0rIDEXNU5wVrCeelm2HOcz
+         +Oy+kjGcGXzP/NgG5uDlGvmXLVE/2j+PpnnYsKhXS4Q7ucDDOyYvkVpwf9Ny/PqHkSdv
+         0NM2I9KIljY37R9Wl8Dh/dxZfZmy9jaA/05VqL5tVI2Z3mxvXuQauXiMthF+uFMx5MWy
+         D0Ww==
+X-Gm-Message-State: AGi0PubCgA++n+dsXKFrrC8qqrcZ2EYuUmnGhU1QcleNdjE0tIpBGIL1
+        ETou3gI8oparz+2Pxrt7umcUjRUgV2bU
+X-Google-Smtp-Source: APiQypJjG4+7fxZJvs2OyFh8L/NQpfPT/oTPGbhxnDyqsTP5PDTB8UJXDCYnwOx2tXbnUork8vwxpZSYKMs0
+X-Received: by 2002:a17:90a:19dc:: with SMTP id 28mr9425073pjj.184.1587541698173;
+ Wed, 22 Apr 2020 00:48:18 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 00:48:03 -0700
+In-Reply-To: <20200422074809.160248-1-irogers@google.com>
+Message-Id: <20200422074809.160248-3-irogers@google.com>
+Mime-Version: 1.0
+References: <20200422074809.160248-1-irogers@google.com>
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH 2/8] perf metrics: fix parse errors in cascade lake metrics
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:27:15AM -0700, Christoph Hellwig wrote:
-> On Sun, Apr 19, 2020 at 07:45:22PM +0000, Luis Chamberlain wrote:
-> > +{
-> > +	struct dentry *dir = NULL;
-> > +
-> > +	/* This can happen if we have a bug in the lower layers */
-> > +	dir = debugfs_lookup(kobject_name(q->kobj.parent), blk_debugfs_root);
-> > +	if (dir) {
-> > +		pr_warn("%s: registering request_queue debugfs directory twice is not allowed\n",
-> > +			kobject_name(q->kobj.parent));
-> > +		dput(dir);
-> > +		return -EALREADY;
-> > +	}
-> 
-> I don't see why we need this check.  If it is valueable enough we
-> should have a debugfs_create_dir_exclusive or so that retunrns an error
-> for an exsting directory, instead of reimplementing it in the caller in
-> a racy way.  But I'm not really sure we need it to start with.
+Remove over escaping with \\.
+Remove extraneous if 1 if 0 == 1 else 0 else 0.
 
-In short races, and even with synchronous request_queue removal I'm
-seeing the race is still possible, but that's due to some other races
-I'm going to chase down now.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ .../pmu-events/arch/x86/cascadelakex/clx-metrics.json  | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The easier solution really is to just have a debugfs dir created for
-each partition if debugfs is enabled, this way the directory will
-always be there, and the lookups are gone.
+diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+index 7fde0d2943cd..d25eebce34c9 100644
+--- a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+@@ -328,31 +328,31 @@
+     },
+     {
+         "BriefDescription": "Average latency of data read request to external memory (in nanoseconds). Accounts for demand loads and L1/L2 prefetches",
+-        "MetricExpr": "1000000000 * ( cha@event\\=0x36\\\\\\,umask\\=0x21@ / cha@event\\=0x35\\\\\\,umask\\=0x21@ ) / ( cha_0@event\\=0x0@ / duration_time )",
++        "MetricExpr": "1000000000 * ( cha@event\\=0x36\\,umask\\=0x21@ / cha@event\\=0x35\\,umask\\=0x21@ ) / ( cha_0@event\\=0x0@ / duration_time )",
+         "MetricGroup": "Memory_Lat",
+         "MetricName": "DRAM_Read_Latency"
+     },
+     {
+         "BriefDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches",
+-        "MetricExpr": "cha@event\\=0x36\\\\\\,umask\\=0x21@ / cha@event\\=0x36\\\\\\,umask\\=0x21\\\\\\,thresh\\=1@",
++        "MetricExpr": "cha@event\\=0x36\\,umask\\=0x21@ / cha@event\\=0x36\\,umask\\=0x21\\,thresh\\=1@",
+         "MetricGroup": "Memory_BW",
+         "MetricName": "DRAM_Parallel_Reads"
+     },
+     {
+         "BriefDescription": "Average latency of data read request to external 3D X-Point memory [in nanoseconds]. Accounts for demand loads and L1/L2 data-read prefetches",
+-        "MetricExpr": "( 1000000000 * ( imc@event\\=0xe0\\\\\\,umask\\=0x1@ / imc@event\\=0xe3@ ) / imc_0@event\\=0x0@ ) if 1 if 0 == 1 else 0 else 0",
++        "MetricExpr": "( 1000000000 * ( imc@event\\=0xe0\\,umask\\=0x1@ / imc@event\\=0xe3@ ) / imc_0@event\\=0x0@ )",
+         "MetricGroup": "Memory_Lat",
+         "MetricName": "MEM_PMM_Read_Latency"
+     },
+     {
+         "BriefDescription": "Average 3DXP Memory Bandwidth Use for reads [GB / sec]",
+-        "MetricExpr": "( ( 64 * imc@event\\=0xe3@ / 1000000000 ) / duration_time ) if 1 if 0 == 1 else 0 else 0",
++        "MetricExpr": "( ( 64 * imc@event\\=0xe3@ / 1000000000 ) / duration_time )",
+         "MetricGroup": "Memory_BW",
+         "MetricName": "PMM_Read_BW"
+     },
+     {
+         "BriefDescription": "Average 3DXP Memory Bandwidth Use for Writes [GB / sec]",
+-        "MetricExpr": "( ( 64 * imc@event\\=0xe7@ / 1000000000 ) / duration_time ) if 1 if 0 == 1 else 0 else 0",
++        "MetricExpr": "( ( 64 * imc@event\\=0xe7@ / 1000000000 ) / duration_time )",
+         "MetricGroup": "Memory_BW",
+         "MetricName": "PMM_Write_BW"
+     },
+-- 
+2.26.2.303.gf8c07b1a785-goog
 
-> > +
-> > +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > +					    blk_debugfs_root);
-> > +	if (!q->debugfs_dir)
-> > +		return -ENOMEM;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +void blk_queue_debugfs_unregister(struct request_queue *q)
-> > +{
-> > +	debugfs_remove_recursive(q->debugfs_dir);
-> > +	q->debugfs_dir = NULL;
-> > +}
-> 
-> Which to me suggests we can just fold these two into the callers,
-> with an IS_ENABLED for the creation case given that we check for errors
-> and the stub will always return an error.
-
-Sorry not sure I follow this.
-
-> >  	debugfs_create_files(q->debugfs_dir, q, blk_mq_debugfs_queue_attrs);
-> >  
-> >  	/*
-> > @@ -856,9 +853,7 @@ void blk_mq_debugfs_register(struct request_queue *q)
-> >  
-> >  void blk_mq_debugfs_unregister(struct request_queue *q)
-> >  {
-> > -	debugfs_remove_recursive(q->debugfs_dir);
-> >  	q->sched_debugfs_dir = NULL;
-> > -	q->debugfs_dir = NULL;
-> >  }
-> 
-> This function is weird - the sched dir gets removed by the
-> debugfs_remove_recursive, so just leaving a function that clears
-> a pointer is rather odd.  In fact I don't think we need to clear
-> either sched_debugfs_dir or debugfs_dir anywhere.
-
-Indeed. Will clean it up.
-
-> > @@ -975,6 +976,14 @@ int blk_register_queue(struct gendisk *disk)
-> >  		goto unlock;
-> >  	}
-> >  
-> > +	ret = blk_queue_debugfs_register(q);
-> > +	if (ret) {
-> > +		blk_trace_remove_sysfs(dev);
-> > +		kobject_del(&q->kobj);
-> > +		kobject_put(&dev->kobj);
-> > +		goto unlock;
-> > +	}
-> > +
-> 
-> Please use a goto label to consolidate the common cleanup code.
-
-Sure.
-
-> Also I think these generic debugfs changes probably should be separate
-> to the blktrace changes.
-
-I'll try to do that.
-
-> >  static struct dentry *blk_trace_debugfs_dir(struct blk_user_trace_setup *buts,
-> > +					    struct request_queue *q,
-> >  					    struct blk_trace *bt)
-> >  {
-> >  	struct dentry *dir = NULL;
-> >  
-> > +	/* This can only happen if we have a bug on our lower layers */
-> > +	if (!q->kobj.parent) {
-> > +		pr_warn("%s: request_queue parent is gone\n", buts->name);
-> > +		return NULL;
-> > +	}
-> 
-> Why is this not simply a WARN_ON_ONCE()?
-
-I'll actually remove it and instead fix the race where it happens.
-
-> > +	if (blk_trace_target_disk(buts->name, kobject_name(q->kobj.parent))) {
-> > +		if (!q->debugfs_dir) {
-> > +			pr_warn("%s: expected request_queue debugfs_dir is not set\n",
-> > +				buts->name);
-> > +			return NULL;
-> > +		}
-> > +		/*
-> > +		 * debugfs_lookup() is used to ensure the directory is not
-> > +		 * taken from underneath us. We must dput() it later once
-> > +		 * done with it within blktrace.
-> > +		 */
-> > +		dir = debugfs_lookup(buts->name, blk_debugfs_root);
-> > +		if (!dir) {
-> > +			pr_warn("%s: expected request_queue debugfs_dir dentry is gone\n",
-> > +				buts->name);
-> > +			return NULL;
-> > +		}
-> > +		 /*
-> > +		 * This is a reaffirmation that debugfs_lookup() shall always
-> > +		 * return the same dentry if it was already set.
-> > +		 */
-> > +		if (dir != q->debugfs_dir) {
-> > +			dput(dir);
-> > +			pr_warn("%s: expected dentry dir != q->debugfs_dir\n",
-> > +				buts->name);
-> > +			return NULL;
-> > +		}
-> > +		bt->backing_dir = q->debugfs_dir;
-> > +		return bt->backing_dir;
-> > +	}
-> 
-> Even with the gigantic commit log I don't get the point of this
-> code.  It looks rather sketchy and I can't find a rationale for it.
-
-Yeah I think this is going to be much easier on the eyes with the
-revert to synchronous request_queue removal first.
-
-  Luis
