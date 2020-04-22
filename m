@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074CD1B398E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3480F1B399C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgDVICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 04:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725810AbgDVICQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 04:02:16 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41202C03C1A6;
-        Wed, 22 Apr 2020 01:02:16 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id t63so1175044wmt.3;
-        Wed, 22 Apr 2020 01:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=276h72KTtylrnULr9OGp8Ofnvi/+2QUze7tpHtVgUYc=;
-        b=NRyeQPoUxhqd6VJaDmPOxUvzPKFp5UVW+KAXnh0USrkJDLUSI5z0xUCrR19/VNs66q
-         ha/QKAWGlTTRrOikeQBb5UwzTTqvcURrzdkEL3jciUpeEATZ2jTPA7CfZWoC5U7GENiL
-         3aCRzlXmFoVsfv7DSo9chTp1x/C7HK6V/z17Uek3vbB2/cTvDVcFo2OU2LKh2SQ2TSiO
-         KEkSIYTUyW14UckA1ONlpt+rUTExOjiKyHi5oEw0lTeyAzRsSUb2Qf5FXilEGAQmeyLu
-         /nZk/zSsPg+20W+WseUIl8zuUTfjwsbitxeBmd3V23Ih67ThPj486UKKKeiOpvDOENRg
-         a9wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=276h72KTtylrnULr9OGp8Ofnvi/+2QUze7tpHtVgUYc=;
-        b=pugg+379XImwfirT65jYpM07X3uDgEFV9qTr5oDdMHLCFi7g88nUXhwVH7TgDWHbtN
-         kO/Zu6qFEVvFxpTXOz5EZowmqAKVnk7j6F16n/T0iRWUm4eG6ugm9XwEOmhriJtsnHak
-         cRHhC/DHD6G/qsORebhz7gqBEUWlSV94sNvxfsDWtUWUes7h/pti2H9sWRkAl+XRXp60
-         rYbmDcG8U2lxk1NyL/Ks8cO70f2BcyWtgY4Kz1hbB6NRZ2WvUsJbiMzGmWGCu7pTXxa/
-         kErsIGgSRbODZ0S/ZuHq2JXqLilvBb4ssPKLOcf5LRQdousqm+nqmgjCqTJXnvJBnyTM
-         eG4g==
-X-Gm-Message-State: AGi0PuaBXtFG0Me6Es5pEeoF3onpA0Cns8zfU4OiTzs8fcBCb6lz6Wbp
-        Gt1WcBCSPsJ8IREx6V6eQ0NR5dhu+fM=
-X-Google-Smtp-Source: APiQypLUIvMLQElpQ0YeDX4LXgi+d6EVLy+A09/FAG1IA0q7WkePThaGskKab/Prr5WYqQs9OXVMnA==
-X-Received: by 2002:a1c:e903:: with SMTP id q3mr8830283wmc.76.1587542534579;
-        Wed, 22 Apr 2020 01:02:14 -0700 (PDT)
-Received: from meru ([2a01:cb18:832e:5f00:1d35:d245:4470:8434])
-        by smtp.gmail.com with ESMTPSA id t16sm8175157wrb.8.2020.04.22.01.02.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 01:02:13 -0700 (PDT)
-From:   Mathieu Othacehe <m.othacehe@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] iio: vcnl4000: Add event support for VCNL4010/20.
-References: <20200421075532.19192-1-m.othacehe@gmail.com>
-        <20200421075532.19192-3-m.othacehe@gmail.com>
-        <CAHp75Veqp=tb0Z9h2cey5DE_KpNBp3Jdmh2gLzSoo-N5CsGpvw@mail.gmail.com>
-Date:   Wed, 22 Apr 2020 10:02:11 +0200
-In-Reply-To: <CAHp75Veqp=tb0Z9h2cey5DE_KpNBp3Jdmh2gLzSoo-N5CsGpvw@mail.gmail.com>
-        (Andy Shevchenko's message of "Tue, 21 Apr 2020 14:24:30 +0300")
-Message-ID: <87y2qoosn0.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726294AbgDVIJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 04:09:23 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3118 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725810AbgDVIJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 04:09:22 -0400
+IronPort-SDR: SjwJpBwfe4wHCh4ayL/YBGaSQZ7FjFkdBFGySeM+LnnSM3Yto9xtuIxHYRojSuip/2ZEW6sMAJ
+ SkP9sUwBrw4A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 01:09:22 -0700
+IronPort-SDR: NYAah0qsiK+CbyM/jO/clQIEDbrOCPop07kDA389yxLeqORC7eqQWTB0w7sqRpL07tXgPNqWp+
+ jEk/3J5OMTAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
+   d="scan'208";a="365609616"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Apr 2020 01:09:20 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 0/4] iommu/vt-d: Add page request draining support
+Date:   Wed, 22 Apr 2020 16:06:07 +0800
+Message-Id: <20200422080611.15689-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When a PASID is stopped or terminated, there can be pending PRQs
+(requests that haven't received responses) in the software and
+remapping hardware. The pending page requests must be drained
+so that the pasid could be reused. The chapter 7.10 in the VT-d
+specification specifies the software steps to drain pending page
+requests and responses.
 
-Hello Andy,
+This includes two parts:
+ - PATCH 1/4 ~ 2/4: refactor the qi_submit_sync() to support multiple
+   descriptors per submission which will be used in the following
+   patch.
+ - PATCH 3/4 ~ 4/4: add page request drain support after a pasid entry
+   is torn down.
 
->> +               ret = devm_request_threaded_irq(&client->dev, client->irq,
->> +                                               NULL, vcnl4010_irq_thread,
->> +                                               IRQF_TRIGGER_FALLING |
->
->> +                                               IRQF_ONESHOT,
->
-> Isn't it by default when threaded IRQ is asked with NULL for hw handler?
+Please help to review.
 
-No, and it fails with this error message if IRQF_ONESHOT is not set:
+Best regards,
+baolu
 
-pr_err("Threaded irq requested with handler=NULL and !ONESHOT for %s (irq %d)\n",
+Change log:
+ v2->v3:
+  - Address Kevin's review comments
+    - Squash the first 2 patches together;
+    - The prq thread is serialized, no need to consider reentrance;
+    - Ensure no new-coming prq before drain prq in queue;
+    - Handle page request overflow case.
 
-Thanks,
+ v1->v2:
+  - Fix race between multiple prq handling threads.
 
-Mathieu
+
+Lu Baolu (4):
+  iommu/vt-d: Multiple descriptors per qi_submit_sync()
+  iommu/vt-d: debugfs: Add support to show inv queue internals
+  iommu/vt-d: Add page request draining support
+  iommu/vt-d: Remove redundant IOTLB flush
+
+ drivers/iommu/dmar.c                |  63 +++++++++-------
+ drivers/iommu/intel-iommu-debugfs.c |  62 +++++++++++++++
+ drivers/iommu/intel-pasid.c         |   4 +-
+ drivers/iommu/intel-svm.c           | 112 +++++++++++++++++++++++++---
+ drivers/iommu/intel_irq_remapping.c |   2 +-
+ include/linux/intel-iommu.h         |  13 +++-
+ 6 files changed, 216 insertions(+), 40 deletions(-)
+
+-- 
+2.17.1
+
