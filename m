@@ -2,171 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6391B3430
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636131B3446
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 03:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgDVAxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:53:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:52610 "EHLO mga09.intel.com"
+        id S1726337AbgDVBAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 21:00:31 -0400
+Received: from mail.cock.li ([37.120.193.124]:52764 "EHLO mail.cock.li"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726296AbgDVAxs (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:53:48 -0400
-IronPort-SDR: 7dy2JvWpSVUnipmZirNjRuinsIr13PI5HXN9SZrWje7eOt5YbmvQwwVePIpBP+0k9B3BqZtHut
- 6wSgUruCwJHQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 17:53:47 -0700
-IronPort-SDR: B5XHrYzTIV+K7fiT2gaOztkRTRE7Tzlbhu9HW0fYL9AjyaLmanclAIdADlWtQZYFuKd+jCMfUA
- UW3R121cLdJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
-   d="scan'208";a="365519277"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.151]) ([10.238.4.151])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Apr 2020 17:53:41 -0700
-Subject: Re: [PATCH v2] perf stat: Improve runtime stat for interval mode
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20200420145417.6864-1-yao.jin@linux.intel.com>
- <20200421135329.GA9110@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <b5724589-f653-f125-a227-b374ec575688@linux.intel.com>
-Date:   Wed, 22 Apr 2020 08:53:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726012AbgDVBAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 21:00:30 -0400
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Apr 2020 21:00:28 EDT
+Date:   Wed, 22 Apr 2020 02:53:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=national.shitposting.agency; s=mail; t=1587516844;
+        bh=p2IreHcoWDUmk7izJSdGsrX30OxvefkCnAAQ1gbHOYA=;
+        h=Date:From:Cc:Subject:From;
+        b=L3R/XOhczy0Eflp52Z/rcUwoG5+NRi3Kx5edmp4VGQtvyRDtjRX7Y804A/LcjYfLG
+         KqSyKzX4FMKc5dgL3W0eXehX37kUrk1vybqWMHia8/EYjNBDyBwWY5jNwy7mpl0el4
+         KM0tfZ/GkShoplvpfTPZIb1Oj6iXFgQtjWEJvetr8H8pNc1nSq+et8qUkE/3m7odxI
+         SipDmUSd7DXOqdd9isMCE+rofLdYvK3ertZlGNpn+E2lu2EKCy/QPqA2sJ3doIBsv7
+         vGBgrX3YRqMLUQaE3N6Xd3mpGhOnmdSduEy3X5O50SQvDHZgmK8m2OMckZgVytfuH4
+         AIfkDgYA6JglQ==
+From:   zsugabubus <zsugabubus@national.shitposting.agency>
+Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ia64: fix word quoting in shell scripts
+Message-ID: <20200422005359.c6vh2jblrevznjml@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20200421135329.GA9110@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Previous implementation did not quote some variables that could be
+potentially empty, for example due to a failed compilation. It made
+test(1) failing but desired error action was not taken.
 
-On 4/21/2020 9:53 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Apr 20, 2020 at 10:54:17PM +0800, Jin Yao escreveu:
->> For interval mode, the metric is printed after # if it exists. But
->> it's not calculated by the counts generated in this interval. See
->> following examples,
->>
->>   root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
->>   #           time             counts unit events
->>        1.000422803            764,809      inst_retired.any          #      2.9 CPI
->>        1.000422803          2,234,932      cycles
->>        2.001464585          1,960,061      inst_retired.any          #      1.6 CPI
->>        2.001464585          4,022,591      cycles
->>
->> The second CPI should not be 1.6 (4,022,591/1,960,061 is 2.1)
->>
->>   root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
->>   #           time             counts unit events
->>        1.000429493          2,869,311      cycles
->>        1.000429493            816,875      instructions              #    0.28  insn per cycle
->>        2.001516426          9,260,973      cycles
->>        2.001516426          5,250,634      instructions              #    0.87  insn per cycle
->>
->> The second 'insn per cycle' should not be 0.87 (5,250,634/9,260,973 is 0.57).
->>
->> The current code uses a global variable rt_stat for tracking and
->> updating the std dev of runtime stat. Unlike the counts, rt_stat is
->> not reset for interval. While the counts are reset for interval.
->>
->> perf_stat_process_counter()
->> {
->>          if (config->interval)
->>                  init_stats(ps->res_stats);
->> }
->>
->> So for interval, the rt_stat should be reset either.
-> 
->                                s/either/too/g right?
-> 
+Cleaning of temporary files is also been made a bit more robust.
+---
+ arch/ia64/scripts/check-gas       | 25 ++++++++--------
+ arch/ia64/scripts/toolchain-flags | 50 ++++++++++++++-----------------
+ 2 files changed, 36 insertions(+), 39 deletions(-)
 
-Yes, should use "too" here. :)
+diff --git a/arch/ia64/scripts/check-gas b/arch/ia64/scripts/check-gas
+index 787cf9b6b..7210522e6 100755
+--- a/arch/ia64/scripts/check-gas
++++ b/arch/ia64/scripts/check-gas
+@@ -1,16 +1,17 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+-dir=$(dirname $0)
+ CC=$1
+ OBJDUMP=$2
+-tmp=${TMPDIR:-/tmp}
+-out=$tmp/out$$.o
+-$CC -c $dir/check-gas-asm.S -o $out
+-res=$($OBJDUMP -r --section .data $out | fgrep 00004 | tr -s ' ' |cut -f3 -d' ')
+-rm -f $out
+-if [ $res != ".text" ]; then
+-	echo buggy
+-else
+-	echo good
+-fi
+-exit 0
++
++cd "$(dirname $0)"
++
++tmp=${TMPDIR:-/tmp}/check-gas-$$.o
++trap 'rm -f "$tmp"' INT TERM EXIT
++
++$CC -c check-gas-asm.S -o "$tmp" &&
++$OBJDUMP -r --section .data "$tmp" \
++| fgrep 00004 | tr -s ' ' | cut -f3 -d' ' \
++| {
++  read -r section
++  [ "$section" = .text ] && echo good
++} || echo buggy
+diff --git a/arch/ia64/scripts/toolchain-flags b/arch/ia64/scripts/toolchain-flags
+index 12dff5c98..4bfa4d6d6 100755
+--- a/arch/ia64/scripts/toolchain-flags
++++ b/arch/ia64/scripts/toolchain-flags
+@@ -7,48 +7,44 @@ CPPFLAGS=""
+ CC=$1
+ OBJDUMP=$2
+ READELF=$3
+-dir=$(dirname $0)
+-tmp=${TMPDIR:-/tmp}
+-out=$tmp/out$$
++
++cd "$(dirname $0)"
++
++tmp=${TMPDIR:-/tmp}/toolchain-flags-$$
++trap 'rm -f "$tmp"' INT TERM EXIT
+ 
+ # Check whether cross-segment segment-relative relocs work fine.  We need
+ # that for building the gate DSO:
+-
+-$CC -nostdlib -static -Wl,-T$dir/check-segrel.lds $dir/check-segrel.S -o $out
+-res=$($OBJDUMP --full --section .rodata $out | fgrep 000 | cut -f3 -d' ')
+-rm -f $out
+-if [ $res != 00000a00 ]; then
+-    CPPFLAGS="$CPPFLAGS -DHAVE_BUGGY_SEGREL"
+-    cat >&2 <<EOF
++$CC -nostdlib -static -Wl,-Tcheck-segrel.lds check-segrel.S -o "$tmp" &&
++$OBJDUMP --full --section .rodata "$tmp" | fgrep 000 | cut -f3 -d' ' \
++| {
++  read -r addr
++  [ "$addr" = 00000a00 ]
++} || {
++  CPPFLAGS="$CPPFLAGS -DHAVE_BUGGY_SEGREL"
++  cat >&2 <<EOF
+ warning: your linker cannot handle cross-segment segment-relative relocations.
+          please upgrade to a newer version (it is safe to use this linker, but
+          the kernel will be bigger than strictly necessary).
+ EOF
+-fi
++}
+ 
+ # Check whether .align inside a function works as expected.
+-
+-$CC -c $dir/check-text-align.S -o $out
+-$READELF -u $out | fgrep -q 'prologue(rlen=12)'
+-res=$?
+-rm -f $out
+-if [ $res -eq 0 ]; then
+-    CPPFLAGS="$CPPFLAGS -DHAVE_WORKING_TEXT_ALIGN"
++if $CC -c check-text-align.S -o "$tmp" && \
++   $READELF -u "$tmp" | fgrep -q 'prologue(rlen=12)'
++then
++  CPPFLAGS="$CPPFLAGS -DHAVE_WORKING_TEXT_ALIGN"
+ fi
+ 
+-if ! $CC -c $dir/check-model.c -o $out 2>&1 | grep  __model__ | grep -q attrib
++if ! $CC -c check-model.c -o "$tmp" 2>&1 | grep  __model__ | grep -q attrib
+ then
+-    CPPFLAGS="$CPPFLAGS -DHAVE_MODEL_SMALL_ATTRIBUTE"
++  CPPFLAGS="$CPPFLAGS -DHAVE_MODEL_SMALL_ATTRIBUTE"
+ fi
+-rm -f $out
+ 
+ # Check whether assembler supports .serialize.{data,instruction} directive.
+-
+-$CC -c $dir/check-serialize.S -o $out 2>/dev/null
+-res=$?
+-rm -f $out
+-if [ $res -eq 0 ]; then
+-    CPPFLAGS="$CPPFLAGS -DHAVE_SERIALIZE_DIRECTIVE"
++if $CC -c check-serialize.S -o "$tmp" 2>/dev/null
++then
++  CPPFLAGS="$CPPFLAGS -DHAVE_SERIALIZE_DIRECTIVE"
+ fi
+ 
+ echo $CPPFLAGS
+-- 
+2.26.1
 
-> And please try and find what was the cset that introduced the problem,
-> so that we can have a Fixes: line and the stable series can pick it, ok?
- >
-> - Arnaldo
->
-
-I have tried to find the patch which introduced this issue.
-
-51fd2df1e882 ("perf stat: Fix interval output values").
-
-This patch zeros stats for interval mode. I just think it should reset 
-rt_stat too.
-
-But I really don't know if it's fair to this patch so I don't add it in 
-my patch description.
-
-Thanks
-Jin Yao
-
->> This patch resets rt_stat before read_counters, so the runtime
->> stat is only calculated by the counts generated in this interval.
->>
->> With this patch,
->>
->>   root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
->>   #           time             counts unit events
->>        1.000420924          2,408,818      inst_retired.any          #      2.1 CPI
->>        1.000420924          5,010,111      cycles
->>        2.001448579          2,798,407      inst_retired.any          #      1.6 CPI
->>        2.001448579          4,599,861      cycles
->>
->>   root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
->>   #           time             counts unit events
->>        1.000428555          2,769,714      cycles
->>        1.000428555            774,462      instructions              #    0.28  insn per cycle
->>        2.001471562          3,595,904      cycles
->>        2.001471562          1,243,703      instructions              #    0.35  insn per cycle
->>
->> Now the second 'insn per cycle' and CPI are calculated by the counts
->> generated in this interval.
->>
->>   v2:
->>   ---
->>   Use just existing perf_stat__reset_shadow_per_stat(&rt_stat).
->>   We don't need to define new function perf_stat__reset_rt_stat.
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/Documentation/perf-stat.txt | 2 ++
->>   tools/perf/builtin-stat.c              | 1 +
->>   2 files changed, 3 insertions(+)
->>
->> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
->> index 4d56586b2fb9..3fb5028aef08 100644
->> --- a/tools/perf/Documentation/perf-stat.txt
->> +++ b/tools/perf/Documentation/perf-stat.txt
->> @@ -176,6 +176,8 @@ Print count deltas every N milliseconds (minimum: 1ms)
->>   The overhead percentage could be high in some cases, for instance with small, sub 100ms intervals.  Use with caution.
->>   	example: 'perf stat -I 1000 -e cycles -a sleep 5'
->>   
->> +If the metric exists, it is calculated by the counts generated in this interval and the metric is printed after #.
->> +
->>   --interval-count times::
->>   Print count deltas for fixed number of times.
->>   This option should be used together with "-I" option.
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index 9207b6c45475..3f050d85c277 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -359,6 +359,7 @@ static void process_interval(void)
->>   	clock_gettime(CLOCK_MONOTONIC, &ts);
->>   	diff_timespec(&rs, &ts, &ref_time);
->>   
->> +	perf_stat__reset_shadow_per_stat(&rt_stat);
->>   	read_counters(&rs);
->>   
->>   	if (STAT_RECORD) {
->> -- 
->> 2.17.1
->>
-> 
