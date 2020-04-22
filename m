@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F031B3DCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14581B3D14
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730006AbgDVKSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:18:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54290 "EHLO mail.kernel.org"
+        id S1729209AbgDVKLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729891AbgDVKRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:17:53 -0400
+        id S1728519AbgDVKLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:11:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CB4A2075A;
-        Wed, 22 Apr 2020 10:17:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFC4F20575;
+        Wed, 22 Apr 2020 10:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550672;
-        bh=cV2r83eP8e/jucUSXYvFnWLjmbcZKhtPCDO2eIQor/o=;
+        s=default; t=1587550282;
+        bh=SJKfbcTMFH18rnumuVrFY/CSI7v7IEsH07v35ULM5S0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=syM4ZPJMJX5Q8skGBTl+OfcWKdzFqnd1vmuYsk65V0OYoyIOn4JdrsqCrfKyV4UuY
-         KE7ut130M+ZQnbIPN+CIFdm77fs1skpOfpd51DyFzgJQ4U3Y8Cl9jIvhjUB02oJKrq
-         ecAkjDXZvS2PM80Y5+RBjih+opjfyyEKM2YmM92U=
+        b=Vcyq16MjoJcbyGlsZ9uMocatMvEsliFwlbwWESDrk9EwfUM+DNTgpxV7iBCC8NXPy
+         HxsU0NFVwjitRyu4p22cZBKf9VY9ksu5DG15UaWjAOl/l0xp1y39zIDyAt9Zfc4pVT
+         jKDBtom4ae75jWP0JZo0BbAX4pi4pFjEbCauJrDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/118] soc: imx: gpc: fix power up sequencing
-Date:   Wed, 22 Apr 2020 11:56:48 +0200
-Message-Id: <20200422095039.685357916@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Ben Hutchings <benh@debian.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 083/199] kmod: make request_module() return an error when autoloading is disabled
+Date:   Wed, 22 Apr 2020 11:56:49 +0200
+Message-Id: <20200422095106.398010265@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,78 +51,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit e0ea2d11f8a08ba7066ff897e16c5217215d1e68 ]
+commit d7d27cfc5cf0766a26a8f56868c5ad5434735126 upstream.
 
-Currently we wait only until the PGC inverts the isolation setting
-before disabling the peripheral clocks. This doesn't ensure that the
-reset is properly propagated through the peripheral devices in the
-power domain.
+Patch series "module autoloading fixes and cleanups", v5.
 
-Wait until the PGC signals that the power up request is done and
-wait a bit for resets to propagate before disabling the clocks.
+This series fixes a bug where request_module() was reporting success to
+kernel code when module autoloading had been completely disabled via
+'echo > /proc/sys/kernel/modprobe'.
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It also addresses the issues raised on the original thread
+(https://lkml.kernel.org/lkml/20200310223731.126894-1-ebiggers@kernel.org/T/#u)
+bydocumenting the modprobe sysctl, adding a self-test for the empty path
+case, and downgrading a user-reachable WARN_ONCE().
+
+This patch (of 4):
+
+It's long been possible to disable kernel module autoloading completely
+(while still allowing manual module insertion) by setting
+/proc/sys/kernel/modprobe to the empty string.
+
+This can be preferable to setting it to a nonexistent file since it
+avoids the overhead of an attempted execve(), avoids potential
+deadlocks, and avoids the call to security_kernel_module_request() and
+thus on SELinux-based systems eliminates the need to write SELinux rules
+to dontaudit module_request.
+
+However, when module autoloading is disabled in this way,
+request_module() returns 0.  This is broken because callers expect 0 to
+mean that the module was successfully loaded.
+
+Apparently this was never noticed because this method of disabling
+module autoloading isn't used much, and also most callers don't use the
+return value of request_module() since it's always necessary to check
+whether the module registered its functionality or not anyway.
+
+But improperly returning 0 can indeed confuse a few callers, for example
+get_fs_type() in fs/filesystems.c where it causes a WARNING to be hit:
+
+	if (!fs && (request_module("fs-%.*s", len, name) == 0)) {
+		fs = __get_fs_type(name, len);
+		WARN_ONCE(!fs, "request_module fs-%.*s succeeded, but still no fs?\n", len, name);
+	}
+
+This is easily reproduced with:
+
+	echo > /proc/sys/kernel/modprobe
+	mount -t NONEXISTENT none /
+
+It causes:
+
+	request_module fs-NONEXISTENT succeeded, but still no fs?
+	WARNING: CPU: 1 PID: 1106 at fs/filesystems.c:275 get_fs_type+0xd6/0xf0
+	[...]
+
+This should actually use pr_warn_once() rather than WARN_ONCE(), since
+it's also user-reachable if userspace immediately unloads the module.
+Regardless, request_module() should correctly return an error when it
+fails.  So let's make it return -ENOENT, which matches the error when
+the modprobe binary doesn't exist.
+
+I've also sent patches to document and test this case.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jeff Vander Stoep <jeffv@google.com>
+Cc: Ben Hutchings <benh@debian.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200310223731.126894-1-ebiggers@kernel.org
+Link: http://lkml.kernel.org/r/20200312202552.241885-1-ebiggers@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/soc/imx/gpc.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ kernel/kmod.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/imx/gpc.c b/drivers/soc/imx/gpc.c
-index 98b9d9a902ae3..90a8b2c0676ff 100644
---- a/drivers/soc/imx/gpc.c
-+++ b/drivers/soc/imx/gpc.c
-@@ -87,8 +87,8 @@ static int imx6_pm_domain_power_off(struct generic_pm_domain *genpd)
- static int imx6_pm_domain_power_on(struct generic_pm_domain *genpd)
+--- a/kernel/kmod.c
++++ b/kernel/kmod.c
+@@ -120,7 +120,7 @@ out:
+  * invoke it.
+  *
+  * If module auto-loading support is disabled then this function
+- * becomes a no-operation.
++ * simply returns -ENOENT.
+  */
+ int __request_module(bool wait, const char *fmt, ...)
  {
- 	struct imx_pm_domain *pd = to_imx_pm_domain(genpd);
--	int i, ret, sw, sw2iso;
--	u32 val;
-+	int i, ret;
-+	u32 val, req;
+@@ -137,7 +137,7 @@ int __request_module(bool wait, const ch
+ 	WARN_ON_ONCE(wait && current_is_async());
  
- 	if (pd->supply) {
- 		ret = regulator_enable(pd->supply);
-@@ -107,17 +107,18 @@ static int imx6_pm_domain_power_on(struct generic_pm_domain *genpd)
- 	regmap_update_bits(pd->regmap, pd->reg_offs + GPC_PGC_CTRL_OFFS,
- 			   0x1, 0x1);
+ 	if (!modprobe_path[0])
+-		return 0;
++		return -ENOENT;
  
--	/* Read ISO and ISO2SW power up delays */
--	regmap_read(pd->regmap, pd->reg_offs + GPC_PGC_PUPSCR_OFFS, &val);
--	sw = val & 0x3f;
--	sw2iso = (val >> 8) & 0x3f;
--
- 	/* Request GPC to power up domain */
--	val = BIT(pd->cntr_pdn_bit + 1);
--	regmap_update_bits(pd->regmap, GPC_CNTR, val, val);
-+	req = BIT(pd->cntr_pdn_bit + 1);
-+	regmap_update_bits(pd->regmap, GPC_CNTR, req, req);
- 
--	/* Wait ISO + ISO2SW IPG clock cycles */
--	udelay(DIV_ROUND_UP(sw + sw2iso, pd->ipg_rate_mhz));
-+	/* Wait for the PGC to handle the request */
-+	ret = regmap_read_poll_timeout(pd->regmap, GPC_CNTR, val, !(val & req),
-+				       1, 50);
-+	if (ret)
-+		pr_err("powerup request on domain %s timed out\n", genpd->name);
-+
-+	/* Wait for reset to propagate through peripherals */
-+	usleep_range(5, 10);
- 
- 	/* Disable reset clocks for all devices in the domain */
- 	for (i = 0; i < pd->num_clks; i++)
-@@ -343,6 +344,7 @@ static const struct regmap_config imx_gpc_regmap_config = {
- 	.rd_table = &access_table,
- 	.wr_table = &access_table,
- 	.max_register = 0x2ac,
-+	.fast_io = true,
- };
- 
- static struct generic_pm_domain *imx_gpc_onecell_domains[] = {
--- 
-2.20.1
-
+ 	va_start(args, fmt);
+ 	ret = vsnprintf(module_name, MODULE_NAME_LEN, fmt, args);
 
 
