@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BC11B40E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5BB1B3D56
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732073AbgDVKtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48226 "EHLO mail.kernel.org"
+        id S1729480AbgDVKOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:14:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729459AbgDVKN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:13:58 -0400
+        id S1729466AbgDVKOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71B442076E;
-        Wed, 22 Apr 2020 10:13:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7A5220775;
+        Wed, 22 Apr 2020 10:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550437;
-        bh=tjM+Gu6dhZqW2oK0pWrJ6jwHx7kK3RIuVIcVvonX61g=;
+        s=default; t=1587550440;
+        bh=3Z5JyLwQNBx9DKwIuJSFdTwrYfhOFuoxKbc227IbNgo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FY9xkYxWCReaDsWGeH5BwiVDzUhi25iXwTXrYoe+FinqjIn5MT+SVcLm9Zrs/Cdos
-         TKRG0+GR7ffLJmNB+9EOK3GXwYUAU/U+eZv6oteybSJxzXcm6cTDB5HkK4ex+25zXS
-         k+tC1CznPshdAwFWc4N6dTjUe+2MisbwaKDaK2GY=
+        b=Cdh8giHBOE/HgIAELwMKhvj3Snr4ueaLWgPdpvpPE2NBbGjURrfgVjIk/fEEUBM9f
+         ETlxQr0ap+tfX59trXLGunIqwpCZzKX+TeQ/juoCpxap0cDISk5xUXux9e3b91Lshm
+         oJ+vr8wjDzGMjXjuzh3f593SZKjfItoIQGNPedm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 08/64] netfilter: nf_tables: report EOPNOTSUPP on unsupported flags/object type
-Date:   Wed, 22 Apr 2020 11:56:52 +0200
-Message-Id: <20200422095014.024164240@linuxfoundation.org>
+        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.19 09/64] irqchip/mbigen: Free msi_desc on device teardown
+Date:   Wed, 22 Apr 2020 11:56:53 +0200
+Message-Id: <20200422095014.189446952@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
 References: <20200422095008.799686511@linuxfoundation.org>
@@ -42,41 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Zenghui Yu <yuzenghui@huawei.com>
 
-commit d9583cdf2f38d0f526d9a8c8564dd2e35e649bc7 upstream.
+commit edfc23f6f9fdbd7825d50ac1f380243cde19b679 upstream.
 
-EINVAL should be used for malformed netlink messages. New userspace
-utility and old kernels might easily result in EINVAL when exercising
-new set features, which is misleading.
+Using irq_domain_free_irqs_common() on the irqdomain free path will
+leave the MSI descriptor unfreed when platform devices get removed.
+Properly free it by MSI domain free function.
 
-Fixes: 8aeff920dcc9 ("netfilter: nf_tables: add stateful object reference to set elements")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 9650c60ebfec0 ("irqchip/mbigen: Create irq domain for each mbigen device")
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200408114352.1604-1-yuzenghui@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/nf_tables_api.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-mbigen.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -3450,7 +3450,7 @@ static int nf_tables_newset(struct net *
- 			      NFT_SET_INTERVAL | NFT_SET_TIMEOUT |
- 			      NFT_SET_MAP | NFT_SET_EVAL |
- 			      NFT_SET_OBJECT))
--			return -EINVAL;
-+			return -EOPNOTSUPP;
- 		/* Only one of these operations is supported */
- 		if ((flags & (NFT_SET_MAP | NFT_SET_OBJECT)) ==
- 			     (NFT_SET_MAP | NFT_SET_OBJECT))
-@@ -3488,7 +3488,7 @@ static int nf_tables_newset(struct net *
- 		objtype = ntohl(nla_get_be32(nla[NFTA_SET_OBJ_TYPE]));
- 		if (objtype == NFT_OBJECT_UNSPEC ||
- 		    objtype > NFT_OBJECT_MAX)
--			return -EINVAL;
-+			return -EOPNOTSUPP;
- 	} else if (flags & NFT_SET_OBJECT)
- 		return -EINVAL;
- 	else
+--- a/drivers/irqchip/irq-mbigen.c
++++ b/drivers/irqchip/irq-mbigen.c
+@@ -231,10 +231,16 @@ static int mbigen_irq_domain_alloc(struc
+ 	return 0;
+ }
+ 
++static void mbigen_irq_domain_free(struct irq_domain *domain, unsigned int virq,
++				   unsigned int nr_irqs)
++{
++	platform_msi_domain_free(domain, virq, nr_irqs);
++}
++
+ static const struct irq_domain_ops mbigen_domain_ops = {
+ 	.translate	= mbigen_domain_translate,
+ 	.alloc		= mbigen_irq_domain_alloc,
+-	.free		= irq_domain_free_irqs_common,
++	.free		= mbigen_irq_domain_free,
+ };
+ 
+ static int mbigen_of_create_domain(struct platform_device *pdev,
 
 
