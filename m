@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865511B4195
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C401B3F99
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728704AbgDVKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33698 "EHLO mail.kernel.org"
+        id S1731237AbgDVKjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:39:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726826AbgDVKIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:22 -0400
+        id S1729682AbgDVKVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D92D82076C;
-        Wed, 22 Apr 2020 10:08:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D88720775;
+        Wed, 22 Apr 2020 10:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550101;
-        bh=JmlwPFJCgtHQ5q2BAaJ+MbNuBQYZUDzspX3nzoSpbdU=;
+        s=default; t=1587550898;
+        bh=pRybFx7TvkkN+rt1U19VDCk30YEFvQNOLv/gbKHErgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHA8OcDIqH1v0VqyqX/JwLmUXIkqaNFoklyKONzrdqc7tJQrbkztdLZl4fCK0NVYZ
-         IGq/RNv8tUv14akJdOwySj3EptXQp437lT+1PUfYCoHxx/aQgpCXkGXpwt8J75K8Xz
-         RZfz0UdQSo28TpOVQa1jPPlnNitnoUp5ZIZgJMNk=
+        b=yGsdz9tEBg14jtBOv1W9iL/fx8aFecmplNfj2LW+ohtbIQNtjMeI2NHX2NGXUSsOA
+         ccX9A5/CiKDeCctnKFk8FytaCkrLgIf5BhMXH+IBubBTKIan0aTPB93KDiu6aimR04
+         AL4w2LM8u7VFu9wvcucGWEYHdXH41Rnk2H0d5T9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Wei <wei.zheng@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 002/199] net: vxge: fix wrong __VA_ARGS__ usage
-Date:   Wed, 22 Apr 2020 11:55:28 +0200
-Message-Id: <20200422095058.079130235@linuxfoundation.org>
+        stable@vger.kernel.org, Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 5.6 002/166] arm, bpf: Fix offset overflow for BPF_MEM BPF_DW
+Date:   Wed, 22 Apr 2020 11:55:29 +0200
+Message-Id: <20200422095048.211829808@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,98 +44,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Wei <wei.zheng@vivo.com>
+From: Luke Nelson <lukenels@cs.washington.edu>
 
-[ Upstream commit b317538c47943f9903860d83cc0060409e12d2ff ]
+commit 4178417cc5359c329790a4a8f4a6604612338cca upstream.
 
-printk in macro vxge_debug_ll uses __VA_ARGS__ without "##" prefix,
-it causes a build error when there is no variable
-arguments(e.g. only fmt is specified.).
+This patch fixes an incorrect check in how immediate memory offsets are
+computed for BPF_DW on arm.
 
-Signed-off-by: Zheng Wei <wei.zheng@vivo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For BPF_LDX/ST/STX + BPF_DW, the 32-bit arm JIT breaks down an 8-byte
+access into two separate 4-byte accesses using off+0 and off+4. If off
+fits in imm12, the JIT emits a ldr/str instruction with the immediate
+and avoids the use of a temporary register. While the current check off
+<= 0xfff ensures that the first immediate off+0 doesn't overflow imm12,
+it's not sufficient for the second immediate off+4, which may cause the
+second access of BPF_DW to read/write the wrong address.
+
+This patch fixes the problem by changing the check to
+off <= 0xfff - 4 for BPF_DW, ensuring off+4 will never overflow.
+
+A side effect of simplifying the check is that it now allows using
+negative immediate offsets in ldr/str. This means that small negative
+offsets can also avoid the use of a temporary register.
+
+This patch introduces no new failures in test_verifier or test_bpf.c.
+
+Fixes: c5eae692571d6 ("ARM: net: bpf: improve 64-bit store implementation")
+Fixes: ec19e02b343db ("ARM: net: bpf: fix LDX instructions")
+Co-developed-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20200409221752.28448-1-luke.r.nels@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/neterion/vxge/vxge-config.h |  2 +-
- drivers/net/ethernet/neterion/vxge/vxge-main.h   | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ arch/arm/net/bpf_jit_32.c |   40 ++++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-config.h b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-index cfa970417f818..fe4a4315d20d4 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-config.h
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-@@ -2065,7 +2065,7 @@ vxge_hw_vpath_strip_fcs_check(struct __vxge_hw_device *hldev, u64 vpath_mask);
- 	if ((level >= VXGE_ERR && VXGE_COMPONENT_LL & VXGE_DEBUG_ERR_MASK) ||  \
- 	    (level >= VXGE_TRACE && VXGE_COMPONENT_LL & VXGE_DEBUG_TRACE_MASK))\
- 		if ((mask & VXGE_DEBUG_MASK) == mask)			       \
--			printk(fmt "\n", __VA_ARGS__);			       \
-+			printk(fmt "\n", ##__VA_ARGS__);		       \
- } while (0)
- #else
- #define vxge_debug_ll(level, mask, fmt, ...)
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.h b/drivers/net/ethernet/neterion/vxge/vxge-main.h
-index 3a79d93b84453..5b535aa10d23e 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-main.h
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-main.h
-@@ -454,49 +454,49 @@ int vxge_fw_upgrade(struct vxgedev *vdev, char *fw_name, int override);
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -992,21 +992,35 @@ static inline void emit_a32_mul_r64(cons
+ 	arm_bpf_put_reg32(dst_hi, rd[0], ctx);
+ }
  
- #if (VXGE_DEBUG_LL_CONFIG & VXGE_DEBUG_MASK)
- #define vxge_debug_ll_config(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_LL_CONFIG, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_ll_config(level, fmt, ...)
- #endif
++static bool is_ldst_imm(s16 off, const u8 size)
++{
++	s16 off_max = 0;
++
++	switch (size) {
++	case BPF_B:
++	case BPF_W:
++		off_max = 0xfff;
++		break;
++	case BPF_H:
++		off_max = 0xff;
++		break;
++	case BPF_DW:
++		/* Need to make sure off+4 does not overflow. */
++		off_max = 0xfff - 4;
++		break;
++	}
++	return -off_max <= off && off <= off_max;
++}
++
+ /* *(size *)(dst + off) = src */
+ static inline void emit_str_r(const s8 dst, const s8 src[],
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+-	s32 off_max;
+ 	s8 rd;
  
- #if (VXGE_DEBUG_INIT & VXGE_DEBUG_MASK)
- #define vxge_debug_init(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_INIT, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_init(level, fmt, ...)
- #endif
+ 	rd = arm_bpf_get_reg32(dst, tmp[1], ctx);
  
- #if (VXGE_DEBUG_TX & VXGE_DEBUG_MASK)
- #define vxge_debug_tx(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_TX, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_tx(level, fmt, ...)
- #endif
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
+-
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], rd), ctx);
+ 		rd = tmp[0];
+@@ -1035,18 +1049,12 @@ static inline void emit_str_r(const s8 d
  
- #if (VXGE_DEBUG_RX & VXGE_DEBUG_MASK)
- #define vxge_debug_rx(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_RX, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_rx(level, fmt, ...)
- #endif
+ /* dst = *(size*)(src + off) */
+ static inline void emit_ldx_r(const s8 dst[], const s8 src,
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+ 	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
+ 	s8 rm = src;
+-	s32 off_max;
+-
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
  
- #if (VXGE_DEBUG_MEM & VXGE_DEBUG_MASK)
- #define vxge_debug_mem(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_MEM, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_mem(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_ENTRYEXIT & VXGE_DEBUG_MASK)
- #define vxge_debug_entryexit(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_ENTRYEXIT, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_entryexit(level, fmt, ...)
- #endif
- 
- #if (VXGE_DEBUG_INTR & VXGE_DEBUG_MASK)
- #define vxge_debug_intr(level, fmt, ...) \
--	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, __VA_ARGS__)
-+	vxge_debug_ll(level, VXGE_DEBUG_INTR, fmt, ##__VA_ARGS__)
- #else
- #define vxge_debug_intr(level, fmt, ...)
- #endif
--- 
-2.20.1
-
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+ 		rm = tmp[0];
 
 
