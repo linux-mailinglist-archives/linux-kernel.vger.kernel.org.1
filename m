@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DC11B4155
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3341B3DE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732046AbgDVKvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:51:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41586 "EHLO mail.kernel.org"
+        id S1729792AbgDVKVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728533AbgDVKK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:56 -0400
+        id S1729999AbgDVKSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6468D20784;
-        Wed, 22 Apr 2020 10:10:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 108802070B;
+        Wed, 22 Apr 2020 10:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550255;
-        bh=XlQgfUFUJP4k8L2WBx4a9KrW5lNWt6JVS5ikBhX0mIU=;
+        s=default; t=1587550719;
+        bh=UGUfe1U4LpfmshnMIP8jNUJV/ZQTslokztFJNdAPGx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C9Dp1/u7qQH+OugmacF8CGMk/90kOpDDHo62vOLoiBOgebFR+jhCPg2TNxU2vVBtf
-         ioUYwjvJpmiYarJlt5j6/oyUk2/QwV6mYlb5wZnvLka2KS7ZCXFkiGfw2iS/Cbd/T7
-         926+6cem1FIUxzbinyEXF34RGquKPH6DS1ze/dlE=
+        b=dx6MvKW3w5RasMtBpMgIjRAuSRvHwloR3xzLHeAss1yus/9im9CWZCbiwZL8/cXnc
+         8gUwBZnVZtd+exJWm8sKkxIUYU6MReXp9tkCHY7bCSZfxvMjJSRQYpisWJkWMT69cX
+         VrLmGJIuqf2ugwhPwn8g5B0SUHnkJKu6C/udxA+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Remus <jremus@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 073/199] scsi: zfcp: fix missing erp_lock in port recovery trigger for point-to-point
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 038/118] net/mlx5e: Enforce setting of a single FEC mode
 Date:   Wed, 22 Apr 2020 11:56:39 +0200
-Message-Id: <20200422095105.455494782@linuxfoundation.org>
+Message-Id: <20200422095038.180585894@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,79 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Maier <maier@linux.ibm.com>
+From: Aya Levin <ayal@mellanox.com>
 
-commit 819732be9fea728623e1ed84eba28def7384ad1f upstream.
+[ Upstream commit 4bd9d5070b92da012f2715cf8e4859acb78b8f35 ]
 
-v2.6.27 commit cc8c282963bd ("[SCSI] zfcp: Automatically attach remote
-ports") introduced zfcp automatic port scan.
+Ethtool command allow setting of several FEC modes in a single set
+command. The driver can only set a single FEC mode at a time. With this
+patch driver will reply not-supported on setting several FEC modes.
 
-Before that, the user had to use the sysfs attribute "port_add" of an FCP
-device (adapter) to add and open remote (target) ports, even for the remote
-peer port in point-to-point topology. That code path did a proper port open
-recovery trigger taking the erp_lock.
-
-Since above commit, a new helper function zfcp_erp_open_ptp_port()
-performed an UNlocked port open recovery trigger. This can race with other
-parallel recovery triggers. In zfcp_erp_action_enqueue() this could corrupt
-e.g. adapter->erp_total_count or adapter->erp_ready_head.
-
-As already found for fabric topology in v4.17 commit fa89adba1941 ("scsi:
-zfcp: fix infinite iteration on ERP ready list"), there was an endless loop
-during tracing of rport (un)block.  A subsequent v4.18 commit 9e156c54ace3
-("scsi: zfcp: assert that the ERP lock is held when tracing a recovery
-trigger") introduced a lockdep assertion for that case.
-
-As a side effect, that lockdep assertion now uncovered the unlocked code
-path for PtP. It is from within an adapter ERP action:
-
-zfcp_erp_strategy[1479]  intentionally DROPs erp lock around
-                         zfcp_erp_strategy_do_action()
-zfcp_erp_strategy_do_action[1441]      NO erp lock
-zfcp_erp_adapter_strategy[876]         NO erp lock
-zfcp_erp_adapter_strategy_open[855]    NO erp lock
-zfcp_erp_adapter_strategy_open_fsf[806]NO erp lock
-zfcp_erp_adapter_strat_fsf_xconf[772]  erp lock only around
-                                       zfcp_erp_action_to_running(),
-                                       BUT *_not_* around
-                                       zfcp_erp_enqueue_ptp_port()
-zfcp_erp_enqueue_ptp_port[728]         BUG: *_not_* taking erp lock
-_zfcp_erp_port_reopen[432]             assumes to be called with erp lock
-zfcp_erp_action_enqueue[314]           assumes to be called with erp lock
-zfcp_dbf_rec_trig[288]                 _checks_ to be called with erp lock:
-	lockdep_assert_held(&adapter->erp_lock);
-
-It causes the following lockdep warning:
-
-WARNING: CPU: 2 PID: 775 at drivers/s390/scsi/zfcp_dbf.c:288
-                            zfcp_dbf_rec_trig+0x16a/0x188
-no locks held by zfcperp0.0.17c0/775.
-
-Fix this by using the proper locked recovery trigger helper function.
-
-Link: https://lore.kernel.org/r/20200312174505.51294-2-maier@linux.ibm.com
-Fixes: cc8c282963bd ("[SCSI] zfcp: Automatically attach remote ports")
-Cc: <stable@vger.kernel.org> #v2.6.27+
-Reviewed-by: Jens Remus <jremus@linux.ibm.com>
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Steffen Maier <maier@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/scsi/zfcp_erp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/s390/scsi/zfcp_erp.c
-+++ b/drivers/s390/scsi/zfcp_erp.c
-@@ -747,7 +747,7 @@ static void zfcp_erp_enqueue_ptp_port(st
- 				 adapter->peer_d_id);
- 	if (IS_ERR(port)) /* error or port already attached */
- 		return;
--	_zfcp_erp_port_reopen(port, 0, "ereptp1");
-+	zfcp_erp_port_reopen(port, 0, "ereptp1");
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index 304ddce6b0872..39ee32518b106 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -1548,6 +1548,10 @@ static int mlx5e_set_fecparam(struct net_device *netdev,
+ 	int mode;
+ 	int err;
  
- static int zfcp_erp_adapter_strat_fsf_xconf(struct zfcp_erp_action *erp_action)
++	if (bitmap_weight((unsigned long *)&fecparam->fec,
++			  ETHTOOL_FEC_BASER_BIT + 1) > 1)
++		return -EOPNOTSUPP;
++
+ 	for (mode = 0; mode < ARRAY_SIZE(pplm_fec_2_ethtool); mode++) {
+ 		if (!(pplm_fec_2_ethtool[mode] & fecparam->fec))
+ 			continue;
+-- 
+2.20.1
+
 
 
