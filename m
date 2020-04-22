@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F861B3C10
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC671B3C96
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgDVKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51056 "EHLO mail.kernel.org"
+        id S1728455AbgDVKHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgDVKCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:10 -0400
+        id S1727837AbgDVKGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA73C2076C;
-        Wed, 22 Apr 2020 10:02:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FFBA20774;
+        Wed, 22 Apr 2020 10:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549730;
-        bh=qo1XiaGrM/lXuq9vYY4i7BcKmhXgjNcRBrvpB4dm4uc=;
+        s=default; t=1587550011;
+        bh=U7xw5TIMIELme+svUXYqgI9d762UMw58MuzqpUriD5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AcB/KKjL1CRM28w6ujXEGR3C8t+dWM7+t/FZ+gb9TB40eqyF0Gjc6XlSLtwexJVu/
-         4qjftLXS/wJQ2EBtq+BBW5YXFTx/TRK+AoB6rz2/LVorQ+zc8wI4w1f1QKfc4P4d10
-         Bvkbb162q6cMGz4OFhZpCBKmLloNpeYrsrO2XaiA=
+        b=pEsbspSiVrtBnYl7o92gmTQ03+U/FvSCfoAU0iQUGoADODYAP45MSYrlVtojd9n+k
+         riyff+g1bbd7vWg+/96MJlD+lyRiF+ZemGUab7nfNoASCKDoR5Z09Hi3d1kLsZPSBr
+         63cvADMS3bH39EKjzE2aMhNiXtTGEqnXTF3MOHK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 083/100] of: unittest: kmemleak in of_unittest_platform_populate()
+        Dedy Lansky <dlansky@codeaurora.org>,
+        Maya Erez <merez@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 096/125] wil6210: rate limit wil_rx_refill error
 Date:   Wed, 22 Apr 2020 11:56:53 +0200
-Message-Id: <20200422095037.982396842@linuxfoundation.org>
+Message-Id: <20200422095048.660973854@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Dedy Lansky <dlansky@codeaurora.org>
 
-[ Upstream commit 216830d2413cc61be3f76bc02ffd905e47d2439e ]
+[ Upstream commit 3d6b72729cc2933906de8d2c602ae05e920b2122 ]
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 2 of 5.
+wil_err inside wil_rx_refill can flood the log buffer.
+Replace it with wil_err_ratelimited.
 
-of_unittest_platform_populate() left an elevated reference count for
-grandchild nodes (which are platform devices).  Fix the platform
-device reference counts so that the memory will be freed.
-
-Fixes: fb2caa50fbac ("of/selftest: add testcase for nodes with same name and address")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Dedy Lansky <dlansky@codeaurora.org>
+Signed-off-by: Maya Erez <merez@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/of/unittest.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/wil6210/txrx.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 1ee2474fa8fbb..109497dbfba08 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -816,10 +816,13 @@ static void __init of_unittest_platform_populate(void)
- 
- 	of_platform_populate(np, match, NULL, &test_bus->dev);
- 	for_each_child_of_node(np, child) {
--		for_each_child_of_node(child, grandchild)
--			unittest(of_find_device_by_node(grandchild),
-+		for_each_child_of_node(child, grandchild) {
-+			pdev = of_find_device_by_node(grandchild);
-+			unittest(pdev,
- 				 "Could not create device for node '%s'\n",
- 				 grandchild->name);
-+			of_dev_put(pdev);
-+		}
+--- a/drivers/net/wireless/ath/wil6210/txrx.c
++++ b/drivers/net/wireless/ath/wil6210/txrx.c
+@@ -546,8 +546,8 @@ static int wil_rx_refill(struct wil6210_
+ 			v->swtail = next_tail) {
+ 		rc = wil_vring_alloc_skb(wil, v, v->swtail, headroom);
+ 		if (unlikely(rc)) {
+-			wil_err(wil, "Error %d in wil_rx_refill[%d]\n",
+-				rc, v->swtail);
++			wil_err_ratelimited(wil, "Error %d in rx refill[%d]\n",
++					    rc, v->swtail);
+ 			break;
+ 		}
  	}
- 
- 	of_platform_depopulate(&test_bus->dev);
--- 
-2.20.1
-
 
 
