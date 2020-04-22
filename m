@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8051B4B29
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DA31B4B2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgDVRAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:00:49 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:33771 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726381AbgDVRAt (ORCPT
+        id S1726727AbgDVRBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgDVRBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:00:49 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 22 Apr 2020 10:00:45 -0700
-Received: from localhost (unknown [10.129.220.242])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 82C10B24B6;
-        Wed, 22 Apr 2020 13:00:48 -0400 (EDT)
-Date:   Wed, 22 Apr 2020 10:00:48 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Ingo Molnar <mingo@kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/3] objtool: Rename elf_read() to elf_open_read()
-Message-ID: <20200422170048.GA9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200422103205.61900-1-mingo@kernel.org>
- <20200422103205.61900-3-mingo@kernel.org>
- <20200422114342.GD20730@hirez.programming.kicks-ass.net>
- <20200422142235.GA2840@gmail.com>
+        Wed, 22 Apr 2020 13:01:04 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E02C03C1AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:01:04 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id o198so1531801ybg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 10:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ym89dv4PATS6R8YX5+GarohHF4cUWXJsipMHJDzTn2c=;
+        b=dv99oNKcCWx2NDVer2ZW48pSkY5pnU+bOeE4MXSJsO/OXoGgjWMf0iRWstcqH+3QpF
+         IfnvBI8vMvP+tDcF2XE2L1nQo5i8Rx36ledHel+AsEv3j5vJHhbJoc0hOYuZhr93YGA7
+         4zmNmaTZw2WmH8dSOhheia3/wQxrHZutmU7XqpV+LqCZ9R7z4Qy/KAePxv51ZVTFN/z1
+         zR2muYvf6iLKPICipD7g6d5gYjouEYots4IM9PiVY+DcBefxG8s6jDuWtVRGVc1J+6I9
+         F3RIqFtMIDweCuHN8xvxQZe6mKckNRHPZ6BbLz3dfhOLhYMwnqzRQ/gcJkFPRIYvm3DP
+         NSog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ym89dv4PATS6R8YX5+GarohHF4cUWXJsipMHJDzTn2c=;
+        b=YB9MSPZrzItwtkHJ0FZMZE8vvjudyWjevFXM8Bn4Mr6c+OsAQVN0sT35AACbCqjIBV
+         t27IhzGUIwME9UrcxJFR7tSOnsyuaJ5GZg4QiGZz1OPkcM4iKgXPt3ieCbtiMpft0agl
+         55Mk2LGZmKdeAgEkGP2KEQXGNx8zjUTRjp4YKApOIlBwAAzZZqktzrW6gdfEupyuCmaB
+         aYwOIj60HP69ktVZA6FF9F3NnSak3L5eNuGnRJMmQZYYFZ+NR89T2noFtbEf19vOWGnI
+         ppyphqNicztNoCUEnY5dB9p/8t1HPp8sBMI1l+0JXkHFhOqnrbPCbzN3fdbSeF1C8+1x
+         Gv1g==
+X-Gm-Message-State: AGi0PuYZ02CDs+UTd+g3KegYCnl9fKujcZjo3mA0sV1tUcnBYipHLdAN
+        jk2pmYftbicJkFB1fNtCt++rbfazJWMH/edbyLM=
+X-Google-Smtp-Source: APiQypKGzAp0vsTy91EG18QXjH4JD7KD1RR157tvuuO183Nfgz21dA5WaKfDdj9qHEaZODgm9kHNKuDthuZmT2IvrEk=
+X-Received: by 2002:a25:db42:: with SMTP id g63mr13516882ybf.201.1587574863586;
+ Wed, 22 Apr 2020 10:01:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200422142235.GA2840@gmail.com>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+Received: by 2002:a26:6942:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 10:01:03
+ -0700 (PDT)
+Reply-To: em102ro@gmail.com
+From:   "Mrs. Tash Alfred" <mrsalimaculu@gmail.com>
+Date:   Wed, 22 Apr 2020 10:01:03 -0700
+Message-ID: <CALpC2+JBN=nVsA_bNX6awz1JheeRCwkZhQbETNdgm87VOBTuZg@mail.gmail.com>
+Subject: Hello My Dearest
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 04:22:35PM +0200, Ingo Molnar wrote:
-> 
-> * Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Wed, Apr 22, 2020 at 12:32:04PM +0200, Ingo Molnar wrote:
-> > > 'struct elf *' handling is an open/close paradigm, make sure the naming
-> > > matches that:
-> > > 
-> > >    elf_open_read()
-> > >    elf_write()
-> > >    elf_close()
-> > 
-> > 
-> > > diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> > > index f2a84271e807..12e2aea42bb2 100644
-> > > --- a/tools/objtool/check.c
-> > > +++ b/tools/objtool/check.c
-> > > @@ -2614,7 +2614,7 @@ int check(const char *_objname, bool orc)
-> > >  
-> > >  	objname = _objname;
-> > >  
-> > > -	file.elf = elf_read(objname, orc ? O_RDWR : O_RDONLY);
-> > > +	file.elf = elf_open_read(objname, orc ? O_RDWR : O_RDONLY);
-> > 
-> > Note that I have a patch pending that makes that unconditionally O_RDWR,
-> > which sort of seems to suggest elf_open() might be the better name.
-> 
-> Ok, done!
+Hello My Dearest
 
-It might be a better name but there could be a problem with it --
-see 8e144797f1a67c52e386161863da4614a23ad913
-"objtool: Rename elf_open() to prevent conflict with libelf from elftoolchain"
+Please I appeal to you to exercise a little patience and read through
+my mail carefully, I am contacting you personally for investment
+assistance and a long term business relationship in your Country.
 
-Unless I'm forgetting something I think that'd still be an issue.
+I am Mrs. Tash  Alfred a citizen of the united state of America 41 old
+,  I work in HSBC Bank in Madrid Spain as a Telex Manager charge of
+wire transfer department.
 
-Cheers,
-	-Matt
+I want the bank to transfer the money left by Dr. Cheng Chao,  A
+Chinese   Politicians who  died on Corona Virus disease  in March 17th
+2020,  he used our bank to launder money overseas through the help of
+their Political advisers. Most of the funds which they transferred out
+of the shores of Chinese were gold and oil money that was supposed to
+have been used to develop the continent.
+
+Can you invest this money and also help the poor ? The amount value at
+($22.5million Dollars), left in his account still unclaimed, if you
+know that you are capable to invest this fund into any   profitable
+business in your country kindly send me your details information as
+listed below to enable me draft you an application form of claim along
+with the deposit certificate which you are going to fill with your
+bank account detail necessary and contact the HSBC Bank in Madrid
+Spain for immediate transfer of the Amount into your bank account
+direct.
+
+Percentage share will be 60,for me/ 40, for you.
+
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your  Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) Your photo.......................................
+
+Thanks with my best regards.
+Mrs. Tash Alfred
+Telex Manager
+Spain Madrid (H.S.B.C)
