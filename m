@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33E61B3530
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1F21B355C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgDVCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 22:51:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2829 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726389AbgDVCvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 22:51:13 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5EDFA9E2B7CFECE1E29E;
-        Wed, 22 Apr 2020 10:51:11 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 22 Apr 2020 10:51:01 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] scsi: aacraid: Use memdup_user() as a cleanup
-Date:   Wed, 22 Apr 2020 10:57:12 +0800
-Message-ID: <1587524232-118733-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726586AbgDVC6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 22:58:03 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:9502 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726407AbgDVC53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 22:57:29 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Apr 2020 19:57:27 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 21 Apr 2020 19:57:26 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 984B84B8D; Tue, 21 Apr 2020 19:57:26 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     linux-pwm@vger.kernel.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v13 01/11] drm/i915: Use 64-bit division macro
+Date:   Tue, 21 Apr 2020 19:57:13 -0700
+Message-Id: <4a3acf8673c08308848fb7ae73d992b6feb758d3.1587523702.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <cover.1587523702.git.gurus@codeaurora.org>
+References: <cover.1587523702.git.gurus@codeaurora.org>
+In-Reply-To: <cover.1587523702.git.gurus@codeaurora.org>
+References: <cover.1587523702.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix coccicheck warning which recommends to use memdup_user().
+Since the PWM framework is switching struct pwm_state.duty_cycle's
+datatype to u64, prepare for this transition by using DIV_ROUND_UP_ULL
+to handle a 64-bit dividend.
 
-This patch fixes the following coccicheck warnings:
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: "Ville Syrjälä" <ville.syrjala@linux.intel.com>
+Cc: intel-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
 
-drivers/scsi/aacraid/commctrl.c:516:15-22: WARNING opportunity for memdup_user
-
-Fixes: 4645df1035b3 ("[PATCH] aacraid: swapped kmalloc args.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
 ---
- drivers/scsi/aacraid/commctrl.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/i915/display/intel_panel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/aacraid/commctrl.c b/drivers/scsi/aacraid/commctrl.c
-index ffe41bc..1ce1620 100644
---- a/drivers/scsi/aacraid/commctrl.c
-+++ b/drivers/scsi/aacraid/commctrl.c
-@@ -513,17 +513,9 @@ static int aac_send_raw_srb(struct aac_dev* dev, void __user * arg)
- 		goto cleanup;
+diff --git a/drivers/gpu/drm/i915/display/intel_panel.c b/drivers/gpu/drm/i915/display/intel_panel.c
+index 276f438..81547a0 100644
+--- a/drivers/gpu/drm/i915/display/intel_panel.c
++++ b/drivers/gpu/drm/i915/display/intel_panel.c
+@@ -1920,7 +1920,7 @@ static int pwm_setup_backlight(struct intel_connector *connector,
+ 		return retval;
  	}
  
--	user_srbcmd = kmalloc(fibsize, GFP_KERNEL);
--	if (!user_srbcmd) {
--		dprintk((KERN_DEBUG"aacraid: Could not make a copy of the srb\n"));
--		rcode = -ENOMEM;
--		goto cleanup;
--	}
--	if(copy_from_user(user_srbcmd, user_srb,fibsize)){
--		dprintk((KERN_DEBUG"aacraid: Could not copy srb from user\n"));
--		rcode = -EFAULT;
--		goto cleanup;
--	}
-+	user_srbcmd = memdup_user(user_srb, fibsize);
-+	if (IS_ERR(user_srbcmd))
-+		return PTR_ERR(user_srbcmd);
- 
- 	flags = user_srbcmd->flags; /* from user in cpu order */
- 	switch (flags & (SRB_DataIn | SRB_DataOut)) {
+-	level = DIV_ROUND_UP(pwm_get_duty_cycle(panel->backlight.pwm) * 100,
++	level = DIV_ROUND_UP_ULL(pwm_get_duty_cycle(panel->backlight.pwm) * 100,
+ 			     CRC_PMIC_PWM_PERIOD_NS);
+ 	panel->backlight.level =
+ 		intel_panel_compute_brightness(connector, level);
 -- 
-2.6.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
