@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB20C1B3CF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB63F1B3C8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgDVKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37440 "EHLO mail.kernel.org"
+        id S1728389AbgDVKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728916AbgDVKJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:52 -0400
+        id S1728376AbgDVKGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:06:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6F8B2070B;
-        Wed, 22 Apr 2020 10:09:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F40BD20575;
+        Wed, 22 Apr 2020 10:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550192;
-        bh=rS6fAOwtq53TVDt14sPui+9k4apRV1Z1cq2QWyeB4ys=;
+        s=default; t=1587549996;
+        bh=HeZ2js+KmPU0Hq5F3zVKBWufn7QhadTQLVNesgLSsUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GIPypwZvgTsc4yRn8b/TWt2m5AcboBWdqN2ZZVGIZeAjxwOSbk2Z24oQBWdCoD8Kq
-         DaFwaimRy7bC+cImRXtB4AbDSiYA9iGoBFaWyHG3+a38tIoOWjBp2s78BtkzEqEzX8
-         VHnxODIsH1tZuYtKlq3B8KcVS2sZbZ1xlSK8eIoE=
+        b=KzisTLVKcGOrPMb9ti8fz5lWrwYDXvmMnR5MCZj3CfW0DyGtNy7/vJDoKo6TbOBjF
+         wg9lDDmKd3wAM8Cwi420OstFRehcW3jXs1n0h0S5vbrjgyAB/CJU0aV67CMypPhixa
+         gpMLFqTaGkXDYmTkVTUrIOPVNX5EU7KXKZYjSBrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.14 045/199] media: ti-vpe: cal: fix disable_irqs to only the intended target
-Date:   Wed, 22 Apr 2020 11:56:11 +0200
-Message-Id: <20200422095102.448080976@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 055/125] cpufreq: powernv: Fix use-after-free
+Date:   Wed, 22 Apr 2020 11:56:12 +0200
+Message-Id: <20200422095042.391448899@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benoit Parrot <bparrot@ti.com>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-commit 1db56284b9da9056093681f28db48a09a243274b upstream.
+commit d0a72efac89d1c35ac55197895201b7b94c5e6ef upstream.
 
-disable_irqs() was mistakenly disabling all interrupts when called.
-This cause all port stream to stop even if only stopping one of them.
+The cpufreq driver has a use-after-free that we can hit if:
 
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Benoit Parrot <bparrot@ti.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+a) There's an OCC message pending when the notifier is registered, and
+b) The cpufreq driver fails to register with the core.
+
+When a) occurs the notifier schedules a workqueue item to handle the
+message. The backing work_struct is located on chips[].throttle and
+when b) happens we clean up by freeing the array. Once we get to
+the (now free) queued item and the kernel crashes.
+
+Fixes: c5e29ea7ac14 ("cpufreq: powernv: Fix bugs in powernv_cpufreq_{init/exit}")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200206062622.28235-1-oohall@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/platform/ti-vpe/cal.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/media/platform/ti-vpe/cal.c
-+++ b/drivers/media/platform/ti-vpe/cal.c
-@@ -544,16 +544,16 @@ static void enable_irqs(struct cal_ctx *
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -955,6 +955,12 @@ static int init_chip_info(void)
  
- static void disable_irqs(struct cal_ctx *ctx)
+ static inline void clean_chip_info(void)
  {
-+	u32 val;
++	int i;
 +
- 	/* Disable IRQ_WDMA_END 0/1 */
--	reg_write_field(ctx->dev,
--			CAL_HL_IRQENABLE_CLR(2),
--			CAL_HL_IRQ_CLEAR,
--			CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	val = 0;
-+	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(2), val);
- 	/* Disable IRQ_WDMA_START 0/1 */
--	reg_write_field(ctx->dev,
--			CAL_HL_IRQENABLE_CLR(3),
--			CAL_HL_IRQ_CLEAR,
--			CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	val = 0;
-+	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
-+	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(3), val);
- 	/* Todo: Add VC_IRQ and CSI2_COMPLEXIO_IRQ handling */
- 	reg_write(ctx->dev, CAL_CSI2_VC_IRQENABLE(1), 0);
++	/* flush any pending work items */
++	if (chips)
++		for (i = 0; i < nr_chips; i++)
++			cancel_work_sync(&chips[i].throttle);
+ 	kfree(chips);
  }
+ 
 
 
