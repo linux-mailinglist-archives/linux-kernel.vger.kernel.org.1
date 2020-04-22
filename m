@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFCE1B43DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8459E1B43F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 14:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgDVMDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 08:03:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44866 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726835AbgDVMDc (ORCPT
+        id S1728577AbgDVMGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 08:06:06 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49092 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgDVMGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:03:32 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MC3T1c139831
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:03:31 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ggxr4j1t-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:03:31 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <zohar@linux.ibm.com>;
-        Wed, 22 Apr 2020 13:02:30 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 22 Apr 2020 13:02:27 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MC32sU56033566
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 12:03:02 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7758A11C054;
-        Wed, 22 Apr 2020 12:03:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 79CA111C050;
-        Wed, 22 Apr 2020 12:03:01 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.220.15])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Apr 2020 12:03:01 +0000 (GMT)
-Subject: Re: [PATCH 1/5] ima: Set file->f_mode instead of file->f_flags in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, krzysztof.struczynski@huawei.com,
-        silviu.vlasceanu@huawei.com, stable@vger.kernel.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Date:   Wed, 22 Apr 2020 08:03:01 -0400
-In-Reply-To: <20200325161116.7082-1-roberto.sassu@huawei.com>
-References: <20200325161116.7082-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        Wed, 22 Apr 2020 08:06:06 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MC2rO5097413;
+        Wed, 22 Apr 2020 12:05:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=L7GWEspZEtRD1L/VpVBFE+u2DMBWTYytg1A5zTqZe30=;
+ b=X5nJyTqxnfILH2uNAa7QDwqOe8hrE6bDeRIvPmz1Cpaoh53/11LPQPw4KtyysOCmdkPi
+ HiB5s88TgJfH6kGG/vfz0meC7MjVbU8YZyJ13789MnTI2g+ypq4g7gXTMZFczjrg+7Q2
+ 3HuFxt3gbvnbw6fC0WkPO27FuVleMvCSnpWPcSRaa/UDboA3z82Q8BpwquavPEnsNerG
+ aD+PTW6qPezUpl01xWk3L3RK8W9Zzr+wj6Bhad/SDV8qjmPPjjj8cZbtzpAmLr5sYcA+
+ 0u25f+ExdHzlDGJVayFr2cB9giFclsvPfZx9K0suD3VjISH/tzfnTiPZvr1slurgZcII bA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30fsgm2cbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 12:05:45 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03MC2HqJ052051;
+        Wed, 22 Apr 2020 12:03:44 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 30gb1jeep1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Apr 2020 12:03:44 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03MC3imt056174;
+        Wed, 22 Apr 2020 12:03:44 GMT
+Received: from control-surface.uk.oracle.com (dhcp-10-175-178-214.vpn.oracle.com [10.175.178.214])
+        by userp3030.oracle.com with ESMTP id 30gb1jeehu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 22 Apr 2020 12:03:43 +0000
+Received: from control-surface.uk.oracle.com (localhost [127.0.0.1])
+        by control-surface.uk.oracle.com (8.15.2/8.15.2) with ESMTPS id 03MC3epQ080674
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 22 Apr 2020 13:03:41 +0100
+Received: (from jch@localhost)
+        by control-surface.uk.oracle.com (8.15.2/8.15.2/Submit) id 03MC3dPx080672;
+        Wed, 22 Apr 2020 13:03:39 +0100
+X-Authentication-Warning: control-surface.uk.oracle.com: jch set sender to john.haxby@oracle.com using -f
+From:   John Haxby <john.haxby@oracle.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Andi Kleen <ak@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, John Haxby <john.haxby@oracle.com>
+Subject: [PATCH 0/1] x86/fpu: Allow clearcpuid= to clear several bits
+Date:   Wed, 22 Apr 2020 13:03:18 +0100
+Message-Id: <cover.1587555769.git.john.haxby@oracle.com>
+X-Mailer: git-send-email 2.25.3
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042212-0008-0000-0000-0000037558B1
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042212-0009-0000-0000-00004A9721D8
-Message-Id: <1587556981.5738.7.camel@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-22_03:2020-04-22,2020-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004220097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CC'ing Goldwyn Rodrigues]
+Back in the mists of time, well, prior to 4.14.9, you could put clearcpuid=N
+several times on the command line to clear several CPUID bits.  Unfortunately,
+there was a problem with the way that this was done which meant XSAVE, in
+particular, wasn't cleared early enough.  This was fixed in 0c2a3913d6f5
+("x86/fpu: Parse clearcpuid= as early XSAVE argument").  Unfortunately that
+also meant that only one bit could be cleared.
 
-Hi Roberto,
+This patch mostly fixes that.  Gone is the old, anachronistic, multiple
+clearcpuid= arguments to be replaced by a single clearcpuid=BITNUM[,BITNUM,...]
+argument.  It's no longer possible to clear perhaps dozens of flags with a very
+long kernel command line, but you can clear up to about eight bits now instead
+of just one.
 
-On Wed, 2020-03-25 at 17:11 +0100, Roberto Sassu wrote:
-> Commit a408e4a86b36 ("ima: open a new file instance if no read
-> permissions") tries to create a new file descriptor to calculate a file
-> digest if the file has not been opened with O_RDONLY flag. However, if a
-> new file descriptor cannot be obtained, it sets the FMODE_READ flag to
-> file->f_flags instead of file->f_mode.
-> 
-> This patch fixes this issue by replacing f_flags with f_mode as it was
-> before that commit.
-> 
-> Cc: stable@vger.kernel.org # 4.20.x
-> Fixes: a408e4a86b36 ("ima: open a new file instance if no read permissions")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/ima/ima_crypto.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-> index 423c84f95a14..8ab17aa867dd 100644
-> --- a/security/integrity/ima/ima_crypto.c
-> +++ b/security/integrity/ima/ima_crypto.c
-> @@ -436,7 +436,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
->  			 */
+jch
 
-Thanks, Roberto.  The comment above here and the rest of the code
-refers to flags.  Both should be updated as well to reflect using
-f_mode.
 
->  			pr_info_ratelimited("Unable to reopen file for reading.\n");
->  			f = file;
-> -			f->f_flags |= FMODE_READ;
-> +			f->f_mode |= FMODE_READ;
->  			modified_flags = true;
+John Haxby (1):
+  x86/fpu: Allow clearcpuid= to clear several bits
 
-The variable should be changed to "modified_mode".
+ .../admin-guide/kernel-parameters.txt         | 24 ++++++++++---------
+ arch/x86/kernel/fpu/init.c                    | 18 ++++++++------
+ 2 files changed, 24 insertions(+), 18 deletions(-)
 
-thanks,
-
-Mimi
-
->  		} else {
->  			new_file_instance = true;
-> @@ -456,7 +456,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
->  	if (new_file_instance)
->  		fput(f);
->  	else if (modified_flags)
-> -		f->f_flags &= ~FMODE_READ;
-> +		f->f_mode &= ~FMODE_READ;
->  	return rc;
->  }
->  
+-- 
+2.25.3
 
