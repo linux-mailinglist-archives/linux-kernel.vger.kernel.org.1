@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037EF1B3E3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489011B3FE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgDVK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
+        id S1731653AbgDVKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:41:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730735AbgDVK0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:26:35 -0400
+        id S1730077AbgDVKUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:20:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 970D62071E;
-        Wed, 22 Apr 2020 10:26:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A85520776;
+        Wed, 22 Apr 2020 10:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551195;
-        bh=14d0vipBRsRPlRsQS2dkebED6wLV/m2MRXuuwhWQ9Mw=;
+        s=default; t=1587550817;
+        bh=SbJ/jaCJ3OrrVtjET4HQ68htaBYLYMg22O0Pj/OIO/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FQNvwXhbjVP1hpv73X8xYr56HpSTRNENhEigDzs4OFZkcxW6fjwN0eOJbCcVyuCJ2
-         13n/Gw9ONF6PKPUIdonnG1CZ02oV15+IkQOYWdij/TFGhBHPy8VeTs9YiKQZBFoadE
-         hooWYa9Rr0cbtWY9ewVU7Gidtp9qpt561lkJT1ZA=
+        b=osnQ7d8PCEuFmesOWVbEQBTbyMf0/yZrOevpk1qMDKAFifEM6UxvIktk3YE3fp40/
+         n7a7MHKZrfIBpIdIlAz7fyfHUBybPbKFDiEfyfyaLsZJKY3DA9kIfV302vKIwEho3w
+         /7Brw20kx8F/jSCa2AfeoerGko5YyM29VZGg3zLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lu Chongzhi <chongzhi.lcz@alibaba-inc.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 139/166] csky: Fixup init_fpu compile warning with __init
+        stable@vger.kernel.org, Simon Goyette <simon.goyette@gmail.com>,
+        =?UTF-8?q?Maxime=20Roussin-B=C3=A9langer?= 
+        <maxime.roussinbelanger@gmail.com>,
+        Guillaume Champagne <champagne.guillaume.c@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 105/118] iio: si1133: read 24-bit signed integer for measurement
 Date:   Wed, 22 Apr 2020 11:57:46 +0200
-Message-Id: <20200422095103.540531498@linuxfoundation.org>
+Message-Id: <20200422095048.371118698@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +46,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+From: Maxime Roussin-Bélanger <maxime.roussinbelanger@gmail.com>
 
-[ Upstream commit 12879bda3c2a974b7e4fe199a9c21f0c5f6bca04 ]
+commit 328b50e9a0ad1fe8accdf8c19923deebab5e0c01 upstream.
 
-WARNING: vmlinux.o(.text+0x2366): Section mismatch in reference from the
-function csky_start_secondary() to the function .init.text:init_fpu()
+The chip is configured in 24 bit mode. The values read from
+it must always be treated as is. This fixes the issue by
+replacing the previous 16 bits value by a 24 bits buffer.
 
-The function csky_start_secondary() references
-the function __init init_fpu().
-This is often because csky_start_secondary lacks a __init
-annotation or the annotation of init_fpu is wrong.
+This changes affects the value output by previous version of
+the driver, since the least significant byte was missing.
+The upper half of 16 bit values previously output are now
+the upper half of a 24 bit value.
 
-Reported-by: Lu Chongzhi <chongzhi.lcz@alibaba-inc.com>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e01e7eaf37d8 ("iio: light: introduce si1133")
+
+Reported-by: Simon Goyette <simon.goyette@gmail.com>
+Co-authored-by: Guillaume Champagne <champagne.guillaume.c@gmail.com>
+Signed-off-by: Maxime Roussin-Bélanger <maxime.roussinbelanger@gmail.com>
+Signed-off-by: Guillaume Champagne <champagne.guillaume.c@gmail.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/csky/abiv2/fpu.c         | 5 -----
- arch/csky/abiv2/inc/abi/fpu.h | 3 ++-
- arch/csky/kernel/smp.c        | 3 +++
- 3 files changed, 5 insertions(+), 6 deletions(-)
+ drivers/iio/light/si1133.c |   37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
-diff --git a/arch/csky/abiv2/fpu.c b/arch/csky/abiv2/fpu.c
-index 86d187d4e5af1..5acc5c2e544e1 100644
---- a/arch/csky/abiv2/fpu.c
-+++ b/arch/csky/abiv2/fpu.c
-@@ -10,11 +10,6 @@
- #define MTCR_DIST	0xC0006420
- #define MFCR_DIST	0xC0006020
- 
--void __init init_fpu(void)
--{
--	mtcr("cr<1, 2>", 0);
--}
--
- /*
-  * fpu_libc_helper() is to help libc to excute:
-  *  - mfcr %a, cr<1, 2>
-diff --git a/arch/csky/abiv2/inc/abi/fpu.h b/arch/csky/abiv2/inc/abi/fpu.h
-index 22ca3cf2794a1..09e2700a36936 100644
---- a/arch/csky/abiv2/inc/abi/fpu.h
-+++ b/arch/csky/abiv2/inc/abi/fpu.h
-@@ -9,7 +9,8 @@
- 
- int fpu_libc_helper(struct pt_regs *regs);
- void fpu_fpe(struct pt_regs *regs);
--void __init init_fpu(void);
+--- a/drivers/iio/light/si1133.c
++++ b/drivers/iio/light/si1133.c
+@@ -102,6 +102,9 @@
+ #define SI1133_INPUT_FRACTION_LOW	15
+ #define SI1133_LUX_OUTPUT_FRACTION	12
+ #define SI1133_LUX_BUFFER_SIZE		9
++#define SI1133_MEASURE_BUFFER_SIZE	3
 +
-+static inline void init_fpu(void) { mtcr("cr<1, 2>", 0); }
++#define SI1133_SIGN_BIT_INDEX 23
  
- void save_to_user_fp(struct user_fp *user_fp);
- void restore_from_user_fp(struct user_fp *user_fp);
-diff --git a/arch/csky/kernel/smp.c b/arch/csky/kernel/smp.c
-index de61feb4b6df2..b5c5bc3afeb5c 100644
---- a/arch/csky/kernel/smp.c
-+++ b/arch/csky/kernel/smp.c
-@@ -22,6 +22,9 @@
- #include <asm/sections.h>
- #include <asm/mmu_context.h>
- #include <asm/pgalloc.h>
-+#ifdef CONFIG_CPU_HAS_FPU
-+#include <abi/fpu.h>
-+#endif
+ static const int si1133_scale_available[] = {
+ 	1, 2, 4, 8, 16, 32, 64, 128};
+@@ -234,13 +237,13 @@ static const struct si1133_lux_coeff lux
+ 	}
+ };
  
- struct ipi_data_struct {
- 	unsigned long bits ____cacheline_aligned;
--- 
-2.20.1
-
+-static int si1133_calculate_polynomial_inner(u32 input, u8 fraction, u16 mag,
++static int si1133_calculate_polynomial_inner(s32 input, u8 fraction, u16 mag,
+ 					     s8 shift)
+ {
+ 	return ((input << fraction) / mag) << shift;
+ }
+ 
+-static int si1133_calculate_output(u32 x, u32 y, u8 x_order, u8 y_order,
++static int si1133_calculate_output(s32 x, s32 y, u8 x_order, u8 y_order,
+ 				   u8 input_fraction, s8 sign,
+ 				   const struct si1133_coeff *coeffs)
+ {
+@@ -276,7 +279,7 @@ static int si1133_calculate_output(u32 x
+  * The algorithm is from:
+  * https://siliconlabs.github.io/Gecko_SDK_Doc/efm32zg/html/si1133_8c_source.html#l00716
+  */
+-static int si1133_calc_polynomial(u32 x, u32 y, u8 input_fraction, u8 num_coeff,
++static int si1133_calc_polynomial(s32 x, s32 y, u8 input_fraction, u8 num_coeff,
+ 				  const struct si1133_coeff *coeffs)
+ {
+ 	u8 x_order, y_order;
+@@ -614,7 +617,7 @@ static int si1133_measure(struct si1133_
+ {
+ 	int err;
+ 
+-	__be16 resp;
++	u8 buffer[SI1133_MEASURE_BUFFER_SIZE];
+ 
+ 	err = si1133_set_adcmux(data, 0, chan->channel);
+ 	if (err)
+@@ -625,12 +628,13 @@ static int si1133_measure(struct si1133_
+ 	if (err)
+ 		return err;
+ 
+-	err = si1133_bulk_read(data, SI1133_REG_HOSTOUT(0), sizeof(resp),
+-			       (u8 *)&resp);
++	err = si1133_bulk_read(data, SI1133_REG_HOSTOUT(0), sizeof(buffer),
++			       buffer);
+ 	if (err)
+ 		return err;
+ 
+-	*val = be16_to_cpu(resp);
++	*val = sign_extend32((buffer[0] << 16) | (buffer[1] << 8) | buffer[2],
++			     SI1133_SIGN_BIT_INDEX);
+ 
+ 	return err;
+ }
+@@ -704,9 +708,9 @@ static int si1133_get_lux(struct si1133_
+ {
+ 	int err;
+ 	int lux;
+-	u32 high_vis;
+-	u32 low_vis;
+-	u32 ir;
++	s32 high_vis;
++	s32 low_vis;
++	s32 ir;
+ 	u8 buffer[SI1133_LUX_BUFFER_SIZE];
+ 
+ 	/* Activate lux channels */
+@@ -719,9 +723,16 @@ static int si1133_get_lux(struct si1133_
+ 	if (err)
+ 		return err;
+ 
+-	high_vis = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
+-	low_vis = (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
+-	ir = (buffer[6] << 16) | (buffer[7] << 8) | buffer[8];
++	high_vis =
++		sign_extend32((buffer[0] << 16) | (buffer[1] << 8) | buffer[2],
++			      SI1133_SIGN_BIT_INDEX);
++
++	low_vis =
++		sign_extend32((buffer[3] << 16) | (buffer[4] << 8) | buffer[5],
++			      SI1133_SIGN_BIT_INDEX);
++
++	ir = sign_extend32((buffer[6] << 16) | (buffer[7] << 8) | buffer[8],
++			   SI1133_SIGN_BIT_INDEX);
+ 
+ 	if (high_vis > SI1133_ADC_THRESHOLD || ir > SI1133_ADC_THRESHOLD)
+ 		lux = si1133_calc_polynomial(high_vis, ir,
 
 
