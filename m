@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B900F1B355F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222C01B3536
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 04:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgDVC6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 22:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726321AbgDVC6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 22:58:48 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EE9C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 19:58:47 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jR5ay-0081rv-85; Wed, 22 Apr 2020 02:58:40 +0000
-Date:   Wed, 22 Apr 2020 03:58:40 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     davem@davemloft.net, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ide: Use memdup_user() as a cleanup
-Message-ID: <20200422025840.GJ23230@ZenIV.linux.org.uk>
-References: <1587524381-120136-1-git-send-email-zou_wei@huawei.com>
+        id S1726424AbgDVCwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 22:52:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52186 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726173AbgDVCwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 22:52:44 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 99E05367F653A2B1F84D;
+        Wed, 22 Apr 2020 10:52:42 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Apr 2020 10:52:36 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <derek.kiernan@xilinx.com>, <dragan.cvetic@xilinx.com>,
+        <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <michal.simek@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] misc: xilinx_sdfec: Use memdup_user() as a cleanup
+Date:   Wed, 22 Apr 2020 10:58:50 +0800
+Message-ID: <1587524330-119776-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587524381-120136-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:59:41AM +0800, Zou Wei wrote:
+Fix coccicheck warning which recommends to use memdup_user().
 
->  	if (taskout) {
->  		int outtotal = tasksize;
-> -		outbuf = kzalloc(taskout, GFP_KERNEL);
-> -		if (outbuf == NULL) {
-> -			err = -ENOMEM;
-> -			goto abort;
-> -		}
-> -		if (copy_from_user(outbuf, buf + outtotal, taskout)) {
-> -			err = -EFAULT;
-> -			goto abort;
-> -		}
-> +		outbuf = memdup_user(buf + outtotal, taskout);
-> +		if (IS_ERR(outbuf))
-> +			return PTR_ERR(outbuf);
->  	}
->  
->  	if (taskin) {
->  		int intotal = tasksize + taskout;
-> -		inbuf = kzalloc(taskin, GFP_KERNEL);
-> -		if (inbuf == NULL) {
-> -			err = -ENOMEM;
-> -			goto abort;
-> -		}
-> -		if (copy_from_user(inbuf, buf + intotal, taskin)) {
-> -			err = -EFAULT;
-> -			goto abort;
-> -		}
-> +		inbuf = memdup_user(buf + intotal, taskin);
-> +		if (IS_ERR(inbuf))
-> +			return PTR_ERR(inbuf);
+This patch fixes the following coccicheck warnings:
 
-That smells like a leak - what happens if both taskin and taskout are
-non-zero at the same time?  <looks>  actually, both parts are leaking -
-there's
-        req_task = memdup_user(buf, tasksize);
-        if (IS_ERR(req_task))
-                return PTR_ERR(req_task);
-shortly prior to that, so both of your failure exits are leaking.
+drivers/misc/xilinx_sdfec.c:652:8-15: WARNING opportunity for memdup_user
+
+Fixes: 20ec628e8007 ("misc: xilinx_sdfec: Add ability to configure LDPC")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/misc/xilinx_sdfec.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
+index 71bbaa5..7a75894 100644
+--- a/drivers/misc/xilinx_sdfec.c
++++ b/drivers/misc/xilinx_sdfec.c
+@@ -649,14 +649,9 @@ static int xsdfec_add_ldpc(struct xsdfec_dev *xsdfec, void __user *arg)
+ 	struct xsdfec_ldpc_params *ldpc;
+ 	int ret, n;
+ 
+-	ldpc = kzalloc(sizeof(*ldpc), GFP_KERNEL);
+-	if (!ldpc)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(ldpc, arg, sizeof(*ldpc))) {
+-		ret = -EFAULT;
+-		goto err_out;
+-	}
++	ldpc = memdup_user(arg, sizeof(*ldpc));
++	if (IS_ERR(ldpc))
++		return PTR_ERR(ldpc);
+ 
+ 	if (xsdfec->config.code == XSDFEC_TURBO_CODE) {
+ 		ret = -EIO;
+-- 
+2.6.2
+
