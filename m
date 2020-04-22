@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC2D1B3FAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23E91B4200
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731542AbgDVKjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:39:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
+        id S1727886AbgDVKDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730195AbgDVKVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:21:19 -0400
+        id S1726442AbgDVKDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:03:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A09B620775;
-        Wed, 22 Apr 2020 10:21:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED33C20774;
+        Wed, 22 Apr 2020 10:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550879;
-        bh=WL3PbyBJMFw8o4KxrC8xipxehGC7bO8H7IF894iaawA=;
+        s=default; t=1587549824;
+        bh=DEhdbPHZQqfPYtJM5It5za6INTguDrtlMdRmDCnIdgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0YVG0KyDL6NkGc83XWZVPJ3EKrMf1qhFSzI2wNh8Rz4SaKNCNXB0QQcLyTZrbcvDo
-         DlNXS+uBMMo381S7QnA/szUPBRlnn/wH/6OB1JPxYziN8tUCUiHdJmM+MLKBFdyIF/
-         PAOEMQYPeELrIvzhoeuVHLX+cD0riSNlvlmBHYsc=
+        b=DmOvUa+1e2fQZPwlEYw3CUTwrl4Tr8h87ayAAP5wcfmM799sqDNjN38g5I1lNREXm
+         aCb/nwWAgQAr6dmItKGhMcyyCeZKavwKcSzs2SW49A3t3FjJFg6un/srSA8yS5p5Cw
+         P6ISIjd9udpUQF8X1zQNz8hxcd7fBQNNhId9EttI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 012/166] ARM: dts: imx6: Use gpc for FEC interrupt controller to fix wake on LAN.
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 022/125] ALSA: hda: Add driver blacklist
 Date:   Wed, 22 Apr 2020 11:55:39 +0200
-Message-Id: <20200422095049.576856427@linuxfoundation.org>
+Message-Id: <20200422095036.870434379@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 4141f1a40fc0789f6fd4330e171e1edf155426aa upstream.
+commit 3c6fd1f07ed03a04debbb9a9d782205f1ef5e2ab upstream.
 
-In order to wake from suspend by ethernet magic packets the GPC
-must be used as intc does not have wakeup functionality.
+The recent AMD platform exposes an HD-audio bus but without any actual
+codecs, which is internally tied with a USB-audio device, supposedly.
+It results in "no codecs" error of HD-audio bus driver, and it's
+nothing but a waste of resources.
 
-But the FEC DT node currently uses interrupt-extended,
-specificying intc, thus breaking WoL.
+This patch introduces a static blacklist table for skipping such a
+known bogus PCI SSID entry.  As of writing this patch, the known SSIDs
+are:
+* 1043:874f - ASUS ROG Zenith II / Strix
+* 1462:cb59 - MSI TRX40 Creator
+* 1462:cb60 - MSI TRX40
 
-This problem is probably fallout from the stacked domain conversion
-as intc used to chain to GPC.
-
-So replace "interrupts-extended" by "interrupts" to use the default
-parent which is GPC.
-
-Fixes: b923ff6af0d5 ("ARM: imx6: convert GPC to stacked domains")
-
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206543
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200408140449.22319-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx6qdl.dtsi |    5 ++---
- arch/arm/boot/dts/imx6qp.dtsi  |    1 -
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_intel.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -1039,9 +1039,8 @@
- 				compatible = "fsl,imx6q-fec";
- 				reg = <0x02188000 0x4000>;
- 				interrupt-names = "int0", "pps";
--				interrupts-extended =
--					<&intc 0 118 IRQ_TYPE_LEVEL_HIGH>,
--					<&intc 0 119 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
-+					     <0 119 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX6QDL_CLK_ENET>,
- 					 <&clks IMX6QDL_CLK_ENET>,
- 					 <&clks IMX6QDL_CLK_ENET_REF>;
---- a/arch/arm/boot/dts/imx6qp.dtsi
-+++ b/arch/arm/boot/dts/imx6qp.dtsi
-@@ -77,7 +77,6 @@
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1971,6 +1971,17 @@ static const struct hdac_io_ops pci_hda_
+ 	.dma_free_pages = dma_free_pages,
  };
  
- &fec {
--	/delete-property/interrupts-extended;
- 	interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>,
- 		     <0 119 IRQ_TYPE_LEVEL_HIGH>;
- };
++/* Blacklist for skipping the whole probe:
++ * some HD-audio PCI entries are exposed without any codecs, and such devices
++ * should be ignored from the beginning.
++ */
++static const struct snd_pci_quirk driver_blacklist[] = {
++	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
++	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
++	{}
++};
++
+ static const struct hda_controller_ops pci_hda_ops = {
+ 	.disable_msi_reset_irq = disable_msi_reset_irq,
+ 	.substream_alloc_pages = substream_alloc_pages,
+@@ -1990,6 +2001,11 @@ static int azx_probe(struct pci_dev *pci
+ 	bool schedule_probe;
+ 	int err;
+ 
++	if (snd_pci_quirk_lookup(pci, driver_blacklist)) {
++		dev_info(&pci->dev, "Skipping the blacklisted device\n");
++		return -ENODEV;
++	}
++
+ 	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+ 	if (!enable[dev]) {
 
 
