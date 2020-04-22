@@ -2,87 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A191B1B3708
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 07:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9E51B370E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 08:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgDVF7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 01:59:31 -0400
-Received: from mx.socionext.com ([202.248.49.38]:9854 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgDVF7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 01:59:31 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 22 Apr 2020 14:59:29 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id B5A5118020B;
-        Wed, 22 Apr 2020 14:59:29 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Wed, 22 Apr 2020 14:59:29 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 85F741A12D0;
-        Wed, 22 Apr 2020 14:59:29 +0900 (JST)
-Received: from [10.213.29.177] (unknown [10.213.29.177])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id D8BC3120133;
-        Wed, 22 Apr 2020 14:59:28 +0900 (JST)
-Subject: Re: [PATCH] PCI: endpoint: functions/pci-epf-test: Avoid DMA release
- when DMA is unsupported
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1584956747-9273-1-git-send-email-hayashi.kunihiko@socionext.com>
- <948ae2b0-825e-4557-7e43-16d95d26e9f4@ti.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <b5501127-826f-78f2-beb2-1b8093c90245@socionext.com>
-Date:   Wed, 22 Apr 2020 14:59:28 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726465AbgDVGAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 02:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgDVGAN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 02:00:13 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2499C03C1A6;
+        Tue, 21 Apr 2020 23:00:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id l19so929148lje.10;
+        Tue, 21 Apr 2020 23:00:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=8wMite28CxNe4/9pqzhlBHCV6MZvYc1qSikiSwQiv+s=;
+        b=kSi3rXHlS6REIAYLmvE16izFWmtg2yznhkkNR+jSrAVpVpS/EDIHGhLV7jZhJe0uwj
+         D7/88+sRDcsEBNGhyXmyNH+7YOCWBhx/eZzFeXUNzOGLdY6IC6qdHeEUkiJHlOB6Gwra
+         GdTuZD7g3je95pfhEfx1JcxdpDXlcWltAR7Ee+ds+OMGi//Z4gcnAMaUhQJC1HGQaph7
+         dEPq5w1vlN7W+VAW4vOb98KOV6oiPUI5JKqf73jjLGpAPNN2U3HEHrKKTljnzZpeXjWo
+         gfPxpjk8DhvWwK0MARq5C1h19h5ndILYWjL9TztT1vktf2Lbes5U1vNWG0GL9xDquEdW
+         uY3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=8wMite28CxNe4/9pqzhlBHCV6MZvYc1qSikiSwQiv+s=;
+        b=RZynelq8v5YKEAPU08MPlQxSajlD+cYdVP3zixvEBc+JUegc5/lDc9UlfhTLKRgtWo
+         v+7H5x/9FMRxAaDe/SB1TxIrY09dAndDZ4kclvwTmfciSgZD+05KjkvubfPudKmW7wZT
+         PQ47GfGYNc9zoFH5wCvOBRpEt6wmhPlMg0Q23O4d8010YCvrMTRrZ+LxoGoZDXQgGCMO
+         1ONe4h3m63PjpaOFxBFwL1hGIxNeOZgUAHlnQf7v+e+NAi0A7l4HlP75ZMxw1mHbTgvX
+         X8PlA2dtDkGl69cxZ15hqzkkahn1YKXFvtzmOH+J8S1rV1VO+BsLFfR4bt41/N8V35cB
+         bqTA==
+X-Gm-Message-State: AGi0PubTsgM3BK7Wq4hf0Q7BNuhSGrQCefXPL77Fg3CxepAlP1YDqPHi
+        UN6iFGrqNJh0vQU+pDPwC/O+E6mo
+X-Google-Smtp-Source: APiQypJBcznuyvynH9gk3++Kig9KC2Xf0zB76ONcidzmQDcyu8/CU3hAkN2qAlcVInW5F6eSQXLjXw==
+X-Received: by 2002:a2e:97d3:: with SMTP id m19mr583425ljj.136.1587535210832;
+        Tue, 21 Apr 2020 23:00:10 -0700 (PDT)
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
+        by smtp.gmail.com with ESMTPSA id u21sm3397040ljo.61.2020.04.21.23.00.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Apr 2020 23:00:09 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Josh Gao <jmgao@google.com>, YongQin Liu <yongqin.liu@linaro.org>,
+        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
+        Yang Fei <fei.yang@intel.com>,
+        Thinh Nguyen <thinhn@synopsys.com>,
+        Tejas Joglekar <tejas.joglekar@synopsys.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: More dwc3 gadget issues with adb
+In-Reply-To: <CALAqxLUdzKRV6nrcLpWsykK+WPnqhUK4iwRe4_Xmo-TvEV5KOg@mail.gmail.com>
+References: <CALAqxLW2R4d=Zm=TKbFprN-uYrerL1oCYsVC3VedEKtW0gCsyA@mail.gmail.com> <877dyfsv00.fsf@kernel.org> <CALAqxLUdzKRV6nrcLpWsykK+WPnqhUK4iwRe4_Xmo-TvEV5KOg@mail.gmail.com>
+Date:   Wed, 22 Apr 2020 09:00:05 +0300
+Message-ID: <87blnkcb6i.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <948ae2b0-825e-4557-7e43-16d95d26e9f4@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 2020/04/22 14:45, Kishon Vijay Abraham I wrote:
-> Hi Kunihiko,
-> 
-> On 3/23/2020 3:15 PM, Kunihiko Hayashi wrote:
->> When unbinding pci_epf_test, pci_epf_test_clean_dma_chan() is called in
->> pci_epf_test_unbind() even though epf_test->dma_supported is false.
->> As a result, dma_release_channel() will occur null pointer access because
->> dma_chan isn't set.
->>
->> This avoids calling dma_release_channel() if epf_test->dma_supported
->> is false.
->>
->> Fixes: a1d105d4ab8e ("PCI: endpoint: functions/pci-epf-test: Add DMA support to transfer data")
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   drivers/pci/endpoint/functions/pci-epf-test.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
->> index 3b4cf7e..8b4f136 100644
->> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
->> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
->> @@ -609,7 +609,8 @@ static void pci_epf_test_unbind(struct pci_epf *epf)
->>   	int bar;
->>   
->>   	cancel_delayed_work(&epf_test->cmd_handler);
->> -	pci_epf_test_clean_dma_chan(epf_test);
->> +	if (epf_test->dma_supported)
->> +		pci_epf_test_clean_dma_chan(epf_test);
-> 
-> Can you add this check inside the pci_epf_test_clean_dma_chan()?
-Okay, I'll move this check to the pci_epf_test_clean_dma_chan().
 
-Thank you,
+Hi,
 
----
-Best Regards
-Kunihiko Hayashi
+John Stultz <john.stultz@linaro.org> writes:
+> On Thu, Apr 16, 2020 at 1:19 AM Felipe Balbi <balbi@kernel.org> wrote:
+>> One thing I noticed is that we're missing a giveback on ep1out. Here's a
+>> working case:
+>>
+>
+> Hey Felipe,
+>   So I found some time to dig around on this today and I started
+> trying to understand this issue that you've pointed out about missing
+> the giveback.
+>
+> It seems part of the issue is we get to a point where we have some req
+> where pending_sgs is more than one.
+>
+> We call dwc3_prepare_one_trb_sg() on it:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/usb/dwc3/gadget.c?h=3Dv5.7-rc2#n1068
+>
+> And we process the sg list incrementing req->num_queued_sgs for each one.
+>
+> then later, dwc3_gadget_ep_cleanup_completed_request() is called on the r=
+equest:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/usb/dwc3/gadget.c?h=3Dv5.7-rc2#n2522
+>
+> We call dwc3_gadget_ep_reclaim_trb_sg()
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/usb/dwc3/gadget.c?h=3Dv5.7-rc2#n2470
+>
+> Where we iterate over the req->sg, ideally decrementing
+> num_pending_sgs each time and return.
+>
+> But back in dwc3_gadget_ep_cleanup_completed_request()  and there
+> we're hitting the:
+>   if (!dwc3_gadget_ep_request_completed(req) ||
+>       req->num_pending_sgs) {
+> case which causes us to skip the call to dwc3_gadget_giveback().
+
+This logic was modified recently. Can you check if today's linus/master
+works for you?
+
+> Looking as to why the num_pending_sgs is non zero, that's because in
+> dwc3_gadget_ep_reclaim_trb_sg we're hitting the case where the trb has
+> the DWC3_TRB_CTRL_HWO ctrl flag set, which breaks us out of the loop
+> early before we decrement num_pending_sgs.
+>
+> For that trb, we're setting the HWO flag in __dwc3_prepare_one_trb()
+> (called from dwc3_prepare_one_trb_sg() back at the beginning):
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/usb/dwc3/gadget.c?h=3Dv5.7-rc2#n921
+>
+> I added logic showing every time we set or clear that flag, and it
+> seems like we're always setting it but never clearing it. And often
+
+HW clears HWO flag. We only have to manually clear in one or two cases.
+
+> that's not an issue as we only have one sg entry. But if its set on a
+> trb in a request with multiple sgs, that's where it seems to be
+> causing the issue.
+
+The issue is completing with HWO set, which should never happen. Can you
+collect tracepoints with linus/master of this particular situation?
+
+>> One interesting thing is that TRB addresses are "odd". I can't find a
+>> proper lifetime for these TRBs. Do you have IOMMU enabled? Can you run
+>> without it? For example, nowhere in the log can I find the place where
+>> trb 0000000092deef41 was first enqueue. I'm assuming the log to be
+>> ordered, which means that trb is the same as 00000000f3db4076. But why
+>> are the addresses different?
+>>
+>> Another weird thing is that even though we CHN bit being set in
+>> 0000000092deef41, we don't see where the second trb (the one its chained
+>> to) was prepared. It seems like it was *never* prepared, what gives?
+>
+> I suspect these bits were due to the tracing happening after some
+> minor amount of initial adb traffic began at bootup? So the trace
+> isn't capturing all the events.
+
+No, no. That's more likely to be IOMMU mucking up the addresses. ADB is
+very sequential in its behavior and USB transfers requests in
+order. Please run linus/master without IOMMU.
+
+cheers
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl6f3WUACgkQzL64meEa
+mQZdyQ//R324qRyXNq8MYvp3qnlSGkCmXCbzy6OKz3lx25FvUYXMBfnCTvfjCJAV
+MuDNe3mqC8EA+ubqORcmFgshfLpLbXZUTkZD40rqbyP7BgN3xtbxwE3wD0ObNe0J
+EY8eY9lwCKkjylTsUQn+3AiRRuxF3RcKPoTwuQOIbuR1MOUltGfgrFhQnGuaITrn
+8CD5q5Ij45LpPUYdFZ+fCB+NQLYoKjau6ATbFUo4vqkxekBQM1CA9+NnYM9nronM
+UwyM1USl7YU9nSWDwr+3pUFgO/Wv3OWe1beVMR+M+jPZ4cm8j/ABld3xnYXK7RsD
+/qKgXslcPGIDefmD+TLXOfw+wzOs0f72yaWWaIaxS/mBeGLiI0bCc1WnXfc+JHGt
+2fpFN9ut6s+l7AdeOVd2Xz+FhmOjSyPMCw3QcYp5EYhku7Ebf+dGzfsSecZ1TYnf
+iwoJOIQCR/Ij2nU07ZCtGXHLpH0XB/RXLu5B6pGCmhkTD0BRHypwHuPtTX4TYrqx
+ncjWl0zT4bRwejoN7nc6IVD5T8AFwceRbY50IigGTjHhjM7TLTt2doDo8bTROnrQ
+XjHzFQXtHtHIHjeSUlBG81XZWFR9yafczP7op//YGPxoATK5bel2L2ZKmlsZ8400
+NHivJbppwKkEWH7zvrGli/1Sg2OFZYueRu+F/BWy2cxpcAI9Eiw=
+=oteR
+-----END PGP SIGNATURE-----
+--=-=-=--
