@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F141B40D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F0B1B3FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgDVKsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49756 "EHLO mail.kernel.org"
+        id S1731623AbgDVKkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729597AbgDVKOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:14:52 -0400
+        id S1730141AbgDVKVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF04B20575;
-        Wed, 22 Apr 2020 10:14:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2D6E2166E;
+        Wed, 22 Apr 2020 10:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550492;
-        bh=k8xYy+LMBvtR9vGrgEP7ljRQZTei9c9KafyXYKHGOAA=;
+        s=default; t=1587550869;
+        bh=Zvt64snqt3uHyzChEK/2HaoW1LghaS7BJDekteEpWdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOcTITFxwuO986jwqY+hFLlUsPvtQbhXuEXyWeierS5l4fNC+zlQuIzjUI3HINsrZ
-         8HEVkZGSGS9BLvqXZCUlfYytQh04MiCrmloWnZo/l69f0q2Plrsv0ZxUdxuBr3KBKY
-         6E5+L72u9YRR8FmNHtwB8M8Pyi7N7nQGoWPao2M4=
+        b=bGwS/o5IWUeH41QoS+JUywQOKy5UV6vAuYBvzR/pZKSAsG76yeJek8VUAm5c/x6PP
+         rjmavHeSPOVEpR2j6ebl57y7b+4KlYwFIeisOuQ0VjWl+gE9ycLj1HWQn2i2LHWDFt
+         z8BOKMILnREzI3tQYl5LMQzESXbPWdBK4ZvXqwuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Long Li <longli@microsoft.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 38/64] cifs: Allocate encryption header through kmalloc
+Subject: [PATCH 5.4 081/118] NFS: Fix memory leaks in nfs_pageio_stop_mirroring()
 Date:   Wed, 22 Apr 2020 11:57:22 +0200
-Message-Id: <20200422095019.806639632@linuxfoundation.org>
+Message-Id: <20200422095044.920778435@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,81 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 3946d0d04bb360acca72db5efe9ae8440012d9dc ]
+[ Upstream commit 862f35c94730c9270833f3ad05bd758a29f204ed ]
 
-When encryption is used, smb2_transform_hdr is defined on the stack and is
-passed to the transport. This doesn't work with RDMA as the buffer needs to
-be DMA'ed.
+If we just set the mirror count to 1 without first clearing out
+the mirrors, we can leak queued up requests.
 
-Fix it by using kmalloc.
-
-Signed-off-by: Long Li <longli@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/transport.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/nfs/pagelist.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/fs/cifs/transport.c b/fs/cifs/transport.c
-index 0c4df56c825ab..70412944b267d 100644
---- a/fs/cifs/transport.c
-+++ b/fs/cifs/transport.c
-@@ -392,7 +392,7 @@ smb_send_rqst(struct TCP_Server_Info *server, int num_rqst,
- 	      struct smb_rqst *rqst, int flags)
- {
- 	struct kvec iov;
--	struct smb2_transform_hdr tr_hdr;
-+	struct smb2_transform_hdr *tr_hdr;
- 	struct smb_rqst cur_rqst[MAX_COMPOUND];
- 	int rc;
- 
-@@ -402,28 +402,34 @@ smb_send_rqst(struct TCP_Server_Info *server, int num_rqst,
- 	if (num_rqst > MAX_COMPOUND - 1)
- 		return -ENOMEM;
- 
--	memset(&cur_rqst[0], 0, sizeof(cur_rqst));
--	memset(&iov, 0, sizeof(iov));
--	memset(&tr_hdr, 0, sizeof(tr_hdr));
--
--	iov.iov_base = &tr_hdr;
--	iov.iov_len = sizeof(tr_hdr);
--	cur_rqst[0].rq_iov = &iov;
--	cur_rqst[0].rq_nvec = 1;
--
- 	if (!server->ops->init_transform_rq) {
- 		cifs_dbg(VFS, "Encryption requested but transform callback "
- 			 "is missing\n");
- 		return -EIO;
- 	}
- 
-+	tr_hdr = kmalloc(sizeof(*tr_hdr), GFP_NOFS);
-+	if (!tr_hdr)
-+		return -ENOMEM;
-+
-+	memset(&cur_rqst[0], 0, sizeof(cur_rqst));
-+	memset(&iov, 0, sizeof(iov));
-+	memset(tr_hdr, 0, sizeof(*tr_hdr));
-+
-+	iov.iov_base = tr_hdr;
-+	iov.iov_len = sizeof(*tr_hdr);
-+	cur_rqst[0].rq_iov = &iov;
-+	cur_rqst[0].rq_nvec = 1;
-+
- 	rc = server->ops->init_transform_rq(server, num_rqst + 1,
- 					    &cur_rqst[0], rqst);
- 	if (rc)
--		return rc;
-+		goto out;
- 
- 	rc = __smb_send_rqst(server, num_rqst + 1, &cur_rqst[0]);
- 	smb3_free_compound_rqst(num_rqst, &cur_rqst[1]);
-+out:
-+	kfree(tr_hdr);
- 	return rc;
+diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
+index 8b7c525dbbf7c..b736912098eee 100644
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -886,15 +886,6 @@ static void nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
+ 	pgio->pg_mirror_count = mirror_count;
  }
  
+-/*
+- * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
+- */
+-void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
+-{
+-	pgio->pg_mirror_count = 1;
+-	pgio->pg_mirror_idx = 0;
+-}
+-
+ static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
+ {
+ 	pgio->pg_mirror_count = 1;
+@@ -1320,6 +1311,14 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
+ 	}
+ }
+ 
++/*
++ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
++ */
++void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
++{
++	nfs_pageio_complete(pgio);
++}
++
+ int __init nfs_init_nfspagecache(void)
+ {
+ 	nfs_page_cachep = kmem_cache_create("nfs_page",
 -- 
 2.20.1
 
