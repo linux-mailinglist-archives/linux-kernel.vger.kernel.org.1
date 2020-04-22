@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EF91B39C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEBD1B39C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgDVIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 04:15:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28968 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725907AbgDVIPj (ORCPT
+        id S1726409AbgDVIOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 04:14:24 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:2390 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgDVIOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 04:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587543337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PXurTIYnOIPkTIWMnh3upHjfMNa21BNU9O3zU5Qjfj0=;
-        b=By00QkCSxFKbNND44Top3PAbY3fOzosCfpEf/f7xKzpUMRw2amHp3HA/dXW+Ie6MM/3TMB
-        owqb+GOCzwXWzVA/+AlmIN49i3MOm9bPjiuAgp07NW6S+3bBXhJ+3Vjxat4dt32RYK2x5b
-        vHDXP9bqnQmdzU5c5LXTah9Pi7mnRjo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-_xbePcN_NFWC_8-A5difIA-1; Wed, 22 Apr 2020 04:15:36 -0400
-X-MC-Unique: _xbePcN_NFWC_8-A5difIA-1
-Received: by mail-wr1-f71.google.com with SMTP id r17so666235wrg.19
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 01:15:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PXurTIYnOIPkTIWMnh3upHjfMNa21BNU9O3zU5Qjfj0=;
-        b=lFmcrpWfKEmyxRqPNvnZNrHQ8f0ETlqjHVJvpLbr6MpqUpLY6Y796Pj6yq8B20yckP
-         ZdaGxcZlMe+9pqviAph3iofpEg7lpTm8sD6Jf7c3lEw+9+t8FU1q1Kt9VoJWrS8IpYAb
-         TBYp/dZlxNCoE2hOP97k8846agrPDonfTy40QoRc8BZS3zoU+wDWQSm4rgdAkUT++AEt
-         /QOgVZ6mOjaRB62SGwyzV59ri+t8zbPq4W1155BzmyI29+KMX6SfOpNauoNhS85KDz0o
-         J+4ATgVHujk+dvJ/216ChVj9udGkHcJBuIzdNGq9zDn3Pioj0DhqdmbjzRd768kC+orY
-         NG/A==
-X-Gm-Message-State: AGi0PuaEzcb/sNumqi77XUWPB/OYaq1ebZV0TPq2tLmqYUwB+nURlqmN
-        dMcchR5qF0CJTaDD9HoAyaxfAQ0AsVjCCfy9uF69EH+ZGWjdznkBGdth9KrD/0/1MQqfzjHShOQ
-        pfkjTiaHJ4NiVvs12yEmtoouJ
-X-Received: by 2002:adf:fecd:: with SMTP id q13mr30110665wrs.12.1587543334596;
-        Wed, 22 Apr 2020 01:15:34 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK8ri1CshnlO1XFFdM+QKzk3a4Kr/Em91ovuJ/P1UV1w2OrtY8Flej8WviighrL8SP4ZX9a6A==
-X-Received: by 2002:adf:fecd:: with SMTP id q13mr30110647wrs.12.1587543334384;
-        Wed, 22 Apr 2020 01:15:34 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id n2sm7933262wrq.74.2020.04.22.01.15.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 01:15:33 -0700 (PDT)
-Subject: Re: [PATCH 1/9] vboxsf: don't use the source name in the bdi name
-To:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200422073851.303714-1-hch@lst.de>
- <20200422073851.303714-2-hch@lst.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2db7b68b-5117-4dab-ce57-6e8011711c23@redhat.com>
-Date:   Wed, 22 Apr 2020 10:15:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 22 Apr 2020 04:14:23 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea5e9ffcc0d7f-02096; Wed, 22 Apr 2020 16:13:53 +0800 (CST)
+X-RM-TRANSID: 2eea5e9ffcc0d7f-02096
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e9ffcbef88-bc4f9;
+        Wed, 22 Apr 2020 16:13:53 +0800 (CST)
+X-RM-TRANSID: 2ee15e9ffcbef88-bc4f9
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] net: phy: Use IS_ERR() to check and simplify code
+Date:   Wed, 22 Apr 2020 16:15:42 +0800
+Message-Id: <20200422081542.8344-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200422073851.303714-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Use IS_ERR() and PTR_ERR() instead of PTR_ZRR_OR_ZERO()
+to simplify code, avoid redundant paramenter definitions
+and judgements.
 
-On 4/22/20 9:38 AM, Christoph Hellwig wrote:
-> Simplify the bdi name to mirror what we are doing elsewhere, and
-> drop them name in favor of just using a number.  This avoids a
-> potentially very long bdi name.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/net/phy/mdio_bus.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Looks good to me:
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 9bb9f37f2..b1114f204 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -42,14 +42,11 @@
+ 
+ static int mdiobus_register_gpiod(struct mdio_device *mdiodev)
+ {
+-	int error;
+-
+ 	/* Deassert the optional reset signal */
+ 	mdiodev->reset_gpio = gpiod_get_optional(&mdiodev->dev,
+ 						 "reset", GPIOD_OUT_LOW);
+-	error = PTR_ERR_OR_ZERO(mdiodev->reset_gpio);
+-	if (error)
+-		return error;
++	if (IS_ERR(mdiodev->reset_gpio))
++		return PTR_ERR(mdiodev->reset_gpio);
+ 
+ 	if (mdiodev->reset_gpio)
+ 		gpiod_set_consumer_name(mdiodev->reset_gpio, "PHY reset");
+-- 
+2.20.1.windows.1
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Regards,
-
-Hans
-
-
-> ---
->   fs/vboxsf/super.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
-> index 675e26989376..8fe03b4a0d2b 100644
-> --- a/fs/vboxsf/super.c
-> +++ b/fs/vboxsf/super.c
-> @@ -164,7 +164,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
->   		goto fail_free;
->   	}
->   
-> -	err = super_setup_bdi_name(sb, "vboxsf-%s.%d", fc->source, sbi->bdi_id);
-> +	err = super_setup_bdi_name(sb, "vboxsf-%d", sbi->bdi_id);
->   	if (err)
->   		goto fail_free;
->   
-> 
 
