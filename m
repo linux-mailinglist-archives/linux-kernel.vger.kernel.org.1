@@ -2,109 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2568D1B48EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310141B48D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgDVPjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:39:22 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2082 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726403AbgDVPjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:39:21 -0400
-Received: from lhreml719-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id B66DEF958287947BB4C1;
-        Wed, 22 Apr 2020 16:39:19 +0100 (IST)
-Received: from fraeml705-chm.china.huawei.com (10.206.15.54) by
- lhreml719-chm.china.huawei.com (10.201.108.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Wed, 22 Apr 2020 16:39:19 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 22 Apr 2020 17:39:18 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Wed, 22 Apr 2020 17:39:18 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: RE: [PATCH 1/5] ima: Set file->f_mode instead of file->f_flags in
- ima_calc_file_hash()
-Thread-Topic: [PATCH 1/5] ima: Set file->f_mode instead of file->f_flags in
- ima_calc_file_hash()
-Thread-Index: AQHWAsBIfWLB8bRS20i6QFRA3R5usKiFFOmAgABdoMA=
-Date:   Wed, 22 Apr 2020 15:39:18 +0000
-Message-ID: <d20f3ea6f2fe425bb8234b1bd5a2f6a9@huawei.com>
-References: <20200325161116.7082-1-roberto.sassu@huawei.com>
- <1587556981.5738.7.camel@linux.ibm.com>
-In-Reply-To: <1587556981.5738.7.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.19.211]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726699AbgDVPgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgDVPgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 11:36:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C02C03C1A9;
+        Wed, 22 Apr 2020 08:36:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b11so2941271wrs.6;
+        Wed, 22 Apr 2020 08:36:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6E0ZwMhEkyIOFS7vsF8aXBJ+5W1xoavdwFkr6dPgnvY=;
+        b=Q1PsnhohiFBFpKKgWU1XNjCS8/QSLVpwLf648QJrZ9zko1pqsTC+ttb8CdT3wAijk9
+         b1ufPO5uRaYRSkEiZVOlUUxk74qhvQ+SVQ0qexFMhZzEB6rPoJD0QWAlOOhL7HJvzr/f
+         9Q+ukWTYEZzN2HD/DtT8IO0mdCmAQH7zo29942pmikD9jVD0/An40u8RzGD0i5qwtrzJ
+         RI4KbSdXqRWXnOLVdfgQ4gzU5P8c+OJC9wL6yU9MfDbP+fFUsYJckO7McwVx/+cB8kn4
+         RY+/Oc4afcNhR46DFI8JguIHT16eqOYBVxFbxRUIGCvqUOFeutuepWMKhh0nS88mB7hq
+         cL1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6E0ZwMhEkyIOFS7vsF8aXBJ+5W1xoavdwFkr6dPgnvY=;
+        b=HRQXvUbPviOsXYvHlKmO3z8FhqVN5xA7FSfhVl8hkUvTyFnTNGjUfKcU2im2Okc0yb
+         yIZWvvU8Q5sE9/skQihdOOeuCC/hZIXRxSbbwh8wGk9zSLqeqLzgKOOHBP8DUX7P8zFn
+         qKr0Il8/jq404Z8k/YfeC9/LsTdqUjv69yRHhLUGvUnscQDhVCx/X1aPvLMCNQuj5+xS
+         5AHUM5xyuANL9w/Z+EeWzMLo/glWMA4AzWRJGIZ7iYlAC/KBIxcAiBp3BK5574169H2b
+         U+CzAwdiKndgRg7/jzbJbLrVbbN6NYF1J0g9FcSYFAJbfA+s9enN9wgon1itXAgYNB4/
+         a4gA==
+X-Gm-Message-State: AGi0PuaZwnB4273qzKEgbYOtrFFak52p/hVUcZviyFuTw6wwZKz7bGH1
+        9ZF1iOVyraKUTFuxP4UIVKsewne15XEF07Rekeg=
+X-Google-Smtp-Source: APiQypKpPY0VOgyPQZ7BLuozETVyOdI/x49oIFbgggidw3KrWQtoSkPJ3pjwfjr6boM9CKLViYhmBLBTpN5RiWODlto=
+X-Received: by 2002:adf:cd0a:: with SMTP id w10mr29732306wrm.404.1587569804501;
+ Wed, 22 Apr 2020 08:36:44 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20200421143149.45108-1-yuehaibing@huawei.com> <20200422093344.GY13121@gauss3.secunet.de>
+ <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
+In-Reply-To: <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Wed, 22 Apr 2020 23:41:37 +0800
+Message-ID: <CADvbK_cEgKCEGRJU1v=FAdFNoh3TzD+cZLiKUtsMLHJh3JqOfg@mail.gmail.com>
+Subject: Re: [PATCH] xfrm: policy: Only use mark as policy lookup key
+To:     Yuehaibing <yuehaibing@huawei.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, kuba@kernel.org,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBsaW51eC1pbnRlZ3JpdHktb3du
-ZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bGludXgtaW50ZWdyaXR5LQ0KPiBvd25lckB2Z2Vy
-Lmtlcm5lbC5vcmddIE9uIEJlaGFsZiBPZiBNaW1pIFpvaGFyDQo+IFNlbnQ6IFdlZG5lc2RheSwg
-QXByaWwgMjIsIDIwMjAgMjowMyBQTQ0KPiBUbzogUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNz
-dUBodWF3ZWkuY29tPg0KPiBDYzogbGludXgtaW50ZWdyaXR5QHZnZXIua2VybmVsLm9yZzsgbGlu
-dXgtc2VjdXJpdHktbW9kdWxlQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZzsgS3J6eXN6dG9mIFN0cnVjenluc2tpDQo+IDxrcnp5c3p0b2Yuc3RydWN6eW5z
-a2lAaHVhd2VpLmNvbT47IFNpbHZpdSBWbGFzY2VhbnUNCj4gPFNpbHZpdS5WbGFzY2VhbnVAaHVh
-d2VpLmNvbT47IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc7IEdvbGR3eW4NCj4gUm9kcmlndWVzIDxy
-Z29sZHd5bkBzdXNlLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzVdIGltYTogU2V0IGZp
-bGUtPmZfbW9kZSBpbnN0ZWFkIG9mIGZpbGUtPmZfZmxhZ3MgaW4NCj4gaW1hX2NhbGNfZmlsZV9o
-YXNoKCkNCj4gDQo+IFtDQydpbmcgR29sZHd5biBSb2RyaWd1ZXNdDQo+IA0KPiBIaSBSb2JlcnRv
-LA0KPiANCj4gT24gV2VkLCAyMDIwLTAzLTI1IGF0IDE3OjExICswMTAwLCBSb2JlcnRvIFNhc3N1
-IHdyb3RlOg0KPiA+IENvbW1pdCBhNDA4ZTRhODZiMzYgKCJpbWE6IG9wZW4gYSBuZXcgZmlsZSBp
-bnN0YW5jZSBpZiBubyByZWFkDQo+ID4gcGVybWlzc2lvbnMiKSB0cmllcyB0byBjcmVhdGUgYSBu
-ZXcgZmlsZSBkZXNjcmlwdG9yIHRvIGNhbGN1bGF0ZSBhIGZpbGUNCj4gPiBkaWdlc3QgaWYgdGhl
-IGZpbGUgaGFzIG5vdCBiZWVuIG9wZW5lZCB3aXRoIE9fUkRPTkxZIGZsYWcuIEhvd2V2ZXIsIGlm
-IGENCj4gPiBuZXcgZmlsZSBkZXNjcmlwdG9yIGNhbm5vdCBiZSBvYnRhaW5lZCwgaXQgc2V0cyB0
-aGUgRk1PREVfUkVBRCBmbGFnIHRvDQo+ID4gZmlsZS0+Zl9mbGFncyBpbnN0ZWFkIG9mIGZpbGUt
-PmZfbW9kZS4NCj4gPg0KPiA+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBpc3N1ZSBieSByZXBsYWNp
-bmcgZl9mbGFncyB3aXRoIGZfbW9kZSBhcyBpdCB3YXMNCj4gPiBiZWZvcmUgdGhhdCBjb21taXQu
-DQo+ID4NCj4gPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZyAjIDQuMjAueA0KPiA+IEZpeGVz
-OiBhNDA4ZTRhODZiMzYgKCJpbWE6IG9wZW4gYSBuZXcgZmlsZSBpbnN0YW5jZSBpZiBubyByZWFk
-DQo+IHBlcm1pc3Npb25zIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBSb2JlcnRvIFNhc3N1IDxyb2Jl
-cnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4gIHNlY3VyaXR5L2ludGVncml0eS9p
-bWEvaW1hX2NyeXB0by5jIHwgNCArKy0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvc2VjdXJpdHkvaW50
-ZWdyaXR5L2ltYS9pbWFfY3J5cHRvLmMNCj4gYi9zZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2ltYV9j
-cnlwdG8uYw0KPiA+IGluZGV4IDQyM2M4NGY5NWExNC4uOGFiMTdhYTg2N2RkIDEwMDY0NA0KPiA+
-IC0tLSBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX2NyeXB0by5jDQo+ID4gKysrIGIvc2Vj
-dXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfY3J5cHRvLmMNCj4gPiBAQCAtNDM2LDcgKzQzNiw3IEBA
-IGludCBpbWFfY2FsY19maWxlX2hhc2goc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdA0KPiBpbWFf
-ZGlnZXN0X2RhdGEgKmhhc2gpDQo+ID4gIAkJCSAqLw0KPiANCj4gVGhhbmtzLCBSb2JlcnRvLiDC
-oFRoZSBjb21tZW50IGFib3ZlIGhlcmUgYW5kIHRoZSByZXN0IG9mIHRoZSBjb2RlDQo+IHJlZmVy
-cyB0byBmbGFncy4gwqBCb3RoIHNob3VsZCBiZSB1cGRhdGVkIGFzIHdlbGwgdG8gcmVmbGVjdCB1
-c2luZw0KPiBmX21vZGUuDQo+IA0KPiA+ICAJCQlwcl9pbmZvX3JhdGVsaW1pdGVkKCJVbmFibGUg
-dG8gcmVvcGVuIGZpbGUgZm9yDQo+IHJlYWRpbmcuXG4iKTsNCj4gPiAgCQkJZiA9IGZpbGU7DQo+
-ID4gLQkJCWYtPmZfZmxhZ3MgfD0gRk1PREVfUkVBRDsNCj4gPiArCQkJZi0+Zl9tb2RlIHw9IEZN
-T0RFX1JFQUQ7DQo+ID4gIAkJCW1vZGlmaWVkX2ZsYWdzID0gdHJ1ZTsNCj4gDQo+IFRoZSB2YXJp
-YWJsZSBzaG91bGQgYmUgY2hhbmdlZCB0byAibW9kaWZpZWRfbW9kZSIuDQoNCk9rLiBJIHdpbGwg
-c2VuZCBhIG5ldyB2ZXJzaW9uIG9mIHRoZSBwYXRjaC4NCg0KVGhhbmtzDQoNClJvYmVydG8NCg0K
-SFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFnaW5n
-IERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkgWWFubGkNCg0KDQo+ID4gIAkJfSBlbHNl
-IHsNCj4gPiAgCQkJbmV3X2ZpbGVfaW5zdGFuY2UgPSB0cnVlOw0KPiA+IEBAIC00NTYsNyArNDU2
-LDcgQEAgaW50IGltYV9jYWxjX2ZpbGVfaGFzaChzdHJ1Y3QgZmlsZSAqZmlsZSwgc3RydWN0DQo+
-IGltYV9kaWdlc3RfZGF0YSAqaGFzaCkNCj4gPiAgCWlmIChuZXdfZmlsZV9pbnN0YW5jZSkNCj4g
-PiAgCQlmcHV0KGYpOw0KPiA+ICAJZWxzZSBpZiAobW9kaWZpZWRfZmxhZ3MpDQo+ID4gLQkJZi0+
-Zl9mbGFncyAmPSB+Rk1PREVfUkVBRDsNCj4gPiArCQlmLT5mX21vZGUgJj0gfkZNT0RFX1JFQUQ7
-DQo+ID4gIAlyZXR1cm4gcmM7DQo+ID4gIH0NCj4gPg0KDQo=
+On Wed, Apr 22, 2020 at 8:18 PM Yuehaibing <yuehaibing@huawei.com> wrote:
+>
+> On 2020/4/22 17:33, Steffen Klassert wrote:
+> > On Tue, Apr 21, 2020 at 10:31:49PM +0800, YueHaibing wrote:
+> >> While update xfrm policy as follow:
+> >>
+> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+> >>  priority 1 mark 0 mask 0x10
+> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+> >>  priority 2 mark 0 mask 0x00
+> >> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
+> >>  priority 2 mark 0 mask 0x10
+> >>
+> >> We get this warning:
+> >>
+> >> WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
+> >> Kernel panic - not syncing: panic_on_warn set ...
+> >> CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
+> >> Call Trace:
+> >> RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
+> >>  xfrm_policy_inexact_insert+0x70/0x330
+> >>  xfrm_policy_insert+0x1df/0x250
+> >>  xfrm_add_policy+0xcc/0x190 [xfrm_user]
+> >>  xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
+> >>  netlink_rcv_skb+0x4c/0x120
+> >>  xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
+> >>  netlink_unicast+0x1b3/0x270
+> >>  netlink_sendmsg+0x350/0x470
+> >>  sock_sendmsg+0x4f/0x60
+> >>
+> >> Policy C and policy A has the same mark.v and mark.m, so policy A is
+> >> matched in first round lookup while updating C. However policy C and
+> >> policy B has same mark and priority, which also leads to matched. So
+> >> the WARN_ON is triggered.
+> >>
+> >> xfrm policy lookup should only be matched when the found policy has the
+> >> same lookup keys (mark.v & mark.m) no matter priority.
+> >>
+> >> Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
+> >> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> >> ---
+> >>  net/xfrm/xfrm_policy.c | 16 +++++-----------
+> >>  1 file changed, 5 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> >> index 297b2fd..67d0469 100644
+> >> --- a/net/xfrm/xfrm_policy.c
+> >> +++ b/net/xfrm/xfrm_policy.c
+> >> @@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
+> >>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+> >>                                 struct xfrm_policy *pol)
+> >>  {
+> >> -    u32 mark = policy->mark.v & policy->mark.m;
+> >> -
+> >> -    if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+> >> -            return true;
+> >> -
+> >> -    if ((mark & pol->mark.m) == pol->mark.v &&
+> >> -        policy->priority == pol->priority)
+> >
+> > If you remove the priority check, you can't insert policies with matching
+> > mark and different priorities anymore. This brings us back the old bug.
+>
+> Yes, this is true.
+>
+> >
+> > I plan to apply the patch from Xin Long, this seems to be the right way
+> > to address this problem.
+>
+> That still brings an issue, update like this:
+>
+> policy A (mark.v = 1, mark.m = 0, priority = 1)
+> policy B (mark.v = 1, mark.m = 0, priority = 1)
+>
+> A and B will all in the list.
+I think this is another issue even before:
+7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and
+different priorities")
+
+>
+> So should do this:
+>
+>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+>                                    struct xfrm_policy *pol)
+>  {
+> -       u32 mark = policy->mark.v & policy->mark.m;
+> -
+> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+> -               return true;
+> -
+> -       if ((mark & pol->mark.m) == pol->mark.v &&
+> +       if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m) &&
+>             policy->priority == pol->priority)
+>                 return true;
+"mark.v & mark.m" looks weird to me, it should be:
+((something & mark.m) == mark.v)
+
+So why should we just do this here?:
+(policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m &&
+ policy->priority == pol->priority)
+
+>
+>
+>
+> >
+> > .
+> >
+>
