@@ -2,69 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74C91B461E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE401B462B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgDVNSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 09:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgDVNSq (ORCPT
+        id S1726422AbgDVNXp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Apr 2020 09:23:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45986 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgDVNXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 09:18:46 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E7AC03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 06:18:44 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l78so2252833qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 06:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=uchh9xZf9elSlIgf8Xxf4XgRxCWvLtd9mt90C/GbGKg=;
-        b=ql2EIoNR+wWfIzQqBbJJMFPRgg1I0z70qU2JcyGqtAgtrsN3U0iw4FYi6X2pU7se/K
-         RAyLat+RwH++zLGUGmwvJK130fMtCjZPMzM6bnPHR09d1U6W0QLEg2TqYoRH8n5ci73a
-         i/zlJs2qlo5eEHz9bcOsasJBkqIoRxjTYi+Nw=
+        Wed, 22 Apr 2020 09:23:45 -0400
+Received: from mail-pl1-f197.google.com ([209.85.214.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jRFJK-0003jN-LO
+        for linux-kernel@vger.kernel.org; Wed, 22 Apr 2020 13:21:06 +0000
+Received: by mail-pl1-f197.google.com with SMTP id 7so1824654ple.19
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 06:21:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=uchh9xZf9elSlIgf8Xxf4XgRxCWvLtd9mt90C/GbGKg=;
-        b=eyMR8hAaVSYmAA3yUtSPGseo4OQ7zgcEPtlILIaEGljElCjtf7PXaZF2ssTo50EsSo
-         EO/17HubEEF4zQ53KqGHfLVGW5aDIaatRr0h4o8OYaQwmHLzhjw+Xh+K9KEvg9N+q7Eo
-         6UOzbZ0QtZ8K6kn35XPwzqvLwPD7CXymeYFsvj+dB8bXt6HhL1CzUjO5msPyaOvJDocm
-         gq7BnRw1tRHB0AubEInpX0l7VHJcdObHC8Zt61XTSQ5KdV8hiOqvQLJUOykA0TibxsG7
-         b/8PYfX4CQgKCNhsanEOxUWdWExiydY4IA32rTh+45hQGi00sd/M1V5pAd2+TTgfxv/+
-         uQ+Q==
-X-Gm-Message-State: AGi0PuYrJqkTGD0GwS2QCKy5hdATw3QOr2dwKGHJU+n/uWB3L04q5OAJ
-        oMmU9yMo+p48OmoMZx/CggrMww==
-X-Google-Smtp-Source: APiQypLAlOSp3e1LCS2yhCsQezJ74j5DgG7VCqGuCgfEutqf61Ct1fSw7UOLdAF4jQoY9VZq2OPb/A==
-X-Received: by 2002:a05:620a:2013:: with SMTP id c19mr26427324qka.162.1587561523779;
-        Wed, 22 Apr 2020 06:18:43 -0700 (PDT)
-Received: from [192.168.1.17] (c-71-62-121-229.hsd1.va.comcast.net. [71.62.121.229])
-        by smtp.gmail.com with ESMTPSA id p202sm3773299qke.120.2020.04.22.06.18.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 06:18:43 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 09:18:41 -0400
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200422103536.GA16263@pc636>
-References: <20200420153837.194532-1-joel@joelfernandes.org> <20200420153837.194532-3-joel@joelfernandes.org> <20200422103536.GA16263@pc636>
-MIME-Version: 1.0
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=T0LMZyTXWoFEf1aVh2cXDeose+ywIML9Nz9WjlzDhZo=;
+        b=aansu3808Zqci7a1w4yJZIy3Z+T4ymA2YkFSom+D4Le91YJUgeBLoodAZRA6ii3vek
+         PE0Ibwk7kYsSYfY83A96I6PuZmk2vgepiMJ4cKESmGNpfbTZgYvgcHe3ipBIRQNZrj1N
+         7Ave67b6pnm7L3VNmFG1R/vna4n64CFSSmSujJZp1yiUnGRd+vAMBYv4dxQESWS7wuZN
+         w1HiE8IrhtL3fiYKOZRU+IMs119OfRiDYRazslHF//TcXz9UJrDe7oQNFrwEdXtP7mZ1
+         0XlXMUZbXJfrp5+EXj17WILNT7fcSF3z+8ay00aQBD955L6kCAlm7Ffrj3G7rqLakc1z
+         APNw==
+X-Gm-Message-State: AGi0PuaWsFFp0qTrutOsXBFpe1TEo0LA8rFRoL7IU6+bbUJYyEWlHdZw
+        wQh6ONcRIkNvbIJh2IxAAWV7zEd/vJWGoBAWGaumVk+Lezpsf952sOJJcUYOhxjWeOs93sbx7HH
+        vjOsM3hLu+CqcaQzYy1+AcXiSNCJn+H2NKxlykMk2/g==
+X-Received: by 2002:a17:902:8a89:: with SMTP id p9mr26137225plo.286.1587561665310;
+        Wed, 22 Apr 2020 06:21:05 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLfA2O6VBk6BTeueKPVTORTPr78NbnZL7Zb6Nrl273jlScDPEo8rwuxAVxViRLC6q6jC2RXNA==
+X-Received: by 2002:a17:902:8a89:: with SMTP id p9mr26137195plo.286.1587561664959;
+        Wed, 22 Apr 2020 06:21:04 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id w66sm5456578pfw.50.2020.04.22.06.21.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 Apr 2020 06:21:04 -0700 (PDT)
 Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH rcu/dev -fixes 2/4] rcu/tree: Skip entry into the page allocator for PREEMPT_RT
-To:     Uladzislau Rezki <urezki@gmail.com>
-CC:     linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-From:   joel@joelfernandes.org
-Message-ID: <51A69C78-FDD4-4A15-8969-EEA17CBA5BBD@joelfernandes.org>
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v2] xhci: Set port link to RxDetect if port is not enabled
+ after resume
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <B4E44BDC-5AFE-4F8A-8498-0EEE9CDAC0E1@canonical.com>
+Date:   Wed, 22 Apr 2020 21:21:01 +0800
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <635B3350-F064-4B45-B194-40F793423049@canonical.com>
+References: <20200311040456.25851-1-kai.heng.feng@canonical.com>
+ <B4E44BDC-5AFE-4F8A-8498-0EEE9CDAC0E1@canonical.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,74 +68,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On April 22, 2020 6:35:36 AM EDT, Uladzislau Rezki <urezki@gmail=2Ecom> wr=
-ote:
->On Mon, Apr 20, 2020 at 11:38:35AM -0400, Joel Fernandes (Google)
->wrote:
->> To keep kfree_rcu() path working on raw non-preemptible sections,
->> prevent the optional entry into the allocator as it uses sleeping
->locks=2E
->> In fact, even if the caller of kfree_rcu() is preemptible, this path
->> still is not, as krcp->lock is a raw spinlock as done in previous
->> patches=2E With additional page pre-allocation in the works, hitting
->this
->> return is going to be much less likely soon so just prevent it for
->now
->> so that PREEMPT_RT does not break=2E Note that page allocation here is
->an
->> optimization and skipping it still makes kfree_rcu() work=2E
->>=20
->> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix=2Ede>
->> Co-developed-by: Uladzislau Rezki <urezki@gmail=2Ecom>
->> Signed-off-by: Uladzislau Rezki <urezki@gmail=2Ecom>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes=2Eorg>
+> On Mar 26, 2020, at 19:33, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+> 
+> Hi Mathias,
+> 
+>> On Mar 11, 2020, at 12:04, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+>> 
+>> On Dell TB16, Realtek USB ethernet (r8152) connects to an SMSC hub which
+>> then connects to ASMedia xHCI's root hub:
+>> 
+>> /:  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 5000M
+>>   |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/7p, 5000M
+>>           |__ Port 2: Dev 3, If 0, Class=Vendor Specific Class, Driver=r8152, 5000M
+>> 
+>> Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+>> Bus 004 Device 002: ID 0424:5537 Standard Microsystems Corp. USB5537B
+>> Bus 004 Device 003: ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Ethernet Adapter
+>> 
+>> The port is disabled after resume:
+>> xhci_hcd 0000:3f:00.0: Get port status 4-1 read: 0x280, return 0x280
+>> 
+>> According to xHCI 4.19.1.2.1, we should set link to RxDetect to transit
+>> it from disabled state to disconnected state, which allows the port to
+>> be set to U0 and completes the resume process.
+>> 
+>> My own test shows port can still resume when it's not enabled, as long
+>> as its link is in U states. So constrain the new logic only when link is
+>> not in any U state.
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> Do you think this is a proper fix?
+
+Another gentle ping...
+
+> 
+> Kai-Heng
+> 
 >> ---
->>  kernel/rcu/tree=2Ec | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>=20
->> diff --git a/kernel/rcu/tree=2Ec b/kernel/rcu/tree=2Ec
->> index cf68d3d9f5b81=2E=2Ecd61649e1b001 100644
->> --- a/kernel/rcu/tree=2Ec
->> +++ b/kernel/rcu/tree=2Ec
->> @@ -3092,6 +3092,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct
->kfree_rcu_cpu *krcp,
->>  		if (!bnode) {
->>  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
->> =20
->> +			/*
->> +			 * To keep this path working on raw non-preemptible
->> +			 * sections, prevent the optional entry into the
->> +			 * allocator as it uses sleeping locks=2E In fact, even
->> +			 * if the caller of kfree_rcu() is preemptible, this
->> +			 * path still is not, as krcp->lock is a raw spinlock=2E
->> +			 * With additional page pre-allocation in the works,
->> +			 * hitting this return is going to be much less likely=2E
->> +			 */
->> +			if (IS_ENABLED(CONFIG_PREEMPT_RT))
->> +				return false;
+>> drivers/usb/host/xhci-hub.c | 8 ++++++++
+>> 1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+>> index a9c87eb8951e..263f9a9237a1 100644
+>> --- a/drivers/usb/host/xhci-hub.c
+>> +++ b/drivers/usb/host/xhci-hub.c
+>> @@ -1776,6 +1776,14 @@ int xhci_bus_resume(struct usb_hcd *hcd)
+>> 			clear_bit(port_index, &bus_state->bus_suspended);
+>> 			continue;
+>> 		}
 >> +
->>  			bnode =3D (struct kfree_rcu_bulk_data *)
->>  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
->>  		}
->This will not be correctly working by just reverting everything to the
->"rcu_head path" for CONFIG_PREEMPT_RT kernel=2E We need to preallocate at
->least once=2E I can add caching on top of this series to address it=2E
->
+>> +		/* 4.19.1.2.1 */
+>> +		if (!(portsc & PORT_PE) && (portsc & PORT_PLS_MASK) > XDEV_U3) {
+>> +			portsc = xhci_port_state_to_neutral(portsc);
+>> +			portsc &= ~PORT_PLS_MASK;
+>> +			portsc |= PORT_LINK_STROBE | XDEV_RXDETECT;
+>> +		}
+>> +
+>> 		/* resume if we suspended the link, and it is still suspended */
+>> 		if (test_bit(port_index, &bus_state->bus_suspended))
+>> 			switch (portsc & PORT_PLS_MASK) {
+>> -- 
+>> 2.17.1
+>> 
+> 
 
-I discussed with Vlad offline, this patch is fine for mainline as we don't=
- have headless support yet=2E So this patch is good=2E Future patches addin=
-g caching will also add the headless support after additional caching, so s=
-kipping the allocation here is ok=2E
-
-Thanks=2E
-
-- Joel
-
-
-
-
->--
->Vlad Rezki
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
