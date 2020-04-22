@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62461B4B2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6827E1B4B3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgDVRBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 13:01:20 -0400
-Received: from verein.lst.de ([213.95.11.211]:53665 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgDVRBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:01:20 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 485BF68C4E; Wed, 22 Apr 2020 19:01:16 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 19:01:16 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: AMD boot woe due to "x86/mm: Cleanup pgprot_4k_2_large() and
- pgprot_large_2_4k()"
-Message-ID: <20200422170116.GA28345@lst.de>
-References: <1ED37D02-125F-4919-861A-371981581D9E@lca.pw>
+        id S1726865AbgDVRDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:03:35 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36313 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726147AbgDVRDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:03:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587575014;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=K+Vw95hzbBrvACE7p1+DGBuatgWYBdD+qziGcMPXbJ0=;
+        b=AxpNiQo8cNoISyIjci7l1IYB8ofUH+5fXJ8zb2Oql6BO1cNCl3lAgIorGo9bIkQ3NfCGc8
+        Eg2skCy+AUHlfDx64m3+tUkp18h2Mbq3y3pubZ6rJOlOUTKHT1sZySD1UklXySw1ByhEN1
+        uvbZQPV9kmxc1so2hb5xVKg0ufkrnr8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-87-HYUCnAmwNdGbaFJx3Q681A-1; Wed, 22 Apr 2020 13:03:28 -0400
+X-MC-Unique: HYUCnAmwNdGbaFJx3Q681A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88DD918B9FC3;
+        Wed, 22 Apr 2020 17:03:26 +0000 (UTC)
+Received: from tucnak.zalov.cz (ovpn-112-104.ams2.redhat.com [10.36.112.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 231BE10190D6;
+        Wed, 22 Apr 2020 17:03:25 +0000 (UTC)
+Received: from tucnak.zalov.cz (localhost [127.0.0.1])
+        by tucnak.zalov.cz (8.15.2/8.15.2) with ESMTP id 03MH3AfF003682;
+        Wed, 22 Apr 2020 19:03:15 +0200
+Received: (from jakub@localhost)
+        by tucnak.zalov.cz (8.15.2/8.15.2/Submit) id 03MH2pcI003681;
+        Wed, 22 Apr 2020 19:02:51 +0200
+Date:   Wed, 22 Apr 2020 19:02:51 +0200
+From:   Jakub Jelinek <jakub@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Matz <matz@suse.de>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v2] x86: fix early boot crash on gcc-10
+Message-ID: <20200422170251.GQ2424@tucnak>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <CAKwvOdmNwNwa6rMC27-QZq8VDrYdTQeQqss-bAwF1EMmnAHxdw@mail.gmail.com>
+ <20200417190607.GY2424@tucnak>
+ <CAKwvOdkkbWgWmNthq5KijCdtatM9PEAaCknaq8US9w4qaDuwug@mail.gmail.com>
+ <alpine.LSU.2.21.2004201401120.11688@wotan.suse.de>
+ <20200422102309.GA26846@zn.tnic>
+ <20200422114007.GC20730@hirez.programming.kicks-ass.net>
+ <20200422134924.GB26846@zn.tnic>
+ <20200422135531.GM2424@tucnak>
+ <20a91f2e-0f25-8dba-e441-3233cc1ef398@suse.cz>
+ <20200422165339.GE26846@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ED37D02-125F-4919-861A-371981581D9E@lca.pw>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200422165339.GE26846@zn.tnic>
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Wed, Apr 22, 2020 at 11:55:54AM -0400, Qian Cai wrote:
-> Reverted the linux-next commit and its dependency,
+On Wed, Apr 22, 2020 at 06:53:39PM +0200, Borislav Petkov wrote:
+> > $ cat asm-detect.c
+> > int foo(int a);
+> > int bar(int a)
+> > {
+> >   int r = foo(a);
+> >   asm ("");
+> >   return r;
+> > }
+> > 
+> > $ gcc -O2 -c asm-detect.c -S -o/dev/stdout | grep jmp
+> > [no output]
 > 
-> a85573f7e741 ("x86/mm: Unexport __cachemode2pte_tbl”)
-> 9e294786c89a (“x86/mm: Cleanup pgprot_4k_2_large() and pgprot_large_2_4k()”)
-> 
-> fixed crashes or hard reset on AMD machines during boot that have been flagged by
-> KASAN in different forms indicating some sort of memory corruption with this config,
+> That is a good test to run at the beginning of the compilation I guess.
 
-Interesting.  Your config seems to boot fine in my VM until the point
-where the lack of virtio-blk support stops it from mounting the root
-file system.
+If it is x86 specific, it can work, though I'd suggest -o - instead of
+-o/dev/stdout and being more picky on where you want to match the jmp,
+as you don't want to match it in comments, or say filenames in the asm file
+etc.  E.g. require that jmp must be preceeded on the line only by whitespace
+and followed by whitespace.
 
-Looking at the patch I found one bug, although that should not affect
-your config (it should use the pgprotval_t type), and one difference
-that could affect code generation, although I prefer the new version
-(use of __pgprot vs a local variable + pgprot_val()).
+	Jakub
 
-Two patches attached, can you try them?
-
---LQksG6bCIzRHxTLp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-x86-Use-pgprotval_t-in-protval_4k_2_large-and-pgprot.patch"
-
-From 71829ed28a4f3d616382e7a362d501eb9ea7dc13 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 22 Apr 2020 18:53:08 +0200
-Subject: x86: Use pgprotval_t in protval_4k_2_large and pgprot_4k_2_large
-
-Use the proper type for "raw" page table values.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/include/asm/pgtable_types.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 567abdbd64d3..7b6ddcf77d70 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -478,7 +478,7 @@ static inline pteval_t pte_flags(pte_t pte)
- 
- unsigned long cachemode2protval(enum page_cache_mode pcm);
- 
--static inline unsigned long protval_4k_2_large(unsigned long val)
-+static inline pgprotval_t protval_4k_2_large(pgprotval_t val)
- {
- 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
- 		((val & _PAGE_PAT) << (_PAGE_BIT_PAT_LARGE - _PAGE_BIT_PAT));
-@@ -487,7 +487,7 @@ static inline pgprot_t pgprot_4k_2_large(pgprot_t pgprot)
- {
- 	return __pgprot(protval_4k_2_large(pgprot_val(pgprot)));
- }
--static inline unsigned long protval_large_2_4k(unsigned long val)
-+static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
- {
- 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
- 		((val & _PAGE_PAT_LARGE) >>
--- 
-2.26.1
-
-
---LQksG6bCIzRHxTLp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0002-foo.patch"
-
-From e5a6c2e84accad3d528c5c90c74071d10079db9a Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 22 Apr 2020 18:54:45 +0200
-Subject: foo
-
----
- arch/x86/include/asm/pgtable_types.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 7b6ddcf77d70..c6d4725269bb 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -485,7 +485,10 @@ static inline pgprotval_t protval_4k_2_large(pgprotval_t val)
- }
- static inline pgprot_t pgprot_4k_2_large(pgprot_t pgprot)
- {
--	return __pgprot(protval_4k_2_large(pgprot_val(pgprot)));
-+	pgprot_t new;
-+
-+	pgprot_val(new) = protval_4k_2_large(pgprot_val(pgprot));
-+	return new;
- }
- static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
- {
-@@ -495,9 +498,11 @@ static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
- }
- static inline pgprot_t pgprot_large_2_4k(pgprot_t pgprot)
- {
--	return __pgprot(protval_large_2_4k(pgprot_val(pgprot)));
--}
-+	pgprot_t new;
- 
-+	pgprot_val(new) = protval_large_2_4k(pgprot_val(pgprot));
-+	return new;
-+}
- 
- typedef struct page *pgtable_t;
- 
--- 
-2.26.1
-
-
---LQksG6bCIzRHxTLp--
