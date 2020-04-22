@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39141B3929
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287681B3934
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 09:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgDVHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 03:39:42 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:46499 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgDVHjW (ORCPT
+        id S1726424AbgDVHkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 03:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726110AbgDVHkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:39:22 -0400
-Received: by mail-lj1-f193.google.com with SMTP id f18so1151656lja.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:39:20 -0700 (PDT)
+        Wed, 22 Apr 2020 03:40:41 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1707BC03C1A6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:40:41 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id v38so399940qvf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 00:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ikk0dQhyFpwnAVzmiYRwmj+JonOTl74dqJfYXMk90xI=;
+        b=MzfB+ou4iSfP5dGvECieDS9Qg0EXAWdTbXCbdZLMF5zLkna1zUEVjfLYTyXFs+N02F
+         XJ5I8uLIqEFwvfXvw6BSKEYKcPqxMGFOs33HL61tmO+S0gfoFeue+7E/7Ov8sBv2rUQF
+         GPatoNGcopgIFcYssgUfwmysEDXEUX/DLIuIWUEphMI8fNLNK6KwOYRDWqctr30RKTvi
+         Bl086By8QVGYMYV4FZSQXZR74tfuP4EL3L1IFm3GwVLIzYs/BqlZ1ATA+ENDd4navY4A
+         gSvED2WRlDCaJs0K4kZHsgT/fssUbob2DLi7NJSqGZC+AwhEcb4yHGz9DxM57kv6OlcF
+         qn+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zGscgFhHY8NA5eLH18mLgSeKi3UH/pOfcnI3ew9ER3A=;
-        b=LTdBPo+UXdRaITqG5Ufpr8qWbGVNho+r5Cs04xRFFoF44M5ro4YdPEvumdv29bwCng
-         HrmOLSsOpSkEJASvXC5L/G/La7JgPxs0LI5ZuEScomJOET2GGLH/7nzTSY+ceIXcR7xe
-         l3IKzgh6nLnJV8OrZ48W+bdCNBMqtX7ebDy/qsZdeFuSkO5qBjkh4dYqF2Z8iLCmVLi4
-         idgGS0Q2NKpganmNhd5yj9w0p41QNvMg+voAgFJmlelA4d2rrq35bNXDdyyleiJ4qfCp
-         0q8ictgrf5GdL/rNEqq+OGqnSgKlmryXzc9WcCS02N7LR6Da3I2GYOjjbpiAJE1t4/+v
-         0cMw==
-X-Gm-Message-State: AGi0PuauoMeUwsiYfNNIBo7p6OkCr5XFDI+uvSfCozIpdMpnoaCbxIL5
-        NOpXVbg2ofGocyN+lY1QG60=
-X-Google-Smtp-Source: APiQypIWNRK6TM2V8ljdse8PMIAgIHZiWJMGIEyTkzRsZ5cMuTWF0RbKwMKM5IuTT4LyTzJJQN8rUA==
-X-Received: by 2002:a2e:b8c1:: with SMTP id s1mr16023319ljp.0.1587541160045;
-        Wed, 22 Apr 2020 00:39:20 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id g6sm1382667ljj.78.2020.04.22.00.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 00:39:19 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.92.3)
-        (envelope-from <johan@kernel.org>)
-        id 1jR9yg-0003oZ-88; Wed, 22 Apr 2020 09:39:26 +0200
-Date:   Wed, 22 Apr 2020 09:39:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     zenyu@tuta.io
-Cc:     Johan <johan@kernel.org>, Elder <elder@kernel.org>,
-        Gregkh <gregkh@linuxfoundation.org>,
-        Greybus Dev <greybus-dev@lists.linaro.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] greybus: fix typos in GREYBUS/GREYBUS_ES2 help text
-Message-ID: <20200422073926.GI18608@localhost>
-References: <M4O-2uM----2@tuta.io>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ikk0dQhyFpwnAVzmiYRwmj+JonOTl74dqJfYXMk90xI=;
+        b=E8EKZlsf/ig8r6hJnULZcnTvDP42Oe1GCY7smxXnhQhwP5eV+bowM8p07LD/oXDLch
+         +QeubBdnvQBEq4zm3Pss8DQQztB6yuLdhbWY+FhHKIpCZi/9xFe/WH+RTe+5G7101bbE
+         nkIcYH768gs6AsFkjacrCdZcfLMy3MWNJNpsI0oJPJ3EBgHjcimV+fmf8PBtD+8TkL6s
+         9jlD//SOBJmiXQ3yNN8wfGPYOrhwj9V4ePG1CPrHwzB5SzDcex5vn99iEjiuXHRXGE9G
+         osV2ZP19GZe3kdUrpAvrtBn5Iq/ozZ0tdG5KepMh1WKXkjPyGeGE2aUV5KN1Ais0eRlR
+         QTjA==
+X-Gm-Message-State: AGi0PuaffDZnJ+Lki7I6xgPyfJH7zwY2jNvpHzlll9L4gjTeX8Lh7Ie0
+        rMakpr2fq3r3hrL/RhDhpy9SaCKdPU6uGkC7z9U=
+X-Google-Smtp-Source: APiQypKU451lMNB3ed5dMLHj/7iehwfMZhGAanJvgkwaF9PIbZlpgAXC2qvOOoOkyoZdgH9Z2Wv9zYrYXjFPAFmRDxA=
+X-Received: by 2002:a05:6214:1248:: with SMTP id q8mr23924825qvv.66.1587541240162;
+ Wed, 22 Apr 2020 00:40:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <M4O-2uM----2@tuta.io>
+References: <1587369582-3882-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1587369582-3882-2-git-send-email-iamjoonsoo.kim@lge.com> <20200421090005.GA23085@infradead.org>
+In-Reply-To: <20200421090005.GA23085@infradead.org>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Wed, 22 Apr 2020 16:40:29 +0900
+Message-ID: <CAAmzW4MQaZ8CRHtNEyFstuSwD_LwYa24WJGs93sP__Mr3+=eog@mail.gmail.com>
+Subject: Re: [PATCH 01/10] mm/page-flags: introduce PageHighMemZone()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Laura Abbott <labbott@redhat.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 10:55:22AM +0200, zenyu@tuta.io wrote:
-> From: Zenyu Sy <zenyu@tuta.io>
-> 
-> Fix typos ("an" -> "a", "chose" -> "choose") in Kconfig
-> 
-> Signed-off-by: Zenyu Sy <zenyu@tuta.io>
+2020=EB=85=84 4=EC=9B=94 21=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 6:00, C=
+hristoph Hellwig <hch@infradead.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> I don't think the names are very good.  I'd keep PageHighMem for the
+> existing highmem zone, and add something like PageDirectMapped or
+> similar for ay page that has a valid direct mapping address.  This will
+> also come in handy if we plan to go ahead with the xpfo work.
 
-This patch is white-space damaged and does not apply. Please fix and
-verify your setup by mailing the patch to yourself and try to apply it
-(and/or run checkpatch.pl on it).
+For PageHighMem(), as mentioned in patch description, my next plan is
+to rename PageHighMem() that checks valid direct mapping to
+PageNoDirectMapped() or something else. PageDirectMapped() looks better.
+Reason that rename isn't implemented in this patchset is that I'd like to r=
+ename
+after everything is settle down.
 
-And since this one supersedes your first patch you should have added a
-version number to the subject line ("[PATCH v2]") and a short changelog
-below the --- line.
+For PageHighMemZone(), I think that it serves correct meaning.
 
-The spelling fixes look good otherwise.
-
-Thanks,
-Johan
+Thanks.
