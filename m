@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170FF1B3CAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DDA1B40DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgDVKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:07:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
+        id S1732052AbgDVKsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726770AbgDVKH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:07:28 -0400
+        id S1728259AbgDVKO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:14:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A7A120575;
-        Wed, 22 Apr 2020 10:07:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE2A62071E;
+        Wed, 22 Apr 2020 10:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550047;
-        bh=9WyvV04rLgQ0yebrNVGdbfNtGMFSfW1avJLli87N90Y=;
+        s=default; t=1587550465;
+        bh=c3tDbP3kjZMereB6y5jCbrX1IZryCnz0sMYCtncHOyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k7D/Rkn2Hh8ONzX/nJZrTwPGcNOlOke2s1IQwbwxD62YLbMs9+Hoq6RtJ2/e22Jhz
-         +heBf2FnyTE7Pvz47VOvA+acQjf0jzPeEJ8hmtHB9h4oBMfNlukDR1qxQBn31kZcKp
-         0+ddeJwoOkcmTK41aGCImvy2c4GvC6YbM4yS+BP4=
+        b=z9O/RbfA2qQhwUGIlGL7lVEm0+chH/XPHQSbFJzlSV1w3AbqjtEvnq79Gxu6j08sK
+         syR5JDbKL1mGbc7N5FdG4LxGgGqxkFzuAxTeoJfk4kG0TBaUyMmXv50rHeLYg0lWmY
+         E43fABCuWoURiL5QLf+LtvLB0ppvXaYtgUBLTV0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 114/125] ext2: fix empty body warnings when -Wextra is used
-Date:   Wed, 22 Apr 2020 11:57:11 +0200
-Message-Id: <20200422095051.098698584@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/64] clk: tegra: Fix Tegra PMC clock out parents
+Date:   Wed, 22 Apr 2020 11:57:12 +0200
+Message-Id: <20200422095018.029209976@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-[ Upstream commit 44a52022e7f15cbaab957df1c14f7a4f527ef7cf ]
+[ Upstream commit 6fe38aa8cac3a5db38154331742835a4d9740788 ]
 
-When EXT2_ATTR_DEBUG is not defined, modify the 2 debug macros
-to use the no_printk() macro instead of <nothing>.
-This fixes gcc warnings when -Wextra is used:
+Tegra PMC clocks clk_out_1, clk_out_2, and clk_out_3 supported parents
+are osc, osc_div2, osc_div4 and extern clock.
 
-../fs/ext2/xattr.c:252:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:258:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:330:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:872:45: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+Clock driver is using incorrect parents clk_m, clk_m_div2, clk_m_div4
+for PMC clocks.
 
-I have verified that the only object code change (with gcc 7.5.0) is
-the reversal of some instructions from 'cmp a,b' to 'cmp b,a'.
+This patch fixes this.
 
-Link: https://lore.kernel.org/r/e18a7395-61fb-2093-18e8-ed4f8cf56248@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/clk/tegra/clk-tegra-pmc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index babef30d440b1..a54037df2c8a8 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -55,6 +55,7 @@
+diff --git a/drivers/clk/tegra/clk-tegra-pmc.c b/drivers/clk/tegra/clk-tegra-pmc.c
+index a35579a3f884f..476dab494c44d 100644
+--- a/drivers/clk/tegra/clk-tegra-pmc.c
++++ b/drivers/clk/tegra/clk-tegra-pmc.c
+@@ -60,16 +60,16 @@ struct pmc_clk_init_data {
  
- #include <linux/buffer_head.h>
- #include <linux/init.h>
-+#include <linux/printk.h>
- #include <linux/slab.h>
- #include <linux/mbcache.h>
- #include <linux/quotaops.h>
-@@ -83,8 +84,8 @@
- 		printk("\n"); \
- 	} while (0)
- #else
--# define ea_idebug(f...)
--# define ea_bdebug(f...)
-+# define ea_idebug(inode, f...)	no_printk(f)
-+# define ea_bdebug(bh, f...)	no_printk(f)
- #endif
+ static DEFINE_SPINLOCK(clk_out_lock);
  
- static int ext2_xattr_set2(struct inode *, struct buffer_head *,
+-static const char *clk_out1_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern1",
++static const char *clk_out1_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern1",
+ };
+ 
+-static const char *clk_out2_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern2",
++static const char *clk_out2_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern2",
+ };
+ 
+-static const char *clk_out3_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern3",
++static const char *clk_out3_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern3",
+ };
+ 
+ static struct pmc_clk_init_data pmc_clks[] = {
 -- 
 2.20.1
 
