@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2449E1B427B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3511B3C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732024AbgDVLBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 07:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49330 "EHLO mail.kernel.org"
+        id S1726896AbgDVKFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:05:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726742AbgDVKBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:10 -0400
+        id S1728205AbgDVKFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:05:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D73020776;
-        Wed, 22 Apr 2020 10:01:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 941D72084D;
+        Wed, 22 Apr 2020 10:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549669;
-        bh=G4im9AdlOXfDKoQn1m8PR/bnrn+ah8nqq88MXdYNarU=;
+        s=default; t=1587549938;
+        bh=tLkQTUfr1Qq0auEeh7aiDCOZwq+IyDJN4FBlWtG9zl4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bf8DHVrr718GP4sYb3VhAFk/fAKBoa6KQRWew2dJPiStFkhuc/y4RqzD31ManH4kF
-         MO/GjBq23CI0aEATmiHde7+2Rqqg5WZJZiilblMChrxlE6fuwo+gJXM50SxlGeNNhu
-         6pgA6hfBDAUK4NiETsMATquIFdR+RZ/CFtSbQDzo=
+        b=nWxcmmxDAaQFYrKpOh3vu/EEgeP7iMT8h6kEf67dd+1dx+FZ+BTE0yqs/oFx51bmb
+         SSn58EKywJ7hFmDTA/kuQhCDx2bAdZDdLokmZnEAu5GjFOCJxVZdN5agVw6ZeUz8qK
+         2atvzZbySHLwrQ6HAo/tSqYxxwci8YznKlhKxT1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
+        stable@vger.kernel.org, Tim Stallard <code@timstallard.me.uk>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 056/100] net: ipv4: devinet: Fix crash when add/del multicast IP with autojoin
+Subject: [PATCH 4.9 069/125] net: ipv6: do not consider routes via gateways for anycast address check
 Date:   Wed, 22 Apr 2020 11:56:26 +0200
-Message-Id: <20200422095033.205387451@linuxfoundation.org>
+Message-Id: <20200422095044.455399481@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,100 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taras Chornyi <taras.chornyi@plvision.eu>
+From: Tim Stallard <code@timstallard.me.uk>
 
-[ Upstream commit 690cc86321eb9bcee371710252742fb16fe96824 ]
+[ Upstream commit 03e2a984b6165621f287fadf5f4b5cd8b58dcaba ]
 
-When CONFIG_IP_MULTICAST is not set and multicast ip is added to the device
-with autojoin flag or when multicast ip is deleted kernel will crash.
+The behaviour for what is considered an anycast address changed in
+commit 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after
+encountering pmtu exception"). This now considers the first
+address in a subnet where there is a route via a gateway
+to be an anycast address.
 
-steps to reproduce:
+This breaks path MTU discovery and traceroutes when a host in a
+remote network uses the address at the start of a prefix
+(eg 2600:: advertised as 2600::/48 in the DFZ) as ICMP errors
+will not be sent to anycast addresses.
 
-ip addr add 224.0.0.0/32 dev eth0
-ip addr del 224.0.0.0/32 dev eth0
+This patch excludes any routes with a gateway, or via point to
+point links, like the behaviour previously from
+rt6_is_gw_or_nonexthop in net/ipv6/route.c.
 
-or
+This can be tested with:
+ip link add v1 type veth peer name v2
+ip netns add test
+ip netns exec test ip link set lo up
+ip link set v2 netns test
+ip link set v1 up
+ip netns exec test ip link set v2 up
+ip addr add 2001:db8::1/64 dev v1 nodad
+ip addr add 2001:db8:100:: dev lo nodad
+ip netns exec test ip addr add 2001:db8::2/64 dev v2 nodad
+ip netns exec test ip route add unreachable 2001:db8:1::1
+ip netns exec test ip route add 2001:db8:100::/64 via 2001:db8::1
+ip netns exec test sysctl net.ipv6.conf.all.forwarding=1
+ip route add 2001:db8:1::1 via 2001:db8::2
+ping -I 2001:db8::1 2001:db8:1::1 -c1
+ping -I 2001:db8:100:: 2001:db8:1::1 -c1
+ip addr delete 2001:db8:100:: dev lo
+ip netns delete test
 
-ip addr add 224.0.0.0/32 dev eth0 autojoin
+Currently the first ping will get back a destination unreachable ICMP
+error, but the second will never get a response, with "icmp6_send:
+acast source" logged. After this patch, both get destination
+unreachable ICMP replies.
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000088
- pc : _raw_write_lock_irqsave+0x1e0/0x2ac
- lr : lock_sock_nested+0x1c/0x60
- Call trace:
-  _raw_write_lock_irqsave+0x1e0/0x2ac
-  lock_sock_nested+0x1c/0x60
-  ip_mc_config.isra.28+0x50/0xe0
-  inet_rtm_deladdr+0x1a8/0x1f0
-  rtnetlink_rcv_msg+0x120/0x350
-  netlink_rcv_skb+0x58/0x120
-  rtnetlink_rcv+0x14/0x20
-  netlink_unicast+0x1b8/0x270
-  netlink_sendmsg+0x1a0/0x3b0
-  ____sys_sendmsg+0x248/0x290
-  ___sys_sendmsg+0x80/0xc0
-  __sys_sendmsg+0x68/0xc0
-  __arm64_sys_sendmsg+0x20/0x30
-  el0_svc_common.constprop.2+0x88/0x150
-  do_el0_svc+0x20/0x80
- el0_sync_handler+0x118/0x190
-  el0_sync+0x140/0x180
-
-Fixes: 93a714d6b53d ("multicast: Extend ip address command to enable multicast group join/leave on")
-Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Fixes: 45e4fd26683c ("ipv6: Only create RTF_CACHE routes after encountering pmtu exception")
+Signed-off-by: Tim Stallard <code@timstallard.me.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/devinet.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ include/net/ip6_route.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -560,12 +560,15 @@ struct in_ifaddr *inet_ifa_byprefix(stru
- 	return NULL;
+--- a/include/net/ip6_route.h
++++ b/include/net/ip6_route.h
+@@ -195,6 +195,7 @@ static inline bool ipv6_anycast_destinat
+ 
+ 	return rt->rt6i_flags & RTF_ANYCAST ||
+ 		(rt->rt6i_dst.plen != 128 &&
++		 !(rt->rt6i_flags & (RTF_GATEWAY | RTF_NONEXTHOP)) &&
+ 		 ipv6_addr_equal(&rt->rt6i_dst.addr, daddr));
  }
  
--static int ip_mc_config(struct sock *sk, bool join, const struct in_ifaddr *ifa)
-+static int ip_mc_autojoin_config(struct net *net, bool join,
-+				 const struct in_ifaddr *ifa)
- {
-+#if defined(CONFIG_IP_MULTICAST)
- 	struct ip_mreqn mreq = {
- 		.imr_multiaddr.s_addr = ifa->ifa_address,
- 		.imr_ifindex = ifa->ifa_dev->dev->ifindex,
- 	};
-+	struct sock *sk = net->ipv4.mc_autojoin_sk;
- 	int ret;
- 
- 	ASSERT_RTNL();
-@@ -578,6 +581,9 @@ static int ip_mc_config(struct sock *sk,
- 	release_sock(sk);
- 
- 	return ret;
-+#else
-+	return -EOPNOTSUPP;
-+#endif
- }
- 
- static int inet_rtm_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh)
-@@ -617,7 +623,7 @@ static int inet_rtm_deladdr(struct sk_bu
- 			continue;
- 
- 		if (ipv4_is_multicast(ifa->ifa_address))
--			ip_mc_config(net->ipv4.mc_autojoin_sk, false, ifa);
-+			ip_mc_autojoin_config(net, false, ifa);
- 		__inet_del_ifa(in_dev, ifap, 1, nlh, NETLINK_CB(skb).portid);
- 		return 0;
- 	}
-@@ -873,8 +879,7 @@ static int inet_rtm_newaddr(struct sk_bu
- 		 */
- 		set_ifa_lifetime(ifa, valid_lft, prefered_lft);
- 		if (ifa->ifa_flags & IFA_F_MCAUTOJOIN) {
--			int ret = ip_mc_config(net->ipv4.mc_autojoin_sk,
--					       true, ifa);
-+			int ret = ip_mc_autojoin_config(net, true, ifa);
- 
- 			if (ret < 0) {
- 				inet_free_ifa(ifa);
 
 
