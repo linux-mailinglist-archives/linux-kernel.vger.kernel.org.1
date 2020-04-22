@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A391B3DBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71921B3F3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729900AbgDVKR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:17:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52890 "EHLO mail.kernel.org"
+        id S1731049AbgDVKgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:36:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbgDVKQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:56 -0400
+        id S1730291AbgDVKXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49AAD20780;
-        Wed, 22 Apr 2020 10:16:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BD122076E;
+        Wed, 22 Apr 2020 10:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550615;
-        bh=kSl5n1X0fqhL9UVctp/VXku8rEYPoENccDyZLyn7bqQ=;
+        s=default; t=1587550995;
+        bh=LvKT9IZJFoDqch09JWfp7jN4pO1lzW0qd658CKnycSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LqOy8fmt6FDG8rfJL+Fry4kmN9Bu5jcUJQZzmNQxsdjQd3kV9asG6OvUAu8opSd1s
-         RoHxWPMHzywZMgUP3cZEIg31q8R+XPSlfcbjsl8cIOKsK/i3uoj2o4GYvf7y1MhY0W
-         6bU4Zz1CAcaMB/AiPV56WRwiJ/6aUUBGnLpgOivg=
+        b=EYJCNGj+s1I+uHjC+AWZ+K2ZTIZRto9GZGSjMoUR29ixYlEc/v1rBGuR5j0oty/HK
+         mpPsAx4BsTentRoB/vzjvlKIpuWtPuDi8pbqX45PZ86NzYCZ8CZGsLwKuCKBO5SaW8
+         ERBY04nShwZmOBM0rLry7ZHkMtlhKf7ruj6Syrms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.4 023/118] x86/Hyper-V: Report crash data in die() when panic_on_oops is set
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 057/166] memory: tegra: Correct debugfs clk rate-range on Tegra124
 Date:   Wed, 22 Apr 2020 11:56:24 +0200
-Message-Id: <20200422095035.568397912@linuxfoundation.org>
+Message-Id: <20200422095055.015947514@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit f3a99e761efa616028b255b4de58e9b5b87c5545 upstream.
+[ Upstream commit 141267bffd1dc19a76e4d50e3e4829f85a806875 ]
 
-When oops happens with panic_on_oops unset, the oops
-thread is killed by die() and system continues to run.
-In such case, guest should not report crash register
-data to host since system still runs. Check panic_on_oops
-and return directly in hyperv_report_panic() when the function
-is called in the die() and panic_on_oops is unset. Fix it.
+Correctly set clk rate-range if number of available timings is zero.
+This fixes noisy "invalid range [4294967295, 0]" error messages during
+boot.
 
-Fixes: 7ed4325a44ea ("Drivers: hv: vmbus: Make panic reporting to be more useful")
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Link: https://lore.kernel.org/r/20200406155331.2105-7-Tianyu.Lan@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 6b9acd935546 ("memory: tegra: Refashion EMC debugfs interface on Tegra124")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c      |    6 +++++-
- drivers/hv/vmbus_drv.c         |    5 +++--
- include/asm-generic/mshyperv.h |    2 +-
- 3 files changed, 9 insertions(+), 4 deletions(-)
+ drivers/memory/tegra/tegra124-emc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -19,6 +19,7 @@
- #include <linux/mm.h>
- #include <linux/hyperv.h>
- #include <linux/slab.h>
-+#include <linux/kernel.h>
- #include <linux/cpuhotplug.h>
- #include <clocksource/hyperv_timer.h>
- 
-@@ -354,11 +355,14 @@ void hyperv_cleanup(void)
- }
- EXPORT_SYMBOL_GPL(hyperv_cleanup);
- 
--void hyperv_report_panic(struct pt_regs *regs, long err)
-+void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die)
- {
- 	static bool panic_reported;
- 	u64 guest_id;
- 
-+	if (in_die && !panic_on_oops)
-+		return;
-+
- 	/*
- 	 * We prefer to report panic on 'die' chain as we have proper
- 	 * registers to report, but if we miss it (e.g. on BUG()) we need
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -31,6 +31,7 @@
- #include <linux/kdebug.h>
- #include <linux/efi.h>
- #include <linux/random.h>
-+#include <linux/kernel.h>
- #include <linux/syscore_ops.h>
- #include <clocksource/hyperv_timer.h>
- #include "hyperv_vmbus.h"
-@@ -75,7 +76,7 @@ static int hyperv_panic_event(struct not
- 	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE
- 	    && hyperv_report_reg()) {
- 		regs = current_pt_regs();
--		hyperv_report_panic(regs, val);
-+		hyperv_report_panic(regs, val, false);
+diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
+index 21f05240682b8..33b8216bac30c 100644
+--- a/drivers/memory/tegra/tegra124-emc.c
++++ b/drivers/memory/tegra/tegra124-emc.c
+@@ -1158,6 +1158,11 @@ static void emc_debugfs_init(struct device *dev, struct tegra_emc *emc)
+ 			emc->debugfs.max_rate = emc->timings[i].rate;
  	}
- 	return NOTIFY_DONE;
- }
-@@ -92,7 +93,7 @@ static int hyperv_die_event(struct notif
- 	 * the notification here.
- 	 */
- 	if (hyperv_report_reg())
--		hyperv_report_panic(regs, val);
-+		hyperv_report_panic(regs, val, true);
- 	return NOTIFY_DONE;
- }
  
---- a/include/asm-generic/mshyperv.h
-+++ b/include/asm-generic/mshyperv.h
-@@ -163,7 +163,7 @@ static inline int cpumask_to_vpset(struc
- 	return nr_bank;
- }
- 
--void hyperv_report_panic(struct pt_regs *regs, long err);
-+void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die);
- void hyperv_report_panic_msg(phys_addr_t pa, size_t size);
- bool hv_is_hyperv_initialized(void);
- void hyperv_cleanup(void);
++	if (!emc->num_timings) {
++		emc->debugfs.min_rate = clk_get_rate(emc->clk);
++		emc->debugfs.max_rate = emc->debugfs.min_rate;
++	}
++
+ 	err = clk_set_rate_range(emc->clk, emc->debugfs.min_rate,
+ 				 emc->debugfs.max_rate);
+ 	if (err < 0) {
+-- 
+2.20.1
+
 
 
