@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304B41B3D01
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248531B3F58
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgDVKKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40054 "EHLO mail.kernel.org"
+        id S1730275AbgDVKXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgDVKK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:26 -0400
+        id S1729431AbgDVKVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D6592070B;
-        Wed, 22 Apr 2020 10:10:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FE5720781;
+        Wed, 22 Apr 2020 10:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550226;
-        bh=MPttC5wXtR7BefjcAZ3LylgLYLtku1sJI3+nLqHtGaE=;
+        s=default; t=1587550893;
+        bh=VEd9/hHSI2LM9QifGfHozkesULLQcwBlXWnlKyhmCus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F1+g5E0OhfEQLN8G3XbkBHyv6/shg6MwKg9eMByXVgTOlt6J/29DpaymasVV+cRZY
-         uYc1Sd1gO/QfwJUbmVNSgzDEy/7Npsh4PONXNGcFTB4DuQTOFqpax/EJE5ROGngX7/
-         v/cJPQN2u/fJtkjlo740131eCgAJp3BpPhIhIYOA=
+        b=ncn9ducF6fPJAF3x0VeLd5UMjoKSBd9IDj7keIeZVmbNeN9g7VwM1AjEETi6zWQLV
+         zAFC29NPTuYnIH1RmbZzcivRyVDNUP21uBQje68a1hPwR3Vxj13MjarliKggAs9Xw8
+         kX+epsPsJqNPQUa1//5eg5JAvdrwblkDc9PQ5pcE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 019/199] x86/boot: Use unsigned comparison for addresses
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jason Dillaman <dillaman@redhat.com>
+Subject: [PATCH 5.6 018/166] rbd: dont test rbd_dev->opts in rbd_dev_image_release()
 Date:   Wed, 22 Apr 2020 11:55:45 +0200
-Message-Id: <20200422095100.130213510@linuxfoundation.org>
+Message-Id: <20200422095050.379977098@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-[ Upstream commit 81a34892c2c7c809f9c4e22c5ac936ae673fb9a2 ]
+commit b8776051529230f76e464d5ffc5d1cf8465576bf upstream.
 
-The load address is compared with LOAD_PHYSICAL_ADDR using a signed
-comparison currently (using jge instruction).
+rbd_dev->opts is used to distinguish between the image that is being
+mapped and a parent.  However, because we no longer establish watch for
+read-only mappings, this test is imprecise and results in unnecessary
+rbd_unregister_watch() calls.
 
-When loading a 64-bit kernel using the new efi32_pe_entry() point added by:
+Make it consistent with need_watch in rbd_dev_image_probe().
 
-  97aa276579b2 ("efi/x86: Add true mixed mode entry point into .compat section")
+Fixes: b9ef2b8858a0 ("rbd: don't establish watch for read-only mappings")
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reviewed-by: Jason Dillaman <dillaman@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-using Qemu with -m 3072, the firmware actually loads us above 2Gb,
-resulting in a very early crash.
-
-Use the JAE instruction to perform a unsigned comparison instead, as physical
-addresses should be considered unsigned.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200301230436.2246909-6-nivedita@alum.mit.edu
-Link: https://lore.kernel.org/r/20200308080859.21568-14-ardb@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/compressed/head_32.S | 2 +-
- arch/x86/boot/compressed/head_64.S | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/block/rbd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
-index 37380c0d59996..01d628ea34024 100644
---- a/arch/x86/boot/compressed/head_32.S
-+++ b/arch/x86/boot/compressed/head_32.S
-@@ -106,7 +106,7 @@ ENTRY(startup_32)
- 	notl	%eax
- 	andl    %eax, %ebx
- 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
--	jge	1f
-+	jae	1f
- #endif
- 	movl	$LOAD_PHYSICAL_ADDR, %ebx
- 1:
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 39fdede523f21..a25127916e679 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -105,7 +105,7 @@ ENTRY(startup_32)
- 	notl	%eax
- 	andl	%eax, %ebx
- 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
--	jge	1f
-+	jae	1f
- #endif
- 	movl	$LOAD_PHYSICAL_ADDR, %ebx
- 1:
-@@ -280,7 +280,7 @@ ENTRY(startup_64)
- 	notq	%rax
- 	andq	%rax, %rbp
- 	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
--	jge	1f
-+	jae	1f
- #endif
- 	movq	$LOAD_PHYSICAL_ADDR, %rbp
- 1:
--- 
-2.20.1
-
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -6955,7 +6955,7 @@ static void rbd_print_dne(struct rbd_dev
+ 
+ static void rbd_dev_image_release(struct rbd_device *rbd_dev)
+ {
+-	if (rbd_dev->opts)
++	if (!rbd_is_ro(rbd_dev))
+ 		rbd_unregister_watch(rbd_dev);
+ 
+ 	rbd_dev_unprobe(rbd_dev);
 
 
