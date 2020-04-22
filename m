@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9631B3F1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FDF1B3EF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgDVKee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        id S1730928AbgDVKdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730402AbgDVKYO (ORCPT
+        with ESMTP id S1730497AbgDVKZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:24:14 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343B1C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:24:13 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d184so843642pfd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:24:13 -0700 (PDT)
+        Wed, 22 Apr 2020 06:25:07 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1C1C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:25:07 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id v8so4569552wma.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=xkeWLnteJjG54BboMmCRycKnKz+ymn9qqeCn2SIVyPQ=;
-        b=SU01xAPQmFHWruDWFN1SqvstGsdj+QtEI2l+t4wN7c4jgMkL/L/wsL03ySzyuQIxdq
-         T0Ioo5gzkx8Vod0lKiA65OS5kWldrL8Q6G5FI9UlLcTmBDqbVhu478J6FU4I8FNL9FGY
-         /9DU9UBHZRgdxvLgcfDf2MTd1FBckvpItjbac=
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=knCP+aW8Y5W/PEzN9s6sK2CQNm77tzBl1PV89WdKtO8=;
+        b=HSWxiMXMmyQS4oSTX9w7RsB9TQfw8MQXxMJYukgHAavi2y+mFGugiOpVIQO0wAzWgD
+         dC8EYYHRBD69HWWWiUKJaZaLavOGSYiVS8HdMjCbqgJRyOgzJR0fIjaLaMS6CXplCUJD
+         HVWMDwOvpolQ6wXQe4IbWRp0m+sWByb3EWA9Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=xkeWLnteJjG54BboMmCRycKnKz+ymn9qqeCn2SIVyPQ=;
-        b=NOVhG7kscO3mifRV9xr3lZ3BmkVG94mSt9Ea/D33SbJSqeJ4nCmFE2s5YJkbqf1qEi
-         ykB4JrYDnf32xwt/FXwLAH+Duy6+LZSSTHyzsV2pzeQ9F8qsBRYC5yijn++YWt6EH0Be
-         rFCwAjqmknrgAViSk1wQfZxsasGXlMfHJqJMtTMvH+D96nBOau7dx/5Wc/fUEp0ClBLW
-         veaOHnYsqm7rOpavJ+rJO9QsSi+8Cx8zkVp1qzZIB7ArIG0MGhuRUMaKYdnqGiRq+ovO
-         qtLfDWjTMyUrJ6VJODm16jaZ/ksgfNhOCa2W4LRkkHeBA64tDY0gWLNlDHxKaWl//5na
-         91ZQ==
-X-Gm-Message-State: AGi0PubPorL0HdfWI1KG9TxvAw+uzM6lAbONPusCHyxujYZJu5b3qXXD
-        MguPdF0toOZeTFNaZ6YdJEN0yg==
-X-Google-Smtp-Source: APiQypLBY8yUOpSkusa0a8k0gnufQC44Y4aGlSsuT2v9ocxchD8HZri/OWeKDQvYCLZNlWUEX5ugEA==
-X-Received: by 2002:a62:ed10:: with SMTP id u16mr26724966pfh.16.1587551052739;
-        Wed, 22 Apr 2020 03:24:12 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id a2sm5066746pja.44.2020.04.22.03.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 03:24:12 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=knCP+aW8Y5W/PEzN9s6sK2CQNm77tzBl1PV89WdKtO8=;
+        b=Z1twk+lyg+Gs8vtjwzbqgzJ4QAwn+c8W+RFqUmU+WA3SedpeEgPcGW23i6wfEKoWbL
+         /58zdhp52F7fGqu0oHFPhz/Gx0AhtoxWFyffFr/V8BiNT6u3ptWnPTXoBhZdfKXjS23h
+         oCpRjLDdp0xRBZqX4lYXwPDEcnnlmM+EKEgBtWO3pZ49VJ8q5aYBinZB9glbFAwgDkI7
+         q+iQ1AvpiGxWoP8sE6H5U2618Q4YpkOoI4QsILFDg6S/hhjAlQk0MkJCN9QYjAxRoEDD
+         sE1zCONMWCW2q+znuCbBl5O7PZ+RP/QdVQftLt/2wEB5t9eTE97Dtq+FpzhbGJvqlSIC
+         IhQw==
+X-Gm-Message-State: AGi0PuYiaM3V/WYP450yw1yXvVEoWKMmPwCTNKXnV7xnHn9K8K9Kmn/I
+        b2ExDaRtFX33i/53qlw1AdwNUQ==
+X-Google-Smtp-Source: APiQypJGosHQPF1ZsovGLZqXng+4NqAXsZZT0+x9rW0B7ixde2wymhQ4VWtJizufYNWp9iDN0SsCkg==
+X-Received: by 2002:a1c:e284:: with SMTP id z126mr10265956wmg.32.1587551105770;
+        Wed, 22 Apr 2020 03:25:05 -0700 (PDT)
+Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
+        by smtp.gmail.com with ESMTPSA id g69sm7524299wmg.17.2020.04.22.03.25.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Apr 2020 03:25:05 -0700 (PDT)
+Subject: Re: [PATCH v4 08/11] READ_ONCE: Drop pointer qualifiers when reading
+ from scalar types
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org, kernel-team@android.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20200421151537.19241-1-will@kernel.org>
+ <20200421151537.19241-9-will@kernel.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <6cbc8ae1-8eb1-a5a0-a584-2081fca1c4aa@rasmusvillemoes.dk>
+Date:   Wed, 22 Apr 2020 12:25:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200420220458.v2.2.I1976736b400a3b30e46efa47782248b86b3bc627@changeid>
-References: <20200421050622.8113-1-dianders@chromium.org> <20200420220458.v2.2.I1976736b400a3b30e46efa47782248b86b3bc627@changeid>
-Subject: Re: [PATCH v2 2/6] dt-bindings: display: Add hpd-gpios to panel-common bindings
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     jonas@kwiboo.se, jeffrey.l.hugo@gmail.com,
-        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        jernej.skrabec@siol.net, bjorn.andersson@linaro.org,
-        robdclark@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        airlied@linux.ie, bgolaszewski@baylibre.com, daniel@ffwll.ch,
-        linus.walleij@linaro.org, narmstrong@baylibre.com,
-        robh+dt@kernel.org, spanda@codeaurora.org
-Date:   Wed, 22 Apr 2020 03:24:11 -0700
-Message-ID: <158755105124.159702.6095634958147138337@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200421151537.19241-9-will@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-04-20 22:06:18)
-> In the cases where there is no connector in a system there's no great
-> place to put "hpd-gpios".  As per discussion [1] the best place to put
-> it is in the panel.  Add this to the device tree bindings.
->=20
-> [1] https://lore.kernel.org/r/20200417180819.GE5861@pendragon.ideasonboar=
-d.com
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On 21/04/2020 17.15, Will Deacon wrote:
+> Passing a volatile-qualified pointer to READ_ONCE() is an absolute
+> trainwreck for code generation: the use of 'typeof()' to define a
+> temporary variable inside the macro means that the final evaluation in
+> macro scope ends up forcing a read back from the stack. When stack
+> protector is enabled (the default for arm64, at least), this causes
+> the compiler to vomit up all sorts of junk.
+> 
+> Unfortunately, dropping pointer qualifiers inside the macro poses quite
+> a challenge, especially since the pointed-to type is permitted to be an
+> aggregate, and this is relied upon by mm/ code accessing things like
+> 'pmd_t'. Based on numerous hacks and discussions on the mailing list,
+> this is the best I've managed to come up with.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Hm, maybe this can be brought to work, only very lightly tested. It
+basically abuses what -Wignored-qualifiers points out:
+
+  warning: type qualifiers ignored on function return type
+
+Example showing the idea:
+
+const int c(void);
+volatile int v(void);
+
+int hack(int x, int y)
+{
+	typeof(c()) a = x;
+	typeof(v()) b = y;
+
+	a += b;
+	b += a;
+	a += b;
+	return a;
+}
+
+Since that compiles, a cannot be const-qualified, and the generated code
+certainly suggests that b is not volatile-qualified. So something like
+
+#define unqual_type(x) _unqual_type(x, unique_id_dance)
+#define _unqual_type(x, id) typeof( ({
+  typeof(x) id(void);
+  id();
+}) )
+
+and perhaps some _Pragma("GCC diagnostic push")/_Pragma("GCC diagnostic
+ignored -Wignored-qualifiers")/_Pragma("GCC diagnostic pop") could
+prevent the warning (which is in -Wextra, so I don't think it would
+appear in a normal build anyway).
+
+No idea how well any of this would work across gcc versions or with clang.
+
+Rasmus
