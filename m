@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BEF1B3CD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6D71B3BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728823AbgDVKJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35316 "EHLO mail.kernel.org"
+        id S1726830AbgDVKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:01:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728779AbgDVKJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:09:04 -0400
+        id S1726799AbgDVKB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:01:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6D6E20575;
-        Wed, 22 Apr 2020 10:09:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C2C32077D;
+        Wed, 22 Apr 2020 10:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550143;
-        bh=GI1A56xH4jtV1mwRDVoGAjyG1Z0mT8Hvjl9lGEaovbM=;
+        s=default; t=1587549686;
+        bh=Q1oyFjKzbrGphP40si7zC/EVZ5glG1t3TqYutsH/IvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eWhshX/QMjFgPlhoh0vVftVa/edy7GcAIj4h3UKuNG57lrBU13bi2VCDZf+cRUpJ+
-         ej4tc5y058Ro8VA0C/OCRnsweUkaYOtvCjI6upUWNfAQehA00gY9F6EvKK79ehzrtS
-         qIjknJAVjnI4e4Ita3O3lrJzo3G9LOxxh91WLOE4=
+        b=1edt9nyrwc+BTCfZYrm0BFeX1jXtc3VPGvDPnAvy/gwwxNidQwFHOvR1+7gl/airc
+         XV8oyTiCBBWvD43EvwYQynDGIN5/IId1jPWCxv8vK8mDxaqdgO/vTJl3opzT9GP5TW
+         2DFKtBkenQc7H2Z6eVyxO7Hies6ExFCLML55/JWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 027/199] btrfs: remove a BUG_ON() from merge_reloc_roots()
-Date:   Wed, 22 Apr 2020 11:55:53 +0200
-Message-Id: <20200422095100.822614077@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Jari Ruusu <jari.ruusu@gmail.com>
+Subject: [PATCH 4.4 024/100] ALSA: pcm: oss: Fix regression by buffer overflow fix
+Date:   Wed, 22 Apr 2020 11:55:54 +0200
+Message-Id: <20200422095027.091141598@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +43,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 7b7b74315b24dc064bc1c683659061c3d48f8668 ]
+commit ae769d3556644888c964635179ef192995f40793 upstream.
 
-This was pretty subtle, we default to reloc roots having 0 root refs, so
-if we crash in the middle of the relocation they can just be deleted.
-If we successfully complete the relocation operations we'll set our root
-refs to 1 in prepare_to_merge() and then go on to merge_reloc_roots().
+The recent fix for the OOB access in PCM OSS plugins (commit
+f2ecf903ef06: "ALSA: pcm: oss: Avoid plugin buffer overflow") caused a
+regression on OSS applications.  The patch introduced the size check
+in client and slave size calculations to limit to each plugin's buffer
+size, but I overlooked that some code paths call those without
+allocating the buffer but just for estimation.
 
-At prepare_to_merge() time if any of the reloc roots have a 0 reference
-still, we will remove that reloc root from our reloc root rb tree, and
-then clean it up later.
+This patch fixes the bug by skipping the size check for those code
+paths while keeping checking in the actual transfer calls.
 
-However this only happens if we successfully start a transaction.  If
-we've aborted previously we will skip this step completely, and only
-have reloc roots with a reference count of 0, but were never properly
-removed from the reloc control's rb tree.
+Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+Tested-and-reported-by: Jari Ruusu <jari.ruusu@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200403072515.25539-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This isn't a problem per-se, our references are held by the list the
-reloc roots are on, and by the original root the reloc root belongs to.
-If we end up in this situation all the reloc roots will be added to the
-dirty_reloc_list, and then properly dropped at that point.  The reloc
-control will be free'd and the rb tree is no longer used.
-
-There were two options when fixing this, one was to remove the BUG_ON(),
-the other was to make prepare_to_merge() handle the case where we
-couldn't start a trans handle.
-
-IMO this is the cleaner solution.  I started with handling the error in
-prepare_to_merge(), but it turned out super ugly.  And in the end this
-BUG_ON() simply doesn't matter, the cleanup was happening properly, we
-were just panicing because this BUG_ON() only matters in the success
-case.  So I've opted to just remove it and add a comment where it was.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ sound/core/oss/pcm_plugin.c |   32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index d4c00edd16d2b..42f388ed0796b 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2480,7 +2480,21 @@ out:
- 			free_reloc_roots(&reloc_roots);
- 	}
- 
--	BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
-+	/*
-+	 * We used to have
-+	 *
-+	 * BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root));
-+	 *
-+	 * here, but it's wrong.  If we fail to start the transaction in
-+	 * prepare_to_merge() we will have only 0 ref reloc roots, none of which
-+	 * have actually been removed from the reloc_root_tree rb tree.  This is
-+	 * fine because we're bailing here, and we hold a reference on the root
-+	 * for the list that holds it, so these roots will be cleaned up when we
-+	 * do the reloc_dirty_list afterwards.  Meanwhile the root->reloc_root
-+	 * will be cleaned up on unmount.
-+	 *
-+	 * The remaining nodes will be cleaned up by free_reloc_control.
-+	 */
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -196,7 +196,9 @@ int snd_pcm_plugin_free(struct snd_pcm_p
+ 	return 0;
  }
  
- static void free_block_list(struct rb_root *blocks)
--- 
-2.20.1
-
+-snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t drv_frames)
++static snd_pcm_sframes_t plug_client_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t drv_frames,
++					  bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	int stream;
+@@ -209,7 +211,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+@@ -222,7 +224,7 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 			plugin_next = plugin->next;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
+-			if (drv_frames > plugin->buf_frames)
++			if (check_size && drv_frames > plugin->buf_frames)
+ 				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+@@ -231,7 +233,9 @@ snd_pcm_sframes_t snd_pcm_plug_client_si
+ 	return drv_frames;
+ }
+ 
+-snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pcm_uframes_t clt_frames)
++static snd_pcm_sframes_t plug_slave_size(struct snd_pcm_substream *plug,
++					 snd_pcm_uframes_t clt_frames,
++					 bool check_size)
+ {
+ 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
+ 	snd_pcm_sframes_t frames;
+@@ -252,14 +256,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 				if (frames < 0)
+ 					return frames;
+ 			}
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
+ 		}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
+-			if (frames > plugin->buf_frames)
++			if (check_size && frames > plugin->buf_frames)
+ 				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+@@ -274,6 +278,18 @@ snd_pcm_sframes_t snd_pcm_plug_slave_siz
+ 	return frames;
+ }
+ 
++snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *plug,
++					   snd_pcm_uframes_t drv_frames)
++{
++	return plug_client_size(plug, drv_frames, false);
++}
++
++snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug,
++					  snd_pcm_uframes_t clt_frames)
++{
++	return plug_slave_size(plug, clt_frames, false);
++}
++
+ static int snd_pcm_plug_formats(struct snd_mask *mask, snd_pcm_format_t format)
+ {
+ 	struct snd_mask formats = *mask;
+@@ -628,7 +644,7 @@ snd_pcm_sframes_t snd_pcm_plug_write_tra
+ 		src_channels = dst_channels;
+ 		plugin = next;
+ 	}
+-	return snd_pcm_plug_client_size(plug, frames);
++	return plug_client_size(plug, frames, true);
+ }
+ 
+ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, struct snd_pcm_plugin_channel *dst_channels_final, snd_pcm_uframes_t size)
+@@ -638,7 +654,7 @@ snd_pcm_sframes_t snd_pcm_plug_read_tran
+ 	snd_pcm_sframes_t frames = size;
+ 	int err;
+ 
+-	frames = snd_pcm_plug_slave_size(plug, frames);
++	frames = plug_slave_size(plug, frames, true);
+ 	if (frames < 0)
+ 		return frames;
+ 
 
 
