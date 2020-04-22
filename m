@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215481B424F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 13:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75071B3F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732328AbgDVK7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51444 "EHLO mail.kernel.org"
+        id S1731053AbgDVKfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:35:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726976AbgDVKCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:25 -0400
+        id S1730355AbgDVKXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:23:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70DC320735;
-        Wed, 22 Apr 2020 10:02:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBD482076B;
+        Wed, 22 Apr 2020 10:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549744;
-        bh=ScWLb8mRR7jm4C5T3zAXxSlgdj/RuvgLpLJQNPZYf4Q=;
+        s=default; t=1587551017;
+        bh=VyOZnvDN6v7p/4EWitshi6AaubiDqI05pzbnVO4r8mA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UfMOPkzhSJ26lq9HkHiTLKDy48qJdHv7crjd4aBN3MVOfeiI2jZ9ZF9GS3ef1H2Em
-         5KJTeHp3icIL4DABTw0Y82MY1RrkZuG/NJq5d6K+xPShz/wewxF0EYLY2aNbgWMLTX
-         32QMx+gWuHjldf6e1P7iXIu7PEo5S0xEiG+8GcMg=
+        b=UltxrXb/Si+Mf9aSmJubONQvwQgstDGrO/Lpn4Qj+rh2VnpDbJfNHCKs3tOT2mqNZ
+         bEKqJYNo80XljeWpci718vHnRR/Gh/3PFRODiFQCIOXlFxQ8h9YFq557gCGHZURKpm
+         kSVM8+N5V7SUut18ioTz9tjgUkLaInrQgGVR1G1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 062/100] ASoC: Intel: mrfld: fix incorrect check on p->sink
+        stable@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 065/166] arm64: dts: marvell: espressobin: add ethernet alias
 Date:   Wed, 22 Apr 2020 11:56:32 +0200
-Message-Id: <20200422095034.208086465@linuxfoundation.org>
+Message-Id: <20200422095055.844059869@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Tomasz Maciej Nowak <tmn505@gmail.com>
 
-commit f5e056e1e46fcbb5f74ce560792aeb7d57ce79e6 upstream.
+[ Upstream commit 5253cb8c00a6f4356760efb38bca0e0393aa06de ]
 
-The check on p->sink looks bogus, I believe it should be p->source
-since the following code blocks are related to p->source. Fix
-this by replacing p->sink with p->source.
+The maker of this board and its variants, stores MAC address in U-Boot
+environment. Add alias for bootloader to recognise, to which ethernet
+node inject the factory MAC address.
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Copy-paste error")
-Link: https://lore.kernel.org/r/20191119113640.166940-1-colin.king@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1318,7 +1318,7 @@ int sst_send_pipe_gains(struct snd_soc_d
- 				dai->capture_widget->name);
- 		w = dai->capture_widget;
- 		snd_soc_dapm_widget_for_each_source_path(w, p) {
--			if (p->connected && !p->connected(w, p->sink))
-+			if (p->connected && !p->connected(w, p->source))
- 				continue;
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+index 53b8ac55a7f3d..e5262dab28f58 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+@@ -13,6 +13,12 @@
+ #include "armada-372x.dtsi"
  
- 			if (p->connect &&  p->source->power &&
+ / {
++	aliases {
++		ethernet0 = &eth0;
++		serial0 = &uart0;
++		serial1 = &uart1;
++	};
++
+ 	chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+-- 
+2.20.1
+
 
 
