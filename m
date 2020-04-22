@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C721B3D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966D71B3DE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgDVKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
+        id S1730086AbgDVKUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729267AbgDVKLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:11:55 -0400
+        id S1729953AbgDVKSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD5AE20575;
-        Wed, 22 Apr 2020 10:11:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 502552070B;
+        Wed, 22 Apr 2020 10:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550315;
-        bh=ZMr3cobph3pHX+whIvaq3dvLnbLGICj7rLWUDrQdOC0=;
+        s=default; t=1587550704;
+        bh=ONrlaUTrJlt3oF5jm/4hpTz5zdiFdn6NHQ66OXct7fU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkyqiBCzn/w/KUAgloKfAdg9DXZbvMm0PYubIceBZtyA7UkSUJQfjNKkmwn8F02af
-         zGZYgcUWr3IrJZQFM+1G5KuDgKO0+YTz3BwHisCtn47tOjNxECUavKGN+EFdCGvvNT
-         JW/jqWQHBZJXWx8qu5pLry5b+2JKQ9hyhT0MMdpA=
+        b=G/nGCjGHnBr6DwQPKIhJuEJRB+35a85zH2kpiy1fvxuEPW7C8c4Gkvq5GyLcg7daN
+         EViVdprOTHTumYQrBtOo48jg4V6uFYweJQKMj3AM2W9sa+HwQmGLy7KJUZAgNeOXV1
+         71IMfJHXLJVd2BD3WMrOVbIjQLiFCdp4VVIpz/LE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Clement Courbet <courbet@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 094/199] powerpc: Make setjmp/longjmp signature standard
+        stable@vger.kernel.org, Sahitya Tummala <stummala@codeaurora.org>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 059/118] f2fs: Add a new CP flag to help fsck fix resize SPO issues
 Date:   Wed, 22 Apr 2020 11:57:00 +0200
-Message-Id: <20200422095107.457740465@linuxfoundation.org>
+Message-Id: <20200422095041.707582404@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clement Courbet <courbet@google.com>
+From: Sahitya Tummala <stummala@codeaurora.org>
 
-commit c17eb4dca5a353a9dbbb8ad6934fe57af7165e91 upstream.
+[ Upstream commit c84ef3c5e65ccf99a7a91a4d731ebb5d6331a178 ]
 
-Declaring setjmp()/longjmp() as taking longs makes the signature
-non-standard, and makes clang complain. In the past, this has been
-worked around by adding -ffreestanding to the compile flags.
+Add and set a new CP flag CP_RESIZEFS_FLAG during
+online resize FS to help fsck fix the metadata mismatch
+that may happen due to SPO during resize, where SB
+got updated but CP data couldn't be written yet.
 
-The implementation looks like it only ever propagates the value
-(in longjmp) or sets it to 1 (in setjmp), and we only call longjmp
-with integer parameters.
+fsck errors -
+Info: CKPT version = 6ed7bccb
+        Wrong user_block_count(2233856)
+[f2fs_do_mount:3365] Checkpoint is polluted
 
-This allows removing -ffreestanding from the compilation flags.
-
-Fixes: c9029ef9c957 ("powerpc: Avoid clang warnings around setjmp and longjmp")
-Cc: stable@vger.kernel.org # v4.14+
-Signed-off-by: Clement Courbet <courbet@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200330080400.124803-1-courbet@google.com
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/setjmp.h |    6 ++++--
- arch/powerpc/kernel/Makefile      |    3 ---
- arch/powerpc/xmon/Makefile        |    3 ---
- 3 files changed, 4 insertions(+), 8 deletions(-)
+ fs/f2fs/checkpoint.c    | 8 ++++++--
+ include/linux/f2fs_fs.h | 1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/setjmp.h
-+++ b/arch/powerpc/include/asm/setjmp.h
-@@ -12,7 +12,9 @@
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 410f5c2c6ef17..a28ffecc0f95a 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1301,10 +1301,14 @@ static void update_ckpt_flags(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 	else
+ 		__clear_ckpt_flags(ckpt, CP_ORPHAN_PRESENT_FLAG);
  
- #define JMP_BUF_LEN    23
+-	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK) ||
+-		is_sbi_flag_set(sbi, SBI_IS_RESIZEFS))
++	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK))
+ 		__set_ckpt_flags(ckpt, CP_FSCK_FLAG);
  
--extern long setjmp(long *) __attribute__((returns_twice));
--extern void longjmp(long *, long) __attribute__((noreturn));
-+typedef long jmp_buf[JMP_BUF_LEN];
++	if (is_sbi_flag_set(sbi, SBI_IS_RESIZEFS))
++		__set_ckpt_flags(ckpt, CP_RESIZEFS_FLAG);
++	else
++		__clear_ckpt_flags(ckpt, CP_RESIZEFS_FLAG);
 +
-+extern int setjmp(jmp_buf env) __attribute__((returns_twice));
-+extern void longjmp(jmp_buf env, int val) __attribute__((noreturn));
- 
- #endif /* _ASM_POWERPC_SETJMP_H */
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -5,9 +5,6 @@
- 
- CFLAGS_ptrace.o		+= -DUTS_MACHINE='"$(UTS_MACHINE)"'
- 
--# Avoid clang warnings around longjmp/setjmp declarations
--CFLAGS_crash.o += -ffreestanding
--
- subdir-ccflags-$(CONFIG_PPC_WERROR) := -Werror
- 
- ifeq ($(CONFIG_PPC64),y)
---- a/arch/powerpc/xmon/Makefile
-+++ b/arch/powerpc/xmon/Makefile
-@@ -1,9 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for xmon
- 
--# Avoid clang warnings around longjmp/setjmp declarations
--subdir-ccflags-y := -ffreestanding
--
- subdir-ccflags-$(CONFIG_PPC_WERROR) += -Werror
- 
- GCOV_PROFILE := n
+ 	if (is_sbi_flag_set(sbi, SBI_CP_DISABLED))
+ 		__set_ckpt_flags(ckpt, CP_DISABLED_FLAG);
+ 	else
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 2847389960281..6bb6f718a1023 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -124,6 +124,7 @@ struct f2fs_super_block {
+ /*
+  * For checkpoint
+  */
++#define CP_RESIZEFS_FLAG		0x00004000
+ #define CP_DISABLED_QUICK_FLAG		0x00002000
+ #define CP_DISABLED_FLAG		0x00001000
+ #define CP_QUOTA_NEED_FSCK_FLAG		0x00000800
+-- 
+2.20.1
+
 
 
