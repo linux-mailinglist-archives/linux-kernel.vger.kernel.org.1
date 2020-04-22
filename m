@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CB81B3C92
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25251B40EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgDVKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:06:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58674 "EHLO mail.kernel.org"
+        id S1732086AbgDVKtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgDVKGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:06:40 -0400
+        id S1728973AbgDVKNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 642922076C;
-        Wed, 22 Apr 2020 10:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D225D2070B;
+        Wed, 22 Apr 2020 10:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549998;
-        bh=ply7STCKTzRLwCtHHPvJalCJ1SwVkJNKXSg6UOLgnCI=;
+        s=default; t=1587550428;
+        bh=6SjgJX5uXF6l/fbulEwoIwAxqi/rr0lTgQYrB8uQ+Qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xvM1Q7p28g/eibymqrt35s/M2MQ9v4ngn0H/aUKsTc1kL5LE+S/4efSvT6vAkYKzz
-         GmAreD3FtFgqV/qgBymYxa3RCXr3tJpkBt82G4G89a7FcpRKhRXCjLDTaoO6hVcwT6
-         0BBihtWdLw1xki4sUnMGgpeCuwdAOOQ5TMWV0vOU=
+        b=WV2tFQ4ZYds5qbBbI0KP9uzzamRgHtyljbzn0i18fM9iZooDfIRtFnUiJanen+Ln0
+         WWtB/qa0pAJtPsQIBxi0dX3dbY35XjmljLxMhBIw+x7OG24ygIFfRHFsX9sNK1Pqr9
+         dSGQC/JhM8NTbstKlKlG04fW/1zUb4j1JlnmMtHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Timur Tabi <timur@codeaurora.org>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 091/125] Revert "gpio: set up initial state from .get_direction()"
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Roman Gushchin <guro@fb.com>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 04/64] ext4: use non-movable memory for superblock readahead
 Date:   Wed, 22 Apr 2020 11:56:48 +0200
-Message-Id: <20200422095047.685351272@linuxfoundation.org>
+Message-Id: <20200422095013.021182139@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
+References: <20200422095008.799686511@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +43,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timur Tabi <timur@codeaurora.org>
+From: Roman Gushchin <guro@fb.com>
 
-[ Upstream commit 1ca2a92b2a99323f666f1b669b7484df4bda05e4 ]
+commit d87f639258a6a5980183f11876c884931ad93da2 upstream.
 
-This reverts commit 72d3200061776264941be1b5a9bb8e926b3b30a5.
+Since commit a8ac900b8163 ("ext4: use non-movable memory for the
+superblock") buffers for ext4 superblock were allocated using
+the sb_bread_unmovable() helper which allocated buffer heads
+out of non-movable memory blocks. It was necessarily to not block
+page migrations and do not cause cma allocation failures.
 
-We cannot blindly query the direction of all GPIOs when the pins are
-first registered.  The get_direction callback normally triggers a
-read/write to hardware, but we shouldn't be touching the hardware for
-an individual GPIO until after it's been properly claimed.
+However commit 85c8f176a611 ("ext4: preload block group descriptors")
+broke this by introducing pre-reading of the ext4 superblock.
+The problem is that __breadahead() is using __getblk() underneath,
+which allocates buffer heads out of movable memory.
 
-Signed-off-by: Timur Tabi <timur@codeaurora.org>
-Reviewed-by: Stephen Boyd <sboyd@codeaurora.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+It resulted in page migration failures I've seen on a machine
+with an ext4 partition and a preallocated cma area.
+
+Fix this by introducing sb_breadahead_unmovable() and
+__breadahead_gfp() helpers which use non-movable memory for buffer
+head allocations and use them for the ext4 superblock readahead.
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Fixes: 85c8f176a611 ("ext4: preload block group descriptors")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Link: https://lore.kernel.org/r/20200229001411.128010-1-guro@fb.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpio/gpiolib.c |   31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
 
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1232,31 +1232,14 @@ int gpiochip_add_data(struct gpio_chip *
- 		struct gpio_desc *desc = &gdev->descs[i];
+---
+ fs/buffer.c                 |   11 +++++++++++
+ fs/ext4/inode.c             |    2 +-
+ fs/ext4/super.c             |    2 +-
+ include/linux/buffer_head.h |    8 ++++++++
+ 4 files changed, 21 insertions(+), 2 deletions(-)
+
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1336,6 +1336,17 @@ void __breadahead(struct block_device *b
+ }
+ EXPORT_SYMBOL(__breadahead);
  
- 		desc->gdev = gdev;
--		/*
--		 * REVISIT: most hardware initializes GPIOs as inputs
--		 * (often with pullups enabled) so power usage is
--		 * minimized. Linux code should set the gpio direction
--		 * first thing; but until it does, and in case
--		 * chip->get_direction is not set, we may expose the
--		 * wrong direction in sysfs.
--		 */
--
--		if (chip->get_direction) {
--			/*
--			 * If we have .get_direction, set up the initial
--			 * direction flag from the hardware.
--			 */
--			int dir = chip->get_direction(chip, i);
++void __breadahead_gfp(struct block_device *bdev, sector_t block, unsigned size,
++		      gfp_t gfp)
++{
++	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp);
++	if (likely(bh)) {
++		ll_rw_block(REQ_OP_READ, REQ_RAHEAD, 1, &bh);
++		brelse(bh);
++	}
++}
++EXPORT_SYMBOL(__breadahead_gfp);
++
+ /**
+  *  __bread_gfp() - reads a specified block and returns the bh
+  *  @bdev: the block_device to read from
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4690,7 +4690,7 @@ make_io:
+ 			if (end > table)
+ 				end = table;
+ 			while (b <= end)
+-				sb_breadahead(sb, b++);
++				sb_breadahead_unmovable(sb, b++);
+ 		}
  
--			if (!dir)
--				set_bit(FLAG_IS_OUT, &desc->flags);
--		} else if (!chip->direction_input) {
--			/*
--			 * If the chip lacks the .direction_input callback
--			 * we logically assume all lines are outputs.
--			 */
--			set_bit(FLAG_IS_OUT, &desc->flags);
--		}
-+		/* REVISIT: most hardware initializes GPIOs as inputs (often
-+		 * with pullups enabled) so power usage is minimized. Linux
-+		 * code should set the gpio direction first thing; but until
-+		 * it does, and in case chip->get_direction is not set, we may
-+		 * expose the wrong direction in sysfs.
-+		 */
-+		desc->flags = !chip->direction_input ? (1 << FLAG_IS_OUT) : 0;
+ 		/*
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4207,7 +4207,7 @@ static int ext4_fill_super(struct super_
+ 	/* Pre-read the descriptors into the buffer cache */
+ 	for (i = 0; i < db_count; i++) {
+ 		block = descriptor_loc(sb, logical_sb_block, i);
+-		sb_breadahead(sb, block);
++		sb_breadahead_unmovable(sb, block);
  	}
  
- #ifdef CONFIG_PINCTRL
+ 	for (i = 0; i < db_count; i++) {
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -189,6 +189,8 @@ struct buffer_head *__getblk_gfp(struct
+ void __brelse(struct buffer_head *);
+ void __bforget(struct buffer_head *);
+ void __breadahead(struct block_device *, sector_t block, unsigned int size);
++void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
++		  gfp_t gfp);
+ struct buffer_head *__bread_gfp(struct block_device *,
+ 				sector_t block, unsigned size, gfp_t gfp);
+ void invalidate_bh_lrus(void);
+@@ -319,6 +321,12 @@ sb_breadahead(struct super_block *sb, se
+ 	__breadahead(sb->s_bdev, block, sb->s_blocksize);
+ }
+ 
++static inline void
++sb_breadahead_unmovable(struct super_block *sb, sector_t block)
++{
++	__breadahead_gfp(sb->s_bdev, block, sb->s_blocksize, 0);
++}
++
+ static inline struct buffer_head *
+ sb_getblk(struct super_block *sb, sector_t block)
+ {
 
 
