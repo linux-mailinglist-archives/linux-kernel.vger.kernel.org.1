@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2452C1B3C56
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E956C1B3FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgDVKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
+        id S1731563AbgDVKkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:40:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728083AbgDVKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:51 -0400
+        id S1730143AbgDVKVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:21:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36EC82078C;
-        Wed, 22 Apr 2020 10:04:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DCD02168B;
+        Wed, 22 Apr 2020 10:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549889;
-        bh=2ysPOcU4eG5VZaaWZplLGws6Gl0xgfw0JPR9mog2OUs=;
+        s=default; t=1587550871;
+        bh=TMC+9tWDsQ38FwH4z1iUXe3pVK+rAiUdtnxJ3vLWwfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2CDNd4xopGF6JYZxrjyjPWkydquaKhLLkyu5lbauu7qlZ4WzDc9e26OkSWs8XYkYe
-         c+bCb7tRSbs4uV3Nfj7FsHzK1PCEPpKaLm4rvNx5sykOLL1mO3WOnlI5GrMnmMSWZM
-         3WfRyENTgzBAgnofQK8dnXMMtdoAQLgc1o1qlhRI=
+        b=GQWnAZMbaYm0QvVs+5e6ihux5YcaB9i5RHA2MjfHMazjQHTKUJ8wwGHWonTQiYLJe
+         q5gv6bRRil1rtzRZ3d1ZDYjxSk6S7ROM4jIZa24/Ep0AXmerzwM6GzriSrYnTA7DzP
+         z6r/ouw+UPRZAp7LKhzMIbJdL6YX6hUutPh57w9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 011/125] locking/lockdep: Avoid recursion in lockdep_count_{for,back}ward_deps()
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Stefano Brivio <sbrivio@redhat.com>
+Subject: [PATCH 5.6 001/166] netfilter: nft_set_rbtree: Drop spurious condition for overlap detection on insertion
 Date:   Wed, 22 Apr 2020 11:55:28 +0200
-Message-Id: <20200422095034.817854633@linuxfoundation.org>
+Message-Id: <20200422095048.103244876@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,79 +45,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Stefano Brivio <sbrivio@redhat.com>
 
-[ Upstream commit 25016bd7f4caf5fc983bbab7403d08e64cba3004 ]
+commit 72239f2795fab9a58633bd0399698ff7581534a3 upstream.
 
-Qian Cai reported a bug when PROVE_RCU_LIST=y, and read on /proc/lockdep
-triggered a warning:
+Case a1. for overlap detection in __nft_rbtree_insert() is not a valid
+one: start-after-start is not needed to detect any type of interval
+overlap and it actually results in a false positive if, while
+descending the tree, this is the only step we hit after starting from
+the root.
 
-  [ ] DEBUG_LOCKS_WARN_ON(current->hardirqs_enabled)
-  ...
-  [ ] Call Trace:
-  [ ]  lock_is_held_type+0x5d/0x150
-  [ ]  ? rcu_lockdep_current_cpu_online+0x64/0x80
-  [ ]  rcu_read_lock_any_held+0xac/0x100
-  [ ]  ? rcu_read_lock_held+0xc0/0xc0
-  [ ]  ? __slab_free+0x421/0x540
-  [ ]  ? kasan_kmalloc+0x9/0x10
-  [ ]  ? __kmalloc_node+0x1d7/0x320
-  [ ]  ? kvmalloc_node+0x6f/0x80
-  [ ]  __bfs+0x28a/0x3c0
-  [ ]  ? class_equal+0x30/0x30
-  [ ]  lockdep_count_forward_deps+0x11a/0x1a0
+This introduced a regression, as reported by Pablo, in Python tests
+cases ip/ip.t and ip/numgen.t:
 
-The warning got triggered because lockdep_count_forward_deps() call
-__bfs() without current->lockdep_recursion being set, as a result
-a lockdep internal function (__bfs()) is checked by lockdep, which is
-unexpected, and the inconsistency between the irq-off state and the
-state traced by lockdep caused the warning.
+  ip/ip.t: ERROR: line 124: add rule ip test-ip4 input ip hdrlength vmap { 0-4 : drop, 5 : accept, 6 : continue } counter: This rule should not have failed.
+  ip/numgen.t: ERROR: line 7: add rule ip test-ip4 pre dnat to numgen inc mod 10 map { 0-5 : 192.168.10.100, 6-9 : 192.168.20.200}: This rule should not have failed.
 
-Apart from this warning, lockdep internal functions like __bfs() should
-always be protected by current->lockdep_recursion to avoid potential
-deadlocks and data inconsistency, therefore add the
-current->lockdep_recursion on-and-off section to protect __bfs() in both
-lockdep_count_forward_deps() and lockdep_count_backward_deps()
+Drop case a1. and renumber others, so that they are a bit clearer. In
+order for these diagrams to be readily understandable, a bigger rework
+is probably needed, such as an ASCII art of the actual rbtree (instead
+of a flattened version).
 
-Reported-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200312151258.128036-1-boqun.feng@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Shell script test sets/0044interval_overlap_0 should cover all
+possible cases for false negatives, so I consider that test case still
+sufficient after this change.
+
+v2: Fix comments for cases a3. and b3.
+
+Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 7c84d41416d8 ("netfilter: nft_set_rbtree: Detect partial overlaps on insertion")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/locking/lockdep.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/netfilter/nft_set_rbtree.c |   23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index d7f425698a4a1..9f56e3fac795a 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1241,9 +1241,11 @@ unsigned long lockdep_count_forward_deps(struct lock_class *class)
- 	this.class = class;
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -218,27 +218,26 @@ static int __nft_rbtree_insert(const str
  
- 	raw_local_irq_save(flags);
-+	current->lockdep_recursion = 1;
- 	arch_spin_lock(&lockdep_lock);
- 	ret = __lockdep_count_forward_deps(&this);
- 	arch_spin_unlock(&lockdep_lock);
-+	current->lockdep_recursion = 0;
- 	raw_local_irq_restore(flags);
+ 	/* Detect overlaps as we descend the tree. Set the flag in these cases:
+ 	 *
+-	 * a1. |__ _ _?  >|__ _ _  (insert start after existing start)
+-	 * a2. _ _ __>|  ?_ _ __|  (insert end before existing end)
+-	 * a3. _ _ ___|  ?_ _ _>|  (insert end after existing end)
+-	 * a4. >|__ _ _   _ _ __|  (insert start before existing end)
++	 * a1. _ _ __>|  ?_ _ __|  (insert end before existing end)
++	 * a2. _ _ ___|  ?_ _ _>|  (insert end after existing end)
++	 * a3. _ _ ___? >|_ _ __|  (insert start before existing end)
+ 	 *
+ 	 * and clear it later on, as we eventually reach the points indicated by
+ 	 * '?' above, in the cases described below. We'll always meet these
+ 	 * later, locally, due to tree ordering, and overlaps for the intervals
+ 	 * that are the closest together are always evaluated last.
+ 	 *
+-	 * b1. |__ _ _!  >|__ _ _  (insert start after existing end)
+-	 * b2. _ _ __>|  !_ _ __|  (insert end before existing start)
+-	 * b3. !_____>|            (insert end after existing start)
++	 * b1. _ _ __>|  !_ _ __|  (insert end before existing start)
++	 * b2. _ _ ___|  !_ _ _>|  (insert end after existing start)
++	 * b3. _ _ ___! >|_ _ __|  (insert start after existing end)
+ 	 *
+-	 * Case a4. resolves to b1.:
++	 * Case a3. resolves to b3.:
+ 	 * - if the inserted start element is the leftmost, because the '0'
+ 	 *   element in the tree serves as end element
+ 	 * - otherwise, if an existing end is found. Note that end elements are
+ 	 *   always inserted after corresponding start elements.
+ 	 *
+-	 * For a new, rightmost pair of elements, we'll hit cases b1. and b3.,
++	 * For a new, rightmost pair of elements, we'll hit cases b3. and b2.,
+ 	 * in that order.
+ 	 *
+ 	 * The flag is also cleared in two special cases:
+@@ -262,9 +261,9 @@ static int __nft_rbtree_insert(const str
+ 			p = &parent->rb_left;
  
- 	return ret;
-@@ -1268,9 +1270,11 @@ unsigned long lockdep_count_backward_deps(struct lock_class *class)
- 	this.class = class;
- 
- 	raw_local_irq_save(flags);
-+	current->lockdep_recursion = 1;
- 	arch_spin_lock(&lockdep_lock);
- 	ret = __lockdep_count_backward_deps(&this);
- 	arch_spin_unlock(&lockdep_lock);
-+	current->lockdep_recursion = 0;
- 	raw_local_irq_restore(flags);
- 
- 	return ret;
--- 
-2.20.1
-
+ 			if (nft_rbtree_interval_start(new)) {
+-				overlap = nft_rbtree_interval_start(rbe) &&
+-					  nft_set_elem_active(&rbe->ext,
+-							      genmask);
++				if (nft_rbtree_interval_end(rbe) &&
++				    nft_set_elem_active(&rbe->ext, genmask))
++					overlap = false;
+ 			} else {
+ 				overlap = nft_rbtree_interval_end(rbe) &&
+ 					  nft_set_elem_active(&rbe->ext,
 
 
