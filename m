@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805C71B3F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D321B3CBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbgDVKVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:21:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55038 "EHLO mail.kernel.org"
+        id S1728667AbgDVKIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:08:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729621AbgDVKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:18:30 -0400
+        id S1728659AbgDVKIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:08:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EC622070B;
-        Wed, 22 Apr 2020 10:18:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25AC22076C;
+        Wed, 22 Apr 2020 10:08:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550709;
-        bh=ZwYuWogEoMguMqy8IBBG5/+pe0y6k0fPBiOgbUr18LM=;
+        s=default; t=1587550091;
+        bh=diZCH/Mg8n9hXnJ0WhmZgAaGP/vFOO2uGKOad9Enxpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QxieqCrvFU1VTeESXIGqquyAjb8hFIFQr/YDXDYVZ02t/W0wSo7er4CxJoP96UJku
-         QUfPewUo5mTL+mul2wjPeXyLIZNEL9eNAi5MJ2uux34Rw0Wy1mm1SUfX2+lsbUVuLK
-         rRm7vLAgZPsDCgnLVmewvuI+VCOqzBwKX2tBHPvE=
+        b=At5yPSyWNiQ/lWkGyZOtncWFFSawMrTX16DvmKg1aHAM+6BpEk1+TDg6BKjbHAzaY
+         wpfhgzjGg+jbU3GlYEcJfPTyd5K3FC+/ltQ2plccVOB70VYuq40QCm4bJRohuINXeW
+         hq+amkIhwkKbNRa7hO4RIAEIX1/Qf6a6Sb4UbMCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Domenico Andreoli <domenico.andreoli@linux.com>,
-        Marian Klein <mkleinsoft@gmail.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 061/118] hibernate: Allow uswsusp to write to swap
+Subject: [PATCH 4.9 105/125] clk: tegra: Fix Tegra PMC clock out parents
 Date:   Wed, 22 Apr 2020 11:57:02 +0200
-Message-Id: <20200422095042.013796362@linuxfoundation.org>
+Message-Id: <20200422095049.865207195@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,48 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Domenico Andreoli <domenico.andreoli@linux.com>
+From: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-[ Upstream commit 56939e014a6c212b317414faa307029e2e80c3b9 ]
+[ Upstream commit 6fe38aa8cac3a5db38154331742835a4d9740788 ]
 
-It turns out that there is one use case for programs being able to
-write to swap devices, and that is the userspace hibernation code.
+Tegra PMC clocks clk_out_1, clk_out_2, and clk_out_3 supported parents
+are osc, osc_div2, osc_div4 and extern clock.
 
-Quick fix: disable the S_SWAPFILE check if hibernation is configured.
+Clock driver is using incorrect parents clk_m, clk_m_div2, clk_m_div4
+for PMC clocks.
 
-Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
-Reported-by: Domenico Andreoli <domenico.andreoli@linux.com>
-Reported-by: Marian Klein <mkleinsoft@gmail.com>
-Signed-off-by: Domenico Andreoli <domenico.andreoli@linux.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+This patch fixes this.
+
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/block_dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/tegra/clk-tegra-pmc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index d612468ee66bf..34644ce4b5025 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -34,6 +34,7 @@
- #include <linux/task_io_accounting_ops.h>
- #include <linux/falloc.h>
- #include <linux/uaccess.h>
-+#include <linux/suspend.h>
- #include "internal.h"
+diff --git a/drivers/clk/tegra/clk-tegra-pmc.c b/drivers/clk/tegra/clk-tegra-pmc.c
+index 91377abfefa19..17a04300f93bf 100644
+--- a/drivers/clk/tegra/clk-tegra-pmc.c
++++ b/drivers/clk/tegra/clk-tegra-pmc.c
+@@ -60,16 +60,16 @@ struct pmc_clk_init_data {
  
- struct bdev_inode {
-@@ -1975,7 +1976,8 @@ ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (bdev_read_only(I_BDEV(bd_inode)))
- 		return -EPERM;
+ static DEFINE_SPINLOCK(clk_out_lock);
  
--	if (IS_SWAPFILE(bd_inode))
-+	/* uswsusp needs write permission to the swap */
-+	if (IS_SWAPFILE(bd_inode) && !hibernation_available())
- 		return -ETXTBSY;
+-static const char *clk_out1_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern1",
++static const char *clk_out1_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern1",
+ };
  
- 	if (!iov_iter_count(from))
+-static const char *clk_out2_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern2",
++static const char *clk_out2_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern2",
+ };
+ 
+-static const char *clk_out3_parents[] = { "clk_m", "clk_m_div2",
+-	"clk_m_div4", "extern3",
++static const char *clk_out3_parents[] = { "osc", "osc_div2",
++	"osc_div4", "extern3",
+ };
+ 
+ static struct pmc_clk_init_data pmc_clks[] = {
 -- 
 2.20.1
 
