@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059271B3D1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F9F1B3F11
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgDVKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:11:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
+        id S1731249AbgDVKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:34:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729227AbgDVKLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:11:41 -0400
+        id S1730426AbgDVKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:24:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A28BE2070B;
-        Wed, 22 Apr 2020 10:11:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACC882075A;
+        Wed, 22 Apr 2020 10:24:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550300;
-        bh=zZc828fF4edIgF7h+Y+tA2AdhzZFPemG6RYMtNeiebY=;
+        s=default; t=1587551069;
+        bh=cpi8xhq+oGMQDR0pcONOu5VnjZ2jS7IwZWsgpVsV+8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VasVYX6SQRy2q2f6FQF1p1P85yJeTG5FcoZtTv7my3PWcxbJPEmqAbFJDU1YmOUI8
-         zFN91FyUF0QWxRXq8nN9MxSmw2+5PpyaD9Gxl2jxk5JkP3EpqLZjKvTwXvQODAzJLz
-         fx2GFy/f/9I/zEbA3f8jSNYRAKDmIWQjOQGlSSGs=
+        b=iD+4igIjAGjChRl6LgDU+5PjVZkDG+Jk2MwZEzeZu2a8HcRrGn05n8JnoUshishQ8
+         /USGlP5pbSMa/an6wBPgjJ727yDNc68f91a+sUx4tu767Agvlgltsjv7f7zqoYGmfI
+         X94FuQbmvyOi75YSN3IenPmrOBSYn8UCFRmbOTBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 089/199] powerpc/hash64/devmap: Use H_PAGE_THP_HUGE when setting up huge devmap PTE entries
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 088/166] btrfs: add RCU locks around block group initialization
 Date:   Wed, 22 Apr 2020 11:56:55 +0200
-Message-Id: <20200422095106.969848295@linuxfoundation.org>
+Message-Id: <20200422095058.125383678@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
-References: <20200422095057.806111593@linuxfoundation.org>
+In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
+References: <20200422095047.669225321@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,136 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-commit 36b78402d97a3b9aeab136feb9b00d8647ec2c20 upstream.
+[ Upstream commit 29566c9c773456467933ee22bbca1c2b72a3506c ]
 
-H_PAGE_THP_HUGE is used to differentiate between a THP hugepage and
-hugetlb hugepage entries. The difference is WRT how we handle hash
-fault on these address. THP address enables MPSS in segments. We want
-to manage devmap hugepage entries similar to THP pt entries. Hence use
-H_PAGE_THP_HUGE for devmap huge PTE entries.
+The space_info list is normally RCU protected and should be traversed
+with rcu_read_lock held. There's a warning
 
-With current code while handling hash PTE fault, we do set is_thp =
-true when finding devmap PTE huge PTE entries.
+  [29.104756] WARNING: suspicious RCU usage
+  [29.105046] 5.6.0-rc4-next-20200305 #1 Not tainted
+  [29.105231] -----------------------------
+  [29.105401] fs/btrfs/block-group.c:2011 RCU-list traversed in non-reader section!!
 
-Current code also does the below sequence we setting up huge devmap
-entries.
+pointing out that the locking is missing in btrfs_read_block_groups.
+However this is not necessary as the list traversal happens at mount
+time when there's no other thread potentially accessing the list.
 
-	entry = pmd_mkhuge(pfn_t_pmd(pfn, prot));
-	if (pfn_t_devmap(pfn))
-		entry = pmd_mkdevmap(entry);
+To fix the warning and for consistency let's add the RCU lock/unlock,
+the code won't be affected much as it's doing some lightweight
+operations.
 
-In that case we would find both H_PAGE_THP_HUGE and PAGE_DEVMAP set
-for huge devmap PTE entries. This results in false positive error like
-below.
-
-  kernel BUG at /home/kvaneesh/src/linux/mm/memory.c:4321!
-  Oops: Exception in kernel mode, sig: 5 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  Modules linked in:
-  CPU: 56 PID: 67996 Comm: t_mmap_dio Not tainted 5.6.0-rc4-59640-g371c804dedbc #128
-  ....
-  NIP [c00000000044c9e4] __follow_pte_pmd+0x264/0x900
-  LR [c0000000005d45f8] dax_writeback_one+0x1a8/0x740
-  Call Trace:
-    str_spec.74809+0x22ffb4/0x2d116c (unreliable)
-    dax_writeback_one+0x1a8/0x740
-    dax_writeback_mapping_range+0x26c/0x700
-    ext4_dax_writepages+0x150/0x5a0
-    do_writepages+0x68/0x180
-    __filemap_fdatawrite_range+0x138/0x180
-    file_write_and_wait_range+0xa4/0x110
-    ext4_sync_file+0x370/0x6e0
-    vfs_fsync_range+0x70/0xf0
-    sys_msync+0x220/0x2e0
-    system_call+0x5c/0x68
-
-This is because our pmd_trans_huge check doesn't exclude _PAGE_DEVMAP.
-
-To make this all consistent, update pmd_mkdevmap to set
-H_PAGE_THP_HUGE and pmd_trans_huge check now excludes _PAGE_DEVMAP
-correctly.
-
-Fixes: ebd31197931d ("powerpc/mm: Add devmap support for ppc64")
-Cc: stable@vger.kernel.org # v4.13+
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200313094842.351830-1-aneesh.kumar@linux.ibm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/book3s/64/hash-4k.h  |    6 ++++++
- arch/powerpc/include/asm/book3s/64/hash-64k.h |    8 +++++++-
- arch/powerpc/include/asm/book3s/64/pgtable.h  |    4 +++-
- arch/powerpc/include/asm/book3s/64/radix.h    |    5 +++++
- 4 files changed, 21 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/include/asm/book3s/64/hash-4k.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash-4k.h
-@@ -108,6 +108,12 @@ extern pmd_t hash__pmdp_huge_get_and_cle
- extern int hash__has_transparent_hugepage(void);
- #endif
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 7f09147872dc7..c9a3bbc8c6afb 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1987,6 +1987,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 		btrfs_release_path(path);
+ 	}
  
-+static inline pmd_t hash__pmd_mkdevmap(pmd_t pmd)
-+{
-+	BUG();
-+	return pmd;
-+}
-+
- #endif /* !__ASSEMBLY__ */
++	rcu_read_lock();
+ 	list_for_each_entry_rcu(space_info, &info->space_info, list) {
+ 		if (!(btrfs_get_alloc_profile(info, space_info->flags) &
+ 		      (BTRFS_BLOCK_GROUP_RAID10 |
+@@ -2007,6 +2008,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 				list)
+ 			inc_block_group_ro(cache, 1);
+ 	}
++	rcu_read_unlock();
  
- #endif /* _ASM_POWERPC_BOOK3S_64_HASH_4K_H */
---- a/arch/powerpc/include/asm/book3s/64/hash-64k.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash-64k.h
-@@ -181,7 +181,7 @@ static inline void mark_hpte_slot_valid(
-  */
- static inline int hash__pmd_trans_huge(pmd_t pmd)
- {
--	return !!((pmd_val(pmd) & (_PAGE_PTE | H_PAGE_THP_HUGE)) ==
-+	return !!((pmd_val(pmd) & (_PAGE_PTE | H_PAGE_THP_HUGE | _PAGE_DEVMAP)) ==
- 		  (_PAGE_PTE | H_PAGE_THP_HUGE));
- }
- 
-@@ -209,6 +209,12 @@ extern pmd_t hash__pmdp_huge_get_and_cle
- 				       unsigned long addr, pmd_t *pmdp);
- extern int hash__has_transparent_hugepage(void);
- #endif /*  CONFIG_TRANSPARENT_HUGEPAGE */
-+
-+static inline pmd_t hash__pmd_mkdevmap(pmd_t pmd)
-+{
-+	return __pmd(pmd_val(pmd) | (_PAGE_PTE | H_PAGE_THP_HUGE | _PAGE_DEVMAP));
-+}
-+
- #endif	/* __ASSEMBLY__ */
- 
- #endif /* _ASM_POWERPC_BOOK3S_64_HASH_64K_H */
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -1179,7 +1179,9 @@ extern void serialize_against_pte_lookup
- 
- static inline pmd_t pmd_mkdevmap(pmd_t pmd)
- {
--	return __pmd(pmd_val(pmd) | (_PAGE_PTE | _PAGE_DEVMAP));
-+	if (radix_enabled())
-+		return radix__pmd_mkdevmap(pmd);
-+	return hash__pmd_mkdevmap(pmd);
- }
- 
- static inline int pmd_devmap(pmd_t pmd)
---- a/arch/powerpc/include/asm/book3s/64/radix.h
-+++ b/arch/powerpc/include/asm/book3s/64/radix.h
-@@ -289,6 +289,11 @@ extern pmd_t radix__pmdp_huge_get_and_cl
- extern int radix__has_transparent_hugepage(void);
- #endif
- 
-+static inline pmd_t radix__pmd_mkdevmap(pmd_t pmd)
-+{
-+	return __pmd(pmd_val(pmd) | (_PAGE_PTE | _PAGE_DEVMAP));
-+}
-+
- extern int __meminit radix__vmemmap_create_mapping(unsigned long start,
- 					     unsigned long page_size,
- 					     unsigned long phys);
+ 	btrfs_init_global_block_rsv(info);
+ 	ret = check_chunk_block_group_mappings(info);
+-- 
+2.20.1
+
 
 
