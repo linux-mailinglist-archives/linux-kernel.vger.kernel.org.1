@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5276F1B3F90
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B995C1B3F86
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731387AbgDVKiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
+        id S1730359AbgDVKi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:38:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729277AbgDVKVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:21:47 -0400
+        id S1729846AbgDVKWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:22:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACECC20776;
-        Wed, 22 Apr 2020 10:21:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 312B620CC7;
+        Wed, 22 Apr 2020 10:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550906;
-        bh=Z+kFyNN5ev+xESvpZfYsp5aT/excqR2Qxg8XYqwsifY=;
+        s=default; t=1587550908;
+        bh=Jkaizt38vuK3ad4xV68G+hRZiQoc5INa/ZDzkOBwnko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q5rj5FGxLlGhWX786/mIk46Uat3Pj8mJHdkdBYaynaFGPWz5IGheupz56jQaghhGK
-         o0oneZvi23qiSkwGHZkn4JD3ACiRkUvXB5zArapmJqsojgM3DpNfdFt+8q+0gxDWbh
-         ThQI4JyYqvsuE3nej6LGJNi4QZJigv0LszPR26Nk=
+        b=GG4gZyam3HWH9z/vBCFdzSMsYHqrZ8vMXoCAeAAi0x0UgkGSewvhID2w0AaSaStQ+
+         9qdZsSPHHoaWYP9YoWlIBQzLHuB4l1as1vP2JkexhDhn+6TJ2SyuttCMR5KY5ABUIV
+         CGMGcW/G7d6YTPdzsDYBihrD8YUfcvLtnEQkNSZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 005/166] ALSA: hda: Honor PM disablement in PM freeze and thaw_noirq ops
-Date:   Wed, 22 Apr 2020 11:55:32 +0200
-Message-Id: <20200422095048.599244508@linuxfoundation.org>
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Roman Gushchin <guro@fb.com>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.6 006/166] ext4: use non-movable memory for superblock readahead
+Date:   Wed, 22 Apr 2020 11:55:33 +0200
+Message-Id: <20200422095048.754376835@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
 References: <20200422095047.669225321@linuxfoundation.org>
@@ -42,43 +43,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Roman Gushchin <guro@fb.com>
 
-commit 10db5bccc390e8e4bd9fcd1fbd4f1b23f271a405 upstream.
+commit d87f639258a6a5980183f11876c884931ad93da2 upstream.
 
-freeze_noirq and thaw_noirq need to check the PM availability like
-other PM ops.  There are cases where the device got disabled due to
-the error, and the PM operation should be ignored for that.
+Since commit a8ac900b8163 ("ext4: use non-movable memory for the
+superblock") buffers for ext4 superblock were allocated using
+the sb_bread_unmovable() helper which allocated buffer heads
+out of non-movable memory blocks. It was necessarily to not block
+page migrations and do not cause cma allocation failures.
 
-Fixes: 3e6db33aaf1d ("ALSA: hda - Set SKL+ hda controller power at freeze() and thaw()")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Link: https://lore.kernel.org/r/20200413082034.25166-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+However commit 85c8f176a611 ("ext4: preload block group descriptors")
+broke this by introducing pre-reading of the ext4 superblock.
+The problem is that __breadahead() is using __getblk() underneath,
+which allocates buffer heads out of movable memory.
+
+It resulted in page migration failures I've seen on a machine
+with an ext4 partition and a preallocated cma area.
+
+Fix this by introducing sb_breadahead_unmovable() and
+__breadahead_gfp() helpers which use non-movable memory for buffer
+head allocations and use them for the ext4 superblock readahead.
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Fixes: 85c8f176a611 ("ext4: preload block group descriptors")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Link: https://lore.kernel.org/r/20200229001411.128010-1-guro@fb.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_intel.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/buffer.c                 |   11 +++++++++++
+ fs/ext4/inode.c             |    2 +-
+ fs/ext4/super.c             |    2 +-
+ include/linux/buffer_head.h |    8 ++++++++
+ 4 files changed, 21 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1071,6 +1071,8 @@ static int azx_freeze_noirq(struct devic
- 	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1377,6 +1377,17 @@ void __breadahead(struct block_device *b
+ }
+ EXPORT_SYMBOL(__breadahead);
  
-+	if (!azx_is_pm_ready(card))
-+		return 0;
- 	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D3hot);
++void __breadahead_gfp(struct block_device *bdev, sector_t block, unsigned size,
++		      gfp_t gfp)
++{
++	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp);
++	if (likely(bh)) {
++		ll_rw_block(REQ_OP_READ, REQ_RAHEAD, 1, &bh);
++		brelse(bh);
++	}
++}
++EXPORT_SYMBOL(__breadahead_gfp);
++
+ /**
+  *  __bread_gfp() - reads a specified block and returns the bh
+  *  @bdev: the block_device to read from
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4348,7 +4348,7 @@ make_io:
+ 			if (end > table)
+ 				end = table;
+ 			while (b <= end)
+-				sb_breadahead(sb, b++);
++				sb_breadahead_unmovable(sb, b++);
+ 		}
  
-@@ -1083,6 +1085,8 @@ static int azx_thaw_noirq(struct device
- 	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
+ 		/*
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4331,7 +4331,7 @@ static int ext4_fill_super(struct super_
+ 	/* Pre-read the descriptors into the buffer cache */
+ 	for (i = 0; i < db_count; i++) {
+ 		block = descriptor_loc(sb, logical_sb_block, i);
+-		sb_breadahead(sb, block);
++		sb_breadahead_unmovable(sb, block);
+ 	}
  
-+	if (!azx_is_pm_ready(card))
-+		return 0;
- 	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D0);
+ 	for (i = 0; i < db_count; i++) {
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -189,6 +189,8 @@ struct buffer_head *__getblk_gfp(struct
+ void __brelse(struct buffer_head *);
+ void __bforget(struct buffer_head *);
+ void __breadahead(struct block_device *, sector_t block, unsigned int size);
++void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
++		  gfp_t gfp);
+ struct buffer_head *__bread_gfp(struct block_device *,
+ 				sector_t block, unsigned size, gfp_t gfp);
+ void invalidate_bh_lrus(void);
+@@ -319,6 +321,12 @@ sb_breadahead(struct super_block *sb, se
+ 	__breadahead(sb->s_bdev, block, sb->s_blocksize);
+ }
  
++static inline void
++sb_breadahead_unmovable(struct super_block *sb, sector_t block)
++{
++	__breadahead_gfp(sb->s_bdev, block, sb->s_blocksize, 0);
++}
++
+ static inline struct buffer_head *
+ sb_getblk(struct super_block *sb, sector_t block)
+ {
 
 
