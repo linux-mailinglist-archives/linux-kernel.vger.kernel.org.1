@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2BE1B3C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45EC1B40FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgDVKCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52000 "EHLO mail.kernel.org"
+        id S1729416AbgDVKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:13:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727040AbgDVKCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:44 -0400
+        id S1726974AbgDVKMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:12:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906872087E;
-        Wed, 22 Apr 2020 10:02:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 598B820575;
+        Wed, 22 Apr 2020 10:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549764;
-        bh=lXo/mUOLvXgMdxR13M1GMOY84RU5XYqhgyq8Pb0pkEw=;
+        s=default; t=1587550368;
+        bh=6FOR2zsEhJsNHgTc8D9F4CP+7uChdEDp9K6YjoSstNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07fSFIBpXqGbyHOaQbBARDU/dGrj9//Ud74YpmvU7QzLuQU4F3xMywqsz7fk0hTml
-         +sLELTQ14UqJWg9SiXsbnM3CN0FM+OI08wbjHQzARyaa7oxRh6CabdcCnPeZX6kLw4
-         v5ZTB5DM72e8oDVPPkkHGNc5cIv4zYhZBwBLjtEY=
+        b=Mm1B3xwVpwVPbhuk5oOso12vOQyOc3DIW+y5XVGJVQ/5SWKDJt5S2dmJjXKDK21du
+         DC5r3tmbz3Yhz8oncUPrwU2w2lRpY94g97OqESenqWBZQkIm+Z7EB1uvvWGQmQ2lcW
+         dYTyqPqMjKuoGJUI9OjxP7q2jHOB9uP0cCSyVcYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.4 096/100] mtd: lpddr: Fix a double free in probe()
-Date:   Wed, 22 Apr 2020 11:57:06 +0200
-Message-Id: <20200422095040.211671851@linuxfoundation.org>
+        stable@vger.kernel.org, Taeung Song <treeze.taeung@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 101/199] ftrace/kprobe: Show the maxactive number on kprobe_events
+Date:   Wed, 22 Apr 2020 11:57:07 +0200
+Message-Id: <20200422095107.998120837@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 4da0ea71ea934af18db4c63396ba2af1a679ef02 upstream.
+[ Upstream commit 6a13a0d7b4d1171ef9b80ad69abc37e1daa941b3 ]
 
-This function is only called from lpddr_probe().  We free "lpddr" both
-here and in the caller, so it's a double free.  The best place to free
-"lpddr" is in lpddr_probe() so let's delete this one.
+Show maxactive parameter on kprobe_events.
+This allows user to save the current configuration and
+restore it without losing maxactive parameter.
 
-Fixes: 8dc004395d5e ("[MTD] LPDDR qinfo probing.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200228092554.o57igp3nqhyvf66t@kili.mountain
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: http://lkml.kernel.org/r/4762764a-6df7-bc93-ed60-e336146dce1f@gmail.com
+Link: http://lkml.kernel.org/r/158503528846.22706.5549974121212526020.stgit@devnote2
 
+Cc: stable@vger.kernel.org
+Fixes: 696ced4fb1d76 ("tracing/kprobes: expose maxactive for kretprobe in kprobe_events")
+Reported-by: Taeung Song <treeze.taeung@gmail.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/lpddr/lpddr_cmds.c |    1 -
- 1 file changed, 1 deletion(-)
+ kernel/trace/trace_kprobe.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -81,7 +81,6 @@ struct mtd_info *lpddr_cmdset(struct map
- 	shared = kmalloc(sizeof(struct flchip_shared) * lpddr->numchips,
- 						GFP_KERNEL);
- 	if (!shared) {
--		kfree(lpddr);
- 		kfree(mtd);
- 		return NULL;
- 	}
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index ea20274a105ae..d66aed6e9c75f 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -877,6 +877,8 @@ static int probes_seq_show(struct seq_file *m, void *v)
+ 	int i;
+ 
+ 	seq_putc(m, trace_kprobe_is_return(tk) ? 'r' : 'p');
++	if (trace_kprobe_is_return(tk) && tk->rp.maxactive)
++		seq_printf(m, "%d", tk->rp.maxactive);
+ 	seq_printf(m, ":%s/%s", tk->tp.call.class->system,
+ 			trace_event_name(&tk->tp.call));
+ 
+-- 
+2.20.1
+
 
 
