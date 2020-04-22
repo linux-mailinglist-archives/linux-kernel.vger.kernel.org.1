@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA1F1B41A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71A51B404F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgDVKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        id S1731872AbgDVKpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:45:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728616AbgDVKIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:08:00 -0400
+        id S1729943AbgDVKSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:18:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C51D2075A;
-        Wed, 22 Apr 2020 10:07:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 614612075A;
+        Wed, 22 Apr 2020 10:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550079;
-        bh=Zy73fb+bLUy9x3QueBMwp3TN5q/AgOXntl8aBGC4r14=;
+        s=default; t=1587550699;
+        bh=L0c94b19MVAUqN2/oWXuSNcZrhQ1Dm0Nd6V1dgiWk8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncrEVCtEAUM5kTtdv5JB8Rg7uwQZi1cPxS0D2zerNVpd3JZh5TJ8Hl7qP4EgvcjjJ
-         o6SbfDzL385wUSzMtDGPEBrczI3iVY/WOzfJ9bhOJe2PQWg61vKLqx7IF0NAD9CMYn
-         x4/5QV1ml0Y5K9aSFvW08pAySgHg2TzWuAexk2UU=
+        b=G/yBfzAGEPffrkNz9mEZAglxDVaAFzzniurrXmJtuzTxPZ0btLj2urSoELG8cAlNl
+         bxQv56GYmcZ4Z27WY6Stpd9lQqjzcm3rzu1yqmzYod9Umq6JCu3QDssCExTcVVuwQL
+         qEI7lnQPRv8f8UEdlqR50FTFns8BIHY5wAx0j5a8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Pitre <nico@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Rob Herring <robh@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 100/125] of: fix missing kobject init for !SYSFS && OF_DYNAMIC config
-Date:   Wed, 22 Apr 2020 11:56:57 +0200
-Message-Id: <20200422095049.212664300@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 057/118] NFS: direct.c: Fix memory leak of dreq when nfs_get_lock_context fails
+Date:   Wed, 22 Apr 2020 11:56:58 +0200
+Message-Id: <20200422095041.394003543@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
-References: <20200422095032.909124119@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
 
-[ Upstream commit bd82bbf38cbe27f2c65660da801900d71bcc5cc8 ]
+[ Upstream commit 8605cf0e852af3b2c771c18417499dc4ceed03d5 ]
 
-The ref counting is broken for OF_DYNAMIC when sysfs is disabled because
-the kobject initialization is skipped. Only the properties
-add/remove/update should be skipped for !SYSFS config.
+When dreq is allocated by nfs_direct_req_alloc(), dreq->kref is
+initialized to 2. Therefore we need to call nfs_direct_req_release()
+twice to release the allocated dreq. Usually it is called in
+nfs_file_direct_{read, write}() and nfs_direct_complete().
 
-Tested-by: Nicolas Pitre <nico@linaro.org>
-Reviewed-by: Frank Rowand <frowand.list@gmail.com>
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However, current code only calls nfs_direct_req_relese() once if
+nfs_get_lock_context() fails in nfs_file_direct_{read, write}().
+So, that case would result in memory leak.
+
+Fix this by adding the missing call.
+
+Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/base.c |    3 ---
- 1 file changed, 3 deletions(-)
+ fs/nfs/direct.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -170,9 +170,6 @@ int __of_attach_node_sysfs(struct device
- 	struct property *pp;
- 	int rc;
- 
--	if (!IS_ENABLED(CONFIG_SYSFS))
--		return 0;
--
- 	if (!of_kset)
- 		return 0;
- 
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 29f00da8a0b7f..6b0bf4ebd8124 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -571,6 +571,7 @@ ssize_t nfs_file_direct_read(struct kiocb *iocb, struct iov_iter *iter)
+ 	l_ctx = nfs_get_lock_context(dreq->ctx);
+ 	if (IS_ERR(l_ctx)) {
+ 		result = PTR_ERR(l_ctx);
++		nfs_direct_req_release(dreq);
+ 		goto out_release;
+ 	}
+ 	dreq->l_ctx = l_ctx;
+@@ -989,6 +990,7 @@ ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
+ 	l_ctx = nfs_get_lock_context(dreq->ctx);
+ 	if (IS_ERR(l_ctx)) {
+ 		result = PTR_ERR(l_ctx);
++		nfs_direct_req_release(dreq);
+ 		goto out_release;
+ 	}
+ 	dreq->l_ctx = l_ctx;
+-- 
+2.20.1
+
 
 
