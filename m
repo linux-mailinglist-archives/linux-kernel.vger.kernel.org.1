@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3121B39B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CA51B39C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 10:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgDVIKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 04:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+        id S1726448AbgDVIO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 04:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725842AbgDVIKn (ORCPT
+        by vger.kernel.org with ESMTP id S1725811AbgDVIOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 04:10:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBDBC03C1A6;
-        Wed, 22 Apr 2020 01:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=67WpxxlCgmhP33pDM7+RRLK1Dw/Wlqp6Mzgtcg8F0+s=; b=CtPbMAnP7cpzodaISmc1Wdoj00
-        2ojUWAmmpSmN1TFTleYUebzjMSwlh8pw1C4LDZAM7BI/5vd44YDklxmJGVq33vu9939PUzqZyCvSM
-        d3oLyz2n+XFctDKmW2cRhZnPLLmeIRyCo9PbvCS2f5JSPTkzIYZ/GAsz2B9DPfMLMESpafZ3A37dM
-        kuhv7SZXlnMBRrRAvj+1fOi1E/OR1UPt1f9i9rVjYc68381u9Azn83v/CsMlUFKvIlL4c6lkbXozV
-        5szWgtf/8d4UdKL5e1bw8b/kuiQgqNaz/6uGaAr1YIWwxEHuLfgoct85LnxSNG7vuO/HwE5XvTsQe
-        ydyoqRfQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRASR-000054-Eh; Wed, 22 Apr 2020 08:10:11 +0000
-Date:   Wed, 22 Apr 2020 01:10:11 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 03/10] blktrace: fix debugfs use after free
-Message-ID: <20200422081011.GA22409@infradead.org>
-References: <20200419194529.4872-1-mcgrof@kernel.org>
- <20200419194529.4872-4-mcgrof@kernel.org>
- <20200422072715.GC19116@infradead.org>
- <20200422074802.GS11244@42.do-not-panic.com>
+        Wed, 22 Apr 2020 04:14:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E983CC03C1A6;
+        Wed, 22 Apr 2020 01:14:24 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v4so4280766wme.1;
+        Wed, 22 Apr 2020 01:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=gcZwmzpZRozVbeeueq/lfLKF1YE2Wt6O6Z8WN9igdl4=;
+        b=mQsa+QXeSYNo2dTVR3JqEP4N3d8jiSjSTcaw4vL+TujGAXv74FP5C/J44fhBnCd0Tt
+         vY+mfGIHID7KJ59EQ/gQxCJsOz9hSShh2s3dHxK8YBOYxkB5hqMrTwaOcJ7ZZnJK42QM
+         32s929B8ZZtK10UeINRuaHSsOJT+QbsnOZrZxW1WZaY0A/KKL1D9Wks59qP7X2PR7fyL
+         Fo0p3TE1dT8NP5bVAh12KRUf95y47XjPoAxjHumxfbvnGdEZ0aKg1SCVHeiL+atXU3o1
+         SR65CgmfMFiW7so27tKhEkHZeeDZIQal8T2h8RJ78NiFe8Ns4jbxHldQkLSr1aHmO5hf
+         hQhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=gcZwmzpZRozVbeeueq/lfLKF1YE2Wt6O6Z8WN9igdl4=;
+        b=ms/ssngyyS1SV/TlnCmHO+5lEWx6D5dKC2lwbMGcI/3Ok6iMZZNth6vW1AgWu/Apxs
+         zMtIB3TOsSxP7ZAnsbfvdJ3xS1JfYPMxEffF9rlRTMwMldv36VoHnWe1a3bA0bSdIzzA
+         EuczIuZbK/K+OJjVqJDiKFYellCIZDLNZQqwkZ4pLxO5fFpW3fDUHEPTF2IlO7ecwvqH
+         qKj/fxoh0/gKxFO5HVHH6CgEUFWFbwwKkGzwd4lR6N0I1yI+6mXJ4qfFBor8zkQYjzF8
+         i6qqJDmJr/4bCh/x/kiwRe0JQ+rZ2bCnvxhrUK3JfXNQIU0MG0Hfn+OFBCzSECXucu9Y
+         yJyQ==
+X-Gm-Message-State: AGi0PuZ1FaujBGdJE3Xk5Us8ISqAhUgwof+nbrAbGD8RsR5Z4K6jfzy3
+        AJilj3/lLgK8wDJRHi/EY2+8g6QLel0=
+X-Google-Smtp-Source: APiQypIFeRvLPBvGOlE2vs2gyjN93pw7CkcVxnQtwefOITVt+0IY5bCY3jraVTYx9xUOe18V7AOGgw==
+X-Received: by 2002:a05:600c:1:: with SMTP id g1mr8919770wmc.142.1587543263394;
+        Wed, 22 Apr 2020 01:14:23 -0700 (PDT)
+Received: from meru ([2a01:cb18:832e:5f00:1d35:d245:4470:8434])
+        by smtp.gmail.com with ESMTPSA id z8sm7319302wrr.40.2020.04.22.01.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 01:14:22 -0700 (PDT)
+From:   Mathieu Othacehe <m.othacehe@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 4/4] iio: vcnl4000: Add buffer support for VCNL4010/20.
+References: <20200421075532.19192-1-m.othacehe@gmail.com>
+        <20200421075532.19192-5-m.othacehe@gmail.com>
+        <CAHp75VfXBgQad1oCBe+oqcC_oRa-3q8OBYcAOV8WfCo7n1wXWw@mail.gmail.com>
+Date:   Wed, 22 Apr 2020 10:14:21 +0200
+In-Reply-To: <CAHp75VfXBgQad1oCBe+oqcC_oRa-3q8OBYcAOV8WfCo7n1wXWw@mail.gmail.com>
+        (Andy Shevchenko's message of "Tue, 21 Apr 2020 15:27:14 +0300")
+Message-ID: <87tv1cos2q.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422074802.GS11244@42.do-not-panic.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 07:48:02AM +0000, Luis Chamberlain wrote:
-> > I don't see why we need this check.  If it is valueable enough we
-> > should have a debugfs_create_dir_exclusive or so that retunrns an error
-> > for an exsting directory, instead of reimplementing it in the caller in
-> > a racy way.  But I'm not really sure we need it to start with.
-> 
-> In short races, and even with synchronous request_queue removal I'm
-> seeing the race is still possible, but that's due to some other races
-> I'm going to chase down now.
-> 
-> The easier solution really is to just have a debugfs dir created for
-> each partition if debugfs is enabled, this way the directory will
-> always be there, and the lookups are gone.
 
-That sounds like the best plan to me.
+>> +static int vcnl4010_buffer_predisable(struct iio_dev *indio_dev)
+>> +{
+>> +       struct vcnl4000_data *data = iio_priv(indio_dev);
+>> +       int ret, ret_disable;
+>> +
+>> +       ret = i2c_smbus_write_byte_data(data->client, VCNL4010_INT_CTRL, 0);
+>> +       if (ret < 0)
+>> +               goto end;
+>> +
+>> +       ret = i2c_smbus_write_byte_data(data->client, VCNL4000_COMMAND, 0);
+>> +
+>> +end:
+>
+>> +       ret_disable = iio_triggered_buffer_predisable(indio_dev);
+>> +       if (ret == 0)
+>> +               ret = ret_disable;
+>
+> What is this?
+>
+> Can't you rather call IIO API first, and then try to handle the rest?
 
-> 
-> > > +
-> > > +	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
-> > > +					    blk_debugfs_root);
-> > > +	if (!q->debugfs_dir)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +void blk_queue_debugfs_unregister(struct request_queue *q)
-> > > +{
-> > > +	debugfs_remove_recursive(q->debugfs_dir);
-> > > +	q->debugfs_dir = NULL;
-> > > +}
-> > 
-> > Which to me suggests we can just fold these two into the callers,
-> > with an IS_ENABLED for the creation case given that we check for errors
-> > and the stub will always return an error.
-> 
-> Sorry not sure I follow this.
+Well, iio_triggered_buffer_predisable will call free_irq which requires
+that the interruption source is disabled, hence this strange pattern.
 
-Don't both with the two above functions and just open code them in
-the callers.  IFF you still want to check for errors after the
-discussion with Greg, wrap the call in a
+However, this may be some misunderstanding from me, but I noticed
+something strange here. In a configuration with one CPU and
+CONFIG_PREEMPT disabled, I have kernel lockups when disabling the
+buffer.
 
-	if (IS_ENABLED(CONFIG_DEBUG_FS))
+This is because free_irq calls synchronize_irq that will wait for any
+IRQ handler to be over. If the kthread handling the interruption is
+still running, it has no chances to terminate, and synchronize_irq waits
+forever. So maybe I'm missing something.
 
-to ensure that you don't fail queue creation in the !DEBUG_FS
-case.
+Anyway, I'll send a v5 addressing your remarks.
+
+Thanks,
+
+Mathieu
