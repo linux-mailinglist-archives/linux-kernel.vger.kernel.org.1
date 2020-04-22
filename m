@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524801B341C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC1D1B341A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 02:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgDVAm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Apr 2020 20:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726012AbgDVAm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Apr 2020 20:42:27 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D86C0610D5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:42:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f20so204263pgl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Apr 2020 17:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=un8H474QNqq9mh1Fli1mXz/+xpNjOExFpRjKSjnMqjw=;
-        b=kzf8kWkhX2BHoz/5S3IIj8vMuAjNeiv0HPear2pSraFd7aEaAxRP4HTuc88OeTp4qd
-         SXFuzDHFn2GoqNN9fFtnDCxLF62wJ1KvUDOrH1NFB6+Zkt7C8sWqz4ygWoZLy/glM6gX
-         rcwJzK49O+nah7/d97CzDLdT7elz52vRRrwWU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=un8H474QNqq9mh1Fli1mXz/+xpNjOExFpRjKSjnMqjw=;
-        b=aRkA4F3MkLtXqnf/V+EQPSsdmoIMkGERH+RK2yuwLm0wTz+oFfZaujPcwuJe9gz6je
-         gbKQh/eWM09hnZLjT42bEm9uKbdbeNDAjh5ZOowq6BM/yh1KKLHMx0Kf8crbdM3ZlN4t
-         e0MxCiGNFP7zb06/w9YcmmaVDnaJCH66F0CvRjOwGYqeObtmRDUKxiDj/Gbk15jg5kzv
-         +i2cGEHobfcRFqFPSRxwiRNzKUp0OYpeJ7Q0a/mQb7appWJdx56Lwbsfl1/jXQ8DsiL7
-         Vbtj52DjKhejhfplOOOVUo7BzltybGraUchA7k0Afao1pyV0TiHeI+qDxCUHcGn+fBdR
-         pFkw==
-X-Gm-Message-State: AGi0Pua1xzInqAu1tSxGm1gGWfQv1OtE/UQnThMSzKnpOJZ4ZDQqOUj9
-        EfS3cbB8i3V8W/Syj4r6Be8MoVfEcRE=
-X-Google-Smtp-Source: APiQypIlMLdyvYdY2/U7CgcvU8u+BTWpLxLtDf0B4Kv+d/U2K6WFq0PwSs/pz8Qr6Dr/9xu1c9D9Tw==
-X-Received: by 2002:a63:554c:: with SMTP id f12mr19298211pgm.163.1587516147052;
-        Tue, 21 Apr 2020 17:42:27 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id o185sm3576066pfg.197.2020.04.21.17.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 17:42:26 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: [PATCH] platform/chrome: typec: Fix ret value check error
-Date:   Tue, 21 Apr 2020 17:41:51 -0700
-Message-Id: <20200422004151.116323-1-pmalani@chromium.org>
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+        id S1726419AbgDVAmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Apr 2020 20:42:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgDVAmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Apr 2020 20:42:09 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56794206D5;
+        Wed, 22 Apr 2020 00:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587516128;
+        bh=mb/GeZW/pAYs7/zVVEqQgr7aut2LB00bzCH+XTKrOxM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lBmz6kuvve++2V17AS+4aruOhzyO/0F7bgvOQlmrqP1kQvvdMSvbmPW8wlr4CQZbJ
+         143a7nxcEWz50OxhJc/tJyHzQU+cQRg1zmobxv5rR79T3TUQ/ZFiWIcY2Wo0vqFQkQ
+         rbtBbKDXLKms+ilT1Mf6FjfB3ZIB+j7nPA+uhWMY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2D7843523039; Tue, 21 Apr 2020 17:42:08 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 17:42:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 07/10] docs: RCU: RTFP: fix bibtex entries
+Message-ID: <20200422004208.GI17661@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <cover.1587488137.git.mchehab+huawei@kernel.org>
+ <3cc10823634f12c3d3c44ee03f73b7aaa347df63.1587488137.git.mchehab+huawei@kernel.org>
+ <20200421174329.GR17661@paulmck-ThinkPad-P72>
+ <20200421175225.GA32083@paulmck-ThinkPad-P72>
+ <20200421212850.616db8b0@coco.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421212850.616db8b0@coco.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cros_typec_add_partner() returns 0 on success, so check for "ret"
-instead of "!ret" as an error.
+On Tue, Apr 21, 2020 at 09:29:06PM +0200, Mauro Carvalho Chehab wrote:
+> Em Tue, 21 Apr 2020 10:52:25 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> escreveu:
+> 
+> > On Tue, Apr 21, 2020 at 10:43:29AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Apr 21, 2020 at 07:04:08PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > There are several troubles at the bibtex entries with
+> > > > prevent them to be processed by LaTeX:
+> > > > 
+> > > > - On LaTeX, comment lines start with '%', but here, comments
+> > > >   are starting with "#";
+> > > > - Underlines should be escaped.
+> > > > - While the best would be to use \url{} for all URL entries,
+> > > >   let's do it at least for a couple that would otherwise
+> > > >   produce errors on LaTeX.
+> > > > 
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > > 
+> > > Another approach might be just to link to a public repo containing
+> > > cleaned-up versions of these bibliography entries:
+> > > 
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/perfbook.git/tree/bib/RCU.bib
+> > > 
+> > > That would have the advantage of keeping this information in only one
+> > > place, and reducing the number of updates required.
+> 
+> Yeah. I didn't know you had it somewhere else.
+> 
+> > > 
+> > > Thoughts?  
+> > 
+> > OK, I should have read the next patch in the series, where you convert
+> > into a Sphinx-compatible bibliography.  Except that you had to convert
+> > the bibtex entries by hand to produce the Sphinx-compatible entries?
+> 
+> No, but it still required a lot of manual work.
+> 
+> I manually converted the file to ReST. That was the easiest part.
+> 
+> Then, I used sphinx-build to convert it into a LaTeX file and changed
+> the produced .tex for it to use the .bib file. 
+> 
+> The last step was the hardest one. I'm not familiar with LaTeX. I did
+> several attempts to produce an output with the same kind of captions
+> as the original file, but I was unable to generate it.
+> 
+> So, I ended doing the final step the hard way: I used XeLaTeX to produce
+> a PDF file. Then, I manually copied the entries from the output back into 
+> the ReST file, carefully adjusting the captions, in order for them to
+> point to the right places. 
+> 
+> Before that, I tried to use a few Sphinx BibTeX extensions, but they
+> are not complete: they were unable to parse some types of entries.
+> If I'm not mistaken (I did it some time ago, on another computer),
+> the ones I tested crashed when trying to parse some entries, like 
+> '@Conference'.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Fixes: 9d33ea331032 ("platform/chrome: cros_ec_typec: Register port partner")
----
- drivers/platform/chrome/cros_ec_typec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, that sounds decidedly non-trivial.  :-(
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index eda57db26f8d..66b8d21092af 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -263,7 +263,7 @@ static void cros_typec_set_port_params_v1(struct cros_typec_data *typec,
- 
- 		pd_en = resp->enabled & PD_CTRL_RESP_ENABLED_PD_CAPABLE;
- 		ret = cros_typec_add_partner(typec, port_num, pd_en);
--		if (!ret)
-+		if (ret)
- 			dev_warn(typec->dev,
- 				 "Failed to register partner on port: %d\n",
- 				 port_num);
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+> > That will get a bit ugly when it comes time to add more entries.
+> > 
+> > Or was the conversion of bibliography entries automated?
+> 
+> I suspect it should be possible to automate it, but, as I said,
+> I'm not too familiar with LaTeX. 
 
+In the meantime, would it work to just reference the RCU.bib URL above?
+
+						Thanx, Paul
