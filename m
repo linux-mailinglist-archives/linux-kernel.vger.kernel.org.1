@@ -2,143 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20661B5012
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C80A1B5018
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 00:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgDVWX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 18:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S1726487AbgDVWYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 18:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726002AbgDVWXz (ORCPT
+        by vger.kernel.org with ESMTP id S1725839AbgDVWYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:23:55 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9316BC03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:23:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c21so693957plz.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 15:23:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=nJjueSqKaycAkbU/QeLo79It2/9MkdVtrHxJylCNtHA=;
-        b=V/DI0eZyaff2SdHJOwpy4lNTt+lYuohYpPpzle0s07NW3CIBK9Tsqn1Gj4xlwy9zgE
-         ICIVH7VFSSiQH12+3T7V1yvUSgnsBibhHWmR4DIk9+0IWjkAFs38PyfxAAGIcqZTWIZ2
-         aqYEmfSHBm0t+8UYfebChUuVTWmJASsrCHu7ATV333buc4cor9/4KP0lKrlUpRch9SYi
-         UAkzyqo8QfspZNAMaw+sfTs7PibefZ92Xv+Sdga8N4r6hoLDcGO8gPoiOz0EdlCwyDay
-         57PriSFEFbi95sibjkIxZfpGsSgbJQidCRkTbdw/wpbUOc8pZ+ti+HENL+CfI0u5vuS0
-         uHAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nJjueSqKaycAkbU/QeLo79It2/9MkdVtrHxJylCNtHA=;
-        b=esOneFxvEe2ibL3ztdgAetWa/Cxv0QqwqvbNJqEuhSfSo1sLAsWxUwsbjUi1U7kFh6
-         ZPjOhJEKik0pzjQKVzBp73REAK31PELo06+TH2a1rMwtkYjyazSGQPXBnQuuqHX1j4ku
-         L3aflADkkpYHJ1vWIYrUInHqiS9KWvxh9cy4xZc+V5IubEgMuslzDqJsitLivKw98w+w
-         EZAYl0aMMZ00w0zuhk9QWdnTHioGtzhyGoaQdhDeiDz55xWUAMb9/Rpy05lae9KJUqvr
-         OC9FVjNHHqCC4vfHJT7WzhypCZ33YGC33tUcPSqr60hWprrDpi4btJmMt/eRkfynwkv0
-         BJNA==
-X-Gm-Message-State: AGi0Pua7E9gYTqyqySTjavo+mm8lJ5BtEA6Ck5kNbKD+3f9lBy+ErHN4
-        dPtKo2NO3pPEmXGrRxYL/MOvx8wWM/hEUQ==
-X-Google-Smtp-Source: APiQypKNd9aDShs9EFFLolO6JJr/78vKYJ1BLet/EOPtuNK8PD4fhP/G9+4fl9Ro+00V+T2B1RsIfw==
-X-Received: by 2002:a17:902:8641:: with SMTP id y1mr883430plt.27.1587594234715;
-        Wed, 22 Apr 2020 15:23:54 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id s66sm230396pgb.84.2020.04.22.15.23.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 15:23:53 -0700 (PDT)
-Subject: Re: [PATCH 1/2] io_uring: trigger timeout after any sqe->off CQEs
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1587229607.git.asml.silence@gmail.com>
- <28005ea0de63e15dbffd87a49fe9b671f1afa87e.1587229607.git.asml.silence@gmail.com>
- <88cbde3c-52a1-7fb3-c4a7-b548beaa5502@kernel.dk>
- <f9c1492c-a0f6-c6ec-ec2e-82a5894060f6@gmail.com>
- <3fe32d07-10e6-4a5a-1390-f03ec4a09c6f@gmail.com>
- <cf991f17-ad5f-c80a-d993-544d8746ac72@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c4bb1251-4ad5-0218-690f-c1be09908e67@kernel.dk>
-Date:   Wed, 22 Apr 2020 16:23:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 22 Apr 2020 18:24:48 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A8CC03C1A9;
+        Wed, 22 Apr 2020 15:24:48 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jRNnB-0001Kw-D2; Thu, 23 Apr 2020 00:24:30 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 634B81C0178;
+        Thu, 23 Apr 2020 00:24:28 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 22:24:27 -0000
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Also consider .entry.text as noinstr
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200416115119.525037514@infradead.org>
+References: <20200416115119.525037514@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <cf991f17-ad5f-c80a-d993-544d8746ac72@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <158759426781.28353.17950951303867293555.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/20 4:20 PM, Pavel Begunkov wrote:
-> On 20/04/2020 23:15, Pavel Begunkov wrote:
->> On 20/04/2020 23:12, Pavel Begunkov wrote:
->>> On 20/04/2020 22:40, Jens Axboe wrote:
->>>> On 4/18/20 11:20 AM, Pavel Begunkov wrote:
->>>>> +static void __io_flush_timeouts(struct io_ring_ctx *ctx)
->>>>> +{
->>>>> +	u32 end, start;
->>>>> +
->>>>> +	start = end = ctx->cached_cq_tail;
->>>>> +	do {
->>>>> +		struct io_kiocb *req = list_first_entry(&ctx->timeout_list,
->>>>> +							struct io_kiocb, list);
->>>>> +
->>>>> +		if (req->flags & REQ_F_TIMEOUT_NOSEQ)
->>>>> +			break;
->>>>> +		/*
->>>>> +		 * multiple timeouts may have the same target,
->>>>> +		 * check that @req is in [first_tail, cur_tail]
->>>>> +		 */
->>>>> +		if (!io_check_in_range(req->timeout.target_cq, start, end))
->>>>> +			break;
->>>>> +
->>>>> +		list_del_init(&req->list);
->>>>> +		io_kill_timeout(req);
->>>>> +		end = ctx->cached_cq_tail;
->>>>> +	} while (!list_empty(&ctx->timeout_list));
->>>>> +}
->>>>> +
->>>>>  static void io_commit_cqring(struct io_ring_ctx *ctx)
->>>>>  {
->>>>>  	struct io_kiocb *req;
->>>>>  
->>>>> -	while ((req = io_get_timeout_req(ctx)) != NULL)
->>>>> -		io_kill_timeout(req);
->>>>> +	if (!list_empty(&ctx->timeout_list))
->>>>> +		__io_flush_timeouts(ctx);
->>>>>  
->>>>>  	__io_commit_cqring(ctx);
->>>>>  
->>>>
->>>> Any chance we can do this without having to iterate timeouts on the
->>>> completion path?
->>>>
->>>
->>> If you mean the one in __io_flush_timeouts(), then no, unless we forbid timeouts
->>> with identical target sequences + some extra constraints. The loop there is not
->>> new, it iterates only over timeouts, that need to be completed, and removes
->>> them. That's amortised O(1).
->>
->> We can think about adding unlock/lock, if that's what you are thinking about.
->>
->>
->>> On the other hand, there was a loop in io_timeout_fn() doing in
->>> total O(n^2), and it was killed by this patch.
->>
-> 
-> Any thoughts on this?
-> 
-> I'll return fixing the last timeout bug I saw, but I'd prefer to know
-> on top of what to do that.
+The following commit has been merged into the objtool/core branch of tip:
 
-I think it's fine, but also likely something that we should defer to
-5.8. So if there are minor fixes to be done for 5.7, it should be
-arranged as such.
+Commit-ID:     b164b813e866b98387815eec40c6653a2edbc38a
+Gitweb:        https://git.kernel.org/tip/b164b813e866b98387815eec40c6653a2edbc38a
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 25 Mar 2020 17:18:17 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 22 Apr 2020 23:10:08 +02:00
 
--- 
-Jens Axboe
+objtool: Also consider .entry.text as noinstr
 
+Consider all of .entry.text as noinstr. This gets us coverage across
+the PTI boundary. While we could add everything .noinstr.text into
+.entry.text that would bloat the amount of code in the user mapping.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lkml.kernel.org/r/20200416115119.525037514@infradead.org
+---
+ tools/objtool/check.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index f51c325..89b208c 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -266,7 +266,8 @@ static int decode_instructions(struct objtool_file *file)
+ 		    strncmp(sec->name, ".discard.", 9))
+ 			sec->text = true;
+ 
+-		if (!strcmp(sec->name, ".noinstr.text"))
++		if (!strcmp(sec->name, ".noinstr.text") ||
++		    !strcmp(sec->name, ".entry.text"))
+ 			sec->noinstr = true;
+ 
+ 		for (offset = 0; offset < sec->len; offset += insn->len) {
+@@ -2087,7 +2088,7 @@ static inline const char *call_dest_name(struct instruction *insn)
+ static int validate_call(struct instruction *insn, struct insn_state *state)
+ {
+ 	if (state->noinstr && state->instr <= 0 &&
+-	    (!insn->call_dest || insn->call_dest->sec != insn->sec)) {
++	    (!insn->call_dest || !insn->call_dest->sec->noinstr)) {
+ 		WARN_FUNC("call to %s() leaves .noinstr.text section",
+ 				insn->sec, insn->offset, call_dest_name(insn));
+ 		return 1;
+@@ -2574,11 +2575,16 @@ static int validate_vmlinux_functions(struct objtool_file *file)
+ 	int warnings = 0;
+ 
+ 	sec = find_section_by_name(file->elf, ".noinstr.text");
+-	if (!sec)
+-		return 0;
++	if (sec) {
++		warnings += validate_section(file, sec);
++		warnings += validate_unwind_hints(file, sec);
++	}
+ 
+-	warnings += validate_section(file, sec);
+-	warnings += validate_unwind_hints(file, sec);
++	sec = find_section_by_name(file->elf, ".entry.text");
++	if (sec) {
++		warnings += validate_section(file, sec);
++		warnings += validate_unwind_hints(file, sec);
++	}
+ 
+ 	return warnings;
+ }
