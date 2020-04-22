@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301361B490F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB5D1B4910
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 17:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgDVPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 11:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
+        id S1726445AbgDVPss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 11:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgDVPsE (ORCPT
+        with ESMTP id S1726399AbgDVPss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 11:48:04 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0A4C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:04 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id i16so1406240ybq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:04 -0700 (PDT)
+        Wed, 22 Apr 2020 11:48:48 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F314C03C1A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:48 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id 19so2858421ioz.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 08:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GsWN2mumHC+tUnsEjdfn2YD0cHxCHZv2pk4MpgL4ME8=;
-        b=r0OwQW5eZ/zCbYsEpoyYyzpycDCu6SwJDBFFB9UyO3Lf7FEvWbWwciuwrt3nTROspH
-         KWmo2VJ0wAsEIxelXMFFdP1XzwHpD8BhDl+QU3NNjxCfDd2LZRyUYymLyPZJMhbHuiQh
-         r2vpsL8nWYR9uejvJtMm7Tym+Dph54jpliuVlC3AfMA9faebpv0KISYXj3jUAbvS8ywf
-         hq+QDXn4LI6pqIZPSEPHLInXn0dh0a0feyUfE41fsqTdxLIgdgVmvxhT6mEVf6JU+WnE
-         i7J5fSnG8tB2G90w+wBp1eR9wtJfH+Xb2mdQlGcdonwmzs9AfEJSgG1EcDZIsbtzrBqn
-         n1iA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
+        b=IHgysYIq24+pV57RDzMKsWqwRemNhSOmnkA+c9xwPFoMr14zb0L25nCfetAJrOO9LX
+         XU6/RKe2oHFpBddV56iqvcWM19Q7KrGgPhd/4yI+yZZkumzcC2gr00v3p/uQ3V7d+fPc
+         mGUFUUbbGM43yRr3Tcl7f6jR3XH39NejxHYYlBKDRuTAohIKYFYxkUu4J83nQftcOwmb
+         sTew3PtnKQEdHEXHhcadN0RYDygB4C3DzdoIb8rCx1ba5xsqul/RaiXWNnsOt4Eq0c28
+         mIip5oSs52bfIBbFUP5p8sowqzW56G4bi5EFurL6zDGgM6hx8b0uAwPvpW1MJ5DbOskh
+         XbdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GsWN2mumHC+tUnsEjdfn2YD0cHxCHZv2pk4MpgL4ME8=;
-        b=lOSfL1el+HRpnoDiA1Vpgirnf7c452MvgjHlrU1v3jI0BfwHJnlNgAijZ+v/qlh/JO
-         64TagGt+cyAGvjVuf1MBgS8/uRAfSZU76vyAsxhxI6ym9TsZAAaRyiSNnukA2wPTIQd5
-         2NK+lMwD6Hk8xJOxKtfbBDWV8KaQmhErHotjhvys/V4JwMO35Ro0uIbpcAj6sdSBujDS
-         aNs6v6LGfQ71AdU+WQVHTjUoL6yM6+oeNU36CUk8XZOlmsTGMx4KUBK7hcbW9zwgn886
-         8GmO6hRFtMMyEwNG8TVIUPOJuD3WCisI40OSr43CsBVVjpl16gTAt+XTqtxQzDgXgf0e
-         XrpQ==
-X-Gm-Message-State: AGi0PuY3vh4c8Z4HnpiNFW5lw3AwdVkyJXzRGFhnudEICM73dOCeFd2I
-        nUpNmuzsdipL1X1iwowniq7HN7EX8hBw94uB+HvEqg==
-X-Google-Smtp-Source: APiQypJ5FEZwmhSeFCnMsqXJ+pLFFGVJsm7AABTVLabYgFu3ZMgSXjTDIe7leQdzq6g50pDR9dJ/B42qlt6q0tUncV4=
-X-Received: by 2002:a25:e0c5:: with SMTP id x188mr38032161ybg.208.1587570483191;
- Wed, 22 Apr 2020 08:48:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
+        b=ZA7dFvOmfCxWO8VEuYwT0ziz6q3Par922XUd9vCx+XYf4T8+3bNfY4qfBNfYhDwUap
+         hVFA0iP/VizwsIN1GpGLTern5vSR38x1irIautlAVSnIgVsMXFFUBKUApO0jDkHa7mmi
+         fdSecGV1wXB+3MqYHeEMQDtEoCggwpgrLLybXo+TJbTwWOicvBDP9Ezzule1WVJyn35f
+         0fGFXN8Ae8MxokIGJfxAWcvlK17APG79CSwFPcYcljOJi68gOj05APh+civBjOEN6qk3
+         bir9qmYVBlXvIiFt3Mr/k9Rp+TwG3FkP7DT135t6hDofu9017tun8IUf8d5wguDIustN
+         ra4g==
+X-Gm-Message-State: AGi0PuYnywsa+9qrCxIeUMmseCXgPfEqfbxXKlbnErcLs+5Gb3ejwuGi
+        dUYiTTIJQpKXmX5Ndic82J2MUTnoWpx3Mbn7Puw=
+X-Google-Smtp-Source: APiQypKY3AO6yK/CfuFD36vl3wV8QUAM5oqZpioPjafI3ST0oK0Vz93IomDtdYcbvItzVzXWTRLUE4wF3bbs3NSIgWw=
+X-Received: by 2002:a5d:8f98:: with SMTP id l24mr26561428iol.172.1587570527473;
+ Wed, 22 Apr 2020 08:48:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200422112719.826676174@infradead.org> <20200422112831.870192415@infradead.org>
- <20200422135628.GH4898@sirena.org.uk> <CAD=FV=VcbXoxtzyvLsFZuCDXJwCv8Y3pUdYBKMUmJaNcueBrqQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=VcbXoxtzyvLsFZuCDXJwCv8Y3pUdYBKMUmJaNcueBrqQ@mail.gmail.com>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Wed, 22 Apr 2020 08:47:52 -0700
-Message-ID: <CABXOdTd-ze8=s8nXNvPSjBBQKX9N3e4v3xQfs_mbJfKaUrvZ0g@mail.gmail.com>
-Subject: Re: [PATCH 11/23] sched,spi: Convert to sched_set_fifo*()
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>, qais.yousef@arm.com,
-        juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Benjamin Segall <bsegall@google.com>,
-        mgorman@suse.de, Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Received: by 2002:ad5:4290:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 08:48:47
+ -0700 (PDT)
+Reply-To: mr_abou.sangoule00@yahoo.com
+From:   Mr Aboubacar Sangoule <mr.buchi.2014@gmail.com>
+Date:   Wed, 22 Apr 2020 16:48:47 +0100
+Message-ID: <CAOiunmEuEsoQiB3+12CZrHH--f49HvtiopsC3gX7S+rRWSmAuQ@mail.gmail.com>
+Subject: Hello My Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 7:35 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, Apr 22, 2020 at 6:56 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Wed, Apr 22, 2020 at 01:27:30PM +0200, Peter Zijlstra wrote:
-> > > Because SCHED_FIFO is a broken scheduler model (see previous patches)
-> > > take away the priority field, the kernel can't possibly make an
-> > > informed decision.
-> > >
-> > > No effective change.
-> >
-> > Copying Doug who did this change and Guenter who reviewed it.  This
-> > looks fine to me but I've no particular involvement with the code or
-> > platforms that are affected here.
->
-> Thanks!  Probably the maintainers of cros_ec_spi.c (Benson and Enric)
-> should be aware of it, too.  CCing them.
->
-> From my point of view, my response is pretty much identical to the one
-> I wrote when the priority was reduced from "MAX_RT_PRIO - 1" to
-> "MAX_RT_PRIO / 2" [1].  Basically, any priority that keeps us from
-> being preempted by tasks that are only high priority for performance
-> reasons (like dm crypt and loopback did when I last analyzed) is fine.
-> Our priority needs to be high not for performance reasons but for
-> correctness reasons (the other side will drop our data if we don't
-> respond in time).
->
-The crypto engine ends up running at the same priority level, so I am
-a bit concerned that this patch series will re-introduce the problem
-that Doug's initial patch tried to solve. Though I do notice that it
-already _is_ running at the same priority, so maybe the problem has
-already been re-introduced with the commit that set the priority to
-MAX_RT_PRIO / 2, and we just haven't noticed yet. So I guess this
-patch indeed doesn't make a difference.
+Hello My Dear Friend,
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Good morning, how are you? Hope fine,
+I just want to know if you can help me to transfer this discovered
+abandon amount of ($6.5 Million us dollars) into any foreign bank
+account of your choice. After the transfer we have to share it, 50%
+for me, and 50% for you. Please let me know if you can handle this
+transfer. For more information regarding the transfer. I hope you will
+work with me honestly? Because this transaction is confidential.
 
-> Thus:
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->
->
-> [1] https://lore.kernel.org/r/CAD=FV=UsYF1R6+XRfFFFm6PfmkTsEOfxxgCw2JxCnpyu1kGVLQ@mail.gmail.com
->
->
-> > > Cc: broonie@kernel.org
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > Reviewed-by: Ingo Molnar <mingo@kernel.org>
-> > > ---
-> > >  drivers/platform/chrome/cros_ec_spi.c |    6 +-----
-> > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > >
-> > > --- a/drivers/platform/chrome/cros_ec_spi.c
-> > > +++ b/drivers/platform/chrome/cros_ec_spi.c
-> > > @@ -709,9 +709,6 @@ static void cros_ec_spi_high_pri_release
-> > >  static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
-> > >                                          struct cros_ec_spi *ec_spi)
-> > >  {
-> > > -     struct sched_param sched_priority = {
-> > > -             .sched_priority = MAX_RT_PRIO / 2,
-> > > -     };
-> > >       int err;
-> > >
-> > >       ec_spi->high_pri_worker =
-> > > @@ -728,8 +725,7 @@ static int cros_ec_spi_devm_high_pri_all
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = sched_setscheduler_nocheck(ec_spi->high_pri_worker->task,
-> > > -                                      SCHED_FIFO, &sched_priority);
-> > > +     err = sched_set_fifo(ec_spi->high_pri_worker->task);
-> > >       if (err)
-> > >               dev_err(dev, "Can't set cros_ec high pri priority: %d\n", err);
-> > >       return err;
-> > > --- a/drivers/spi/spi.c
-> > > +++ b/drivers/spi/spi.c
-> > > @@ -1589,11 +1589,9 @@ EXPORT_SYMBOL_GPL(spi_take_timestamp_pos
-> > >   */
-> > >  static void spi_set_thread_rt(struct spi_controller *ctlr)
-> > >  {
-> > > -     struct sched_param param = { .sched_priority = MAX_RT_PRIO / 2 };
-> > > -
-> > >       dev_info(&ctlr->dev,
-> > >               "will run message pump with realtime priority\n");
-> > > -     sched_setscheduler(ctlr->kworker_task, SCHED_FIFO, &param);
-> > > +     sched_set_fifo(ctlr->kworker_task);
-> > >  }
-> > >
-> > >  static int spi_init_queue(struct spi_controller *ctlr)
-> > >
-> > >
+Kindly Update me with your personal information such as;
+
+1. Your name in Full:
+2. Your House Address:
+3. Your Occupation:
+4. Your Age:
+5. Your direct phone number;
+6. Your Identity card or international passport:
+
+I want to hear from you as soon as possible, this transaction will be
+finalize before one week which is seven 7 bank working days. Hope you
+understood.I am waiting for your urgent positive response soon.Please
+send the following: Reply To This E-mail Address
+mr_abou.sangoule00@yahoo.com
+
+1)your full name.....
+
+God bless you.
+
+Yours Faithfully.
+
+Mr Aboubacar Sangoule
