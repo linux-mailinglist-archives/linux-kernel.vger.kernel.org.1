@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E26A1B4BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B841B4BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 19:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgDVRkJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Apr 2020 13:40:09 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:38210 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgDVRkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:40:09 -0400
-Received: from [192.168.1.91] (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D0B23CECFD;
-        Wed, 22 Apr 2020 19:49:44 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 0/3] Bluetooth: hci_qca: add support for QCA9377
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200421081656.9067-1-christianshewitt@gmail.com>
-Date:   Wed, 22 Apr 2020 19:39:36 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <D965D634-A881-43E0-B9F8-DF4679BB9C6D@holtmann.org>
-References: <20200421081656.9067-1-christianshewitt@gmail.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1726372AbgDVRj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 13:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726061AbgDVRjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 13:39:55 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54D942076E;
+        Wed, 22 Apr 2020 17:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587577195;
+        bh=AGiU7qjKR7ZjubwJ6K3M5/8GasoseXdg8O+47fVqLuw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JyusGuPT4yl7OaJxaidjSDJ0k/CikIy6bBfxMY0e+Pl8R0Jyo0kh0xtn6x5NZmkJc
+         57TrOndBtCukynqsiQxqbtjZ/p4Kv1jhveVyOIXjcX+v2OQKZhsYeb5Uw/OHmxFOIs
+         4BB1KgVHdsNjWZXGTusGX+5UGalpUEJglG0CFtsA=
+Date:   Wed, 22 Apr 2020 18:39:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jann Horn <jannh@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 01/12] add support for Clang's Shadow Call Stack (SCS)
+Message-ID: <20200422173938.GA3069@willie-the-truck>
+References: <20191018161033.261971-1-samitolvanen@google.com>
+ <20200416161245.148813-1-samitolvanen@google.com>
+ <20200416161245.148813-2-samitolvanen@google.com>
+ <20200420171727.GB24386@willie-the-truck>
+ <20200420211830.GA5081@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420211830.GA5081@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
-
-> This series adds a new compatible for the QCA9377 BT device that is found
-> in many Android TV box devices, makes minor changes to allow max-speed
-> values for the device to be read from device-tree, and updates bindings
-> to reflect those changes.
+On Mon, Apr 20, 2020 at 02:18:30PM -0700, Sami Tolvanen wrote:
+> On Mon, Apr 20, 2020 at 06:17:28PM +0100, Will Deacon wrote:
+> > > +	 * The shadow call stack is aligned to SCS_SIZE, and grows
+> > > +	 * upwards, so we can mask out the low bits to extract the base
+> > > +	 * when the task is not running.
+> > > +	 */
+> > > +	return (void *)((unsigned long)task_scs(tsk) & ~(SCS_SIZE - 1));
+> > 
+> > Could we avoid forcing this alignment it we stored the SCS pointer as a
+> > (base,offset) pair instead? That might be friendlier on the allocations
+> > later on.
 > 
-> Christian Hewitt (3):
->  dt-bindings: net: bluetooth: Add device tree bindings for QCA9377
->  Bluetooth: hci_qca: add compatible for QCA9377
->  Bluetooth: hci_qca: allow max-speed to be set for QCA9377 devices
-> 
-> .../bindings/net/qualcomm-bluetooth.txt         |  5 +++++
-> drivers/bluetooth/hci_qca.c                     | 17 ++++++++++-------
-> 2 files changed, 15 insertions(+), 7 deletions(-)
+> The idea is to avoid storing the current task's shadow stack address in
+> memory, which is why I would rather not store the base address either.
 
-the series doesn’t apply cleanly against bluetooth-next tree. Can you please respin it.
+What I mean is that, instead of storing the current shadow stack pointer,
+we instead store a base and an offset. We can still clear the base, as you
+do with the pointer today, and I don't see that the offset is useful to
+an attacker on its own.
 
-Regards
+But more generally, is it really worthwhile to do this clearing at all? Can
+you (or Kees?) provide some justification for it, please? We don't do it
+for anything else, e.g. the pointer authentication keys, so something
+feels amiss here.
 
-Marcel
+Thanks,
 
+Will
