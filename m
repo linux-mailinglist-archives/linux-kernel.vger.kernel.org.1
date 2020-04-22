@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045271B4091
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2091B3BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731969AbgDVKqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52764 "EHLO mail.kernel.org"
+        id S1726719AbgDVKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729783AbgDVKQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:16:51 -0400
+        id S1726707AbgDVKA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:00:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F8EA2076B;
-        Wed, 22 Apr 2020 10:16:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E6CF2076C;
+        Wed, 22 Apr 2020 10:00:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550610;
-        bh=dAFfcstJg00S/Bt0ciKcvKr/afc1DBg6KrevEqRtYpU=;
+        s=default; t=1587549657;
+        bh=0XlszoyFMe59iSqgMh03FHzcv92v+WCoY0GZ3XGuGbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+1foNRFX5/ZKI9y9c///eTa6MjkwTxQIcT6nzuS6o8+QtaCwsKkHAIjbGn+n7wz+
-         8zDf5SZrTIK2sU9a8XIK/PkHKXAocdQoDKODj3PnTovIIcjvYyZT+GVGdF+TxOrdO3
-         c8ke/QU39UYyav0OrPinm4FHs2MA4G2pW85u0j3A=
+        b=qem/+px26ycZXRAbBESLJ8xp065yMfcySIBzdeByiD7sXJLzEwdKxMz/bo9nOPvUc
+         bxaR3p5g22DqNWuUoBi5pxAhQFq6NBHfsIKlMG6eY7f0LpDmCMXt523SiJ9UVzuPgB
+         ndMBL/aMTAeDKZa0e4wV1D8n++dmhqz+Q4rujs84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.4 021/118] x86/Hyper-V: Report crash register data or kmsg before running crash kernel
+        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>,
+        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
+        openipmi-developer@lists.sourceforge.net,
+        Corey Minyard <cminyard@mvista.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 052/100] ipmi: fix hung processes in __get_guid()
 Date:   Wed, 22 Apr 2020 11:56:22 +0200
-Message-Id: <20200422095035.165390638@linuxfoundation.org>
+Message-Id: <20200422095032.319462835@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
-References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+From: Wen Yang <wenyang@linux.alibaba.com>
 
-commit a11589563e96bf262767294b89b25a9d44e7303b upstream.
+[ Upstream commit 32830a0534700f86366f371b150b17f0f0d140d7 ]
 
-We want to notify Hyper-V when a Linux guest VM crash occurs, so
-there is a record of the crash even when kdump is enabled.   But
-crash_kexec_post_notifiers defaults to "false", so the kdump kernel
-runs before the notifiers and Hyper-V never gets notified.  Fix this by
-always setting crash_kexec_post_notifiers to be true for Hyper-V VMs.
+The wait_event() function is used to detect command completion.
+When send_guid_cmd() returns an error, smi_send() has not been
+called to send data. Therefore, wait_event() should not be used
+on the error path, otherwise it will cause the following warning:
 
-Fixes: 81b18bce48af ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-Link: https://lore.kernel.org/r/20200406155331.2105-5-Tianyu.Lan@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[ 1361.588808] systemd-udevd   D    0  1501   1436 0x00000004
+[ 1361.588813]  ffff883f4b1298c0 0000000000000000 ffff883f4b188000 ffff887f7e3d9f40
+[ 1361.677952]  ffff887f64bd4280 ffffc90037297a68 ffffffff8173ca3b ffffc90000000010
+[ 1361.767077]  00ffc90037297ad0 ffff887f7e3d9f40 0000000000000286 ffff883f4b188000
+[ 1361.856199] Call Trace:
+[ 1361.885578]  [<ffffffff8173ca3b>] ? __schedule+0x23b/0x780
+[ 1361.951406]  [<ffffffff8173cfb6>] schedule+0x36/0x80
+[ 1362.010979]  [<ffffffffa071f178>] get_guid+0x118/0x150 [ipmi_msghandler]
+[ 1362.091281]  [<ffffffff810d5350>] ? prepare_to_wait_event+0x100/0x100
+[ 1362.168533]  [<ffffffffa071f755>] ipmi_register_smi+0x405/0x940 [ipmi_msghandler]
+[ 1362.258337]  [<ffffffffa0230ae9>] try_smi_init+0x529/0x950 [ipmi_si]
+[ 1362.334521]  [<ffffffffa022f350>] ? std_irq_setup+0xd0/0xd0 [ipmi_si]
+[ 1362.411701]  [<ffffffffa0232bd2>] init_ipmi_si+0x492/0x9e0 [ipmi_si]
+[ 1362.487917]  [<ffffffffa0232740>] ? ipmi_pci_probe+0x280/0x280 [ipmi_si]
+[ 1362.568219]  [<ffffffff810021a0>] do_one_initcall+0x50/0x180
+[ 1362.636109]  [<ffffffff812231b2>] ? kmem_cache_alloc_trace+0x142/0x190
+[ 1362.714330]  [<ffffffff811b2ae1>] do_init_module+0x5f/0x200
+[ 1362.781208]  [<ffffffff81123ca8>] load_module+0x1898/0x1de0
+[ 1362.848069]  [<ffffffff811202e0>] ? __symbol_put+0x60/0x60
+[ 1362.913886]  [<ffffffff8130696b>] ? security_kernel_post_read_file+0x6b/0x80
+[ 1362.998514]  [<ffffffff81124465>] SYSC_finit_module+0xe5/0x120
+[ 1363.068463]  [<ffffffff81124465>] ? SYSC_finit_module+0xe5/0x120
+[ 1363.140513]  [<ffffffff811244be>] SyS_finit_module+0xe/0x10
+[ 1363.207364]  [<ffffffff81003c04>] do_syscall_64+0x74/0x180
 
+Fixes: 50c812b2b951 ("[PATCH] ipmi: add full sysfs support")
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Corey Minyard <minyard@acm.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org # 2.6.17-
+Message-Id: <20200403090408.58745-1-wenyang@linux.alibaba.com>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mshyperv.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/char/ipmi/ipmi_msghandler.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -263,6 +263,16 @@ static void __init ms_hyperv_init_platfo
- 			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
- 	}
- 
-+	/*
-+	 * Hyper-V expects to get crash register data or kmsg when
-+	 * crash enlightment is available and system crashes. Set
-+	 * crash_kexec_post_notifiers to be true to make sure that
-+	 * calling crash enlightment interface before running kdump
-+	 * kernel.
-+	 */
-+	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE)
-+		crash_kexec_post_notifiers = true;
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 5cb5e8ff02240..7b8c1a64a1009 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -2645,7 +2645,9 @@ get_guid(ipmi_smi_t intf)
+ 	if (rv)
+ 		/* Send failed, no GUID available. */
+ 		intf->bmc->guid_set = 0;
+-	wait_event(intf->waitq, intf->bmc->guid_set != 2);
++	else
++		wait_event(intf->waitq, intf->bmc->guid_set != 2);
 +
- #ifdef CONFIG_X86_LOCAL_APIC
- 	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
- 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
+ 	intf->null_user_handler = NULL;
+ }
+ 
+-- 
+2.20.1
+
 
 
