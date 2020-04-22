@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A6C1B3ECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED51B40F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730547AbgDVKZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33910 "EHLO mail.kernel.org"
+        id S1731828AbgDVKtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730536AbgDVKZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:25:22 -0400
+        id S1726201AbgDVKNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:13:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B7722075A;
-        Wed, 22 Apr 2020 10:25:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAECC20776;
+        Wed, 22 Apr 2020 10:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551121;
-        bh=EmooAh3QNBEGdyK8oG4A8fdn5lpHulsc2cu+K0KzJrc=;
+        s=default; t=1587550413;
+        bh=RJLVCku9igORfpt5oVv3tIoCepU57wftd4+a8zsHa/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YnUxXUZ95rOBroY4S0JFpZTmOGo/RJiam950Iu1cDiG74pCZHugANClAHGeOFHWOx
-         X2GPAnKdoC/XMHjgBWsizm3RRquN8bN7iJlKga4YzU/OJJfVc4OuFGMVvpaX2eJ12D
-         cGibco5acbneiUHxXXmZBtVJAPz2fu5c7qPK2WtY=
+        b=NmOiWFiBK5WknABTJid7dvMwY6hfkNre4ryrlKw4c/rsMUO18iH9RxhtIcV9JJlyG
+         FvaoDm+9FsvO1dmrFdgv6epAtDuxI1f87OzlZYuD+7uYcnjDp+Hv9xQ2QyvqRqTr1R
+         lBv0fZthGFcu0VV8Bvaq04Csgw1vGwoWP2mAfSqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 107/166] KVM: s390: vsie: Fix possible race when shadowing region 3 tables
+        stable@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 108/199] net: ipv4: devinet: Fix crash when add/del multicast IP with autojoin
 Date:   Wed, 22 Apr 2020 11:57:14 +0200
-Message-Id: <20200422095100.317308946@linuxfoundation.org>
+Message-Id: <20200422095108.530696540@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
+In-Reply-To: <20200422095057.806111593@linuxfoundation.org>
+References: <20200422095057.806111593@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Taras Chornyi <taras.chornyi@plvision.eu>
 
-[ Upstream commit 1493e0f944f3c319d11e067c185c904d01c17ae5 ]
+[ Upstream commit 690cc86321eb9bcee371710252742fb16fe96824 ]
 
-We have to properly retry again by returning -EINVAL immediately in case
-somebody else instantiated the table concurrently. We missed to add the
-goto in this function only. The code now matches the other, similar
-shadowing functions.
+When CONFIG_IP_MULTICAST is not set and multicast ip is added to the device
+with autojoin flag or when multicast ip is deleted kernel will crash.
 
-We are overwriting an existing region 2 table entry. All allocated pages
-are added to the crst_list to be freed later, so they are not lost
-forever. However, when unshadowing the region 2 table, we wouldn't trigger
-unshadowing of the original shadowed region 3 table that we replaced. It
-would get unshadowed when the original region 3 table is modified. As it's
-not connected to the page table hierarchy anymore, it's not going to get
-used anymore. However, for a limited time, this page table will stick
-around, so it's in some sense a temporary memory leak.
+steps to reproduce:
 
-Identified by manual code inspection. I don't think this classifies as
-stable material.
+ip addr add 224.0.0.0/32 dev eth0
+ip addr del 224.0.0.0/32 dev eth0
 
-Fixes: 998f637cc4b9 ("s390/mm: avoid races on region/segment/page table shadowing")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Link: https://lore.kernel.org/r/20200403153050.20569-4-david@redhat.com
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+or
+
+ip addr add 224.0.0.0/32 dev eth0 autojoin
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000088
+ pc : _raw_write_lock_irqsave+0x1e0/0x2ac
+ lr : lock_sock_nested+0x1c/0x60
+ Call trace:
+  _raw_write_lock_irqsave+0x1e0/0x2ac
+  lock_sock_nested+0x1c/0x60
+  ip_mc_config.isra.28+0x50/0xe0
+  inet_rtm_deladdr+0x1a8/0x1f0
+  rtnetlink_rcv_msg+0x120/0x350
+  netlink_rcv_skb+0x58/0x120
+  rtnetlink_rcv+0x14/0x20
+  netlink_unicast+0x1b8/0x270
+  netlink_sendmsg+0x1a0/0x3b0
+  ____sys_sendmsg+0x248/0x290
+  ___sys_sendmsg+0x80/0xc0
+  __sys_sendmsg+0x68/0xc0
+  __arm64_sys_sendmsg+0x20/0x30
+  el0_svc_common.constprop.2+0x88/0x150
+  do_el0_svc+0x20/0x80
+ el0_sync_handler+0x118/0x190
+  el0_sync+0x140/0x180
+
+Fixes: 93a714d6b53d ("multicast: Extend ip address command to enable multicast group join/leave on")
+Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/mm/gmap.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/ipv4/devinet.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 9d9ab77d02dd3..364e3a89c0969 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -1844,6 +1844,7 @@ int gmap_shadow_r3t(struct gmap *sg, unsigned long saddr, unsigned long r3t,
- 		goto out_free;
- 	} else if (*table & _REGION_ENTRY_ORIGIN) {
- 		rc = -EAGAIN;		/* Race with shadow */
-+		goto out_free;
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -579,12 +579,15 @@ struct in_ifaddr *inet_ifa_byprefix(stru
+ 	return NULL;
+ }
+ 
+-static int ip_mc_config(struct sock *sk, bool join, const struct in_ifaddr *ifa)
++static int ip_mc_autojoin_config(struct net *net, bool join,
++				 const struct in_ifaddr *ifa)
+ {
++#if defined(CONFIG_IP_MULTICAST)
+ 	struct ip_mreqn mreq = {
+ 		.imr_multiaddr.s_addr = ifa->ifa_address,
+ 		.imr_ifindex = ifa->ifa_dev->dev->ifindex,
+ 	};
++	struct sock *sk = net->ipv4.mc_autojoin_sk;
+ 	int ret;
+ 
+ 	ASSERT_RTNL();
+@@ -597,6 +600,9 @@ static int ip_mc_config(struct sock *sk,
+ 	release_sock(sk);
+ 
+ 	return ret;
++#else
++	return -EOPNOTSUPP;
++#endif
+ }
+ 
+ static int inet_rtm_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh,
+@@ -638,7 +644,7 @@ static int inet_rtm_deladdr(struct sk_bu
+ 			continue;
+ 
+ 		if (ipv4_is_multicast(ifa->ifa_address))
+-			ip_mc_config(net->ipv4.mc_autojoin_sk, false, ifa);
++			ip_mc_autojoin_config(net, false, ifa);
+ 		__inet_del_ifa(in_dev, ifap, 1, nlh, NETLINK_CB(skb).portid);
+ 		return 0;
  	}
- 	crst_table_init(s_r3t, _REGION3_ENTRY_EMPTY);
- 	/* mark as invalid as long as the parent table is not protected */
--- 
-2.20.1
-
+@@ -896,8 +902,7 @@ static int inet_rtm_newaddr(struct sk_bu
+ 		 */
+ 		set_ifa_lifetime(ifa, valid_lft, prefered_lft);
+ 		if (ifa->ifa_flags & IFA_F_MCAUTOJOIN) {
+-			int ret = ip_mc_config(net->ipv4.mc_autojoin_sk,
+-					       true, ifa);
++			int ret = ip_mc_autojoin_config(net, true, ifa);
+ 
+ 			if (ret < 0) {
+ 				inet_free_ifa(ifa);
 
 
