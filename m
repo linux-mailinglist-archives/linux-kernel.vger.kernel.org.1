@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49E81B4725
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310A51B4734
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgDVOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 10:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726720AbgDVOWj (ORCPT
+        id S1727836AbgDVO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 10:26:15 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:59258 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726414AbgDVO0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:22:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0473AC03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:22:39 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g13so2607696wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 07:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ufnee/q97CC1CGBkoV1pipCbIwuaBK73Df12DK7GmQM=;
-        b=G/q6n0qYA2Zalko2hOs1fOAoBG23c4arPJ4/nR/mgJ9jIpO6v9X61ryrLtTzpQQA6M
-         +lH71mW+Kg7emKULTYSSiElVHDq9SnlUfgpRkmingJxKtgeO9jkIDkvnfe8Vo15Z9F/W
-         JB/Y0biRf6LaEP6sU/CRAHP8FZmgXkAkMaoSebj0zqEhSuXchgKhNm1WvWmIWKmMf67E
-         DAUUSYEZNHkM4tfVpWxMjEUJV6jV4TLlme9exaNphU7HZfM792GczQTrvn/0h6J5mU7H
-         O8a4LiUqKwHRhbkk4sA/VQxLm4FyFtPzBdoGrdDYCp1ZYqX79Bhhw/F4dAHIRN1hLfUT
-         KMwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ufnee/q97CC1CGBkoV1pipCbIwuaBK73Df12DK7GmQM=;
-        b=Mvho7DNamEuIup3+zdYJAUu+DPBz/wNXtjoCQIZxYQcuSX91VzDlSXqB38E/DR246W
-         l6vf8CDAaz5q7H8JPtOcVOjRORwJ6lowW0DXcyoNzoIwcnjsyRpb03AlA4il2ux73e/X
-         hKXXTiygGIWJdkxMkbkqV4aKxlUT/p3YlBlBzdP955hHAQUK2ILEnGOdfLmyZDAlfHAr
-         GBK/1Y0pQAocfXZrhS5DRfNvpAOaaCyEEaxW8fZh6ZZjudQEnUtDKF5NFmEe1/Ihkx05
-         WsIPawTkHalo/wvsGaBvn2x1XnrMmWBhJvntP305X6U5OY/7mdFpGsEIFQKehYEygkp0
-         aVUw==
-X-Gm-Message-State: AGi0Puaaaz0naoIte+uPg2dY8n+tvAWggmFmeCJKRx1uZ4ucyVQEX3AU
-        NDQYi8pn5jU3flp0mTFKizE=
-X-Google-Smtp-Source: APiQypI7Ji2w+STU5RCXfOUCRhnwJ6IvSkfob35nBNPOrSZw/R9iM2Tj6zxzC0UkKIP1XK5+l7n9lQ==
-X-Received: by 2002:a5d:4b04:: with SMTP id v4mr31729231wrq.358.1587565357795;
-        Wed, 22 Apr 2020 07:22:37 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id b12sm9092431wro.18.2020.04.22.07.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 07:22:37 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 16:22:35 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/3] objtool: Rename elf_read() to elf_open_read()
-Message-ID: <20200422142235.GA2840@gmail.com>
-References: <20200422103205.61900-1-mingo@kernel.org>
- <20200422103205.61900-3-mingo@kernel.org>
- <20200422114342.GD20730@hirez.programming.kicks-ass.net>
+        Wed, 22 Apr 2020 10:26:15 -0400
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id A7F4B20CD7;
+        Wed, 22 Apr 2020 14:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587565563; bh=yzj3obMtgh8EsESdciGUOI+o2hcpe8mFlM3owBlPDbc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aBFA8jqB6F1yCUeQ5WILR6IdVp461Blt/Ilbt/Kw7E5zm1thEzKvXwMHs5Rrdmjpf
+         EKUTj2xxa2kFtfIZ7eVMktvv92vMXv2aXCJzC1FM7GjSMxp0QoDgmKsn3MxEoXD6O1
+         HlABW/gCmm4sqRom52dfvjNoKIa/BOgF9EqNkYo34YZygRFf1YIuZ6z3lpguDNWiDf
+         918pgBEweCrvnboY4Fk3O1t6ddslj+WE7Cvn05kCXK4TNmC0Hga9JIq3aprbRA+tRe
+         EEphAs8trrnx5brWYrikldA6sMVC0NjKBaAlx2w+bo2HHWeS8VkWUoDs0NRkIXQJr6
+         18AdUt4f2T85w==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org, maz@kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 0/6] Loongson PCH IRQ Support
+Date:   Wed, 22 Apr 2020 22:24:20 +0800
+Message-Id: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422114342.GD20730@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series mainly added IRQ support for Loongson-7A1000 PCH.
+DeviceTree will be added later as PCI support is also pending
+for reviewing.
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+Jiaxun Yang (6):
+  irqchip: Add Loongson HyperTransport Vector support
+  dt-bindings: interrupt-controller: Add Loongson HTVEC
+  irqchip: Add Loongson PCH PIC controller
+  dt-bindings: interrupt-controller: Add Loongson PCH PIC
+  irqchip: Add Loongson PCH MSI controller
+  dt-bindings: interrupt-controller: Add Loongson PCH MSI
 
-> On Wed, Apr 22, 2020 at 12:32:04PM +0200, Ingo Molnar wrote:
-> > 'struct elf *' handling is an open/close paradigm, make sure the naming
-> > matches that:
-> > 
-> >    elf_open_read()
-> >    elf_write()
-> >    elf_close()
-> 
-> 
-> > diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> > index f2a84271e807..12e2aea42bb2 100644
-> > --- a/tools/objtool/check.c
-> > +++ b/tools/objtool/check.c
-> > @@ -2614,7 +2614,7 @@ int check(const char *_objname, bool orc)
-> >  
-> >  	objname = _objname;
-> >  
-> > -	file.elf = elf_read(objname, orc ? O_RDWR : O_RDONLY);
-> > +	file.elf = elf_open_read(objname, orc ? O_RDWR : O_RDONLY);
-> 
-> Note that I have a patch pending that makes that unconditionally O_RDWR,
-> which sort of seems to suggest elf_open() might be the better name.
+ .../interrupt-controller/loongson,htvec.yaml  |  59 ++++
+ .../loongson,pch-msi.yaml                     |  56 ++++
+ .../loongson,pch-pic.yaml                     |  55 ++++
+ drivers/irqchip/Kconfig                       |  26 ++
+ drivers/irqchip/Makefile                      |   3 +
+ drivers/irqchip/irq-loongson-htvec.c          | 217 ++++++++++++++
+ drivers/irqchip/irq-loongson-pch-msi.c        | 265 ++++++++++++++++++
+ drivers/irqchip/irq-loongson-pch-pic.c        | 256 +++++++++++++++++
+ 8 files changed, 937 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,htvec.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
+ create mode 100644 drivers/irqchip/irq-loongson-htvec.c
+ create mode 100644 drivers/irqchip/irq-loongson-pch-msi.c
+ create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
 
-Ok, done!
+-- 
+2.26.0.rc2
 
-Thanks,
-
-	Ingo
