@@ -2,87 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDDC1B4138
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9376C1B40B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732182AbgDVKvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:51:08 -0400
-Received: from disco-boy.misterjones.org ([51.254.78.96]:48482 "EHLO
-        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728702AbgDVKvF (ORCPT
+        id S1729858AbgDVKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729738AbgDVKPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:51:05 -0400
-X-Greylist: delayed 2170 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 06:51:03 EDT
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@misterjones.org>)
-        id 1jRCOi-005RP3-VM; Wed, 22 Apr 2020 11:14:29 +0100
+        Wed, 22 Apr 2020 06:15:51 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE03C03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:15:51 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id y10so1016289uao.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ent6+GWTAd1CN2cQFL7owIeVj6EL283gNxioSTs4l5o=;
+        b=F32QzgthXD2jgAuQ+ulZ7jjKUc5cEILBetXy1JuSILGE0igdjC2J+lnu2jSNRH5O+P
+         iUF47dndUkLlazROwjFbGHDTMtiDDzdTJikSM1TF/CvtD9WvqW2VEQhu2wAO7wiglWL6
+         MMekwxK9vV8suAiRek8nAFqL0lJwXKAZSg3US0Bj/E8at5iKP/lc/QmsNULdHi2kp33H
+         l7srBJ5x4usVwd4oulnyViwGb5/3CGCvs0VwhB5f6oXkQD2pcAy+Y2XagtstUjUHbi+e
+         4bHO8GzDRl86l2mdjcRT43iujjarSg946/pa9aUENTDs7od6CaGTzGwAuHdVlQUIjgtm
+         v/yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ent6+GWTAd1CN2cQFL7owIeVj6EL283gNxioSTs4l5o=;
+        b=sey+Go+j5bRbein0JCBtuAO9N6/prJFIApMI+wDFvVU0h1PT016wXCyR2ak+KFap7Z
+         E25kbVng6RGb9FlzHNe6O1dQu1vfyR0NSgO+/0fAKblwbhv8LW0ONhXDRa0QLvT9r3pX
+         EVkU+h/yjdimcnTzd2px/CUk7zwmqrQNde4n6A1WGKW91R6ZdJiCitJohrLyNS0SEkxw
+         YgK3xtpjn3UbvVykny8n+fOHjq5XKNxPGXhlhpkn/bTmbSs01xHs1eFMMAz9FyO7XzMM
+         edoXo7VAJpBWOi6Bp1GLw4y3IwiuXHySFrI/3AC6MzzhChQTqwNW9k0/D7PxFCFew2YX
+         4Unw==
+X-Gm-Message-State: AGi0PubAChVQRHYe+IaotIhRUyma6HjV1FYhwrS1cBRdpwCus6GTsg7Y
+        p8KJ5NCEa3BpnVodLFRFxfWyRcRxylo6QyePpkAkVQ==
+X-Google-Smtp-Source: APiQypLkLgLmjx37u5zwjtD+wcJhoFaiBukTOUSNTmPHeMUtYrDFKBnEw8llvD54u+Y56sM/sAqQ1C17tA2NQVE11MY=
+X-Received: by 2002:ab0:2ea:: with SMTP id 97mr15760020uah.129.1587550548143;
+ Wed, 22 Apr 2020 03:15:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 22 Apr 2020 11:14:28 +0100
-From:   Marc Zyngier <maz@misterjones.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     tglx@linutronix.de, pbonzini@redhat.com, kvm@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>, peterz@infradead.org,
-        torvalds@linux-foundation.org, bigeasy@linutronix.de,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        joel@joelfernandes.org, will@kernel.org,
-        kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH 4/5] kvm: Replace vcpu->swait with rcuwait
-In-Reply-To: <20200422040739.18601-5-dave@stgolabs.net>
-References: <20200422040739.18601-1-dave@stgolabs.net>
- <20200422040739.18601-5-dave@stgolabs.net>
-Message-ID: <a6e848e46f3c865f6b9d2771c8aad37a@misterjones.org>
-X-Sender: maz@misterjones.org
-User-Agent: Roundcube Webmail/1.3.10
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dave@stgolabs.net, tglx@linutronix.de, pbonzini@redhat.com, kvm@vger.kernel.org, dbueso@suse.de, peterz@infradead.org, torvalds@linux-foundation.org, bigeasy@linutronix.de, linux-kernel@vger.kernel.org, rostedt@goodmis.org, linux-mips@vger.kernel.org, paulus@ozlabs.org, joel@joelfernandes.org, will@kernel.org, kvmarm@lists.cs.columbia.edu
-X-SA-Exim-Mail-From: maz@misterjones.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200417145017.3932443d@canb.auug.org.au> <995a958c-15a1-cb05-e276-065c7f6e57fd@infradead.org>
+ <CAPDyKFqE7zfaKSbpBoBbrSCEnx+70dOrWs+=QG_x2G-Fpt6=ng@mail.gmail.com>
+ <ce11a0b5-22a6-dd18-f858-5d30f43e1128@intel.com> <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
+In-Reply-To: <CAK7LNARCT3YQEnVE0NMCphSuqvjLoG2EXdpdcAZuoEOD_mFyEw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 22 Apr 2020 12:15:12 +0200
+Message-ID: <CAPDyKFqCnUzHQ9+FKH-w_VLRNQ_UvK4nmxw+hROwXkxucjzrUw@mail.gmail.com>
+Subject: Re: linux-next: Tree for Apr 17 (mmc/host/sdhci-of-at91.c)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ludovic Desroches <ludovic.desroches@atmel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-22 05:07, Davidlohr Bueso wrote:
-> The use of any sort of waitqueue (simple or regular) for
-> wait/waking vcpus has always been an overkill and semantically
-> wrong. Because this is per-vcpu (which is blocked) there is
-> only ever a single waiting vcpu, thus no need for any sort of
-> queue.
-> 
-> As such, make use of the rcuwait primitive, with the following
-> considerations:
-> 
->   - rcuwait already provides the proper barriers that serialize
->   concurrent waiter and waker.
-> 
->   - Task wakeup is done in rcu read critical region, with a
->   stable task pointer.
-> 
->   - Because there is no concurrency among waiters, we need
->   not worry about rcuwait_wait_event() calls corrupting
->   the wait->task. As a consequence, this saves the locking
->   done in swait when modifying the queue. This also applies
->   to per-vcore wait for powerpc kvm-hv.
-> 
-> The x86 tscdeadline_latency test mentioned in 8577370fb0cb
-> ("KVM: Use simple waitqueue for vcpu->wq") shows that, on avg,
-> latency is reduced by around 15-20% with this change.
-> 
-> Cc: Paul Mackerras <paulus@ozlabs.org>
-> Cc: kvmarm@lists.cs.columbia.edu
-> Cc: linux-mips@vger.kernel.org
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+On Mon, 20 Apr 2020 at 14:28, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Mon, Apr 20, 2020 at 7:28 PM Adrian Hunter <adrian.hunter@intel.com> w=
+rote:
+> >
+> > On 20/04/20 12:12 pm, Ulf Hansson wrote:
+> > > + Masahiro Yamada, Adrian Hunter
+> > >
+> > > On Fri, 17 Apr 2020 at 16:48, Randy Dunlap <rdunlap@infradead.org> wr=
+ote:
+> > >>
+> > >> On 4/16/20 9:50 PM, Stephen Rothwell wrote:
+> > >>> Hi all,
+> > >>>
+> > >>> Changes since 20200416:
+> > >>>
+> > >>
+> > >> on i386:
+> > >>
+> > >>   CC      drivers/mmc/host/sdhci-of-at91.o
+> > >> In file included from ../include/linux/build_bug.h:5:0,
+> > >>                  from ../include/linux/bitfield.h:10,
+> > >>                  from ../drivers/mmc/host/sdhci-of-at91.c:9:
+> > >> ../drivers/mmc/host/sdhci-of-at91.c: In function =E2=80=98sdhci_at91=
+_set_clks_presets=E2=80=99:
+> > >> ../include/linux/compiler.h:394:38: error: call to =E2=80=98__compil=
+etime_assert_63=E2=80=99 declared with attribute error: FIELD_PREP: value t=
+oo large for the field
+> > >>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+> > >>                                       ^
+> > >> ../include/linux/compiler.h:375:4: note: in definition of macro =E2=
+=80=98__compiletime_assert=E2=80=99
+> > >>     prefix ## suffix();    \
+> > >>     ^~~~~~
+> > >> ../include/linux/compiler.h:394:2: note: in expansion of macro =E2=
+=80=98_compiletime_assert=E2=80=99
+> > >>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNT=
+ER__)
+> > >>   ^~~~~~~~~~~~~~~~~~~
+> > >> ../include/linux/build_bug.h:39:37: note: in expansion of macro =E2=
+=80=98compiletime_assert=E2=80=99
+> > >>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg=
+)
+> > >>                                      ^~~~~~~~~~~~~~~~~~
+> > >> ../include/linux/bitfield.h:49:3: note: in expansion of macro =E2=80=
+=98BUILD_BUG_ON_MSG=E2=80=99
+> > >>    BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?  \
+> > >>    ^~~~~~~~~~~~~~~~
+> > >> ../include/linux/bitfield.h:94:3: note: in expansion of macro =E2=80=
+=98__BF_FIELD_CHECK=E2=80=99
+> > >>    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
+> > >>    ^~~~~~~~~~~~~~~~
+> > >> ../drivers/mmc/host/sdhci-of-at91.c:185:11: note: in expansion of ma=
+cro =E2=80=98FIELD_PREP=E2=80=99
+> > >>   caps1 |=3D FIELD_PREP(SDHCI_CLOCK_MUL_MASK, clk_mul);
+> >
+> > My guess is the compiler has decided clk_mul is constant (probably (uns=
+igned
+> > int)-1) because there is no CONFIG_COMMON_CLK i.e. clk_get_rate() is 0
+> >
+> > So maybe add to config MMC_SDHCI_OF_AT91
+> >
+> >         depends on COMMON_CLK
+> >
+> > >>            ^~~~~~~~~~
+>
+>
+>
+> I checked include/linux/clk.h
+>
+>
+> clk_get_rate() is guarded by CONFIG_HAVE_CLK.
+>
+> I think
+>
+>     depends on HAVE_CLK
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Do you have the possibility of sending a patch, asap. Otherwise I can
+help to do it!?
 
-Thanks,
-
-         M.
--- 
-Who you jivin' with that Cosmik Debris?
+Kind regards
+Uffe
