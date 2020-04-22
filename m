@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6AD1B3C0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059861B4062
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbgDVKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
+        id S1731735AbgDVKpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgDVKBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:01:51 -0400
+        id S1729882AbgDVKRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:17:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F7962084D;
-        Wed, 22 Apr 2020 10:01:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D80E22076B;
+        Wed, 22 Apr 2020 10:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549711;
-        bh=K/G1Ol3Qn2eJB/T6A0kj+OvSzOLbRHOEM+bWIrOdrnI=;
+        s=default; t=1587550670;
+        bh=oooFEStGUZHNuhXxGFvK4GTwAIxHao8rhtCGvyKcdGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAwQcOs5EI61zwAIzY+gJRYEW13bJirBddOWR6DgUJHcyV51OkghEM6eh2UMLmNVx
-         dVFvnlT+kpux1ged8iHkC2RYhgRaHNlQEKojHfLCaFiuDhVEP3h9jDiB4LRtuGekAo
-         r/O9eggixDnL/tqdUNz0ttXfXmxuqPISgFOf9/gA=
+        b=gWQ1/6DBw/4DFvh9GauDMLZpHoWdrQ8aQHy4+TUiRk5m26Q/LgOFSJPLUSIYTik63
+         eRC2saUGJ1u0Hy1KpZkpbHL4abqybF4d2n4L1ps0LJV/2/kl6sorRlrIQREAERkKc1
+         2BLHhhGeH9YRQSXgtdY7PplofIafjiqF3qo4P0fA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hamad Kadmany <hkadmany@codeaurora.org>,
-        Maya Erez <merez@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 076/100] wil6210: increase firmware ready timeout
-Date:   Wed, 22 Apr 2020 11:56:46 +0200
-Message-Id: <20200422095036.785246209@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 046/118] arm64: dts: clearfog-gt-8k: set gigabit PHY reset deassert delay
+Date:   Wed, 22 Apr 2020 11:56:47 +0200
+Message-Id: <20200422095039.517795504@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+References: <20200422095031.522502705@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamad Kadmany <hkadmany@codeaurora.org>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 6ccae584014ef7074359eb4151086beef66ecfa9 ]
+[ Upstream commit 46f94c7818e7ab82758fca74935ef3d454340b4e ]
 
-Firmware ready event may take longer than
-current timeout in some scenarios, for example
-with multiple RFs connected where each
-requires an initial calibration.
+If the mv88e6xxx DSA driver is built as a module, it causes the
+ethernet driver to re-probe when it's loaded. This in turn causes
+the gigabit PHY to be momentarily reset and reprogrammed. However,
+we attempt to reprogram the PHY immediately after deasserting reset,
+and the PHY ignores the writes.
 
-Increase the timeout to support these scenarios.
+This results in the PHY operating in the wrong mode, and the copper
+link states down.
 
-Signed-off-by: Hamad Kadmany <hkadmany@codeaurora.org>
-Signed-off-by: Maya Erez <merez@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Set a reset deassert delay of 10ms for the gigabit PHY to avoid this.
+
+Fixes: babc5544c293 ("arm64: dts: clearfog-gt-8k: 1G eth PHY reset signal")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Acked-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wil6210/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/wireless/ath/wil6210/main.c
-+++ b/drivers/net/wireless/ath/wil6210/main.c
-@@ -741,7 +741,7 @@ static void wil_bl_crash_info(struct wil
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+index a211a046b2f2f..b90d78a5724b2 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+@@ -367,6 +367,7 @@
+ 		pinctrl-0 = <&cp0_copper_eth_phy_reset>;
+ 		reset-gpios = <&cp0_gpio2 11 GPIO_ACTIVE_LOW>;
+ 		reset-assert-us = <10000>;
++		reset-deassert-us = <10000>;
+ 	};
  
- static int wil_wait_for_fw_ready(struct wil6210_priv *wil)
- {
--	ulong to = msecs_to_jiffies(1000);
-+	ulong to = msecs_to_jiffies(2000);
- 	ulong left = wait_for_completion_timeout(&wil->wmi_ready, to);
- 
- 	if (0 == left) {
+ 	switch0: switch0@4 {
+-- 
+2.20.1
+
 
 
