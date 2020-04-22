@@ -2,71 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953021B465D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320481B4666
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 15:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgDVNjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 09:39:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:56274 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgDVNjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 09:39:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=k+1cIh8XjYZNIJTil34Mdg1G0PNol/tREUjipVfCnrY=; b=5yXS+Gp2kRNtwZC+GWd7ec6S9C
-        ArpFHQok6rG9P31AYY4mjSNnrgrFOXtLx0HyZJucIv9v05OnD/zsWJH+sKznoZv0+voggepI1GITW
-        Fk8/jIo7um77GRCw7JiQHifdZndY58ZP2QeH5tPk/LoFl+Z/QAzNYcLRIvoXzXMSyU8I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jRFaz-004D3b-A3; Wed, 22 Apr 2020 15:39:21 +0200
-Date:   Wed, 22 Apr 2020 15:39:21 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        David Jander <david@protonic.nl>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v3] net: phy: micrel: add phy-mode support for
- the KSZ9031 PHY
-Message-ID: <20200422133921.GA974925@lunn.ch>
-References: <20200422072137.8517-1-o.rempel@pengutronix.de>
+        id S1726833AbgDVNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 09:40:42 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36246 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726158AbgDVNkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 09:40:41 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MDcOSJ007859;
+        Wed, 22 Apr 2020 15:40:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=ZeG5MEBElFGxvDwVRDIezNZHBbeSXf35WjhoaaZsj6A=;
+ b=jO+y+5a32gAoEFM1QqBzK5iYTjSmrs7P8SuFYvtFR+W3OnGhd/4Gp2BDA+qrlTFbFTsJ
+ BMn/lRxiRcbFnqblJhnf66LRE9O5sRx/AVwyDw4vAR9QnnI8f45cuFdhMWDmbuTrSvve
+ r/QZ4eDjlMGNpiKxrPC7aMnHM/XUFDgUpURhbDLJNeg8kMRXvtNWCChZlPVwjRhCPwLr
+ KsSAgre6hLBCL0tCNVVJTIRtjNULSb8E/g+FBEyovrkI4Gbgb3I/NKjZJhC+/UFoC6pi
+ x+VoUY4+cq/cYppqFIlXllWqSMXhqt1SgXCeVltwpvaV7u0MUR8TDZYQ3JqT1dXmpTRW og== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fregpq4d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Apr 2020 15:40:09 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 951D310002A;
+        Wed, 22 Apr 2020 15:40:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8015C2B1889;
+        Wed, 22 Apr 2020 15:40:07 +0200 (CEST)
+Received: from lmecxl0923.lme.st.com (10.75.127.44) by SFHDAG6NODE1.st.com
+ (10.75.127.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Apr
+ 2020 15:40:06 +0200
+Subject: Re: [PATCH] mmc: mmci_sdmmc: fix power on issue due to pwr_reg
+ initialization
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20200420161831.5043-1-ludovic.barre@st.com>
+ <CAPDyKFqC3fdnQ9CMYhS-=5MiCET=r5Az2S5oFoA2v1gdDeGO3w@mail.gmail.com>
+ <CAPDyKFrHcoVd=GKPB70gOFE8STOnTJrJbcZzE_DEgFWh1Vhszg@mail.gmail.com>
+From:   Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <1d9cefd1-aaed-1eb5-92f2-b1f45b4da2ac@st.com>
+Date:   Wed, 22 Apr 2020 15:40:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422072137.8517-1-o.rempel@pengutronix.de>
+In-Reply-To: <CAPDyKFrHcoVd=GKPB70gOFE8STOnTJrJbcZzE_DEgFWh1Vhszg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG6NODE1.st.com
+ (10.75.127.16)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_06:2020-04-22,2020-04-22 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 09:21:37AM +0200, Oleksij Rempel wrote:
-> Add support for following phy-modes: rgmii, rgmii-id, rgmii-txid, rgmii-rxid.
-> 
-> This PHY has an internal RX delay of 1.2ns and no delay for TX.
-> 
-> The pad skew registers allow to set the total TX delay to max 1.38ns and
-> the total RX delay to max of 2.58ns (configurable 1.38ns + build in
-> 1.2ns) and a minimal delay of 0ns.
-> 
-> According to the RGMII v1.3 specification the delay provided by PCB traces
-> should be between 1.5ns and 2.0ns. The RGMII v2.0 allows to provide this
-> delay by MAC or PHY. So, we configure this PHY to the best values we can
-> get by this HW: TX delay to 1.38ns (max supported value) and RX delay to
-> 1.80ns (best calculated delay)
-> 
-> The phy-modes can still be fine tuned/overwritten by *-skew-ps
-> device tree properties described in:
-> Documentation/devicetree/bindings/net/micrel-ksz90x1.txt
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+hi Ulf
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Le 4/21/20 à 11:38 AM, Ulf Hansson a écrit :
+> On Tue, 21 Apr 2020 at 11:25, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>>
+>> On Mon, 20 Apr 2020 at 18:18, Ludovic Barre <ludovic.barre@st.com> wrote:
+>>>
+>>> This patch fix a power-on issue, and avoid to retry the power sequence.
+>>>
+>>> In power off sequence: sdmmc must set pwr_reg in "power-cycle" state
+>>> (value 0x2), to prevent the card from being supplied through the signal
+>>> lines (all the lines are driven low).
+>>>
+>>> In power on sequence: when the power is stable, sdmmc must set pwr_reg
+>>> in "power-off" state (value 0x0) to drive all signal to high before to
+>>> set "power-on".
+>>
+>> Just a question to gain further understanding.
+>>
+>> Let's assume that the controller is a power-on state, because it's
+>> been initialized by the boot loader. When the mmc core then starts the
+>> power-on sequence (not doing a power-off first), would $subject patch
+>> then cause the
+>> MMCIPOWER to remain as is, or is it going to be overwritten?
 
-    Andrew
+On sdmmc controller, the PWRCTRL[1:0] field of MMCIPOWER register allow
+to manage sd lines and has a specific bahavior.
+
+PWRCTRL value:
+  - 0x0: After reset, Reset: the SDMMC is disabled and the clock to the
+         Card is stopped, SDMMC_D[7:0], and SDMMC_CMD are HiZ and
+         SDMMC_CK is driven low.
+         When written 00, power-off: the SDMMC is disabled and the clock
+         to the card is stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK
+         are driven high.
+
+  - 0x2: Power-cycle, the SDMMC is disabled and the clock to the card is
+         stopped, SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are driven low.
+
+  - 0x3: Power-on: the card is clocked, The first 74 SDMMC_CK cycles the
+         SDMMC is still disabled. After the 74 cycles the SDMMC is
+         enabled and the SDMMC_D[7:0], SDMMC_CMD and SDMMC_CK are
+         controlled according the SDMMC operation.
+         **Any further write will be ignored, PWRCTRL value
+         will keep 0x3**. when the SDMMC is ON (0x3) only a reset could
+         change pwrctrl value and the state of sdmmc lines.
+
+So if the lines are already "ON", the power-on sequence (decribed in
+commit message) not overwrite the pwctrl field and not disturb the sdmmc 
+lines.
+
+>>
+>> I am a little worried that we may start to rely on boot loader
+>> conditions, which isn't really what we want either...
+>>
+
+We not depend of boot loader conditions.
+
+This patch simply allows to drive high the sd lines before to set
+"power-on" value (no effect if already power ON).
+
+>>>
+>>> To avoid writing the same value to the power register several times, this
+>>> register is cached by the pwr_reg variable. At probe pwr_reg is initialized
+>>> to 0 by kzalloc of mmc_alloc_host.
+>>>
+>>> Like pwr_reg value is 0 at probing, the power on sequence fail because
+>>> the "power-off" state is not writes (value 0x0) and the lines
+>>> remain drive to low.
+>>>
+>>> This patch initializes "pwr_reg" variable with power register value.
+>>> This it done in sdmmc variant init to not disturb default mmci behavior.
+>>>
+>>> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+>>
+>> Besides the comment, the code and the approach seems reasonable to me.
+> 
+> Another related question. I just realized why you probably haven't set
+> .pwrreg_nopower for the variant_stm32_sdmmc and variant_stm32_sdmmcv2.
+> 
+> I guess it's because you need a slightly different way to restore the
+> context of MMCIPOWER register at ->runtime_resume(), rather than just
+> re-writing it with the saved register values. Is this something that
+> you are looking into as well?
+
+Yes exactly, the sequence is slightly different. I can't write 0 on 
+mmci_runtime_suspend, and can't just re-writing the saved register.
+
+Regards
+Ludo
+
+> 
+> [...]
+> 
+> Kind regards
+> Uffe
+> 
