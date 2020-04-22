@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CA51B3CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D389D1B3D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgDVKK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728984AbgDVKKS (ORCPT
+        id S1729140AbgDVKLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:11:05 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:57691 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729105AbgDVKK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:10:18 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BF3C03C1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:10:18 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x23so1180894lfq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 03:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C6DnVKRB6NIRjwPWAXMLQ0NJgkEo62OoeU3KPTioqDw=;
-        b=KObRodabLDVnh1RpbkhyXvi3gbBuwT9PIEfxCQHFdpvCFUN4d+kPA4VAHcRZ0RmfVZ
-         4wIxqA6/QeN4pIEGPxiruC+Wizaj1UgClk2twBJwLYA2KBkeFCQVRwwAjmdMB/BoSkB6
-         r0AGQiT09nh4MdZh/BYj9bHL+W2gJtzl2/Z/wSMvMN7E0k10z4EmkCrpKMeu3+5jfc98
-         JQsmBEmWCQqQBBzMEAC9wIQz0e2+Tu9TzKVjO/TR1zp3LnZK8eP8DzkVpWzZzZeasvxE
-         +Ex9E8rxacadZ+yRRA/FMveBBk1RwMPUPgpDv6wlQi9J/i9v18jGoBlxjLEMNJRwtqTs
-         wGPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C6DnVKRB6NIRjwPWAXMLQ0NJgkEo62OoeU3KPTioqDw=;
-        b=UIzK7rwodqyoqdMr3nWCE3KEHUbY9NR1F3clstPO4YXhtumsWlJVKECyPCHtRtJe6O
-         4ID85BfytclSgqZ0AioOud2W2u0YCt+/9MzllXbGtuD6zGlAM1+VU3O6L/Jvrip+J7P8
-         Jb1BCZ3ohc7vC9XHBTTEW/0VsGNng41plI3yrH4Nr2BlIB8ktLOBNIpctPEOeo+K0Odz
-         HzMtVO4mKxjwyOc/5NjHVJ3VfDKiasGrkKTLPVuNOuvvsqXGjMp2wa3yKeB0YmW9b8zu
-         Jsiyif2F2XGH0bM/tjVmIaeMQJMu0Gr+VlOk6GjZgWl8/DVWc+oiApacoWdVJ4kKRJ0i
-         V6Eg==
-X-Gm-Message-State: AGi0PubL0MGjTMnpKFBX8y4W15nSsc8MwyveNq16HUhaG6lHz0FlJ+lP
-        vGIoCLtVEdzZKiu4OQtsdfN9Yg==
-X-Google-Smtp-Source: APiQypLiEWMoI272TzvgNnpPzocl0qlAVahabYTkLZn37KAuy/71WeWwggv4+DDRNoenNgGXkegsaw==
-X-Received: by 2002:a19:ee11:: with SMTP id g17mr16425495lfb.42.1587550216225;
-        Wed, 22 Apr 2020 03:10:16 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-181-7.NA.cust.bahnhof.se. [98.128.181.7])
-        by smtp.gmail.com with ESMTPSA id s6sm4246018lfs.74.2020.04.22.03.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 03:10:15 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Russell King <linux@armlinux.org.uk>,
+        Wed, 22 Apr 2020 06:10:57 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 64B203C004C;
+        Wed, 22 Apr 2020 12:10:54 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oguoUnbPx3nK; Wed, 22 Apr 2020 12:10:49 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 69CC13C057F;
+        Wed, 22 Apr 2020 12:10:49 +0200 (CEST)
+Received: from lxhi-065.adit-jv.com (10.72.94.60) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 22 Apr
+ 2020 12:10:48 +0200
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     <linux-renesas-soc@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vinod Koul <vkoul@kernel.org>, Haibo Chen <haibo.chen@nxp.com>,
-        Ludovic Barre <ludovic.barre@st.com>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>, stable@vger.kernel.org
-Subject: [RESEND PATCH v2 2/2] amba: Initialize dma_parms for amba devices
-Date:   Wed, 22 Apr 2020 12:10:13 +0200
-Message-Id: <20200422101013.31267-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Chris Paterson <chris.paterson2@renesas.com>,
+        Yusuke Ashiduka <ashiduka@fujitsu.com>,
+        Torii Kenichi <torii.ken1@jp.fujitsu.com>,
+        Fukui Yohhei <yohhei.fukui@denso-ten.com>,
+        Yasushi Asano <yasano@jp.adit-jv.com>,
+        Yuichi Kusakabe <yuichi.kusakabe@denso-ten.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Jiada Wang <jiada_wang@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Eugeniu Rosca <rosca.eugeniu@gmail.com>
+Subject: [RFC PATCH 0/3] gpio: rcar: Add support for GPIO alternative interrupt
+Date:   Wed, 22 Apr 2020 12:10:23 +0200
+Message-ID: <20200422101026.9220-1-erosca@de.adit-jv.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.72.94.60]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's currently the amba driver's responsibility to initialize the pointer,
-dma_parms, for its corresponding struct device. The benefit with this
-approach allows us to avoid the initialization and to not waste memory for
-the struct device_dma_parameters, as this can be decided on a case by case
-basis.
+The motivation behind this series is described in commit
+("gpio: rcar: Add support for GPIO alternative interrupt").
 
-However, it has turned out that this approach is not very practical. Not
-only does it lead to open coding, but also to real errors. In principle
-callers of dma_set_max_seg_size() doesn't check the error code, but just
-assumes it succeeds.
+The reasons for which RFC tag is attached are:
+ - Have Renesas/linux-gpio communities been facing GPIO interrupt
+   partitioning questions in the past (specifically AP vs RT)?
+ - Is it a no-go to have mandatory DTS dependencies like updating
+   'interrupts' on specifying the new 'use-alternative-interrupt'?
 
-For these reasons, let's do the initialization from the common amba bus at
-the device registration point. This also follows the way the PCI devices
-are being managed, see pci_device_add().
+Many thanks for your comments!
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: <stable@vger.kernel.org>
-Tested-by: Haibo Chen <haibo.chen@nxp.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/amba/bus.c       | 1 +
- include/linux/amba/bus.h | 1 +
- 2 files changed, 2 insertions(+)
+Eugeniu Rosca (1):
+  [LOCAL] arm64: dts: renesas: ulcb: Showcase 'use-alternative-interrupt'
 
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index fe1523664816..8558b629880b 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -645,6 +645,7 @@ static void amba_device_initialize(struct amba_device *dev, const char *name)
- 	dev->dev.release = amba_device_release;
- 	dev->dev.bus = &amba_bustype;
- 	dev->dev.dma_mask = &dev->dev.coherent_dma_mask;
-+	dev->dev.dma_parms = &dev->dma_parms;
- 	dev->res.name = dev_name(&dev->dev);
- }
- 
-diff --git a/include/linux/amba/bus.h b/include/linux/amba/bus.h
-index 26f0ecf401ea..0bbfd647f5c6 100644
---- a/include/linux/amba/bus.h
-+++ b/include/linux/amba/bus.h
-@@ -65,6 +65,7 @@ struct amba_device {
- 	struct device		dev;
- 	struct resource		res;
- 	struct clk		*pclk;
-+	struct device_dma_parameters dma_parms;
- 	unsigned int		periphid;
- 	unsigned int		cid;
- 	struct amba_cs_uci_id	uci;
+Torii Kenichi (2):
+  dt-bindings: gpio-rcar: Add optional use-alternative-interrupt property
+  gpio: rcar: Add support for GPIO alternative interrupt
+
+ Documentation/devicetree/bindings/gpio/renesas,gpio-rcar.txt |  3 +++
+ arch/arm64/boot/dts/renesas/ulcb.dtsi                        | 40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/gpio/gpio-rcar.c                                     | 22 +++++++++++++++++-----
+ 3 files changed, 60 insertions(+), 5 deletions(-)
+
 -- 
-2.20.1
+2.26.0
 
