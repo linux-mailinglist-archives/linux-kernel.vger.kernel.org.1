@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5BB1B3D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F861B3C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 12:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgDVKOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 06:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
+        id S1726962AbgDVKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 06:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729466AbgDVKOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:14:00 -0400
+        id S1726046AbgDVKCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:02:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7A5220775;
-        Wed, 22 Apr 2020 10:13:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA73C2076C;
+        Wed, 22 Apr 2020 10:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587550440;
-        bh=3Z5JyLwQNBx9DKwIuJSFdTwrYfhOFuoxKbc227IbNgo=;
+        s=default; t=1587549730;
+        bh=qo1XiaGrM/lXuq9vYY4i7BcKmhXgjNcRBrvpB4dm4uc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cdh8giHBOE/HgIAELwMKhvj3Snr4ueaLWgPdpvpPE2NBbGjURrfgVjIk/fEEUBM9f
-         ETlxQr0ap+tfX59trXLGunIqwpCZzKX+TeQ/juoCpxap0cDISk5xUXux9e3b91Lshm
-         oJ+vr8wjDzGMjXjuzh3f593SZKjfItoIQGNPedm4=
+        b=AcB/KKjL1CRM28w6ujXEGR3C8t+dWM7+t/FZ+gb9TB40eqyF0Gjc6XlSLtwexJVu/
+         4qjftLXS/wJQ2EBtq+BBW5YXFTx/TRK+AoB6rz2/LVorQ+zc8wI4w1f1QKfc4P4d10
+         Bvkbb162q6cMGz4OFhZpCBKmLloNpeYrsrO2XaiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 09/64] irqchip/mbigen: Free msi_desc on device teardown
+        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
+        Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 083/100] of: unittest: kmemleak in of_unittest_platform_populate()
 Date:   Wed, 22 Apr 2020 11:56:53 +0200
-Message-Id: <20200422095014.189446952@linuxfoundation.org>
+Message-Id: <20200422095037.982396842@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095008.799686511@linuxfoundation.org>
-References: <20200422095008.799686511@linuxfoundation.org>
+In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
+References: <20200422095022.476101261@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Frank Rowand <frank.rowand@sony.com>
 
-commit edfc23f6f9fdbd7825d50ac1f380243cde19b679 upstream.
+[ Upstream commit 216830d2413cc61be3f76bc02ffd905e47d2439e ]
 
-Using irq_domain_free_irqs_common() on the irqdomain free path will
-leave the MSI descriptor unfreed when platform devices get removed.
-Properly free it by MSI domain free function.
+kmemleak reports several memory leaks from devicetree unittest.
+This is the fix for problem 2 of 5.
 
-Fixes: 9650c60ebfec0 ("irqchip/mbigen: Create irq domain for each mbigen device")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200408114352.1604-1-yuzenghui@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+of_unittest_platform_populate() left an elevated reference count for
+grandchild nodes (which are platform devices).  Fix the platform
+device reference counts so that the memory will be freed.
 
+Fixes: fb2caa50fbac ("of/selftest: add testcase for nodes with same name and address")
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-mbigen.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/of/unittest.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/irqchip/irq-mbigen.c
-+++ b/drivers/irqchip/irq-mbigen.c
-@@ -231,10 +231,16 @@ static int mbigen_irq_domain_alloc(struc
- 	return 0;
- }
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index 1ee2474fa8fbb..109497dbfba08 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -816,10 +816,13 @@ static void __init of_unittest_platform_populate(void)
  
-+static void mbigen_irq_domain_free(struct irq_domain *domain, unsigned int virq,
-+				   unsigned int nr_irqs)
-+{
-+	platform_msi_domain_free(domain, virq, nr_irqs);
-+}
-+
- static const struct irq_domain_ops mbigen_domain_ops = {
- 	.translate	= mbigen_domain_translate,
- 	.alloc		= mbigen_irq_domain_alloc,
--	.free		= irq_domain_free_irqs_common,
-+	.free		= mbigen_irq_domain_free,
- };
+ 	of_platform_populate(np, match, NULL, &test_bus->dev);
+ 	for_each_child_of_node(np, child) {
+-		for_each_child_of_node(child, grandchild)
+-			unittest(of_find_device_by_node(grandchild),
++		for_each_child_of_node(child, grandchild) {
++			pdev = of_find_device_by_node(grandchild);
++			unittest(pdev,
+ 				 "Could not create device for node '%s'\n",
+ 				 grandchild->name);
++			of_dev_put(pdev);
++		}
+ 	}
  
- static int mbigen_of_create_domain(struct platform_device *pdev,
+ 	of_platform_depopulate(&test_bus->dev);
+-- 
+2.20.1
+
 
 
