@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6424C1B3604
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D421B35F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Apr 2020 06:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgDVEMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 00:12:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60174 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgDVEL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 00:11:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1E94DAE6E;
-        Wed, 22 Apr 2020 04:11:55 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de, pbonzini@redhat.com
-Cc:     bigeasy@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        torvalds@linux-foundation.org, will@kernel.org,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 5/5] sched/swait: Reword some of the main description
-Date:   Tue, 21 Apr 2020 21:07:39 -0700
-Message-Id: <20200422040739.18601-6-dave@stgolabs.net>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200422040739.18601-1-dave@stgolabs.net>
-References: <20200422040739.18601-1-dave@stgolabs.net>
+        id S1726398AbgDVEL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 00:11:28 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40030 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgDVEL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 00:11:27 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M48PF0146397;
+        Wed, 22 Apr 2020 04:09:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=LJPIxEjvAyJWR1bKqIIXFUCN6Ey7++feqURLD0U6oLI=;
+ b=toMAIth/pZ777CW06WY28Ymy/PFJDn70Ouu6E35/v1vbIGYXkezRh78f6jM4AYPwrRpt
+ JhvMsmaF78pZfTvL4phl/zfVdrOEut1UjUQns3qJ/bs06BmKzKS47KwIYYU728WrS4NU
+ iuF0uRCq2I1Lduc0X1+S5KMJg7ftAggsUAa2c8HxAuNrq40FkEFp6ECK5sPqRMCcfOHc
+ wldXHBmPBpFGEHTWQF7Ls5wyp0BkqxvLJRRAL8nlLz0x432PhXcwaguRjE/Ixxg1OJEn
+ 9nsiD8McotEZfKzhyoj5lSZZkDtuPIRTLVy02qnlzxyFnEJTDfQckknPcAY1qc2lKn5w lQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30grpgmta8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 04:09:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M47kGL150313;
+        Wed, 22 Apr 2020 04:07:57 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 30gb3t7vda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 04:07:57 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03M47u0k000515;
+        Wed, 22 Apr 2020 04:07:56 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Apr 2020 21:07:56 -0700
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <zhengbin13@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: fcoe: remove unneeded semicolon in fcoe.c
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200421034008.27865-1-yanaijie@huawei.com>
+Date:   Wed, 22 Apr 2020 00:07:54 -0400
+In-Reply-To: <20200421034008.27865-1-yanaijie@huawei.com> (Jason Yan's message
+        of "Tue, 21 Apr 2020 11:40:08 +0800")
+Message-ID: <yq1zhb4go2t.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
+ mlxlogscore=973 phishscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004220031
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 clxscore=1011
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004220031
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With both the increased use of swait and kvm no longer using
-it, we can reword some of the comments. While removing Linus'
-valid rant, I've also cared to explicitly mention that swait
-is very different than regular wait. In addition it is
-mentioned against using swait in favor of the regular flavor.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- include/linux/swait.h | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+Jason,
 
-diff --git a/include/linux/swait.h b/include/linux/swait.h
-index 73e06e9986d4..6a8c22b8c2a5 100644
---- a/include/linux/swait.h
-+++ b/include/linux/swait.h
-@@ -9,23 +9,10 @@
- #include <asm/current.h>
- 
- /*
-- * BROKEN wait-queues.
-- *
-- * These "simple" wait-queues are broken garbage, and should never be
-- * used. The comments below claim that they are "similar" to regular
-- * wait-queues, but the semantics are actually completely different, and
-- * every single user we have ever had has been buggy (or pointless).
-- *
-- * A "swake_up_one()" only wakes up _one_ waiter, which is not at all what
-- * "wake_up()" does, and has led to problems. In other cases, it has
-- * been fine, because there's only ever one waiter (kvm), but in that
-- * case gthe whole "simple" wait-queue is just pointless to begin with,
-- * since there is no "queue". Use "wake_up_process()" with a direct
-- * pointer instead.
-- *
-- * While these are very similar to regular wait queues (wait.h) the most
-- * important difference is that the simple waitqueue allows for deterministic
-- * behaviour -- IOW it has strictly bounded IRQ and lock hold times.
-+ * Simple waitqueues are semantically very different to regular wait queues
-+ * (wait.h). The most important difference is that the simple waitqueue allows
-+ * for deterministic behaviour -- IOW it has strictly bounded IRQ and lock hold
-+ * times.
-  *
-  * Mainly, this is accomplished by two things. Firstly not allowing swake_up_all
-  * from IRQ disabled, and dropping the lock upon every wakeup, giving a higher
-@@ -39,7 +26,7 @@
-  *    sleeper state.
-  *
-  *  - the !exclusive mode; because that leads to O(n) wakeups, everything is
-- *    exclusive.
-+ *    exclusive. As such swake_up_one will only ever awake _one_ waiter.
-  *
-  *  - custom wake callback functions; because you cannot give any guarantees
-  *    about random code. This also allows swait to be used in RT, such that
+> Fix the following coccicheck warning:
+>
+> drivers/scsi/fcoe/fcoe.c:1918:3-4: Unneeded semicolon
+> drivers/scsi/fcoe/fcoe.c:1930:3-4: Unneeded semicolon
+
+Applied to 5.8/scsi-queue, thanks!
+
 -- 
-2.16.4
-
+Martin K. Petersen	Oracle Linux Engineering
