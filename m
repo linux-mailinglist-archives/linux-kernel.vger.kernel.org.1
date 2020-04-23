@@ -2,58 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40C41B5BC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C811B5BCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgDWMwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        id S1728487AbgDWMw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728422AbgDWMwM (ORCPT
+        by vger.kernel.org with ESMTP id S1728390AbgDWMwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:52:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0A8C09B040
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:52:12 -0700 (PDT)
+        Thu, 23 Apr 2020 08:52:25 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28211C08E934
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:52:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-Id:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=MmWDzrYVXIVgWsUeAlvJsS1/JNqcyjdtQ1qm7Ad0/WE=; b=f89TjFaqm2I9hI8SkhQ7/+e34e
-        wsDDnNTUTQSFijv3sdSeFC1GWsJRYAdskPNI+2FNgl9VvPtqunUpmV3BXrTgV3o1ITL3uDYnPpg2H
-        4clAHUgMYV65jE02NrEa7q32e0aAIx5M7XCIKHGHdJvU53yRbhUXTwTpZEpqJ4rruvzCvTUbKDQ/m
-        4NU2Gjq63JX0HJO1rMs2RFlrSUTtI/jGCFAxLgMf9Q0x1t6uuOTA+SsQrYYzJhkUnmH9OdU6gRtH8
-        cTI1ItPZE04vi+jxiGxwS7ie4MuOs3dLbCTUKKrOeqS9ldRPHabFEBVtTnfTPmd5PVj5S7a41bINR
-        gdjLpCCg==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=0LPOq6kuy6O1K32QsrMgcnJ+qO6SmUMAmC4PPFEY/AA=; b=U/PIKqNoE0I7TewkuBPlrLDig4
+        /i0IbshIA5wXUHWIZwZfu5mXgcKcDSG4G60MWBf6bc3/b7gegk+nycA3/24mV+SIpa1+mS/ZP9TXK
+        /87aODiIrnK1FI7RUCO6kRCsDbT9gsLyS6DJbNmPuHET1YmgfPGWbOOd5tjMWruqqORqQXNTnDql4
+        DXV+ZIdJArlLNOhpTelkxIapISAMljv8a3m1Gi9AtjxfVJmA1AdWDMWbf7zXrfI0fJFmF5vh6d+Fv
+        hTbH0GqrfAfe6V6b/p0LSswKqBMn5GPhU4JfHVS1hd1FCnEiynXlOx0fgBNSLGdRAPD9v2e2jGPFJ
+        7qAHVAfQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRbKi-0005mZ-LM; Thu, 23 Apr 2020 12:52:00 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRbKi-0007S5-Qu; Thu, 23 Apr 2020 12:52:01 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4580C300739;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4914E30477A;
         Thu, 23 Apr 2020 14:51:58 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 30F0320BE6372; Thu, 23 Apr 2020 14:51:58 +0200 (CEST)
-Message-Id: <20200423125013.452964352@infradead.org>
+        id 355BA201420C4; Thu, 23 Apr 2020 14:51:58 +0200 (CEST)
+Message-Id: <20200423125042.556416884@infradead.org>
 User-Agent: quilt/0.65
-Date:   Thu, 23 Apr 2020 14:47:17 +0200
+Date:   Thu, 23 Apr 2020 14:47:18 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz,
         peterz@infradead.org
-Subject: [PATCH 0/8] objtool vs retpoline
+Subject: [PATCH 1/8] objtool: is_fentry_call() crashes if call has no destination
+References: <20200423125013.452964352@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-Based on Alexandre's patches, here's a pile that goes on top of tip/objtool/core.
+Fix is_fentry_call() so that it works if a call has no destination
+set (call_dest). This needs to be done in order to support intra-
+function calls.
 
-With these patches on objtool can completely understand retpolines and RSB
-stuffing, which means it can emit valid ORC unwind information for them, which
-in turn means we can now unwind through a retpoline.
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
+---
+ tools/objtool/check.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1490,7 +1490,7 @@ static int decode_sections(struct objtoo
+ 
+ static bool is_fentry_call(struct instruction *insn)
+ {
+-	if (insn->type == INSN_CALL &&
++	if (insn->type == INSN_CALL && insn->call_dest &&
+ 	    insn->call_dest->type == STT_NOTYPE &&
+ 	    !strcmp(insn->call_dest->name, "__fentry__"))
+ 		return true;
+
 
