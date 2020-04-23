@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175C01B5C76
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF281B5C7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgDWNWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 09:22:15 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44125 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728458AbgDWNWN (ORCPT
+        id S1728529AbgDWNW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 09:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726429AbgDWNW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:22:13 -0400
-Received: by mail-wr1-f66.google.com with SMTP id d17so6800453wrg.11;
-        Thu, 23 Apr 2020 06:22:12 -0700 (PDT)
+        Thu, 23 Apr 2020 09:22:57 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03863C09B041
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 06:22:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x18so6835712wrq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 06:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6lrCN4Y2jvBEhMEE9yoKB0QoRLluJFmgeNzXOO0519c=;
+        b=MfGul8Hpypn6B6iEzWypyjdhBn2Sm6I3sSyNkRkdieKZwsujvoViJAlUxKfCp6PvVT
+         nwSpOW9fHqYx6TfeuZBHXpiT/Q2s2RfycyW/XV2CCERaWqWBevrZxULrN89FB2oqqqIj
+         EC4+LROpYsU0aZMAoa54xpOSfpfCZFQyZRrwaCx87r3hFioBkCt8KsdEjlJAImIi4s1I
+         Us/CNyKM0JIG8zvg7SiTo3pIgmAXzgypQm3ZpltQJG1qtzhzgxWvcovuoFdh5tQZy9Cx
+         NgvYaqs9da3YhKQ+izEK3Cgf+BXf15gAENfjKuHLNG3VaHH3xMMHcEogSfbIRqjGk5gK
+         /7lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iuq6pBRpV7QPrN7TD8s7GlKdVuT8Rr6JcPkVbP2MpI0=;
-        b=lV4MAxxosL9zDQLgP9WYOiOj2gaOdh3izALQKSMs61nHjt8K+sjKA1UZxQD+DpuEoC
-         7SHfvHmRGkeXrkxOOLe2hMDf+62IhAsefH2U/DeZHGauCDNKKDtRbhnZ/ar5itsZ7vE+
-         gKpgzm2ocdhyZKQnjFurGMUO8CPnOp1HqqpUwMcJQqSZFScdmppObN9RKVFqyYfd/OvQ
-         zW5G7bXT96AFhMTZ6C7b4sq8cGcQnCG+fZ04VEkSH0837WA2NULq6LBWRI9rOXxZxNtJ
-         8HQUr+gjFAC5mNvYuBFZdfO7bH0ieu/y6pP3CwKVOTDEjV/eekDF38foYYr4l7w+8c/d
-         r1RA==
-X-Gm-Message-State: AGi0Pubky7IW14786yQSvY836Pynit0b/Zib/xQfVbl2UBQMOcLfhLCD
-        Olgx0gVFP5BYESzvwyY3LKw=
-X-Google-Smtp-Source: APiQypIEZxPpWwZO1dJPmZJRXbxGHGkpj0uIQN9V5WBHqfcSsT+C5L1UlHcfMdotuTpqLaVZIGAXig==
-X-Received: by 2002:a05:6000:4:: with SMTP id h4mr5088646wrx.386.1587648131443;
-        Thu, 23 Apr 2020 06:22:11 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id b22sm11963106wmj.1.2020.04.23.06.22.09
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6lrCN4Y2jvBEhMEE9yoKB0QoRLluJFmgeNzXOO0519c=;
+        b=lmrIqKb5ro7i+LRfSBDSmByIaOGI2y7KwCA2kJNq+zRNsBPi1Nz9F94Dpr8OIpJCwL
+         S93d796pJqii1saj1lSY7I+Q121dwOhmLfAsq3t9YMlSse1MmoQGp3cjXaKb41/gur76
+         AOoLoqALULXuOMy6yaAra55HV376cLCczmrCUFWL65ckp8/jO/TB3eBakYd81Z9nrY32
+         12wq+x6DRGCPGoolsRYiZH0qlFMXmS5heFLvN78MW9lnX3Y/PJSkRLlUcI66kAMDU9gz
+         9+oClmoTCgc8P6eufj6r6Gw5ebzeEgA12dLB38ItZn4pxOwK66y8OzuUh5dxuH8jpSVK
+         gLcg==
+X-Gm-Message-State: AGi0PuZ1AoxTY4cQ8epb5m1YhTeAlVGUk1HzSINfxuZ0loQUg/Dnzj1A
+        QDlg1Avieqg1i2o/I2XxOeUYTA==
+X-Google-Smtp-Source: APiQypLIExvxbZk7AtfC6O9cBOXmdm+gz1QSH3p+99FlJwwJBGarRXDyjXQkXRxvvC0opKaSfe3/tA==
+X-Received: by 2002:adf:fdc1:: with SMTP id i1mr5430755wrs.158.1587648175280;
+        Thu, 23 Apr 2020 06:22:55 -0700 (PDT)
+Received: from linaro.org ([37.167.216.250])
+        by smtp.gmail.com with ESMTPSA id h137sm14658623wme.0.2020.04.23.06.22.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 06:22:10 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 13:22:08 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Split hyperv-tlfs.h into generic and arch
- specific files
-Message-ID: <20200423132208.i522jqpevglruhur@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
-References: <20200422195737.10223-1-mikelley@microsoft.com>
+        Thu, 23 Apr 2020 06:22:54 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 15:22:43 +0200
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com, Dietmar.Eggemann@arm.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        qperret@google.com, bsegall@google.com, mgorman@suse.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh@kernel.org,
+        matthias.bgg@gmail.com, steven.price@arm.com,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
+        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
+        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
+Subject: Re: [PATCH v6 03/10] PM / EM: update callback structure and add
+ device pointer
+Message-ID: <20200423132243.GA65632@linaro.org>
+References: <20200410084210.24932-1-lukasz.luba@arm.com>
+ <20200410084210.24932-4-lukasz.luba@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200422195737.10223-1-mikelley@microsoft.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200410084210.24932-4-lukasz.luba@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:57:33PM -0700, Michael Kelley wrote:
-> This series splits hyperv-tlfs.h into architecture independent and
-> architecture specific files so that the arch independent portion can
-> be shared between the x86/x64 and ARM64 code for Hyper-V.  While the
-> Hyper-V team has not released a version of the TLFS document that
-> clearly specifies which portions of the interface are arch independent,
-> we can make a fairly good assessment based on implementation work done
-> to support Linux guests on Hyper-V on ARM64, and on private communication
-> with the Hyper-V team.  Definitions are considered arch independent if
-> they are implemented by Hyper-V on both architectures (x86/x64 and ARM64),
-> even if they are currently needed by Linux code only on one architecture.
+On Fri, Apr 10, 2020 at 09:42:03AM +0100, Lukasz Luba wrote:
+> The Energy Model framework is going to support devices other that CPUs. In
+> order to make this happen change the callback function and add pointer to
+> a device as an argument.
 > 
-> Many definitions in hyperv-tlfs.h have historically contained "X64" in the
-> name, which doesn't make sense for architecture independent definitions.
-> While many of the occurrences of "X64" have already been removed, some
-> still remain in definitions that should be arch independent. The
-> split removes the "X64" from the definitions so that the arch
-> independent hyper-tlfs.h has no occurrences of "X64". However, to
-> keep this patch set separate from a wider change in the names, aliases
-> are added in the x86/x64 specific hyperv-tlfs.h so that existing code
-> continues to compile.  The definitions can be fixed throughout the code
-> in a more incremental fashion in separate patches, and then the aliases
-> can be removed.
+> Update the related users to use new function and new callback from the
+> Energy Model.
 > 
-> Where it is not clear if definitions are arch independent, they have been
-> kept in the x86/x64 specific file. The Hyper-V team is aiming to have a
-> version of the TLFS document covering ARM64 by the end of calendar 2020,
-> so additional definitions may be moved into the arch independent portion
-> after the new TLFS document is released.
-> 
-> The first two patches in the series clean up the existing hyperv-tlfs.h
-> file a bit by removing duplicate or unnecessary definitions so they are
-> not propagated across the split. The third patch does the split, and the
-> fourth patch adds new definitions that are needed on ARM64 but are generic.
-> 
-> These changes have no functional impact.
-> 
-> These patches are built against linux-next-20200415
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
 
-Applied to hyperv-next. Thanks.
+[ ... ]
 
-Wei.
+> +static struct em_perf_domain *
+> +em_create_pd(struct device *dev, int nr_states, struct em_data_callback *cb,
+> +	     cpumask_t *span)
+>  {
+>  	unsigned long opp_eff, prev_opp_eff = ULONG_MAX;
+>  	unsigned long power, freq, prev_freq = 0;
+> @@ -106,7 +107,7 @@ static struct em_perf_domain *em_create_pd(cpumask_t *span, int nr_states,
+>  		 * lowest performance state of 'cpu' above 'freq' and updates
+>  		 * 'power' and 'freq' accordingly.
+>  		 */
+> -		ret = cb->active_power(&power, &freq, cpu);
+> +		ret = cb->active_power(&power, &freq, dev);
+>  		if (ret) {
+>  			pr_err("pd%d: invalid perf. state: %d\n", cpu, ret);
+>  			goto free_ps_table;
+
+Why are the changes 'cpu' to 'dev' in the patch 4/10 instead of this one ?
+
+> @@ -237,7 +238,7 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+>  	}
+>  
+>  	/* Create the performance domain and add it to the Energy Model. */
+> -	pd = em_create_pd(span, nr_states, cb);
+> +	pd = em_create_pd(dev, nr_states, cb, span);
+>  	if (!pd) {
+>  		ret = -EINVAL;
+>  		goto unlock;
+
+-- 
+
+ <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
