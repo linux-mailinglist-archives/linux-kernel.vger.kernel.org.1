@@ -2,49 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48D61B52FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 05:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC531B5304
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 05:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbgDWDO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 23:14:59 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:52788 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726454AbgDWDO6 (ORCPT
+        id S1726756AbgDWDPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 23:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgDWDPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 23:14:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TwNry4Z_1587611689;
-Received: from 30.27.118.66(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwNry4Z_1587611689)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Apr 2020 11:14:51 +0800
-Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run' parameters
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        frankja@linux.ibm.com, david@redhat.com, heiko.carstens@de.ibm.com,
-        gor@linux.ibm.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, christoffer.dall@arm.com,
-        peterx@redhat.com, thuth@redhat.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
- <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
- <20200422154543.2efba3dd.cohuck@redhat.com>
- <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <ed11e51e-7861-a93d-ac9f-ae81f94630b0@linux.alibaba.com>
-Date:   Thu, 23 Apr 2020 11:14:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 22 Apr 2020 23:15:48 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C976C03C1AA;
+        Wed, 22 Apr 2020 20:15:48 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id w2so3230122edx.4;
+        Wed, 22 Apr 2020 20:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cxsx7utk7++1Wvv+Y9Ze+APMY5I4SIalD834TlR6uYg=;
+        b=hh6jrlt/msqEqx/ARg0lwpjPhcrympZFisWyBBcykRn/+/HhwXcmfEoY2+YP0u47Yq
+         Ud3Y5H54K6EPPJwtcLKPc24tNAHeqRBtw79NcFeUJXfMmNIitS6HiHImGzZkF8ygibOQ
+         V2GzTew3BWfa7bzFp25BIGaPgse/Xfbkc9Y+5mk4GXui256E2GC0zm5BIPGEbCHyeAZQ
+         eEcervtyqY2rOVsu3sJ8edjDHO18QZQR4XO4yQsPpsdgQKJQD5Vkcg4AO8SSjJ14ic/X
+         K6i9uNeSfc/lxEUKDn50xsur7nXLQD4ty1bushKSMAv67GBHldpaCbEk7n4O6Ttzreux
+         7y2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cxsx7utk7++1Wvv+Y9Ze+APMY5I4SIalD834TlR6uYg=;
+        b=NEnC+f0QP4H04ABCpbOzN0al4ejUyUB+dk2ID1nU9/BD+lcOMcXvZTL8X387NcCrTh
+         inm3lGzhBcu5QsXySbpyAhzdKbK0o7cjsrYpSBbRYX1AELO8F8fvfJiahUp7TFe4Io3y
+         1m4k+oUF8Invv4xh+t9h/DOT4naQeBWoYt5s8b542KBosAQfkJ2NHaB0uRBra2myTu+N
+         uIxYGNl+Sr657voYRY5Fd2dqjNRHPT5VdVhEaDvhvmNpFWdI597YHWRwSAoEdPERQTvd
+         5X2s0iLJiLdqRLowK1wpoeKipwVJ83Cwp9TNKD7Hl35bhsm57tWtEsg7KbJpozNiVmll
+         XWSw==
+X-Gm-Message-State: AGi0PuZYSomBCg5P4Vo2t8/Y5MEyDkEPrJ1SBtYc8QHanLlYXJxPGlBJ
+        YupSvEqCV9t6apIfuOviU5Dqs/A6
+X-Google-Smtp-Source: APiQypJRHUysfsJxvtHghejmUkPFpdgYm2y6xvPxt/EEgHyVePhNxUknpC3IaLtoXtO311aSaLdSOg==
+X-Received: by 2002:a50:85c4:: with SMTP id q4mr1082462edh.147.1587611746367;
+        Wed, 22 Apr 2020 20:15:46 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id dk19sm187042edb.66.2020.04.22.20.15.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Apr 2020 20:15:45 -0700 (PDT)
+Subject: Re: [PATCH net-next v5 1/4] dt-bindings: net: phy: Add support for
+ NXP TJA11xx
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+References: <20200422092456.24281-1-o.rempel@pengutronix.de>
+ <20200422092456.24281-2-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b47f742d-e79a-11c8-6d39-db27dced28b8@gmail.com>
+Date:   Wed, 22 Apr 2020 20:15:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
+In-Reply-To: <20200422092456.24281-2-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -53,60 +80,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2020/4/22 23:58, Christian Borntraeger wrote:
+On 4/22/2020 2:24 AM, Oleksij Rempel wrote:
+> Document the NXP TJA11xx PHY bindings.
 > 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>   .../devicetree/bindings/net/nxp,tja11xx.yaml  | 61 +++++++++++++++++++
+>   1 file changed, 61 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
 > 
-> On 22.04.20 15:45, Cornelia Huck wrote:
->> On Wed, 22 Apr 2020 20:58:04 +0800
->> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
->>
->>> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
->>> structure. Earlier than historical reasons, many kvm-related function
->>
->> s/Earlier than/For/ ?
->>
->>> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
->>> This patch does a unified cleanup of these remaining redundant parameters.
->>>
->>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->>> ---
->>>   arch/s390/kvm/kvm-s390.c | 37 ++++++++++++++++++++++---------------
->>>   1 file changed, 22 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>> index e335a7e5ead7..d7bb2e7a07ff 100644
->>> --- a/arch/s390/kvm/kvm-s390.c
->>> +++ b/arch/s390/kvm/kvm-s390.c
->>> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
->>>   	return rc;
->>>   }
->>>   
->>> -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
->>>   {
->>> +	struct kvm_run *kvm_run = vcpu->run;
->>>   	struct runtime_instr_cb *riccb;
->>>   	struct gs_cb *gscb;
->>>   
->>> @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>>   		}
->>>   		if (vcpu->arch.gs_enabled) {
->>>   			current->thread.gs_cb = (struct gs_cb *)
->>> -						&vcpu->run->s.regs.gscb;
->>> +						&kvm_run->s.regs.gscb;
->>
->> Not sure if these changes (vcpu->run-> => kvm_run->) are really worth
->> it. (It seems they amount to at least as much as the changes advertised
->> in the patch description.)
->>
->> Other opinions?
-> 
-> Agreed. It feels kind of random. Maybe just do the first line (move kvm_run from the
-> function parameter list into the variable declaration)? Not sure if this is better.
-> 
+> diff --git a/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+> new file mode 100644
+> index 0000000000000..42be0255512b3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: GPL-2.0+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/nxp,tja11xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP TJA11xx PHY
+> +
+> +maintainers:
+> +  - Andrew Lunn <andrew@lunn.ch>
+> +  - Florian Fainelli <f.fainelli@gmail.com>
+> +  - Heiner Kallweit <hkallweit1@gmail.com>
 
-Why not, `kvm_run` is equivalent to `vcpu->run`, which is also part of 
-the cleanup, or do you mean to put this change in another patch?
+I would have expected to have you listed as a maintainer of this 
+binding, but fair enough.
 
-Thanks,
-Tianjia
+> +
+> +description:
+> +  Bindings for NXP TJA11xx automotive PHYs
+> +
+> +allOf:
+> +  - $ref: ethernet-phy.yaml#
+> +
+> +patternProperties:
+> +  "^ethernet-phy@[0-9a-f]+$":
+> +    type: object
+> +    description: |
+> +      Some packages have multiple PHYs. Secondary PHY should be defines as
+
+should be defined as a subnode.
+-- 
+Florian
