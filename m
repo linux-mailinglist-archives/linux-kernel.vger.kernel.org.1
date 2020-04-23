@@ -2,102 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE2C1B5DB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1101D1B5DB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgDWOYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726119AbgDWOYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:24:35 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7F7C08E934;
-        Thu, 23 Apr 2020 07:24:35 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id h6so2935275qvz.8;
-        Thu, 23 Apr 2020 07:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xd6yffwd4vSoqtLrrM8ZfIryfm3GpMsJV/9YC+jtP4s=;
-        b=dKh5i2w+rpkn+EuzyKFN19shcxAXHjXqm3Ze3mvGP2FB70HGbpS+m823x7KF8CGcEE
-         RWY7jFsvYtnAczGHNj8nZkRTNBgxcVJMqQGsTdBPA5Lkbhqd0NjYs5F7DHKntbD5BS6f
-         SDrtkHKzAE3PElLMkWHw8qe1g5+QqWM95GEeRI4W0GE7UD8f1y9RVsXm46XZhotlLYhx
-         XKiBuxCjGVuMioJkkgJYcOAYT3VI+NCKeR9Cq70IlYzh3Fv8LRfQeun11lNmrj3jtNMD
-         2gTCn7ek1L7Wd1PtFL5eid2A5NxjJTK2IphhpR//CcTFspuvjm3L2VvXpfjwDnFvnuxU
-         gZTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xd6yffwd4vSoqtLrrM8ZfIryfm3GpMsJV/9YC+jtP4s=;
-        b=jS9oa2HMeDBy1uhrBsPcCJcuoQ1p4CPLCdWASO6bPEWFo03wE2FGL373tPGDKGUn1E
-         aDxiIs16Ku2M8f/as2R25LIoLy8W7tjSoL0utZUW8GjUhK89dBCKHueDeDFKYQ43WQMF
-         XoR4RyJ1m3bCoCx6hScdPZh/zxjmcZ5nnXO7M77cs+7cU6gLVbXpI3uVztE9g0LDjOnp
-         AROj986Vqqn/OTWGHcROB3HSGiQ+OFFednf5oRZepkd7CpFtFJFoxyJyr61rmh8ZVNh6
-         aS6LgQppJtMvJnR4/BepmrK66VqKND0SwR2ipkUflJv1lP8T1G0jmpQYGR+otrAhrRoL
-         Zrfg==
-X-Gm-Message-State: AGi0PuZvJzCGV8xh5HuhbwNiiYS8neGhvdsKIvauSMDAICB0VvIaf1NW
-        bbiee6rAt7t7oPqqs+KySfw=
-X-Google-Smtp-Source: APiQypIpYOStqJVFPFRt1jFzSmG2LjoChmgXgCo91yyUcIiYFovZB+AmC/XEO6IffJVsu+mLqzY9kA==
-X-Received: by 2002:a05:6214:158b:: with SMTP id m11mr3201202qvw.168.1587651874865;
-        Thu, 23 Apr 2020 07:24:34 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id 190sm1639258qkj.87.2020.04.23.07.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 07:24:34 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CCDEB409A3; Thu, 23 Apr 2020 11:24:31 -0300 (-03)
-Date:   Thu, 23 Apr 2020 11:24:31 -0300
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrey Zhizhikin <andrey.z@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v5 0/3] perf synthetic events
-Message-ID: <20200423142431.GJ19437@kernel.org>
-References: <20200415054050.31645-1-irogers@google.com>
- <CAM9d7cj4fMsnDLgq0rHwqb6_ZLKP-AOzyyAP4kd=b=P5-t5NGQ@mail.gmail.com>
+        id S1728234AbgDWOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:24:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgDWOYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 10:24:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32D8E206ED;
+        Thu, 23 Apr 2020 14:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587651893;
+        bh=awxfurzkZKl16SHw8EPTwq6LCLWkAhmyRFGAWg9HM+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O3E7jg7rCQPRXXyLoWBrL+nLpl6Km3V7EQZa8kwvrj1fNCwKIy0VPUqRALSsweR8F
+         i14bZXIdzDyEMKEWDPbMDOHxTeXY1pJ94cSEF3fcCF/JCdmrAB9zO5HykffjRDFeQQ
+         mKee7wkv+VngA16l4t72zDfQzJQOdnGVr1CbuTgA=
+Date:   Thu, 23 Apr 2020 16:24:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        slawomir.blauciak@intel.com, mengdong.lin@intel.com
+Subject: Re: [RFC 1/5] soundwire: bus_type: add sdw_master_device support
+Message-ID: <20200423142451.GA4181720@kroah.com>
+References: <20200416205524.2043-1-yung-chuan.liao@linux.intel.com>
+ <20200416205524.2043-2-yung-chuan.liao@linux.intel.com>
+ <20200420072631.GW72691@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cj4fMsnDLgq0rHwqb6_ZLKP-AOzyyAP4kd=b=P5-t5NGQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200420072631.GW72691@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 16, 2020 at 11:19:19PM +0900, Namhyung Kim escreveu:
-> On Wed, Apr 15, 2020 at 2:40 PM Ian Rogers <irogers@google.com> wrote:
-> > v4 added a missing test file
-> > v3 improved documenation, return values and added testing to the io framework
-> >    following feedback from namhyung@kernel.org.
-> > v2 addressed single threaded synthesize benchmark issues from jolsa@redhat.com
-> > https://lore.kernel.org/lkml/20200402154357.107873-1-irogers@google.com/
-> >
-> > Ian Rogers (3):
-> >   perf bench: add a multi-threaded synthesize benchmark
-> >   tools api: add a lightweight buffered reading api
-> >   perf synthetic events: Remove use of sscanf from /proc reading
+On Mon, Apr 20, 2020 at 12:56:31PM +0530, Vinod Koul wrote:
+> Hello Bard,
 > 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> On 17-04-20, 04:55, Bard Liao wrote:
+> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > 
+> > In the existing SoundWire code, Master Devices are not explicitly
+> > represented - only SoundWire Slave Devices are exposed (the use of
+> > capital letters follows the SoundWire specification conventions).
+> > 
+> > The SoundWire Master Device provides the clock, synchronization
+> > information and command/control channels. When multiple links are
+> > supported, a Controller may expose more than one Master Device; they
+> > are typically embedded inside a larger audio cluster (be it in an
+> > SOC/chipset or an external audio codec), and we need to describe it
+> > using the Linux device and driver model.  This will allow for
+> > configuration functions to account for external dependencies such as
+> > power rails, clock sources or wake-up mechanisms. This transition will
+> > also allow for better sysfs support without the reference count issues
+> > mentioned in the initial reviews.
+> 
+> Well the primary reason for doing sdw_master_device for creating a
+> adding sysfs representation.
 
-Jiri, you seem to be ok with it, can I get your Acked-by or Reviewed-by
-as well?
+-ENOPARSE :(
 
-- Arnaldo
+> It *also* helps some vendors due to
+> inherent model should not be constructed as the primary approach for the
+> sdw_master_device.
+
+No, the PRIMARY reason is "it is the correct thing to do".  It's how to
+tie into the driver model correctly, without it, crazy things happen as
+we have seen.
+
+> > In this patch, we convert the existing code to use an explicit
+> > sdw_slave_type, then define a sdw_master_device structure.
+> 
+> Please split that up, we should do the conversions required first and
+> then do addition of new things.
+
+Can you really do that in two different steps?
+
+> > +struct device_type sdw_master_type = {
+> > +	.name =		"soundwire_master",
+> > +	.release =	sdw_master_device_release,
+> > +};
+> > +
+> > +/**
+> > + * sdw_master_device_add() - create a Linux Master Device representation.
+> > + * @parent: the parent Linux device (e.g. a PCI device)
+> > + * @fwnode: the parent fwnode (e.g. an ACPI companion device to the parent)
+> > + * @link_ops: link-specific ops (optional)
+> > + * @link_id: link index as defined by MIPI DisCo specification
+> > + * @pdata: private data (e.g. register base, offsets, platform quirks, etc).
+> > + *
+> > + * The link_ops argument can be NULL, it is only used when link-specific
+> > + * initializations and power-management are required.
+> > + */
+> > +struct sdw_master_device
+> > +*sdw_master_device_add(struct device *parent,
+> > +		       struct fwnode_handle *fwnode,
+> > +		       struct sdw_link_ops *link_ops,
+> > +		       int link_id,
+> > +		       void *pdata)
+> > +{
+> > +	struct sdw_master_device *md;
+> > +	int ret;
+> > +
+> > +	md = kzalloc(sizeof(*md), GFP_KERNEL);
+> > +	if (!md)
+> > +		return ERR_PTR(-ENOMEM);
+> > +
+> > +	md->link_id = link_id;
+> > +	md->pdata = pdata;
+> > +	md->link_ops = link_ops;
+> > +
+> > +	md->dev.parent = parent;
+> > +	md->dev.fwnode = fwnode;
+> > +	md->dev.bus = &sdw_bus_type;
+> > +	md->dev.type = &sdw_master_type;
+> > +	md->dev.dma_mask = md->dev.parent->dma_mask;
+> > +	dev_set_name(&md->dev, "sdw-master-%d", md->link_id);
+> > +
+> > +	if (link_ops && link_ops->driver) {
+> > +		/*
+> > +		 * A driver is only needed for ASoC integration (need
+> > +		 * driver->name) and for link-specific power management
+> > +		 * w/ a pm_dev_ops structure.
+> 
+> That is not true for everyone, it is only true for Intel, pls call that
+> out as well...
+
+Why is it not true for everyone?  How else do you get the pm stuff back
+to your hardware?
+
+thanks,
+
+greg k-h
