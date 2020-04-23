@@ -2,63 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C881B55A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53A41B55BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgDWH2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:28:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2877 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725562AbgDWH2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:28:00 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CBD3FEF2F79ED8B19743;
-        Thu, 23 Apr 2020 15:27:53 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 23 Apr 2020 15:27:47 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
-        <dave.jiang@intel.com>, <ira.weiny@intel.com>
-CC:     <linux-nvdimm@lists.01.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] libnvdimm/security: Make __nvdimm_security_overwrite_query() static
-Date:   Thu, 23 Apr 2020 15:34:02 +0800
-Message-ID: <1587627242-97991-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726845AbgDWHfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgDWHfa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:35:30 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A19AC03C1AB;
+        Thu, 23 Apr 2020 00:35:28 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id x2so4604357ilp.13;
+        Thu, 23 Apr 2020 00:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0hlTl/zCZbAA+GFl2dvVEJ1v8GPDc+Kbabyo2qL/7PY=;
+        b=OBnyG7PTHDCCLUE4ws+cv0rx52XPBDkBrMCNyEZfc9kAQVk3+4lTcKI7hbJtv25yej
+         fv4TX/B2zr1x45m1SG5oNY6N7HrCNdF1AVTdschZ5mWmwdvgXbyANO8zmDpCTrg1sM1Q
+         8IYYK06n8wgXSzYkkzIKxf1tQY9QDb9UNOu/xrSg6wswcih34vgfVq2d3TKja0szHgmb
+         4VZeWTbVGmIfUiagSYTLqT562mhG/GXzAh71Adh4VxD+TGpq66SAVVeTN0ifPV42dIDC
+         pz0AcXv+7QFMoWVwrfNwlUlVFJxPfd6kqVJCsrf3dpnxtgmFwiNyRCHN8FYtYXFJbZpK
+         ygWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0hlTl/zCZbAA+GFl2dvVEJ1v8GPDc+Kbabyo2qL/7PY=;
+        b=CwUWT95ZKMyoqi/KhyQVSj/zjZts7aEnlnFXSFWu/ZIlB7Ns9c6ZdSXdm6U7MzTuKU
+         bfcDPBGt6JkOSCmirotVIV1EBxfAKViul/b6/nRT9znroQRhFod18FijyYmF3lJkSOHW
+         3oLlb8aiU5HI/WwiobJMDgRmI5fWHLdDo2KHckK7f11CfKcyR5l1JCqLbp8WmsAgzjc7
+         9qNNNRpTd8nv2ksXT9uVy94kqxuJ5DnSBXkm8cDXU5Sx40Dlx6bgC+PhqwbrMt2dU/tu
+         0j5GVnkeIjrjSN1eernLABKoHuAla8rAL5vEgKYg0AsmIE/KalcFvK02rPAVNFO/iM6p
+         uMQQ==
+X-Gm-Message-State: AGi0Pub3FqE8sj85JewDEd50ow8jVsNuSSQPOi5n5NFeypSOYXa/nTyD
+        T8BOG+mCWVS3LbSmWv/LSqqKuv34Kh3/cn7Iu+kuULb8Xp0=
+X-Google-Smtp-Source: APiQypKXWH4EZsa3e+ik+tfviGjD3zqic9BgcJWx+N0WLN2FGGHy7WvCtX5MXcR6RsFDgYNqLahTpflaJeSW9U3t+TA=
+X-Received: by 2002:a92:d443:: with SMTP id r3mr2212189ilm.293.1587627327911;
+ Thu, 23 Apr 2020 00:35:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+References: <20200422041502.7497-1-samuel@sholland.org> <20200422151616.httmhmo2tbd4m4eu@gilmour.lan>
+ <b554ea70-16da-1637-d349-db51dddcf95b@sholland.org>
+In-Reply-To: <b554ea70-16da-1637-d349-db51dddcf95b@sholland.org>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Thu, 23 Apr 2020 09:35:16 +0200
+Message-ID: <CAJiuCcfxokJr3Tj9XY8AT8O2y68RpuO+O3QZRvfCjVbu6s9aUw@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH] arm64: dts: allwinner: a64: Disable
+ SPDIF by default
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>, Chen-Yu Tsai <wens@csie.org>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Hi Samuel, Maxime,
 
-drivers/nvdimm/security.c:416:6: warning: symbol '__nvdimm_security_overwrite_query'
-was not declared. Should it be static?
+On Thu, 23 Apr 2020 at 01:50, Samuel Holland <samuel@sholland.org> wrote:
+>
+> Maxime,
+>
+> On 4/22/20 10:16 AM, Maxime Ripard wrote:
+> > On Tue, Apr 21, 2020 at 11:15:02PM -0500, Samuel Holland wrote:
+> >> As of v5.7-rc2, Linux now prints the following message at boot:
+> >>
+> >>   [   33.848525] platform sound_spdif: deferred probe pending
+> >>
+> >> This is because &sound_spdif is waiting on its DAI link component
+> >> &spdif to probe, but &spdif is disabled in the DTS. Disable the
+> >> audio card as well to match.
+> >>
+> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> >
+> > The patch looks good, but don't we have some boards with SPDIF enabled that
+> > should be modified accordingly?
+>
+> I don't see any in-tree. The only A64 DTS that references &spdif at all is
+> sun50i-a64-pine64.dts, which explicitly disables it:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/nvdimm/security.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This has been introduced by Marcus Cooper for the Pine64 audio extension.
+https://store.pine64.org/?product=pine64-stereo-audio-dac-pot-board
 
-diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
-index 89b8597..11fb5ad 100644
---- a/drivers/nvdimm/security.c
-+++ b/drivers/nvdimm/security.c
-@@ -413,7 +413,7 @@ static int security_overwrite(struct nvdimm *nvdimm, unsigned int keyid)
- 	return rc;
- }
- 
--void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
-+static void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
- {
- 	struct nvdimm_bus *nvdimm_bus = walk_to_nvdimm_bus(&nvdimm->dev);
- 	int rc;
--- 
-2.6.2
+So this should be moved to an overlay no?
 
+Regards,
+Clement
+
+>
+>         /* On Euler connector */
+>         &spdif {
+>                 status = "disabled";
+>         };
+>
+> I'm leaning toward agreeing with Clement that the sound_spdif node (and also
+> spdif_out) should be removed altogether from the A64 DTSI.
+>
+> Regards,
+> Samuel
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/b554ea70-16da-1637-d349-db51dddcf95b%40sholland.org.
