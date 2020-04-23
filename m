@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EBC1B6139
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3DE1B611C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgDWQqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 12:46:09 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:46692 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729756AbgDWQqI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:46:08 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03NGjuEx113868;
-        Thu, 23 Apr 2020 11:45:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587660356;
-        bh=tKDw8OQZcIMisiTxBsvq0HEhQVuhSJ2oL6rRmaHita8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=l+QdGwrB0y4GleuBqdWCjgG1tj8QsW+HOWJHHSOadCt+SpoMek1G42USrUoiSf0NV
-         iTrIb47oFnBM0pFEFyiOggQ3ts0eLCK+QzrfoohfmlhIR3QDN2uLZsEQzAjUBsKwkB
-         eFkGAyXm0Muj8xZhp9jgcuDUxeD+jEcQlXHOUL4E=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03NGjuDL123655
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Apr 2020 11:45:56 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
- Apr 2020 11:45:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 23 Apr 2020 11:45:55 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03NGjtIm012635;
-        Thu, 23 Apr 2020 11:45:55 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>
-CC:     <linux@armlinux.org.uk>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <afd@ti.com>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net 2/2] net: phy: DP83TC811: Fix WoL in config init to be disabled
-Date:   Thu, 23 Apr 2020 11:39:47 -0500
-Message-ID: <20200423163947.18313-3-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200423163947.18313-1-dmurphy@ti.com>
-References: <20200423163947.18313-1-dmurphy@ti.com>
+        id S1729657AbgDWQju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:39:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:51293 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729423AbgDWQjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 12:39:49 -0400
+IronPort-SDR: homFFEGGG4utyNlcGxcrHDBREt3vAhqeGUjVpe4go6ljd27h5WGLNvdLAus3YGuaF/FS8ajEFN
+ EpiNfKxxMR7g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 09:39:49 -0700
+IronPort-SDR: boS1UWXK/pG63LvSnmxRtSBoGCn3Bs55q91PEJzZeMSGS0vdOyGeKt9j4Ex/PQAp4u5rxzpe/7
+ df5nRD/YyltA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
+   d="scan'208";a="256043220"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga003.jf.intel.com with ESMTP; 23 Apr 2020 09:39:49 -0700
+Date:   Thu, 23 Apr 2020 09:39:48 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, jmattson@google.com,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 1/9] KVM: VMX: Introduce CET VMX fields and flags
+Message-ID: <20200423163948.GA25564@linux.intel.com>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
+ <20200326081847.5870-2-weijiang.yang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326081847.5870-2-weijiang.yang@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WoL feature should be disabled when config_init is called and the
-feature should turned on or off  when set_wol is called.
+On Thu, Mar 26, 2020 at 04:18:38PM +0800, Yang Weijiang wrote:
+> If VM_EXIT_LOAD_HOST_CET_STATE = 1, the host CET states are restored
+> from below VMCS fields at VM-Exit:
+>   HOST_S_CET
+>   HOST_SSP
+>   HOST_INTR_SSP_TABLE
+> 
+> If VM_ENTRY_LOAD_GUEST_CET_STATE = 1, the guest CET states are loaded
+> from below VMCS fields at VM-Entry:
+>   GUEST_S_CET
+>   GUEST_SSP
+>   GUEST_INTR_SSP_TABLE
+> 
+> Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
 
-In addition updated the calls to modify the registers to use the set_bit
-and clear_bit function calls.
+...
 
-Fixes: 6d749428788b ("net: phy: DP83TC811: Introduce support for the
-DP83TC811 phy")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/phy/dp83tc811.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 5e090d1f03f8..e938bc6c37aa 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -94,6 +94,7 @@
+>  #define VM_EXIT_CLEAR_BNDCFGS                   0x00800000
+>  #define VM_EXIT_PT_CONCEAL_PIP			0x01000000
+>  #define VM_EXIT_CLEAR_IA32_RTIT_CTL		0x02000000
+> +#define VM_EXIT_LOAD_HOST_CET_STATE             0x10000000
+>  
+>  #define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
+>  
+> @@ -107,6 +108,7 @@
+>  #define VM_ENTRY_LOAD_BNDCFGS                   0x00010000
+>  #define VM_ENTRY_PT_CONCEAL_PIP			0x00020000
+>  #define VM_ENTRY_LOAD_IA32_RTIT_CTL		0x00040000
+> +#define VM_ENTRY_LOAD_GUEST_CET_STATE           0x00100000
 
-diff --git a/drivers/net/phy/dp83tc811.c b/drivers/net/phy/dp83tc811.c
-index 06f08832ebcd..48dcd2649272 100644
---- a/drivers/net/phy/dp83tc811.c
-+++ b/drivers/net/phy/dp83tc811.c
-@@ -139,10 +139,11 @@ static int dp83811_set_wol(struct phy_device *phydev,
- 			value &= ~DP83811_WOL_SECURE_ON;
- 		}
- 
--		value |= (DP83811_WOL_EN | DP83811_WOL_INDICATION_SEL |
--			  DP83811_WOL_CLR_INDICATION);
--		phy_write_mmd(phydev, DP83811_DEVADDR, MII_DP83811_WOL_CFG,
--			      value);
-+		value |= DP83811_WOL_EN | DP83811_WOL_INDICATION_SEL |
-+			 DP83811_WOL_CLR_INDICATION;
-+
-+		phy_set_bits_mmd(phydev, DP83811_DEVADDR, MII_DP83811_WOL_CFG,
-+				 value);
- 	} else {
- 		phy_clear_bits_mmd(phydev, DP83811_DEVADDR, MII_DP83811_WOL_CFG,
- 				   DP83811_WOL_EN);
-@@ -292,8 +293,8 @@ static int dp83811_config_init(struct phy_device *phydev)
- 
- 	value = DP83811_WOL_MAGIC_EN | DP83811_WOL_SECURE_ON | DP83811_WOL_EN;
- 
--	return phy_write_mmd(phydev, DP83811_DEVADDR, MII_DP83811_WOL_CFG,
--	      value);
-+	return phy_clear_bits_mmd(phydev, DP83811_DEVADDR, MII_DP83811_WOL_CFG,
-+				  value);
- }
- 
- static int dp83811_phy_reset(struct phy_device *phydev)
--- 
-2.25.1
-
+I think it probably make senses to drop HOST/GUEST from the controls,
+i.e. VM_{ENTER,EXIT}_LOAD_CET_STATE.  The SDM doesn't qualify them with
+guest vs. host, nor does KVM qualify any of the other entry/exit controls
+that are effective guest vs. host.
