@@ -2,186 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBDA1B5D1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37551B5D24
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgDWOBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727053AbgDWOBK (ORCPT
+        id S1728624AbgDWOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:01:43 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:6920 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728014AbgDWOBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:01:10 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCCEC08E934;
-        Thu, 23 Apr 2020 07:01:08 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id p13so2869778qvt.12;
-        Thu, 23 Apr 2020 07:01:08 -0700 (PDT)
+        Thu, 23 Apr 2020 10:01:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jXDe/IW3FrJSTh/vYqQdoYVT3ff45aX6yw/T7/hZptk=;
-        b=iu7dtUoy9t4K29l/5Fa0WXwcHbdLxNAOu6c6/jCTjdv3xq9eXlSIxixzt8w5mEFsxN
-         KC0G83TpOICG32Xo63toL6NpMBDn2TuVBuLN2yii3sMwHDzya6QDByhQKjZ/muR9YpGc
-         8+tfz2tvWNFIM4I9MKBmw8m2Gz/1ZrixFjpp43aTJH1kWgSYv81aJPb/lcvWTijf9lYH
-         S/JoaqNYe+EMHPZMG9aM2uZn1+AQK7c/tu/ygL6q/VC0hvJ2P6rXz64N/jAXF19xWqWg
-         sVOQLr2wy0Rb4C8l7fMdTv4JXjtEm/NRhgbBtNw5M2JXQYJeKabD5JOzPT0XCxF1GDOD
-         4TXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jXDe/IW3FrJSTh/vYqQdoYVT3ff45aX6yw/T7/hZptk=;
-        b=Dvsm0amh2EVTo2LKk3c423tA56kSwtYzasSkj87DNG/Ki5frbIsbFfUT+/xeSNQCfP
-         HTx0DqG2b+EqZe4pgVn1qszyhiIBsORVdGIl1ip1LGxrc7qmrZ1blrZ9K+f0CsTcAwXh
-         dHANemVfEJtOP3Xt6Yxp8PWD+y85XLDDxTpSHNCjPvnp7j7PAxaeU3P3hG1udpSK5FHW
-         fxyqsJiycaJbSgWcTxyS6vOb6nUUDYLREItBg/S1kfVUPeC3N9Fy8cJTKVT96Uq6Sexs
-         Mn13GGndPj+D0M6ohNwPivCo8E6+J21kPsay/s08aYO4XxX2kZqhes4q4Ic6kR30495o
-         P0OA==
-X-Gm-Message-State: AGi0PuayUfPH8Q7hPX7E+/0gYVH6fIsmc53gFbJU4EHzYfvw4QwSymBN
-        xvo8iUB5r9blXlJaIBi1L3dugzL7rcU=
-X-Google-Smtp-Source: APiQypK69MjOG3v2c5KK/21f3EG5cCkaefsv8EQvpuOcgfuWAWhlx2xjHR8F7WI/Pz/4jMDbUxuH8g==
-X-Received: by 2002:a05:6214:18c9:: with SMTP id cy9mr4243800qvb.35.1587650467052;
-        Thu, 23 Apr 2020 07:01:07 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id i56sm1841572qte.6.2020.04.23.07.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 07:01:06 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7DC42409A3; Thu, 23 Apr 2020 11:01:02 -0300 (-03)
-Date:   Thu, 23 Apr 2020 11:01:02 -0300
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf-probe: Check address correctness by map instead
- of _etext
-Message-ID: <20200423140102.GF19437@kernel.org>
-References: <158763965400.30755.14484569071233923742.stgit@devnote2>
- <158763967332.30755.4922496724365529088.stgit@devnote2>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587650500; x=1619186500;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=GlXA8QYdbNJSlsP6IcydE++snKBjUDYw7I1a/xcR9BQ=;
+  b=SL9CDGuhnkgfmezzVe1AzbI0SEkVp6TddNtqYvrBEwnc6tu1Ot/umMOE
+   OZ4o4bPdAZ4BQCLqjmCZ33J6op7tGNNm0cJITVyuUpw3DdRpuClCRWNvx
+   t++YBGmhrZLzV5apWS6BcIdTPss4z1/+ath7BIfIkNf2o0DRW+OddE5Gq
+   k=;
+IronPort-SDR: Y2sPg+P8vTtT9NeP9g7kZM5zdL5sDKBNZw8fmnrzK0ZYUGM7Zi9GMEC4CuIiN8nDEo+Dcff9HW
+ qo4BpHsi4MwQ==
+X-IronPort-AV: E=Sophos;i="5.73,307,1583193600"; 
+   d="scan'208";a="40451004"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 23 Apr 2020 14:01:37 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 1055DA23D7;
+        Thu, 23 Apr 2020 14:01:33 +0000 (UTC)
+Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 23 Apr 2020 14:01:33 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
+ EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 23 Apr 2020 14:01:33 +0000
+Received: from localhost (10.143.207.46) by mail-relay.amazon.com
+ (10.43.62.224) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Apr 2020 14:01:31 +0000
+From:   Balbir Singh <sblbir@amazon.com>
+To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
+CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
+        <keescook@chromium.org>, <benh@kernel.crashing.org>,
+        <x86@kernel.org>, <dave.hansen@intel.com>,
+        "Balbir Singh" <sblbir@amazon.com>
+Subject: [PATCH v4 0/6] Optionally flush L1D on context switch
+Date:   Fri, 24 Apr 2020 00:01:19 +1000
+Message-ID: <20200423140125.7332-1-sblbir@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158763967332.30755.4922496724365529088.stgit@devnote2>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 23, 2020 at 08:01:13PM +0900, Masami Hiramatsu escreveu:
-> Since commit 03db8b583d1c ("perf tools: Fix maps__find_symbol_by_name()")
-> introduced map address range check in maps__find_symbol_by_name(),
-> we can not get "_etext" from kernel map because _etext is placed
-> on the edge of the kernel .text section (= kernel map in perf.)
-> 
-> To fix this issue, this checks the address correctness
-> by map address range information (map->start and map->end)
-> instead of using _etext address.
-> 
-> This can cause an error if the target inlined function is
-> embedded in both __init function and normal function.
-> 
-> For exaample, request_resource() is a normal function but also
-> embedded in __init reserve_setup(). In this case, the probe point
-> in reserve_setup() must be skipped. However, without this fix,
-> it failes to setup all probe points.
-> ================
->   # ./perf probe -v request_resource
->   probe-definition(0): request_resource
->   symbol:request_resource file:(null) line:0 offset:0 return:0 lazy:(null)
->   0 arguments
->   Looking at the vmlinux_path (8 entries long)
->   Using /usr/lib/debug/lib/modules/5.5.17-200.fc31.x86_64/vmlinux for symbols
->   Open Debuginfo file: /usr/lib/debug/lib/modules/5.5.17-200.fc31.x86_64/vmlinux
->   Try to find probe point from debuginfo.
->   Matched function: request_resource [15e29ad]
->   found inline addr: 0xffffffff82fbf892
->   Probe point found: reserve_setup+204
->   found inline addr: 0xffffffff810e9790
->   Probe point found: request_resource+0
->   Found 2 probe_trace_events.
->   Opening /sys/kernel/debug/tracing//kprobe_events write=1
->   Opening /sys/kernel/debug/tracing//README write=0
->   Writing event: p:probe/request_resource _text+33290386
->   Failed to write event: Invalid argument
->     Error: Failed to add events. Reason: Invalid argument (Code: -22)
-> ================
-> 
-> With this fix,
-> 
-> ================
->   # ./perf probe request_resource
->   reserve_setup is out of .text, skip it.
->   Added new events:
->     (null):(null)        (on request_resource)
+Provide a mechanism to flush the L1D cache on context switch.  The goal
+is to allow tasks that are paranoid due to the recent snoop assisted data
+sampling vulnerabilites, to flush their L1D on being switched out.
+This protects their data from being snooped or leaked via side channels
+after the task has context switched out.
 
-But what is this (null):(null) probe? Confusing :-)
 
-Thanks for working on this!
+Changelog v4:
+- Refactor the L1D flushing code even further, pages are now allocated
+  once and never freed. Simplify the exported functions.
+- Change the name prefixs to be more consistent (l1d_flush_*)
+- Refactoring of the code done in the spirit of the comments, prctl
+  still requires arch bits for get/set L1D flush and ofcourse in
+  the arch switch_mm bits flushing the L1D cache.
+Changelog v3:
+ - Refactor the return value of what flush_l1d_cache_hw() returns
+ - Refactor the code, so that the generic setup bits come first
+   (patch 3 from previous posting is now patches 3 and 4)
+ - Move from arch_prctl() to the prctl() interface as recommend
+   in the reviews.
+Changelog v2:
+ - Fix a miss of mutex_unlock (caught by Borislav Petkov <bp@alien8.de>)
+ - Add documentation about the changes (Josh Poimboeuf
+   <jpoimboe@redhat.com>)
 
-- Arnaldo
+Changelog:
+ - Refactor the code and reuse cond_ibpb() - code bits provided by tglx
+ - Merge mm state tracking for ibpb and l1d flush
+ - Rename TIF_L1D_FLUSH to TIF_SPEC_FLUSH_L1D
 
->     probe:request_resource (on request_resource)
-> 
->   You can now use it in all perf tools, such as:
-> 
->   	perf record -e probe:request_resource -aR sleep 1
-> 
-> ================
-> 
-> Fixes: 03db8b583d1c ("perf tools: Fix maps__find_symbol_by_name()")
-> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: stable@vger.kernel.org
-> ---
->  tools/perf/util/probe-event.c |   25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index f75df63309be..a5387e03e365 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -236,21 +236,22 @@ static void clear_probe_trace_events(struct probe_trace_event *tevs, int ntevs)
->  static bool kprobe_blacklist__listed(unsigned long address);
->  static bool kprobe_warn_out_range(const char *symbol, unsigned long address)
->  {
-> -	u64 etext_addr = 0;
-> -	int ret;
-> -
-> -	/* Get the address of _etext for checking non-probable text symbol */
-> -	ret = kernel_get_symbol_address_by_name("_etext", &etext_addr,
-> -						false, false);
-> +	struct map *map;
-> +	bool ret = false;
->  
-> -	if (ret == 0 && etext_addr < address)
-> -		pr_warning("%s is out of .text, skip it.\n", symbol);
-> -	else if (kprobe_blacklist__listed(address))
-> +	map = kernel_get_module_map(NULL);
-> +	if (map) {
-> +		ret = address <= map->start || map->end < address;
-> +		if (ret)
-> +			pr_warning("%s is out of .text, skip it.\n", symbol);
-> +		map__put(map);
-> +	}
-> +	if (!ret && kprobe_blacklist__listed(address)) {
->  		pr_warning("%s is blacklisted function, skip it.\n", symbol);
-> -	else
-> -		return false;
-> +		ret = true;
-> +	}
->  
-> -	return true;
-> +	return ret;
->  }
->  
->  /*
-> 
+Changelog RFC:
+ - Reuse existing code for allocation and flush
+ - Simplify the goto logic in the actual l1d_flush function
+ - Optimize the code path with jump labels/static functions
+
+The previous version of these patches are posted at:
+
+https://lore.kernel.org/lkml/20200408090229.16467-1-sblbir@amazon.com/
+
+Balbir Singh (6):
+  arch/x86/kvm: Refactor l1d flush lifecycle management
+  arch/x86/kvm: Refactor tlbflush and l1d flush
+  arch/x86/mm: Refactor cond_ibpb() to support other use cases
+  arch/x86/kvm: Refactor L1D flushing
+  Optionally flush L1D on context switch
+  Documentation: Add L1D flushing Documentation
+
+ Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+ .../admin-guide/hw-vuln/l1d_flush.rst         |  40 ++++++
+ arch/x86/include/asm/cacheflush.h             |   8 ++
+ arch/x86/include/asm/thread_info.h            |   7 +-
+ arch/x86/include/asm/tlbflush.h               |   2 +-
+ arch/x86/kernel/Makefile                      |   1 +
+ arch/x86/kernel/l1d_flush.c                   | 117 ++++++++++++++++++
+ arch/x86/kvm/vmx/vmx.c                        |  62 +---------
+ arch/x86/mm/tlb.c                             |  83 +++++++++----
+ include/uapi/linux/prctl.h                    |   4 +
+ kernel/sys.c                                  |  20 +++
+ 11 files changed, 263 insertions(+), 82 deletions(-)
+ create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+ create mode 100644 arch/x86/kernel/l1d_flush.c
 
 -- 
+2.17.1
 
-- Arnaldo
