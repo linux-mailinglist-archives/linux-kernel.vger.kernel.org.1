@@ -2,182 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15B31B55F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA441B560B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgDWHkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgDWHkK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:40:10 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DBDC03C1AF
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 00:40:08 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k13so5595581wrw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 00:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rgsjFMqSsFFfA3SHOg4kk9F6xuZxuDBetiHKZE6ZEAU=;
-        b=vQaVOPkcX+k5PLQQ//2UBsEb/qjn5P1N5bQBIHHy5FK16Yb4A+B31m1qe+hhv87lA3
-         AJjarUH2nZsniFrZMRJv0n54hBgioOviCdsnFZ49krVfmZ5j5GN59Q2L33HnhTW1hudd
-         sRha0KwzP0VvOEkaLMuE8t6XTtIlmA/GEYks8ZGnsMPPCOZe5ME5KomchbULNlFv0Nuk
-         LB+zyLIhi0GzGsOaulaFquiBiFzv8b+HCYrkW6TzZvtjoJ6n2D025pGsKTlNXzYg7qnW
-         xj3fuwXasWPnt8QFYMgELGHix5zVPMvOaXVVFiXWsubDOg93tZFzguRfcMm6VRlDK/cy
-         dOVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rgsjFMqSsFFfA3SHOg4kk9F6xuZxuDBetiHKZE6ZEAU=;
-        b=Wz6kzT7X0nDBYycgAqGa3NReW2H5LAuJGZxiJri9M/N/aENwysQPxkb/FsdsSXCeIH
-         NiGStq3OD9jDnwsxBNsJnBsYvzBCx0htMIS8h2hJep9QHyo7ZY4+A7WvMHk3tSlXWWE0
-         M6iDBHbWw14vvgrheBcke4KCfDQXDhakhBrrhps+DZvOic+TIPoaMu2q4q39JB3yX+S8
-         FUnXkIydCWs9MSpCM353QCr4IXnQN4Un2vu5wWh10HXB/jE+pKvdg6UKKFaPOQxSlvrQ
-         k54rizMHY3Hz4E3l1TvOAGVBqDZJa7jh7MAFBz2+SYc4zjw9Zaa6td6bUEWX2Pl5AFUN
-         25wg==
-X-Gm-Message-State: AGi0PuathLMdJtIII3jQ5NGFznJ7er0ulW27wFy/aKefUjGaM6wUPPaO
-        hVZfCSxrnJz0f5xFun70jMNJiA==
-X-Google-Smtp-Source: APiQypKhS0qi57AjvtSCZG1TL4X8Zf+1Ic2OVYSggCaWZNfJ/WBe8jRi0OU9b9Bmlfgj0/UCCnwNVw==
-X-Received: by 2002:a5d:49cb:: with SMTP id t11mr3329216wrs.91.1587627607168;
-        Thu, 23 Apr 2020 00:40:07 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56? ([2a01:e35:2ec0:82b0:39cc:a07:8b48:cc56])
-        by smtp.gmail.com with ESMTPSA id x6sm2595188wrg.58.2020.04.23.00.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 00:40:06 -0700 (PDT)
-Subject: Re: [PATCH v3] arm64: dts: meson: S922X: extend cpu opp-points
-To:     Tim Lewis <elatllat@gmail.com>
-Cc:     khilman@baylibre.com, christianshewitt@gmail.com,
-        joy.cho@hardkernel.com, tobetter@gmail.com,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        mark.rutland@arm.com, robh+dt@kernel.org
-References: <20200422233928.GA2816@imac>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <8255d8b1-f652-9ece-67d2-68c30a5cfbac@baylibre.com>
-Date:   Thu, 23 Apr 2020 09:40:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727038AbgDWHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:41:06 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:45559 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726936AbgDWHkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:40:37 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4978Nf2L8Zz9twkp;
+        Thu, 23 Apr 2020 09:40:34 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=hkIguouR; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id azaWpSan6ISQ; Thu, 23 Apr 2020 09:40:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4978Nf13ybz9twkn;
+        Thu, 23 Apr 2020 09:40:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1587627634; bh=MpTmQJ4zYNO0G1Sd1KpHv+2jnU1Isfgy/wCPvmwET88=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hkIguouRGdSkiHAiHo0RDH1XsuOeWxLD7VYysU4IRfV5Z8E6FvpgV0WuOOSRX1rSt
+         G2PjL1vRDgC0oEzIDiaPqn4clTIAgrJEEbz0V92GntC3ztQIKi9FWqOONgZ60C9L6T
+         pVrR/W48RmQbBRGsOsgRroFprOxld7yVoKu6suP4=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 377A38B7EA;
+        Thu, 23 Apr 2020 09:40:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id a4qF4jLoALPJ; Thu, 23 Apr 2020 09:40:35 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6D6038B772;
+        Thu, 23 Apr 2020 09:40:34 +0200 (CEST)
+Subject: Re: [PATCH crypto-stable v3 1/2] crypto: arch/lib - limit simd usage
+ to 4k chunks
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20200422200344.239462-1-Jason@zx2c4.com>
+ <20200422231854.675965-1-Jason@zx2c4.com>
+ <CAMj1kXHV=ryaFmj0jhQVGBd31nfHs7q5RtSyu7dY6GdEJJsr7A@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <beb32f2b-f16a-d235-f2a5-026b32dbc5b8@c-s.fr>
+Date:   Thu, 23 Apr 2020 09:40:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200422233928.GA2816@imac>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAMj1kXHV=ryaFmj0jhQVGBd31nfHs7q5RtSyu7dY6GdEJJsr7A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2020 01:39, Tim Lewis wrote:
-> HardKernel supports overclock through the addition to extra opp points
-> in their official kernel sources for odroid-n2 [1]. Christian tested
-> on other S922X devices with "no obvious issues". Neil thinks dvfs and
-> thermal managementis can keep other S922X devices safe.
---------------/\
-	  management
+
+
+Le 23/04/2020 à 09:18, Ard Biesheuvel a écrit :
+> FYI: you shouldn't cc stable@vger.kernel.org directly on your patches,
+> or add the cc: line. Only patches that are already in Linus' tree
+> should be sent there.
+> 
+> Also, the fixes tags are really quite sufficient. In fact, it is
+> actually rather difficult these days to prevent something from being
+> taken into -stable if the bots notice that it applies cleanly.
+
+According to Kernel Documentation, 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html :
+
+
+Patches that fix a severe bug in a released kernel should be directed 
+toward the stable maintainers by putting a line like this:
+
+Cc: stable@vger.kernel.org
+
+into the sign-off area of your patch (note, NOT an email recipient). You 
+should also read Documentation/process/stable-kernel-rules.rst in 
+addition to this file.
+
+
+Isn't it correct anymore ?
+
+Christophe
+
 
 > 
-> [1] https://github.com/hardkernel/linux/commit/f86cd9487c7483b2a05f448b9ebacf6bd5a2ad2f
-> Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-> Signed-off-by: Tim Lewis <elatllat@gmail.com>
+> On Thu, 23 Apr 2020 at 01:19, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>>
+>> The initial Zinc patchset, after some mailing list discussion, contained
+>> code to ensure that kernel_fpu_enable would not be kept on for more than
+>> a 4k chunk, since it disables preemption. The choice of 4k isn't totally
+>> scientific, but it's not a bad guess either, and it's what's used in
+>> both the x86 poly1305, blake2s, and nhpoly1305 code already (in the form
+>> of PAGE_SIZE, which this commit corrects to be explicitly 4k for the
+>> former two).
+>>
+>> Ard did some back of the envelope calculations and found that
+>> at 5 cycles/byte (overestimate) on a 1ghz processor (pretty slow), 4k
+>> means we have a maximum preemption disabling of 20us, which Sebastian
+>> confirmed was probably a good limit.
+>>
+>> Unfortunately the chunking appears to have been left out of the final
+>> patchset that added the glue code. So, this commit adds it back in.
+>>
+>> Fixes: 84e03fa39fbe ("crypto: x86/chacha - expose SIMD ChaCha routine as library function")
+>> Fixes: b3aad5bad26a ("crypto: arm64/chacha - expose arm64 ChaCha routine as library function")
+>> Fixes: a44a3430d71b ("crypto: arm/chacha - expose ARM ChaCha routine as library function")
+>> Fixes: d7d7b8535662 ("crypto: x86/poly1305 - wire up faster implementations for kernel")
+>> Fixes: f569ca164751 ("crypto: arm64/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+>> Fixes: a6b803b3ddc7 ("crypto: arm/poly1305 - incorporate OpenSSL/CRYPTOGAMS NEON implementation")
+>> Fixes: ed0356eda153 ("crypto: blake2s - x86_64 SIMD implementation")
+>> Cc: Eric Biggers <ebiggers@google.com>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 > 
-> ---
->  arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi | 15 +++++++++++++++
->  1 files changed, 15 insertions(+)
+> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> index 046cc332d..1e5d0ee5d 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> @@ -65,6 +65,11 @@
->  			opp-hz = /bits/ 64 <1896000000>;
->  			opp-microvolt = <981000>;
->  		};
-> +
-> +		opp-1992000000 {
-> +			opp-hz = /bits/ 64 <1992000000>;
-> +			opp-microvolt = <1001000>;
-> +		};
->  	};
->  
->  	cpub_opp_table_1: opp-table-1 {
-> @@ -120,5 +125,15 @@
->  			opp-hz = /bits/ 64 <1704000000>;
->  			opp-microvolt = <891000>;
->  		};
-> +
-> +		opp-1800000000 {
-> +			opp-hz = /bits/ 64 <1800000000>;
-> +			opp-microvolt = <981000>;
-> +		};
-> +
-> +		opp-1908000000 {
-> +			opp-hz = /bits/ 64 <1908000000>;
-> +			opp-microvolt = <1022000>;
-> +		};
->  	};
->  };
+> Thanks for cleaning this up
 > 
-
-The patch is well formed but I can only test on Odroid-N2.
-
-Anyway, Christian did a test other S922X boxes and it doesn't crash.
-
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-
-Neil
+>> ---
+>> Changes v2->v3:
+>>   - [Eric] Split nhpoly1305 changes into separate commit, since it's not
+>>     related to the library interface.
+>>
+>> Changes v1->v2:
+>>   - [Ard] Use explicit 4k chunks instead of PAGE_SIZE.
+>>   - [Eric] Prefer do-while over for (;;).
+>>
+>>   arch/arm/crypto/chacha-glue.c        | 14 +++++++++++---
+>>   arch/arm/crypto/poly1305-glue.c      | 15 +++++++++++----
+>>   arch/arm64/crypto/chacha-neon-glue.c | 14 +++++++++++---
+>>   arch/arm64/crypto/poly1305-glue.c    | 15 +++++++++++----
+>>   arch/x86/crypto/blake2s-glue.c       | 10 ++++------
+>>   arch/x86/crypto/chacha_glue.c        | 14 +++++++++++---
+>>   arch/x86/crypto/poly1305_glue.c      | 13 ++++++-------
+>>   7 files changed, 65 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/arch/arm/crypto/chacha-glue.c b/arch/arm/crypto/chacha-glue.c
+>> index 6fdb0ac62b3d..59da6c0b63b6 100644
+>> --- a/arch/arm/crypto/chacha-glue.c
+>> +++ b/arch/arm/crypto/chacha-glue.c
+>> @@ -91,9 +91,17 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+>>                  return;
+>>          }
+>>
+>> -       kernel_neon_begin();
+>> -       chacha_doneon(state, dst, src, bytes, nrounds);
+>> -       kernel_neon_end();
+>> +       do {
+>> +               unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
+>> +
+>> +               kernel_neon_begin();
+>> +               chacha_doneon(state, dst, src, todo, nrounds);
+>> +               kernel_neon_end();
+>> +
+>> +               bytes -= todo;
+>> +               src += todo;
+>> +               dst += todo;
+>> +       } while (bytes);
+>>   }
+>>   EXPORT_SYMBOL(chacha_crypt_arch);
+>>
+>> diff --git a/arch/arm/crypto/poly1305-glue.c b/arch/arm/crypto/poly1305-glue.c
+>> index ceec04ec2f40..13cfef4ae22e 100644
+>> --- a/arch/arm/crypto/poly1305-glue.c
+>> +++ b/arch/arm/crypto/poly1305-glue.c
+>> @@ -160,13 +160,20 @@ void poly1305_update_arch(struct poly1305_desc_ctx *dctx, const u8 *src,
+>>                  unsigned int len = round_down(nbytes, POLY1305_BLOCK_SIZE);
+>>
+>>                  if (static_branch_likely(&have_neon) && do_neon) {
+>> -                       kernel_neon_begin();
+>> -                       poly1305_blocks_neon(&dctx->h, src, len, 1);
+>> -                       kernel_neon_end();
+>> +                       do {
+>> +                               unsigned int todo = min_t(unsigned int, len, SZ_4K);
+>> +
+>> +                               kernel_neon_begin();
+>> +                               poly1305_blocks_neon(&dctx->h, src, todo, 1);
+>> +                               kernel_neon_end();
+>> +
+>> +                               len -= todo;
+>> +                               src += todo;
+>> +                       } while (len);
+>>                  } else {
+>>                          poly1305_blocks_arm(&dctx->h, src, len, 1);
+>> +                       src += len;
+>>                  }
+>> -               src += len;
+>>                  nbytes %= POLY1305_BLOCK_SIZE;
+>>          }
+>>
+>> diff --git a/arch/arm64/crypto/chacha-neon-glue.c b/arch/arm64/crypto/chacha-neon-glue.c
+>> index 37ca3e889848..af2bbca38e70 100644
+>> --- a/arch/arm64/crypto/chacha-neon-glue.c
+>> +++ b/arch/arm64/crypto/chacha-neon-glue.c
+>> @@ -87,9 +87,17 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+>>              !crypto_simd_usable())
+>>                  return chacha_crypt_generic(state, dst, src, bytes, nrounds);
+>>
+>> -       kernel_neon_begin();
+>> -       chacha_doneon(state, dst, src, bytes, nrounds);
+>> -       kernel_neon_end();
+>> +       do {
+>> +               unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
+>> +
+>> +               kernel_neon_begin();
+>> +               chacha_doneon(state, dst, src, todo, nrounds);
+>> +               kernel_neon_end();
+>> +
+>> +               bytes -= todo;
+>> +               src += todo;
+>> +               dst += todo;
+>> +       } while (bytes);
+>>   }
+>>   EXPORT_SYMBOL(chacha_crypt_arch);
+>>
+>> diff --git a/arch/arm64/crypto/poly1305-glue.c b/arch/arm64/crypto/poly1305-glue.c
+>> index e97b092f56b8..f33ada70c4ed 100644
+>> --- a/arch/arm64/crypto/poly1305-glue.c
+>> +++ b/arch/arm64/crypto/poly1305-glue.c
+>> @@ -143,13 +143,20 @@ void poly1305_update_arch(struct poly1305_desc_ctx *dctx, const u8 *src,
+>>                  unsigned int len = round_down(nbytes, POLY1305_BLOCK_SIZE);
+>>
+>>                  if (static_branch_likely(&have_neon) && crypto_simd_usable()) {
+>> -                       kernel_neon_begin();
+>> -                       poly1305_blocks_neon(&dctx->h, src, len, 1);
+>> -                       kernel_neon_end();
+>> +                       do {
+>> +                               unsigned int todo = min_t(unsigned int, len, SZ_4K);
+>> +
+>> +                               kernel_neon_begin();
+>> +                               poly1305_blocks_neon(&dctx->h, src, todo, 1);
+>> +                               kernel_neon_end();
+>> +
+>> +                               len -= todo;
+>> +                               src += todo;
+>> +                       } while (len);
+>>                  } else {
+>>                          poly1305_blocks(&dctx->h, src, len, 1);
+>> +                       src += len;
+>>                  }
+>> -               src += len;
+>>                  nbytes %= POLY1305_BLOCK_SIZE;
+>>          }
+>>
+>> diff --git a/arch/x86/crypto/blake2s-glue.c b/arch/x86/crypto/blake2s-glue.c
+>> index 06ef2d4a4701..6737bcea1fa1 100644
+>> --- a/arch/x86/crypto/blake2s-glue.c
+>> +++ b/arch/x86/crypto/blake2s-glue.c
+>> @@ -32,16 +32,16 @@ void blake2s_compress_arch(struct blake2s_state *state,
+>>                             const u32 inc)
+>>   {
+>>          /* SIMD disables preemption, so relax after processing each page. */
+>> -       BUILD_BUG_ON(PAGE_SIZE / BLAKE2S_BLOCK_SIZE < 8);
+>> +       BUILD_BUG_ON(SZ_4K / BLAKE2S_BLOCK_SIZE < 8);
+>>
+>>          if (!static_branch_likely(&blake2s_use_ssse3) || !crypto_simd_usable()) {
+>>                  blake2s_compress_generic(state, block, nblocks, inc);
+>>                  return;
+>>          }
+>>
+>> -       for (;;) {
+>> +       do {
+>>                  const size_t blocks = min_t(size_t, nblocks,
+>> -                                           PAGE_SIZE / BLAKE2S_BLOCK_SIZE);
+>> +                                           SZ_4K / BLAKE2S_BLOCK_SIZE);
+>>
+>>                  kernel_fpu_begin();
+>>                  if (IS_ENABLED(CONFIG_AS_AVX512) &&
+>> @@ -52,10 +52,8 @@ void blake2s_compress_arch(struct blake2s_state *state,
+>>                  kernel_fpu_end();
+>>
+>>                  nblocks -= blocks;
+>> -               if (!nblocks)
+>> -                       break;
+>>                  block += blocks * BLAKE2S_BLOCK_SIZE;
+>> -       }
+>> +       } while (nblocks);
+>>   }
+>>   EXPORT_SYMBOL(blake2s_compress_arch);
+>>
+>> diff --git a/arch/x86/crypto/chacha_glue.c b/arch/x86/crypto/chacha_glue.c
+>> index b412c21ee06e..22250091cdbe 100644
+>> --- a/arch/x86/crypto/chacha_glue.c
+>> +++ b/arch/x86/crypto/chacha_glue.c
+>> @@ -153,9 +153,17 @@ void chacha_crypt_arch(u32 *state, u8 *dst, const u8 *src, unsigned int bytes,
+>>              bytes <= CHACHA_BLOCK_SIZE)
+>>                  return chacha_crypt_generic(state, dst, src, bytes, nrounds);
+>>
+>> -       kernel_fpu_begin();
+>> -       chacha_dosimd(state, dst, src, bytes, nrounds);
+>> -       kernel_fpu_end();
+>> +       do {
+>> +               unsigned int todo = min_t(unsigned int, bytes, SZ_4K);
+>> +
+>> +               kernel_fpu_begin();
+>> +               chacha_dosimd(state, dst, src, todo, nrounds);
+>> +               kernel_fpu_end();
+>> +
+>> +               bytes -= todo;
+>> +               src += todo;
+>> +               dst += todo;
+>> +       } while (bytes);
+>>   }
+>>   EXPORT_SYMBOL(chacha_crypt_arch);
+>>
+>> diff --git a/arch/x86/crypto/poly1305_glue.c b/arch/x86/crypto/poly1305_glue.c
+>> index 6dfec19f7d57..dfe921efa9b2 100644
+>> --- a/arch/x86/crypto/poly1305_glue.c
+>> +++ b/arch/x86/crypto/poly1305_glue.c
+>> @@ -91,8 +91,8 @@ static void poly1305_simd_blocks(void *ctx, const u8 *inp, size_t len,
+>>          struct poly1305_arch_internal *state = ctx;
+>>
+>>          /* SIMD disables preemption, so relax after processing each page. */
+>> -       BUILD_BUG_ON(PAGE_SIZE < POLY1305_BLOCK_SIZE ||
+>> -                    PAGE_SIZE % POLY1305_BLOCK_SIZE);
+>> +       BUILD_BUG_ON(SZ_4K < POLY1305_BLOCK_SIZE ||
+>> +                    SZ_4K % POLY1305_BLOCK_SIZE);
+>>
+>>          if (!static_branch_likely(&poly1305_use_avx) ||
+>>              (len < (POLY1305_BLOCK_SIZE * 18) && !state->is_base2_26) ||
+>> @@ -102,8 +102,8 @@ static void poly1305_simd_blocks(void *ctx, const u8 *inp, size_t len,
+>>                  return;
+>>          }
+>>
+>> -       for (;;) {
+>> -               const size_t bytes = min_t(size_t, len, PAGE_SIZE);
+>> +       do {
+>> +               const size_t bytes = min_t(size_t, len, SZ_4K);
+>>
+>>                  kernel_fpu_begin();
+>>                  if (IS_ENABLED(CONFIG_AS_AVX512) && static_branch_likely(&poly1305_use_avx512))
+>> @@ -113,11 +113,10 @@ static void poly1305_simd_blocks(void *ctx, const u8 *inp, size_t len,
+>>                  else
+>>                          poly1305_blocks_avx(ctx, inp, bytes, padbit);
+>>                  kernel_fpu_end();
+>> +
+>>                  len -= bytes;
+>> -               if (!len)
+>> -                       break;
+>>                  inp += bytes;
+>> -       }
+>> +       } while (len);
+>>   }
+>>
+>>   static void poly1305_simd_emit(void *ctx, u8 mac[POLY1305_DIGEST_SIZE],
+>> --
+>> 2.26.2
+>>
