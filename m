@@ -2,323 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BADE1B5F93
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686CA1B5F88
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgDWPj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:39:28 -0400
-Received: from mout.gmx.net ([212.227.15.15]:42763 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgDWPj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:39:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587656354;
-        bh=AnrOXTpXsfBgG++l8YlqTgHwAfmDn9tSuFzC+LRmxiA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=KQiO+x5enh7v4JgcavZkzff4u1bf7ewLcsToRsjf7S2WJPUBM21UPzSNd/TSFYd9k
-         ULKdKewsiwuTEMuERX//niqIu4jNxX2LY06vdpZgaHZN7A18r/vNKCEQbYbLg1q6fg
-         I9myX7P+KYOvBrkLx5pYGXeoJJKgD7tRQvH4DppM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M9Wys-1jX7aw2XRM-005cVE; Thu, 23 Apr 2020 17:39:14 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] staging: vt6656: Remove functions' documentation
-Date:   Thu, 23 Apr 2020 17:38:36 +0200
-Message-Id: <20200423153836.5582-3-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200423153836.5582-1-oscar.carter@gmx.com>
-References: <20200423153836.5582-1-oscar.carter@gmx.com>
+        id S1729316AbgDWPi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:38:57 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:35653 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729077AbgDWPi4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:38:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587656335; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=BRAibgfRj7aiNJ9xmqPaKVlJBsIulp+Nf9+VhQlrZxs=; b=tzapb9QQlWvJBkgBB8CsSF0CfvMKIU1811Id9e1k/HtHCnU92ym8OxXHDFmB5e8H+FoaKddo
+ zoQtNhpeukSfiR5Gcdd896V4GWIijnlLe0iBnrmjMUgjuU5H8RL/MF/aWx1dl4m8iOzT0JRe
+ QHrkQcvay4gUSOr9+jbfhAe2TH4=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea1b685.7fe2f589ca78-smtp-out-n04;
+ Thu, 23 Apr 2020 15:38:45 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E09A5C44792; Thu, 23 Apr 2020 15:38:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E71B2C433D2;
+        Thu, 23 Apr 2020 15:38:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E71B2C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Thu, 23 Apr 2020 09:38:38 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Brian Masney <masneyb@onstation.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/9] drm/msm/a6xx: add A640/A650 to gpulist
+Message-ID: <20200423153837.GB15079@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Brian Masney <masneyb@onstation.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200421234127.27965-1-jonathan@marek.ca>
+ <20200421234127.27965-5-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6sKv60QHAf3LbU2MSaMTkLSVfIXF5/SOzoMo+QJ6n/IHyE0dUSk
- qzwguUyEpuZotUOSO31IF30z4NjWvUui8I28Ehh9kvcip4mSd6r0IpWBAV4zA1sMwISvu1m
- VLhq+RIuBwE06lZ81841MXVwzz6WRJtjCbjfaLalLverADEsryCg9rYzyfkoYFZXL4T7j/u
- yesT3gNc+5lw2jjOb4hZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LY3TKA0ZSDY=:RouImVkvsHs+B8J/YIPOho
- LxbKnsmm3LPQnIKONRzTUC34a1YDB4sN3DDdYWeFSdO3ZzM+5Ts26WoPoAxNmwl1nUeIJWwOq
- 29jcBWwiE4/8YGvBRzPvDoOvMLHFSX6swQd6Ntyw63LY+zqY4Zx8DOkkx7zidO/kkGWtk7hkE
- dxpc22v1k7+A9SzbKHccIGR4rRhknbJtHwE8YLA6jhWyKueRffGwetsEk/ZSPCE5e3FSCFYkR
- rIWkvEHxhxY7pPmsFxpQJFL16uzvS58emXl5zXBRNXwzE3uFTG7iopr6p0VUeEVOKLFM0e4bN
- AXzpWRr9NwxHtsD3p+T0DGiQC6sg+Spmbu95nqxyAz+GvWcdZgFtSJFrpR55Se6TOJSeTCEbu
- ZaK/Wruca4NqxpVOaf1Ry/uI9JalaAQwvEGR4q7BRufex7D74I+ZlnnxJL5IdgkF73le0BWA0
- QeF9hqecaeewvSdd8QfxezTbK235zSIQIbot+K1qlZVLbovUJ027xW51naWFc74TZtUcQQ9+A
- yjZVpC12GWgadv95XRLGg7WNrT34IBoNon+cJA/+Q2p7pdOTN23gxxJCiCRDLZZWOYS7XPkxQ
- QvuTjZFcf7pXuTVqmMaGdkm3d7Ao20jBxUrMzJPTEUfHdMmce/KyylqB/DkA0nryOGFAIyVLw
- 381oPkmAdjmzys07AUQdutwTBOXrj74MDikbxBUBAytbLRdL4+gT5+BQxKOjXc6+aP9v/qytb
- Ij3+53X+katqB6iaf1rW3ACQEJnBfg8hJRpmVNaMgbpDLpSE2x5VI4v8IjtQDhmiKo+MksXcW
- WueX9yIaoptdxjBpcI+JHm9H+rBjzVhBXYig6uSZpLlBgItsGTBzbz/PDAccRspSX3rGK0JgN
- 0uN/agFhP5KefyM/BD0RVELQMsNaNITZF/OsR9ghBJ6nLrRhOtZz69N2aCCSwvQFSaaCIBIDW
- YwPAU6XgZufurGB3QTYCSkDbwEl/YF7Fp29chyW3wIbBjjM7xANAhNI0wJF9D17+EIGTp7ESZ
- +RqyQQGm+6sDvGsBzG9y4CY7MPKLCRkzvMv3bTLVMdtZZtGQo2ggmDwkaa68+COZIX5HidB66
- 8oq7vFultHMYNZ/toezj1M6op3uqMuhLBExa0jXk8YvN2fvx8Ok9DtOvJ3kdof4g+szftvFU9
- eU7f6jx94/g9kRFVxggVARd7U9/cNuUX5bXBh3wQB+MswGoR2fRt6h981ge/fcsAi08KFX7Hj
- 4avA244WPAqlRSsDw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421234127.27965-5-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the functions' documentation as the names of the functions are
-clear enought. Also, the actual documentation it's not correct in all
-cases.
+On Tue, Apr 21, 2020 at 07:41:22PM -0400, Jonathan Marek wrote:
+> Add Adreno 640 and 650 GPU info to the gpulist.
+> 
 
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- drivers/staging/vt6656/card.c  | 79 ----------------------------------
- drivers/staging/vt6656/mac.c   | 52 ----------------------
- drivers/staging/vt6656/power.c | 10 -----
- 3 files changed, 141 deletions(-)
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-diff --git a/drivers/staging/vt6656/card.c b/drivers/staging/vt6656/card.c
-index c29f7072c742..370ae4253a3f 100644
-=2D-- a/drivers/staging/vt6656/card.c
-+++ b/drivers/staging/vt6656/card.c
-@@ -46,16 +46,6 @@ static const u16 cw_rxbcntsf_off[MAX_RATE] =3D {
- 	192, 96, 34, 17, 34, 23, 17, 11, 8, 5, 4, 3
- };
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/adreno/adreno_device.c | 24 ++++++++++++++++++++++
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c    |  2 +-
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h    | 10 +++++++++
+>  3 files changed, 35 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> index cb3a6e597d76..1156f72532a4 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> @@ -189,6 +189,30 @@ static const struct adreno_info gpulist[] = {
+>  		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>  		.init = a6xx_gpu_init,
+>  		.zapfw = "a630_zap.mdt",
+> +	}, {
+> +		.rev = ADRENO_REV(6, 4, 0, ANY_ID),
+> +		.revn = 640,
+> +		.name = "A640",
+> +		.fw = {
+> +			[ADRENO_FW_SQE] = "a630_sqe.fw",
+> +			[ADRENO_FW_GMU] = "a640_gmu.bin",
+> +		},
+> +		.gmem = SZ_1M,
+> +		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+> +		.init = a6xx_gpu_init,
+> +		.zapfw = "a640_zap.mdt",
+> +	}, {
+> +		.rev = ADRENO_REV(6, 5, 0, ANY_ID),
+> +		.revn = 650,
+> +		.name = "A650",
+> +		.fw = {
+> +			[ADRENO_FW_SQE] = "a650_sqe.fw",
+> +			[ADRENO_FW_GMU] = "a650_gmu.bin",
+> +		},
+> +		.gmem = SZ_1M + SZ_128K,
+> +		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+> +		.init = a6xx_gpu_init,
+> +		.zapfw = "a650_zap.mdt",
+>  	},
+>  };
+>  
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index 1d5c43c22269..a7647eaacc7a 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -197,7 +197,7 @@ int adreno_get_param(struct msm_gpu *gpu, uint32_t param, uint64_t *value)
+>  		*value = adreno_gpu->gmem;
+>  		return 0;
+>  	case MSM_PARAM_GMEM_BASE:
+> -		*value = 0x100000;
+> +		*value = !adreno_is_a650(adreno_gpu) ? 0x100000 : 0;
 
--/*
-- * Description: Set NIC media channel
-- *
-- * Parameters:
-- *  In:
-- *      pDevice             - The adapter to be set
-- *      connection_channel  - Channel to be set
-- *  Out:
-- *      none
-- */
- int vnt_set_channel(struct vnt_private *priv, u32 connection_channel)
- {
- 	int ret;
-@@ -99,19 +89,6 @@ static const u8 vnt_rspinf_gb_table[] =3D {
- 	0x0e, 0x8d, 0x0a, 0x88, 0x0a, 0x8c, 0x0a, 0x8c, 0x0a
- };
+This will likely be 0 from here on out. This is okay for now, but we might need
+to consider adding the gmem base to the GPU list to avoid some ugly
+conditionals.
 
--/*
-- * Description: Set RSPINF
-- *
-- * Parameters:
-- *  In:
-- *      pDevice             - The adapter to be set
-- *  Out:
-- *      none
-- *
-- * Return Value: None.
-- *
-- */
--
- int vnt_set_rspinf(struct vnt_private *priv, u8 bb_type)
- {
- 	const u8 *data;
-@@ -145,18 +122,6 @@ int vnt_set_rspinf(struct vnt_private *priv, u8 bb_ty=
-pe)
- 			       MESSAGE_REQUEST_MACREG, len, data);
- }
+>  		return 0;
+>  	case MSM_PARAM_CHIP_ID:
+>  		*value = adreno_gpu->rev.patchid |
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index 9ff4e550e7bd..88ae1b2813ef 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -237,6 +237,16 @@ static inline int adreno_is_a630(struct adreno_gpu *gpu)
+>         return gpu->revn == 630;
+>  }
+>  
+> +static inline int adreno_is_a640(struct adreno_gpu *gpu)
+> +{
+> +       return gpu->revn == 640;
+> +}
+> +
+> +static inline int adreno_is_a650(struct adreno_gpu *gpu)
+> +{
+> +       return gpu->revn == 650;
+> +}
+> +
+>  int adreno_get_param(struct msm_gpu *gpu, uint32_t param, uint64_t *value);
+>  const struct firmware *adreno_request_fw(struct adreno_gpu *adreno_gpu,
+>  		const char *fwname);
+> -- 
+> 2.26.1
+> 
 
--/*
-- * Description: Update IFS
-- *
-- * Parameters:
-- *  In:
-- *	priv - The adapter to be set
-- * Out:
-- *	none
-- *
-- * Return Value: None.
-- *
-- */
- int vnt_update_ifs(struct vnt_private *priv)
- {
- 	u8 max_min =3D 0;
-@@ -300,21 +265,6 @@ u64 vnt_get_tsf_offset(u8 rx_rate, u64 tsf1, u64 tsf2=
-)
- 	return tsf1 - tsf2 - (u64)cw_rxbcntsf_off[rx_rate % MAX_RATE];
- }
-
--/*
-- * Description: Sync. TSF counter to BSS
-- *              Get TSF offset and write to HW
-- *
-- * Parameters:
-- *  In:
-- *      priv		- The adapter to be sync.
-- *      time_stamp	- Rx BCN's TSF
-- *      local_tsf	- Local TSF
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_adjust_tsf(struct vnt_private *priv, u8 rx_rate,
- 		   u64 time_stamp, u64 local_tsf)
- {
-@@ -408,20 +358,6 @@ u64 vnt_get_next_tbtt(u64 tsf, u16 beacon_interval)
- 	return tsf;
- }
-
--/*
-- * Description: Set NIC TSF counter for first Beacon time
-- *              Get NEXTTBTT from adjusted TSF and Beacon Interval
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - IO Base
-- *	beacon_interval - Beacon Interval
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_reset_next_tbtt(struct vnt_private *priv, u16 beacon_interval)
- {
- 	u64 next_tbtt =3D 0;
-@@ -444,21 +380,6 @@ int vnt_reset_next_tbtt(struct vnt_private *priv, u16=
- beacon_interval)
- 			       MESSAGE_REQUEST_TBTT, 0, 8, data);
- }
-
--/*
-- * Description: Sync NIC TSF counter for Beacon time
-- *              Get NEXTTBTT and write to HW
-- *
-- * Parameters:
-- *  In:
-- *	priv		- The adapter to be set
-- *      tsf		- Current TSF counter
-- *      beacon_interval - Beacon Interval
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_update_next_tbtt(struct vnt_private *priv, u64 tsf,
- 			 u16 beacon_interval)
- {
-diff --git a/drivers/staging/vt6656/mac.c b/drivers/staging/vt6656/mac.c
-index 639172fad0f3..da7067c34643 100644
-=2D-- a/drivers/staging/vt6656/mac.c
-+++ b/drivers/staging/vt6656/mac.c
-@@ -22,19 +22,6 @@
- #include "mac.h"
- #include "usbpipe.h"
-
--/*
-- * Description:
-- *      Write MAC Multicast Address Mask
-- *
-- * Parameters:
-- *  In:
-- *	mc_filter (mac filter)
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_set_filter(struct vnt_private *priv, u64 mc_filter)
- {
- 	__le64 le_mc =3D cpu_to_le64(mc_filter);
-@@ -44,17 +31,6 @@ int vnt_mac_set_filter(struct vnt_private *priv, u64 mc=
-_filter)
- 			       (u8 *)&le_mc);
- }
-
--/*
-- * Description:
-- *      Shut Down MAC
-- *
-- * Parameters:
-- *  In:
-- *  Out:
-- *      none
-- *
-- *
-- */
- int vnt_mac_shutdown(struct vnt_private *priv)
- {
- 	return vnt_control_out(priv, MESSAGE_TYPE_MACSHUTDOWN, 0, 0, 0, NULL);
-@@ -72,40 +48,12 @@ int vnt_mac_set_bb_type(struct vnt_private *priv, u8 t=
-ype)
- 			       data);
- }
-
--/*
-- * Description:
-- *      Disable the Key Entry by MISCFIFO
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - Base Address for MAC
-- *
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_disable_keyentry(struct vnt_private *priv, u8 entry_idx)
- {
- 	return vnt_control_out(priv, MESSAGE_TYPE_CLRKEYENTRY, 0, 0,
- 			       sizeof(entry_idx), &entry_idx);
- }
-
--/*
-- * Description:
-- *      Set the Key by MISCFIFO
-- *
-- * Parameters:
-- *  In:
-- *      dwIoBase        - Base Address for MAC
-- *
-- *  Out:
-- *      none
-- *
-- * Return Value: none
-- *
-- */
- int vnt_mac_set_keyentry(struct vnt_private *priv, u16 key_ctl, u32 entry=
-_idx,
- 			 u32 key_idx, u8 *addr, u8 *key)
- {
-diff --git a/drivers/staging/vt6656/power.c b/drivers/staging/vt6656/power=
-.c
-index 2d8d5a332a63..d160a0773943 100644
-=2D-- a/drivers/staging/vt6656/power.c
-+++ b/drivers/staging/vt6656/power.c
-@@ -77,16 +77,6 @@ void vnt_enable_power_saving(struct vnt_private *priv, =
-u16 listen_interval)
- 	dev_dbg(&priv->usb->dev,  "PS:Power Saving Mode Enable...\n");
- }
-
--/*
-- *
-- * Routine Description:
-- * Disable hw power saving functions
-- *
-- * Return Value:
-- *    None.
-- *
-- */
--
- int vnt_disable_power_saving(struct vnt_private *priv)
- {
- 	int ret;
-=2D-
-2.20.1
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
