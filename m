@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1841B6918
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E981B6962
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgDWXUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:20:18 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17709 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729589AbgDWXUP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:20:15 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ea222a20000>; Thu, 23 Apr 2020 16:20:02 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 23 Apr 2020 16:20:15 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 23 Apr 2020 16:20:15 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
- 2020 23:20:14 +0000
-Received: from [10.2.165.49] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
- 2020 23:20:13 +0000
-Subject: Re: [RFC PATCH v9 6/9] media: tegra: Add Tegra210 Video input driver
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1587536339-4030-1-git-send-email-skomatineni@nvidia.com>
- <1587536339-4030-7-git-send-email-skomatineni@nvidia.com>
- <7e473fa9-0409-d868-e818-2e7928a8acca@gmail.com>
- <a83bfc89-35de-85b5-fe5f-71e62456f5e9@nvidia.com>
-Message-ID: <3691c4b5-1ecc-2ad3-23ed-72ef6b8d25fa@nvidia.com>
-Date:   Thu, 23 Apr 2020 16:20:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729443AbgDWXWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:22:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726071AbgDWXWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:22:12 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A0CA2077D;
+        Thu, 23 Apr 2020 23:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587684131;
+        bh=QotbvpR+ipa9WO0KVHtHpisc4gu+Geq5eDDff4yyXaw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nHLB5/apYOfrVUc5/SaqYvmsoMFu97LT0cCsvHGI7QT83Qp7Ur6t4do6jabWrI4Lb
+         MeF2F278ba7t1nzxgJ4+6tFY3DIKQiksQ+fHwpMTudptvx+aaT5zmWAS67eCIb3Ebl
+         YaPuQ0q7kpLebLIoMOvAnGrBPexMPUc4ftZAl5Is=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        luto@kernel.org
+Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
+        ak@linux.intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v10 00/18] Enable FSGSBASE instructions
+Date:   Thu, 23 Apr 2020 19:21:49 -0400
+Message-Id: <20200423232207.5797-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <a83bfc89-35de-85b5-fe5f-71e62456f5e9@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587684002; bh=CPRq9cMt/lN6NzDJ05Bova74TvWpdusnmYaV2OQmpZc=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=gP/V70j/RucgH4oE3n6e/1smKYjeDoHMjHN/psXuADH9AlFST3EEkQCEVSqbkKTmi
-         l//C9mwLWXxdia9IrSUrhTGW6ze7BUYFWhX3FVAZAK58EYcTXLDNgqJlWNVFPFaQCN
-         nEwCgtUC2FOTMKw1AAQiGkHY/6RB3ZQCVSl2xBFaU0v04D3L9axdagwKcQnCYGGfFB
-         Emy7GW7lGBBoqnXCTU7FVD/2tAvJbtj9gaTSJIULthE+Odlnp+92m9nTgJy8scK+UZ
-         TDJa5aSuX0SCMCPocR+LZj0Dn0Sc+GZbJNBo/0Iu4xSGa206pLTZUMzlSXJMpKXNpH
-         unAWdnh7miXPA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Benefits:
+Currently a user process that wishes to read or write the FS/GS base must
+make a system call. But recent X86 processors have added new instructions
+for use in 64-bit mode that allow direct access to the FS and GS segment
+base addresses.  The operating system controls whether applications can
+use these instructions with a %cr4 control bit.
 
-On 4/23/20 4:19 PM, Sowjanya Komatineni wrote:
->
-> On 4/23/20 4:16 PM, Dmitry Osipenko wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> 22.04.2020 09:18, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> +static int chan_capture_kthread_start(void *data)
->>> +{
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan =3D data;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 struct tegra_channel_buffer *buf;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 set_freezable();
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 while (1) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 try_to_freeze();
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 wait_event_interruptible(chan->start_wait,
->>> + !list_empty(&chan->capture) ||
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 kthread_should_stop());
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 if (kthread_should_stop())
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 /*
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * Source is not streaming if error is non-zero.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * So, do not dequeue buffers on capture error.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 */
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 if (err)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 continue;
->> This will result in an endless loop, I suppose it wasn't the intention.
->
-> no it will not. on error we report vb2_queue_error which will do=20
-> streaming stop request.
->
-> So thread will be stopped on streaming stop request thru kthread stop=20
-> signal
-To be clear on error it reports vb2 queue error and waits for stop=20
-streaming to happen
+In addition to benefits to applications, performance improvements to the
+OS context switch code are possible by making use of these instructions. A
+third party reported out promising performance numbers out of their
+initial benchmarking of the previous version of this patch series [9].
+
+Enablement check:
+The kernel provides information about the enabled state of FSGSBASE to
+applications using the ELF_AUX vector. If the HWCAP2_FSGSBASE bit is set in
+the AUX vector, the kernel has FSGSBASE instructions enabled and
+applications can use them.
+
+Kernel changes:
+Major changes made in the kernel are in context switch, paranoid path, and
+ptrace. In a context switch, a task's FS/GS base will be secured regardless
+of its selector. In the paranoid path, GS base is unconditionally
+overwritten to the kernel GS base on entry and the original GS base is
+restored on exit. Ptrace includes divergence of FS/GS index and base
+values.
+
+Security:
+For mitigating the Spectre v1 SWAPGS issue, LFENCE instructions were added
+on most kernel entries. Those patches are dependent on previous behaviors
+that users couldn't load a kernel address into the GS base. These patches
+change that assumption since the user can load any address into GS base.
+The changes to the kernel entry path in this patch series take account of
+the SWAPGS issue.
+
+Changes from v9:
+
+ - Rebase on top of v5.7-rc1 and re-test.
+ - Work around changes in 2fff071d28b5 ("x86/process: Unify
+   copy_thread_tls()").
+ - Work around changes in c7ca0b614513 ("Revert "x86/ptrace: Prevent
+   ptrace from clearing the FS/GS selector" and fix the test").
+
+ 
+
+Andi Kleen (2):
+  x86/fsgsbase/64: Add intrinsics for FSGSBASE instructions
+  x86/elf: Enumerate kernel FSGSBASE capability in AT_HWCAP2
+
+Andy Lutomirski (4):
+  x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
+  x86/entry/64: Clean up paranoid exit
+  x86/fsgsbase/64: Use FSGSBASE in switch_to() if available
+  x86/fsgsbase/64: Enable FSGSBASE on 64bit by default and add a chicken
+    bit
+
+Chang S. Bae (9):
+  x86/ptrace: Prevent ptrace from clearing the FS/GS selector
+  selftests/x86/fsgsbase: Test GS selector on ptracer-induced GS base
+    write
+  x86/entry/64: Switch CR3 before SWAPGS in paranoid entry
+  x86/entry/64: Introduce the FIND_PERCPU_BASE macro
+  x86/entry/64: Handle FSGSBASE enabled paranoid entry/exit
+  x86/entry/64: Document GSBASE handling in the paranoid path
+  x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions
+  x86/fsgsbase/64: Use FSGSBASE instructions on thread copy and ptrace
+  selftests/x86/fsgsbase: Test ptracer-induced GS base write with
+    FSGSBASE
+
+Sasha Levin (1):
+  x86/fsgsbase/64: move save_fsgs to header file
+
+Thomas Gleixner (1):
+  Documentation/x86/64: Add documentation for GS/FS addressing mode
+
+Tony Luck (1):
+  x86/speculation/swapgs: Check FSGSBASE in enabling SWAPGS mitigation
+
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ Documentation/x86/entry_64.rst                |   9 +
+ Documentation/x86/x86_64/fsgs.rst             | 199 ++++++++++++++++++
+ Documentation/x86/x86_64/index.rst            |   1 +
+ arch/x86/entry/calling.h                      |  40 ++++
+ arch/x86/entry/entry_64.S                     | 131 +++++++++---
+ arch/x86/include/asm/fsgsbase.h               |  45 +++-
+ arch/x86/include/asm/inst.h                   |  15 ++
+ arch/x86/include/uapi/asm/hwcap2.h            |   3 +
+ arch/x86/kernel/cpu/bugs.c                    |   6 +-
+ arch/x86/kernel/cpu/common.c                  |  22 ++
+ arch/x86/kernel/process.c                     |  10 +-
+ arch/x86/kernel/process.h                     |  69 ++++++
+ arch/x86/kernel/process_64.c                  | 142 +++++++------
+ arch/x86/kernel/ptrace.c                      |  17 +-
+ tools/testing/selftests/x86/fsgsbase.c        |  24 ++-
+ 16 files changed, 606 insertions(+), 129 deletions(-)
+ create mode 100644 Documentation/x86/x86_64/fsgs.rst
+
+-- 
+2.20.1
+
