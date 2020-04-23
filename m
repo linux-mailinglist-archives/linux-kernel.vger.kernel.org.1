@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E891B5EB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312811B5EBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgDWPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:10:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24319 "EHLO
+        id S1729042AbgDWPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:11:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31540 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728551AbgDWPKv (ORCPT
+        with ESMTP id S1728878AbgDWPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:10:51 -0400
+        Thu, 23 Apr 2020 11:11:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587654650;
+        s=mimecast20190719; t=1587654676;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6IQojHe4J/6k3qfeiWdzY68BgNr3d6Bt4ImpMFFIpDM=;
-        b=g0n8gvqByRemSBNfL6MVXTSX6Yw7iUXQlgGd0QuTFAD11wAj3IxeJ9xn1OfAX9PYG86J3D
-        60UdX+5m03ITp+6vJZ+Aufj4xbuU/pYise8dKOv5HToca9q2+M/vTlXd2jqwJs6I+6VxyW
-        hhKFyisIrIzv+TlWrS4U49hlNEE4LaE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-3yHZFWMCNTWl8-_Wf4Mnew-1; Thu, 23 Apr 2020 11:10:49 -0400
-X-MC-Unique: 3yHZFWMCNTWl8-_Wf4Mnew-1
-Received: by mail-wm1-f71.google.com with SMTP id u11so2461792wmc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:10:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6IQojHe4J/6k3qfeiWdzY68BgNr3d6Bt4ImpMFFIpDM=;
-        b=gpHEo/Hw0rqXiy+HNiIlI8hndjaZpBFxLjJ6EZHZKYQqzv4mQXmNfiz/j0VIQdzIbP
-         7hdA3P7jSHn1IRSTWzGQNauKWM6ofJ6Nvq0IzAg46E2orHAhCLZQeGVZ8ytrn4+cCAuO
-         t1sv7O0jxOj/xdDP9gvJkQvWvo+RlU3xSQ+lI8gTaReHNUvofRS9rtIah2tFI/ICSoLJ
-         hHgUvgI/2M1V4Rq7wr8lvOpDeSEm6wXwYUAndzEWXmYfoaMmflPFboCmvrgdWEDP54x/
-         T/bQn+fx5L9OAh3eFpDKDmP0704yfnfXQgqPd4Ny/LNB2RnMHvCxO7STYaxMuLQ25CBt
-         0BqA==
-X-Gm-Message-State: AGi0Pubx1basDVpEeBC656YuNX2V7NP46y3T2OVg0uT+ECnJifQ68yoJ
-        R3avIHK51Sgq2Vh4S/oTypan4kyduYemOQze2f0JMhubS6aS9/PnBSkm7oCNYBjsRswqkY7P7TH
-        yDOLOC+th4XTIlTpwmqZ8GI9s
-X-Received: by 2002:a1c:4989:: with SMTP id w131mr4817219wma.137.1587654647739;
-        Thu, 23 Apr 2020 08:10:47 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJBRJkol6+EEfdoUivoCv0K3f//jt7ca68U8BmQbf6RxQwuLwAzr8W2Z3WR0idg+KG9HTTMhQ==
-X-Received: by 2002:a1c:4989:: with SMTP id w131mr4817197wma.137.1587654647460;
-        Thu, 23 Apr 2020 08:10:47 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:f43b:97b2:4c89:7446? ([2001:b07:6468:f312:f43b:97b2:4c89:7446])
-        by smtp.gmail.com with ESMTPSA id d7sm3994249wrn.78.2020.04.23.08.10.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 08:10:46 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: x86: check_nested_events if there is an
- injectable NMI
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Cathy Avery <cavery@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, wei.huang2@amd.com
-References: <20200414201107.22952-1-cavery@redhat.com>
- <20200414201107.22952-3-cavery@redhat.com>
- <20200423144209.GA17824@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ae2d4f5d-cb96-f63a-7742-a7f46ad0d1a8@redhat.com>
-Date:   Thu, 23 Apr 2020 17:10:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=p98rCYJhtZR44ScMt2ctfYRg4qGKkTUSrXSjyzpvnXo=;
+        b=LSeysXyx17f58+nkjrqsUkdtjnW9ET3yHrQZrirfGifdbvrtIZ/mlysEyBjMCRBiBB6rJj
+        i70FDlyBFnXzB3JGwoLzujcggZ/7X+f2nDjs3ZoVMwDHFsAlnQN7FCsQx+H1+dOsjdyQ/U
+        YYdsREitGgYJCpcLX8JRN1bgQnDsqvk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-O4prfYliPcqdEkCRMS9Erg-1; Thu, 23 Apr 2020 11:11:09 -0400
+X-MC-Unique: O4prfYliPcqdEkCRMS9Erg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E7E3872FF0;
+        Thu, 23 Apr 2020 15:11:08 +0000 (UTC)
+Received: from gondolin (ovpn-112-121.ams2.redhat.com [10.36.112.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0E8D600F5;
+        Thu, 23 Apr 2020 15:11:06 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 17:11:03 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jared Rossi <jrossi@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] vfio-ccw: Enable transparent CCW IPL from DASD
+Message-ID: <20200423171103.497dcd02.cohuck@redhat.com>
+In-Reply-To: <20200423155620.493cb7cb.pasic@linux.ibm.com>
+References: <20200417182939.11460-1-jrossi@linux.ibm.com>
+        <20200417182939.11460-2-jrossi@linux.ibm.com>
+        <20200423155620.493cb7cb.pasic@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200423144209.GA17824@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/20 16:42, Sean Christopherson wrote:
-> On Tue, Apr 14, 2020 at 04:11:07PM -0400, Cathy Avery wrote:
->> With NMI intercept moved to check_nested_events there is a race
->> condition where vcpu->arch.nmi_pending is set late causing
-> How is nmi_pending set late?  The KVM_{G,S}ET_VCPU_EVENTS paths can't set
-> it because the current KVM_RUN thread holds the mutex, and the only other
-> call to process_nmi() is in the request path of vcpu_enter_guest, which has
-> already executed.
+On Thu, 23 Apr 2020 15:56:20 +0200
+Halil Pasic <pasic@linux.ibm.com> wrote:
+
+> On Fri, 17 Apr 2020 14:29:39 -0400
+> Jared Rossi <jrossi@linux.ibm.com> wrote:
 > 
+> > Remove the explicit prefetch check when using vfio-ccw devices.
+> > This check is not needed as all Linux channel programs are intended
+> > to use prefetch and will be executed in the same way regardless.  
+> 
+> Hm. This is a guest thing or? So you basically say, it is OK to do
+> this, because you know that the guest is gonna be Linux and that it
+> the channel program is intended to use prefetch -- but the ORB supplied
+> by the guest that designates the channel program happens to state the
+> opposite.
+> 
+> Or am I missing something?
 
-I think the actual cause is priority inversion between NMI and
-interrupts, because NMI is added last in patch 1.
+I see this as a kind of architecture compliance/ease of administration
+tradeoff, as we none of the guests we currently support uses something
+that breaks with prefetching outside of IPL (which has a different
+workaround).
 
-Paolo
+One thing that still concerns me a bit is debuggability if a future
+guest indeed does want to dynamically rewrite a channel program: the
+guest thinks it instructed the device to not prefetch, and then
+suddenly things do not work as expected. We can log when a guest
+submits an orb without prefetch set, but we can't find out if the guest
+actually does something that relies on non-prefetch.
+
+The only correct way to handle this would be to actually implement
+non-prefetch processing, where I would not really know where to even
+start -- and then we'd only have synthetic test cases, for now. None of
+the options are pleasant :(
 
