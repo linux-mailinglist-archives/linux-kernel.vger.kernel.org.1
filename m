@@ -2,152 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FBF1B5F13
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5166D1B5EF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbgDWPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:24:26 -0400
-Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:16382 "EHLO
-        hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729078AbgDWPYX (ORCPT
+        id S1729089AbgDWPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:18:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:55247 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729016AbgDWPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:24:23 -0400
-IronPort-SDR: xmltpFLAp/Ch+C8s6X8ZcWyZXCqxANXQnZqE0QWcc6RZ49diIS4b/bDe03G5OskVamH9rKrp+T
- oq4+l3143FtggGIP63BivpfQMLHDGpoOCuqGoKGHTsDyu5izW0eI3bI1YiNNRYwxSGlHA595Aw
- L9GtxbL4IBGcPwg6gSf4JYXifcX4tzSSFqfVHC4koYUnw/Fm2fHYhrorQTXbRt6CR8JZz04IgN
- 7oGplHLt4QyJZDS0Q8zkTSplBQCDQgLA+K8/LNJAiVr7nCnwYvYm3yO90J2PwYj5ATv9Cmw4CW
- AI8=
-X-IronPort-AV: E=Sophos;i="5.73,307,1583186400"; 
-   d="scan'208";a="277228202"
-From:   =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
-        <vesa.jaaskelainen@vaisala.com>
-To:     op-tee@lists.trustedfirmware.org,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
-        <vesa.jaaskelainen@vaisala.com>
-Subject: [PATCH 3/3] [RFC] tee: add support for app id for client UUID generation
-Date:   Thu, 23 Apr 2020 18:17:01 +0300
-Message-Id: <20200423151701.111231-4-vesa.jaaskelainen@vaisala.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200423151701.111231-1-vesa.jaaskelainen@vaisala.com>
-References: <20200423151701.111231-1-vesa.jaaskelainen@vaisala.com>
+        Thu, 23 Apr 2020 11:18:15 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M8QNs-1jW1KP2LNw-004Qo8 for <linux-kernel@vger.kernel.org>; Thu, 23 Apr
+ 2020 17:18:13 +0200
+Received: by mail-lj1-f178.google.com with SMTP id y4so6614597ljn.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:18:13 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYsN5JIj1v9n/myXB9bIaUrt5ZrQV7cFLysqmvbYHM2treRh9w4
+        d7XFULTwDHyePX1+qHqEU5Vq+xWdUeCdmTokKmY=
+X-Google-Smtp-Source: APiQypJZExUtcD94RDruX3xk8SuY1awdgvcATE7ZOMREsLTA2azO4fgL4AgWM4ZPRu8nw8wtzLgPpXRvAVCqNgtH2QE=
+X-Received: by 2002:a05:651c:107a:: with SMTP id y26mr2746346ljm.80.1587655093051;
+ Thu, 23 Apr 2020 08:18:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 23 Apr 2020 15:17:07.0464 (UTC) FILETIME=[409F6880:01D61982]
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Apr 2020 17:17:57 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2rtR9y15Vx1Vgsv2xpaQyf7eNgV8JsCCOYaWTWZhMNAg@mail.gmail.com>
+Message-ID: <CAK8P3a2rtR9y15Vx1Vgsv2xpaQyf7eNgV8JsCCOYaWTWZhMNAg@mail.gmail.com>
+Subject: [GIT PULL] ARM: soc fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:8gBhmzVpdf9N0xHV/DQ/VXWjr69L23itMPGzosYrx7lC2g9klDO
+ xdWRB/4Tgebp60EvwFCM+R+wAmDTBm4rRSiKwBS5aClgfGFV24molaW2ua6SxLptvkVvXhm
+ cP/0Vo7gzfacSR1aFo9Y6WfCroPGAjr7+fLH7g4qNmtEyWzEKtz9xu8R0EDm5O15R+91Z4V
+ B//0jHsOEdPsJzNjnqCoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ev6dD7dqRQ0=:3X5hZnOKJDQ14q4sRUYItt
+ DbKfYzKNR7KPM9Fa2Gfi8ymQNXbOGJqZOTMwLhpxNy42sxD2aLBmr6SlblslwJJk06bIL9LzH
+ ktZlnkKSfTeUv2jCTn8kPF3tgliZW1orGbJR5nYEmThQFavEHSGCKlHeP44s+dd7r1ssdr7PO
+ 4KENlNLtn8oVQa6GnvzWpmZ5rHD51KPHST5I1rb8YGbepUnXiRltn0UFn9F3P5mLF138eUTaf
+ /J36LM3MbQRXmIDpYYMDYfTwvKNOyYkAAAAMMJsTF+efNYbtaksZhzrG7c+19qQQbVTMLkLTD
+ bsDuTveWFJsErKY2b+cXQV6S1oQOEny7p58VDlt5zY2ixX66yjMiT9+t8yRYcz2ON0++KYy7I
+ cB58x8AFQbWzfJKLMu3udc4pmZvVKSx8b9z/gY7b84m2MPD8ug5mBoJ9q5yPixIkQwNEuKeH/
+ 0SgXIFnzrXg44mh01Wz4gf5bFcYtfcmhP6rZDQ46Xm19FsVnwGOOY5MIO445x2VbR81saScy+
+ X9ldvMePz0rS9NrRZpJXBD1sbOoJZ8tx+dwvKOGvupHOAqxD5WvKufPKIVroN6HZD2vmwk0Hj
+ aejuOG8+ohsEurAdi1V7pIW/cYbZOdx6ZsRVgfejNEY62l1y3hTCvicNpY8kkX0iPFOdbnsiO
+ pQbuvGjrLkygNzOXB3Fs61Hn5tFbcjMwVPTSDUmKoaJH9m3AfPesNszMPz+DQzWiBhjBQk+RY
+ FJ+QLihfwQyufKuEzwX/I/16Hzdv9LBiecSS9XUjesiGxmMdIqF6rjjgbL25zUR0pbycWEwfi
+ qLJFvRuwRD06O0lK/8I8X4OyIKmh5eh/bOxwWoQcRgTBgQK3AM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux kernel does not provide common contex for application identifier,
-instead different security frameworks provide own means to define
-application identifier for running process. Code includes place holder for
-such solutions but is left for later implementation.
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-Open questions:
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-1. App ID source
+are available in the Git repository at:
 
-How to specify what source is used for app id?
+  git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/armsoc-fixes
 
-Does it need to be protected on runtime?
-- Should this be Kconfig setting?
-- Cnfigure once during runtime thru sysfs or so?
-- Configure from device tree?
+for you to fetch changes up to f42ae4cd4cae92408bffec2c0a4c110447e908e0:
 
-2. Formatting for App ID
+  Merge tag 'arm-soc/for-5.7/devicetree-fixes' of
+https://github.com/Broadcom/stblinux into arm/fixes (2020-04-23
+17:12:48 +0200)
 
-Should there be common format? Or common keyword id?
+----------------------------------------------------------------
+ARM: SoC fixes
 
-3. How to handle custom App ID sources
+A few smaller fixes for v5.7-rc3: The majority are fixes for bugs I found
+after restarting my randconfig build testing that had been dormant for
+a while.
 
-Android has own App ID so does Tizen.
+On the Nokia N950/N9 phone, a DT fix is required to address a boot
+regression.
 
-Should there be place holder for this where to make local patch?
+For the bcm283x (Raspberry Pi), two DT fixes address minor issues.
 
-Signed-off-by: Vesa Jääskeläinen <vesa.jaaskelainen@vaisala.com>
----
- drivers/tee/tee_core.c | 45 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 872272bf9dec..df03bd0071da 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -125,6 +125,15 @@ static int tee_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+static const char *tee_session_get_application_id(void)
-+{
-+	return NULL;
-+}
-+
-+static void tee_session_free_application_id(const char *app_id)
-+{
-+}
-+
- /**
-  * uuid_v5() - Calculate UUIDv5
-  * @uuid: Resulting UUID
-@@ -217,6 +226,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	 * For TEEC_LOGIN_GROUP:
- 	 * gid=<gid>
- 	 *
-+	 * For TEEC_LOGIN_APPLICATION:
-+	 * app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_USER_APPLICATION:
-+	 * uid=<uid>:app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_GROUP_APPLICATION:
-+	 * gid=<gid>:app=<application id>
- 	 */
- 
- 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-@@ -240,6 +257,34 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x", grp.val);
- 		break;
- 
-+	case TEE_IOCTL_LOGIN_APPLICATION:
-+		application_id = tee_session_get_application_id();
-+		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-+			  application_id);
-+		tee_session_free_application_id(application_id);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-+		application_id = tee_session_get_application_id();
-+		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
-+			  current_euid().val, application_id);
-+		tee_session_free_application_id(application_id);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-+		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-+		grp = make_kgid(current_user_ns(), ns_grp);
-+		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-+			rc = -EPERM;
-+			goto out;
-+		}
-+
-+		application_id = tee_session_get_application_id();
-+		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
-+			  grp.val, application_id);
-+		tee_session_free_application_id(application_id);
-+		break;
-+
- 	default:
- 		rc = -EINVAL;
- 		goto out;
--- 
-2.17.1
+----------------------------------------------------------------
+Aaro Koskinen (1):
+      ARM: dts: OMAP3: disable RNG on N950/N9
 
+Ahmad Fatoum (1):
+      ARM: imx: provide v7_cpu_resume() only on ARM_CPU_SUSPEND=y
+
+Arnd Bergmann (8):
+      drivers: soc: xilinx: fix firmware driver Kconfig dependency
+      soc: fsl: dpio: fix incorrect pointer conversions
+      soc: fsl: dpio: avoid stack usage warning
+      soc: tegra: fix tegra_pmc_get_suspend_mode definition
+      soc: imx8: select SOC_BUS
+      Merge tag 'omap-for-v5.6/fixes-rc7-signed' of
+git://git.kernel.org/.../tmlind/linux-omap into arm/fixes
+      Merge tag 'zynqmp-soc-for-v5.7-rc3' of
+https://github.com/Xilinx/linux-xlnx into arm/fixes
+      Merge tag 'arm-soc/for-5.7/devicetree-fixes' of
+https://github.com/Broadcom/stblinux into arm/fixes
+
+Florian Fainelli (1):
+      Merge tag 'tags/bcm2835-dt-fixes-2020-03-27' into devicetree/fixes
+
+Jason Yan (1):
+      firmware: xilinx: make firmware_debugfs_root static
+
+Nicolas Saenz Julienne (2):
+      ARM: dts: bcm283x: Add cells encoding format to firmware bus
+      ARM: dts: bcm283x: Disable dsi0 node
+
+ arch/arm/boot/dts/bcm2835-rpi.dtsi     |  3 +++
+ arch/arm/boot/dts/bcm283x.dtsi         |  1 +
+ arch/arm/boot/dts/omap3-n950-n9.dtsi   |  5 +++++
+ arch/arm/mach-imx/Makefile             |  2 ++
+ drivers/firmware/xilinx/zynqmp-debug.c |  2 +-
+ drivers/soc/fsl/dpio/dpio-service.c    | 19 ++++++++++++++-----
+ drivers/soc/fsl/dpio/qbman-portal.c    |  6 ++----
+ drivers/soc/imx/Kconfig                |  1 +
+ drivers/soc/xilinx/Kconfig             |  4 ++--
+ include/soc/tegra/pmc.h                | 15 +++++++++------
+ 10 files changed, 40 insertions(+), 18 deletions(-)
