@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AC91B62E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5E91B62E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgDWSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:05:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58162 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729901AbgDWSF5 (ORCPT
+        id S1730157AbgDWSGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:06:02 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:53570 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbgDWSGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:05:57 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03NI5l5p005744;
-        Thu, 23 Apr 2020 13:05:47 -0500
+        Thu, 23 Apr 2020 14:06:00 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03NI5nZU001508;
+        Thu, 23 Apr 2020 13:05:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587665147;
-        bh=mMaO8t1Eqao/J6mtLde2dOBedpV17ybTny2HZzC7JxY=;
-        h=From:To:CC:Subject:Date;
-        b=FGotfNibqGvKapww+9XkCnFPum7qyEFRO+3Lr2RtKQajWJJC1AtH5csD2x4ktFPsk
-         Hvl/AOb2mpj1tsqbeTkKPW24463op5xqnIlj0Vc4OtrZMQIJoqXokdiMYIlHqCe5Ak
-         w32Cwr65Z2BBRwx8nJ8iRFZjuFZJlRSCkbvUQIt0=
+        s=ti-com-17Q1; t=1587665149;
+        bh=Vh2zPhW1Qrp8akdwIMS1wgw3zeKMLQGJLfuKxWRmKm4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=i9IKOzUwB8wMbUpM3AnLiHrm89HIBGFiAg4BHQ/h5H36wKJMsZeJ1ziVVzLze1QRZ
+         KoZ7lOOPX+hglvTJeIDQKUQviv0E0URE1WKJu7v13uG5+VhFCEboag25xAEcsh0pn+
+         lZamNRZU+K7kEmVl703UZgPga2afqIgpOsMN5MFs=
 Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03NI5lZt097577
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03NI5nYf107003
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Apr 2020 13:05:47 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
+        Thu, 23 Apr 2020 13:05:49 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
  (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
- Apr 2020 13:05:46 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2020 13:05:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 23 Apr 2020 13:05:46 -0500
+ Frontend Transport; Thu, 23 Apr 2020 13:05:49 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03NI5jw4008985;
-        Thu, 23 Apr 2020 13:05:46 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03NI5lCM009015;
+        Thu, 23 Apr 2020 13:05:48 -0500
 From:   Grygorii Strashko <grygorii.strashko@ti.com>
 To:     Dave Gerlach <d-gerlach@ti.com>,
         Santosh Shilimkar <ssantosh@kernel.org>,
@@ -49,10 +49,12 @@ CC:     Sekhar Nori <nsekhar@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH 0/5] soc: ti: add k3 platforms chipid module driver
-Date:   Thu, 23 Apr 2020 21:05:40 +0300
-Message-ID: <20200423180545.13707-1-grygorii.strashko@ti.com>
+Subject: [PATCH 1/5] dt-bindings: soc: ti: add binding for k3 platforms chipid module
+Date:   Thu, 23 Apr 2020 21:05:41 +0300
+Message-ID: <20200423180545.13707-2-grygorii.strashko@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200423180545.13707-1-grygorii.strashko@ti.com>
+References: <20200423180545.13707-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -61,47 +63,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Add DT binding for Texas Instruments K3 Multicore SoC platforms chipid
+module which is represented by CTRLMMR_xxx_JTAGID register and contains
+information about SoC id and revision.
 
-This series introduces TI K3 Multicore SoC platforms chipid module driver
-which provides identification support of the TI K3 SoCs (family, revision)
-and register this information with the SoC bus. It is available under
-/sys/devices/soc0/ for user space, and can be checked, where needed,
-in Kernel using soc_device_match().
-It is also required for introducing support for new revisions of
-K3 AM65x/J721E SoCs.
-
-Example J721E:
-  # cat /sys/devices/soc0/{machine,family,revision}
-  Texas Instruments K3 J721E SoC
-  J721E
-  SR1.0
-
-Example AM65x:
-  # cat /sys/devices/soc0/{machine,family,revision}
-  Texas Instruments AM654 Base Board
-  AM65X
-  SR1.0
-
-Grygorii Strashko (5):
-  dt-bindings: soc: ti: add binding for k3 platforms chipid module
-  soc: ti: add k3 platforms chipid module driver
-  arm64: arch_k3: enable chipid driver
-  arm64: dts: ti: k3-am65-wakeup: add k3 platforms chipid module node
-  arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid module
-    node
-
- .../bindings/soc/ti/k3-socinfo.yaml           |  40 ++++++
- arch/arm64/Kconfig.platforms                  |   1 +
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi    |   5 +
- .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |   5 +
- drivers/soc/ti/Kconfig                        |  10 ++
- drivers/soc/ti/Makefile                       |   1 +
- drivers/soc/ti/k3-socinfo.c                   | 135 ++++++++++++++++++
- 7 files changed, 197 insertions(+)
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+---
+ .../bindings/soc/ti/k3-socinfo.yaml           | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
- create mode 100644 drivers/soc/ti/k3-socinfo.c
 
+diff --git a/Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml b/Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
+new file mode 100644
+index 000000000000..a1a8423b2e2e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soc/ti/k3-socinfo.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments K3 Multicore SoC platforms chipid module
++
++maintainers:
++  - Tero Kristo <t-kristo@ti.com>
++  - Nishanth Menon <nm@ti.com>
++
++description: |
++  Texas Instruments (ARM64) K3 Multicore SoC platforms chipid module is
++  represented by CTRLMMR_xxx_JTAGID register which contains information about
++  SoC id and revision.
++
++properties:
++  $nodename:
++    pattern: "^chipid@[0-9a-f]+$"
++
++  compatible:
++    items:
++      - const: ti,am654-chipid
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    chipid@43000014 {
++        compatible = "ti,am654-chipid";
++        reg = <0x43000014 0x4>;
++    };
 -- 
 2.17.1
 
