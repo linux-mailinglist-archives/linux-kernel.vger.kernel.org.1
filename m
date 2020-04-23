@@ -2,143 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9E11B5B2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F0C1B5B3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgDWMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:15:24 -0400
-Received: from mout.web.de ([212.227.15.3]:55209 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgDWMPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:15:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587644090;
-        bh=1SKzE4Q2FpgGEwUDDVzFQzRLWubTgqwnZLfvXfb0+ZQ=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=hXFnrrmBdJKOhkCU+WE8reYaNWVDUVxsvvUp3pSIEKiLZ7C5xhuw3DX0lkvZZEOFk
-         blvnEHLdZv38q6W/xWdis4zfObjS/B6/BYwcQybTMSCGsbkqUqsBnjIr6bnbgcZA5h
-         A7CGF/hVQCNsMI30Hd9p4gGSEtY1EZ7mmnksqrhA=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.69.235]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Llncm-1isFw13qW8-00ZMyt; Thu, 23
- Apr 2020 14:14:50 +0200
-To:     Dejin Zheng <zhengdejin5@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S1726613AbgDWMTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:19:22 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:33428 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgDWMTV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 08:19:21 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRap5-00048z-2F; Thu, 23 Apr 2020 06:19:19 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRap3-0005q7-LI; Thu, 23 Apr 2020 06:19:18 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Security Module <linux-security-module@vger.kernel.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Djalal Harouni <tixxdz@gmail.com>,
+        "Dmitry V . Levin" <ldv@altlinux.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v1] fbdev: sm712fb: fix an issue about iounmap for a wrong
- address
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <bb6ba7c9-ad92-9c54-e1c4-91d2f7d0f5f8@web.de>
-Date:   Thu, 23 Apr 2020 14:14:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Ingo Molnar <mingo@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Howells <dhowells@redhat.com>
+References: <20200419141057.621356-3-gladkov.alexey@gmail.com>
+        <20200423112858.95820-1-gladkov.alexey@gmail.com>
+Date:   Thu, 23 Apr 2020 07:16:07 -0500
+In-Reply-To: <20200423112858.95820-1-gladkov.alexey@gmail.com> (Alexey
+        Gladkov's message of "Thu, 23 Apr 2020 13:28:58 +0200")
+Message-ID: <87lfmmz9bs.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fNl1cgofnTwAo5SJnX+oCy/NEF1B/UCFW519u4Hpg0ptC1sJLg2
- Lgj12RzQSsSjYV5m1/DHaJzegclx/eSNoh1r5k//wRS5zMUgC9Lrt2HJs/fTqwOLs13QgbT
- 2n0nkbFV5jiGwI3L/xUbZrEPLuluP8Fky8h39z9rIqSrLn+xkuDJ47lSEpS/HcclvwrYm9O
- aLXNjNhlma/j5HSigomOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZKe2MMTCh5s=:TvG8BqpKT2GzCaKluhcfSy
- kB41QablcGOHx7krOy1EAlWK3bb+35IcWpQLqSgrS/JTIsh2oga1Zh0Ml/A0TjIFTRPlSZKkk
- ACd88BRBqnwsxCdTaqPtjrRzub+ug1qWae7hlkdsfG3vLbCN4I0igyKuFJHRE/dbjxM+pPbUm
- aEkgcoVb6xhkx3sEVY+NlZTtfobK5b3bkC47Dgu8OMnsQb+M+Md28w9Lh80/DhiaBgkhZv+jD
- Kiy8g5zuAafBU+SuyQJSFjYp72b7L8TkdK6CI0vQrOEDr4NWyEgwViDUmQYHZ8AqrsbVRS92+
- Z7vus94bMvaJNV0OCcZhJEQ+GfRAYTAstLP4RcEvQRaSsXQ5sCCgIKNqYApEMy5h169xBjSBH
- iy19lAZSl296Qswm3+n9TOrgVaDVpGCDO91LydWcjHbwB0xHQf0jIYWZNcDi5Cvitp7Vi4zRl
- xp4JlWz3K3HGD5SIFuSbtVNVaF196JRuYL4HnqLiz5i8vuRB4tTQEPAgQczNRyl6k0nuojWv3
- og/F2xr3f49ORUhlnNo/EWpqz3mf/VYIosYcPdABIlimywt+RAne0plOfuO8euRp/pD5cFlqk
- hYH99n/wLbZRgH00vxyPOyGvi4wv7Z2cZErrTGmGg3FyzUzMZv49YE8J2CrXvYSZGdTu7ASzr
- QJnKXrZIT+9ar0whJZavRB7fMH4M6MbGEMK2MrTmU+dVV8PFB2t3IZ7Pa0uIZJ0QjxTNWxoJk
- O/EAfi7Z5dhtlS6Jb1Rb4XAgp/nWDAfUaDx6aWC3AQDJn2OTFqr8rx2MiUvqAh634mg4Lv+80
- 6NAC8HKVOBvxhQ5kfxaby+afxo1sKsoWfn6UuYnxxynVc0hDTeXtP3ObhtCDuFXYzHYp06o2S
- wGaAP4cvCkCMh0GythDdhbYNQfv6y6xTDHi1CB/4c7G0Kx3HFPMBrEzVZXe+Uu3vWV1PqcARt
- 5pbm3UAgYdJybfVd9Sjw0NVzjMXVbQqosx6ynbyyEFl7BRP8F5DDr3WKpR8fFQSAO0GYSQkh5
- e7gi/Co3W5Nbf8OOyQTljy+3h1g/ZdWGdR2bnMaH1aTPlppbz+TfLVSSs/7qXEFfzfDBzgCk6
- Ekr8V+4vQHVWxLSDwoJ6CUTJ+mdvIyB17RyHndMfps6OqCPU0ATm5GM41rYn7Y8UxB8xIVluM
- xjqzG9HgjVhr/3uDBV14MA3qwJGrA8Y6a5as6qcRNLtxooMxS6XACtzjl3iOGR6vQcKgD46VJ
- veHKKNSOE/9WfqMKQ
+Content-Type: text/plain
+X-XM-SPF: eid=1jRap3-0005q7-LI;;;mid=<87lfmmz9bs.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+iR9pVq9wAKGMb1dkjvzvzUUF2IrtP4AY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 666 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.3 (0.6%), b_tie_ro: 2.9 (0.4%), parse: 1.19
+        (0.2%), extract_message_metadata: 4.8 (0.7%), get_uri_detail_list: 2.6
+        (0.4%), tests_pri_-1000: 4.4 (0.7%), tests_pri_-950: 1.06 (0.2%),
+        tests_pri_-900: 0.82 (0.1%), tests_pri_-90: 318 (47.7%), check_bayes:
+        316 (47.5%), b_tokenize: 10 (1.5%), b_tok_get_all: 12 (1.9%),
+        b_comp_prob: 2.9 (0.4%), b_tok_touch_all: 288 (43.3%), b_finish: 0.83
+        (0.1%), tests_pri_0: 317 (47.5%), check_dkim_signature: 0.61 (0.1%),
+        check_dkim_adsp: 2.3 (0.3%), poll_dns_idle: 0.91 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 6 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v13 2/7] proc: allow to mount many instances of proc in one pid namespace
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> the sfb->fb->screen_base is not save the value get by iounmap() when
-> the chip id is 0x720.
 
-I suggest to improve this change description.
-How did you determine relevant differences for the mentioned chip model?
+I took a quick look and there is at least one other use in security/tomoyo/realpath.c:
+
+static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
+				   const int buflen)
+{
+	struct super_block *sb = dentry->d_sb;
+	char *pos = tomoyo_get_dentry_path(dentry, buffer, buflen);
+
+	if (IS_ERR(pos))
+		return pos;
+	/* Convert from $PID to self if $PID is current thread. */
+	if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
+		char *ep;
+		const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
+
+		if (*ep == '/' && pid && pid ==
+		    task_tgid_nr_ns(current, sb->s_fs_info)) {
+			pos = ep - 5;
+			if (pos < buffer)
+				goto out;
+			memmove(pos, "/self", 5);
+		}
+		goto prepend_filesystem_name;
+	}
+
+Can you make the fixes to locks.c and tomoyo a couple of standalone
+fixes that should be inserted before your patch?
+
+On the odd chance there is a typo they will bisect better, as well
+as just keeping this patch and it's description from expanding in size.
+So that things are small enough for people to really look at and review.
+
+The fix itself looks fine.
+
+Thank you,
+Eric
 
 
-> so iounmap() for address sfb->fb->screen_base is not right.
+Alexey Gladkov <gladkov.alexey@gmail.com> writes:
 
-Will another imperative wording become helpful here?
+> Fixed getting proc_pidns in the lock_get_status() and locks_show() directly from
+> the superblock, which caused a crash:
+>
+> === arm64 ===
+> [12140.366814] LTP: starting proc01 (proc01 -m 128)
+> [12149.580943] ==================================================================
+> [12149.589521] BUG: KASAN: out-of-bounds in pid_nr_ns+0x2c/0x90 pid_nr_ns at kernel/pid.c:456
+> [12149.595939] Read of size 4 at addr 1bff000bfa8c0388 by task = proc01/50298
+> [12149.603392] Pointer tag: [1b], memory tag: [fe]
+>
+> [12149.610906] CPU: 69 PID: 50298 Comm: proc01 Tainted: G L 5.7.0-rc2-next-20200422 #6
+> [12149.620585] Hardware name: HPE Apollo 70 /C01_APACHE_MB , BIOS L50_5.13_1.11 06/18/2019
+> [12149.631074] Call trace:
+> [12149.634304]  dump_backtrace+0x0/0x22c
+> [12149.638745]  show_stack+0x28/0x34
+> [12149.642839]  dump_stack+0x104/0x194
+> [12149.647110]  print_address_description+0x70/0x3a4
+> [12149.652576]  __kasan_report+0x188/0x238
+> [12149.657169]  kasan_report+0x3c/0x58
+> [12149.661430]  check_memory_region+0x98/0xa0
+> [12149.666303]  __hwasan_load4_noabort+0x18/0x20
+> [12149.671431]  pid_nr_ns+0x2c/0x90
+> [12149.675446]  locks_translate_pid+0xf4/0x1a0
+> [12149.680382]  locks_show+0x68/0x110
+> [12149.684536]  seq_read+0x380/0x930
+> [12149.688604]  pde_read+0x5c/0x78
+> [12149.692498]  proc_reg_read+0x74/0xc0
+> [12149.696813]  __vfs_read+0x84/0x1d0
+> [12149.700939]  vfs_read+0xec/0x124
+> [12149.704889]  ksys_read+0xb0/0x120
+> [12149.708927]  __arm64_sys_read+0x54/0x88
+> [12149.713485]  do_el0_svc+0x128/0x1dc
+> [12149.717697]  el0_sync_handler+0x150/0x250
+> [12149.722428]  el0_sync+0x164/0x180
+>
+> [12149.728672] Allocated by task 1:
+> [12149.732624]  __kasan_kmalloc+0x124/0x188
+> [12149.737269]  kasan_kmalloc+0x10/0x18
+> [12149.741568]  kmem_cache_alloc_trace+0x2e4/0x3d4
+> [12149.746820]  proc_fill_super+0x48/0x1fc
+> [12149.751377]  vfs_get_super+0xcc/0x170
+> [12149.755760]  get_tree_nodev+0x28/0x34
+> [12149.760143]  proc_get_tree+0x24/0x30
+> [12149.764439]  vfs_get_tree+0x54/0x158
+> [12149.768736]  do_mount+0x80c/0xaf0
+> [12149.772774]  __arm64_sys_mount+0xe0/0x18c
+> [12149.777504]  do_el0_svc+0x128/0x1dc
+> [12149.781715]  el0_sync_handler+0x150/0x250
+> [12149.786445]  el0_sync+0x164/0x180
 
-
-=E2=80=A6
-> +++ b/drivers/video/fbdev/sm712fb.c
-> @@ -1429,6 +1429,8 @@  static int smtc_map_smem(struct smtcfb_info *sfb,
->  static void smtc_unmap_smem(struct smtcfb_info *sfb)
+> diff --git a/fs/locks.c b/fs/locks.c
+> index b8a31c1c4fff..399c5dbb72c4 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -2823,7 +2823,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
 >  {
->  	if (sfb && sfb->fb->screen_base) {
-> +		if (sfb->chip_id =3D=3D 0x720)
-> +			sfb->fb->screen_base -=3D 0x00200000;
->  		iounmap(sfb->fb->screen_base);
+>  	struct inode *inode = NULL;
+>  	unsigned int fl_pid;
+> -	struct pid_namespace *proc_pidns = file_inode(f->file)->i_sb->s_fs_info;
+> +	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
+>  
+>  	fl_pid = locks_translate_pid(fl, proc_pidns);
+>  	/*
+> @@ -2901,7 +2901,7 @@ static int locks_show(struct seq_file *f, void *v)
+>  {
+>  	struct locks_iterator *iter = f->private;
+>  	struct file_lock *fl, *bfl;
+> -	struct pid_namespace *proc_pidns = file_inode(f->file)->i_sb->s_fs_info;
+> +	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
+>  
+>  	fl = hlist_entry(v, struct file_lock, fl_link);
+>  
 
-How do you think about to use descriptive identifiers for
-the shown constants?
-
-Would you like to clarify any related software analysis approaches?
-
-Regards,
-Markus
+Eric
