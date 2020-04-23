@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6921B53F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513A21B53E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgDWFJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:09:15 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:45215 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725863AbgDWFJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:09:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=raVeIWaYg75pW07/IsX+vunYDfGP0hLRH+1G2wNODvA=; b=2
-        PukIG9H0iiVv7WWOVDYsT7fChtU13lrqjmyoTJg5hm2uU6kHhfVhMmlrr4dgnMY0
-        4+z4eHYOR5vG+L6bKo8vZ9m0m4j8P9nBaTVzfIxm/7E8323q3k+wHPSpx9epmzkE
-        5OYTr7Efbjmnn7FJRVpwzgYj+vQFnHUoYiJeHOOvhE=
-Received: from localhost.localdomain (unknown [120.229.255.80])
-        by app1 (Coremail) with SMTP id XAUFCgC3JZzPIqFefZc8AA--.30807S3;
-        Thu, 23 Apr 2020 13:08:32 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        Thomas Anderson <thomasanderson@google.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] drm/amdgpu/display: Fix dc_sink refcnt leak when detecting link
-Date:   Thu, 23 Apr 2020 13:05:51 +0800
-Message-Id: <1587618357-13349-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgC3JZzPIqFefZc8AA--.30807S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AryfAFyDJFyfWw1UuryxuFg_yoW8Cr4Upr
-        W5Gr409r18AF1Iqr98Aa4ruFyUZ3W8JF1Fk3y5CwnYvw15ZwsxtF15Xr43XrW7WFZ8Aa9r
-        ZFnFq3yxZFnruaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8WwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbfOz3UUUUU==
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S1726409AbgDWFF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:05:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18180 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgDWFF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 01:05:58 -0400
+IronPort-SDR: Y57X/DpYbBwZsYAu72v3nflOw9HDXIo+5lw7p9S48WkK6tc/Lz/l3IHFJ5c0F0cinGZC1xd4Qt
+ I2A60v+nv74w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 22:05:58 -0700
+IronPort-SDR: R8/hwfbiquKx9lajTQNsTcvgWmgTd/VNiubmA7RVKIQGmk0QnYQGE4AemX6LmFqL0s28JKVffz
+ 70/jtdRlPJJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; 
+   d="scan'208";a="255868475"
+Received: from unknown (HELO iweiny-DESK2.sc.intel.com) ([10.3.52.147])
+  by orsmga003.jf.intel.com with ESMTP; 22 Apr 2020 22:05:57 -0700
+Date:   Wed, 22 Apr 2020 22:05:57 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Yasunori Goto <y-goto@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH V10 04/11] Documentation/dax: Update Usage section
+Message-ID: <20200423050557.GG3758470@iweiny-DESK2.sc.intel.com>
+References: <20200422212102.3757660-1-ira.weiny@intel.com>
+ <20200422212102.3757660-5-ira.weiny@intel.com>
+ <2282176d-60c5-0e4b-3cf9-7a7682de380d@fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2282176d-60c5-0e4b-3cf9-7a7682de380d@fujitsu.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-emulated_link_detect() invokes dc_sink_retain(), which increases the
-refcount of the "prev_sink".
+On Thu, Apr 23, 2020 at 11:33:26AM +0900, Yasunori Goto wrote:
+> Hello,
+> 
+> I'm trying use your patch now, and I have a small comment in this document.
+> 
+> On 2020/04/23 6:20, ira.weiny@intel.com wrote:
+> 
+> > +To clarify inheritance here are 3 examples:
+> > +
+> > +Example A:
+> > +
+> > +mkdir -p a/b/c
+> > +xfs_io 'chattr +x' a
+> 
+> Probably, "-c" is necessary here.
+> 
+> xfs_io -c 'chattr +x' a
 
-When emulated_link_detect() returns, local variable "prev_sink" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+Yes! Thanks!
+> 
+> 
+> > +mkdir a/b/c/d
+> > +mkdir a/e
+> > +
+> > +	dax: a,e
+> > +	no dax: b,c,d
+> > +
+> > +Example B:
+> > +
+> > +mkdir a
+> > +xfs_io 'chattr +x' a
+> ditto
+> > +mkdir -p a/b/c/d
+> > +
+> > +	dax: a,b,c,d
+> > +	no dax:
+> > +
+> > +Example C:
+> > +
+> > +mkdir -p a/b/c
+> > +xfs_io 'chattr +x' c
+> ditto
 
-The reference counting issue happens in all paths of
-emulated_link_detect(), which forgets to decrease the refcnt increased
-by dc_sink_retain(), causing a refcnt leak.
+Thank you!  Updated.
+Ira
 
-Fix this issue by adding a "err_sink_put" label and calling
-dc_sink_release() before emulated_link_detect() returns.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index e997251a8b57..1b0c4f11b9b1 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1633,7 +1633,7 @@ static void emulated_link_detect(struct dc_link *link)
- 	default:
- 		DC_ERROR("Invalid connector type! signal:%d\n",
- 			link->connector_signal);
--		return;
-+		goto err_sink_put;
- 	}
- 
- 	sink_init_data.link = link;
-@@ -1642,7 +1642,7 @@ static void emulated_link_detect(struct dc_link *link)
- 	sink = dc_sink_create(&sink_init_data);
- 	if (!sink) {
- 		DC_ERROR("Failed to create sink!\n");
--		return;
-+		goto err_sink_put;
- 	}
- 
- 	/* dc_sink_create returns a new reference */
-@@ -1655,6 +1655,9 @@ static void emulated_link_detect(struct dc_link *link)
- 
- 	if (edid_status != EDID_OK)
- 		DC_ERROR("Failed to read EDID");
-+err_sink_put:
-+	if (prev_sink != NULL)
-+		dc_sink_release(prev_sink);
- 
- }
- 
--- 
-2.7.4
-
+> > +mkdir a/b/c/d
+> > +
+> > +	dax: c,d
+> > +	no dax: a,b
+> > +
+> > +
+> 
+> ---
+> 
+> Yasunori Goto
+> 
