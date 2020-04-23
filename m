@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16CA1B5810
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A571B5819
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgDWJX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgDWJXZ (ORCPT
+        id S1726861AbgDWJZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 05:25:11 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:40865 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgDWJZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:23:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84767C03C1AF;
-        Thu, 23 Apr 2020 02:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wSczomJfGQBW2henWhZVVO4Oy56D/opsLQ1kvUxuKsA=; b=huOywNO4EwZNUmQYmCNW9ackGa
-        pynSho+JFOEC3v90M9YBjSU3jJeFzck36IXLCPBzoc2K7TipFfroiQADoCilSrhPKTopODTDz+M7G
-        hGHmO6eaEUK2+Ea2IZGJQ2/vhg8z/eUsAAcjSrXkAdF1vZqG20wewe+W2L5NCA2oCnIyDB8evUUOu
-        1YE1o9ct1xsoIB3Rz9EkcT8+8esQilAWROqEEqcQZTaJwgeR5nRsVbWdxOIyBP8wQ5rFHBRcHlznT
-        plfccN/8L5jGy3At/rOypMx/Gf2WQat++ejIzGP3SuRjfOKCe7MgkRZAZzl3XmtqDL4YbhLcfutUz
-        PCbSPGDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRY4i-0007WP-DB; Thu, 23 Apr 2020 09:23:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D863530477A;
-        Thu, 23 Apr 2020 11:23:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BE80E20C02CD2; Thu, 23 Apr 2020 11:23:14 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 11:23:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     tglx@linutronix.de, pbonzini@redhat.com, bigeasy@linutronix.de,
-        rostedt@goodmis.org, torvalds@linux-foundation.org,
-        will@kernel.org, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 3/5] rcuwait: Introduce prepare_to and finish_rcuwait
-Message-ID: <20200423092314.GQ20730@hirez.programming.kicks-ass.net>
-References: <20200422040739.18601-1-dave@stgolabs.net>
- <20200422040739.18601-4-dave@stgolabs.net>
+        Thu, 23 Apr 2020 05:25:09 -0400
+Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M4roN-1jSv120psd-0020KI; Thu, 23 Apr 2020 11:25:07 +0200
+Received: by mail-qk1-f170.google.com with SMTP id t3so5686261qkg.1;
+        Thu, 23 Apr 2020 02:25:06 -0700 (PDT)
+X-Gm-Message-State: AGi0PubPju4TS9vqFIy5fUpPQXhorHWEfCTMOmWy9O+uzLsr19DU4U0c
+        kbcUSai7neEsPCcvYaur2DGy6nKnjCrmZIZgJh0=
+X-Google-Smtp-Source: APiQypL+w45VTBoxMvprVb6NEGdgZyNyPMU0dKAvD2rTXgVRLwfn3/Y7HWt6ZXTYoBoj1KPld4qOl8X+Utd6NzHUvt8=
+X-Received: by 2002:a37:63d0:: with SMTP id x199mr2439571qkb.3.1587633905619;
+ Thu, 23 Apr 2020 02:25:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422040739.18601-4-dave@stgolabs.net>
+References: <cover.1587531463.git.josh@joshtriplett.org> <05c9a6725490c5a5c4ee71be73326c2fedf35ba5.1587531463.git.josh@joshtriplett.org>
+In-Reply-To: <05c9a6725490c5a5c4ee71be73326c2fedf35ba5.1587531463.git.josh@joshtriplett.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Apr 2020 11:24:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a09h4jhJWckxVUMYLoUp8=vAJ5NXuMTzSmghRxuk2_PTQ@mail.gmail.com>
+Message-ID: <CAK8P3a09h4jhJWckxVUMYLoUp8=vAJ5NXuMTzSmghRxuk2_PTQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] fs: Support setting a minimum fd for "lowest
+ available fd" allocation
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     io-uring@vger.kernel.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Aleksa Sarai <cyphar@cyphar.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:e6+fXZCzbNUcGueHZi0BR8/JFqXLu3ow8UkwsShEw/fDTsxMjHo
+ Qt1mAwe83HkCU+qPttGnY+0+8e3ZAHvsTa02Fukov2D2leInYAI/HO06d2FyAdvYk3pgoIh
+ 89W3fIgoQ6/p4NNtT/BtKzw5jAz2+rRJy2GeWnBok4QDe/DCzXnyOn+APqk5xJG0Kx4aAp2
+ vy+iKbATk+5JtgOy4odVQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:V3w25P3eXTE=:ThBWKENYGuaDDbCgV64qnP
+ bkbRgl8/B2JfJMnqoS0JcufoLCvJqQNpdxz+pX4XaXGGEokkLU9t8l4Ha1MlAHOFKG/8K6FXI
+ MYgyZ0j2vV5S0xR09xlGrx+I3Lfoa56k4t6h6pX0LTYtAUgK2cIJMjm4eOc6jQdXBEAiaDdE4
+ KylyazTM42OhTMoN6Qw1U1rlngh6GgVM9AT90hM/XVLp5mEfR6nldUdSReMlKQmPSYSOq+0Pz
+ aD7MXXCwbVwbu1VX3wHVgAp+JhwDrK/Bbr6svVTCIR4MqTy7I503erAZvZtqm+7y6HsS9/SwK
+ C6131GSKb579dphRwUOY76Eh+oBlIZgjwNopQS/eDDIBqpswCUTpCF4McxzZ1auDrOMA68/X8
+ tP2KlKWOvFCG80DicrkpzLNXqQVippZPOgPqkVs5AqvEqwQG6+tdQu82gRBMUtEMrJgADgtH5
+ 7ezukIAhwBbMBSGDPAb6F84UR9oixi2YEnHSK93vq69kT65uLfVEZdbaazznxZzq3EUmTLniB
+ q3r8wazivQU22HEn79g0Jal+QVdPnEQM41vBpJ/6hZBe/T9+PAwFpec/re6J5FIemCkKHzUpO
+ 2ras1d3DBNePUpsWkCX8uW69oIsM7wWleraqMomlc9EUebhOa3Hu3RnEWjywuu0uo449qjD9t
+ yHWhG+k50RrPr9MhcRvBxlifJIcFlP69epb+U4BuIgglulInbGMZvYyxlj/XjySxeQZItuhLp
+ 3Ymw+EJwVAIu3LOp1e92ImKesomN3PC4JP3/s0b8LQ9vGHci3Z1z7rjfVhyEZtHub3Pa4wpLM
+ M4OEPdbG01a3cYWIZvLOQG5wmdOIKX8dOZZX7tg6VELwG4fFbI=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 09:07:37PM -0700, Davidlohr Bueso wrote:
+On Wed, Apr 22, 2020 at 7:19 AM Josh Triplett <josh@joshtriplett.org> wrote:
+>
+> Some applications want to prevent the usual "lowest available fd"
+> allocation from allocating certain file descriptors. For instance, they
+> may want to prevent allocation of a closed fd 0, 1, or 2 other than via
+> dup2/dup3, or reserve some low file descriptors for other purposes.
+>
+> Add a prctl to increase the minimum fd and return the previous minimum.
+>
+> System calls that allocate a specific file descriptor, such as
+> dup2/dup3, ignore this minimum.
+>
+> exec resets the minimum fd, to prevent one program from interfering with
+> another program's expectations about fd allocation.
 
-> +static inline void prepare_to_rcuwait(struct rcuwait *w)
-> +{
-> +	rcu_assign_pointer(w->task, current);
-> +}
-> +
-> +static inline void finish_rcuwait(struct rcuwait *w)
-> +{
-> +	WRITE_ONCE(w->task, NULL);
+Have you considered making this a separate system call rather than
+a part of prctl()?
 
-I think that wants to be:
+At the moment, there are certain classes of things controlled by prctl,
+e.g. capabilities, floating point handling and timer behavior, but nothing
+that relates to file descriptors as such, so it's not an obvious decision.
 
-	rcu_assign_pointer(w->task, NULL);
+Another option would be prlimit(), as it already controls the maximum
+file descriptor number with RLIMIT_NOFILE, and adding a minimum
+there would let you set min/max atomically.
 
-There is a special case in rcu_assign_pointer() that looses the barrier,
-but it will keep the __rcu sparse people happy. That is w->task is
-__rcu, and WRITE_ONCE ignores that etc.. blah.
-
-The alternative is using RCU_INIT_POINTER() I suppose.
-
-> +	__set_current_state(TASK_RUNNING);
-> +}
+     Arnd
