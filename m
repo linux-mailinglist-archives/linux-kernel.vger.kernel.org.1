@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9B31B64CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2192E1B64D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgDWTvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgDWTvD (ORCPT
+        id S1728099AbgDWTv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:51:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40319 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726157AbgDWTvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:51:03 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433F1C09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:51:03 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n24so2758136plp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=5tWhbVu6f4kKLyjS9n2H+QKCL93se0wUZsp2GpUWnJ4=;
-        b=m7cQip5KfL5HR2V+EKRyTtJ3V15ZC1ZrB+JdE6lRckcbhAabJIJ+UUe6I64yo+ozH5
-         EQG0k8496luTp9MI9Li0rADkqs/km5SLwhpaU+BAdNVHYpIQYLYEIwPFjaph9xHsJOWE
-         BgTuQ0YwTq1/tBizp9Nl5s9pArRuB/vwdOxTBzFObX0rtnqxB8dGBIhl6MqIf/YIrC77
-         CKKEnLOMT7ZSckHWfHVg+ezljF9qKyFk7xekfawD/2rQqFLOSQ2jjjNXvAbTHzjoVl9M
-         wajheHzMpnV4daW0yYGoPmE3lBlxJx5zGGung8mzQ3NiPju4cVJcNt2SSXrhyIVozMRJ
-         KCuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=5tWhbVu6f4kKLyjS9n2H+QKCL93se0wUZsp2GpUWnJ4=;
-        b=Hc3NDtCvl1q/H2K3+JXbgIS01aXt1qjJIhmEDoNVZW0NbzJBwCuMN0RAAwMc4SWkKE
-         zGa1+Efu6SyyRjc5UbnNOKVx3cnDrI1LLZNlqL5yKPeMell0V7H3USVrH1qr62f98bVz
-         TuuWC1XJ16B7gcr6p4cH4v/dRMZoufON0sOJr/vteqzXG5LbO/F5RstMzSD7/25mf01S
-         eyfHp+HDs9ib0spvnAe0m2Ls4A88rHzR44SR0FYCg5m0kXhR5jW3CTHHsMnLH7dCpsn9
-         Bk1CPtExkJ6PLHrcejJcXMLmsDLQ4Q0MDJ9k4XTYLzZDt85hvf8sIfUuZxuihqXEdE9s
-         PC7Q==
-X-Gm-Message-State: AGi0PuawfbNKh+V8YOK3G+B2jopxPfvquQNIMjUeeCsw774f39cd+ezz
-        jIBWx2PLTPjqTEqwI4xxtPgg3w==
-X-Google-Smtp-Source: APiQypK0hnwQefSAK9l6B4HhbysWyTvs3gPGYwKSuX/g42JrBKE0CexKbHC60H8OhhX/8RCvfFCfiA==
-X-Received: by 2002:a17:902:8e8b:: with SMTP id bg11mr5107800plb.139.1587671462576;
-        Thu, 23 Apr 2020 12:51:02 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id nm22sm2961544pjb.38.2020.04.23.12.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 12:51:01 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 12:51:00 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-cc:     akpm@linux-foundation.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mhocko@kernel.org,
-        vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] slub: Remove userspace notifier for cache
- add/remove
-In-Reply-To: <20200423115721.19821-1-mkoutny@suse.com>
-Message-ID: <alpine.DEB.2.22.394.2004231250480.248617@chino.kir.corp.google.com>
-References: <20200423115721.19821-1-mkoutny@suse.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 23 Apr 2020 15:51:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587671484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n/ZRfwaJsWeMlmhaE0MLI9ibN/qDljihHXGQSca7pOw=;
+        b=ZmbG5VuO4vW5ywhGslaG9LDsCJZuGC/EPjNg+96J5K7BU3Y44kfFFv6U0+qCEceiJd0j2c
+        3x0BXGvD7oMs85z1XkeaUbrPkZ5+XIIX6q6zLWtKBi9MuTwEN94dFIG2+MvBWaxqOEhQMz
+        IbufzvyLIokvxkldQ9Oh4ke4JHFh/DE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-WSk22hD4M6uOAnRC_nsvuw-1; Thu, 23 Apr 2020 15:51:22 -0400
+X-MC-Unique: WSk22hD4M6uOAnRC_nsvuw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF539107BEF5;
+        Thu, 23 Apr 2020 19:51:20 +0000 (UTC)
+Received: from treble (ovpn-118-207.rdu2.redhat.com [10.10.118.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3F1146084C;
+        Thu, 23 Apr 2020 19:51:19 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 14:51:16 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: Re: linux-next: Tree for Apr 22 (objtool warnings)
+Message-ID: <20200423195116.ftpqx6ff5ydy2jpp@treble>
+References: <20200422171016.484b031d@canb.auug.org.au>
+ <2bf0635d-1406-23db-28c7-e55da9a07e05@infradead.org>
+ <20200422164406.qhvd2my35wnjlzyg@treble>
+ <202004231053.5E4F16C3E8@keescook>
+ <20200423182845.u7rthm67mqdqtuq5@treble>
+ <202004231224.D6B3B650@keescook>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="1482994552-405825474-1587671461=:248617"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202004231224.D6B3B650@keescook>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---1482994552-405825474-1587671461=:248617
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 23 Apr 2020, Michal Koutný wrote:
-
-> From: Christoph Lameter <cl@linux.com>
+On Thu, Apr 23, 2020 at 12:32:32PM -0700, Kees Cook wrote:
+> On Thu, Apr 23, 2020 at 01:28:45PM -0500, Josh Poimboeuf wrote:
+> > On Thu, Apr 23, 2020 at 11:06:14AM -0700, Kees Cook wrote:
+> > > Regardless, the type_mismatch it triggered for misalignment and
+> > > object-size checks, and the alignment check is likely going to always
+> > > misfire on x86. The randconfig includes that config:
+> > > 
+> > > CONFIG_UBSAN_ALIGNMENT=y
+> > > 
+> > > So perhaps the config should be strengthened to disallow it under
+> > > COMPILE_TEST?
+> > > 
+> > > config UBSAN_ALIGNMENT
+> > >         def_bool !UBSAN_NO_ALIGNMENT
+> > > 	depends on !COMPILE_TEST
+> > 
+> > But this issue basically makes UBSAN_TRAP unusable, right?  Should
+> > UBSAN_ALIGNMENT and UBSAN_TRAP be made mutually exclusive?
 > 
-> I came across some unnecessary uevents once again which reminded me
-> this. The patch seems to be lost in the leaves of the original
-> discussion [1], so resending.
-> 
-> [1] https://lore.kernel.org/r/alpine.DEB.2.21.2001281813130.745@www.lameter.com
-> 
-> 8<---
-> Kmem caches are internal kernel structures so it is strange that
-> userspace notifiers would be needed. And I am not aware of any use
-> of these notifiers. These notifiers may just exist because in the
-> initial slub release the sysfs code was copied from another
-> subsystem.
-> 
-> Signed-off-by: Christoph Lameter <cl@linux.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Acked-by: Michal Koutný <mkoutny@suse.com>
+> Well, no, not UBSAN_TRAP alone. It seems that -fsanitize=alignment (and
+> possibly -fsanitize=object-size) is likely to produce false positives. And
+> that was already well understood. With UBSAN_TRAP, though, those functions
+> become unusable. Part of the goal of adding UBSAN_TRAP was to be able to
+> extract the non-false-positive sanitizer options out of UBSAN_MISC so
+> they could be used in production without the large debug text overhead.
+> (And the "alignment" checker had long since already been separate and
+> set to false by default on x86, since it's going to trip over everything
+> since it shouldn't get run on such hardware for any sane reason that
+> I know of.) So, while UBSAN_TRAP with UBSAN_ALIGNMENT is going to be
+> especially bad, UBSAN_ALIGNMENT at all is likely bad enough on x86, so
+> I think it'd be best to make it a negative depends on COMPILE_TEST (but
+> leave it available if someone is doing some really unusual UBSAN work).
 
-Acked-by: David Rientjes <rientjes@google.com>
---1482994552-405825474-1587671461=:248617--
+I think I'm still missing why UBSAN_ALIGNMENT is even possible on x86.
+But at least it sounds like your fix will keep the objtool reports from
+coming in :-)
+
+-- 
+Josh
+
