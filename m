@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8961B5C87
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0161B5C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgDWNY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 09:24:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28808 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726224AbgDWNY6 (ORCPT
+        id S1728038AbgDWN2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 09:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726224AbgDWN23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:24:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587648297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RuDyAj20bmjbvYj7VsEeP7XEemVCDcYopHSDDueemOo=;
-        b=IKMTdZ841e3eRC6MqAXGGG083JUfn7NQC/xNrOs017m6jk9jMYSbYTsVEk6j0/C6F1None
-        m4dU9LJ0hZpPcV3zXLQ+Xmnw1DixrFh6B/GhaIJJK1uwo90HWPnoUJ+H4zg5M9D4rj7gvR
-        goWPbIvPQF1Zlx0BWMJEC++gbbCntv0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22--jOYvudAO7eUPhq-S7CEWA-1; Thu, 23 Apr 2020 09:24:53 -0400
-X-MC-Unique: -jOYvudAO7eUPhq-S7CEWA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC00380B70F;
-        Thu, 23 Apr 2020 13:24:51 +0000 (UTC)
-Received: from krava (ovpn-115-157.ams2.redhat.com [10.36.115.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52D1C619C0;
-        Thu, 23 Apr 2020 13:24:48 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 15:24:46 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 3/3] perf stat: Add --metrics-file option
-Message-ID: <20200423132446.GN1136647@krava>
-References: <20200421181337.988681-1-jolsa@kernel.org>
- <20200421181337.988681-4-jolsa@kernel.org>
- <20200421183615.GD608746@tassilo.jf.intel.com>
- <20200421185252.GA962614@krava>
- <20200421200630.GG608746@tassilo.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421200630.GG608746@tassilo.jf.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 23 Apr 2020 09:28:29 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93672C08E934;
+        Thu, 23 Apr 2020 06:28:29 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id d15so5241103wrx.3;
+        Thu, 23 Apr 2020 06:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=H+kR0UcPOO6MRdLEzgHE+vv3y4TUhkBdKhYsw9irPWw=;
+        b=RPI/id/t6l5PqqaFmS+oq7ZoVqwl/0FeLJ3Xvmgm4BjC/GSrZc30HFIA3bd780ZyNp
+         QRACaq3CWo/Y9RZQm5Dntm0D7cx2TFvElMhb9v+Co+KgNzEfHU0f99cTzDy9NHYG9j7K
+         nJGMkbogwc+KlKgU40owfPE3bORQGnSnV6s6lQH6uvuBU0JRRRj8DyjLpcu3FHYTKVO0
+         mhjSdNqkfVMOExwmy3rdDr/PhMTh9gKgitG0KY9xCEciZSwiHUuq3zvxD3n8mMiJTxEg
+         box8fxZV8zgE8Ij/cwmXN/2gFfu4azXZgdpMpmxfggiWjlzHsR3uWEsr7u4p3kd1xXad
+         G86g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=H+kR0UcPOO6MRdLEzgHE+vv3y4TUhkBdKhYsw9irPWw=;
+        b=NBDOQbcsdHn6D6LqYXpSlNgXymIA3AA5bUS78HOYA+7QJu59pYZRcNUCNmt8lIndC6
+         QWeJKmTHDqgWeLcgnF5EJ3D7q+/83+/XE03r2VDuGWlLXDUlCCNHr1C1lDtFiXXMqoo3
+         IIkIaMtzPwpS1b5gUTh7frbO+iO8qQ7XeTd0PJuqw7K6UJHgZnnp/EbCdZThzg4d4jR9
+         KpMvURvL5kTFhd9zEKgLJnrzOexSrLT2YPF0Q822nmXpH/ITyecxI7NkMpvClZCar23h
+         1NtBHYJCCmCP3WqyddIf/Oc3SclLpqSs/L3Q2Ir/rB3XHmXFdJFzhEdm2mq836BjlZ+B
+         xhSA==
+X-Gm-Message-State: AGi0PuaK+vcbnSSsTyt4chY2Bt6SPtkKADBZrfUEMuLHSQaLs2M8O9Yl
+        ykFv0Zcy48Fv/Ie4tg6W1C115wFfMryIGw==
+X-Google-Smtp-Source: APiQypL00MM7opxNieTqA6f4ccQWl4aOFoowwL2e4/vkcJL487OI1qTQuZqKZuXMAad1M5XSGGVPKQ==
+X-Received: by 2002:a5d:6a92:: with SMTP id s18mr4699435wru.50.1587648508339;
+        Thu, 23 Apr 2020 06:28:28 -0700 (PDT)
+Received: from localhost.localdomain (89-212-21-243.static.t-2.net. [89.212.21.243])
+        by smtp.googlemail.com with ESMTPSA id l15sm3552703wmi.48.2020.04.23.06.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 06:28:27 -0700 (PDT)
+From:   Andrej Picej <andpicej@gmail.com>
+Cc:     primoz.fiser@norik.com, Andrej Picej <andpicej@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: (lm70) Add support for ACPI
+Date:   Thu, 23 Apr 2020 15:27:33 +0200
+Message-Id: <20200423132733.7743-1-andpicej@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 01:06:30PM -0700, Andi Kleen wrote:
-> > > Also there are some asserts that can be triggered by expressions. I think
-> > > you should fix those too and convert them to errors.
-> > 
-> > do you have some details on this? examples of those failures?
-> 
-> At a minimum 
-> 
-> /* Caller must make sure id is allocated */
-> void expr__add_id(struct parse_ctx *ctx, const char *name, double val)
-> {
->         int idx;
->         assert(ctx->num_ids < MAX_PARSE_ID);
-> 
-> 
-> -Andi
-> 
+This commit adds support for lm70 commpatible drivers with systems that
+use ACPI.
 
-I did it and then I realized this is already caught in the parsing
-code (expr.y) with this check:
+Signed-off-by: Andrej Picej <andpicej@gmail.com>
+---
+ drivers/hwmon/lm70.c | 45 ++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 39 insertions(+), 6 deletions(-)
 
-        if (ctx->num_ids + 1 >= EXPR_MAX_OTHER) {
-                pr_err("failed: way too many variables\n");
-                YYABORT;
-        }
-
-so that assert can stay there and shouldn't be ever hit
-
-jirka
+diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
+index 4122e59f0bb4..0e809cac2cf4 100644
+--- a/drivers/hwmon/lm70.c
++++ b/drivers/hwmon/lm70.c
+@@ -25,6 +25,9 @@
+ #include <linux/spi/spi.h>
+ #include <linux/slab.h>
+ #include <linux/of_device.h>
++#include <linux/acpi.h>
++#include <acpi/acpi_bus.h>
++#include <acpi/acpi_drivers.h>
+ 
+ 
+ #define DRVNAME		"lm70"
+@@ -148,18 +151,47 @@ static const struct of_device_id lm70_of_ids[] = {
+ MODULE_DEVICE_TABLE(of, lm70_of_ids);
+ #endif
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id lm70_acpi_ids[] = {
++	{
++		.id = "LM000070",
++		.driver_data = LM70_CHIP_LM70,
++	},
++	{
++		.id = "TMP00121",
++		.driver_data = LM70_CHIP_TMP121,
++	},
++	{
++		.id = "LM000071",
++		.driver_data = LM70_CHIP_LM71,
++	},
++	{
++		.id = "LM000074",
++		.driver_data = LM70_CHIP_LM74,
++	},
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, lm70_acpi_ids);
++#endif
++
+ static int lm70_probe(struct spi_device *spi)
+ {
+-	const struct of_device_id *match;
++	const struct of_device_id *of_match;
++	const struct acpi_device_id *acpi_match;
+ 	struct device *hwmon_dev;
+ 	struct lm70 *p_lm70;
+ 	int chip;
+ 
+-	match = of_match_device(lm70_of_ids, &spi->dev);
+-	if (match)
+-		chip = (int)(uintptr_t)match->data;
+-	else
+-		chip = spi_get_device_id(spi)->driver_data;
++	of_match = of_match_device(lm70_of_ids, &spi->dev);
++	if (of_match)
++		chip = (int)(uintptr_t)of_match->data;
++	else {
++		acpi_match = acpi_match_device(lm70_acpi_ids, &spi->dev);
++		if (acpi_match)
++			chip = (int)(uintptr_t)acpi_match->driver_data;
++		else
++			chip = spi_get_device_id(spi)->driver_data;
++	}
+ 
+ 	/* signaling is SPI_MODE_0 */
+ 	if (spi->mode & (SPI_CPOL | SPI_CPHA))
+@@ -195,6 +227,7 @@ static struct spi_driver lm70_driver = {
+ 	.driver = {
+ 		.name	= "lm70",
+ 		.of_match_table	= of_match_ptr(lm70_of_ids),
++		.acpi_match_table = ACPI_PTR(lm70_acpi_ids),
+ 	},
+ 	.id_table = lm70_ids,
+ 	.probe	= lm70_probe,
+-- 
+2.17.1
 
