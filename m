@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88B41B528E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB47A1B5271
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgDWCbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 22:31:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2873 "EHLO huawei.com"
+        id S1726755AbgDWC0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 22:26:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51406 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725781AbgDWCbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 22:31:34 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 88D166779FDD7B390461;
-        Thu, 23 Apr 2020 10:31:31 +0800 (CST)
-Received: from [127.0.0.1] (10.63.139.185) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 23 Apr 2020
- 10:31:21 +0800
-Subject: Re: [PATCH -next] crypto: hisilicon/qm - Make qm_controller_reset()
- static
-To:     Zou Wei <zou_wei@huawei.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-References: <1587608556-113975-1-git-send-email-zou_wei@huawei.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5EA0FDF4.5010601@hisilicon.com>
-Date:   Thu, 23 Apr 2020 10:31:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1726724AbgDWC0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 22:26:37 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 24870E7B8AC50BD116A2;
+        Thu, 23 Apr 2020 10:26:35 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 23 Apr 2020 10:26:27 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] bpf: Make bpf_link_fops static
+Date:   Thu, 23 Apr 2020 10:32:40 +0800
+Message-ID: <1587609160-117806-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <1587608556-113975-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.63.139.185]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/23 10:22, Zou Wei wrote:
-> Fix the following sparse warning:
-> 
-> drivers/crypto/hisilicon/qm.c:3079:5: warning: symbol 'qm_controller_reset'
-> was not declared. Should it be static?
+Fix the following sparse warning:
 
-It should be static.
+kernel/bpf/syscall.c:2289:30: warning: symbol 'bpf_link_fops' was not declared. Should it be static?
 
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
-
-Thanks,
-Zhou
-
-> ---
->  drivers/crypto/hisilicon/qm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-> index 80c5525..69d02cb 100644
-> --- a/drivers/crypto/hisilicon/qm.c
-> +++ b/drivers/crypto/hisilicon/qm.c
-> @@ -3076,7 +3076,7 @@ static int qm_controller_reset_done(struct hisi_qm *qm)
->  	return 0;
->  }
->  
-> -int qm_controller_reset(struct hisi_qm *qm)
-> +static int qm_controller_reset(struct hisi_qm *qm)
->  {
->  	struct pci_dev *pdev = qm->pdev;
->  	int ret;
-> 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8608d6e..fcb80e1 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2286,7 +2286,7 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+ }
+ #endif
+ 
+-const struct file_operations bpf_link_fops = {
++static const struct file_operations bpf_link_fops = {
+ #ifdef CONFIG_PROC_FS
+ 	.show_fdinfo	= bpf_link_show_fdinfo,
+ #endif
+-- 
+2.6.2
 
