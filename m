@@ -2,163 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8461B5EE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D261B5F10
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgDWPQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729009AbgDWPQ0 (ORCPT
+        id S1729146AbgDWPYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:24:19 -0400
+Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:16379 "EHLO
+        hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbgDWPYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:16:26 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F4BC09B041
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:16:26 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id g74so6679949qke.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RuwvuXrV7STsC2XSTWZguPreMY6qFyucfZMv6dyCZ9g=;
-        b=L1nG+W+9ij6Dmdui58Miqo8Hh4qEFLkqwCmLJxQxFoePYWrMwKGNzaxr4E80FZkNCe
-         hQY0MtIjCD3biwbp2usIhc/bG/mliQ/SqZ0McDel88WUP76y2ZGdmL7PMNp0PaHNo0rl
-         MKaRM6WGmnlovhV+jkviMk0Md8xSeIBeyYs3Jhj1MboZsVxSy5Z6KFdWQkuMOmJMkHPs
-         xPJ9WRJzN1iFHYZg9vn/CoYF58u7O3qGIJsDg9NbskJH9YenhnG+h/m1F2YovvkdJuHM
-         TlIy/oK9hmHrgClqupcDFQjiLPAX4CZbEe2orbnKjAJwMTc7eueUgAjkgMriugvWA7bZ
-         9BvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RuwvuXrV7STsC2XSTWZguPreMY6qFyucfZMv6dyCZ9g=;
-        b=XRgESZ+XcVFqHiAFixJxmmqIINAWOtvC5Z0YXA+NR6CD0aTTeB4Ynp+virTg57pHbA
-         RLL9Rvl/KOEXAE25zP7WfSyc1gNtU1LFHT48pSpZ5tr3IyUVSshg75uOtuOWf31z4HEP
-         NmQGHJnDUEC0CrQIuKAE88ZY8gof04Cf7MzrVl1oNLvlZlOwghND1w3ZmFFw5ajlEx6s
-         mR3Jqdrxfxdl6KHKByiPZmEacLRyTZiIcTexblcdm4s4uRdTx925q8ewOwHYD4GCw68F
-         /h1BRC46jOXNLTGmhSTHr8rlGhhtcmA3JhHNe7s6athggNrXnq809Cw2/FwkJDyhQIfR
-         b6yw==
-X-Gm-Message-State: AGi0PuZCI1/TbfEqYzIlce03DoSvIO5PfhW+UihA7dczQTqNRxmma8DT
-        1RwldMxp/N8r8VZWzIjPRtIg1w==
-X-Google-Smtp-Source: APiQypJiqOT4fipFLUGohNv7Deb1s+6ID4GDzmCNpgpgqR/iKAnZEgmnnLbZQ13uR71Jym2saStjag==
-X-Received: by 2002:a37:9dd6:: with SMTP id g205mr4268266qke.9.1587654985482;
-        Thu, 23 Apr 2020 08:16:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id a22sm1663046qko.81.2020.04.23.08.16.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 08:16:25 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRdaS-0003hD-Gu; Thu, 23 Apr 2020 12:16:24 -0300
-Date:   Thu, 23 Apr 2020 12:16:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-Message-ID: <20200423151624.GA26002@ziepe.ca>
-References: <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
- <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr>
- <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com>
- <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr>
- <871rofdhtg.fsf@intel.com>
- <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr>
- <940d3add-4d12-56ed-617a-8b3bf8ef3a0f@infradead.org>
- <nycvar.YSQ.7.76.2004231059170.2671@knanqh.ubzr>
- <20200423150556.GZ26002@ziepe.ca>
- <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr>
+        Thu, 23 Apr 2020 11:24:19 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 11:24:18 EDT
+IronPort-SDR: /hbHqgLehMC96EACJ5+drsFQvhIzNXnKAAQ0mbktBYTREh6QIV+38FPynIL4nsUVuXSf2gVoiF
+ 5Hn7zN/jDjJ3uZMRdwgWhPR1nyYLHjqvCB7zBXgdum7wX2RAMAdcg9QtEIveY1lqED6BcExdqt
+ RzUrKGVzXPYsepX41zjMuOj4o85W/0L++Q7sXNLhF1nyISmFrRak0J4zj0CLwqzLej+O6RRjiS
+ qRNFvfdryFDhkkxQ5TU0eXqjUWUIbOitHCDzy/+eUueLsT2jFdPBdNICSGiwUe7ETePX13aTKh
+ gic=
+X-IronPort-AV: E=Sophos;i="5.73,307,1583186400"; 
+   d="scan'208";a="277228178"
+From:   =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
+        <vesa.jaaskelainen@vaisala.com>
+To:     op-tee@lists.trustedfirmware.org,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
+        <vesa.jaaskelainen@vaisala.com>
+Subject: [PATCH 0/3] tee: add support for session's client UUID generation
+Date:   Thu, 23 Apr 2020 18:16:58 +0300
+Message-Id: <20200423151701.111231-1-vesa.jaaskelainen@vaisala.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 23 Apr 2020 15:17:07.0183 (UTC) FILETIME=[407487F0:01D61982]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:11:46AM -0400, Nicolas Pitre wrote:
-> On Thu, 23 Apr 2020, Jason Gunthorpe wrote:
-> 
-> > On Thu, Apr 23, 2020 at 11:01:40AM -0400, Nicolas Pitre wrote:
-> > > On Wed, 22 Apr 2020, Randy Dunlap wrote:
-> > > 
-> > > > On 4/22/20 2:13 PM, Nicolas Pitre wrote:
-> > > > > On Wed, 22 Apr 2020, Jani Nikula wrote:
-> > > > > 
-> > > > >> On Tue, 21 Apr 2020, Nicolas Pitre <nico@fluxnic.net> wrote:
-> > > > >>> This is really a conditional dependency. That's all this is about.
-> > > > >>> So why not simply making it so rather than fooling ourselves? All that 
-> > > > >>> is required is an extension that would allow:
-> > > > >>>
-> > > > >>> 	depends on (expression) if (expression)
-> > > > >>>
-> > > > >>> This construct should be obvious even without reading the doc, is 
-> > > > >>> already used extensively for other things already, and is flexible 
-> > > > >>> enough to cover all sort of cases in addition to this particular one.
-> > > > >>
-> > > > >> Okay, you convinced me. Now you only need to convince whoever is doing
-> > > > >> the actual work of implementing this stuff. ;)
-> > > > > 
-> > > > > What about this:
-> > > > > 
-> > > > > Subject: [PATCH] kconfig: allow for conditional dependencies
-> > > > > 
-> > > > > This might appear to be a strange concept, but sometimes we want
-> > > > > a dependency to be conditionally applied. One such case is currently
-> > > > > expressed with:
-> > > > > 
-> > > > > 	depends on FOO || !FOO
-> > > > > 
-> > > > > This pattern is strange enough to give one's pause. Given that it is
-> > > > > also frequent, let's make the intent more obvious with some syntaxic 
-> > > > > sugar by effectively making dependencies optionally conditional.
-> > > > > This also makes the kconfig language more uniform.
-> > > > > 
-> > > > > Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > If we must do something here, I prefer this one.
-> > > > 
-> > > > Nicolas, would you do another example, specifically for
-> > > > CRAMFS_MTD in fs/cramfs/Kconfig, please?
-> > > 
-> > > I don't see how that one can be helped. The MTD dependency is not 
-> > > optional.
-> > 
-> > Could it be done as 
-> > 
-> > config MTD
-> >    depends on CRAMFS if CRAMFS_MTD
-> > 
-> > ?
-> 
-> No. There is no logic in restricting MTD usage based on CRAMFS or 
-> CRAMFS_MTD.
+TEE Client API defines that from user space only information needed for
+specified login operations is group identifier for group based logins.
 
-Ah, I got it backwards, maybe this:
+REE kernel is expected to formulate trustworthy client UUID and pass that
+to TEE environment. REE kernel is required to verify that provided group
+identifier for group based logins matches calling processes group
+memberships.
 
-config CRAMFS
-   depends on MTD if CRAMFS_MTD
+TEE specification only defines that the information passed from REE
+environment to TEE environment is encoded into on UUID.
 
-?
+In order to guarantee trustworthiness of client UUID user space is not
+allowed to freely pass client UUID.
 
-Jason
+Vesa Jääskeläinen (3):
+  tee: add support for session's client UUID generation
+  tee: optee: Add support for session login client UUID generation
+  [RFC] tee: add support for app id for client UUID generation
+
+ drivers/tee/Kconfig      |   1 +
+ drivers/tee/optee/call.c |   6 +-
+ drivers/tee/tee_core.c   | 188 +++++++++++++++++++++++++++++++++++++++
+ include/linux/tee_drv.h  |  16 ++++
+ 4 files changed, 210 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
+Notes:
+
+This patcheset has been designed so that it can be iteratively intergrated
+meaning that the application ID (RFC patch) part can be left for later when
+there is agreed solution for that.
+
+TEE specification leaves Linux behavior undefined. It does not define any
+UUID value for name space. UUID in here is randomly generated with uuidgen
+tool.
+
+I have also include amdtee people as this method probably should also be
+applied in there.
+
+Using op-tee@lists.trustedfirmware.org instead of tee-dev@lists.linaro.org as
+latter is deprecated old list.
+
+Original issue in OP-TEE OS tracker:
+https://github.com/OP-TEE/optee_os/issues/3642
+
+Related reviews and demonstration for the concept:
+https://github.com/linaro-swg/linux/pull/74
+https://github.com/OP-TEE/optee_client/pull/195
+https://github.com/OP-TEE/optee_test/pull/406
