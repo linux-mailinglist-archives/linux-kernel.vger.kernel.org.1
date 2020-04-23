@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0505E1B6476
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E161B647D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgDWTbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:31:10 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45090 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728652AbgDWTbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:31:09 -0400
-IronPort-SDR: CTNkFYoa3JcqBpK/uI4fzZ0XoE68i/cIPBPn03BjjcqFwtYJLk99rUNy1DoXkKE4daruisg+Sb
- ppVCedPGY1Kg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 12:31:09 -0700
-IronPort-SDR: tqg+y67A/vNG+cYI5UcNzAeImAaYvydHXeRdJYcr+b08J/agvX+DJI0UNOTHxHxpPb/1zAWlwI
- phuRR75eTgaQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
-   d="scan'208";a="430444846"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by orsmga005.jf.intel.com with ESMTP; 23 Apr 2020 12:31:09 -0700
-Date:   Thu, 23 Apr 2020 12:31:08 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Nadav Amit <namit@cs.technion.ac.il>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] kvm: x86: skip DRn reload if previous VM exit is
- DR access VM exit
-Message-ID: <20200423193108.GP17824@linux.intel.com>
-References: <20200416101509.73526-1-xiaoyao.li@intel.com>
- <20200416101509.73526-4-xiaoyao.li@intel.com>
+        id S1728752AbgDWTcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728652AbgDWTcf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 15:32:35 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F238C09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:32:35 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a7so2924489pju.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AucMh0ksuApTqmSqz5uKzvpEi+vb6lou60a9nNWAoyY=;
+        b=JcNVt9SgBBGF/iiJ+iTb7pgfG/HtP9LQZMxtcyICmGMV+91NN1urybM6ySCRx1pAy6
+         M73lK2+sWzMVD6+EIsbYrm78d3qnaIFI7ZbQDp7EdeZiICSxMtVsTo3exn35pfVqfFf8
+         QboNgKKhlds8A9465okRu9CbZdmhuAPD0MrMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AucMh0ksuApTqmSqz5uKzvpEi+vb6lou60a9nNWAoyY=;
+        b=JlTbDqoGtftacHUDZpUCr12XY2/7myAl37fFhk+teYKTRDm4dxhZb6GIi64oC9vY/i
+         2tB5f6ukv/IyHdsZPMDUHQ6uOtD77TIRCksmAReYabQgyG+yuI5d7YHW9PWblLkm/AEH
+         qbNu2rDOe5RjA4tLpI8QL+ZbfLSEENRnnVs9CP24ieAL5ggWrtL3dPSf5UYAOiE5+WAo
+         GiDSNv3+sillATzgKzR+5KN3HUx6OnGQiTJhWyhnlMMBEAS9AHracbLvq1hNCvPeUS+g
+         0+K5N5iihiLwAuLW9M7o+8H8xVb2sjdsWKNWqqV+XMCeyJUCEgwlEs3MjHORAe5XuQZ6
+         CDkQ==
+X-Gm-Message-State: AGi0PuZ/9it03SGlW0ASjCa5qNnPVE+stUDNwJk9Jqz3J2+iy9ckJ7+D
+        9XT9Ejz/Iod6tA06EVUiXmig00s2LFg=
+X-Google-Smtp-Source: APiQypLoCaK1dpkgXIdK2bb8q6JF5fwJMvbBdzyg7f0LPP9wDXuonKyVpUdhhE4j06sdwpZVpvGKWQ==
+X-Received: by 2002:a17:90a:1da6:: with SMTP id v35mr2507161pjv.44.1587670354690;
+        Thu, 23 Apr 2020 12:32:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h31sm3174915pjb.33.2020.04.23.12.32.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 12:32:33 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 12:32:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: Re: linux-next: Tree for Apr 22 (objtool warnings)
+Message-ID: <202004231224.D6B3B650@keescook>
+References: <20200422171016.484b031d@canb.auug.org.au>
+ <2bf0635d-1406-23db-28c7-e55da9a07e05@infradead.org>
+ <20200422164406.qhvd2my35wnjlzyg@treble>
+ <202004231053.5E4F16C3E8@keescook>
+ <20200423182845.u7rthm67mqdqtuq5@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416101509.73526-4-xiaoyao.li@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200423182845.u7rthm67mqdqtuq5@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 06:15:09PM +0800, Xiaoyao Li wrote:
-> When DR access vm exit, there is no DRn change throughout VM exit to
-> next VM enter. Skip the DRn reload in this case and fix the comments.
-
-Same thing as the previous patch, the hardware values aren't stable.  In
-this case, MOV DR won't exit so KVM needs to ensure hardware has the guest
-values, irrespective of whether breakpoints are enabled.
-
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 8 +++++---
->  arch/x86/kvm/vmx/vmx.c | 8 +++++---
->  arch/x86/kvm/x86.c     | 2 +-
->  3 files changed, 11 insertions(+), 7 deletions(-)
+On Thu, Apr 23, 2020 at 01:28:45PM -0500, Josh Poimboeuf wrote:
+> On Thu, Apr 23, 2020 at 11:06:14AM -0700, Kees Cook wrote:
+> > Regardless, the type_mismatch it triggered for misalignment and
+> > object-size checks, and the alignment check is likely going to always
+> > misfire on x86. The randconfig includes that config:
+> > 
+> > CONFIG_UBSAN_ALIGNMENT=y
+> > 
+> > So perhaps the config should be strengthened to disallow it under
+> > COMPILE_TEST?
+> > 
+> > config UBSAN_ALIGNMENT
+> >         def_bool !UBSAN_NO_ALIGNMENT
+> > 	depends on !COMPILE_TEST
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 66123848448d..c6883a0bf8c3 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2287,9 +2287,11 @@ static int dr_interception(struct vcpu_svm *svm)
->  
->  	if (svm->vcpu.guest_debug == 0) {
->  		/*
-> -		 * No more DR vmexits; force a reload of the debug registers
-> -		 * and reenter on this instruction.  The next vmexit will
-> -		 * retrieve the full state of the debug registers.
-> +		 * No more DR vmexits and reenter on this instruction.
-> +		 * The next vmexit will retrieve the full state of the debug
-> +		 * registers and re-enable DR vmexits.
-> +		 * No need to set KVM_DEBUGREG_NEED_RELOAD because no DRn change
-> +		 * since this DR vmexit.
->  		 */
->  		clr_dr_intercepts(svm);
->  		svm->vcpu.arch.switch_db_regs |= KVM_DEBUGREG_WONT_EXIT;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index aa1b8cf7c915..22eff8503048 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4967,9 +4967,11 @@ static int handle_dr(struct kvm_vcpu *vcpu)
->  		exec_controls_clearbit(to_vmx(vcpu), CPU_BASED_MOV_DR_EXITING);
->  
->  		/*
-> -		 * No more DR vmexits; force a reload of the debug registers
-> -		 * and reenter on this instruction.  The next vmexit will
-> -		 * retrieve the full state of the debug registers.
-> +		 * No more DR vmexits and reenter on this instruction.
-> +		 * The next vmexit will retrieve the full state of the debug
-> +		 * registers and re-enable DR vmexits.
-> +		 * No need to set KVM_DEBUGREG_NEED_RELOAD because no DRn change
-> +		 * since this DR vmexit.
->  		 */
->  		vcpu->arch.switch_db_regs |= KVM_DEBUGREG_WONT_EXIT;
->  		return 1;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 71264df64001..8983848cbf45 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8400,7 +8400,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  	if (test_thread_flag(TIF_NEED_FPU_LOAD))
->  		switch_fpu_return();
->  
-> -	if (unlikely(vcpu->arch.switch_db_regs)) {
-> +	if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_NEED_RELOAD)) {
->  		set_debugreg(0, 7);
->  		set_debugreg(vcpu->arch.eff_db[0], 0);
->  		set_debugreg(vcpu->arch.eff_db[1], 1);
-> -- 
-> 2.20.1
-> 
+> But this issue basically makes UBSAN_TRAP unusable, right?  Should
+> UBSAN_ALIGNMENT and UBSAN_TRAP be made mutually exclusive?
+
+Well, no, not UBSAN_TRAP alone. It seems that -fsanitize=alignment (and
+possibly -fsanitize=object-size) is likely to produce false positives. And
+that was already well understood. With UBSAN_TRAP, though, those functions
+become unusable. Part of the goal of adding UBSAN_TRAP was to be able to
+extract the non-false-positive sanitizer options out of UBSAN_MISC so
+they could be used in production without the large debug text overhead.
+(And the "alignment" checker had long since already been separate and
+set to false by default on x86, since it's going to trip over everything
+since it shouldn't get run on such hardware for any sane reason that
+I know of.) So, while UBSAN_TRAP with UBSAN_ALIGNMENT is going to be
+especially bad, UBSAN_ALIGNMENT at all is likely bad enough on x86, so
+I think it'd be best to make it a negative depends on COMPILE_TEST (but
+leave it available if someone is doing some really unusual UBSAN work).
+
+-Kees
+
+-- 
+Kees Cook
