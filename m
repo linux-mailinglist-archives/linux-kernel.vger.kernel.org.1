@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFCF1B56AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8F31B56A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgDWHvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
+        id S1726996AbgDWHvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726998AbgDWHto (ORCPT
+        with ESMTP id S1727001AbgDWHto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Apr 2020 03:49:44 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B9C08C5F2;
-        Thu, 23 Apr 2020 00:49:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F791C08E934;
+        Thu, 23 Apr 2020 00:49:44 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jRWc2-0008Jq-OI; Thu, 23 Apr 2020 09:49:34 +0200
+        id 1jRWc3-0008LF-Nz; Thu, 23 Apr 2020 09:49:35 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 58D411C0450;
-        Thu, 23 Apr 2020 09:49:34 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 07:49:33 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5C7061C0450;
+        Thu, 23 Apr 2020 09:49:35 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 07:49:34 -0000
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Also consider .entry.text as noinstr
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: objtool/core] objtool: Rearrange validate_section()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200416115119.525037514@infradead.org>
-References: <20200416115119.525037514@infradead.org>
+In-Reply-To: <20200416115119.405863817@infradead.org>
+References: <20200416115119.405863817@infradead.org>
 MIME-Version: 1.0
-Message-ID: <158762817396.28353.10539514652564906695.tip-bot2@tip-bot2>
+Message-ID: <158762817498.28353.15802303225309999349.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -54,71 +53,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     0cc9ac8db0b447922d9af77916cd7941fc784b64
-Gitweb:        https://git.kernel.org/tip/0cc9ac8db0b447922d9af77916cd7941fc784b64
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 25 Mar 2020 17:18:17 +01:00
+Commit-ID:     4b5e2e7ffef87ae864f3f4546ee5753556e7550b
+Gitweb:        https://git.kernel.org/tip/4b5e2e7ffef87ae864f3f4546ee5753556e7550b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 23 Mar 2020 21:17:50 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 22 Apr 2020 10:53:51 +02:00
 
-objtool: Also consider .entry.text as noinstr
+objtool: Rearrange validate_section()
 
-Consider all of .entry.text as noinstr. This gets us coverage across
-the PTI boundary. While we could add everything .noinstr.text into
-.entry.text that would bloat the amount of code in the user mapping.
+In preparation of further changes, once again break out the loop body.
+No functional changes intended.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20200416115119.525037514@infradead.org
+Link: https://lkml.kernel.org/r/20200416115119.405863817@infradead.org
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- tools/objtool/check.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ tools/objtool/check.c | 51 +++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 22 deletions(-)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 0d9f9cf..f2a8427 100644
+index e201aa1..f49bf83 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -266,7 +266,8 @@ static int decode_instructions(struct objtool_file *file)
- 		    strncmp(sec->name, ".discard.", 9))
- 			sec->text = true;
+@@ -2486,12 +2486,37 @@ static bool ignore_unreachable_insn(struct instruction *insn)
+ 	return false;
+ }
  
--		if (!strcmp(sec->name, ".noinstr.text"))
-+		if (!strcmp(sec->name, ".noinstr.text") ||
-+		    !strcmp(sec->name, ".entry.text"))
- 			sec->noinstr = true;
- 
- 		for (offset = 0; offset < sec->len; offset += insn->len) {
-@@ -2071,7 +2072,7 @@ static inline const char *call_dest_name(struct instruction *insn)
- static int validate_call(struct instruction *insn, struct insn_state *state)
+-static int validate_section(struct objtool_file *file, struct section *sec)
++static int validate_symbol(struct objtool_file *file, struct section *sec,
++			   struct symbol *sym, struct insn_state *state)
  {
- 	if (state->noinstr && state->instr <= 0 &&
--	    (!insn->call_dest || insn->call_dest->sec != insn->sec)) {
-+	    (!insn->call_dest || !insn->call_dest->sec->noinstr)) {
- 		WARN_FUNC("call to %s() leaves .noinstr.text section",
- 				insn->sec, insn->offset, call_dest_name(insn));
- 		return 1;
-@@ -2558,11 +2559,16 @@ static int validate_vmlinux_functions(struct objtool_file *file)
- 	int warnings = 0;
- 
- 	sec = find_section_by_name(file->elf, ".noinstr.text");
--	if (!sec)
--		return 0;
-+	if (sec) {
-+		warnings += validate_section(file, sec);
-+		warnings += validate_unwind_hints(file, sec);
+-	struct symbol *func;
+ 	struct instruction *insn;
++	int ret;
++
++	if (!sym->len) {
++		WARN("%s() is missing an ELF size annotation", sym->name);
++		return 1;
 +	}
++
++	if (sym->pfunc != sym || sym->alias != sym)
++		return 0;
++
++	insn = find_insn(file, sec, sym->offset);
++	if (!insn || insn->ignore || insn->visited)
++		return 0;
++
++	state->uaccess = sym->uaccess_safe;
++
++	ret = validate_branch(file, insn->func, insn, *state);
++	if (ret && backtrace)
++		BT_FUNC("<=== (sym)", insn);
++	return ret;
++}
++
++static int validate_section(struct objtool_file *file, struct section *sec)
++{
+ 	struct insn_state state;
+-	int ret, warnings = 0;
++	struct symbol *func;
++	int warnings = 0;
  
--	warnings += validate_section(file, sec);
--	warnings += validate_unwind_hints(file, sec);
-+	sec = find_section_by_name(file->elf, ".entry.text");
-+	if (sec) {
-+		warnings += validate_section(file, sec);
-+		warnings += validate_unwind_hints(file, sec);
-+	}
+ 	/*
+ 	 * We need the full vmlinux for noinstr validation, otherwise we can
+@@ -2505,31 +2530,13 @@ static int validate_section(struct objtool_file *file, struct section *sec)
+ 		if (func->type != STT_FUNC)
+ 			continue;
+ 
+-		if (!func->len) {
+-			WARN("%s() is missing an ELF size annotation",
+-			     func->name);
+-			warnings++;
+-		}
+-
+-		if (func->pfunc != func || func->alias != func)
+-			continue;
+-
+-		insn = find_insn(file, sec, func->offset);
+-		if (!insn || insn->ignore || insn->visited)
+-			continue;
+-
+ 		clear_insn_state(&state);
+ 		state.cfi.cfa = initial_func_cfi.cfa;
+ 		memcpy(&state.cfi.regs, &initial_func_cfi.regs,
+ 		       CFI_NUM_REGS * sizeof(struct cfi_reg));
+ 		state.cfi.stack_size = initial_func_cfi.cfa.offset;
+ 
+-		state.uaccess = func->uaccess_safe;
+-
+-		ret = validate_branch(file, func, insn, state);
+-		if (ret && backtrace)
+-			BT_FUNC("<=== (func)", insn);
+-		warnings += ret;
++		warnings += validate_symbol(file, sec, func, &state);
+ 	}
  
  	return warnings;
- }
