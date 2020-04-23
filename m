@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9D01B5FF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CDF1B600B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgDWPye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729230AbgDWPye (ORCPT
+        id S1729432AbgDWQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:01:30 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51108 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgDWQBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:54:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193D3C09B040
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KwSXPvgUYiTHnatXM5A5YtzTm3Yeu/jjyhqkXoCcjDE=; b=hFg12bRGbQqFI+zNKj371TZHSW
-        lvAvAaphdJwCIw2u4Xn1D3AzlFVuMW07NHIIhyJwgEAEj6mEt9EHRXRNOxx26pnQWyP5eYWngVj0m
-        Q6C4OkHonMLdPzW7KgRqxmM/7/atqLEaML7jxwfLvytR8MN/2myv3xiU6zUAF3NzmT3LKMc4RdxHX
-        dllTEMox+oNRv7N8LIGFwg5vTZKmksw07RFmC/ipKJDUsXDnP0wJfwxjv57aBGTGuhfgE0hjHak/W
-        Y6W2I1k2MG01deBlrwvmsdyj/nng9IiSJUyeIUs48E7j0s8zrMxBq+IeP4zNdubD3I1nkgB+PxRRC
-        E+x42T8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jReBH-00018N-A0; Thu, 23 Apr 2020 15:54:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C7F33011C6;
-        Thu, 23 Apr 2020 17:54:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 18BC720BC7378; Thu, 23 Apr 2020 17:54:25 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 17:54:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     jpoimboe@redhat.com, linux-kernel@vger.kernel.org,
-        jthierry@redhat.com, tglx@linutronix.de, x86@kernel.org,
-        mbenes@suse.cz
-Subject: Re: [PATCH 3/8] objtool: Rework allocating stack_ops on decode
-Message-ID: <20200423155425.GW20730@hirez.programming.kicks-ass.net>
-References: <20200423125013.452964352@infradead.org>
- <20200423125042.713052240@infradead.org>
- <7df9ec97-dc14-c4b6-fb26-f163e9afb1cd@oracle.com>
+        Thu, 23 Apr 2020 12:01:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03NG1MuR027754;
+        Thu, 23 Apr 2020 11:01:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1587657682;
+        bh=3EMZJugifEJV7++cTG3bh5SqWq/CwODT2ggcLh7vMbg=;
+        h=From:To:CC:Subject:Date;
+        b=RBHKEas83f2sDRSSacALL3hBBmFIYMJPKYB7smqpEDa4g9/OawPgE9cT0ogaEHkz2
+         h01FZEghM6Fe3AiPLUML8vcTsQG5NRSad/iXgm8EaZ/cGt745hMS5W9x4TsODxoTSK
+         tQViiJPvwGdCJlI6ce1Nbb5woXrrZX6u2eXrxtFI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03NG1Mq6059382
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 23 Apr 2020 11:01:22 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
+ Apr 2020 11:01:22 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 23 Apr 2020 11:01:22 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03NG1MS8025980;
+        Thu, 23 Apr 2020 11:01:22 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v20 00/17] Multicolor Framework (array edition)
+Date:   Thu, 23 Apr 2020 10:55:07 -0500
+Message-ID: <20200423155524.13971-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7df9ec97-dc14-c4b6-fb26-f163e9afb1cd@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 05:40:38PM +0200, Alexandre Chartre wrote:
+This is the multi color LED framework.   This framework presents clustered
+colored LEDs into an array and allows the user space to adjust the brightness
+of the cluster using a single file write.  The individual colored LEDs
+intensities are controlled via a single file that is an array of LEDs
 
-> > @@ -77,6 +77,17 @@ unsigned long arch_jump_destination(stru
-> >   	return insn->offset + insn->len + insn->immediate;
-> >   }
-> > +#define PUSH_OP(op) \
-> > +({ \
-> > +	list_add_tail(&op->list, ops_list); \
-> > +	NULL; \
-> > +})
-> > +
-> > +#define ADD_OP(op) \
-> > +	if (!(op = calloc(1, sizeof(*op)))) \
-> > +		return -1; \
-> > +	else for (; op; op = PUSH_OP(op))
-> > +
-> 
-> I would better have a function to alloc+add op instead of weird macros,
-> for example:
-> 
-> static struct stack_op *add_op(void)
-> {
->         struct stack *op;
-> 
->         op = calloc(1, sizeof(*op));
->         if (!op)
->                 return NULL;
->         list_add_tail(&op->list, ops_list);
-> }
-> 
-> Then it requires two more lines when using it but I think the code is much
-> cleaner and clearer, e.g.:
-> 
->                         op = add_op();
->                         if (!op)
->                                 return -1;
->                         op->src.type = OP_SRC_ADD;
->                         op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
->                         op->dest.type = OP_DEST_REG;
->                         op->dest.reg = CFI_SP;
+A design alternative to having files that have multiple values written to a
+single file is here:
 
-The 'problem' which this is that it doesn't NULL op again, so any later
-use will do 'funny' things instead of crashing sensibly. Also, I'm
-mightly lazy, I don't like endlessly repeating the same things.
+https://lore.kernel.org/patchwork/patch/1186194/*
+
+Dan Murphy (17):
+  dt: bindings: Add multicolor class dt bindings documention
+  leds: Add multicolor ID to the color ID list
+  leds: multicolor: Introduce a multicolor class definition
+  dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
+  leds: lp50xx: Add the LP50XX family of the RGB LED driver
+  dt: bindings: lp55xx: Be consistent in the document with LED acronym
+  dt: bindings: lp55xx: Update binding for Multicolor Framework
+  ARM: dts: n900: Add reg property to the LP5523 channel node
+  ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node
+  ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
+  leds: lp55xx: Convert LED class registration to devm_*
+  leds: lp55xx: Add multicolor framework support to lp55xx
+  leds: lp5523: Update the lp5523 code to add multicolor brightness
+    function
+  leds: lp5521: Add multicolor framework multicolor brightness support
+  leds: lp55xx: Fix checkpatch file permissions issues
+  leds: lp5523: Fix checkpatch issues in the code
+  dt: bindings: Update lp55xx binding to recommended LED naming
+
+ .../ABI/testing/sysfs-class-led-multicolor    |  42 +
+ .../bindings/leds/leds-class-multicolor.txt   |  98 +++
+ .../devicetree/bindings/leds/leds-lp50xx.txt  | 148 ++++
+ .../devicetree/bindings/leds/leds-lp55xx.txt  | 163 +++-
+ Documentation/leds/index.rst                  |   1 +
+ Documentation/leds/leds-class-multicolor.rst  |  92 +++
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi    |  14 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  29 +-
+ arch/arm/boot/dts/ste-href.dtsi               |  22 +-
+ drivers/leds/Kconfig                          |  22 +
+ drivers/leds/Makefile                         |   2 +
+ drivers/leds/led-class-multicolor.c           | 206 +++++
+ drivers/leds/led-core.c                       |   1 +
+ drivers/leds/leds-lp50xx.c                    | 778 ++++++++++++++++++
+ drivers/leds/leds-lp5521.c                    |  43 +-
+ drivers/leds/leds-lp5523.c                    |  62 +-
+ drivers/leds/leds-lp5562.c                    |  22 +-
+ drivers/leds/leds-lp55xx-common.c             | 213 +++--
+ drivers/leds/leds-lp55xx-common.h             |  13 +-
+ drivers/leds/leds-lp8501.c                    |  23 +-
+ include/dt-bindings/leds/common.h             |   3 +-
+ include/linux/led-class-multicolor.h          | 121 +++
+ include/linux/platform_data/leds-lp55xx.h     |   8 +
+ 23 files changed, 1968 insertions(+), 158 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-multicolor
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.txt
+ create mode 100644 Documentation/leds/leds-class-multicolor.rst
+ create mode 100644 drivers/leds/led-class-multicolor.c
+ create mode 100644 drivers/leds/leds-lp50xx.c
+ create mode 100644 include/linux/led-class-multicolor.h
+
+-- 
+2.25.1
+
