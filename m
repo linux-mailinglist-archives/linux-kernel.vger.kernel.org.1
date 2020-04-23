@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEAB1B5491
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 08:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026F81B5497
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 08:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgDWGJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 02:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725562AbgDWGJY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 02:09:24 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF084C03C1AB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 23:09:23 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id h205so2547927ybg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 23:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lrE4KKFTdzZAODRsf0iRvpS449bChhBAlCxKgsDfMv4=;
-        b=U7wNYsYb7GLwNYtEY39aq//g5FCqhxwzUssRFVir5TOdM9g1tzUbYksuV+2kWI+n2y
-         iZpJQoqKhffNiNfQB5A7iA0Mql17gEw3jbshKx8ad4y8dINipu4h3olXN+uiv97GlVER
-         XP0HtaM/mScXUVJYRVJw80lB/ilvNSRb8na7DfKIQfPwIRGmQdxb7zmQabbHPgwBzkFz
-         gbF25bxGJSGNBU1B1IbgMcy2Ef0ZKMACFZuAD4RJ/+EW8i0ri7z72YuHPTIbS/BHK6qz
-         55NXdLL9cPiun1Q7doJ8AcdVH1xyqXMFT59aJStdYJDZCwMmH4ETswD2a5Fce9JfYhLU
-         w4sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lrE4KKFTdzZAODRsf0iRvpS449bChhBAlCxKgsDfMv4=;
-        b=ieyczLxDodboQvfarWmPoOzW6ZhVycYfofTu4+B1BEzHObe7KGalpOrsF5XkEVLvhd
-         vN1qR4rlaf39TzsPFSUMEvq+uHKC/Mrs7mjtVqdlyblCw4oKLzjCG6SiUq9t4c3YgRnE
-         rDlb3SfNT7/mS7D64wYPcs9DRHMqXzggfsGeyHEEXfiIIIchjDiCjXa5znEq6FEiBA6z
-         uDmVoIzW7CZPTg9B/4nG3cOPL1U8tEz/c6k/P/e1EXfxe7HxsDwkDXYqPdy/Tx1O/kCy
-         BbhOBtTT+nDs8Cd01nkwf96Qix1c9ibDysZPcF9ofpW3gGKsZ8ph79/qcq8RirijXHZD
-         Wb1g==
-X-Gm-Message-State: AGi0PuZhT8YFZuaEhi2EKxswuPdFtsVaRPWf6ZRQh4IOKJmQsIuMzo9n
-        xdj+mJOjq8oc5p8rmH2JyLT17wtdMRch0RwNwGCF6g==
-X-Google-Smtp-Source: APiQypLd8bChmUKTyL6TkmgbOYfrCSG+TdAeNavHsinwPWlRtsg1zAbaCqnaUSFP4YmuqDbX/UDcTVTRScX6X8BeY7o=
-X-Received: by 2002:a5b:9cb:: with SMTP id y11mr4252129ybq.177.1587622162585;
- Wed, 22 Apr 2020 23:09:22 -0700 (PDT)
+        id S1726825AbgDWGK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 02:10:28 -0400
+Received: from verein.lst.de ([213.95.11.211]:56130 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgDWGK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 02:10:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B47E6227A81; Thu, 23 Apr 2020 08:10:23 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 08:10:23 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        intel-gfx@lists.freedesktop.org,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        nouveau@lists.freedesktop.org
+Subject: Re: [PATCH hmm 5/5] mm/hmm: remove the customizable pfn format
+ from hmm_range_fault
+Message-ID: <20200423061023.GA9856@lst.de>
+References: <0-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com> <5-v1-4eb72686de3c+5062-hmm_no_flags_jgg@mellanox.com> <20200422060329.GD22366@lst.de> <20200422123911.GV26002@ziepe.ca>
 MIME-Version: 1.0
-References: <20200422074809.160248-1-irogers@google.com> <20200422074809.160248-3-irogers@google.com>
- <20200422143840.GJ608746@tassilo.jf.intel.com> <CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com>
- <CAP-5=fUMFqiSFLbKA-XWStrePwxiYfq7Jk6mS9=F56Q9y-KVsA@mail.gmail.com>
- <46e803f3-80a4-0d37-9d39-b625b947ac7f@linux.intel.com> <cb5fcb4b-3ac6-66b5-9f9e-7943f4a6dadf@linux.intel.com>
-In-Reply-To: <cb5fcb4b-3ac6-66b5-9f9e-7943f4a6dadf@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 22 Apr 2020 23:09:11 -0700
-Message-ID: <CAP-5=fXVF_ExxVuiivF0JY3MwgxrQZqyFoPwn-p7DPf6Gbdh0g@mail.gmail.com>
-Subject: Re: [PATCH 2/8] perf metrics: fix parse errors in cascade lake metrics
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422123911.GV26002@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:54 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
->
-> Hi Jiri,
->
-> Bisected to this commit which introduced the regression.
->
-> 26226a97724d ("perf expr: Move expr lexer to flex")
->
-> Would you like to look at that?
+On Wed, Apr 22, 2020 at 09:39:11AM -0300, Jason Gunthorpe wrote:
+> > Nice callchain from hell..  Unfortunately such "code listings" tend to
+> > get out of date very quickly, so I'm not sure it is worth keeping in
+> > the code.  What would be really worthile is consolidating the two
+> > different sets of defines (NVIF_VMM_PFNMAP_V0_ vs NVKM_VMM_PFN_)
+> > to make the code a little easier to follow.
+> 
+> I was mainly concerned that this function is using hmm properly,
+> becuase it sure looks like it is just forming the CPU physical address
+> into a HW specific data. But it turns out it is just an internal data
+> for some other code and the dma_map is impossibly far away
+> 
+> It took forever to find, I figured I'd leave a hint for the next poor
+> soul that has to look at this.. 
+> 
+> Also, I think it shows there is no 'performance' argument here, if
+> this path needs more performance the above should be cleaned
+> before we abuse hmm_range_fault.
+> 
+> Put it in the commit message instead?
 
-Hi Jin,
+Yes, the graph itself sounds reasonable for the commit log as a point
+of time information.
 
-that commit breaks parsing of things like ','. See fixes in this patch
-set such as:
-https://lore.kernel.org/lkml/20200422220430.254014-5-irogers@google.com/
-Fixing the lex issues then exposes other bugs that need to be
-corrected in the json. I've added Fixes to the commit message of:
-https://lore.kernel.org/lkml/20200422220430.254014-3-irogers@google.com/
-https://lore.kernel.org/lkml/20200422220430.254014-4-irogers@google.com/
-and would be glad of a review. If we can land:
-https://lore.kernel.org/lkml/20200422220430.254014-12-irogers@google.com/
-then expr as the source of parse errors can go away :-) The next
-problem is the parse events code, but some of that logic is dependent
-on the machine it is running on. It'd be good to add a test that
-parsed events code can handle the events in metrics too, filtering out
-things like duration_time that are special to metrics.
+> > >  	npages = (range->end - range->start) >> PAGE_SHIFT;
+> > >  	for (i = 0; i < npages; ++i) {
+> > >  		struct page *page;
+> > >  
+> > > +		if (!(range->hmm_pfns[i] & HMM_PFN_VALID)) {
+> > > +			ioctl_addr[i] = 0;
+> > >  			continue;
+> > > +		}
+> > 
+> > Can't we rely on the caller pre-zeroing the array?
+> 
+> This ends up as args.phys in nouveau_svm_fault - I didn't see a
+> zeroing?
+> 
+> I think it makes sense that this routine fully sets the output array
+> and does not assume pre-initialize
 
-Thanks,
-Ian
-
-> Thanks
-> Jin Yao
->
-> On 4/23/2020 9:08 AM, Jin, Yao wrote:
-> >
-> >
-> > On 4/23/2020 12:18 AM, Ian Rogers wrote:
-> >> On Wed, Apr 22, 2020 at 8:34 AM Ian Rogers <irogers@google.com> wrote:
-> >>>
-> >>> On Wed, Apr 22, 2020 at 7:38 AM Andi Kleen <ak@linux.intel.com> wrote:
-> >>>>
-> >>>> On Wed, Apr 22, 2020 at 12:48:03AM -0700, Ian Rogers wrote:
-> >>>>> Remove over escaping with \\.
-> >>>>> Remove extraneous if 1 if 0 == 1 else 0 else 0.
-> >>>>
-> >>>> So where do these parse errors happen exactly? Some earlier
-> >>>> patches introduced them as regressions?
-> >>>
-> >>> I'll work to track down a Fixes tag. I can repro the Skylakex errors
-> >>> without the test in this series, by doing:
-> >>>
-> >>> $ perf stat -M DRAM_Read_Latency sleep 1
-> >>> Error:
-> >>> The sys_perf_event_open() syscall returned with 22 (Invalid argument)
-> >>> for event (cha/event=0x36\,uma
-> >>> sk=0x21/).
-> >>> /bin/dmesg | grep -i perf may provide additional information.
-> >>>
-> >
-> > I also think some patches introduced this regression. When we rollback
-> > to commit 61ec07f5917e (perf vendor events intel: Update all the Intel
-> > JSON metrics from TMAM 3.6.), there is no this error on CLX.
-> >
-> > Thanks
-> > Jin Yao
-> >
-> >>> This was just the escaping issue. I'm less clear on the other cascade
-> >>> lake issue, and it is a bit more work for me to test on cascade lake.
-> >>> What is "if 1 if 0 == 1 else 0 else 0" trying to do? Perhaps hunting
-> >>> for the Fixes will let me know, but it looks like a copy-paste error.
-> >>>
-> >>>> The original metrics worked without parse errors as far as I know.
-> >>>
-> >>> The skylake issue above repros on 5.2.17 and so it seems like it is
-> >>> broken for a while. The test in this series will prevent this in the
-> >>> future, but without this patch that test fails.
-> >>
-> >> The parse errors were introduced with the metrics, so they've never
-> >> worked:
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=fd5500989c8f3c3944ac0a144be04bae2506f7ba
-> >>
-> >>
-> >> I will send out a v2 with Fixes in the commit message but wanted to
-> >> wait in case there was any more feedback. In particular the fixes to
-> >> the new test and expr parser lex code. The lex code wasn't broken at
-> >> the time the metrics were added and should be working again after this
-> >> patch set.
-> >>
-> >> Thanks,
-> >> Ian
-> >>
-> >>>> If it fixes something earlier it would need Fixes: tags.
-> >>>
-> >>> Working on it. Thanks for the input!
-> >>>
-> >>> Ian
-> >>>
-> >>>> -Andi
+Ok.
