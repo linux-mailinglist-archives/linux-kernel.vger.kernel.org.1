@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91891B6307
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68B31B6316
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgDWSKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        id S1730114AbgDWSNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729995AbgDWSKg (ORCPT
+        with ESMTP id S1730042AbgDWSNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:10:36 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F035FC09B042;
-        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id v26so56005qto.0;
-        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
+        Thu, 23 Apr 2020 14:13:42 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B929C09B042;
+        Thu, 23 Apr 2020 11:13:42 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d184so3364866pfd.4;
+        Thu, 23 Apr 2020 11:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qPBEpYztacbVXAnXtHaabQP6rRHo96QuqAvZkwuZJto=;
-        b=L4EUQ7yBDVooy2o3cEUID9EV6wJXZht1OM/OumQrg17mjL4U6kJ3+3wdpqagD8ubXA
-         yxJRaNEBUPqdD8xRvkC8QEruzYVzwWrRgtFoYGXuiH7fSRBaJDRHnnIZNah/zHQQT+DM
-         F37gTBIlutLG9InjqxXNeh7t6xbtL0fSbFnC9wWiSneqsAICpPT1GKY8m7yHLz5Q8Vov
-         hfhldY0TPwAiKej2xUc2Wc/vGu5cu3pOv4D8XKjvTLgOXNSkd0MEAfncp2460uYPEjby
-         z2zHZQiOjMEcx/YzqZKReN+/3zkWL5T/A2UL91kw6wOswuSipIA78vkNtAv2Z4Bpbv0D
-         3SNg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=cFN0/zrQP7F0Mq14HYwfDQmMilQbxmV8QgknbMWRRiA=;
+        b=o2cB2aiWMce4KylBe8HnWY7j5AB08CCy4vQabQDeK/Nf2zLPezYcJQizFTt9HcSvSm
+         FjFs+2w6vm7NQkx15aSWesYUitcKi85u+EvxDs5mJK9WZP0Ey26mv+4FhqayDgRI6hMB
+         Y3VVwSSO2OkjvNX8XEJOxHmrb3C6BU5WC299eeX2kxudo9qYPJ/3yNKauLWUYqNyyi5Z
+         E0J3wT9I0noFqW4N6s/AsA0nS8Jl7M9k0anZPnnGyKFi4epKJvMfUSzp3WZOpOE7B/dY
+         LmzakcGDHT1Lt0UVnKvfCO/xZ5X+1stmMoh9xqmLBq9Yyn7Ud0Ji81erVcO1R0gjNN5L
+         dWCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qPBEpYztacbVXAnXtHaabQP6rRHo96QuqAvZkwuZJto=;
-        b=YHF8fZjsYwJzUdfl+w+5ZAl1tEwkUUzBgfQFHzItZF5s4PJ6v1BanO4byEpvPX2+yq
-         3kj7Ox1tpWIA4+Gjvo7EWA2st9q3FPchSnHUGE4xnbLsIjHX3ViG5Mu0l2GzlLSQazhw
-         apsuGGUaZs5l1DDj8fJG8raK5d+VvXfaaF/lQCscqSnh9fZcm/Xi8pYhVTynBUBvqRnr
-         l9PpJIIkSLfnf4xTwo9JQ8VO8LkNE1W2jwmBtki66myC9yPxfVtUUF/QS83MMzouQuy7
-         znf6tDdxVYLimUZqUsG3G7SnbsNsV8Z/A516u0jr6ehdcNTro7SGiNvO2v2F2DdQAl9s
-         S34A==
-X-Gm-Message-State: AGi0PuahZ9zndBx04+I433pEL1mkM5/IFgsvxthsAHWmjQfAPsi92XQv
-        7nVTMVeN0ZI1l56tGw5CW1c=
-X-Google-Smtp-Source: APiQypLgGpRR9+KI9m0wrhx/bDA4BvwPsUvOnPo0dBZgS7bSoovpi9pkIB2JuG+EIiG33Dw9+aslrg==
-X-Received: by 2002:ac8:2c0c:: with SMTP id d12mr5448806qta.284.1587665435149;
-        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id k2sm2316868qta.39.2020.04.23.11.10.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 11:10:33 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2C10A409A3; Thu, 23 Apr 2020 15:10:30 -0300 (-03)
-Date:   Thu, 23 Apr 2020 15:10:30 -0300
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] perf trace: substitute CAP_SYS_ADMIN with
- CAP_PERFMON in error message
-Message-ID: <20200423181030.GF20647@kernel.org>
-References: <66f2975b-4a69-b428-7dc5-d9aa40b3c673@linux.intel.com>
- <450d035a-c192-10e5-1c28-664ccae3e46e@linux.intel.com>
- <20200423132052.GA19437@kernel.org>
- <a775fef2-6d86-d43a-3a46-5b2d129c77dc@linux.intel.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cFN0/zrQP7F0Mq14HYwfDQmMilQbxmV8QgknbMWRRiA=;
+        b=mZW2dyOnJhfgAYJnUFP8c2bA2824ApYGdaPL8disLaTS8V/YUL/k2YmX6o4TEQlEUq
+         WmsnLWK9pyvYitKVvstlhSxo5MNPqvQbpHdS8vZU3LG2qy46e84zDya/vKzCfAHkNtNa
+         dBbX7kll9S383FSo6vq//laWVGGrqL2WsZsitmg29aVFOUfFAKU2lhn+ZdRJ+kj/jk44
+         ygUAkkZa1N+YgzenXiD4a7nEV0baYNUxnnLfodybXbVlXgAiSvRpgXuq1VZU54ps7G46
+         bXkz4V0IQP8MHueZX4SFlkduHCidOwQyzVQmEYDaJZ2NYA7DxAMgwHmm0xUZpANmCDNH
+         1jhQ==
+X-Gm-Message-State: AGi0PuZALKzcY+ec+M6tLgizcyoKBa1KzCcKAzTVSU+v/bxF8e2kNlLr
+        qqs/1GtNHupOzAQA7nYbPw==
+X-Google-Smtp-Source: APiQypKgpA/BxrJZSp+4DE6piw6U7i9z+juTdGZ7bdsEmHqatwrxP8Xd0T5SszBpQPq7A02GlbgWqw==
+X-Received: by 2002:a63:68c1:: with SMTP id d184mr4982644pgc.231.1587665621977;
+        Thu, 23 Apr 2020 11:13:41 -0700 (PDT)
+Received: from madhuparna-HP-Notebook ([2402:3a80:d22:fee6:34b8:6e26:7d76:a7bd])
+        by smtp.gmail.com with ESMTPSA id q187sm3072238pfb.131.2020.04.23.11.13.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Apr 2020 11:13:40 -0700 (PDT)
+From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
+Date:   Thu, 23 Apr 2020 23:43:35 +0530
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     madhuparnabhowmik10@gmail.com, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrianov@ispras.ru, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] drivers: dma: pch_dma.c: Avoid data race between probe
+ and irq handler
+Message-ID: <20200423181334.GA23094@madhuparna-HP-Notebook>
+References: <20200416062335.29223-1-madhuparnabhowmik10@gmail.com>
+ <20200423061935.GV72691@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a775fef2-6d86-d43a-3a46-5b2d129c77dc@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200423061935.GV72691@vkoul-mobl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 23, 2020 at 05:49:32PM +0300, Alexey Budankov escreveu:
+On Thu, Apr 23, 2020 at 11:49:35AM +0530, Vinod Koul wrote:
+> On 16-04-20, 11:53, madhuparnabhowmik10@gmail.com wrote:
+> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > 
+> > pd->dma.dev is read in irq handler pd_irq().
+> > However, it is set to pdev->dev after request_irq().
+> > Therefore, set pd->dma.dev to pdev->dev before request_irq() to
+> > avoid data race between pch_dma_probe() and pd_irq().
 > 
-> On 23.04.2020 16:20, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Apr 22, 2020 at 05:44:02PM +0300, Alexey Budankov escreveu:
-> >>
-> >> Update error message to mention CAP_PERFMON only. CAP_SYS_ADMIN still
-> >> works in keeping with user space backward compatibility approach.
-> > 
-> > This will confuse users that build the latest perf to use in older
-> > systems where CAP_PERFMON isn't available, probably we need to, in these
-> > cases, check for the existence of CAP_PERFMON to provide a better
-> > warning message, something like:
-> > 
-> >   You need CAP_ADMIN or update your kernel and libcap to one that supports
-> >   CAP_PERFMON.
-> > 
-> > For systems without CAP_PERFMON, while mentioning only CAP_PERFMON for
-> > systems where it is present, right?
-> 
-> Right, but this ideal implementation requires more effort, so staying with
-> two caps in the message and letting users decide which one to use looks like
-> a good balance already. 
+> Please use the right subsystem tag for patch. You can find that using
+> git log on the respective subsystem, in this case it would have told you
+> that it is dmaengine.
+>
+Sure, I will take care of this.
 
-Agreed.
-
-- Arnaldo
+> I have fixed that up and applied it, thanks for the patch
+>
+Thank you,
+Madhuparna
+> -- 
+> ~Vinod
