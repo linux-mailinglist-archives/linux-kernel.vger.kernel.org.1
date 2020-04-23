@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FD21B524B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A2F1B523A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgDWCIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 22:08:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:61411 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgDWCIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 22:08:40 -0400
-IronPort-SDR: sBqXayEWg52F/pFDSKUPQU96zpZzbNqqk93B3C6tWHbhq+/9J/ftyQsgUNSUbyfzoDYeKEVCNW
- nuGw/n8ZgQUg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 19:08:40 -0700
-IronPort-SDR: dW+7VQ4x7y7AnryNYI928QMWa+IOoOhxCpxCXaekQfalHh+BhiXW4m3BH5Fi7otb06liJKPxrc
- P+ythg9ZNHUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; 
-   d="scan'208";a="402756503"
-Received: from coffy.sc.intel.com ([10.3.79.166])
-  by orsmga004.jf.intel.com with ESMTP; 22 Apr 2020 19:08:39 -0700
-Message-ID: <ac04f1aa46234496fc88354add386da725d883ab.camel@intel.com>
-Subject: Re: [PATCH 1/1] platform/x86: Add Slim Bootloader firmware update
- signaling driver
-From:   Jithu Joseph <jithu.joseph@intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
-        sean.v.kelley@intel.com, kuo-lang.tseng@intel.com,
-        jithu.joseph@intel.com
-Date:   Wed, 22 Apr 2020 19:02:42 -0700
-In-Reply-To: <CAHp75VeV+HOditUphBkFoy6LLh6QKfBoC-eLixquAHLTwaz4RQ@mail.gmail.com>
-References: <20200420194405.8281-1-jithu.joseph@intel.com>
-         <20200420194405.8281-2-jithu.joseph@intel.com>
-         <CAHp75VeV+HOditUphBkFoy6LLh6QKfBoC-eLixquAHLTwaz4RQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S1726432AbgDWCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 22:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgDWCEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 22:04:40 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20BAC03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 19:04:39 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id k1so4942347wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 19:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0cUppuMNZR15jq9h3I+rd1YzY5ZtLEZoi3qlrA8cUlA=;
+        b=WRfO7MWdcCmm4CwWw6KxB1n4ZaWoa8KqTaHcSTjS8efmM6HYXKKfgjsLmIEIPdH3Le
+         ZGkeaILpD9Bt4Prn4Fm25TpzfLbuPs/zuC5kUMKGpklCvpoRWESVHPuQVlaY1es1cesf
+         1Gq56+4//ygghsbDXIDwy6JWQjYba482ROlpuIqAmMbdnujdacZXg7zGJFyKk8Vp0SrS
+         Mh400RrVovWviEpDBvYcTZ81wv1hpH91txC7mmGF7hKfHfhzWNr9GFLT7GG74du50vV4
+         fG/QZ5GX7GEQ51EMfk2seIOHVvIOwGo1NzsgxeDGxg6gkUgZuBQhsinPftUgsJbX8FZ/
+         NA/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0cUppuMNZR15jq9h3I+rd1YzY5ZtLEZoi3qlrA8cUlA=;
+        b=aQ4CYTUwVcbqa0ZWXnYOa0UU7crr19n8Dm5fiM56P31acgsH8A4jizGP3gXkmGbbQ/
+         07UdGLk12iGaS2eLrn8JCFetDRkn9h4tiS/uvpld+TeB/awiHVyOwppdkU7d4boVNVTp
+         tBi7OLI39Dxc8BmfnHZadbqBppswEIKoCrz5mhtXQ3LVTrcklsmUZw1XvltMZMTtO0Bv
+         ITcgymNHm0XIKPhHH7dQuBJ52Vpm1ThWH8oCx6LXeVXE00Fcp6RA8BswEPydK5UW8r2T
+         Zr8paPtxekOmiXkoczjeO8Ys189V/f8Twy0cMcBXNQOOWfMDtTAqumjW28FmGEx/roVg
+         QtMg==
+X-Gm-Message-State: AGi0PuYBY4QjImOvYt1YVEQyPQSchkinGF0lgv5onrY+aSGFWwGfXoU0
+        MAHjp/IWxDhfj7bTCnTHGzlhWg==
+X-Google-Smtp-Source: APiQypLh+nI2OpJgFyQyZ15I1UqtyaJQvwJaMpRiC4ZY96bVS4a0bfSsR7gDmUqqUzPhTynGuN25Mg==
+X-Received: by 2002:a5d:5085:: with SMTP id a5mr2240790wrt.394.1587607478627;
+        Wed, 22 Apr 2020 19:04:38 -0700 (PDT)
+Received: from localhost.localdomain ([176.61.57.127])
+        by smtp.gmail.com with ESMTPSA id j17sm1423292wrb.46.2020.04.22.19.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 19:04:38 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        shawn.guo@linaro.org, p.zabel@pengutronix.de,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v2 0/2] Add Qualcomm MSM8939 GCC binding and driver
+Date:   Thu, 23 Apr 2020 03:05:05 +0100
+Message-Id: <20200423020507.455732-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+V2:
+This update does the following
 
-Appreciate your valuable feedback. I think I understood most of your
-comments but I need clarification regarding the last comment in this
-reply.
+1. Drops code in the probe routine to add xo and sleep_clk. Instead
+   the DTS for the GCC will need to declare both of those clocks for the
+   GCC controller.
 
-On Wed, 2020-04-22 at 16:42 +0300, Andy Shevchenko wrote:
-> On Mon, Apr 20, 2020 at 10:50 PM Jithu Joseph <jithu.joseph@intel.com
-> > wrote:
-> > 
-> > 
-> > This driver only implements a signaling mechanism, the actual
-> > firmware
-> > update process and various details like firmware update image
-> > format,
-> > firmware image location etc are defined by SBL [2] and are not in
-> > the
-> > scope of this driver.
-> 
-> I have noticed that it misses ABI documentation. So, please add. Also
-> some comments below.
+2. Supplants parent_names for parent_data for all clocks.
 
-I will add one via a new Documentation/ABI/testing/sysfs-platform-sbl-
-fwu-wmi file
+3. Squashes down the previous three patches into two.
 
-> 
-> ...
-> 
-> > [1] https://slimbootloader.github.io
-> > [2] https://slimbootloader.github.io/security/firmware-update.html
-> 
-> Can you add a DocLink: tag below for the reference to the official
-> documentation?
+4. Drops the git log of copying files. The git log makes clear the silicon
+   is highly similar, so, you can just as easily read the log and do a
+   diff.
 
-I wasnt aware of this tag. Will add this.
+5. Doesn't update the MSM8916 with parent_data.
+   Happy to do this at a later date but, don't have the time to validate
+   this properly at the moment. This set focuses on the MSM8939 alone.
 
-> 
-> ...
-> 
-> > +SLIM BOOTLOADER (SBL) FIRMWARE UPDATE WMI DRIVER
-> > +M:     Jithu Joseph <jithu.joseph@intel.com>
-> > +R:     Maurice Ma <maurice.ma@intel.com>
-> > +S:     Maintained
-> > +W:     
-> > https://slimbootloader.github.io/security/firmware-update.html
-> > +F:     drivers/platform/x86/sbl_fwu_wmi.c
-> 
-> I hope you run latest and greatest version of checkpatch.pl and it's
-> okay with this section.
+6. Dropped comment and boilerplate license text as indicated.
 
-Yes it was fine, chekpatch.pl was merely asking to update the
-MAINTAINERS file. And the ordering of the section matches with that of
-parse-maintainers.pl
+7. Dropped dependency on COMMON_CLK_QCOM seems to not be needed.
 
-> 
-> ...
-> 
-> > @@ -114,6 +114,16 @@ config XIAOMI_WMI
-> >           To compile this driver as a module, choose M here: the
-> > module will
-> >           be called xiaomi-wmi.
-> > 
-> > +config SBL_FWU_WMI
-> > +       tristate "WMI driver for Slim Bootloader firmware update
-> > signaling"
-> > +       depends on ACPI_WMI
-> > +       help
-> > +         Say Y here if you want to be able to use the WMI
-> > interface to signal
-> > +         Slim Bootloader to trigger update on next reboot.
-> > +
-> > +         To compile this driver as a module, choose M here: the
-> > module will
-> > +         be called sbl-fwu-wmi.
-> > @@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)   += intel-
-> > wmi-thunderbolt.o
-> >  obj-$(CONFIG_MXM_WMI)                  += mxm-wmi.o
-> >  obj-$(CONFIG_PEAQ_WMI)                 += peaq-wmi.o
-> >  obj-$(CONFIG_XIAOMI_WMI)               += xiaomi-wmi.o
-> > +obj-$(CONFIG_SBL_FWU_WMI)              += sbl_fwu_wmi.o
-> 
-> I didn't get an ordering schema in above files.
-> Shouldn't be rather alphasort?
+8. Easily view the changes here:
+   git add bod https://github.com/bryanodonoghue/linux.git
+   git fetch bod
+   git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2   
 
-Looks like there is an ordering within the wmi related files, so I will
-move mine in between PEAQ_WMI and XIAOMI_WMI .
+V1:
+These three patches add support for the MSM8939 Global Clock Controller.
+The MSM8939 is a derivation of the MSM8916 sharing the large majority of
+its clock settings with MSM8916, however, there are enough changes, in some
+cases mutually incompatible changes that necessitate a separate driver.
 
-> 
-> ...
-> 
-> > +static ssize_t firmware_update_request_store(struct device *dev,
-> > +                                            struct
-> > device_attribute *attr,
-> > +                                            const char *buf,
-> > size_t count)
-> > +{
-> > +       bool val;
-> > +       int ret;
-> > +
-> > +       ret = kstrtobool(buf, &val);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       ret = set_fwu_request(dev, val ? 1 : 0);
-> 
-> Hmm... If you are going to extend this, why not to pass integer
-> directly? (And thus take one from user)
+I thought it was both important and useful to show in the git log the
+differences between MSM8916 and MSM8939 so, one patch copies the MSM8916
+driver while another patch applies the entire gamut of MSM8939 changes,
+squashing down from a git log of approximately 31 separate commits.
 
-We have also been thinking about  extensibility …
+For reference that log is here:
+https://github.com/bryanodonoghue/linux/pull/new/msm8939-clk-next-reference-log
 
-So I will modify the code to allow any u32 input by the user  to be
-passed down via wmi_set_block(), though 0 and 1 will be the only
-inputs  documented  in the ABI today.( Or did you still mean  to error
-out if the user input is something other than 0 or 1 ?)
+Generally speaking MSM8939 differes from MSM8916 in two key ways.
 
-Thanks
-Jithu
+- New and higher clock frequencies for existing IP blocks.
+- New PLLs to drive those higher frequencies
+
+Bryan O'Donoghue (2):
+  clk: qcom: Add DT bindings for MSM8939 GCC
+  clk: qcom: gcc-msm8939: Add MSM8939 Generic Clock Controller
+
+ .../devicetree/bindings/clock/qcom,gcc.yaml   |    3 +
+ drivers/clk/qcom/Kconfig                      |    9 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-msm8939.c                | 4145 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-msm8939.h  |  206 +
+ include/dt-bindings/reset/qcom,gcc-msm8939.h  |  110 +
+ 6 files changed, 4474 insertions(+)
+ create mode 100644 drivers/clk/qcom/gcc-msm8939.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8939.h
+ create mode 100644 include/dt-bindings/reset/qcom,gcc-msm8939.h
+
+-- 
+2.25.1
 
