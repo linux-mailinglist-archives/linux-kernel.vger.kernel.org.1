@@ -2,131 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4358A1B588E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACD71BDB0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgDWJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:49:43 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:53745 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726145AbgDWJtn (ORCPT
+        id S1726737AbgD2Lt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:49:59 -0400
+Received: from 281070.cloudwaysapps.com ([142.93.83.242]:34226 "EHLO
+        281070.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726516AbgD2Lt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:49:43 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 35EA7706;
-        Thu, 23 Apr 2020 05:49:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 23 Apr 2020 05:49:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=G2jAMqcEuXOVO6A3EqfT0UwmQC6
-        hpWGRqcPB7zT18FI=; b=XR0NLN0Tc/bjTcDKyiBF9Bi1VseQHjJpKT+6m1IgsVu
-        MQZAgGlbV9FvUCcLjsHp5d35vLvrOnamQUu/3Eb36CdfTZQLc36FJJ4pPVEXtL6t
-        6Zv/vbt2Naz/+iEcj8kkzvMhWHJOfiTWgP2+IcC07xWjegEikYqIbgOpbaj1LIEI
-        JmQgXU5GegRyAMZ548/Da56pZ2lWNV47Th9VxZ0Vkou83BSj6zwGkw3j7Ya3dTRY
-        YOzA1dtVGsMUxbHnpiUnt4hwUQfwY1PsMUpImNnjcsqENhN+l0qp/AQ9/LY/J1VD
-        zRCBTYQDqzm9A9tOYoaft+5c6fp72A6IBbY7XCpDJJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=G2jAMq
-        cEuXOVO6A3EqfT0UwmQC6hpWGRqcPB7zT18FI=; b=3e+wNdrI89BclXcsWi0yhS
-        4TIADRP45sSloOBv3wF5tHrunYVaYBHIMt3JeeITEOiA7KYoOXaI3SJ9WtJYqWWV
-        St9BLQppu755QRVLqFpOOnVURycMLNVaxv4SOMBa2ZUECvdikGgivHLfRxfYEbTD
-        /Emb4r1VR22MqWnWi3ygnXBXZAkDxVAxKQn9f4WkL5OgF2VcaYkr4yc480Tti+yd
-        W723bB/diLFTD0z/xN0lFGZSX4c7yPeobHbQTNC5ho56m9g4zFAXu3XOxCUTTyzz
-        9IoijklLHunQeUj5MAsRi9syt28tyMtEVvusPChYWlmbc7YUyfAsjx8+maDzPuyA
-        ==
-X-ME-Sender: <xms:tWShXt5yZfSr4sDijqtNTkelGzbyauEJucaos-_5CicLmz6mJmibeA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgddvudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:tWShXnNJuF5ko7bAbCjsHgVJjljSW5m_uebp-IJIBzhRsfO8krEUeA>
-    <xmx:tWShXnOhd2XX_xUwqmdKD6eLotpNM9O6dSxfbVptGgx5p78WpPv9PQ>
-    <xmx:tWShXn-vlBfu8TwkRxKqOHllAvK7ufBlG0DQw9gJda16gd8ycoAhIA>
-    <xmx:tWShXsbUEdZoZlKd9rJm9PTD_r1bp2igdvkr7naqHFlyvJ2Gw-Ywrw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 13F053280064;
-        Thu, 23 Apr 2020 05:49:40 -0400 (EDT)
-Date:   Thu, 23 Apr 2020 11:49:39 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] arm64: dts: allwinner: a64: Disable SPDIF by default
-Message-ID: <20200423094939.os74dohwkdoig4eq@gilmour.lan>
-References: <20200422041502.7497-1-samuel@sholland.org>
- <20200422151616.httmhmo2tbd4m4eu@gilmour.lan>
- <b554ea70-16da-1637-d349-db51dddcf95b@sholland.org>
+        Wed, 29 Apr 2020 07:49:58 -0400
+X-Greylist: delayed 104792 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 07:49:58 EDT
+Received: from Shop01 (281070.cloudwaysapps.com [127.0.0.1])
+        by 281070.cloudwaysapps.com (Postfix) with SMTP id E4CBD81638;
+        Thu, 23 Apr 2020 07:57:06 +0000 (UTC)
+Received: from [168.197.236.111] by Shop01 with ESMTP id 66495892 for <cmaynard@shaw.ca>; Thu, 23 Apr 2020 09:50:05 +0100
+Message-ID: <6155$7w$o2006r0-27howwup678-kw@q4pporv.v07>
+From:   "MRS. SAFIYA QADHAFI." <qadahasasi@gmail.com>
+Reply-To: "MRS. SAFIYA QADHAFI." <qadahasasi@gmail.com>
+To:     cmaynard@shaw.ca
+Subject: Hi!
+Date:   Thu, 23 Apr 20 09:50:05 GMT
+X-Mailer: Microsoft Outlook, Build 10.0.2616
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qhzqxzvlhlzjufin"
-Content-Disposition: inline
-In-Reply-To: <b554ea70-16da-1637-d349-db51dddcf95b@sholland.org>
+Content-Type: multipart/alternative;
+        boundary="CD.8C._.0..6120.7"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---qhzqxzvlhlzjufin
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--CD.8C._.0..6120.7
+Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 22, 2020 at 06:50:54PM -0500, Samuel Holland wrote:
-> Maxime,
->=20
-> On 4/22/20 10:16 AM, Maxime Ripard wrote:
-> > On Tue, Apr 21, 2020 at 11:15:02PM -0500, Samuel Holland wrote:
-> >> As of v5.7-rc2, Linux now prints the following message at boot:
-> >>
-> >>   [   33.848525] platform sound_spdif: deferred probe pending
-> >>
-> >> This is because &sound_spdif is waiting on its DAI link component
-> >> &spdif to probe, but &spdif is disabled in the DTS. Disable the
-> >> audio card as well to match.
-> >>
-> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> >=20
-> > The patch looks good, but don't we have some boards with SPDIF enabled =
-that
-> > should be modified accordingly?
->=20
-> I don't see any in-tree. The only A64 DTS that references &spdif at all is
-> sun50i-a64-pine64.dts, which explicitly disables it:
->=20
-> 	/* On Euler connector */
-> 	&spdif {
->   		status =3D "disabled";
-> 	};
->=20
-> I'm leaning toward agreeing with Clement that the sound_spdif node (and a=
-lso
-> spdif_out) should be removed altogether from the A64 DTSI.
+Hello friend,
 
-Yeah, I agree, it's pretty much what we've been doing in other SoCs. Especi=
-ally
-if we don't have any DT in-tree using it, we don't really have any incentiv=
-e to
-make it common.
+I have a business proposal that I want to share with you, it is lucrative =
+and it is going to benefit you and me. And I do need you to advise me on y=
+our position.
+Please contact me via email address: (safiya@scurelmail.com) for more info=
+rmationa.
 
-Maxime
+Yours sincerely,
+Mrs.Safiya Qadhafi.
 
---qhzqxzvlhlzjufin
-Content-Type: application/pgp-signature; name="signature.asc"
+--CD.8C._.0..6120.7--
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqFkswAKCRDj7w1vZxhR
-xcXYAP0YCJVCZ13NxvfRPVD96Em/vCf6tbVNq2xSDRxJvc/HXgEArMdDscxqBjIi
-+IipThGZM45abULaOWDYaEdv6VvqOwQ=
-=5Z/9
------END PGP SIGNATURE-----
-
---qhzqxzvlhlzjufin--
