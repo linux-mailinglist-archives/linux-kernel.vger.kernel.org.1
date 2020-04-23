@@ -2,281 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B64F1B5448
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FFD1B5458
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgDWFed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:34:33 -0400
-Received: from m4a0073g.houston.softwaregrp.com ([15.124.2.131]:52231 "EHLO
-        m4a0073g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726027AbgDWFed (ORCPT
+        id S1726809AbgDWFoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:44:17 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17876 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725854AbgDWFoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:34:33 -0400
-Received: FROM m4a0073g.houston.softwaregrp.com (15.120.17.147) BY m4a0073g.houston.softwaregrp.com WITH ESMTP;
- Thu, 23 Apr 2020 05:32:15 +0000
-Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
- M4W0335.microfocus.com (2002:f78:1193::f78:1193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Thu, 23 Apr 2020 05:33:32 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (15.124.8.11) by
- M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Thu, 23 Apr 2020 05:33:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M9I6cvTzDKnhipYQwOUSjCh2qeRsyTjBSpnDFNEv8vGYiiks+6Z2o80FEZN+jC9gvlXdk3qCq9/GgDJUSrlB7kRVHk5JGRha/uCLosZ3IB34FGbE0FujWK43WjEY9IxqTq/AsDEs17w73yHxylKkLJJs2W64OoJWOsOaOlM+MYN5JTwzz1eMlZ29XrWyQzZdWFk9iE2NdAcZgk4ru62dRpRszc77Du9EY0YzU2h1JBbEpmtcG32LK9EJ81X4eetIwvLxLowcu265DR/zFfGpweT1npK/A54WN8P/Wz1ibp78unExMPJEb2qEfi3q/Yfj7GbNvE2GO1V/Cpa6oTAnfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7tKcdUviP8aVMryiBqRSB4Z9Qp88tu5+LbcqI834jrY=;
- b=Jn2bmjHP5MnNGEfzxHwUQox7CIrUgOhjZ0hlmQaE0RL27cAI717eW9ryb7E3q4Z6TDKW53Ewa2CggFqGVDi9qoBZO503b3Hklldmy96zl7Djw/aa0a8nhA+BOE1/De0AcBlRGy9RVXfjFlcD8PeFGVK+A9s2VNCcJ+ROx6vXdShwlyupTKRq7gCmaXkZ09ojpaap3JGkFgbZGBmKja6hbfEW8ltlpGzYt245OFZYCpwe1ZdPVcnFOvqUQmK3KBlsL1s0QTEF26YobvkXHIYGHaZNb+as+8gPrXOd+GuKCSlE7I9eIQzBUEUT1g5tVtD/UIwXSgnfy0gYRXveKzJ6Ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=GHe@suse.com; 
-Received: from CH2PR18MB3206.namprd18.prod.outlook.com (2603:10b6:610:14::15)
- by CH2PR18MB3430.namprd18.prod.outlook.com (2603:10b6:610:2e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 23 Apr
- 2020 05:33:30 +0000
-Received: from CH2PR18MB3206.namprd18.prod.outlook.com
- ([fe80::f0d5:5de3:82c0:6b8a]) by CH2PR18MB3206.namprd18.prod.outlook.com
- ([fe80::f0d5:5de3:82c0:6b8a%4]) with mapi id 15.20.2921.030; Thu, 23 Apr 2020
- 05:33:30 +0000
-From:   Gang He <ghe@suse.com>
-To:     <mark@fasheh.com>, <jlbec@evilplan.org>,
-        <joseph.qi@linux.alibaba.com>
-CC:     Gang He <ghe@suse.com>, <linux-kernel@vger.kernel.org>,
-        <ocfs2-devel@oss.oracle.com>, <akpm@linux-foundation.org>
-Subject: [PATCH] ocfs2: mount shared volume without ha stack
-Date:   Thu, 23 Apr 2020 13:33:00 +0800
-Message-ID: <20200423053300.22661-1-ghe@suse.com>
-X-Mailer: git-send-email 2.12.3
-Content-Type: text/plain
-X-ClientProxiedBy: MAXPR0101CA0017.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:c::27) To CH2PR18MB3206.namprd18.prod.outlook.com
- (2603:10b6:610:14::15)
+        Thu, 23 Apr 2020 01:44:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1587620578; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=WEXPfoDkTWR/J9oQ9Jcu7q/a/EFKCDDKjQO2CAHp2ijGoscDdlo4HyceiMs/n8zMB8/PyX3CFPQhD0dhwlAMta1YuthFxuys8tCAVPSxLiThRHeZrNgUdQrqb0fjrHP/m6RSUyLwuSo60uQLNKaqMejC5AOOMEInULT2bvzITAo=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1587620578; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=p0Hue82OArHegP34/EQC99f2PxSUyGy0fvP1kcei0ek=; 
+        b=Lqh3ZFfPQNHk+KReY/uCf6LxTjL1w/abhWPo7X+YAx4gZ7d7GdyYgBPPQrbjRE5oopJe0PaHPWFllMrx7utrTHEYfaiBmh+TJLsnABmCJjEa/RgNrR+RndKhHs6JjmC/rp+MpgqE32A0BXqWdhuRz869SpvjWMX9xw24/E19FrM=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1587620578;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=p0Hue82OArHegP34/EQC99f2PxSUyGy0fvP1kcei0ek=;
+        b=O7+gDV4+us94bD1eMWGrcE2y8xlgPk4WYi+XXKNEK4r6a30aHvXJ5TsQzXVS1ez9
+        GGg94lSbvV4EKhj+hPewIDkylwxf2o8dCXaiUZuVUXmXWj/KqIV6nf8vMZy2a3519N5
+        AD3tg2QdF4MfiUOeo4+mz7/YfJMjQD0Y4U9bJo18=
+Received: from [127.0.0.1] (122.235.213.3 [122.235.213.3]) by mx.zoho.com.cn
+        with SMTPS id 1587620575832526.5212172311194; Thu, 23 Apr 2020 13:42:55 +0800 (CST)
+Date:   Thu, 23 Apr 2020 13:42:52 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+CC:     linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jouni Hogander <jouni.hogander@unikie.com>,
+        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] MIPS: Truncate link address into 32bit for 32bit kernel
+User-Agent: K-9 Mail for Android
+Reply-to: jiaxun.yang@flygoat.com
+In-Reply-To: <alpine.LFD.2.21.2004230036480.851719@eddie.linux-mips.org>
+References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com> <20200422143258.1250960-1-jiaxun.yang@flygoat.com> <alpine.LFD.2.21.2004230036480.851719@eddie.linux-mips.org>
+Message-ID: <B307BFAC-9973-4444-B69A-40B054210E84@flygoat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ghe-pc.suse.asia (45.122.156.254) by MAXPR0101CA0017.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2937.13 via Frontend Transport; Thu, 23 Apr 2020 05:33:26 +0000
-X-Mailer: git-send-email 2.12.3
-X-Originating-IP: [45.122.156.254]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 03d2ef94-5bba-4379-b6cd-08d7e747daf9
-X-MS-TrafficTypeDiagnostic: CH2PR18MB3430:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH2PR18MB3430AA180347601D213D0C14CFD30@CH2PR18MB3430.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:568;
-X-Forefront-PRVS: 03827AF76E
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR18MB3206.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(956004)(6512007)(5660300002)(8936002)(81156014)(316002)(26005)(478600001)(186003)(6506007)(36756003)(52116002)(6486002)(2906002)(2616005)(86362001)(16526019)(66476007)(4326008)(6666004)(66556008)(66946007)(1076003)(8676002)(16060500001);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zLQsqIe9STndH7yh+zC5f17xwMMz9gSnmi2uFn4SrpNNyheHo5OGMj8f95W2Rq66Ov6MLJJIOR5WqOB5y99cGWpbFwMRg8fOych4ps/QKj4ffCF427ZHifG1Yy0kT+cj5SSga2g45HeXoMMMnNaXDRuUhf2D2u0Mf5Ur5rZDjEvrupB6wWGor23v1T1CwWFFKzyEQEM0Ch6ycAK2TuAX1mhWE8757m4RBCmF8VX0mu0phNTzcmr1w36msP2QWSVIKJzFFqMCBLe3hdYrRgQz+o7zCc6sovOH2SiE8B17Tt6aVBI7xeuQOVmpMjbVoVfU0u2/9oHxk3HUi8fOE98VbdpzmHwRgwMpjVkjCry1aeMjl6k+cFwOJc0CR0x3tQM5bMz+m48jK34lmMdCw1VieZe5Rqyp63oV52khbFrLSVXrepTiP954B9ufsTIf10Irm2uU517sMxhaRF78rK0YwIfZYUZ61g5OR7oAVVancVAkOkQimexUo0R0noTPe45O
-X-MS-Exchange-AntiSpam-MessageData: nXtKyfBWcTIWXd7tG0GuADVx87Z2EkMZ5S5mVAPWKMzHpw/Em1CzoCKzMoWSNWmkNvWeIurTx++VidqLbN/dbInG49htdiuEJW6LAzGlWZ0VB6uNKXBNargt2jk3SL1FH0Nf9Ho5ceLG24RRWnnrog==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03d2ef94-5bba-4379-b6cd-08d7e747daf9
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 05:33:30.2924
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1s8ojJVPWt5CoMqWMpaRPmp1E7EjuWRsp9aoiILVPM6a0ufLz3rJcmTbIBbPkPaj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR18MB3430
-X-OriginatorOrg: suse.com
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usually we create and use a ocfs2 shared volume on the top of
-ha stack. For pcmk based ha stack, which includes DLM, corosync
-and pacemaker services.
-The customers complained they could not mount existent ocfs2
-volume in the single node without ha stack, e.g. single node
-backup/restore scenario.
-Like this case, the customers just want to access the data
-from the existent ocfs2 volume quickly, but do not want to
-restart or setup ha stack.
-Then, I'd like to add a mount option "nocluster", if the users
-use this option to mount a ocfs2 shared volume, the whole mount
-will not depend on the ha related services. the command will mount
-the existent ocfs2 volume directly (like local mount), for avoiding
-setup the ha stack.
 
-Signed-off-by: Gang He <ghe@suse.com>
----
- fs/ocfs2/ocfs2.h    |  4 +++-
- fs/ocfs2/slot_map.c | 46 ++++++++++++++++++++++++++-------------------
- fs/ocfs2/super.c    | 21 +++++++++++++++++++++
- 3 files changed, 51 insertions(+), 20 deletions(-)
 
-diff --git a/fs/ocfs2/ocfs2.h b/fs/ocfs2/ocfs2.h
-index 9150cfa4df7d..ee5d98516212 100644
---- a/fs/ocfs2/ocfs2.h
-+++ b/fs/ocfs2/ocfs2.h
-@@ -279,6 +279,7 @@ enum ocfs2_mount_options
- 	OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT = 1 << 15,  /* Journal Async Commit */
- 	OCFS2_MOUNT_ERRORS_CONT = 1 << 16, /* Return EIO to the calling process on error */
- 	OCFS2_MOUNT_ERRORS_ROFS = 1 << 17, /* Change filesystem to read-only on error */
-+	OCFS2_MOUNT_NOCLUSTER = 1 << 18, /* No cluster aware filesystem mount */
- };
- 
- #define OCFS2_OSB_SOFT_RO	0x0001
-@@ -673,7 +674,8 @@ static inline int ocfs2_cluster_o2cb_global_heartbeat(struct ocfs2_super *osb)
- 
- static inline int ocfs2_mount_local(struct ocfs2_super *osb)
- {
--	return (osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT);
-+	return ((osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT)
-+		|| (osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER));
- }
- 
- static inline int ocfs2_uses_extended_slot_map(struct ocfs2_super *osb)
-diff --git a/fs/ocfs2/slot_map.c b/fs/ocfs2/slot_map.c
-index 8caeceeaeda7..4da0e4b1e79b 100644
---- a/fs/ocfs2/slot_map.c
-+++ b/fs/ocfs2/slot_map.c
-@@ -254,14 +254,16 @@ static int __ocfs2_find_empty_slot(struct ocfs2_slot_info *si,
- 	int i, ret = -ENOSPC;
- 
- 	if ((preferred >= 0) && (preferred < si->si_num_slots)) {
--		if (!si->si_slots[preferred].sl_valid) {
-+		if (!si->si_slots[preferred].sl_valid ||
-+		    !si->si_slots[preferred].sl_node_num) {
- 			ret = preferred;
- 			goto out;
- 		}
- 	}
- 
- 	for(i = 0; i < si->si_num_slots; i++) {
--		if (!si->si_slots[i].sl_valid) {
-+		if (!si->si_slots[i].sl_valid ||
-+		    !si->si_slots[i].sl_node_num) {
- 			ret = i;
- 			break;
- 		}
-@@ -456,24 +458,30 @@ int ocfs2_find_slot(struct ocfs2_super *osb)
- 	spin_lock(&osb->osb_lock);
- 	ocfs2_update_slot_info(si);
- 
--	/* search for ourselves first and take the slot if it already
--	 * exists. Perhaps we need to mark this in a variable for our
--	 * own journal recovery? Possibly not, though we certainly
--	 * need to warn to the user */
--	slot = __ocfs2_node_num_to_slot(si, osb->node_num);
--	if (slot < 0) {
--		/* if no slot yet, then just take 1st available
--		 * one. */
--		slot = __ocfs2_find_empty_slot(si, osb->preferred_slot);
-+	if (ocfs2_mount_local(osb))
-+		/* use slot 0 directly in local mode */
-+		slot = 0;
-+	else {
-+		/* search for ourselves first and take the slot if it already
-+		 * exists. Perhaps we need to mark this in a variable for our
-+		 * own journal recovery? Possibly not, though we certainly
-+		 * need to warn to the user */
-+		slot = __ocfs2_node_num_to_slot(si, osb->node_num);
- 		if (slot < 0) {
--			spin_unlock(&osb->osb_lock);
--			mlog(ML_ERROR, "no free slots available!\n");
--			status = -EINVAL;
--			goto bail;
--		}
--	} else
--		printk(KERN_INFO "ocfs2: Slot %d on device (%s) was already "
--		       "allocated to this node!\n", slot, osb->dev_str);
-+			/* if no slot yet, then just take 1st available
-+			 * one. */
-+			slot = __ocfs2_find_empty_slot(si, osb->preferred_slot);
-+			if (slot < 0) {
-+				spin_unlock(&osb->osb_lock);
-+				mlog(ML_ERROR, "no free slots available!\n");
-+				status = -EINVAL;
-+				goto bail;
-+			}
-+		} else
-+			printk(KERN_INFO "ocfs2: Slot %d on device (%s) was "
-+			       "already allocated to this node!\n",
-+			       slot, osb->dev_str);
-+	}
- 
- 	ocfs2_set_slot(si, slot, osb->node_num);
- 	osb->slot_num = slot;
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index ac61eeaf3837..71ea9ce71a6b 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -175,6 +175,7 @@ enum {
- 	Opt_dir_resv_level,
- 	Opt_journal_async_commit,
- 	Opt_err_cont,
-+	Opt_nocluster,
- 	Opt_err,
- };
- 
-@@ -208,6 +209,7 @@ static const match_table_t tokens = {
- 	{Opt_dir_resv_level, "dir_resv_level=%u"},
- 	{Opt_journal_async_commit, "journal_async_commit"},
- 	{Opt_err_cont, "errors=continue"},
-+	{Opt_nocluster, "nocluster"},
- 	{Opt_err, NULL}
- };
- 
-@@ -619,6 +621,13 @@ static int ocfs2_remount(struct super_block *sb, int *flags, char *data)
- 		goto out;
- 	}
- 
-+	tmp = OCFS2_MOUNT_NOCLUSTER;
-+	if ((osb->s_mount_opt & tmp) != (parsed_options.mount_opt & tmp)) {
-+		ret = -EINVAL;
-+		mlog(ML_ERROR, "Cannot change nocluster option on remount\n");
-+		goto out;
-+	}
-+
- 	tmp = OCFS2_MOUNT_HB_LOCAL | OCFS2_MOUNT_HB_GLOBAL |
- 		OCFS2_MOUNT_HB_NONE;
- 	if ((osb->s_mount_opt & tmp) != (parsed_options.mount_opt & tmp)) {
-@@ -859,6 +868,7 @@ static int ocfs2_verify_userspace_stack(struct ocfs2_super *osb,
- 	}
- 
- 	if (ocfs2_userspace_stack(osb) &&
-+	    !(osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER) &&
- 	    strncmp(osb->osb_cluster_stack, mopt->cluster_stack,
- 		    OCFS2_STACK_LABEL_LEN)) {
- 		mlog(ML_ERROR,
-@@ -1139,6 +1149,11 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
- 	       osb->s_mount_opt & OCFS2_MOUNT_DATA_WRITEBACK ? "writeback" :
- 	       "ordered");
- 
-+	if ((osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER) &&
-+	   !(osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT))
-+		printk(KERN_NOTICE "ocfs2: The shared device (%s) is mounted "
-+		       "without cluster aware mode.\n", osb->dev_str);
-+
- 	atomic_set(&osb->vol_state, VOLUME_MOUNTED);
- 	wake_up(&osb->osb_mount_event);
- 
-@@ -1445,6 +1460,9 @@ static int ocfs2_parse_options(struct super_block *sb,
- 		case Opt_journal_async_commit:
- 			mopt->mount_opt |= OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT;
- 			break;
-+		case Opt_nocluster:
-+			mopt->mount_opt |= OCFS2_MOUNT_NOCLUSTER;
-+			break;
- 		default:
- 			mlog(ML_ERROR,
- 			     "Unrecognized mount option \"%s\" "
-@@ -1556,6 +1574,9 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
- 	if (opts & OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT)
- 		seq_printf(s, ",journal_async_commit");
- 
-+	if (opts & OCFS2_MOUNT_NOCLUSTER)
-+		seq_printf(s, ",nocluster");
-+
- 	return 0;
- }
- 
--- 
-2.21.0
+=E4=BA=8E 2020=E5=B9=B44=E6=9C=8823=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=888=
+:10:12, "Maciej W=2E Rozycki" <macro@linux-mips=2Eorg> =E5=86=99=E5=88=B0:
+>On Wed, 22 Apr 2020, Jiaxun Yang wrote:
+>
+>> Reviewed-by: Maciej W=2E Rozycki <macro@linux-mips=2Eorg>
+>
+> Hmm, that was for an earlier version of the patch, and reviews obviously=
+=20
+>do not automatically carry over to subsequent versions, as it cannot be=
+=20
+>claimed that they are as good in the reviewer's eyes as the actual versio=
+n=20
+>reviewed was=2E
+>
+>> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+>> index e1c44aed8156=2E=2E68c0f22fefc0 100644
+>> --- a/arch/mips/Makefile
+>> +++ b/arch/mips/Makefile
+>> @@ -288,12 +288,23 @@ ifdef CONFIG_64BIT
+>>    endif
+>>  endif
+>> =20
+>> +# When linking a 32-bit executable the LLVM linker cannot cope with a
+>> +# 32-bit load address that has been sign-extended to 64 bits=2E  Simpl=
+y
+>> +# remove the upper 32 bits then, as it is safe to do so with other
+>> +# linkers=2E
+>> +ifdef CONFIG_64BIT
+>> +	load-ld			=3D $(load-y)
+>> +else
+>> +	load-ld			=3D $(subst 0xffffffff,0x,$(load-y))
+>> +endif
+>> +
+>>  KBUILD_AFLAGS	+=3D $(cflags-y)
+>>  KBUILD_CFLAGS	+=3D $(cflags-y)
+>> -KBUILD_CPPFLAGS +=3D -DVMLINUX_LOAD_ADDRESS=3D$(load-y)
+>> +KBUILD_CPPFLAGS +=3D -DVMLINUX_LOAD_ADDRESS=3D$(load-y) -DVMLINUX_LINK=
+_ADDRESS=3D$(load-ld)
+>>  KBUILD_CPPFLAGS +=3D -DDATAOFFSET=3D$(if $(dataoffset-y),$(dataoffset-=
+y),0)
+>> =20
+>>  bootvars-y	=3D VMLINUX_LOAD_ADDRESS=3D$(load-y) \
+>> +		  VMLINUX_LINK_ADDRESS=3D$(load-ld) \
+>>  		  VMLINUX_ENTRY_ADDRESS=3D$(entry-y) \
+>>  		  PLATFORM=3D"$(platform-y)" \
+>>  		  ITS_INPUTS=3D"$(its-y)"
+>
+> Hmm, to be honest I find the nomenclature confusing: VMLINUX_LOAD_ADDRES=
+S=20
+>and VMLINUX_LINK_ADDRESS sound like synonyms to me and also look very=20
+>similar, so I expect people will be confused and scratch their heads in=
+=20
+>the future=2E  Due to the obscurity of the problem I think there is littl=
+e=20
+>room for manoeuvre here really, but how about using LINKER_LOAD_ADDRESS=
+=20
+>for the new variable?
+>
+> Alternatively, have you made any attempt to verify if actually replacing=
+=20
+>the setting for VMLINUX_LOAD_ADDRESS would be safe?  Glancing over its us=
+e=20
+>there do not appear to be many places=2E
 
+Limited experiments showed it should be fine=2E=2E=2E
+
+But MIPS kernel has some design I'm not really familiar with like SYM32 fo=
+r
+64-bit kernel and special address space design for Trap-and-emul KVM=2E
+
+I'm not 100 sure it's safe so I didn't do so=2E
+
+>
+>  Maciej
+
+--=20
+Jiaxun Yang
