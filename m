@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AB91B6456
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1451B645B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgDWTQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgDWTQJ (ORCPT
+        id S1728290AbgDWTRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:17:50 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:34926 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgDWTRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:16:09 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC8DC09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:16:08 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n6so7384258ljg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lP37EGskFEIGvXFAbituPzZQR0d5rXvoC7Ob8n/gCPg=;
-        b=bl1c5uhKJTAqhkrGC03RJLBC/puXM77cnT7RkPVFVNMvCKh7YF4yptyq2ImTo5CCBJ
-         gOuIuKzVlkxhuW0pJAedIW6sockxPs89H+qJtDdGxDHA8qH8d0Ov4yo7DJEqKZXjf8Nl
-         TE5VsGYmTYz+THWXkOEVI2/g/IBpZiGso5RUk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lP37EGskFEIGvXFAbituPzZQR0d5rXvoC7Ob8n/gCPg=;
-        b=pUhkEAvh16QGsc4oIw2xzkiluE587QLu7WA7eRk8UpmTSLM+BoMeZ61psLhW0M/9ol
-         t3NlgwXhzpz/JhUWhIXmujUlS2RkG0aMxlkcLaN660th1M2YXX3SIxF+ySrP0pCJsoJ6
-         j4JyCzI4oYGV1wS6emEPMfZBt6V7qH7eiGaFaimU4jHJ4aOKxfzQpw/9pLrnfGq/2R5F
-         kOjfeFNcvijrOAXu42RFo1781d/6xAbO/JrZYCijgrp2+pqRwtbrMAN0uOTRGQe5WDlI
-         O9rvMoRcVHLgrao938zY5J3PMKjP6tABWaiqOq8qbIrggGJRljKO6wHuqj+fd1sc9VnD
-         surw==
-X-Gm-Message-State: AGi0PubnGifwDmPh3zpAeGbWoxywvAg2PSCdVRshrV3gL1tOa4ScFJzt
-        7TnbyyvnE2DOMAzeyoem50od35x3YJg=
-X-Google-Smtp-Source: APiQypKavBjvN+24WWl7Yzq891KC2b3JQ6yD8QiSL6hrT7gAEEZnKkxk1CyCrFC5C2uKqLaeUcJL+A==
-X-Received: by 2002:a2e:888e:: with SMTP id k14mr3420541lji.4.1587669366186;
-        Thu, 23 Apr 2020 12:16:06 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id u6sm2524474ljd.68.2020.04.23.12.16.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 12:16:05 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id b2so7412178ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:16:05 -0700 (PDT)
-X-Received: by 2002:a2e:7308:: with SMTP id o8mr3304431ljc.16.1587669364828;
- Thu, 23 Apr 2020 12:16:04 -0700 (PDT)
+        Thu, 23 Apr 2020 15:17:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1587669469; x=1619205469;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Jt1/ckSRkhCCZj848GJDeClGoNfbc1ra8uCc3PfjFkY=;
+  b=dqXRnrqR2/+l1Uf4tKHgNPmzZhRD46IjwsahmaXjm5nPou/4w18+0jhU
+   RmoNaHkCcYe7E9c1xlVn+dbiUY5jlOVJMKyocxoNbSMWt6Mq+proWM4e9
+   E4c4weVKTfnc00tKFjxlJb4J1okMMWTo4QCjKYJFt4eL2izu08VoK6BTp
+   qbxOr33F0O1s6foZSYjDM+kTj/o/lcEMD9KHpe4xp29SUnGNrbVMonk6P
+   g56XK9tFa6MLuKgeJW7UDSuPQNSFmud517yvkwSWX/V9IN9Kqvk7f3XJX
+   tMrMOSWmD63A4XYN2V9Rjf4w+gcS4bfVtCOsh6lMkHZWYGz9G0ZMNUkoF
+   Q==;
+IronPort-SDR: rsI0zVj6PkOkATLFwBc196W/Mj98ccoaPbRdLMfh0LBkUo/oVVYeEJWYNggn0G4q9g3ysnLcu4
+ mXrRpNZ1vv2YCjBpdLPNkovPAwH6uN73cdaTxhfvVncruWdnfJZo0WbIme7dL3NolM4GinBYcv
+ bJWPHUMh8a89BJI7j2L9yUwy2N0yZ/ikklAp2yU8ENKtL6t6c+K+Xo4ug9TQvDvgNUb/Sfat6O
+ bB1RJCdYycrquqlljExgJvurBlGsJHoUotUPfaW7cZcKjUE+hwkeJbwE12MBwbrrFcdKkka8UL
+ 6NM=
+X-IronPort-AV: E=Sophos;i="5.73,307,1583218800"; 
+   d="scan'208";a="74384503"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Apr 2020 12:17:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 Apr 2020 12:17:48 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Thu, 23 Apr 2020 12:17:47 -0700
+Date:   Thu, 23 Apr 2020 21:17:47 +0200
+From:   "Allan W. Nielsen" <allan.nielsen@microchip.com>
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>
+CC:     Po Liu <Po.Liu@nxp.com>, <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <claudiu.manoil@nxp.com>, <vladimir.oltean@nxp.com>,
+        <alexandru.marginean@nxp.com>, <michael.chan@broadcom.com>,
+        <vishal@chelsio.com>, <saeedm@mellanox.com>, <leon@kernel.org>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <kuba@kernel.org>, <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>,
+        <simon.horman@netronome.com>, <pablo@netfilter.org>,
+        <moshe@mellanox.com>, <m-karicheri2@ti.com>,
+        <andre.guedes@linux.intel.com>, <stephen@networkplumber.org>
+Subject: Re: [v3,net-next  1/4] net: qos: introduce a gate control flow action
+Message-ID: <20200423191747.vzfmh3x3qerqbx7z@ws.localdomain>
+References: <20200418011211.31725-5-Po.Liu@nxp.com>
+ <20200422024852.23224-1-Po.Liu@nxp.com>
+ <20200422024852.23224-2-Po.Liu@nxp.com>
+ <878sim2jcs.fsf@intel.com>
 MIME-Version: 1.0
-References: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
-In-Reply-To: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Apr 2020 12:15:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg+TdPXZ4bDgEwg9x+0m0cmNhwAB3XDQNjwwMjUTG3GJA@mail.gmail.com>
-Message-ID: <CAHk-=wg+TdPXZ4bDgEwg9x+0m0cmNhwAB3XDQNjwwMjUTG3GJA@mail.gmail.com>
-Subject: Re: remaining flexible-array conversions
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <878sim2jcs.fsf@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 11:23 AM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
+On 23.04.2020 10:38, Vinicius Costa Gomes wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >
-> Just wanted to ask you if you would agree on pulling the remaining
-> flexible-array conversions all at once, after they bake for a couple
-> of weeks in linux-next[1]
+>Po Liu <Po.Liu@nxp.com> writes:
+>>> tc filter add dev eth0 parent ffff: protocol ip \
+>>          flower src_ip 192.168.0.20 \
+>>          action gate index 2 clockid CLOCK_TAI \
+>>          sched-entry open 200000000 -1 8000000 \
+>>          sched-entry close 100000000 -1 -1
 >
-> This is not a disruptive change and there are no code generation
-> differences.
+>From the insight that Vladimir gave, it really makes it easier for me to
+>understand if you added these filters and actions in two steps. The
+>first, you would add the "time based" actions and the second you would
+>plug the filters into the actions. And I think this would match real
+>world usage better.
+I agree.
 
-The "no code generation differnces" is a good thing, but how was that
-tested? I assume just one configuration or architecture?
-
-Also, it bothers me a bit that some of the diff is unrelated
-whitespace cleanup. I'd actually be happier with a pure scripted patch
-(maybe coccinelle, maybe something else), than something that looks
-like it's at least partly manual. In particular, if I can re-create
-the diff with a script, I'd not have to worry about verifying it other
-ways..
-
-               Linus
+/Allan
