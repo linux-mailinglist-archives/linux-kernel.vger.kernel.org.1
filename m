@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE0B1B5583
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3ED1B5586
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgDWHVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:21:15 -0400
-Received: from sonic305-19.consmr.mail.sg3.yahoo.com ([106.10.241.82]:40360
-        "EHLO sonic305-19.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725562AbgDWHVP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:21:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587626471; bh=YdDyVS9QBRPCiN2YYZ/cryZSa6YEXSJJY6ujWZ06LZ8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KbyIYTCCL6VRgIshDBRGHW3jgVcXFWaIZGmXQLV7QJ3fBl2vQLQ/THI3r+T8hkrcB6XIioWgP/0KPtee+IW/exsCkigGVAxITO7B5u2yva8f9Sl3M3Q1mKiQyZAuHWZ2xSdw0wsPf+ZcJC1dsjMmtabyAfI6uQ0JKTcxWwUFojfEKeB+lFjdn1dx4dZ5/Bpi1GUrYTLmduWv+GWd+pDJ6tLfbTVVEmCNKMcUXoi7mJguIHABTfiQGp4sdXzKl/C/5H5lzRiHRhbYefrcKfythOOS29euAb95KntcDRvMeeLE6Lhf73fKGMnwEkaI7weKeCZohkpoCO1z/8VpvXes6g==
-X-YMail-OSG: 1MY5A7wVM1mFS5MPmeRCxxkoA_60fnU6Ch1liJ5J9XRci2RoPbz2_iUU.J36dt.
- qn3Qvk0CKsAAR2Y8cz7fuIk4CLG_JAlUbnzXP238wW8gjrSsNPzPUeTZwlaLjdXOpllt4sOBFmIx
- UHkQWJj1z9yAl9wUmFUQoFw2JnyTnkylOiU85QQi7zQuVsUS6WzmdKm8lEC4Gl0n479ssDHEq53.
- PDqJYMuCGU3k0_rbGNwHUSZq8yxQ.AtAxCH8qGMrTiyqJ1qaZs15C_9VOCfNa2RMdXbDuNHLSjx.
- Hi6_3Nn408Jzk41L44itbtZAT3QRkoLH6SMs4tLKnc_iuqU7ivhLZzoS10YeVbVi0D2q4ISH1f1y
- 6graRd3fRhS7Tn1kYl_aTIKimoeTu3Azi2vkAvGJaaJ.QvqCLU9HUfeaV_Lydu397nJfnDHgFBpt
- p6N4y.waCeE6pwtRc0B_sd6Pvw8dhFKjO2XArqHvf6YchIEwRKrYoxs8lTxf2NKGjkRJrb28y8W7
- 3BfO8Lv6T0eOaS.oGq8si0Xgmi3BHMD3zvJPL5tqydoHmVqj4pzVbZjet8lAGPNCNZT.yGhrRxBH
- uRzUmlPw5al.AFz.rEnYC6C_7CVZt_Bg.EqEk9g8_qL4C2TRvxmcPpvsriLRlIz_5JgypMzj7ZV2
- Wbo3TopmfHTc3dw0Wsu0H1B5QiFrTRu3qHQIe4LitYT.NP2b.LQk9lmWnQEV.KGg.rAlW69nkAea
- 0wpyFbXMN2Rw_jap3vBCTh1zQDnymctbwB_dA59ZMiInt9duMyfyEGQNp.lnD6o5jCHuQQyLyu8q
- qqNjOHEZZc5zWHmabFFRqs_ee8NTsigWoCiCNGQU8omBuc_uash0rPJ.cWLKRYzWh6DAVkbq3WNq
- .qd3_ZuaPdmuif5KtQMcPgKZJ8V63j69ZJQfDatdepKUY93jbW8cME7Gj5c0VnR.orxImXYSb_Va
- YWS2a_yeQk7YRK_nFYK6nTV2Y8H3LTUEjbplMfZRpNVlp76yq0T55DN5EzVmugF4jz8JYmk4nHl5
- n7QtmM2W42kFn.P2r4bmW0yJO0380sG9motQ3qlcQQmB407cAjqWAyll50bZVq_mQw0qonduNAYa
- 0nRY.clKPVZcL1x.3xizSY7RPWyGO3ZM.ThGK1Gh5P4jmQXM95lJmaN7hTVb7MZQC_01sCdGkABj
- RCxKl7XJjTAf6xOx7J95HJ8Yw4yEMo9gYoAtMY6tYvrrrpUlxIWYmypQCUsXeCvU0y5iRvmPbB94
- J6T1YDuQ0Cp0w_74buzOYXvEu8tedsiLgLQLxeiwD_dzqx9fQd.f2rBvHveIJazWwtobLhXVSzoT
- 2HFP7C7nTXBTmDuHYK.5Gs5qT
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.sg3.yahoo.com with HTTP; Thu, 23 Apr 2020 07:21:11 +0000
-Date:   Thu, 23 Apr 2020 07:21:10 +0000 (UTC)
-From:   Mr Moussa Dauda <mrmoussadauda@gmail.com>
-Reply-To: mrmoussadaudaa@gmail.com
-Message-ID: <810952952.177480.1587626470064@mail.yahoo.com>
-Subject: I await your urgent response immediately.
+        id S1726857AbgDWHVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:21:20 -0400
+Received: from mail-eopbgr30089.outbound.protection.outlook.com ([40.107.3.89]:52866
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725562AbgDWHVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:21:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dd5l2owf/7kbmkabgrmsRtINdx7PlkG/hFOPhapM53kZl3I/2M1sHcHh0gz1H2XuGxcM05HT6bbGn3HsqVYAJEojMLgSkqriEpAybQ1xkE7h0vf9qr88NBkkq3fTlh7aGuWGnB4//3kNPxIe1zx3/O8Yp0rJz+90iNOFFJyThMDfdvipcs1mvrEG02E20Yva4KQ8+7H9XzZV32fp8d3StWlDgpwG1K9k9pkcsFsGSFuwgS00P7oRYovnSNptazPNomClREW1IZ+qdsau+GNHk1SM+VLzqRaUitjV/0wKVt8bc/R1BuE+uaAO5gb3lXPDbbJHqTRdFxXiI8Hfwjzc6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Aj8TSJ8pPbH6BE4l5TtstG8qBhpd9a33wg13yMDtQA=;
+ b=GhJqpBRisvYyFwBdR/z/2EIJhOKrrJbrHvOYnKTiFUpldtKgISQBtDlpFqIHZYCk9XCkxubKYwc2uyP4clhJ24ypA5OV0jqQEA5Nh23ovDflD7am0MvV9kKRJVfn/Ch0rpqSpY67sCc4lrnBav47VIAIgkgTcJZs94eRYR8jURq44OL0+LtymX0gQqKdLKruMxp7uK6gAZ3Sbl9NCid+ERXVsuUNfTAApsFQ0syKCSUord6B1T4lM6BuL36I52GzXaOD6cE/osN9cweZrf40BSr7CUq1mO9Z+py8JUvIawKNuc2nSEew1cV/q/j7Yi9WP5PcyfQ0/CT89SGpcxeIkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Aj8TSJ8pPbH6BE4l5TtstG8qBhpd9a33wg13yMDtQA=;
+ b=GLtjM2yB6usysXCYw1oeFrJfqAX0dixKDLtCxbee3NDi2dcKSNFYdl5ZoWRyOpHTVLneJKiRl0t67j+c/aK7e+12Yd2nPm2Q3SYKjmH7ELinm10qY59QEq1JteQwbps8rigQa6vzsYvyfeQppDfHrIdPqRnRVovjzyGT6h/mOiQ=
+Received: from AM0PR05MB5250.eurprd05.prod.outlook.com (2603:10a6:208:f0::15)
+ by AM0PR05MB5169.eurprd05.prod.outlook.com (2603:10a6:208:eb::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Thu, 23 Apr
+ 2020 07:21:14 +0000
+Received: from AM0PR05MB5250.eurprd05.prod.outlook.com
+ ([fe80::a8ee:2db5:9156:59ee]) by AM0PR05MB5250.eurprd05.prod.outlook.com
+ ([fe80::a8ee:2db5:9156:59ee%6]) with mapi id 15.20.2921.033; Thu, 23 Apr 2020
+ 07:21:14 +0000
+From:   Raed Salem <raeds@mellanox.com>
+To:     Colin Ian King <colin.king@canonical.com>
+CC:     Boris Pismenny <borisp@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: net/mlx5: IPsec, Refactor SA handle creation and destruction
+Thread-Topic: net/mlx5: IPsec, Refactor SA handle creation and destruction
+Thread-Index: AQHWF+UmkNGV/mersUq2oN08s1UegqiGT4fA
+Date:   Thu, 23 Apr 2020 07:21:14 +0000
+Message-ID: <AM0PR05MB525070A499F8A4E0E94D4EF3C4D30@AM0PR05MB5250.eurprd05.prod.outlook.com>
+References: <ffb0bca8-003f-bb7a-51ac-171b1f4e4a75@canonical.com>
+In-Reply-To: <ffb0bca8-003f-bb7a-51ac-171b1f4e4a75@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=raeds@mellanox.com; 
+x-originating-ip: [93.172.75.92]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 992031a9-59ae-4c68-2e66-08d7e756e876
+x-ms-traffictypediagnostic: AM0PR05MB5169:|AM0PR05MB5169:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB516913E4762071BF6DB9693DC4D30@AM0PR05MB5169.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-forefront-prvs: 03827AF76E
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5250.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(26005)(76116006)(54906003)(2906002)(64756008)(316002)(6506007)(53546011)(71200400001)(478600001)(33656002)(6916009)(66946007)(9686003)(4326008)(81156014)(66446008)(8676002)(5660300002)(186003)(66556008)(86362001)(66476007)(55016002)(7696005)(52536014)(8936002);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9f2EHDt6Sq/SBpKenEMu6RSZ1yoxbteMvYlD6a4SE4iy5le6tW2R9AI7SxTDIL+ddS+sCvoPEmbSnuCkYG1vA53sHkSM89SfXCrxLNcn2jTIaTU1zIEp8VUewXRS8sZ3rsF01Be7K/y1Fy6Inkmrmgp6twQm2hkSXzxedgQ3b+9ZcF5CaUOrDrodmm3Tkl2+vwCgEVhqoT1RIKNB6Fi6h54HiVgBg+GNTq6jt1CDu1RvIxJ8fLknATHYGKymMFyejpSGKfI9hUYg5GcGja9O+so+C0g1Q0BVhCWVkFu1ZTeD7uYbHSoaNL/GzkRHhZYXSH4tXyBr6NFu6CjTQwuW1UZHbTLI2U+W27ssGHQDPhvbL04EP26N5XFkvVYYCMSs8/APsYTv+Rtztpx0dxCCfed9S2ND+M27YoyK5nQYTfGT8DNW3ThyBYzCuHdJ44nb
+x-ms-exchange-antispam-messagedata: ia2MtG5yaLIL2n8elB2OYVpG+0vnTxjuII/kPRPuaOpVOw8jHeHHijxXtCmMyl2tFnJF7ZOsoXgHyyNVHnNqzY3PNUFYLQyXpFgasbOgbaHEX1LRigcG+gJZGe461M4lVV4lZT5rlOSMUDNexpEHFQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <810952952.177480.1587626470064.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
-To:     unlisted-recipients:; (no To-header on input)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 992031a9-59ae-4c68-2e66-08d7e756e876
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2020 07:21:14.8428
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cwHiffVhwjwf8vk5K0Gsmu+JKAqjGmRzOnm4DxpxluQB9jThZSAfRVuQY43qEkFnBV6Sxz+E+KMMhl0jMAgKMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5169
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Dear Good Friend,
-
-Good Day,
-
-I am Mr. Moussa Dauda, Director In charge of Auditing and accounting department of Bank Of Africa, BOA, I hope that you will not betray or expose this trust and confident that i am about to repose on you for the mutual benefit of our both families.
-
-I need your urgent assistance in transferring the sum of TEN MILLION FIVE HUNDRED THOUSAND UNITED STATES DOLLARS, U$10,500.000.00, immediately to your account anywhere you chose.
-
-This is a very highly secret, i will like you to please keep this proposal as a top secret or delete it if you are not interested, upon receipt of your reply, i will send to you more details about this business deal.
-
-I will also direct you on how this deal will be done without any problem; you must understand that this is 100% free from risk.
-
-Therefore my questions are:
-
-1. Can you handle this project?
-2. Can I give you this trust?
-If yes, get back to me immediately.
-
-Try and get back to me with this my private email address ( mrmoussadaudaa@gmail.com )
-
-I will be waiting to hear from you immediately.
-
-Regards
-Mr. Moussa Dauda.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDb2xpbiBJYW4gS2luZyBbbWFp
+bHRvOmNvbGluLmtpbmdAY2Fub25pY2FsLmNvbV0NCj4gU2VudDogVHVlc2RheSwgQXByaWwgMjEs
+IDIwMjAgNTowMCBQTQ0KPiBUbzogUmFlZCBTYWxlbSA8cmFlZHNAbWVsbGFub3guY29tPg0KPiBD
+YzogQm9yaXMgUGlzbWVubnkgPGJvcmlzcEBtZWxsYW5veC5jb20+OyBTYWVlZCBNYWhhbWVlZA0K
+PiA8c2FlZWRtQG1lbGxhbm94LmNvbT47IExlb24gUm9tYW5vdnNreSA8bGVvbkBrZXJuZWwub3Jn
+PjsgVGFyaXENCj4gVG91a2FuIDx0YXJpcXRAbWVsbGFub3guY29tPjsgbmV0ZGV2QHZnZXIua2Vy
+bmVsLm9yZzsgbGludXgtDQo+IHJkbWFAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IHJlOiBuZXQvbWx4NTogSVBzZWMsIFJlZmFjdG9yIFNB
+IGhhbmRsZSBjcmVhdGlvbiBhbmQgZGVzdHJ1Y3Rpb24NCj4gDQo+IEhpLA0KPiANCj4gU3RhdGlj
+IGFuYWx5c2lzIHdpdGggQ292ZXJpdHkgaGFzIGRldGVjdGVkIGEgcG90ZW50aWFsIGlzc3VlIHdp
+dGggdGhlIGZvbGxvd2luZw0KPiBjb21taXQ6DQo+IA0KPiBjb21taXQgN2RmZWU0YjFkNzllMTgw
+MDgxOGFiY2ZiNDc3NDdiMTYyYzlhMmQzMQ0KPiBBdXRob3I6IFJhZWQgU2FsZW0gPHJhZWRzQG1l
+bGxhbm94LmNvbT4NCj4gRGF0ZTogICBXZWQgT2N0IDIzIDE3OjA0OjEzIDIwMTkgKzAzMDANCj4g
+DQo+ICAgICBuZXQvbWx4NTogSVBzZWMsIFJlZmFjdG9yIFNBIGhhbmRsZSBjcmVhdGlvbiBhbmQg
+ZGVzdHJ1Y3Rpb24NCj4gDQo+IFRoZSBpc3N1ZSBpcyBpbiBtbHg1X2ZwZ2FfaXNfaXBzZWNfZGV2
+aWNlKCkgaW4NCj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2ZwZ2Ev
+aXBzZWMuYyBhcyBmb2xsb3dzOg0KPiANCj4gDQo+IDcxMCAgQml0d2lzZS1hbmQgd2l0aCB6ZXJv
+DQo+ICAgICAgYml0X2FuZF93aXRoX3plcm86IGFjY2VsX3hmcm0tPmF0dHJzLmFjdGlvbiAmDQo+
+IE1MWDVfQUNDRUxfRVNQX0FDVElPTl9ERUNSWVBUIGlzIGFsd2F5cyAwLiAgVGhpcyBvY2N1cnMg
+YXMgdGhlIGxvZ2ljYWwNCj4gb3BlcmFuZCBvZiBpZi4NCj4gDQo+IDcxMSAgICAgICAgaWYgKGFj
+Y2VsX3hmcm0tPmF0dHJzLmFjdGlvbiAmIE1MWDVfQUNDRUxfRVNQX0FDVElPTl9ERUNSWVBUKSB7
+DQo+IExvZ2ljYWxseSBkZWFkIGNvZGUgKERFQURDT0RFKQ0KPiANCj4gNzEyICAgICAgICAgICAg
+ICAgIGVyciA9IGlkYV9zaW1wbGVfZ2V0KCZmaXBzZWMtPmhhbGxvYywgMSwgMCwgR0ZQX0tFUk5F
+TCk7DQo+IDcxMyAgICAgICAgICAgICAgICBpZiAoZXJyIDwgMCkgew0KPiA3MTQgICAgICAgICAg
+ICAgICAgICAgICAgICBjb250ZXh0ID0gRVJSX1BUUihlcnIpOw0KPiA3MTUgICAgICAgICAgICAg
+ICAgICAgICAgICBnb3RvIGV4aXN0czsNCj4gNzE2ICAgICAgICAgICAgICAgIH0NCj4gNzE3DQo+
+IDcxOCAgICAgICAgICAgICAgICBzYV9jdHgtPnNhX2hhbmRsZSA9IGVycjsNCj4gNzE5ICAgICAg
+ICAgICAgICAgIGlmIChzYV9oYW5kbGUpDQo+IDcyMCAgICAgICAgICAgICAgICAgICAgICAgICpz
+YV9oYW5kbGUgPSBzYV9jdHgtPnNhX2hhbmRsZTsNCj4gNzIxICAgICAgICB9DQo+IA0KPiBpbiBp
+bmNsdWRlL2xpbnV4L21seDUvYWNjZWwuaCBNTFg1X0FDQ0VMX0VTUF9BQ1RJT05fREVDUllQVCBp
+cyBkZWZpbmVkDQo+IGFzIHplcm86DQo+IA0KPiA1MCBlbnVtIG1seDVfYWNjZWxfZXNwX2FjdGlv
+biB7DQo+IDUxICAgICAgICBNTFg1X0FDQ0VMX0VTUF9BQ1RJT05fREVDUllQVCwNCj4gNTIgICAg
+ICAgIE1MWDVfQUNDRUxfRVNQX0FDVElPTl9FTkNSWVBULA0KPiA1MyB9Ow0KPiANCj4gDQo+IEkg
+YmVsaWV2ZSB0aGVyZSBhcmUgc29tZSBvdGhlciBpbnN0YW5jZXMgb2YgdGhpcyBiaXQtd2lzZSBh
+bmQtaW5nIHdpdGggemVybywNCj4gZS5nLiBpbiBtbHg1X2ZwZ2FfaXBzZWNfcmVsZWFzZV9zYV9j
+dHgoKSB3ZSBoYXZlOg0KPiANCj4gODU1ICAgICBpZiAoc2FfY3R4LT5mcGdhX3hmcm0tPmFjY2Vs
+X3hmcm0uYXR0cnMuYWN0aW9uICYNCj4gODU2ICAgICAgICAgTUxYNV9BQ0NFTF9FU1BfQUNUSU9O
+X0RFQ1JZUFQpDQo+IA0KPiBDb2xpbg0KDQpUaGFua3MgZm9yIHRoZSBjYXRjaCAuLi4gd2lsbCBQ
+b3N0IGEgZml4DQo=
