@@ -2,150 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669751B5B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5AA1B5B4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgDWMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:22:07 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:49785 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726390AbgDWMWG (ORCPT
+        id S1726740AbgDWMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726077AbgDWMW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:22:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587644525; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=xmKbPe6qYAz7syjI+7B563Vnwnt8egJotMv+Ym61YWs=;
- b=jSWrCIJO8EWzZFopAPxh0k4Px5V8xA+FFH4R9GJABGxuI3tnW4blsKbG45VXuBSeyAsToSup
- a2KuE76ZqdBYhaUzvwyL4y7fvT16zGNAYiIBjqV4ueYZcM/I4duWbgXsVKtb/gUCw+tu1emj
- m4Ra07JwfZ1xKQZjk/KObbPAv80=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea18856.7f73800a3618-smtp-out-n01;
- Thu, 23 Apr 2020 12:21:42 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A1194C43636; Thu, 23 Apr 2020 12:21:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04DC7C433CB;
-        Thu, 23 Apr 2020 12:21:40 +0000 (UTC)
+        Thu, 23 Apr 2020 08:22:27 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC92C08E934
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:22:27 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id 36so1351878uaf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zQp/+NnZT7xuP7zQ8iR6+6K7f5pp2S+U2r/fnGuT0Ss=;
+        b=HGdvKG3DWQOKq1jelJ/RuzPy/tbrJMWphiFTtCkymuxBRKdjlGhNtZEi0Kt0bmdV2a
+         xv5A+t2HqrfGrEBgWa6pm40bDm/Mt2MnMzs/reNMk9qtbAPAsJ2vOjmhRnMrcD4DPupT
+         py150V+OjRpFRb7Js3Y1+qiRop7emtt+QvDKjXFTqBDG2+hj/NJUXvh+e6L3T8VkCbYs
+         6VCt0cXj1xKujb80FDNI8QwpbPoUe08QlFEViKzgkYVFBnkryx7zXQmnleUySwGv1fUj
+         4oAxFklpVn5O/8ZEvAmWA1QeI5t6xWV0GXBCtpZT0NjbUNJQ8CiOq5QYefsmruUCADJ8
+         EodQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zQp/+NnZT7xuP7zQ8iR6+6K7f5pp2S+U2r/fnGuT0Ss=;
+        b=bUaaumfyncOI5HNw5oqrBV3Kmt1kC5aX+Vjj/9YM6z88mlC0fCdWnrG3mk72BEYtTs
+         Nrctd4Hzl0O7om2Sf4NsDDzCN4q0fKA6/LXBGXjujRe7dFuoieMCanhWJi8pyjR6Kqey
+         EqFmFc7JzhpSA7WVepdVBh8cdro9I7GbIqAayeQ3qJ8i6RwwzRPBIvKOH3r2ZaCHyZW0
+         rytxykFe/23G41YsPYayyopqDacWrI2WXq4LcHtiQizxHzyCf6GAJpj78Y1nticp/kmC
+         SEIqOn1yqsOZlNPmhtYjD1h4SeIQx3rBVZ2xoNh8tIZzvFDtx9UQi6Vw0b6vYIIEmAvt
+         X1eA==
+X-Gm-Message-State: AGi0PuYHJF99CAjuWqDKuSX5baRc3qRBSR3WrTuQ6dkmDqXB6Ms2lHFV
+        MavcSHs7Hwf45aZoOwicEVYmR9b3Nn9ZkyW0oE2n0w==
+X-Google-Smtp-Source: APiQypIvMNnUtDTaqa3c9rLP6PGh1YHIOgeazgeaHOCVrZkHTM+3JCNPyqBZXIAga7ZH8cCkAGiF5V8I8SCrgq4WWiY=
+X-Received: by 2002:a67:f24b:: with SMTP id y11mr2692108vsm.165.1587644545946;
+ Thu, 23 Apr 2020 05:22:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 23 Apr 2020 17:51:40 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
-        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
- multiple connections
-In-Reply-To: <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
-References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
- <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
- <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
- <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
- <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
- <bd05b31c2391edfff5044f22f2f83edf@codeaurora.org>
- <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
-Message-ID: <526ee10ba1df05b41f9471613550a0fd@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1587633319-19835-1-git-send-email-zou_wei@huawei.com>
+ <CAPDyKFogU2BT1vmcovrGvNEOtS+cxWwM09foMfN3bOPXEhhT3g@mail.gmail.com> <C3CD0DF8AD11A84CB25A1426DE537C61E59522ED@dggeml524-mbx.china.huawei.com>
+In-Reply-To: <C3CD0DF8AD11A84CB25A1426DE537C61E59522ED@dggeml524-mbx.china.huawei.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Apr 2020 14:21:50 +0200
+Message-ID: <CAPDyKFpf7HWUk3Ss=swvrGYBh_nDoKW02vqThbN=CWwekp4zrA@mail.gmail.com>
+Subject: Re: [PATCH -next] mmc: core: Use DEFINE_DEBUGFS_ATTRIBUTE instead of DEFINE_SIMPLE_ATTRIBUTE
+To:     "Zouwei (Samuel)" <zou_wei@huawei.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+On Thu, 23 Apr 2020 at 13:55, Zouwei (Samuel) <zou_wei@huawei.com> wrote:
+>
+> Hi Ulf,
+>
+> Thanks for your review and reply.
+>
+> 1. DEFINE_SIMPLE_ATTRIBUTE + debugfs_create_file() imposes some significa=
+nt overhead as compared to DEFINE_DEBUGFS_ATTRIBUTE + debugfs_create_file_u=
+nsafe().
+>   You can refer to the patch of 1a2b3666da58 ("mt76: fix debugfs_simple_a=
+ttr.cocci warnings")
 
-On 2020-04-07 20:23, Suzuki K Poulose wrote:
-> On 04/07/2020 02:56 PM, Sai Prakash Ranjan wrote:
->> Hi Suzuki,
->> 
->> On 2020-04-07 18:38, Suzuki K Poulose wrote:
->>> On 04/07/2020 12:29 PM, Sai Prakash Ranjan wrote:
->>>> Hi Suzuki,
->>>> 
->>>> Thanks for looking into this issue.
->>>> 
->>>> On 2020-04-07 15:54, Suzuki K Poulose wrote:
->>>>> On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
->>>>> 
->>>>> There seems to be two replicators back to back here. What is 
->>>>> connected
->>>>> to the other output of both of them ? Are there any TPIUs ? What 
->>>>> happens
->>>>> if you choose a sink on the other end of "swao_replicator" (ETB ?)
->>>>> 
->>>> 
->>>> The other outport of swao replicator is connected to EUD which is a
->>>> QCOM specific HW which can be used as a sink like USB.
->>>> And the other outport of other replicator(replicator_out) is 
->>>> connected to
->>>> TPIU.
->>>> 
->>>>> After boot, what do the idfilter registers read for both the 
->>>>> replicators ?
->>>>> 
->>>> 
->>>> Added some prints in replicator_probe.
->>>> 
->>>>   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
->>>> idfilter1=0x0
->>>>   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
->>>> idfilter1=0xff
->>>>   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
->>>> idfilter1=0xff
->>> 
->>> Curious to see how the idfilterX is set to 0:
->>>      if that is never used.
->>>         Or
->>>      if the user doesn't reset it back to 0xff.
->>> 
->> 
->> For both replicators, the default value seems to be 0x0.
->> 
->>   replicator probe in res ret=0 devname=6046000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
->> idfilter1=0x0
->>   replicator probe in res ret=0 devname=6b06000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
->> idfilter1=0xff
->>   replicator probe in res ret=0 devname=6046000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
->> idfilter1=0xff
-> 
-> I am not sure how you have added the debugs, but it looks like the
-> drivers set 0xff for both the port filters on a successful probe.
-> 
+I see.
 
-About the earlier mentioned points on:
+> 2. debugfs_create_file_unsafe(...&mmc_clock_fops) is corresponds to DEFIN=
+E_DEBUGFS_ATTRIBUTE(mmc_clock_fops...), so I only modified this one.
 
-1) Disallow turning the replicator ON, when it is already turned ON
-2) Do what your patch does. i.e, disable the other end while one end
-    is turned on.
+I have now read the complete function header of
+debugfs_create_file_unsafe() and realized that this is indeed okay.
 
-Do we need 1) and should we go ahead with this?
+>
+> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: Ulf Hansson [mailto:ulf.hansson@linaro.org]
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2020=E5=B9=B44=E6=9C=8823=E6=97=A5 =
+19:17
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: Zouwei (Samuel) <zou_wei@huawei.com>
+> =E6=8A=84=E9=80=81: linux-mmc@vger.kernel.org; Linux Kernel Mailing List =
+<linux-kernel@vger.kernel.org>
+> =E4=B8=BB=E9=A2=98: Re: [PATCH -next] mmc: core: Use DEFINE_DEBUGFS_ATTRI=
+BUTE instead of DEFINE_SIMPLE_ATTRIBUTE
+>
+> On Thu, 23 Apr 2020 at 11:09, Zou Wei <zou_wei@huawei.com> wrote:
+> >
+> > Fixes coccicheck warning:
+> >
+> > drivers/mmc/core/debugfs.c:222:0-23: WARNING: mmc_clock_fops should be
+> > defined with DEFINE_DEBUGFS_ATTRIBUTE
+> >
+> > Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE for
+> > debugfs files
+> >
+> > Fixes: 703aae3d09a4b ("mmc: add a file to debugfs for changing host
+> > clock at runtime")
+> > Fixes: a04c50aaa916f ("mmc: core: no need to check return value of
+> > debugfs_create functions")
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-Thanks,
-Sai
+Applied for next, thanks!
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Kind regards
+Uffe
+
+> > ---
+> >  drivers/mmc/core/debugfs.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/mmc/core/debugfs.c b/drivers/mmc/core/debugfs.c
+> > index 09e0c76..9ec84c8 100644
+> > --- a/drivers/mmc/core/debugfs.c
+> > +++ b/drivers/mmc/core/debugfs.c
+> > @@ -219,7 +219,7 @@ static int mmc_clock_opt_set(void *data, u64 val)
+> >         return 0;
+> >  }
+> >
+> > -DEFINE_SIMPLE_ATTRIBUTE(mmc_clock_fops, mmc_clock_opt_get,
+> > mmc_clock_opt_set,
+> > +DEFINE_DEBUGFS_ATTRIBUTE(mmc_clock_fops, mmc_clock_opt_get,
+> > +mmc_clock_opt_set,
+> >         "%llu\n");
+> >
+> >  void mmc_add_host_debugfs(struct mmc_host *host) @@ -232,8 +232,8 @@
+> > void mmc_add_host_debugfs(struct mmc_host *host)
+> >         debugfs_create_file("ios", S_IRUSR, root, host, &mmc_ios_fops);
+> >         debugfs_create_x32("caps", S_IRUSR, root, &host->caps);
+> >         debugfs_create_x32("caps2", S_IRUSR, root, &host->caps2);
+> > -       debugfs_create_file("clock", S_IRUSR | S_IWUSR, root, host,
+> > -                           &mmc_clock_fops);
+> > +       debugfs_create_file_unsafe("clock", S_IRUSR | S_IWUSR, root, ho=
+st,
+> > +                                  &mmc_clock_fops);
+>
+> Apologize for my ignorance, but why convert to the *_unsafe option for th=
+is one, but not for the others?
+>
+> [...]
+>
+> Kind regards
+> Uffe
