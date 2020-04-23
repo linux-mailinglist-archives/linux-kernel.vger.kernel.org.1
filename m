@@ -2,561 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7EA1B5F84
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B01F1B5FB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgDWPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:38:25 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40922 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729319AbgDWPiW (ORCPT
+        id S1729291AbgDWPnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729072AbgDWPnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:38:22 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NFJ0Ye152130;
-        Thu, 23 Apr 2020 15:38:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Ke3uI4ILcmC+tdjd5OGvuVLJlepu5b3rI6oqe3FwIQw=;
- b=DCM3VBUEjvoj/7d203ua7PNnlbYPw4+0cWbj/CT/XvCFDj4PS1RYL6iEG9AZjkUvM5V7
- thOYDtQIVve00MEiKDqrhH6dvAKsNSIAZ6KFaRc3MuTbNDRnsH4v+K2b/5KqkCMoTE97
- mdWwjLZJJLXhOlMis1uXMBQF2qx7CvHgBH1w5cPZPkgpK/aOitTmhPURGsF/AHBHNOVF
- VznfHvyMEMROTFz7wyU4sv5+b7JYFIhMIRzXRl39X5+hATJhVf/JzhbCv8TCM1glVmDY
- jc4fT3vEDTlPZKgITVnJrTnD9M32svWUZbS/ZOlLxrjw+5/jqDSOclqt5Q3Ykh/7jCSY 0Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30k7qe22mr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Apr 2020 15:37:59 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NFHhQV107398;
-        Thu, 23 Apr 2020 15:35:58 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30gb3vsc2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Apr 2020 15:35:58 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03NFZucA022742;
-        Thu, 23 Apr 2020 15:35:56 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 23 Apr 2020 08:35:56 -0700
-Subject: Re: [PATCH 3/8] objtool: Rework allocating stack_ops on decode
-To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com
-Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz
-References: <20200423125013.452964352@infradead.org>
- <20200423125042.713052240@infradead.org>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <7df9ec97-dc14-c4b6-fb26-f163e9afb1cd@oracle.com>
-Date:   Thu, 23 Apr 2020 17:40:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200423125042.713052240@infradead.org>
+        Thu, 23 Apr 2020 11:43:18 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F12C09B040
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:43:17 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x15so3149942pfa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:43:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kg7M4xD9jeOCc5gp5xCZax2oVOZa7KcCbIv0zMuiHGw=;
+        b=jdxNZdqnkgxjmMccyXVc0yzWYhqTW73wR2FVcl/1mojOY4JsmcywIotiTcLKHeMHPY
+         M/h7nfQ6Lt5H96VNs0x9u5d9XRzMG+92RQk8x+Yh9Zeu232zSPh9aCzXnohs+gOBWrtf
+         N9QgGJ4qwwY7UT1uKCfUMSFWTIOOR9XOFTGESa2ZRUjoAaByvITQ6Vdgx0AxU4mXmy6u
+         aOAGqMEQIcNlLhF7zHYbybWBFdK7MgJ1hDujYGWm64+QhHL8cEUQJTFdbp9RYMIpE02L
+         OS2/hOcJs5y0mFcnv/kB1JozMVPx2p2JKvHa228VsX4F+uj+rwayzCgggu/VLt+oBbst
+         6LXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Kg7M4xD9jeOCc5gp5xCZax2oVOZa7KcCbIv0zMuiHGw=;
+        b=eXiXkDon8c26y93/aCmqlPYgS3JV0rI/CRJySvKXTDYRbZTtZW873HhRFj91uVN78I
+         R64fdJmfwL53ZNemgpZGAPL3EQHehRz2RIJraaGqs4LCN0RzitUhJI+/gPIvelQ7E2f2
+         ewdhFcwgKfU0Fi2PHxiuQ3oYxE+DLIQsDn7761wXYtFThdd+vzjfjLe0HOu0q7P96vdg
+         9XUzBM3EQDNbsttAxKr3vNPfTspj4p40cI2gyuVuzOvQcKGVdMDv95lXMuIQmDVTAq+O
+         Kci+3T5I//iyRlKvr37e4p+S3hyrSxqiWzVTmBspzlDNf0VByEOevVrx6E3qfytD6zJ5
+         dlDw==
+X-Gm-Message-State: AGi0PuYP2+JK1U3LSFt76NniragjaLJzMdlWYROpuPqJRrGvHN4S3dbu
+        yL9g/VfuYJrNb1rDPUio0RAiuA==
+X-Google-Smtp-Source: APiQypL0rdmDv1u1pIBnXgRbU4zfRGn7m8WubBpK6fMP8z32Ebbh6TMUsEYXss99PdGrrqmfyNIXXw==
+X-Received: by 2002:a62:1bd0:: with SMTP id b199mr4264913pfb.283.1587656596222;
+        Thu, 23 Apr 2020 08:43:16 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id t11sm2913054pfl.122.2020.04.23.08.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 08:43:14 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 08:43:14 -0700 (PDT)
+X-Google-Original-Date: Thu, 23 Apr 2020 08:38:24 PDT (-0700)
+Subject:     Re: [PATCH 1/3] riscv: sbi: Correct sbi_shutdown() and sbi_clear_ipi() export
+In-Reply-To: <20200417121222.156422-1-wangkefeng.wang@huawei.com>
+CC:     Atish Patra <Atish.Patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, wangkefeng.wang@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     wangkefeng.wang@huawei.com
+Message-ID: <mhng-25c7c97b-dc82-462d-b6ef-b67a32d57f76@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 suspectscore=2 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004230120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=2 mlxlogscore=999 phishscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 malwarescore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230120
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/23/20 2:47 PM, Peter Zijlstra wrote:
-> Wrap each stack_op in a macro that allocates and adds it to the list.
-> This simplifies trying to figure out what to do with the pre-allocated
-> stack_op at the end.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Fri, 17 Apr 2020 05:12:20 PDT (-0700), wangkefeng.wang@huawei.com wrote:
+> Fix incorrect EXPORT_SYMBOL().
+>
+> Fixes: efca13989250 ("RISC-V: Introduce a new config for SBI v0.1")
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->   tools/objtool/arch/x86/decode.c |  257 +++++++++++++++++++++++-----------------
->   1 file changed, 153 insertions(+), 104 deletions(-)
-> 
-> --- a/tools/objtool/arch/x86/decode.c
-> +++ b/tools/objtool/arch/x86/decode.c
-> @@ -77,6 +77,17 @@ unsigned long arch_jump_destination(stru
->   	return insn->offset + insn->len + insn->immediate;
->   }
->   
-> +#define PUSH_OP(op) \
-> +({ \
-> +	list_add_tail(&op->list, ops_list); \
-> +	NULL; \
-> +})
-> +
-> +#define ADD_OP(op) \
-> +	if (!(op = calloc(1, sizeof(*op)))) \
-> +		return -1; \
-> +	else for (; op; op = PUSH_OP(op))
-> +
+>  arch/riscv/kernel/sbi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index 7c24da59bccf..62b10a16c8d7 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -102,7 +102,7 @@ void sbi_shutdown(void)
+>  {
+>  	sbi_ecall(SBI_EXT_0_1_SHUTDOWN, 0, 0, 0, 0, 0, 0, 0);
+>  }
+> -EXPORT_SYMBOL(sbi_set_timer);
+> +EXPORT_SYMBOL(sbi_shutdown);
+>
+>  /**
+>   * sbi_clear_ipi() - Clear any pending IPIs for the calling hart.
+> @@ -113,7 +113,7 @@ void sbi_clear_ipi(void)
+>  {
+>  	sbi_ecall(SBI_EXT_0_1_CLEAR_IPI, 0, 0, 0, 0, 0, 0, 0);
+>  }
+> -EXPORT_SYMBOL(sbi_shutdown);
+> +EXPORT_SYMBOL(sbi_clear_ipi);
+>
+>  /**
+>   * sbi_set_timer_v01() - Program the timer for next timer event.
 
-I would better have a function to alloc+add op instead of weird macros,
-for example:
-
-static struct stack_op *add_op(void)
-{
-         struct stack *op;
-
-         op = calloc(1, sizeof(*op));
-         if (!op)
-                 return NULL;
-         list_add_tail(&op->list, ops_list);
-}
-
-Then it requires two more lines when using it but I think the code is much
-cleaner and clearer, e.g.:
-
-                         op = add_op();
-                         if (!op)
-                                 return -1;
-                         op->src.type = OP_SRC_ADD;
-                         op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-                         op->dest.type = OP_DEST_REG;
-                         op->dest.reg = CFI_SP;
-
-alex.
-
->   int arch_decode_instruction(struct elf *elf, struct section *sec,
->   			    unsigned long offset, unsigned int maxlen,
->   			    unsigned int *len, enum insn_type *type,
-> @@ -88,7 +99,7 @@ int arch_decode_instruction(struct elf *
->   	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
->   		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
->   		      modrm_reg = 0, sib = 0;
-> -	struct stack_op *op;
-> +	struct stack_op *op = NULL;
->   
->   	x86_64 = is_x86_64(elf);
->   	if (x86_64 == -1)
-> @@ -129,10 +140,6 @@ int arch_decode_instruction(struct elf *
->   	if (insn.sib.nbytes)
->   		sib = insn.sib.bytes[0];
->   
-> -	op = calloc(1, sizeof(*op));
-> -	if (!op)
-> -		return -1;
-> -
->   	switch (op1) {
->   
->   	case 0x1:
-> @@ -141,10 +148,12 @@ int arch_decode_instruction(struct elf *
->   
->   			/* add/sub reg, %rsp */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_ADD;
-> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_ADD;
-> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   		}
->   		break;
->   
-> @@ -152,9 +161,11 @@ int arch_decode_instruction(struct elf *
->   
->   		/* push reg */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_REG;
-> -		op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
-> -		op->dest.type = OP_DEST_PUSH;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_REG;
-> +			op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
-> +			op->dest.type = OP_DEST_PUSH;
-> +		}
->   
->   		break;
->   
-> @@ -162,9 +173,11 @@ int arch_decode_instruction(struct elf *
->   
->   		/* pop reg */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_POP;
-> -		op->dest.type = OP_DEST_REG;
-> -		op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_POP;
-> +			op->dest.type = OP_DEST_REG;
-> +			op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
-> +		}
->   
->   		break;
->   
-> @@ -172,8 +185,10 @@ int arch_decode_instruction(struct elf *
->   	case 0x6a:
->   		/* push immediate */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_CONST;
-> -		op->dest.type = OP_DEST_PUSH;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_CONST;
-> +			op->dest.type = OP_DEST_PUSH;
-> +		}
->   		break;
->   
->   	case 0x70 ... 0x7f:
-> @@ -188,11 +203,13 @@ int arch_decode_instruction(struct elf *
->   		if (modrm == 0xe4) {
->   			/* and imm, %rsp */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_AND;
-> -			op->src.reg = CFI_SP;
-> -			op->src.offset = insn.immediate.value;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_AND;
-> +				op->src.reg = CFI_SP;
-> +				op->src.offset = insn.immediate.value;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   			break;
->   		}
->   
-> @@ -205,11 +222,13 @@ int arch_decode_instruction(struct elf *
->   
->   		/* add/sub imm, %rsp */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_ADD;
-> -		op->src.reg = CFI_SP;
-> -		op->src.offset = insn.immediate.value * sign;
-> -		op->dest.type = OP_DEST_REG;
-> -		op->dest.reg = CFI_SP;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_ADD;
-> +			op->src.reg = CFI_SP;
-> +			op->src.offset = insn.immediate.value * sign;
-> +			op->dest.type = OP_DEST_REG;
-> +			op->dest.reg = CFI_SP;
-> +		}
->   		break;
->   
->   	case 0x89:
-> @@ -217,10 +236,12 @@ int arch_decode_instruction(struct elf *
->   
->   			/* mov %rsp, reg */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG;
-> -			op->src.reg = CFI_SP;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG;
-> +				op->src.reg = CFI_SP;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> +			}
->   			break;
->   		}
->   
-> @@ -228,10 +249,12 @@ int arch_decode_instruction(struct elf *
->   
->   			/* mov reg, %rsp */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG;
-> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG;
-> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   			break;
->   		}
->   
-> @@ -242,21 +265,25 @@ int arch_decode_instruction(struct elf *
->   
->   			/* mov reg, disp(%rbp) */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG;
-> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> -			op->dest.type = OP_DEST_REG_INDIRECT;
-> -			op->dest.reg = CFI_BP;
-> -			op->dest.offset = insn.displacement.value;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG;
-> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +				op->dest.type = OP_DEST_REG_INDIRECT;
-> +				op->dest.reg = CFI_BP;
-> +				op->dest.offset = insn.displacement.value;
-> +			}
->   
->   		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
->   
->   			/* mov reg, disp(%rsp) */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG;
-> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> -			op->dest.type = OP_DEST_REG_INDIRECT;
-> -			op->dest.reg = CFI_SP;
-> -			op->dest.offset = insn.displacement.value;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG;
-> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +				op->dest.type = OP_DEST_REG_INDIRECT;
-> +				op->dest.reg = CFI_SP;
-> +				op->dest.offset = insn.displacement.value;
-> +			}
->   		}
->   
->   		break;
-> @@ -266,22 +293,26 @@ int arch_decode_instruction(struct elf *
->   
->   			/* mov disp(%rbp), reg */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG_INDIRECT;
-> -			op->src.reg = CFI_BP;
-> -			op->src.offset = insn.displacement.value;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG_INDIRECT;
-> +				op->src.reg = CFI_BP;
-> +				op->src.offset = insn.displacement.value;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +			}
->   
->   		} else if (rex_w && !rex_b && sib == 0x24 &&
->   			   modrm_mod != 3 && modrm_rm == 4) {
->   
->   			/* mov disp(%rsp), reg */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_REG_INDIRECT;
-> -			op->src.reg = CFI_SP;
-> -			op->src.offset = insn.displacement.value;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_REG_INDIRECT;
-> +				op->src.reg = CFI_SP;
-> +				op->src.offset = insn.displacement.value;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
-> +			}
->   		}
->   
->   		break;
-> @@ -290,27 +321,31 @@ int arch_decode_instruction(struct elf *
->   		if (sib == 0x24 && rex_w && !rex_b && !rex_x) {
->   
->   			*type = INSN_STACK;
-> -			if (!insn.displacement.value) {
-> -				/* lea (%rsp), reg */
-> -				op->src.type = OP_SRC_REG;
-> -			} else {
-> -				/* lea disp(%rsp), reg */
-> -				op->src.type = OP_SRC_ADD;
-> -				op->src.offset = insn.displacement.value;
-> +			ADD_OP(op) {
-> +				if (!insn.displacement.value) {
-> +					/* lea (%rsp), reg */
-> +					op->src.type = OP_SRC_REG;
-> +				} else {
-> +					/* lea disp(%rsp), reg */
-> +					op->src.type = OP_SRC_ADD;
-> +					op->src.offset = insn.displacement.value;
-> +				}
-> +				op->src.reg = CFI_SP;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
->   			}
-> -			op->src.reg = CFI_SP;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
->   
->   		} else if (rex == 0x48 && modrm == 0x65) {
->   
->   			/* lea disp(%rbp), %rsp */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_ADD;
-> -			op->src.reg = CFI_BP;
-> -			op->src.offset = insn.displacement.value;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_ADD;
-> +				op->src.reg = CFI_BP;
-> +				op->src.offset = insn.displacement.value;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   
->   		} else if (rex == 0x49 && modrm == 0x62 &&
->   			   insn.displacement.value == -8) {
-> @@ -322,11 +357,13 @@ int arch_decode_instruction(struct elf *
->   			 * stack realignment.
->   			 */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_ADD;
-> -			op->src.reg = CFI_R10;
-> -			op->src.offset = -8;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_ADD;
-> +				op->src.reg = CFI_R10;
-> +				op->src.offset = -8;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   
->   		} else if (rex == 0x49 && modrm == 0x65 &&
->   			   insn.displacement.value == -16) {
-> @@ -338,11 +375,13 @@ int arch_decode_instruction(struct elf *
->   			 * stack realignment.
->   			 */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_ADD;
-> -			op->src.reg = CFI_R13;
-> -			op->src.offset = -16;
-> -			op->dest.type = OP_DEST_REG;
-> -			op->dest.reg = CFI_SP;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_ADD;
-> +				op->src.reg = CFI_R13;
-> +				op->src.offset = -16;
-> +				op->dest.type = OP_DEST_REG;
-> +				op->dest.reg = CFI_SP;
-> +			}
->   		}
->   
->   		break;
-> @@ -350,8 +389,10 @@ int arch_decode_instruction(struct elf *
->   	case 0x8f:
->   		/* pop to mem */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_POP;
-> -		op->dest.type = OP_DEST_MEM;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_POP;
-> +			op->dest.type = OP_DEST_MEM;
-> +		}
->   		break;
->   
->   	case 0x90:
-> @@ -361,15 +402,19 @@ int arch_decode_instruction(struct elf *
->   	case 0x9c:
->   		/* pushf */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_CONST;
-> -		op->dest.type = OP_DEST_PUSHF;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_CONST;
-> +			op->dest.type = OP_DEST_PUSHF;
-> +		}
->   		break;
->   
->   	case 0x9d:
->   		/* popf */
->   		*type = INSN_STACK;
-> -		op->src.type = OP_SRC_POPF;
-> -		op->dest.type = OP_DEST_MEM;
-> +		ADD_OP(op) {
-> +			op->src.type = OP_SRC_POPF;
-> +			op->dest.type = OP_DEST_MEM;
-> +		}
->   		break;
->   
->   	case 0x0f:
-> @@ -405,15 +450,19 @@ int arch_decode_instruction(struct elf *
->   
->   			/* push fs/gs */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_CONST;
-> -			op->dest.type = OP_DEST_PUSH;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_CONST;
-> +				op->dest.type = OP_DEST_PUSH;
-> +			}
->   
->   		} else if (op2 == 0xa1 || op2 == 0xa9) {
->   
->   			/* pop fs/gs */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_POP;
-> -			op->dest.type = OP_DEST_MEM;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_POP;
-> +				op->dest.type = OP_DEST_MEM;
-> +			}
->   		}
->   
->   		break;
-> @@ -427,7 +476,8 @@ int arch_decode_instruction(struct elf *
->   		 * pop bp
->   		 */
->   		*type = INSN_STACK;
-> -		op->dest.type = OP_DEST_LEAVE;
-> +		ADD_OP(op)
-> +			op->dest.type = OP_DEST_LEAVE;
->   
->   		break;
->   
-> @@ -449,12 +499,14 @@ int arch_decode_instruction(struct elf *
->   	case 0xcf: /* iret */
->   		*type = INSN_EXCEPTION_RETURN;
->   
-> -		/* add $40, %rsp */
-> -		op->src.type = OP_SRC_ADD;
-> -		op->src.reg = CFI_SP;
-> -		op->src.offset = 5*8;
-> -		op->dest.type = OP_DEST_REG;
-> -		op->dest.reg = CFI_SP;
-> +		ADD_OP(op) {
-> +			/* add $40, %rsp */
-> +			op->src.type = OP_SRC_ADD;
-> +			op->src.reg = CFI_SP;
-> +			op->src.offset = 5*8;
-> +			op->dest.type = OP_DEST_REG;
-> +			op->dest.reg = CFI_SP;
-> +		}
->   		break;
->   
->   	case 0xca: /* retf */
-> @@ -492,8 +544,10 @@ int arch_decode_instruction(struct elf *
->   
->   			/* push from mem */
->   			*type = INSN_STACK;
-> -			op->src.type = OP_SRC_CONST;
-> -			op->dest.type = OP_DEST_PUSH;
-> +			ADD_OP(op) {
-> +				op->src.type = OP_SRC_CONST;
-> +				op->dest.type = OP_DEST_PUSH;
-> +			}
->   		}
->   
->   		break;
-> @@ -504,11 +558,6 @@ int arch_decode_instruction(struct elf *
->   
->   	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
->   
-> -	if (*type == INSN_STACK || *type == INSN_EXCEPTION_RETURN)
-> -		list_add_tail(&op->list, ops_list);
-> -	else
-> -		free(op);
-> -
->   	return 0;
->   }
->   
-> 
-> 
+Thanks.  I've put all three of these on fixes.
