@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D771B67CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CF21B6762
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgDWXJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:09:51 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:55406 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728296AbgDWXJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:09:47 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8AB5E20013D;
-        Fri, 24 Apr 2020 01:09:45 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 16560200143;
-        Fri, 24 Apr 2020 01:09:42 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7513240246;
-        Fri, 24 Apr 2020 07:09:37 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     jassisinghbrar@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] mailbox: imx: Add context save/restore for suspend/resume
-Date:   Fri, 24 Apr 2020 07:01:11 +0800
-Message-Id: <1587682871-528-1-git-send-email-Anson.Huang@nxp.com>
+        id S1727803AbgDWXCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgDWXCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:02:23 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93589C09B042;
+        Thu, 23 Apr 2020 16:02:23 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w3so3005430plz.5;
+        Thu, 23 Apr 2020 16:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JGxbVqXS9X2h4TzZ1w3vbs2rJWQVdBkMmQST4qkRksg=;
+        b=QB23OuqQMqx722WHTzznuVUrIolsO9dALfi+383Bzccmu1nJxbwIBOggZUDILMXS+N
+         dEXoeOPBza9ab9k8SLW4sg3Kn90NuM6vCdyStQldd7lOppZHFFZXDOyXWObDbOCtvw+C
+         5GuD6oX8WU9R1/M01SbYW0XOPLVNNSC3YgkRKskPH4E7ImcUgHmMcjqM/jidCZ8Fn8Ar
+         1qyCaU4U3if/SD7jTjao5ZIYf8hnMdLmjcd4vE6JpDNbmsBKdbrqPmdiYYawLDnDYSPT
+         sedKOnBJlS5vvFkcFSBaWHWem3MzFTd5f0zL+PvbtIrhq5V9VXnrW0X0bF1ZN0/DvI2i
+         VCEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JGxbVqXS9X2h4TzZ1w3vbs2rJWQVdBkMmQST4qkRksg=;
+        b=P/YVYaH6iDvfUUC0xaW5Xo7Xe0vGrhA8kTs2Nmr13SedC4S/zT4bn3MBtupYIYBznx
+         VC7qpzgwaCMQnfkl23hc6e7NO8H9mMjAD4UxD+XdB0Dy32KfXjS50UZyolyBdefCzZlO
+         s2jVqsckGS96rZXqbILMRsuFUTxjc6GqwLpd2feVu64uK5wyX2pA85SSN7IFFiUXDLZl
+         e7cMU9VgrKt8G8ZGhJN/6Hv8Re+se16FTVR+dSm/4a8pfkxf/U0f8ejTDvPCUkXTwVqS
+         q1RDjS1PSXTZIuG438R8LsKsu9QkeiSJmi0NzNDaXgol5TFnYQt0dME4NDKPxiqOqSEZ
+         hZfw==
+X-Gm-Message-State: AGi0PuZnsPyvfIMhrWgmu+xpuwRfGG3UWC1ewW4VnW13gbi6NdSr2/Lw
+        hp37Nb4JUN5pYguArS4ypiy1rkye
+X-Google-Smtp-Source: APiQypJhiUK0tBdIYE7QpIVyEspwQeujaLucNyMDRNmEKpsyp38chkp9Ou/0s42zk5XZeDspJI14dA==
+X-Received: by 2002:a17:902:8e8b:: with SMTP id bg11mr5783024plb.139.1587682943072;
+        Thu, 23 Apr 2020 16:02:23 -0700 (PDT)
+Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id p8sm3419414pjd.10.2020.04.23.16.02.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Apr 2020 16:02:21 -0700 (PDT)
+From:   Doug Berger <opendmb@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Doug Berger <opendmb@gmail.com>
+Subject: [PATCH net-next] net: bcmgenet: suppress warnings on failed Rx SKB allocations
+Date:   Thu, 23 Apr 2020 16:02:11 -0700
+Message-Id: <1587682931-38636-1-git-send-email-opendmb@gmail.com>
 X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For "mem" mode suspend on i.MX8 SoCs, MU settings could be
-lost because its power is off, so save/restore is needed
-for MU settings during suspend/resume. However, the restore
-can ONLY be done when MU settings are actually lost, for the
-scenario of settings NOT lost in "freeze" mode suspend, since
-there could be still IPC going on multiple CPUs, restoring the
-MU settings could overwrite the TIE by mistake and cause system
-freeze, so need to make sure ONLY restore the MU settings when
-it is powered off.
+The driver is designed to drop Rx packets and reclaim the buffers
+when an allocation fails, and the network interface needs to safely
+handle this packet loss. Therefore, an allocation failure of Rx
+SKBs is relatively benign.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+However, the output of the warning message occurs with a high
+scheduling priority that can cause excessive jitter/latency for
+other high priority processing.
+
+This commit suppresses the warning messages to prevent scheduling
+problems while retaining the failure count in the statistics of
+the network interface.
+
+Signed-off-by: Doug Berger <opendmb@gmail.com>
 ---
- drivers/mailbox/imx-mailbox.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 97bf0ac..b53cf63 100644
---- a/drivers/mailbox/imx-mailbox.c
-+++ b/drivers/mailbox/imx-mailbox.c
-@@ -67,6 +67,8 @@ struct imx_mu_priv {
- 	struct clk		*clk;
- 	int			irq;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 20aba79becce..bfeff5585f4b 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -1617,7 +1617,8 @@ static struct sk_buff *bcmgenet_rx_refill(struct bcmgenet_priv *priv,
+ 	dma_addr_t mapping;
  
-+	u32 xcr;
-+
- 	bool			side_b;
- };
- 
-@@ -583,12 +585,45 @@ static const struct of_device_id imx_mu_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, imx_mu_dt_ids);
- 
-+static int imx_mu_suspend_noirq(struct device *dev)
-+{
-+	struct imx_mu_priv *priv = dev_get_drvdata(dev);
-+
-+	priv->xcr = imx_mu_read(priv, priv->dcfg->xCR);
-+
-+	return 0;
-+}
-+
-+static int imx_mu_resume_noirq(struct device *dev)
-+{
-+	struct imx_mu_priv *priv = dev_get_drvdata(dev);
-+
-+	/*
-+	 * ONLY restore MU when context lost, the TIE could
-+	 * be set during noirq resume as there is MU data
-+	 * communication going on, and restore the saved
-+	 * value will overwrite the TIE and cause MU data
-+	 * send failed, may lead to system freeze. This issue
-+	 * is observed by testing freeze mode suspend.
-+	 */
-+	if (!imx_mu_read(priv, priv->dcfg->xCR))
-+		imx_mu_write(priv, priv->xcr, priv->dcfg->xCR);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops imx_mu_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_mu_suspend_noirq,
-+				      imx_mu_resume_noirq)
-+};
-+
- static struct platform_driver imx_mu_driver = {
- 	.probe		= imx_mu_probe,
- 	.remove		= imx_mu_remove,
- 	.driver = {
- 		.name	= "imx_mu",
- 		.of_match_table = imx_mu_dt_ids,
-+		.pm = &imx_mu_pm_ops,
- 	},
- };
- module_platform_driver(imx_mu_driver);
+ 	/* Allocate a new Rx skb */
+-	skb = netdev_alloc_skb(priv->dev, priv->rx_buf_len + SKB_ALIGNMENT);
++	skb = __netdev_alloc_skb(priv->dev, priv->rx_buf_len + SKB_ALIGNMENT,
++				 GFP_ATOMIC | __GFP_NOWARN);
+ 	if (!skb) {
+ 		priv->mib.alloc_rx_buff_failed++;
+ 		netif_err(priv, rx_err, priv->dev,
 -- 
 2.7.4
 
