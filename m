@@ -2,115 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5311B618F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 19:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2071B1B61AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 19:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729859AbgDWRHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 13:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729840AbgDWRHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 13:07:21 -0400
-Received: from localhost (mobile-166-175-187-210.mycingular.net [166.175.187.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E0BB2076C;
-        Thu, 23 Apr 2020 17:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587661640;
-        bh=yw9wJXzgI852NvRxPmOyJyXU9gysczH5+gd8R6BRqdg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jRBGlpIAOMr0aJEhtE9qf9xmylLTnD1+54cwHWFclX7d4jCcl2dYjP2Ky/QQ44gSB
-         cw+8hXorBVHvZRIKuHFLtZExR5YTTmPk8/qfasQtq4F55wkr9CzeWvU9INQJntPHzP
-         74k2wAD7i4pxKssLvx8nwPa1cqjoK93h+egLbs1w=
-Date:   Thu, 23 Apr 2020 12:07:18 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v2 0/9] PM: sleep: core: Rearrange the handling of driver
- power management flags
-Message-ID: <20200423170718.GA190576@google.com>
+        id S1729864AbgDWROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 13:14:48 -0400
+Received: from forward501p.mail.yandex.net ([77.88.28.111]:41889 "EHLO
+        forward501p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729674AbgDWROr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 13:14:47 -0400
+X-Greylist: delayed 410 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 13:14:46 EDT
+Received: from mxback10g.mail.yandex.net (mxback10g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:171])
+        by forward501p.mail.yandex.net (Yandex) with ESMTP id 2DE6C350030C;
+        Thu, 23 Apr 2020 20:07:50 +0300 (MSK)
+Received: from localhost (localhost [::1])
+        by mxback10g.mail.yandex.net (mxback/Yandex) with ESMTP id CKPOo3RA33-7nHuvsHP;
+        Thu, 23 Apr 2020 20:07:49 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1587661669;
+        bh=q10Ol93uIKqGljLLQN5m691CxeTW2gdHmj35roTjhTU=;
+        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
+        b=p7MdlFTXHRMgT+FLLI6oAFz/evPhc+O5Sz7+ia10pTyRMYMv6AQ28SG7Xk4e5I664
+         kGKqf3RTIpB822NMGLapGVjpFp+EC8bpp1k6bpc1zucfkbHzpqjHwfLcnuaeml88iN
+         2nyqPzgOQeGHNnecrJAFN2yhgEMQx2Mye+M3Ese4=
+Authentication-Results: mxback10g.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by sas2-ace8bd7a4730.qloud-c.yandex.net with HTTP;
+        Thu, 23 Apr 2020 20:07:49 +0300
+From:   Evgeniy Polyakov <zbr@ioremap.net>
+Envelope-From: drustafa@yandex.ru
+To:     Greg KH <greg@kroah.com>, Akira Shimahara <akira215corp@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200423144116.GA7319@kroah.com>
+References: <20200414170248.299534-1-akira215corp@gmail.com> <20200423144116.GA7319@kroah.com>
+Subject: Re: [PATCH] Changes in w1_therm.c and adding w1_therm.h
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5673945.BT02kTCndr@kreacher>
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Thu, 23 Apr 2020 20:07:49 +0300
+Message-Id: <307231587661588@mail.yandex.ru>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 06:23:08PM +0200, Rafael J. Wysocki wrote:
-> Hi,
-> 
-> This is an update including some fixes and extra patches based on the
-> continuation of the discussion [1].
-> 
-> On Friday, April 10, 2020 5:46:27 PM CEST Rafael J. Wysocki wrote:
-> > Hi Alan,
-> > 
-> > Following our recent discussion regarding the DPM_FLAG_* family of flags [1],
-> > I have decided to follow some of your recommendations and make changes to the
-> > core code handling those flags.
-> > 
-> > The purpose of this is basically to make the code more consistent internally,
-> > easier to follow and better documented.
-> > 
-> > First of all, patch [1/7] changes the PM core to skip driver-level "late"
-> > and "noirq" suspend callbacks for devices with SMART_SUSPEND set if they are
-> > still runtime-suspended during the "late" system-wide suspend phase (without
-> > the patch it does that only if subsystem-level late/noirq/early suspend/resume
-> > callbacks are not present for the device, which is demonstrably inconsistent)
-> > and updates the resume part of the code accordingly (it doesn't need to check
-> > whether or not the subsystem-level callbacks are present any more).
-> > 
-> > The next patch, [2/7], is purely cosmetic and its only purpose is to reduce
-> > the LOC number and move related pieces of code closer to each other.
-> 
-> The first two patches have not changed.
-> 
-> > Patch [3/7] changes the PM core so that it doesn't skip any subsystem-level
-> > callbacks during system-wide resume (without the patch they may be skipped in
-> > the "early resume" and "resume" phases due to LEAVE_SUSPENDED being set which
-> > may be problematic) and to always run the driver's ->resume callback if the
-> > corresponding subsystem-level callback is not present (without the patch it
-> > may be skipped if LEAVE_SUSPENDED is set) to let it reverse the changes made
-> > by the driver's ->suspend callback (which always runs too) if need be.
-> 
-> The difference between this one and patch [3/9] in the v2 is the fixed
-> definition of dev_pm_may_skip_resume(), renamed to dev_pm_skip_resume() by
-> one of the next patches.
-> 
-> Patch [4/9] changes the handling of the power.may_skip_resume flag to set it
-> to 'true' by default and updates the subsystems aware of it to clear it when
-> they don't want devices to stay in suspend.
-> 
-> > Patches [4-6/7] rename one function in the PM core and two driver PM flags to
-> > make their names better reflect their purpose.
-> 
-> These are patches [5/9] and [7-8/9] in the v2 and patch [6/9] renames
-> dev_pm_smart_suspend_and_suspended() to dev_pm_skip_suspend().
-> 
-> > Finally, patch [7/7] updates the documentation of the driver PM flags to
-> > reflect the new code flows.
-> 
-> This patch [9/9] now and it has been updated to reflect the new code changes.
-> 
-> The pm-sleep-core branch:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
->   pm-sleep-core
-> 
-> contains the v2 now.
+Hi
 
-For the drivers/pci parts:
+23.04.2020, 17:41, "Greg KH" <greg@kroah.com>:
+> You do not document any of these new sysfs files, why not?
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
+Looks like there are bigger isues with the patch that I've missed, and if I understood correctly, Akira asked to drop this patch
