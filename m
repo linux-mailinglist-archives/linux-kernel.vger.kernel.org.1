@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3111B640A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902531B63D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgDWSvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:51:21 -0400
-Received: from 9.mo177.mail-out.ovh.net ([46.105.72.238]:59781 "EHLO
-        9.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgDWSvV (ORCPT
+        id S1730294AbgDWScj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:32:39 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3582 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730252AbgDWSch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:51:21 -0400
-X-Greylist: delayed 847 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 14:51:20 EDT
-Received: from player746.ha.ovh.net (unknown [10.110.115.246])
-        by mo177.mail-out.ovh.net (Postfix) with ESMTP id 7D1E312D18D
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 20:32:37 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player746.ha.ovh.net (Postfix) with ESMTPSA id 0C0B911C624B8;
-        Thu, 23 Apr 2020 18:32:32 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 20:32:31 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] docs: sysctl/kernel: document BPF entries
-Message-ID: <20200423203231.5f682a52@heffalump.sk2.org>
-In-Reply-To: <20200420165949.14dc0752@lwn.net>
-References: <20200315122648.20558-1-steve@sk2.org>
-        <20200420165949.14dc0752@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 23 Apr 2020 14:32:37 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea1ded00001>; Thu, 23 Apr 2020 11:30:40 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 23 Apr 2020 11:32:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 23 Apr 2020 11:32:37 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
+ 2020 18:32:37 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
+ 2020 18:32:31 +0000
+Subject: Re: [PATCH] nouveau/hmm: fix nouveau_dmem_chunk allocations
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Ben Skeggs <bskeggs@redhat.com>
+References: <20200421231107.30958-1-rcampbell@nvidia.com>
+ <20200423121744.GY11945@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <a4a405d7-c136-b479-2bbe-5a2304f59c99@nvidia.com>
+Date:   Thu, 23 Apr 2020 11:32:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/o1onwjijsn/X1nkA2sVL9pS"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 16088265247455071621
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgdelhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejgeeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+In-Reply-To: <20200423121744.GY11945@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587666640; bh=G+nUmnRcJ5ydh6Fqsxvex5y164yAqJgOdeSWpoSvEso=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=HvIBjsiN8WsVxIg/1f+qlmPDtr3fRvI0oZ5uaHP5qXZw0HG9CI+njrtxsYGY/1yBS
+         gNZgb8LHMvioY5p19Rd2AaNkmFIC3MzXPIu+svmr/faDMM3L1luHXfeYHjBBJaqPMV
+         ips0u32xtmp29/wFUIzqCilWvdIVZRHX6BKXfw4BNV4T+tIyKdNZ+TeRakfTQXbxvY
+         JJLVVpYIXpf5CHB0xN4aob7nw72twxqb9HclE4yz67VxVgGB5KaANTiHlY1M1Ly6gH
+         h63Sm5raZ5X3QJk1IhCnHLSjLeUKbj+VOPo512LIQSA2jT16TBSCoAPBeC8YXvtVLt
+         yKzfd0z5K1BGg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o1onwjijsn/X1nkA2sVL9pS
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 20 Apr 2020 16:59:49 -0600, Jonathan Corbet <corbet@lwn.net> wrote:
-> On Sun, 15 Mar 2020 13:26:48 +0100
-> Stephen Kitt <steve@sk2.org> wrote:
->=20
-> > Based on the implementation in kernel/bpf/syscall.c,
-> > kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
-> > in bpftool-prog.rst.
-> >=20
-> > Signed-off-by: Stephen Kitt <steve@sk2.org>
-> > ---
-> >=20
-> > Notes:
-> >     This patch is intended for docs-next, but I'd appreciate reviews fr=
-om
-> >     BPF developers. =20
->=20
-> Haven't seen a whole lot of those...it's been a month, so I'll ahead and
-> apply this; it can be fixed up later if need be.
+On 4/23/20 5:17 AM, Jason Gunthorpe wrote:
+> On Tue, Apr 21, 2020 at 04:11:07PM -0700, Ralph Campbell wrote:
+>> In nouveau_dmem_init(), a number of struct nouveau_dmem_chunk are allocated
+>> and put on the dmem->chunk_empty list. Then in nouveau_dmem_pages_alloc(),
+>> a nouveau_dmem_chunk is removed from the list and GPU memory is allocated.
+>> However, the nouveau_dmem_chunk is never removed from the chunk_empty
+>> list nor placed on the chunk_free or chunk_full lists. This results
+>> in only one chunk ever being actually used (2MB) and quickly leads to
+>> migration to device private memory failures.
+>>
+>> Fix this by having just one list of free device private pages and if no
+>> pages are free, allocate a chunk of device private pages and GPU memory.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> ---
+>>   drivers/gpu/drm/nouveau/nouveau_dmem.c | 304 +++++++++----------------
+>>   1 file changed, 112 insertions(+), 192 deletions(-)
+> 
+> Does this generate any conflicts with my series to rework
+> hmm_range_fault?
+> 
+> Jason
 
-Thanks, I=E2=80=99ll start pushing my remaining sysctl doc patches.
+I based it on top of your series and the patch that Ben already has queued
+("nouveau/hmm: map pages after migration") so it shouldn't have any conflicts.
 
-Regards,
-
-Stephen
-
---Sig_/o1onwjijsn/X1nkA2sVL9pS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6h3z8ACgkQgNMC9Yht
-g5yBYxAAnAhijFdCY555e/sspMaOXstZhLe2ieWHr+OE1sZwokukp99cPd8xavzr
-4VvCL/MLTCmxEdiF1u2OWcar5qb1jmNsz3kuvP4lImpranerkN+j4nC0SiNrO9oW
-P76NRx6Zi/vZIRDNPEsoJjp2pl/i00YppayfGEYkT5UxeCOsNfTn3j1zQctWN/6v
-eLGtfkghS+6emGqCcEBoTrhkxxCqiv6VrDpGWNe+tEoseEm1I6NUm/gRqr8i6iM3
-EQzM7w+R8oiSy8JsIJR0ay03IGzUii5b3hkKZLQW/rAm1+MJVRaQaaHYsJn2JdD7
-/418UZwMZAJxZILek6bDNMQF3EHZgO6QbTDLjBPTm6ZeTJqqQEwfJ0DAVDG7sN/6
-MYjXUDrqYhj3XLziu0tf8DkS9ujvzcaLhyYRealessJy6WxFXDfYNt8t7IlbIRY1
-L0U2Euzl8akF5L6p4wfRy0C5ZYWQxgqNvPWhbuX+5DBATA76XIGtFHn5aRDZEMzD
-tSs0pkIre0oIPzD0Q93qVTcmHoIqUIyq3cLG+5mImhveBC4GDKMc6ULXJW2G+CY0
-1saNKu93Xvs6p9iioEE2lC/i0/NRvCfxT4DEfTJWl5nnyz3ZfzZ3gOJJ4CDVqLJZ
-ODgpRYY9+IkLj//4HyR34DE8M2hvQ+L0UYHo/K0qrfHw0Xm2ZhY=
-=6H/Z
------END PGP SIGNATURE-----
-
---Sig_/o1onwjijsn/X1nkA2sVL9pS--
+I guess I should have mentioned that in a cover letter.
