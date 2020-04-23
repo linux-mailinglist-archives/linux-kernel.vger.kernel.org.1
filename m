@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BF71B63D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3111B640A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730325AbgDWSa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730213AbgDWSa5 (ORCPT
+        id S1728318AbgDWSvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:51:21 -0400
+Received: from 9.mo177.mail-out.ovh.net ([46.105.72.238]:59781 "EHLO
+        9.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgDWSvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:30:57 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B0C09B044
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:30:57 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id s30so5736053qth.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=j6vx62T0cUnGorC7bQl2F/WmrnGQGNIQf7tVvJs2alQ=;
-        b=kINT/mL8BJANHc3utJboA7e++/E97u13tPbXwtZsXtg6xIZbI5o2ksqDU5FSEo8bMC
-         WJJy03Eds1xqsDhuQaNN7ZJ1OwSiDAyzlx09E46h2cGtcUDY/ee3NfpM2p1mrhQxt6OL
-         I5QRMV/LAHoUyHa92JzJMMvJp9DOZQbzoPLAy9391WCI3Tz/VdW4Zr780p8+DFy0luYO
-         9NwRigT3BcYhbsoyhXfPbCjT+zrv0gfeXNDOKdcxiXBalV9FUmGnC47UXg+0uTuUoHN1
-         qk115iMNzVbf637wm1kzra4h5nRq9knmOGSwMcU21hWhXtDXf9kspo6ipjy0DcmoaJa1
-         Tdvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=j6vx62T0cUnGorC7bQl2F/WmrnGQGNIQf7tVvJs2alQ=;
-        b=YoBuWYDc4gd/ZnU2bUzV58fp+svcNZqzmmjulbaedTwpT63ktobVtFQ9KNDnKSbIsO
-         YgQN/WUVXTfNN1SVfLs7xKmN7IKckvreia1b0nXCTZHy0FZc5SKQYz6cEfwGIPiMbkBe
-         LbScXdVovZrVTE8lZooQ3al7WMaIsOehjxXV33fBp7gLKBy3Bba/VLvsrU1OUtn3lduT
-         2lqjSrQiDwBqXMV6p5Y24Vo52AYsikSZL+ivvJy8ZOlg2/qjOkwkVhqG/sV7gfar4UEo
-         hwbJzx9G2rhbiWmXQ5RIgNMF/uSwmpXtmlgBHoW0JkvTsT32hK3rnElwWT+mQvpgik9n
-         APjQ==
-X-Gm-Message-State: AGi0PuZF8C8qNlNSYOsEHpIg9JU4uy9A8abBNvncVkv+XuO1ETyTokbE
-        a1+xm7EzV4OPGJ/rWQL22FYnpA==
-X-Google-Smtp-Source: APiQypKLmzIW/Ecao7idLzoJvjbffCPalu3gsWoeTzATgTxGBLsgz+Rj9v35dLweYr3CVQ7GCZwp4w==
-X-Received: by 2002:aed:2b43:: with SMTP id p61mr5464265qtd.298.1587666656655;
-        Thu, 23 Apr 2020 11:30:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id s8sm723438qtb.0.2020.04.23.11.30.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 11:30:56 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRgch-0006EC-Bq; Thu, 23 Apr 2020 15:30:55 -0300
-Date:   Thu, 23 Apr 2020 15:30:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-Message-ID: <20200423183055.GB26002@ziepe.ca>
-References: <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com>
- <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr>
- <871rofdhtg.fsf@intel.com>
- <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr>
- <940d3add-4d12-56ed-617a-8b3bf8ef3a0f@infradead.org>
- <nycvar.YSQ.7.76.2004231059170.2671@knanqh.ubzr>
- <20200423150556.GZ26002@ziepe.ca>
- <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr>
- <20200423151624.GA26002@ziepe.ca>
- <nycvar.YSQ.7.76.2004231128210.2671@knanqh.ubzr>
+        Thu, 23 Apr 2020 14:51:21 -0400
+X-Greylist: delayed 847 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 14:51:20 EDT
+Received: from player746.ha.ovh.net (unknown [10.110.115.246])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id 7D1E312D18D
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 20:32:37 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player746.ha.ovh.net (Postfix) with ESMTPSA id 0C0B911C624B8;
+        Thu, 23 Apr 2020 18:32:32 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 20:32:31 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] docs: sysctl/kernel: document BPF entries
+Message-ID: <20200423203231.5f682a52@heffalump.sk2.org>
+In-Reply-To: <20200420165949.14dc0752@lwn.net>
+References: <20200315122648.20558-1-steve@sk2.org>
+        <20200420165949.14dc0752@lwn.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YSQ.7.76.2004231128210.2671@knanqh.ubzr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/o1onwjijsn/X1nkA2sVL9pS"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 16088265247455071621
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgdelhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejgeeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:33:33AM -0400, Nicolas Pitre wrote:
-> > > No. There is no logic in restricting MTD usage based on CRAMFS or 
-> > > CRAMFS_MTD.
-> > 
-> > Ah, I got it backwards, maybe this:
-> > 
-> > config CRAMFS
-> >    depends on MTD if CRAMFS_MTD
-> > 
-> > ?
-> 
-> Still half-backward. CRAMFS should not depend on either MTD nor
-> CRAMFS_MTD.
+--Sig_/o1onwjijsn/X1nkA2sVL9pS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Well, I would view this the same as all the other cases.. the CRAMFS
-module has an optional ability consume symbols from MTD.  Here that is
-controlled by another 'CRAMFS_MTD' selection, but it should still
-settle it out the same way as other cases like this - ie CRAMFS is
-restricted to m if MTD is m
+On Mon, 20 Apr 2020 16:59:49 -0600, Jonathan Corbet <corbet@lwn.net> wrote:
+> On Sun, 15 Mar 2020 13:26:48 +0100
+> Stephen Kitt <steve@sk2.org> wrote:
+>=20
+> > Based on the implementation in kernel/bpf/syscall.c,
+> > kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
+> > in bpftool-prog.rst.
+> >=20
+> > Signed-off-by: Stephen Kitt <steve@sk2.org>
+> > ---
+> >=20
+> > Notes:
+> >     This patch is intended for docs-next, but I'd appreciate reviews fr=
+om
+> >     BPF developers. =20
+>=20
+> Haven't seen a whole lot of those...it's been a month, so I'll ahead and
+> apply this; it can be fixed up later if need be.
 
-Arnd's point that kconfig is acyclic does kill it though :(
+Thanks, I=E2=80=99ll start pushing my remaining sysctl doc patches.
 
-> It is CRAMFS_MTD that needs both CRAMFS and MTD.
-> Furthermore CRAMFS_MTD can't be built-in if MTD is modular.
+Regards,
 
-CRAMFS_MTD is a bool feature flag for the CRAMFS tristate - it is
-CRAMFS that can't be built in if MTD is modular.
+Stephen
 
-Jason
+--Sig_/o1onwjijsn/X1nkA2sVL9pS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6h3z8ACgkQgNMC9Yht
+g5yBYxAAnAhijFdCY555e/sspMaOXstZhLe2ieWHr+OE1sZwokukp99cPd8xavzr
+4VvCL/MLTCmxEdiF1u2OWcar5qb1jmNsz3kuvP4lImpranerkN+j4nC0SiNrO9oW
+P76NRx6Zi/vZIRDNPEsoJjp2pl/i00YppayfGEYkT5UxeCOsNfTn3j1zQctWN/6v
+eLGtfkghS+6emGqCcEBoTrhkxxCqiv6VrDpGWNe+tEoseEm1I6NUm/gRqr8i6iM3
+EQzM7w+R8oiSy8JsIJR0ay03IGzUii5b3hkKZLQW/rAm1+MJVRaQaaHYsJn2JdD7
+/418UZwMZAJxZILek6bDNMQF3EHZgO6QbTDLjBPTm6ZeTJqqQEwfJ0DAVDG7sN/6
+MYjXUDrqYhj3XLziu0tf8DkS9ujvzcaLhyYRealessJy6WxFXDfYNt8t7IlbIRY1
+L0U2Euzl8akF5L6p4wfRy0C5ZYWQxgqNvPWhbuX+5DBATA76XIGtFHn5aRDZEMzD
+tSs0pkIre0oIPzD0Q93qVTcmHoIqUIyq3cLG+5mImhveBC4GDKMc6ULXJW2G+CY0
+1saNKu93Xvs6p9iioEE2lC/i0/NRvCfxT4DEfTJWl5nnyz3ZfzZ3gOJJ4CDVqLJZ
+ODgpRYY9+IkLj//4HyR34DE8M2hvQ+L0UYHo/K0qrfHw0Xm2ZhY=
+=6H/Z
+-----END PGP SIGNATURE-----
+
+--Sig_/o1onwjijsn/X1nkA2sVL9pS--
