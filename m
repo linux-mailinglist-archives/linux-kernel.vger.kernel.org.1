@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD861B66E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 00:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A383B1B6700
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 00:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgDWWif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 18:38:35 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:32929 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726071AbgDWWie (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 18:38:34 -0400
-Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 95C4D3A2D1C;
-        Fri, 24 Apr 2020 08:38:30 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jRkUH-0006mw-5I; Fri, 24 Apr 2020 08:38:29 +1000
-Date:   Fri, 24 Apr 2020 08:38:29 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V10 09/11] fs: Lift XFS_IDONTCACHE to the VFS layer
-Message-ID: <20200423223829.GX27860@dread.disaster.area>
-References: <20200422212102.3757660-1-ira.weiny@intel.com>
- <20200422212102.3757660-10-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422212102.3757660-10-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=QyXUC8HyAAAA:8 a=drOt6m5kAAAA:8
-        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=jKX92kTyylOnBEM7lDIA:9
-        a=CjuIK1q_8ugA:10 a=RMMjzBEyIzXRtoq5n5K6:22 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1727812AbgDWWt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 18:49:26 -0400
+Received: from mga06.intel.com ([134.134.136.31]:36983 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726057AbgDWWt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 18:49:26 -0400
+IronPort-SDR: b3wZtSpBe/B0/lo8G3V1DZ9YbMl0k8oMJWXa9RHAPeE9ySTrAI8pwnHrgJan22YkiqMTpF16KV
+ 0jQoX7mHUt/Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 15:49:25 -0700
+IronPort-SDR: diI5/0t1rbZ3Sv5KS05Ae7RMdcx0iTHV5JV1E9rIOoG0pvKR6wrEByaReWlTvJftLwGYGUpf/H
+ 5YO0j1/MEVZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,309,1583222400"; 
+   d="scan'208";a="403090496"
+Received: from coffy.sc.intel.com ([10.3.79.166])
+  by orsmga004.jf.intel.com with ESMTP; 23 Apr 2020 15:49:25 -0700
+From:   Jithu Joseph <jithu.joseph@intel.com>
+To:     dvhart@infradead.org, andy@infradead.org
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
+        sean.v.kelley@intel.com, kuo-lang.tseng@intel.com,
+        Jithu Joseph <jithu.joseph@intel.com>
+Subject: [PATCH v2 0/1] platform/x86: Add Slim Bootloader firmware update support
+Date:   Thu, 23 Apr 2020 15:42:21 -0700
+Message-Id: <20200423224222.29730-1-jithu.joseph@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 02:21:00PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> DAX effective mode (S_DAX) changes requires inode eviction.
-> 
-> XFS has an advisory flag (XFS_IDONTCACHE) to prevent caching of the
-> inode if no other additional references are taken.  We lift this flag to
-> the VFS layer and change the behavior slightly by allowing the flag to
-> remain even if multiple references are taken.
-> 
-> This will expedite the eviction of inodes to change S_DAX.
-> 
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+v1 Upstream submission is available here:
+https://lore.kernel.org/lkml/20200420194405.8281-1-jithu.joseph@intel.com
 
-Looks good.
+v2 primarily addresses review comments from Andy Shevchenko to v1. 
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Changes in v2
+ - Rebased on top of tag: v5.7-rc2
+ - Added ABI documentation file
+ - Changed the ordering of SBL entry in Makefile and Kconfig
+ - Replaced kstrtobool() with kstrtouint() for user input processing
+ - Added DocLink: tag to annottate weblink in commit message
+ - Minor edits to commit message in p1/1
+ - Style related changes
 
+From v1 submission:
+
+Slim Bootloader(SBL) [see link below] is a small open-source boot
+firmware, designed for running on certain Intel platforms. SBL can be
+thought-of as fulfilling the role of a minimal BIOS
+implementation, i.e initializing the hardware and booting
+Operating System.
+
+This driver creates sysfs interfaces which allows user space entities
+to trigger update of SBL firmware.
+
+Acknowledgment: Initial draft of the driver code was authored by
+Maurice Ma <maurice.ma@intel.com>
+
+DocLink: https://slimbootloader.github.io
+
+Jithu Joseph (1):
+  platform/x86: Add Slim Bootloader firmware update signaling driver
+
+ .../ABI/testing/sysfs-platform-sbl-fwu-wmi    |  12 ++
+ MAINTAINERS                                   |   7 +
+ drivers/platform/x86/Kconfig                  |  10 ++
+ drivers/platform/x86/Makefile                 |   1 +
+ drivers/platform/x86/sbl_fwu_wmi.c            | 144 ++++++++++++++++++
+ 5 files changed, 174 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-sbl-fwu-wmi
+ create mode 100644 drivers/platform/x86/sbl_fwu_wmi.c
+
+
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
 -- 
-Dave Chinner
-david@fromorbit.com
+2.17.1
+
