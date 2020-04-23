@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7461B54EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 08:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA81B54D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 08:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgDWGtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 02:49:17 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:51497 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726696AbgDWGtR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 02:49:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587624556; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=o+wVZ0HdkKdgihK3M0H7Bb0gg28lZpceeXg+Uha9THY=; b=vyEFmFLDuTklpG6caKpuXfBAOVXj/erkVYz+ZQQDsoEK4kfmBrteQ3JR2DRKWkxD3SZfMbSQ
- qMqCmF35KDRdDH869lQ+hOHOu6DlSan8yOKRTfq6msXneW01chJKGCGrYejSq7ucvVh4UPS4
- OYit7mN8tr6gFv4fsuZJptN1Cd4=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea13a60.7f5db181c688-smtp-out-n03;
- Thu, 23 Apr 2020 06:49:04 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CF365C43636; Thu, 23 Apr 2020 06:49:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC586C433CB;
-        Thu, 23 Apr 2020 06:49:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC586C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     yhchuang@realtek.com, "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER
-        (rtw88)), netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 2/2] rtw88: Use udelay instead of usleep in atomic context
-References: <20200423063811.2636-1-kai.heng.feng@canonical.com>
-        <20200423063811.2636-2-kai.heng.feng@canonical.com>
-Date:   Thu, 23 Apr 2020 09:49:01 +0300
-In-Reply-To: <20200423063811.2636-2-kai.heng.feng@canonical.com> (Kai-Heng
-        Feng's message of "Thu, 23 Apr 2020 14:38:10 +0800")
-Message-ID: <87h7xan1cy.fsf@kamboji.qca.qualcomm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726721AbgDWGqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 02:46:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35460 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726032AbgDWGqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 02:46:20 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4BC04130DCD682959441;
+        Thu, 23 Apr 2020 14:46:15 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 23 Apr 2020 14:46:08 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <rrichter@marvell.com>, <bp@alien8.de>, <mchehab@kernel.org>,
+        <tony.luck@intel.com>, <james.morse@arm.com>
+CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] EDAC, thunderx: Make some symbols static
+Date:   Thu, 23 Apr 2020 14:52:24 +0800
+Message-ID: <1587624744-97240-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+Fix the following sparse warning:
 
-> It's incorrect to use usleep in atomic context.
->
-> Switch to a macro which uses udelay instead of usleep to prevent the issue.
->
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+drivers/edac/thunderx_edac.c:1281:22: warning: symbol 'ocx_dfs_ents'
+was not declared. Should it be static?
+drivers/edac/thunderx_edac.c:1922:22: warning: symbol 'l2c_tad_dfs_ents'
+was not declared. Should it be static?
+drivers/edac/thunderx_edac.c:1928:22: warning: symbol 'l2c_cbc_dfs_ents'
+was not declared. Should it be static?
+drivers/edac/thunderx_edac.c:1934:22: warning: symbol 'l2c_mci_dfs_ents'
+was not declared. Should it be static?
 
-This fixes a regression, right? So there should be a Fixes line.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/edac/thunderx_edac.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Also I can't take this until patch 1 is in my tree. And I don't know who
-takes iopoll.h patches.
-
+diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
+index 34be60f..4af9744 100644
+--- a/drivers/edac/thunderx_edac.c
++++ b/drivers/edac/thunderx_edac.c
+@@ -1278,7 +1278,7 @@ OCX_DEBUGFS_ATTR(lne23_badcnt, OCX_LNE_BAD_CNT(23));
+ 
+ OCX_DEBUGFS_ATTR(com_int, OCX_COM_INT_W1S);
+ 
+-struct debugfs_entry *ocx_dfs_ents[] = {
++static struct debugfs_entry *ocx_dfs_ents[] = {
+ 	&debugfs_tlk0_ecc_ctl,
+ 	&debugfs_tlk1_ecc_ctl,
+ 	&debugfs_tlk2_ecc_ctl,
+@@ -1919,19 +1919,19 @@ static irqreturn_t thunderx_l2c_threaded_isr(int irq, void *irq_id)
+ 
+ L2C_DEBUGFS_ATTR(tad_int, L2C_TAD_INT_W1S);
+ 
+-struct debugfs_entry *l2c_tad_dfs_ents[] = {
++static struct debugfs_entry *l2c_tad_dfs_ents[] = {
+ 	&debugfs_tad_int,
+ };
+ 
+ L2C_DEBUGFS_ATTR(cbc_int, L2C_CBC_INT_W1S);
+ 
+-struct debugfs_entry *l2c_cbc_dfs_ents[] = {
++static struct debugfs_entry *l2c_cbc_dfs_ents[] = {
+ 	&debugfs_cbc_int,
+ };
+ 
+ L2C_DEBUGFS_ATTR(mci_int, L2C_MCI_INT_W1S);
+ 
+-struct debugfs_entry *l2c_mci_dfs_ents[] = {
++static struct debugfs_entry *l2c_mci_dfs_ents[] = {
+ 	&debugfs_mci_int,
+ };
+ 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.6.2
+
