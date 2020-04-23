@@ -2,90 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0641B53F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9681B5403
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgDWFKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:10:01 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:48402 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725863AbgDWFKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:10:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=3OYx4GBLe0XanFHFYKCyXCxotnUqJEh9x+Y95HIWd0M=; b=Q
-        DzZXq817hTPuDr3a6/hxsgWr/1JzvVxYn6lYgtnxbVTGRT6VENaHpmV0pnJr6azO
-        +g7xnsi3oWmDINi8cL0OjoChh323LIW0bKE5r2cF1Ev+Otfy3MQTiVLRAeGZR1My
-        CllCg2jrsVn3V4ZhEVyIwK/rHzhXjfUCSFrK6hQqR4=
-Received: from localhost.localdomain (unknown [120.229.255.80])
-        by app1 (Coremail) with SMTP id XAUFCgCX33cfI6Fe3Js8AA--.30847S3;
-        Thu, 23 Apr 2020 13:09:52 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] ext4: Fix buffer_head refcnt leak when ext4_iget() fails
-Date:   Thu, 23 Apr 2020 13:09:27 +0800
-Message-Id: <1587618568-13418-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgCX33cfI6Fe3Js8AA--.30847S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy7Zw4ktF1fZw4kZr4ktFb_yoWkZrX_WF
-        1ktF48ur90vwsaka4UXrZ8Aw4Yk3W8ta1DWrZavr13X3s0ya9rCr9YvFy3Ar47WrW2yFn8
-        CrnxGr9xA3ySvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbskFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUO2NtUUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S1726666AbgDWFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:12:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:37814 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725961AbgDWFMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 01:12:21 -0400
+IronPort-SDR: WrhYc+t6JOklM1PUaz60L6OKaRrTcVjckYaBWBGx7BZJjlvDplEinWkHLxDnQgIQhTcpC4XtnV
+ 3vzqHIQliPQQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 22:12:21 -0700
+IronPort-SDR: CaLeYimjrE1X7uWVc9FtYpX1vYLIdIO3dWZk/8E64x85IpEKhr0IbiEnZ4StGXbr+va5BgiGpm
+ 84jyyHJAt8tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; 
+   d="scan'208";a="365895105"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Apr 2020 22:12:19 -0700
+Date:   Thu, 23 Apr 2020 13:09:34 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: How to upload fpga firmware
+Message-ID: <20200423050934.GC30060@yilunxu-OptiPlex-7050>
+References: <20200422114432.GM1694@pengutronix.de>
+ <20200423013648.GA2430@epycbox.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423013648.GA2430@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ext4_orphan_get() invokes ext4_read_inode_bitmap(), which returns a
-reference of the specified buffer_head object to "bitmap_bh" with
-increased refcnt.
+Hi Moritz:
 
-When ext4_orphan_get() returns, local variable "bitmap_bh" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+On Wed, Apr 22, 2020 at 06:36:48PM -0700, Moritz Fischer wrote:
+> Hi Sascha,
+> 
+> On Wed, Apr 22, 2020 at 01:44:32PM +0200, Sascha Hauer wrote:
+> > Hi,
+> > 
+> > I wonder what can be done with the mainline state of drivers/fpga/. The
+> > entry to the framework seems to be fpga_mgr_load(). The only user of
+> > this function is fpga_region_program_fpga(). This in turn is only called
+> > in response of applying a device tree overlay. A device tree overlay is
+> > applied with of_overlay_fdt_apply() which has no users in the Kernel.
+> 
+> Yes. It is waiting for dt_overlays one way or another. I personally
+> don't currently have the bandwidth to work actively on this.
+> 
+> > My current task is to load a firmware to a FPGA. The code all seems to
+> > be there in the Kernel, it only lacks a way to trigger it. I am not very
+> > interested in device tree overlays since the FPGA appears as a PCI
+> > device (although applying a dtbo could enable the PCIe controller device
+> > tree node). Is there some mainline way to upload FPGA firmware? At the
+> > moment we are using the attached patch to trigger loading the firmware
+> > from userspace. Would something like this be acceptable for mainline?
+> 
+> We've looked into this sort of patches over the years and never came to
+> a general interface that really works.
+> 
+> The OPAE folks (and other users I know of) usually use FPGA Manager with
+> a higher layer on top of it that moves the bitstream into the kernel via
+> an ioctl().
+> 
+> One concept I had toyed with mentally, but haven't really gotten around
+> to implement is a 'discoverable' region, that would deal with the
+> necessary re-enumeration via a callback and have a sysfs interface
+> similar to what the patch below has.
+> This would essentially cover use-cases where you have a discoverable
+> device implemented in FPGA logic, such as say an FPGA hanging off of
+> PCIe bus that can get loaded over USB, a CPLD or some other side-band
+> mechanism. After loading the image you'd have to rescan the PCIe bus -
+> which - imho is the kernel's job.
 
-The reference counting issue happens in one exception handling path of
-ext4_orphan_get(). When ext4_iget() fails, the function forgets to
-decrease the refcnt increased by ext4_read_inode_bitmap(), causing a
-refcnt leak.
+Seems you mentioned the static region update. I have the pcie based FPGA
+card, and the pcie endpoint is implemented in FPGA static region. So after
+I have written image into Flash (over USB or other ways), and trying to
+load it to FPGA, the pcie endpoint is also disfunctional, the pcie device
+is actually lost. We need to rescan the pcie bus after loading is finished.
 
-Fix this issue by calling brelse() when ext4_iget() fails.
+The concern is that when the pcie device lost, the 'discoverable' region
+created by the pcie driver is also destroyed. When you rescaned the pcie
+device back, it is like everything is start over again (pci probe, fpga
+region creation, subdev enumeration ...) rather than just a re-enumeration
+callback for discoverable region.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- fs/ext4/ialloc.c | 1 +
- 1 file changed, 1 insertion(+)
+How do you think about it?
 
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index f95ee99091e4..2e4729ba17e6 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1234,6 +1234,7 @@ struct inode *ext4_orphan_get(struct super_block *sb, unsigned long ino)
- 		ext4_set_errno(sb, -err);
- 		ext4_error(sb, "couldn't read orphan inode %lu (err %d)",
- 			   ino, err);
-+		brelse(bitmap_bh);
- 		return inode;
- 	}
- 
--- 
-2.7.4
+> 
+> What I really wanna avoid is creating another /dev/fpga0 / /dev/xdevcfg
+> that completely leaves the kernel in the dark about the fact that it
+> reconfigures a bit of hardware hanging off the bus.
 
+I have the FPGA board whose image binary for static region is stored in Flash.
+I was able to enumerate the Flash as MTD device and update it directly, (now
+switch to another interface for security support). 
+Do you mean I should avoid doing that cause FPGA region device is unaware of
+the update? Some interface in FPGA region would be better choice?
+
+Thanks!
+
+> 
+> In my ideal world you'd create a pci driver that binds to your device,
+> and creates mfd style subdevices for whatever you'd want your design to
+> do. One of these devices would be an FPGA and a FPGA region attached to
+> that FPGA manager. Your top level driver would co-ordinate the fact that
+> you are re-programming parts of the FPGA and create / destroy devices as
+> needed for the hardware contained in the bitstream.
+> 
+> [..]
+> > +static ssize_t firmware_name_show(struct device *dev,
+> > +				  struct device_attribute *attr,
+> > +				  char *buf)
+> > +{
+> > +	struct fpga_region *region = to_fpga_region(dev);
+> > +
+> > +	if (!region->info || !region->info->firmware_name)
+> > +		return 0;
+> > +
+> > +	return sprintf(buf, "%s\n", region->info->firmware_name);
+> > +}
+> > +
+> > +static ssize_t firmware_name_store(struct device *dev,
+> > +				   struct device_attribute *attr,
+> > +				   const char *firmware_name, size_t count)
+> > +{
+> > +	struct fpga_region *region = to_fpga_region(dev);
+> > +	struct fpga_image_info *info = region->info;
+> > +	int error;
+> > +
+> > +	if (!info) {
+> > +		info = fpga_image_info_alloc(dev);
+> > +		if (!info)
+> > +			return -ENOMEM;
+> > +	} else if (info->firmware_name) {
+> > +		devm_kfree(dev, info->firmware_name);
+> > +	}
+> > +
+> > +	info->firmware_name = devm_kstrdup(dev, firmware_name, GFP_KERNEL);
+> > +	if (!info->firmware_name)
+> > +		return -ENOMEM;
+> > +
+> > +	if (count >  0 && info->firmware_name[count - 1] == '\n')
+> > +		info->firmware_name[count - 1] = '\0';
+> > +
+> > +	region->info = info;
+> > +	error = fpga_region_program_fpga(region);
+> > +	if (error) {
+> > +		devm_kfree(dev, info->firmware_name);
+> > +		info->firmware_name = NULL;
+> > +	}
+> > +
+> > +	return error ? error : count;
+> > +}
+> 
+> Cheers,
+> Moritz
