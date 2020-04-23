@@ -2,133 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1E41B5EBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AED1B5EC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgDWPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:11:21 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22750 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729032AbgDWPLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:11:18 -0400
-IronPort-SDR: h/issFRsndPNKjiiGV+hxyd/Nz/72qoPHh+5BqyXLClBtoSUDeeRou43ol33nhegKXLYcY0FAl
- S4gCY+H1oCVg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 08:11:16 -0700
-IronPort-SDR: 1jhfBXFrFWuz6CBqLI/R4z6G6fO9VBVZHvtWFo2hWncqCnf2JYI2aDRZyC1trtpfT6bqz1QlZc
- M3Yvq3BWxaww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
-   d="scan'208";a="244894681"
-Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
-  by orsmga007.jf.intel.com with ESMTP; 23 Apr 2020 08:11:16 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.204]) by
- ORSMSX106.amr.corp.intel.com ([169.254.1.150]) with mapi id 14.03.0439.000;
- Thu, 23 Apr 2020 08:11:15 -0700
-From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
-To:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>
-CC:     "rajatja@google.com" <rajatja@google.com>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "fred@fredlawl.com" <fred@fredlawl.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        id S1729076AbgDWPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:11:52 -0400
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:56841 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728928AbgDWPLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:11:51 -0400
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id A52406367B;
+        Thu, 23 Apr 2020 11:11:48 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=liUy51BXPagKlCpsxsU30mmCCug=; b=B+EA2M
+        QyUzFiSAqoYAraOIp3H40AD73D0C4Tobz7XWGQjCz0nUpgHcTMrSzaXIztWtxrT/
+        GC+Rc8QJvC5DmljlmmT397odad9V22Qh0yNVArwcRZ/uETpdSm17o+W7MV7FHfgV
+        WV7JsA/cdm4QR0+vUtZv+aszhzdRqtZkFCEcE=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 96FBD6367A;
+        Thu, 23 Apr 2020 11:11:48 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=sgOUu7eN/fZaL+hHaitw7ZcpUu4hOm/EaIXLM4l/NWY=; b=XM6IO9W1P4XTOEkPCHeNSEh0evLSN/mxgeAFKpbS+9j5iBWGTYUrUuMCegQSMtZfLbX0I/3kO+hyy0pBdPeGqOlsdSzXN2rtn0NSfR0rubiHS2vXyGPTJBg36GoTo1adjeVe7FnDe1xAEKSqYVfm8gS3poCWcphGgECndwVn1d0=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id C829F63679;
+        Thu, 23 Apr 2020 11:11:47 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id B5CAE2DA0C34;
+        Thu, 23 Apr 2020 11:11:46 -0400 (EDT)
+Date:   Thu, 23 Apr 2020 11:11:46 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "sbobroff@linux.ibm.com" <sbobroff@linux.ibm.com>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Patel, Mayurkumar" <mayurkumar.patel@intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] PCI/DPC: Allow Native DPC Host Bridges to use DPC
-Thread-Topic: [PATCH v2 2/2] PCI/DPC: Allow Native DPC Host Bridges to use
- DPC
-Thread-Index: AQHWF186KnXLsMWtVkCGO69asmmcQaiGN2OAgAESEwA=
-Date:   Thu, 23 Apr 2020 15:11:14 +0000
-Message-ID: <ea21d9475b0af277c7288504ff2cd32b3f91e4ba.camel@intel.com>
-References: <1587418630-13562-1-git-send-email-jonathan.derrick@intel.com>
-         <1587418630-13562-3-git-send-email-jonathan.derrick@intel.com>
-         <0058b993-0663-7fed-ed31-cb0adf845a39@linux.intel.com>
-In-Reply-To: <0058b993-0663-7fed-ed31-cb0adf845a39@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.255.1.180]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7AE62BCA59372E4DBE12A4448988D76D@intel.com>
-Content-Transfer-Encoding: base64
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+In-Reply-To: <20200423150556.GZ26002@ziepe.ca>
+Message-ID: <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr>
+References: <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com> <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com> <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr> <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com>
+ <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr> <871rofdhtg.fsf@intel.com> <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr> <940d3add-4d12-56ed-617a-8b3bf8ef3a0f@infradead.org> <nycvar.YSQ.7.76.2004231059170.2671@knanqh.ubzr>
+ <20200423150556.GZ26002@ziepe.ca>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: C05F543C-8574-11EA-8AB0-D1361DBA3BAF-78420484!pb-smtp2.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2F0aHlhbmFyYXlhbmFuLA0KDQpPbiBXZWQsIDIwMjAtMDQtMjIgYXQgMTU6NTAgLTA3MDAs
-IEt1cHB1c3dhbXksIFNhdGh5YW5hcmF5YW5hbiB3cm90ZToNCj4gDQo+IE9uIDQvMjAvMjAgMjoz
-NyBQTSwgSm9uIERlcnJpY2sgd3JvdGU6DQo+ID4gVGhlIGV4aXN0aW5nIHBvcnRkcnYgbW9kZWwg
-cHJldmVudHMgRFBDIHNlcnZpY2VzIHdpdGhvdXQgZWl0aGVyIE9TDQo+ID4gY29udHJvbCAoX09T
-QykgZ3JhbnRlZCB0byBBRVIgc2VydmljZXMsIGEgSG9zdCBCcmlkZ2UgcmVxdWVzdGluZyBOYXRp
-dmUNCj4gPiBBRVIsIG9yIHVzaW5nIG9uZSBvZiB0aGUgJ3BjaWVfcG9ydHM9JyBwYXJhbWV0ZXJz
-IG9mICduYXRpdmUnIG9yDQo+ID4gJ2RwYy1uYXRpdmUnLg0KPiA+IA0KPiA+IFRoZSBEUEMgcG9y
-dCBzZXJ2aWNlIGRyaXZlciBpdHNlbGYgd2lsbCBhbHNvIGZhaWwgdG8gcHJvYmUgaWYgdGhlIGtl
-cm5lbA0KPiA+IGFzc3VtZXMgdGhlIHBvcnQgaXMgdXNpbmcgRmlybXdhcmUtRmlyc3QgQUVSLiBJ
-dCdzIGEgcmVhc29uYWJsZQ0KPiA+IGV4cGVjdGF0aW9uIHRoYXQgYSBwb3J0IHVzaW5nIEZpcm13
-YXJlLUZpcnN0IEFFUiB3aWxsIGFsc28gYmUgdXNpbmcNCj4gPiBGaXJtd2FyZS1GaXJzdCBEUEMs
-IGhvd2V2ZXIgaWYgYSBIb3N0IEJyaWRnZSByZXF1ZXN0cyBOYXRpdmUgRFBDLCB0aGUNCj4gPiBE
-UEMgZHJpdmVyIHNob3VsZCBhbGxvdyBpdCBhbmQgbm90IGZhaWwgdG8gYmluZCBkdWUgdG8gQUVS
-IGNhcGFiaWxpdHkNCj4gPiBzZXR0aW5ncy4NCj4gPiANCj4gPiBIb3N0IEJyaWRnZXMgd2hpY2gg
-cmVxdWVzdCBOYXRpdmUgRFBDIHBvcnQgc2VydmljZXMgd2lsbCBhbHNvIGxpa2VseQ0KPiA+IHJl
-cXVlc3QgTmF0aXZlIEFFUiwgaG93ZXZlciBpdCBzaG91bGRuJ3QgYmUgYSByZXF1aXJlbWVudC4g
-VGhpcyBwYXRjaA0KPiA+IGFsbG93cyBwb3J0cyBvbiB0aG9zZSBIb3N0IEJyaWRnZXMgdG8gaGF2
-ZSBEUEMgcG9ydCBzZXJ2aWNlcy4NCj4gPiANCj4gPiBUaGlzIHdpbGwgYXZvaWQgdGhlIHVubGlr
-ZWx5IHNpdHVhdGlvbiB3aGVyZSB0aGUgcG9ydCBpcyBGaXJtd2FyZS1GaXJzdA0KPiA+IEFFUiBh
-bmQgTmF0aXZlIERQQywgYW5kIGEgQklPUyBvciBzd2l0Y2ggZmlybXdhcmUgcHJlY29uZmlndXJh
-dGlvbiBvZg0KPiA+IHRoZSBEUEMgdHJpZ2dlciBjb3VsZCByZXN1bHQgaW4gdW5oYW5kbGVkIERQ
-QyBldmVudHMuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSm9uIERlcnJpY2sgPGpvbmF0aGFu
-LmRlcnJpY2tAaW50ZWwuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9wY2kvcGNpZS9kcGMu
-YyAgICAgICAgICB8IDMgKystDQo+ID4gICBkcml2ZXJzL3BjaS9wY2llL3BvcnRkcnZfY29yZS5j
-IHwgMyArKy0NCj4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0
-aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2llL2RwYy5jIGIv
-ZHJpdmVycy9wY2kvcGNpZS9kcGMuYw0KPiA+IGluZGV4IDc2MjE3MDQuLjNmMzEwNmYgMTAwNjQ0
-DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kvcGNpZS9kcGMuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcGNp
-L3BjaWUvZHBjLmMNCj4gPiBAQCAtMjg0LDcgKzI4NCw4IEBAIHN0YXRpYyBpbnQgZHBjX3Byb2Jl
-KHN0cnVjdCBwY2llX2RldmljZSAqZGV2KQ0KPiA+ICAgCWludCBzdGF0dXM7DQo+ID4gICAJdTE2
-IGN0bCwgY2FwOw0KPiA+ICAgDQo+ID4gLQlpZiAocGNpZV9hZXJfZ2V0X2Zpcm13YXJlX2ZpcnN0
-KHBkZXYpICYmICFwY2llX3BvcnRzX2RwY19uYXRpdmUpDQo+ID4gKwlpZiAocGNpZV9hZXJfZ2V0
-X2Zpcm13YXJlX2ZpcnN0KHBkZXYpICYmICFwY2llX3BvcnRzX2RwY19uYXRpdmUgJiYNCj4gPiAr
-CSAgICAhcGNpX2ZpbmRfaG9zdF9icmlkZ2UocGRldi0+YnVzKS0+bmF0aXZlX2RwYykNCj4gV2h5
-IGRvIGl0IGluIHByb2JlIGFzIHdlbGwgPyBpZiBob3N0LT5uYXRpdmVfZHBjIGlzIG5vdCBzZXQg
-dGhlbiB0aGUNCj4gZGV2aWNlIERQQyBwcm9iZSBpdCBzZWxmIHdvbid0IGhhcHBlbiByaWdodCA/
-DQoNClBvcnRkcnYgb25seSBlbmFibGVzIHRoZSBpbnRlcnJ1cHQgYW5kIGFsbG93cyB0aGUgcHJv
-YmUgdG8gb2NjdXIuDQoNClRoZSBwcm9iZSBpdHNlbGYgd2lsbCBzdGlsbCBmYWlsIGlmIHRoZXJl
-J3MgYSBtaXhlZC1tb2RlIF9PU0MNCm5lZ290aWF0ZWQgQUVSICYgRFBDLCBkdWUgdG8gcGNpZV9h
-ZXJfZ2V0X2Zpcm13YXJlX2ZpcnN0IHJldHVybmluZyAxDQpmb3IgQUVSIGFuZCBubyBjaGVjayBm
-b3IgRFBDLg0KDQpJIGRvbid0IGtub3cgaWYgc3VjaCBhIHBsYXRmb3JtIHdpbGwgZXhpc3QsIGJ1
-dCB0aGUga2VybmVsIGlzIGFscmVhZHkNCndpcmVkIGZvciAnZHBjLW5hdGl2ZScgc28gaXQgbWFr
-ZXMgc2Vuc2UgdG8gZXh0ZW5kIGl0IGZvciB0aGlzLi4NCg0KVGhpcyB0cmFuc2Zvcm0gbWlnaHQg
-YmUgbW9yZSByZWFkYWJsZToNCglpZiAocGNpZV9hZXJfZ2V0X2Zpcm13YXJlX2ZpcnN0KHBkZXYp
-ICYmDQoJICAgICEocGNpZV9wb3J0c19kcGNfbmF0aXZlIHx8IGhiLT5uYXRpdmVfZHBjKSkNCg0K
-DQoNCj4gPiAgIAkJcmV0dXJuIC1FTk9UU1VQUDsNCj4gPiAgIA0KPiA+ICAgCXN0YXR1cyA9IGRl
-dm1fcmVxdWVzdF90aHJlYWRlZF9pcnEoZGV2aWNlLCBkZXYtPmlycSwgZHBjX2lycSwNCj4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpZS9wb3J0ZHJ2X2NvcmUuYyBiL2RyaXZlcnMvcGNp
-L3BjaWUvcG9ydGRydl9jb3JlLmMNCj4gPiBpbmRleCA1MGE5NTIyLi5mMjEzOWExIDEwMDY0NA0K
-PiA+IC0tLSBhL2RyaXZlcnMvcGNpL3BjaWUvcG9ydGRydl9jb3JlLmMNCj4gPiArKysgYi9kcml2
-ZXJzL3BjaS9wY2llL3BvcnRkcnZfY29yZS5jDQo+ID4gQEAgLTI1Niw3ICsyNTYsOCBAQCBzdGF0
-aWMgaW50IGdldF9wb3J0X2RldmljZV9jYXBhYmlsaXR5KHN0cnVjdCBwY2lfZGV2ICpkZXYpDQo+
-ID4gICAJICovDQo+ID4gICAJaWYgKHBjaV9maW5kX2V4dF9jYXBhYmlsaXR5KGRldiwgUENJX0VY
-VF9DQVBfSURfRFBDKSAmJg0KPiA+ICAgCSAgICBwY2lfYWVyX2F2YWlsYWJsZSgpICYmDQo+ID4g
-LQkgICAgKHBjaWVfcG9ydHNfZHBjX25hdGl2ZSB8fCAoc2VydmljZXMgJiBQQ0lFX1BPUlRfU0VS
-VklDRV9BRVIpKSkNCj4gPiArCSAgICAocGNpZV9wb3J0c19kcGNfbmF0aXZlIHx8IGhvc3QtPm5h
-dGl2ZV9kcGMgfHwNCj4gPiArCSAgICAgKHNlcnZpY2VzICYgUENJRV9QT1JUX1NFUlZJQ0VfQUVS
-KSkpDQo+ID4gICAJCXNlcnZpY2VzIHw9IFBDSUVfUE9SVF9TRVJWSUNFX0RQQzsNCj4gPiAgIA0K
-PiA+ICAgCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX0RPV05TVFJFQU0g
-fHwNCj4gPiANCg==
+On Thu, 23 Apr 2020, Jason Gunthorpe wrote:
+
+> On Thu, Apr 23, 2020 at 11:01:40AM -0400, Nicolas Pitre wrote:
+> > On Wed, 22 Apr 2020, Randy Dunlap wrote:
+> > 
+> > > On 4/22/20 2:13 PM, Nicolas Pitre wrote:
+> > > > On Wed, 22 Apr 2020, Jani Nikula wrote:
+> > > > 
+> > > >> On Tue, 21 Apr 2020, Nicolas Pitre <nico@fluxnic.net> wrote:
+> > > >>> This is really a conditional dependency. That's all this is about.
+> > > >>> So why not simply making it so rather than fooling ourselves? All that 
+> > > >>> is required is an extension that would allow:
+> > > >>>
+> > > >>> 	depends on (expression) if (expression)
+> > > >>>
+> > > >>> This construct should be obvious even without reading the doc, is 
+> > > >>> already used extensively for other things already, and is flexible 
+> > > >>> enough to cover all sort of cases in addition to this particular one.
+> > > >>
+> > > >> Okay, you convinced me. Now you only need to convince whoever is doing
+> > > >> the actual work of implementing this stuff. ;)
+> > > > 
+> > > > What about this:
+> > > > 
+> > > > Subject: [PATCH] kconfig: allow for conditional dependencies
+> > > > 
+> > > > This might appear to be a strange concept, but sometimes we want
+> > > > a dependency to be conditionally applied. One such case is currently
+> > > > expressed with:
+> > > > 
+> > > > 	depends on FOO || !FOO
+> > > > 
+> > > > This pattern is strange enough to give one's pause. Given that it is
+> > > > also frequent, let's make the intent more obvious with some syntaxic 
+> > > > sugar by effectively making dependencies optionally conditional.
+> > > > This also makes the kconfig language more uniform.
+> > > > 
+> > > > Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
+> > > 
+> > > Hi,
+> > > 
+> > > If we must do something here, I prefer this one.
+> > > 
+> > > Nicolas, would you do another example, specifically for
+> > > CRAMFS_MTD in fs/cramfs/Kconfig, please?
+> > 
+> > I don't see how that one can be helped. The MTD dependency is not 
+> > optional.
+> 
+> Could it be done as 
+> 
+> config MTD
+>    depends on CRAMFS if CRAMFS_MTD
+> 
+> ?
+
+No. There is no logic in restricting MTD usage based on CRAMFS or 
+CRAMFS_MTD.
+
+
+Nicolas
