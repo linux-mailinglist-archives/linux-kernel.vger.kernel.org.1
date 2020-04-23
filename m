@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E150E1B521C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91E61B51D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgDWBrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 21:47:48 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:7901 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725781AbgDWBrr (ORCPT
+        id S1726403AbgDWBej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 21:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgDWBej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 21:47:47 -0400
-X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 21:47:47 EDT
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 22 Apr 2020 18:32:40 -0700
-Received: from [10.62.16.246] (unknown [10.62.16.246])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 8A28AB1660;
-        Wed, 22 Apr 2020 21:32:42 -0400 (EDT)
-Reply-To: <ganb@vmware.com>
-Subject: Re: Re: [PATCH 40/70] x86/sev-es: Setup per-cpu GHCBs for the runtime
- handler
-To:     Joerg Roedel <jroedel@suse.de>, Mike Stunes <mstunes@vmware.com>
-CC:     Joerg Roedel <joro@8bytes.org>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-References: <20200319091407.1481-1-joro@8bytes.org>
- <20200319091407.1481-41-joro@8bytes.org>
- <A7DF63B4-6589-4386-9302-6B7F8BE0D9BA@vmware.com>
- <20200415155302.GD21899@suse.de>
-From:   Bo Gan <ganb@vmware.com>
-Message-ID: <1a164e55-19dd-a20b-6837-9f425cfac100@vmware.com>
-Date:   Wed, 22 Apr 2020 18:33:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200415155302.GD21899@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: ganb@vmware.com does not
- designate permitted sender hosts)
+        Wed, 22 Apr 2020 21:34:39 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CA3C03C1AA;
+        Wed, 22 Apr 2020 18:34:37 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x23so3424171lfq.1;
+        Wed, 22 Apr 2020 18:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DAjDO2syVihYfSYHVPHnBlRhOt9duNjgHctpjQ0ix6c=;
+        b=eUVd8k2O2d2zxPxp8rFtZ7IDbc6v/LYYWEtLilnhk89o1oS1POopQeOtxW9hMjQyrg
+         hnw/uKRLApQXMBqmHw/Wt1ybEHUXEO/j3o89rYQ66McADGjAU4fNtKTq2EaPMwpreHHd
+         bXwGW7BOqm+gSJUhWf2JJAt2AEr2eKDsv1ao6iRVY3v24ywl8+I3ExhuRUVChw7ndNmr
+         Omd48AdkdaZ/KhfwVtv3jM/KGdyyGL4+zhSwzouhXsYP2T6uJLH22W/sYD184aEu+sCF
+         qaA0MweY69Y5u+ZdsvkDLb8XI4t27jeR3Y5DYLWq+tQJWM9QY2KbDHod5HHOL/FRyekp
+         dPJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DAjDO2syVihYfSYHVPHnBlRhOt9duNjgHctpjQ0ix6c=;
+        b=JFBOPHlJXmorpcAWw8baAoQhv2uFR+YrT8gkkI67rR2TYX4sGj2N2Ljo9KC1xDOk60
+         K8ey5apnP3Z5Hd7PsNCU+wVKYKp6bS1j9uqaglTgw0DRIaGPiGueVMCYRgPQ/wl6BKlD
+         INhUx8E5zSueCxEXEEpmshE0cuy2y1xSiABo8N+kQ6hEGhPqMeeZ17SECt41MBMnMmok
+         F1qgn4+0a/yNW5cVImOCgV2HfRvrSiPOHVBBZ77iNDBZsWUyY4ZKpJonWuHRazd7XUMr
+         lvsaXHhF9Mpi92oFmuBuXq22LUN0ed2scXoZMzAWu6gNt3W4VARsxPkxBh7NXdvPitV0
+         pt+Q==
+X-Gm-Message-State: AGi0PubDDIJ+VBkSg2FyMbevtE29hHp8hI4LFevKpe32BBrphV+IV2Za
+        qR2btzHK/hqlmXfJp3M6i/Q=
+X-Google-Smtp-Source: APiQypLVF8k5uqxjiwCBFvVf1xeH58dehjnKwlyRN+zx1HBI6paxUET+mG4Tcr86VknKMveN0sPEbg==
+X-Received: by 2002:a19:946:: with SMTP id 67mr848245lfj.142.1587605675892;
+        Wed, 22 Apr 2020 18:34:35 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id h21sm564967lfp.1.2020.04.22.18.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 18:34:35 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH v2 0/3] Bluetooth: hci_qca: add support for QCA9377
+Date:   Thu, 23 Apr 2020 01:34:27 +0000
+Message-Id: <20200423013430.21399-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/20 8:53 AM, Joerg Roedel wrote:
-> Hi Mike,
-> 
-> On Tue, Apr 14, 2020 at 07:03:44PM +0000, Mike Stunes wrote:
->> set_memory_decrypted needs to check the return value. I see it
->> consistently return ENOMEM. I've traced that back to split_large_page
->> in arch/x86/mm/pat/set_memory.c.
-> 
-> I agree that the return code needs to be checked. But I wonder why this
-> happens. The split_large_page() function returns -ENOMEM when
-> alloc_pages() fails. Do you boot the guest with minal RAM assigned?
-> 
-> Regards,
-> 
-> 	Joerg
-> 
+From: Christian Hewittt <christianshewitt@gmail.com>
 
-I just want to add some context around this. The call path that lead to 
-the failure is like the following:
+This series adds a new compatible for the QCA9377 BT device that is found
+in many Android TV box devices, makes minor changes to allow max-speed
+values for the device to be read from device-tree, and updates bindings
+to reflect those changes.
 
-	__alloc_pages_slowpath
-	__alloc_pages_nodemask
-	alloc_pages_current
-	alloc_pages
-	split_large_page
-	__change_page_attr
-	__change_page_attr_set_clr
-	__set_memory_enc_dec
-	set_memory_decrypted
-	sev_es_init_ghcbs
-	trap_init   -> before mm_init (in init/main.c)
-	start_kernel
-	x86_64_start_reservations
-	x86_64_start_kernel
-	secondary_startup_64
+v2 changes: rebase against bluetooth-next
 
-At this time, mem_init hasn't been called yet (which would be called by 
-mm_init). Thus, the free pages are still owned by memblock. It's in 
-mem_init (x86/mm/init_64.c) that memblock_free_all gets called and free 
-pages are released.
+Christian Hewitt (3):
+  dt-bindings: net: bluetooth: Add device tree bindings for QCA9377
+  Bluetooth: hci_qca: add compatible for QCA9377
+  Bluetooth: hci_qca: allow max-speed to be set for QCA9377 devices
 
-During testing, I've also noticed that debug_pagealloc=1 will make the 
-issue disappear. That's because with debug_pagealloc=1, 
-probe_page_size_mask in x86/mm/init.c will not allow large pages 
-(2M/1G). Therefore, no split_large_page would happen. Similarly, if CPU 
-doesn't have X86_FEATURE_PSE, there won't be large pages either.
+ .../bindings/net/qualcomm-bluetooth.txt         |  5 +++++
+ drivers/bluetooth/hci_qca.c                     | 17 ++++++++++-------
+ 2 files changed, 15 insertions(+), 7 deletions(-)
 
-Any thoughts? Maybe split_large_page should get pages from memblock at 
-early boot?
+-- 
+2.17.1
 
-Bo
