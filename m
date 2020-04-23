@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95181B5DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E680E1B5DAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgDWOYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:24:41 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:42829 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgDWOYi (ORCPT
+        id S1728045AbgDWOYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726591AbgDWOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:24:38 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 03NEO72X028581;
-        Thu, 23 Apr 2020 23:24:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 03NEO72X028581
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587651849;
-        bh=OlCb8frhpY2Za1yj/p2H075SumHInvU8We060i62nwA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oZjBIcd4ohGNjihfaisSdXgwVTujFq+0B8pHpx3EVq04kMZpyRDsbo3haZBTcmB1M
-         098HHsN68cll5ysJdxKc8kTIOEQ6sn8czjan0cq00Jux3B4PL9X0XJnvtAALXq5WR5
-         PNEFNiQU9Ol8WY+YTKfNHK4EMW1aymqhT08DB01mZeQIu36rMXR9tc5HcfD0GS19yY
-         P7KeMJ39RoIIFzmgYoEWG7tQ6ADoxAxYO/Ayfc1iWJ7XPOFHB3Nnz2RAonPKAV36ga
-         sP+OOwJSQ2Lbi6RIAg5FzjEeE9L4igdfTgiRvnrNe35AbGbgXpsU6YNdEdzJVjqjdI
-         a/kTQPvWWC7mQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] kbuild: use CONFIG_CC_VERSION_TEXT to construct LINUX_COMPILER macro
-Date:   Thu, 23 Apr 2020 23:23:54 +0900
-Message-Id: <20200423142354.312088-4-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200423142354.312088-1-masahiroy@kernel.org>
-References: <20200423142354.312088-1-masahiroy@kernel.org>
+        Thu, 23 Apr 2020 10:24:09 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3440DC08E934
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 07:24:09 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n188so3238276ybc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 07:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=On7uMVKUj/oaJJmzywZSm4qsJXQIiJn8ZPz+oC8CTSE=;
+        b=Q5C1V4ioZfi/+MM9yv6Cv+SHFjYnL3VOcPKr1mZvDos2T8v85hmBSffk983k5JwUNp
+         ANH21Hh0gwip6XnY++G5HwcFbasNi1n6OdSzCpkenzz1a6owgSmSe8cxdphujeM2vykV
+         Pal5Y/9qt0e52WqVq4sQ8UuxOpsNp+SC8Scy2O6zAn+RiQS0iuwx9KlxJa3+kLt+kGqR
+         3G8BXu2X6ProAyhn5Uu3T+pMoJdnPcs9mHiH3FupB/jAS5BZbXAdokizLf0MtkbcYtpz
+         u6j8RLg8FbjhQrcMQlQ2/fGDeiM4yuEEkuPTabRH076SXZC0lsDYhnoJgx9i+oPliUqE
+         9n1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=On7uMVKUj/oaJJmzywZSm4qsJXQIiJn8ZPz+oC8CTSE=;
+        b=MDS5wLADcX0XC+SVX5/Rd74Jo9xnh5B+xhOuLWruQQ5jjh73/HQvkr85R+ITxNy47D
+         pUhqRGZ9IPRZx0FvSpI59UPZGVMFleZSzkyDBEErZ28DEdb3cZ2f3P0VyD/4YQrZZNaP
+         0rPvMWT2r9Wa81w1Jvd54F7QkPfYMWhbjs+O4Tj6wzz0kR+SUkQ5h5+rFWJpLdu1i0Zx
+         WrfVeDMWyt642+DRTamqTwSFEuS7axO7NU/IUAFheon9fyOS8fgEEneUdvHtZqOtTqr+
+         PT7jGeMgd/3W0dJpVUj8/c40JqvXKZqXocm+PuRzNHmThc/RQk9zowinRE0LH/RSQNwa
+         GifQ==
+X-Gm-Message-State: AGi0PuZAzDHwv3IIEsrrDnLvoFExn2AHPoj9KeIRGZh+oLJGIpFA1Sx8
+        oXF3oCp9CHb4406dwAne6X30vjWBDmtbZpS8t4SVsA==
+X-Google-Smtp-Source: APiQypJ41R/4vXDGGlNAKSVrq8gFAp0tInuFgn6gp4Sq2IdCJtYis2Fi6ZRQAnuu7tLtrEsv7n4DdcLtIPwKiX3eVVs=
+X-Received: by 2002:a25:77d8:: with SMTP id s207mr7227599ybc.47.1587651848118;
+ Thu, 23 Apr 2020 07:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200422220430.254014-1-irogers@google.com> <20200422220430.254014-6-irogers@google.com>
+ <20200423112915.GH1136647@krava>
+In-Reply-To: <20200423112915.GH1136647@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 23 Apr 2020 07:23:56 -0700
+Message-ID: <CAP-5=fU7=FvpRr+PMsc_xebiETBgbNcv7U2jX3pJT87X7LAdtQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] perf expr: increase max other
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-scripts/mkcompile_h runs $(CC) just for getting the version string.
-Re-use CONFIG_CC_VERSION_TEXT to optimize it.
+On Thu, Apr 23, 2020 at 4:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Apr 22, 2020 at 03:04:24PM -0700, Ian Rogers wrote:
+> > Large metrics such as Branch_Misprediction_Cost_SMT on x86 broadwell
+> > need more space.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/expr.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+> > index 0938ad166ece..4938bfc608b7 100644
+> > --- a/tools/perf/util/expr.h
+> > +++ b/tools/perf/util/expr.h
+> > @@ -2,7 +2,7 @@
+> >  #ifndef PARSE_CTX_H
+> >  #define PARSE_CTX_H 1
+> >
+> > -#define EXPR_MAX_OTHER 20
+> > +#define EXPR_MAX_OTHER 64
+> >  #define MAX_PARSE_ID EXPR_MAX_OTHER
+> >
+> >  struct expr_parse_id {
+> > --
+> > 2.26.2.303.gf8c07b1a785-goog
+> >
+>
+> ok, and we should probably start to think about what Andi suggested
+> in here: https://lore.kernel.org/lkml/20200224210308.GQ160988@tassilo.jf.intel.com/
 
-For GCC, this slightly changes the version string. I do not think it
-is a big deal as we do not have the defined format for LINUX_COMPILER.
-In fact, the recent commit 4dcc9a88448a ("kbuild: mkcompile_h:
-Include $LD version in /proc/version") added the linker version.
+Agreed, a hash table would make sense. This was the smallest value
+that would let the test on x86 pass.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Thanks,
+Ian
 
-Changes in v2:
-  - new patch
-
- init/Makefile       | 2 +-
- scripts/mkcompile_h | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/init/Makefile b/init/Makefile
-index d45e967483b2..30c7345e4fe2 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -35,4 +35,4 @@ include/generated/compile.h: FORCE
- 	@$($(quiet)chk_compile.h)
- 	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@	\
- 	"$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"	\
--	"$(CONFIG_PREEMPT_RT)" "$(CC)" "$(LD)"
-+	"$(CONFIG_PREEMPT_RT)" "$(CONFIG_CC_VERSION_TEXT)" "$(LD)"
-diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-index 5b80a4699740..baf3ab8d9d49 100755
---- a/scripts/mkcompile_h
-+++ b/scripts/mkcompile_h
-@@ -6,7 +6,7 @@ ARCH=$2
- SMP=$3
- PREEMPT=$4
- PREEMPT_RT=$5
--CC=$6
-+CC_VERSION="$6"
- LD=$7
- 
- vecho() { [ "${quiet}" = "silent_" ] || echo "$@" ; }
-@@ -62,7 +62,6 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
-   printf '#define LINUX_COMPILE_BY "%s"\n' "$LINUX_COMPILE_BY"
-   echo \#define LINUX_COMPILE_HOST \"$LINUX_COMPILE_HOST\"
- 
--  CC_VERSION=$($CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//')
-   LD_VERSION=$($LD -v | head -n1 | sed 's/(compatible with [^)]*)//' \
- 		      | sed 's/[[:space:]]*$//')
-   printf '#define LINUX_COMPILER "%s"\n' "$CC_VERSION, $LD_VERSION"
--- 
-2.25.1
-
+> jirka
+>
