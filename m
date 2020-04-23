@@ -2,92 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1321B6364
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA261B6398
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbgDWS05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        id S1730408AbgDWS1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730306AbgDWS0y (ORCPT
+        with ESMTP id S1730380AbgDWS13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:26:54 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4105C09B043
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id q18so3282922pgm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
-        b=g40sBMuaO0eKdotmx6qgQBl63DKBmrekz5bvyEQHA4wVZtcqrxc+aFVgh/QD84O9VQ
-         7GeGJGwCstc5CQBYUut5JFB/SR9hiHRBoNucBdQ5+M/xcZE7LYnQNVriX94nlJDQQ53M
-         WWNnGuPMmJMtuCxOc6M3BOG48McWyi9pwkfv1qCbwmDhh95byI3UmcGK9ZJ59xQm/kqA
-         giNgZwxUHu+XTIAoqn/uu1orK63Ur+6hMBQW2TB101zb0oJ5HpVThkCq6id/TjpQtg27
-         HPMb1DcYsj7bM6wQaeV1UkPK6mgUhECRFNV10F5zDhvx1RXP4ikb8uuEIGMKOSNWVb51
-         vLew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
-        b=fmRM/XJy3VnNq7RZw6pWTXud9t2eleThAEX6eOGa08Fe0v2HwuanIfHIcrzm1bTwc4
-         yQIkF8KpQDYAotme5GUHx/97e5ytIUvtu9gmQT4RCC6OdjKJlO8//zZhEtulOKmXC9gv
-         FlyEUI5cvSj0v6ch0VGQRg16Fbe9uUyZrudjgm5A1B6yFqQxjYFP/RoaKKe0j/WA9Yss
-         gsrOeYt5/zrSW2BvwxX+gyNDg9UDsKtkgzh3ZinJEn0qDwVZvK65OnmFN7suOizNlWbB
-         YFZOXxW65LYFas6jlLM/tLp3c4w9wKQLfVAtfiQMr59Tgtt01c4urYEV/feQ2NAwvFBU
-         pj+A==
-X-Gm-Message-State: AGi0PuaiBv446m5bX5rJ/tPgS4R40R8VgzwP9k+XY4F3U2V0ofEAV+2p
-        +9Ugnc1cFhNRmpridY0B4dSNNgG0j1XmhA07c43XIzM=
-X-Google-Smtp-Source: APiQypKZ88CB7WlyCjo0k9+cU4PX0VcggKkKtzSKgRJHkcPGizF0yZXAjzEMBgo6XH4xzBXv0KAOMjPM9p1sgpp6/70=
-X-Received: by 2002:a5e:9416:: with SMTP id q22mr2547966ioj.93.1587666410194;
- Thu, 23 Apr 2020 11:26:50 -0700 (PDT)
+        Thu, 23 Apr 2020 14:27:29 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFC9C09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:27:29 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F0D2E00329C23FFFEA6A903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2e00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F5361EC0D8D;
+        Thu, 23 Apr 2020 20:27:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1587666447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6l2OhVohaqlD4hKfwY1YL9IkS67B6tIfRgQm/UCeQLE=;
+        b=QDpiO43DcGVz16U0f8CoKKwsuY8WUszZmHglJMCFciFR2AZYQNg4D6qdn3u0cejpjZK+mB
+        xKRrzy1ZkgWGtXgQa19cUAh/o+OR6KHQNh+DRlJxtsflsxRuRa/uXLSRTcjZRnLDGu6ApT
+        QY0QYp3vWcKi1jmjY2vjZo0edTTormM=
+Date:   Thu, 23 Apr 2020 20:27:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michael Matz <matz@suse.de>, Jakub Jelinek <jakub@redhat.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] x86: Fix early boot crash on gcc-10, next try
+Message-ID: <20200423182728.GI26021@zn.tnic>
+References: <20200422102309.GA26846@zn.tnic>
+ <CAKwvOd=Dza3UBfeUzs2RW6ko5fDr3jYeGQAYpJXqyEVns6DJHg@mail.gmail.com>
+ <20200422192113.GG26846@zn.tnic>
+ <CAKwvOdkbcO8RzoafON2mGiSy5P96P5+aY8GySysF2my7q+nTqw@mail.gmail.com>
+ <20200422212605.GI26846@zn.tnic>
+ <CAKwvOd=exxhfb8N6=1Q=wBUaYcRDEq3L1+TiHDLz+pxWg8OuwQ@mail.gmail.com>
+ <20200423125300.GC26021@zn.tnic>
+ <20200423161126.GD26021@zn.tnic>
+ <20200423173058.GE26021@zn.tnic>
+ <CAKwvOdmmuE=o-bGpraR1rJdzDgf2UYvgcx2-S7cdGSFWWkWurA@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a02:c845:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 11:26:49
- -0700 (PDT)
-Reply-To: boa.benin107@yahoo.com
-From:   "Mrs. Angella Michelle" <info.zennitbankplcnigerian@gmail.com>
-Date:   Thu, 23 Apr 2020 20:26:49 +0200
-Message-ID: <CABHzvr=N78snvtMHePMOa+RLFdcZEjXLPkuhkojt4VoZGNzBsQ@mail.gmail.com>
-Subject: Contact Bank of Africa-Benin to receive your payment funds transfer
- amount of $12.800.000,00 Million USD,approved this morning by IMF.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdmmuE=o-bGpraR1rJdzDgf2UYvgcx2-S7cdGSFWWkWurA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attn Dear.
-Contact Bank of Africa-Benin to receive your payment funds transfer amount =
-of
-$12.800.000,00 Million USD,approved this morning by IMF.
-Happy to inform you, we have finally deposited your payment funds
-$12.8 million us dollars with the Paying Bank of Africa-Benin
-to transfer the payment amount of $12.800,000,00 Million Us Dollars to you
-Contact the bank immediately you receive this email now.
-Director Bank of Africa-Benin: Dr. Festus Obiara
-Email id:  boa.benin107@yahoo.com
-Tel/mobile, (229) 62819378
-BOA-BENIN | GROUPE BANK OF AFRICA, boa-benin
-Avenue Jean-Paul II - 08 BP 0879 - Cotonou - B=C3=A9nin
-Phone:(229) 62819378.
-2020 GROUPE BANK OF AFRICA
-Be advised to re-confirm your bank details to this bank as listed.
-Your account Holder's name----------------
-Bank Name----------------------------------------------------------
-Bank address----------------------------------------------
-Account Numbers---------------------------------------
-Rounting-----------------------------------------------------------------
-Your direct Phone Numbers----------------------------------------------
-Note,I have paid the deposit and insurance fees for you
-But the only money you are to send to this bank is $150.00 us dollars
-Been for the wire transfer fees of your funds
-Contact Him now to receive your transfer deposited this morning
-I wait for your reply upon confirmation
-Mrs. Angella Michelle
-Editor, Zenith Bank- Companies Benin
-mrsa9389@gmail.com
+On Thu, Apr 23, 2020 at 11:02:09AM -0700, Nick Desaulniers wrote:
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
+> It's too bad that $(CC) isn't exported yet; IIUC we include the arch
+> specific Makefiles then later export $(CC).  If that was the case, we
+> could just use $(CC) in the shell script, rather than passing it along
+> as an argument.  Oh well.
+
+Aha, so that's why others pass it. I used
+gcc-x86_64-has-stack-protector.sh as an example to slap that one
+together.
+
+Below new version with proper commit message this time.
+
+> If I add `echo "hello world"` to the end of
+> scripts/x86-check-compiler.sh to verify this stops a build, this is
+> the error message I would observe:
+> arch/x86/Makefile:6: *** clang check failed. Aborting.  Stop.
+
+Right, or you can comment out the asm("") in the script and then it
+matches the "jmp" and thus fails the build. As it should be.
+
+Thx.
+
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Thu, 23 Apr 2020 19:28:28 +0200
+Subject: [PATCH] x86: Check whether the compiler is sane
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add a check script to verify whether the compiler is sane. This is
+x86-only for now and checks one thing only but should be useful for more
+checks in the future.
+
+Suggested-by: Martin Liška <mliska@suse.cz>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/x86/Makefile             | 4 ++++
+ scripts/x86-check-compiler.sh | 9 +++++++++
+ 2 files changed, 13 insertions(+)
+ create mode 100755 scripts/x86-check-compiler.sh
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 00e378de8bc0..38d3eec5062e 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -1,6 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Unified Makefile for i386 and x86_64
+ 
++#  Check the compiler
++sane_compiler := $(shell $(srctree)/scripts/x86-check-compiler.sh $(CC))
++$(if $(sane_compiler),$(error $(CC) check failed. Aborting),)
++
+ # select defconfig based on actual architecture
+ ifeq ($(ARCH),x86)
+   ifeq ($(shell uname -m),x86_64)
+diff --git a/scripts/x86-check-compiler.sh b/scripts/x86-check-compiler.sh
+new file mode 100755
+index 000000000000..b2b5b54b6939
+--- /dev/null
++++ b/scripts/x86-check-compiler.sh
+@@ -0,0 +1,9 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++# Check whether the compiler tail-call optimizes across an asm() statement.
++# Fail the build if it does.
++
++echo "int foo(int a); int bar(int a) { int r = foo(a); asm(\"\"); return r; }" |\
++	     $* -O2 -x c -c -S - -o - 2>/dev/null |\
++	     grep -E "^[[:blank:]]+jmp[[:blank:]]+.*"
+-- 
+2.21.0
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
