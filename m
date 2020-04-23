@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DE41B5474
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ACA1B544F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgDWFzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:55:10 -0400
-Received: from mail-eopbgr80057.outbound.protection.outlook.com ([40.107.8.57]:45075
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725867AbgDWFzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:55:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7BAloR1QKB7I4G0+2iMmxQDFiO8p+snCTLQKJjtqS3PxYjC8YHUaas7eBKvLIBGa2NJ2GJ3Kb+vh+9N63AxJ8XaIOAEJ3mpLpolnIbfkGfmGeW6daROBMU6y0xF/l2XlsVf5gUetNf//3qMryvHlJdOwWJ6HOZTnwM8cHNNb1N7Qcl824s9POtRLCgiz473ZUK6QcmZYqC0we5WIC6u/geI3q0Jn3osdrouAv7XX3GIlRXABH1hobWVKewylcCj2Td4KhWI7GQY6YV76UhN56glmcG5ZvURXWhEstEdD08UuyfBIWCs4rt+6T/YqedC1lul1q0A5ht3J3tJkp4nmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xKQNys9bM89V5fWqHce4Z44blJ+W9EhLHDEgJS7DflI=;
- b=DDxIHeOsDec5FsF8X8mBOVUxPVJlNWIM53UR+7QCf130smz/kcQ46TMRsdM7g9U3UKBkk7P6wa7ZnJ/ZRkLhJcKch5E5err4Da2AdfcLSZs43L+D0OB+sMn1gxTvigPy7/H4AROZtqIWaHheb7hVo9fvJMkxxTPGjxmI5pm6yNl4g3KdxhbZh7HC+w2PKPlE4diO1Qz15zN1G/KLbP3p5+fHposjNU/SCB7QJRiZ+w6JpiKe6yRj7fzpvFqz4qdAWZM8+KM/Bccl7+Z/BYdEwqPdEAbc+0TvrstxtfTlC2dHX7vff1t5PO3j4lQx/NqnT2M/Hof+aoShynnFEpHhlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xKQNys9bM89V5fWqHce4Z44blJ+W9EhLHDEgJS7DflI=;
- b=dS2h0QYOsUAPILO7/Ae3/+o5fYonKwGeGHJSPmpi3fzMlhYk2KEKd9rvg3X9QgNrYEgzCUXmJ09zddw1mGDcHLxVmtbWmrR5YB02WWOKCe/oPxPWpoo4R8q65vH06c7MglfjzhYV5RgBTlDCTRtUwyLMZpD4JsUH4eqjJf/moGU=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2712.eurprd04.prod.outlook.com (2603:10a6:4:99::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 23 Apr
- 2020 05:55:06 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2937.012; Thu, 23 Apr 2020
- 05:55:06 +0000
-From:   peng.fan@nxp.com
-To:     broonie@kernel.org
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        shengjiu.wang@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] regmap: mmio: prepare/unprepare clk only when read/write
-Date:   Thu, 23 Apr 2020 13:46:31 +0800
-Message-Id: <1587620791-5279-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0075.apcprd02.prod.outlook.com
- (2603:1096:4:90::15) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1726701AbgDWFm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:42:59 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:39819 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgDWFm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 01:42:58 -0400
+Received: by mail-io1-f67.google.com with SMTP id w4so5122489ioc.6;
+        Wed, 22 Apr 2020 22:42:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gmCpsolV5O6IrBICHK4TbSGq0+YV2uB2pTUJIO1xgPg=;
+        b=I0erHkM9gab2v6fIm/fx9sY8JccCgcSBStlCz385vJAPG9YuLcg9qAX+jMoRXwqUk+
+         ausA3ZEJUt0I2WMsPso/MtHa4VrUqdOLCjkYAvOYVEiiGTtlSyz6b9KeTY3XIWCBLjsc
+         CvjWnYdz1DRFJhff0883zp8KW/d/vcdmLg0b1ICVc6MypJkIqSy0euo9spetjT/eX1If
+         GYt5Yg/yXN+JZyv6Jxzkk26eD9ZMD8MjbMy+QHf8qWLEgBE5UBmDLSW1PimKmQxK6fJC
+         b9+TTe6BJfVIg0B9UTtAow7r35joAzeucB/0maq0O7/SnfhF0ehFQMiq9iSmZQEYcYhD
+         O4Zg==
+X-Gm-Message-State: AGi0PuZSkufsw/aes9zq5p/0xsXn2uSDyqgRaqqB+9CDNWbTqWGHz1+M
+        eO+p2AMuKc0i4p+LeN8iq74wO4TJmDtQ1QgH0lU=
+X-Google-Smtp-Source: APiQypIsomUxi7LXs971z/6bCPclQ9Yy5q0il+Vgc/GXU9zRdFij6HYKYfU6mC4VjIKigwxWLOddJLzfuGIzAxd2cbk=
+X-Received: by 2002:a6b:6c01:: with SMTP id a1mr2149899ioh.196.1587620577403;
+ Wed, 22 Apr 2020 22:42:57 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0075.apcprd02.prod.outlook.com (2603:1096:4:90::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2937.13 via Frontend Transport; Thu, 23 Apr 2020 05:55:04 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 72645e57-de95-437f-bbb7-08d7e74adf79
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2712:|DB6PR0402MB2712:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB271215A7AA2EE0792513054988D30@DB6PR0402MB2712.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-Forefront-PRVS: 03827AF76E
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(366004)(136003)(39860400002)(376002)(66556008)(52116002)(8676002)(81156014)(66946007)(66476007)(6506007)(5660300002)(26005)(86362001)(2906002)(36756003)(478600001)(6916009)(316002)(69590400007)(6666004)(6486002)(4326008)(6512007)(2616005)(9686003)(16526019)(186003)(956004)(8936002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EQICZkw0uX8QUCExgP5BdP6FGSDT4K+x1gh9U+xQRg7Z483HoM97HVAPWm2EAut64cRNRZD597sCgPBCa49j3Z200TBuMDy0c24cnMsqF/68VA6Gdoo4WWRC42URChyNOMqUvalZuAvC+rgSNU8UUoonWDI7c9HceLnq+jKy+9vXBVA2xLGiHQzO3VxR9ZE6tiTajdvhwnOH0TRTQ4z8dFlvuRsnYl2FoxxCrltx/QYXW0F3GCGsH0Atr2J+vNYYqZNGbaqJUiUPMsPmJQMgjdGkH4m59y4Aze+B4yCaasUABQvmRA8enypQO2YfvVfrXHbGpg1MHbwNKgnduIsVsOXwvqBbJq8t1uXqRiwsTz4WXes5u/o34jv7RoF7AcRkU1po9FSLZuzjvNYI/szazzvZc9klKOCquKWTNGNNwrciBqxW0JyARlog02ZpwaIgaonP7CzXAYTdxTOZR0T0Nly3aNotTttAMMb1OpUYQ6xhF3ymYvUM3P0hi7zVitDM
-X-MS-Exchange-AntiSpam-MessageData: FcJQ3YGvr4UwMH2hz5Ei+3SoJw5zkpIwfzY4pgt5xB7i+1MT/jSVIhcx9I6rmWFfZcmYZMLQmYn353JzHwQCmk9Ry5930VMHZ72g/LWIn2+aVToPhUedW+ncXicrRTsRdd0dOtUSNVFsZvja18Sn4w==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72645e57-de95-437f-bbb7-08d7e74adf79
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 05:55:06.1696
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uZZVWxwemztr8E6EmcsdTD396T3d8DMTAsp9YkGkF4hTEipbep61I2z7VAKat3GVV/dainWJXPRW6ud8BHo/PA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2712
+References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Thu, 23 Apr 2020 13:50:20 +0800
+Message-ID: <CAAhV-H70zSz0T5QYHXAEZP5vJA67+8XRsx8n2wgdpfjigaiofg@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Loongson PCH IRQ Support
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hi, Jiaxun,
 
-use clk_prepare at the very beginning will invoke pm runtime resume,
-if the clk is binded with a power domain. This will cause runtime
-power high. Let's use clk_prepare_enable and clk_disable_unprepare
-when read/write to avoid the runtime power issue.
+We have established a rule before, so please don't call the PCH bridge
+as Loongson-7A or Loongson-7A1000. You can call it LS7A, or Loongson's
+LS7A if needed.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/base/regmap/regmap-mmio.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+Huacai
 
-diff --git a/drivers/base/regmap/regmap-mmio.c b/drivers/base/regmap/regmap-mmio.c
-index af967d8f975e..a1ad7419c4a3 100644
---- a/drivers/base/regmap/regmap-mmio.c
-+++ b/drivers/base/regmap/regmap-mmio.c
-@@ -118,7 +118,7 @@ static int regmap_mmio_write(void *context, unsigned int reg, unsigned int val)
- 	int ret;
- 
- 	if (!IS_ERR(ctx->clk)) {
--		ret = clk_enable(ctx->clk);
-+		ret = clk_prepare_enable(ctx->clk);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -126,7 +126,7 @@ static int regmap_mmio_write(void *context, unsigned int reg, unsigned int val)
- 	ctx->reg_write(ctx, reg, val);
- 
- 	if (!IS_ERR(ctx->clk))
--		clk_disable(ctx->clk);
-+		clk_disable_unprepare(ctx->clk);
- 
- 	return 0;
- }
-@@ -175,7 +175,7 @@ static int regmap_mmio_read(void *context, unsigned int reg, unsigned int *val)
- 	int ret;
- 
- 	if (!IS_ERR(ctx->clk)) {
--		ret = clk_enable(ctx->clk);
-+		ret = clk_prepare_enable(ctx->clk);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -183,7 +183,7 @@ static int regmap_mmio_read(void *context, unsigned int reg, unsigned int *val)
- 	*val = ctx->reg_read(ctx, reg);
- 
- 	if (!IS_ERR(ctx->clk))
--		clk_disable(ctx->clk);
-+		clk_disable_unprepare(ctx->clk);
- 
- 	return 0;
- }
-@@ -193,7 +193,6 @@ static void regmap_mmio_free_context(void *context)
- 	struct regmap_mmio_context *ctx = context;
- 
- 	if (!IS_ERR(ctx->clk)) {
--		clk_unprepare(ctx->clk);
- 		if (!ctx->attached_clk)
- 			clk_put(ctx->clk);
- 	}
-@@ -305,12 +304,6 @@ static struct regmap_mmio_context *regmap_mmio_gen_context(struct device *dev,
- 		goto err_free;
- 	}
- 
--	ret = clk_prepare(ctx->clk);
--	if (ret < 0) {
--		clk_put(ctx->clk);
--		goto err_free;
--	}
--
- 	return ctx;
- 
- err_free:
-@@ -361,7 +354,7 @@ int regmap_mmio_attach_clk(struct regmap *map, struct clk *clk)
- 	ctx->clk = clk;
- 	ctx->attached_clk = true;
- 
--	return clk_prepare(ctx->clk);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(regmap_mmio_attach_clk);
- 
-@@ -369,8 +362,6 @@ void regmap_mmio_detach_clk(struct regmap *map)
- {
- 	struct regmap_mmio_context *ctx = map->bus_context;
- 
--	clk_unprepare(ctx->clk);
--
- 	ctx->attached_clk = false;
- 	ctx->clk = NULL;
- }
--- 
-2.16.4
-
+On Wed, Apr 22, 2020 at 10:26 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> This series mainly added IRQ support for Loongson-7A1000 PCH.
+> DeviceTree will be added later as PCI support is also pending
+> for reviewing.
+>
+> Jiaxun Yang (6):
+>   irqchip: Add Loongson HyperTransport Vector support
+>   dt-bindings: interrupt-controller: Add Loongson HTVEC
+>   irqchip: Add Loongson PCH PIC controller
+>   dt-bindings: interrupt-controller: Add Loongson PCH PIC
+>   irqchip: Add Loongson PCH MSI controller
+>   dt-bindings: interrupt-controller: Add Loongson PCH MSI
+>
+>  .../interrupt-controller/loongson,htvec.yaml  |  59 ++++
+>  .../loongson,pch-msi.yaml                     |  56 ++++
+>  .../loongson,pch-pic.yaml                     |  55 ++++
+>  drivers/irqchip/Kconfig                       |  26 ++
+>  drivers/irqchip/Makefile                      |   3 +
+>  drivers/irqchip/irq-loongson-htvec.c          | 217 ++++++++++++++
+>  drivers/irqchip/irq-loongson-pch-msi.c        | 265 ++++++++++++++++++
+>  drivers/irqchip/irq-loongson-pch-pic.c        | 256 +++++++++++++++++
+>  8 files changed, 937 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,htvec.yaml
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
+>  create mode 100644 drivers/irqchip/irq-loongson-htvec.c
+>  create mode 100644 drivers/irqchip/irq-loongson-pch-msi.c
+>  create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
+>
+> --
+> 2.26.0.rc2
+>
