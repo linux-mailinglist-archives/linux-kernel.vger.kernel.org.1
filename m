@@ -2,44 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D28B1B6181
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 19:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3131B6184
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 19:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729793AbgDWRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 13:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S1729854AbgDWRC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 13:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729674AbgDWRCn (ORCPT
+        with ESMTP id S1729674AbgDWRCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 13:02:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A773FC09B042;
-        Thu, 23 Apr 2020 10:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=woeHLzx2UyIQ/D6tJ1KvK2T3SJtwi4BVd49pVJRsTWA=; b=ATuZoGTyc71GfTDwe7WeYFXr9q
-        +WpG5ohuvFc54tA/SLkPuogLnOrIeym1WzQF1KkHX3thClqxLuoXTvhkIz+6+7vt27NDPsTidcAQz
-        9aakKqD4YCXnkPWDraxl9M5BjIxbzIak65UrGHF3yWYVb3rY578OGlqzweZa4qJsGSlt5FdjDu5ax
-        QTblip1z4/5b9WIJi4cC/5hsmzugJnAPFOIG88rHPtFs0gN7sYgtfP99RzlSaSwUTCETiC9j+2dMM
-        Fmtia4VisQQOurt8+ipErRxMouYYiiusb3Gx8BIn/Q4KBaXjtReBO34OZ4ex8r2uhBGWaWO7uzrux
-        /jo/9Gyw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRfFI-0001fB-J5; Thu, 23 Apr 2020 17:02:40 +0000
-Subject: Re: [PATCH v2] io: correct documentation mismatches for io memcpy
-To:     Wang Wenhu <wenhu.wang@vivo.com>, arnd@arndb.de,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com
-References: <20200423000945.118231-1-wenhu.wang@vivo.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <84b453cb-886c-2ec6-e562-e300a3cd55d4@infradead.org>
-Date:   Thu, 23 Apr 2020 10:02:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Thu, 23 Apr 2020 13:02:54 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2D5C09B042;
+        Thu, 23 Apr 2020 10:02:54 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k1so7716579wrx.4;
+        Thu, 23 Apr 2020 10:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OgOoFPMvziAtiUZxoE51wszbOZtCs8cBFEzsWONoXaQ=;
+        b=fNLNNyipyEVINdAKv5TCJmwFHz02ABD9GsJ45feEgUSC3QzsDSJ/C24fKrp0btqSCW
+         bD7q0I+D2qw88HV3LrvVGA+jkQuSd20SfXmhPJNdYOvvECzR+3lRimOKZdhvgKEPilcB
+         0ySYrBYjp1Oxqyh7Y3rskjj07DRr0XvjV3hgoZWku9fXg8QTRuuyJAM5PxnZHglByWL2
+         8AOKnuNZHCJq0LXMVnh1mLIS03knoIEnnbUf1L46MO6p3eoDTP8Ys1RbBbT1oVGGdSde
+         4qWLJdVy22i5VT2+5yfhtpnz4jDWjefKGZ3eoCSl5RezIbj2HgHo/xugZL/dmEGTxD3q
+         Frdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OgOoFPMvziAtiUZxoE51wszbOZtCs8cBFEzsWONoXaQ=;
+        b=lLBHWkuomg7Jb+xlTNC3UGJrVYCVIWe1UlofuF1xgDXaPtMMDtxFyKtPGegJPgjpWT
+         jwvwq0IlV3VJeEng/vWlmImB1UA+vAOUOJTLi40PkEGtApniCTbvDkeb5tGdvTlKsmBE
+         Hu6JpSVYRe/Qqbp4UrzA0nVQGSWhZ6PbLH+TbqMCsN9OdTjyjRUke5B29hNfXI6I4IcK
+         fiKFObVyBSRBx1YvHQsfWm2h3Oc9sdXJDDfNGyebnf9NJcKQ78QvmvKswwHZ6OxgFb+K
+         nZVC/7hl7Vx59h+6JxnZV3OVrOHX9PRy+q1Vs0FciVlw7ZEXVB58YE+fCya2I29UlGv5
+         w0Bg==
+X-Gm-Message-State: AGi0PubyRPA8QqEQHpA6nzs4cwLNYmqT8EPxJk7Og+92eSD2YGUt+TET
+        mD2Kxiq4lVmzzCgai+9kci8x6hVY
+X-Google-Smtp-Source: APiQypLNkmvGiFI2nuonYn40oI+/9YHa3LWpEYLJDmPDLMrDGbGo6niBfzx8atGWQ8hO+m50PuzLaw==
+X-Received: by 2002:adf:ed46:: with SMTP id u6mr5623801wro.327.1587661372787;
+        Thu, 23 Apr 2020 10:02:52 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f29:6000:c569:21dc:2ec:9a23? (p200300EA8F296000C56921DC02EC9A23.dip0.t-ipconnect.de. [2003:ea:8f29:6000:c569:21dc:2ec:9a23])
+        by smtp.googlemail.com with ESMTPSA id d13sm4300093wmb.39.2020.04.23.10.02.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 10:02:52 -0700 (PDT)
+Subject: Re: [PATCH net 1/2] net: phy: DP83822: Fix WoL in config init to be
+ disabled
+To:     Dan Murphy <dmurphy@ti.com>, andrew@lunn.ch, f.fainelli@gmail.com
+Cc:     linux@armlinux.org.uk, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, afd@ti.com
+References: <20200423163947.18313-1-dmurphy@ti.com>
+ <20200423163947.18313-2-dmurphy@ti.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <487889d0-d2e4-ddd4-b199-c621b2826601@gmail.com>
+Date:   Thu, 23 Apr 2020 19:02:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200423000945.118231-1-wenhu.wang@vivo.com>
+In-Reply-To: <20200423163947.18313-2-dmurphy@ti.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,71 +71,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/20 5:09 PM, Wang Wenhu wrote:
-> Minor mismatches exist between funtion documentations and parameter
-> definitions. Also a dash '-' is needed between a function name and
-> its description.
+On 23.04.2020 18:39, Dan Murphy wrote:
+> The WoL feature should be disabled when config_init is called and the
+> feature should turned on or off  when set_wol is called.
 > 
-> Function definitions are as following:
-> static inline void memcpy_fromio(void *buffer,
-> 				 const volatile void __iomem *addr,
-> 				 size_t size)
-> static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
-> 			       size_t size)
+> In addition updated the calls to modify the registers to use the set_bit
+> and clear_bit function calls.
 > 
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-
-Hi,
-Sorry to just notice this, but could you also fix up all of
-the kernel-doc notation for memset_io() in the same manner?
-
-thanks.
-
+> Fixes: 3b427751a9d0 ("net: phy: DP83822 initial driver submission")
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 > ---
-> Changes since v1:
->  * Dashes added between the function names and their descriptions.
+>  drivers/net/phy/dp83822.c | 30 ++++++++++++++++--------------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
 > 
->  include/asm-generic/io.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index d39ac997dda8..b6a9131ec4d4 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -1066,10 +1066,10 @@ static inline void memset_io(volatile void __iomem *addr, int value,
->  #ifndef memcpy_fromio
->  #define memcpy_fromio memcpy_fromio
->  /**
-> - * memcpy_fromio	Copy a block of data from I/O memory
-> - * @dst:		The (RAM) destination for the copy
-> - * @src:		The (I/O memory) source for the data
-> - * @count:		The number of bytes to copy
-> + * memcpy_fromio -	Copy a block of data from I/O memory
-> + * @buffer:		The (RAM) destination for the copy
-> + * @addr:		The (I/O memory) source for the data
-> + * @size:		The number of bytes to copy
->   *
->   * Copy a block of data from I/O memory.
->   */
-> @@ -1084,10 +1084,10 @@ static inline void memcpy_fromio(void *buffer,
->  #ifndef memcpy_toio
->  #define memcpy_toio memcpy_toio
->  /**
-> - * memcpy_toio		Copy a block of data into I/O memory
-> - * @dst:		The (I/O memory) destination for the copy
-> - * @src:		The (RAM) source for the data
-> - * @count:		The number of bytes to copy
-> + * memcpy_toio -	Copy a block of data into I/O memory
-> + * @addr:		The (I/O memory) destination for the copy
-> + * @buffer:		The (RAM) source for the data
-> + * @size:		The number of bytes to copy
->   *
->   * Copy a block of data to I/O memory.
->   */
-> 
+> diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+> index fe9aa3ad52a7..40fdfd043947 100644
+> --- a/drivers/net/phy/dp83822.c
+> +++ b/drivers/net/phy/dp83822.c
+> @@ -137,16 +137,19 @@ static int dp83822_set_wol(struct phy_device *phydev,
+>  			value &= ~DP83822_WOL_SECURE_ON;
+>  		}
+>  
+> -		value |= (DP83822_WOL_EN | DP83822_WOL_INDICATION_SEL |
+> -			  DP83822_WOL_CLR_INDICATION);
+> -		phy_write_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
+> -			      value);
+> +		/* Clear any pending WoL interrupt */
+> +		phy_read(phydev, MII_DP83822_MISR2);
+> +
+> +		value |= DP83822_WOL_EN | DP83822_WOL_INDICATION_SEL |
+> +			DP83822_WOL_CLR_INDICATION;
+> +
+> +		return phy_set_bits_mmd(phydev, DP83822_DEVADDR,
+> +					MII_DP83822_WOL_CFG, value);
 
+The switch to phy_set_bits_mmd() doesn't seem to be correct here.
+So far bit DP83822_WOL_MAGIC_EN is cleared if WAKE_MAGIC isn't set.
+Similar for bit DP83822_WOL_SECURE_ON. With your change they don't
+get cleared any longer.
 
--- 
-~Randy
+>  	} else {
+> -		value = phy_read_mmd(phydev, DP83822_DEVADDR,
+> -				     MII_DP83822_WOL_CFG);
+> -		value &= ~DP83822_WOL_EN;
+> -		phy_write_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
+> -			      value);
+> +		value = DP83822_WOL_EN | DP83822_WOL_CLR_INDICATION;
+> +
+You clear one bit more than before. The reason for this may be worth a note
+in the commit message.
+
+> +		return phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+> +					  MII_DP83822_WOL_CFG, value);
+>  	}
+>  
+>  	return 0;
+> @@ -258,12 +261,11 @@ static int dp83822_config_intr(struct phy_device *phydev)
+>  
+>  static int dp83822_config_init(struct phy_device *phydev)
+>  {
+> -	int value;
+> -
+> -	value = DP83822_WOL_MAGIC_EN | DP83822_WOL_SECURE_ON | DP83822_WOL_EN;
+> +	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
+> +		    DP83822_WOL_SECURE_ON;
+>  
+> -	return phy_write_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
+> -	      value);
+> +	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+> +				  MII_DP83822_WOL_CFG, value);
+>  }
+>  
+>  static int dp83822_phy_reset(struct phy_device *phydev)
+> 
 
