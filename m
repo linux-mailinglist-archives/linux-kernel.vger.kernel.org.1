@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDB51B62F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F47D1B62ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbgDWSGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:06:24 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:53604 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730191AbgDWSGW (ORCPT
+        id S1730184AbgDWSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbgDWSGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:06:22 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03NI6Emm001640;
-        Thu, 23 Apr 2020 13:06:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587665174;
-        bh=VlD9jKFyzM/lNw1mYY2vB0Bu4n56Zf3FBrpLnWHtTMs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=EHxJvl3F4Q6dtOprXYawkBuY3oJF+ft651Ils8hoCHgXuQ8RS5Ok0imX0U2OJBcvd
-         E1eBuTNiuO4We9gOdKuzPNWZY58UpUT4M1EXeamHAEwDeLMBVyvxhnOaMFK+TsxAkD
-         fua50YzY1yF7WpdXR4pEPcG/LXKbfecL3op311rk=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03NI6Erh108615
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 23 Apr 2020 13:06:14 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
- Apr 2020 13:06:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 23 Apr 2020 13:06:14 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03NI6DHu022644;
-        Thu, 23 Apr 2020 13:06:13 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Dave Gerlach <d-gerlach@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH 5/5] arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid module node
-Date:   Thu, 23 Apr 2020 21:05:45 +0300
-Message-ID: <20200423180545.13707-6-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200423180545.13707-1-grygorii.strashko@ti.com>
-References: <20200423180545.13707-1-grygorii.strashko@ti.com>
+        Thu, 23 Apr 2020 14:06:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2EFC09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:06:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id y25so3351263pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aMzN8y43RzIeS+hGOjJQmVpyCdPMVYWSbPwa9BUqxsk=;
+        b=KQ7SwGEE7BGDgi9nQDxn5/Qf+DVEwwXSpISshGAQFVxxqcofFWkLXI2M6EXYPngQWU
+         PgnOirdnEL39LbXQdRpmdcipOkqc+kLm9yJ78NGGM14K3bEqEODuH4goJXgV5DrYzMPN
+         9J4hHpHGb1j4OqNvtIKczFHBEXOJQ3JNKWMyU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aMzN8y43RzIeS+hGOjJQmVpyCdPMVYWSbPwa9BUqxsk=;
+        b=t4EXBeiOQjUV9D+VtvCix5+BhVMTX2riTkZfx3fu0HUS2KbWlX3WuBkLhKQE5AykJR
+         Oq+aALgy+iuJcnarDDY/vN4SM0I4byubpWlHrFOUJCU0sFziunDvPJS/DDpuT6Jr+EVx
+         Fu0Q535T/vASk0jp9u38bf2M5zjcoX+AjTPQxdb+Pew5VRomWjOuE689lDKhdwo/DExT
+         hO8lWorygUWXeOvnKmavCFq+ID8kdza0u65LEUQ8FG2l9FVZLVJmCRbKaMIrJ1bx/3GK
+         eOL7wVk2MhXMcZxjFIo4GRvocTDbyCLf95DyWP7GtJJobNRF1QV3mQChCdtJuredrAdQ
+         Qjog==
+X-Gm-Message-State: AGi0PuZxhVThku11YEqnqkZx29E4vbwjzaaeuXp7gl5BrVVJ+oP7KfiH
+        ggYpgujKbkf5fEieWtzKuBbJL3hu9+E=
+X-Google-Smtp-Source: APiQypK4H47IY7ViPrvh6uL0870HFLX9QoJ2ivL8CiGjHoztWNMxnsStpejcK6W/BX8+xQ7ExE8XJA==
+X-Received: by 2002:a63:48a:: with SMTP id 132mr5156238pge.380.1587665176255;
+        Thu, 23 Apr 2020 11:06:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f76sm3118222pfa.167.2020.04.23.11.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 11:06:15 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 11:06:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Apr 22 (objtool warnings)
+Message-ID: <202004231053.5E4F16C3E8@keescook>
+References: <20200422171016.484b031d@canb.auug.org.au>
+ <2bf0635d-1406-23db-28c7-e55da9a07e05@infradead.org>
+ <20200422164406.qhvd2my35wnjlzyg@treble>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422164406.qhvd2my35wnjlzyg@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT node for the Texas Instruments K3 Multicore J721E SoC platforms
-chipid module.
+On Wed, Apr 22, 2020 at 11:44:06AM -0500, Josh Poimboeuf wrote:
+> On Wed, Apr 22, 2020 at 08:35:29AM -0700, Randy Dunlap wrote:
+> > On 4/22/20 12:10 AM, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > Changes since 20200421:
+> > > 
+> > 
+> > on x86_64:
+> 
+> In both cases the unreachable instruction happens immediately after a
+> call to a function which is truncated with a UD2 (because of
+> UBSAN_TRAP).
+> 
+> When I remove UBSAN_TRAP, the UD2s are replaced with calls to
+> __ubsan_handle_type_mismatch_v1().
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+Hrm, these are coming out of CONFIG_UBSAN_MISC, yes? It seems that the
+UBSAN checks that are non-recoverable all inject unreachable checks
+afterwards, from what I can see.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index 3d6064125b40..b69688f0f925 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -48,6 +48,11 @@
- 		};
- 	};
- 
-+	chipid@43000014 {
-+		compatible = "ti,am654-chipid";
-+		reg = <0x0 0x43000014 0x0 0x4>;
-+	};
-+
- 	wkup_pmx0: pinmux@4301c000 {
- 		compatible = "pinctrl-single";
- 		/* Proxy 0 addressing */
+> Kees, any idea?
+
+Isn't this another version of the earlier unreachable-ud2 issue?
+
+Regardless, the type_mismatch it triggered for misalignment and
+object-size checks, and the alignment check is likely going to always
+misfire on x86. The randconfig includes that config:
+
+CONFIG_UBSAN_ALIGNMENT=y
+
+So perhaps the config should be strengthened to disallow it under
+COMPILE_TEST?
+
+config UBSAN_ALIGNMENT
+        def_bool !UBSAN_NO_ALIGNMENT
+	depends on !COMPILE_TEST
+
+
 -- 
-2.17.1
-
+Kees Cook
