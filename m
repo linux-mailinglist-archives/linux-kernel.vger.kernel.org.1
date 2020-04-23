@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBACF1B5964
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 12:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62801B596D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 12:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgDWKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 06:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34226 "EHLO mail.kernel.org"
+        id S1727091AbgDWKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 06:41:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8397 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbgDWKkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 06:40:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B4AE20857;
-        Thu, 23 Apr 2020 10:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587638403;
-        bh=DJrwxV1CteilAyNbnpDxy4pVpFE/V0iDtEse9XqxW7U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MXH8k7YYtHTeDgrX6stnMRK5CYXgWnbUvKzpNRvYRFS7xVxtsqPfoCLIEjlMYjnIp
-         1/8e22g2lQPTzQ1J2bODauQku9OLnacH9tEFbiZb092AV338itzshIzRmTYhQ1kMRI
-         CO+hfULCoccd4Zbi7T7Iu7Z4tQnOi2scRUjgVcsY=
-Date:   Thu, 23 Apr 2020 11:40:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        shengjiu.wang@nxp.com
-Subject: Re: [PATCH] regmap: mmio: prepare/unprepare clk only when read/write
-Message-ID: <20200423104000.GD4808@sirena.org.uk>
-References: <1587620791-5279-1-git-send-email-peng.fan@nxp.com>
+        id S1725863AbgDWKlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 06:41:07 -0400
+IronPort-SDR: 91FP6AM55qA9ubi+Nw316rDmXsY1gcBi29KTMCJ+3mKIMuoJJOEC1wLJ9ACk1nSLXtjBC3te7J
+ /i53Wj89f4Zg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 03:41:06 -0700
+IronPort-SDR: Kx7K6p4/N5TZr/15qVHfz7t/YfWa8qfU8ew8siy/+r4y7JvNcT3POh2yqW11AOx+oW2pMXXyru
+ ohidmBdCH2uA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
+   d="scan'208";a="291141993"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Apr 2020 03:41:04 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jRZI3-002cOT-JJ; Thu, 23 Apr 2020 13:41:07 +0300
+Date:   Thu, 23 Apr 2020 13:41:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Fengping yu <fengping.yu@mediatek.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        wsd_upstream@mediatek.com, linux-input@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 3/3] drivers: input: keyboard: add mtk keypad driver
+Message-ID: <20200423104107.GO185537@smile.fi.intel.com>
+References: <20200423011958.30521-1-fengping.yu@mediatek.com>
+ <20200423011958.30521-4-fengping.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587620791-5279-1-git-send-email-peng.fan@nxp.com>
-X-Cookie: This unit... must... survive.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200423011958.30521-4-fengping.yu@mediatek.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 23, 2020 at 09:20:02AM +0800, Fengping yu wrote:
+> From: "fengping.yu" <fengping.yu@mediatek.com>
+> 
 
---AkbCVLjbJ9qUtAXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This misses the commit message. It's a show stopper for such patches.
+Read this [1].
 
-On Thu, Apr 23, 2020 at 01:46:31PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> use clk_prepare at the very beginning will invoke pm runtime resume,
-> if the clk is binded with a power domain. This will cause runtime
-> power high. Let's use clk_prepare_enable and clk_disable_unprepare
-> when read/write to avoid the runtime power issue.
+[1]: https://chris.beams.io/posts/git-commit/
 
-This will mean that we're doing clk_prepare() during I/O which isn't
-good since for MMIO regmaps we support I/O operations in atomic
-contexts.
+...
 
---AkbCVLjbJ9qUtAXD
-Content-Type: application/pgp-signature; name="signature.asc"
+> +#define KPD_DEBOUNCE_MASK	GENMASK(13, 0)
+> +#define KPD_DEBOUNCE_MAX	256000
 
------BEGIN PGP SIGNATURE-----
+Is there any unit in which debounce time is being measured? Add it as a suffix
+to the definition, if it's possible.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hcH8ACgkQJNaLcl1U
-h9C17Qf/fo2ZNApBE+9ZJmGgA/okKIKMIRmlk4OQFFeJsttGsP7t5k28YoZr5OAp
-lRXBkQIeYbA2SmqQmAm0MCowjHv+bX+dUCoZvPr8ghk0j5zSAPfdCe1pXyEBASQl
-bpBuqx2qr5e75sCnxZ57URuJnSPyHtWF0RYlSW+uTt3OJ9Zz2PNHaWA4Bg6WXxgj
-qGqEsjpsplrI5Qt88+/nF32NgBENkHUI4glAthZQDirrjzu7dH3z6L+LDwtUTWeG
-nd9mY3Z6atKt6B4EjRtIlny9JEvETiLpHepdAWJ8oprkHWuDtYRO27n89DyEJVch
-EJT65ClClqHV9p/sUNO2Uu0QIUtpPg==
-=DT/v
------END PGP SIGNATURE-----
+...
 
---AkbCVLjbJ9qUtAXD--
+> +#define BITS_TO_U32(nr)	DIV_ROUND_UP(nr, BITS_PER_BYTE * sizeof(u32))
+
+This already defined in bits.h.
+
+...
+
+> +	keypad->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(keypad->base)) {
+
+> +		dev_err(&pdev->dev, "Failed to get resource and iomap keypad\n");
+
+This is duplicate noisy message, please remove.
+
+> +		return PTR_ERR(keypad->base);
+> +	}
+
+...
+
+> +	writew(keypad->key_debounce * 32 / 1000 & KPD_DEBOUNCE_MASK,
+
+Perhaps one pair of parentheses is needed to make logic clear.
+
+(Yes, I remember I commented on this in earlier versions where it was many
+ parentheses around above calculations, but you have to use common sense as well)
+
+> +		keypad->base + KP_DEBOUNCE);
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
