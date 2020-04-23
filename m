@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1291B663D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 23:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03ED41B667C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 23:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgDWVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 17:41:17 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60409 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726976AbgDWVlP (ORCPT
+        id S1726725AbgDWVo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 17:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgDWVo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 17:41:15 -0400
-Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 942913A2A5A;
-        Fri, 24 Apr 2020 07:41:08 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jRjam-0006R8-3B; Fri, 24 Apr 2020 07:41:08 +1000
-Date:   Fri, 24 Apr 2020 07:41:08 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V10 02/11] fs: Remove unneeded IS_DAX() check in
- io_is_direct()
-Message-ID: <20200423214108.GR27860@dread.disaster.area>
-References: <20200422212102.3757660-1-ira.weiny@intel.com>
- <20200422212102.3757660-3-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422212102.3757660-3-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=QyXUC8HyAAAA:8 a=yPCof4ZbAAAA:8
-        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=JVZ9yd-c_uYkw5Y7WEkA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        Thu, 23 Apr 2020 17:44:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B14C09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 14:44:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g13so8392841wrb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 14:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jwBFGlISu+ZI6XDb9QeuV5Ui7R1Z+15tmGmCMSS0zGk=;
+        b=XguNQg9JJtPS8hvqzI2G1Xm4c+PBj1/yeEH7i6KegSRtd+7M4T2zOW2a2f9XLS8XFG
+         0UM/W4NW8LuACP/uC1j/Em6VD+khBcwacxoHt/6WqqWueHhXZ6bmJkukPYkfCiogESDD
+         CXO8uuT/dH32fthuHJE70z853zoF+UgEDNaK8/Lfr1pmPNkHEKSTsYIdR+yepoV7dyQ7
+         aY4YyNAetWvUTnef+jV6IZXJXnixwd4+luSpaPbMuqe1fzxFvf2kERibzfwO43R9czRr
+         YheteCNxMU6k/3sxPaAskeCI7li//4+gE+69bQSiHvAWL+NKTKV8/+VTXM6Dv/xJYYNi
+         JyUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jwBFGlISu+ZI6XDb9QeuV5Ui7R1Z+15tmGmCMSS0zGk=;
+        b=gHpWLxRm2Qior3vNdPFmIUaKzL8MpIwv/JD96D+Xbzyhc3pPQHmsyMaNXqduVN3Xhi
+         b8b8AQPy2icOUPL0UEikIBPexljwk0fm1D20k51Y8ECkSjc2jbVckW0ts8a82Uy9Jf3a
+         +q96PykEyyJ7kIOg5CQLsQl06pVK6ofc3cHEURD4QlorwTvp5qVL8HkPNrZBooBzFb28
+         emtO91UBp6Tc2D4FXy9Y2ttNWlfsYg0P2QMbgJie/nX5N3kEzNsX141JrZwi65aZnHH1
+         EihcgG9rrsokNKTAJ5o4RTG76KYBjF+BSvpVfLBbqIaEqk+wBDIJoBeFGP+wYWkqtYmX
+         fUEA==
+X-Gm-Message-State: AGi0PuacKrFtCOPisPPNKWfePC1rjFZPnJGJVD0hNPOdGhOiNvGGDf6+
+        MJM23JSI+n7Gt0k+oqVINbDZ3PrJ
+X-Google-Smtp-Source: APiQypIVAGS9RNUjvlnC1ewCJp3zn6pqACkaX3wlMXd72YepRmQ47CBfIWNgD8txasRip1c1eFuJwQ==
+X-Received: by 2002:a5d:6b86:: with SMTP id n6mr7010213wrx.113.1587678297124;
+        Thu, 23 Apr 2020 14:44:57 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id k9sm5652288wrd.17.2020.04.23.14.44.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Apr 2020 14:44:56 -0700 (PDT)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH] sched/core: not necessary to init root_task_group's common part for each cpu
+Date:   Thu, 23 Apr 2020 21:44:43 +0000
+Message-Id: <20200423214443.29994-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 02:20:53PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Remove the check because DAX now has it's own read/write methods and
-> file systems which support DAX check IS_DAX() prior to IOCB_DIRECT on
-> their own.  Therefore, it does not matter if the file state is DAX when
-> the iocb flags are created.
-> 
-> Also remove io_is_direct() as it is just a simple flag check.
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Currently root_task_group.shares and cfs_bandwidth are initialized for
+each online cpu, which not necessary.
 
-Looks good.
+Let's take it out to do it only once.
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+---
+ kernel/sched/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5ca567adfcb9..613d6e892d80 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6642,6 +6642,8 @@ void __init sched_init(void)
+ 		root_task_group.cfs_rq = (struct cfs_rq **)ptr;
+ 		ptr += nr_cpu_ids * sizeof(void **);
+ 
++		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
++		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+ #endif /* CONFIG_FAIR_GROUP_SCHED */
+ #ifdef CONFIG_RT_GROUP_SCHED
+ 		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
+@@ -6694,7 +6696,6 @@ void __init sched_init(void)
+ 		init_rt_rq(&rq->rt);
+ 		init_dl_rq(&rq->dl);
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+-		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
+ 		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);
+ 		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
+ 		/*
+@@ -6716,7 +6717,6 @@ void __init sched_init(void)
+ 		 * We achieve this by letting root_task_group's tasks sit
+ 		 * directly in rq->cfs (i.e root_task_group->se[] = NULL).
+ 		 */
+-		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+ 		init_tg_cfs_entry(&root_task_group, &rq->cfs, NULL, i, NULL);
+ #endif /* CONFIG_FAIR_GROUP_SCHED */
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.23.0
+
