@@ -2,157 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D291B5FE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B3A1B5FFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbgDWPv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729072AbgDWPv0 (ORCPT
+        id S1729451AbgDWPyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:54:45 -0400
+Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:43253 "EHLO
+        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729435AbgDWPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:51:26 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8770C09B040;
-        Thu, 23 Apr 2020 08:51:24 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 18so3144166pfx.6;
-        Thu, 23 Apr 2020 08:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=+Lpx84ybnP3CbGO9+hIlMb8pKZvpHlBUCvuaUaL2gSc=;
-        b=siyn8fn9dgNTeY0PFfNmf3LQOi0S4q18gLuG/8tqxoJ2xhYIUJtylgFoSPsgXvC62U
-         13PR7A6ZHoCHxk6J5LGWsHxwmqAbc9fAL3QpZTmQHXf9lND8mWx5WZsepUSTtHf9ilO7
-         iYoWUINohBd88hEZk/vniNzaVSpxQQlBxTzTUaUQwdFnNk1BX0IqjmE0DXZjEPE+BFO4
-         o+TOxBANszxYwZg9ETuztp4Z1kS2iy8RSSXxvZKe5QHPZYDg2RfNblXS9svfX0sneC3Q
-         Ap0U76J8jIoXqnEHpcJQWa7SFgJBTPm73RPp2csNvjdfbyUffI3AeCGPC6DWelbU6sFA
-         eVVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=+Lpx84ybnP3CbGO9+hIlMb8pKZvpHlBUCvuaUaL2gSc=;
-        b=Vw46uONZ2rbslhgTGFzcq7IbllIpLNb7skz35flTY6ZLxyxZE4Ra4+Hk2VXgTSHCft
-         o7UqxtA/OuCBzfm+Mkmw2/OgGfUTxLiZKhMSxhIexyr3yTbUqOT5NB9RZMSiOaQ1C+6O
-         I+NwCzEh34kDgREtBP6bH5X8oQrPlm1jsmq7P+TmJnLbXyLxXcsPsuOqZnXZ1ixStHoR
-         wX5U9237YCBqmj/cZd9XVue6SXensU0qKmkFUO+z8YwreWyQnxBEvODexIjNwBSRZOaN
-         qQLwKuJAnlTQQa/wpM3d347IlcSog7G0ncodvrhGuFxgorQswLqmpXoExe5wrOJB44wi
-         7bqQ==
-X-Gm-Message-State: AGi0PuYnSYht+stXoV2Po6iCcRoMj5tnmf6HCl+0HxjOmA19nLvHLiGd
-        phBkcn4U4fiYv4tk6g6deQY=
-X-Google-Smtp-Source: APiQypIz/YwOugDPJn9jgplod/vw/LcRDTS+6PH+rgJgIUALhMFb4iU4bXeGzUzz1cPDhS+gji1UoA==
-X-Received: by 2002:a05:6a00:d:: with SMTP id h13mr4466425pfk.254.1587657084207;
-        Thu, 23 Apr 2020 08:51:24 -0700 (PDT)
-Received: from localhost (176.122.158.71.16clouds.com. [176.122.158.71])
-        by smtp.gmail.com with ESMTPSA id h17sm2931338pfk.13.2020.04.23.08.51.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 08:51:23 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 23:51:16 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     gregkh@linuxfoundation.org, tglx@linutronix.de,
-        FlorianSchandinat@gmx.de, ralf@linux-mips.org,
-        tsbogend@alpha.franken.de, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] console: console: Complete exception handling in
- newport_probe()
-Message-ID: <20200423155116.GA2247@nuc8i5>
-References: <CGME20200423142637eucas1p2ea543e281d96c75aa4292b49756f2146@eucas1p2.samsung.com>
- <20200423142627.1820-1-zhengdejin5@gmail.com>
- <081f8192-1708-80ff-6eef-885d72bdf5c5@samsung.com>
+        Thu, 23 Apr 2020 11:54:44 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.1.145])
+        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 3F0B54F74541;
+        Thu, 23 Apr 2020 17:54:41 +0200 (CEST)
+Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 23 Apr
+ 2020 17:54:40 +0200
+Date:   Thu, 23 Apr 2020 17:53:17 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <jic23@kernel.org>
+Subject: Re: [PATCH 4/6] Documentation: ABI: testing: scd30: document iio
+ attributes
+Message-ID: <20200423155317.GB43448@arch>
+References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
+ <20200422141135.86419-5-tomasz.duszynski@octakon.com>
+ <alpine.DEB.2.21.2004221818490.26800@vps.pmeerw.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <081f8192-1708-80ff-6eef-885d72bdf5c5@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.DEB.2.21.2004221818490.26800@vps.pmeerw.net>
+X-Originating-IP: [89.70.31.203]
+X-ClientProxiedBy: DAG2EX1.emp2.local (172.16.2.11) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 13421008366491753717
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgdejhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecukfhppedtrddtrddtrddtpdekledrjedtrdefuddrvddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehjihgtvdefsehkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 04:55:35PM +0200, Bartlomiej Zolnierkiewicz wrote:
-> 
-> Hi,
-> 
-> I believe that the patch summary line should be:
-> 
-> "[PATCH v2] console: newport_con: ..."
+On Wed, Apr 22, 2020 at 06:40:17PM +0200, Peter Meerwald-Stadler wrote:
+> On Wed, 22 Apr 2020, Tomasz Duszynski wrote:
 >
-OK, thanks!
-
-> On 4/23/20 4:26 PM, Dejin Zheng wrote:
-> > A call of the function ¡°do_take_over_console¡± can fail here.
-> > The corresponding system resources were not released then.
-> > Thus add a call of the function ¡°iounmap¡± together with the check
-> > of a failure predicate.
-> > 
-> > Fixes: e84de0c6190503 ("MIPS: GIO bus support for SGI IP22/28")
+> > Add documentation for sensor specific iio attributes.
 >
-> I cannot see how this patch fixes commit e84de0c6190503
-> (AFAICS npregs has also been leaked on error before)?
+> minor comments below
+
+Thanks.
+
 >
-yes, you are right, the commit should be e86bb8acc0fdca82d2
-("[PATCH] VT binding: Make newport_con support binding")
-
-- move register ioremap from newport_startup() to newport_console_init()
-
-> > CC: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
 > > ---
-> > v1 -> v2:
-> > 	- modify the commit comments by Markus'suggestion.
-> > 
-> >  drivers/video/console/newport_con.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
-> > index 00dddf6e08b0..6bfc8e3ffd4a 100644
-> > --- a/drivers/video/console/newport_con.c
-> > +++ b/drivers/video/console/newport_con.c
-> > @@ -720,6 +720,9 @@ static int newport_probe(struct gio_device *dev,
-> >  	console_lock();
-> >  	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
-> >  	console_unlock();
-> > +
-> > +	if (err)
-> > +		iounmap((void *)npregs);
-> 
-> Looks OK but while you are at it, could you please also add missing
-> release_mem_region() on error and on device removal:
+> >  Documentation/ABI/testing/sysfs-bus-iio-scd30 | 97 +++++++++++++++++++
+> >  1 file changed, 97 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-scd30 b/Documentation/ABI/testing/sysfs-bus-iio-scd30
+> > new file mode 100644
+> > index 000000000000..0431a718447d
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-bus-iio-scd30
+> > @@ -0,0 +1,97 @@
+> > +What:		/sys/bus/iio/devices/iio:deviceX/pressure_comp
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Given that sensor's CO2 measurement chamber has fixed volume
+> > +		pressure changes will affect concentration readings. Writing
+> > +		current ambient pressure here will allow senor to make necessary
 >
-Ok, Thanks, I will send the patch v3 for it.
+> sensor
+>
 
-> 	newport_addr = dev->resource.start + 0xF0000;
-> 	if (!request_mem_region(newport_addr, 0x10000, "Newport"))
-> 		return -ENODEV;
-> 
-> 	npregs = (struct newport_regs *)/* ioremap cannot fail */
-> 		ioremap(newport_addr, sizeof(struct newport_regs));
-> 	console_lock();
-> 	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
-> 	console_unlock();
-> 	return err;
-> }
-> 
-> static void newport_remove(struct gio_device *dev)
-> {
-> 	give_up_console(&newport_con);
-> 	iounmap((void *)npregs);
-> }
-> 
-> ?
-> 
-> >  	return err;
-> >  }
-> >  
-> 
-> Best regards,
+Okay.
+
+> > +		adjustments. Upon reading previously set value is returned.
+> > +		Units are millibars.
+>
+> unit for pressure in IIO is kilopascal (e.g.
+> /sys/bus/iio/devices/iio:deviceX/in_pressure_raw)
+>
+
+My thinking here was that since these are sensor specific attributes
+they don't need to stick to iio conventions and millibars were somewhat
+more natural to use. But I guess that's just matter of habit.
+
+So generally I am okay with reworking all attrs to accept values in iio
+preferred units.
+
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/pressure_comp_available
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		The range of available values in millibars represented as the
+> > +		minimum value, the step and the maximum value, all enclosed in
+> > +		square brackets.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/meas_interval
+> > +Date:		January 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Amount of time between subsequent measurements. Writing this
+> > +		attribute will change measurement interval. Upon reading
+> > +		current measurement interval is returned. Units are seconds.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/meas_interval_available
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		The range of available values in seconds represented as the
+> > +		minimum value, the step and the maximum value, all enclosed in
+> > +		square brackets.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/asc
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Writing 1 or 0 to this attribute will respectively activate or
+> > +		deactivate automatic self calibration procedure. Upon reading 1
+>
+> deactivate automatic self calibration (asc) procedure
+>
+
+That shouldn't be too difficult to realize what asc actually stands for after
+reading this short description.
+
+> > +		is returned if asc is ongoing, 0 otherwise.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/frc
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Forced recalibration is used to compensate for sensor drifts
+> > +		when a reference value of CO2 concentration in close proximity
+> > +		to the sensor is available. Writing attribute will set frc
+> > +		value. Upon reading current frc is returned. Units are
+> > +		millibars.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/frc_available
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		The range of available values in millibars represented as the
+> > +		minimum value, the step and the maximum value, all enclosed in
+> > +		square brackets.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/temp_offset
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Sensor readings may be affected by ambient temperature.
+> > +		Writing temperature offset will compensate for unwanted changes.
+> > +		Note that written offset gets multiplied by a factor of 100
+> > +		by a sensor internally.
+> > +
+> > +		For example, writing 10 here will correspond to 0.1 degree
+> > +		Celsius.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/temp_offset_available
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		The range of available values in degrees Celsius represented as
+> > +		the minimum value, the step and the maximum value, all enclosed
+> > +		in square brackets.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/reset
+> > +Date:		April 2020
+> > +KernelVersion:	5.8
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Software reset mechanism forces sensor into the same state
+> > +		as after powering up without the need for removing power supply.
+> > +		Writing any value will reset sensor.
+> >
+>
 > --
-> Bartlomiej Zolnierkiewicz
-> Samsung R&D Institute Poland
-> Samsung Electronics
+>
+> Peter Meerwald-Stadler
+> Mobile: +43 664 24 44 418
