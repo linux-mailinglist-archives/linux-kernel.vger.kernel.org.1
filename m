@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89801B6159
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353C61B6171
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgDWQ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 12:56:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57896 "EHLO mga04.intel.com"
+        id S1729833AbgDWQ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:58:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:44234 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729685AbgDWQ4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:56:32 -0400
-IronPort-SDR: 3BlYyVNj/vAYLoaK/7jtjRLpLXNwp1ogQRf3gtenegxcOKmNoTAhGPwT5FjVfR6cz+I+Q4hozC
- DH0xfarPWb5g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 09:56:31 -0700
-IronPort-SDR: pQYcwN/zIhJlMVvB52YVl4Ttgkv0Zub6V7g3IRK2tHK9OAWwX6uOkH8xSsyvzdH2fIZxkqKrs4
- QMlZheB3U/lw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
-   d="scan'208";a="430390420"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by orsmga005.jf.intel.com with ESMTP; 23 Apr 2020 09:56:31 -0700
-Date:   Thu, 23 Apr 2020 09:56:31 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, jmattson@google.com,
-        yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 9/9] KVM: X86: Set CET feature bits for CPUID
- enumeration
-Message-ID: <20200423165631.GB25564@linux.intel.com>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-10-weijiang.yang@intel.com>
+        id S1729674AbgDWQ6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 12:58:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85EE330E;
+        Thu, 23 Apr 2020 09:58:22 -0700 (PDT)
+Received: from [10.37.12.89] (unknown [10.37.12.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B9B73F68F;
+        Thu, 23 Apr 2020 09:57:48 -0700 (PDT)
+Subject: Re: [PATCH v6 04/10] PM / EM: add support for other devices than CPUs
+ in Energy Model
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com, Dietmar.Eggemann@arm.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        qperret@google.com, bsegall@google.com, mgorman@suse.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh@kernel.org,
+        matthias.bgg@gmail.com, steven.price@arm.com,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
+        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
+        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
+References: <20200410084210.24932-1-lukasz.luba@arm.com>
+ <20200410084210.24932-5-lukasz.luba@arm.com>
+ <20200423151250.GB65632@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <ff1c8cc5-f64d-6156-7d30-97b8426c6f99@arm.com>
+Date:   Thu, 23 Apr 2020 17:57:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326081847.5870-10-weijiang.yang@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200423151250.GB65632@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 04:18:46PM +0800, Yang Weijiang wrote:
-> Set the feature bits so that CET capabilities can be seen
-> in guest via CPUID enumeration. Add CR4.CET bit support
-> in order to allow guest set CET master control bit(CR4.CET).
-> 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 3 ++-
->  arch/x86/kvm/cpuid.c            | 4 ++++
->  2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 2c944ad99692..5109c43c6981 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -95,7 +95,8 @@
->  			  | X86_CR4_PGE | X86_CR4_PCE | X86_CR4_OSFXSR | X86_CR4_PCIDE \
->  			  | X86_CR4_OSXSAVE | X86_CR4_SMEP | X86_CR4_FSGSBASE \
->  			  | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_VMXE \
-> -			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP))
-> +			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP \
-> +			  | X86_CR4_CET))
->  
->  #define CR8_RESERVED_BITS (~(unsigned long)X86_CR8_TPR)
->  
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 25e9a11291b3..26ab959df92f 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -366,6 +366,10 @@ void kvm_set_cpu_caps(void)
->  		kvm_cpu_cap_set(X86_FEATURE_INTEL_STIBP);
->  	if (boot_cpu_has(X86_FEATURE_AMD_SSBD))
->  		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
-> +	if (boot_cpu_has(X86_FEATURE_IBT))
-> +		kvm_cpu_cap_set(X86_FEATURE_IBT);
-> +	if (boot_cpu_has(X86_FEATURE_SHSTK))
-> +		kvm_cpu_cap_set(X86_FEATURE_SHSTK);
 
-This is the wrong way to advertise bits, the correct method is to declare
-the flag in the appriorate kvm_cpu_cap_mask() call.  The manually handling
-is only needed when the feature bit diverges from kernel support, either
-because KVM allow a feature based purely on hardware support, e.g. LA57, or
-when emulating a feature based on a different similar feature, e.g. the
-STIBP/SSBD flags above.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 6828be99b908..6262438f9527 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -329,7 +329,8 @@ void kvm_set_cpu_caps(void)
-                F(AVX512VBMI) | F(LA57) | 0 /*PKU*/ | 0 /*OSPKE*/ | F(RDPID) |
-                F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
-                F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
--               F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/
-+               F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
-+               F(SHSTK)
-        );
-        /* Set LA57 based on hardware capability. */
-        if (cpuid_ecx(7) & F(LA57))
-@@ -338,7 +339,7 @@ void kvm_set_cpu_caps(void)
-        kvm_cpu_cap_mask(CPUID_7_EDX,
-                F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
-                F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
--               F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM)
-+               F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) | F(IBT)
-        );
-
->  
->  	kvm_cpu_cap_mask(CPUID_7_1_EAX,
->  		F(AVX512_BF16)
-> -- 
-> 2.17.2
+On 4/23/20 4:12 PM, Daniel Lezcano wrote:
+> On Fri, Apr 10, 2020 at 09:42:04AM +0100, Lukasz Luba wrote:
+>> Add support for other devices that CPUs. The registration function
+>> does not require a valid cpumask pointer and is ready to handle new
+>> devices. Some of the internal structures has been reorganized in order to
+>> keep consistent view (like removing per_cpu pd pointers). To track usage
+>> of the Energy Model structures, they are protected with kref.
 > 
+> Why not add the energy model structure in the struct device directly?
+
+Do you mean this structure?
+https://elixir.bootlin.com/linux/latest/source/include/linux/device.h#L537
+
+and to put something like:
+struct device {
+...
+	struct dev_pm_domain	*pm_domain;
+#ifdef CONFIG_ENERGY_MODEL
+	struct em_perf_domain	*em_pd;
+#endif
+...
+};
+
+> 
+> For instance for the em_cpu_get() function, the cpu id allows to retrieve the
+> cpu device and then from there, the energy model instead of browsing another
+> list. The em_device life cycle will be tied to the struct device.
+
+That would be perfect.
+
+> 
+> Then when the struct device and the em_device are connected, add the debugfs
+> with a struct device list for those which are energy aware, so you end up with
+> a structure:
+> 
+> struct em_device {
+> 	struct device *dev;
+> 	struct list_head em_dev_list;
+> };
+> 
+> (a global single dentry for debugfs to do a recursive delete is enough).
+> 
+> Locks when inspecting and add/removal called from the struct device release
+> function. So no need of an extra refcounting.
+> 
+> Does it make sense?
+> 
+
+Indeed it looks much cleaner/simpler.
+
+I will try to address this idea and get rid of refcounting.
+
+This should be doable in this patch (4/10). In the v7 I will keep your
+ACKs for other patches that you have already commented.
+
+Thank you for your suggestions and review.
+
+Regards,
+Lukasz
+
