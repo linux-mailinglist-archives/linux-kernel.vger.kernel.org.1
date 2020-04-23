@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6361B5813
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1321B581C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgDWJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:25:08 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59601 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725884AbgDWJZH (ORCPT
+        id S1726893AbgDWJ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 05:26:11 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56675 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725884AbgDWJ0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:25:07 -0400
+        Thu, 23 Apr 2020 05:26:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587633905;
+        s=mimecast20190719; t=1587633969;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=do8zJdc7I4uHXHEben8lWabWs6HgpJn+cw0sGKbh2zc=;
-        b=IA27skT5UHBBlazwPOyGuCxq3BNUM2Iv84uGXyrC4Py7l7I1QcZNdL7QfNhZ9J3QZBBo8d
-        WU3mbJEzu+izGEAu+jRMvcCvBBU/AmfCnYAblQCNrtfUZJxLAAoGqAz2hK+hBQSV4vM+aR
-        Ct8gxxncjgW4JfuaPwAJu/tByWABTNE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-ekMwkEZ0PtmWCLZr-fo10w-1; Thu, 23 Apr 2020 05:25:04 -0400
-X-MC-Unique: ekMwkEZ0PtmWCLZr-fo10w-1
-Received: by mail-wr1-f72.google.com with SMTP id m5so2554093wru.15
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:25:03 -0700 (PDT)
+        bh=MGgmr4DwO0KzfyPWlPuSjwCWCAlutT/YH5ClZ1SR4T4=;
+        b=ilxYUyh/A0yAJ7uvLJPHUnYzxEBnf1rYXNzBrWJHnT2D7MBiWojVzeRPA+KSgKTGVa7pxj
+        rVbF/SVaGJMf31ayaQHinVbxK6XHhXHCbJ19s1yp7dtx5LI1hm/9m2oyCHB59p0vbSjRIZ
+        UNMjG2rXP3fDq/LfYwGIk1GlNfbuQHs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-mIpSYKm3PK-j641bY5Bo0Q-1; Thu, 23 Apr 2020 05:26:07 -0400
+X-MC-Unique: mIpSYKm3PK-j641bY5Bo0Q-1
+Received: by mail-wr1-f71.google.com with SMTP id m5so2555170wru.15
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:26:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=do8zJdc7I4uHXHEben8lWabWs6HgpJn+cw0sGKbh2zc=;
-        b=YVM1TLSUFyuk4HE3auIA1WJ8v/f2aUAizRyCRSSY1OFCRMCkLGalp+FDk6/EAKCX3t
-         LmwHOb19zPMBq2wX7RduC8GLEY04bhjIrozsIlzMY3SInE2mmj6WgxGSBnsE/lqNpe1z
-         qwTCBI2uqaTBiiEI3Msw7PHPv64Oy+GNManBdHMJN17cCNzi1H3OKpw7cQlGxK5S0vkV
-         tDrRGHKl8+lj2/xayKbSCEyTgDOIbqt4lxbKTF9h7mmKgCGo0UFDdrF/8n48jOaDD82a
-         Oz5wl4vPV8rCEDZ8Nkq3fl8Stax2Ssszgu4wVmq4KNPLmbZneHTfv6cVlftH5rwNEqLQ
-         IeoA==
-X-Gm-Message-State: AGi0PuaNarrSegvymqj5YP1FSrO+pUJBkAcFZ9UyyD2YgbZFtNKJ8k3p
-        nCi/zEaumdu/i7qBT3IxOaraFIia6kzt0bzZRB9pTNBL6AurY9DR39hDqPfi5ZFdSL6E0IDnTKM
-        37xx9kfZf4VwsGAje0gCIcI99
-X-Received: by 2002:adf:f648:: with SMTP id x8mr3763901wrp.257.1587633902901;
-        Thu, 23 Apr 2020 02:25:02 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKfSJ+2+dBWEkydp4auYku0fYvTDUrKMch6QWddxKWBQoac935UdKFUm+uuf3gEakhZSfBc3w==
-X-Received: by 2002:adf:f648:: with SMTP id x8mr3763873wrp.257.1587633902615;
-        Thu, 23 Apr 2020 02:25:02 -0700 (PDT)
+        bh=MGgmr4DwO0KzfyPWlPuSjwCWCAlutT/YH5ClZ1SR4T4=;
+        b=Q5yqGEmrQG8TVXDhjXELdFrlzgfiHHwGv9+i90U4rCXwxS2Ae6PnI20TTzEypl+dGr
+         e9WzH/IIu0xqQjjQ6+lhZJ5qLNE6Ic2MtqXRtZZsXmHrtfjmkaji1ltpyOcaUp129uxK
+         r5UGpqdn8tjgVzPfte/zyTLKYaJLtGs970LGZROdb3lCvx6DbMC9hEoKilPwMWPlrW1k
+         GUL7kQxkie4SEyUBbbzl9jtpyZAclIb4qfSUD3taPrTFf0S2F1gYu90Wc9wM5P0u4tfS
+         foBkK1XvU1p5q96YnoJi9yj2B/rIAmv6eVw4HmnbOcs43FtMEMirkGGpwYxfcxkYFiS9
+         qisQ==
+X-Gm-Message-State: AGi0PuYRxTdml27H3DOUk7u63f4XvtDyNTSUpO+zJtExp1BnRGFSGzuE
+        2zyMEH7/AdGBfBJh7NQkurVtsLDZxbCWK3reGpRDHSrL21HRJCiBBxfxLpaNstkghTyH0sdsGjQ
+        60mB+uD4oQMZuc+IdDRabbeYK
+X-Received: by 2002:adf:ee91:: with SMTP id b17mr3881553wro.109.1587633966465;
+        Thu, 23 Apr 2020 02:26:06 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKViKVqjhZYWHhmD4gX+L181e384ppt9H3dp83Sm4GYTaac8jfbTOwhBotE8r0qEIg2tyXvIA==
+X-Received: by 2002:adf:ee91:: with SMTP id b17mr3881512wro.109.1587633966196;
+        Thu, 23 Apr 2020 02:26:06 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:d0a0:f143:e9e4:2926? ([2001:b07:6468:f312:d0a0:f143:e9e4:2926])
-        by smtp.gmail.com with ESMTPSA id t16sm3114627wrb.8.2020.04.23.02.25.01
+        by smtp.gmail.com with ESMTPSA id z18sm2779590wrw.41.2020.04.23.02.26.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 02:25:02 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] KVM: LAPIC: Introduce interrupt delivery fastpath
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-References: <1587632507-18997-1-git-send-email-wanpengli@tencent.com>
- <1587632507-18997-2-git-send-email-wanpengli@tencent.com>
+        Thu, 23 Apr 2020 02:26:05 -0700 (PDT)
+Subject: Re: [PATCH 4/5] kvm: Replace vcpu->swait with rcuwait
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        tglx@linutronix.de, kvm@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>,
+        torvalds@linux-foundation.org, bigeasy@linutronix.de,
+        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        joel@joelfernandes.org, will@kernel.org,
+        kvmarm@lists.cs.columbia.edu
+References: <20200422040739.18601-1-dave@stgolabs.net>
+ <20200422040739.18601-5-dave@stgolabs.net> <20200423094140.69909bbb@why>
+ <f07f6f55-9339-04b0-3877-d3240abd6d9c@redhat.com>
+ <20200423091911.GP20730@hirez.programming.kicks-ass.net>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <09cba36c-61d8-e660-295d-af54ceb36036@redhat.com>
-Date:   Thu, 23 Apr 2020 11:25:00 +0200
+Message-ID: <1a1e2aa6-64b2-f642-1e19-d3f5684d70b3@redhat.com>
+Date:   Thu, 23 Apr 2020 11:26:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <1587632507-18997-2-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <20200423091911.GP20730@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,44 +81,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/20 11:01, Wanpeng Li wrote:
-> +static void fast_deliver_interrupt(struct kvm_lapic *apic, int vector)
-> +{
-> +	struct kvm_vcpu *vcpu = apic->vcpu;
-> +
-> +	kvm_lapic_clear_vector(vector, apic->regs + APIC_TMR);
-> +
-> +	if (vcpu->arch.apicv_active) {
-> +		if (kvm_x86_ops.pi_test_and_set_pir_on(vcpu, vector))
-> +			return;
-> +
-> +		kvm_x86_ops.sync_pir_to_irr(vcpu);
-> +	} else {
-> +		kvm_lapic_set_irr(vector, apic);
-> +		if (kvm_cpu_has_injectable_intr(vcpu)) {
-> +			if (kvm_x86_ops.interrupt_allowed(vcpu)) {
-> +				kvm_queue_interrupt(vcpu,
-> +					kvm_cpu_get_interrupt(vcpu), false);
-> +				kvm_x86_ops.set_irq(vcpu);
-> +			} else
-> +				kvm_x86_ops.enable_irq_window(vcpu);
-> +		}
-> +	}
-> +}
-> +
+On 23/04/20 11:19, Peter Zijlstra wrote:
+>>
+>> 1) Davidlohr, please post only patches 1-3 to "equalize" the swait and
+>> rcuwait APIs.
+>>
+>> 2) Peter, please prepare a topic branch for those, or provide Acked-by
+> I don't think I have anything that conflicts with this, so sure, take
+> the whole thing through KVM.
+> 
+> For 1-3 (and I'll send a small niggle for 3 right after this):
+> 
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Ok, got it now.  The problem is that deliver_posted_interrupt goes through
-
-        if (!kvm_vcpu_trigger_posted_interrupt(vcpu, false))
-                kvm_vcpu_kick(vcpu);
-
-Would it help to make the above
-
-        if (vcpu != kvm_get_running_vcpu() &&
-	    !kvm_vcpu_trigger_posted_interrupt(vcpu, false))
-                kvm_vcpu_kick(vcpu);
-
-?  If that is enough for the APICv case, it's good enough.
+Great thanks.  I assume you have no issue with rcuwait_active either.
 
 Paolo
+
+> I'll keep 5 as it is unrelated.
+> 
 
