@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D931B6309
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586F01B630E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgDWSKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        id S1730240AbgDWSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729995AbgDWSKi (ORCPT
+        with ESMTP id S1730163AbgDWSLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:10:38 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82F1C09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:10:37 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h12so1859741pjz.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:10:37 -0700 (PDT)
+        Thu, 23 Apr 2020 14:11:00 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452A8C09B043
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:11:00 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s18so605271pgl.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QrjNM8BIB5l9RDDyP/w9uL8SShDah7FJKmQ5DvjnKE8=;
-        b=AsXfCxXazLdQ4m4tFsITnoDFMxqGenJRkSF+hQa764+Ie951E0z1+86ZtMDbqQeqN9
-         EoMfgJun6N/RY0LSGQ4n6KcyLtyLxeE6qI0AYgv5QA60oCmP8THtiezL2RHowJtIe/7X
-         ibS7aUydBcFHYotXKrT/7B5h0McBa7t+WrF0Kod6rl8RAR3VRpE2rebAt0ODkRKw89rM
-         h2swOx8HZH8pTN3Epi4K0wNbez+NDF2bsW3xtSPJjsFeLdq7yB50zmj/WTJb0qBWc6sq
-         zELPZtUFYAhh1kh05HOxNhOi2RPJGDPjiDAXuUVBTAZRVjZr8kCBRFN0xdbZ/Wq5/FTF
-         rGDA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoJh63kKG0D1+kAjjOCcewUCrHwScAwF4fHmVhu3yEY=;
+        b=L0AntvfFKEA4nZ8QFmeepfjDCUe1xnSA9QJTsWXvTnYODCycIN8mNS0gJEzeGP1bSm
+         wAKsdRcfKn9KaXt/gq8ndbLWHH2gdqKsRHAnbuE0qS/y1T1uJTkskpHaDDwLp/nRJBwE
+         Pz48JtbiG88ZSUwUhkb6gOIErAL4odG5iY1q0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QrjNM8BIB5l9RDDyP/w9uL8SShDah7FJKmQ5DvjnKE8=;
-        b=te39BuHmKBZonDFZcZL6/5w5fVorM2jTTXYy8hbMS7Z8/WPwMUocFNGKeWDMt7AHGS
-         jTneGTimsjHDIYKCVfBsB0sr/FqrSLejMzgfLhjVVyRgBG9+jdnkFBM3JM0lJ0durEY8
-         i4Rop4HmiTJ3rIRvT4dznZQR2upMKKtS6ex3x0HfZJJqf2hM8Ybl/ZedYHY6TRi/zVO5
-         6HFuat172eqBiQgUus0QigoYKlquSlmE1hWKX76QLXVluZyQoY2sVVRvjuNcoUS/fkHz
-         3mZHkHQam6o2LBZBsTsmpd9VNRECg4TZTyRkbEypxtFZEh5a62VU4Av1dQ98crZhw64M
-         NFtA==
-X-Gm-Message-State: AGi0PuYHDDu5zmW3vo0REzCW58TKvXNZ32s1DNJocIGYc/Nmf7oxxsZv
-        I4oOzjsKiZd/MDLgKmfpK4BtisAyBbrR1yqBbIwj5w==
-X-Google-Smtp-Source: APiQypJxSAw4KraboivCNfbdVu5dxs22Lp01yJChZEKk7LuJohXkK/zLo28qdyZgNXxQMSdqcAn9Gjof2vvDu8FLAOQ=
-X-Received: by 2002:a17:902:ac87:: with SMTP id h7mr4756081plr.119.1587665437124;
- Thu, 23 Apr 2020 11:10:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoJh63kKG0D1+kAjjOCcewUCrHwScAwF4fHmVhu3yEY=;
+        b=iskie/QT3dv7f1rPUONh+1g5m25yJhc4SHfiQf+IBQ3eVZUsVlkzaoXcjLPMIUfXy4
+         PnM67yc0IDSTSTBsPq2NTMJqGTBd4ABypwUcvF7CVEn9GbDU338s8+8iDoZltgqCdyr8
+         mqVDrwAj7Bx7nxVnkqZ8x3IWBW/I0YlAFHhBA5zwr8Ao4rr2Yo8wjdu3FyoMKrQDpsju
+         3fnbeqt+ouCDQm+KizsQr2HqigFhoft8hv4x6EqGUP+r1JmQpE+8Wv/ZlxZr0wKAyM1K
+         mIUIvELpXRVGAxW9u31OsPbbZCA0Zo0a8qHCnE4PbISh8DIrLfS2ACY/8hGJtftamib2
+         nI9g==
+X-Gm-Message-State: AGi0PuZoFis9JITWD6b9KzJFU0Iltv63snmnTL58oQ4ieWDu8G9CR9tM
+        s/07MqTOcp/HvsxWhe0dIOSw3g==
+X-Google-Smtp-Source: APiQypI8KmAiqWhTqcfvYHF1yYC3JCBs4eDoNyXAdnzNlAEdjbJVyLX6yor26Tit0MPP0rQlJBaAjQ==
+X-Received: by 2002:a62:e306:: with SMTP id g6mr4896489pfh.182.1587665459750;
+        Thu, 23 Apr 2020 11:10:59 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id u9sm2858156pfn.197.2020.04.23.11.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 11:10:59 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>, mka@chromium.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: phy: qcom-qusb2: Fix defaults
+Date:   Thu, 23 Apr 2020 11:10:27 -0700
+Message-Id: <20200423111015.1.Ifa8039b6f3031e9a69c4a526a6efc2f499f07292@changeid>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
-References: <20200423162923.10886-1-natechancellor@gmail.com>
-In-Reply-To: <20200423162923.10886-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 23 Apr 2020 11:10:25 -0700
-Message-ID: <CAKwvOdnP247LJpqo5ZZfGXUktjtXKzhDwQU=aTOrFi-y_px9mA@mail.gmail.com>
-Subject: Re: [PATCH] USB: gadget: udc: s3c2410_udc: Remove pointless NULL
- check in s3c2410_udc_nuke
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 9:30 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> Clang warns:
->
-> drivers/usb/gadget/udc/s3c2410_udc.c:255:11: warning: comparison of
-> address of 'ep->queue' equal to a null pointer is always false
-> [-Wtautological-pointer-compare]
->         if (&ep->queue == NULL)
->              ~~~~^~~~~    ~~~~
-> 1 warning generated.
->
-> It is not wrong, queue is not a pointer so if ep is not NULL, the
-> address of queue cannot be NULL. No other driver does a check like this
-> and this check has been around since the driver was first introduced,
-> presumably with no issues so it does not seem like this check should be
-> something else. Just remove it.
->
-> Commit afe956c577b2d ("kbuild: Enable -Wtautological-compare") exposed
-> this but it is not the root cause of the warning.
->
-> Fixes: 3fc154b6b8134 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1004
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+The defaults listed in the bindings don't match what the code is
+actually doing.  Presumably existing users care more about keeping
+existing behavior the same, so change the bindings to match the code
+in Linux.
 
-Thanks for the patch!  If anything, I'd be happy to see some more NULL
-checks against `ep`, though the callers of s3c2410_udc_nuke() also
-seem quite confident that the pointer is not NULL.
+The "qcom,preemphasis-level" default has been wrong for quite a long
+time (May 2018).  The other two were recently added.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+As some evidence that these values are wrong, this is from the Linux
+driver:
+- qcom,preemphasis-level: sets "PORT_TUNE1", lower 2 bits.  Driver
+  programs PORT_TUNE1 to 0x30 by default and (0x30 & 0x3) = 0.
+- qcom,bias-ctrl-value: sets "PLL_BIAS_CONTROL_2", lower 6 bits.
+  Driver programs PLL_BIAS_CONTROL_2 to 0x20 by default and (0x20 &
+  0x3f) = 0x20 = 32.
+- qcom,hsdisc-trim-value: sets "PORT_TUNE2", lower 2 bits.  Driver
+  programs PORT_TUNE2 to 0x29 by default and (0x29 & 0x3) = 1.
 
-> ---
->  drivers/usb/gadget/udc/s3c2410_udc.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
-> index 0507a2ca0f552..80002d97b59d8 100644
-> --- a/drivers/usb/gadget/udc/s3c2410_udc.c
-> +++ b/drivers/usb/gadget/udc/s3c2410_udc.c
-> @@ -251,10 +251,6 @@ static void s3c2410_udc_done(struct s3c2410_ep *ep,
->  static void s3c2410_udc_nuke(struct s3c2410_udc *udc,
->                 struct s3c2410_ep *ep, int status)
->  {
-> -       /* Sanity check */
-> -       if (&ep->queue == NULL)
-> -               return;
-> -
->         while (!list_empty(&ep->queue)) {
->                 struct s3c2410_request *req;
->                 req = list_entry(ep->queue.next, struct s3c2410_request,
->
-> base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
-> --
-> 2.26.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200423162923.10886-1-natechancellor%40gmail.com.
+Fixes: 1e6f134eb67a ("dt-bindings: phy: qcom-qusb2: Add support for overriding Phy tuning parameters")
+Fixes: a8b70ccf10e3 ("dt-bindings: phy-qcom-usb2: Add support to override tuning values")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
+ Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-
+diff --git a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+index 144ae29e7141..f8bd28ff31c1 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+@@ -97,7 +97,7 @@ then:
+         - $ref: /schemas/types.yaml#/definitions/uint32
+         - minimum: 0
+           maximum: 63
+-          default: 0
++          default: 32
+ 
+     qcom,charge-ctrl-value:
+      description:
+@@ -130,7 +130,7 @@ then:
+         - $ref: /schemas/types.yaml#/definitions/uint32
+         - minimum: 0
+           maximum: 3
+-          default: 2
++          default: 0
+ 
+     qcom,preemphasis-width:
+       description:
+@@ -152,7 +152,7 @@ then:
+         - $ref: /schemas/types.yaml#/definitions/uint32
+         - minimum: 0
+           maximum: 3
+-          default: 0
++          default: 1
+ 
+ required:
+   - compatible
 -- 
-Thanks,
-~Nick Desaulniers
+2.26.1.301.g55bc3eb7cb9-goog
+
