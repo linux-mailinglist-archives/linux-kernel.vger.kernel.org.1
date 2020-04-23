@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D4C1B5BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1691B5BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgDWMnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgDWMnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:43:17 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CF652074F;
-        Thu, 23 Apr 2020 12:43:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587645797;
-        bh=Jf4U83nslK4pLE/BKjzX7LhcMz5BzxX0wK8k8b1LmEQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=x8suleylMoRjsePqe89CrWPBmZhjfz1Lm3yD8IEyVyMofPYEVyOy3Ljc3xgzOLje4
-         +Dgz55oeV9szl7pUhrwRT6HBD9UoCwHf4Z9J6rUyWJynYmOufitJs2HXkZzBP5U1NI
-         YLwoRTIJSnRJdid5hhJN64cNoMAT/k9ZyMSEBri0=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jRbCF-005lvs-Kh; Thu, 23 Apr 2020 13:43:15 +0100
+        id S1728378AbgDWMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726117AbgDWMqf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 08:46:35 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EACBC08E934
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:46:35 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id i68so4688364qtb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 05:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=iux7fvGc+9PiZBFUb4OVVjRcxFgnv1KzvRydtTjUYBI=;
+        b=LmzXr6AW0Y7HDPOCFgZnQhG0ERoxW9cDzwBDaCNDbeE7RB102+vc/cfNdPP4DGUUJb
+         qHc5Rm/x5FPFw8tmzwxWw0S3IWPOpCQKZ1nn5Ft2Xo3sulfACclEZH4+91R497tfNqwH
+         2hj2kkb9V7T7OmtzfgDKJtEk6UeXe0991ePpmkxCY5lxMWpx4t79X4BQzp/3nhUwiCFV
+         qHiYD8wFtNVB51A5ygU2NA+5uWqhmawx2wgI9twHSVwvueMg7LG13UoghSQgUfnvvTyH
+         0BmziCf6Yxtk9uBxGnl3eakOGDMEEWv0EFjyqrttjM2RvoI7rsJ/7D4WRCIOYaBjrl0d
+         RuIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=iux7fvGc+9PiZBFUb4OVVjRcxFgnv1KzvRydtTjUYBI=;
+        b=b01LIzBXeuo4b24mr+f5DufqsqUloWKAtfkk8B1hq369o+56vC/9OrfCkCDCepPI3k
+         2NBMOWHgdxgzIQY+bjS41R62QBw2DjXfjH1RrgaZtXw+knaNNkBu5pdvsIHsWeXigyyv
+         WXUOnEJJEK8IatdsWnMhY3ESN1RVJ63t2k2lNiEJlNMgm58o53dRgJNxMd9HmOeQC7HT
+         MqPOfrPB/oVLbqPW6uPiJfUagQnBstqSu6TIbn0lln4D3s9bA2ReDazRbWlxAShU5/ur
+         SAfXF7L3/ohErZBP4KbdJx8sD+y3tUuvWfOKJ3AERXYQKGV5TK6xJlCUU+qprCit/t67
+         6znA==
+X-Gm-Message-State: AGi0PuaGzayxnFJNJQaM4wukdybK2XBumsuaXHHCN+HLU53mwasnYG+9
+        CZkqbY63t6WVSkob+kHKZk7EuxHX/xku83WDpQ==
+X-Google-Smtp-Source: APiQypJCb7It4C2rSyL+YOUcyUXS4+Uh3kPkoTYobGbc5e4R6RWiTs1HFCmcmodIhiya8r8hxoNWfk5WdaZQMwr35fs=
+X-Received: by 2002:aed:3e22:: with SMTP id l31mr3803964qtf.290.1587645994839;
+ Thu, 23 Apr 2020 05:46:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 23 Apr 2020 13:43:15 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 6/6] dt-bindings: interrupt-controller: Add Loongson PCH
- MSI
-In-Reply-To: <CAAhV-H43ds5YnW+h3zpbwedT0Lksz_o5d=Sz0Uqn+--uuDHN1A@mail.gmail.com>
-References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
- <20200422142428.1249684-7-jiaxun.yang@flygoat.com>
- <CAAhV-H43ds5YnW+h3zpbwedT0Lksz_o5d=Sz0Uqn+--uuDHN1A@mail.gmail.com>
-Message-ID: <b645bfeba3c1c9d3167aef68868ef09f@kernel.org>
-X-Sender: maz@kernel.org
-User-Agent: Roundcube Webmail/1.3.10
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: chenhc@lemote.com, jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, robh+dt@kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Received: by 2002:aed:35ef:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 05:46:34
+ -0700 (PDT)
+Reply-To: gh727530@gmail.com
+From:   george howard <smithhason13@gmail.com>
+Date:   Thu, 23 Apr 2020 14:46:34 +0200
+Message-ID: <CAE9dMzYDrNdG-W4qO5eB3Fc=ZF1Qewg9Vy3mw2V=pS3YotxYUA@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huacai,
+Alo
 
-On 2020-04-23 06:55, Huacai Chen wrote:
-> Hi, Jiaxun,
-> 
-> On Wed, Apr 22, 2020 at 10:28 PM Jiaxun Yang <jiaxun.yang@flygoat.com> 
-> wrote:
->> 
->> Add binding for Loongson PCH MSI controller.
->> 
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> ---
->>  .../loongson,pch-msi.yaml                     | 56 
->> +++++++++++++++++++
->>  1 file changed, 56 insertions(+)
->>  create mode 100644 
->> Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml 
->> b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
->> new file mode 100644
->> index 000000000000..dfb9cecacba0
->> --- /dev/null
->> +++ 
->> b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
->> @@ -0,0 +1,56 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: 
->> "http://devicetree.org/schemas/interrupt-controller/loongson,pch-msi.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Loongson PCH MSI Controller
->> +
->> +maintainers:
->> +  - Jiaxun Yang <jiaxun.yang@flygoat.com>
->> +
->> +description: |
->> +  This interrupt controller is found in the Loongson-7A family of PCH 
->> for
-> Please use "Loongson's LS7A family" here.
+Numele meu este George Howard. Sunt avocat de profesie. Vreau s=C4=83 v=C4=
+=83 ofer
+ruda cea mai apropiat=C4=83 a clientului meu. Ei mo=C8=99tenesc suma de (8,=
+5 milioane USD)
+Dolarul meu a plecat =C3=AEn banc=C4=83 =C3=AEnainte de a muri.
 
-It's the fourth email you send on the same subject. I think the author
-has got the message already. Frankly, it is only a name, and if they
-want to call it Bob, so be it.
+Clientul meu este un cet=C4=83=C8=9Bean al =C8=9B=C4=83rii dvs. care a muri=
+t =C3=AEntr-un
+accident de ma=C8=99in=C4=83 cu so=C8=9Bia sa
+=C8=99i singurul fiu. Am dreptul la 50% din fondul total, 50%
+fi pentru tine.
+V=C4=83 rug=C4=83m s=C4=83 contacta=C8=9Bi e-mailul meu privat aici pentru =
+mai multe
+informa=C8=9Bii: gh727530@gmail.com
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Va multumesc anticipat
+Domnule George Howard,
