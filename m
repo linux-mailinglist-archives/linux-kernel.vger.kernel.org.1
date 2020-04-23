@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9407F1B6052
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47F41B605D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729535AbgDWQHL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Apr 2020 12:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
+        id S1729593AbgDWQHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729386AbgDWQHK (ORCPT
+        by vger.kernel.org with ESMTP id S1729445AbgDWQHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:07:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C9EC09B040;
-        Thu, 23 Apr 2020 09:07:10 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jReNX-0000y2-Et; Thu, 23 Apr 2020 18:07:07 +0200
-Date:   Thu, 23 Apr 2020 18:07:07 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PREEMPT_RT] 8250 IRQ lockup when flooding serial console (was
- Re: [ANNOUNCE] v5.4.28-rt19)
-Message-ID: <20200423160707.hqt5wjinzcec2yig@linutronix.de>
-References: <20200330144712.cwcz5ejal4ankeoi@linutronix.de>
- <nycvar.YEU.7.76.2004231017470.4730@gjva.wvxbf.pm>
- <nycvar.YFH.7.76.2004231111550.19713@cbobk.fhfr.pm>
- <20200423104559.rgplz6rqk6sg4kz7@linutronix.de>
+        Thu, 23 Apr 2020 12:07:30 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB9EC09B040
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 09:07:29 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s10so7522516wrr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 09:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JilRdq2BDhA1AKoin3Th54s1noQnrS50Fz/y17AV1jA=;
+        b=mu5AJ++cQsxccfAWV5JOLI/SgRQB86tng7pTsdRiA0kz/jrOGnc32OzFYt/7FPwzzB
+         +RKxvAWyG3Fhb/LTxr6iLFG7Fqd7cKZchlM4nPOFnCKoCRxMGn7M5oQDMCMFbxxLhDGe
+         5X2igq6lLyFRp4YnVVxEseuIDVoFkyq+mdHi+Zisfd8Pp3LapzbK+KzPaARkQ4AAAyz7
+         bNs+1FaBot8KfjfQNqxRFuFjrp9Rx7gmbOUG0SjUisIrkJPmKAomEWKkRNJRPC7bZciu
+         H7JBYPscd6A7+6TIJnHQSIdrfBlMdUZgWFGabEUO3JDAeXaryLKlgvKAiL43TvO8v1SR
+         jQPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JilRdq2BDhA1AKoin3Th54s1noQnrS50Fz/y17AV1jA=;
+        b=FQXJUXm5Jhpqgi0xdDEk/214u5uGdYR4riabHgjQ15jAKIgSPzXQsuyPZVzx8vZi+k
+         Jvi2Zefu+2C+7efiJOrZL6He/D0cKG8QOw8gPdaf0+SutLv9XGOn9cK0SWJgk2rMTg0P
+         Hw19dkZb6Tn2Is0kbL3YAOShtQ8evHGk4EtfLGlQIRki+GkMI+BOM18F0TIsQqG6G094
+         nCUbVoVX502XPLmXT0WTbm4cov/HJtiJQttE3Q2L7eqrvax7SCk66tHwCzSZkKExqbjs
+         ScMWTC/JZ98d9g7bKVLQjy3nwwmNOe0UVChXTgW0z5qRQKomarad7eP4ZTIG5FTENgiG
+         wcCQ==
+X-Gm-Message-State: AGi0PuZCYi8jPRroQrKpPpxhF7OaEo7Y0fNBKcxpNN7jHJUUq5GU71GC
+        3BFhYrAuA6lWgc+xTB5/Bup1EA==
+X-Google-Smtp-Source: APiQypLW+PKkIM2+wwd4rW8a0Cu+5yfXB9aOs7exzbNq/9IiN/eo7uFJ35wUPd5bS6ATZyaoXdBIzg==
+X-Received: by 2002:a5d:49c7:: with SMTP id t7mr5482028wrs.22.1587658048446;
+        Thu, 23 Apr 2020 09:07:28 -0700 (PDT)
+Received: from linaro.org ([37.167.216.250])
+        by smtp.gmail.com with ESMTPSA id g74sm4308279wme.44.2020.04.23.09.07.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 09:07:27 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 18:07:23 +0200
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-imx@nxp.com, Dietmar.Eggemann@arm.com, cw00.choi@samsung.com,
+        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
+        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
+        rui.zhang@intel.com, amit.kucheria@verdurent.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        qperret@google.com, bsegall@google.com, mgorman@suse.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh@kernel.org,
+        matthias.bgg@gmail.com, steven.price@arm.com,
+        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
+        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
+        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
+Subject: Re: [PATCH v6 07/10] Documentation: power: update Energy Model
+ description
+Message-ID: <20200423160723.GE65632@linaro.org>
+References: <20200410084210.24932-1-lukasz.luba@arm.com>
+ <20200410084210.24932-8-lukasz.luba@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200423104559.rgplz6rqk6sg4kz7@linutronix.de>
+In-Reply-To: <20200410084210.24932-8-lukasz.luba@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-23 12:45:59 [+0200], To Jiri Kosina wrote:
-> On 2020-04-23 11:12:59 [+0200], Jiri Kosina wrote:
-> > On Thu, 23 Apr 2020, Jiri Kosina wrote:
-> > 
-> > > > I'm pleased to announce the v5.4.28-rt19 patch set. 
-> > > 
-> > > First, I don't believe this is necessarily a regression coming with this 
-> > > particular version, but this is the first kernel where I tried this and it 
-> > > crashed.
-> > 
-> > I just tried with 5.6.4-rt3, and I can make it explode exactly the same 
-> > way:
+On Fri, Apr 10, 2020 at 09:42:07AM +0100, Lukasz Luba wrote:
+> The Energy Model framework supports also other devices than CPUs. Update
+> related information and add description for the new usage.
 > 
-> I though I dealt with it. In the past it triggered also with threadirqs
-> on !RT but this isn't the case anymore. It still explodes on RT. Let me
-> look…
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
 
-So it also happens with !RT, you just have to try a little harder. For
-instance in drivers/tty/serial/8250/8250_core.c making the PASS_LIMIT
-change apply to !RT and boom.
-
-The IRQ4 is edge and in charge of ttyS0. It is handled by
-handle_edge_irq() and after ->irq_ack(), the thread is woken up and then
-we get another ->handle_edge_irq() for IRQ4. With larger PASS_LIMIT the
-thread runs longer so note_interrupt() will make less IRQ_HANDLED based
-on ->threads_handled_last. If it observes 100 handled within 100000
-interrupts then the counters are reset again. On !RT it usually manages
-to get >100 per 100000 interrupts so it appears good. On RT it gets less
-and the interrupt gets disabled.
-
-So it is not RT related, but RT triggers it more reliably (also the
-PASS_LIMIT change can vanish).
-I can't tell if this is a qemu bug in emulating the HW or not. I can't
-reproduce it real HW. I see a second edge interrupt only after the
-thread completed. I can't tell if this is because it is a real UART and
-the data is flowing slower or because the edge-IRQ is not triggered
-repeatedly.
-
-Sebastian
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
