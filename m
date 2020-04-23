@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426DA1B52AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C464F1B5292
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgDWCor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 22:44:47 -0400
-Received: from mgwkm03.jp.fujitsu.com ([202.219.69.170]:30664 "EHLO
-        mgwkm03.jp.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgDWCor (ORCPT
+        id S1726502AbgDWCee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 22:34:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62770 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726454AbgDWCed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 22:44:47 -0400
-X-Greylist: delayed 671 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 22:44:44 EDT
-Received: from kw-mxq.gw.nic.fujitsu.com (unknown [192.168.231.130]) by mgwkm03.jp.fujitsu.com with smtp
-         id 0abc_3579_5544f71c_4878_43bc_a3de_fa2088113603;
-        Thu, 23 Apr 2020 11:33:27 +0900
-Received: from m3050.s.css.fujitsu.com (msm.b.css.fujitsu.com [10.134.21.208])
-        by kw-mxq.gw.nic.fujitsu.com (Postfix) with ESMTP id BF869AC00FD;
-        Thu, 23 Apr 2020 11:33:26 +0900 (JST)
-Received: from [10.133.121.138] (VPC-Y08P0560080.g01.fujitsu.local [10.133.121.138])
-        by m3050.s.css.fujitsu.com (Postfix) with ESMTP id A3A30403;
-        Thu, 23 Apr 2020 11:33:26 +0900 (JST)
-Subject: Re: [PATCH V10 04/11] Documentation/dax: Update Usage section
-To:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20200422212102.3757660-1-ira.weiny@intel.com>
- <20200422212102.3757660-5-ira.weiny@intel.com>
-From:   Yasunori Goto <y-goto@fujitsu.com>
-Message-ID: <2282176d-60c5-0e4b-3cf9-7a7682de380d@fujitsu.com>
-Date:   Thu, 23 Apr 2020 11:33:26 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200422212102.3757660-5-ira.weiny@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        Wed, 22 Apr 2020 22:34:33 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03N23bw3139364
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 22:34:33 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gmv1g5xd-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 22:34:32 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <zohar@linux.ibm.com>;
+        Thu, 23 Apr 2020 03:34:24 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 23 Apr 2020 03:34:22 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03N2YRh346399608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 02:34:27 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96873AE045;
+        Thu, 23 Apr 2020 02:34:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0274AE056;
+        Thu, 23 Apr 2020 02:34:26 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.162.195])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 23 Apr 2020 02:34:26 +0000 (GMT)
+Subject: Re: [PATCH] ima: Fix return value of ima_write_policy()
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
+        stable@vger.kernel.org
+Date:   Wed, 22 Apr 2020 22:34:26 -0400
+In-Reply-To: <20200421090442.22693-1-roberto.sassu@huawei.com>
+References: <20200421090442.22693-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
+x-cbid: 20042302-0028-0000-0000-000003FD4DCD
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042302-0029-0000-0000-000024C316E6
+Message-Id: <1587609266.5165.58.camel@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_08:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230014
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 2020-04-21 at 11:04 +0200, Roberto Sassu wrote:
+> Return datalen instead of zero if there is a rule to appraise the policy
+> but that rule is not enforced.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 19f8a84713edc ("ima: measure and appraise the IMA policy itself")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  security/integrity/ima/ima_fs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
+> index a71e822a6e92..2c2ea814b954 100644
+> --- a/security/integrity/ima/ima_fs.c
+> +++ b/security/integrity/ima/ima_fs.c
+> @@ -340,6 +340,8 @@ static ssize_t ima_write_policy(struct file *file, const char __user *buf,
+>  				    1, 0);
+>  		if (ima_appraise & IMA_APPRAISE_ENFORCE)
+>  			result = -EACCES;
+> +		else
+> +			result = datalen;
 
-I'm trying use your patch now, and I have a small comment in this document.
+In all other cases, where the IMA_APPRAISE_ENFORCE is not enabled we
+allow the action.  Here we prevent loading the policy, but don't
+return an error.  One option, as you did, is return some indication
+that the policy was not loaded.  Another option would be to allow
+loading the policy in LOG or FIX mode, but I don't think that would be
+productive.  Perhaps differentiate between the LOG and FIX modes from
+the OFF mode.  For the LOG and FIX modes, perhaps return -EACCES as
+well.  For the OFF case, loading a policy with appraise rules should
+not be permitted.
 
-On 2020/04/23 6:20, ira.weiny@intel.com wrote:
+Mimi
 
-> +To clarify inheritance here are 3 examples:
-> +
-> +Example A:
-> +
-> +mkdir -p a/b/c
-> +xfs_io 'chattr +x' a
-
-Probably, "-c" is necessary here.
-
-xfs_io -c 'chattr +x' a
-
-
-> +mkdir a/b/c/d
-> +mkdir a/e
-> +
-> +	dax: a,e
-> +	no dax: b,c,d
-> +
-> +Example B:
-> +
-> +mkdir a
-> +xfs_io 'chattr +x' a
-ditto
-> +mkdir -p a/b/c/d
-> +
-> +	dax: a,b,c,d
-> +	no dax:
-> +
-> +Example C:
-> +
-> +mkdir -p a/b/c
-> +xfs_io 'chattr +x' c
-ditto
-> +mkdir a/b/c/d
-> +
-> +	dax: c,d
-> +	no dax: a,b
-> +
-> +
-
----
-
-Yasunori Goto
+>  	} else {
+>  		result = ima_parse_add_rule(data);
+>  	}
 
