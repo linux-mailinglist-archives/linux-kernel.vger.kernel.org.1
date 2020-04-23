@@ -2,167 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DE51B5269
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA321B5287
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgDWC0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 22:26:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2834 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726632AbgDWC0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 22:26:06 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 63FB4A08C4E675876811;
-        Thu, 23 Apr 2020 10:26:02 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.154) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 23 Apr 2020
- 10:25:59 +0800
-Subject: Re: [PATCH] xfrm: policy: Only use mark as policy lookup key
-To:     Xin Long <lucien.xin@gmail.com>
-References: <20200421143149.45108-1-yuehaibing@huawei.com>
- <20200422093344.GY13121@gauss3.secunet.de>
- <1650fd55-dd70-f687-88b6-d32a04245915@huawei.com>
- <CADvbK_cEgKCEGRJU1v=FAdFNoh3TzD+cZLiKUtsMLHJh3JqOfg@mail.gmail.com>
-CC:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, <kuba@kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <02a56d2c-8d27-f53a-d9e3-c25bd03677c8@huawei.com>
-Date:   Thu, 23 Apr 2020 10:25:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        id S1726516AbgDWC3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 22:29:09 -0400
+Received: from mail-m127107.qiye.163.com ([115.236.127.107]:9783 "EHLO
+        mail-m127107.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726784AbgDWC3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 22:29:08 -0400
+Received: from vivo.com (wm-12.qy.internal [127.0.0.1])
+        by mail-m127107.qiye.163.com (Hmail) with ESMTP id 23EDE8239F;
+        Thu, 23 Apr 2020 10:26:51 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALIAKgDoCKmzQ6k5LYOILapX.3.1587608811084.Hmail.wenhu.wang@vivo.com>
+To:     =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Cc:     Scott Wood <oss@buserror.net>, gregkh@linuxfoundation.org,
+        arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, robh@kernel.org,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2MixSRVNFTkRdIG1pc2M6IG5ldyBkcml2ZXIgc3JhbV91YXBpIGZvciB1c2VyIGxldmVsIFNSQU0gYWNjZXNz?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
+In-Reply-To: <AEcAyQCMCDKzrJl2z8MdhKp5.3.1587602127200.Hmail.wenhu.wang@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <CADvbK_cEgKCEGRJU1v=FAdFNoh3TzD+cZLiKUtsMLHJh3JqOfg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 23 Apr 2020 10:26:51 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Thu, 23 Apr 2020 10:26:51 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVCTkhCQkJCQk1KQ05IWVdZKFlBSE
+        83V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSExJQk9LS01KN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6NzI6MBw*FDgwFgEqTRBONyI0MjcaCyNVSFVKTkNMTUtDQ0pISU5MVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUJDTEI3Bg++
+X-HM-Tid: 0a71a4dbf693986bkuuu23ede8239f
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/22 23:41, Xin Long wrote:
-> On Wed, Apr 22, 2020 at 8:18 PM Yuehaibing <yuehaibing@huawei.com> wrote:
->>
->> On 2020/4/22 17:33, Steffen Klassert wrote:
->>> On Tue, Apr 21, 2020 at 10:31:49PM +0800, YueHaibing wrote:
->>>> While update xfrm policy as follow:
->>>>
->>>> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>>>  priority 1 mark 0 mask 0x10
->>>> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>>>  priority 2 mark 0 mask 0x00
->>>> ip -6 xfrm policy update src fd00::1/128 dst fd00::2/128 dir in \
->>>>  priority 2 mark 0 mask 0x10
->>>>
->>>> We get this warning:
->>>>
->>>> WARNING: CPU: 0 PID: 4808 at net/xfrm/xfrm_policy.c:1548
->>>> Kernel panic - not syncing: panic_on_warn set ...
->>>> CPU: 0 PID: 4808 Comm: ip Not tainted 5.7.0-rc1+ #151
->>>> Call Trace:
->>>> RIP: 0010:xfrm_policy_insert_list+0x153/0x1e0
->>>>  xfrm_policy_inexact_insert+0x70/0x330
->>>>  xfrm_policy_insert+0x1df/0x250
->>>>  xfrm_add_policy+0xcc/0x190 [xfrm_user]
->>>>  xfrm_user_rcv_msg+0x1d1/0x1f0 [xfrm_user]
->>>>  netlink_rcv_skb+0x4c/0x120
->>>>  xfrm_netlink_rcv+0x32/0x40 [xfrm_user]
->>>>  netlink_unicast+0x1b3/0x270
->>>>  netlink_sendmsg+0x350/0x470
->>>>  sock_sendmsg+0x4f/0x60
->>>>
->>>> Policy C and policy A has the same mark.v and mark.m, so policy A is
->>>> matched in first round lookup while updating C. However policy C and
->>>> policy B has same mark and priority, which also leads to matched. So
->>>> the WARN_ON is triggered.
->>>>
->>>> xfrm policy lookup should only be matched when the found policy has the
->>>> same lookup keys (mark.v & mark.m) no matter priority.
->>>>
->>>> Fixes: 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and different priorities")
->>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->>>> ---
->>>>  net/xfrm/xfrm_policy.c | 16 +++++-----------
->>>>  1 file changed, 5 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
->>>> index 297b2fd..67d0469 100644
->>>> --- a/net/xfrm/xfrm_policy.c
->>>> +++ b/net/xfrm/xfrm_policy.c
->>>> @@ -1436,13 +1436,7 @@ static void xfrm_policy_requeue(struct xfrm_policy *old,
->>>>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->>>>                                 struct xfrm_policy *pol)
->>>>  {
->>>> -    u32 mark = policy->mark.v & policy->mark.m;
->>>> -
->>>> -    if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
->>>> -            return true;
->>>> -
->>>> -    if ((mark & pol->mark.m) == pol->mark.v &&
->>>> -        policy->priority == pol->priority)
->>>
->>> If you remove the priority check, you can't insert policies with matching
->>> mark and different priorities anymore. This brings us back the old bug.
->>
->> Yes, this is true.
->>
->>>
->>> I plan to apply the patch from Xin Long, this seems to be the right way
->>> to address this problem.
->>
->> That still brings an issue, update like this:
->>
->> policy A (mark.v = 1, mark.m = 0, priority = 1)
->> policy B (mark.v = 1, mark.m = 0, priority = 1)
->>
->> A and B will all in the list.
-> I think this is another issue even before:
-> 7cb8a93968e3 ("xfrm: Allow inserting policies with matching mark and
-> different priorities")
-> 
->>
->> So should do this:
->>
->>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->>                                    struct xfrm_policy *pol)
->>  {
->> -       u32 mark = policy->mark.v & policy->mark.m;
->> -
->> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
->> -               return true;
->> -
->> -       if ((mark & pol->mark.m) == pol->mark.v &&
->> +       if ((policy->mark.v & policy->mark.m) == (pol->mark.v & pol->mark.m) &&
->>             policy->priority == pol->priority)
->>                 return true;
-> "mark.v & mark.m" looks weird to me, it should be:
-> ((something & mark.m) == mark.v)
-> 
-> So why should we just do this here?:
-> (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m &&
->  policy->priority == pol->priority)
-
-
-This leads to this issue:
-
- ip -6 xfrm policy add src fd00::1/128 dst fd00::2/128 dir in mark 0x00000001 mask 0x00000005
- ip -6 xfrm policy add src fd00::1/128 dst fd00::2/128 dir in mark 0x00000001 mask 0x00000003
-
-the two policies will be in list, which should not be allowed.
-
-> 
->>
->>
->>
->>>
->>> .
->>>
->>
-> 
-> .
-> 
-
+PkhpLCBTY290dCwgR3JlZywKPgo+VGhhbmsgeW91IGZvciB5b3VyIGhlbHBmdWwgY29tbWVudHMu
+Cj5Gb3IgdGhhdCBHcmVnIG1lbnRpb25lZCB0aGF0IHRoZSBwYXRjaCAob3IgcGF0Y2ggc2VyaWVz
+KSB2aWEgVUlPIHNob3VsZCB3b3JrZWQgdGhyb3VnaCwKPnNvIEkgd2FudCB0byBtYWtlIGl0IGNs
+ZWFyIHRoYXQgaWYgaXQgd291bGQgZ28gdXBzdHJlYW0/KEFuZCBpZiBzbywgd2hlbj8gTm8gcHVz
+aCwganVzdCBhc2spCj4KPkFsc28gSSBoYXZlIGJlZW4gd29uZGVyaW5nIGhvdyB0aGUgcGF0Y2hl
+cyB3aXRoIGNvbXBvbmVudHMgaW4gZGlmZmVyZW50IHN1YnN5c3RlbXMKPmdvIGdldCB1cHN0cmVh
+bSB0byB0aGUgbWFpbmxpbmU/IExpa2UgcGF0Y2ggMS0zIGFyZSBvZiBsaW51eHBwYy1kZXYsIGFu
+ZCBwYXRjaCA0IGlzIG9mCj5zdWJzeXN0ZW0gVUlPLCBhbmQgaWYgYWNjZXB0YWJsZSwgaG93IHdv
+dWxkIHlvdSBkZWFsIHdpdGggdGhlbT8KPgo+QmFjayB0byB0aGUgZGV2aWNldHJlZSB0aGluZywg
+SSBtYWtlIGl0IGRldGFjaGVkIGZyb20gaGFyZHdhcmUgY29tcGF0aWJpbGl0aWVzIHdoaWNoIGJl
+bG9uZwo+dG8gdGhlIGhhcmR3YXJlIGxldmVsIGRyaXZlciBhbmQgYWxzbyB1c2VkIG1vZHVsZSBw
+YXJhbWV0ZXIgZm9yIG9mX2lkIGRlZmluaXRpb24gYXMgZHQtYmluZGluZwo+aXMgbm90IGFsbG93
+ZWQgZm9yIFVJTyBub3cuIFNvIGFzIEkgY2FuIHNlZSwgdGhpbmdzIG1heSBnbyB3ZWxsIGFuZCB0
+aGVyZSBpcyBubyBoYXJtIHRvIGFueXRoaW5nLAo+SSBob3BlIHlvdShTY290dCkgcGxlYXNlIHRh
+a2UgYSByZS1jb25zaWRlcmF0aW9uLiAKPgoKSSBtZWFuIEkgaGF2ZSBnZXQgc29tZSBuZXcgd29y
+ayBkb25lIGJhc2VkIG9uIHRoZSBjb21tZW50cyBvZiBBcm5kLCBTY290dCBhbmQgR3JlZy4gQWxz
+byBhIGxvdCBvZiB0ZXN0cyBkb25lLgpTbyBpdCB3b3VsZCBiZSBiZXR0ZXIgdG8gbWFrZSBpdCBj
+bGVhciB3aGV0aGVyIEkgc2hvdWQga2VlcCB0aGUgd29yayBnb2luZyBvciB0aGUgVUlPIHZlcnNp
+b24gaXMgdG8gYmUgYWNjZXB0ZWQKdG8gZ28gdXBzdHJlYW0gcmVjZW50bHkgaW4gdGhlIGZ1dHVy
+ZS4KClRoYW5rcyAmIHJlZ2FyZHMsCldlbmh1Cj4KPj5PbiBTdW4sIDIwMjAtMDQtMTkgYXQgMjA6
+MDUgLTA3MDAsIFdhbmcgV2VuaHUgd3JvdGU6Cj4+PiArc3RhdGljIHZvaWQgc3JhbV91YXBpX3Jl
+c19pbnNlcnQoc3RydWN0IHNyYW1fdWFwaSAqdWFwaSwKPj4+ICsJCQkJIHN0cnVjdCBzcmFtX3Jl
+c291cmNlICpyZXMpCj4+PiArewo+Pj4gKwlzdHJ1Y3Qgc3JhbV9yZXNvdXJjZSAqY3VyLCAqdG1w
+Owo+Pj4gKwlzdHJ1Y3QgbGlzdF9oZWFkICpoZWFkID0gJnVhcGktPnJlc19saXN0Owo+Pj4gKwo+
+Pj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUoY3VyLCB0bXAsIGhlYWQsIGxpc3QpIHsKPj4+
+ICsJCWlmICgmdG1wLT5saXN0ICE9IGhlYWQgJiYKPj4+ICsJCSAgICAoY3VyLT5pbmZvLm9mZnNl
+dCArIGN1ci0+aW5mby5zaXplICsgcmVzLT5pbmZvLnNpemUgPD0KPj4+ICsJCSAgICB0bXAtPmlu
+Zm8ub2Zmc2V0KSkgewo+Pj4gKwkJCXJlcy0+aW5mby5vZmZzZXQgPSBjdXItPmluZm8ub2Zmc2V0
+ICsgY3VyLT5pbmZvLnNpemU7Cj4+PiArCQkJcmVzLT5wYXJlbnQgPSB1YXBpOwo+Pj4gKwkJCWxp
+c3RfYWRkKCZyZXMtPmxpc3QsICZjdXItPmxpc3QpOwo+Pj4gKwkJCXJldHVybjsKPj4+ICsJCX0K
+Pj4+ICsJfQo+Pgo+PldlIGRvbid0IG5lZWQgeWV0IGFub3RoZXIgb3BlbiBjb2RlZCBhbGxvY2F0
+b3IuICBJZiB5b3UgcmVhbGx5IG5lZWQgdG8gZG8gdGhpcwo+PnRoZW4gdXNlIGluY2x1ZGUvbGlu
+dXgvZ2VuYWxsb2MuaCwgYnV0IG1heWJlIGtlZXAgaXQgc2ltcGxlIGFuZCBqdXN0IGhhdmUgb25l
+Cj4+YWxsb2NhdG9uIHBlciBmaWxlIGRlc2NyaXB0b3Igc28geW91IGRvbid0IG5lZWQgdG8gbWFu
+YWdlIGZkIG9mZnNldHM/Cj4+Cj4+PiArc3RhdGljIHN0cnVjdCBzcmFtX3Jlc291cmNlICpzcmFt
+X3VhcGlfZmluZF9yZXMoc3RydWN0IHNyYW1fdWFwaSAqdWFwaSwKPj4+ICsJCQkJCQlfX3UzMiBv
+ZmZzZXQpCj4+PiArewo+Pj4gKwlzdHJ1Y3Qgc3JhbV9yZXNvdXJjZSAqcmVzOwo+Pj4gKwo+Pj4g
+KwlsaXN0X2Zvcl9lYWNoX2VudHJ5KHJlcywgJnVhcGktPnJlc19saXN0LCBsaXN0KSB7Cj4+PiAr
+CQlpZiAocmVzLT5pbmZvLm9mZnNldCA9PSBvZmZzZXQpCj4+PiArCQkJcmV0dXJuIHJlczsKPj4+
+ICsJfQo+Pj4gKwo+Pj4gKwlyZXR1cm4gTlVMTDsKPj4+ICt9Cj4+Cj4+V2hhdCBpZiB0aGUgYWxs
+b2NhdGlvbiBpcyBtb3JlIHRoYW4gb25lIHBhZ2UsIGFuZCB0aGUgdXNlciBtbWFwcyBzdGFydGlu
+Zwo+PnNvbWV3aGVyZSBvdGhlciB0aGFuIHRoZSBmaXJzdCBwYWdlPwo+Pgo+Pj4gKwlzd2l0Y2gg
+KGNtZCkgewo+Pj4gKwljYXNlIFNSQU1fVUFQSV9JT0NfU0VUX1NSQU1fVFlQRToKPj4+ICsJCWlm
+ICh1YXBpLT5zYSkKPj4+ICsJCQlyZXR1cm4gLUVFWElTVDsKPj4+ICsKPj4+ICsJCWdldF91c2Vy
+KHR5cGUsIChjb25zdCBfX3UzMiBfX3VzZXIgKilhcmcpOwo+Pj4gKwkJdWFwaS0+c2EgPSBnZXRf
+c3JhbV9hcGlfZnJvbV90eXBlKHR5cGUpOwo+Pj4gKwkJaWYgKHVhcGktPnNhKQo+Pj4gKwkJCXJl
+dCA9IDA7Cj4+PiArCQllbHNlCj4+PiArCQkJcmV0ID0gLUVOT0RFVjsKPj4+ICsKPj4+ICsJCWJy
+ZWFrOwo+Pj4gKwo+Pgo+Pkp1c3QgZXhwb3NlIG9uZSBkZXZpY2UgcGVyIGJhY2tpbmcgU1JBTSwg
+ZXNwZWNpYWxseSBpZiB0aGUgdXNlciBoYXMgYW55IHJlYXNvbgo+PnRvIGNhcmUgYWJvdXQgd2hl
+cmUgdGhlIFNSQU0gaXMgY29taW5nIGZyb20gKGNvcnJlbGF0aW5nIHN5c2ZzIG5vZGVzIGlzIG11
+Y2gKPj5tb3JlIGV4cHJlc3NpdmUgdGhhbiBzb21lIHZhZ3VlIG5vdGlvbiBvZiAidHlwZSIpLgo+
+Pgo+Pj4gKwljYXNlIFNSQU1fVUFQSV9JT0NfQUxMT0M6Cj4+PiArCQlpZiAoIXVhcGktPnNhKQo+
+Pj4gKwkJCXJldHVybiAtRUlOVkFMOwo+Pj4gKwo+Pj4gKwkJcmVzID0ga3phbGxvYyhzaXplb2Yo
+KnJlcyksIEdGUF9LRVJORUwpOwo+Pj4gKwkJaWYgKCFyZXMpCj4+PiArCQkJcmV0dXJuIC1FTk9N
+RU07Cj4+PiArCj4+PiArCQlzaXplID0gY29weV9mcm9tX3VzZXIoKHZvaWQgKikmcmVzLT5pbmZv
+LAo+Pj4gKwkJCQkgICAgICAoY29uc3Qgdm9pZCBfX3VzZXIgKilhcmcsCj4+PiArCQkJCSAgICAg
+IHNpemVvZihyZXMtPmluZm8pKTsKPj4+ICsJCWlmICghUEFHRV9BTElHTkVEKHJlcy0+aW5mby5z
+aXplKSB8fCAhcmVzLT5pbmZvLnNpemUpCj4+PiArCQkJcmV0dXJuIC1FSU5WQUw7Cj4+Cj4+TWlz
+c2luZyBFRkFVTFQgdGVzdCAoaGVyZSBhbmQgZWxzZXdoZXJlKSwgYW5kIHJlcyBsZWFrcyBvbiBl
+cnJvci4KPj4KPj4+ICsKPj4+ICsJCXJlcy0+dmlydCA9ICh2b2lkICopdWFwaS0+c2EtPnNyYW1f
+YWxsb2MocmVzLT5pbmZvLnNpemUsCj4+PiArCQkJCQkJCSAmcmVzLT5waHlzLAo+Pj4gKwkJCQkJ
+CQkgUEFHRV9TSVpFKTsKPj4KPj5EbyB3ZSByZWFsbHkgbmVlZCBtdWx0aXBsZSBhbGxvY2F0b3Jz
+LCBvciBjb3VsZCB0aGUgYmFja2VuZCBiZSBsaW1pdGVkIHRvIGp1c3QKPj5hZGRpbmcgcmVnaW9u
+cyB0byBhIGdlbmVyaWMgYWxsb2NhdG9yICh3aXRoIHRoYXQgYWxsb2NhdG9yIGFsc28gc2Vydmlu
+ZyBpbi0KPj5rZXJuZWwgdXNlcnMpPwo+Pgo+PklmIHNyYW1fYWxsb2MgaXMgc3VwcG9zZWQgdG8g
+cmV0dXJuIGEgdmlydHVhbCBhZGRyZXNzLCB3aHkgaXNuJ3QgdGhhdCB0aGUKPj5yZXR1cm4gdHlw
+ZT8KPj4KPj4+ICsJCWlmICghcmVzLT52aXJ0KSB7Cj4+PiArCQkJa2ZyZWUocmVzKTsKPj4+ICsJ
+CQlyZXR1cm4gLUVOT01FTTsKPj4+ICsJCX0KPj4KPj5FTk9TUEMgbWlnaHQgYmUgbW9yZSBhcHBy
+b3ByaWF0ZSwgYXMgdGhpcyBpc24ndCBnZW5lcmFsLXB1cnBvc2UgUkFNLgo+Pgo+Pj4gKwo+Pj4g
+KwkJc3JhbV91YXBpX3Jlc19pbnNlcnQodWFwaSwgcmVzKTsKPj4+ICsJCXNpemUgPSBjb3B5X3Rv
+X3VzZXIoKHZvaWQgX191c2VyICopYXJnLAo+Pj4gKwkJCQkgICAgKGNvbnN0IHZvaWQgKikmcmVz
+LT5pbmZvLAo+Pj4gKwkJCQkgICAgc2l6ZW9mKHJlcy0+aW5mbykpOwo+Pj4gKwo+Pj4gKwkJcmV0
+ID0gMDsKPj4+ICsJCWJyZWFrOwo+Pj4gKwo+Pj4gKwljYXNlIFNSQU1fVUFQSV9JT0NfRlJFRToK
+Pj4+ICsJCWlmICghdWFwaS0+c2EpCj4+PiArCQkJcmV0dXJuIC1FSU5WQUw7Cj4+PiArCj4+PiAr
+CQlzaXplID0gY29weV9mcm9tX3VzZXIoKHZvaWQgKikmaW5mbywgKGNvbnN0IHZvaWQgX191c2Vy
+ICopYXJnLAo+Pj4gKwkJCQkgICAgICBzaXplb2YoaW5mbykpOwo+Pj4gKwo+Pj4gKwkJcmVzID0g
+c3JhbV91YXBpX3Jlc19kZWxldGUodWFwaSwgJmluZm8pOwo+Pj4gKwkJaWYgKCFyZXMpIHsKPj4+
+ICsJCQlwcl9lcnIoImVycm9yIG5vIHNyYW0gcmVzb3VyY2UgZm91bmRcbiIpOwo+Pj4gKwkJCXJl
+dHVybiAtRUlOVkFMOwo+Pj4gKwkJfQo+Pj4gKwo+Pj4gKwkJdWFwaS0+c2EtPnNyYW1fZnJlZShy
+ZXMtPnZpcnQpOwo+Pj4gKwkJa2ZyZWUocmVzKTsKPj4+ICsKPj4+ICsJCXJldCA9IDA7Cj4+PiAr
+CQlicmVhazsKPj4KPj5TbyB5b3UgY2FuIGp1c3QgZGVsZXRlIGFueSBhcmJpdHJhcnkgb2Zmc2V0
+LCBldmVuIGlmIHlvdSB3ZXJlbid0IHRoZSBvbmUgdGhhdAo+PmFsbG9jYXRlZCBpdD8gIEV2ZW4g
+aWYgdGhpcyBpc24ndCBtZWFudCBmb3IgdW5wcml2aWxlZ2VkIHVzZSBpdCBzZWVtcyBlcnJvci0K
+Pj5wcm9uZS4gIAo+Pgo+Pj4gKwo+Pj4gKwlkZWZhdWx0Ogo+Pj4gKwkJcHJfZXJyKCJlcnJvciBu
+byBjbWQgbm90IHN1cHBvcnRlZFxuIik7Cj4+PiArCQlicmVhazsKPj4+ICsJfQo+Pj4gKwo+Pj4g
+KwlyZXR1cm4gcmV0Owo+Pj4gK30KPj4+ICsKPj4+ICtzdGF0aWMgaW50IHNyYW1fdWFwaV9tbWFw
+KHN0cnVjdCBmaWxlICpmaWxwLCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSkKPj4+ICt7Cj4+
+PiArCXN0cnVjdCBzcmFtX3VhcGkgKnVhcGkgPSBmaWxwLT5wcml2YXRlX2RhdGE7Cj4+PiArCXN0
+cnVjdCBzcmFtX3Jlc291cmNlICpyZXM7Cj4+PiArCj4+PiArCXJlcyA9IHNyYW1fdWFwaV9maW5k
+X3Jlcyh1YXBpLCB2bWEtPnZtX3Bnb2ZmKTsKPj4+ICsJaWYgKCFyZXMpCj4+PiArCQlyZXR1cm4g
+LUVJTlZBTDsKPj4+ICsKPj4+ICsJaWYgKHZtYS0+dm1fZW5kIC0gdm1hLT52bV9zdGFydCA+IHJl
+cy0+aW5mby5zaXplKQo+Pj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+PiArCj4+PiArCXZtYS0+dm1f
+cGFnZV9wcm90ID0gcGdwcm90X25vbmNhY2hlZCh2bWEtPnZtX3BhZ2VfcHJvdCk7Cj4+PiArCj4+
+PiArCXJldHVybiByZW1hcF9wZm5fcmFuZ2Uodm1hLCB2bWEtPnZtX3N0YXJ0LAo+Pj4gKwkJCSAg
+ICAgICByZXMtPnBoeXMgPj4gUEFHRV9TSElGVCwKPj4+ICsJCQkgICAgICAgdm1hLT52bV9lbmQg
+LSB2bWEtPnZtX3N0YXJ0LAo+Pj4gKwkJCSAgICAgICB2bWEtPnZtX3BhZ2VfcHJvdCk7Cj4+PiAr
+fQo+Pgo+PldpbGwgbm9uY2FjaGVkIGFsd2F5cyBiZSB3aGF0J3Mgd2FudGVkIGhlcmU/Cj4+Cj4+
+LVNjb3R0Cj4+Cj4+Cj4KPgoNCg0K
