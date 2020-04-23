@@ -2,160 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7121B5DDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A4A1B5DE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgDWOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:34:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50974 "EHLO mx2.suse.de"
+        id S1728175AbgDWOfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgDWOeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:34:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CF1B1AB7F;
-        Thu, 23 Apr 2020 14:34:21 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 16:34:21 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     jpoimboe@redhat.com, alexandre.chartre@oracle.com,
-        linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de, x86@kernel.org
-Subject: Re: [PATCH 4/8] objtool: Add support for intra-function calls
-In-Reply-To: <20200423125042.794350465@infradead.org>
-Message-ID: <alpine.LSU.2.21.2004231619070.6520@pobox.suse.cz>
-References: <20200423125013.452964352@infradead.org> <20200423125042.794350465@infradead.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728036AbgDWOfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 10:35:17 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC9C620728;
+        Thu, 23 Apr 2020 14:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587652516;
+        bh=rTNJGPsQUx5fw1XQatvpogr5TI8tvW4SJdwN6KzsVbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kgd3dSZdZzX0zm4W8ZQ1CAi+zJwzKKzfNBpr5gzaWBcMOU9CXWIqwnKGxkK/S68oF
+         DC72b8r1cFWv5yycG8vEoVc6OB1dJxs2BanFkcVhzrXxWcX4IIpTOhp7MHcRUqukfz
+         9P8zIN4M89x6wF1Tq6oaEVquMYgjc4Whyjn4Hqlg=
+Date:   Thu, 23 Apr 2020 15:35:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Todd Kjos <tkjos@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH v5 0/6] driver core: Improve and cleanup
+ driver_deferred_probe_check_state()
+Message-ID: <20200423143514.GL4808@sirena.org.uk>
+References: <20200225050828.56458-1-john.stultz@linaro.org>
+ <20200421235836.GA8319@lxhi-065.adit-jv.com>
+ <CALAqxLXX455P0V0o11scc3-1MHvecnvcUoT=XBcwB+ma7Kyjqg@mail.gmail.com>
+ <20200422075413.GB4898@sirena.org.uk>
+ <CALAqxLW13oA376bqj7uTR4E4zmnX5ASK=rpqw3HMr4yOWQGaOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1X+6QtwRodzgDPAC"
+Content-Disposition: inline
+In-Reply-To: <CALAqxLW13oA376bqj7uTR4E4zmnX5ASK=rpqw3HMr4yOWQGaOw@mail.gmail.com>
+X-Cookie: This unit... must... survive.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  /*
->   * Find the destination instructions for all calls.
->   */
-> @@ -715,10 +725,7 @@ static int add_call_destinations(struct
->  				continue;
->  
->  			if (!insn->call_dest) {
-> -				WARN_FUNC("unsupported intra-function call",
-> -					  insn->sec, insn->offset);
-> -				if (retpoline)
-> -					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
-> +				WARN_FUNC("intra-function call", insn->sec, insn->offset);
 
-"unsupported intra-function call"?
+--1X+6QtwRodzgDPAC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  				return -1;
->  			}
->  
-> @@ -741,6 +748,12 @@ static int add_call_destinations(struct
->  			}
->  		} else
->  			insn->call_dest = rela->sym;
-> +
-> +		/*
-> +		 * Whatever stack impact regular CALLs have, should be
-> +		 * undone by the RETURN of the called function.
+On Wed, Apr 22, 2020 at 01:45:49PM -0700, John Stultz wrote:
+> On Wed, Apr 22, 2020 at 12:54 AM Mark Brown <broonie@kernel.org> wrote:
 
- * Annotated intra-function CALLs are treated as JMPs with a stack_op.
- * See read_intra_function_calls().
+> > If you're reverting the timeout we should revert the regulator change
+> > too I think.
 
-would make it a bit clearer.
+> Maybe? The main issue for me was my change was clearly breaking users
+> with dts with missing dependencies where their setup was working
+> before. I sort of feel like having a dtb with missing dependencies is
+> less valid than wanting to load module dependencies from userland, but
+> they were working first, so we have to keep them happy :) And at least
+> now the latter can add the timeout boot argument to make it work.
 
-> +                */
-> +               remove_insn_ops(insn);
->         }
->  
->         return 0;
-> @@ -1416,6 +1429,57 @@ static int read_instr_hints(struct objto
->         return 0;
->  }
-> 
-> +static int read_intra_function_calls(struct objtool_file *file)
-> +{
-> +       struct instruction *insn;
-> +       struct section *sec;
-> +       struct rela *rela;
-> +
-> +       sec = find_section_by_name(file->elf, ".rela.discard.intra_function_calls");
-> +       if (!sec)
-> +               return 0;
-> +
-> +       list_for_each_entry(rela, &sec->rela_list, list) {
-> +               unsigned long dest_off;
-> +
-> +               if (rela->sym->type != STT_SECTION) {
-> +                       WARN("unexpected relocation symbol type in %s",
-> +                            sec->name);
-> +                       return -1;
-> +               }
-> +
-> +               insn = find_insn(file, rela->sym->sec, rela->addend);
-> +               if (!insn) {
-> +                       WARN("bad .discard.intra_function_call entry");
-> +                       return -1;
-> +               }
-> +
-> +               if (insn->type != INSN_CALL) {
-> +                       WARN_FUNC("intra_function_call not a direct call",
-> +                                 insn->sec, insn->offset);
-> +                       return -1;
-> +               }
-> +
-> +               /*
-> +                * Treat intra-function CALLs as JMPs, but with a stack_op.
-> +                * Also see how setup_call_dest() strips stack_ops from normal
-> +                * CALLs.
+> For your case, I'm not sure if the timeout would run afoul on the nfs
+> root mounting case this one tripped over.
 
-/*
- * Treat annotated intra-function CALLs as JMPs, but with a stack_op.
- * Also see how add_call_destinations() strips stack_ops from normal
- * CALLs.
- */
+Given that it's basically entirely about glitching displays rather than
+an unrecoverable break I suspect that anyone using NFS root is some
+combination of unaffected or doesn't care if they see the timeout kick
+in.
 
-? (note added "annotated" and s/setup_call_dest/add_call_destinations/)
+--1X+6QtwRodzgDPAC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +                */
-> +               insn->type = INSN_JUMP_UNCONDITIONAL;
+-----BEGIN PGP SIGNATURE-----
 
-[...]
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6hp6EACgkQJNaLcl1U
+h9BAnQf4o2K1oT2OABX/pK3TMNmi6b4KY4XoVJSbuGguI9f01sgsNzhCfw+4txVs
+2sUiq++Ug1lckGyW3I56+/ZAYAuQco4kGgHsQ6ME27rl2hnt3Es457jjw2By3rmk
+VfCpvUWdq7Zifdq/2tKx2uJgNMWuRy6kPJ4wfwXeSXxLPFk3GvATDcyw7JjA0BMA
+Dt4GAC8Y2PFATD0AteC+bBo9JIWR4qs4CZ/1uladh22gWL4cAkCwDXQAKAJnpgbq
+ybEXCThDRbUeygV4aZD5yWwNLbyyN6+X+XN3itoIbmqBNiSnDGvILAkYGUNGTPN2
+exAfj9tWxY+JKkJTibhLAvmP7bYx
+=Gd5+
+-----END PGP SIGNATURE-----
 
-> @@ -2245,6 +2313,9 @@ static int validate_branch(struct objtoo
->  				return 0;
->  		}
->  
-> +		if (handle_insn_ops(insn, &state))
-> +			return 1;
-> +
->  		switch (insn->type) {
->  
->  		case INSN_RETURN:
-> @@ -2304,9 +2375,6 @@ static int validate_branch(struct objtoo
->  			break;
->  
->  		case INSN_EXCEPTION_RETURN:
-> -			if (handle_insn_ops(insn, &state))
-> -				return 1;
-> -
->  			/*
->  			 * This handles x86's sync_core() case, where we use an
->  			 * IRET to self. All 'normal' IRET instructions are in
-> @@ -2326,8 +2394,6 @@ static int validate_branch(struct objtoo
->  			return 0;
->  
->  		case INSN_STACK:
-> -			if (handle_insn_ops(insn, &state))
-> -				return 1;
->  			break;
-
-So we could get rid of INSN_STACK now as Julien proposed, couldn't we? If 
-I am not missing something. handle_insn_ops() is called unconditionally 
-here for all insn types and you remove stack_ops when unneeded.
-
-We could also go ahead with Julien's proposal to remove 
-INSN_EXCEPTION_RETURN hack and move it to tools/objtool/arch/x86/decode.c. 
-
-Miroslav
+--1X+6QtwRodzgDPAC--
