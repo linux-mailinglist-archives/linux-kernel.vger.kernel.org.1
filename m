@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5451B5F58
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238221B5F50
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgDWPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:34:28 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:42104 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729020AbgDWPe0 (ORCPT
+        id S1729250AbgDWPdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:33:42 -0400
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:58339 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729020AbgDWPdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:34:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587656065; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=2Kjf6YLoA4OkpyBb4xKWnTXI0yhSWwCZFp3OhQ7ATXg=; b=U/GkECoAw27a4lJgd7NSq+j8MGUmn5B7GRx2N1OJg0gl+q8EXL7KVQNIjOx2KtqvhBNyo+1Q
- YuAB/xU+suEqkQlmMJ5UbU9HhVeebHgJxWSr9tYpfxRxYOkoR5b704uK1/cJSzswa8OB/HNc
- /+7MojWSMDIjonbC0ZunAhvGBL8=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea1b575.7fa7ffca55e0-smtp-out-n03;
- Thu, 23 Apr 2020 15:34:13 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18E02C44788; Thu, 23 Apr 2020 15:34:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from kgunda-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Thu, 23 Apr 2020 11:33:42 -0400
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 23121C8574;
+        Thu, 23 Apr 2020 11:33:39 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=MzicH27rdexv30KgOupgDHNzO0A=; b=UvBmrF
+        PMNz92Ewh+rcwgIdcQGR4M3AQ2jY6KWfOrfSkXL8JnFRn9Nh4Cro8Qx2aY7YO6tl
+        h9CIZFjTUPH5OuzsSzc1+R3XANRPOa7ByVsaQ6gIWrk7cjddjyU6doaGeycpTs3/
+        w8tZJWYpDXwuFOVjL32ekNMAenfqIkrgmZLVc=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 05F3EC8573;
+        Thu, 23 Apr 2020 11:33:39 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=O+rr3BNuwQiLVk4n3xxKa9AYdQMYS30XZdh6Q/mV6mA=; b=GP8FmoUAyQxzMBurjGECSXPTktUpNn0yelSY0szzIiWj0WaVqVQq+2mKCHjIUZKST8MdBgH6RFUMdn8mrh6T4v2kfKVQMqN7bu88pAAw4Oq8jbJQ85L0HFohdzuyU7tg02NWSRvJqRPHdW1oXbmfiNH1OppF+RnPP6GsaMUzMNw=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A899C433D2;
-        Thu, 23 Apr 2020 15:34:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9A899C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kgunda@codeaurora.org
-From:   Kiran Gunda <kgunda@codeaurora.org>
-To:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
-        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
-        mark.rutland@arm.com, robh@kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
-Subject: [PATCH V6 0/4] Add support for WLED5
-Date:   Thu, 23 Apr 2020 21:03:33 +0530
-Message-Id: <1587656017-27911-1-git-send-email-kgunda@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id C5D35C856F;
+        Thu, 23 Apr 2020 11:33:35 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id E37032DA0CB1;
+        Thu, 23 Apr 2020 11:33:33 -0400 (EDT)
+Date:   Thu, 23 Apr 2020 11:33:33 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+In-Reply-To: <20200423151624.GA26002@ziepe.ca>
+Message-ID: <nycvar.YSQ.7.76.2004231128210.2671@knanqh.ubzr>
+References: <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com> <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr> <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com> <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr> <871rofdhtg.fsf@intel.com>
+ <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr> <940d3add-4d12-56ed-617a-8b3bf8ef3a0f@infradead.org> <nycvar.YSQ.7.76.2004231059170.2671@knanqh.ubzr> <20200423150556.GZ26002@ziepe.ca> <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr>
+ <20200423151624.GA26002@ziepe.ca>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: CBFEED22-8577-11EA-B0EC-8D86F504CC47-78420484!pb-smtp21.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, WLED driver supports only WLED4 peripherals that is present
-on pmi8998 and pm660L. This patch series  converts the existing WLED4
-bindings from .txt to .yaml format and adds the support for WLED5 peripheral
-that is present on PM8150L.
+On Thu, 23 Apr 2020, Jason Gunthorpe wrote:
 
-PM8150L WLED supports the following.
-    - Two modulators and each sink can use any of the modulator
-    - Multiple CABC selection options
-    - Multiple brightness width selection (12 bits to 15 bits)
+> On Thu, Apr 23, 2020 at 11:11:46AM -0400, Nicolas Pitre wrote:
+> > On Thu, 23 Apr 2020, Jason Gunthorpe wrote:
+> > 
+> > > On Thu, Apr 23, 2020 at 11:01:40AM -0400, Nicolas Pitre wrote:
+> > > > On Wed, 22 Apr 2020, Randy Dunlap wrote:
+> > > > 
+> > > > > On 4/22/20 2:13 PM, Nicolas Pitre wrote:
+> > > > > > On Wed, 22 Apr 2020, Jani Nikula wrote:
+> > > > > > 
+> > > > > >> On Tue, 21 Apr 2020, Nicolas Pitre <nico@fluxnic.net> wrote:
+> > > > > >>> This is really a conditional dependency. That's all this is about.
+> > > > > >>> So why not simply making it so rather than fooling ourselves? All that 
+> > > > > >>> is required is an extension that would allow:
+> > > > > >>>
+> > > > > >>> 	depends on (expression) if (expression)
+> > > > > >>>
+> > > > > >>> This construct should be obvious even without reading the doc, is 
+> > > > > >>> already used extensively for other things already, and is flexible 
+> > > > > >>> enough to cover all sort of cases in addition to this particular one.
+> > > > > >>
+> > > > > >> Okay, you convinced me. Now you only need to convince whoever is doing
+> > > > > >> the actual work of implementing this stuff. ;)
+> > > > > > 
+> > > > > > What about this:
+> > > > > > 
+> > > > > > Subject: [PATCH] kconfig: allow for conditional dependencies
+> > > > > > 
+> > > > > > This might appear to be a strange concept, but sometimes we want
+> > > > > > a dependency to be conditionally applied. One such case is currently
+> > > > > > expressed with:
+> > > > > > 
+> > > > > > 	depends on FOO || !FOO
+> > > > > > 
+> > > > > > This pattern is strange enough to give one's pause. Given that it is
+> > > > > > also frequent, let's make the intent more obvious with some syntaxic 
+> > > > > > sugar by effectively making dependencies optionally conditional.
+> > > > > > This also makes the kconfig language more uniform.
+> > > > > > 
+> > > > > > Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
+> > > > > 
+> > > > > Hi,
+> > > > > 
+> > > > > If we must do something here, I prefer this one.
+> > > > > 
+> > > > > Nicolas, would you do another example, specifically for
+> > > > > CRAMFS_MTD in fs/cramfs/Kconfig, please?
+> > > > 
+> > > > I don't see how that one can be helped. The MTD dependency is not 
+> > > > optional.
+> > > 
+> > > Could it be done as 
+> > > 
+> > > config MTD
+> > >    depends on CRAMFS if CRAMFS_MTD
+> > > 
+> > > ?
+> > 
+> > No. There is no logic in restricting MTD usage based on CRAMFS or 
+> > CRAMFS_MTD.
+> 
+> Ah, I got it backwards, maybe this:
+> 
+> config CRAMFS
+>    depends on MTD if CRAMFS_MTD
+> 
+> ?
 
-Changes from V1:
-	- Rebased on top of the below commit.
-	  backlight: qcom-wled: Fix unsigned comparison to zero
+Still half-backward. CRAMFS should not depend on either MTD nor 
+CRAMFS_MTD.
 
-Changes from V2:
-	- Addressed Bjorn's comments by splitting the WLED4 changes
-	  in a seperate patch.
-	- Added WLED5 auto calibration support
+It is CRAMFS_MTD that needs both CRAMFS and MTD. 
+Furthermore CRAMFS_MTD can't be built-in if MTD is modular.
 
-Changes from V3:
-        - Addressed comments from Daniel Thompson and Rob Herring
-        - Seperated the WLED5 bindings from the driver changes
-         - Squashed wled5 auto string detection and wled5 basic changes
-          to avoid the NULL callback function pointer issue.
 
-Changes from V4:
-        - Addressed the yaml formatting comments from Rob Herring.
-        - Addressed the comments from Daniel Thompson on the below patch
-  	  "backlight: qcom-wled: Add callback functions"
-
-Changes from V5:
-        - This series depends on the below patch.
-          https://lore.kernel.org/patchwork/patch/1226258/
-        - Addressed yaml formatting comments from Rob Herring.
-        - Removed the "wled_ovp_fault_status" callback as per Daniel Thomson
-          suggestion from patch #2.
-        - Addressed comments from Daniel Thomson on patch #4.
-
-Kiran Gunda (3):
-  backlight: qcom-wled: convert the wled bindings to .yaml format
-  backlight: qcom-wled: Add callback functions
-  backlight: qcom-wled: Add WLED5 bindings
-
-Subbaraman Narayanamurthy (1):
-  backlight: qcom-wled: Add support for WLED5 peripheral that is present
-    on PM8150L PMICs
-
- .../bindings/leds/backlight/qcom-wled.txt          | 154 ------
- .../bindings/leds/backlight/qcom-wled.yaml         | 261 +++++++++
- drivers/video/backlight/qcom-wled.c                | 589 ++++++++++++++++++---
- 3 files changed, 777 insertions(+), 227 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/leds/backlight/qcom-wled.txt
- create mode 100644 Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
- a Linux Foundation Collaborative Project
+Nicolas
