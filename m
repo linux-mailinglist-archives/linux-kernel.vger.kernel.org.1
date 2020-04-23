@@ -2,289 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211A01B695B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501471B69A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbgDWXWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:22:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729941AbgDWXWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:22:38 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE725214AF;
-        Thu, 23 Apr 2020 23:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587684157;
-        bh=NyMvVPc26cHDJ5pBzO6gjZvfGZ7yw4HWPE+vaWF6wHs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oWUb6AnYwrUQhgkbMAUoqYVaQWMiYRxwyk2P6+Xhcl3yIbX6HDNEdTnjJ5kQLy0Jr
-         a65PEhT/vRQS5kAoEKDGNFB54SEmvKfe/nNOFzHOCRZho4j39/p8xson4CiCDI7BG2
-         Ov+CCiF1i8hwOH6PwAdadoNhcVOxKXVgA4xVP8mM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        luto@kernel.org
-Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com, Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v10 18/18] Documentation/x86/64: Add documentation for GS/FS addressing mode
-Date:   Thu, 23 Apr 2020 19:22:07 -0400
-Message-Id: <20200423232207.5797-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200423232207.5797-1-sashal@kernel.org>
-References: <20200423232207.5797-1-sashal@kernel.org>
+        id S1729953AbgDWXZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:25:19 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45665 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729348AbgDWXZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:25:17 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w65so3819174pfc.12;
+        Thu, 23 Apr 2020 16:25:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=nXwzG0UZc6KKxJD7f9w5S9le9tHn88lTbuq8NDnlIcE=;
+        b=iyaeXlk1SeJrW0VOAK03cYweH2PEmsvTkfNZYi3jKT2NYujxq7vUkOzpizurG/9FUn
+         nwaTQYqpPLVrxyrCW0VXmxA+p4ENGE0xfcMBC6cK5rEU+rMFcIaRG7PRI68FNnIaIjzk
+         NZO6JJETxx1yWPiqEWr1sdTyWmnvMY2BAx1xWDbU5faIBYlIvUv7EB1YSFYCunYSbMup
+         kfm+kkbe0275OymBEPi/CLB6N4cCsMiJXyV8A1HQxJrsEZd5G50QZz6ZHujy5EktVdFb
+         WrEVkne+sbWx3ZH2/PS4zdxMslLFGyTj/fEArENlOe74YtCsz6WkJqdF8ahkFsx6ncUy
+         Vp7A==
+X-Gm-Message-State: AGi0PuaZD+3oUPSNlpubSmQww3cTQ+1GXgsaVD8XH7zaiSNmuGOkHcmg
+        w/7QxO/MYbK6YEM9ZSw6R3A=
+X-Google-Smtp-Source: APiQypKxsNXbiiRHX+Hm3WgB++Uo+jvnCWaXXvhtNGpfZ9YuxZGolRkGPH+2YkNX6KP7I5WB1V6qgQ==
+X-Received: by 2002:a63:9701:: with SMTP id n1mr5964142pge.19.1587684315425;
+        Thu, 23 Apr 2020 16:25:15 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:30fe:750:6059:a44d? ([2601:647:4000:d7:30fe:750:6059:a44d])
+        by smtp.gmail.com with ESMTPSA id u2sm3299740pjn.20.2020.04.23.16.25.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 16:25:14 -0700 (PDT)
+Subject: Re: [PATCH] scsi: storvsc: Fix a panic in the hibernation procedure
+To:     Dexuan Cui <decui@microsoft.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@lst.de" <hch@lst.de>, "hare@suse.de" <hare@suse.de>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        Balsundar P <Balsundar.P@microchip.com>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>
+References: <1587514644-47058-1-git-send-email-decui@microsoft.com>
+ <1b6de3b0-4e0c-4b46-df1a-db531bd2c888@acm.org>
+ <HK0P153MB027395755C14233F09A8F352BFD20@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+ <c55d643c-c13f-70f1-7a44-608f94fbfd5f@acm.org>
+ <HK0P153MB02737524F120829405C6DE68BFD30@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+ <ade7f096-4a09-4d4e-753a-f9e4acb7b550@acm.org>
+ <HK0P153MB02731F9C5FC61C466715362CBFD30@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <f23cb660-13e4-8466-4c78-163fcc857caa@acm.org>
+Date:   Thu, 23 Apr 2020 16:25:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <HK0P153MB02731F9C5FC61C466715362CBFD30@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On 2020-04-23 11:29, Dexuan Cui wrote:
+> So it looks the below patch also works for me:
+> 
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -898,6 +898,11 @@ static int software_resume(void)
+>         error = freeze_processes();
+>         if (error)
+>                 goto Close_Finish;
+> +
+> +       error = freeze_kernel_threads();
+> +       if (error)
+> +               goto Close_Finish;
+> +
+>         error = load_image_and_restore();
+>         thaw_processes();
+>   Finish:
+> 
+> Just to be sure, I'll do more tests, but I believe the panic can be fixed
+> by this according to my tests I have done so far.
 
-Explain how the GS/FS based addressing can be utilized in user space
-applications along with the differences between the generic prctl() based
-GS/FS base control and the FSGSBASE version available on newer CPUs.
+If a freeze_kernel_threads() call is added in software_resume(), should
+a thaw_kernel_threads() call be added too?
 
-Originally-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Documentation/x86/x86_64/fsgs.rst  | 199 +++++++++++++++++++++++++++++
- Documentation/x86/x86_64/index.rst |   1 +
- 2 files changed, 200 insertions(+)
- create mode 100644 Documentation/x86/x86_64/fsgs.rst
+Anyway, please Cc me if a patch for software_resume() is submitted.
 
-diff --git a/Documentation/x86/x86_64/fsgs.rst b/Documentation/x86/x86_64/fsgs.rst
-new file mode 100644
-index 0000000000000..50960e09e1f66
---- /dev/null
-+++ b/Documentation/x86/x86_64/fsgs.rst
-@@ -0,0 +1,199 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Using FS and GS segments in user space applications
-+===================================================
-+
-+The x86 architecture supports segmentation. Instructions which access
-+memory can use segment register based addressing mode. The following
-+notation is used to address a byte within a segment:
-+
-+  Segment-register:Byte-address
-+
-+The segment base address is added to the Byte-address to compute the
-+resulting virtual address which is accessed. This allows to access multiple
-+instances of data with the identical Byte-address, i.e. the same code. The
-+selection of a particular instance is purely based on the base-address in
-+the segment register.
-+
-+In 32-bit mode the CPU provides 6 segments, which also support segment
-+limits. The limits can be used to enforce address space protections.
-+
-+In 64-bit mode the CS/SS/DS/ES segments are ignored and the base address is
-+always 0 to provide a full 64bit address space. The FS and GS segments are
-+still functional in 64-bit mode.
-+
-+Common FS and GS usage
-+------------------------------
-+
-+The FS segment is commonly used to address Thread Local Storage (TLS). FS
-+is usually managed by runtime code or a threading library. Variables
-+declared with the '__thread' storage class specifier are instantiated per
-+thread and the compiler emits the FS: address prefix for accesses to these
-+variables. Each thread has its own FS base address so common code can be
-+used without complex address offset calculations to access the per thread
-+instances. Applications should not use FS for other purposes when they use
-+runtimes or threading libraries which manage the per thread FS.
-+
-+The GS segment has no common use and can be used freely by
-+applications. GCC and Clang support GS based addressing via address space
-+identifiers.
-+
-+Reading and writing the FS/GS base address
-+------------------------------------------
-+
-+There exist two mechanisms to read and write the FS/GS base address:
-+
-+ - the arch_prctl() system call
-+
-+ - the FSGSBASE instruction family
-+
-+Accessing FS/GS base with arch_prctl()
-+--------------------------------------
-+
-+ The arch_prctl(2) based mechanism is available on all 64-bit CPUs and all
-+ kernel versions.
-+
-+ Reading the base:
-+
-+   arch_prctl(ARCH_GET_FS, &fsbase);
-+   arch_prctl(ARCH_GET_GS, &gsbase);
-+
-+ Writing the base:
-+
-+   arch_prctl(ARCH_SET_FS, fsbase);
-+   arch_prctl(ARCH_SET_GS, gsbase);
-+
-+ The ARCH_SET_GS prctl may be disabled depending on kernel configuration
-+ and security settings.
-+
-+Accessing FS/GS base with the FSGSBASE instructions
-+---------------------------------------------------
-+
-+ With the Ivy Bridge CPU generation Intel introduced a new set of
-+ instructions to access the FS and GS base registers directly from user
-+ space. These instructions are also supported on AMD Family 17H CPUs. The
-+ following instructions are available:
-+
-+  =============== ===========================
-+  RDFSBASE %reg   Read the FS base register
-+  RDGSBASE %reg   Read the GS base register
-+  WRFSBASE %reg   Write the FS base register
-+  WRGSBASE %reg   Write the GS base register
-+  =============== ===========================
-+
-+ The instructions avoid the overhead of the arch_prctl() syscall and allow
-+ more flexible usage of the FS/GS addressing modes in user space
-+ applications. This does not prevent conflicts between threading libraries
-+ and runtimes which utilize FS and applications which want to use it for
-+ their own purpose.
-+
-+FSGSBASE instructions enablement
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+ The instructions are enumerated in CPUID leaf 7, bit 0 of EBX. If
-+ available /proc/cpuinfo shows 'fsgsbase' in the flag entry of the CPUs.
-+
-+ The availability of the instructions does not enable them
-+ automatically. The kernel has to enable them explicitly in CR4. The
-+ reason for this is that older kernels make assumptions about the values in
-+ the GS register and enforce them when GS base is set via
-+ arch_prctl(). Allowing user space to write arbitrary values to GS base
-+ would violate these assumptions and cause malfunction.
-+
-+ On kernels which do not enable FSGSBASE the execution of the FSGSBASE
-+ instructions will fault with a #UD exception.
-+
-+ The kernel provides reliable information about the enabled state in the
-+ ELF AUX vector. If the HWCAP2_FSGSBASE bit is set in the AUX vector, the
-+ kernel has FSGSBASE instructions enabled and applications can use them.
-+ The following code example shows how this detection works::
-+
-+   #include <sys/auxv.h>
-+   #include <elf.h>
-+
-+   /* Will be eventually in asm/hwcap.h */
-+   #ifndef HWCAP2_FSGSBASE
-+   #define HWCAP2_FSGSBASE        (1 << 1)
-+   #endif
-+
-+   ....
-+
-+   unsigned val = getauxval(AT_HWCAP2);
-+
-+   if (val & HWCAP2_FSGSBASE)
-+        printf("FSGSBASE enabled\n");
-+
-+FSGSBASE instructions compiler support
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+GCC version 4.6.4 and newer provide instrinsics for the FSGSBASE
-+instructions. Clang 5 supports them as well.
-+
-+  =================== ===========================
-+  _readfsbase_u64()   Read the FS base register
-+  _readfsbase_u64()   Read the GS base register
-+  _writefsbase_u64()  Write the FS base register
-+  _writegsbase_u64()  Write the GS base register
-+  =================== ===========================
-+
-+To utilize these instrinsics <immintrin.h> must be included in the source
-+code and the compiler option -mfsgsbase has to be added.
-+
-+Compiler support for FS/GS based addressing
-+-------------------------------------------
-+
-+GCC version 6 and newer provide support for FS/GS based addressing via
-+Named Address Spaces. GCC implements the following address space
-+identifiers for x86:
-+
-+  ========= ====================================
-+  __seg_fs  Variable is addressed relative to FS
-+  __seg_gs  Variable is addressed relative to GS
-+  ========= ====================================
-+
-+The preprocessor symbols __SEG_FS and __SEG_GS are defined when these
-+address spaces are supported. Code which implements fallback modes should
-+check whether these symbols are defined. Usage example::
-+
-+  #ifdef __SEG_GS
-+
-+  long data0 = 0;
-+  long data1 = 1;
-+
-+  long __seg_gs *ptr;
-+
-+  /* Check whether FSGSBASE is enabled by the kernel (HWCAP2_FSGSBASE) */
-+  ....
-+
-+  /* Set GS base to point to data0 */
-+  _writegsbase_u64(&data0);
-+
-+  /* Access offset 0 of GS */
-+  ptr = 0;
-+  printf("data0 = %ld\n", *ptr);
-+
-+  /* Set GS base to point to data1 */
-+  _writegsbase_u64(&data1);
-+  /* ptr still addresses offset 0! */
-+  printf("data1 = %ld\n", *ptr);
-+
-+
-+Clang does not provide the GCC address space identifiers, but it provides
-+address spaces via an attribute based mechanism in Clang 2.6 and newer
-+versions:
-+
-+ ==================================== =====================================
-+  __attribute__((address_space(256))  Variable is addressed relative to GS
-+  __attribute__((address_space(257))  Variable is addressed relative to FS
-+ ==================================== =====================================
-+
-+FS/GS based addressing with inline assembly
-+-------------------------------------------
-+
-+In case the compiler does not support address spaces, inline assembly can
-+be used for FS/GS based addressing mode::
-+
-+	mov %fs:offset, %reg
-+	mov %gs:offset, %reg
-+
-+	mov %reg, %fs:offset
-+	mov %reg, %gs:offset
-diff --git a/Documentation/x86/x86_64/index.rst b/Documentation/x86/x86_64/index.rst
-index d6eaaa5a35fcd..a56070fc8e77a 100644
---- a/Documentation/x86/x86_64/index.rst
-+++ b/Documentation/x86/x86_64/index.rst
-@@ -14,3 +14,4 @@ x86_64 Support
-    fake-numa-for-cpusets
-    cpu-hotplug-spec
-    machinecheck
-+   fsgs
--- 
-2.20.1
+> I'm still not sure what the comment before scsi_device_quiesce() means:
+>  *  ... Since special requests may also be requeued requests,
+>  *      a successful return doesn't guarantee the device will be
+>  *      totally quiescent.
+> 
+> I don't know if there can be some other I/O submitted after
+> scsi_device_quiesce() returns in the case of hibernation, and I don't
+> know if aac_suspend() -> scsi_host_block() should be fixed/removed,
+> but as far as the panic is concerned, I'm very glad I have found a better
+> fix with your help. 
 
+The function blk_set_pm_only() increments the q->pm_only counter while
+the blk_clear_pm_only() function decrements the q->pm_only counter.
+If q->pm_only > 0, blk_queue_enter() only succeeds if the flag
+BLK_MQ_REQ_PREEMPT is set in the second argument passed to that
+function. blk_get_request() calls blk_queue_enter(). The result is that
+while q->pm_only > 0 blk_get_request() only submits a request without
+waiting if the BLK_MQ_REQ_PREEMPT flag is set in its second argument.
+scsi_execute() sets the BLK_MQ_REQ_PREEMPT flag. In other words,
+scsi_device_quiesce() blocks requests submitted by filesystems but still
+allows SCSI commands submitted by the SCSI core to be executed.
+"special" refers to requests with the BLK_MQ_REQ_PREEMPT flag set.
+
+Bart.
