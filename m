@@ -2,138 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E511B5D61
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1CC1B5D6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgDWOMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:12:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59549 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727832AbgDWOMm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:12:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587651160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pOsChlB873+qeEVS/N6Pcq8uxmstSl6iuwpNzcxYzPk=;
-        b=fYWjALw+WWJKb23ooV8WRRG5cMu9BrtQkqO+MovcIDGAdTahM8a/1x1D1mUA6dCaPwSxHj
-        UozNR4gdOB+NrPNlapcEvAb2tDpz7+yzDpOkscULU3XtxqFhMHzqq2fnAX5bb5m8qtMTt0
-        zs3rXo+Sh4bmk0BRxlL+pNUcD50FouY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-gqsli4KTMoK6o7A4vSITKw-1; Thu, 23 Apr 2020 10:12:36 -0400
-X-MC-Unique: gqsli4KTMoK6o7A4vSITKw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0110A86ABDF;
-        Thu, 23 Apr 2020 14:12:35 +0000 (UTC)
-Received: from treble (ovpn-118-207.rdu2.redhat.com [10.10.118.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B08756084D;
-        Thu, 23 Apr 2020 14:12:30 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 09:12:28 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH v2 6/9] s390/module: Use s390_kernel_write() for late
- relocations
-Message-ID: <20200423141228.sjvnxwdqlzoyqdwg@treble>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
- <18266eb2c2c9a2ce0033426837d89dcb363a85d3.1587131959.git.jpoimboe@redhat.com>
- <20200422164037.7edd21ea@thinkpad>
- <20200422172126.743908f5@thinkpad>
- <20200422194605.n77t2wtx5fomxpyd@treble>
- <20200423141834.234ed0bc@thinkpad>
- <alpine.LSU.2.21.2004231513250.6520@pobox.suse.cz>
+        id S1728418AbgDWON4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:13:56 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2088 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726450AbgDWONz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 10:13:55 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id A235B288AFABC7CBEA83;
+        Thu, 23 Apr 2020 15:13:53 +0100 (IST)
+Received: from [127.0.0.1] (10.47.5.255) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Apr
+ 2020 15:13:51 +0100
+Subject: Re: [PATCH RFC v2 02/24] scsi: allocate separate queue for reserved
+ commands
+To:     Christoph Hellwig <hch@infradead.org>,
+        Hannes Reinecke <hare@suse.de>
+CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <esc.storagedev@microsemi.com>, <chenxiang66@hisilicon.com>,
+        Hannes Reinecke <hare@suse.com>
+References: <1583857550-12049-1-git-send-email-john.garry@huawei.com>
+ <1583857550-12049-3-git-send-email-john.garry@huawei.com>
+ <20200310183243.GA14549@infradead.org>
+ <79cf4341-f2a2-dcc9-be0d-2efc6e83028a@huawei.com>
+ <20200311062228.GA13522@infradead.org>
+ <b5a63725-722b-8ccd-3867-6db192a248a4@suse.de>
+ <9c6ced82-b3f1-9724-b85e-d58827f1a4a4@huawei.com>
+ <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
+ <20200407163033.GA26568@infradead.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ae3b498b-aea8-dc09-53b8-9e160effc681@huawei.com>
+Date:   Thu, 23 Apr 2020 15:13:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2004231513250.6520@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200407163033.GA26568@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.5.255]
+X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 03:22:06PM +0200, Miroslav Benes wrote:
-> > > [   50.294476] Unable to handle kernel pointer dereference in virtual kernel address space
-> > > [   50.294479] Failing address: 000003ff8015b000 TEID: 000003ff8015b407
-> > > [   50.294480] Fault in home space mode while using kernel ASCE.
-> > > [   50.294483] AS:000000006cef0007 R3:000000007e2c4007 S:0000000003ccb800 P:0000 00000257321d
-> > > [   50.294557] Oops: 0004 ilc:3 [#1] SMP
-> > > [   50.294561] Modules linked in: test_klp_convert1(K+) test_klp_convert_mod ghash_s390 prng xts aes_s390 des_s390 libdes sha512_s390 vmur zcrypt_cex4 ip_tables xfs libcrc32c dasd_fba_mod qeth_l2 dasd_eckd_mod dasd_mod qeth lcs ctcm qdio cc
-> > > wgroup fsm dm_mirror dm_region_hash dm_log dm_mod pkey zcrypt [last unloaded: test_klp_atomic_replace]
-> > > [   50.294576] CPU: 0 PID: 1743 Comm: modprobe Tainted: G              K   5.6.0 + #2
-> > > [   50.294579] Hardware name: IBM 2964 N96 400 (z/VM 6.4.0)
-> > > [   50.294583] Krnl PSW : 0704e00180000000 000000006bf6be0a (apply_rela+0x2ba/0x 4e0)
-> > > [   50.294589]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:2 PM:0 RI: 0 EA:3
-> > > [   50.294684] Krnl GPRS: 000003ff80147010 000003e0001b9588 000003ff8015c168 000 003ff8015b19a
-> > > [   50.294686]            000003ff8015b07c 0d10e310100a0004 000003ff80147010 000 00000000000a0
-> > > [   50.294687]            000003ff8015e588 000003ff8015e5e8 000003ff8015d300 000 0003b00000014
-> > > [   50.294698]            000000007a663000 000000006c6bbb80 000003e0009a7918 000 003e0009a78b8
-> > > [   50.294707] Krnl Code: 000000006bf6bdf8: e350d0080004        lg      %r5,8(%r 13)
-> > > [   50.294707]            000000006bf6bdfe: e34010080008        ag      %r4,8(%r 1)
-> > > [   50.294707]           #000000006bf6be04: e340a2000008        ag      %r4,512( %r10)
-> > > [   50.294707]           >000000006bf6be0a: e35040000024        stg     %r5,0(%r 4)
-> > > [   50.294707]            000000006bf6be10: c050007c6136        larl    %r5,0000 00006cef807c
-> > > [   50.294707]            000000006bf6be16: e35050000012        lt      %r5,0(%r 5)
-> > > [   50.294707]            000000006bf6be1c: a78400a6            brc     8,000000 006bf6bf68
-> > > [   50.294707]            000000006bf6be20: a55e07f1            llilh   %r5,2033
-> > > 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 01.
-> > > 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 00.
-> > > [   50.295369] Call Trace:
-> > > [   50.295372]  [<000000006bf6be0a>] apply_rela+0x2ba/0x4e0
-> > > [   50.295376]  [<000000006bf6c5c8>] apply_relocate_add+0xe0/0x138
-> > > [   50.295378]  [<000000006c0229a0>] klp_apply_section_relocs+0xe8/0x128
-> > > [   50.295380]  [<000000006c022b4c>] klp_apply_object_relocs+0x9c/0xd0
-> > > [   50.295382]  [<000000006c022bb0>] klp_init_object_loaded+0x30/0x138
-> > > [   50.295384]  [<000000006c023052>] klp_enable_patch+0x39a/0x870
-> > > [   50.295387]  [<000003ff8015b0da>] test_klp_convert_init+0x22/0x50 [test_klp_convert1]
-> > > [   50.295389]  [<000000006bf54838>] do_one_initcall+0x40/0x1f0
-> > > [   50.295391]  [<000000006c04d610>] do_init_module+0x70/0x280
-> > > [   50.295392]  [<000000006c05002a>] load_module+0x1aba/0x1d10
-> > > [   50.295394]  [<000000006c0504c4>] __do_sys_finit_module+0xa4/0xe8
-> > > [   50.295416]  [<000000006c6b5742>] system_call+0x2aa/0x2c8
-> > > [   50.295416] Last Breaking-Event-Address:
-> > > [   50.295418]  [<000000006c6b6aa0>] __s390_indirect_jump_r4+0x0/0xc
-> > > [   50.295421] Kernel panic - not syncing: Fatal exception: panic_on_oops
-> >
-> > this is strange. While I would have expected an exception similar to
-> > this, it really should have happened on the "sturg" instruction which
-> > does the DAT-off store in s390_kernel_write(), and certainly not with
-> > an ID of 0004 (protection). However, in your case, it happens on a
-> > normal store instruction, with 0004 indicating a protection exception.
-> > 
-> > This is more like what I would expect e.g. in the case where you do
-> > _not_ use the s390_kernel_write() function for RO module text patching,
-> > but rather normal memory access. So I am pretty sure that this is not
-> > related to the s390_kernel_write(), but some other issue, maybe some
-> > place left where you still use normal memory access?
+On 07/04/2020 17:30, Christoph Hellwig wrote:
+> On Tue, Apr 07, 2020 at 04:00:10PM +0200, Hannes Reinecke wrote:
+>> My concern is this:
+>>
+>> struct scsi_device *scsi_get_host_dev(struct Scsi_Host *shost)
+>> {
+>> 	[ .. ]
+>> 	starget = scsi_alloc_target(&shost->shost_gendev, 0, shost->this_id);
+>> 	[ .. ]
+>>
+>> and we have typically:
+>>
+>> drivers/scsi/hisi_sas/hisi_sas_v3_hw.c: .this_id                = -1,
+>>
+>> It's _very_ uncommon to have a negative number as the SCSI target device; in
+>> fact, it _is_ an unsigned int already.
+>>
+>> But alright, I'll give it a go; let's see what I'll end up with.
 > 
-> The call trace above also suggests that it is not a late relocation, no? 
-> The path is from KLP module init function through klp_enable_patch. It should 
-> mean that the to-be-patched object is loaded (it must be a module thanks 
-> to a check klp_init_object_loaded(), vmlinux relocations were processed 
-> earlier in apply_relocations()).
+> But this shouldn't be exposed anywhere.  And I prefer that over having
+> magic requests/scsi_cmnd that do not have a valid ->device pointer.
+> .
 > 
-> However, the KLP module state here must be COMING, so s390_kernel_write() 
-> should be used. What are we missing?
 
-I'm also scratching my head.  It _should_ be using s390_kernel_write()
-based on the module state, but I don't see that on the stack trace.
+(just looking at this again)
 
-This trace (and Gerald's comment) seem to imply it's using
-__builtin_memcpy(), which might expected for UNFORMED state.
+Hi Christoph,
 
-Weird...
+So how would this look added in scsi_lib.c:
 
--- 
-Josh
+struct scsi_cmnd *scsi_get_reserved_cmd(struct Scsi_Host *shost)
+{
+	struct scsi_cmnd *scmd;
+	struct request *rq;
+	struct scsi_device *sdev = scsi_get_host_dev(shost);
 
+	if (!sdev)
+		return NULL;
+
+	rq = blk_mq_alloc_request(sdev->request_queue,
+				  REQ_OP_DRV_OUT | REQ_NOWAIT,
+				  BLK_MQ_REQ_RESERVED);
+	if (IS_ERR(rq)) // fix tidy-up
+		return NULL;
+	WARN_ON(rq->tag == -1);
+	scmd = blk_mq_rq_to_pdu(rq);
+	scmd->request = rq;
+	scmd->device = sdev;
+
+	return scmd;
+}
+EXPORT_SYMBOL_GPL(scsi_get_reserved_cmd);
+
+void scsi_put_reserved_cmd(struct scsi_cmnd *scmd)
+{
+	struct request *rq = blk_mq_rq_from_pdu(scmd);
+
+	if (blk_mq_rq_is_reserved(rq)) {
+		struct scsi_device *sdev = scmd->device;
+		blk_mq_free_request(rq);
+		scsi_free_host_dev(sdev);
+	}
+}
+EXPORT_SYMBOL_GPL(scsi_put_reserved_cmd);
+
+Not sure if we want a static scsi_device per host, or alloc and free 
+dynamically.
+
+(@Hannes, I also have some proper patches for libsas if you want to add it)
+
+Cheers,
+John
