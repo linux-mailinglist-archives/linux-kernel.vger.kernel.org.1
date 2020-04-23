@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B601B6480
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6FB1B649D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgDWTd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728308AbgDWTd5 (ORCPT
+        id S1726648AbgDWTlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:41:23 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:43014 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgDWTlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:33:57 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB80C09B042;
-        Thu, 23 Apr 2020 12:33:57 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id EA79412776892;
-        Thu, 23 Apr 2020 12:33:55 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 12:33:55 -0700 (PDT)
-Message-Id: <20200423.123355.1116107619410931438.davem@davemloft.net>
-To:     bloodyreaper@yandex.ru
-Cc:     kuba@kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, hauke@hauke-m.de, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, sean.wang@mediatek.com,
-        matthias.bgg@gmail.com, vladimir.oltean@nxp.com,
-        claudiu.manoil@nxp.com, linus.walleij@linaro.org,
-        p.zabel@pengutronix.de, linux@armlinux.org.uk,
-        linux@rempel-privat.de, maowenan@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 net-next] net: dsa: add GRO support via gro_cells
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200421134108.167646-1-bloodyreaper@yandex.ru>
-References: <20200421134108.167646-1-bloodyreaper@yandex.ru>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 23 Apr 2020 12:33:56 -0700 (PDT)
+        Thu, 23 Apr 2020 15:41:22 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRhir-0006qh-LG; Thu, 23 Apr 2020 13:41:21 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRhiq-0001Ot-TI; Thu, 23 Apr 2020 13:41:21 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+        <20200423175432.GA18034@redhat.com>
+Date:   Thu, 23 Apr 2020 14:38:12 -0500
+In-Reply-To: <20200423175432.GA18034@redhat.com> (Oleg Nesterov's message of
+        "Thu, 23 Apr 2020 19:54:33 +0200")
+Message-ID: <878simxaaj.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1jRhiq-0001Ot-TI;;;mid=<878simxaaj.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19dCJ+VAndkjtlTXMjXhU69eKISG5HCfXc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSlimDrugH,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4387]
+        *  1.0 XMSlimDrugH Weight loss drug headers
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 363 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (3.1%), b_tie_ro: 10 (2.7%), parse: 0.81
+        (0.2%), extract_message_metadata: 2.6 (0.7%), get_uri_detail_list:
+        0.71 (0.2%), tests_pri_-1000: 17 (4.8%), tests_pri_-950: 1.95 (0.5%),
+        tests_pri_-900: 1.69 (0.5%), tests_pri_-90: 61 (16.9%), check_bayes:
+        59 (16.4%), b_tokenize: 9 (2.5%), b_tok_get_all: 6 (1.6%),
+        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 38 (10.4%), b_finish: 1.36
+        (0.4%), tests_pri_0: 211 (58.1%), check_dkim_signature: 1.60 (0.4%),
+        check_dkim_adsp: 3.9 (1.1%), poll_dns_idle: 0.70 (0.2%), tests_pri_10:
+        2.4 (0.7%), tests_pri_500: 44 (12.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 0/2] proc: Calling proc_flush_task exactly once per task
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <bloodyreaper@yandex.ru>
-Date: Tue, 21 Apr 2020 16:41:08 +0300
+Oleg Nesterov <oleg@redhat.com> writes:
 
-> gro_cells lib is used by different encapsulating netdevices, such as
-> geneve, macsec, vxlan etc. to speed up decapsulated traffic processing.
-> CPU tag is a sort of "encapsulation", and we can use the same mechs to
-> greatly improve overall DSA performance.
-> skbs are passed to the GRO layer after removing CPU tags, so we don't
-> need any new packet offload types as it was firstly proposed by me in
-> the first GRO-over-DSA variant [1].
-> 
-> The size of struct gro_cells is sizeof(void *), so hot struct
-> dsa_slave_priv becomes only 4/8 bytes bigger, and all critical fields
-> remain in one 32-byte cacheline.
-> The other positive side effect is that drivers for network devices
-> that can be shipped as CPU ports of DSA-driven switches can now use
-> napi_gro_frags() to pass skbs to kernel. Packets built that way are
-> completely non-linear and are likely being dropped without GRO.
-> 
-> This was tested on to-be-mainlined-soon Ethernet driver that uses
-> napi_gro_frags(), and the overall performance was on par with the
-> variant from [1], sometimes even better due to minimal overhead.
-> net.core.gro_normal_batch tuning may help to push it to the limit
-> on particular setups and platforms.
-> 
-> iperf3 IPoE VLAN NAT TCP forwarding (port1.218 -> port0) setup
-> on 1.2 GHz MIPS board:
- ...
-> v2:
->  - Add some performance examples in the commit message;
->  - No functional changes.
-> 
-> [1] https://lore.kernel.org/netdev/20191230143028.27313-1-alobakin@dlink.ru/
-> 
-> Signed-off-by: Alexander Lobakin <bloodyreaper@yandex.ru>
+> On 04/22, Eric W. Biederman wrote:
+>>
+>> Eric W. Biederman (2):
+>>       proc: Use PIDTYPE_TGID in next_tgid
+>>       proc: Ensure we see the exit of each process tid exactly once
+>>
+>>  fs/exec.c           |  5 +----
+>>  fs/proc/base.c      | 16 ++--------------
+>>  include/linux/pid.h |  1 +
+>>  kernel/pid.c        | 16 ++++++++++++++++
+>>  4 files changed, 20 insertions(+), 18 deletions(-)
+>>
+>> ---
+>> Oleg if these look good I will add these onto my branch of proc changes
+>> that includes Alexey's changes.
+>
+> Eric, sorry, where can I find these 2 patches?
 
-Applied, thank you.
+Did I not post them?  Apologies.  I will post them now.
+
+Eric
