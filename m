@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BC11B568E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8698E1B5680
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgDWHuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        id S1727108AbgDWHuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgDWHty (ORCPT
+        with ESMTP id S1727057AbgDWHt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:49:54 -0400
+        Thu, 23 Apr 2020 03:49:57 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61A2C03C1AB;
-        Thu, 23 Apr 2020 00:49:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B00C03C1AB;
+        Thu, 23 Apr 2020 00:49:56 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jRWcE-0008RZ-FH; Thu, 23 Apr 2020 09:49:46 +0200
+        id 1jRWcJ-0008SA-1W; Thu, 23 Apr 2020 09:49:51 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E8F701C04D7;
-        Thu, 23 Apr 2020 09:49:43 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 07:49:43 -0000
-From:   "tip-bot2 for Nick Desaulniers" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 64FAA1C047B;
+        Thu, 23 Apr 2020 09:49:44 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 07:49:44 -0000
+From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Documentation: document UACCESS warnings
-Cc:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Matt Helsley <mhelsley@vmware.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+Subject: [tip: objtool/core] objtool: Split out arch-specific CFI definitions
+Cc:     Julien Thierry <jthierry@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158762818353.28353.5362585986312936988.tip-bot2@tip-bot2>
+Message-ID: <158762818401.28353.4361966704110954019.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,67 +51,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     e378fa17d3fac5b118381923abd2636f45a98c6e
-Gitweb:        https://git.kernel.org/tip/e378fa17d3fac5b118381923abd2636f45a98c6e
-Author:        Nick Desaulniers <ndesaulniers@google.com>
-AuthorDate:    Thu, 26 Mar 2020 11:37:06 -07:00
+Commit-ID:     6f8ca67683962d408c7a337664212669bd3e8355
+Gitweb:        https://git.kernel.org/tip/6f8ca67683962d408c7a337664212669bd3e8355
+Author:        Julien Thierry <jthierry@redhat.com>
+AuthorDate:    Fri, 27 Mar 2020 15:28:46 
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 22 Apr 2020 10:53:49 +02:00
 
-objtool: Documentation: document UACCESS warnings
+objtool: Split out arch-specific CFI definitions
 
-Compiling with Clang and CONFIG_KASAN=y was exposing a few warnings:
+Some CFI definitions used by generic objtool code have no reason to vary
+from one architecture to another.  Keep those definitions in generic
+code and move the arch-specific ones to a new arch-specific header.
 
-  call to memset() with UACCESS enabled
-
-Document how to fix these for future travelers.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/876
-Suggested-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Suggested-by: Matt Helsley <mhelsley@vmware.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- tools/objtool/Documentation/stack-validation.txt | 26 +++++++++++++++-
- 1 file changed, 26 insertions(+)
+ tools/objtool/Makefile                    |  3 ++-
+ tools/objtool/arch/x86/include/cfi_regs.h | 25 ++++++++++++++++++++++-
+ tools/objtool/cfi.h                       | 21 +-----------------
+ 3 files changed, 29 insertions(+), 20 deletions(-)
+ create mode 100644 tools/objtool/arch/x86/include/cfi_regs.h
 
-diff --git a/tools/objtool/Documentation/stack-validation.txt b/tools/objtool/Documentation/stack-validation.txt
-index de09467..faa47c3 100644
---- a/tools/objtool/Documentation/stack-validation.txt
-+++ b/tools/objtool/Documentation/stack-validation.txt
-@@ -289,6 +289,32 @@ they mean, and suggestions for how to fix them.
-       might be corrupt due to a gcc bug.  For more details, see:
-       https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70646
+diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+index d1ab0cc..6b91388 100644
+--- a/tools/objtool/Makefile
++++ b/tools/objtool/Makefile
+@@ -35,7 +35,8 @@ all: $(OBJTOOL)
  
-+9. file.o: warning: objtool: funcA() call to funcB() with UACCESS enabled
+ INCLUDES := -I$(srctree)/tools/include \
+ 	    -I$(srctree)/tools/arch/$(HOSTARCH)/include/uapi \
+-	    -I$(srctree)/tools/arch/$(SRCARCH)/include
++	    -I$(srctree)/tools/arch/$(SRCARCH)/include	\
++	    -I$(srctree)/tools/objtool/arch/$(SRCARCH)/include
+ WARNINGS := $(EXTRA_WARNINGS) -Wno-switch-default -Wno-switch-enum -Wno-packed
+ CFLAGS   := -Werror $(WARNINGS) $(KBUILD_HOSTCFLAGS) -g $(INCLUDES) $(LIBELF_FLAGS)
+ LDFLAGS  += $(LIBELF_LIBS) $(LIBSUBCMD) $(KBUILD_HOSTLDFLAGS)
+diff --git a/tools/objtool/arch/x86/include/cfi_regs.h b/tools/objtool/arch/x86/include/cfi_regs.h
+new file mode 100644
+index 0000000..79bc517
+--- /dev/null
++++ b/tools/objtool/arch/x86/include/cfi_regs.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
 +
-+   This means that an unexpected call to a non-whitelisted function exists
-+   outside of arch-specific guards.
-+   X86: SMAP (stac/clac): __uaccess_begin()/__uaccess_end()
-+   ARM: PAN: uaccess_enable()/uaccess_disable()
++#ifndef _OBJTOOL_CFI_REGS_H
++#define _OBJTOOL_CFI_REGS_H
 +
-+   These functions should be called to denote a minimal critical section around
-+   access to __user variables. See also: https://lwn.net/Articles/517475/
++#define CFI_AX			0
++#define CFI_DX			1
++#define CFI_CX			2
++#define CFI_BX			3
++#define CFI_SI			4
++#define CFI_DI			5
++#define CFI_BP			6
++#define CFI_SP			7
++#define CFI_R8			8
++#define CFI_R9			9
++#define CFI_R10			10
++#define CFI_R11			11
++#define CFI_R12			12
++#define CFI_R13			13
++#define CFI_R14			14
++#define CFI_R15			15
++#define CFI_RA			16
++#define CFI_NUM_REGS		17
 +
-+   The intention of the warning is to prevent calls to funcB() from eventually
-+   calling schedule(), potentially leaking the AC flags state, and not
-+   restoring them correctly.
-+
-+   It also helps verify that there are no unexpected calls to funcB() which may
-+   access user space pages with protections against doing so disabled.
-+
-+   To fix, either:
-+   1) remove explicit calls to funcB() from funcA().
-+   2) add the correct guards before and after calls to low level functions like
-+      __get_user_size()/__put_user_size().
-+   3) add funcB to uaccess_safe_builtin whitelist in tools/objtool/check.c, if
-+      funcB obviously does not call schedule(), and is marked notrace (since
-+      function tracing inserts additional calls, which is not obvious from the
-+      sources).
-+
++#endif /* _OBJTOOL_CFI_REGS_H */
+diff --git a/tools/objtool/cfi.h b/tools/objtool/cfi.h
+index 4427bf8..1a3e7b8 100644
+--- a/tools/objtool/cfi.h
++++ b/tools/objtool/cfi.h
+@@ -6,30 +6,13 @@
+ #ifndef _OBJTOOL_CFI_H
+ #define _OBJTOOL_CFI_H
  
- If the error doesn't seem to make sense, it could be a bug in objtool.
- Feel free to ask the objtool maintainer for help.
++#include "cfi_regs.h"
++
+ #define CFI_UNDEFINED		-1
+ #define CFI_CFA			-2
+ #define CFI_SP_INDIRECT		-3
+ #define CFI_BP_INDIRECT		-4
+ 
+-#define CFI_AX			0
+-#define CFI_DX			1
+-#define CFI_CX			2
+-#define CFI_BX			3
+-#define CFI_SI			4
+-#define CFI_DI			5
+-#define CFI_BP			6
+-#define CFI_SP			7
+-#define CFI_R8			8
+-#define CFI_R9			9
+-#define CFI_R10			10
+-#define CFI_R11			11
+-#define CFI_R12			12
+-#define CFI_R13			13
+-#define CFI_R14			14
+-#define CFI_R15			15
+-#define CFI_RA			16
+-#define CFI_NUM_REGS		17
+-
+ struct cfi_reg {
+ 	int base;
+ 	int offset;
