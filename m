@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAD61B5418
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2D31B53E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgDWFSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726691AbgDWFSJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:18:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336DCC03C1AB;
-        Wed, 22 Apr 2020 22:18:09 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mq3so1952089pjb.1;
-        Wed, 22 Apr 2020 22:18:09 -0700 (PDT)
+        id S1726233AbgDWFCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:02:25 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:35267 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725854AbgDWFCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 01:02:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X/bdaJ5V5H1KJbsw0eGlJwkvK434Nt04DtUI1ZecYLM=;
-        b=lLzF5KkbfSTw9RNjqMYjexHclyBEVb2kpqk3pAlhJfOhkGFuL8B9H0LP+BdPU1z75z
-         2d10ysdqeCrSYXQKDVBciRh2uJyOchU8KwXL7eJkBaYqtnYeosCUnIXRPflLWCuTcJM5
-         rbsUTg6binJc1RpZtwfe04db8Cpsw9Yqdw5f1zB36AqxPeai14pwF+GHBO9dJcXODF0z
-         t+2jvOpVF0swL2AUFoET/5H/EvlrkSFyseYJPhehGf2PTUq0PkdlYyLmjlfausxf865x
-         UmuRMK90lsp7cuhIsBDZdcOMMSL4JUDjbeFoONMI0mcHlZ0RxvTDw1KBLQ8+sLCWrfdn
-         9JjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=X/bdaJ5V5H1KJbsw0eGlJwkvK434Nt04DtUI1ZecYLM=;
-        b=W/CPWGinDKkRj8u6ZTGjaMzBYctu9EXAkB+Jtumt5TAYqEmKXq4Z9az54Q7kp85Uey
-         vyWJl1tytDK8j2S8xuBtzdXa3uMyWzvO99js/VKZV9I67z78Ue3pgL0qfudKcCQSZbFl
-         8DUtl8SiTvYDqOJekRd6okbIw5mW+M+lnRrQZiDwU5mYCxsRg5Cw/HHC21FCEbAUMilL
-         6b+YT4ZQy2vKjBl2Cq4cQJcRuZZpRsVW2IAQqi0KklpAqSFJ6uKTgn4SBTl9eBKN8eSe
-         IGGVW71p7qAIlL7wYfSQhoy45wbeZehlHqyG1OSmo5GkFi6J5IBRZ1cLW6iQpA2gAUvp
-         wd6Q==
-X-Gm-Message-State: AGi0PuY+YEVdsKugEOAHikf+n2HMgQJGl+y113NH6PofcXcFiy5Wcj6P
-        SHBhmw7UTJOmDBWo+04jDWY=
-X-Google-Smtp-Source: APiQypJLLbaBcyZazQopL3aDYB6VLEH3ua/ifLN3oi85y/63+awgT+NPWSeukqaJAAkn1CF8R2cXOw==
-X-Received: by 2002:a17:90a:de8d:: with SMTP id n13mr2283164pjv.173.1587619088742;
-        Wed, 22 Apr 2020 22:18:08 -0700 (PDT)
-Received: from udknight.localhost ([183.250.89.86])
-        by smtp.gmail.com with ESMTPSA id k10sm1300719pfa.163.2020.04.22.22.18.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 22:18:07 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03N4rwl5003504;
-        Thu, 23 Apr 2020 12:53:58 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03N4rvmP003503;
-        Thu, 23 Apr 2020 12:53:57 +0800
-Date:   Thu, 23 Apr 2020 12:53:56 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     bpf@vger.kernel.org, Brian Gerst <brgerst@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=FzFFOupEbTJiKCO0+vjZwkaOJbfDiGf31CZ3WKTh5eI=; b=3
+        gfq+gpdSWJL6dCPSa7mWohhjKPqPIrzUPVPR8PZi4VQQwYuAThZKEq3p4J+n0VIP
+        FeweYYqwE8HcipEcUV7W5wRyUqxDK1H7qiiM79ripExcNVO+DZPfAlomMXtX8bFy
+        4WmA3fOdKlXZ71ZQFVIuvdbWasW6XYgOwVyEFMO2AA=
+Received: from localhost.localdomain (unknown [120.229.255.80])
+        by app2 (Coremail) with SMTP id XQUFCgDXiOErIaFe4opPAA--.26330S3;
+        Thu, 23 Apr 2020 13:01:34 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "Geoffrey D. Bennett" <g@b4.vu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf v2 1/2] bpf, x86_32: Fix incorrect encoding in
- BPF_LDX zero-extension
-Message-ID: <20200423045356.GB1153@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
-        Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Brian Gerst <brgerst@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422173630.8351-1-luke.r.nels@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422173630.8351-1-luke.r.nels@gmail.com>
-User-Agent: Mutt/1.7.1 (2016-10-04)
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu
+Subject: [PATCH] ALSA: usb-audio: Fix usb audio refcnt leak when getting spdif
+Date:   Thu, 23 Apr 2020 12:54:19 +0800
+Message-Id: <1587617711-13200-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgDXiOErIaFe4opPAA--.26330S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CryrGFy3WFWkCr1rZr1DWrg_yoW8Ar13pr
+        W3WrWvyF1YqFW3X3Z8tr4kuF95Za1Iya93GFWfKwn7Zw47Jas3Xw48t34Yvr4jk397G34a
+        va1jvF18ua98C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUOlksUUUUU
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:36:29AM -0700, Luke Nelson wrote:
-> The current JIT uses the following sequence to zero-extend into the
-> upper 32 bits of the destination register for BPF_LDX BPF_{B,H,W},
-> when the destination register is not on the stack:
-> 
->   EMIT3(0xC7, add_1reg(0xC0, dst_hi), 0);
-> 
-> The problem is that C7 /0 encodes a MOV instruction that requires a 4-byte
-> immediate; the current code emits only 1 byte of the immediate. This
-> means that the first 3 bytes of the next instruction will be treated as
-> the rest of the immediate, breaking the stream of instructions.
-> 
-> This patch fixes the problem by instead emitting "xor dst_hi,dst_hi"
-> to clear the upper 32 bits. This fixes the problem and is more efficient
-> than using MOV to load a zero immediate.
-> 
-> This bug may not be currently triggerable as BPF_REG_AX is the only
-> register not stored on the stack and the verifier uses it in a limited
-> way, and the verifier implements a zero-extension optimization. But the
-> JIT should avoid emitting incorrect encodings regardless.
-> 
-> Fixes: 03f5781be2c7b ("bpf, x86_32: add eBPF JIT compiler for ia32")
-> Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-Acked-by: Wang YanQing <udknight@gmail.com>
+snd_microii_spdif_default_get() invokes snd_usb_lock_shutdown(), which
+increases the refcount of the snd_usb_audio object "chip".
+
+When snd_microii_spdif_default_get() returns, local variable "chip"
+becomes invalid, so the refcount should be decreased to keep refcount
+balanced.
+
+The reference counting issue happens in several exception handling paths
+of snd_microii_spdif_default_get(). When those error scenarios occur
+such as usb_ifnum_to_if() returns NULL, the function forgets to decrease
+the refcnt increased by snd_usb_lock_shutdown(), causing a refcnt leak.
+
+Fix this issue by jumping to "end" label when those error scenarios
+occur.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ sound/usb/mixer_quirks.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index c237e24f08d9..0f072426b84c 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1508,11 +1508,15 @@ static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
+ 
+ 	/* use known values for that card: interface#1 altsetting#1 */
+ 	iface = usb_ifnum_to_if(chip->dev, 1);
+-	if (!iface || iface->num_altsetting < 2)
+-		return -EINVAL;
++	if (!iface || iface->num_altsetting < 2) {
++		err = -EINVAL;
++		goto end;
++	}
+ 	alts = &iface->altsetting[1];
+-	if (get_iface_desc(alts)->bNumEndpoints < 1)
+-		return -EINVAL;
++	if (get_iface_desc(alts)->bNumEndpoints < 1) {
++		err = -EINVAL;
++		goto end;
++	}
+ 	ep = get_endpoint(alts, 0)->bEndpointAddress;
+ 
+ 	err = snd_usb_ctl_msg(chip->dev,
+-- 
+2.7.4
+
