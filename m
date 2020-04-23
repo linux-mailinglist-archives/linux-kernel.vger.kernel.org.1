@@ -2,118 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432421B5C6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BCD1B5C7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbgDWNVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 09:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728122AbgDWNVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:21:50 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E05C08E934
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 06:21:50 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id u11so6353992iow.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 06:21:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7pXepSPYzMMHMLgU540c61hPctFJN9vDrJKRud42zak=;
-        b=mzoaoaFg6koBO2ACNovE9T8UIRIfNn3EpNy0K6v0cRYQjmk+wY3NSjDUc6VkXr2rPH
-         UerHj3hi4Ba1PYKuuoavchDgqVqltc4p87CH+KRdL9lD8AeFZt7bo3EuW/hL4r+MNnV9
-         iq9G6Nd+6yn53my9QEi8arrIlqqJC7Yl6Ug8E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7pXepSPYzMMHMLgU540c61hPctFJN9vDrJKRud42zak=;
-        b=VUOPWEwsejqJYpq9KF3bXO7+pVaicSi62+M5Xx7MeFoABknxjDfecyZSjbDRq8GMBB
-         Za2xqDvjCzLDKMX5GJNaiDRk9luCeqcqqRNdrtHf1VLzFxwXKeiGkd0EJdH/PYqjbYTx
-         5DX+dnkCmyJXtaKVU5dt4CzLBWMG355EQDO6ObBPAiWU8fmiHNR4urUtfroM9fdTFO6k
-         P0/j/Ybdbo37njJ2QlRhWvaG6xHz3avLiYa+rb0L4wJsJ2hM18yhC2GpeTxpq8cr43O8
-         xksK3OQDOT1tIlowsIlEWYD5ISBAhKKEb9xUxtHEN/95T+NZQknEeLozjh3VucW+acnV
-         ZmNg==
-X-Gm-Message-State: AGi0PubbRIism0Wi236LQ3/PmVyQAOjAq1cHjE929DAQMX5nzlaggyQ1
-        GnGRPgnTfqYmiOj9Pu2drJV9vfCdJtRj+Y87r32W3Q==
-X-Google-Smtp-Source: APiQypI0taFrwRk3OnD/St6Osfy28tOJknnldqFqCt2ZmHtIdhEoYQ8FT5xsuPuAnWbqTJ86reuAHtliGoYo6r55leU=
-X-Received: by 2002:a02:7611:: with SMTP id z17mr3181791jab.42.1587648110030;
- Thu, 23 Apr 2020 06:21:50 -0700 (PDT)
+        id S1728089AbgDWNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 09:22:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2845 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727104AbgDWNWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 09:22:36 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 633546DCDA01EE0B70F5;
+        Thu, 23 Apr 2020 21:22:26 +0800 (CST)
+Received: from huawei.com (10.67.174.156) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 23 Apr 2020
+ 21:22:17 +0800
+From:   ChenTao <chentao107@huawei.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <georgi.djakov@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chentao107@huawei.com>
+Subject: [PATCH-next v2] interconnect: qcom: Move the static keyword to the front of declaration
+Date:   Thu, 23 Apr 2020 21:21:42 +0800
+Message-ID: <20200423132142.45174-1-chentao107@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200423044050.162093-1-joel@joelfernandes.org>
- <20200423114008.GB13910@bombadil.infradead.org> <CAEXW_YTwHApBgUBS1-GBUQ4i7iNHde1k5CxVVEqHPQfAV+51HQ@mail.gmail.com>
-In-Reply-To: <CAEXW_YTwHApBgUBS1-GBUQ4i7iNHde1k5CxVVEqHPQfAV+51HQ@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 23 Apr 2020 09:21:39 -0400
-Message-ID: <CAEXW_YTyw24aksUjgOcesEVHe5HjFVyVKCUpbf70yvqF13GrGA@mail.gmail.com>
-Subject: Re: [RFC] fs: Use slab constructor to initialize conn objects in fsnotify
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.156]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 9:20 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Thu, Apr 23, 2020 at 7:40 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Apr 23, 2020 at 12:40:50AM -0400, Joel Fernandes (Google) wrote:
-> > > While reading the famous slab paper [1], I noticed that the conn->lock
-> > > spinlock and conn->list hlist in fsnotify code is being initialized
-> > > during every object allocation. This seems a good fit for the
-> > > constructor within the slab to take advantage of the slab design. Move
-> > > the initializtion to that.
-> >
-> > The slab paper was written a number of years ago when CPU caches were
-> > not as they are today.  With this patch, every time you allocate a
-> > new page, we dirty the entire page, and then the dirty cachelines will
-> > gradually fall out of cache as the other objects on the page are not used
-> > immediately.  Then, when we actually use one of the objects on the page,
-> > we bring those cachelines back in and dirty them again by initialising
-> > 'type' and 'obj'.  The two stores to initialise lock and list are almost
-> > free when done in fsnotify_attach_connector_to_object(), but are costly
-> > when done in a slab constructor.
->
-> Thanks a lot for this reasoning. Basically, you're saying when a slab
-> allocates a page, it would construct all objects which end up dirtying
-> the entire page before the object is even allocated. That makes sense.
->
-> There's one improvement (although probably verys small) that the paper mentions:
-> Also according to the paper you referenced, the instruction cache is
+Fix the following warning:
 
-Correcting myself, the paper wasn't referenced by you but by a
-colleague :) Apologies for mistyping :)
+Move the static keyword to the front of declaration of sdm845_icc_osm_l3
+sdm845_aggre1_noc sc7180_icc_osm_l3 sdm845_aggre2_noc sdm845_config_noc
+sdm845_dc_noc sdm845_gladiator_noc sdm845_mem_noc sdm845_mmss_noc and
+sdm845_system_noc, resolve the following compiler warning that can be
+when building with warnings enabled (W=1):
 
-Thanks,
+drivers/interconnect/qcom/osm-l3.c:81:1: warning:
+ const static struct qcom_icc_desc sdm845_icc_osm_l3 = {
+drivers/interconnect/qcom/osm-l3.c:94:1: warning:
+ const static struct qcom_icc_desc sc7180_icc_osm_l3 = {
+drivers/interconnect/qcom/sdm845.c:195:1: warning:
+ const static struct qcom_icc_desc sdm845_aggre1_noc = {
+drivers/interconnect/qcom/sdm845.c:223:1: warning:
+ const static struct qcom_icc_desc sdm845_aggre2_noc = {
+drivers/interconnect/qcom/sdm845.c:284:1: warning:
+ const static struct qcom_icc_desc sdm845_config_noc = {
+drivers/interconnect/qcom/sdm845.c:300:1: warning:
+ const static struct qcom_icc_desc sdm845_dc_noc = {
+drivers/interconnect/qcom/sdm845.c:318:1: warning:
+ const static struct qcom_icc_desc sdm845_gladiator_noc = {
+drivers/interconnect/qcom/sdm845.c:353:1: warning:
+ const static struct qcom_icc_desc sdm845_mem_noc = {
+drivers/interconnect/qcom/sdm845.c:387:1: warning:
+ const static struct qcom_icc_desc sdm845_mmss_noc = {
+drivers/interconnect/qcom/sdm845.c:433:1: warning:
+ const static struct qcom_icc_desc sdm845_system_noc = {
 
- - Joel
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: ChenTao <chentao107@huawei.com>
+---
+v1->v2:
+- add the same warning from osm-l3.c
 
+ drivers/interconnect/qcom/osm-l3.c |  4 ++--
+ drivers/interconnect/qcom/sdm845.c | 16 ++++++++--------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-> what would also benefit. Those spinlock and hlist initialization
-> instructions wouldn't cost L1 I-cache footprint for every allocation.
->
-> > There are very few places where a slab constructor is justified with a
-> > modern CPU.  We've considered removing the functionality before.
->
-> I see, thanks again for the insights.
->
->  - Joel
->
-> >
-> > > @@ -479,8 +479,6 @@ static int fsnotify_attach_connector_to_object(fsnotify_connp_t *connp,
-> > >       conn = kmem_cache_alloc(fsnotify_mark_connector_cachep, GFP_KERNEL);
-> > >       if (!conn)
-> > >               return -ENOMEM;
-> > > -     spin_lock_init(&conn->lock);
-> > > -     INIT_HLIST_HEAD(&conn->list);
-> > >       conn->type = type;
-> > >       conn->obj = connp;
-> > >       /* Cache fsid of filesystem containing the object */
-> > > --
-> > > 2.26.1.301.g55bc3eb7cb9-goog
+diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
+index a03c6d6833df..96fb9ff5ff2e 100644
+--- a/drivers/interconnect/qcom/osm-l3.c
++++ b/drivers/interconnect/qcom/osm-l3.c
+@@ -78,7 +78,7 @@ static struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
+ 	[SLAVE_OSM_L3] = &sdm845_osm_l3,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_icc_osm_l3 = {
++static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
+ 	.nodes = sdm845_osm_l3_nodes,
+ 	.num_nodes = ARRAY_SIZE(sdm845_osm_l3_nodes),
+ };
+@@ -91,7 +91,7 @@ static struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
+ 	[SLAVE_OSM_L3] = &sc7180_osm_l3,
+ };
+ 
+-const static struct qcom_icc_desc sc7180_icc_osm_l3 = {
++static const struct qcom_icc_desc sc7180_icc_osm_l3 = {
+ 	.nodes = sc7180_osm_l3_nodes,
+ 	.num_nodes = ARRAY_SIZE(sc7180_osm_l3_nodes),
+ };
+diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
+index b013b80caa45..f6c7b969520d 100644
+--- a/drivers/interconnect/qcom/sdm845.c
++++ b/drivers/interconnect/qcom/sdm845.c
+@@ -192,7 +192,7 @@ static struct qcom_icc_node *aggre1_noc_nodes[] = {
+ 	[SLAVE_ANOC_PCIE_A1NOC_SNOC] = &qns_pcie_a1noc_snoc,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_aggre1_noc = {
++static const struct qcom_icc_desc sdm845_aggre1_noc = {
+ 	.nodes = aggre1_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(aggre1_noc_nodes),
+ 	.bcms = aggre1_noc_bcms,
+@@ -220,7 +220,7 @@ static struct qcom_icc_node *aggre2_noc_nodes[] = {
+ 	[SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_aggre2_noc = {
++static const struct qcom_icc_desc sdm845_aggre2_noc = {
+ 	.nodes = aggre2_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(aggre2_noc_nodes),
+ 	.bcms = aggre2_noc_bcms,
+@@ -281,7 +281,7 @@ static struct qcom_icc_node *config_noc_nodes[] = {
+ 	[SLAVE_SERVICE_CNOC] = &srvc_cnoc,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_config_noc = {
++static const struct qcom_icc_desc sdm845_config_noc = {
+ 	.nodes = config_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(config_noc_nodes),
+ 	.bcms = config_noc_bcms,
+@@ -297,7 +297,7 @@ static struct qcom_icc_node *dc_noc_nodes[] = {
+ 	[SLAVE_MEM_NOC_CFG] = &qhs_memnoc,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_dc_noc = {
++static const struct qcom_icc_desc sdm845_dc_noc = {
+ 	.nodes = dc_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(dc_noc_nodes),
+ 	.bcms = dc_noc_bcms,
+@@ -315,7 +315,7 @@ static struct qcom_icc_node *gladiator_noc_nodes[] = {
+ 	[SLAVE_SERVICE_GNOC] = &srvc_gnoc,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_gladiator_noc = {
++static const struct qcom_icc_desc sdm845_gladiator_noc = {
+ 	.nodes = gladiator_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(gladiator_noc_nodes),
+ 	.bcms = gladiator_noc_bcms,
+@@ -350,7 +350,7 @@ static struct qcom_icc_node *mem_noc_nodes[] = {
+ 	[SLAVE_EBI1] = &ebi,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_mem_noc = {
++static const struct qcom_icc_desc sdm845_mem_noc = {
+ 	.nodes = mem_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(mem_noc_nodes),
+ 	.bcms = mem_noc_bcms,
+@@ -384,7 +384,7 @@ static struct qcom_icc_node *mmss_noc_nodes[] = {
+ 	[SLAVE_CAMNOC_UNCOMP] = &qns_camnoc_uncomp,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_mmss_noc = {
++static const struct qcom_icc_desc sdm845_mmss_noc = {
+ 	.nodes = mmss_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(mmss_noc_nodes),
+ 	.bcms = mmss_noc_bcms,
+@@ -430,7 +430,7 @@ static struct qcom_icc_node *system_noc_nodes[] = {
+ 	[SLAVE_TCU] = &xs_sys_tcu_cfg,
+ };
+ 
+-const static struct qcom_icc_desc sdm845_system_noc = {
++static const struct qcom_icc_desc sdm845_system_noc = {
+ 	.nodes = system_noc_nodes,
+ 	.num_nodes = ARRAY_SIZE(system_noc_nodes),
+ 	.bcms = system_noc_bcms,
+-- 
+2.17.1
+
