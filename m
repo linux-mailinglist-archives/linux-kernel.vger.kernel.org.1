@@ -2,157 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9171F1B6574
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 22:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73B71B657A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 22:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgDWUdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 16:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
+        id S1726510AbgDWUej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 16:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgDWUdj (ORCPT
+        with ESMTP id S1726458AbgDWUeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 16:33:39 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC684C09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 13:33:37 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n16so3446446pgb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 13:33:37 -0700 (PDT)
+        Thu, 23 Apr 2020 16:34:37 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16B4C09B043
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 13:34:35 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so2810010plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 13:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=WqMcHBrQL5Hrx/5UPlvgx3z4tpcct1oI0fprZGVyhow=;
-        b=sm3n1yn1FEv8KlppYnJA3szSMesRSg+OEYPnihsFc2ITcWOXMlhTGDwdfSRy2OUMTu
-         WD6Pf5xk6bydVlTjzR+2xJZ//sYi0mBGJoID6eJmV8YCgjbXKOaLI0PsFjRPQ7kxziG1
-         iGqTHbnmqrHdempnnkY3rDxrvTXc55MvLIlU0ZAx5+BLQHxz68U0XcuyAJWchpO4X4lb
-         zx4Dy1CHk4lpIbeY84XVqDfINyVycVreY+5vvnEkf71VzPP+OA0hfoP+aDUnZDuB4XEy
-         Qp/Of4Tj2E3WMiEOqJvvx8tzK+PpGA7QyBG+o/X0PguA6mcYP3v+M3UZng/zxgNMBFNx
-         nJYQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S6QHYAQNJk/r7RcX2egg9QjNYJDfZ7VPfp2pyf+zOWQ=;
+        b=iuLVk7tU3P3H5Mb1U3zBU4nWhOhIRU5F/zHi9uFNWmfJsHIbXcw1Fq8YtaDEcAOuR3
+         JPhKTcSr8mLnmintaxTFgbNsVH/uXvrg8cNfE/krwGJFmsJlsqYeRV7sr6oqMdseMFSQ
+         Qd39yC6MzTDdmRRmpM+96KY4wn8Z7GUwGDU9M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=WqMcHBrQL5Hrx/5UPlvgx3z4tpcct1oI0fprZGVyhow=;
-        b=CRzHIiQm1ZNDrqrLfVNx72k/sRI7v5zEQsg9Ix1kGmxRmISzdPI/c56gLT+7oIIu/G
-         IzTH5ypNs689Kl5tKS+2atEvVlNXFQtUTXFxBjaNDnwGWrZyrExu2RlWtQ853YS6Sy5+
-         STIYGUAXaqsuidEDTc6gUrI/YV8rmV9xptkugBebvYTIhRPOTGKT3Q1ohjG8EuoTb1n0
-         U5z1SUNWjnBs8ruHM+3918kd+0ehZX0UcC3v1uMty5kky+ubnU6KNs1q7eFyWdzbtNDs
-         iRYdnULZbfYsZ9pTa/g85TLIalv/FelNyy3Mrs7WHKyDPQcbhDfhUiE0eHRN4L3aqwVT
-         UOMQ==
-X-Gm-Message-State: AGi0PuaPkGqaEPzvJXXuNgm6IownU6qEVVJsi3kiD2VDlToBPFFXpoBw
-        8H1CLGK9OqlrzVDaLjwKLLXIAQ==
-X-Google-Smtp-Source: APiQypLNIoAWytupjwFrf+mjTSan1lvG0IjxLhTQdyYYTq2V/sufCnzkIjSsou9MFnqjvUvvPYOO7Q==
-X-Received: by 2002:a63:1a0b:: with SMTP id a11mr5278109pga.29.1587674016957;
-        Thu, 23 Apr 2020 13:33:36 -0700 (PDT)
-Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
-        by smtp.gmail.com with ESMTPSA id o11sm2832171pgd.58.2020.04.23.13.33.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S6QHYAQNJk/r7RcX2egg9QjNYJDfZ7VPfp2pyf+zOWQ=;
+        b=CrAchp5d+DbuXP6ACItWLucjtmvxQo0zKbc1gfFi8YD8YU53MrELGsFVgeZ9oqh9L3
+         vUgrrETUbRXM1uRt6njbC0oSMxhA2mwTMp7Roqzduc6w9s4ZLajLt3an5Cv+9RJonBYP
+         9I2jz4D+8EZdmZ9eKbH9Veczi4Npilo2ddguR5QzHC6l2JZMVs77OJYcZsW//B1uEeAp
+         17HDQr9rPDQSrf3g064V7M8A3ru8eycL+9c56KUQwRAOojiAqI8636OG2PBBQmsYB+X7
+         yTc6h9HNSXEDy2mwN/zRTwVg0jhK+1uQnuhFa7QbVNt3RL98kQd/Q1oufTryAanbwTxl
+         OD/g==
+X-Gm-Message-State: AGi0PuY4yxyMN3x6vuDhipDSJqYu6EneVfjxnuAG0+010qk9PggII13w
+        mdCCwYMnmv3cRD4k25R/5ydKXDIo4J0=
+X-Google-Smtp-Source: APiQypJXeojnpJa/3rx7LWMgNYonCQfG+V/x3GE+RkoYxeMue+ICy0iF43qe2z6K+6WZkzhatKZVpg==
+X-Received: by 2002:a17:902:8688:: with SMTP id g8mr5781326plo.268.1587674075346;
+        Thu, 23 Apr 2020 13:34:35 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id c3sm3391925pfa.160.2020.04.23.13.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 13:33:35 -0700 (PDT)
-From:   bsegall@google.com
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, chiluk+linux@indeed.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, pauld@redhead.com,
-        peterz@infradead.org, vincent.guittot@linaro.org
-Subject: Re: [PATCH] sched: Defend cfs and rt bandwidth quota against overflow
-References: <xm261roim4hi.fsf@google.com>
-        <20200423133752.12787-1-changhuaixin@linux.alibaba.com>
-Date:   Thu, 23 Apr 2020 13:33:33 -0700
-In-Reply-To: <20200423133752.12787-1-changhuaixin@linux.alibaba.com> (Huaixin
-        Chang's message of "Thu, 23 Apr 2020 21:37:52 +0800")
-Message-ID: <xm26k126kkma.fsf@google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Thu, 23 Apr 2020 13:34:34 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Alexandru M Stan <amstan@chromium.org>
+Subject: [PATCH] gpiolib: devprop: Warn if gpio-line-names is too long
+Date:   Thu, 23 Apr 2020 13:34:16 -0700
+Message-Id: <20200423203416.133274-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huaixin Chang <changhuaixin@linux.alibaba.com> writes:
+Some DT authors (including myself) have messed up the length of
+gpio-line-names and made it longer than it should be. Add a warning here
+so that developers can figure out that they've messed up their DT and
+should fix it.
 
-> When users write some huge number into cpu.cfs_quota_us or
-> cpu.rt_runtime_us, overflow might happen during to_ratio() shifts of
-> schedulable checks.
->
-> to_ratio() could be altered to avoid unnecessary internal overflow, but
-> min_cfs_quota_period is less than 1 << BW_SHIFT, so a cutoff would still
-> be needed. Set a cap MAX_BW for cfs_quota_us and rt_runtime_us to
-> prevent overflow.
->
-> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-> ---
->  kernel/sched/core.c  | 8 ++++++++
->  kernel/sched/rt.c    | 9 +++++++++
->  kernel/sched/sched.h | 2 ++
->  3 files changed, 19 insertions(+)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 3a61a3b8eaa9..0be1782e15c9 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7390,6 +7390,8 @@ static DEFINE_MUTEX(cfs_constraints_mutex);
->  
->  const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
->  static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
-> +/* More than 203 days if BW_SHIFT equals 20. */
-> +static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
->  
->  static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
->  
-> @@ -7417,6 +7419,12 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
->  	if (period > max_cfs_quota_period)
->  		return -EINVAL;
->  
-> +	/*
-> +	 * Bound quota to defend quota against overflow during bandwidth shift.
-> +	 */
-> +	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
-> +		return -EINVAL;
-> +
->  	/*
->  	 * Prevent race between setting of cfs_rq->runtime_enabled and
->  	 * unthrottle_offline_cfs_rqs().
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index df11d88c9895..7ba49625cdbd 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -2569,6 +2569,9 @@ static int __rt_schedulable(struct task_group *tg, u64 period, u64 runtime)
->  	return ret;
->  }
->  
-> +/* More than 4 hours if BW_SHIFT equals 20. */
-> +static const u64 max_rt_runtime = MAX_BW;
-> +
->  static int tg_set_rt_bandwidth(struct task_group *tg,
->  		u64 rt_period, u64 rt_runtime)
->  {
-> @@ -2585,6 +2588,12 @@ static int tg_set_rt_bandwidth(struct task_group *tg,
->  	if (rt_period == 0)
->  		return -EINVAL;
->  
-> +	/*
-> +	 * Bound quota to defend quota against overflow during bandwidth shift.
-> +	 */
-> +	if (rt_runtime != RUNTIME_INF && rt_runtime > max_rt_runtime)
-> +		return -EINVAL;
-> +
+Cc: Alexandru M Stan <amstan@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/gpio/gpiolib-devprop.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-We probably _do_ also want this in sched_rt_global_validate now that I
-think of it. Other than missing that, it looks good.
+diff --git a/drivers/gpio/gpiolib-devprop.c b/drivers/gpio/gpiolib-devprop.c
+index 53781b253986..26741032fa9e 100644
+--- a/drivers/gpio/gpiolib-devprop.c
++++ b/drivers/gpio/gpiolib-devprop.c
+@@ -37,8 +37,11 @@ void devprop_gpiochip_set_names(struct gpio_chip *chip,
+ 	if (count < 0)
+ 		return;
+ 
+-	if (count > gdev->ngpio)
++	if (count > gdev->ngpio) {
++		dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
++			 count, gdev->ngpio);
+ 		count = gdev->ngpio;
++	}
+ 
+ 	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
+ 	if (!names)
+-- 
+Sent by a computer, using git, on the internet
 
->  	mutex_lock(&rt_constraints_mutex);
->  	err = __rt_schedulable(tg, rt_period, rt_runtime);
->  	if (err)
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index db3a57675ccf..1f58677a8f23 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1918,6 +1918,8 @@ extern void init_dl_inactive_task_timer(struct sched_dl_entity *dl_se);
->  #define BW_SHIFT		20
->  #define BW_UNIT			(1 << BW_SHIFT)
->  #define RATIO_SHIFT		8
-> +#define MAX_BW_BITS		(64 - BW_SHIFT)
-> +#define MAX_BW			((1ULL << MAX_BW_BITS) - 1)
->  unsigned long to_ratio(u64 period, u64 runtime);
->  
->  extern void init_entity_runnable_average(struct sched_entity *se);
