@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08A31B630B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91891B6307
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgDWSKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:10:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54847 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729995AbgDWSKm (ORCPT
+        id S1730164AbgDWSKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729995AbgDWSKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:10:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587665440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2yRJCnoX8qkbcjYUfFVSZLzSknvTSyY8JodZRku30p4=;
-        b=ZkRUfm5vlM7l9u0snLSCtNrMF+lg5iynTEQsS1Ammp7K7u4QyQinGSW2RJhs5EFJfqTazd
-        HWLCBjIs2NIkHBsr938HLleoK9fhEGIfBRHpu041obehRt8rIQw0aCiqSEwfoq1ysttqUQ
-        Ix1DW+d/lcQZ10Xmt+kP0cja+61Ip6A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-ssTxrkrmM5-MnUXBiq4--A-1; Thu, 23 Apr 2020 14:10:38 -0400
-X-MC-Unique: ssTxrkrmM5-MnUXBiq4--A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A8B78005BA;
-        Thu, 23 Apr 2020 18:10:37 +0000 (UTC)
-Received: from treble (ovpn-118-207.rdu2.redhat.com [10.10.118.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEEF25C1BE;
-        Thu, 23 Apr 2020 18:10:32 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 13:10:30 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thu, 23 Apr 2020 14:10:36 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F035FC09B042;
+        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id v26so56005qto.0;
+        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qPBEpYztacbVXAnXtHaabQP6rRHo96QuqAvZkwuZJto=;
+        b=L4EUQ7yBDVooy2o3cEUID9EV6wJXZht1OM/OumQrg17mjL4U6kJ3+3wdpqagD8ubXA
+         yxJRaNEBUPqdD8xRvkC8QEruzYVzwWrRgtFoYGXuiH7fSRBaJDRHnnIZNah/zHQQT+DM
+         F37gTBIlutLG9InjqxXNeh7t6xbtL0fSbFnC9wWiSneqsAICpPT1GKY8m7yHLz5Q8Vov
+         hfhldY0TPwAiKej2xUc2Wc/vGu5cu3pOv4D8XKjvTLgOXNSkd0MEAfncp2460uYPEjby
+         z2zHZQiOjMEcx/YzqZKReN+/3zkWL5T/A2UL91kw6wOswuSipIA78vkNtAv2Z4Bpbv0D
+         3SNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qPBEpYztacbVXAnXtHaabQP6rRHo96QuqAvZkwuZJto=;
+        b=YHF8fZjsYwJzUdfl+w+5ZAl1tEwkUUzBgfQFHzItZF5s4PJ6v1BanO4byEpvPX2+yq
+         3kj7Ox1tpWIA4+Gjvo7EWA2st9q3FPchSnHUGE4xnbLsIjHX3ViG5Mu0l2GzlLSQazhw
+         apsuGGUaZs5l1DDj8fJG8raK5d+VvXfaaF/lQCscqSnh9fZcm/Xi8pYhVTynBUBvqRnr
+         l9PpJIIkSLfnf4xTwo9JQ8VO8LkNE1W2jwmBtki66myC9yPxfVtUUF/QS83MMzouQuy7
+         znf6tDdxVYLimUZqUsG3G7SnbsNsV8Z/A516u0jr6ehdcNTro7SGiNvO2v2F2DdQAl9s
+         S34A==
+X-Gm-Message-State: AGi0PuahZ9zndBx04+I433pEL1mkM5/IFgsvxthsAHWmjQfAPsi92XQv
+        7nVTMVeN0ZI1l56tGw5CW1c=
+X-Google-Smtp-Source: APiQypLgGpRR9+KI9m0wrhx/bDA4BvwPsUvOnPo0dBZgS7bSoovpi9pkIB2JuG+EIiG33Dw9+aslrg==
+X-Received: by 2002:ac8:2c0c:: with SMTP id d12mr5448806qta.284.1587665435149;
+        Thu, 23 Apr 2020 11:10:35 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id k2sm2316868qta.39.2020.04.23.11.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 11:10:33 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2C10A409A3; Thu, 23 Apr 2020 15:10:30 -0300 (-03)
+Date:   Thu, 23 Apr 2020 15:10:30 -0300
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH v2 6/9] s390/module: Use s390_kernel_write() for late
- relocations
-Message-ID: <20200423181030.b5mircvgc7zmqacr@treble>
-References: <cover.1587131959.git.jpoimboe@redhat.com>
- <18266eb2c2c9a2ce0033426837d89dcb363a85d3.1587131959.git.jpoimboe@redhat.com>
- <20200422164037.7edd21ea@thinkpad>
- <20200422172126.743908f5@thinkpad>
- <20200422194605.n77t2wtx5fomxpyd@treble>
- <20200423141834.234ed0bc@thinkpad>
- <alpine.LSU.2.21.2004231513250.6520@pobox.suse.cz>
- <20200423141228.sjvnxwdqlzoyqdwg@treble>
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] perf trace: substitute CAP_SYS_ADMIN with
+ CAP_PERFMON in error message
+Message-ID: <20200423181030.GF20647@kernel.org>
+References: <66f2975b-4a69-b428-7dc5-d9aa40b3c673@linux.intel.com>
+ <450d035a-c192-10e5-1c28-664ccae3e46e@linux.intel.com>
+ <20200423132052.GA19437@kernel.org>
+ <a775fef2-6d86-d43a-3a46-5b2d129c77dc@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200423141228.sjvnxwdqlzoyqdwg@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <a775fef2-6d86-d43a-3a46-5b2d129c77dc@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 09:12:28AM -0500, Josh Poimboeuf wrote:
-> > > this is strange. While I would have expected an exception similar to
-> > > this, it really should have happened on the "sturg" instruction which
-> > > does the DAT-off store in s390_kernel_write(), and certainly not with
-> > > an ID of 0004 (protection). However, in your case, it happens on a
-> > > normal store instruction, with 0004 indicating a protection exception.
-> > > 
-> > > This is more like what I would expect e.g. in the case where you do
-> > > _not_ use the s390_kernel_write() function for RO module text patching,
-> > > but rather normal memory access. So I am pretty sure that this is not
-> > > related to the s390_kernel_write(), but some other issue, maybe some
-> > > place left where you still use normal memory access?
+Em Thu, Apr 23, 2020 at 05:49:32PM +0300, Alexey Budankov escreveu:
+> 
+> On 23.04.2020 16:20, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Apr 22, 2020 at 05:44:02PM +0300, Alexey Budankov escreveu:
+> >>
+> >> Update error message to mention CAP_PERFMON only. CAP_SYS_ADMIN still
+> >> works in keeping with user space backward compatibility approach.
 > > 
-> > The call trace above also suggests that it is not a late relocation, no? 
-> > The path is from KLP module init function through klp_enable_patch. It should 
-> > mean that the to-be-patched object is loaded (it must be a module thanks 
-> > to a check klp_init_object_loaded(), vmlinux relocations were processed 
-> > earlier in apply_relocations()).
+> > This will confuse users that build the latest perf to use in older
+> > systems where CAP_PERFMON isn't available, probably we need to, in these
+> > cases, check for the existence of CAP_PERFMON to provide a better
+> > warning message, something like:
 > > 
-> > However, the KLP module state here must be COMING, so s390_kernel_write() 
-> > should be used. What are we missing?
+> >   You need CAP_ADMIN or update your kernel and libcap to one that supports
+> >   CAP_PERFMON.
+> > 
+> > For systems without CAP_PERFMON, while mentioning only CAP_PERFMON for
+> > systems where it is present, right?
 > 
-> I'm also scratching my head.  It _should_ be using s390_kernel_write()
-> based on the module state, but I don't see that on the stack trace.
-> 
-> This trace (and Gerald's comment) seem to imply it's using
-> __builtin_memcpy(), which might expected for UNFORMED state.
-> 
-> Weird...
+> Right, but this ideal implementation requires more effort, so staying with
+> two caps in the message and letting users decide which one to use looks like
+> a good balance already. 
 
-Mystery solved:
+Agreed.
 
-  $ CROSS_COMPILE=s390x-linux-gnu- scripts/faddr2line vmlinux apply_rela+0x16a/0x520
-  apply_rela+0x16a/0x520:
-  apply_rela at arch/s390/kernel/module.c:336
-
-which corresponds to the following code in apply_rela():
-
-
-	case R_390_PLTOFF64:	/* 16 bit offset from GOT to PLT. */
-		if (info->plt_initialized == 0) {
-			unsigned int *ip;
-			ip = me->core_layout.base + me->arch.plt_offset +
-				info->plt_offset;
-			ip[0] = 0x0d10e310;	/* basr 1,0  */
-			ip[1] = 0x100a0004;	/* lg	1,10(1) */
-
-
-Notice how it's writing directly to text... oops.
-
--- 
-Josh
-
+- Arnaldo
