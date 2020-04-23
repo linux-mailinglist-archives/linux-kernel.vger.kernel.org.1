@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61CE1B666E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 23:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1291B663D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 23:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgDWVlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 17:41:50 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:7839 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727976AbgDWVls (ORCPT
+        id S1727782AbgDWVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 17:41:17 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60409 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726976AbgDWVlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 17:41:48 -0400
-X-IronPort-AV: E=Sophos;i="5.73,309,1583161200"; 
-   d="scan'208";a="45339816"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 24 Apr 2020 06:41:47 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D21654004BB2;
-        Fri, 24 Apr 2020 06:41:43 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 10/10] cpufreq: dt: Add support for r8a7742
-Date:   Thu, 23 Apr 2020 22:40:50 +0100
-Message-Id: <1587678050-23468-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587678050-23468-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1587678050-23468-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Thu, 23 Apr 2020 17:41:15 -0400
+Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 942913A2A5A;
+        Fri, 24 Apr 2020 07:41:08 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jRjam-0006R8-3B; Fri, 24 Apr 2020 07:41:08 +1000
+Date:   Fri, 24 Apr 2020 07:41:08 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH V10 02/11] fs: Remove unneeded IS_DAX() check in
+ io_is_direct()
+Message-ID: <20200423214108.GR27860@dread.disaster.area>
+References: <20200422212102.3757660-1-ira.weiny@intel.com>
+ <20200422212102.3757660-3-ira.weiny@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422212102.3757660-3-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=QyXUC8HyAAAA:8 a=yPCof4ZbAAAA:8
+        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=JVZ9yd-c_uYkw5Y7WEkA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatible strings for supporting the generic cpufreq driver on
-the Renesas RZ/G1H (R8A7742) SoC.
+On Wed, Apr 22, 2020 at 02:20:53PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Remove the check because DAX now has it's own read/write methods and
+> file systems which support DAX check IS_DAX() prior to IOCB_DIRECT on
+> their own.  Therefore, it does not matter if the file state is DAX when
+> the iocb flags are created.
+> 
+> Also remove io_is_direct() as it is just a simple flag check.
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
+Looks good.
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index cb9db16..148aa66 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -53,6 +53,7 @@ static const struct of_device_id whitelist[] __initconst = {
- 	{ .compatible = "renesas,r7s72100", },
- 	{ .compatible = "renesas,r8a73a4", },
- 	{ .compatible = "renesas,r8a7740", },
-+	{ .compatible = "renesas,r8a7742", },
- 	{ .compatible = "renesas,r8a7743", },
- 	{ .compatible = "renesas,r8a7744", },
- 	{ .compatible = "renesas,r8a7745", },
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 -- 
-2.7.4
-
+Dave Chinner
+david@fromorbit.com
