@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7011B5E18
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B681B5E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgDWOmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:42:51 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:35184 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbgDWOmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:42:50 -0400
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 03NEgXG8015496;
-        Thu, 23 Apr 2020 23:42:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 03NEgXG8015496
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587652954;
-        bh=ZbrX8HgIq0QwRra2pCZbmne6rmEly6+QxtlCHSyKHGM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=23X9GSV0v29umhRrIZR0Xvdms/zTPnXPEHWQlfuP97fiFzR4OsLTLmVmJt7NdEK0u
-         2DUBkFskpTt1rY+FzwI9dsW12gQuftqeSP+oERyF/jQ8ULyRjEQABuArwRmCdpTUJ7
-         AYZwGGjBXZAPRti2Y94YcEeBHYVMh65eTHPw7gcqp/T6gE2+60xDA92iui/CCujRsK
-         v1DfGsV9xBdZsiCsiFoSVHl/Ced1famCL+gCAvOLVxPqwxLijzOhFFFWzK7H16D97D
-         ria/7IDQwuvqhytqVC1/rTEVHvVU+uuK3MFCQHhJi4btb9hAmLJvrgJP5f0BK/Y5RH
-         wae1fmb2TH5UA==
-X-Nifty-SrcIP: [209.85.222.48]
-Received: by mail-ua1-f48.google.com with SMTP id i5so5914326uaq.1;
-        Thu, 23 Apr 2020 07:42:34 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaqZiCtx0VNpVZ90km9DV4V2cc4KcRpKHnOXRbPNu3Q39sVICnj
-        b8hf1dZIQ59GGCUtqkoSY9G4OMA+SntOLmeKyeo=
-X-Google-Smtp-Source: APiQypJrKKb72liE11VFowlb87QsF1jPVb/XNG6Tjg9gH8WKWsWX5WAPsXhORsdlkATG9DI+inT1M7eivCuMKc1B89M=
-X-Received: by 2002:a05:6102:240f:: with SMTP id j15mr3574415vsi.155.1587652953014;
- Thu, 23 Apr 2020 07:42:33 -0700 (PDT)
+        id S1728474AbgDWOmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:42:10 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40291 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726323AbgDWOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 10:42:10 -0400
+IronPort-SDR: Y5r+AXxd6Q4bljWGySnDoehbm4Qk+E05YC0Tnr7TxtArcGnn9oD0ccZBw9ZCLYjMMBzrI2Mj/N
+ V9D9BEjssB9g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 07:42:09 -0700
+IronPort-SDR: heL70kamjV8fP3qeZ86FGQrHpl921Z+ulj0rEDtSvkjoGH+G/3HYAUI3tYQm05YAwuf90SuGC7
+ tAtBeguRjE7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
+   d="scan'208";a="430344560"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga005.jf.intel.com with ESMTP; 23 Apr 2020 07:42:09 -0700
+Date:   Thu, 23 Apr 2020 07:42:09 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Cathy Avery <cavery@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, wei.huang2@amd.com
+Subject: Re: [PATCH 2/2] KVM: x86: check_nested_events if there is an
+ injectable NMI
+Message-ID: <20200423144209.GA17824@linux.intel.com>
+References: <20200414201107.22952-1-cavery@redhat.com>
+ <20200414201107.22952-3-cavery@redhat.com>
 MIME-Version: 1.0
-References: <20200419180445.26722-1-natechancellor@gmail.com>
- <20200419202128.20571-1-natechancellor@gmail.com> <20200419202128.20571-2-natechancellor@gmail.com>
- <CA+icZUVaLW+38WEJhqnfO7B_unHvrbSr0moKnfJ6zXGGA06CWQ@mail.gmail.com> <20200421024256.GA42179@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200421024256.GA42179@ubuntu-s3-xlarge-x86>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Apr 2020 23:41:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT-rcfbri48rA8yNYN6ySvRUWg=DoppvrU9eerY5ckBVQ@mail.gmail.com>
-Message-ID: <CAK7LNAT-rcfbri48rA8yNYN6ySvRUWg=DoppvrU9eerY5ckBVQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] MIPS: VDSO: Move disabling the VDSO logic to Kconfig
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dmitry Golovin <dima@golovin.in>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414201107.22952-3-cavery@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 11:43 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Mon, Apr 20, 2020 at 11:53:55AM +0200, Sedat Dilek wrote:
-> > On Sun, Apr 19, 2020 at 10:21 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > After commit 9553d16fa671 ("init/kconfig: Add LD_VERSION Kconfig"), we
-> > > have access to GNU ld's version at configuration time. As a result, we
-> > > can make it clearer under what configuration circumstances the MIPS VDSO
-> > > needs to be disabled.
-> > >
-> > > This is a prerequisite for getting rid of the MIPS VDSO binutils
-> > > warning and linking the VDSO when LD is ld.lld. Wrapping the call to
-> > > ld-ifversion with CONFIG_LD_IS_LLD does not work because the config
-> > > values are wiped away during 'make clean'.
-> > >
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > ---
-> > >
-> > > v1 -> v2:
-> > >
-> > > * New patch.
-> > >
-> > >  arch/mips/Kconfig         |  2 ++
-> > >  arch/mips/vdso/Kconfig    | 18 ++++++++++++++++++
-> > >  arch/mips/vdso/Makefile   | 30 ++----------------------------
-> > >  arch/mips/vdso/vdso.lds.S |  2 +-
-> > >  4 files changed, 23 insertions(+), 29 deletions(-)
-> > >  create mode 100644 arch/mips/vdso/Kconfig
-> > >
-> > > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> > > index 690718b3701a..45220e4b8a65 100644
-> > > --- a/arch/mips/Kconfig
-> > > +++ b/arch/mips/Kconfig
-> > > @@ -3275,3 +3275,5 @@ endmenu
-> > >  source "drivers/firmware/Kconfig"
-> > >
-> > >  source "arch/mips/kvm/Kconfig"
-> > > +
-> > > +source "arch/mips/vdso/Kconfig"
-> > > diff --git a/arch/mips/vdso/Kconfig b/arch/mips/vdso/Kconfig
-> > ...
-> > > --- /dev/null
-> > > +++ b/arch/mips/vdso/Kconfig
-> > ...
-> > > +config MIPS_DISABLE_VDSO
-> > > +       def_bool CPU_MICROMIPS || (!CPU_MIPSR6 && !MIPS_LD_CAN_LINK_VDSO)
-> > ...
-> > > diff --git a/arch/mips/vdso/vdso.lds.S b/arch/mips/vdso/vdso.lds.S
-> > ...
-> > > --- a/arch/mips/vdso/vdso.lds.S
-> > > +++ b/arch/mips/vdso/vdso.lds.S
-> > ...
-> > > -#ifndef DISABLE_MIPS_VDSO
-> > > +#ifndef CONFIG_DISABLE_MIPS_VDSO
-> >
-> > Should be s/CONFIG_DISABLE_MIPS_VDSO/CONFIG_MIPS_DISABLE_VDSO ?
-> >
-> > - Sedat -
->
-> Ugh yes, thank you much for pointing it out.
->
-> I'll send a v3 once I get further feedback on the series.
+On Tue, Apr 14, 2020 at 04:11:07PM -0400, Cathy Avery wrote:
+> With NMI intercept moved to check_nested_events there is a race
+> condition where vcpu->arch.nmi_pending is set late causing
 
+How is nmi_pending set late?  The KVM_{G,S}ET_VCPU_EVENTS paths can't set
+it because the current KVM_RUN thread holds the mutex, and the only other
+call to process_nmi() is in the request path of vcpu_enter_guest, which has
+already executed.
 
-I just wondered if we could raise the minimal binutils
-version from 2.23 to 2.25, but it might be too aggressive...
-I do not know.
-
-Other than what Sedat pointed out, this looks good me.
-
--- 
-Best Regards
-Masahiro Yamada
+> the execution of check_nested_events to not setup correctly
+> for nested.exit_required. A second call to check_nested_events
+> allows the injectable nmi to be detected in time in order to
+> require immediate exit from L2 to L1.
+> 
+> Signed-off-by: Cathy Avery <cavery@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 027dfd278a97..ecfafcd93536 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7734,10 +7734,17 @@ static int inject_pending_event(struct kvm_vcpu *vcpu)
+>  		vcpu->arch.smi_pending = false;
+>  		++vcpu->arch.smi_count;
+>  		enter_smm(vcpu);
+> -	} else if (vcpu->arch.nmi_pending && kvm_x86_ops.nmi_allowed(vcpu)) {
+> -		--vcpu->arch.nmi_pending;
+> -		vcpu->arch.nmi_injected = true;
+> -		kvm_x86_ops.set_nmi(vcpu);
+> +	} else if (vcpu->arch.nmi_pending) {
+> +		if (is_guest_mode(vcpu) && kvm_x86_ops.check_nested_events) {
+> +			r = kvm_x86_ops.check_nested_events(vcpu);
+> +			if (r != 0)
+> +				return r;
+> +		}
+> +		if (kvm_x86_ops.nmi_allowed(vcpu)) {
+> +			--vcpu->arch.nmi_pending;
+> +			vcpu->arch.nmi_injected = true;
+> +			kvm_x86_ops.set_nmi(vcpu);
+> +		}
+>  	} else if (kvm_cpu_has_injectable_intr(vcpu)) {
+>  		/*
+>  		 * Because interrupts can be injected asynchronously, we are
+> -- 
+> 2.20.1
+> 
