@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7751B5FBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605BC1B5FC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgDWPni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:43:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29417 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729145AbgDWPnh (ORCPT
+        id S1729409AbgDWPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729139AbgDWPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:43:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587656616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yaSfDwhy0WkP2x8l/xKsfypjnmxH9a+M8bRe06h89X0=;
-        b=EC2rkmig9ikuTPUj/5SB5MusuT0efqVfBj3OOSkzoJ7aaJaCk3+IrK6WiRpIhYqNA0Zjw8
-        ShKkWp3I1fhonlrLVslKtINkFl9Lk6qvJGb7saUqnV95dseH6lUBlsLzICjD9goEOBLarC
-        emF3FUI57J88as4NtJc9UvYDQBEFOrQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-1nRq_44rNkKVY9bIQkaeFw-1; Thu, 23 Apr 2020 11:43:34 -0400
-X-MC-Unique: 1nRq_44rNkKVY9bIQkaeFw-1
-Received: by mail-wm1-f72.google.com with SMTP id s12so1932324wmj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:43:34 -0700 (PDT)
+        Thu, 23 Apr 2020 11:45:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D5CC09B040
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:45:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 145so3118200pfw.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sHxljxjTpk2oBVN9jqQPNFsunhe5JYr63Xg+w6BjEk0=;
+        b=OVK4+lyUyi3K2XxNxns66uFwMhNrBdcne/S7/UEjlw0E22jAQTHxvEqLBeqPOAPxFK
+         X+jjDj0hqNMQkWzrHiZfGWnwvGlMB24GNj07YjCI2D3rKZ+5K+DDH+ZhzWUfOxvMYHc+
+         bbZBn3S1ZiSTV5hTJmxP8lKXGmBJdbONugF2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yaSfDwhy0WkP2x8l/xKsfypjnmxH9a+M8bRe06h89X0=;
-        b=g9OZVX343kMHMglSgZ4WPWAVAbcchpQpI+6lfZ2dVbm63oDPdcyFZyzyWYkQci6GP1
-         fzCP5nFhTSvH/03qVtVJh75DyeilEVmmQcuCkAASR3qgJZ4st0X/8sMOQIvxCJE49mcG
-         OXhMSN2kit8wFgs4zTcS9F0tLH7GrkqMku8zLuLajm0eO+jSJzqHNaQehKI2xRR+0CUK
-         7oMfee1IC4dch/5U65fcmq4tmqqjfI89no8O1bKAiOc62Zzeys6gp/7BhXuEOgCIkTRy
-         Ujx/R31P/rcPxi37TrG2PePipBzTAhdwSHxqOZVbj6S520FsBQQff7FbLj/cxXW1ziqt
-         FGcw==
-X-Gm-Message-State: AGi0Pub+oEqYN+HYhoq1Gci/u82+Dwu0RjtoTa6OVgAiGZiKyJYOWBpc
-        1We+JUGWSn5fKo+i1S7QTRxQjOvDaRPTVcimSvxMtJBS5AfIFcv1WoVNrpjh/g/g0Se8ioE0BWP
-        QoUQFyuTnd81SqKfpnv6ZbClK
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr6090862wrn.56.1587656613726;
-        Thu, 23 Apr 2020 08:43:33 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLi2aeT+iCRoZnl2LY6pfEQsNNFK9xdNRsShgC3cQDvBg7qhvEgLDszJu8Ia3sgKnMcdHdlxA==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr6090832wrn.56.1587656613448;
-        Thu, 23 Apr 2020 08:43:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:f43b:97b2:4c89:7446? ([2001:b07:6468:f312:f43b:97b2:4c89:7446])
-        by smtp.gmail.com with ESMTPSA id 17sm4119170wmo.2.2020.04.23.08.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 08:43:32 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: x86: check_nested_events if there is an
- injectable NMI
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, vkuznets@redhat.com, wei.huang2@amd.com
-References: <20200414201107.22952-1-cavery@redhat.com>
- <20200414201107.22952-3-cavery@redhat.com>
- <20200423144209.GA17824@linux.intel.com>
- <ae2d4f5d-cb96-f63a-7742-a7f46ad0d1a8@redhat.com>
- <20200423153531.GC17824@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <793bf6ba-a21a-02cc-c80a-05a7af37b5b6@redhat.com>
-Date:   Thu, 23 Apr 2020 17:43:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=sHxljxjTpk2oBVN9jqQPNFsunhe5JYr63Xg+w6BjEk0=;
+        b=jTObNV3jnOQXlEnQmOznJO8A/wSpJzttEvaGHnK1tWvS3/DHlq2qX/Lv8ZkvsZT0us
+         Dj48JylvMCKzqtfyaQPIWtRoXxORrz9xmUI7TQnpyz4n70mFvaFO/eVMLCLunzOxwsLl
+         bI+bb7z7fFbPU/MgzV+r8T3zUL0WsqZEPAKTZJEevMVWYouCj6fJsjH18oJTYULiwhxM
+         VcSPom7zZxuQeIPrYLakSFYQHfu/VmS5IHfwVpgWT83DO1mZIz+kbtTgFbcn/FfcVD+W
+         1kOh2QloO2ae+lNUiqLb0CZfoDuCowDMc8En4zDItKa9HWdNytu3bwNihaezz48e2ADE
+         OQCQ==
+X-Gm-Message-State: AGi0PuYJedGq7SbAA6KhxKFUA+7OsZS53Rr/51yhzdkQHNOTdvj+OW2n
+        Kf38XpZMBa+MSObfQ4Q0OqgdfDzDtDw=
+X-Google-Smtp-Source: APiQypL2rXvy7qGsCVugJpqQ0AJTu54mjBe+WV8wdzmBABoHEz5ipyihDvyYwh/78HYmZ4bBDKu+Ww==
+X-Received: by 2002:a63:7805:: with SMTP id t5mr4611238pgc.141.1587656709247;
+        Thu, 23 Apr 2020 08:45:09 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-7979-720a-9390-aec6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:7979:720a:9390:aec6])
+        by smtp.gmail.com with ESMTPSA id u15sm2645383pjm.47.2020.04.23.08.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 08:45:08 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, kasan-dev@googlegroups.com
+Cc:     dvyukov@google.com, christophe.leroy@c-s.fr,
+        Daniel Axtens <dja@axtens.net>
+Subject: [PATCH v3 0/3] Fix some incompatibilites between KASAN and FORTIFY_SOURCE
+Date:   Fri, 24 Apr 2020 01:45:00 +1000
+Message-Id: <20200423154503.5103-1-dja@axtens.net>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200423153531.GC17824@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/20 17:35, Sean Christopherson wrote:
-> On Thu, Apr 23, 2020 at 05:10:45PM +0200, Paolo Bonzini wrote:
->> On 23/04/20 16:42, Sean Christopherson wrote:
->>> On Tue, Apr 14, 2020 at 04:11:07PM -0400, Cathy Avery wrote:
->>>> With NMI intercept moved to check_nested_events there is a race
->>>> condition where vcpu->arch.nmi_pending is set late causing
->>> How is nmi_pending set late?  The KVM_{G,S}ET_VCPU_EVENTS paths can't set
->>> it because the current KVM_RUN thread holds the mutex, and the only other
->>> call to process_nmi() is in the request path of vcpu_enter_guest, which has
->>> already executed.
->>>
->> I think the actual cause is priority inversion between NMI and
->> interrupts, because NMI is added last in patch 1.
-> Ah, that makes more sense.  I stared/glared at this exact code for a long
-> while and came to the conclusion that the "late" behavior was exclusive to
-> interrupts, would have been a shame if all that glaring was for naught.
-> 
+3 KASAN self-tests fail on a kernel with both KASAN and FORTIFY_SOURCE:
+memchr, memcmp and strlen. I have observed this on x86 and powerpc.
 
-Ah no, it's a bug in Cathy's patch and it's a weird one.
+When FORTIFY_SOURCE is on, a number of functions are replaced with
+fortified versions, which attempt to check the sizes of the
+operands. However, these functions often directly invoke __builtin_foo()
+once they have performed the fortify check.
 
-The problem is that on AMD you exit guest mode with the NMI latched and
-GIF=0.  So check_nested_events should enable the NMI window in addition
-to causing a vmexit.
+This breaks things in 2 ways:
 
-So why does it work?  Because on AMD we don't have (yet)
-nested_run_pending, so we just check if we already have a vmexit
-scheduled and if so return -EBUSY.  The second call causes
-inject_pending_event to return -EBUSY and thus go through KVM_REQ_EVENT
-again, which enables the NMI window.
+ - the three function calls are technically dead code, and can be
+   eliminated. When __builtin_ versions are used, the compiler can detect
+   this.
 
-Paolo
+ - Using __builtins may bypass KASAN checks if the compiler decides to
+   inline it's own implementation as sequence of instructions, rather than
+   emit a function call that goes out to a KASAN-instrumented
+   implementation.
+
+The patches address each reason in turn. Finally, test_memcmp used a
+stack array without explicit initialisation, which can sometimes break
+too, so fix that up.
+
+v3: resend with Reviewed-bys, hopefully for inclusion in 5.8.
+
+v2: - some cleanups, don't mess with arch code as I missed some wrinkles.
+    - add stack array init (patch 3)
+
+Daniel Axtens (3):
+  kasan: stop tests being eliminated as dead code with FORTIFY_SOURCE
+  string.h: fix incompatibility between FORTIFY_SOURCE and KASAN
+  kasan: initialise array in kasan_memcmp test
+
+ include/linux/string.h | 60 +++++++++++++++++++++++++++++++++---------
+ lib/test_kasan.c       | 32 +++++++++++++---------
+ 2 files changed, 68 insertions(+), 24 deletions(-)
+
+-- 
+2.20.1
 
