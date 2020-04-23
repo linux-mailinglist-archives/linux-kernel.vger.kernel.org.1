@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626501B6904
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC0F1B68FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728994AbgDWXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55724 "EHLO mail.kernel.org"
+        id S1729485AbgDWXTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:19:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729803AbgDWXTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:19:21 -0400
+        id S1729805AbgDWXTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:19:22 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BC4D2168B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 94891216FD;
         Thu, 23 Apr 2020 23:19:21 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jRl7o-000YsF-C0; Thu, 23 Apr 2020 19:19:20 -0400
-Message-Id: <20200423231920.252506175@goodmis.org>
+        id 1jRl7o-000Ysl-GT; Thu, 23 Apr 2020 19:19:20 -0400
+Message-Id: <20200423231920.393503922@goodmis.org>
 User-Agent: quilt/0.65
-Date:   Thu, 23 Apr 2020 19:18:40 -0400
+Date:   Thu, 23 Apr 2020 19:18:41 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 2/4] ftrace: Fix memory leak caused by not freeing entry in
- unregister_ftrace_direct()
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: [for-linus][PATCH 3/4] tracing: Remove DECLARE_TRACE_NOARGS
 References: <20200423231838.682478056@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,44 +36,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Nikolay Borisov <nborisov@suse.com>
 
-kmemleak reported the following:
+This macro was intentionally broken so that the kernel code is not
+poluted with such noargs macro used simply as markers. This use case
+can be satisfied by using dummy no inline functions. Just remove it.
 
-unreferenced object 0xffff90d47127a920 (size 32):
-  comm "modprobe", pid 1766, jiffies 4294792031 (age 162.568s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 22 01 00 00 00 00 ad de  ........".......
-    00 78 12 a7 ff ff ff ff 00 00 b6 c0 ff ff ff ff  .x..............
-  backtrace:
-    [<00000000bb79e72e>] register_ftrace_direct+0xcb/0x3a0
-    [<00000000295e4f79>] do_one_initcall+0x72/0x340
-    [<00000000873ead18>] do_init_module+0x5a/0x220
-    [<00000000974d9de5>] load_module+0x2235/0x2550
-    [<0000000059c3d6ce>] __do_sys_finit_module+0xc0/0x120
-    [<000000005a8611b4>] do_syscall_64+0x60/0x230
-    [<00000000a0cdc49e>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
+Link: http://lkml.kernel.org/r/20200413153246.8511-1-nborisov@suse.com
 
-The entry used to save the direct descriptor needs to be freed
-when unregistering.
-
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/tracepoint.h | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 041694a1eb74..bd030b1b9514 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5165,6 +5165,7 @@ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
- 			list_del_rcu(&direct->next);
- 			synchronize_rcu_tasks();
- 			kfree(direct);
-+			kfree(entry);
- 			ftrace_direct_func_count--;
- 		}
- 	}
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 1fb11daa5c53..a1fecf311621 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -156,8 +156,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+  * Note, the proto and args passed in includes "__data" as the first parameter.
+  * The reason for this is to handle the "void" prototype. If a tracepoint
+  * has a "void" prototype, then it is invalid to declare a function
+- * as "(void *, void)". The DECLARE_TRACE_NOARGS() will pass in just
+- * "void *data", where as the DECLARE_TRACE() will pass in "void *data, proto".
++ * as "(void *, void)".
+  */
+ #define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+ 	do {								\
+@@ -373,25 +372,6 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ # define __tracepoint_string
+ #endif
+ 
+-/*
+- * The need for the DECLARE_TRACE_NOARGS() is to handle the prototype
+- * (void). "void" is a special value in a function prototype and can
+- * not be combined with other arguments. Since the DECLARE_TRACE()
+- * macro adds a data element at the beginning of the prototype,
+- * we need a way to differentiate "(void *data, proto)" from
+- * "(void *data, void)". The second prototype is invalid.
+- *
+- * DECLARE_TRACE_NOARGS() passes "void" as the tracepoint prototype
+- * and "void *__data" as the callback prototype.
+- *
+- * DECLARE_TRACE() passes "proto" as the tracepoint protoype and
+- * "void *__data, proto" as the callback prototype.
+- */
+-#define DECLARE_TRACE_NOARGS(name)					\
+-	__DECLARE_TRACE(name, void, ,					\
+-			cpu_online(raw_smp_processor_id()),		\
+-			void *__data, __data)
+-
+ #define DECLARE_TRACE(name, proto, args)				\
+ 	__DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),		\
+ 			cpu_online(raw_smp_processor_id()),		\
 -- 
 2.26.1
 
