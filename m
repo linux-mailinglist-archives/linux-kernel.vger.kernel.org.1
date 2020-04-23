@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C401B602F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA311B6038
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgDWQCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 12:02:40 -0400
-Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:55505 "EHLO
-        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729556AbgDWQCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:02:38 -0400
-Received: from pro2.mail.ovh.net (unknown [10.108.16.2])
-        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 92B435A9E7E8;
-        Thu, 23 Apr 2020 18:02:35 +0200 (CEST)
-Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 23 Apr
- 2020 18:02:35 +0200
-Date:   Thu, 23 Apr 2020 18:01:12 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 6/6] MAINTAINERS: add myself as a SCD30 driver maintainer
-Message-ID: <20200423160112.GC43448@arch>
-References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
- <20200422141135.86419-7-tomasz.duszynski@octakon.com>
- <CAHp75VeQComzEs0JmOBAqtKQ5Ez79sRHmsMNHiU9X2zWfnrpew@mail.gmail.com>
+        id S1729632AbgDWQDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:03:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53254 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729621AbgDWQDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 12:03:15 -0400
+IronPort-SDR: dh7p7s7kzozyeliPqsuZ9H2tkrRyzZlXF5sHlx5aWy4lQoneAXrGMmrq7WP1Alj0ipSUC0VQTJ
+ 4K0c/+EGEzAw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 09:03:14 -0700
+IronPort-SDR: BWfWAWVku/R6kPBuOGhh/PJ7WQmTfNHytD5ZZWwL8ycBOU2zOO7wKB4NCrEaLZ90vliB+BFpsw
+ PJG5HKkmnrqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
+   d="scan'208";a="335010776"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga001.jf.intel.com with ESMTP; 23 Apr 2020 09:03:14 -0700
+Date:   Thu, 23 Apr 2020 09:03:14 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, jmattson@google.com,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 0/9] Introduce support for guest CET feature
+Message-ID: <20200423160314.GE17824@linux.intel.com>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VeQComzEs0JmOBAqtKQ5Ez79sRHmsMNHiU9X2zWfnrpew@mail.gmail.com>
-X-Originating-IP: [89.70.31.203]
-X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 13554427507541040287
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgdejhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecukfhppedtrddtrddtrddtpdekledrjedtrdefuddrvddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehjihgtvdefsehkvghrnhgvlhdrohhrgh
+In-Reply-To: <20200326081847.5870-1-weijiang.yang@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:25:03PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 22, 2020 at 5:23 PM Tomasz Duszynski
-> <tomasz.duszynski@octakon.com> wrote:
-> >
-> > Add myself as a SCD30 driver maintainer.
->
-> > +SENSIRION SCD30 CARBON DIOXIDE SENSOR DRIVER
-> > +M:     Tomasz Duszynski <tomasz.duszynski@octakon.com>
-> > +S:     Maintained
-> > +F:     drivers/iio/chemical/scd30.h
-> > +F:     drivers/iio/chemical/scd30_core.c
-> > +F:     drivers/iio/chemical/scd30_i2c.c
-> > +F:     drivers/iio/chemical/scd30_serial.c
-> > +F:     Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
->
-> Broken order. Run
->   scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS --order
-> to fix.
+On Thu, Mar 26, 2020 at 04:18:37PM +0800, Yang Weijiang wrote:
+> Control-flow Enforcement Technology (CET) provides protection against
+> Return/Jump-Oriented Programming (ROP/JOP) attack. It includes two
+> sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
+> 
+> KVM needs to update to enable guest CET feature.
+> This patchset implements CET related CPUID/XSAVES enumeration, MSRs
+> and vmentry/vmexit configuration etc.so that guest kernel can setup CET
+> runtime infrastructure based on them. Some CET MSRs and related feature
+> flags used reference the definitions in kernel patchset.
+> 
+> CET kernel patches are here:
+> https://lkml.org/lkml/2020/2/5/593
+> https://lkml.org/lkml/2020/2/5/604
 
-Indeed. That order argument seems to be some fairly recent addition. Thanks for
-pointing this out.
+...
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+> - This patch serial is built on top of below branch and CET kernel patches
+>   for seeking xsaves support:
+>   https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=cpu-caps
+
+Can you provide the full code in a branch/tag somewhere?  The CET patches
+are in turn dependent on XSAVES enabling[*], and those don't apply cleanly
+on the cpu-caps branch.
+
+It might make sense to also rebase to kvm/queue?  Though that's not a
+requirement by any means, e.g. don't bother if the CET patches are going to
+be respun soon.
+
+https://lkml.kernel.org/r/20200328164307.17497-1-yu-cheng.yu@intel.com
