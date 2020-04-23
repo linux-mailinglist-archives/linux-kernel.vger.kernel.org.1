@@ -2,435 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B651B58AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC671B5890
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726879AbgDWJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:57:43 -0400
-Received: from segapp02.wistron.com ([103.200.3.19]:64930 "EHLO
-        segapp03.wistron.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725884AbgDWJ5n (ORCPT
+        id S1726579AbgDWJwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 05:52:39 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:30248 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726101AbgDWJwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:57:43 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 05:57:41 EDT
-Received: from EXCHAPP04.whq.wistron (unverified [10.37.38.27]) by TWNHUMSW4.wistron.com
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Tdeb49446cbc0a816721910@TWNHUMSW4.wistron.com>;
- Thu, 23 Apr 2020 17:52:36 +0800
-Received: from EXCHAPP01.whq.wistron (10.37.38.24) by EXCHAPP04.whq.wistron
- (10.37.38.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Apr
- 2020 17:52:33 +0800
-Received: from gitserver.wistron.com (10.37.38.233) by EXCHAPP01.whq.wistron
- (10.37.38.24) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 23 Apr 2020 17:52:33 +0800
-From:   Ben Pai <Ben_Pai@wistron.com>
-To:     <robh+dt@kernel.org>, <mark.rutland@arm.com>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <Claire_Ku@wistron.com>, <Andy_YF_Wang@wistron.com>,
-        <wangat@tw.ibm.com>, Ben Pai <Ben_Pai@wistron.com>
-Subject: [PATCH v1] ARM: dts: aspeed: mihawk: add aliases for i2c
-Date:   Thu, 23 Apr 2020 17:52:30 +0800
-Message-ID: <20200423095230.7622-1-Ben_Pai@wistron.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 23 Apr 2020 05:52:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587635557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wfTWHpfgM90dhku3gSYt8YyCxLtENM52kAFB9Xkdy/Y=;
+        b=fNs81Mai4744UWS79xKxj69yXxiVs1ju/Y8y1KnFbQRjNI7OP6gSi8Qk6apGMtb1Vspoji
+        61W6ktoENzQU2Cte5h4D1sZ2+KPApnam+A4+9rknBEApzjD04SyYynKBZCxmuOmM8fJ2Gk
+        ZBsFq0uF1iA8RMUWbjUsDs6WW8za9Kg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-NdgIN125PXW6Q04p7efdBw-1; Thu, 23 Apr 2020 05:52:35 -0400
+X-MC-Unique: NdgIN125PXW6Q04p7efdBw-1
+Received: by mail-wm1-f72.google.com with SMTP id n17so2094082wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:52:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wfTWHpfgM90dhku3gSYt8YyCxLtENM52kAFB9Xkdy/Y=;
+        b=X9BLOSlDxvUFExrEcf7FEdZ9wb5HX7d4H5II6sRem5UieLMTo5MixrnQt/qHdBBMVn
+         qUX3sy0FreUVLranqSCkG8rU6WlHG0dBBcp0f7IMhlJSYtGBNl8s/u6bz7QwE7bvisHt
+         DZh6ZdijQkEPbgASlIrLd/MtS+yPisbAdu+7Y4/uX5qAxI+Kw0+QzqVLKIFHKOpnAyte
+         0V6/gXG2OrgDY4i3BVnwbg9JoKO3Daq0ulKtipkxo4xa3eU0FQISnTibrTiTwVOEif1K
+         rz210cr2nEwbLc2hT0AQCiVn5RWRY5E/RB52jch+ojvMUbDg9fLnuJ7xDXEKYaUHqNQC
+         VoYA==
+X-Gm-Message-State: AGi0PubSEtdrPaCArebIi0N9C+rpgcfl5uVgV4OWfQ2bOssTgjGRRY2v
+        esrAU3SaSMbvKqa86S9ZUaBYm2bo3alwl7qhd9WUk0d2Xwg/B6pARfo7k66fJFFZSP8A3hjow9L
+        G81hbFVdWyzhqxJFMJq+u0zIy
+X-Received: by 2002:adf:edc6:: with SMTP id v6mr3935903wro.8.1587635554377;
+        Thu, 23 Apr 2020 02:52:34 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKfAiNuOF9QP8LaFJne9ECJ8ndLYf/hYMVlrB3b8SbuEYpG21/xow0J3Jf8cXJSSsfo5rTEWg==
+X-Received: by 2002:adf:edc6:: with SMTP id v6mr3935877wro.8.1587635554166;
+        Thu, 23 Apr 2020 02:52:34 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id x13sm3119979wmc.5.2020.04.23.02.52.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 02:52:33 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] KVM: LAPIC: Introduce interrupt delivery fastpath
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <1587632507-18997-1-git-send-email-wanpengli@tencent.com>
+ <1587632507-18997-2-git-send-email-wanpengli@tencent.com>
+ <09cba36c-61d8-e660-295d-af54ceb36036@redhat.com>
+ <CANRm+Cybksev1jJK7Fuog43G9zBCqmtLTYGvqAdCwpw3f6z0yA@mail.gmail.com>
+ <8a29181c-c6bb-fe36-51ac-49d764819393@redhat.com>
+ <CANRm+CzFgbuYY6t8E0OihXMzRV8ePjnoZPUPXxGcexbL8gKfEA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0c77ae96-09ec-985b-a8d7-a4ba7e80b18f@redhat.com>
+Date:   Thu, 23 Apr 2020 11:52:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DF640E53D713C7A34CBE175353B2BE73D2DAA46F479D4A5F1E5646AC6EFC3D5A2000:8
+In-Reply-To: <CANRm+CzFgbuYY6t8E0OihXMzRV8ePjnoZPUPXxGcexbL8gKfEA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the bus id for each mux channel to avoid switching channels
-multiple times
+On 23/04/20 11:44, Wanpeng Li wrote:
+>>>> Would it help to make the above
+>>>> 
+>>>>         if (vcpu != kvm_get_running_vcpu() &&
+>>>>             !kvm_vcpu_trigger_posted_interrupt(vcpu, false))
+>>>>                 kvm_vcpu_kick(vcpu);
+>>>> 
+>>>> ?  If that is enough for the APICv case, it's good enough.
+>>>
+>>> We will not exit from vmx_vcpu_run to vcpu_enter_guest, so it will not
+>>> help, right?
+>>
+>> Oh indeed---the call to sync_pir_to_irr is in vcpu_enter_guest.  You can
+>> add it to patch 3 right before "goto cont_run", since AMD does not need it.
+>
+> Just move kvm_x86_ops.sync_pir_to_irr(vcpu)? How about the set pir/on
+> part for APICv and non-APICv part in fast_deliver_interrupt()?
 
-Signed-off-by: Ben Pai <Ben_Pai@wistron.com>
----
- arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts | 293 +++++++++++++++++++-
- 1 file changed, 289 insertions(+), 4 deletions(-)
+That should be handled by deliver_posted_interrupt with no performance
+penalty, if you add "vcpu != kvm_get_running_vcpu()" before it calls
+kvm_vcpu_trigger_posted_interrupt.
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts b/arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts
-index f7e935ede919..0f8550f158f5 100644
---- a/arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts
-@@ -8,6 +8,52 @@
- 	model = "Mihawk BMC";
- 	compatible = "ibm,mihawk-bmc", "aspeed,ast2500";
- 
-+	aliases {
-+		i2c215 = &bus6_mux215;
-+		i2c216 = &bus6_mux216;
-+		i2c217 = &bus6_mux217;
-+		i2c218 = &bus6_mux218;
-+		i2c219 = &bus6_mux219;
-+		i2c220 = &bus6_mux220;
-+		i2c221 = &bus6_mux221;
-+		i2c222 = &bus6_mux222;
-+		i2c223 = &bus7_mux223;
-+		i2c224 = &bus7_mux224;
-+		i2c225 = &bus7_mux225;
-+		i2c226 = &bus7_mux226;
-+		i2c227 = &bus7_mux227;
-+		i2c228 = &bus7_mux228;
-+		i2c229 = &bus7_mux229;
-+		i2c230 = &bus7_mux230;
-+		i2c231 = &bus9_mux231;
-+		i2c232 = &bus9_mux232;
-+		i2c233 = &bus9_mux233;
-+		i2c234 = &bus9_mux234;
-+		i2c235 = &bus9_mux235;
-+		i2c236 = &bus9_mux236;
-+		i2c237 = &bus9_mux237;
-+		i2c238 = &bus9_mux238;
-+		i2c239 = &bus10_mux239;
-+		i2c240 = &bus10_mux240;
-+		i2c241 = &bus10_mux241;
-+		i2c242 = &bus10_mux242;
-+		i2c243 = &bus10_mux243;
-+		i2c244 = &bus10_mux244;
-+		i2c245 = &bus10_mux245;
-+		i2c246 = &bus10_mux246;
-+		i2c247 = &bus12_mux247;
-+		i2c248 = &bus12_mux248;
-+		i2c249 = &bus12_mux249;
-+		i2c250 = &bus12_mux250;
-+		i2c251 = &bus13_mux251;
-+		i2c252 = &bus13_mux252;
-+		i2c253 = &bus13_mux253;
-+		i2c254 = &bus13_mux254;
-+		i2c255 = &bus13_mux255;
-+		i2c256 = &bus13_mux256;
-+		i2c257 = &bus13_mux257;
-+		i2c258 = &bus13_mux258;
-+	};
- 
- 	chosen {
- 		stdout-path = &uart5;
-@@ -630,6 +676,54 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+
-+		bus6_mux215: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus6_mux216: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus6_mux217: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus6_mux218: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+
-+		bus6_mux219: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+		};
-+
-+		bus6_mux220: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		bus6_mux221: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+		};
-+
-+		bus6_mux222: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
- 	};
- 
- };
-@@ -644,6 +738,54 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+
-+		bus7_mux223: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus7_mux224: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus7_mux225: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus7_mux226: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+
-+		bus7_mux227: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+		};
-+
-+		bus7_mux228: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		bus7_mux229: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+		};
-+
-+		bus7_mux230: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
- 	};
- 
- };
-@@ -684,6 +826,30 @@
- 		i2c-mux-idle-disconnect;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
-+
-+		bus9_mux231: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus9_mux232: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus9_mux233: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus9_mux234: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
- 
- 	pca9545@71 {
-@@ -695,6 +861,30 @@
- 		i2c-mux-idle-disconnect;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
-+
-+		bus9_mux235: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus9_mux236: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus9_mux237: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus9_mux238: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
- };
- 
-@@ -725,6 +915,30 @@
- 		i2c-mux-idle-disconnect;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
-+
-+		bus10_mux239: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus10_mux240: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus10_mux241: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus10_mux242: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
- 
- 	pca9545@71 {
-@@ -736,6 +950,30 @@
- 		i2c-mux-idle-disconnect;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
-+
-+		bus10_mux243: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus10_mux244: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus10_mux245: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus10_mux246: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
- };
- 
-@@ -796,7 +1034,7 @@
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 
--		i2c@0 {
-+		bus12_mux247: i2c@0 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <0>;
-@@ -807,7 +1045,7 @@
- 			};
- 		};
- 
--		i2c@1 {
-+		bus12_mux248: i2c@1 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <1>;
-@@ -818,7 +1056,7 @@
- 			};
- 		};
- 
--		i2c@2 {
-+		bus12_mux249: i2c@2 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <2>;
-@@ -829,7 +1067,7 @@
- 			};
- 		};
- 
--		i2c@3 {
-+		bus12_mux250: i2c@3 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <3>;
-@@ -857,6 +1095,53 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+		bus13_mux251: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		bus13_mux252: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		bus13_mux253: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		bus13_mux254: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+
-+		bus13_mux255: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+		};
-+
-+		bus13_mux256: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		bus13_mux257: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+		};
-+
-+		bus13_mux258: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
- 	};
- };
- 
--- 
-2.17.1
+Paolo
 
