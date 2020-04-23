@@ -2,119 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CAF1B64A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F367F1B6497
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgDWTmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:42:21 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:43650 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgDWTmV (ORCPT
+        id S1727804AbgDWTj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727831AbgDWTj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:42:21 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jRhjo-0007Ai-2Q; Thu, 23 Apr 2020 13:42:20 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jRhjm-0003pV-SR; Thu, 23 Apr 2020 13:42:19 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
-        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
-Date:   Thu, 23 Apr 2020 14:39:10 -0500
-In-Reply-To: <87ftcv1nqe.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Wed, 22 Apr 2020 11:36:41 -0500")
-Message-ID: <87368uxa8x.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 23 Apr 2020 15:39:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F44C09B044
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t11so3403671pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=7VPU62AS0hE3DKQRkOunlFCKQKhdwD9eupm/jSgSc0o=;
+        b=fqm9ZIjYeSPBDfE/QRu99KVQdVsUeerRL5pAVUVajv+e2SuYpHLE1FyB095+rRNLhg
+         /J3qFsRFP7AfK6wYscG9PXM49C3MZEyA5tvD/Zv8lnY8QYwqZoSxa+Y04fsNkGs3+dpZ
+         9g6GfHdmQjY9gvJea954/kRhpTEdxkybP1Axg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=7VPU62AS0hE3DKQRkOunlFCKQKhdwD9eupm/jSgSc0o=;
+        b=Vu2+/3AkmT8DxvBZYzUc2fVreuuaByxEaB3BA1ZR9m8vOZlZ49k7cbdJ2Ymy1F94O3
+         bn/VqmEmNH8y9/lsnNhxCUxgp7HXZT11qSk5RhljpIRB8vFoRHj4XPYMwryXz0yFKb9e
+         TEvf9hkxMUEh3oviilI3HZAi0oWVJRowwjeddwxeiyxjbh5kpt4oP3PzNbkJAcyyPRrT
+         xjzhNaa9nzvc9JA1oiWLHxJPowzUSSgg11GvMN+gi2pf/rT28GBAcdZ2s/MaJhB7vW58
+         4Rh3V7D4Ynykxfi4jtEot9Hu7LxZS6SN94WMuOC8mO/oxs2mwj73iMyhbt2spD8M5mle
+         k9Jw==
+X-Gm-Message-State: AGi0PuZdUbYpdrsRyO4Y8D665jRFJ74NnWHWCI6+RIRrEF/dgjXcFbWd
+        sEs0lB5nBkdtYpfktLVAQ+XTDA==
+X-Google-Smtp-Source: APiQypJd4T0HLRLEhYMctigRHwArQ5Lyj7Ah48K5q+Fq0x5nv4fDYp6iTUKOzhPoARFHEfZwN9MqWQ==
+X-Received: by 2002:a62:8202:: with SMTP id w2mr5342725pfd.117.1587670766035;
+        Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id l185sm3281987pfl.104.2020.04.23.12.39.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 12:39:24 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 12:39:23 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org>
+Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: usb: qcom,dwc3: Convert USB DWC3
+ bindings
+Message-ID: <20200423193923.GK199755@google.com>
+References: <1585206368-685-1-git-send-email-sanm@codeaurora.org>
+ <1585206368-685-2-git-send-email-sanm@codeaurora.org>
+ <20200404171700.GA10096@bogus>
+ <5e2eb0a4-ed70-4212-fc70-6ee850507a7e@codeaurora.org>
+ <5793ea62-7a73-789e-33d6-6b2fb37b376c@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jRhjm-0003pV-SR;;;mid=<87368uxa8x.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19AlV3Q6ga6LG7nofoG7B8nBnQL9mK/87k=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4993]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;LKML <linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 402 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.9%), b_tie_ro: 10 (2.5%), parse: 1.48
-        (0.4%), extract_message_metadata: 17 (4.1%), get_uri_detail_list: 1.73
-        (0.4%), tests_pri_-1000: 16 (4.0%), tests_pri_-950: 1.31 (0.3%),
-        tests_pri_-900: 1.07 (0.3%), tests_pri_-90: 110 (27.4%), check_bayes:
-        109 (27.0%), b_tokenize: 10 (2.6%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 1.89 (0.5%), b_tok_touch_all: 86 (21.5%), b_finish: 0.94
-        (0.2%), tests_pri_0: 230 (57.2%), check_dkim_signature: 0.52 (0.1%),
-        check_dkim_adsp: 2.3 (0.6%), poll_dns_idle: 0.74 (0.2%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 7 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v2 1/2] proc: Use PIDTYPE_TGID in next_tgid
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5793ea62-7a73-789e-33d6-6b2fb37b376c@codeaurora.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 02:23:29PM +0530, Sandeep Maheswaram (Temp) wrote:
+> Hi Rob,
+> 
+> Any suggestions to solve this error in assigned-clock-rates
 
-Combine the pid_task and thes test has_group_leader_pid into a single
-dereference by using pid_task(PIDTYPE_TGID).
+> On 4/6/2020 10:09 PM, Sandeep Maheswaram (Temp) wrote:
+> > Hi Rob,
+> > 
+> > On 4/4/2020 10:47 PM, Rob Herring wrote:
+> > > On Thu, Mar 26, 2020 at 12:36:07PM +0530, Sandeep Maheswaram wrote:
+> > > > Convert USB DWC3 bindings to DT schema format using json-schema.
+> > > > 
+> > > > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> > > > ---
+> > > >   .../devicetree/bindings/usb/qcom,dwc3.txt          | 104
+> > > > --------------
+> > > >   .../devicetree/bindings/usb/qcom,dwc3.yaml         | 158
+> > > > +++++++++++++++++++++
+> > > >   2 files changed, 158 insertions(+), 104 deletions(-)
+> > > >   delete mode 100644
+> > > > Documentation/devicetree/bindings/usb/qcom,dwc3.txt
+> > > >   create mode 100644
+> > > > Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > 
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > > b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > > new file mode 100644
+> > > > index 0000000..0f69475
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
 
-This makes the code simpler and proof against needing to even think
-about any shenanigans that de_thread might get up to.
+...
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/proc/base.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+> > > > +    items:
+> > > > +      - description: Must be 19.2MHz (19200000).
+> > > Sounds like a constraint:
+> > > 
+> > > - const: 19200000
+> > > 
+> > > > +      - description: Must be >= 60 MHz in HS mode, >= 125 MHz
+> > > > in SS mode.
+> > > - minimum: 60000000
+> > >    maximum: ?
+> > 
+> > Tried  as below but facing errors
+> > 
+> > assigned-clock-rates:
+> >     items:
+> >       - const: 19200000
+> >       - minimum: 60000000
+> >         maximum: 150000000
+> > 
+> > Errors
+> > 
+> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
+> > usb@a6f8800: assigned-clock-rates: Additional items are not allowed
+> > ([150000000] was unexpected)
+> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
+> > usb@a6f8800: assigned-clock-rates:0: [19200000] is too short
+> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
+> > usb@a6f8800: assigned-clock-rates: [[19200000], [150000000]] is too long
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 2868bff1a142..a48b4d4056a9 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3360,20 +3360,8 @@ static struct tgid_iter next_tgid(struct pid_namespace *ns, struct tgid_iter ite
- 	pid = find_ge_pid(iter.tgid, ns);
- 	if (pid) {
- 		iter.tgid = pid_nr_ns(pid, ns);
--		iter.task = pid_task(pid, PIDTYPE_PID);
--		/* What we to know is if the pid we have find is the
--		 * pid of a thread_group_leader.  Testing for task
--		 * being a thread_group_leader is the obvious thing
--		 * todo but there is a window when it fails, due to
--		 * the pid transfer logic in de_thread.
--		 *
--		 * So we perform the straight forward test of seeing
--		 * if the pid we have found is the pid of a thread
--		 * group leader, and don't worry if the task we have
--		 * found doesn't happen to be a thread group leader.
--		 * As we don't care in the case of readdir.
--		 */
--		if (!iter.task || !has_group_leader_pid(iter.task)) {
-+		iter.task = pid_task(pid, PIDTYPE_TGID);
-+		if (!iter.task) {
- 			iter.tgid += 1;
- 			goto retry;
- 		}
--- 
-2.20.1
+judging from the error messages my uneducated guess is that the above rules for
+assigned-clock-rates expect a single tuple of two elements, not two tuples with
+a single element, i.e.
 
+assigned-clock-rates = <19200000, 150000000>;
+
+  instead of
+
+assigned-clock-rates = <19200000>, <150000000>;
+
+I experimented a bit but couldn't find the magic incantation to appease the
+schema deities.
+
+Rob, could you please help to distentangle this?
+
+Thanks
+
+Matthias
