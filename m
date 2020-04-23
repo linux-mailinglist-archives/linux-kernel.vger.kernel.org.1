@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31881B51C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7810F1B51CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgDWBVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 21:21:18 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34145 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgDWBVR (ORCPT
+        id S1726071AbgDWBbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 21:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgDWBbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 21:21:17 -0400
-Received: by mail-pf1-f195.google.com with SMTP id x15so2098728pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 18:21:17 -0700 (PDT)
+        Wed, 22 Apr 2020 21:31:33 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737CAC03C1AA;
+        Wed, 22 Apr 2020 18:31:33 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a9so2266179ybc.8;
+        Wed, 22 Apr 2020 18:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qTERN+i0HIChPpFfmgcmeaOzlSbySSWPcFYAbeYUgFo=;
+        b=rr+E4ojcCqOtxYzaHP++U+89MxK5MiZjXlb5Qb9nqsg9otkLEszW9zKDREFSW6adY4
+         ihYDJRt2EpNRNRrZxo1hzL9zLecZqgElRxoLRO2UQLyv0t/EJh4fKPNyk+Mc9NwRZZF2
+         oKYvcS3Tb4V3ElMicauImL9A4P7MqJe0mu36ZXTEjhL7HLxrESS6M9pUQ/HO8TU23+Df
+         NHVni4I8FA9QqHq4jZzOyUsgghQlxerauUtojYGDYnJUISHQCgIdLo5LfcbUfBcTMMMV
+         cFJ4B/tO2d+r+idJyo3OVLe9I1A8d4MWzi9JgVgp8Odp8VKr8Odyj2OoCQnk7D1W6/W9
+         Os0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HuA0hxQTe90PJtZs9WSSy8kDWUbxSlnvi9VsPza7S2Y=;
-        b=NxRGnjG+UfX4tgyPXsBtpAS7Ie29rFncjOTE1gAkOH3z2STfgMKfNzV6wTRRmyuvfX
-         zPB0hS7tuzb4UsOI8BNVUMKvlFqN5AlknjZeIFJCo6msYW9bLiO3Hd3mGQ/Vk9cSnQAW
-         nFesuslAC/VQtY+yujN6O/0lKJF8WSZWoQ8nCIVqislChrJuS4Shql5nHK5/S6KWmraq
-         MG371PT5+Ql5cHo3ZRVgAxO1u2aSPKJvkKaZ4yeju8Z/OfecVlBS9nHY2YiXxHGu5SnT
-         sEI3IhylpUwVoljxW5svgPudgs2e+A4ImcQGEEFAGLAsjwIFFB0uTPBt2/39agzDHJ4O
-         GP3Q==
-X-Gm-Message-State: AGi0PuY3mPuDaXhI3aHXso6RXLG2DNZz8DJGHkF6jWUbvEvELXPHcrft
-        X1hiWoCsb3uPZXuVtcSyWhA=
-X-Google-Smtp-Source: APiQypKxBlGRT0F6vEFPhi5oneOUM697xMXU65q00ggKMra7UIbFqy/Kx++vjPJ34SrVHIxn8OpClA==
-X-Received: by 2002:aa7:80cf:: with SMTP id a15mr1441540pfn.124.1587604876968;
-        Wed, 22 Apr 2020 18:21:16 -0700 (PDT)
-Received: from [100.124.12.67] ([104.129.198.222])
-        by smtp.gmail.com with ESMTPSA id n23sm471545pjq.18.2020.04.22.18.21.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 18:21:16 -0700 (PDT)
-Subject: Re: [PATCH v2] stacktrace: cleanup inconsistent variable type
-To:     Walter Wu <walter-zh.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>
-References: <20200421013511.5960-1-walter-zh.wu@mediatek.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d2a9f155-f309-0182-73c9-5c02d7014574@acm.org>
-Date:   Wed, 22 Apr 2020 18:21:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qTERN+i0HIChPpFfmgcmeaOzlSbySSWPcFYAbeYUgFo=;
+        b=gqxwpjduUFDffkMYeCO//+iTXN4zj11K1bHD1CaXmnPpQom5+dnuxma3Uudv56Pn0b
+         jHH39E/HlnWyWB29w9A8phqfYiZ/AwzB17AvYZWbzBRrtZGgyomEa9BKKFpj2HopBqoH
+         wR9wgve3ZOnyrAGtO3R46sMLLAwQFoENSMSp+oHajGZ+IJdT3zfHytDkWHc241IMEuro
+         Pg2ZKGCiCV7Xa7R9Gpk8wk3NI2rYD1xE2bHSSCrh1c+DI4qFPCKXTU55OCShJuo//ouA
+         jTV0kbLZU/DJ+FMB33pVPhSZVIpPGqD2F2TNH2Hemv7vgGXYApgqXxnlgUsQVCgQOQl5
+         QzUA==
+X-Gm-Message-State: AGi0PuYyVioKZORU8QWl0vftBFx5J0TeWvSy5ij+3+SAHGmCfyujzcQ7
+        jrUyDdy9rOotDQDkTS25UUEso8E1vwew7cYBJis=
+X-Google-Smtp-Source: APiQypKJMu3AyBtHt03zMEEtlNqfRN+lKkkWcS4V5OtidAVtmrzo7IAb6GE/EErIjP0YvJxe7VTaI7uyfOjCnDHmn+w=
+X-Received: by 2002:a25:e907:: with SMTP id n7mr2857011ybd.85.1587605492519;
+ Wed, 22 Apr 2020 18:31:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200421013511.5960-1-walter-zh.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200423103101.0d416eb8@canb.auug.org.au>
+In-Reply-To: <20200423103101.0d416eb8@canb.auug.org.au>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 22 Apr 2020 20:31:21 -0500
+Message-ID: <CAH2r5mvUwDAfW0Eh1cLvSxukBkySYrW7Bf-f35bMdzHu81EG9A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the cifs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paulo Alcantara <pc@cjr.nz>, Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 6:35 PM, Walter Wu wrote:
-> Modify the variable type of 'skip' member of struct stack_trace.
-> In theory, the 'skip' variable type should be unsigned int.
-> There are two reasons:
-> - The 'skip' only has two situation, 1)Positive value, 2)Zero
-> - The 'skip' of struct stack_trace has inconsistent type with struct
->    stack_trace_data, it makes a bit confusion in the relationship between
->    struct stack_trace and stack_trace_data.
+Fixed.  updated cifs-2.6.git for-next with Paulo's respun version of
+two patches to address the missing #ifdef
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Should be ok now.
+
+On Wed, Apr 22, 2020 at 7:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the cifs tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>
+> fs/cifs/connect.c: In function 'cifs_find_tcon':
+> fs/cifs/connect.c:3378:45: error: 'struct cifs_tcon' has no member named 'dfs_path'
+>  3378 |   if (!match_tcon(tcon, volume_info) || tcon->dfs_path)
+>       |                                             ^~
+>
+> Caused by commit
+>
+>   f73409e5babd ("cifs: do not share tcons with DFS")
+>
+> # CONFIG_CIFS_DFS_UPCALL is not set
+>
+> I have reverted that commit for today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+
+
+-- 
+Thanks,
+
+Steve
