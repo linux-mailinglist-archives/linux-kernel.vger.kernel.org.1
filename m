@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F4A1B5A82
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3741B5A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgDWL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgDWL3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:29:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728142AbgDWL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 07:29:33 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48023 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727976AbgDWL3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:29:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587641372;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ak2/xqcDfE6mCFXaoyYqstq84WV0bpXKw1y+hjWvB3w=;
+        b=X6bj9dPqbSXl/miEYlZLxm1tfqxtzzNvawc5vExoLo54XyVTUC6+woCgID07jLPSawI6zj
+        VK+5gw6+1KzFUJoZvUvVTjFL/ZqjAkH/TVxsc0QDNwS0psZAVSv1C6Nhwz0FaJy+pHiz9K
+        exzPF8bXib9u3CskSFuREIh8wwCtDrE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-UbZ-Sy2yP02mp7GXcGPC-A-1; Thu, 23 Apr 2020 07:29:25 -0400
+X-MC-Unique: UbZ-Sy2yP02mp7GXcGPC-A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7120820736;
-        Thu, 23 Apr 2020 11:29:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587641352;
-        bh=GLlc36Uzd9tq03rZItAwzH28jaEo5ZcpHGyvduOR2A0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2UfGZuQCnr47rkAUJssPrBDRMExOsOBUUr0CuLJo6mJx9nyJv6MMYUvhnKJoL+Vua
-         9Wh/S1YtwuHrLDjruOSyXA344ONMBut+uKlZLIF2zhiFvO8wnKdR1hE82NG7KEuMOt
-         GnbEpGteOvxHw9Aka5yptbzP0plKT0e1K0kHzKZw=
-Date:   Thu, 23 Apr 2020 13:29:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ivan Safonov <insafonov@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        devel@driverdev.osuosl.org, Puranjay Mohan <puranjay12@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Subject: Re: [PATCH] staging:r8188eu: avoid skb_clone for amsdu to msdu
- conversion
-Message-ID: <20200423112910.GA3768232@kroah.com>
-References: <20200418084112.3723-1-insafonov@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8AAA91009619;
+        Thu, 23 Apr 2020 11:29:22 +0000 (UTC)
+Received: from krava (unknown [10.40.196.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7CBE419167;
+        Thu, 23 Apr 2020 11:29:18 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 13:29:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 05/11] perf expr: increase max other
+Message-ID: <20200423112915.GH1136647@krava>
+References: <20200422220430.254014-1-irogers@google.com>
+ <20200422220430.254014-6-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200418084112.3723-1-insafonov@gmail.com>
+In-Reply-To: <20200422220430.254014-6-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 11:41:12AM +0300, Ivan Safonov wrote:
-> skb clones use same data buffer, so tail of one skb is corrupted by beginning of next skb.
-
-Please properly wrap your changelog text at the correct column (72).
-
-Also, your subject: line does not have the correct driver name :(
-
+On Wed, Apr 22, 2020 at 03:04:24PM -0700, Ian Rogers wrote:
+> Large metrics such as Branch_Misprediction_Cost_SMT on x86 broadwell
+> need more space.
 > 
-> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  drivers/staging/rtl8188eu/core/rtw_recv.c | 19 ++++++-------------
->  1 file changed, 6 insertions(+), 13 deletions(-)
+>  tools/perf/util/expr.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
-> index d4278361e002..a036ef104198 100644
-> --- a/drivers/staging/rtl8188eu/core/rtw_recv.c
-> +++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
-> @@ -1525,21 +1525,14 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
+> diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+> index 0938ad166ece..4938bfc608b7 100644
+> --- a/tools/perf/util/expr.h
+> +++ b/tools/perf/util/expr.h
+> @@ -2,7 +2,7 @@
+>  #ifndef PARSE_CTX_H
+>  #define PARSE_CTX_H 1
 >  
->  		/* Allocate new skb for releasing to upper layer */
->  		sub_skb = dev_alloc_skb(nSubframe_Length + 12);
-> -		if (sub_skb) {
-> -			skb_reserve(sub_skb, 12);
-> -			skb_put_data(sub_skb, pdata, nSubframe_Length);
-> -		} else {
-> -			sub_skb = skb_clone(prframe->pkt, GFP_ATOMIC);
-> -			if (sub_skb) {
-> -				sub_skb->data = pdata;
-> -				sub_skb->len = nSubframe_Length;
-> -				skb_set_tail_pointer(sub_skb, nSubframe_Length);
-> -			} else {
-> -				DBG_88E("skb_clone() Fail!!! , nr_subframes=%d\n", nr_subframes);
-> -				break;
-> -			}
-> +		if (!sub_skb) {
-> +			DBG_88E("dev_alloc_skb() Fail!!! , nr_subframes=%d\n", nr_subframes);
-> +			break;
->  		}
+> -#define EXPR_MAX_OTHER 20
+> +#define EXPR_MAX_OTHER 64
+>  #define MAX_PARSE_ID EXPR_MAX_OTHER
 >  
-> +		skb_reserve(sub_skb, 12);
-> +		skb_put_data(sub_skb, pdata, nSubframe_Length);
-> +
+>  struct expr_parse_id {
+> -- 
+> 2.26.2.303.gf8c07b1a785-goog
+> 
 
-Have you tested this?
+ok, and we should probably start to think about what Andi suggested
+in here: https://lore.kernel.org/lkml/20200224210308.GQ160988@tassilo.jf.intel.com/
 
-thanks,
+jirka
 
-greg k-h
