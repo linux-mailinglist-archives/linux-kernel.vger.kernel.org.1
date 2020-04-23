@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC731B5F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194CF1B5F17
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgDWPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:23:51 -0400
-Received: from mout.web.de ([212.227.15.4]:41205 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729024AbgDWPXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:23:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587655411;
-        bh=M4+W1USca9HVX4Azy30pfv+90wRipbT6lbsENz2hjLE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=X7lfJqmckIqrzVGF8Ua8MYRnMuAHeg7JRJc3NiXdXXZDdvsLJslU1gyRhusrShVWM
-         QwG+JhBkfsdkJ1mA4n1GWJOUoQGIWOwWaLD1QoWesfmq/oqVhjz5Se35l0W+uvX7G/
-         OeVTU2JoNoggBqkRSigX5yaPwxZruirJARcvxhtc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.69.235]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LtFAh-1j3cSW1x8N-012lEi; Thu, 23
- Apr 2020 17:23:31 +0200
-Subject: Re: console: Complete exception handling in newport_probe()
-To:     Dejin Zheng <zhengdejin5@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Coccinelle <cocci@systeme.lip6.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Ralf_B=c3=a4chle?= <ralf@linux-mips.org>,
-        =?UTF-8?Q?Thomas_Bogend=c3=b6rfer?= <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <c62ec54f-348b-2eae-59eb-374dde4d49ad@web.de>
- <20200423142909.GB1562@nuc8i5>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <f054f00c-b813-e0c2-fe2e-30ccdec1ff46@web.de>
-Date:   Thu, 23 Apr 2020 17:23:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729187AbgDWPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:24:38 -0400
+Received: from mail-co1nam11on2054.outbound.protection.outlook.com ([40.107.220.54]:10485
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729152AbgDWPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:24:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QbpSgPo3FbFFnW40apscAaNlKg/QWvfZOrc5rpLcxnREJQ1G1MczGmdxXApXIEeSAYC5fV/282m2G3IrppRdCOeFoCPSAyIMo5xToT96+mL2QywvAlzI4JgaGZqvhfWWWEQwWwW8PVQgwjOoBrQTL+4qXvdzkgD6LhrqeEqO+LKuJEoz7l50N5rXBBgoC50XSHaesfvgYJ4y0Sbs6f+1TLDdMoS1LU7BIZT2v9Dnfh09Q/MkZsEZgz/WxDuE22YiXwcwW14WfSvAu5twUoY3uk/OAgSXa/AE0sfwGHipVPqgBi32rUh/OB6SiLZd7kdXhSH6hSTs/L7bO5l0ynoc8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UiyDdcewKqQdfPS/aQehQwnwEd+DRpklXiSdsSapetw=;
+ b=AAHm6nf98L4vFUEGqj684Y2v/yAoL/y/cGtHy8KuZUS2OgwS6zFKexLiCuBC0w/2o0pbytgBUFQhDu67NnpKPHI7ehAOqPIPnTcy74PP/EEMdyjxJ5JISr7EVUSmjNuOB1HZ6I8jiN/HNlHfqIsL3bGsTKCtTDygar+PxOIVnQj52uD599V89OdFurYuDjLsW1l5Mh/9+mcAt2KKpRVUKzyo0zzOT2D3jj4Ydua0PKfCckZEBq6E4sHL5vw6W3Te6sH5afNoKtaHCk9ClxuXIANTT47JaGNyh7+2QENNhlNxREP69L0DxjE/jpjsjhk/Hlg3ARJdpkzfmki08GVcJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UiyDdcewKqQdfPS/aQehQwnwEd+DRpklXiSdsSapetw=;
+ b=WQmrB/5HU/g653bxSknpJMzqb+u+A/oNTswBGj4oG4R+1/mDU+pzoOufX8yDJOdHsiyivVknZzqIKumfWGd6GW4kK5J1TlqCG42SJ1K5KS03FO3qg5i4EzhKusB0HpBswxPheyieMCNVUNjVHffxJrfQiYFNOVp1zu6Nz3S5l0c=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Janakarajan.Natarajan@amd.com; 
+Received: from DM5PR12MB1226.namprd12.prod.outlook.com (2603:10b6:3:75::7) by
+ DM5PR12MB2391.namprd12.prod.outlook.com (2603:10b6:4:b3::27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2921.27; Thu, 23 Apr 2020 15:24:33 +0000
+Received: from DM5PR12MB1226.namprd12.prod.outlook.com
+ ([fe80::e549:aba2:a697:2b3]) by DM5PR12MB1226.namprd12.prod.outlook.com
+ ([fe80::e549:aba2:a697:2b3%10]) with mapi id 15.20.2921.030; Thu, 23 Apr 2020
+ 15:24:32 +0000
+From:   Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, Ira Weiny <ira.weiny@intel.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+Subject: [PATCH] KVM: SVM: Change flag passed to GUP fast in sev_pin_memory()
+Date:   Thu, 23 Apr 2020 10:24:19 -0500
+Message-Id: <20200423152419.87202-1-Janakarajan.Natarajan@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR1401CA0016.namprd14.prod.outlook.com
+ (2603:10b6:4:4a::26) To DM5PR12MB1226.namprd12.prod.outlook.com
+ (2603:10b6:3:75::7)
 MIME-Version: 1.0
-In-Reply-To: <20200423142909.GB1562@nuc8i5>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-Provags-ID: V03:K1:I25rebWPlVXPKQRAe55ebCQcs7veEq7l6aFHkXrgRw7EUlk9SwD
- HgMOlxkXVFe9XYv/FIdjuIJV8fhn6BItJ02BaMHD92JBxUWd1xGyycKcI2Z/Q5ldqeCmgXw
- 7dXbBhC8v7ddRXO2YSf78ATIXoAYemzl1Zx4KwGFb30cTVPZndDhV5tByiH+w728LF7wA+y
- /BcsiBgtPYMHCGzbMoABA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OXXHy57w/qU=:6qxJ8NG+o0pbnqSZCEl215
- 4d+khhyja+zyuz1vcTiizHh/q7uob/WMBIgfqcF+BUMdsyR1Za3+E3cIq1sn/wJut/8iP8Q4d
- lW21wgVA17HbIBO4sKVk3hGJfT34B26XamcnxKVcMEovAfPBgmsEviu+b4DSm5cJOOsuzxs79
- efWE8tkraY8TetcCqX/oGl61h/RYajFPt9Ejxr5RHTFVwGNN/cCncV397eVU39dQiTGyR+Qy0
- rZ/KywoluAI2Se/yAYOlXqaZXGkv2ZQUOfG7fz/j1pj5yLjMI/sOF4UveG/KKFt1ZyE3BHIEk
- 8oLrK9+bv52eRgBhrVCDnDnXK8QTg/9l9KunAoL8YzKgujwiJuUFwSASj1tAFt2KKkEb2uBKF
- VSQbq2leQxo4+i865JDBUji5B8pVHMsxZo3m0HNeTgXgy57aDh4oow7A3IvB8UT2z0WY16hkF
- QVDC71DThevQp5qRwhu3olLx7qWLdWWu/X4FHuSBCEqPDyR8mpfF0IRJwxipUnTTiZIc1xHIf
- XEaXLu410qnBIfDi5SeEz4wVrRTpV3v03e03nGB+3Jxc0DXAQcL7WQLRC7m49RBjlNmg+rXjJ
- 78Svc6IvYsrC9G1IOt8sdNGbWruYzDCHDj7EbRlpE8++b1t65eVrjlD3xw2ZtdNUHTw0RTIrr
- Fy5AsujnAhPIbRbRMLfgc6KO8JXDyEBwY/Suhle/4gLzL7D/xH71GbuB/BUkB6iRy2T+qXTO9
- o/zzaDE52l8jDYInr4TmSKKEt1rIdm8EfKk5JtdEQfhR/Jurq8d995sffEgrzt8t+Dt87FWkv
- fz918D9e3j78anlwGUgpu1YjDsIpFio7Y4xsjdFgr7Ixizin7Zehozjp/sEBB65Z+SYSF7/uX
- 0MqqmLzZmEPIz/MfOevJ8djJaEEXeYRTI5QW0GvXFRhEB5sDtWAUxTnrPT09VbssE8a8yaD0N
- OGbBzE9+KjlrVCjFiQPk5Kg7j8MbeBPXOUGBZXNqX2WwLgXFOeXOHPzewg41MRlT7C5WP/dLD
- h7zqJR+qwjtbfUHkncwO604PnqY0hwQXyTw1QiYgdtxzm47TTf6E8/waOZU5+KotnaokeJkcZ
- olEp88R7mVAo7NMzKUBG7YHyjXX8VZ0i2aXwRdN0q15ZMIsGxsj89Ir0Z9a1lIMqEB5xxVyfj
- /FnoacgZtSBQ8hB6qk6XxoqjhFyq//oAHkrLq/vm8fwXmRHlM3SRsmue3t3HFHCdZ71y9fmvF
- Cd2bbOH7uI70yEW/h
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jubuntu.amd.com (165.204.78.2) by DM5PR1401CA0016.namprd14.prod.outlook.com (2603:10b6:4:4a::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Thu, 23 Apr 2020 15:24:31 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bbcb5e80-e49c-4142-ca1a-08d7e79a6c56
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2391:|DM5PR12MB2391:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2391C32D9953D7C50905E1A5E7D30@DM5PR12MB2391.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:972;
+X-Forefront-PRVS: 03827AF76E
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1226.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(136003)(346002)(39860400002)(396003)(366004)(36756003)(66556008)(66476007)(66946007)(2616005)(5660300002)(1076003)(956004)(6486002)(8936002)(81156014)(8676002)(7416002)(478600001)(6666004)(7696005)(52116002)(26005)(16526019)(186003)(86362001)(2906002)(4326008)(316002)(54906003);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7ng6LnkN1MSQRpHnsMtgu5kcSVkrCaEghyJxXYMrDxcnz/qzru1EXJ7YDvcl5qeOXJSJxx0tnEINoGj1IuH8aVd+tRO54u4NIa0bp4XpJ2fof+FdcxYFU7zK7/IQ/G60+MK9iPR54IbYtsoH/akKfv8khaBZ4qgisM+zyaENclNPLTYoobOUN25s6XiTT0QWMKO/RjEBs6ODPoMywvrE8/SpsGVgqBtL6kKn0rf29EjVDjSvjdpYomaX6eQThv1DNXqxKgvzeduzhT+XVAsIaZN38+e2fbflCOxT8ed8n9rqVLpvC4osi550FMwZ6F2rpAGs8dljYmJuoXNTZJbk0rAWvcKcfrW719eQvtI7LUoVTuPx7/sbprGl1qQT69eAa5610pPn+VGfc37Jt+HkonqctykwewX+TYf9gbXSk632ItZG1kJvPzqOrSIqHGM/
+X-MS-Exchange-AntiSpam-MessageData: GUke2vFzBervHXdyj2Pb3QAtsEu78nTUrffjC2ttL9VJLIzYGRR9xk1264E1P8VgmCUmyRxNOnJcV1jLR87MfkXzA+zGIaWJ91ezVgEUoWV+IQUwgjWaOvfrxNgDlvJoxPvdJFzi3S313Yp+2+qLGw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbcb5e80-e49c-4142-ca1a-08d7e79a6c56
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 15:24:32.8260
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5g0mtvCpLeGLc2fc/3rzqfbAi8P5Tb15YRO42aYd9OZ5gv4fUkNddM++7l3N7HWfLd73ibOly2MHT4h9okKFWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2391
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/scripts/coccinelle/free/iounmap.cocci
->>
->> How do you think about to extend presented software analysis approaches?
->>
-> Sorry, I am not familiar with it, I don't know.
+When trying to lock read-only pages, sev_pin_memory() fails because FOLL_WRITE
+is used as the flag for get_user_pages_fast().
 
-Do you find the comments helpful at the beginning of this SmPL script?
+Commit 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a write
+'bool'") updated the get_user_pages_fast() call sites to use flags, but
+incorrectly updated the call in sev_pin_memory(). As the original coding of this
+call was correct, revert the change made by that commit.
 
-Would you like to let any more source code analysis tools help you
-to find remaining update candidates?
+Fixes: 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a write 'bool'")
+Signed-off-by: Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+---
+ arch/x86/kvm/svm/sev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Markus
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index cf912b4aaba8..89f7f3aebd31 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -345,7 +345,7 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
+ 		return NULL;
+ 
+ 	/* Pin the user virtual address. */
+-	npinned = get_user_pages_fast(uaddr, npages, FOLL_WRITE, pages);
++	npinned = get_user_pages_fast(uaddr, npages, write ? FOLL_WRITE : 0, pages);
+ 	if (npinned != npages) {
+ 		pr_err("SEV: Failure locking %lu pages.\n", npages);
+ 		goto err;
+-- 
+2.17.1
+
