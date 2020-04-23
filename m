@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7810F1B51CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E150E1B521C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgDWBbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 21:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgDWBbd (ORCPT
+        id S1726381AbgDWBrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 21:47:48 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:7901 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725781AbgDWBrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 21:31:33 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737CAC03C1AA;
-        Wed, 22 Apr 2020 18:31:33 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a9so2266179ybc.8;
-        Wed, 22 Apr 2020 18:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qTERN+i0HIChPpFfmgcmeaOzlSbySSWPcFYAbeYUgFo=;
-        b=rr+E4ojcCqOtxYzaHP++U+89MxK5MiZjXlb5Qb9nqsg9otkLEszW9zKDREFSW6adY4
-         ihYDJRt2EpNRNRrZxo1hzL9zLecZqgElRxoLRO2UQLyv0t/EJh4fKPNyk+Mc9NwRZZF2
-         oKYvcS3Tb4V3ElMicauImL9A4P7MqJe0mu36ZXTEjhL7HLxrESS6M9pUQ/HO8TU23+Df
-         NHVni4I8FA9QqHq4jZzOyUsgghQlxerauUtojYGDYnJUISHQCgIdLo5LfcbUfBcTMMMV
-         cFJ4B/tO2d+r+idJyo3OVLe9I1A8d4MWzi9JgVgp8Odp8VKr8Odyj2OoCQnk7D1W6/W9
-         Os0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qTERN+i0HIChPpFfmgcmeaOzlSbySSWPcFYAbeYUgFo=;
-        b=gqxwpjduUFDffkMYeCO//+iTXN4zj11K1bHD1CaXmnPpQom5+dnuxma3Uudv56Pn0b
-         jHH39E/HlnWyWB29w9A8phqfYiZ/AwzB17AvYZWbzBRrtZGgyomEa9BKKFpj2HopBqoH
-         wR9wgve3ZOnyrAGtO3R46sMLLAwQFoENSMSp+oHajGZ+IJdT3zfHytDkWHc241IMEuro
-         Pg2ZKGCiCV7Xa7R9Gpk8wk3NI2rYD1xE2bHSSCrh1c+DI4qFPCKXTU55OCShJuo//ouA
-         jTV0kbLZU/DJ+FMB33pVPhSZVIpPGqD2F2TNH2Hemv7vgGXYApgqXxnlgUsQVCgQOQl5
-         QzUA==
-X-Gm-Message-State: AGi0PuYyVioKZORU8QWl0vftBFx5J0TeWvSy5ij+3+SAHGmCfyujzcQ7
-        jrUyDdy9rOotDQDkTS25UUEso8E1vwew7cYBJis=
-X-Google-Smtp-Source: APiQypKJMu3AyBtHt03zMEEtlNqfRN+lKkkWcS4V5OtidAVtmrzo7IAb6GE/EErIjP0YvJxe7VTaI7uyfOjCnDHmn+w=
-X-Received: by 2002:a25:e907:: with SMTP id n7mr2857011ybd.85.1587605492519;
- Wed, 22 Apr 2020 18:31:32 -0700 (PDT)
+        Wed, 22 Apr 2020 21:47:47 -0400
+X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 21:47:47 EDT
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Wed, 22 Apr 2020 18:32:40 -0700
+Received: from [10.62.16.246] (unknown [10.62.16.246])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 8A28AB1660;
+        Wed, 22 Apr 2020 21:32:42 -0400 (EDT)
+Reply-To: <ganb@vmware.com>
+Subject: Re: Re: [PATCH 40/70] x86/sev-es: Setup per-cpu GHCBs for the runtime
+ handler
+To:     Joerg Roedel <jroedel@suse.de>, Mike Stunes <mstunes@vmware.com>
+CC:     Joerg Roedel <joro@8bytes.org>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+References: <20200319091407.1481-1-joro@8bytes.org>
+ <20200319091407.1481-41-joro@8bytes.org>
+ <A7DF63B4-6589-4386-9302-6B7F8BE0D9BA@vmware.com>
+ <20200415155302.GD21899@suse.de>
+From:   Bo Gan <ganb@vmware.com>
+Message-ID: <1a164e55-19dd-a20b-6837-9f425cfac100@vmware.com>
+Date:   Wed, 22 Apr 2020 18:33:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20200423103101.0d416eb8@canb.auug.org.au>
-In-Reply-To: <20200423103101.0d416eb8@canb.auug.org.au>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 22 Apr 2020 20:31:21 -0500
-Message-ID: <CAH2r5mvUwDAfW0Eh1cLvSxukBkySYrW7Bf-f35bMdzHu81EG9A@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the cifs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paulo Alcantara <pc@cjr.nz>, Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200415155302.GD21899@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: ganb@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed.  updated cifs-2.6.git for-next with Paulo's respun version of
-two patches to address the missing #ifdef
+On 4/15/20 8:53 AM, Joerg Roedel wrote:
+> Hi Mike,
+> 
+> On Tue, Apr 14, 2020 at 07:03:44PM +0000, Mike Stunes wrote:
+>> set_memory_decrypted needs to check the return value. I see it
+>> consistently return ENOMEM. I've traced that back to split_large_page
+>> in arch/x86/mm/pat/set_memory.c.
+> 
+> I agree that the return code needs to be checked. But I wonder why this
+> happens. The split_large_page() function returns -ENOMEM when
+> alloc_pages() fails. Do you boot the guest with minal RAM assigned?
+> 
+> Regards,
+> 
+> 	Joerg
+> 
 
-Should be ok now.
+I just want to add some context around this. The call path that lead to 
+the failure is like the following:
 
-On Wed, Apr 22, 2020 at 7:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the cifs tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->
-> fs/cifs/connect.c: In function 'cifs_find_tcon':
-> fs/cifs/connect.c:3378:45: error: 'struct cifs_tcon' has no member named 'dfs_path'
->  3378 |   if (!match_tcon(tcon, volume_info) || tcon->dfs_path)
->       |                                             ^~
->
-> Caused by commit
->
->   f73409e5babd ("cifs: do not share tcons with DFS")
->
-> # CONFIG_CIFS_DFS_UPCALL is not set
->
-> I have reverted that commit for today.
->
-> --
-> Cheers,
-> Stephen Rothwell
+	__alloc_pages_slowpath
+	__alloc_pages_nodemask
+	alloc_pages_current
+	alloc_pages
+	split_large_page
+	__change_page_attr
+	__change_page_attr_set_clr
+	__set_memory_enc_dec
+	set_memory_decrypted
+	sev_es_init_ghcbs
+	trap_init   -> before mm_init (in init/main.c)
+	start_kernel
+	x86_64_start_reservations
+	x86_64_start_kernel
+	secondary_startup_64
 
+At this time, mem_init hasn't been called yet (which would be called by 
+mm_init). Thus, the free pages are still owned by memblock. It's in 
+mem_init (x86/mm/init_64.c) that memblock_free_all gets called and free 
+pages are released.
 
+During testing, I've also noticed that debug_pagealloc=1 will make the 
+issue disappear. That's because with debug_pagealloc=1, 
+probe_page_size_mask in x86/mm/init.c will not allow large pages 
+(2M/1G). Therefore, no split_large_page would happen. Similarly, if CPU 
+doesn't have X86_FEATURE_PSE, there won't be large pages either.
 
--- 
-Thanks,
+Any thoughts? Maybe split_large_page should get pages from memblock at 
+early boot?
 
-Steve
+Bo
