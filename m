@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712011B541A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2403D1B5369
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 06:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgDWFSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        id S1726042AbgDWEYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 00:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725867AbgDWFSM (ORCPT
+        by vger.kernel.org with ESMTP id S1725562AbgDWEYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:18:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928EEC03C1AB;
-        Wed, 22 Apr 2020 22:18:11 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o15so2334590pgi.1;
-        Wed, 22 Apr 2020 22:18:11 -0700 (PDT)
+        Thu, 23 Apr 2020 00:24:32 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F641C03C1AB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 21:24:31 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id j20so3330307edj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 21:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qCBsa1pJlvt7zkIr/3FJFH5RgTV4mszszMc7Yftm9j8=;
-        b=ZnsO8fVk0++VtXCgCcGrNVzqJZq0AoklIMWuOpbYiwXhATkktI9CbfqB4yRA0SItP7
-         azBW1r6Jb5iyoAiziDIDLIuEYdQ4M97hJ/Sf/rfI92FjaZZ2S/q9tzL2QhP2j7J2egpf
-         CbxWrli3xBhkp6H20ZA2qRN7J2jVYTeh4GVyoJ11H2yCZtvohehqoD1QwPvpFLH7Ka4J
-         oqowfGJg4MNNxmHVCxWKhClqlf4InXXnWLzk4c3jbHm0H4RQyGW1999uONr1HVCP9F1M
-         bnjQ02lVGrC2IUMkYYiiJebH93C7ygcXHo1kP3G/fFgNFcLyRgVNSB52JQ5Qq2oxpqX7
-         4hxw==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W1DMwknr8Mv5esWhXjaUd0WNvn+/fUVQmBus68SdeKI=;
+        b=Ttz2w7rbGa7bL4xh9pO5D01ts9bopo8zmXqwhb6SJpuJqdNz8GT63pO+DS3o5rFExI
+         91FDNSYgk46tTG7Z7myPIWIqQOs9vaczQphPBJwn1EJSP3KphnVypF5PWJUyTfiS1+ju
+         I3mogJgoyAiEEbYmdzuht+uXeeqbjhAf9VKrM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=qCBsa1pJlvt7zkIr/3FJFH5RgTV4mszszMc7Yftm9j8=;
-        b=QF4pwUbLkNhVu+vKs2wqZr9JmqCAYpvfgzViUj5yNNONJtIDaTdP6WaHhgwy7Ixn+X
-         T0vPLa5D4Wwz79atWE/WIgvLld4SYjgXTBYlh2h3TLFZteianxkF6DDGejYs5jg7ACSX
-         qTXj2k+nQ5kLEDlFIDL3tstwpLLFZzLGZZVi2PJsPeIQyA1Jk8Ax21kHOGW4/kXwpmpJ
-         WNCHuQmbrK2foG7R2JFD/oX+onGlQEJ4WIdSwOxop1QeFG80lpjCOR4J9b3L6Rg82D6S
-         q4/cQ2twMP5UMclUbatr6uPnlpyjzaCOmYqs/7n1BJFmYFfA2S4thrzSCd375z0lV+Vv
-         ntKQ==
-X-Gm-Message-State: AGi0Pub1qdT7OAE3l/dwKVH47lXSALGTqpS/ZdVg8nTzSzK+wW5VMbHc
-        UusTehVnzXPCeU0K0KkEbv8=
-X-Google-Smtp-Source: APiQypLKYZo7sa83+KriCNF74gBjCVlbbw0qbHAGVoV3iMxICiijUV8rmcy6yRTFdCDjoeefv36pdQ==
-X-Received: by 2002:a63:2166:: with SMTP id s38mr2306743pgm.369.1587619091150;
-        Wed, 22 Apr 2020 22:18:11 -0700 (PDT)
-Received: from udknight.localhost ([183.250.89.86])
-        by smtp.gmail.com with ESMTPSA id k10sm1300719pfa.163.2020.04.22.22.18.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 22:18:10 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03N4AMGY001222;
-        Thu, 23 Apr 2020 12:10:22 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03N4AGAg001218;
-        Thu, 23 Apr 2020 12:10:16 +0800
-Date:   Thu, 23 Apr 2020 12:10:16 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     bpf@vger.kernel.org, Brian Gerst <brgerst@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf v2 2/2] bpf, x86_32: Fix clobbering of dst for
- BPF_JSET
-Message-ID: <20200423041016.GA1153@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
-        Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Brian Gerst <brgerst@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422173630.8351-1-luke.r.nels@gmail.com>
- <20200422173630.8351-2-luke.r.nels@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W1DMwknr8Mv5esWhXjaUd0WNvn+/fUVQmBus68SdeKI=;
+        b=gWgTSBhrryypkf0XfjNQjd58nbdSzoOPlDW7rwyN9wdY2eqg2XYZV8rjiHsHcwQLfJ
+         UL156K3yg+69wIdYzk7NMlhzOfnbVZKvD3+bj8GLDW3swob9Wciz/rM2WX9P2sykohTu
+         smVkoFekoBqoUMjvkKSk9XfdI++OaqVTvr9QzqZb4kPepdGFPcNct7/6xmT5b2NNasj1
+         LDUepv2x7wAR/lU+zAHThuHo83r86c75CZECwsXaKIBUY6R3PTq88I91lz83u2gimu80
+         Js7WrBD3O9/wVKCEpSwxKrgVu2ANAr6hxntcuIOdHH/SPQpOJU52EzhFZ6tyu6d88tcW
+         6MQQ==
+X-Gm-Message-State: AGi0PubUgmTEbkE/ecgfcoS/mV+MJjUKzTsBbuBBAqgFXD1Lt92aFEb8
+        9xAeaNwg9V1Vviq2BNp9a4Iw48nHbkRkbK5PUWpveA==
+X-Google-Smtp-Source: APiQypIEFE4myQJwMnY76Nzh2FYKbEqny6z5ZXE6PB4mX15k5Pi4QVY5srwSRvGlAuVTRyIy9W6Eg4K1/Y9vK968Cqw=
+X-Received: by 2002:a05:6402:22ed:: with SMTP id dn13mr1254167edb.212.1587615865963;
+ Wed, 22 Apr 2020 21:24:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422173630.8351-2-luke.r.nels@gmail.com>
-User-Agent: Mutt/1.7.1 (2016-10-04)
+References: <cover.1587531463.git.josh@joshtriplett.org> <9873b8bd7d14ff8cd2a5782b434b39f076679eeb.1587531463.git.josh@joshtriplett.org>
+ <CAKgNAkjo3AeA78XqK-RRGqJHNy1H8SbcjQQQs7+jDwuFgq4YSg@mail.gmail.com>
+ <CAJfpegt=xe-8AayW2i3AYrk3q-=Pp_A+Hctsk+=sXoMed5hFQA@mail.gmail.com> <20200423004807.GC161058@localhost>
+In-Reply-To: <20200423004807.GC161058@localhost>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 23 Apr 2020 06:24:14 +0200
+Message-ID: <CAJfpegtSYKsApx2Dc6VGmc5Fm4SsxtAWAP-Zs052umwK1CjJmQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] fs: openat2: Extend open_how to allow
+ userspace-selected fds
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>, io-uring@vger.kernel.org,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:36:30AM -0700, Luke Nelson wrote:
-> The current JIT clobbers the destination register for BPF_JSET BPF_X
-> and BPF_K by using "and" and "or" instructions. This is fine when the
-> destination register is a temporary loaded from a register stored on
-> the stack but not otherwise.
-> 
-> This patch fixes the problem (for both BPF_K and BPF_X) by always loading
-> the destination register into temporaries since BPF_JSET should not
-> modify the destination register.
-> 
-> This bug may not be currently triggerable as BPF_REG_AX is the only
-> register not stored on the stack and the verifier uses it in a limited
-> way.
-> 
-> Fixes: 03f5781be2c7b ("bpf, x86_32: add eBPF JIT compiler for ia32")
-> Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-Acked-by: Wang YanQing <udknight@gmail.com>
+On Thu, Apr 23, 2020 at 2:48 AM Josh Triplett <josh@joshtriplett.org> wrote:
+>
+> On Wed, Apr 22, 2020 at 09:55:56AM +0200, Miklos Szeredi wrote:
+> > On Wed, Apr 22, 2020 at 8:06 AM Michael Kerrisk (man-pages)
+> > <mtk.manpages@gmail.com> wrote:
+> > >
+> > > [CC += linux-api]
+> > >
+> > > On Wed, 22 Apr 2020 at 07:20, Josh Triplett <josh@joshtriplett.org> wrote:
+> > > >
+> > > > Inspired by the X protocol's handling of XIDs, allow userspace to select
+> > > > the file descriptor opened by openat2, so that it can use the resulting
+> > > > file descriptor in subsequent system calls without waiting for the
+> > > > response to openat2.
+> > > >
+> > > > In io_uring, this allows sequences like openat2/read/close without
+> > > > waiting for the openat2 to complete. Multiple such sequences can
+> > > > overlap, as long as each uses a distinct file descriptor.
+> >
+> > If this is primarily an io_uring feature, then why burden the normal
+> > openat2 API with this?
+>
+> This feature was inspired by io_uring; it isn't exclusively of value
+> with io_uring. (And io_uring doesn't normally change the semantics of
+> syscalls.)
+
+What's the use case of O_SPECIFIC_FD beyond io_uring?
+
+>
+> > This would also allow Implementing a private fd table for io_uring.
+> > I.e. add a flag interpreted by file ops (IORING_PRIVATE_FD), including
+> > openat2 and freely use the private fd space without having to worry
+> > about interactions with other parts of the system.
+>
+> I definitely don't want to add a special kind of file descriptor that
+> doesn't work in normal syscalls taking file descriptors. A file
+> descriptor allocated via O_SPECIFIC_FD is an entirely normal file
+> descriptor, and works anywhere a file descriptor normally works.
+
+What's the use case of allocating a file descriptor within io_uring
+and using it outside of io_uring?
+
+Thanks,
+Miklos
