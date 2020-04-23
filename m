@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F18F1B5BD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1841B5C04
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgDWMyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:54:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23936 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726503AbgDWMyc (ORCPT
+        id S1728599AbgDWM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728286AbgDWM6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:54:32 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03NCrcgR017108
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:54:31 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30k7rky844-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 08:54:31 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <gor@linux.ibm.com>;
-        Thu, 23 Apr 2020 13:53:34 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 23 Apr 2020 13:53:31 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03NCsOx162914906
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Apr 2020 12:54:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7B90A404D;
-        Thu, 23 Apr 2020 12:54:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B0C0A4053;
-        Thu, 23 Apr 2020 12:54:24 +0000 (GMT)
-Received: from localhost (unknown [9.145.82.112])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Apr 2020 12:54:23 +0000 (GMT)
-Date:   Thu, 23 Apr 2020 14:54:22 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, cohuck@redhat.com, david@redhat.com,
-        kbuild test robot <lkp@intel.com>,
-        Philipp Rudo <prudo@linux.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390/protvirt: fix compilation issue
-References: <20200423120114.2027410-1-imbrenda@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200423120114.2027410-1-imbrenda@linux.ibm.com>
-X-TM-AS-GCONF: 00
-x-cbid: 20042312-0020-0000-0000-000003CD2B98
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042312-0021-0000-0000-000022262C5B
-Message-Id: <your-ad-here.call-01587646462-ext-4177@work.hours>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-23_09:2020-04-22,2020-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 suspectscore=1 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230096
+        Thu, 23 Apr 2020 08:58:00 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B4AC08E934;
+        Thu, 23 Apr 2020 05:57:59 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u127so6448123wmg.1;
+        Thu, 23 Apr 2020 05:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dqaGCrrGdtqTHr8h7W7rgZUN4zoILX85Lt2ArDxobAw=;
+        b=WvdmeSTm03f4OQVBbZ1iK+jbVgf/wF81xLfrlniB7emB2YICETx8QKNrBHjJ3D6B9S
+         /kT220mEN9AJvYfMSrpreaeEy/xx6N3MHR3M8VBv44C1pQdCGOgVmWFPxZFaSEuLv1/p
+         E4qk3+3tx+fACOucmXS+CoQzszk7ghP6MFuAjxXE1P7trrwLmBcLaPv2a2iSzAQERh53
+         CfbJmFQcQxfS6lUrjZ7mp87/3hJaDeYj1cErhJKhxoyzwDwkCMZQxbIlbOs+5ug72kkB
+         aj1dUEhlyHaTL58Br7RnRA3TGbkQihUatFh7dsfmq9SxzjAFh1VoBG6P/rVrEw09vhV9
+         WXsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dqaGCrrGdtqTHr8h7W7rgZUN4zoILX85Lt2ArDxobAw=;
+        b=IpC24l/tAOtchxTShUBvlBD8Btwwm3eGgGCFkmavfyswTTnN7n0tjirNVVo8JU6rSf
+         TNZkQZROYDgrNXHGQ92RqcMKzn0ZVsFG095T6rlhYCc1GPOI9YGsvd5VAVENlmMiUUic
+         q+QSigCtSse5GFrl06ex3dkLIgMsLFsrdk+6uobLmeydTZ96kEcBF/Hr0Lhv7Xt9B3Ox
+         jln6LGuwZbm+4TDQXru9ClO5f1h5YcuQaBZ6b4+DkS8Hu8keoS4M6DpFziArRWqVvYeq
+         mSJpxUnMnk50GBiPa6eAyGa/wiEr4P5PoGdES7o95i/jSn+wlZChijYTkZzG9U8YpbF5
+         LUGQ==
+X-Gm-Message-State: AGi0PuZ1/bkZ++VwCBWS5XuSSaKbXM3Srfv8NFaCmGesTNzhIvslSN5n
+        8ptEznObhuGqS4NoIzy5ufM=
+X-Google-Smtp-Source: APiQypJo4EyDiMeYphl9h0zQtMu+AdWMwzAH0KkyGB6bL0c5tSeXt3hvIJunfcz2O6eUi0LXihVJGA==
+X-Received: by 2002:a05:600c:2314:: with SMTP id 20mr3951028wmo.35.1587646678480;
+        Thu, 23 Apr 2020 05:57:58 -0700 (PDT)
+Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
+        by smtp.gmail.com with ESMTPSA id 185sm4051252wmc.32.2020.04.23.05.57.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Apr 2020 05:57:57 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] thermal: ti-soc-thermal: avoid dereferencing ERR_PTR
+Date:   Thu, 23 Apr 2020 13:57:57 +0100
+Message-Id: <20200423125757.14057-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 02:01:14PM +0200, Claudio Imbrenda wrote:
-> The kernel fails to compile with CONFIG_PROTECTED_VIRTUALIZATION_GUEST
-> set but CONFIG_KVM unset.
-> 
-> This patch fixes the issue by making the needed variable always available.
+On error the function ti_bandgap_get_sensor_data() returns the error
+code in ERR_PTR() but we only checked if the return value is NULL or
+not. And, so we can dereference a error code inside ERR_PTR.
 
-This statement confuses me a bit.
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It's worth to mention that both arch/s390/boot/uv.c (for the
-decompressor) and arch/s390/kernel/uv.c (for the main kernel) are only
-built when either CONFIG_PROTECTED_VIRTUALIZATION_GUEST or
-CONFIG_KVM is enabled.
-Both arch/s390/boot/Makefile and arch/s390/kernel/Makefile contain:
-obj-$(findstring y, $(CONFIG_PROTECTED_VIRTUALIZATION_GUEST) $(CONFIG_PGSTE))   += uv.o
-
-So this makes the variable available when
-CONFIG_PROTECTED_VIRTUALIZATION_GUEST or CONFIG_KVM (expressed via
-CONFIG_PGSTE) is enabled. Hence no need for extra conditions for variable
-declaration.
-
-> Fixes: a0f60f8431999bf5 ("s390/protvirt: Add sysfs firmware interface for Ultravisor information")
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Philipp Rudo <prudo@linux.ibm.com>
-> Suggested-by: Philipp Rudo <prudo@linux.ibm.com>
-> CC: Vasily Gorbik <gor@linux.ibm.com>
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/boot/uv.c   | 2 --
->  arch/s390/kernel/uv.c | 3 ++-
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/boot/uv.c b/arch/s390/boot/uv.c
-> index 8fde561f1d07..f887a479cdc7 100644
-> --- a/arch/s390/boot/uv.c
-> +++ b/arch/s390/boot/uv.c
-> @@ -7,9 +7,7 @@
->  #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
->  int __bootdata_preserved(prot_virt_guest);
->  #endif
-> -#if IS_ENABLED(CONFIG_KVM)
->  struct uv_info __bootdata_preserved(uv_info);
-> -#endif
->  
->  void uv_query_info(void)
->  {
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index c86d654351d1..4c0677fc8904 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -23,10 +23,11 @@
->  int __bootdata_preserved(prot_virt_guest);
->  #endif
->  
-> +struct uv_info __bootdata_preserved(uv_info);
-> +
->  #if IS_ENABLED(CONFIG_KVM)
->  int prot_virt_host;
->  EXPORT_SYMBOL(prot_virt_host);
-> -struct uv_info __bootdata_preserved(uv_info);
->  EXPORT_SYMBOL(uv_info);
-
-hm, EXPORT_SYMBOL(uv_info) is not needed without CONFIG_KVM and this saves
-1 symbol export, but I'd still made EXPORT_SYMBOL follow the declaration
-immediately. Documentation/process/coding-style.rst mentions that only
-for function declarations though.
-
-Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
+diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
+index d3e959d01606..1e2bf1f22dd1 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
++++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
+@@ -196,7 +196,7 @@ int ti_thermal_remove_sensor(struct ti_bandgap *bgp, int id)
+ 
+ 	data = ti_bandgap_get_sensor_data(bgp, id);
+ 
+-	if (data && data->ti_thermal) {
++	if (!IS_ERR_OR_NULL(data) && data->ti_thermal) {
+ 		if (data->our_zone)
+ 			thermal_zone_device_unregister(data->ti_thermal);
+ 	}
+-- 
+2.11.0
 
