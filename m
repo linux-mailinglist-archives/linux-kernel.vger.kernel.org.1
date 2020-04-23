@@ -2,117 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7863A1B5F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7EA1B5F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbgDWPja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:39:30 -0400
-Received: from mail-eopbgr30046.outbound.protection.outlook.com ([40.107.3.46]:55534
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729332AbgDWPj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:39:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JcqhEkt2yevtKwGqWB0y+dgEY5GhNWa0tc0M/MnFLZrJiFccfHtNkuGSy449qCFXdvPD4QSIc93L4ob+5Yt3CAFCLHwhvBtrXjWC1MvE3JgE/H+6A2WSP3ISKXlAXuIT0bytgWA+80AC/mlnaBAG2E5lrKtfwpHHhTIjqmWaMDQbD0rO07j+8kYml4TkWkHuy7Nl3eEaTKCpTyr1EkOEtNarnvmat50sAzbpRxGOCde+U7M4gSXLWgIJjQwnyMr8h2FQIfErUSMnp0UWPe5a7fzKACHd6wdymFkFBHFUMl2xBNeCJ9uoRTwS5YxfqdM/4wmvWN6M4M4kuvgxB4Z/mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TIWm0BOwSfWeNSZUykaS0hHq8GTcL3jy9xN51aSqa5Y=;
- b=ma/b3HxxcDFh1hlWMPAoiI8S1QPlLBPYpgwX10dI/Ea7EcXEahfBUj7PPHVGmwUpXsCfJzBrdwievyg7Hh1zW5f37YFFaiIrm8hGpgyqG08zhvUm0Bp3H0aA+LCLDLSg01IHk2o7pgd+qRUXH5076JJh5NNoLj27JK9h0U9ObEuvw5jGdLmQ/N2LDaNVVHS8XSUEGev3SxrdpTSugYxLrwfKjgKjfEldjNlPRkzu7piJ7dCTcbBH9zHBYPewtPWP2ARYQONYeeg99dLctnfZtxZEqUNO+YziMgVADnjO+lVI2/CdSGF5yvVRabGjzMq30NN6wkGwisNl1iWD7ZFQmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TIWm0BOwSfWeNSZUykaS0hHq8GTcL3jy9xN51aSqa5Y=;
- b=idZVkBu5x7e5FON5hOEp5wayuBMPX2e6EVsKKgLv3JGCKCF5QAexTCCClyhGGW5ExCRbAm7vMVmzW8R9Tcq2MGcglZ9RRf5rpGyfwtn9KWjcCoQKv32yHM25fBXj8Y4hMNHH9RxJzGwcQSB/7qeYHnuk3vsksSCQRvFq+NaIYEY=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3899.eurprd04.prod.outlook.com (2603:10a6:8:f::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Thu, 23 Apr
- 2020 15:39:24 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::3143:c46:62e4:8a8b]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::3143:c46:62e4:8a8b%7]) with mapi id 15.20.2921.030; Thu, 23 Apr 2020
- 15:39:24 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Amit Kucheria <amit.kucheria@verdurent.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "linux@rempel-privat.de" <linux@rempel-privat.de>,
-        Peng Fan <peng.fan@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        lakml <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/3] dt-bindings: firmware: imx: Move system control into
- dt-binding headfile
-Thread-Topic: [PATCH 1/3] dt-bindings: firmware: imx: Move system control into
- dt-binding headfile
-Thread-Index: AQHWGXizyKpLQyPoM0K6vK6jVENDPKiGxoOAgAAQV6A=
-Date:   Thu, 23 Apr 2020 15:39:24 +0000
-Message-ID: <DB3PR0402MB39167F9D8D3101FDA02E3077F5D30@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1587650406-20050-1-git-send-email-Anson.Huang@nxp.com>
- <CAHLCerP3jGUZC+i2i6CEYhOtBjLYKAPe7M0bKUs1b5oQEsdfEg@mail.gmail.com>
-In-Reply-To: <CAHLCerP3jGUZC+i2i6CEYhOtBjLYKAPe7M0bKUs1b5oQEsdfEg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=anson.huang@nxp.com; 
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 51351c67-cb01-4163-ae22-08d7e79c802a
-x-ms-traffictypediagnostic: DB3PR0402MB3899:|DB3PR0402MB3899:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB38998B5117959DDDDA7E1167F5D30@DB3PR0402MB3899.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 03827AF76E
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(39860400002)(396003)(376002)(136003)(366004)(7416002)(76116006)(9686003)(8676002)(86362001)(64756008)(66476007)(4326008)(478600001)(66946007)(66446008)(66556008)(33656002)(5660300002)(55016002)(4744005)(316002)(186003)(54906003)(6916009)(2906002)(81156014)(71200400001)(52536014)(26005)(44832011)(8936002)(7696005)(6506007)(53546011);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2bNCzmRQmwBbRCntm7MOTMnHzdshrQOzhpHE0wR+oIQ1XK6MX60rxF9mgiJ2I+Z0Cd0GVcdxyIS9iUWJwCbPVuvZHGCWT7eE1SGYdUSvvFWPbMe8WELWJEVw9rfVYjX4FjYs7kRVdjeJU2ztsgUmFNGwI1IPSWLTpem3f/Y30KGrPQsqXtWBVJn7Ol8UkoE2z/TWwrhLdRDlTlhhhiY/DPBZVNvMAf2nJX991D2mubgsvBQx+kIG5Y2tNKZcpLKoQ9YbUtTgEwIiqwtSBmP4UgV89cpp5w7WKXPa0bU48s5QOez/bhZY43FI/asW2SKaOB9hobstqxCsKstYOh8IdEuI8AVpa0pL+PKxeig0aIjooCgs3E+sFGzyPI8lAqLQNQcMnlap1JQa9GDG9784Japvnh2M8xv+mUM76bknazDGUlE9qdlUAKTejCy+FZ2Y
-x-ms-exchange-antispam-messagedata: Dw/cntGq1vYYAttlywiimH/vxgYh56tc8l0GU37ZfBU3a1v2xHr3JiVxFYFsbzjCeKb2zx5Ha6awmi015ttWoYkYFzVKGW2JUORKYgg8AO0Wgl/S4QDTQ6cFqje3pdYMCoU0KKvReoRyfJuQO0oZErj53N1o7XLam44cZBY6fpHVSqXFNfSXrsXULZ3qCa4ZwkQfuGGcM8kiaRfViU0tuk9rHwPrbOY3vw9JpuY3vagIhTLA6I3n5p7cn3KcRSaPAd2Xg4OMOc5eVkrWcXYpUZW0CxKsu9nB3J3b9oi+yjLVcfVVx9MY0xc68MfEvHYZO7/O1HQNjQreoYSFPsy3zzd0GwbJUy02EQ3+vk8JUK0xgH+pNapz574g1l+dVG3uYf8ItZP4xi8OnHntpjhVYTG1QGAyM8KnPNwFmp6v2cgjosMSF5vozKhdTLZIKB2gWwwkRZo2r8mk341TZvrkcmHhZW+SzLT5qDi/LlAFldeiNs38deR6bSnuvfbA6eSiO9InuEjISiv51/kKNJ2I2MLXF5pip3WaT6P6RzNbFQDpl29UWGgZFGTpDsIcWklJAptXb3j07wCbwwIh9FpTq22SJq1eHoZYnxN9/QzmeFgx++FmCvpANw/pFz+cgVR0zAq4Bt5EVGEhzUT9Fl3Wc4mCfCQpqSYSJ4/DGUqgOd+OlRlkC9/U0F1wZQ+PDniwCzzRbC0tZ/aLqswBNEeAo2BME2twi9GozVZJtBteppSlVboVlSoe1R601Ex7vbmUZ6ouQwQvcBeT6g6RYb4llBZIHgq4U/irAfX+PNt5pLs=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729342AbgDWPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:38:25 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40922 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729319AbgDWPiW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:38:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NFJ0Ye152130;
+        Thu, 23 Apr 2020 15:38:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Ke3uI4ILcmC+tdjd5OGvuVLJlepu5b3rI6oqe3FwIQw=;
+ b=DCM3VBUEjvoj/7d203ua7PNnlbYPw4+0cWbj/CT/XvCFDj4PS1RYL6iEG9AZjkUvM5V7
+ thOYDtQIVve00MEiKDqrhH6dvAKsNSIAZ6KFaRc3MuTbNDRnsH4v+K2b/5KqkCMoTE97
+ mdWwjLZJJLXhOlMis1uXMBQF2qx7CvHgBH1w5cPZPkgpK/aOitTmhPURGsF/AHBHNOVF
+ VznfHvyMEMROTFz7wyU4sv5+b7JYFIhMIRzXRl39X5+hATJhVf/JzhbCv8TCM1glVmDY
+ jc4fT3vEDTlPZKgITVnJrTnD9M32svWUZbS/ZOlLxrjw+5/jqDSOclqt5Q3Ykh/7jCSY 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 30k7qe22mr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 15:37:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NFHhQV107398;
+        Thu, 23 Apr 2020 15:35:58 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 30gb3vsc2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 15:35:58 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03NFZucA022742;
+        Thu, 23 Apr 2020 15:35:56 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 23 Apr 2020 08:35:56 -0700
+Subject: Re: [PATCH 3/8] objtool: Rework allocating stack_ops on decode
+To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com
+Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz
+References: <20200423125013.452964352@infradead.org>
+ <20200423125042.713052240@infradead.org>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <7df9ec97-dc14-c4b6-fb26-f163e9afb1cd@oracle.com>
+Date:   Thu, 23 Apr 2020 17:40:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51351c67-cb01-4163-ae22-08d7e79c802a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2020 15:39:24.6320
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k1dEcNp63/K34Y0bMOVtZMZOkgOfOICSQsTbB63VwSah77NnDDhbzXEqBMLOXlMAtR53LaZPIBBmbZptkZUlEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3899
+In-Reply-To: <20200423125042.713052240@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 suspectscore=2 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004230120
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=2 mlxlogscore=999 phishscore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 malwarescore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFtaXQNCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvM10gZHQtYmluZGluZ3M6IGZpcm13
-YXJlOiBpbXg6IE1vdmUgc3lzdGVtIGNvbnRyb2wgaW50bw0KPiBkdC1iaW5kaW5nIGhlYWRmaWxl
-DQo+IA0KPiBPbiBUaHUsIEFwciAyMywgMjAyMCBhdCA3OjM4IFBNIEFuc29uIEh1YW5nIDxBbnNv
-bi5IdWFuZ0BueHAuY29tPg0KPiB3cm90ZToNCj4gPg0KPiA+IGkuTVg4IFNvQ3MgRFRTIGZpbGUg
-bmVlZHMgc3lzdGVtIGNvbnRyb2wgbWFjcm8gZGVmaW5pdGlvbnMsIHNvIG1vdmUNCj4gPiB0aGVt
-IGludG8gZHQtYmluZGluZyBoZWFkZmlsZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFuc29u
-IEh1YW5nIDxBbnNvbi5IdWFuZ0BueHAuY29tPg0KPiANCj4gV2h5IGFtIEkgc2VlaW5nIG11bHRp
-cGxlIHZlcnNpb25zIG9mIHRoZSBzYW1lIHNlcmllcz8NCj4gDQo+IFlvdSBuZWVkIHRvIHNxdWFz
-aCB0aGlzIHNlcmllcyBzbyB0aGF0IHRoZSBzd2FwcGluZyBvZiB0aGUgaGVhZGVyIGZpbGUgaGFw
-cGVucw0KPiBpbiBhIHNpbmdsZSBwYXRjaCBvdGhlcndpc2UgY29tcGlsYXRpb24gd2lsbCBicmVh
-ayB3aXRoIG9ubHkgcGF0Y2ggMSBhcHBsaWVkLg0KDQpUaGUgZmlyc3QgdmVyc2lvbiBJIHNlbnQg
-aXMgaGF2aW5nIGNvbW1hbmQgZXJyb3IgYnkgbWlzdGFrZSBhbmQgcGF0Y2ggMS8zIGlzIG1pc3Np
-bmcsDQpTbyBJIHNlbmQgaXQgYWdhaW4uDQoNClllcywgSSB3aWxsIHNxdWFzaCB0aGlzIHNlcmll
-cywgc29tZXRpbWVzIEkgd2FzIGNvbmZ1c2VkIGFib3V0IHRoZSBwYXRjaCBjYXRlZ29yeSwgYnV0
-DQptYWtpbmcgaXQgTk9UIGJyZWFrIHRoZSBiaXNlY3Qgb3IgYnVpbGQgc2hvdWxkIGJlIHRoZSBt
-b3N0IGltcG9ydGFudCBmYWN0b3IuDQoNClRoYW5rcywNCkFuc29uDQo=
+
+On 4/23/20 2:47 PM, Peter Zijlstra wrote:
+> Wrap each stack_op in a macro that allocates and adds it to the list.
+> This simplifies trying to figure out what to do with the pre-allocated
+> stack_op at the end.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   tools/objtool/arch/x86/decode.c |  257 +++++++++++++++++++++++-----------------
+>   1 file changed, 153 insertions(+), 104 deletions(-)
+> 
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -77,6 +77,17 @@ unsigned long arch_jump_destination(stru
+>   	return insn->offset + insn->len + insn->immediate;
+>   }
+>   
+> +#define PUSH_OP(op) \
+> +({ \
+> +	list_add_tail(&op->list, ops_list); \
+> +	NULL; \
+> +})
+> +
+> +#define ADD_OP(op) \
+> +	if (!(op = calloc(1, sizeof(*op)))) \
+> +		return -1; \
+> +	else for (; op; op = PUSH_OP(op))
+> +
+
+I would better have a function to alloc+add op instead of weird macros,
+for example:
+
+static struct stack_op *add_op(void)
+{
+         struct stack *op;
+
+         op = calloc(1, sizeof(*op));
+         if (!op)
+                 return NULL;
+         list_add_tail(&op->list, ops_list);
+}
+
+Then it requires two more lines when using it but I think the code is much
+cleaner and clearer, e.g.:
+
+                         op = add_op();
+                         if (!op)
+                                 return -1;
+                         op->src.type = OP_SRC_ADD;
+                         op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+                         op->dest.type = OP_DEST_REG;
+                         op->dest.reg = CFI_SP;
+
+alex.
+
+>   int arch_decode_instruction(struct elf *elf, struct section *sec,
+>   			    unsigned long offset, unsigned int maxlen,
+>   			    unsigned int *len, enum insn_type *type,
+> @@ -88,7 +99,7 @@ int arch_decode_instruction(struct elf *
+>   	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
+>   		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
+>   		      modrm_reg = 0, sib = 0;
+> -	struct stack_op *op;
+> +	struct stack_op *op = NULL;
+>   
+>   	x86_64 = is_x86_64(elf);
+>   	if (x86_64 == -1)
+> @@ -129,10 +140,6 @@ int arch_decode_instruction(struct elf *
+>   	if (insn.sib.nbytes)
+>   		sib = insn.sib.bytes[0];
+>   
+> -	op = calloc(1, sizeof(*op));
+> -	if (!op)
+> -		return -1;
+> -
+>   	switch (op1) {
+>   
+>   	case 0x1:
+> @@ -141,10 +148,12 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* add/sub reg, %rsp */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_ADD;
+> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_ADD;
+> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   		}
+>   		break;
+>   
+> @@ -152,9 +161,11 @@ int arch_decode_instruction(struct elf *
+>   
+>   		/* push reg */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_REG;
+> -		op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+> -		op->dest.type = OP_DEST_PUSH;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_REG;
+> +			op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+> +			op->dest.type = OP_DEST_PUSH;
+> +		}
+>   
+>   		break;
+>   
+> @@ -162,9 +173,11 @@ int arch_decode_instruction(struct elf *
+>   
+>   		/* pop reg */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_POP;
+> -		op->dest.type = OP_DEST_REG;
+> -		op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_POP;
+> +			op->dest.type = OP_DEST_REG;
+> +			op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+> +		}
+>   
+>   		break;
+>   
+> @@ -172,8 +185,10 @@ int arch_decode_instruction(struct elf *
+>   	case 0x6a:
+>   		/* push immediate */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_CONST;
+> -		op->dest.type = OP_DEST_PUSH;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_CONST;
+> +			op->dest.type = OP_DEST_PUSH;
+> +		}
+>   		break;
+>   
+>   	case 0x70 ... 0x7f:
+> @@ -188,11 +203,13 @@ int arch_decode_instruction(struct elf *
+>   		if (modrm == 0xe4) {
+>   			/* and imm, %rsp */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_AND;
+> -			op->src.reg = CFI_SP;
+> -			op->src.offset = insn.immediate.value;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_AND;
+> +				op->src.reg = CFI_SP;
+> +				op->src.offset = insn.immediate.value;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   			break;
+>   		}
+>   
+> @@ -205,11 +222,13 @@ int arch_decode_instruction(struct elf *
+>   
+>   		/* add/sub imm, %rsp */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_ADD;
+> -		op->src.reg = CFI_SP;
+> -		op->src.offset = insn.immediate.value * sign;
+> -		op->dest.type = OP_DEST_REG;
+> -		op->dest.reg = CFI_SP;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_ADD;
+> +			op->src.reg = CFI_SP;
+> +			op->src.offset = insn.immediate.value * sign;
+> +			op->dest.type = OP_DEST_REG;
+> +			op->dest.reg = CFI_SP;
+> +		}
+>   		break;
+>   
+>   	case 0x89:
+> @@ -217,10 +236,12 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* mov %rsp, reg */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG;
+> -			op->src.reg = CFI_SP;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG;
+> +				op->src.reg = CFI_SP;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
+> +			}
+>   			break;
+>   		}
+>   
+> @@ -228,10 +249,12 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* mov reg, %rsp */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG;
+> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG;
+> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   			break;
+>   		}
+>   
+> @@ -242,21 +265,25 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* mov reg, disp(%rbp) */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG;
+> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> -			op->dest.type = OP_DEST_REG_INDIRECT;
+> -			op->dest.reg = CFI_BP;
+> -			op->dest.offset = insn.displacement.value;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG;
+> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +				op->dest.type = OP_DEST_REG_INDIRECT;
+> +				op->dest.reg = CFI_BP;
+> +				op->dest.offset = insn.displacement.value;
+> +			}
+>   
+>   		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
+>   
+>   			/* mov reg, disp(%rsp) */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG;
+> -			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> -			op->dest.type = OP_DEST_REG_INDIRECT;
+> -			op->dest.reg = CFI_SP;
+> -			op->dest.offset = insn.displacement.value;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG;
+> +				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +				op->dest.type = OP_DEST_REG_INDIRECT;
+> +				op->dest.reg = CFI_SP;
+> +				op->dest.offset = insn.displacement.value;
+> +			}
+>   		}
+>   
+>   		break;
+> @@ -266,22 +293,26 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* mov disp(%rbp), reg */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG_INDIRECT;
+> -			op->src.reg = CFI_BP;
+> -			op->src.offset = insn.displacement.value;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG_INDIRECT;
+> +				op->src.reg = CFI_BP;
+> +				op->src.offset = insn.displacement.value;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +			}
+>   
+>   		} else if (rex_w && !rex_b && sib == 0x24 &&
+>   			   modrm_mod != 3 && modrm_rm == 4) {
+>   
+>   			/* mov disp(%rsp), reg */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_REG_INDIRECT;
+> -			op->src.reg = CFI_SP;
+> -			op->src.offset = insn.displacement.value;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_REG_INDIRECT;
+> +				op->src.reg = CFI_SP;
+> +				op->src.offset = insn.displacement.value;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+> +			}
+>   		}
+>   
+>   		break;
+> @@ -290,27 +321,31 @@ int arch_decode_instruction(struct elf *
+>   		if (sib == 0x24 && rex_w && !rex_b && !rex_x) {
+>   
+>   			*type = INSN_STACK;
+> -			if (!insn.displacement.value) {
+> -				/* lea (%rsp), reg */
+> -				op->src.type = OP_SRC_REG;
+> -			} else {
+> -				/* lea disp(%rsp), reg */
+> -				op->src.type = OP_SRC_ADD;
+> -				op->src.offset = insn.displacement.value;
+> +			ADD_OP(op) {
+> +				if (!insn.displacement.value) {
+> +					/* lea (%rsp), reg */
+> +					op->src.type = OP_SRC_REG;
+> +				} else {
+> +					/* lea disp(%rsp), reg */
+> +					op->src.type = OP_SRC_ADD;
+> +					op->src.offset = insn.displacement.value;
+> +				}
+> +				op->src.reg = CFI_SP;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+>   			}
+> -			op->src.reg = CFI_SP;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+>   
+>   		} else if (rex == 0x48 && modrm == 0x65) {
+>   
+>   			/* lea disp(%rbp), %rsp */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_ADD;
+> -			op->src.reg = CFI_BP;
+> -			op->src.offset = insn.displacement.value;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_ADD;
+> +				op->src.reg = CFI_BP;
+> +				op->src.offset = insn.displacement.value;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   
+>   		} else if (rex == 0x49 && modrm == 0x62 &&
+>   			   insn.displacement.value == -8) {
+> @@ -322,11 +357,13 @@ int arch_decode_instruction(struct elf *
+>   			 * stack realignment.
+>   			 */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_ADD;
+> -			op->src.reg = CFI_R10;
+> -			op->src.offset = -8;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_ADD;
+> +				op->src.reg = CFI_R10;
+> +				op->src.offset = -8;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   
+>   		} else if (rex == 0x49 && modrm == 0x65 &&
+>   			   insn.displacement.value == -16) {
+> @@ -338,11 +375,13 @@ int arch_decode_instruction(struct elf *
+>   			 * stack realignment.
+>   			 */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_ADD;
+> -			op->src.reg = CFI_R13;
+> -			op->src.offset = -16;
+> -			op->dest.type = OP_DEST_REG;
+> -			op->dest.reg = CFI_SP;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_ADD;
+> +				op->src.reg = CFI_R13;
+> +				op->src.offset = -16;
+> +				op->dest.type = OP_DEST_REG;
+> +				op->dest.reg = CFI_SP;
+> +			}
+>   		}
+>   
+>   		break;
+> @@ -350,8 +389,10 @@ int arch_decode_instruction(struct elf *
+>   	case 0x8f:
+>   		/* pop to mem */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_POP;
+> -		op->dest.type = OP_DEST_MEM;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_POP;
+> +			op->dest.type = OP_DEST_MEM;
+> +		}
+>   		break;
+>   
+>   	case 0x90:
+> @@ -361,15 +402,19 @@ int arch_decode_instruction(struct elf *
+>   	case 0x9c:
+>   		/* pushf */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_CONST;
+> -		op->dest.type = OP_DEST_PUSHF;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_CONST;
+> +			op->dest.type = OP_DEST_PUSHF;
+> +		}
+>   		break;
+>   
+>   	case 0x9d:
+>   		/* popf */
+>   		*type = INSN_STACK;
+> -		op->src.type = OP_SRC_POPF;
+> -		op->dest.type = OP_DEST_MEM;
+> +		ADD_OP(op) {
+> +			op->src.type = OP_SRC_POPF;
+> +			op->dest.type = OP_DEST_MEM;
+> +		}
+>   		break;
+>   
+>   	case 0x0f:
+> @@ -405,15 +450,19 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* push fs/gs */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_CONST;
+> -			op->dest.type = OP_DEST_PUSH;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_CONST;
+> +				op->dest.type = OP_DEST_PUSH;
+> +			}
+>   
+>   		} else if (op2 == 0xa1 || op2 == 0xa9) {
+>   
+>   			/* pop fs/gs */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_POP;
+> -			op->dest.type = OP_DEST_MEM;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_POP;
+> +				op->dest.type = OP_DEST_MEM;
+> +			}
+>   		}
+>   
+>   		break;
+> @@ -427,7 +476,8 @@ int arch_decode_instruction(struct elf *
+>   		 * pop bp
+>   		 */
+>   		*type = INSN_STACK;
+> -		op->dest.type = OP_DEST_LEAVE;
+> +		ADD_OP(op)
+> +			op->dest.type = OP_DEST_LEAVE;
+>   
+>   		break;
+>   
+> @@ -449,12 +499,14 @@ int arch_decode_instruction(struct elf *
+>   	case 0xcf: /* iret */
+>   		*type = INSN_EXCEPTION_RETURN;
+>   
+> -		/* add $40, %rsp */
+> -		op->src.type = OP_SRC_ADD;
+> -		op->src.reg = CFI_SP;
+> -		op->src.offset = 5*8;
+> -		op->dest.type = OP_DEST_REG;
+> -		op->dest.reg = CFI_SP;
+> +		ADD_OP(op) {
+> +			/* add $40, %rsp */
+> +			op->src.type = OP_SRC_ADD;
+> +			op->src.reg = CFI_SP;
+> +			op->src.offset = 5*8;
+> +			op->dest.type = OP_DEST_REG;
+> +			op->dest.reg = CFI_SP;
+> +		}
+>   		break;
+>   
+>   	case 0xca: /* retf */
+> @@ -492,8 +544,10 @@ int arch_decode_instruction(struct elf *
+>   
+>   			/* push from mem */
+>   			*type = INSN_STACK;
+> -			op->src.type = OP_SRC_CONST;
+> -			op->dest.type = OP_DEST_PUSH;
+> +			ADD_OP(op) {
+> +				op->src.type = OP_SRC_CONST;
+> +				op->dest.type = OP_DEST_PUSH;
+> +			}
+>   		}
+>   
+>   		break;
+> @@ -504,11 +558,6 @@ int arch_decode_instruction(struct elf *
+>   
+>   	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
+>   
+> -	if (*type == INSN_STACK || *type == INSN_EXCEPTION_RETURN)
+> -		list_add_tail(&op->list, ops_list);
+> -	else
+> -		free(op);
+> -
+>   	return 0;
+>   }
+>   
+> 
+> 
