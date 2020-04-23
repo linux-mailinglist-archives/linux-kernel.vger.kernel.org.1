@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91C1B5228
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFE21B5229
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgDWByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 21:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S1726435AbgDWBzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 21:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgDWByf (ORCPT
+        with ESMTP id S1725781AbgDWBzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 21:54:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDF9C03C1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 18:54:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x15so2138394pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 18:54:35 -0700 (PDT)
+        Wed, 22 Apr 2020 21:55:17 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A0AC03C1AA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 18:55:17 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id j16so3811092oih.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 18:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9gO/jOmDbmIi4YH9skozzrQ7C4Ubf/dRYg/3aTUpYHc=;
-        b=IDIMWoCeAa5ituZWv4aR5uTHX+7XW67yKvSpSpHgSfVnMi/JZDZm16mpf+tz/13Ooz
-         2kM4IHWQk5x2DxLZAvllPyLlPDHFRLWODyJkwmcR4VBqkZAUTH6YbLyFR07jEfYthxBb
-         upihERw+bOTPql4AnpGNVoY4sVdPB3h2clXQ3va8fHQDMQPo+kKcDgXwIbbN/Yms4JHH
-         /3uwujltQLsft9Fyn6KHZQIptvC3YEh2mBEhL0IAE8Uk4JT62CPAd1XJWQH5i2Lrmswm
-         sYt8mT0QVFkZVJCPZezjbpugcHbB6PPHYlm02uHsKTGkECSswqs+V2dPm/koa8Sduvjb
-         nxVg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=jFk2Hkh3P8KM4AitD1nLcIT/J3fPwUzk0okqwA0Yesc=;
+        b=WM2ymaVCqX+0EiMxwIW9cKbsxIzBpf/O5cHQbj68m7cvJLLRCDsdowgguOPqk35GYR
+         PaBVNPbcF6UvKgsn4fMOjDo7aQE97Awuh/DjY6gKAzP3ibjP1DCs2htMdM8zD+Pp8ZLI
+         z6etobtBl9rfv70TLkhGmII/pgvdhYeMT+m6P3VeReUgz0Yfec9V52KgTChG3F6s4DJd
+         YmyWHs5PN/NvglDFS3Fm0og3B9vnlKeIHTKXOJwWteJz94OtRzZZBUc0ON4PZQH1/zuB
+         c/vRwE/vpIliYy1CpnkdSGqBs/9AXMmMi/oQ2y5HSxAmngt4tr0J2Hcx9z982YRF4Owx
+         Ettg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9gO/jOmDbmIi4YH9skozzrQ7C4Ubf/dRYg/3aTUpYHc=;
-        b=ntlgEIVBs6U0t2BSGw2mxPXEbXuloRcGbQihn9PNE5wpE4doxOn1259m1ubIZO7dUF
-         cYb8egNyDVzQTkg0WPne+mZ/qWx0WEvqUoMFXR7TYsK6ivIVS38c609TQmh6cVJ2L2pG
-         EkFEcwfjtHtQ68Xhly7vw+nXqyzeMEpQiQTYIYYOjzLgcNYElVjl/ePczRAxPdiQ2whg
-         Kw9vpR151QUx7gXDGaKIykL6uodO/LdzBhEDQuYoEOd9dkGOVdMFSXajqjEfMym3AEWE
-         yhFajVE0FGwkXPgRit4YFk1/MDMaM+oxGJNA1WUtTkuUFSmRbEVyufWOs4nmaYPkRhds
-         1azw==
-X-Gm-Message-State: AGi0PuYLnGGVIQqhZTqU30nMrwhZVWtQ3k6CAe5MdxzzEtfQRYF4IV8c
-        O23fwiPzeSvBdMw6gjeC2IU=
-X-Google-Smtp-Source: APiQypKRXLoprifp0GnJG6+McjPd8QX8qzMbxhfr6enCoe/u68NFMaeEav2GLV6pzIciMsD1lOcOWA==
-X-Received: by 2002:a62:1d48:: with SMTP id d69mr1502419pfd.102.1587606874702;
-        Wed, 22 Apr 2020 18:54:34 -0700 (PDT)
-Received: from localhost (146.85.30.125.dy.iij4u.or.jp. [125.30.85.146])
-        by smtp.gmail.com with ESMTPSA id f99sm520780pjg.22.2020.04.22.18.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 18:54:33 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Thu, 23 Apr 2020 10:54:31 +0900
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v3 1/3] lib/vsprintf: Print time64_t in human readable
- format
-Message-ID: <20200423015431.GB246741@jagdpanzerIV.localdomain>
-References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
- <20200415170046.33374-2-andriy.shevchenko@linux.intel.com>
- <20200416023219.GA30641@jagdpanzerIV.localdomain>
- <20200421130846.GM185537@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=jFk2Hkh3P8KM4AitD1nLcIT/J3fPwUzk0okqwA0Yesc=;
+        b=Yxs+21mM0wf/NOWDKorxyR029uUeMrImqzjlAesrdK8yTmNg2IG/j4OOc2VSixBe9k
+         NR+nX0N4Oc+aDSMAj6/SsUxfQVW6KB8l9qKKykPJXR4qpQmmNYg0FzPXqFzh1rf7vSCt
+         lZ9vpDDRw2+usFEVZ7xF5/fYxiR2DQ3as7bNDXGB2CxGDU1YMX/E+3Dh8ZWcwp73yXvy
+         8YAAowdvXHgktaZp36jDNhMJKL+qJd4tlYJrpnMu6SAzopfY+xJ8rKSFWwVodvVrDL1G
+         3O5Vf2LQOnst/1B2ZCqVbxIry5R2jZrvmXIBVnTkj4JWKNYYcpR/5Jx88i8ft/BXazRz
+         iH/w==
+X-Gm-Message-State: AGi0PuaaAMQdsFipQ27tUn5AbT9QdLsJ5zY+/JuzOcpvrdMQF04pUb/e
+        Dfhiy5lrXPOeaEaMAZfaYFvWsOj0xOx7JZSqVjM=
+X-Google-Smtp-Source: APiQypL/Hrhf0RDYF+Hw5/EyWl1dL43whOUVWtGHHaQH2IV+Fgz+50mVKkH/toyMMPKPUjlKzjgMmjbW0mNz/qZDo/g=
+X-Received: by 2002:aca:3889:: with SMTP id f131mr1360978oia.154.1587606916779;
+ Wed, 22 Apr 2020 18:55:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421130846.GM185537@smile.fi.intel.com>
+Received: by 2002:ac9:3a2a:0:0:0:0:0 with HTTP; Wed, 22 Apr 2020 18:55:16
+ -0700 (PDT)
+Reply-To: lawyerjeannoel22@gmail.com
+From:   lawyer jean <rokishia.made@gmail.com>
+Date:   Thu, 23 Apr 2020 01:55:16 +0000
+Message-ID: <CAKmRV4WrtMjTmqqfQn6dTGMZqmKG7C5OwwscXJxHOsgmYe8yNg@mail.gmail.com>
+Subject: Please you don't keep me waiting
+To:     rokishia.made@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/04/21 16:08), Andy Shevchenko wrote:
-[..]
-> > Here you convert time64_t (signed, we also have unsigned version - timeu64_t)
-> > to tm first and then convert tm to rtc_time. Will rtc_time64_to_tm() do the
-> > trick?
->
-> You missed v2 round. The RTC is configuration dependent and Alexandre in favour
-> of removing those from RTC completely by replacing with always enabled
-> time64_to_tm().
-
-I see.
-I don't think I was Cc-ed on v1/v2.
-
-	-ss
+Hello Dear Friend,
+I am delighted to get across to you for a confidential private
+business investment proposal worth of (US$13.5 million dollars) in
+which your partnership and trust are highly required.
+For more details and the procedure, kindly provide me with your
+the following information and contact me in my email
