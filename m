@@ -2,63 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B2D1B5B0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8401B5B13
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgDWMFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:05:11 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:56260 "EHLO mta-01.yadro.com"
+        id S1726594AbgDWMIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:08:12 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2118 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728104AbgDWMFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:05:11 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 638CE4A17C;
-        Thu, 23 Apr 2020 12:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        in-reply-to:content-disposition:content-type:content-type
-        :mime-version:references:message-id:subject:subject:from:from
-        :date:date:received:received:received; s=mta-01; t=1587643507;
-         x=1589457908; bh=mLLyssSl6nMcwXw59jsI5OboKUUNH5MjP+qTGX8gHHs=; b=
-        OY75G05PhSzt2UMWkl7XrxyvffrzW9M7VFST76ZgRkVMRyvdWRRiIrU6Km5QujVE
-        /2sJ4v4XTFJIfhs3z/DzvRxYnDtID4Y68+4b3BXPVnjZmJ3qRdgG2r7ywY8/XBds
-        VRdNIfnCpEwfipWFSeELQreZh+FUrLtgQQvuKTxj6zw=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SGlfKVfQBJWF; Thu, 23 Apr 2020 15:05:07 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 5106B46473;
-        Thu, 23 Apr 2020 15:05:07 +0300 (MSK)
-Received: from localhost (172.17.14.122) by T-EXCH-02.corp.yadro.com
- (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Thu, 23
- Apr 2020 15:05:08 +0300
-Date:   Thu, 23 Apr 2020 15:05:06 +0300
-From:   "Alexander A. Filippov" <a.filippov@yadro.com>
-To:     Alexander Filippov <a.filippov@yadro.com>
-CC:     <linux-aspeed@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] ARM: DTS: Aspeed: Add YADRO Nicole BMC
-Message-ID: <20200423120506.GA21043@bbwork.lan>
-References: <20200423112100.19424-1-a.filippov@yadro.com>
+        id S1726068AbgDWMIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 08:08:11 -0400
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 4EB3F4144C2054E3DE59;
+        Thu, 23 Apr 2020 20:08:09 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Thu, 23 Apr 2020 20:08:08 +0800
+Received: from [10.173.219.71] (10.173.219.71) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 23 Apr 2020 20:08:08 +0800
+Subject: Re: [PATCH net-next 1/3] hinic: add mailbox function support
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+References: <20200421045635.8128-1-luobin9@huawei.com>
+ <20200421045635.8128-2-luobin9@huawei.com>
+ <20200421111352.263c7cbb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <7efeca68-004b-8b2a-eef1-ce62b3307386@huawei.com>
+Date:   Thu, 23 Apr 2020 20:08:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20200423112100.19424-1-a.filippov@yadro.com>
-X-Originating-IP: [172.17.14.122]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+In-Reply-To: <20200421111352.263c7cbb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.173.219.71]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like I've missed subject prefix.
-Should I resend this with v4 prefix?
+Thank you for your review. Will fix.
 
-Alexander
+On 2020/4/22 2:13, Jakub Kicinski wrote:
+> On Tue, 21 Apr 2020 04:56:33 +0000 Luo bin wrote:
+>> virtual function and physical function can communicate with each
+>> other through mailbox channel supported by hw
+>>
+>> Signed-off-by: Luo bin <luobin9@huawei.com>
+>> +static int recv_vf_mbox_handler(struct hinic_mbox_func_to_func *func_to_func,
+>> +				struct hinic_recv_mbox *recv_mbox,
+>> +				void *buf_out, u16 *out_size)
+>> +{
+>> +	hinic_vf_mbox_cb cb;
+>> +	int ret = 0;
+>> +
+>> +	if (recv_mbox->mod >= HINIC_MOD_MAX) {
+>> +		dev_err(&func_to_func->hwif->pdev->dev, "Receive illegal mbox message, mod = %d\n",
+>> +			recv_mbox->mod);
+> You may want to rate limit these, otherwise VF may spam PFs logs.
+>
+>> +		return -EINVAL;
+>> +	}
+>> +static int mbox_func_params_valid(struct hinic_mbox_func_to_func *func_to_func,
+>> +				  void *buf_in, u16 in_size)
+>> +{
+>> +	if (!buf_in || !in_size)
+>> +		return -EINVAL;
+> This is defensive programming, we don't do that in the kernel, callers
+> should not pass NULL buffer and 0 size.
+>
+> Also you probably want the size to be size_t, otherwise it may get
+> truncated before the check below.
+>
+>> +	if (in_size > HINIC_MBOX_DATA_SIZE) {
+>> +		dev_err(&func_to_func->hwif->pdev->dev,
+>> +			"Mbox msg len(%d) exceed limit(%d)\n",
+>> +			in_size, HINIC_MBOX_DATA_SIZE);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int hinic_mbox_to_pf(struct hinic_hwdev *hwdev,
+>> +		     enum hinic_mod_type mod, u8 cmd, void *buf_in,
+>> +		     u16 in_size, void *buf_out, u16 *out_size, u32 timeout)
+>> +{
+>> +	struct hinic_mbox_func_to_func *func_to_func = hwdev->func_to_func;
+>> +	int err = mbox_func_params_valid(func_to_func, buf_in, in_size);
+>> +
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	if (!HINIC_IS_VF(hwdev->hwif)) {
+>> +		dev_err(&hwdev->hwif->pdev->dev, "Params error, func_type: %d\n",
+>> +			HINIC_FUNC_TYPE(hwdev->hwif));
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	err = hinic_mbox_to_func(func_to_func, mod, cmd,
+>> +				 hinic_pf_id_of_vf_hw(hwdev->hwif), buf_in,
+>> +				 in_size, buf_out, out_size, timeout);
+>> +	return err;
+> return hinic_mbox_to...
+>
+> directly
+>
+>> +}
+>> +static int comm_pf_mbox_handler(void *handle, u16 vf_id, u8 cmd, void *buf_in,
+>> +				u16 in_size, void *buf_out, u16 *out_size)
+>> +{
+>> +	struct hinic_hwdev *hwdev = handle;
+>> +	struct hinic_pfhwdev *pfhwdev;
+>> +	int err = 0;
+>> +
+>> +	pfhwdev = container_of(hwdev, struct hinic_pfhwdev, hwdev);
+>> +
+>> +	if (cmd == HINIC_COMM_CMD_START_FLR) {
+>> +		*out_size = 0;
+>> +	} else {
+>> +		err = hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_COMM,
+>> +					cmd, buf_in, in_size, buf_out, out_size,
+>> +					HINIC_MGMT_MSG_SYNC);
+>> +		if (err  && err != HINIC_MBOX_PF_BUSY_ACTIVE_FW)
+> Double space, please run checkpatch --strict on the patches
+>
+>> +			dev_err(&hwdev->hwif->pdev->dev,
+>> +				"PF mbox common callback handler err: %d\n",
+>> +				err);
+>> +	}
+>> +
+>> +	return err;
+>> +}
+> .
