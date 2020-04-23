@@ -2,199 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F9E1B67DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC17F1B684B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729149AbgDWXKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:10:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729126AbgDWXKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:10:11 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75C9C20784;
-        Thu, 23 Apr 2020 23:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587683410;
-        bh=igt1K/a1ZMxJiTPpRElNSn87vNdw8wzrU/2oEcIWO+I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zJjycQhOOkbHFuEq2ic7HPwLXbL4kcXh8j0YbwEliwqANWjvplYZB3Vc9h24jK6ay
-         5nBE4e1ZOlWoMaDWMu/AKWNiLLALT5keROykushwTF9e+05WMJFNa3ben3F3qUOE3G
-         x/+i15LpU0m/5eKFhKcitOfYP5J3CXXPmIRgBcP0=
-Date:   Thu, 23 Apr 2020 16:10:09 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: optimize memory.numa_stat like memory.stat
-Message-Id: <20200423161009.973c645420a4d17ded2a67ee@linux-foundation.org>
-In-Reply-To: <CALvZod4R68wNgzOF9dN=i6LwyUYMBhvM7SXaRJGW9Wn_SmeGGA@mail.gmail.com>
-References: <20200304022058.248270-1-shakeelb@google.com>
-        <20200305204109.be23f5053e2368d3b8ccaa06@linux-foundation.org>
-        <CALvZod7W-Qwa4BRKW0_Ts5f68fwkcqD72SF_4NqZRgEMgA_1-g@mail.gmail.com>
-        <CALvZod4R68wNgzOF9dN=i6LwyUYMBhvM7SXaRJGW9Wn_SmeGGA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729031AbgDWXOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728628AbgDWXNr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:13:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE16C09B042;
+        Thu, 23 Apr 2020 16:13:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k13so8597460wrw.7;
+        Thu, 23 Apr 2020 16:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9+tLQbU6rNyziVvImQingDwaJR2gEdQLKWLdpp3M4uw=;
+        b=h6s1g6FsVkOnYNVUK0jCFCIai1dpCxoOwuZQEmdWFiI79i7obLds2NSsRmtUcIBafm
+         pU1UOVCouOoTHwgKmzNtXyeedkXSPOQnaLct+2R4Rmszu8De5EhaR+cebxqI9Ge6A4nv
+         eiSunmNNEGytSXCwMuYLdLdih2Qi6JFk+FKfK2GAx3jvoeyDiXgxHHO+UJNp9tQYNJIo
+         EFIt6ibvaQgTHHBD1lRmkve2LyG3RcxPOLMY/RJeYraZFdKnYPmr0GfVuBp8dtOiKSRn
+         TIpaS+2hkONaA4CEolsj//ldTJsjx2r6ZCgxUTB9keWDbAaxJdP1woVYLsmqFA9DZ1d+
+         aLVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9+tLQbU6rNyziVvImQingDwaJR2gEdQLKWLdpp3M4uw=;
+        b=Kb1hUsqXcTlm+A/2fBap2r5jKU4uYgZKeWKSdTqZaSJXRd8ci0hFrOwdCcfZbvL+A5
+         HmWuqz+DW5IYI8VmIo9k2JEIG9ErENa9uFTfr0TsudWtctDtZ7qHUUMGDzi/hweMuorS
+         gDZAULOcOIhBzUzeqJo4U6HOwEpbEtYG2/rJN099SBieDip4Tx2fDLevNuC/819/Lh9b
+         8MxC+XX641WLoC+Xb3L5Wix4V9FY5NB1ZKMxryEAMzwr4FStmIbwqP9kZHwNYNatfMtJ
+         9iKgvQ6kEX42KSDDP7eTG9MTpzi5C1cm9FTKKDHZVyqGUHDQv0sKbjdNlyg9vwewYo5q
+         5j3A==
+X-Gm-Message-State: AGi0PuYiA1UDMlcAv21bn8PkQSmAd8yewtxEJ/oGnkOscbfpoEIIBu/q
+        zTYXVhESTVQjHgDYaYPz7qHnrkcS
+X-Google-Smtp-Source: APiQypLhovJKyzkshBe8hf/w0eNYa9nDr2KJcanPob1u6b3ohu2lVf1ziRQrKnbDOa79MLZijp7Exw==
+X-Received: by 2002:adf:92c2:: with SMTP id 60mr7191793wrn.379.1587683625642;
+        Thu, 23 Apr 2020 16:13:45 -0700 (PDT)
+Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s12sm382393wmc.7.2020.04.23.16.13.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Apr 2020 16:13:45 -0700 (PDT)
+From:   Doug Berger <opendmb@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Doug Berger <opendmb@gmail.com>
+Subject: [PATCH net-next] net: systemport: suppress warnings on failed Rx SKB allocations
+Date:   Thu, 23 Apr 2020 16:13:30 -0700
+Message-Id: <1587683610-4342-1-git-send-email-opendmb@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Apr 2020 15:59:41 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+The driver is designed to drop Rx packets and reclaim the buffers
+when an allocation fails, and the network interface needs to safely
+handle this packet loss. Therefore, an allocation failure of Rx
+SKBs is relatively benign.
 
-> > >                      text    data     bss     dec     hex filename
-> > > now:               106705   35641    1024  143370   2300a mm/memcontrol.o
-> > > shakeel:           107111   35657    1024  143792   231b0 mm/memcontrol.o
-> > > shakeel+the-above: 106805   35657    1024  143486   2307e mm/memcontrol.o
-> > >
-> > > Which do we prefer?  The 100-byte patch or the 406-byte patch?
-> >
-> > I would go with the 100-byte one. The for-loop is just 5 iteration, so
-> > doing a check in each iteration should not be an issue.
-> >
-> 
-> Andrew, anything more needed for this patch to be merged?
+However, the output of the warning message occurs with a high
+scheduling priority that can cause excessive jitter/latency for
+other high priority processing.
 
-Some feedback from hannes & mhocko would be appreciated?
+This commit suppresses the warning messages to prevent scheduling
+problems while retaining the failure count in the statistics of
+the network interface.
 
-
-From: Shakeel Butt <shakeelb@google.com>
-Subject: mm/memcg: optimize memory.numa_stat like memory.stat
-
-Currently reading memory.numa_stat traverses the underlying memcg tree
-multiple times to accumulate the stats to present the hierarchical view of
-the memcg tree.  However the kernel already maintains the hierarchical
-view of the stats and use it in memory.stat.  Just use the same mechanism
-in memory.numa_stat as well.
-
-I ran a simple benchmark which reads root_mem_cgroup's memory.numa_stat
-file in the presense of 10000 memcgs.  The results are:
-
-Without the patch:
-$ time cat /dev/cgroup/memory/memory.numa_stat > /dev/null
-
-real    0m0.700s
-user    0m0.001s
-sys     0m0.697s
-
-With the patch:
-$ time cat /dev/cgroup/memory/memory.numa_stat > /dev/null
-
-real    0m0.001s
-user    0m0.001s
-sys     0m0.000s
-
-[akpm@linux-foundation.org: avoid forcing out-of-line code generation]
-Link: http://lkml.kernel.org/r/20200304022058.248270-1-shakeelb@google.com
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Doug Berger <opendmb@gmail.com>
 ---
+ drivers/net/ethernet/broadcom/bcmsysport.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- mm/memcontrol.c |   49 +++++++++++++++++++++++-----------------------
- 1 file changed, 25 insertions(+), 24 deletions(-)
-
---- a/mm/memcontrol.c~memcg-optimize-memorynuma_stat-like-memorystat
-+++ a/mm/memcontrol.c
-@@ -3688,7 +3688,7 @@ static int mem_cgroup_move_charge_write(
- #define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
+diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
+index af7ce5c5488c..ed12a0f894bf 100644
+--- a/drivers/net/ethernet/broadcom/bcmsysport.c
++++ b/drivers/net/ethernet/broadcom/bcmsysport.c
+@@ -664,7 +664,8 @@ static struct sk_buff *bcm_sysport_rx_refill(struct bcm_sysport_priv *priv,
+ 	dma_addr_t mapping;
  
- static unsigned long mem_cgroup_node_nr_lru_pages(struct mem_cgroup *memcg,
--					   int nid, unsigned int lru_mask)
-+				int nid, unsigned int lru_mask, bool tree)
- {
- 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
- 	unsigned long nr = 0;
-@@ -3699,13 +3699,17 @@ static unsigned long mem_cgroup_node_nr_
- 	for_each_lru(lru) {
- 		if (!(BIT(lru) & lru_mask))
- 			continue;
--		nr += lruvec_page_state_local(lruvec, NR_LRU_BASE + lru);
-+		if (tree)
-+			nr += lruvec_page_state(lruvec, NR_LRU_BASE + lru);
-+		else
-+			nr += lruvec_page_state_local(lruvec, NR_LRU_BASE + lru);
- 	}
- 	return nr;
- }
- 
- static unsigned long mem_cgroup_nr_lru_pages(struct mem_cgroup *memcg,
--					     unsigned int lru_mask)
-+					     unsigned int lru_mask,
-+					     bool tree)
- {
- 	unsigned long nr = 0;
- 	enum lru_list lru;
-@@ -3713,7 +3717,10 @@ static unsigned long mem_cgroup_nr_lru_p
- 	for_each_lru(lru) {
- 		if (!(BIT(lru) & lru_mask))
- 			continue;
--		nr += memcg_page_state_local(memcg, NR_LRU_BASE + lru);
-+		if (tree)
-+			nr += memcg_page_state(memcg, NR_LRU_BASE + lru);
-+		else
-+			nr += memcg_page_state_local(memcg, NR_LRU_BASE + lru);
- 	}
- 	return nr;
- }
-@@ -3733,34 +3740,28 @@ static int memcg_numa_stat_show(struct s
- 	};
- 	const struct numa_stat *stat;
- 	int nid;
--	unsigned long nr;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
--		nr = mem_cgroup_nr_lru_pages(memcg, stat->lru_mask);
--		seq_printf(m, "%s=%lu", stat->name, nr);
--		for_each_node_state(nid, N_MEMORY) {
--			nr = mem_cgroup_node_nr_lru_pages(memcg, nid,
--							  stat->lru_mask);
--			seq_printf(m, " N%d=%lu", nid, nr);
--		}
-+		seq_printf(m, "%s=%lu", stat->name,
-+			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
-+						   false));
-+		for_each_node_state(nid, N_MEMORY)
-+			seq_printf(m, " N%d=%lu", nid,
-+				   mem_cgroup_node_nr_lru_pages(memcg, nid,
-+							stat->lru_mask, false));
- 		seq_putc(m, '\n');
- 	}
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
--		struct mem_cgroup *iter;
- 
--		nr = 0;
--		for_each_mem_cgroup_tree(iter, memcg)
--			nr += mem_cgroup_nr_lru_pages(iter, stat->lru_mask);
--		seq_printf(m, "hierarchical_%s=%lu", stat->name, nr);
--		for_each_node_state(nid, N_MEMORY) {
--			nr = 0;
--			for_each_mem_cgroup_tree(iter, memcg)
--				nr += mem_cgroup_node_nr_lru_pages(
--					iter, nid, stat->lru_mask);
--			seq_printf(m, " N%d=%lu", nid, nr);
--		}
-+		seq_printf(m, "hierarchical_%s=%lu", stat->name,
-+			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
-+						   true));
-+		for_each_node_state(nid, N_MEMORY)
-+			seq_printf(m, " N%d=%lu", nid,
-+				   mem_cgroup_node_nr_lru_pages(memcg, nid,
-+							stat->lru_mask, true));
- 		seq_putc(m, '\n');
- 	}
- 
-_
+ 	/* Allocate a new SKB for a new packet */
+-	skb = netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH);
++	skb = __netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH,
++				 GFP_ATOMIC | __GFP_NOWARN);
+ 	if (!skb) {
+ 		priv->mib.alloc_rx_buff_failed++;
+ 		netif_err(priv, rx_err, ndev, "SKB alloc failed\n");
+-- 
+2.7.4
 
