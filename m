@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E6D1B5B5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F281B5B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgDWM0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 08:26:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62016 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgDWM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:26:33 -0400
-IronPort-SDR: /sihSxZVvuDj6/0YsQxdBiFJ6ROFhR+PnSXIfJecDVMONCIbYSafRZ0b47QrXYUVgoChQo3WxY
- Dc2rsZXCcWdg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 05:26:33 -0700
-IronPort-SDR: gFk0zFCNkZPm9QNMJ8rY7QXqd35COTkC6c1cVd+Rj7Ey+G/MP3RMx2ZVo6uTtEXNx+YUIz3qrA
- p7xGQ7cYZXkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,307,1583222400"; 
-   d="scan'208";a="259407494"
-Received: from zzhang7-mobl1.amr.corp.intel.com (HELO [10.255.73.51]) ([10.255.73.51])
-  by orsmga006.jf.intel.com with ESMTP; 23 Apr 2020 05:26:32 -0700
-Subject: Re: linux-next: build failure after merge of the sound-asoc tree
-To:     Mark Brown <broonie@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-References: <20200423155539.4492a0cc@canb.auug.org.au>
- <20200423113041.GI4808@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <00f801fc-cf1c-8ea0-3d2a-0c8e902dd1f0@linux.intel.com>
-Date:   Thu, 23 Apr 2020 07:26:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726986AbgDWM0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726789AbgDWM0q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 08:26:46 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA68C08E934;
+        Thu, 23 Apr 2020 05:26:46 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jRawC-0005GC-Ry; Thu, 23 Apr 2020 14:26:40 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5966D1C0244;
+        Thu, 23 Apr 2020 14:26:40 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 12:26:39 -0000
+From:   "tip-bot2 for Christoph Hellwig" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/mm: Use pgprotval_t in protval_4k_2_large() and
+ protval_large_2_4k()
+Cc:     Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200422170116.GA28345@lst.de>
+References: <20200422170116.GA28345@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200423113041.GI4808@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Message-ID: <158764479990.28353.14903341506618201022.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/mm branch of tip:
 
+Commit-ID:     325518e9b743686f471e7a4ef617b57c91386795
+Gitweb:        https://git.kernel.org/tip/325518e9b743686f471e7a4ef617b57c91386795
+Author:        Christoph Hellwig <hch@lst.de>
+AuthorDate:    Wed, 22 Apr 2020 18:53:08 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 23 Apr 2020 11:38:42 +02:00
 
-On 4/23/20 6:30 AM, Mark Brown wrote:
-> On Thu, Apr 23, 2020 at 03:55:39PM +1000, Stephen Rothwell wrote:
-> 
->> Presumably caused by (one of) commits
-> 
->>    fe17e6cdc0fe ("ASoC: SOF: imx8: Fix randbuild error")
->>    cb0312f61c3e ("ASoC: SOF: imx: fix undefined reference issue")
-> 
->> I just removed the COMPILE_TEST from SND_SOC_SOF_IMX_TOPLEVEL for today.
-> 
-> It looks like this is triggered by PowerPC not including
-> drivers/firmware - there are missing dependencies but it works for other
-> all*configs since the dependencies all get built in those.  It would be
-> helpful if PowerPC were fixed to include the firmware directory to
-> improve coverage.
+x86/mm: Use pgprotval_t in protval_4k_2_large() and protval_large_2_4k()
 
-We have a fix for this, I'll send it later today. There were still unmet 
-dependencies and inconsistent use of select/depends.
+Use the proper type for "raw" page table values.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200422170116.GA28345@lst.de
+---
+ arch/x86/include/asm/pgtable_types.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 567abdb..7b6ddcf 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -478,7 +478,7 @@ static inline pteval_t pte_flags(pte_t pte)
+ 
+ unsigned long cachemode2protval(enum page_cache_mode pcm);
+ 
+-static inline unsigned long protval_4k_2_large(unsigned long val)
++static inline pgprotval_t protval_4k_2_large(pgprotval_t val)
+ {
+ 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
+ 		((val & _PAGE_PAT) << (_PAGE_BIT_PAT_LARGE - _PAGE_BIT_PAT));
+@@ -487,7 +487,7 @@ static inline pgprot_t pgprot_4k_2_large(pgprot_t pgprot)
+ {
+ 	return __pgprot(protval_4k_2_large(pgprot_val(pgprot)));
+ }
+-static inline unsigned long protval_large_2_4k(unsigned long val)
++static inline pgprotval_t protval_large_2_4k(pgprotval_t val)
+ {
+ 	return (val & ~(_PAGE_PAT | _PAGE_PAT_LARGE)) |
+ 		((val & _PAGE_PAT_LARGE) >>
