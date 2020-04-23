@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB741B51C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD931B51C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 03:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgDWBSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 21:18:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbgDWBSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 21:18:54 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5B6A2075A;
-        Thu, 23 Apr 2020 01:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587604734;
-        bh=5J7cR0szFxvJoNJ8P80jMKgqc3d3/p0yIBp4jdKWeYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IIx59UKndzfTh4wq2bvrFTQGolD30iYA5PEGQljltaIBRO7fHpu7TroWBiaoSDHiL
-         zQzTb3TtBKYrMsVRxlHH0z/8IkrBtBN9md++fOaiM7ZrqN+MmQ0q4EHdlAIVhi7UEo
-         DcjwZEgN++cnXQXTx8NmtR6QNwx8wcuUWELejeYo=
-Date:   Thu, 23 Apr 2020 09:18:47 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Martin Kepplinger <martink@posteo.de>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] arm64: dts: imx8mq-librem5-devkit: Use 0.9V for
- VDD_GPU
-Message-ID: <20200423011846.GG8571@dragon>
-References: <cover.1587480093.git.agx@sigxcpu.org>
+        id S1726173AbgDWBYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 21:24:20 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:31930 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725846AbgDWBYT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 21:24:19 -0400
+X-UUID: 933b61af9163417fa800debf136076a2-20200423
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=n69err7fZ+dUEdayQQ/ds4lOY0vJ/aaYZuP0ALEneYI=;
+        b=sODo5jYW1KGP42KOk/BcU5+1EADLT/hogKmhIwSI4FCuzLtVEy33o+xsJy8dI42hnYpPl5gP8+pnvbHB6UUhaiSLvILJBMii1ByJh3QFXwPqMynC2F7dviDxKfMX84nd6vfqoiF2DkUFHPRyEtKQ8j5vDYPLksEogftU2laF2lw=;
+X-UUID: 933b61af9163417fa800debf136076a2-20200423
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <fengping.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 397310574; Thu, 23 Apr 2020 09:24:17 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Apr 2020 09:24:05 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Apr 2020 09:24:09 +0800
+From:   Fengping yu <fengping.yu@mediatek.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        <linux-input@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v5] add mtk matrix keypad driver for keypad on MTK SoC 
+Date:   Thu, 23 Apr 2020 09:19:56 +0800
+Message-ID: <20200423011958.30521-1-fengping.yu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1587480093.git.agx@sigxcpu.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: C4F198DFD9281E00ED4062512287613C53AF1CF5D317FAAF98071E88C786B0462000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 04:44:12PM +0200, Guido Günther wrote:
-> According to the imx8mq data sheet running VDD_GPU at 0.9V is enough
-> when not overclocking to 1GHz (which we currently don't do).
-> 
-> changes from v2:
->  - rebase aginst Shawn's tree
->  - fix a warning for the typec connector
-> 
-> Guido Günther (2):
->   arm64: dts: imx8mq-librem5-devkit: Use 0.9V for VDD_GPU
->   arm64: dts: Don't use underscore in node name
+DQpDaGFuZ2Ugc2luY2UgdjQ6DQotIHJlbW92ZSBleHRyYSBzcGFjZSBhbmQgcmVkdW5kYW50IGxp
+bmVzDQotIHJlbW92ZSBkaXNhYmxlX2lycV9ub3N5bmMgYW5kIGVuYWJsZV9pcnEgaW4gaXJxIGhh
+bmRsZXINCi0gcHV0IGRlZmNvbmZpZyBhcyBhIHNpbmdsZSBwYXRjaA0KLSB1bmlmaWVkIGRldmlj
+ZSBwcm9wZXJ0aWVzIGludGVyZmFjZSBmb3IgQUNQSSBhbmQgZGV2aWNlIHRyZWVzDQotIGZpeGVk
+IG90aGVyIGlzc3VlIGFjY29yZGluZyByZXZpZXdlciBjb21tZW50cw0KDQpmZW5ncGluZy55dSAo
+Myk6DQogIGR0LWJpbmRpbmdzOiBhZGQgbWF0cml4IGtleXBhZCBkb2N1bWVudGF0aW9uDQogIGFy
+bTY0OiBjb25maWdzOiBkZWZjb25maWc6IGVuYWJsZSBtdGsga2V5cGFkIGNvbmZpZw0KICBkcml2
+ZXJzOiBpbnB1dDoga2V5Ym9hcmQ6IGFkZCBtdGsga2V5cGFkIGRyaXZlcg0KDQogLi4uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvaW5wdXQvbXRrLWtwZC50eHQgICAgIHwgIDYxICsrKysrDQogYXJjaC9h
+cm02NC9jb25maWdzL2RlZmNvbmZpZyAgICAgICAgICAgICAgICAgIHwgICAxICsNCiBkcml2ZXJz
+L2lucHV0L2tleWJvYXJkL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDkgKw0KIGRyaXZlcnMv
+aW5wdXQva2V5Ym9hcmQvTWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9p
+bnB1dC9rZXlib2FyZC9tdGsta3BkLmMgICAgICAgICAgICAgIHwgMjQyICsrKysrKysrKysrKysr
+KysrKw0KIDUgZmlsZXMgY2hhbmdlZCwgMzE0IGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L210ay1rcGQudHh0
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvaW5wdXQva2V5Ym9hcmQvbXRrLWtwZC5jDQoN
+Ci0tDQoyLjE4LjANCg0K
 
-This one should also be prefixed like arm64: dts: imx8mq-librem5-devkit:
-
-I fixed it up and applied both.
-
-Shawn
-
-> 
->  arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.26.1
-> 
