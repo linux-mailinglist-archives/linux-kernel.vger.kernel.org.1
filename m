@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53541B52F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 05:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7D81B5302
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 05:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgDWDNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 23:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgDWDNK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 23:13:10 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7267C03C1AB
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 20:13:10 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c21so952492plz.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Apr 2020 20:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4fisqMMsjkXIIaoiEwZqz/+KMKxIEdSIi4Ag2uuUrns=;
-        b=E11SChRwqleTAcPL0IoAAxo4iRW6XMOWC4C4UyPdxP6yfE1X3pgodeSDiYhHBEdKIk
-         /dfWrRMsblKCxVJArb1Tla8FkT0ri/AMw8W6K8LeXTuYmOUXkFMyl+KwJHpBKdJe3hLE
-         bHCzfwOF6e4m2EGh+Mpj9j+hC0TCWP7XmAvmQKLQQJasTJWCmm37mgaymwf2NhGJs/aW
-         BF0HBMuGbL0RXKCSwLUNC9AD09ceGaxVbnPy7xDBNp4+5KbPU9Yk27zyCf4zk9QbjLi9
-         wFHK3yqPXEev5C5pAP2xaTvLD+lACbML75KOaVVj79X9BpOOvPao+eSe3BOnWuL7Rbyz
-         qwaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4fisqMMsjkXIIaoiEwZqz/+KMKxIEdSIi4Ag2uuUrns=;
-        b=by8wW5BA6nFp2wy8a8cWAw4hUXkwJVwvDht41vusu3butqhXC4HE5dRPCd2mGAmlKW
-         JZtdkjV/y+rAsPCq3G59Eqzy1OgDkLukTf1wq+IV73RswMDBAxkB2K7vjiXTSi69agWn
-         9ZxhmDZkeJ7s96VnBWVLqLIi4XZpHPipml2XHIDRCQyuT0pwfLMqxNPtTCAbPoJQ3nuJ
-         t3pm3XAeA6TdAZYBe4Z+u4ZxMSzARBFwh5N8N9lIm99pAQrmFAWT/uXk2HEg9gv56+gl
-         0TSwIqzOykPMzoh+losWg3Uf1o1jjp8WhLaN2fV4BSn1cnBHUt0BkOsrlkDV8hoFY2Ca
-         xfxw==
-X-Gm-Message-State: AGi0PuYvdjuxs+Akyl8khMckgSNBXtOHcTP+uzl7FEDe9dTTVbfMB4Pt
-        u/Lx4klVit8KyHvf0K7kYlX22w==
-X-Google-Smtp-Source: APiQypLH6jXOlspqqLhFHI3VKsHcXSlBrETFXKdD0T4wHUQdx55V6QAW3InFyjhpVSnNPDAvQjkvnA==
-X-Received: by 2002:a17:902:40a:: with SMTP id 10mr1738972ple.183.1587611590028;
-        Wed, 22 Apr 2020 20:13:10 -0700 (PDT)
-Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id z25sm968561pfa.213.2020.04.22.20.13.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 20:13:09 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 20:13:07 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Shawn Guo <shawn.guo@linaro.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: qualcomm: usb-hs-28nm: Prepare clocks in init
-Message-ID: <20200423031307.GI987656@yoga>
-References: <20200408012854.3070187-1-bjorn.andersson@linaro.org>
+        id S1726732AbgDWDPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 23:15:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:65105 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgDWDPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 23:15:35 -0400
+IronPort-SDR: g7+6MnpDz1jAi6OLmj+ims+bVJhkiwqaLgyhvhPlLbsGKTkB/JWwGo8cpT6YXv62NqLGvYHTfG
+ N/GGJgy/yStw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 20:15:35 -0700
+IronPort-SDR: aT9HbTHEvbkCPkbeTpAzsOmK36jErh2gicUvCbEKj/zp5cRYQzWWJx03QqJ+/Z4nzvL0M2UG1d
+ w8tSBYRnoQ2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; 
+   d="scan'208";a="292146112"
+Received: from rpedgeco-mobl.amr.corp.intel.com (HELO localhost.intel.com) ([10.255.231.66])
+  by orsmga008.jf.intel.com with ESMTP; 22 Apr 2020 20:15:33 -0700
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, x86@kernel.org, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: [PATCH] x86/mm/cpa: Flush direct map alias during cpa
+Date:   Wed, 22 Apr 2020 20:13:55 -0700
+Message-Id: <20200423031355.23955-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408012854.3070187-1-bjorn.andersson@linaro.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 07 Apr 18:28 PDT 2020, Bjorn Andersson wrote:
+Change cpa_flush() to always flush_tlb_all(), as it previously did. As an
+optimization, cpa_flush() was changed to optionally only flush the range
+in "struct cpa_data *data" if it was small enough. However, this range
+does not include any direct map aliases changed in cpa_process_alias().
+So small set_memory_() calls that touch that alias don't get the direct
+map changes flushed. This situation can happen when the virtual address
+taking variants are passed an address in vmalloc or modules space.
 
-> The AHB clock must be on for qcom_snps_hsphy_init() to be able to write
-> the initialization sequence to the hardware, so move the clock
-> enablement to phy init and exit.
-> 
-> Fixes: 67b27dbeac4d ("phy: qualcomm: Add Synopsys 28nm Hi-Speed USB PHY driver")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The issue was verified by creating a sequence like:
+/* Allocate something in vmalloc */
+void *ptr = vmalloc();
+/* Set vmalloc addr and direct map alias as not present */
+set_memory_np((unsigned long)ptr, num_pages);
+/* Try to read from direct map alias */
+printk("%d\n", *(int*)page_address(vmalloc_to_page(ptr));
 
-Kishon, can we have this picked up?
+Which successfully read from the direct mapped page now set as not
+present.
 
-Thanks,
-Bjorn
+There is usually some flushing that happens before the PTE is set in this
+operation, which covers up that the alias doesn't actually get flushed
+after it's changed. So to reproduce, set_memory_np() was also tweaked to
+touch the address right before it clears its PTE. This loads the old value
+in the TLB to simulate a state that could happen in real life for a number
+of reasons.
 
-> ---
->  drivers/phy/qualcomm/phy-qcom-usb-hs-28nm.c | 32 ++++++++++++++-------
->  1 file changed, 21 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-usb-hs-28nm.c b/drivers/phy/qualcomm/phy-qcom-usb-hs-28nm.c
-> index d998e65c89c8..a52a9bf13b75 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-usb-hs-28nm.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-usb-hs-28nm.c
-> @@ -160,18 +160,11 @@ static int qcom_snps_hsphy_power_on(struct phy *phy)
->  	ret = regulator_bulk_enable(VREG_NUM, priv->vregs);
->  	if (ret)
->  		return ret;
-> -	ret = clk_bulk_prepare_enable(priv->num_clks, priv->clks);
-> -	if (ret)
-> -		goto err_disable_regulator;
-> +
->  	qcom_snps_hsphy_disable_hv_interrupts(priv);
->  	qcom_snps_hsphy_exit_retention(priv);
->  
->  	return 0;
-> -
-> -err_disable_regulator:
-> -	regulator_bulk_disable(VREG_NUM, priv->vregs);
-> -
-> -	return ret;
->  }
->  
->  static int qcom_snps_hsphy_power_off(struct phy *phy)
-> @@ -180,7 +173,6 @@ static int qcom_snps_hsphy_power_off(struct phy *phy)
->  
->  	qcom_snps_hsphy_enter_retention(priv);
->  	qcom_snps_hsphy_enable_hv_interrupts(priv);
-> -	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
->  	regulator_bulk_disable(VREG_NUM, priv->vregs);
->  
->  	return 0;
-> @@ -266,21 +258,39 @@ static int qcom_snps_hsphy_init(struct phy *phy)
->  	struct hsphy_priv *priv = phy_get_drvdata(phy);
->  	int ret;
->  
-> -	ret = qcom_snps_hsphy_reset(priv);
-> +	ret = clk_bulk_prepare_enable(priv->num_clks, priv->clks);
->  	if (ret)
->  		return ret;
->  
-> +	ret = qcom_snps_hsphy_reset(priv);
-> +	if (ret)
-> +		goto disable_clocks;
-> +
->  	qcom_snps_hsphy_init_sequence(priv);
->  
->  	ret = qcom_snps_hsphy_por_reset(priv);
->  	if (ret)
-> -		return ret;
-> +		goto disable_clocks;
-> +
-> +	return 0;
-> +
-> +disable_clocks:
-> +	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
-> +	return ret;
-> +}
-> +
-> +static int qcom_snps_hsphy_exit(struct phy *phy)
-> +{
-> +	struct hsphy_priv *priv = phy_get_drvdata(phy);
-> +
-> +	clk_bulk_disable_unprepare(priv->num_clks, priv->clks);
->  
->  	return 0;
->  }
->  
->  static const struct phy_ops qcom_snps_hsphy_ops = {
->  	.init = qcom_snps_hsphy_init,
-> +	.exit = qcom_snps_hsphy_exit,
->  	.power_on = qcom_snps_hsphy_power_on,
->  	.power_off = qcom_snps_hsphy_power_off,
->  	.set_mode = qcom_snps_hsphy_set_mode,
-> -- 
-> 2.24.0
-> 
+Note this issue does not extend to cases where the set_memory_() calls are
+passed a direct map address, or page array, etc, as the primary target. In
+those cases the direct map would be flushed.
+
+Fixes: 935f583 ("x86/mm/cpa: Optimize cpa_flush_array() TLB invalidation")
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+---
+
+Besides the flushing that happens in most cases before the PTE is changed,
+the other thing that covers this up is that stale TLB hits around RO->RW
+CPA's would be silently fixed by the spurious fault fixer. It looks like
+some of the set_memory_uc() calls can operate on vmapped memory addresses
+though. So this would miss the flush of the UC attribute on the direct map.
+
+So there isn't any confirmed bug, but it seems like we should be flushing
+these, and there possibly is one around cache attributes.
+
+ arch/x86/mm/pat/set_memory.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index c4aedd00c1ba..9b6d2854b842 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -331,15 +331,6 @@ static void cpa_flush_all(unsigned long cache)
+ 	on_each_cpu(__cpa_flush_all, (void *) cache, 1);
+ }
+ 
+-static void __cpa_flush_tlb(void *data)
+-{
+-	struct cpa_data *cpa = data;
+-	unsigned int i;
+-
+-	for (i = 0; i < cpa->numpages; i++)
+-		__flush_tlb_one_kernel(fix_addr(__cpa_addr(cpa, i)));
+-}
+-
+ static void cpa_flush(struct cpa_data *data, int cache)
+ {
+ 	struct cpa_data *cpa = data;
+@@ -352,10 +343,7 @@ static void cpa_flush(struct cpa_data *data, int cache)
+ 		return;
+ 	}
+ 
+-	if (cpa->numpages <= tlb_single_page_flush_ceiling)
+-		on_each_cpu(__cpa_flush_tlb, cpa, 1);
+-	else
+-		flush_tlb_all();
++	flush_tlb_all();
+ 
+ 	if (!cache)
+ 		return;
+-- 
+2.20.1
+
