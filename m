@@ -2,50 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACFE1B5869
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558F41B585F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgDWJl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:41:27 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:48619 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727010AbgDWJl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:41:26 -0400
-Received: from carbon-x1.hos.anvin.org ([IPv6:2601:646:8600:3281:e7ea:4585:74bd:2ff0])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 03N9e6l31992151
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Thu, 23 Apr 2020 02:40:06 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 03N9e6l31992151
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020032201; t=1587634814;
-        bh=Ya1uL1f9lhCFML4o9w+eIvnqDUw43WLYC+xpvJjwcxc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=PwQVOu7SkPBzOcBtqqwc9ey3h9Egov7y2oIQXhwFP9AbSi/Mrat5wBApUffK219Cq
-         b/jQsUkGeyCIF9FZRY30m+cNKCDa7GsCTot7LZtCOjE+oSHmM4Q1HHZLj1+qjJkVtJ
-         HMyLpDzklMhvrbaNPtKEPIcqu0pLTmgK+qWm30gmx6aidbBJeNdhPVkQdTKpEyTVDn
-         cG28L34nE/4zxiLleGG+lz2woKzJJY2OucAvY4oxA3OxhGiFEBza2z4LhoiEXT8w7M
-         RkudI+gfdriBZmzXAsCSwNl2/UuuArJZUbg1NYMEpdZPVzTJBXxUyhHBSj4YVH6svc
-         OuvbHJ2Uf8pbw==
-Subject: Re: [PATCH] bpf, x32: remove unneeded conversion to bool
-To:     Wang YanQing <udknight@gmail.com>, Jason Yan <yanaijie@huawei.com>,
-        davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        lukenels@cs.washington.edu, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200420123727.3616-1-yanaijie@huawei.com>
- <dff9a49b-0d00-54b0-0375-cc908289e65a@zytor.com>
- <20200423021021.GA16982@udknight>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <01cbaffb-dfb3-06e7-d01f-ae583ee0c012@zytor.com>
-Date:   Thu, 23 Apr 2020 02:40:01 -0700
+        id S1726978AbgDWJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 05:40:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54673 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726410AbgDWJka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 05:40:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587634829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+3ygCTnYu/wlHXxWXOoaGQbutWunwVNrFgGVQyQXUr0=;
+        b=UZsxJbTkkSth9DFtMA1BaOEOBs7v1Y0ICoJZHgSYjxjmJHZSOPMBfdqKd4gkYQrLy/Ksx3
+        G07XRGZH01/K2fgdBLzIyVl9+K/bk90fG2+qxG+CS//8MrLBsf4Hddgdk0eLK371tRMH6w
+        anDjnH1SC5931yp1F3Z3BxeGb9B5G/E=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-e_LH8LoAMVSUe7s3rANEhg-1; Thu, 23 Apr 2020 05:40:28 -0400
+X-MC-Unique: e_LH8LoAMVSUe7s3rANEhg-1
+Received: by mail-wr1-f72.google.com with SMTP id p16so2572966wro.16
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:40:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+3ygCTnYu/wlHXxWXOoaGQbutWunwVNrFgGVQyQXUr0=;
+        b=W6YKznXoOI62HTQhixqMScsZEL9CdUEerYNSKyImVM5ac4IlZCStmztPCTYqo3GSAO
+         gSPvlAjlPO4j46PHeQVK7DMGyTQtwLNRNFVWGlLZCpEVDtPsXJyTtmakSHB96h6HUTlg
+         edigJ95ffrVbclstjlw07WcZkWbQtChycX2DVh5/WnOy/5P+1P68imL01qHxBwmFklYM
+         MHuZiv+QTwoK624gZY+pCf+bTnQmk1iMS+YfhAUzSziYqwP1ElE6K2foWvhiJhOxWgZN
+         iYm5vbx+Wt2KuJo8wkNPM5WKiZPX1e4WlfqwjWba7mZciGbCDRjXq0Bx4U3WsWwv/V/f
+         2VnA==
+X-Gm-Message-State: AGi0PuaZoj8g5vNjreD0Lt8A+kWqbL4ic6UqSJTR4uq8nEE/09T5mEY/
+        4pPod7JnlD95T2T3zWVzXtinCo+oM48UeCSfSpp3V5tOUSWciy/Y3y7OmUx5NzZHNzbIZIHHRhD
+        J4q4zSuYznjXZNGIXiEZvuIuB
+X-Received: by 2002:a05:600c:2341:: with SMTP id 1mr3045515wmq.153.1587634826801;
+        Thu, 23 Apr 2020 02:40:26 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI5nDN9Dp9bQCt/hSG35BrUOAHLEb9eZzK5+7BCQXTdDq2vMBThkHU8kWWVihCu3FLU21shzg==
+X-Received: by 2002:a05:600c:2341:: with SMTP id 1mr3045499wmq.153.1587634826607;
+        Thu, 23 Apr 2020 02:40:26 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id z1sm2881789wmf.15.2020.04.23.02.40.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 02:40:26 -0700 (PDT)
+Subject: Re: [PATCH v2 5/5] KVM: VMX: Handle preemption timer fastpath
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <1587632507-18997-1-git-send-email-wanpengli@tencent.com>
+ <1587632507-18997-6-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <99d81fa5-dc37-b22f-be1e-4aa0449e6c26@redhat.com>
+Date:   Thu, 23 Apr 2020 11:40:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200423021021.GA16982@udknight>
+In-Reply-To: <1587632507-18997-6-git-send-email-wanpengli@tencent.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,41 +78,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-22 19:10, Wang YanQing wrote:
-> On Wed, Apr 22, 2020 at 11:43:58AM -0700, H. Peter Anvin wrote:
->> On 2020-04-20 05:37, Jason Yan wrote:
->>> The '==' expression itself is bool, no need to convert it to bool again.
->>> This fixes the following coccicheck warning:
->>>
->>> arch/x86/net/bpf_jit_comp32.c:1478:50-55: WARNING: conversion to bool
->>> not needed here
->>> arch/x86/net/bpf_jit_comp32.c:1479:50-55: WARNING: conversion to bool
->>> not needed here
->>>
->>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
->>> ---
->>>  arch/x86/net/bpf_jit_comp32.c | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>
->> x32 is not i386.
->>
->> 	-hpa
-> Hi! H. Peter Anvin and all
-> 
-> I use the name "x86_32" to describe it in original commit 03f5781be2c7
-> ("bpf, x86_32: add eBPF JIT compiler for ia32"), but almost all following
-> committers and contributors use the world "x32", I think it is short format
-> for x{86_}32.
-> 
-> Yes, I agree, "x32" isn't the right name here, I think "x32" is well known
-> as a ABI, so maybe we should use "x86_32" or ia32 in future communication.
-> 
-> Which one is the best name here? x86_32 or ia32 or anything other?
-> 
+On 23/04/20 11:01, Wanpeng Li wrote:
+> +bool kvm_lapic_expired_hv_timer_fast(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_lapic *apic = vcpu->arch.apic;
+> +	struct kvm_timer *ktimer = &apic->lapic_timer;
+> +
+> +	if (!apic_lvtt_tscdeadline(apic) ||
+> +		!ktimer->hv_timer_in_use ||
+> +		atomic_read(&ktimer->pending))
+> +		return 0;
+> +
+> +	WARN_ON(swait_active(&vcpu->wq));
+> +	cancel_hv_timer(apic);
+> +
+> +	ktimer->expired_tscdeadline = ktimer->tscdeadline;
+> +	kvm_inject_apic_timer_irqs_fast(vcpu);
+> +
+> +	return 1;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_lapic_expired_hv_timer_fast);
 
-x86-32 or i386.
+Please re-evaluate if this is needed (or which parts are needed) after
+cleaning up patch 4.  Anyway again---this is already better, I don't
+like the duplicated code but at least I can understand what's going on.
 
-	-hpa
-
+Paolo
 
