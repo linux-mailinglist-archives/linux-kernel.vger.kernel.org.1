@@ -2,176 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BCD1B5C7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C501B5C6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 15:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgDWNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 09:22:36 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2845 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727104AbgDWNWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:22:36 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 633546DCDA01EE0B70F5;
-        Thu, 23 Apr 2020 21:22:26 +0800 (CST)
-Received: from huawei.com (10.67.174.156) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 23 Apr 2020
- 21:22:17 +0800
-From:   ChenTao <chentao107@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <georgi.djakov@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <chentao107@huawei.com>
-Subject: [PATCH-next v2] interconnect: qcom: Move the static keyword to the front of declaration
-Date:   Thu, 23 Apr 2020 21:21:42 +0800
-Message-ID: <20200423132142.45174-1-chentao107@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727965AbgDWNWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 09:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726780AbgDWNWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 09:22:08 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6A6C08E934;
+        Thu, 23 Apr 2020 06:22:07 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c63so6327225qke.2;
+        Thu, 23 Apr 2020 06:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cfSJ/n7+m5NIf3p98KEiW2LshWNCIUPwffj22cRtE+A=;
+        b=QeaT55SyqVcIQ7WBkkNii9JSiVqmvsk7W6SEPdaXHSRPgjtMOdOPtUWWCmu6f7104I
+         UW1zvQTFSI8nHcex0kAXCgvJTOM265EX8G4rVD9Z2dxGogbBgUDQL/35DScsSZ1VNnrG
+         ih7JMde8AgfVA4DxmUB1FJ996x/xH68j69zzjLumM+3y0g/AJdbbF5tKtpUFLl1+oBNd
+         Q4B+KhuueCa5YeLv9qrrCCGl8xnnQrDoOGkbhmz47wYoVnA8pUNDl+KcNc1zg6uDVXFV
+         1/MQGfIPF/U4FCt1jYbMV+5rv4b0DLLAbRSLfh6BbaSQQ4Uv8wx0+8Dji2re6KGtkmIw
+         Kb+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cfSJ/n7+m5NIf3p98KEiW2LshWNCIUPwffj22cRtE+A=;
+        b=QzKTWNNdp9rmZDIyj+SBLaKL/T2Sz+DNAaPRh7ZBSRxjxe2sgRHaoXr8mOSo06dqn1
+         MnP9ap/gkoGfRD+U4jygT8hIwVzBLF38A8kCpL/ijncf9gssOC+Nf10YAWZSMXQWKH2t
+         7QnMpceXA6ATUY8P+cNKMHYRSQokMpGFSqGSVNe80SsYNEvH289XFs3O9wQW3I/LdlX0
+         iVz3QU/uzjw7wGnM3E02hTJT0JNp4Pso1uBryzCoK08MWhuMZNm7F/8u7c0bjRuTWEz8
+         Qv4PGQRsFjXNmbQhehn5ZXKStmhty8spXMnliRYbheje6zp0c6Jp0Flc3ZdniO9HMfEn
+         XSvA==
+X-Gm-Message-State: AGi0PuZIHDzVpwIPqcBlsIIjwmE0rLtDhRPF4GXy/s8DRTAKFxM/ZpdX
+        vqG0loXT9OLYGkON6D/ZT50=
+X-Google-Smtp-Source: APiQypLIlJIjbI0Sz0htU7mo5gYbQ5yhlssITmswaWusPAXt0p4NFJNphZpfZkTmJ09ustzF2tzx2g==
+X-Received: by 2002:a05:620a:7fa:: with SMTP id k26mr1822673qkk.289.1587648126553;
+        Thu, 23 Apr 2020 06:22:06 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id y6sm1467644qky.133.2020.04.23.06.22.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 06:22:02 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1B9B7409A3; Thu, 23 Apr 2020 10:22:01 -0300 (-03)
+Date:   Thu, 23 Apr 2020 10:22:01 -0300
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] perf docs: substitute CAP_SYS_ADMIN with
+ CAP_PERFMON where needed
+Message-ID: <20200423132201.GB19437@kernel.org>
+References: <66f2975b-4a69-b428-7dc5-d9aa40b3c673@linux.intel.com>
+ <f1b48de9-e2b7-d20b-3686-3a15b73ef45c@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.156]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1b48de9-e2b7-d20b-3686-3a15b73ef45c@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning:
+Em Wed, Apr 22, 2020 at 05:44:53PM +0300, Alexey Budankov escreveu:
+> 
+> Substitute CAP_SYS_ADMIN with CAP_PERFMON in the docs where admin
+> is mentioned. CAP_SYS_ADMIN still works in keeping with user space
+> backward compatibility approach.
 
-Move the static keyword to the front of declaration of sdm845_icc_osm_l3
-sdm845_aggre1_noc sc7180_icc_osm_l3 sdm845_aggre2_noc sdm845_config_noc
-sdm845_dc_noc sdm845_gladiator_noc sdm845_mem_noc sdm845_mmss_noc and
-sdm845_system_noc, resolve the following compiler warning that can be
-when building with warnings enabled (W=1):
+Same issue as with the previous patch, the documentation is for the
+tool, that may be used in older kernels, so we need to clarify that
+CAP_PERFMON requires updating libcap and the kernel, if that isn't
+possible, then CAP_SYS_ADMIN is needed.
 
-drivers/interconnect/qcom/osm-l3.c:81:1: warning:
- const static struct qcom_icc_desc sdm845_icc_osm_l3 = {
-drivers/interconnect/qcom/osm-l3.c:94:1: warning:
- const static struct qcom_icc_desc sc7180_icc_osm_l3 = {
-drivers/interconnect/qcom/sdm845.c:195:1: warning:
- const static struct qcom_icc_desc sdm845_aggre1_noc = {
-drivers/interconnect/qcom/sdm845.c:223:1: warning:
- const static struct qcom_icc_desc sdm845_aggre2_noc = {
-drivers/interconnect/qcom/sdm845.c:284:1: warning:
- const static struct qcom_icc_desc sdm845_config_noc = {
-drivers/interconnect/qcom/sdm845.c:300:1: warning:
- const static struct qcom_icc_desc sdm845_dc_noc = {
-drivers/interconnect/qcom/sdm845.c:318:1: warning:
- const static struct qcom_icc_desc sdm845_gladiator_noc = {
-drivers/interconnect/qcom/sdm845.c:353:1: warning:
- const static struct qcom_icc_desc sdm845_mem_noc = {
-drivers/interconnect/qcom/sdm845.c:387:1: warning:
- const static struct qcom_icc_desc sdm845_mmss_noc = {
-drivers/interconnect/qcom/sdm845.c:433:1: warning:
- const static struct qcom_icc_desc sdm845_system_noc = {
+- Arnaldo
+ 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/Documentation/perf-intel-pt.txt | 2 +-
+>  tools/perf/design.txt                      | 3 +--
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+> index 456fdcbf26ac..176597be0755 100644
+> --- a/tools/perf/Documentation/perf-intel-pt.txt
+> +++ b/tools/perf/Documentation/perf-intel-pt.txt
+> @@ -687,7 +687,7 @@ The v4.2 kernel introduced support for a context switch metadata event,
+>  PERF_RECORD_SWITCH, which allows unprivileged users to see when their processes
+>  are scheduled out and in, just not by whom, which is left for the
+>  PERF_RECORD_SWITCH_CPU_WIDE, that is only accessible in system wide context,
+> -which in turn requires CAP_SYS_ADMIN.
+> +which in turn requires CAP_PERFMON.
+>  
+>  Please see the 45ac1403f564 ("perf: Add PERF_RECORD_SWITCH to indicate context
+>  switches") commit, that introduces these metadata events for further info.
+> diff --git a/tools/perf/design.txt b/tools/perf/design.txt
+> index a42fab308ff6..6fd879440c40 100644
+> --- a/tools/perf/design.txt
+> +++ b/tools/perf/design.txt
+> @@ -258,8 +258,7 @@ gets schedule to. Per task counters can be created by any user, for
+>  their own tasks.
+>  
+>  A 'pid == -1' and 'cpu == x' counter is a per CPU counter that counts
+> -all events on CPU-x. Per CPU counters need CAP_PERFMON or CAP_SYS_ADMIN
+> -privilege.
+> +all events on CPU-x. Per CPU counters need CAP_PERFMON privilege.
+>  
+>  The 'flags' parameter is currently unused and must be zero.
+>  
+> -- 
+> 2.24.1
+> 
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenTao <chentao107@huawei.com>
----
-v1->v2:
-- add the same warning from osm-l3.c
-
- drivers/interconnect/qcom/osm-l3.c |  4 ++--
- drivers/interconnect/qcom/sdm845.c | 16 ++++++++--------
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-index a03c6d6833df..96fb9ff5ff2e 100644
---- a/drivers/interconnect/qcom/osm-l3.c
-+++ b/drivers/interconnect/qcom/osm-l3.c
-@@ -78,7 +78,7 @@ static struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
- 	[SLAVE_OSM_L3] = &sdm845_osm_l3,
- };
- 
--const static struct qcom_icc_desc sdm845_icc_osm_l3 = {
-+static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
- 	.nodes = sdm845_osm_l3_nodes,
- 	.num_nodes = ARRAY_SIZE(sdm845_osm_l3_nodes),
- };
-@@ -91,7 +91,7 @@ static struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
- 	[SLAVE_OSM_L3] = &sc7180_osm_l3,
- };
- 
--const static struct qcom_icc_desc sc7180_icc_osm_l3 = {
-+static const struct qcom_icc_desc sc7180_icc_osm_l3 = {
- 	.nodes = sc7180_osm_l3_nodes,
- 	.num_nodes = ARRAY_SIZE(sc7180_osm_l3_nodes),
- };
-diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
-index b013b80caa45..f6c7b969520d 100644
---- a/drivers/interconnect/qcom/sdm845.c
-+++ b/drivers/interconnect/qcom/sdm845.c
-@@ -192,7 +192,7 @@ static struct qcom_icc_node *aggre1_noc_nodes[] = {
- 	[SLAVE_ANOC_PCIE_A1NOC_SNOC] = &qns_pcie_a1noc_snoc,
- };
- 
--const static struct qcom_icc_desc sdm845_aggre1_noc = {
-+static const struct qcom_icc_desc sdm845_aggre1_noc = {
- 	.nodes = aggre1_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(aggre1_noc_nodes),
- 	.bcms = aggre1_noc_bcms,
-@@ -220,7 +220,7 @@ static struct qcom_icc_node *aggre2_noc_nodes[] = {
- 	[SLAVE_SERVICE_A2NOC] = &srvc_aggre2_noc,
- };
- 
--const static struct qcom_icc_desc sdm845_aggre2_noc = {
-+static const struct qcom_icc_desc sdm845_aggre2_noc = {
- 	.nodes = aggre2_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(aggre2_noc_nodes),
- 	.bcms = aggre2_noc_bcms,
-@@ -281,7 +281,7 @@ static struct qcom_icc_node *config_noc_nodes[] = {
- 	[SLAVE_SERVICE_CNOC] = &srvc_cnoc,
- };
- 
--const static struct qcom_icc_desc sdm845_config_noc = {
-+static const struct qcom_icc_desc sdm845_config_noc = {
- 	.nodes = config_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(config_noc_nodes),
- 	.bcms = config_noc_bcms,
-@@ -297,7 +297,7 @@ static struct qcom_icc_node *dc_noc_nodes[] = {
- 	[SLAVE_MEM_NOC_CFG] = &qhs_memnoc,
- };
- 
--const static struct qcom_icc_desc sdm845_dc_noc = {
-+static const struct qcom_icc_desc sdm845_dc_noc = {
- 	.nodes = dc_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(dc_noc_nodes),
- 	.bcms = dc_noc_bcms,
-@@ -315,7 +315,7 @@ static struct qcom_icc_node *gladiator_noc_nodes[] = {
- 	[SLAVE_SERVICE_GNOC] = &srvc_gnoc,
- };
- 
--const static struct qcom_icc_desc sdm845_gladiator_noc = {
-+static const struct qcom_icc_desc sdm845_gladiator_noc = {
- 	.nodes = gladiator_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(gladiator_noc_nodes),
- 	.bcms = gladiator_noc_bcms,
-@@ -350,7 +350,7 @@ static struct qcom_icc_node *mem_noc_nodes[] = {
- 	[SLAVE_EBI1] = &ebi,
- };
- 
--const static struct qcom_icc_desc sdm845_mem_noc = {
-+static const struct qcom_icc_desc sdm845_mem_noc = {
- 	.nodes = mem_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(mem_noc_nodes),
- 	.bcms = mem_noc_bcms,
-@@ -384,7 +384,7 @@ static struct qcom_icc_node *mmss_noc_nodes[] = {
- 	[SLAVE_CAMNOC_UNCOMP] = &qns_camnoc_uncomp,
- };
- 
--const static struct qcom_icc_desc sdm845_mmss_noc = {
-+static const struct qcom_icc_desc sdm845_mmss_noc = {
- 	.nodes = mmss_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(mmss_noc_nodes),
- 	.bcms = mmss_noc_bcms,
-@@ -430,7 +430,7 @@ static struct qcom_icc_node *system_noc_nodes[] = {
- 	[SLAVE_TCU] = &xs_sys_tcu_cfg,
- };
- 
--const static struct qcom_icc_desc sdm845_system_noc = {
-+static const struct qcom_icc_desc sdm845_system_noc = {
- 	.nodes = system_noc_nodes,
- 	.num_nodes = ARRAY_SIZE(system_noc_nodes),
- 	.bcms = system_noc_bcms,
 -- 
-2.17.1
 
+- Arnaldo
