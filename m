@@ -2,377 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703EF1B5A4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602821B5A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgDWLSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:18:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35019 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgDWLST (ORCPT
+        id S1728028AbgDWLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 07:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727862AbgDWLPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:18:19 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jRZpG-0002qQ-5v; Thu, 23 Apr 2020 11:15:26 +0000
+        Thu, 23 Apr 2020 07:15:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BF0C035494;
+        Thu, 23 Apr 2020 04:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gkR8NvhW2LD02NLRfludhHvMbSAtpn6ukWm0M0tScz8=; b=Mw96FpxeYalQOzMV9Od9h8dpR0
+        oDafizWD+QsBefHlGXK8BY0K/dp3HcoXVBbPtViHyxMB8o4h5EhVdPev7FKJKmko/oGx5pELFDoO3
+        OASG8Nbjnj8fdeaF0L5AF19lMuXOjoaCaOa12MtRoicncDK02urG42dZpuWD5spNMlzEn1BiKLieJ
+        q1mun7g4oLIhagELPJ+A/MPNoI4a8KFOBF+0r/7u5S0OuHrlRFQw+mcnR6CtUVS1K40LCyZGVr0g/
+        OjkzjYKVmTTTqgE/oL8MIFKJ0rnZHhBgPegm1PbTkCNMFi3mU3A61rhv8FHe+oZTCiBhz1ZpGvVou
+        KKUfeQrg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRZpG-0008LX-K7; Thu, 23 Apr 2020 11:15:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7DFE0300739;
+        Thu, 23 Apr 2020 13:15:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 651E523D3AA98; Thu, 23 Apr 2020 13:15:24 +0200 (CEST)
 Date:   Thu, 23 Apr 2020 13:15:24 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        David Rheinsberg <david.rheinsberg@gmail.com>,
-        Tom Gundersen <teg@jklm.no>,
-        Christian Kellner <ckellner@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        Steve Barber <smbarber@google.com>,
-        Dylan Reid <dgreid@google.com>,
-        Filipe Brandenburger <filbranden@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Benjamin Elder <bentheelder@google.com>,
-        Akihiro Suda <suda.kyoto@gmail.com>
-Subject: Re: [PATCH v2 5/7] loop: preserve sysfs backwards compatibility
-Message-ID: <20200423111524.2u3auxkfrdqpt3hr@wittgenstein>
-References: <20200422145437.176057-1-christian.brauner@ubuntu.com>
- <20200422145437.176057-6-christian.brauner@ubuntu.com>
- <20200423011706.GA2982@mail.hallyn.com>
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Julien Thierry <jthierry@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [tip: objtool/core] objtool: Support multiple stack_op per
+ instruction
+Message-ID: <20200423111524.GS20730@hirez.programming.kicks-ass.net>
+References: <20200327152847.15294-11-jthierry@redhat.com>
+ <158762818246.28353.13419513995701103731.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200423011706.GA2982@mail.hallyn.com>
+In-Reply-To: <158762818246.28353.13419513995701103731.tip-bot2@tip-bot2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 08:17:06PM -0500, Serge Hallyn wrote:
-> On Wed, Apr 22, 2020 at 04:54:35PM +0200, Christian Brauner wrote:
-> > For sysfs the initial namespace is special. All devices currently
-> > propagate into all non-initial namespaces. For example, sysfs is usually
-> > mounted in a privileged or unprivileged container and all devices are
-> > visible to the container but are owned by global root. Even though none
-> > of the propagated files can be used there are still a lot of read-only
-> > values that are accessed or read by tools running in non-initial
-> > namespaces. Some devices though, which can be moved or created in
-> > another namespace, will only show up in the corresponding namespace.
-> > This currently includes network and loop devices but no other ones.
-> > Since all current workloads depend on devices from the inital namespace
-> > being visible this behavior cannot be simply changed. This patch just
-> > makes sure to keep propagating devices that share the same device class
-> > with loop devices from the initial namespaces into all non-initial
-> > namespaces as before. In short, nothing changes only loopfs loop devices
-> > will be shown in their correct namespace.
-> > 
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Hi,
-> 
-> two comments below:
-> 
-> > ---
-> > /* v2 */
-> > - Christian Brauner <christian.brauner@ubuntu.com>:
-> >   - Protect init_net with a CONFIG_NET ifdef in case it is set to "n".
-> >   - As Tejun pointed out there is argument to be made that a new mount
-> >     option for sysfs could be added that would change how devices are
-> >     propagated. This patch does not prevent this but it is an orthogonal
-> >     problem.
-> > ---
-> >  block/genhd.c               | 79 +++++++++++++++++++++++++++++++++++++
-> >  fs/kernfs/dir.c             | 34 +++++++++++++---
-> >  fs/kernfs/kernfs-internal.h | 24 +++++++++++
-> >  fs/sysfs/mount.c            |  4 ++
-> >  include/linux/genhd.h       |  3 ++
-> >  include/linux/kernfs.h      | 22 +++++++++++
-> >  include/linux/kobject_ns.h  |  4 ++
-> >  lib/kobject.c               |  2 +
-> >  8 files changed, 167 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/block/genhd.c b/block/genhd.c
-> > index 06b642b23a07..b5b2601c4311 100644
-> > --- a/block/genhd.c
-> > +++ b/block/genhd.c
-> > @@ -1198,11 +1198,81 @@ static struct kobject *base_probe(dev_t devt, int *partno, void *data)
-> >  	return NULL;
-> >  }
-> >  
-> > +#ifdef CONFIG_BLK_DEV_LOOPFS
-> > +static void *user_grab_current_ns(void)
-> > +{
-> > +	struct user_namespace *ns = current_user_ns();
-> > +	return get_user_ns(ns);
-> > +}
-> > +
-> > +static const void *user_initial_ns(void)
-> > +{
-> > +	return &init_user_ns;
-> > +}
-> > +
-> > +static void user_put_ns(void *p)
-> > +{
-> > +	struct user_namespace *ns = p;
-> > +	put_user_ns(ns);
-> > +}
-> > +
-> > +static bool user_current_may_mount(void)
-> > +{
-> > +	return ns_capable(current_user_ns(), CAP_SYS_ADMIN);
-> > +}
-> > +
-> > +const struct kobj_ns_type_operations user_ns_type_operations = {
-> > +	.type			= KOBJ_NS_TYPE_USER,
-> > +	.current_may_mount	= user_current_may_mount,
-> > +	.grab_current_ns	= user_grab_current_ns,
-> > +	.initial_ns		= user_initial_ns,
-> > +	.drop_ns		= user_put_ns,
-> > +};
-> > +
-> > +static const void *block_class_user_namespace(struct device *dev)
-> > +{
-> > +	struct gendisk *disk;
-> > +
-> > +	if (dev->type == &part_type)
-> > +		disk = part_to_disk(dev_to_part(dev));
-> > +	else
-> > +		disk = dev_to_disk(dev);
-> > +
-> > +	return disk->user_ns;
-> > +}
-> > +
-> > +static void block_class_get_ownership(struct device *dev, kuid_t *uid, kgid_t *gid)
-> > +{
-> > +	struct gendisk *disk;
-> > +	struct user_namespace *ns;
-> > +
-> > +	if (dev->type == &part_type)
-> > +		disk = part_to_disk(dev_to_part(dev));
-> > +	else
-> > +		disk = dev_to_disk(dev);
-> > +
-> > +	ns = disk->user_ns;
-> > +	if (ns && ns != &init_user_ns) {
-> > +		kuid_t ns_root_uid = make_kuid(ns, 0);
-> > +		kgid_t ns_root_gid = make_kgid(ns, 0);
-> > +
-> > +		if (uid_valid(ns_root_uid))
-> > +			*uid = ns_root_uid;
-> > +
-> > +		if (gid_valid(ns_root_gid))
-> > +			*gid = ns_root_gid;
-> > +	}
-> 
-> You're not setting uid and gid in the else case?
+On Thu, Apr 23, 2020 at 07:49:42AM -0000, tip-bot2 for Julien Thierry wrote:
 
-Right, the reason being that sysfs and the associated kobject
-infrastructure will always set global root as the default. So the
-callchain is:
-kobject_get_ownership()
-and this calls the ktype callbacks which hits
--> device_get_ownership()
-which calls into the device class specific callbacks which in this is
-case calls block_class_get_ownership().
+> diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+> index 7ce8650..199b408 100644
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -80,13 +80,15 @@ unsigned long arch_jump_destination(struct instruction *insn)
+>  int arch_decode_instruction(struct elf *elf, struct section *sec,
+>  			    unsigned long offset, unsigned int maxlen,
+>  			    unsigned int *len, enum insn_type *type,
+> -			    unsigned long *immediate, struct stack_op *op)
+> +			    unsigned long *immediate,
+> +			    struct list_head *ops_list)
+>  {
+>  	struct insn insn;
+>  	int x86_64, sign;
+>  	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
+>  		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
+>  		      modrm_reg = 0, sib = 0;
+> +	struct stack_op *op;
+>  
+>  	x86_64 = is_x86_64(elf);
+>  	if (x86_64 == -1)
+> @@ -127,6 +129,10 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+>  	if (insn.sib.nbytes)
+>  		sib = insn.sib.bytes[0];
+>  
+> +	op = calloc(1, sizeof(*op));
+> +	if (!op)
+> +		return -1;
+> +
+>  	switch (op1) {
+>  
+>  	case 0x1:
+> @@ -488,6 +494,11 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+>  
+>  	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
+>  
+> +	if (*type == INSN_STACK)
+> +		list_add_tail(&op->list, ops_list);
+> +	else
+> +		free(op);
+> +
+>  	return 0;
+>  }
 
-And there's no direct callers of, say <device-class>->get_ownership()
-that all needs to always go through the callback infrastructure.
+So I was playing around with the intra-function thing, trying to address
+Josh's comments from last time, but that also got me staring at this
+again because it adds yet another type with a stack-op.
 
-> 
-> > +}
-> > +#endif /* CONFIG_BLK_DEV_LOOPFS */
-> > +
-> >  static int __init genhd_device_init(void)
-> >  {
-> >  	int error;
-> >  
-> >  	block_class.dev_kobj = sysfs_dev_block_kobj;
-> > +#ifdef CONFIG_BLK_DEV_LOOPFS
-> > +	kobj_ns_type_register(&user_ns_type_operations);
-> > +#endif
-> >  	error = class_register(&block_class);
-> >  	if (unlikely(error))
-> >  		return error;
-> > @@ -1524,8 +1594,14 @@ static void disk_release(struct device *dev)
-> >  		blk_put_queue(disk->queue);
-> >  	kfree(disk);
-> >  }
-> > +
-> >  struct class block_class = {
-> >  	.name		= "block",
-> > +#ifdef CONFIG_BLK_DEV_LOOPFS
-> > +	.ns_type	= &user_ns_type_operations,
-> > +	.namespace	= block_class_user_namespace,
-> > +	.get_ownership	= block_class_get_ownership,
-> > +#endif
-> >  };
-> >  
-> >  static char *block_devnode(struct device *dev, umode_t *mode,
-> > @@ -1715,6 +1791,9 @@ struct gendisk *__alloc_disk_node(int minors, int node_id)
-> >  		disk_to_dev(disk)->class = &block_class;
-> >  		disk_to_dev(disk)->type = &disk_type;
-> >  		device_initialize(disk_to_dev(disk));
-> > +#ifdef CONFIG_BLK_DEV_LOOPFS
-> > +		disk->user_ns = &init_user_ns;
-> > +#endif
-> >  	}
-> >  	return disk;
-> >  }
-> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > index 1f2d894ae454..02796ba6521a 100644
-> > --- a/fs/kernfs/dir.c
-> > +++ b/fs/kernfs/dir.c
-> > @@ -575,10 +575,15 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
-> >  		goto out_bad;
-> >  
-> >  	/* The kernfs node has been moved to a different namespace */
-> > -	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
-> > -	    kernfs_info(dentry->d_sb)->ns[kn->ns_type] != kn->ns)
-> > -		goto out_bad;
-> > +	if (kn->parent && kernfs_ns_enabled(kn->parent)) {
-> > +		if (kernfs_init_ns_propagates(kn->parent) &&
-> > +		    kn->ns == kernfs_init_ns(kn->parent->ns_type))
-> > +			goto out_good;
-> > +		if (kernfs_info(dentry->d_sb)->ns[kn->parent->ns_type] != kn->ns)
-> > +			goto out_bad;
-> > +	}
-> >  
-> > +out_good:
-> >  	mutex_unlock(&kernfs_mutex);
-> >  	return 1;
-> >  out_bad:
-> > @@ -1090,6 +1095,10 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
-> >  		ns = kernfs_info(dir->i_sb)->ns[parent->ns_type];
-> >  
-> >  	kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
-> > +	if (!kn && kernfs_init_ns_propagates(parent)) {
-> > +		ns = kernfs_init_ns(parent->ns_type);
-> > +		kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
-> > +	}
-> >  
-> >  	/* no such entry */
-> >  	if (!kn || !kernfs_active(kn)) {
-> > @@ -1614,6 +1623,8 @@ static int kernfs_dir_fop_release(struct inode *inode, struct file *filp)
-> >  static struct kernfs_node *kernfs_dir_pos(const void *ns,
-> >  	struct kernfs_node *parent, loff_t hash, struct kernfs_node *pos)
-> >  {
-> > +	const void *init_ns;
-> > +
-> >  	if (pos) {
-> >  		int valid = kernfs_active(pos) &&
-> >  			pos->parent == parent && hash == pos->hash;
-> > @@ -1621,6 +1632,12 @@ static struct kernfs_node *kernfs_dir_pos(const void *ns,
-> >  		if (!valid)
-> >  			pos = NULL;
-> >  	}
-> > +
-> > +	if (kernfs_init_ns_propagates(parent))
-> > +		init_ns = kernfs_init_ns(parent->ns_type);
-> > +	else
-> > +		init_ns = NULL;
-> > +
-> >  	if (!pos && (hash > 1) && (hash < INT_MAX)) {
-> >  		struct rb_node *node = parent->dir.children.rb_node;
-> >  		while (node) {
-> > @@ -1635,7 +1652,7 @@ static struct kernfs_node *kernfs_dir_pos(const void *ns,
-> >  		}
-> >  	}
-> >  	/* Skip over entries which are dying/dead or in the wrong namespace */
-> > -	while (pos && (!kernfs_active(pos) || pos->ns != ns)) {
-> > +	while (pos && (!kernfs_active(pos) || (pos->ns != ns && pos->ns != init_ns))) {
-> >  		struct rb_node *node = rb_next(&pos->rb);
-> >  		if (!node)
-> >  			pos = NULL;
-> > @@ -1650,13 +1667,20 @@ static struct kernfs_node *kernfs_dir_next_pos(const void *ns,
-> >  {
-> >  	pos = kernfs_dir_pos(ns, parent, ino, pos);
-> >  	if (pos) {
-> > +		const void *init_ns;
-> > +		if (kernfs_init_ns_propagates(parent))
-> > +			init_ns = kernfs_init_ns(parent->ns_type);
-> > +		else
-> > +			init_ns = NULL;
-> > +
-> >  		do {
-> >  			struct rb_node *node = rb_next(&pos->rb);
-> >  			if (!node)
-> >  				pos = NULL;
-> >  			else
-> >  				pos = rb_to_kn(node);
-> > -		} while (pos && (!kernfs_active(pos) || pos->ns != ns));
-> > +		} while (pos && (!kernfs_active(pos) ||
-> > +				 (pos->ns != ns && pos->ns != init_ns)));
-> >  	}
-> >  	return pos;
-> >  }
-> > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-> > index 7c972c00f84a..74eb6c447361 100644
-> > --- a/fs/kernfs/kernfs-internal.h
-> > +++ b/fs/kernfs/kernfs-internal.h
-> > @@ -80,6 +80,30 @@ static inline struct kernfs_node *kernfs_dentry_node(struct dentry *dentry)
-> >  	return d_inode(dentry)->i_private;
-> >  }
-> >  
-> > +#ifdef CONFIG_NET
-> > +extern struct net init_net;
-> > +#endif
-> > +
-> > +extern struct user_namespace init_user_ns;
-> > +
-> > +static inline const void *kernfs_init_ns(enum kobj_ns_type ns_type)
-> > +{
-> > +	switch (ns_type) {
-> > +	case KOBJ_NS_TYPE_NET:
-> > +#ifdef CONFIG_NET
-> > +		return &init_net;
-> > +#else
-> > +		break;
-> > +#endif
-> > +	case KOBJ_NS_TYPE_USER:
-> > +		return &init_user_ns;
-> > +	default:
-> > +		pr_debug("Unsupported namespace type %d for kernfs\n", ns_type);
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> >  extern const struct super_operations kernfs_sops;
-> >  extern struct kmem_cache *kernfs_node_cache, *kernfs_iattrs_cache;
-> >  
-> > diff --git a/fs/sysfs/mount.c b/fs/sysfs/mount.c
-> > index 5e2ec88a709e..99b82a0ae7ea 100644
-> > --- a/fs/sysfs/mount.c
-> > +++ b/fs/sysfs/mount.c
-> > @@ -43,6 +43,8 @@ static void sysfs_fs_context_free(struct fs_context *fc)
-> >  
-> >  	if (kfc->ns_tag[KOBJ_NS_TYPE_NET])
-> >  		kobj_ns_drop(KOBJ_NS_TYPE_NET, kfc->ns_tag[KOBJ_NS_TYPE_NET]);
-> > +	if (kfc->ns_tag[KOBJ_NS_TYPE_USER])
-> > +		kobj_ns_drop(KOBJ_NS_TYPE_USER, kfc->ns_tag[KOBJ_NS_TYPE_USER]);
-> >  	kernfs_free_fs_context(fc);
-> >  	kfree(kfc);
-> >  }
-> > @@ -67,6 +69,7 @@ static int sysfs_init_fs_context(struct fs_context *fc)
-> >  		return -ENOMEM;
-> >  
-> >  	kfc->ns_tag[KOBJ_NS_TYPE_NET] = netns = kobj_ns_grab_current(KOBJ_NS_TYPE_NET);
-> > +	kfc->ns_tag[KOBJ_NS_TYPE_USER] = kobj_ns_grab_current(KOBJ_NS_TYPE_USER);
-> 
-> It's nice and tidy this way so maybe worth it, but getting
-> the kobj_ns_type_lock spinlock twice in a row here seems
-> unfortunate.
+How do people feel about something like so?
 
-Let me see if I can do something non-ugly and moderately simple about
-this. If not, it's probably fine as it is since it only happens on sysfs
-mount.
+---
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -77,6 +77,17 @@ unsigned long arch_jump_destination(stru
+ 	return insn->offset + insn->len + insn->immediate;
+ }
+ 
++#define PUSH_OP(op) \
++({ \
++	list_add_tail(&op->list, ops_list); \
++	NULL; \
++})
++
++#define ADD_OP(op) \
++	if (!(op = calloc(1, sizeof(*op)))) \
++		return -1; \
++	else for (; op; op = PUSH_OP(op))
++
+ int arch_decode_instruction(struct elf *elf, struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+@@ -88,7 +99,7 @@ int arch_decode_instruction(struct elf *
+ 	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
+ 		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
+ 		      modrm_reg = 0, sib = 0;
+-	struct stack_op *op;
++	struct stack_op *op = NULL;
+ 
+ 	x86_64 = is_x86_64(elf);
+ 	if (x86_64 == -1)
+@@ -129,10 +140,6 @@ int arch_decode_instruction(struct elf *
+ 	if (insn.sib.nbytes)
+ 		sib = insn.sib.bytes[0];
+ 
+-	op = calloc(1, sizeof(*op));
+-	if (!op)
+-		return -1;
+-
+ 	switch (op1) {
+ 
+ 	case 0x1:
+@@ -141,10 +148,12 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* add/sub reg, %rsp */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_ADD;
+-			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_ADD;
++				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 		}
+ 		break;
+ 
+@@ -152,9 +161,11 @@ int arch_decode_instruction(struct elf *
+ 
+ 		/* push reg */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_REG;
+-		op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+-		op->dest.type = OP_DEST_PUSH;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_REG;
++			op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
++			op->dest.type = OP_DEST_PUSH;
++		}
+ 
+ 		break;
+ 
+@@ -162,9 +173,11 @@ int arch_decode_instruction(struct elf *
+ 
+ 		/* pop reg */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_POP;
+-		op->dest.type = OP_DEST_REG;
+-		op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
++		ADD_OP(op) {
++			op->src.type = OP_SRC_POP;
++			op->dest.type = OP_DEST_REG;
++			op->dest.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
++		}
+ 
+ 		break;
+ 
+@@ -172,8 +185,10 @@ int arch_decode_instruction(struct elf *
+ 	case 0x6a:
+ 		/* push immediate */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_CONST;
+-		op->dest.type = OP_DEST_PUSH;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_CONST;
++			op->dest.type = OP_DEST_PUSH;
++		}
+ 		break;
+ 
+ 	case 0x70 ... 0x7f:
+@@ -188,11 +203,13 @@ int arch_decode_instruction(struct elf *
+ 		if (modrm == 0xe4) {
+ 			/* and imm, %rsp */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_AND;
+-			op->src.reg = CFI_SP;
+-			op->src.offset = insn.immediate.value;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_AND;
++				op->src.reg = CFI_SP;
++				op->src.offset = insn.immediate.value;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 			break;
+ 		}
+ 
+@@ -205,11 +222,13 @@ int arch_decode_instruction(struct elf *
+ 
+ 		/* add/sub imm, %rsp */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_ADD;
+-		op->src.reg = CFI_SP;
+-		op->src.offset = insn.immediate.value * sign;
+-		op->dest.type = OP_DEST_REG;
+-		op->dest.reg = CFI_SP;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_ADD;
++			op->src.reg = CFI_SP;
++			op->src.offset = insn.immediate.value * sign;
++			op->dest.type = OP_DEST_REG;
++			op->dest.reg = CFI_SP;
++		}
+ 		break;
+ 
+ 	case 0x89:
+@@ -217,10 +236,12 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* mov %rsp, reg */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG;
+-			op->src.reg = CFI_SP;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG;
++				op->src.reg = CFI_SP;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
++			}
+ 			break;
+ 		}
+ 
+@@ -228,10 +249,12 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* mov reg, %rsp */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG;
+-			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG;
++				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 			break;
+ 		}
+ 
+@@ -242,21 +265,25 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* mov reg, disp(%rbp) */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG;
+-			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+-			op->dest.type = OP_DEST_REG_INDIRECT;
+-			op->dest.reg = CFI_BP;
+-			op->dest.offset = insn.displacement.value;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG;
++				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
++				op->dest.type = OP_DEST_REG_INDIRECT;
++				op->dest.reg = CFI_BP;
++				op->dest.offset = insn.displacement.value;
++			}
+ 
+ 		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
+ 
+ 			/* mov reg, disp(%rsp) */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG;
+-			op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+-			op->dest.type = OP_DEST_REG_INDIRECT;
+-			op->dest.reg = CFI_SP;
+-			op->dest.offset = insn.displacement.value;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG;
++				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
++				op->dest.type = OP_DEST_REG_INDIRECT;
++				op->dest.reg = CFI_SP;
++				op->dest.offset = insn.displacement.value;
++			}
+ 		}
+ 
+ 		break;
+@@ -266,22 +293,26 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* mov disp(%rbp), reg */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG_INDIRECT;
+-			op->src.reg = CFI_BP;
+-			op->src.offset = insn.displacement.value;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG_INDIRECT;
++				op->src.reg = CFI_BP;
++				op->src.offset = insn.displacement.value;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
++			}
+ 
+ 		} else if (rex_w && !rex_b && sib == 0x24 &&
+ 			   modrm_mod != 3 && modrm_rm == 4) {
+ 
+ 			/* mov disp(%rsp), reg */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_REG_INDIRECT;
+-			op->src.reg = CFI_SP;
+-			op->src.offset = insn.displacement.value;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
++			ADD_OP(op) {
++				op->src.type = OP_SRC_REG_INDIRECT;
++				op->src.reg = CFI_SP;
++				op->src.offset = insn.displacement.value;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
++			}
+ 		}
+ 
+ 		break;
+@@ -290,27 +321,31 @@ int arch_decode_instruction(struct elf *
+ 		if (sib == 0x24 && rex_w && !rex_b && !rex_x) {
+ 
+ 			*type = INSN_STACK;
+-			if (!insn.displacement.value) {
+-				/* lea (%rsp), reg */
+-				op->src.type = OP_SRC_REG;
+-			} else {
+-				/* lea disp(%rsp), reg */
+-				op->src.type = OP_SRC_ADD;
+-				op->src.offset = insn.displacement.value;
++			ADD_OP(op) {
++				if (!insn.displacement.value) {
++					/* lea (%rsp), reg */
++					op->src.type = OP_SRC_REG;
++				} else {
++					/* lea disp(%rsp), reg */
++					op->src.type = OP_SRC_ADD;
++					op->src.offset = insn.displacement.value;
++				}
++				op->src.reg = CFI_SP;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+ 			}
+-			op->src.reg = CFI_SP;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = op_to_cfi_reg[modrm_reg][rex_r];
+ 
+ 		} else if (rex == 0x48 && modrm == 0x65) {
+ 
+ 			/* lea disp(%rbp), %rsp */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_ADD;
+-			op->src.reg = CFI_BP;
+-			op->src.offset = insn.displacement.value;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_ADD;
++				op->src.reg = CFI_BP;
++				op->src.offset = insn.displacement.value;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 
+ 		} else if (rex == 0x49 && modrm == 0x62 &&
+ 			   insn.displacement.value == -8) {
+@@ -322,11 +357,13 @@ int arch_decode_instruction(struct elf *
+ 			 * stack realignment.
+ 			 */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_ADD;
+-			op->src.reg = CFI_R10;
+-			op->src.offset = -8;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_ADD;
++				op->src.reg = CFI_R10;
++				op->src.offset = -8;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 
+ 		} else if (rex == 0x49 && modrm == 0x65 &&
+ 			   insn.displacement.value == -16) {
+@@ -338,11 +375,13 @@ int arch_decode_instruction(struct elf *
+ 			 * stack realignment.
+ 			 */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_ADD;
+-			op->src.reg = CFI_R13;
+-			op->src.offset = -16;
+-			op->dest.type = OP_DEST_REG;
+-			op->dest.reg = CFI_SP;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_ADD;
++				op->src.reg = CFI_R13;
++				op->src.offset = -16;
++				op->dest.type = OP_DEST_REG;
++				op->dest.reg = CFI_SP;
++			}
+ 		}
+ 
+ 		break;
+@@ -350,8 +389,10 @@ int arch_decode_instruction(struct elf *
+ 	case 0x8f:
+ 		/* pop to mem */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_POP;
+-		op->dest.type = OP_DEST_MEM;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_POP;
++			op->dest.type = OP_DEST_MEM;
++		}
+ 		break;
+ 
+ 	case 0x90:
+@@ -361,15 +402,19 @@ int arch_decode_instruction(struct elf *
+ 	case 0x9c:
+ 		/* pushf */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_CONST;
+-		op->dest.type = OP_DEST_PUSHF;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_CONST;
++			op->dest.type = OP_DEST_PUSHF;
++		}
+ 		break;
+ 
+ 	case 0x9d:
+ 		/* popf */
+ 		*type = INSN_STACK;
+-		op->src.type = OP_SRC_POPF;
+-		op->dest.type = OP_DEST_MEM;
++		ADD_OP(op) {
++			op->src.type = OP_SRC_POPF;
++			op->dest.type = OP_DEST_MEM;
++		}
+ 		break;
+ 
+ 	case 0x0f:
+@@ -405,15 +450,19 @@ int arch_decode_instruction(struct elf *
+ 
+ 			/* push fs/gs */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_CONST;
+-			op->dest.type = OP_DEST_PUSH;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_CONST;
++				op->dest.type = OP_DEST_PUSH;
++			}
+ 
+ 		} else if (op2 == 0xa1 || op2 == 0xa9) {
+ 
+ 			/* pop fs/gs */
+ 			*type = INSN_STACK;
+-			op->src.type = OP_SRC_POP;
+-			op->dest.type = OP_DEST_MEM;
++			ADD_OP(op) {
++				op->src.type = OP_SRC_POP;
++				op->dest.type = OP_DEST_MEM;
++			}
+ 		}
+ 
+ 		break;
+@@ -427,7 +476,8 @@ int arch_decode_instruction(struct elf *
+ 		 * pop bp
+ 		 */
+ 		*type = INSN_STACK;
+-		op->dest.type = OP_DEST_LEAVE;
++		ADD_OP(op)
++			op->dest.type = OP_DEST_LEAVE;
+ 
+ 		break;
+ 
+@@ -449,12 +499,14 @@ int arch_decode_instruction(struct elf *
+ 	case 0xcf: /* iret */
+ 		*type = INSN_EXCEPTION_RETURN;
+ 
+-		/* add $40, %rsp */
+-		op->src.type = OP_SRC_ADD;
+-		op->src.reg = CFI_SP;
+-		op->src.offset = 5*8;
+-		op->dest.type = OP_DEST_REG;
+-		op->dest.reg = CFI_SP;
++		ADD_OP(op) {
++			/* add $40, %rsp */
++			op->src.type = OP_SRC_ADD;
++			op->src.reg = CFI_SP;
++			op->src.offset = 5*8;
++			op->dest.type = OP_DEST_REG;
++			op->dest.reg = CFI_SP;
++		}
+ 		break;
+ 
+ 	case 0xca: /* retf */
+@@ -504,11 +556,6 @@ int arch_decode_instruction(struct elf *
+ 
+ 	*immediate = insn.immediate.nbytes ? insn.immediate.value : 0;
+ 
+-	if (*type == INSN_STACK || *type == INSN_EXCEPTION_RETURN)
+-		list_add_tail(&op->list, ops_list);
+-	else
+-		free(op);
+-
+ 	return 0;
+ }
+ 
