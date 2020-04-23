@@ -2,90 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDA71B5236
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FD21B524B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 04:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgDWCBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Apr 2020 22:01:18 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:55269 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgDWCBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Apr 2020 22:01:17 -0400
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 03N20sDr027698;
-        Thu, 23 Apr 2020 11:00:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 03N20sDr027698
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587607255;
-        bh=ISn1zcDbqD2LVlnbauksd8MruLENNun6WMcR58P2qcI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LZ2hy/m3kyAspFf0n8gbMqzG8q4/ENsAcC6y5X0tdE4JTA71wFtqCu14vIQPS6koh
-         bqA4kNA/0drF4SSyQBZDo5r7chGkgod2Cft6VW2XTgFMxwqXCLkUcrku7IxZxBzNTm
-         o2stTctbF5u/gzU/8GW8SHhbxyXdksJEysZB+f2g70znIIYxnCepCovSLn0WTO7fIM
-         2io+52tVX+/On4MmDF/H1/qhJxD+COeuDYqtV+lhWUbjAQ1B+qMaKBle42WIeaQPdV
-         e+9bPOi4SciFKMyjpEJqzQ7Ut4OqASVeOJr/YBtnKXQvW+M7Ah5bo78GESV28fND8O
-         0Fh5Q4H/Ik5Rw==
-X-Nifty-SrcIP: [209.85.222.41]
-Received: by mail-ua1-f41.google.com with SMTP id t8so4149226uap.3;
-        Wed, 22 Apr 2020 19:00:55 -0700 (PDT)
-X-Gm-Message-State: AGi0PubpXU8+nChOB5qI0KFcE6ZqAxyf8G2Hr2WLIglNjvkITKoOkY4y
-        5KMX9L01kZQ/ZIT4A8AOeR5HZ22fNLY3vy468/k=
-X-Google-Smtp-Source: APiQypKRgU7oPWeRAT900AuP/QQ6Sr147jDjr+iq+LfPL1juv5V1gaXnJ4FqIKsaY6bSqjdDXnBMPKQ5GXKMoNZv7lQ=
-X-Received: by 2002:a67:6542:: with SMTP id z63mr1467003vsb.179.1587607254226;
- Wed, 22 Apr 2020 19:00:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200423014919.31713-1-masahiroy@kernel.org>
-In-Reply-To: <20200423014919.31713-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 23 Apr 2020 11:00:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ-5aKSn0J81NMey5+nTis8LZT_mv+bYbndx99SBf_w6w@mail.gmail.com>
-Message-ID: <CAK7LNAQ-5aKSn0J81NMey5+nTis8LZT_mv+bYbndx99SBf_w6w@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kbuild: fix the section title format
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1726466AbgDWCIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Apr 2020 22:08:41 -0400
+Received: from mga14.intel.com ([192.55.52.115]:61411 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgDWCIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Apr 2020 22:08:40 -0400
+IronPort-SDR: sBqXayEWg52F/pFDSKUPQU96zpZzbNqqk93B3C6tWHbhq+/9J/ftyQsgUNSUbyfzoDYeKEVCNW
+ nuGw/n8ZgQUg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 19:08:40 -0700
+IronPort-SDR: dW+7VQ4x7y7AnryNYI928QMWa+IOoOhxCpxCXaekQfalHh+BhiXW4m3BH5Fi7otb06liJKPxrc
+ P+ythg9ZNHUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,305,1583222400"; 
+   d="scan'208";a="402756503"
+Received: from coffy.sc.intel.com ([10.3.79.166])
+  by orsmga004.jf.intel.com with ESMTP; 22 Apr 2020 19:08:39 -0700
+Message-ID: <ac04f1aa46234496fc88354add386da725d883ab.camel@intel.com>
+Subject: Re: [PATCH 1/1] platform/x86: Add Slim Bootloader firmware update
+ signaling driver
+From:   Jithu Joseph <jithu.joseph@intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
+        sean.v.kelley@intel.com, kuo-lang.tseng@intel.com,
+        jithu.joseph@intel.com
+Date:   Wed, 22 Apr 2020 19:02:42 -0700
+In-Reply-To: <CAHp75VeV+HOditUphBkFoy6LLh6QKfBoC-eLixquAHLTwaz4RQ@mail.gmail.com>
+References: <20200420194405.8281-1-jithu.joseph@intel.com>
+         <20200420194405.8281-2-jithu.joseph@intel.com>
+         <CAHp75VeV+HOditUphBkFoy6LLh6QKfBoC-eLixquAHLTwaz4RQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 10:49 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Make it consistent with the other sections.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+Hi Andy,
 
-Applied to linux/fixes.
+Appreciate your valuable feedback. I think I understood most of your
+comments but I need clarification regarding the last comment in this
+reply.
 
+On Wed, 2020-04-22 at 16:42 +0300, Andy Shevchenko wrote:
+> On Mon, Apr 20, 2020 at 10:50 PM Jithu Joseph <jithu.joseph@intel.com
+> > wrote:
+> > 
+> > 
+> > This driver only implements a signaling mechanism, the actual
+> > firmware
+> > update process and various details like firmware update image
+> > format,
+> > firmware image location etc are defined by SBL [2] and are not in
+> > the
+> > scope of this driver.
+> 
+> I have noticed that it misses ABI documentation. So, please add. Also
+> some comments below.
 
+I will add one via a new Documentation/ABI/testing/sysfs-platform-sbl-
+fwu-wmi file
 
->  Documentation/kbuild/makefiles.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-> index 04d5c01a2e99..b80257a03830 100644
-> --- a/Documentation/kbuild/makefiles.rst
-> +++ b/Documentation/kbuild/makefiles.rst
-> @@ -1241,7 +1241,8 @@ When kbuild executes, the following steps are followed (roughly):
->         will be displayed with "make KBUILD_VERBOSE=0".
->
->
-> ---- 6.9 Preprocessing linker scripts
-> +6.9 Preprocessing linker scripts
-> +--------------------------------
->
->         When the vmlinux image is built, the linker script
->         arch/$(ARCH)/kernel/vmlinux.lds is used.
-> --
-> 2.25.1
->
+> 
+> ...
+> 
+> > [1] https://slimbootloader.github.io
+> > [2] https://slimbootloader.github.io/security/firmware-update.html
+> 
+> Can you add a DocLink: tag below for the reference to the official
+> documentation?
 
+I wasnt aware of this tag. Will add this.
 
--- 
-Best Regards
-Masahiro Yamada
+> 
+> ...
+> 
+> > +SLIM BOOTLOADER (SBL) FIRMWARE UPDATE WMI DRIVER
+> > +M:     Jithu Joseph <jithu.joseph@intel.com>
+> > +R:     Maurice Ma <maurice.ma@intel.com>
+> > +S:     Maintained
+> > +W:     
+> > https://slimbootloader.github.io/security/firmware-update.html
+> > +F:     drivers/platform/x86/sbl_fwu_wmi.c
+> 
+> I hope you run latest and greatest version of checkpatch.pl and it's
+> okay with this section.
+
+Yes it was fine, chekpatch.pl was merely asking to update the
+MAINTAINERS file. And the ordering of the section matches with that of
+parse-maintainers.pl
+
+> 
+> ...
+> 
+> > @@ -114,6 +114,16 @@ config XIAOMI_WMI
+> >           To compile this driver as a module, choose M here: the
+> > module will
+> >           be called xiaomi-wmi.
+> > 
+> > +config SBL_FWU_WMI
+> > +       tristate "WMI driver for Slim Bootloader firmware update
+> > signaling"
+> > +       depends on ACPI_WMI
+> > +       help
+> > +         Say Y here if you want to be able to use the WMI
+> > interface to signal
+> > +         Slim Bootloader to trigger update on next reboot.
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > module will
+> > +         be called sbl-fwu-wmi.
+> > @@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)   += intel-
+> > wmi-thunderbolt.o
+> >  obj-$(CONFIG_MXM_WMI)                  += mxm-wmi.o
+> >  obj-$(CONFIG_PEAQ_WMI)                 += peaq-wmi.o
+> >  obj-$(CONFIG_XIAOMI_WMI)               += xiaomi-wmi.o
+> > +obj-$(CONFIG_SBL_FWU_WMI)              += sbl_fwu_wmi.o
+> 
+> I didn't get an ordering schema in above files.
+> Shouldn't be rather alphasort?
+
+Looks like there is an ordering within the wmi related files, so I will
+move mine in between PEAQ_WMI and XIAOMI_WMI .
+
+> 
+> ...
+> 
+> > +static ssize_t firmware_update_request_store(struct device *dev,
+> > +                                            struct
+> > device_attribute *attr,
+> > +                                            const char *buf,
+> > size_t count)
+> > +{
+> > +       bool val;
+> > +       int ret;
+> > +
+> > +       ret = kstrtobool(buf, &val);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       ret = set_fwu_request(dev, val ? 1 : 0);
+> 
+> Hmm... If you are going to extend this, why not to pass integer
+> directly? (And thus take one from user)
+
+We have also been thinking about  extensibility …
+
+So I will modify the code to allow any u32 input by the user  to be
+passed down via wmi_set_block(), though 0 and 1 will be the only
+inputs  documented  in the ABI today.( Or did you still mean  to error
+out if the user input is something other than 0 or 1 ?)
+
+Thanks
+Jithu
+
