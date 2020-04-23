@@ -2,141 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C2C1B55E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30241B5638
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgDWHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:38:08 -0400
-Received: from mail-eopbgr60088.outbound.protection.outlook.com ([40.107.6.88]:17742
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbgDWHiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:38:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SRu7JTYFnogXoTNcW8GQSKi5s9VhLlu04zEhNkyZBgB0SK0jqyrrtee1frTW5XNjXpFyC5+WlS3JYeZYFQ+ncdtosjt5qcVaBPymosomSTxWc1ESET6s9pe5BCZSktV2LSlYmLeesm1oOV8IZ9ZlEt7l1GWU1mlB4A69KLeLxzHzI2xzp4vxrQbC6XLs+fSSnAcb+INeYQAW1Du/AaIae3tXmrWLipwiAhBnCnzhuY9oqGsno0+RwIFR92yAHO7XxTtu62qkRj5Gtgpsuwe3Rs9DHTiged6cDCYY65qmiwMX7XP6WLXNjuF99I8XMsp3iXSfzpPAuheLNJlDdeNcBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyqK3YEtIl8Lv4Z1U8+JHGKKgMKXFexlIZSFylSMOWQ=;
- b=bloZ8j3c6ZAdMoZSlBE69Qlz3FqxkhZRLUGxQoFM+7S479kgufrULfsCeBBpFs8wKEifsTBTn9OAvul3GmOHu963F/rcla7Sno3ks+zPlFlyVnFfd634wNuEGb8ggZCGhjbycn5kI5FX25c/jdysyqMi+b+eStubWoTOm/tw0Vjre/pIEoxvilJ5HG4R1lmnikvEGIbZa0+GZ+bojafX8ecQEvdfZOZ3PmP8g59HQs82h/teEL++pC4teL4nnMZHDtKCsulMOvQe9P7eZ6HZDhVBGZB2EV4+P5qBEerXBrQoDcmAAi7GOa7K3tD0lHhlfNt+g+q5GSJewuZcsuEkZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyqK3YEtIl8Lv4Z1U8+JHGKKgMKXFexlIZSFylSMOWQ=;
- b=rel7F6qGlcFPRVhXAB+EqcM/yt6nz22JHHiGKd4nxCZSZqxPBOB7pqYIlZqcf4VpLOKXCk7YeBFOmDFHWV6YsyCGzF50e2l+ywHYBHRa4cGgsZT74EqukadPRtxm9ytM1TWVuT1r4Uggw2qsOSHDOhTlV/x8hAlImQmV7OL1QMc=
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- (2603:10a6:803:11::14) by VI1PR0402MB3454.eurprd04.prod.outlook.com
- (2603:10a6:803:a::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 23 Apr
- 2020 07:38:04 +0000
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c0d8:b266:77f1:ed8c]) by VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c0d8:b266:77f1:ed8c%6]) with mapi id 15.20.2937.012; Thu, 23 Apr 2020
- 07:38:04 +0000
-From:   "S.j. Wang" <shengjiu.wang@nxp.com>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "allison@lohutok.net" <allison@lohutok.net>,
-        "info@metux.net" <info@metux.net>,
-        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: restore the CLOCKING2 register in resume
-Thread-Topic: [PATCH] ASoC: wm8962: restore the CLOCKING2 register in resume
-Thread-Index: AdYZQfo76p2wS61GRuCd1txp3pItIQ==
-Date:   Thu, 23 Apr 2020 07:38:04 +0000
-Message-ID: <VI1PR0402MB3342492AE94B24C7E92F1ABDE3D30@VI1PR0402MB3342.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=shengjiu.wang@nxp.com; 
-x-originating-ip: [119.31.174.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f4a6c756-481b-46f9-223e-08d7e759425e
-x-ms-traffictypediagnostic: VI1PR0402MB3454:
-x-microsoft-antispam-prvs: <VI1PR0402MB3454002C7691594D8197394DE3D30@VI1PR0402MB3454.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 03827AF76E
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3342.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(346002)(366004)(396003)(376002)(2906002)(478600001)(7416002)(26005)(316002)(7696005)(6506007)(71200400001)(8936002)(6916009)(33656002)(81156014)(8676002)(52536014)(9686003)(86362001)(5660300002)(76116006)(54906003)(66476007)(66946007)(66556008)(4326008)(64756008)(55016002)(66446008)(186003);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wWh5pKZVxPmzvo3xYq7Wgggn5XeqlFkrltx63MVHiweBNqDcuWlqx4mru4fzb1SeeY0dMz1ZNMdfPgowN5P1arhAe4x3kl/lMqFQaQsdt/8JQ8jz6ehn12Ifzd4QSOJvWKkGo9Cf0MyjLo1lCHKAPwLOw/ukn+HujvQhNcmSukZffxgp1N+WT2yrLqxQGRcCBA5ImP6Ix7PUcRbETcYNzRxEtn23qA75OySbM0EIQhycufz+O94zD/ZKh6vvL2PIF79jR67Q3GbuCfpfX7GtlNbKfgWLm85jrRsUSseiKRskWT16Dc2Y1moZrqnNxq+y4amkJt9o1A+rzEWG5bgaxWwSpuDpPuJEf8s/Vsv7VCqIQm5E8RXMuSPa5VL5yW+mmq6cYgexVffGvHOegMtbBmI2AeiYpTTvCkMMDTWzAhduu6W+NrYjM9+hRqgMq/xN
-x-ms-exchange-antispam-messagedata: I6Wna6y8yCT/lnOadigxqod3dmhf3SJl7jqgGXWJbKFgX8+ONSRDVtsdj7n5D1MmTpwrhPcYNT945YfPmWV7s8qgFUy8YjSENT+2kixXna56aKpwjCBllwuL2TEG3ZhTVJxi2NZHBRJk50uh2OP4sHEoLzT7e9UAC9G3W1FlYUvaLTMnBlO7IfRMSv/pX2P58SAy+bhWyLOTnOlyOJgCDONUt04LOyUR7VAJnbt/7wOgYFWoWkhIEWE9mz7Pu7atNyo78lRKcGcph2R8Qsid/GJFdDE2aX4l8hUaESH9A7UfEm41QXKvbhchB1BVlZKOR2q4q4cWpv54uuwk6LI6qq0Oym9hwqbT52RrYUH1uzx5c0wTEf0RFED/jDXUkm8w3eNU2H0c+dgp6qt7IP8zJo6Nkuq2v7hNMok9i7NiqNFWSwLbFV8LyO+7w3rTH4+VLNwJANSn0DO/M9FYnq29AOnQviNzsP/eBsJZ1QIMWNlaVdl+BNto8MU6C1FuPCu/Rc7bezCMKtrsvhlObFHi+WEXDw7N14+bHmRJZpJpN0uzuSUQ5oqzLeTTKiO323KbEaQXe+Qj4EuTiBAF5HRoiriz9Ow5LVXn7PCDujMbZOpzFgbxCZGevthkRWZL+lLL97SswiceQTd50DPIOND8NxJzwN2x3Eo1aRmhtyRYRK/5QTJLmQARyxKwR8vJHcXaNkbjjg+5TdyE9A5lEOd1SNk8N503jSgJfj6y/SipPPH3neQLKO0R6x7Hac/PRD1pWOZ3pAWB/qdEA6c2sjANbyvBFw13Y21higzAv5IAOVc=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727845AbgDWHmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:42:15 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:34844 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgDWHmN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:42:13 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 03N7dV9L000368;
+        Thu, 23 Apr 2020 16:39:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 03N7dV9L000368
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587627573;
+        bh=EYsJ2uRz3WzlUm4V0pOlApP3srqM3AzplJXKFcPvEZc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YP/cvFIDqNzUc1LGLrpWHugU6378NxtI+s6jypZfvWr37vn0c2PyraGPlREaAqEnQ
+         FC1fPQYiietJ+VjRm+QAa2UHsfgcqar1R4Y8TA7XJVvbfqBD5wafX0GIrmnV5pHmHh
+         8q5jt3rWU7dnCSGSZ6CCjGpaYlwCjjUKfj+RanMm/ZTFwZeY/4AKlUmyBZpsFcYdS1
+         zSX7an90gnGH+1EzAWoWJLkNef6Aq6rRejTbRIHliWScMURQ7y5lDCp3gkCI9qUiNU
+         0XISVVH5T4wiwolwemmrDutqkAe8H17XGYnW/Q8jrBhvoUUYbV1xExyHCGSZ7YmSk8
+         O0kUSWi3KCBuA==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Yonghong Song <yhs@fb.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 00/16] kbuild: support 'userprogs' syntax
+Date:   Thu, 23 Apr 2020 16:39:13 +0900
+Message-Id: <20200423073929.127521-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4a6c756-481b-46f9-223e-08d7e759425e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2020 07:38:04.6138
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xlqCGUFYF15Tzuu261n1OAyd/XfM/grLP5FQTLGnOq4bxvMr99DSxhXmW8k4+tJkiFY0ff6sj7vwHJNQI41aCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3454
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
->=20
-> On Tue, Apr 21, 2020 at 08:02:15PM +0800, Shengjiu Wang wrote:
-> > The CLOCKING2 is a volatile register, but some bits should be restored
-> > when resume, for example SYSCLK_SRC. otherwise the output clock is
-> > wrong
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  sound/soc/codecs/wm8962.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> > index d9d59f45833f..6e96c0c5ad2a 100644
-> > --- a/sound/soc/codecs/wm8962.c
-> > +++ b/sound/soc/codecs/wm8962.c
-> > @@ -82,6 +82,7 @@ struct wm8962_priv {  #endif
-> >
-> >       int irq;
-> > +     u32 regcache_clocking2;
-> >  };
-> >
-> >  /* We can't use the same notifier block for more than one supply and
-> > @@ -3813,6 +3814,10 @@ static int wm8962_runtime_resume(struct
-> device
-> > *dev)
-> >
-> >       regcache_sync(wm8962->regmap);
-> >
-> > +     regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
-> > +                        WM8962_SYSCLK_SRC_MASK,
-> > +                        wm8962->regcache_clocking2);
-> > +
->=20
-> I wonder if it might just be better to make the register non-volatile? Fr=
-om
-> looking through the datasheet I am guessing this is volatile for the
-> CLASSD_CLK_DIV bits, which are controlled by the chip itself. But the
-> datasheet claims these are read only and protected by the security key, a=
-nd
-> they are not read by the driver at all.
->=20
-> Thanks,
-> Charles
->=20
-Use non-volatile also can fix the issue, I will send v2 for it
+Several Makefiles use 'hostprogs' for building the code for
+the host architecture is not appropriate.
 
-Best regards
-Wang shengjiu
+This is just because Kbuild does not provide the syntax to do it.
+
+This series introduce 'userprogs' syntax and use it from
+sample and bpf Makefiles.
+
+Sam worked on this in 2014.
+https://lkml.org/lkml/2014/7/13/154
+
+He used 'uapiprogs-y' but I just thought the meaning of
+"UAPI programs" is unclear.
+
+Naming is one the most difficult parts of this.
+
+I chose 'userprogs'.
+Anothor choice I had in my mind was 'targetprogs'.
+
+If you can test this series quickly by
+'make allmodconfig samples/'
+
+When building objects for userspace, [U] is displayed.
+
+masahiro@oscar:~/workspace/linux$ make allmodconfig samples/
+  [snip]
+  AR      samples/vfio-mdev/built-in.a
+  CC [M]  samples/vfio-mdev/mtty.o
+  CC [M]  samples/vfio-mdev/mdpy.o
+  CC [M]  samples/vfio-mdev/mdpy-fb.o
+  CC [M]  samples/vfio-mdev/mbochs.o
+  AR      samples/mei/built-in.a
+  CC [U]  samples/mei/mei-amt-version
+  CC [U]  samples/auxdisplay/cfag12864b-example
+  CC [M]  samples/configfs/configfs_sample.o
+  CC [M]  samples/connector/cn_test.o
+  CC [U]  samples/connector/ucon
+  CC [M]  samples/ftrace/ftrace-direct.o
+  CC [M]  samples/ftrace/ftrace-direct-too.o
+  CC [M]  samples/ftrace/ftrace-direct-modify.o
+  CC [M]  samples/ftrace/sample-trace-array.o
+  CC [U]  samples/hidraw/hid-example
+  CC [M]  samples/hw_breakpoint/data_breakpoint.o
+  CC [M]  samples/kdb/kdb_hello.o
+  CC [M]  samples/kfifo/bytestream-example.o
+  CC [M]  samples/kfifo/dma-example.o
+  CC [M]  samples/kfifo/inttype-example.o
+  CC [M]  samples/kfifo/record-example.o
+  CC [M]  samples/kobject/kobject-example.o
+  CC [M]  samples/kobject/kset-example.o
+  CC [M]  samples/kprobes/kprobe_example.o
+  CC [M]  samples/kprobes/kretprobe_example.o
+  CC [M]  samples/livepatch/livepatch-sample.o
+  CC [M]  samples/livepatch/livepatch-shadow-mod.o
+  CC [M]  samples/livepatch/livepatch-shadow-fix1.o
+  CC [M]  samples/livepatch/livepatch-shadow-fix2.o
+  CC [M]  samples/livepatch/livepatch-callbacks-demo.o
+  CC [M]  samples/livepatch/livepatch-callbacks-mod.o
+  CC [M]  samples/livepatch/livepatch-callbacks-busymod.o
+  CC [M]  samples/rpmsg/rpmsg_client_sample.o
+  CC [U]  samples/seccomp/bpf-fancy.o
+  CC [U]  samples/seccomp/bpf-helper.o
+  LD [U]  samples/seccomp/bpf-fancy
+  CC [U]  samples/seccomp/dropper
+  CC [U]  samples/seccomp/bpf-direct
+  CC [U]  samples/seccomp/user-trap
+  CC [U]  samples/timers/hpet_example
+  CC [M]  samples/trace_events/trace-events-sample.o
+  CC [M]  samples/trace_printk/trace-printk.o
+  CC [U]  samples/uhid/uhid-example
+  CC [M]  samples/v4l/v4l2-pci-skeleton.o
+  CC [U]  samples/vfs/test-fsmount
+  CC [U]  samples/vfs/test-statx
+samples/vfs/test-statx.c:24:15: warning: ‘struct foo’ declared inside parameter list will not be visible outside of this definition or declaration
+   24 | #define statx foo
+      |               ^~~
+  CC [U]  samples/watchdog/watchdog-simple
+  AR      samples/built-in.a
+
+
+
+Masahiro Yamada (15):
+  Documentation: kbuild: fix the section title format
+  Revert "objtool: Skip samples subdirectory"
+  kbuild: add infrastructure to build userspace programs
+  net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
+  samples: seccomp: build sample programs for target architecture
+  kbuild: doc: document the new syntax 'userprogs'
+  samples: uhid: build sample program for target architecture
+  samples: hidraw: build sample program for target architecture
+  samples: connector: build sample program for target architecture
+  samples: vfs: build sample programs for target architecture
+  samples: pidfd: build sample program for target architecture
+  samples: mei: build sample program for target architecture
+  samples: auxdisplay: use 'userprogs' syntax
+  samples: timers: use 'userprogs' syntax
+  samples: watchdog: use 'userprogs' syntax
+
+Sam Ravnborg (1):
+  samples: uhid: fix warnings in uhid-example
+
+ Documentation/kbuild/makefiles.rst | 185 +++++++++++++++++++++--------
+ Makefile                           |  11 +-
+ net/bpfilter/Makefile              |  11 +-
+ samples/Kconfig                    |  26 +++-
+ samples/Makefile                   |   5 +-
+ samples/auxdisplay/Makefile        |  11 +-
+ samples/connector/Makefile         |  12 +-
+ samples/hidraw/Makefile            |   9 +-
+ samples/mei/Makefile               |   9 +-
+ samples/pidfd/Makefile             |   8 +-
+ samples/seccomp/Makefile           |  42 +------
+ samples/timers/Makefile            |  17 +--
+ samples/uhid/.gitignore            |   2 +
+ samples/uhid/Makefile              |   9 +-
+ samples/uhid/uhid-example.c        |   4 +-
+ samples/vfs/Makefile               |  11 +-
+ samples/watchdog/Makefile          |  10 +-
+ scripts/Makefile.build             |   5 +
+ scripts/Makefile.clean             |   2 +-
+ scripts/Makefile.userprogs         |  44 +++++++
+ 20 files changed, 258 insertions(+), 175 deletions(-)
+ create mode 100644 samples/uhid/.gitignore
+ create mode 100644 scripts/Makefile.userprogs
+
+-- 
+2.25.1
+
