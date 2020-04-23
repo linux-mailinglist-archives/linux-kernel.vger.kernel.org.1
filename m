@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C101B5F81
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFEF1B5F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 17:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgDWPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 11:38:18 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1426 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729020AbgDWPiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:38:17 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ea1b62a0000>; Thu, 23 Apr 2020 08:37:14 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 23 Apr 2020 08:38:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 23 Apr 2020 08:38:17 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
- 2020 15:38:17 +0000
-Received: from [10.2.165.49] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
- 2020 15:38:16 +0000
-Subject: Re: [PATCH 5.4.33 0/2] Fix for long operation cmds busy detection
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
-        <baolin.wang@linaro.org>, <kstewart@linuxfoundation.org>,
-        <tglx@linutronix.de>, <bradleybolen@gmail.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <anrao@nvidia.com>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
-References: <1587573149-30269-1-git-send-email-skomatineni@nvidia.com>
- <20200423064755.GA3491005@kroah.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <fe49d36f-65c9-736f-791c-27c602cc3bb8@nvidia.com>
-Date:   Thu, 23 Apr 2020 08:38:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729276AbgDWPjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 11:39:21 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37171 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726109AbgDWPjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:39:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1587656348;
+        bh=tVK9wHiOkp+HiJDasb5SXHVH2+WN8NOIYB+YERfKM2Q=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=GWvb0Ms4UUk6kdlp/H1p0bUqoyWCpOnrpdbfcbSi9FW0otuyiMcsHuuRd/1JSnI/i
+         6mGbvzSx6G0pEccZSZ1gJ8RNPdSrbqP4nGK9Vehr9ddvcx/HmOT4EcJlLuPf3pLDOd
+         HdfkymzpEUveOZaRIMmAH1L3fQpBTcIhKIGzRc2k=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M8ykW-1jXfY53sUI-006Aja; Thu, 23 Apr 2020 17:39:08 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
+        Malcolm Priestley <tvboxspy@gmail.com>,
+        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] staging: vt6656: Check the return value of vnt_control_out_* calls
+Date:   Thu, 23 Apr 2020 17:38:34 +0200
+Message-Id: <20200423153836.5582-1-oscar.carter@gmx.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200423064755.GA3491005@kroah.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587656234; bh=495s3XStWCdDU+8jNjva2u+UJ0EQp4UZnnUzedvPKBs=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=T+a/tLa7vytVN2fptW3Zk2nkVxw6Sh3iyOPvclRLH8bj+6zDo5Am+z8yPGAfe0Ae9
-         tDBlCWbdv+yaPJ4AMtfXhF0691igOQONS72SDgMl9TjmPI7P4V2UztY6mZruvRtrFA
-         KkuNHWiXFuW8uCAxoB21ZBDU0b8bkoKFNBdUMDgmM9yFpGiXCDId2EZ0kKXNHXPfy3
-         LsvAM6V5QxH8WUQgZ04F40Sd5oDhJC9O2feWH5b4D8EfswK69FA+VWW5bmSDyPFROX
-         ZH/YCmco99WVLC3RRQybKMF1HYcUXCoLr29/GjHOrS+qpy1hmT5SRRg0HZBCltciy8
-         ND3I4CaTtKMSA==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ez+aTspjR2dwAdEjcGrDYLjesRrwRUyke9QkGrpBfCvigvJ043Z
+ qS0MkZ/xtlErRc4ca1V8ECZk9HZrm8qDs4EzJvkk5jC+N9Mgd7l3SFyRR2jNE19yl+HEe4L
+ KROKFC14FAW5tefsb2dIdQ8ujwPjmmtZGMxL8F309qwl3Jte8rM5VMvYfSDy9ICQifGdZ0b
+ Ho4fZmLSm76L34RFkhuAQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Lu4RGMyXhlA=:dTwuxiosGMrAjqHWh5IGMk
+ BFVKJDbE8Ks+3EiWIJZT8O9+DxVpMEqGfH33ti4lzgGi4q2+I664jobM1JW+W69uEsjhV6hv3
+ 8Q6vVbFPwbVu1o/IbUb/t2wdf3NbZUcSIrNeReN5tyahlMJi44ivp22uAXEDF4DDtTTgGaf/e
+ +lSnYZtymMLzIPAVa2j8i+9YCImdZojmjA+aOjQ+xyL+GWujFRSncVK+bl84TcFrXNmifmRNK
+ +1UfQ8mB/tQbLpPw2Fn/mCdpwzD9t+5k+PYuffuTlOvP7gJ1+PFbziI5b6FZ5e9b/t23rcHdt
+ NsJmAY30YT6OiMlivAyBGjF5k1uDUmwn6EoC5xfyfRjCyhjGblBGhAFb2LIRHP47gt6XF7Duv
+ HGZjJpIQnYZy60cR5suDWd1jxEWHkGrvGl29gJ1lzExokaAQpGdaY7YllYOXb2KKDtqwYn2lj
+ 3ZIKvXygN56md2ltKUDemalaRukKG8caA4qtim4D408mjzXAUtWjS6h0b5NFTv4ztaVKtw16Z
+ MoytBmNQJZfLJ9fV+tIr5g9k8/hf0ADUz5GT4hYXuxmOLq/GAWqZB4D8yCY0oRZLzorPRTeR8
+ vLsgzbP+24jgLIkQ2qhiRTbfKDAIDIDY3r9z3RyWE6kLcKC+ZDMiGJT8WnQdfBy4TtT8SdQIj
+ BDIviYEQhxGVajgpaLShLniUDPWR+jUyOn47Dv8KBVUEsf5zscWVrL9LWGfSfnSNmtmyDkl9G
+ QBoewJ//+TEGNXB3cxdxZRld2jsCb/VPhUtSFE1+xKcUF+5GZTzRgvv2cCWkLHxurA9LHf5ND
+ lxICoUxIyJdXu6RlA3ZC4XVttm+ICWm7irLdGu28k7f3oT5Fo9mzRX7xEOTmL56LD0aiw47wL
+ p19WwaWUATHaPvkfdbuV66by/xcYLjCdorK1iss4zCCcsmm5qrSO9WvUz8mwrZ7ysfq2UMji3
+ hoGrEQfa2aR2S6i84GF1zDSNPrBYlbSo5t5P1UsD2hSlc8YdJ/GLDPE09NMx0vNK7ordRLlvH
+ 8BHNwJKibEVWfHIffCZst0GAClZGB56BK64q/avDX+KsbNDWTEAKbEvX7smcMvkpanlQP+vjM
+ ENCq6OSvh4X6cQRItG60gX2oiUV/TZ6Zkoj/KuVrB2lQZCI3/XZhmSO+mWqYPbjKCquphLic4
+ eFenVdJHK7ep295Ns+EVe9FxBOvcXGrZ19M+hAe/iLTRkFXzTha9EvnlNzLZU8fms/snA8mhy
+ 01mo2rkBxULu9AVmF
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series checks the return value of vnt_control_out_* function
+calls.
 
-On 4/22/20 11:47 PM, Greg KH wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Wed, Apr 22, 2020 at 09:32:27AM -0700, Sowjanya Komatineni wrote:
->> This series is to backport the upstream patches that fixes busy detection
->> for long operation mmc commands by implementing Tegra specific timeout
->> callback to switch between finite and infinite HW busy detection wait
->> modes.
->>
->>
->> Sowjanya Komatineni (2):
->>    sdhci: tegra: Implement Tegra specific set_timeout callback
->>    sdhci: tegra: Enable MMC_CAP_WAIT_WHILE_BUSY host capability
->>
->>   drivers/mmc/host/sdhci-tegra.c | 33 +++++++++++++++++++++++++++++++++
->>   1 file changed, 33 insertions(+)
-> Any specific reason you did not cc: the stable@vger list when asking for
-> stable patches to be merged?
+The first patch checks the return value and when necessary modify the
+function prototype to be able to return the new checked error code.
 
-I added Cc: <stable@vger.kernel.org> in Signed-off area of patches
+The second patch removes the documentation of functions that their
+prototype has changed as the function names are clear enought. Also,
+the actual documentation is not correct in all cases.
 
-Thanks
+Changelog v1 -> v2
+- Remove the function's documentation instead of fix them as suggested
+  Malcolm Priestley.
 
-Sowjanya
+Changelog v2 -> v3
+- Rebase against the staging-next branch of Greg's staging tree.
+
+Oscar Carter (2):
+  staging: vt6656: Check the return value of vnt_control_out_* calls
+  staging: vt6656: Remove functions' documentation
+
+ drivers/staging/vt6656/baseband.c |  35 +++---
+ drivers/staging/vt6656/baseband.h |   4 +-
+ drivers/staging/vt6656/card.c     | 176 +++++++++++-------------------
+ drivers/staging/vt6656/card.h     |  18 +--
+ drivers/staging/vt6656/mac.c      | 128 +++++++---------------
+ drivers/staging/vt6656/mac.h      |  26 ++---
+ drivers/staging/vt6656/power.c    |  22 ++--
+ drivers/staging/vt6656/power.h    |   2 +-
+ 8 files changed, 156 insertions(+), 255 deletions(-)
+
+=2D-
+2.20.1
 
