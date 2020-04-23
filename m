@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EAF1B63F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F42D1B63F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgDWSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S1728247AbgDWSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgDWSoK (ORCPT
+        with ESMTP id S1726994AbgDWSqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:44:10 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1745C09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:44:08 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d184so3409587pfd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:44:08 -0700 (PDT)
+        Thu, 23 Apr 2020 14:46:50 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A257DC09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:46:49 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id q8so5508812eja.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L0juQPPe5rfRYSQ0Sh7WpR1oaLBLNzpfp7k0pnwTsjA=;
-        b=nf99pkAuh1886jnD1pD9AAVRyG01kUAF5rURTolpq38wDz4htD37J1PDSYZTjVI2Or
-         lGHHWJpYCL9unS7mj3upVRBLf6J0jmaeHYX+0X/XOm5h4CBATvpeJJPFt09a3nluPDcp
-         9BtcSYLdnbf4rkv+Ialeojr3kWeqoUIpJm6supGekPtN5G1Hib8EXwCTIzR6QTjdwF8g
-         oJu4pHvkh0mnwFvkzy4WjEwp9ekcLekzPGNCtW6BkJTU71xrKpgIJ3TrnCKyz7gGl0qJ
-         rL6DiuJS21xAreoN9xSXCRaP8ZQKF0L9SgVlA8L6w/zeOAmxpPAeW1OKag/qCPsvFIG2
-         fhCA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
+        b=uAgAkKag1RbQfzu9nzrtN3m+nNJm6TIlAgEnYdMiNTsnQyVx3z30xoLMo6aFDRVSAs
+         kexsjndfxu6FWCiTySJJjcSON5VnTY4QJXeZYW+gewmGuLgo977liSCON4zUxwKghZGF
+         Hl5gpaf/ZrxhrhY0ZcGkmkODqdtzf+LvyOaXX+rQmzz7f8eA59Tk66Y1u1it+gtHHck2
+         ZDyW/LHg3xNaa11oTV+AlxBl6sJbyYyWii4cMdr9q2AKz/sEIGx+Q5hDFC05dGx2CXxa
+         J+si9I89l8TuGKHKC7e+A/1O2IlbI2c1TfcXp7QFpi7hYwTCZyVHGgPiYLB8KP9Jmyp2
+         iTxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L0juQPPe5rfRYSQ0Sh7WpR1oaLBLNzpfp7k0pnwTsjA=;
-        b=sF7ErhK5/P0HXnIIX+JBRJlbnjZGOCe7I7ETlB0ggmzEGZaGTOcZnz15oQMB8ekhJW
-         KhOFiSNPFK+aKZNZdycAWR6pByJYc+jGiMRS4XLfUIlZTSxxVfwVYkeBJltkIkgkt7eH
-         G3UKXc+uN4PjJegWQeQzHk7pT9iSV7WEe1aXv7z7ZqShzsZpxAoD+v1xS2K2PPRV4OZS
-         OBAfCnvJKueomuCjq2uu3wC+9z37Y5Y89FzmLW6de7KNfI21Md8OwYTUmheMhoaKrtw7
-         wPcRehANeY+7+Cdxy7XaXFeNpKB6DBHzzo4wNKKYK+2ZqBJWj8sBzrVgegu9hv707gXV
-         PH9A==
-X-Gm-Message-State: AGi0PuY02X7n7xvOge7lBaghKQ5K7x7Wkeg7f7iu6PgtuD9Xlaq13K9y
-        RNtna3ElvG6P2i4Jzg1JPLIas0uuVISMV4G73iOX0A==
-X-Google-Smtp-Source: APiQypLxhNHAyFaOMhFQH7PUIEWWQyowerZtHbxmvOrYczfM6Zupu2DMZMEabFtaU4B1kJHOts++WJdYzXy/14KY0p4=
-X-Received: by 2002:a62:146:: with SMTP id 67mr5168262pfb.169.1587667447736;
- Thu, 23 Apr 2020 11:44:07 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Bkiw2uu/o/3oMuK1k7a/P40qbuwZ015JenHFxtgTCG0=;
+        b=sBAZS1PqqMBZxl0w96QxtJyg1C6K//Gufs2TOOE2yXyILC8coNKYA4yjKnh7Iwm0ya
+         mRBcoTe/PkDle6Ja9O+YN3GsaSqSoE9+HBCCRz8nLeqeci09iZyrwfW4WtrKrSuAX2bI
+         8UlpihWjUOaZMm6ZEBuLebMvjUf0DzUQO6BchJXi+qdMQr4y58UPik1KANm6AhMMXv0X
+         5XmNfjU421cXwu07HZN5B67IeUEo4YdV8EqLGmdmsh2gdOdl+MgYSRrYw+BLqxdi5apD
+         lSiXsXvPt5GXur6s7XDy3xe4g4wTVd9AyE3XRGh/AysBcr6Z4RhKlPsrNUFbcM7ee9xI
+         b5Rg==
+X-Gm-Message-State: AGi0PuamhCZQ5Poxpl6HHXsuCmMEuo+E9Oxr90Alv2QYVCLWw+Z/zDXO
+        NigtgWHwyMdUxZXDqbeY9Zqj9IpKcr26mhzMNbk=
+X-Google-Smtp-Source: APiQypLkq4PS4A+D+OmseVQWt3PgrFVNLDly8zWPuJW5ZSu4XEHlmVhI7CMyxX+eYDqnQvrZ47Oq8KmiDd1mMsHHBu8=
+X-Received: by 2002:a17:906:af99:: with SMTP id mj25mr3782877ejb.151.1587667608234;
+ Thu, 23 Apr 2020 11:46:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200419131947.173685-1-sedat.dilek@gmail.com>
-In-Reply-To: <20200419131947.173685-1-sedat.dilek@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 23 Apr 2020 11:43:56 -0700
-Message-ID: <CAKwvOd=Rt0q0+nRJasc8GzOXSj1_-jZGNc2bAWJkmd7Vzr8FFw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] kbuild: add CONFIG_LD_IS_BINUTILS
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+Received: by 2002:ab4:a128:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 11:46:47
+ -0700 (PDT)
+Reply-To: mr_abou.sangoule00@yahoo.com
+From:   Mr Aboubacar Sangoule <www.boa.bf@gmail.com>
+Date:   Thu, 23 Apr 2020 19:46:47 +0100
+Message-ID: <CAOV7-tFHUkkwBBu-PeJ+9MQQNitEegFxa17a-rD8c-OPseFjgQ@mail.gmail.com>
+Subject: Hello My Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 6:19 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> This patch is currently not mandatory but a prerequisites for the second one.
->
-> Folks from ClangBuiltLinux project like the combination of Clang compiler
-> and LLD linker from LLVM project to build their Linux kernels.
->
-> Sami Tolvanen <samitolvanen@google.com> has a patch for using LD_IS_LLD (see [1]).
->
-> Documentation/process/changes.rst says and uses "binutils" that's why I called
-> it LD_IS_BINUTILS (see [2] and [3]).
->
-> The second patch will rename existing LD_VERSION to BINUTILS_VERSION to have
-> a consistent naming convention like:
->
-> 1. CC_IS_GCC and GCC_VERSION
-> 2. CC_IS_CLANG and CLANG_VERSION
-> 3. LD_IS_BINUTILS and BINUTILS_VERSION
->
-> [1] https://github.com/samitolvanen/linux/commit/61889e01f0ed4f07a9d631f163bba6c6637bfa46
-> [2] https://git.kernel.org/linus/tree/Documentation/process/changes.rst#n34
-> [3] https://git.kernel.org/linus/tree/Documentation/process/changes.rst#n76
->
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+Hello My Dear Friend,
 
-Just some background on Sami's patch.  Originally we were using
-ld.gold (for LTO for Pixel 3) before moving to ld.lld (for LTO for
-Pixel 4 and later).  Not sure if Kconfig would be a better place to
-check if gold is used, then warn?  I kind of prefer the distinction
-that binutils contains two different linkers, though if no one is
-supporting ld.gold, and it doesn't work for the kernel, then maybe
-that preference is moot?
+Good morning, how are you? Hope fine,
+I just want to know if you can help me to transfer this discovered
+abandon amount of ($6.5 Million us dollars) into any foreign bank
+account of your choice. After the transfer we have to share it, 50%
+for me, and 50% for you. Please let me know if you can handle this
+transfer. For more information regarding the transfer. I hope you will
+work with me honestly? Because this transaction is confidential.
 
-> ---
->  init/Kconfig | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 9e22ee8fbd75..520116efea0f 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -16,9 +16,12 @@ config GCC_VERSION
->         default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
->         default 0
->
-> +config LD_IS_BINUTILS
-> +       def_bool $(success,$(LD) -v | head -n 1 | grep -q 'GNU ld')
-> +
->  config LD_VERSION
->         int
-> -       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-> +       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh) if LD_IS_BINUTILS
->
->  config CC_IS_CLANG
->         def_bool $(success,$(CC) --version | head -n 1 | grep -q clang)
-> --
-> 2.26.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200419131947.173685-1-sedat.dilek%40gmail.com.
+Kindly Update me with your personal information such as;
 
+1. Your name in Full:
+2. Your House Address:
+3. Your Occupation:
+4. Your Age:
+5. Your direct phone number;
+6. Your Identity card or international passport:
 
+I want to hear from you as soon as possible, this transaction will be
+finalize before one week which is seven 7 bank working days. Hope you
+understood.I am waiting for your urgent positive response soon.Please
+send the following: Reply To This E-mail Address
+mr_abou.sangoule00@yahoo.com
 
--- 
-Thanks,
-~Nick Desaulniers
+1)your full name.....
+
+God bless you.
+
+Yours Faithfully.
+
+Mr Aboubacar Sangoule
