@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0670F1B5D30
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B55C1B5D33
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 16:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgDWOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 10:02:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40643 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgDWOCo (ORCPT
+        id S1728745AbgDWODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 10:03:09 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:20623 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726060AbgDWODI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:02:44 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jRcR6-0006xx-Rb; Thu, 23 Apr 2020 14:02:40 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amd/display: fix incorrect assignment due to a typo
-Date:   Thu, 23 Apr 2020 15:02:40 +0100
-Message-Id: <20200423140240.19360-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Apr 2020 10:03:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587650587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bwq59lAwZcqWx6DoQUqW9btvyMCwQqbrPUnucuTaXSI=;
+        b=LkkP80Z5PKs2UlufakMswl3jS+dwuCFbPBM+eS8TBWkJyNJaUXbH1Ng+/gkbVMy5bU8Dhu
+        laOi8S1drBcC6um7zbXRDT/tbC5FtaYHMIwu065KlB0g5zyn5jyR/LzGoX3bTvIOe9vUl+
+        SWqgInMZefWYGcrQC+hyKt2bpBlQdFg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-Hj0OtouUMO2odi5YGP4xCg-1; Thu, 23 Apr 2020 10:03:01 -0400
+X-MC-Unique: Hj0OtouUMO2odi5YGP4xCg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD9508014D8;
+        Thu, 23 Apr 2020 14:02:58 +0000 (UTC)
+Received: from krava (ovpn-115-157.ams2.redhat.com [10.36.115.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 570A45D9D3;
+        Thu, 23 Apr 2020 14:02:52 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 16:02:49 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 00/11] perf metric fixes and test
+Message-ID: <20200423140249.GA1199027@krava>
+References: <20200422220430.254014-1-irogers@google.com>
+ <20200423112825.GD1136647@krava>
+ <1dd2e280-d711-2dda-61b1-b81609af6467@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1dd2e280-d711-2dda-61b1-b81609af6467@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Apr 23, 2020 at 09:44:24PM +0800, Jin, Yao wrote:
+> Hi Jiri,
+> 
+> On 4/23/2020 7:28 PM, Jiri Olsa wrote:
+> > On Wed, Apr 22, 2020 at 03:04:19PM -0700, Ian Rogers wrote:
+> > > Add a test that all perf metrics (for your architecture) are
+> > > parsable. Fix bugs in the expr parser and in x86 metrics. Untested on
+> > > architectures other than x86.
+> > > 
+> > > v2 adds Fixes tags to commit messages for when broken metrics were
+> > >    first added. Adds a debug warning for division by zero in expr, and
+> > >    adds a workaround for id values in the expr test necessary for
+> > >    powerpc. It also fixes broken power8 and power9 metrics.
+> > 
+> > looks good to me
+> > 
+> > Jin Yao, is there a metric that's not working for you with this patchset
+> > applied?
+> > 
+> > thanks,
+> > jirka
+> > 
+> 
+> Let me look for a CLX for testing, but maybe need some time.
+> 
+> BTW, suppose this patchset can work well, does it mean we will change the
+> json file format in future?
+> 
+> For example,
+> 
+> before:
+> cha@event\\=0x36\\\\\\
+> 
+> after:
+> cha@event\\=0x36\\
+> 
+> "\\\\" are removed.
+> 
+> If so, we need to change our event generation script.
 
-The assignment to infopacket->sb[7] looks incorrect, the comment states it
-is the minimum refresh rate yet it is being assigned a value from the
-maximum refresh rate max_refresh_in_uhz. Fix this by using min_refresh_in_uhz
-instead.
+ok, maybe I got the wrong idea that the extra \\\\ were just
+superfluous, what was the actual error there? and what's the
+reason for that many '\' in there?
 
-Addresses-Coverity: ("Copy-paste error")
-Fixes: d2bacc38f6ca ("drm/amd/display: Change infopacket type programming")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/display/modules/freesync/freesync.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-index eb7421e83b86..fe11436536e8 100644
---- a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-+++ b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-@@ -587,7 +587,7 @@ static void build_vrr_infopacket_data_v3(const struct mod_vrr_params *vrr,
- 	} else {
- 		// Non-fs case, program nominal range
- 		/* PB7 = FreeSync Minimum refresh rate (Hz) */
--		infopacket->sb[7] = (unsigned char)((vrr->max_refresh_in_uhz + 500000) / 1000000);
-+		infopacket->sb[7] = (unsigned char)((vrr->min_refresh_in_uhz + 500000) / 1000000);
- 		/* PB8 = FreeSync Maximum refresh rate (Hz) */
- 		infopacket->sb[8] = (unsigned char)((vrr->max_refresh_in_uhz + 500000) / 1000000);
- 	}
--- 
-2.25.1
+jirka
 
