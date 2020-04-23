@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9B51B5A48
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0CE1B5A58
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgDWLRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727858AbgDWLRx (ORCPT
+        id S1728071AbgDWLUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 07:20:06 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:35995 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728015AbgDWLUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:17:53 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A8AC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 04:17:53 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id i5so5283164uaq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 04:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l7Ez4s7TFcL08+td0Pw/HtNXY/KZWdaJ4sc1TpkUu4I=;
-        b=TXlhMy4AhQ0GH0pixgpOUpMgHBsU3h0tAkK/6Rx8vJFz56Uxwhnoqp8zEbB1TQIEgw
-         apmUDenzv/6fnRwX4igtvuMyAnkVyAJ602w5wRbbM98UpxkfLo/ncMfBp+HsaHtHpr9w
-         hhXFNofBL01cDkDNed4uptRCpPy/WQfooEJVAvSnV9clpK0CmWOynAxeja2PE6cyqD/F
-         Ua4fG1IrFBIkAjAof/I6JwxWwQCqPMrWFL07+ylSyRMhyUsIX23DJLWWKPdxpgkM+lYk
-         Np5thEbUlOwBnIEYwqK+OagaKbamesqM/QaJ24DLT+XgSL3Sqt/W3WdhCI5+MsuLUckS
-         pPdw==
+        Thu, 23 Apr 2020 07:20:06 -0400
+Received: by mail-io1-f69.google.com with SMTP id p9so5333100ioh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 04:20:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l7Ez4s7TFcL08+td0Pw/HtNXY/KZWdaJ4sc1TpkUu4I=;
-        b=EVrzUJccUI1qUq4uy7iMesVRQHSLtxwEHP4tpQ7mk9JIrUjg9A56Hr8LU+gpY4NTTU
-         nzzlpMbBtkn3W47cmf971Y+dZg9WEPIUKHNuRfq8LdPLfTT9P1+knDz5MxIeOIvkDLis
-         uV0v/BaPt1L9xlNKNdngExrtfpwxihP74P2jThvoU5SUJd5hrFyC9F9WE8gBbFmuLapR
-         Ypcj95ChTyH/ks5bl9YZ4ZhDeHDbQA7f3TPqnlYNK+GXoub+cKgHDPpgVFwVjIqANJAN
-         uLb7r41sQO3iAbXJv9+VeSoYxRuliEWs0BMUvZOe7HavwthVCWRgJImlZ2Qs0z4okB5c
-         Y8pg==
-X-Gm-Message-State: AGi0PuYz1/LQh3CPSvwEunb12cf+ay57+bMQ4h416SkspR+Sk8bpUxtU
-        f1Ih0YOVykVFMFCJWiEvuV0gn2PGRE1Zg/6ubIpDL1ZG
-X-Google-Smtp-Source: APiQypLA9V3XutvG6mVWw3NQ84jZUoAmzeAqOv7CjGYh0u1E0EmomcjbzAXorUdZ+CSlX+3b6nji5sX1kUGklyCk5xg=
-X-Received: by 2002:a67:f24b:: with SMTP id y11mr2479677vsm.165.1587640672754;
- Thu, 23 Apr 2020 04:17:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7ws0cdv3Hoh5HeHAP/ghf6fY1WIucwMKaP3c8MnIE78=;
+        b=fgj5gxGQOQ6MQDEL/229fos02HdreH46iZxQQP2RLb5p/k6n6YnOPaCfDG86WTu0Nd
+         1PPGXCwI9dR78cTLE6XNbl3myck1pcx2i3vyG2m+y+f6hwFi8YnzAOCvJiFAgPIjA4Sp
+         Ply33URYRPJRDtQaUYkjclT7JMBHgP4M7xUKOxQl4a6NUV3dkGytBba7L5z72WcZ26P+
+         JajvDOnpKqxZ3UY0DJ7mArXjJFCzwVK+1rizI0MybCgUbTYA9n/GybLiBJ+Jpb//TncA
+         ZYJiuReQPvMNuG+hMkjDtEzQ3wajGtnYsga3afGJ4ZHkUpThIwbUzh61JZcOBW36RoIO
+         RydA==
+X-Gm-Message-State: AGi0PuZeZlc8mmkfZLJXSFUv0PhGR0cTqZQrnaNPyNkmJ4E34QkW99jT
+        QyASl43xfeyCUQ3QUiTkpaRJwuFborHWwuggZb23ZiGG/ao5
+X-Google-Smtp-Source: APiQypI+EsLOsSPy6Sg+P7SRjTLpki9gp5v/Xt5zbhKL9lDbKFt5ewoTipmheSr6K6PolKz5AuPvg7AodJLNWX3+BaXd0t0KhCeX
 MIME-Version: 1.0
-References: <1587633319-19835-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1587633319-19835-1-git-send-email-zou_wei@huawei.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Apr 2020 13:17:16 +0200
-Message-ID: <CAPDyKFogU2BT1vmcovrGvNEOtS+cxWwM09foMfN3bOPXEhhT3g@mail.gmail.com>
-Subject: Re: [PATCH -next] mmc: core: Use DEFINE_DEBUGFS_ATTRIBUTE instead of DEFINE_SIMPLE_ATTRIBUTE
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a92:3cc4:: with SMTP id j65mr2713330ilf.190.1587640805461;
+ Thu, 23 Apr 2020 04:20:05 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 04:20:05 -0700
+In-Reply-To: <1587639690.23108.2.camel@suse.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d967305a3f36ee9@google.com>
+Subject: Re: general protection fault in go7007_usb_probe
+From:   syzbot <syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, hverkuil-cisco@xs4all.nl,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, oneukum@suse.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Apr 2020 at 11:09, Zou Wei <zou_wei@huawei.com> wrote:
->
-> Fixes coccicheck warning:
->
-> drivers/mmc/core/debugfs.c:222:0-23: WARNING: mmc_clock_fops should be
-> defined with DEFINE_DEBUGFS_ATTRIBUTE
->
-> Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE
-> for debugfs files
->
-> Fixes: 703aae3d09a4b ("mmc: add a file to debugfs for changing host clock at runtime")
-> Fixes: a04c50aaa916f ("mmc: core: no need to check return value of debugfs_create functions")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/mmc/core/debugfs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/core/debugfs.c b/drivers/mmc/core/debugfs.c
-> index 09e0c76..9ec84c8 100644
-> --- a/drivers/mmc/core/debugfs.c
-> +++ b/drivers/mmc/core/debugfs.c
-> @@ -219,7 +219,7 @@ static int mmc_clock_opt_set(void *data, u64 val)
->         return 0;
->  }
->
-> -DEFINE_SIMPLE_ATTRIBUTE(mmc_clock_fops, mmc_clock_opt_get, mmc_clock_opt_set,
-> +DEFINE_DEBUGFS_ATTRIBUTE(mmc_clock_fops, mmc_clock_opt_get, mmc_clock_opt_set,
->         "%llu\n");
->
->  void mmc_add_host_debugfs(struct mmc_host *host)
-> @@ -232,8 +232,8 @@ void mmc_add_host_debugfs(struct mmc_host *host)
->         debugfs_create_file("ios", S_IRUSR, root, host, &mmc_ios_fops);
->         debugfs_create_x32("caps", S_IRUSR, root, &host->caps);
->         debugfs_create_x32("caps2", S_IRUSR, root, &host->caps2);
-> -       debugfs_create_file("clock", S_IRUSR | S_IWUSR, root, host,
-> -                           &mmc_clock_fops);
-> +       debugfs_create_file_unsafe("clock", S_IRUSR | S_IWUSR, root, host,
-> +                                  &mmc_clock_fops);
+Hello,
 
-Apologize for my ignorance, but why convert to the *_unsafe option for
-this one, but not for the others?
+syzbot has tested the proposed patch and the reproducer did not trigger crash:
 
-[...]
+Reported-and-tested-by: syzbot+cabfa4b5b05ff6be4ef0@syzkaller.appspotmail.com
 
-Kind regards
-Uffe
+Tested on:
+
+commit:         e9010320 usb: cdns3: gadget: make a bunch of functions sta..
+git tree:       https://github.com/google/kasan.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd14feb44652cfaf
+dashboard link: https://syzkaller.appspot.com/bug?extid=cabfa4b5b05ff6be4ef0
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=108a4ecfe00000
+
+Note: testing is done by a robot and is best-effort only.
