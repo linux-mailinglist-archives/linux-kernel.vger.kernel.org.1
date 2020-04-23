@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D270E1B68FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C741B6900
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgDWXTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729809AbgDWXTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728370AbgDWXTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:19:34 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17649 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729810AbgDWXTW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Apr 2020 19:19:22 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8CF92192A;
-        Thu, 23 Apr 2020 23:19:21 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jRl7o-000YtH-L0; Thu, 23 Apr 2020 19:19:20 -0400
-Message-Id: <20200423231920.532930181@goodmis.org>
-User-Agent: quilt/0.65
-Date:   Thu, 23 Apr 2020 19:18:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hulk Robot <hulkci@huawei.com>, Jason Yan <yanaijie@huawei.com>
-Subject: [for-linus][PATCH 4/4] tracing: Convert local functions in tracing_map.c to static
-References: <20200423231838.682478056@goodmis.org>
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea2226d0001>; Thu, 23 Apr 2020 16:19:09 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 23 Apr 2020 16:19:21 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 23 Apr 2020 16:19:21 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
+ 2020 23:19:21 +0000
+Received: from [10.2.165.49] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr
+ 2020 23:19:20 +0000
+Subject: Re: [RFC PATCH v9 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1587536339-4030-1-git-send-email-skomatineni@nvidia.com>
+ <1587536339-4030-7-git-send-email-skomatineni@nvidia.com>
+ <7e473fa9-0409-d868-e818-2e7928a8acca@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <a83bfc89-35de-85b5-fe5f-71e62456f5e9@nvidia.com>
+Date:   Thu, 23 Apr 2020 16:19:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <7e473fa9-0409-d868-e818-2e7928a8acca@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587683949; bh=oU0Wfn+wZyvfbdQdhKn0QkbGqj+n2qkMVpStz95S7M8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=KE+HmEUNg+W7/ykVVaTcd+lF7j8sL6Isr1yR05pKLfbV2Sn5yFho6pQ8dlJOkvy9L
+         7liQmHBwNlRf9ruNAUdJ305CP6B0BPMl3m00ppK5Bu3+ELq9enVY7b00y6cwIQ5aJ6
+         T76XcIaaFRWMhVpiqfhGdet1hASX+UKfAO6oOJlmuV1VsRvPpRB3WRNbSVeqvCzosB
+         fOzIlLSiYjDEAjtSxDNPseayuPSherCpm/Cx5bqDhDZrI7oIgrOvRrAcWkhQO45A0W
+         fN8sjkwvndOBnW02zk3otKTxL0ydL31giLF1IYn+SXuVZWxADDLTvdl6SN8ogE7aTg
+         RB1pVjdAXarIw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Yan <yanaijie@huawei.com>
 
-Fix the following sparse warning:
+On 4/23/20 4:16 PM, Dmitry Osipenko wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> 22.04.2020 09:18, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> +static int chan_capture_kthread_start(void *data)
+>> +{
+>> +     struct tegra_vi_channel *chan =3D data;
+>> +     struct tegra_channel_buffer *buf;
+>> +     int err =3D 0;
+>> +
+>> +     set_freezable();
+>> +
+>> +     while (1) {
+>> +             try_to_freeze();
+>> +
+>> +             wait_event_interruptible(chan->start_wait,
+>> +                                      !list_empty(&chan->capture) ||
+>> +                                      kthread_should_stop());
+>> +
+>> +             if (kthread_should_stop())
+>> +                     break;
+>> +
+>> +             /*
+>> +              * Source is not streaming if error is non-zero.
+>> +              * So, do not dequeue buffers on capture error.
+>> +              */
+>> +             if (err)
+>> +                     continue;
+> This will result in an endless loop, I suppose it wasn't the intention.
 
-kernel/trace/tracing_map.c:286:6: warning: symbol
-'tracing_map_array_clear' was not declared. Should it be static?
-kernel/trace/tracing_map.c:297:6: warning: symbol
-'tracing_map_array_free' was not declared. Should it be static?
-kernel/trace/tracing_map.c:319:26: warning: symbol
-'tracing_map_array_alloc' was not declared. Should it be static?
+no it will not. on error we report vb2_queue_error which will do=20
+streaming stop request.
 
-Link: http://lkml.kernel.org/r/20200410073312.38855-1-yanaijie@huawei.com
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/tracing_map.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-index 9e31bfc818ff..74738c9856f1 100644
---- a/kernel/trace/tracing_map.c
-+++ b/kernel/trace/tracing_map.c
-@@ -283,7 +283,7 @@ int tracing_map_add_key_field(struct tracing_map *map,
- 	return idx;
- }
- 
--void tracing_map_array_clear(struct tracing_map_array *a)
-+static void tracing_map_array_clear(struct tracing_map_array *a)
- {
- 	unsigned int i;
- 
-@@ -294,7 +294,7 @@ void tracing_map_array_clear(struct tracing_map_array *a)
- 		memset(a->pages[i], 0, PAGE_SIZE);
- }
- 
--void tracing_map_array_free(struct tracing_map_array *a)
-+static void tracing_map_array_free(struct tracing_map_array *a)
- {
- 	unsigned int i;
- 
-@@ -316,7 +316,7 @@ void tracing_map_array_free(struct tracing_map_array *a)
- 	kfree(a);
- }
- 
--struct tracing_map_array *tracing_map_array_alloc(unsigned int n_elts,
-+static struct tracing_map_array *tracing_map_array_alloc(unsigned int n_elts,
- 						  unsigned int entry_size)
- {
- 	struct tracing_map_array *a;
--- 
-2.26.1
-
+So thread will be stopped on streaming stop request thru kthread stop signa=
+l
 
