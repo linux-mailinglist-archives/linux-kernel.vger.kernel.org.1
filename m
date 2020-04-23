@@ -2,61 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3FF1B63DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737F21B6457
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730288AbgDWSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730102AbgDWSek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:34:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AEFD2071C;
-        Thu, 23 Apr 2020 18:34:39 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 14:34:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PREEMPT_RT] 8250 IRQ lockup when flooding serial console (was
- Re: [ANNOUNCE] v5.4.28-rt19)
-Message-ID: <20200423143437.3d82c3ea@gandalf.local.home>
-In-Reply-To: <20200423090601.2439e64f@gandalf.local.home>
-References: <20200330144712.cwcz5ejal4ankeoi@linutronix.de>
-        <nycvar.YEU.7.76.2004231017470.4730@gjva.wvxbf.pm>
-        <nycvar.YFH.7.76.2004231111550.19713@cbobk.fhfr.pm>
-        <20200423104559.rgplz6rqk6sg4kz7@linutronix.de>
-        <20200423090601.2439e64f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728249AbgDWTQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:16:29 -0400
+Received: from 8.mo177.mail-out.ovh.net ([46.105.61.98]:53460 "EHLO
+        8.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgDWTQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 15:16:29 -0400
+X-Greylist: delayed 1809 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Apr 2020 15:16:28 EDT
+Received: from player796.ha.ovh.net (unknown [10.110.171.173])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id BE17C12D3A6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 20:37:12 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player796.ha.ovh.net (Postfix) with ESMTPSA id DBDDC11A47C5D;
+        Thu, 23 Apr 2020 18:37:06 +0000 (UTC)
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH 1/3] docs: sysctl/kernel: document cad_pid
+Date:   Thu, 23 Apr 2020 20:36:49 +0200
+Message-Id: <20200423183651.15365-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 16165670866134453637
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeelgdeljecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Apr 2020 09:06:01 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Based on the implementation in kernel/sysctl.c (the proc_do_cad_pid()
+function), kernel/reboot.c, and include/linux/sched/signal.h.
 
-> BTW, I haven't released a new 5.4-rt because the default one is triggering
-> a large latency somewhere, and makes my tests fail. I'm trying to dig into
-> the cause when I get time.
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Figured it out. Seems that starting with 5.4-rt, PREEMPT_RT now depends on
-CONFIG_EXPERT, which I didn't have set, and PREEMPT_RT was disabled when
-using my default config.
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 55b24eada13c..82bfd5892663 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -116,6 +116,16 @@ run. The statistics can be seen using ``bpftool``.
+ = ===================================
+ 
+ 
++cad_pid
++=======
++
++This is the pid which will be signalled on reboot (notably, by
++Ctrl-Alt-Delete). Writing a value to this file which doesn't
++correspond to a running process will result in ``-ESRCH``.
++
++See also `ctrl-alt-del`_.
++
++
+ cap_last_cap
+ ============
+ 
 
-Had to add CONFIG_EXPERT to my default config to make it work again.
+base-commit: 7b9121040d83eb9e332f7dbc140eca17643d3586
+-- 
+2.20.1
 
-Starting the tests over....
-
--- Steve
