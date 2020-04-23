@@ -2,140 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFD71B5AAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FB11B5BAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 14:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgDWLnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:43:23 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43943 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgDWLnV (ORCPT
+        id S1728358AbgDWMpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 08:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726435AbgDWMpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:43:21 -0400
-Received: by mail-lj1-f193.google.com with SMTP id l19so5836902lje.10;
-        Thu, 23 Apr 2020 04:43:18 -0700 (PDT)
+        Thu, 23 Apr 2020 08:45:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E27C08E934;
+        Thu, 23 Apr 2020 05:45:44 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id d17so6662037wrg.11;
+        Thu, 23 Apr 2020 05:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=out4PF7f/PmTIeJMMNg9xrpl67X2+hDnaDGBvd5Qh6I=;
+        b=SEH1jWKV903FaLqMz8aHHnCbdx0XE+eaEso7o5J4JGZkkKyMYT2FZX6gmDu5io9L4O
+         XhmCAmk+9ygDNmWYQboRZwlEUxJCWVZlzNzb1DNJAtm/JaG7KBA6SvbmLkAt8a0sH4GA
+         P5rsgyQZJbVZ8xU3mf+pD5AF/guqDgQiOE1WBvaCLqoc6+8Xc3FcZlqZSlPC3cIXFKTh
+         rlAIgReQKVFuDTSEgklm/rYQp3INflYJLLVmRR2OHBwjaOk3r+wjw5n84VPBcQeJIlix
+         uhaRCsjKui/yJF4394LZt6kykocczgiBPim6P8jprY4kcp2LMGrSFXX6/zQKp5Xxvw0R
+         qFRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C7lj58MFnLePtA19l1qlYr6e++DcjSNazO2l/JEQ44w=;
-        b=GQxJrhN1HJmf0PEh02R4CQlQq/Jc/cfcCcgfhomOtMAfSkyCGFjh8dNxzxgVHxyrAN
-         w6rLCT94FH1CHiGvdKT06vXfGS0xd6QI7x2xB7vtNejCN2QQmAFSBQjTklLXQxNQ2vEp
-         ZD4++79mLRT62BX14IeinIId6seG4fdTBDGk+ehNA1N3ksY+0nOmwzZGlNPNjG/1eT45
-         ValhXzSPe6nEa+MfzpGq/uzgXl8tcwv8EkKCHAs+mGWku8/ZdVoyDbWDPdhlH7UycANi
-         NdNjdVU4NX1PEFPkXk/84ezBD6QNmBVdYzk4UA2QJvNFAmN2n0lW9k65df7ssH3VDN3o
-         YKNQ==
-X-Gm-Message-State: AGi0PuZRmhod6jK/rFustsW0ObfCw1IoPo/kThtCz0gAvQ35wmYufGPq
-        3JQpOu012nIROKnNThMbR7g=
-X-Google-Smtp-Source: APiQypLpXxwpZWbjR9D3X5tsAZC+au1GagS5X6SZYtkKVLlZ7Vj6uBrtzkk360XXCFwFPPxnLcWh7g==
-X-Received: by 2002:a2e:a169:: with SMTP id u9mr2231221ljl.144.1587642197450;
-        Thu, 23 Apr 2020 04:43:17 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 16sm1613269ljr.55.2020.04.23.04.43.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=out4PF7f/PmTIeJMMNg9xrpl67X2+hDnaDGBvd5Qh6I=;
+        b=ch24rzIoit+KoUnt1QV0tauG/PjHVNa1yAH1kqy5fuhJwrr94wrv5p8Isgjy+lg08R
+         v8xn2KV+C5KdoAFT0WIj3Kao0sPFzGsO3sGSaqoghaSh2bqLuWZDlvDW11KAk6LdLYIc
+         NpyySItQgWwqLI/RclwLJS7CSNsc/FGSEj49Ot1Ze1yZKawEefri6CUQpAtdywibB4ks
+         xCposkzU4RmnrksiZzi11UdQZrHlei401dediDbwJXRb+Lh1CR6o4XAgQQ+Oq3c+OH12
+         0eokmaEUoI5lwpo2TPhq4L775HxqK6gygDrl369WQcLmL5wsFcHfk22rb5YHeBLuT6QZ
+         85Wg==
+X-Gm-Message-State: AGi0PuZpadPl8y0yyMMGt/Rxh3c70e5jYgjZSa1jvM4yBukzsrZ9F7Kw
+        ACYM389nm6HcbWG23rhScv8=
+X-Google-Smtp-Source: APiQypJLoMPD4aEjRb8mZV8whi87DgBvI13poaPpbJYRJq+2N/ZzLCza99R+9lQnGYTDapul28+r4w==
+X-Received: by 2002:adf:ec46:: with SMTP id w6mr2785258wrn.262.1587645943224;
+        Thu, 23 Apr 2020 05:45:43 -0700 (PDT)
+Received: from net.saheed (563BD1A4.dsl.pool.telekom.hu. [86.59.209.164])
+        by smtp.gmail.com with ESMTPSA id s18sm3771640wra.94.2020.04.23.05.45.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 04:43:16 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.92.3)
-        (envelope-from <johan@kernel.org>)
-        id 1jRaGM-0004uT-CR; Thu, 23 Apr 2020 13:43:26 +0200
-Date:   Thu, 23 Apr 2020 13:43:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
-        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
-        Johan Hovold <johan@kernel.org>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCHv6 0/4] n_gsm serdev support and protocol driver for
- droid4 modem
-Message-ID: <20200423114326.GQ18608@localhost>
-References: <20200421232752.3070-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421232752.3070-1-tony@atomide.com>
+        Thu, 23 Apr 2020 05:45:42 -0700 (PDT)
+From:   Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+X-Google-Original-From: Bolarinwa Olayemi Saheed <refactormyself@users.noreply.github.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Stephen Kitt <steve@sk2.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masanari Iida <standby24x7@gmail.com>,
+        Eric Biggers <ebiggers@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH] docs: Fix WARNING - Title underline too short
+Date:   Thu, 23 Apr 2020 13:45:17 +0200
+Message-Id: <20200423114517.18074-1-refactormyself@users.noreply.github.com>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
 
-On Tue, Apr 21, 2020 at 04:27:48PM -0700, Tony Lindgren wrote:
-> Hi all,
-> 
-> Here's v4 set of n_gsm serdev support patches, and the related protocol
-> driver for the modem found on Motorola Mapphone phones and tablets
-> like droid4.
-> 
-> This series only adds basic character device support for the serdev
-> driver. Other serdev consumer drivers for specific devices will be
-> posted separately.
+There were two instances of "Title underline too short" and they were
+increased to match the title text.
 
-I'm still missing an architectural (design) overview here -- reviewer
-time is a scarce resource.
+Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I also suggested earlier that you include, at least as an RFC, one or
-more of your child-device drivers so that we can see how this ends up
-being used in the end (including an example devicetree).
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 3e68da9fc066..6f7f01b1180c 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -292,7 +292,7 @@ Default value is "``/sbin/hotplug``".
+ 
+ 
+ hung_task_all_cpu_backtrace:
+-================
++============================
+ 
+ If this option is set, the kernel will send an NMI to all CPUs to dump
+ their backtraces when a hung task is detected. This file shows up if
+@@ -575,7 +575,7 @@ scanned for a given scan.
+ 
+ 
+ oops_all_cpu_backtrace:
+-================
++=======================
+ 
+ If this option is set, the kernel will send an NMI to all CPUs to dump
+ their backtraces when an oops event occurs. It should be used as a last
+-- 
+2.18.2
 
-Some high-level comments until then:
-
-I'm not sure that a plain chardev interface for the mux channels is the
-right interface. The n_gsm ldisc exposes tty devices and I think your
-serdev adaptation should continue to do that.
-
-On that note; you're not actually adding general TS 27.010 serdev
-support, but rather some hooks and a custom driver and interface (mfd +
-/dev/motmdmN) for one particular modem.
-
-I'd rather see a generic implementation which can be used with other
-modems and that continues to expose a /dev/gsmttyN interface to which we
-could attach serdev clients instead (and not create a motmdm serdev
-replica of sorts).
-
-I know the location of this driver has been up for discussion already,
-but drivers/tty/serdev/protocol still isn't right (e.g. we don't have an
-drivers/i2c/protocol directory where we stuff random i2c client
-drivers).
-
-It's an mfd + custom chardev driver for a modem and related to n_gsm
-(even more if you add generic serdev support). Currently, drivers/mfd or
-drivers/misc appear to be better choices. Otherwise, n_gsm lives in
-drivers/tty since it's a line discipline, but it could be moved to a new
-drivers/modem if needed (cf. the bluetooth hci ldisc).
-
-Last, it seems you've based the serdev-ngsm-motmdm.c chardev
-implementation on a more or less verbatim copy of drivers/gnss/core.c.
-I'd appreciate if you could mention that in the file header and
-reproduce the copyright notice if you end up keeping that interface.
-
-> Tony Lindgren (4):
->   tty: n_gsm: Add support for serdev drivers
->   serdev: ngsm-motmdm: Add Motorola TS 27.010 serdev modem driver for
->     droid4
->   dt-bindings: serdev: motmdm: Add binding for motorola-mdm
->   ARM: dts: omap4-droid4: Enable basic modem support
-> 
->  .../serdev/motorola,mapphone-mdm6600.yaml     |   34 +
->  .../boot/dts/motorola-mapphone-common.dtsi    |    6 +
->  drivers/tty/n_gsm.c                           |  372 +++++
->  drivers/tty/serdev/Kconfig                    |    2 +
->  drivers/tty/serdev/Makefile                   |    2 +
->  drivers/tty/serdev/protocol/Kconfig           |   14 +
->  drivers/tty/serdev/protocol/Makefile          |    3 +
->  .../tty/serdev/protocol/serdev-ngsm-motmdm.c  | 1191 +++++++++++++++++
->  include/linux/serdev-gsm.h                    |  168 +++
->  9 files changed, 1792 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serdev/motorola,mapphone-mdm6600.yaml
->  create mode 100644 drivers/tty/serdev/protocol/Kconfig
->  create mode 100644 drivers/tty/serdev/protocol/Makefile
->  create mode 100644 drivers/tty/serdev/protocol/serdev-ngsm-motmdm.c
->  create mode 100644 include/linux/serdev-gsm.h
-
-Johan
