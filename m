@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325421B6577
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 22:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B771B657B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 22:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgDWUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 16:34:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:42895 "EHLO mga07.intel.com"
+        id S1726386AbgDWUeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 16:34:36 -0400
+Received: from fieldses.org ([173.255.197.46]:60220 "EHLO fieldses.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgDWUe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 16:34:28 -0400
-IronPort-SDR: VAtVVIkPnEVAwufiCRL2eY0S5sFWbPoS0epttwpj4uoP7lmXNztWC4PUONWKQpc9ZVh7iuWueS
- 1qxZIq7VN5hg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 13:34:25 -0700
-IronPort-SDR: EI6Ve9nnUVyb2g3jV9TsSYsL0FC4/+jzmNMl1+ZNvkzCyZ6IqOTd3GUkgjEJuulHr5wLVISCjn
- H2pJtnmhT8QA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,309,1583222400"; 
-   d="scan'208";a="301316877"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Apr 2020 13:34:24 -0700
-Date:   Thu, 23 Apr 2020 13:34:24 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] KVM: SVM: Change flag passed to GUP fast in
- sev_pin_memory()
-Message-ID: <20200423203424.GA3997014@iweiny-DESK2.sc.intel.com>
-References: <20200423152419.87202-1-Janakarajan.Natarajan@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423152419.87202-1-Janakarajan.Natarajan@amd.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726387AbgDWUeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 16:34:36 -0400
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 308AE1BE2; Thu, 23 Apr 2020 16:34:35 -0400 (EDT)
+From:   "J. Bruce Fields" <bfields@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "J. Bruce Fields" <bfields@redhat.com>
+Subject: [PATCH 1/2] nfsd4: common stateid-printing code
+Date:   Thu, 23 Apr 2020 16:34:32 -0400
+Message-Id: <1587674073-9551-1-git-send-email-bfields@redhat.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 10:24:19AM -0500, Janakarajan Natarajan wrote:
-> When trying to lock read-only pages, sev_pin_memory() fails because FOLL_WRITE
-> is used as the flag for get_user_pages_fast().
-> 
-> Commit 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a write
-> 'bool'") updated the get_user_pages_fast() call sites to use flags, but
-> incorrectly updated the call in sev_pin_memory(). As the original coding of this
-> call was correct, revert the change made by that commit.
-> 
-> Fixes: 73b0140bf0fe ("mm/gup: change GUP fast to use flags rather than a write 'bool'")
-> Signed-off-by: Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+From: "J. Bruce Fields" <bfields@redhat.com>
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+There's a problem with how I'm formatting stateids.  Before I fix it,
+I'd like to move the stateid formatting into a common helper.
 
-> ---
->  arch/x86/kvm/svm/sev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index cf912b4aaba8..89f7f3aebd31 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -345,7 +345,7 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
->  		return NULL;
->  
->  	/* Pin the user virtual address. */
-> -	npinned = get_user_pages_fast(uaddr, npages, FOLL_WRITE, pages);
-> +	npinned = get_user_pages_fast(uaddr, npages, write ? FOLL_WRITE : 0, pages);
->  	if (npinned != npages) {
->  		pr_err("SEV: Failure locking %lu pages.\n", npages);
->  		goto err;
-> -- 
-> 2.17.1
-> 
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+---
+ fs/nfsd/nfs4state.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index e32ecedece0f..7537f2f5156e 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -2420,6 +2420,11 @@ static void nfs4_show_owner(struct seq_file *s, struct nfs4_stateowner *oo)
+ 	seq_quote_mem(s, oo->so_owner.data, oo->so_owner.len);
+ }
+ 
++static void nfs4_show_stateid(struct seq_file *s, stateid_t *stid)
++{
++	seq_printf(s, "0x%16phN", stid);
++}
++
+ static int nfs4_show_open(struct seq_file *s, struct nfs4_stid *st)
+ {
+ 	struct nfs4_ol_stateid *ols;
+@@ -2435,7 +2440,9 @@ static int nfs4_show_open(struct seq_file *s, struct nfs4_stid *st)
+ 	nf = st->sc_file;
+ 	file = find_any_file(nf);
+ 
+-	seq_printf(s, "- 0x%16phN: { type: open, ", &st->sc_stateid);
++	seq_printf(s, "- ");
++	nfs4_show_stateid(s, &st->sc_stateid);
++	seq_printf(s, ": { type: open, ");
+ 
+ 	access = bmap_to_share_mode(ols->st_access_bmap);
+ 	deny   = bmap_to_share_mode(ols->st_deny_bmap);
+@@ -2468,7 +2475,9 @@ static int nfs4_show_lock(struct seq_file *s, struct nfs4_stid *st)
+ 	nf = st->sc_file;
+ 	file = find_any_file(nf);
+ 
+-	seq_printf(s, "- 0x%16phN: { type: lock, ", &st->sc_stateid);
++	seq_printf(s, "- ");
++	nfs4_show_stateid(s, &st->sc_stateid);
++	seq_printf(s, ": { type: lock, ");
+ 
+ 	/*
+ 	 * Note: a lock stateid isn't really the same thing as a lock,
+@@ -2497,7 +2506,9 @@ static int nfs4_show_deleg(struct seq_file *s, struct nfs4_stid *st)
+ 	nf = st->sc_file;
+ 	file = nf->fi_deleg_file;
+ 
+-	seq_printf(s, "- 0x%16phN: { type: deleg, ", &st->sc_stateid);
++	seq_printf(s, "- ");
++	nfs4_show_stateid(s, &st->sc_stateid);
++	seq_printf(s, ": { type: deleg, ");
+ 
+ 	/* Kinda dead code as long as we only support read delegs: */
+ 	seq_printf(s, "access: %s, ",
+@@ -2519,7 +2530,9 @@ static int nfs4_show_layout(struct seq_file *s, struct nfs4_stid *st)
+ 	ls = container_of(st, struct nfs4_layout_stateid, ls_stid);
+ 	file = ls->ls_file;
+ 
+-	seq_printf(s, "- 0x%16phN: { type: layout, ", &st->sc_stateid);
++	seq_printf(s, "- ");
++	nfs4_show_stateid(s, &st->sc_stateid);
++	seq_printf(s, ": { type: layout, ");
+ 
+ 	/* XXX: What else would be useful? */
+ 
+-- 
+2.25.3
+
