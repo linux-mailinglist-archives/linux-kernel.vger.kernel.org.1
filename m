@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347611B6135
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0751D1B6131
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729780AbgDWQpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 12:45:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729661AbgDWQpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729754AbgDWQpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 23 Apr 2020 12:45:19 -0400
-Subject: Re: [GIT PULL] remoteproc fixes for v5.7
+Received: from mail.kernel.org ([198.145.29.99]:42342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729407AbgDWQpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 12:45:18 -0400
+Subject: Re: [GIT PULL] Audit fixes for v5.7 (#1)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587660318;
-        bh=YrMFeTdI3wX0lbT2CAoq1eX5P4/UmlD45Rj8jf9ucro=;
+        bh=2H0xaD5b72HI7Xk9Tngpmu837nPxKcdFdyRGf1G/TNw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=V5AVlCs2Wcwpe7TWeRAq/aPA1m+HUvNz8roiSNKp+fpcqtiXYAN/jhwIRBQ052eHb
-         rA8D3o2CFPbNEZbF0a9/0ZRV20bvwb91uqpcpaJJw9CPJHsO2AYth4q1mVagbTPlE6
-         +bomwueb3Z33nu5C3V9x+yNVFovpQJDvolKoYwWA=
+        b=F9f6tpgl1Hd6FSqGB/CyVBgiznbt7Vn4Kyhc72B6xELUnLZm0uJNu97yFbQwEwuk4
+         BT73F43vXdsYv7BGhDNtmCx+PrPSBDRAfmEto6Eu/enP9YkhgSR0GjTtUhlmzOY6Fq
+         VFoAs2RvcHaZiKKy1BNW0PcHl83fKzUEAdtgG7p4=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200422230833.GA2112870@builder.lan>
-References: <20200422230833.GA2112870@builder.lan>
+In-Reply-To: <CAHC9VhQNo=Z3G-K8KvTGiu0Fzmwv4byFQriNuTsu+vwnx85YXg@mail.gmail.com>
+References: <CAHC9VhQNo=Z3G-K8KvTGiu0Fzmwv4byFQriNuTsu+vwnx85YXg@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200422230833.GA2112870@builder.lan>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git
- tags/rproc-v5.7-fixes
-X-PR-Tracked-Commit-Id: c2781e4d9bc6d925dfc1ff833dfdaf12b69679de
+X-PR-Tracked-Message-Id: <CAHC9VhQNo=Z3G-K8KvTGiu0Fzmwv4byFQriNuTsu+vwnx85YXg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
+ tags/audit-pr-20200422
+X-PR-Tracked-Commit-Id: 763dafc520add02a1f4639b500c509acc0ea8e5b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3cda77991eb75aa0066065b7f352a4349ca1a3bc
-Message-Id: <158766031890.20212.5272714956436329155.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6a400063826b6ab7a9dc8eeddcb36a55ebbd7dab
+Message-Id: <158766031859.20212.3262990343424454639.pr-tracker-bot@kernel.org>
 Date:   Thu, 23 Apr 2020 16:45:18 +0000
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Paul Moore <paul@paul-moore.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Elder <elder@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 22 Apr 2020 16:08:33 -0700:
+The pull request you sent on Wed, 22 Apr 2020 17:25:44 -0400:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.7-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git tags/audit-pr-20200422
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3cda77991eb75aa0066065b7f352a4349ca1a3bc
+https://git.kernel.org/torvalds/c/6a400063826b6ab7a9dc8eeddcb36a55ebbd7dab
 
 Thank you!
 
