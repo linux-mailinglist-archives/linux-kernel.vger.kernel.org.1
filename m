@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225921B5415
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0641B53F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 07:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgDWFSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 01:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725562AbgDWFSG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:18:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8992BC03C1AB;
-        Wed, 22 Apr 2020 22:18:06 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id r14so2371548pfg.2;
-        Wed, 22 Apr 2020 22:18:06 -0700 (PDT)
+        id S1726573AbgDWFKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 01:10:01 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:48402 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725863AbgDWFKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 01:10:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
-         :content-disposition:user-agent;
-        bh=l8LWkxvey9Hd79SGqrSqUJiOWTNMAJRbACX2qSq2ln4=;
-        b=H5EWF0lYUrxxpaKuojPYYefKw8mE/5+f8ios6XJ+oAFyJBdxwEXDXfWUbYl4CI+rXb
-         NJdax4IcjJo9P2sfaDXtP6xg2bKG5+AaoiQ3gFRDMaRLPN0VGf5iTu1A9Zj9P9NZ79bE
-         Xaxa2DoKhfEtcoVUPXbGUIFAfbJfblXZSXJEsNbc8p+YyL4qMUNtbH5F32Ricoh3fWhT
-         RVbtDyVLavSSwFSEHj1iUX68ZpvHiTl35I/34mOMD5vE35DPNwTSVUiDcP7t4kKcViAt
-         l5WQFiu9ep2uZtwcIWNmOBB3HUzxxW9O8k+Tzc1/sYlbVuT57Qw0ol4VZmYg1pDKKyks
-         +Tbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:mime-version:content-disposition:user-agent;
-        bh=l8LWkxvey9Hd79SGqrSqUJiOWTNMAJRbACX2qSq2ln4=;
-        b=hMASv2vCp7tCJSopBuND2bDYv97FnodBH/dnw0YUkEjykhgL0nvcLfMIdBpfOEMujm
-         K21/Kj3x2Ll4iosgElfPiiAb0s1UOGFoAsdc8IKDjBYc1WDwkX31/BqKBpn2YbOse0at
-         hKNHygoXg+idM1yrDTlVCqvlmwuB/KjT0D5XQMPOV2oV2fxZDY1HMfEJUQBi0wk7Yw4Y
-         uZ7qv1sUyIX8ZrbwY6zkAnV/b88u2CzJWLcAD4Lzh/3XA80+alnzkbsBRLUt/3bNPad2
-         SzgMnCcS2vd2Kf753N7mQF6045oHXM78todkrQPnYsd76eFKIq8c/Q9hmQla0K8UgDuv
-         dBjg==
-X-Gm-Message-State: AGi0PuY13n4uP7qod/yRD45elnKLIrTUEJxrT1zz7h+KJ/dyCUFqdu3p
-        xex+FWIX6erCumh96ByWFmHnq2m6
-X-Google-Smtp-Source: APiQypJfZ5VCVKkn5GQPwGkKVeCYzBIgX76ZJWzKuUz+EalyeEVAuHevhKjsSi9VKBO1o/awjueKww==
-X-Received: by 2002:a62:4e88:: with SMTP id c130mr2191578pfb.122.1587619086049;
-        Wed, 22 Apr 2020 22:18:06 -0700 (PDT)
-Received: from udknight.localhost ([183.250.89.86])
-        by smtp.gmail.com with ESMTPSA id k10sm1300719pfa.163.2020.04.22.22.18.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 22:18:05 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03N56cTC004174;
-        Thu, 23 Apr 2020 13:06:38 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03N56bZS004173;
-        Thu, 23 Apr 2020 13:06:37 +0800
-Date:   Thu, 23 Apr 2020 13:06:37 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     daniel@iogearbox.net
-Cc:     ast@kernel.org, davem@davemloft.net, jiong.wang@netronome.com,
-        kuznet@ms2.inr.ac.ru, tglx@linutronix.de, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf, x86_32: Fix logic error in BPF_LDX zero-extension
-Message-ID: <20200423050637.GA4029@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>, daniel@iogearbox.net,
-        ast@kernel.org, davem@davemloft.net, jiong.wang@netronome.com,
-        kuznet@ms2.inr.ac.ru, tglx@linutronix.de, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.7.1 (2016-10-04)
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=3OYx4GBLe0XanFHFYKCyXCxotnUqJEh9x+Y95HIWd0M=; b=Q
+        DzZXq817hTPuDr3a6/hxsgWr/1JzvVxYn6lYgtnxbVTGRT6VENaHpmV0pnJr6azO
+        +g7xnsi3oWmDINi8cL0OjoChh323LIW0bKE5r2cF1Ev+Otfy3MQTiVLRAeGZR1My
+        CllCg2jrsVn3V4ZhEVyIwK/rHzhXjfUCSFrK6hQqR4=
+Received: from localhost.localdomain (unknown [120.229.255.80])
+        by app1 (Coremail) with SMTP id XAUFCgCX33cfI6Fe3Js8AA--.30847S3;
+        Thu, 23 Apr 2020 13:09:52 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] ext4: Fix buffer_head refcnt leak when ext4_iget() fails
+Date:   Thu, 23 Apr 2020 13:09:27 +0800
+Message-Id: <1587618568-13418-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XAUFCgCX33cfI6Fe3Js8AA--.30847S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFy7Zw4ktF1fZw4kZr4ktFb_yoWkZrX_WF
+        1ktF48ur90vwsaka4UXrZ8Aw4Yk3W8ta1DWrZavr13X3s0ya9rCr9YvFy3Ar47WrW2yFn8
+        CrnxGr9xA3ySvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbskFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
+        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUO2NtUUUUU
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When verifier_zext is true, we don't need to emit code
-for zero-extension.
+ext4_orphan_get() invokes ext4_read_inode_bitmap(), which returns a
+reference of the specified buffer_head object to "bitmap_bh" with
+increased refcnt.
 
-Fixes: 836256bf ("x32: bpf: eliminate zero extension code-gen")
+When ext4_orphan_get() returns, local variable "bitmap_bh" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
 
-Signed-off-by: Wang YanQing <udknight@gmail.com>
+The reference counting issue happens in one exception handling path of
+ext4_orphan_get(). When ext4_iget() fails, the function forgets to
+decrease the refcnt increased by ext4_read_inode_bitmap(), causing a
+refcnt leak.
+
+Fix this issue by calling brelse() when ext4_iget() fails.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/ialloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index 4d2a7a764602..ed34dd16ebc5 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -1847,7 +1847,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 			case BPF_B:
- 			case BPF_H:
- 			case BPF_W:
--				if (!bpf_prog->aux->verifier_zext)
-+				if (bpf_prog->aux->verifier_zext)
- 					break;
- 				if (dstk) {
- 					EMIT3(0xC7, add_1reg(0x40, IA32_EBP),
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index f95ee99091e4..2e4729ba17e6 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -1234,6 +1234,7 @@ struct inode *ext4_orphan_get(struct super_block *sb, unsigned long ino)
+ 		ext4_set_errno(sb, -err);
+ 		ext4_error(sb, "couldn't read orphan inode %lu (err %d)",
+ 			   ino, err);
++		brelse(bitmap_bh);
+ 		return inode;
+ 	}
+ 
 -- 
-2.17.1
+2.7.4
 
