@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B312B1B5851
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343931B5867
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 11:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgDWJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 05:39:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35227 "EHLO
+        id S1727008AbgDWJlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 05:41:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60414 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726343AbgDWJjQ (ORCPT
+        with ESMTP id S1726343AbgDWJlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:39:16 -0400
+        Thu, 23 Apr 2020 05:41:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587634754;
+        s=mimecast20190719; t=1587634877;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=krIKFQitEIQii4FaNTmzJRbDm53HYqI5kEcn11R/yc8=;
-        b=ah0zGEyER/wPsOMZK65GDplax2qj+NrrIZI9L3v7sWdCGmhuna9qlGKUjV2F36sc0yTK0y
-        wnnpcIu4okOjqi1fuNk0KmEOoYbZEoTVPYaBS3sefApPWWiwXuUcrSErGfyJJGEIvmFjca
-        1vMOOvdkj6ReVPiiv4tMqQkTjUxlNAk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-eAn_C87qMC6VfnVCdiGEew-1; Thu, 23 Apr 2020 05:39:12 -0400
-X-MC-Unique: eAn_C87qMC6VfnVCdiGEew-1
-Received: by mail-wm1-f70.google.com with SMTP id h22so1858462wml.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:39:12 -0700 (PDT)
+        bh=azl4EOKrk5ieu/X3rC1ejOH/OCp4GqTP+vS6TG0Ikm0=;
+        b=EKGNSNHzdn910QtysBG+jUTJj05EHFgXatnTcLIXVUkIejJtchvoxUv92jGSUH6PPVfh+W
+        ifSrncinOyDXQcf6af6evlaUIPmCedIMrq8rwZQJY4JI+/XMCJu8p103Dh1Fi0cCe41lkb
+        rJeO48qJ8zx51IDuOQ8WA4dlsoa8jFk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-F539PVjpMOO15hY5ToiJjQ-1; Thu, 23 Apr 2020 05:41:15 -0400
+X-MC-Unique: F539PVjpMOO15hY5ToiJjQ-1
+Received: by mail-wm1-f72.google.com with SMTP id l21so1858396wmh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 02:41:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=krIKFQitEIQii4FaNTmzJRbDm53HYqI5kEcn11R/yc8=;
-        b=YfPJqtCKR5tUEqiDkMUcbmaIZoWM8UZsORKLWgoXCv6x0rp0hmE+Z1yCyTAkR9wDM3
-         1SlP+K4fsf5jxehmxdikccU8poujYb8CBS52EKsLuNu5ULKGzN8+sibCIgcvqD76KWfQ
-         9qhK7D+vuPI4HTaTbHIns4VjPEosWEAzYzvQbSNUx/decf95UW0HUU37eXpHfk8I21aS
-         k8iXETlLB26hhbLkJQs6dN6hkuKvfmCiFGb8CFcoLAFOMOpXPGnVIS9CMRXeE8YIP43F
-         MKGkxiQuQKcZEZF+aZQJC5zLGG3PJNxQRSfZVb0EC1g96PFWSZZsON2nd9kyg16gvRjr
-         obBA==
-X-Gm-Message-State: AGi0PuZGla0B4WCOjy3HVPWKHabyDYFas/5U4J34RdKLDFaJ0y35krCJ
-        VcVtUvhdN9PtRC4YfMRh/YqmPngjuZLwnw/fpGCCoz5dvJD4NbTmN0IQAWjejkgRqwZOeHwfur6
-        nyKK1eO/OKEF39AcpLq0glaFr
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr4010842wrx.185.1587634751408;
-        Thu, 23 Apr 2020 02:39:11 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI6uS0O6WE67lrL00XGzKt4Wxu+kI7s3/b8HBMChSVaLLepDiKCBydP7j8Im1fqRhH3NZ+mJw==
-X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr4010807wrx.185.1587634751161;
-        Thu, 23 Apr 2020 02:39:11 -0700 (PDT)
+        bh=azl4EOKrk5ieu/X3rC1ejOH/OCp4GqTP+vS6TG0Ikm0=;
+        b=btPp/ApB2f+ipIPto+bkLFtIziPbN+uDDXaThmFLWOCeFFD54WsolVDqdHmU6+BEbc
+         m5WlkZySanAWpEafJ3eoDWoagnzW4YAeT/UwKNqDj0oQtrJXlMc13v0XnFpLOH+hkY2m
+         Y4T7gK1lWEPRehwEdjbMvuQt9sXLsviGvFzzHf7OVeEeJh/CNWowCns8JNHxxKoqfSoh
+         9MXlfUMlJn5PzwRaYeBzUmtXStTiw5zy0B/7o+/ITzn2swwRTJeD5MtSC2f50029Ak5w
+         J7KsURkNeAD+uiaUi8wPBRA/2wvoHG+jXftVCPry+PgT9aNwg/AxmImMIhvOb/6zMQQr
+         22sw==
+X-Gm-Message-State: AGi0PuY4aCHPpO1Qs0HFGVrq4DlAAXmIfBh9MC700JoPnr2WXD5FKwrA
+        IIjgrzImupmf1COL+sA0NlozBp6M3V640tYZecuQxZhhucjS6iFOHOeJp9LEXZXGIeRT4x7N3rr
+        WSu0xGlf7unSk5zvxPyxskTIs
+X-Received: by 2002:a5d:4645:: with SMTP id j5mr3833208wrs.282.1587634873996;
+        Thu, 23 Apr 2020 02:41:13 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKmS21JtTUsn1ahG9txOKjxAk/HDnRTv0ERS+dV5m610jdf8hdz/jbKFEmKVINrb0EQb/vgsA==
+X-Received: by 2002:a5d:4645:: with SMTP id j5mr3833184wrs.282.1587634873822;
+        Thu, 23 Apr 2020 02:41:13 -0700 (PDT)
 Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id j13sm3015373wrq.24.2020.04.23.02.39.10
+        by smtp.gmail.com with ESMTPSA id h188sm3135576wme.8.2020.04.23.02.41.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 02:39:10 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] KVM: X86: TSCDEADLINE MSR emulation fastpath
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thu, 23 Apr 2020 02:41:13 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] KVM: LAPIC: Introduce interrupt delivery fastpath
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
         Haiwei Li <lihaiwei@tencent.com>
 References: <1587632507-18997-1-git-send-email-wanpengli@tencent.com>
- <1587632507-18997-5-git-send-email-wanpengli@tencent.com>
+ <1587632507-18997-2-git-send-email-wanpengli@tencent.com>
+ <09cba36c-61d8-e660-295d-af54ceb36036@redhat.com>
+ <CANRm+Cybksev1jJK7Fuog43G9zBCqmtLTYGvqAdCwpw3f6z0yA@mail.gmail.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1309372a-0dcf-cba6-9d65-e50139bbe46b@redhat.com>
-Date:   Thu, 23 Apr 2020 11:37:00 +0200
+Message-ID: <8a29181c-c6bb-fe36-51ac-49d764819393@redhat.com>
+Date:   Thu, 23 Apr 2020 11:39:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <1587632507-18997-5-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <CANRm+Cybksev1jJK7Fuog43G9zBCqmtLTYGvqAdCwpw3f6z0yA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,55 +80,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/20 11:01, Wanpeng Li wrote:
-> +
-> +void kvm_set_lapic_tscdeadline_msr(struct kvm_vcpu *vcpu, u64 data)
-> +{
-> +	if (__kvm_set_lapic_tscdeadline_msr(vcpu, data))
-> +		start_apic_timer(vcpu->arch.apic);
-> +}
-> +
-> +int kvm_set_lapic_tscdeadline_msr_fast(struct kvm_vcpu *vcpu, u64 data)
-> +{
-> +	struct kvm_lapic *apic = vcpu->arch.apic;
-> +
-> +	if (__kvm_set_lapic_tscdeadline_msr(vcpu, data)) {
-> +		atomic_set(&apic->lapic_timer.pending, 0);
-> +		if (start_hv_timer(apic))
-> +			return tscdeadline_expired_timer_fast(vcpu);
-> +	}
-> +
-> +	return 1;
->  }
->
-> +static int tscdeadline_expired_timer_fast(struct kvm_vcpu *vcpu)
-> +{
-> +	if (kvm_check_request(KVM_REQ_PENDING_TIMER, vcpu)) {
-> +		kvm_clear_request(KVM_REQ_PENDING_TIMER, vcpu);
-> +		kvm_inject_apic_timer_irqs_fast(vcpu);
-> +		atomic_set(&vcpu->arch.apic->lapic_timer.pending, 0);
-> +	}
-> +
-> +	return 0;
-> +}
+On 23/04/20 11:35, Wanpeng Li wrote:
+>> Ok, got it now.  The problem is that deliver_posted_interrupt goes through
+>>
+>>         if (!kvm_vcpu_trigger_posted_interrupt(vcpu, false))
+>>                 kvm_vcpu_kick(vcpu);
+>>
+>> Would it help to make the above
+>>
+>>         if (vcpu != kvm_get_running_vcpu() &&
+>>             !kvm_vcpu_trigger_posted_interrupt(vcpu, false))
+>>                 kvm_vcpu_kick(vcpu);
+>>
+>> ?  If that is enough for the APICv case, it's good enough.
+> We will not exit from vmx_vcpu_run to vcpu_enter_guest, so it will not
+> help, right?
 
-This could also be handled in apic_timer_expired.  For example you can
-add an argument from_timer_fn and do
+Oh indeed---the call to sync_pir_to_irr is in vcpu_enter_guest.  You can
+add it to patch 3 right before "goto cont_run", since AMD does not need it.
 
-	if (!from_timer_fn) {
-		WARN_ON(kvm_get_running_vcpu() != vcpu);
-		kvm_inject_apic_timer_irqs_fast(vcpu);
-		return;
-	}
-
-        if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
-                ...
-	}
-	atomic_inc(&apic->lapic_timer.pending);
-	kvm_set_pending_timer(vcpu);
-
-and then you don't need kvm_set_lapic_tscdeadline_msr_fast and
-everything else.  Anyway thanks, this is already much better.
-
-Paoo
+Paolo
 
