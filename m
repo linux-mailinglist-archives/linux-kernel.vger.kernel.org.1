@@ -2,161 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F367F1B6497
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7831B64A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 21:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgDWTj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 15:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgDWTj1 (ORCPT
+        id S1727920AbgDWTmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 15:42:53 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:44078 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgDWTmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:39:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F44C09B044
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t11so3403671pgg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7VPU62AS0hE3DKQRkOunlFCKQKhdwD9eupm/jSgSc0o=;
-        b=fqm9ZIjYeSPBDfE/QRu99KVQdVsUeerRL5pAVUVajv+e2SuYpHLE1FyB095+rRNLhg
-         /J3qFsRFP7AfK6wYscG9PXM49C3MZEyA5tvD/Zv8lnY8QYwqZoSxa+Y04fsNkGs3+dpZ
-         9g6GfHdmQjY9gvJea954/kRhpTEdxkybP1Axg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7VPU62AS0hE3DKQRkOunlFCKQKhdwD9eupm/jSgSc0o=;
-        b=Vu2+/3AkmT8DxvBZYzUc2fVreuuaByxEaB3BA1ZR9m8vOZlZ49k7cbdJ2Ymy1F94O3
-         bn/VqmEmNH8y9/lsnNhxCUxgp7HXZT11qSk5RhljpIRB8vFoRHj4XPYMwryXz0yFKb9e
-         TEvf9hkxMUEh3oviilI3HZAi0oWVJRowwjeddwxeiyxjbh5kpt4oP3PzNbkJAcyyPRrT
-         xjzhNaa9nzvc9JA1oiWLHxJPowzUSSgg11GvMN+gi2pf/rT28GBAcdZ2s/MaJhB7vW58
-         4Rh3V7D4Ynykxfi4jtEot9Hu7LxZS6SN94WMuOC8mO/oxs2mwj73iMyhbt2spD8M5mle
-         k9Jw==
-X-Gm-Message-State: AGi0PuZdUbYpdrsRyO4Y8D665jRFJ74NnWHWCI6+RIRrEF/dgjXcFbWd
-        sEs0lB5nBkdtYpfktLVAQ+XTDA==
-X-Google-Smtp-Source: APiQypJd4T0HLRLEhYMctigRHwArQ5Lyj7Ah48K5q+Fq0x5nv4fDYp6iTUKOzhPoARFHEfZwN9MqWQ==
-X-Received: by 2002:a62:8202:: with SMTP id w2mr5342725pfd.117.1587670766035;
-        Thu, 23 Apr 2020 12:39:26 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id l185sm3281987pfl.104.2020.04.23.12.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 12:39:24 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 12:39:23 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org>
-Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: usb: qcom,dwc3: Convert USB DWC3
- bindings
-Message-ID: <20200423193923.GK199755@google.com>
-References: <1585206368-685-1-git-send-email-sanm@codeaurora.org>
- <1585206368-685-2-git-send-email-sanm@codeaurora.org>
- <20200404171700.GA10096@bogus>
- <5e2eb0a4-ed70-4212-fc70-6ee850507a7e@codeaurora.org>
- <5793ea62-7a73-789e-33d6-6b2fb37b376c@codeaurora.org>
+        Thu, 23 Apr 2020 15:42:51 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRhkI-0007IC-E3; Thu, 23 Apr 2020 13:42:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jRhkH-00022D-GR; Thu, 23 Apr 2020 13:42:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+Date:   Thu, 23 Apr 2020 14:39:41 -0500
+In-Reply-To: <87ftcv1nqe.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Wed, 22 Apr 2020 11:36:41 -0500")
+Message-ID: <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5793ea62-7a73-789e-33d6-6b2fb37b376c@codeaurora.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
+X-XM-SPF: eid=1jRhkH-00022D-GR;;;mid=<87wo66vvnm.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19+p1OI9uD+ggl4NnOJQC9jcVE7p3h3y1M=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;LKML <linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 526 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (2.2%), b_tie_ro: 10 (1.9%), parse: 0.86
+        (0.2%), extract_message_metadata: 10 (2.0%), get_uri_detail_list: 1.91
+        (0.4%), tests_pri_-1000: 13 (2.5%), tests_pri_-950: 1.32 (0.3%),
+        tests_pri_-900: 1.20 (0.2%), tests_pri_-90: 182 (34.6%), check_bayes:
+        180 (34.2%), b_tokenize: 10 (1.9%), b_tok_get_all: 30 (5.7%),
+        b_comp_prob: 4.0 (0.8%), b_tok_touch_all: 130 (24.8%), b_finish: 1.37
+        (0.3%), tests_pri_0: 294 (55.8%), check_dkim_signature: 0.50 (0.1%),
+        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 1.09 (0.2%), tests_pri_10:
+        2.3 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:23:29PM +0530, Sandeep Maheswaram (Temp) wrote:
-> Hi Rob,
-> 
-> Any suggestions to solve this error in assigned-clock-rates
 
-> On 4/6/2020 10:09 PM, Sandeep Maheswaram (Temp) wrote:
-> > Hi Rob,
-> > 
-> > On 4/4/2020 10:47 PM, Rob Herring wrote:
-> > > On Thu, Mar 26, 2020 at 12:36:07PM +0530, Sandeep Maheswaram wrote:
-> > > > Convert USB DWC3 bindings to DT schema format using json-schema.
-> > > > 
-> > > > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> > > > ---
-> > > >   .../devicetree/bindings/usb/qcom,dwc3.txt          | 104
-> > > > --------------
-> > > >   .../devicetree/bindings/usb/qcom,dwc3.yaml         | 158
-> > > > +++++++++++++++++++++
-> > > >   2 files changed, 158 insertions(+), 104 deletions(-)
-> > > >   delete mode 100644
-> > > > Documentation/devicetree/bindings/usb/qcom,dwc3.txt
-> > > >   create mode 100644
-> > > > Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > 
-> > > > diff --git
-> > > > a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > new file mode 100644
-> > > > index 0000000..0f69475
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+When the thread group leader changes during exec and the old leaders
+thread is reaped proc_flush_pid will flush the dentries for the entire
+process because the leader still has it's original pid.
 
-...
+Fix this by exchanging the pids in an rcu safe manner,
+and wrapping the code to do that up in a helper exchange_tids.
 
-> > > > +    items:
-> > > > +      - description: Must be 19.2MHz (19200000).
-> > > Sounds like a constraint:
-> > > 
-> > > - const: 19200000
-> > > 
-> > > > +      - description: Must be >= 60 MHz in HS mode, >= 125 MHz
-> > > > in SS mode.
-> > > - minimum: 60000000
-> > >    maximum: ?
-> > 
-> > Tried  as below but facing errors
-> > 
-> > assigned-clock-rates:
-> >     items:
-> >       - const: 19200000
-> >       - minimum: 60000000
-> >         maximum: 150000000
-> > 
-> > Errors
-> > 
-> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
-> > usb@a6f8800: assigned-clock-rates: Additional items are not allowed
-> > ([150000000] was unexpected)
-> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
-> > usb@a6f8800: assigned-clock-rates:0: [19200000] is too short
-> > linux-next/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml:
-> > usb@a6f8800: assigned-clock-rates: [[19200000], [150000000]] is too long
+When I removed switch_exec_pids and introduced this behavior
+in d73d65293e3e ("[PATCH] pidhash: kill switch_exec_pids") there
+really was nothing that cared as flushing happened with
+the cached dentry and de_thread flushed both of them on exec.
 
-judging from the error messages my uneducated guess is that the above rules for
-assigned-clock-rates expect a single tuple of two elements, not two tuples with
-a single element, i.e.
+This lack of fully exchanging pids became a problem a few months later
+when I introduced 48e6484d4902 ("[PATCH] proc: Rewrite the proc dentry
+flush on exit optimization").  Which overlooked the de_thread case
+was no longer swapping pids, and I was looking up proc dentries
+by task->pid.
 
-assigned-clock-rates = <19200000, 150000000>;
+The current behavior isn't properly a bug as everything in proc will
+continue to work correctly just a little bit less efficiently.  Fix
+this just so there are no little surprise corner cases waiting to bite
+people.
 
-  instead of
+-- Oleg points out this could be an issue in next_tgid in proc where
+   has_group_leader_pid is called, and reording some of the assignments
+   should fix that.
 
-assigned-clock-rates = <19200000>, <150000000>;
+-- Oleg points out this will break the 10 year old hack in __exit_signal.c
+>	/*
+>	 * This can only happen if the caller is de_thread().
+>	 * FIXME: this is the temporary hack, we should teach
+>	 * posix-cpu-timers to handle this case correctly.
+>	 */
+>	if (unlikely(has_group_leader_pid(tsk)))
+>		posix_cpu_timers_exit_group(tsk);
 
-I experimented a bit but couldn't find the magic incantation to appease the
-schema deities.
+The code in next_tgid has been changed to use PIDTYPE_TGID,
+and the posix cpu timers code has been fixed so it does not
+need the 10 year old hack, so this should be safe to merge
+now.
 
-Rob, could you please help to distentangle this?
+Fixes: 48e6484d4902 ("[PATCH] proc: Rewrite the proc dentry flush on exit optimization").
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+---
+ fs/exec.c           |  5 +----
+ include/linux/pid.h |  1 +
+ kernel/pid.c        | 16 ++++++++++++++++
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
-Thanks
+diff --git a/fs/exec.c b/fs/exec.c
+index 06b4c550af5d..9b60f927afd7 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1186,11 +1186,8 @@ static int de_thread(struct task_struct *tsk)
+ 
+ 		/* Become a process group leader with the old leader's pid.
+ 		 * The old leader becomes a thread of the this thread group.
+-		 * Note: The old leader also uses this pid until release_task
+-		 *       is called.  Odd but simple and correct.
+ 		 */
+-		tsk->pid = leader->pid;
+-		change_pid(tsk, PIDTYPE_PID, task_pid(leader));
++		exchange_tids(tsk, leader);
+ 		transfer_pid(leader, tsk, PIDTYPE_TGID);
+ 		transfer_pid(leader, tsk, PIDTYPE_PGID);
+ 		transfer_pid(leader, tsk, PIDTYPE_SID);
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index cc896f0fc4e3..2159ffca63fc 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -102,6 +102,7 @@ extern void attach_pid(struct task_struct *task, enum pid_type);
+ extern void detach_pid(struct task_struct *task, enum pid_type);
+ extern void change_pid(struct task_struct *task, enum pid_type,
+ 			struct pid *pid);
++extern void exchange_tids(struct task_struct *task, struct task_struct *old);
+ extern void transfer_pid(struct task_struct *old, struct task_struct *new,
+ 			 enum pid_type);
+ 
+diff --git a/kernel/pid.c b/kernel/pid.c
+index c835b844aca7..4ece32d8791a 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -363,6 +363,22 @@ void change_pid(struct task_struct *task, enum pid_type type,
+ 	attach_pid(task, type);
+ }
+ 
++void exchange_tids(struct task_struct *ntask, struct task_struct *otask)
++{
++	/* pid_links[PIDTYPE_PID].next is always NULL */
++	struct pid *npid = READ_ONCE(ntask->thread_pid);
++	struct pid *opid = READ_ONCE(otask->thread_pid);
++
++	rcu_assign_pointer(opid->tasks[PIDTYPE_PID].first, &ntask->pid_links[PIDTYPE_PID]);
++	rcu_assign_pointer(npid->tasks[PIDTYPE_PID].first, &otask->pid_links[PIDTYPE_PID]);
++	rcu_assign_pointer(ntask->thread_pid, opid);
++	rcu_assign_pointer(otask->thread_pid, npid);
++	WRITE_ONCE(ntask->pid_links[PIDTYPE_PID].pprev, &opid->tasks[PIDTYPE_PID].first);
++	WRITE_ONCE(otask->pid_links[PIDTYPE_PID].pprev, &npid->tasks[PIDTYPE_PID].first);
++	WRITE_ONCE(ntask->pid, pid_nr(opid));
++	WRITE_ONCE(otask->pid, pid_nr(npid));
++}
++
+ /* transfer_pid is an optimization of attach_pid(new), detach_pid(old) */
+ void transfer_pid(struct task_struct *old, struct task_struct *new,
+ 			   enum pid_type type)
+-- 
+2.20.1
 
-Matthias
