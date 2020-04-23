@@ -2,266 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED9E1B5AD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F991B5ADC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbgDWLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728200AbgDWLz1 (ORCPT
+        id S1728245AbgDWL41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 07:56:27 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:34623 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728197AbgDWL4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:55:27 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EDAC035495
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 04:55:26 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id s5so5365201uad.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 04:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EsVqTT5wXXhdTLsomAwxroQ1T+w0e7VVQswoorQRWuI=;
-        b=ijFQI1cUWrlnvFTSLmAmYANFQVYYT0KLtxIWD4KQV76dY3HQy5sXwhskWitkENgJUk
-         FRJcj876X/B2f8QB/wEo76RAmYiaCyHuFafl3aMhOy5qhbMbaoXj4+aN5L7HBP44LxbZ
-         MOKv7xfXQ2BiOXG2HXichEwQ0IHnAODo3VpkI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EsVqTT5wXXhdTLsomAwxroQ1T+w0e7VVQswoorQRWuI=;
-        b=jSIHG0N8GhDZzHLzEvDOxHzfThtrAlVWehx5iRluMKUuBVysVdRmE1m2KpWrvutJS/
-         xwhh3Xq7tn9rCJ/qj2elSZk7HM6hN4G70acDCXaLTAZBpVT+PUsa6yY4Wmq/2QKMfbU9
-         fl1FYvqXPas6ij80sadOEyid0dFPNkZBpD3KiGU3dEdtrYVBDXu9d+DtsxonPPotCetz
-         wyFW3lpfM5mA/Z7Wry6ZEK4v+6f5fbY6nIdmHZlsWhdOpCK3hQpkMyDAtDxIEyGuyqP6
-         F+AvooW/y52BrmFHUogtrNCtagx7AUhf+zFrjpt1Vx3UBktuGQXxtfi9/wFnewXYqQXZ
-         DQgA==
-X-Gm-Message-State: AGi0Pub9nZMerZRDCQqIW1HaXuZHX3zKsCkBn2KbnId+BTyXVJc624IV
-        raBXS6UixgCVh6gki38hxdrNSk5Q10d1Z6zePWZ1lg==
-X-Google-Smtp-Source: APiQypLuW645Sg7+l9AH4kIkM3J8fzdluHvCEFm1pFoq/7YjpI/mbTanqNvaw/UbOaEPxD+LGY9qmP//QPp/Bzlw/sw=
-X-Received: by 2002:a05:6102:308b:: with SMTP id l11mr2597359vsb.14.1587642926008;
- Thu, 23 Apr 2020 04:55:26 -0700 (PDT)
+        Thu, 23 Apr 2020 07:56:25 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03NBrJ4n027364;
+        Thu, 23 Apr 2020 13:56:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=32DkuINxmGb0Gh3Yn0zcdCa7UHTz4GuphAt8o/QOmXw=;
+ b=MDjRu9lmwq13W44Bf+SYWnQbzlxhBnm8ekXRN0vdPB4oA1IaZM6jEzHNUIqMFS6ClLPr
+ SL6UiDPpShLk/mN8pf9nJG2LY5zFXos21jsP4/cZilGnW8dNMa29t9YPw7n1ZFTstrY/
+ UfjHXccPeNmsFblASLU0A53aYuoz5fqI3IgkOZ9aJFuMU8ddaMNGGy64lJCRj7I01iCa
+ J0dIyX1RW/XrN6WSj2jikaUPR5wcA7xjboTx6yjvYAaDYe57I3DI7h38w7UmJ+LeNPRZ
+ Y5DjZGEyaSBAmlUXvuBaMfDXA+y58aLxZVZbmR4O4sx95hscO0mWlaKzEhIZlWOUUW1n Ww== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30fqawmghn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Apr 2020 13:56:15 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EE800100039;
+        Thu, 23 Apr 2020 13:56:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D7D292BC7CE;
+        Thu, 23 Apr 2020 13:56:14 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG5NODE3.st.com (10.75.127.15)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Apr 2020 13:56:14
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>,
+        <balbi@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <amelie.delaunay@st.com>, <fabrice.gasnier@st.com>
+Subject: [PATCH v2 0/4] usb: gadget: serial: add supend resume support
+Date:   Thu, 23 Apr 2020 13:55:52 +0200
+Message-ID: <1587642956-8157-1-git-send-email-fabrice.gasnier@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <cover.1582529411.git.xji@analogixsemi.com> <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
-In-Reply-To: <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 23 Apr 2020 19:55:15 +0800
-Message-ID: <CANMq1KBfB6tXFqYGvr=8fV_bpCV5GbVHeEbRs+fuaZba65-OPw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
- DP bridge driver
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG5NODE3.st.com
+ (10.75.127.15)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-23_07:2020-04-22,2020-04-23 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series handles an issue seen when doing basic testing using ACM or SERIAL
+gadget functions like in [1], and using the DWC2 gadget driver. It occurs when
+the HOST has suspended the bus before testing, in this order:
+- On the device:
+  cat /dev/ttyGS<Y>
+  Dmesg error log is seen on device side:
+  configfs-gadget gadget: acm ttyGS0 can't notify serial state, -11
+- On the host:
+  echo test > /dev/ttyACM<X>
+  The bus resumes, but the serial link isn't functional.
 
-Just commenting on the mode_fixup function that was added in v7.
+So, implement suspend/resume callbacks in gadget serial drivers to handle this.
+There is a precursor patch in DWC2 to enable submitting usb requests from the
+gadget resume routine, once in L0 state.
 
-On Tue, Feb 25, 2020 at 2:15 PM Xin Ji <xji@analogixsemi.com> wrote:
->
-> The ANX7625 is an ultra-low power 4K Mobile HD Transmitter designed
-> for portable device. It converts MIPI DSI/DPI to DisplayPort 1.3 4K.
->
-> The ANX7625 can support both USB Type-C PD feature and MIPI DSI/DPI
-> to DP feature. This driver only enabled MIPI DSI/DPI to DP feature.
->
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  drivers/gpu/drm/bridge/Makefile           |    2 +-
->  drivers/gpu/drm/bridge/analogix/Kconfig   |    6 +
->  drivers/gpu/drm/bridge/analogix/Makefile  |    1 +
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 2172 +++++++++++++++++++++++++++++
->  drivers/gpu/drm/bridge/analogix/anx7625.h |  410 ++++++
->  5 files changed, 2590 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
->  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
->
-> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-> index 4934fcf..bcd388a 100644
-> --- a/drivers/gpu/drm/bridge/Makefile
-> +++ b/drivers/gpu/drm/bridge/Makefile
-[snip]
-> +static bool anx7625_bridge_mode_fixup(struct drm_bridge *bridge,
-> +                                     const struct drm_display_mode *mode,
-> +                                     struct drm_display_mode *adj)
-> +{
-> +       struct anx7625_data *ctx = bridge_to_anx7625(bridge);
-> +       struct device *dev = &ctx->client->dev;
-> +       u32 hsync, hfp, hbp, hactive, hblanking;
-> +       u32 adj_hsync, adj_hfp, adj_hbp, adj_hblanking, delta_adj;
-> +       u32 vref, adj_clock;
-> +
-> +       DRM_DEV_DEBUG_DRIVER(dev, "drm mode fixup set\n");
-> +
-> +       mutex_lock(&ctx->lock);
+[1] https://www.kernel.org/doc/html/latest/usb/gadget-testing.html#testing-the-acm-function
 
-Why do you need this lock?
+Changes in v2:
+- update dwc2 with Minas suggestions
 
-> +
-> +       hactive = mode->hdisplay;
+Fabrice Gasnier (4):
+  usb: dwc2: gadget: move gadget resume after the core is in L0 state
+  usb: gadget: u_serial: add suspend resume callbacks
+  usb: gadget: f_serial: add suspend resume callbacks
+  usb: gadget: f_acm: add suspend resume callbacks
 
-This is never used, drop it?
+ drivers/usb/dwc2/core_intr.c           |  7 +++--
+ drivers/usb/gadget/function/f_acm.c    | 16 ++++++++++
+ drivers/usb/gadget/function/f_serial.c | 16 ++++++++++
+ drivers/usb/gadget/function/u_serial.c | 57 +++++++++++++++++++++++++++++-----
+ drivers/usb/gadget/function/u_serial.h |  2 ++
+ 5 files changed, 88 insertions(+), 10 deletions(-)
 
-> +       hsync = mode->hsync_end - mode->hsync_start;
-> +       hfp = mode->hsync_start - mode->hdisplay;
-> +       hbp = mode->htotal - mode->hsync_end;
-> +       hblanking = mode->htotal - mode->hdisplay;
-> +
-> +       DRM_DEV_DEBUG_DRIVER(dev, "before mode fixup\n");
-> +       DRM_DEV_DEBUG_DRIVER(dev, "hsync(%d),hfp(%d),hbp(%d),clock(%d)\n",
-> +                            hsync,
-> +                            hfp,
-> +                            hbp,
-> +                            adj->clock);
-> +       DRM_DEV_DEBUG_DRIVER(dev, "hsync_start(%d),hsync_end(%d),htotal(%d)\n",
-> +                            adj->hsync_start,
-> +                            adj->hsync_end,
-> +                            adj->htotal);
-> +
-> +       adj_hfp = hfp;
-> +       adj_hsync = hsync;
-> +       adj_hbp = hbp;
-> +       adj_hblanking = hblanking;
-> +
-> +       /* plus 1 if hfp is odd */
+-- 
+2.7.4
 
-A better way to word these comments is to say "hfp needs to be even",
-otherwise, you're just repeating what we can already see in the code.
-
-> +       if (hfp & 0x1) {
-> +               adj_hfp = hfp + 1;
-
-adj_hfp -= 1 for consistency?
-
-> +               adj_hblanking += 1;
-> +       }
-> +
-> +       /* minus 1 if hbp is odd */
-> +       if (hbp & 0x1) {
-> +               adj_hbp = hbp - 1;
-
-ditto, adj_hbp -= 1;
-
-> +               adj_hblanking -= 1;
-> +       }
-> +
-> +       /* plus 1 if hsync is odd */
-> +       if (hsync & 0x1) {
-> +               if (adj_hblanking < hblanking)
-> +                       adj_hsync = hsync + 1;
-
-ditto
-
-> +               else
-> +                       adj_hsync = hsync - 1;
-
-ditto
-
-> +       }
-> +
-> +       /*
-> +        * once illegal timing detected, use default HFP, HSYNC, HBP
-> +        */
-> +       if (hblanking < HBLANKING_MIN || (hfp < HP_MIN && hbp < HP_MIN)) {
-
-should this be adj_hblanking/adj_hfp/adj_hbp?
-
-> +               adj_hsync = SYNC_LEN_DEF;
-> +               adj_hfp = HFP_HBP_DEF;
-> +               adj_hbp = HFP_HBP_DEF;
-> +               vref = adj->clock * 1000 / (adj->htotal * adj->vtotal);
-> +               if (hblanking < HBLANKING_MIN) {
-> +                       delta_adj = HBLANKING_MIN - hblanking;
-> +                       adj_clock = vref * delta_adj * adj->vtotal;
-> +                       adj->clock += DIV_ROUND_UP(adj_clock, 1000);
-> +               } else {
-> +                       delta_adj = hblanking - HBLANKING_MIN;
-> +                       adj_clock = vref * delta_adj * adj->vtotal;
-> +                       adj->clock -= DIV_ROUND_UP(adj_clock, 1000);
-> +               }
-> +
-> +               DRM_WARN("illegal hblanking timing, use default.\n");
-> +               DRM_WARN("hfp(%d),hbp(%d),hsync(%d).\n", hfp, hbp, hsync);
-
-How likely is it that this mode is going to work? Can you just return
-false here to reject the mode?
-
-> +       } else if (adj_hfp < HP_MIN) {
-> +               /* adjust hfp if hfp less than HP_MIN */
-> +               delta_adj = HP_MIN - adj_hfp;
-> +               adj_hfp = HP_MIN;
-> +
-> +               /*
-> +                * balance total HBlanking pixel, if HBP hasn't enough space,
-
-"does not have enough space"
-
-> +                * adjust HSYNC length, otherwize adjust HBP
-
-otherwise
-
-> +                */
-> +               if ((adj_hbp - delta_adj) < HP_MIN)
-> +                       /* hbp not enough space */
-> +                       adj_hsync -= delta_adj;
-> +               else
-> +                       adj_hbp -= delta_adj;
-> +       } else if (adj_hbp < HP_MIN) {
-> +               delta_adj = HP_MIN - adj_hbp;
-> +               adj_hbp = HP_MIN;
-> +
-> +               /*
-> +                * balance total HBlanking pixel, if HBP hasn't enough space,
-> +                * adjust HSYNC length, otherwize adjust HBP
-> +                */
-> +               if ((adj_hfp - delta_adj) < HP_MIN)
-> +                       /* hbp not enough space */
-> +                       adj_hsync -= delta_adj;
-> +               else
-> +                       adj_hfp -= delta_adj;
-> +       }
-> +
-> +       DRM_DEV_DEBUG_DRIVER(dev, "after mode fixup\n");
-> +       DRM_DEV_DEBUG_DRIVER(dev, "hsync(%d),hfp(%d),hbp(%d),clock(%d)\n",
-
-Add spaces after commas in your debug strings (same above and below).
-
-> +                            adj_hsync,
-> +                            adj_hfp,
-> +                            adj_hbp,
-> +                            adj->clock);
-
-Put these 4 on a single line.
-
-> +
-> +       /* reconstruct timing */
-> +       adj->hsync_start = adj->hdisplay + adj_hfp;
-> +       adj->hsync_end = adj->hsync_start + adj_hsync;
-> +       adj->htotal = adj->hsync_end + adj_hbp;
-> +       DRM_DEV_DEBUG_DRIVER(dev, "hsync_start(%d),hsync_end(%d),htotal(%d)\n",
-> +                            adj->hsync_start,
-> +                            adj->hsync_end,
-> +                            adj->htotal);
-> +
-> +       mutex_unlock(&ctx->lock);
-> +
-> +       return true;
-> +}
-> +
-> [snip]
