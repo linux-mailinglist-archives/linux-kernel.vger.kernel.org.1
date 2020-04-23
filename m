@@ -2,518 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CED1B69BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE361B69CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 01:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgDWX0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 19:26:02 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28307 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728490AbgDWXZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 19:25:50 -0400
-IronPort-SDR: NY/DaHHx6kcAIjtH8BlH7FZRG2Zibt5NDxnE40wFPTxQqMTsKkVh3t/m/9cKmVyRFvgXkloqdZ
- /biMQZiGcLuA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 16:25:49 -0700
-IronPort-SDR: 1EcgloIQgpPWcznAFYVWwSsXC/s9d38eUqmnaIoqqxq+bOP5zW3if5UCZVVHHd5AZsfdYAwbJx
- s38Pw5Ssa34A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,309,1583222400"; 
-   d="scan'208";a="430537672"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga005.jf.intel.com with ESMTP; 23 Apr 2020 16:25:49 -0700
-Date:   Thu, 23 Apr 2020 16:25:48 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V10 04/11] Documentation/dax: Update Usage section
-Message-ID: <20200423232548.GA4088835@iweiny-DESK2.sc.intel.com>
-References: <20200422212102.3757660-1-ira.weiny@intel.com>
- <20200422212102.3757660-5-ira.weiny@intel.com>
- <20200423222720.GS27860@dread.disaster.area>
+        id S1728310AbgDWX1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 19:27:12 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57980 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726079AbgDWX1L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:27:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587684429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MfgBjVJT8Qe4F9Avigjfw4aMMKJ+gS3Qr1hPwvgYRjU=;
+        b=VpfUasFLCD+rDOF/LNVil9vMepZ1rlbDt09sYRV5PCXSx89WCTF/HEt8g0Ss1jJCSzVB5+
+        M8reJiRaI17KPF2w0xYzbwNS1c2gzVsCXx8vs4iBtuCKJiHqEM1rhrVlu/6CqoiK03WTe+
+        JkNWVQkgAoW1PbHoDA663vccOsCAD0A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-7clzXQH4Nf6_jK0lzXRdvw-1; Thu, 23 Apr 2020 19:27:06 -0400
+X-MC-Unique: 7clzXQH4Nf6_jK0lzXRdvw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 785901895A2E;
+        Thu, 23 Apr 2020 23:27:04 +0000 (UTC)
+Received: from treble (ovpn-118-207.rdu2.redhat.com [10.10.118.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 562396084A;
+        Thu, 23 Apr 2020 23:27:00 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 18:26:57 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH v2 6/9] s390/module: Use s390_kernel_write() for late
+ relocations
+Message-ID: <20200423232657.7minzcsysnhp474w@treble>
+References: <cover.1587131959.git.jpoimboe@redhat.com>
+ <18266eb2c2c9a2ce0033426837d89dcb363a85d3.1587131959.git.jpoimboe@redhat.com>
+ <20200422164037.7edd21ea@thinkpad>
+ <20200422172126.743908f5@thinkpad>
+ <20200422194605.n77t2wtx5fomxpyd@treble>
+ <20200423141834.234ed0bc@thinkpad>
+ <alpine.LSU.2.21.2004231513250.6520@pobox.suse.cz>
+ <20200423141228.sjvnxwdqlzoyqdwg@treble>
+ <20200423181030.b5mircvgc7zmqacr@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200423222720.GS27860@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200423181030.b5mircvgc7zmqacr@treble>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 08:27:20AM +1000, Dave Chinner wrote:
-> On Wed, Apr 22, 2020 at 02:20:55PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
+On Thu, Apr 23, 2020 at 01:10:30PM -0500, Josh Poimboeuf wrote:
+> On Thu, Apr 23, 2020 at 09:12:28AM -0500, Josh Poimboeuf wrote:
+> > > > this is strange. While I would have expected an exception similar to
+> > > > this, it really should have happened on the "sturg" instruction which
+> > > > does the DAT-off store in s390_kernel_write(), and certainly not with
+> > > > an ID of 0004 (protection). However, in your case, it happens on a
+> > > > normal store instruction, with 0004 indicating a protection exception.
+> > > > 
+> > > > This is more like what I would expect e.g. in the case where you do
+> > > > _not_ use the s390_kernel_write() function for RO module text patching,
+> > > > but rather normal memory access. So I am pretty sure that this is not
+> > > > related to the s390_kernel_write(), but some other issue, maybe some
+> > > > place left where you still use normal memory access?
+> > > 
+> > > The call trace above also suggests that it is not a late relocation, no? 
+> > > The path is from KLP module init function through klp_enable_patch. It should 
+> > > mean that the to-be-patched object is loaded (it must be a module thanks 
+> > > to a check klp_init_object_loaded(), vmlinux relocations were processed 
+> > > earlier in apply_relocations()).
+> > > 
+> > > However, the KLP module state here must be COMING, so s390_kernel_write() 
+> > > should be used. What are we missing?
 > > 
-> > Update the Usage section to reflect the new individual dax selection
-> > functionality.
+> > I'm also scratching my head.  It _should_ be using s390_kernel_write()
+> > based on the module state, but I don't see that on the stack trace.
 > > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > This trace (and Gerald's comment) seem to imply it's using
+> > __builtin_memcpy(), which might expected for UNFORMED state.
 > > 
-> > ---
-> > Changes from V9:
-> > 	Fix missing ')'
-> > 	Fix trialing '"'
-> > 
-> > Changes from V8:
-> > 	Updates from Darrick
-> > 
-> > Changes from V7:
-> > 	Cleanups/clarifications from Darrick and Dan
-> > 
-> > Changes from V6:
-> > 	Update to allow setting FS_XFLAG_DAX any time.
-> > 	Update with list of behaviors from Darrick
-> > 	https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-> > 
-> > Changes from V5:
-> > 	Update to reflect the agreed upon semantics
-> > 	https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> > ---
-> >  Documentation/filesystems/dax.txt | 164 +++++++++++++++++++++++++++++-
-> >  1 file changed, 161 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> > index 679729442fd2..553712c5054e 100644
-> > --- a/Documentation/filesystems/dax.txt
-> > +++ b/Documentation/filesystems/dax.txt
-> > @@ -17,11 +17,169 @@ For file mappings, the storage device is mapped directly into userspace.
-> >  Usage
-> >  -----
-> >  
-> > -If you have a block device which supports DAX, you can make a filesystem
-> > +If you have a block device which supports DAX, you can make a file system
-> >  on it as usual.  The DAX code currently only supports files with a block
-> >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
-> > -size when creating the filesystem.  When mounting it, use the "-o dax"
-> > -option on the command line or add 'dax' to the options in /etc/fstab.
-> > +size when creating the file system.
-> > +
-> > +Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
-> > +is different.
-> > +
-> > +Enabling DAX on ext4 and ext2
-> > +-----------------------------
-> > +
-> > +When mounting the filesystem, use the "-o dax" option on the command line or
-> > +add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
-> > +within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
-> > +
-> > +
-> > +Enabling DAX on xfs
-> > +-------------------
-> > +
-> > +Summary
-> > +-------
-> > +
-> > + 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
-> > +    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
-> > +    about this access mode.
-> > +
-> > + 2. There exists an advisory file inode flag FS_XFLAG_DAX that is
-> > +    inherited from the parent directory FS_XFLAG_DAX inode flag at file
-> > +    creation time.  This advisory flag can be set or cleared at any
-> > +    time, but doing so does not immediately affect the S_DAX state.
+> > Weird...
 > 
-> This needs to make it clear that the inheritance behaviour of this
-> flag affects both newly created regular files and sub-directories,
-> but no other types of directory entries.
-
-Done.
-
+> Mystery solved:
 > 
-> > +
-> > +    Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
-> > +    and the fs is on pmem then it will enable S_DAX at inode load time;
-> > +    if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+>   $ CROSS_COMPILE=s390x-linux-gnu- scripts/faddr2line vmlinux apply_rela+0x16a/0x520
+>   apply_rela+0x16a/0x520:
+>   apply_rela at arch/s390/kernel/module.c:336
 > 
-> This is item 3), and needs to state that it is specific to regular
-> files as DAX is not a method that can be used to access the
-> directory structure.
-
-In 1) S_DAX was defined as being a "file" access mode flag.  I could add
-explicit verbiage in 1 to clarify that?
-
+> which corresponds to the following code in apply_rela():
 > 
-> Also "at inode load time" doesn't really mean anything useful to
-> users. "when the inode is instantiated in memory by the kernel" is
-> what you really mean, and given that 5(c) talks about "the kernel
-> evicts the inode from memory", we really need to use consistent
-> terminology here so that it's clear to users that the behaviours are
-> related.
-
-
 > 
-> > +
-> > + 3. There exists a dax= mount option.
-> > +
-> > +    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
-> > +
-> > +    "-o dax=always" means "always set S_DAX (at least on pmem),
-> > +                    and ignore FS_XFLAG_DAX."
-> > +
-> > +    "-o dax"        is an alias for "dax=always".
+> 	case R_390_PLTOFF64:	/* 16 bit offset from GOT to PLT. */
+> 		if (info->plt_initialized == 0) {
+> 			unsigned int *ip;
+> 			ip = me->core_layout.base + me->arch.plt_offset +
+> 				info->plt_offset;
+> 			ip[0] = 0x0d10e310;	/* basr 1,0  */
+> 			ip[1] = 0x100a0004;	/* lg	1,10(1) */
 > 
-> "Legacy option that is an alias for "dax=always". This may be
-> deprecated and removed in future, so "dax=always" is the preferred
-> method for specifying this behaviour."
-
-Done.
-
 > 
-> > +
-> > +    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
-> > +
-> > + 4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
-> > +    be set or cleared at any time.  The flag state is inherited by any files or
-> > +    subdirectories when they are created within that directory.
-> 
-> This should be item 2, so that it is defined before it is referenced
-> by the current item 2 in the list.
-
-Done.
-
-> 
-> > +
-> > + 5. Programs that require a specific file access mode (DAX or not DAX)
-> > +    can do one of the following:
-> > +
-> > +    (a) Create files in directories that the FS_XFLAG_DAX flag set as
-> > +        needed; or
-> 
-> 	(a) Set the parent directory FS_XFLAG_DAX as needed before
-> 	files are created; or
-
-Done.
-
-> 
-> > +    (b) Have the administrator set an override via mount option; or
-> 
-> 	(b) Have the administrator set the desired behaviour via
-> 	mount option; or
-
-Done.
-
-> 
-> > +    (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
-> > +        must then cause the kernel to evict the inode from memory.  This
-> > +        can be done by:
-> > +
-> > +        i>  Closing the file and re-opening the file and using statx to
-> > +            see if the fs has changed the S_DAX flag; and
-> 
-> That will almost never work by itself as the cached dentry will
-> still pin the inode. Suggesting it will lead to people implementing
-> dumb loops where they open/check/close/sleep because they....
-
-loops which ...  will keep loading the inode into the cache...  yea...  :-(
-
-> 
-> > +        ii> If the file still does not have the desired S_DAX access
-> > +            mode, either unmount and remount the filesystem, or close
-> > +            the file and use drop_caches.
-> 
-> .... don't have permissions to do either of these things...
-> 
-> Essentially, you may as well say "reboot the machine" at this point,
-> because it's effectively the same thing from a production workload
-> point of view...
-> 
-> Realistically, I'm not sure we should even say "programs must cause
-> eviction", because that's something they cannot do directly without
-> admin privileges nor is it something we want to occur randomly on
-> production machines during production. i.e. this is something that
-> should only be done in scheduled downtime by an administrator, not
-> attempted by applications because DAX isn't immediately available.
-> The admin is in charge here, not the "program".
-
-I agree with everything you say.
-
-But I feel a bit stuck here.  Without some type of documentation we are not
-allowing FS_XFLAG_DAX to be changed on a file by the user.  Which is what we
-were proposing before and we all disliked.
-
-So I feel like we need to say something about getting the inodes evicted.
-perhaps by a 'drop cache' even requested of the admin???
-
-Maybe this?
-
-
- 4. Programs that require a specific file access mode (DAX or not DAX)
-    can do one of the following:
-
-    (a) Set the parent directory FS_XFLAG_DAX as needed before file are
-        created; or
-
-    (b) Have the administrator set the desired behaviour via mount option; or
-
-    (c) Set or clear the file's FS_XFLAG_DAX flag as needed and wait for the
-        inode to be evicted from memory.
-
-        i> the only effective way of ensuring this is to request the admin drop
-           the file system caches.
-
-
-> 
-> > + 6. It is expected that users who want to squeeze every last bit of performance
-> > +    out of the particular rough and tumble bits of their storage will also be
-> > +    exposed to the difficulties of what happens when the operating system can't
-> > +    totally virtualize those hardware capabilities.  DAX is such a feature.
-> 
-> I don't think this adds any value. You may as well just say "caveat
-> empor", but that's kinda implied by the fact a computer is
-> involved..
-
-Deleted.
-
-> 
-> > +
-> > +
-> > +Details
-> > +-------
-> > +
-> > +There are 2 per-file dax flags.  One is a physical inode setting (FS_XFLAG_DAX)
-> 
-> s/physical/persistent/
-
-Done.
-
-> 
-> > +and the other a currently enabled state (S_DAX).
-> 
-> the other is a volatile flag indicating the active state of the
-> feature (S_DAX)
-
-Done.
-
-> 
-> > +
-> > +FS_XFLAG_DAX is maintained, on disk, on individual inodes.
-> 
-> This is implementation detail, not a requirement. The only
-> requirement is that it is stored persistently by the filesystem.
-
-removed.
-
-> 
-> > It is preserved
-> > +within the file system.  This 'physical' config setting can be set using an
-> > +ioctl and/or an application such as "xfs_io -c 'chattr [-+]x'".  Files and
-> 
-> s/physical/persistent/
-> 
-> ... can be set, cleared and/or queried use the FS_IOC_FS[GS]ETXATTR
-> ioctl (see ioctl_xfs_fsgetxattr(2)) or an utility such as 'xfs_io'.
-> New files and ...
-
-Done.
-
-> 
-> > +directories automatically inherit FS_XFLAG_DAX from their parent directory
-> > +_when_ _created_.  Therefore, setting FS_XFLAG_DAX at directory creation time
-> > +can be used to set a default behavior for an entire sub-tree.  (Doing so on the
-> > +root directory acts to set a default for the entire file system.)
-> 
-> No need for () around the example, but regardless, I don't think
-> this is a well thought out example. i.e.  setting it on an existing
-> filesystem which already contains data will not affect the default
-> behaviour of existing subdirectories or files. IOWs, it only sets the
-> default behaviour when set on an -empty- filesystem because of the
-> inheritance characteristics of the flag...
-
-I did mention "at directory creation time" which in my mind when extended to
-the root directory means when the file system is empty...  But I'll just remove
-this example as it provide very little additional information.
-
-> 
-> > +The current enabled state (S_DAX) is set when a file inode is _loaded_ based on
-> 
-> instantiated in memoy by the kernel.
-
-Done.
-
-> 
-> > +the underlying media support, the value of FS_XFLAG_DAX, and the file systems
-> 
-> no comma before "and".
-
-Done.
-
-> 
-> > +dax mount option setting.  See below.
-> > +
-> > +statx can be used to query S_DAX.  NOTE that a directory will never have S_DAX
-> > +set and therefore statx will never indicate that S_DAX is set on directories.
-> > +
-> > +NOTE: Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs
-> > +even if the underlying media does not support dax and/or the file system is
-> > +overridden with a mount option.
-> > +
-> > +
-> > +Overriding FS_XFLAG_DAX (dax= mount option)
-> > +-------------------------------------------
-> > +
-> > +There exists a dax mount option.  Using the mount option does not change the
-> > +physical configured state of individual files but overrides the S_DAX operating
-> > +state when inodes are loaded.
-> > +
-> > +Given underlying media support, the dax mount option is a tri-state option
-> > +(never, always, inode) with the following meanings:
-> > +
-> > +   "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
-> > +   "-o dax=always" means "always set S_DAX, ignore FS_XFLAG_DAX"
-> > +        "-o dax" by itself means "dax=always" to remain compatible with older
-> > +	         kernels
-> > +   "-o dax=inode" means "follow FS_XFLAG_DAX"
-> 
-> This is just repeating what is in the definition section.
-
-Removed.
-
-> 
-> > +The default state is 'inode'.  Given underlying media support, the following
-> > +algorithm is used to determine the effective mode of the file S_DAX on a
-> > +capable device.
-> > +
-> > +	S_DAX = FS_XFLAG_DAX;
-> > +
-> > +	if (dax_mount == "always")
-> > +		S_DAX = true;
-> > +	else if (dax_mount == "off")
-> > +		S_DAX = false;
-> > +
-> > +To reiterate: Setting, and inheritance, continues to affect FS_XFLAG_DAX even
-> > +while the file system is mounted with a dax override.  However, in-core inode
-> > +state (S_DAX) will continue to be overridden until the filesystem is remounted
-> > +with dax=inode and the inode is evicted.
-> 
-> Just put this last paragraph up in the "behavioural definitions" and
-> this whole section can go away.
-
-Yep moved above.
-
-To sum up the changes see the entire text below.
-Ira
-
-
-<quote>
-Enabling DAX on xfs
--------------------
-
-Summary
--------
-
- 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
-    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
-    about this access mode.
-
- 2. There exists a regular file and directory inode flag FS_XFLAG_DAX.  It is
-    inherited from the parent directory FS_XFLAG_DAX inode flag at creation
-    time.  This advisory flag can be set or cleared at any time, but doing so
-    does not immediately affect the S_DAX state.
-
- 3. There exists dax mount options which can override FS_XFLAG_DAX in the
-    setting of the S_DAX flag.  Given underlying storage which supports DAX the
-    following hold.
-
-    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
-
-    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
-
-    "-o dax=always" means "always set S_DAX ignore FS_XFLAG_DAX."
-
-    "-o dax"        is a legacy option which is an alias for "dax=always".
-    		    This may be removed in the future so "-o dax=always" is
-		    the preferred method for specifying this behavior.
-
-    NOTE: Setting and inheritance affect FS_XFLAG_DAX at all times even when
-    the file system is mounted with a dax option.  However, in-core inode
-    state (S_DAX) will continue to be overridden until the file system is
-    remounted with dax=inode and the inode is evicted.
-
- 4. Programs that require a specific file access mode (DAX or not DAX)
-    can do one of the following:
-
-    (a) Set the parent directory FS_XFLAG_DAX as needed before file are
-        created; or
-
-    (b) Have the administrator set the desired behaviour via mount option; or
-
-    (c) Set or clear the file's FS_XFLAG_DAX flag as needed and wait for the
-        inode to be evicted from memory.
-
-	i> the only effective way of ensuring this is to request the admin drop
-	   the file system caches.
-
-
-Details
--------
-
-There are 2 per-file dax flags.  One is a persistent inode setting (FS_XFLAG_DAX)
-and the other is a volatile flag indicating the active state of the feature
-(S_DAX).
-
-FS_XFLAG_DAX is preserved within the file system.  This persistent config
-setting can be set, cleared and/or queried using the FS_IOC_FS[GS]ETXATTR ioctl
-(see ioctl_xfs_fsgetxattr(2)) or an utility such as 'xfs_io'.
-'chattr [-+]x'".
-
-New files and directories automatically inherit FS_XFLAG_DAX from
-their parent directory _when_ _created_.  Therefore, setting FS_XFLAG_DAX at
-directory creation time can be used to set a default behavior for an entire
-sub-tree.
-
-To clarify inheritance here are 3 examples:
-
-Example A:
-
-mkdir -p a/b/c
-xfs_io -c 'chattr +x' a
-mkdir a/b/c/d
-mkdir a/e
-
-	dax: a,e
-	no dax: b,c,d
-
-Example B:
-
-mkdir a
-xfs_io -c 'chattr +x' a
-mkdir -p a/b/c/d
-
-	dax: a,b,c,d
-	no dax:
-
-Example C:
-
-mkdir -p a/b/c
-xfs_io -c 'chattr +x' c
-mkdir a/b/c/d
-
-	dax: c,d
-	no dax: a,b
-
-
-The current enabled state (S_DAX) is set when a file inode is instantiated in
-memory by the kernel.  It is set based on the underlying media support, the
-value of FS_XFLAG_DAX and the file systems dax mount option setting.
-
-statx can be used to query S_DAX.  NOTE that a directory will never have S_DAX
-set and therefore statx will never indicate that S_DAX is set on directories.
-
-Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs even if
-the underlying media does not support dax and/or the file system is overridden
-with a mount option.
-
-</quote>
+> Notice how it's writing directly to text... oops.
+
+Here's a fix, using write() for the PLT and the GOT.
+
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index 2798329ebb74..fe446f42818f 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -297,7 +297,7 @@ static int apply_rela(Elf_Rela *rela, Elf_Addr base, Elf_Sym *symtab,
+ 
+ 			gotent = me->core_layout.base + me->arch.got_offset +
+ 				info->got_offset;
+-			*gotent = val;
++			write(gotent, &val, sizeof(*gotent));
+ 			info->got_initialized = 1;
+ 		}
+ 		val = info->got_offset + rela->r_addend;
+@@ -330,25 +330,29 @@ static int apply_rela(Elf_Rela *rela, Elf_Addr base, Elf_Sym *symtab,
+ 	case R_390_PLTOFF32:	/* 32 bit offset from GOT to PLT. */
+ 	case R_390_PLTOFF64:	/* 16 bit offset from GOT to PLT. */
+ 		if (info->plt_initialized == 0) {
+-			unsigned int *ip;
++			unsigned int *ip, insn[5];
++
+ 			ip = me->core_layout.base + me->arch.plt_offset +
+ 				info->plt_offset;
+-			ip[0] = 0x0d10e310;	/* basr 1,0  */
+-			ip[1] = 0x100a0004;	/* lg	1,10(1) */
++
++			insn[0] = 0x0d10e310;	/* basr 1,0  */
++			insn[1] = 0x100a0004;	/* lg	1,10(1) */
+ 			if (IS_ENABLED(CONFIG_EXPOLINE) && !nospec_disable) {
+ 				unsigned int *ij;
+ 				ij = me->core_layout.base +
+ 					me->arch.plt_offset +
+ 					me->arch.plt_size - PLT_ENTRY_SIZE;
+-				ip[2] = 0xa7f40000 +	/* j __jump_r1 */
++				insn[2] = 0xa7f40000 +	/* j __jump_r1 */
+ 					(unsigned int)(u16)
+ 					(((unsigned long) ij - 8 -
+ 					  (unsigned long) ip) / 2);
+ 			} else {
+-				ip[2] = 0x07f10000;	/* br %r1 */
++				insn[2] = 0x07f10000;	/* br %r1 */
+ 			}
+-			ip[3] = (unsigned int) (val >> 32);
+-			ip[4] = (unsigned int) val;
++			insn[3] = (unsigned int) (val >> 32);
++			insn[4] = (unsigned int) val;
++
++			write(ip, insn, sizeof(insn));
+ 			info->plt_initialized = 1;
+ 		}
+ 		if (r_type == R_390_PLTOFF16 ||
 
