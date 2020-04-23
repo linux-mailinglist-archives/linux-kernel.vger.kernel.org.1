@@ -2,131 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7001B552B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3982C1B5521
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgDWHHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726027AbgDWHHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:07:02 -0400
-Received: from localhost (unknown [49.207.59.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4995208E4;
-        Thu, 23 Apr 2020 07:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587625621;
-        bh=dqOAH6f+q0EsFhUG8mK6iVhk6XGZrFa8diYIKEfHARs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YWXxvT27gIOMUwaVeCCRelYlSwvfPbErLib5+ZaS+D6wXfO4XdOb9Ew3kYjK4iZz4
-         dTnTJ91p2Kw+fLQo4f/j1ta5Q3PMBEClBwYOOTWjorHL3eBm5CUKi8DLHEQpIveHSg
-         U0T+P78Jxc4r2EK1rVS1INybje4pUz5lyxCZoFXI=
-Date:   Thu, 23 Apr 2020 12:36:57 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] dmaengine: mmp_tdma: Validate the transfer direction
-Message-ID: <20200423070657.GW72691@vkoul-mobl>
-References: <20200419164912.670973-1-lkundrak@v3.sk>
- <20200419164912.670973-4-lkundrak@v3.sk>
+        id S1726858AbgDWHES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:04:18 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2838 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726679AbgDWHEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:04:16 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5D3BC9A1978D68F7FC4D;
+        Thu, 23 Apr 2020 15:04:11 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 23 Apr 2020 15:04:03 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <bfields@fieldses.org>,
+        <chuck.lever@oracle.com>
+CC:     <linux-nfs@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] xprtrdma: Make xprt_rdma_slot_table_entries static
+Date:   Thu, 23 Apr 2020 15:10:02 +0800
+Message-ID: <1587625802-97494-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200419164912.670973-4-lkundrak@v3.sk>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-04-20, 18:49, Lubomir Rintel wrote:
-> We only support DMA_DEV_TO_MEM and DMA_MEM_TO_DEV. Let's not do
-> undefined things with other values and reject them.
-> 
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> ---
->  drivers/dma/mmp_tdma.c | 37 ++++++++++++++++++++++++++++---------
->  1 file changed, 28 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-> index d559bb4d6a31d..d574641791598 100644
-> --- a/drivers/dma/mmp_tdma.c
-> +++ b/drivers/dma/mmp_tdma.c
-> @@ -207,10 +207,17 @@ static int mmp_tdma_config_chan(struct dma_chan *chan)
->  
->  	mmp_tdma_disable_chan(chan);
->  
-> -	if (tdmac->dir == DMA_MEM_TO_DEV)
-> -		tdcr = TDCR_DSTDIR_ADDR_HOLD | TDCR_SRCDIR_ADDR_INC;
-> -	else if (tdmac->dir == DMA_DEV_TO_MEM)
-> +	switch (tdmac->dir) {
-> +	case DMA_DEV_TO_MEM:
->  		tdcr = TDCR_SRCDIR_ADDR_HOLD | TDCR_DSTDIR_ADDR_INC;
-> +		break;
-> +	case DMA_MEM_TO_DEV:
-> +		tdcr = TDCR_DSTDIR_ADDR_HOLD | TDCR_SRCDIR_ADDR_INC;
-> +		break;
-> +	default:
-> +		dev_err(tdmac->dev, "invalid transfer direction\n");
-> +		return -EINVAL;
-> +	}
+Fix the following sparse warning:
 
-You can use macros is_slave_direction() to validate
+net/sunrpc/xprtrdma/transport.c:71:14: warning: symbol 'xprt_rdma_slot_table_entries'
+was not declared. Should it be static?
 
->  	if (tdmac->type == MMP_AUD_TDMA) {
->  		tdcr |= TDCR_PACKMOD;
-> @@ -455,12 +462,18 @@ static struct dma_async_tx_descriptor *mmp_tdma_prep_dma_cyclic(
->  			desc->nxt_desc = tdmac->desc_arr_phys +
->  				sizeof(*desc) * (i + 1);
->  
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ net/sunrpc/xprtrdma/transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It would make more sense to use is_slave_direction() and reject up early
-in the function and proceed only when good :)
-
-> -		if (direction == DMA_MEM_TO_DEV) {
-> -			desc->src_addr = dma_addr;
-> -			desc->dst_addr = tdmac->dev_addr;
-> -		} else {
-> +		switch (direction) {
-> +		case DMA_DEV_TO_MEM:
->  			desc->src_addr = tdmac->dev_addr;
->  			desc->dst_addr = dma_addr;
-> +			break;
-> +		case DMA_MEM_TO_DEV:
-> +			desc->src_addr = dma_addr;
-> +			desc->dst_addr = tdmac->dev_addr;
-> +			break;
-> +		default:
-> +			dev_err(tdmac->dev, "invalid transfer direction\n");
-> +			goto err_out;
->  		}
->  		desc->byte_cnt = period_len;
->  		dma_addr += period_len;
-> @@ -510,14 +523,20 @@ static int mmp_tdma_config_write(struct dma_chan *chan,
->  {
->  	struct mmp_tdma_chan *tdmac = to_mmp_tdma_chan(chan);
->  
-> -	if (dir == DMA_DEV_TO_MEM) {
-> +	switch (dir) {
-> +	case DMA_DEV_TO_MEM:
->  		tdmac->dev_addr = dmaengine_cfg->src_addr;
->  		tdmac->burst_sz = dmaengine_cfg->src_maxburst;
->  		tdmac->buswidth = dmaengine_cfg->src_addr_width;
-> -	} else {
-> +		break;
-> +	case DMA_MEM_TO_DEV:
->  		tdmac->dev_addr = dmaengine_cfg->dst_addr;
->  		tdmac->burst_sz = dmaengine_cfg->dst_maxburst;
->  		tdmac->buswidth = dmaengine_cfg->dst_addr_width;
-> +		break;
-> +	default:
-> +		dev_err(tdmac->dev, "invalid transfer direction\n");
-> +		return -EINVAL;
-
-is this required, if you have checked in all _prep() fns then you are
-guaranteed that this will never hit, right?
-
+diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
+index 659da37..9f2e8f5 100644
+--- a/net/sunrpc/xprtrdma/transport.c
++++ b/net/sunrpc/xprtrdma/transport.c
+@@ -68,7 +68,7 @@
+  * tunables
+  */
+ 
+-unsigned int xprt_rdma_slot_table_entries = RPCRDMA_DEF_SLOT_TABLE;
++static unsigned int xprt_rdma_slot_table_entries = RPCRDMA_DEF_SLOT_TABLE;
+ unsigned int xprt_rdma_max_inline_read = RPCRDMA_DEF_INLINE;
+ unsigned int xprt_rdma_max_inline_write = RPCRDMA_DEF_INLINE;
+ unsigned int xprt_rdma_memreg_strategy		= RPCRDMA_FRWR;
 -- 
-~Vinod
+2.6.2
+
