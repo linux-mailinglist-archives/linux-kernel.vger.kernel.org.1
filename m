@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09B41B60EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330A21B60F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 18:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgDWQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 12:29:18 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:39929 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729527AbgDWQ3R (ORCPT
+        id S1729741AbgDWQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 12:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729446AbgDWQaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 12:29:17 -0400
-Received: (qmail 1763 invoked by uid 500); 23 Apr 2020 12:29:15 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 23 Apr 2020 12:29:15 -0400
-Date:   Thu, 23 Apr 2020 12:29:15 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     Oliver Neukum <oneukum@suse.com>
-cc:     Pete Zaitcev <zaitcev@redhat.com>, Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com>,
-        <andreyknvl@google.com>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: use-after-free Read in usblp_bulk_read
-In-Reply-To: <1587640413.23108.7.camel@suse.com>
-Message-ID: <Pine.LNX.4.44L0.2004231213260.20147-100000@netrider.rowland.org>
+        Thu, 23 Apr 2020 12:30:20 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D290CC09B041;
+        Thu, 23 Apr 2020 09:30:18 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id q204so1451436ooq.1;
+        Thu, 23 Apr 2020 09:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfMYnWMcgnIY3nd+oLvzUL7qnJpXroGRL8ZoecQv4Uc=;
+        b=cKOd4A7azrl4Vm7tSN/fCKPvy3PR/U3Uyaw6nPIAEBZnf/F5eQ4RVSjync+mtYrfii
+         u+o7EMbntnkNGQe1wddxGbM15Q5wKx/Pf1093jikw/kLl+rFbVuTO4+1cGLDja0CBCv0
+         h0ugnaikixNVrNrcATsn5LdRnpos8sDly92ng1dus7UC3JvLC4m5uJkb14o+Ks2LGTm7
+         WqRttur9+962uS6hWtxuftsTDHiqnApvNOQuiR/3ke12K2U+f0SR5j8if6W+Z0R6CMnL
+         4g9nuAQWpZM0SWJRYGHVynESqKH6NNhd9Umst40d3QkXzVyVt0VwI5B10pZGR7t05U3h
+         Tt8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfMYnWMcgnIY3nd+oLvzUL7qnJpXroGRL8ZoecQv4Uc=;
+        b=pWMnB3f5L2n81JOBAvc1dV+ez1A84mWYx2+aWerZVfE57auwp29M6OGgKj8abAQmhR
+         ILIDMDJbQAhwvkMdL+qsqpQeYr9BWK2+rRmbGdZ/K/2Dm9Lg6XbqTrMltnZPgv0occ+u
+         YSNitzgr93AwiPCyFL2I1EiZ+dkeb7W84yyM5MVXEWEaNrxP1kC22iiDniHTengq9LuP
+         x0hY68osYVueiXQaouzaluax1/HXVg/iycEuNW724wzWd8rytoHvQpw+/X2jX0sBc0oG
+         LedmFbz4YHc7fjHXodRAyz3BpTAjuNt1+5Qwr/hgz0h+BUkEbJ6K/4owXgoe4zHDdjZB
+         AYFA==
+X-Gm-Message-State: AGi0PubODAhPQo569eomRsLB5lCOYsMmQimsxU385Ec/qszWJNt68YGp
+        +kUa24T1ZsSXRJ4nB8uIGoiAdLbS
+X-Google-Smtp-Source: APiQypIaCRE0Nsmi4ws4s7q6Ep7nOYaDSuoHlmT9yiItoTvZh8USxpZrLlXu3lVmkvxBYIMxBz95yA==
+X-Received: by 2002:a4a:df51:: with SMTP id j17mr4010608oou.57.1587659418007;
+        Thu, 23 Apr 2020 09:30:18 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id 10sm703031oto.80.2020.04.23.09.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 09:30:17 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] USB: gadget: udc: s3c2410_udc: Remove pointless NULL check in s3c2410_udc_nuke
+Date:   Thu, 23 Apr 2020 09:29:24 -0700
+Message-Id: <20200423162923.10886-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Apr 2020, Oliver Neukum wrote:
+Clang warns:
 
-> Am Donnerstag, den 23.04.2020, 00:10 -0500 schrieb Pete Zaitcev:
-> > 
-> > I do not agree with this kind of workaround. The model we're following
-> > is for usb_kill_urb() to cancel the transfer. The usblp invokes it
-> > through usb_kill_anchored_urbs() and usblp_unlink_urbs(), as seen
-> > above. There can be no timer hitting anything once it returns.
-> 
-> Right. It seems to me that the problem is not killing an existing
-> transfer but a failure to check in case of new transfers whether
-> the device has been disconnected.
-> 
-> > 1104 is kzalloc for struct usblp.
-> > 
-> > > > Freed by task 12266:
-> > > >  save_stack+0x1b/0x80 mm/kasan/common.c:72
-> > > >  set_track mm/kasan/common.c:80 [inline]
-> > > >  kasan_set_free_info mm/kasan/common.c:337 [inline]
-> > > >  __kasan_slab_free+0x117/0x160 mm/kasan/common.c:476
-> > > >  slab_free_hook mm/slub.c:1444 [inline]
-> > > >  slab_free_freelist_hook mm/slub.c:1477 [inline]
-> > > >  slab_free mm/slub.c:3034 [inline]
-> > > >  kfree+0xd5/0x300 mm/slub.c:3995
-> > > >  usblp_disconnect.cold+0x24/0x29 drivers/usb/class/usblp.c:1380
-> > > >  usb_unbind_interface+0x1bd/0x8a0 drivers/usb/core/driver.c:436
-> > > >  __device_release_driver drivers/base/dd.c:1137 [inline]
-> > > >  device_release_driver_internal+0x42f/0x500 drivers/base/dd.c:1168
-> > > >  bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
-> > 
-> > 1380 is an inlined call to usblp_cleanup, which is just
-> > a bunch of kfree.
-> 
-> But that must never happen while while the device is open.
-> If that ever happens something is wrong with usblp->used.
-> 
-> > The bug report is still a bug report, but I'm pretty sure the
-> > culprit is the emulated HCD and/or the gadget layer. Unfortunately,
-> > I'm not up to speed in that subsystem. Maybe Alan can look at it?
-> 
-> I doubt it. Operation by a timer triggering a timeout must work.
+drivers/usb/gadget/udc/s3c2410_udc.c:255:11: warning: comparison of
+address of 'ep->queue' equal to a null pointer is always false
+[-Wtautological-pointer-compare]
+        if (&ep->queue == NULL)
+             ~~~~^~~~~    ~~~~
+1 warning generated.
 
-The timer is not the issue.  usb_kill_anchored_urbs() waits until all 
-the URBs have completed, and those completions happen when the timer 
-fires.
+It is not wrong, queue is not a pointer so if ep is not NULL, the
+address of queue cannot be NULL. No other driver does a check like this
+and this check has been around since the driver was first introduced,
+presumably with no issues so it does not seem like this check should be
+something else. Just remove it.
 
-The only suspicious thing I see is that usblp_resume() calls 
-handle_bidir() without first acquiring any mutex.  But resume shouldn't 
-race with disconnect.
+Commit afe956c577b2d ("kbuild: Enable -Wtautological-compare") exposed
+this but it is not the root cause of the warning.
 
-The only other place where read URBs get submitted is under
-usblp_read(), which does acquire the mutex and checks for disconnection
-while holding it.
+Fixes: 3fc154b6b8134 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1004
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/usb/gadget/udc/s3c2410_udc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-So I'm baffled.
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index 0507a2ca0f552..80002d97b59d8 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -251,10 +251,6 @@ static void s3c2410_udc_done(struct s3c2410_ep *ep,
+ static void s3c2410_udc_nuke(struct s3c2410_udc *udc,
+ 		struct s3c2410_ep *ep, int status)
+ {
+-	/* Sanity check */
+-	if (&ep->queue == NULL)
+-		return;
+-
+ 	while (!list_empty(&ep->queue)) {
+ 		struct s3c2410_request *req;
+ 		req = list_entry(ep->queue.next, struct s3c2410_request,
 
-Alan Stern
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+-- 
+2.26.2
 
