@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45CC1B6408
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8967D1B640C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 20:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgDWSvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 14:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgDWSu7 (ORCPT
+        id S1728388AbgDWSwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 14:52:23 -0400
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:63284 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgDWSwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 14:50:59 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E13BC09B042
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:50:59 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id x56so7885186qtc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 11:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=A9o/1fjOsC5s5Fr0nJQ29JU4WvQHR0Kqyz/lYqRJhYg=;
-        b=fMMrW+4mVw4osKe6koCLYXeSJJ1aRtIAQ0bX0BMoBxA/aNbIBihmOKQaHbUYi/365m
-         zDKWmJ3w4MopN64tJ0OonZ//Ez+vcL92LZv1CP2vG+VnUWv30udBTZgIpRnHn5TKG0NQ
-         ZLpBDmCmhreZMWct9RAWjjFMWcE9uI2cxn3XhbmaXqsBRkLYlGXQiZm2fJ+sWCRggYBF
-         N6tEIkTc9bA/wqtmjyRBdh9uukDFWrIfvt7d3P1P50YoKdSdSsl5Zt6lohGJyMByjfmz
-         VghYO27H6yLA3b3eO0Zpm3xT6vohvHG/1d+ovsTercfaxCzJ8RDpTEG/co0dDM5EFj6L
-         /6DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=A9o/1fjOsC5s5Fr0nJQ29JU4WvQHR0Kqyz/lYqRJhYg=;
-        b=O+4qm0nCgZR8zGTA/nF2q8AjznemPju+624gUrH9zvb83qaXzTQ/QA6s2+UIAxB8Yy
-         rh7bVHzScerETYuhq1BDqUDpXtHKkD1i+6sWJSUssOjzhSUz73ElX0g9ebkLaNUC08JM
-         ukq4YjaOd+VXxG2qoZe4AnrzhDeCo7DgggfF8BntbgB+glXam1L/xGSIYL3DbC5HzCwS
-         px8wcd8+Z83SbhggLNLliUgLKL8uvCI5rpALS4DztyAAUuqCi6sagK/k65wFgaA2mGmX
-         HNENwHlIRwPcQDYme3aF75Ob2aR2oezuj+E7/bPTY54jhccfhz+23cLvvBnhN9K9x8Md
-         15sA==
-X-Gm-Message-State: AGi0PublXW0HS11cFQPG28Pw0fb+bGhDe7kH1gCbkQQNK6eNWJ2Tuu68
-        CU4I3B6+vmB5YOGssxpLidvE/pk=
-X-Google-Smtp-Source: APiQypL/yjgCBThNNDHGBCWV/dpRBlWm8PBAFNp7jDhn5eTIq1mWctfAl1pf6s0t+DasHruvn0JMJ4M=
-X-Received: by 2002:ac8:5653:: with SMTP id 19mr5447074qtt.252.1587667858638;
- Thu, 23 Apr 2020 11:50:58 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 14:50:52 -0400
-Message-Id: <20200423185052.143975-1-rcy@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
-Subject: [PATCH] Add rcy@google.com as maintainer for drivers/staging/gasket
-From:   Richard Yeh <rcy@google.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Richard C Yeh <rcy@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 23 Apr 2020 14:52:23 -0400
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 11492CC76A;
+        Thu, 23 Apr 2020 14:52:20 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=pYU0AMuQlOREd1+6VLkN+ll2Wmw=; b=unNW3G
+        a0fmfK+aImdn2fY4EQSPU9uu9tT0VaYVTfSNbh/0IDBrgQ+i8Ul4QlqCYSOjeBYc
+        KTGaaeeA957jiPuwY2tlDtUIhxR++NLP4/CGBCMd1RX/bWToMt88pkxdHZP4sERl
+        v3WRduVsfUuDF4csGvtoBiKIV7BRmolP35F80=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 0829ACC769;
+        Thu, 23 Apr 2020 14:52:20 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=uCFGMAwTUfy3QWw/Nrw1WO4CjlHOh6AiWtHwO1XyK+c=; b=wWrhpOnobs5viGIBdcx+erqAnz9ARnG7BMjQrVIcpf92OBVxtzlP/axJsTrD6kqowNkI8GlzfYsIZfTMeYOPcGrFW0eeACS5UTQ2Rgq5+LUYwhRw6b6gSgal0KmtDFhAQetXgvwv5Ho6K+QG0YhmFCNmU8Et0SGM78A4V2Utomo=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id DDD5CCC763;
+        Thu, 23 Apr 2020 14:52:16 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 09F152DA0CE0;
+        Thu, 23 Apr 2020 14:52:15 -0400 (EDT)
+Date:   Thu, 23 Apr 2020 14:52:14 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+In-Reply-To: <20200423183055.GB26002@ziepe.ca>
+Message-ID: <nycvar.YSQ.7.76.2004231448020.2671@knanqh.ubzr>
+References: <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com> <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr> <871rofdhtg.fsf@intel.com> <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr> <940d3add-4d12-56ed-617a-8b3bf8ef3a0f@infradead.org>
+ <nycvar.YSQ.7.76.2004231059170.2671@knanqh.ubzr> <20200423150556.GZ26002@ziepe.ca> <nycvar.YSQ.7.76.2004231109500.2671@knanqh.ubzr> <20200423151624.GA26002@ziepe.ca> <nycvar.YSQ.7.76.2004231128210.2671@knanqh.ubzr> <20200423183055.GB26002@ziepe.ca>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 8D860ECE-8593-11EA-8543-B0405B776F7B-78420484!pb-smtp20.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard C Yeh <rcy@google.com>
+On Thu, 23 Apr 2020, Jason Gunthorpe wrote:
 
-After consultation with Todd Poynor and Jesse Barnes, I am
-adding myself as a maintainer for drivers/staging/gasket
+> On Thu, Apr 23, 2020 at 11:33:33AM -0400, Nicolas Pitre wrote:
+> > > > No. There is no logic in restricting MTD usage based on CRAMFS or 
+> > > > CRAMFS_MTD.
+> > > 
+> > > Ah, I got it backwards, maybe this:
+> > > 
+> > > config CRAMFS
+> > >    depends on MTD if CRAMFS_MTD
+> > > 
+> > > ?
+> > 
+> > Still half-backward. CRAMFS should not depend on either MTD nor
+> > CRAMFS_MTD.
+> 
+> Well, I would view this the same as all the other cases.. the CRAMFS
+> module has an optional ability consume symbols from MTD.  Here that is
+> controlled by another 'CRAMFS_MTD' selection, but it should still
+> settle it out the same way as other cases like this - ie CRAMFS is
+> restricted to m if MTD is m
+> 
+> Arnd's point that kconfig is acyclic does kill it though :(
+> 
+> > It is CRAMFS_MTD that needs both CRAMFS and MTD.
+> > Furthermore CRAMFS_MTD can't be built-in if MTD is modular.
+> 
+> CRAMFS_MTD is a bool feature flag for the CRAMFS tristate - it is
+> CRAMFS that can't be built in if MTD is modular.
 
-Signed-off-by: Richard C Yeh <rcy@google.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Not exactly. CRAMFS still can be built irrespective of MTD. It is only 
+the XIP part of CRAMFS relying on MTD that is restricted.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c1175fc0aadb..3a61de752219 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7036,6 +7036,7 @@ GASKET DRIVER FRAMEWORK
- M:	Rob Springer <rspringer@google.com>
- M:	Todd Poynor <toddpoynor@google.com>
- M:	Ben Chan <benchan@chromium.org>
-+M:	Richard Yeh <rcy@google.com>
- S:	Maintained
- F:	drivers/staging/gasket/
- 
--- 
-2.26.1.301.g55bc3eb7cb9-goog
 
+Nicolas
