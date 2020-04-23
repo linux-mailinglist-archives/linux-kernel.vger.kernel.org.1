@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918CF1B5A87
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171831B5A91
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 13:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgDWL3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 07:29:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59574 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728035AbgDWL3x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:29:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587641392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=roA7oSvUwqVq7fxAgKiqFkL2qs0oAGhgEsm3N0YXn9U=;
-        b=IeUWeQonc+pzmtYVeRHN8aLBvfymy8WSw4BKCZo1dxqUYlrEHH98U/6L/QmA63hVIswt34
-        3D4fciOkBPHTK4a9T+qOD2+QSrUa39XaH05CsHDk5mvx23EOfbM0JlYY3jMkvW3Q4//T5P
-        yUF4DSge7JuQtZK28YzxbckoOi9WvPw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-MCck4-NpMmWwMxhf2xtErA-1; Thu, 23 Apr 2020 07:29:48 -0400
-X-MC-Unique: MCck4-NpMmWwMxhf2xtErA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F939800C78;
-        Thu, 23 Apr 2020 11:29:45 +0000 (UTC)
-Received: from krava (unknown [10.40.196.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A507D5D710;
-        Thu, 23 Apr 2020 11:29:41 +0000 (UTC)
-Date:   Thu, 23 Apr 2020 13:29:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 04/11] perf expr: allow ',' to be an other token
-Message-ID: <20200423112939.GJ1136647@krava>
-References: <20200422220430.254014-1-irogers@google.com>
- <20200422220430.254014-5-irogers@google.com>
+        id S1728182AbgDWLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 07:30:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60130 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727928AbgDWLac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:30:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8C767B120;
+        Thu, 23 Apr 2020 11:30:29 +0000 (UTC)
+Date:   Thu, 23 Apr 2020 13:30:27 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Bo Gan <ganb@vmware.com>
+Cc:     Mike Stunes <mstunes@vmware.com>, Joerg Roedel <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: Re: [PATCH 40/70] x86/sev-es: Setup per-cpu GHCBs for the
+ runtime handler
+Message-ID: <20200423113027.GL30814@suse.de>
+References: <20200319091407.1481-1-joro@8bytes.org>
+ <20200319091407.1481-41-joro@8bytes.org>
+ <A7DF63B4-6589-4386-9302-6B7F8BE0D9BA@vmware.com>
+ <20200415155302.GD21899@suse.de>
+ <1a164e55-19dd-a20b-6837-9f425cfac100@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422220430.254014-5-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <1a164e55-19dd-a20b-6837-9f425cfac100@vmware.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 03:04:23PM -0700, Ian Rogers wrote:
-> Corrects parse errors in expr__find_other of expressions with min.
+On Wed, Apr 22, 2020 at 06:33:13PM -0700, Bo Gan wrote:
+> On 4/15/20 8:53 AM, Joerg Roedel wrote:
+> > Hi Mike,
+> > 
+> > On Tue, Apr 14, 2020 at 07:03:44PM +0000, Mike Stunes wrote:
+> > > set_memory_decrypted needs to check the return value. I see it
+> > > consistently return ENOMEM. I've traced that back to split_large_page
+> > > in arch/x86/mm/pat/set_memory.c.
+> > 
+> > I agree that the return code needs to be checked. But I wonder why this
+> > happens. The split_large_page() function returns -ENOMEM when
+> > alloc_pages() fails. Do you boot the guest with minal RAM assigned?
+> > 
+> > Regards,
+> > 
+> > 	Joerg
+> > 
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/expr.y | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I just want to add some context around this. The call path that lead to the
+> failure is like the following:
 > 
-> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-> index cd17486c1c5d..54260094b947 100644
-> --- a/tools/perf/util/expr.y
-> +++ b/tools/perf/util/expr.y
-> @@ -80,7 +80,7 @@ other: ID
->  	ctx->ids[ctx->num_ids++].name = $1;
->  }
->  |
-> -MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')'
-> +MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
-
-ugh, thanks
-
-jirka
-
->  
->  
->  all_expr: if_expr			{ *final_val = $1; }
-> -- 
-> 2.26.2.303.gf8c07b1a785-goog
+> 	__alloc_pages_slowpath
+> 	__alloc_pages_nodemask
+> 	alloc_pages_current
+> 	alloc_pages
+> 	split_large_page
+> 	__change_page_attr
+> 	__change_page_attr_set_clr
+> 	__set_memory_enc_dec
+> 	set_memory_decrypted
+> 	sev_es_init_ghcbs
+> 	trap_init   -> before mm_init (in init/main.c)
+> 	start_kernel
+> 	x86_64_start_reservations
+> 	x86_64_start_kernel
+> 	secondary_startup_64
 > 
+> At this time, mem_init hasn't been called yet (which would be called by
+> mm_init). Thus, the free pages are still owned by memblock. It's in mem_init
+> (x86/mm/init_64.c) that memblock_free_all gets called and free pages are
+> released.
+> 
+> During testing, I've also noticed that debug_pagealloc=1 will make the issue
+> disappear. That's because with debug_pagealloc=1, probe_page_size_mask in
+> x86/mm/init.c will not allow large pages (2M/1G). Therefore, no
+> split_large_page would happen. Similarly, if CPU doesn't have
+> X86_FEATURE_PSE, there won't be large pages either.
+> 
+> Any thoughts? Maybe split_large_page should get pages from memblock at early
+> boot?
+
+Thanks for you analysis. I fixed it (verified by Mike) by using
+early_set_memory_decrypted() instead of set_memory_decrypted(). I still
+wonder why I didn't see that issue on my kernel. It has
+DEBUG_PAGEALLOC=y set, but it is not enabled by default and I also
+didn't pass the command-line parameter.
+
+Regards,
+
+	Joerg
 
