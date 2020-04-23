@@ -2,194 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D221D1B56AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDA01B56BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Apr 2020 09:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgDWHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 03:51:29 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15587 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727850AbgDWHvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:51:25 -0400
-IronPort-SDR: zfJQnbgWlJ9P/yHgngSLguC0w6uAKYh6VJR8ts/mrx8n2b3uoxppx8nIiwq36irAsc+/dFBmLR
- XtF/6hdy7E7Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 00:51:24 -0700
-IronPort-SDR: VZJ3h40CylMLMY4yzOF4dRiVGNw6kRdB1xKBOyS/9OL5eXseuoUuNTl2pA+bAdWCUxoG/qWyb1
- stSML4Hfoe5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,306,1583222400"; 
-   d="scan'208";a="365930195"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.151]) ([10.238.4.151])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Apr 2020 00:51:19 -0700
-Subject: Re: [PATCH 2/8] perf metrics: fix parse errors in cascade lake
- metrics
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200422074809.160248-1-irogers@google.com>
- <20200422074809.160248-3-irogers@google.com>
- <20200422143840.GJ608746@tassilo.jf.intel.com>
- <CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com>
- <CAP-5=fUMFqiSFLbKA-XWStrePwxiYfq7Jk6mS9=F56Q9y-KVsA@mail.gmail.com>
- <46e803f3-80a4-0d37-9d39-b625b947ac7f@linux.intel.com>
- <cb5fcb4b-3ac6-66b5-9f9e-7943f4a6dadf@linux.intel.com>
- <CAP-5=fXVF_ExxVuiivF0JY3MwgxrQZqyFoPwn-p7DPf6Gbdh0g@mail.gmail.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <abec8f03-ecb5-9bfe-c8ab-2c6d2aad2a60@linux.intel.com>
-Date:   Thu, 23 Apr 2020 15:51:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726442AbgDWHyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 03:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgDWHyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:54:04 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0417BC03C1AB
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 00:54:04 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id j14so3963253lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 00:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4UEOdXwxEm6LM9DNvnfZm1b3ROrLaqHjn0hz9sIJcG0=;
+        b=HSnjqWp/6qALA+mTUDwmajzvAkmImFFkRkVElj1CcoJnHeBkUqmj8M269JuUj7VxwP
+         IE9WFiYC2WVF51462BBD5QcmrMpiJDvBGyY+nds/loi04iOEB/39HrWg6weyIOY+mwCW
+         mBucRmf/Fh8xf6Q5ZKPOLnGKtCwqvjl7Y7nTfAfiT/BB/cjlXhXS5oMJeV9Jga1Zkc2M
+         NxVcPXgtJs/k6+6AhqrEgl4TUEtUTut+q7cVRm44M2RHRYgfK5ZEqHdSx205CUG6gTlh
+         eNkmMsa9VkySIOuKNGSsQpcfGpZXeaH+Pq0wBEkG2cZSoorSDDeUL/xXxqcXM+nSaiXL
+         A5dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4UEOdXwxEm6LM9DNvnfZm1b3ROrLaqHjn0hz9sIJcG0=;
+        b=UbTCENTgLsGGj6BMWmXG1g9DlAgRWY4cWNz1aN14RaJTTU5pPQxGIPVUdax72m1tHY
+         Z0RGlWK5rOxKtteiYvtqSNHN9y/9y6QLPZa08sfZYUGB5HubZkW0WPBOLjUw6oNE2Axf
+         J36inRabIgCTMyvczwu/DB60r2+RESjrpxDGEzWbujE5FkCH1bu8kATJA6wiyeWCnRIi
+         ABQGMRbTEfyU33OZO6jRbtKDkCrYNQn+bnEKbs3RD3uxOoClmV/NchvWHulrg6ozr996
+         lARN29NRAR+7FK+BcRP5vO++w4ual2ndwpIFpB8PrJAP9UGrHA0NYAC6LBq8lWazftJU
+         BFUQ==
+X-Gm-Message-State: AGi0PuYT6lYEoSbuvxCFGn8vMrICdBS59Rg8jLK+dHnoG8hEVBRPw+OP
+        jzcXzVdcId/3Es5QH7zLNlN+SH5hAJ4+uta9Y4xjKcSx15PRzw==
+X-Google-Smtp-Source: APiQypKrl1JJiWs2QGieTdGaz/MFZsBlr4BPgyd5GnMJ1EmOHaWBJt7et4F+l23ntDj8Wl8ea9hRxWe0kRUpzTtYHvw=
+X-Received: by 2002:ac2:4da7:: with SMTP id h7mr1565819lfe.95.1587628442305;
+ Thu, 23 Apr 2020 00:54:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXVF_ExxVuiivF0JY3MwgxrQZqyFoPwn-p7DPf6Gbdh0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200422095031.522502705@linuxfoundation.org>
+In-Reply-To: <20200422095031.522502705@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 23 Apr 2020 13:23:50 +0530
+Message-ID: <CA+G9fYvzMkSyzQzsBeHgc1ps9s_SDnU3qz8fAXEwD-U=8xDNiQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/118] 5.4.35-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On Wed, 22 Apr 2020 at 15:53, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.35 release.
+> There are 118 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 24 Apr 2020 09:48:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.35-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 4/23/2020 2:09 PM, Ian Rogers wrote:
-> On Wed, Apr 22, 2020 at 10:54 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
->>
->> Hi Jiri,
->>
->> Bisected to this commit which introduced the regression.
->>
->> 26226a97724d ("perf expr: Move expr lexer to flex")
->>
->> Would you like to look at that?
-> 
-> Hi Jin,
-> 
-> that commit breaks parsing of things like ','. See fixes in this patch
-> set such as:
-> https://lore.kernel.org/lkml/20200422220430.254014-5-irogers@google.com/
-> Fixing the lex issues then exposes other bugs that need to be
-> corrected in the json. I've added Fixes to the commit message of:
-> https://lore.kernel.org/lkml/20200422220430.254014-3-irogers@google.com/
-> https://lore.kernel.org/lkml/20200422220430.254014-4-irogers@google.com/
-> and would be glad of a review. If we can land:
-> https://lore.kernel.org/lkml/20200422220430.254014-12-irogers@google.com/
-> then expr as the source of parse errors can go away :-) The next
-> problem is the parse events code, but some of that logic is dependent
-> on the machine it is running on. It'd be good to add a test that
-> parsed events code can handle the events in metrics too, filtering out
-> things like duration_time that are special to metrics.
-> 
-> Thanks,
-> Ian
-> 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Only with the fix 
-"https://lore.kernel.org/lkml/20200422220430.254014-5-irogers@google.com/" 
-(without other json modifications), the issue was still there.
+Summary
+------------------------------------------------------------------------
 
-localhost:~ # perf stat -M DRAM_Read_Latency
-event syntax error: 
-'../event=0x36,,umask=0x21/,cha/event=0x35,cha_0/event=0x0/}:W,duration_time'
-                                   \___ parser error
+kernel: 5.4.35-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 186764443bf32f12e07093aaff52dd4a25231781
+git describe: v5.4.34-119-g186764443bf3
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
+ld/v5.4.34-119-g186764443bf3
 
-  Usage: perf stat [<options>] [<command>]
+No regressions (compared to build v5.4.34)
 
-     -M, --metrics <metric/metric group list>
-                           monitor specified metrics or metric groups 
-(separated by ,)
+No fixes (compared to build v5.4.34)
 
-So you added other commits which changed the json to let the parse work. 
-But I don't know if we have to do with this way because it should be a 
-regression issue.
+Ran 37179 total tests in the following environments and test suites.
 
-In my opinion, we'd better fix the issue in 26226a97724d ("perf expr: 
-Move expr lexer to flex") and try not to change the json if possible.
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
 
-Thanks
-Jin Yao
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* kselftest/networking
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* kvm-unit-tests
+* libgpiod
+* ltp-cve-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* libhugetlbfs
+* ltp-containers-tests
+* ltp-fs-tests
+* ltp-open-posix-tests
+* v4l2-compliance
+* spectre-meltdown-checker-test
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-native/networking
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* kselftest-vsyscall-mode-none/networking
 
->> Thanks
->> Jin Yao
->>
->> On 4/23/2020 9:08 AM, Jin, Yao wrote:
->>>
->>>
->>> On 4/23/2020 12:18 AM, Ian Rogers wrote:
->>>> On Wed, Apr 22, 2020 at 8:34 AM Ian Rogers <irogers@google.com> wrote:
->>>>>
->>>>> On Wed, Apr 22, 2020 at 7:38 AM Andi Kleen <ak@linux.intel.com> wrote:
->>>>>>
->>>>>> On Wed, Apr 22, 2020 at 12:48:03AM -0700, Ian Rogers wrote:
->>>>>>> Remove over escaping with \\.
->>>>>>> Remove extraneous if 1 if 0 == 1 else 0 else 0.
->>>>>>
->>>>>> So where do these parse errors happen exactly? Some earlier
->>>>>> patches introduced them as regressions?
->>>>>
->>>>> I'll work to track down a Fixes tag. I can repro the Skylakex errors
->>>>> without the test in this series, by doing:
->>>>>
->>>>> $ perf stat -M DRAM_Read_Latency sleep 1
->>>>> Error:
->>>>> The sys_perf_event_open() syscall returned with 22 (Invalid argument)
->>>>> for event (cha/event=0x36\,uma
->>>>> sk=0x21/).
->>>>> /bin/dmesg | grep -i perf may provide additional information.
->>>>>
->>>
->>> I also think some patches introduced this regression. When we rollback
->>> to commit 61ec07f5917e (perf vendor events intel: Update all the Intel
->>> JSON metrics from TMAM 3.6.), there is no this error on CLX.
->>>
->>> Thanks
->>> Jin Yao
->>>
->>>>> This was just the escaping issue. I'm less clear on the other cascade
->>>>> lake issue, and it is a bit more work for me to test on cascade lake.
->>>>> What is "if 1 if 0 == 1 else 0 else 0" trying to do? Perhaps hunting
->>>>> for the Fixes will let me know, but it looks like a copy-paste error.
->>>>>
->>>>>> The original metrics worked without parse errors as far as I know.
->>>>>
->>>>> The skylake issue above repros on 5.2.17 and so it seems like it is
->>>>> broken for a while. The test in this series will prevent this in the
->>>>> future, but without this patch that test fails.
->>>>
->>>> The parse errors were introduced with the metrics, so they've never
->>>> worked:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=fd5500989c8f3c3944ac0a144be04bae2506f7ba
->>>>
->>>>
->>>> I will send out a v2 with Fixes in the commit message but wanted to
->>>> wait in case there was any more feedback. In particular the fixes to
->>>> the new test and expr parser lex code. The lex code wasn't broken at
->>>> the time the metrics were added and should be working again after this
->>>> patch set.
->>>>
->>>> Thanks,
->>>> Ian
->>>>
->>>>>> If it fixes something earlier it would need Fixes: tags.
->>>>>
->>>>> Working on it. Thanks for the input!
->>>>>
->>>>> Ian
->>>>>
->>>>>> -Andi
+--=20
+Linaro LKFT
+https://lkft.linaro.org
