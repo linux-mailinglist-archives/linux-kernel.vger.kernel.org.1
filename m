@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F9F1B81FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 00:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DD61B7733
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgDXWVR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Apr 2020 18:21:17 -0400
-Received: from [116.62.10.213] ([116.62.10.213]:45252 "EHLO mail.qdztrk.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgDXWVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 18:21:16 -0400
-X-Greylist: delayed 27374 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Apr 2020 18:21:16 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.qdztrk.com (Postfix) with ESMTP id E1C571E68E7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 21:43:39 +0800 (CST)
-Received: from mail.qdztrk.com ([127.0.0.1])
-        by localhost (mail.qdztrk.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id YT1GXarMxdm8 for <linux-kernel@vger.kernel.org>;
-        Fri, 24 Apr 2020 21:43:39 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.qdztrk.com (Postfix) with ESMTP id 9E6341E68D7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 21:43:39 +0800 (CST)
-X-Virus-Scanned: amavisd-new at mail.qdztrk.com
-Received: from mail.qdztrk.com ([127.0.0.1])
-        by localhost (mail.qdztrk.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pQw3xWfrLzay for <linux-kernel@vger.kernel.org>;
-        Fri, 24 Apr 2020 21:43:39 +0800 (CST)
-Received: from coris.com (unknown [103.207.36.17])
-        by mail.qdztrk.com (Postfix) with ESMTP id 720001E68E8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 21:43:37 +0800 (CST)
-Reply-To: kentpace@sina.com
-From:   Kent Pace <kentpace@coris.com>
-To:     linux-kernel@vger.kernel.org
-Subject: URGENT!! PLEASE READ
-Date:   24 Apr 2020 06:43:32 -0700
-Message-ID: <20200424064331.B81787232022F12A@coris.com>
+        id S1728096AbgDXNmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:42:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48236 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726301AbgDXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:42:07 -0400
+IronPort-SDR: XcNwQyCIiOsSAEukrIvEUZOjK5/VmgEN4juUP5nFbfsN1FsFN2pPaV2zVIMZaWjs0tQH3DG4PY
+ YxdF3AN430AA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 06:42:06 -0700
+IronPort-SDR: 8USxce6JaaWf19goY9DaQF4NC95AxRX0qFW2EG2S6Bj2Mf9VZvApdNXRxwbY+XB1N2nBBrb0U6
+ RbK9j+LAYDPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
+   d="scan'208";a="280800527"
+Received: from unknown (HELO localhost) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Apr 2020 06:42:04 -0700
+Date:   Fri, 24 Apr 2020 21:44:07 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        jmattson@google.com, yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 1/9] KVM: VMX: Introduce CET VMX fields and flags
+Message-ID: <20200424134407.GD24039@local-michael-cet-test>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
+ <20200326081847.5870-2-weijiang.yang@intel.com>
+ <20200423163948.GA25564@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423163948.GA25564@linux.intel.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-
-
-There is something very important I need to discuss with you.  I 
-am writing  this letter in tears and fear. In tears because I 
-will soon depart and in fear because I don't really know if you 
-will do this faithfully.
-
-I am COVID-19  patient and the doctor has already confirmed I may 
-not last for the next 7 days.
-
-I have substantial amount of money deposited in a security vault 
-around your country. It is in trunk boxes and once  I receive 
-your response and see your readiness to claim the money 
-immediately, I will forward the needed documents and the contact 
-of the security vault where the consignment is deposited,
-I am not asking you to give me anything but I want you to help 
-people that has been infected with this deadly virus with 60% of 
-the money and 40% should be for you and your family.
-
-I will disclose exact amount in the boxes as soon as I 
-receive your response.
-
-
-Regards.
+On Thu, Apr 23, 2020 at 09:39:48AM -0700, Sean Christopherson wrote:
+> On Thu, Mar 26, 2020 at 04:18:38PM +0800, Yang Weijiang wrote:
+> > If VM_EXIT_LOAD_HOST_CET_STATE = 1, the host CET states are restored
+> > from below VMCS fields at VM-Exit:
+> >   HOST_S_CET
+> >   HOST_SSP
+> >   HOST_INTR_SSP_TABLE
+> > 
+> > If VM_ENTRY_LOAD_GUEST_CET_STATE = 1, the guest CET states are loaded
+> > from below VMCS fields at VM-Entry:
+> >   GUEST_S_CET
+> >   GUEST_SSP
+> >   GUEST_INTR_SSP_TABLE
+> > 
+> > Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> > Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > ---
+> 
+> ...
+> 
+> > diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> > index 5e090d1f03f8..e938bc6c37aa 100644
+> > --- a/arch/x86/include/asm/vmx.h
+> > +++ b/arch/x86/include/asm/vmx.h
+> > @@ -94,6 +94,7 @@
+> >  #define VM_EXIT_CLEAR_BNDCFGS                   0x00800000
+> >  #define VM_EXIT_PT_CONCEAL_PIP			0x01000000
+> >  #define VM_EXIT_CLEAR_IA32_RTIT_CTL		0x02000000
+> > +#define VM_EXIT_LOAD_HOST_CET_STATE             0x10000000
+> >  
+> >  #define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
+> >  
+> > @@ -107,6 +108,7 @@
+> >  #define VM_ENTRY_LOAD_BNDCFGS                   0x00010000
+> >  #define VM_ENTRY_PT_CONCEAL_PIP			0x00020000
+> >  #define VM_ENTRY_LOAD_IA32_RTIT_CTL		0x00040000
+> > +#define VM_ENTRY_LOAD_GUEST_CET_STATE           0x00100000
+> 
+> I think it probably make senses to drop HOST/GUEST from the controls,
+> i.e. VM_{ENTER,EXIT}_LOAD_CET_STATE.  The SDM doesn't qualify them with
+> guest vs. host, nor does KVM qualify any of the other entry/exit controls
+> that are effective guest vs. host.
+Sure, will fix them, thanks.
 
