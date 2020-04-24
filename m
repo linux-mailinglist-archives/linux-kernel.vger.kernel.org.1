@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489DE1B6CD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 06:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818AE1B6CD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 06:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgDXEyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 00:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgDXEyT (ORCPT
+        id S1726413AbgDXE4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 00:56:41 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:38280 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725852AbgDXE4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 00:54:19 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE7EC09B048
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 21:54:18 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id g2so3316278plo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 21:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z/YsFv/10NhkBeiZjaV6l6O7A2swaX/eVpoeaYwPiNg=;
-        b=VU1s+LT31TEalxhE+dHeMgtEMRrST5oIP96hg6VW4pHGnP+qE7kUxu38tEe52CypLI
-         xuKf3XnGnEDYe3ajNmaDD67pxCiXLlDvRJ5Fxn4hSq61lETE0fcgJ4nc9BHFQegGTQZk
-         Q6saQBat6gqeg9CpStPfAtuouhMP8wx4u6uhk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z/YsFv/10NhkBeiZjaV6l6O7A2swaX/eVpoeaYwPiNg=;
-        b=Hto2NBxWXfgoUzvMpXP7rtQSQugCQxAeytTn7/W4ijPiyqktsIB0zl15RI2GT9suvG
-         45lKwIhRyx+XilGK93qGxuajTY6VAfGpD1JhyJP5a6FLY+D0U428B8rZ2ccqm/6CBEIm
-         qwOBaeXKP2TcpRauDUSfeFM/TJZdUrDwaVPauJ6506tqhDYVC7Z175beq7lOuhKHEf1t
-         ZjtlnsN+T2fFPiyLJzRSkXNuF8z7tZ0k56TPTXECts5EAdne4W3qhL+ZnqYQvmvAs71c
-         suSm/Hj7vrlGlNq1CCyuSVUX8rY+m4oEiJdvtJUpP2VQy/yHMAeUWVDtSm0QAtwO1kko
-         5wlA==
-X-Gm-Message-State: AGi0PuYj+0BXNGRQsMtyXtO5nR9jqhoyUNwFhZ1t3cVRowxhDivl9sjl
-        Aq3Cv98ZczO2rnL/8qBcdBcl+Q==
-X-Google-Smtp-Source: APiQypI6m7J+NqwxX2iu4a6RtckM854S3bBsQf98LAgWiQRqbCtnJRyA11TOuBgHg51CtgGWm2KTmQ==
-X-Received: by 2002:a17:902:7148:: with SMTP id u8mr6922882plm.13.1587704058295;
-        Thu, 23 Apr 2020 21:54:18 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id 62sm4344680pfu.181.2020.04.23.21.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 21:54:17 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH 3/3] soc: qcom: rpmh-rsc: Fold WARN_ON() into if condition
-Date:   Thu, 23 Apr 2020 21:54:14 -0700
-Message-Id: <20200424045414.133381-4-swboyd@chromium.org>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-In-Reply-To: <20200424045414.133381-1-swboyd@chromium.org>
-References: <20200424045414.133381-1-swboyd@chromium.org>
+        Fri, 24 Apr 2020 00:56:40 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03O4rGIZ028901;
+        Fri, 24 Apr 2020 00:56:22 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 30fxf6csfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 00:56:22 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 03O4uLEU016508
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 24 Apr 2020 00:56:21 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 24 Apr 2020 00:56:20 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 24 Apr 2020 00:56:20 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 24 Apr 2020 00:56:20 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03O4uGpj017534;
+        Fri, 24 Apr 2020 00:56:17 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>, <pmeerw@pmeerw.net>,
+        "Alexandru Ardelean" <alexandru.ardelean@analog.com>
+Subject: [PATCH v4 0/7] iio: core,buffer: re-organize chardev creation
+Date:   Fri, 24 Apr 2020 07:56:35 +0300
+Message-ID: <20200424045642.4903-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-24_01:2020-04-23,2020-04-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ suspectscore=2 bulkscore=0 impostorscore=0 mlxlogscore=939 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240035
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the WARN_ON() into the if condition so the compiler can see that
-the branch is unlikely() and possibly optimize it better.
+The main intent is to be able to add more chardevs per IIO device, one
+for each buffer. To get there, some rework is needed.
 
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/soc/qcom/rpmh-rsc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Since v3, some changes have been done. See changelog
 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 462dd267afef..f7763f008e03 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -373,10 +373,8 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- 
- 	for_each_set_bit(i, &irq_status, BITS_PER_TYPE(u32)) {
- 		req = get_req_from_tcs(drv, i);
--		if (!req) {
--			WARN_ON(1);
-+		if (WARN_ON(!req))
- 			goto skip;
--		}
- 
- 		err = 0;
- 		for (j = 0; j < req->num_cmds; j++) {
+Changelog v3 -> v4:
+- added patch [1] 'iio: Use an early return in iio_device_alloc to simplify code.'
+  it's main purpose is so that this patch applies:
+     [2]'iio: core: add simple centralized mechanism for ioctl() handlers'
+  depending on the final version of patch [1], patch [2] needs some
+  minor fixup
+- added patch 'iio: core,buffer: wrap iio_buffer_put() call into iio_buffers_put()'
+- patch 'iio: core: register buffer fileops only if buffer present'
+  is now: 'iio: core: register chardev only if needed'
+- dropped 'iio: buffer: move sysfs alloc/free in industrialio-buffer.c'
+  it's likely we won't be doing this patch anymore
+- patches:
+    'iio: buffer: move iio buffer chrdev in industrialio-buffer.c'
+    'iio: event: move event-only chardev in industrialio-event.c'
+  have been merged into 'iio: buffer,event: duplicate chardev creation for buffers & events'
+  since now, the logic is a bit different, and 'indio_dev->chrdev' is
+  now a reference to either the buffer's chrdev & or the events-only
+  chrdev
+- added simple mechanism to register ioctl() handlers for IIO device
+  which is currently used only by events mechanism
+
+Changelog v2 -> v3:
+* removed double init in
+  'iio: event: move event-only chardev in industrialio-event.c'
+
+Changelog v1 -> v2:
+* re-reviewed some exit-paths and cleanup some potential leaks on those
+  exit paths:
+  - for 'iio: buffer: move iio buffer chrdev in industrialio-buffer.c'
+    add iio_device_buffers_put() helper and calling iio_buffers_uninit()
+    on device un-regsiter
+  - for 'move sysfs alloc/free in industrialio-buffer.c'
+    call 'iio_buffer_free_sysfs_and_mask()' on exit path if
+    cdev_device_add() fails
+  - for 'move event-only chardev in industrialio-event.c'
+    check if event_interface is NULL in
+    iio_device_unregister_event_chrdev()
+
+Alexandru Ardelean (6):
+  iio: buffer: add back-ref from iio_buffer to iio_dev
+  iio: core,buffer: wrap iio_buffer_put() call into iio_buffers_put()
+  iio: core: register chardev only if needed
+  iio: buffer,event: duplicate chardev creation for buffers & events
+  iio: core: add simple centralized mechanism for ioctl() handlers
+  iio: core: use new common ioctl() mechanism
+
+Jonathan Cameron (1):
+  iio: Use an early return in iio_device_alloc to simplify code.
+
+ drivers/iio/iio_core.h            |  29 ++++--
+ drivers/iio/industrialio-buffer.c | 102 ++++++++++++++++++--
+ drivers/iio/industrialio-core.c   | 151 ++++++++++++------------------
+ drivers/iio/industrialio-event.c  | 100 +++++++++++++++++++-
+ include/linux/iio/buffer_impl.h   |  10 ++
+ include/linux/iio/iio.h           |   8 +-
+ 6 files changed, 290 insertions(+), 110 deletions(-)
+
 -- 
-Sent by a computer, using git, on the internet
+2.17.1
 
