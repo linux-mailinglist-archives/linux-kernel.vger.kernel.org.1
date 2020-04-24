@@ -2,129 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0291B73A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80E01B73B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgDXMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:14:09 -0400
-Received: from mail-db8eur05on2043.outbound.protection.outlook.com ([40.107.20.43]:17857
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726668AbgDXMOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:14:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bfiHPKxa1IHBBXNbchWXTfijEt10fTsmzFuRjW182govdvJzWLSuOQID8wJVCmQu4rsXNbTk4RyIlWUwkImuQXsuZNZi5SepPZ3qUQt7umMLC1Npr7EUQZVL8Jadqf+QP5xh3nG1dOPq+fMSGJ8Z6C23eSbkEWj5E//SI1fT3I3KFx6QfMHSWZOHzi6HKgRyEoWV97iqGUsZNhR15wrY9zu3geYBdypIS70a3ShZ2khSTt7p5Az3iGOrc2vaUBiWF2mgxMpz77GUPV4JlKuwNkx5jXzeKmhL3yUEc3auqxyDI+OrPG8M59O51iCjSWSkKTlP9saGz1RJLC835W3jkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0N2ovQwEi1U3BCXEi0kL1IvyFOLJ17/LkzbpQ9Oit5w=;
- b=OQ0SOA6DRFkEtqihgEaa86/agMk+AC6rwWbHPhgTxShptlooeSKJqUxuR3hhpijEceEuVHKemkrNlNzLiN5Om1VNtmcKZZC+eq7/VOalE9UDVgYkgqLlzVOT7/cBoexL0wDui9Erek83ODDIY7rkRltlLFN13Ue8gsDgKviwIEhPZRZWZu1wSlA8Byb5PWHEcm7YhjToGXYPq38p9irGmLfD6Kn0B2XUEo+MXIaX7DpqsUj5bAiQVEHmZ9M7txRdLsUbr1hUNiA1kDMjcVqrTDA2+N5LWcvskCVBODfP8JmVG6xEdvFqN8tgJk0ncJ/JTLiXK8DWBlIIHmxSgA9r8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0N2ovQwEi1U3BCXEi0kL1IvyFOLJ17/LkzbpQ9Oit5w=;
- b=d6r7V0dYWIrEhhuCKza/YyQ4ruwhQy8k3nNcNruxfL0/J8tnyNjKFRCDhndeRBVkgDmaaho3oDE/DOPsHcwYG76IDfvnpEQhGzQBpQXshUIVkKgVrUORdloDgEKKaqPeqoEq7drLOqdea9YBHTbU0qmcMyRXfr9w/dIFE6cCJV8=
-Received: from AM0PR04MB5443.eurprd04.prod.outlook.com (2603:10a6:208:119::33)
- by AM0PR04MB5314.eurprd04.prod.outlook.com (2603:10a6:208:cd::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
- 2020 12:14:05 +0000
-Received: from AM0PR04MB5443.eurprd04.prod.outlook.com
- ([fe80::8cc9:252:1c77:5860]) by AM0PR04MB5443.eurprd04.prod.outlook.com
- ([fe80::8cc9:252:1c77:5860%2]) with mapi id 15.20.2937.012; Fri, 24 Apr 2020
- 12:14:05 +0000
-From:   Florinel Iordache <florinel.iordache@nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 6/9] net: phy: add backplane kr driver support
-Thread-Topic: [PATCH net-next 6/9] net: phy: add backplane kr driver support
-Thread-Index: AdYaMARbyR37uWIvRc+0I7pINBGoWw==
-Date:   Fri, 24 Apr 2020 12:14:05 +0000
-Message-ID: <AM0PR04MB5443C8E4C6765250CF3361C0FBD00@AM0PR04MB5443.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=florinel.iordache@nxp.com; 
-x-originating-ip: [89.136.167.85]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9c966410-c3d1-445b-4d36-08d7e848fbb7
-x-ms-traffictypediagnostic: AM0PR04MB5314:|AM0PR04MB5314:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR04MB53144C49415944600D2FBC6AFBD00@AM0PR04MB5314.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 03838E948C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5443.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(9686003)(55016002)(53546011)(6506007)(8676002)(8936002)(7696005)(81156014)(54906003)(110136005)(33656002)(2906002)(7416002)(316002)(5660300002)(86362001)(44832011)(71200400001)(66556008)(26005)(478600001)(76116006)(66446008)(4326008)(64756008)(186003)(52536014)(66476007)(66946007);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WxM6CcyzWdKK5db+Pw5V2yfOTYmOAUF9wT+c44Xy+bP4mSusZsB5RjW8jxSkRe+gl6EozKApRe++mwKTnyZeI1oT21uUnEnZH6yOkLP2HcvT7v5/pL7++FEtnM1+F0seWP+a8b2cdxrJZ+0gHMkFiOn9+jxziS0qay8UtzCgtOa6J7DiEiIYljIrNq66/hF+l7jaIGlh3zajxTRVE07epk+fQk66M1Y9RoqEU3ZtfUM+LGLAXLWPKjju7b7cj22kwPdC/fjADBzTdMxdCgXFyrGPdiVXSARc603/dGL5cE1OeP3sS3AtFu7Qqf/SLrM4yGcwry4lvPs4I8967RV/zfkLKMyZZHIaSk143kxwNpYHGdqmu/MPVj7FPLH7f1n7OLf9Sil/TF5aoTuGowb8cEJnyKHslhxpR2kIT4/kQDrXkJZ8avAoy8pBEJkP3fIs
-x-ms-exchange-antispam-messagedata: Qco8mfGBpVSnQh894OXTkA92U/G/6zVwKkrlDRm/HnQBaz+sKeP0QtkunPlFQAv2qWHZimsu8b3SD7qI525Bi/Wp5jxtaYd5pdJPEiGLltEwsgTI0PPJyVtuw0SjzqOE/4rUAYacYk0+MeVr1aarHg==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726987AbgDXMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgDXMP4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:15:56 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E19C09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:15:56 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id z90so7617818qtd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=stQMKcxru1ycab0nNkNI6do88V3oBob0HPMSzdDCfe8=;
+        b=EDZuIF9mh4MO3uMagwfvQxVrPyFcFcQQ/YqjHSU0E/7kpK67/O0VrMTQoYFLr8Xdny
+         ceiP3ShAFGqLCCymImyTS/u6CK+6safGqktYl2wczdx4ePh0V3TgYzN1JsDVl6udIRsq
+         xyQF4sH+c7HTjpikgxlXaO09iVMuC2RjskPYlDJvaw/qiHWiG4RNmEkxF94TvEQHgFGo
+         xpvogtMZJbKVekUBYomI0XHS58lhKGIuW27flx9u3bacRsygXmUNas6R2YrNbOEN5vMO
+         PtCu8zKPCWi6bsyPoOJXB0n7faMV4msQWUy1wqQdNqEUyYfLcY1i6S7/tTCbpXSgPsaU
+         Q6Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=stQMKcxru1ycab0nNkNI6do88V3oBob0HPMSzdDCfe8=;
+        b=m+nXYqhm5TDO1QdKIryGGqR8HuOPM9I28hiRRknSraPELd/19ySl9AVRCkNiw9tEKF
+         x1auMKrGvvFNMG+w27gnr7jrbaKVWep/P4y3lNHCmjI1EwEKDiW5jVh5afrxcHWjgALX
+         D2ujnDEfWXW2+4DanktX5RcERBlNjFBtGwFsXAu00FUNswGTsvNE9RMnP1iQd7deMyfJ
+         /togNKAmiOmqzFGw7/sCxy5PJ+NJIzi993oKofobip8MQyh/s089YctJjh04/b76brN+
+         +x0gUx2OZHbm/gRG/X4ko0F4yvjo0PefSTwupiDYbYTYn1txIQ/hKhJ2PSC82W1tnaUl
+         R5BA==
+X-Gm-Message-State: AGi0PuY8nnO0zZCIWEFZSflKh4my4Tq0Q5/J2r5oxW2V+a/bgY/eF5lD
+        Qu7MvNEnxBh8+pAzDwaL0ugpvQ==
+X-Google-Smtp-Source: APiQypJwaI8TLuxWqrHXshDeb9lGmk6VW5/OSCE7FqJ0JkKmwRLUmX+YjvFHC38kGO7S4SbpF5T8iQ==
+X-Received: by 2002:aed:3ff4:: with SMTP id w49mr9175729qth.61.1587730555234;
+        Fri, 24 Apr 2020 05:15:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id p80sm3577469qka.134.2020.04.24.05.15.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Apr 2020 05:15:54 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jRxFJ-0004zP-Fh; Fri, 24 Apr 2020 09:15:53 -0300
+Date:   Fri, 24 Apr 2020 09:15:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: remaining flexible-array conversions
+Message-ID: <20200424121553.GE26002@ziepe.ca>
+References: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
+ <20200424034704.GA12320@ubuntu-s3-xlarge-x86>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c966410-c3d1-445b-4d36-08d7e848fbb7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 12:14:05.3328
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RMxF2ShRQA56ElcyI6rmq/n3vTXyArDDSL1KcaTEm4CQvWLD50SgNjBJF5Asz6U85oMh5sI0fIDsnhbdFAoIMfkOL6j0W8Ec+SbGsK88AiM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5314
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424034704.GA12320@ubuntu-s3-xlarge-x86>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAzLzI2LzIwMjAgNjowNyBQTSwgQW5kcmV3IEx1bm4gd3JvdGU6DQo+ID4+ICtzdGF0aWMg
-dTMyIGxlX2lvcmVhZDMyKHZvaWQgX19pb21lbSAqcmVnKSB7DQo+ID4+ICsgICAgcmV0dXJuIGlv
-cmVhZDMyKHJlZyk7DQo+ID4+ICt9DQo+ID4+ICsNCj4gPj4gK3N0YXRpYyB2b2lkIGxlX2lvd3Jp
-dGUzMih1MzIgdmFsdWUsIHZvaWQgX19pb21lbSAqcmVnKSB7DQo+ID4+ICsgICAgaW93cml0ZTMy
-KHZhbHVlLCByZWcpOw0KPiA+PiArfQ0KPiA+PiArDQo+ID4+ICtzdGF0aWMgdTMyIGJlX2lvcmVh
-ZDMyKHZvaWQgX19pb21lbSAqcmVnKSB7DQo+ID4+ICsgICAgcmV0dXJuIGlvcmVhZDMyYmUocmVn
-KTsNCj4gPj4gK30NCj4gPj4gKw0KPiA+PiArc3RhdGljIHZvaWQgYmVfaW93cml0ZTMyKHUzMiB2
-YWx1ZSwgdm9pZCBfX2lvbWVtICpyZWcpIHsNCj4gPj4gKyAgICBpb3dyaXRlMzJiZSh2YWx1ZSwg
-cmVnKTsNCj4gPj4gK30NCj4gPg0KPiA+IFRoaXMgaXMgdmVyeSBzdXJwcmlzaW5nIHRvIG1lLiBJ
-J3ZlIG5vdCBnb3QgbXkgaGVhZCBhcm91bmQgdGhlDQo+ID4gc3RydWN0dXJlIG9mIHRoaXMgY29k
-ZSB5ZXQsIGJ1dCBpJ20gc3VycHJpc2VkIHRvIHNlZSBtZW1vcnkgbWFwcGVkDQo+ID4gYWNjZXNz
-IGZ1bmN0aW9ucyBpbiBnZW5lcmljIGNvZGUuDQo+IA0KPiBUaGlzIGFic3RyYWN0aW9uIG1ha2Vz
-IG5vIHNlbnNlIHdoYXRzb2V2ZXIsIHlvdSBhbHJlYWR5IGhhdmUNCj4gaW97cmVhZCx3cml0ZX0z
-MntiZSx9IHRvIGRlYWwgd2l0aCB0aGUgY29ycmVjdCBlbmRpYW4sIGFuZCB5b3UgY2FuIHVzZSB0
-aGUNCj4gc3RhbmRhcmQgRGV2aWNlIFRyZWUgcHJvcGVydGllcyAnYmlnLWVuZGlhbicsICdsaXR0
-bGUtZW5kaWFuJywgJ25hdGl2ZS1lbmRpYW4nIHRvDQo+IGRlY2lkZSB3aGljaCBvZiB0aG9zZSBv
-ZiB0byB1c2UuIElmIHlvdSBuZWVkIHRvIGludHJvZHVjZSBhIHdyYXBwZXIgb3IgaW5kaXJlY3QN
-Cj4gZnVuY3Rpb24gY2FsbHMgdG8gc2VsZWN0IHRoZSBjb3JyZWN0IEkvTyBhY2Nlc3NvciwgdGhh
-dCBpcyBmaW5lIG9mIGNvdXJzZS4NCj4gLS0NCj4gRmxvcmlhbg0KDQpIaSBGbG9yaWFuLA0KSSBu
-ZWVkIHRoZXNlIHdyYXBwZXJzIGluIGdlbmVyaWMgY29kZSBpbiBvcmRlciB0byBhdXRvbWF0aWNh
-bGx5IGFzc2lnbiB0aGUgcHJvcGVyDQpJL08gYWNjZXNzb3IgaW4gdGhlIGZvbGxvd2luZyBzdHJ1
-Y3R1cmUgYWNjb3JkaW5nIHRvIGVuZGlhbm5lc3Mgc3BlY2lmaWVkIGluIERULg0KDQovKiBFbmRp
-YW5uZXNzIHNwZWNpZmljIG1lbW9yeSBJL08gKi8NCnN0cnVjdCBtZW1faW8gew0KCXUzMiAoKnJl
-YWQzMikodm9pZCBfX2lvbWVtICphZGRyKTsNCgl2b2lkICgqd3JpdGUzMikodTMyIHZhbHVlLCB2
-b2lkIF9faW9tZW0gKmFkZHIpOw0KfTsNCg0KQW5kIHRoZW4gdGhlIHVzYWdlIGlzIHN0cmFpZ2h0
-Zm9yd2FyZCBpbiBkZXZpY2Ugc3BlY2lmaWMgY29kZToNCmlvLnJlYWQzMigmcmVnX2Jhc2UtPnRj
-c3IzKSAuLi4NCmlvLndyaXRlMzIoKGlvLnJlYWQzMigmcmVnX2Jhc2UtPnRjc3IxKSAuLi4gDQoN
-CndpdGhvdXQgdGhlIG5lZWQgdG8gY2hlY2sgZW5kaWFubmVzcyBhdCBlYWNoIGNhbGwgYW5kIHNl
-bGVjdCB3aGljaCByZWFkL3dyaXRlIGZ1bmN0aW9uIHRvIHVzZS4NClRoaXMgaXMgZG9uZSBpbiBv
-cmRlciB0byByZWR1Y2UgdGhlIG92ZXJhbGwgbnVtYmVyIG9mIExPQyAobGluZXMgb2YgY29kZSku
-DQoNCkZsb3Jpbi4NCg==
+On Thu, Apr 23, 2020 at 08:47:04PM -0700, Nathan Chancellor wrote:
+> Hi Gustavo,
+> 
+> On Wed, Apr 22, 2020 at 01:26:02PM -0500, Gustavo A. R. Silva wrote:
+> > Hi Linus,
+> > 
+> > Just wanted to ask you if you would agree on pulling the remaining
+> > flexible-array conversions all at once, after they bake for a couple
+> > of weeks in linux-next[1]
+> > 
+> > This is not a disruptive change and there are no code generation
+> > differences. So, I think it would make better use of everyone's time
+> > if you pull this treewide patch[2] from my tree (after sending you a
+> > proper pull-request, of course) sometime in the next couple of weeks.
+> > 
+> > Notice that the treewide patch I mention here has been successfully
+> > built (on top of v5.7-rc1) for multiple architectures (arm, arm64,
+> > sparc, powerpc, ia64, s390, i386, nios2, c6x, xtensa, openrisc, mips,
+> > parisc, x86_64, riscv, sh, sparc64) and 82 different configurations
+> > with the help of the 0-day CI guys[3].
+> > 
+> > What do you think?
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=d496496793ff69c4a6b1262a0001eb5cd0a56544
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=for-next/kspp&id=d783301058f3d3605f9ad34f0192692ef572d663
+> > [3] https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/kernel-ci/kspp-fam0-20200420.md
+> > 
+> > Thanks
+> 
+> That patch in -next appears to introduce some warnings with clang when
+> CONFIG_UAPI_HEADER_TEST is enabled (allyesconfig/allmodconfig exposed it
+> for us with KernelCI [1]):
+
+Indeed, I've tried these conversions before and run into problems like
+this, and more. Particularly in userspace these structs also get
+embedded in other structs and the warnings explode.
+
+Please drop changes to ib_user_verbs.h from your series
+
+> ./usr/include/rdma/ib_user_verbs.h:436:34: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of
+> a struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_cq_resp base;
+>                                         ^
+> ./usr/include/rdma/ib_user_verbs.h:647:34: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of
+> a struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_qp_resp base;
+>                                         ^
+> ./usr/include/rdma/ib_user_verbs.h:743:29: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_modify_qp' not at the end of a
+> struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_modify_qp base;
+>                                    ^
+> 3 warnings generated.
+> 
+> I presume this is part of the point of the conversion since you mention
+> a compiler warning when the flexible member is not at the end of a
+> struct. How should they be fixed? That should probably happen before the
+> patch gets merged.
+
+The flexible member IS at the end of the struct and is often intended
+to cover the memory in the enclosing struct. I think clang is being
+overzealous with its warnings here.
+
+Jason
