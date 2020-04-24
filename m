@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CA01B7587
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F9A1B751C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgDXMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:38:44 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:59524 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgDXMin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:38:43 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 875331A03CA;
-        Fri, 24 Apr 2020 14:38:41 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 067471A03BE;
-        Fri, 24 Apr 2020 14:38:37 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 24BD8402C7;
-        Fri, 24 Apr 2020 20:38:31 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_easrc: Check NULL pinter before dereference
-Date:   Fri, 24 Apr 2020 20:30:04 +0800
-Message-Id: <1587731404-29750-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728477AbgDXMbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728476AbgDXMa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:30:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E5AC09B045;
+        Fri, 24 Apr 2020 05:30:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h11so3666605plr.11;
+        Fri, 24 Apr 2020 05:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=t9Lzyy5hmq/sWXwmK6V3xxvcVaLKMxmhplBn/KbogKU=;
+        b=AkTXVEwSZkN0UrEMj153ZdmMhPBFg1AVBj5QcNAlNuSdnBDcTj15nb1h0DBAmpQCdl
+         P45C+S/zE+jnY0f1syYEjoygUenKLDOMUOSpZnfewgHuhqB1Yc1JkRO3U0ChrYzaX5nB
+         xJk6uVgor7q6NZKuCLA/Uw+3iKOaTRq01kLNPl5ZRQkwlgIOGalYwjsanYgaDBvePya7
+         sS5CwgCc/SZ7UwfJH1AldjDcIt0BNnrSu070JHUFShdwM4kwbDPyyVpqrXuKx4wO0h7C
+         xHxROMFrCoZEmjRjU6asoYWFsRQRg5poIx5BZ+/qxyoxDcCO5jLCTe4jxWB0TZaJrg3i
+         MCIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=t9Lzyy5hmq/sWXwmK6V3xxvcVaLKMxmhplBn/KbogKU=;
+        b=Air+1juGzSxryn4xDht9ZIU2FCLV4pEDzZlf6O2C8VXZBlArteO1MWtqhv513Bk330
+         5gEYBVLkWiYMT6EKlxjl93dIcFf1v9OEZG4FiWDbnWfRfID5OsutvubPVWqWGI2Rg8UI
+         PqI9dh4s9J9PLKrtjnTB+XZ17ZprZjdZ69T/yFnGgYcpFCaObtSPa68si9uP8AFlOqOj
+         kZL5bsQA+UBhUWIabNe3HGILA41soWLpn9zCIJf5bjOLSZhOF1uUULas8vjW+lrcurjI
+         p0P/kWNOyLuHIAArbFj76vMW7YGGRmjM3VyFzzFWbwrtguntUguUlh3ALrg8UccZC/Fp
+         hcgQ==
+X-Gm-Message-State: AGi0PubhfHu1R+0hwG7VC9Isu159GWnJTEozshqnmPAnmp/8bJ44JhQV
+        /HaXhuk0VJbGvyhzKtZAQKk=
+X-Google-Smtp-Source: APiQypLWlblKpczKfwKO4MBHWH1VTc92fAppAaKzkMK9+L+S7l7hehZQG15Du2fyFvH2p9AybrXPVQ==
+X-Received: by 2002:a17:90a:3441:: with SMTP id o59mr5344496pjb.185.1587731457833;
+        Fri, 24 Apr 2020 05:30:57 -0700 (PDT)
+Received: from syed ([106.223.101.26])
+        by smtp.gmail.com with ESMTPSA id p62sm5560770pfb.93.2020.04.24.05.30.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 05:30:57 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 18:00:50 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        rrichter@marvell.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 5/6] gpio: thunderx: Utilize for_each_set_clump macro
+Message-ID: <20200424123050.GA5653@syed>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
-drivers" from Apr 16, 2020, leads to the following Smatch complaint:
+This patch reimplements the thunderx_gpio_set_multiple function in
+drivers/gpio/gpio-thunderx.c to use the new for_each_set_clump macro.
+Instead of looping for each bank in thunderx_gpio_set_multiple
+function, now we can skip bank which is not set and save cycles.
 
-sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
-warn: variable dereferenced before check 'ctx' (see line 1527)
-
-sound/soc/fsl/fsl_easrc.c
-  1526          struct fsl_asrc_pair *ctx = runtime->private_data;
-  1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-                                                      ^^^^^
-Dereference
-
-  1528
-  1529          if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-                    ^^^
-This check is too late, to prevent a NULL dereference.
-
-  1530                  ctx_priv->ctx_streams &= ~BIT(substream->stream);
-  1531                  fsl_easrc_release_context(ctx);
-
-Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: Robert Richter <rrichter@marvell.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 ---
- sound/soc/fsl/fsl_easrc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-thunderx.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 97658e1f4989..20326bffab64 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1524,9 +1524,14 @@ static int fsl_easrc_hw_free(struct snd_pcm_substream *substream,
+diff --git a/drivers/gpio/gpio-thunderx.c b/drivers/gpio/gpio-thunderx.c
+index 9f66dea..74aea25 100644
+--- a/drivers/gpio/gpio-thunderx.c
++++ b/drivers/gpio/gpio-thunderx.c
+@@ -275,12 +275,16 @@ static void thunderx_gpio_set_multiple(struct gpio_chip *chip,
+ 				       unsigned long *bits)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *ctx = runtime->private_data;
--	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv;
+ 	int bank;
+-	u64 set_bits, clear_bits;
++	u64 set_bits, clear_bits, gpio_mask;
++	const unsigned long bank_size = 64;
++	unsigned long offset;
 +
-+	if (!ctx)
-+		return -EINVAL;
-+
-+	ctx_priv = ctx->private;
+ 	struct thunderx_gpio *txgpio = gpiochip_get_data(chip);
  
--	if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-+	if (ctx_priv->ctx_streams & BIT(substream->stream)) {
- 		ctx_priv->ctx_streams &= ~BIT(substream->stream);
- 		fsl_easrc_release_context(ctx);
+-	for (bank = 0; bank <= chip->ngpio / 64; bank++) {
+-		set_bits = bits[bank] & mask[bank];
+-		clear_bits = ~bits[bank] & mask[bank];
++	for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, bank_size) {
++		bank = offset / bank_size;
++		set_bits = bits[bank] & gpio_mask;
++		clear_bits = ~bits[bank] & gpio_mask;
+ 		writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_SET);
+ 		writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_CLR);
  	}
 -- 
-2.21.0
+2.7.4
 
