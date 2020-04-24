@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4211B81BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 23:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0762E1B81C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 23:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgDXVun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 17:50:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41534 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgDXVun (ORCPT
+        id S1726144AbgDXVv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 17:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgDXVv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 17:50:43 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 502391C0237; Fri, 24 Apr 2020 23:50:41 +0200 (CEST)
-Date:   Fri, 24 Apr 2020 23:50:40 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
-        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCHv6 0/4] n_gsm serdev support and protocol driver for
- droid4 modem
-Message-ID: <20200424215040.GA14087@amd>
-References: <20200421232752.3070-1-tony@atomide.com>
- <20200423114326.GQ18608@localhost>
+        Fri, 24 Apr 2020 17:51:56 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E07C09B049
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 14:51:55 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id d16so8489952edq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 14:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PQNey5J4m05taFWia4GD1NrRrq+YSdJb5hG7zAcllAA=;
+        b=D1hEvZmEJ/MQA6Qze+6lehHqnQctIkcGh44n20m+tUpuRwndmDJ7PmZ9GbIzK+QO+X
+         OH+W44KItPKhT5yezZvJwxSqBNhW4TQ1eIWrrLt58meBviIJ38g91QOdkrkMTVEkOUr/
+         J4pcY2AkURqqGi3kYaHwuqyxoOZFA5I/iCeaCHUYcK8wNBQ/idjUBrfRyhocOq5hFgp+
+         Nzk1m167MLSQRaax7FX5LvHk3BpWVWLLadAaUuD0XDIlBW73c7J9z1ldALeKmoeZQO26
+         XG0Onofzngx5u60znXIsm7PWr7O3rmwi9nICCcr9FV81TKHL1VdcNG1v940lgu4I98mh
+         gNcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PQNey5J4m05taFWia4GD1NrRrq+YSdJb5hG7zAcllAA=;
+        b=lssWr0lUgyWwlQMVD4+l/npTP0Kk4afFYLocJQK6ZWKDpejOteLWPZfYuTOsjML6lO
+         4cxhxkuUWMrc16HgHuLIbQweN/HNHNDzvtLUh/ZOA3yriVvErk9MvcAOIoKLGk9dL/bg
+         I8T8de6I0JGQmdq3VbeqAT9fMXMb1kOnAVvPZ0rSV7fUfsBegElldff0QW8vMnPjwKPV
+         X52fry+HmXv+uq1WYnf9fHitC7A7NdSHYd7MS3t8vGIAWQttGSiARrTIvatpUddJqTEY
+         6NTJL5n8y6Hf0ZL04x6c9+dZh+C56nVaFq4WDY0u55WLQNu0vY4uShxohxU1ozbTkGtR
+         ddNA==
+X-Gm-Message-State: AGi0PuZSCc9B1wjZMGLrdavGdQbBeUkeKwgdn4TMXSZvV4Hdss0yjCDi
+        eTWh1Zc4sIh3OnkO8lE20B9nefVPK7K92MUIpjux
+X-Google-Smtp-Source: APiQypLRHoOQqlS+eTiXjiKNm2Vnp4dQTSNZByKUDEO/mfLCT00jY8KrZIOPwayS/VFghWwtEWH+81952BYl3oY4skI=
+X-Received: by 2002:a50:d98b:: with SMTP id w11mr8787931edj.196.1587765114174;
+ Fri, 24 Apr 2020 14:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
-Content-Disposition: inline
-In-Reply-To: <20200423114326.GQ18608@localhost>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <CACT4Y+YTi4JCFRqOB9rgA22S+6xxTo87X41hj6Tdfro8K3ef7g@mail.gmail.com>
+In-Reply-To: <CACT4Y+YTi4JCFRqOB9rgA22S+6xxTo87X41hj6Tdfro8K3ef7g@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 24 Apr 2020 17:51:42 -0400
+Message-ID: <CAHC9VhQs6eJpX4oMrhBiDap-HhEsBBgmYWEou=ZH60YiA__T7w@mail.gmail.com>
+Subject: Re: selinux_netlink_send changes program behavior
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 24, 2020 at 4:27 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> Hi SELinux maintainers,
+>
+> We've hit a case where a developer wasn't able to reproduce a kernel
+> bug, it turned out to be a difference in behavior between SELinux and
+> non-SELinux kernels.
+> Condensed version: a program does sendmmsg on netlink socket with 2
+> mmsghdr's, first is completely empty/zeros, second contains some
+> actual payload. Without SELinux the first mmsghdr is treated as no-op
+> and the kernel processes the second one (triggers bug). However the
+> SELinux hook does:
+>
+> static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
+> {
+>     if (skb->len < NLMSG_HDRLEN) {
+>         err = -EINVAL;
+>         goto out;
+>     }
+>
+> and fails processing on the first empty mmsghdr (does not happen
+> without SELinux).
+>
+> Is this difference in behavior intentional/acceptable/should be fixed?
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From a practical perspective, SELinux is always going to need to do a
+length check as it needs to peek into the netlink message header for
+the message type so it can map that to the associated SELinux
+permissions.  So in that sense, the behavior is intentional and
+desired; however from a bug-for-bug compatibility perspective ... not
+so much.
 
-Hi!
+Ultimately, my it's-Friday-and-it's-been-a-long-week-ending-in-a-long-day
+thought is that this was a buggy operation to begin with and the bug
+was just caught in different parts of the kernel, depending on how it
+was configured.  It may not be ideal, but I can think of worse things
+(and arguably SELinux is doing the Right Thing).
 
-> > Here's v4 set of n_gsm serdev support patches, and the related protocol
-> > driver for the modem found on Motorola Mapphone phones and tablets
-> > like droid4.
-> >=20
-> > This series only adds basic character device support for the serdev
-> > driver. Other serdev consumer drivers for specific devices will be
-> > posted separately.
->=20
-> I'm still missing an architectural (design) overview here -- reviewer
-> time is a scarce resource.
->=20
-> I also suggested earlier that you include, at least as an RFC, one or
-> more of your child-device drivers so that we can see how this ends up
-> being used in the end (including an example devicetree).
-
-Note that this is useful on its own: we have ofonod running on the top
-of this doing calls and SMSes.
-
-Tony: I know you have drivers depending on this somewhere (audio
-routing and GPS), but I can't find them. It is not droid4-pending-v5.6
-AFAICT. Do you have a pointer / could you publish them somewhere?
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl6jXzAACgkQMOfwapXb+vL1MgCgkfDgPdNCuH+IVEioBezNZBZW
-CdIAnR1+l1rBSV1qT6U8BWmkXXdKbSoT
-=NUS7
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
+-- 
+paul moore
+www.paul-moore.com
