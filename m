@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DD61B7733
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11B21B774F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgDXNmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:42:07 -0400
-Received: from mga17.intel.com ([192.55.52.151]:48236 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726301AbgDXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:42:07 -0400
-IronPort-SDR: XcNwQyCIiOsSAEukrIvEUZOjK5/VmgEN4juUP5nFbfsN1FsFN2pPaV2zVIMZaWjs0tQH3DG4PY
- YxdF3AN430AA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 06:42:06 -0700
-IronPort-SDR: 8USxce6JaaWf19goY9DaQF4NC95AxRX0qFW2EG2S6Bj2Mf9VZvApdNXRxwbY+XB1N2nBBrb0U6
- RbK9j+LAYDPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="280800527"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Apr 2020 06:42:04 -0700
-Date:   Fri, 24 Apr 2020 21:44:07 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 1/9] KVM: VMX: Introduce CET VMX fields and flags
-Message-ID: <20200424134407.GD24039@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-2-weijiang.yang@intel.com>
- <20200423163948.GA25564@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423163948.GA25564@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+        id S1728090AbgDXNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:45:07 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:45420 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726753AbgDXNpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:45:04 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D904A4048C;
+        Fri, 24 Apr 2020 13:45:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1587735904; bh=fUGJqawcBEgP+QdRQ/p9SxgMNc2aPtUdTOSFffhfqTo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FZDNASM/ehIHTH7vo/YP5DPNxEJA88SAayFd5SdTyZa1pXNAZW/lRnQQ74XrMSszS
+         gAx+Bms4xJAHpg6dCgrEoVjWTaWoCE8FgNyWgEQrocgZdFonrFIb+58hOAVrylF8AZ
+         FAoILgZCkmUmAfqLMZKVxeFKsXyvFwVMhAflmTPmC/ibRMqdAp9AjUzQMLDu7XiT1u
+         fkPZ1n6r1MJ9NF4xWJM34DTYOLFi8F/Qc9vd5ewUpN/ZqxkBIuIFURC90DPmKo0EpF
+         83IjE38P0bbGe4+QhMjUANQ3JA2Ln4lzr//pCuQ+FWB2J2w94A5M2i3icv9XYjfymD
+         9yHoQ3KsHoKyQ==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id C561FA005D;
+        Fri, 24 Apr 2020 13:45:01 +0000 (UTC)
+From:   Jose Abreu <Jose.Abreu@synopsys.com>
+To:     linux-scsi@vger.kernel.org
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>,
+        Joao Lima <Joao.Lima@synopsys.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] scsi: ufs: Misc improvements for DesignWare drivers and UFS
+Date:   Fri, 24 Apr 2020 15:44:44 +0200
+Message-Id: <cover.1587735561.git.Jose.Abreu@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 09:39:48AM -0700, Sean Christopherson wrote:
-> On Thu, Mar 26, 2020 at 04:18:38PM +0800, Yang Weijiang wrote:
-> > If VM_EXIT_LOAD_HOST_CET_STATE = 1, the host CET states are restored
-> > from below VMCS fields at VM-Exit:
-> >   HOST_S_CET
-> >   HOST_SSP
-> >   HOST_INTR_SSP_TABLE
-> > 
-> > If VM_ENTRY_LOAD_GUEST_CET_STATE = 1, the guest CET states are loaded
-> > from below VMCS fields at VM-Entry:
-> >   GUEST_S_CET
-> >   GUEST_SSP
-> >   GUEST_INTR_SSP_TABLE
-> > 
-> > Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-> > Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > ---
-> 
-> ...
-> 
-> > diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> > index 5e090d1f03f8..e938bc6c37aa 100644
-> > --- a/arch/x86/include/asm/vmx.h
-> > +++ b/arch/x86/include/asm/vmx.h
-> > @@ -94,6 +94,7 @@
-> >  #define VM_EXIT_CLEAR_BNDCFGS                   0x00800000
-> >  #define VM_EXIT_PT_CONCEAL_PIP			0x01000000
-> >  #define VM_EXIT_CLEAR_IA32_RTIT_CTL		0x02000000
-> > +#define VM_EXIT_LOAD_HOST_CET_STATE             0x10000000
-> >  
-> >  #define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
-> >  
-> > @@ -107,6 +108,7 @@
-> >  #define VM_ENTRY_LOAD_BNDCFGS                   0x00010000
-> >  #define VM_ENTRY_PT_CONCEAL_PIP			0x00020000
-> >  #define VM_ENTRY_LOAD_IA32_RTIT_CTL		0x00040000
-> > +#define VM_ENTRY_LOAD_GUEST_CET_STATE           0x00100000
-> 
-> I think it probably make senses to drop HOST/GUEST from the controls,
-> i.e. VM_{ENTER,EXIT}_LOAD_CET_STATE.  The SDM doesn't qualify them with
-> guest vs. host, nor does KVM qualify any of the other entry/exit controls
-> that are effective guest vs. host.
-Sure, will fix them, thanks.
+v2 Address review comments from Tomas and adds r-b tag provided by Alim.
+
+---
+
+Misc set of improvements for Synopsys DesignWare drivers and UFS core.
+
+Patch 1/5, allows UFS 3.0 as a valid version for a given Host.
+
+Patch 2/5, removes all mention of G210 to the DesignWare drivers so that we
+can use same driver among different Test Chips.
+
+Patch 3/5, re-arranges the initialization sequence of PCI driver to be more
+modular.
+
+Patch 4/5, allows MSI as a valid interrupt type.
+
+Finally at 5/5, we change the Maintainers for UFS DesignWare drivers.
+
+---
+Cc: "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc: Joao Lima <Joao.Lima@synopsys.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+
+Jose Abreu (5):
+  scsi: ufs: Allow UFS 3.0 as a valid version
+  scsi: ufs: Rename tc-dwc-g210 -> tc-dwc
+  scsi: ufs: tc-dwc-pci: Use PDI ID to match Test Chip type
+  scsi: ufs: tc-dwc-pci: Allow for MSI interrupt type
+  MAINTAINERS: Change Maintainers for SCSI UFS DWC Drivers
+
+ MAINTAINERS                                        |   3 +-
+ drivers/scsi/ufs/Kconfig                           |   4 +-
+ drivers/scsi/ufs/Makefile                          |   4 +-
+ drivers/scsi/ufs/tc-dwc-g210-pci.c                 | 176 ------------------
+ drivers/scsi/ufs/tc-dwc-pci.c                      | 204 +++++++++++++++++++++
+ .../ufs/{tc-dwc-g210-pltfrm.c => tc-dwc-pltfrm.c}  |  37 ++--
+ drivers/scsi/ufs/{tc-dwc-g210.c => tc-dwc.c}       |   6 +-
+ drivers/scsi/ufs/{tc-dwc-g210.h => tc-dwc.h}       |   6 +-
+ drivers/scsi/ufs/ufshcd.c                          |   3 +-
+ drivers/scsi/ufs/ufshci.h                          |   1 +
+ 10 files changed, 238 insertions(+), 206 deletions(-)
+ delete mode 100644 drivers/scsi/ufs/tc-dwc-g210-pci.c
+ create mode 100644 drivers/scsi/ufs/tc-dwc-pci.c
+ rename drivers/scsi/ufs/{tc-dwc-g210-pltfrm.c => tc-dwc-pltfrm.c} (70%)
+ rename drivers/scsi/ufs/{tc-dwc-g210.c => tc-dwc.c} (98%)
+ rename drivers/scsi/ufs/{tc-dwc-g210.h => tc-dwc.h} (78%)
+
+-- 
+2.7.4
 
