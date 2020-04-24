@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C85A1B7A2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AF61B79B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbgDXPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:40:19 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:53017 "EHLO
+        id S1728414AbgDXPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:36:11 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:60849 "EHLO
         wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728437AbgDXPgH (ORCPT
+        by vger.kernel.org with ESMTP id S1728450AbgDXPgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:36:07 -0400
+        Fri, 24 Apr 2020 11:36:09 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 6AA8F10AA;
-        Fri, 24 Apr 2020 11:36:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 24 Apr 2020 11:36:07 -0400
+        by mailnew.west.internal (Postfix) with ESMTP id C400D3E9;
+        Fri, 24 Apr 2020 11:36:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 24 Apr 2020 11:36:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=2I5zMakGdefyc
-        AHM9J30Y7T2xEqngHoH53dlRgc3XbQ=; b=BD1B4CN8zWU+fPz7IlbsH+rnyrL/K
-        GmWvt/35ykWfkbGxhUf3nvgpM/HFzhC6z5mbrPEessL1hEz9R1N36E3rQfYI+jOX
-        4NeMvWRfrYLX3CWXu8lALSxcJFtXgnijMRi1t93HqXYAt+/6Su/sJERGgtJYUKLy
-        ss86uXwDxtAHwKXgtomXo8lToxz1CUKTyZkf+cKUBkRBtaz/7Gqe0XZlXOGN5Mxu
-        LhfAac9FMdLJwAjB6XLz5MpFWNUFjdOqIZAqHwXM99H5iHt1MW5PTN96gc6aRwwc
-        PdvRZrDN2H+GwHWfBheSDg2WnL2WJtgs0irTb+HE1jMwJlSAiKzOJ8Exw==
+        :mime-version:content-transfer-encoding; s=fm2; bh=ZDDHs6S1gq2LI
+        nfVgmp0pHkW/VF7Q7iLnmFsdw8/KiU=; b=r//bO9qIgxdaJSKujrpIRc2odnZ23
+        m0spgdGn3TSSH1yiyLwkbAUk5NAcAC3I5empK8aw4TU/uk33ajmezUoX4skp7rhJ
+        ilvZp2wQnZtwfPaY0tr3KOE9JV9g3n2zjxjcAS7p1oq1wnEYtljBjjXfjMpwf3PR
+        tYvS7oI3KBnU6P6VWewWDaty0Rq+xZkQSOA2osw2pbsDRlsJZKBQ3h1aZnAf6Oc0
+        X1ww/Lykmt2wF+Ye51tNlzHhBtztH2KHfr3sU4gfaBqFrkm5DXANgX35i3QlDlsf
+        ezSskS46bFAsLz84NKLJnJEznN8FEDoKseWqhSfQWktgFuGAExvkflgrA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=2I5zMakGdefycAHM9J30Y7T2xEqngHoH53dlRgc3XbQ=; b=Pis+VpXI
-        t0wmLmPGRLm+wsq/DgSmOoRh+9csdgurzenCAT4Ra6SxAyJYtkWgBcp6Mx9j0tRE
-        on987iRDzEBBXlS/JnMLPgvTGYLdpSJOBU8mdAjUjy4nS1+nMBJiyxLfNeKgmCot
-        UeeN0/zqrttVLPbV92LYnWIWbG0vFw5Wz0kIRejyZs5MnqKWJ+JL9VaUbbNt50/H
-        mZnyWAimGdR+ar+ed45xnMdcohtr02DWUnD6oixn+LJwadBsYthTXGp9kNRmKwzT
-        kYfVDSDgUHxYjR709uuYs2B4hUdW/JIt4fqM43JK1O7JHh93MAXZt1pFdzmjnRei
-        fVCEHGAaADQTiw==
-X-ME-Sender: <xms:ZQejXkufTVDwLok66FHM6BLrBJuB_BSbVYKOOazzTbfziom17RDw6w>
+        fm2; bh=ZDDHs6S1gq2LInfVgmp0pHkW/VF7Q7iLnmFsdw8/KiU=; b=T6hbr9/f
+        JvMhh2zBE3RVRuztK5bIGCwlEzqHvGUgsBJnzFfpr1mLYxU1vkK8VkJpLXdZpMhb
+        Vs7zQtYTez8xTm6S9YCscm27PAeYXXomLyXyGUeEwP5I39KAnYtdohsoHoaSOq6l
+        HKa1O82lNpYjns5STZ1hPQGj0fA9C5MMvjM05/ctdAsUVxb4T1dsS+Au4VdbrOl0
+        LhxD4FmqrUp+MrzfYlzM5gI/faNxj8MbizvcDg7791fixXGN9CH0IZdXwehhViiL
+        E/EU8Ey8WyulVogAAE3tazAY6wgPDOWw3b34eC/XsPTNuo3urBIulaQCmX6XvGD3
+        cdAijCp/ACbbzQ==
+X-ME-Sender: <xms:ZwejXoa5z1yHEhpuBIMOcLDQonnMn1XslMfpDIeqnGHH17CUwFGBnA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrhedugdekiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -45,13 +45,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrhedugdekiecutefuodetggdote
     ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
     ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvheenucfrrghrrghmpehmrghi
     lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ZQejXo31Oh_FJDumAK97HP0x9cGyjm3g5i4OalhfqmvRBbCD4PkpUw>
-    <xmx:ZQejXqFiow9NgvsiJn5lD0t8g-U3c-sZGhwV2nQv7IbJAA9lhLELnA>
-    <xmx:ZQejXtPhBRvfTvRQfys8YUwSYQ3cfoYMHaeD8ma69SixaggyksKPvA>
-    <xmx:ZgejXppFBIk2U4L8O8z2BDU1N5BMLE3_ww19HQbuONEucwCJCxwu5ZU3b7Y>
+X-ME-Proxy: <xmx:ZwejXmChnfT6QMbyJZaO6Bqpj_w-zYtFFw3NP7-2fmxSKueeIm_Fkg>
+    <xmx:ZwejXieksySxOwa-RPe1eSlg4Jq3dIh-R-1rDnVyteUJMxuS1FbCZQ>
+    <xmx:ZwejXj_icdsdgEwZIDpf5d8qCcxnmjoBWEE8rLyxEtLM0N0qsuOzkg>
+    <xmx:ZwejXrIHsmCIfSK9IHIAHNpsPJi7vGkDvaNWD_5nEK-soQ_qU-odYrP_V-c>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A6A0E3065D9A;
-        Fri, 24 Apr 2020 11:36:05 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 09E68328005E;
+        Fri, 24 Apr 2020 11:36:06 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Eric Anholt <eric@anholt.net>
@@ -62,11 +62,10 @@ Cc:     dri-devel@lists.freedesktop.org,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Tim Gover <tim.gover@raspberrypi.com>,
         Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 31/91] dt-bindings: display: vc4: Document BCM2711 VC5
-Date:   Fri, 24 Apr 2020 17:34:12 +0200
-Message-Id: <1fc211841ff633f59d64c3b074724a23f3606d72.1587742492.git-series.maxime@cerno.tech>
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH v2 32/91] drm/vc4: drv: Add include guards
+Date:   Fri, 24 Apr 2020 17:34:13 +0200
+Message-Id: <e460188876bf0d4b3b3a6428a237794907bbb4d4.1587742492.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
 References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
@@ -77,26 +76,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM2711 comes with a new VideoCore. Add a compatible for it.
+vc4_drv.h doesn't have any include guards which prevents it from being
+included twice. Let's add them.
 
-Cc: devicetree@vger.kernel.org
-Reviewed-by: Rob Herring <robh+dt@kernel.org>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- Documentation/devicetree/bindings/display/brcm,bcm2835-vc4.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/vc4/vc4_drv.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-vc4.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-vc4.yaml
-index 0dcf0c397375..49a5e041aa49 100644
---- a/Documentation/devicetree/bindings/display/brcm,bcm2835-vc4.yaml
-+++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-vc4.yaml
-@@ -17,6 +17,7 @@ description: >
- properties:
-   compatible:
-     enum:
-+      - brcm,bcm2711-vc5
-       - brcm,bcm2835-vc4
-       - brcm,cygnus-vc4
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 139d25a8328e..e7748f8e2967 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -2,6 +2,8 @@
+ /*
+  * Copyright (C) 2015 Broadcom
+  */
++#ifndef _VC4_DRV_H_
++#define _VC4_DRV_H_
  
+ #include <linux/delay.h>
+ #include <linux/refcount.h>
+@@ -897,3 +899,5 @@ int vc4_perfmon_destroy_ioctl(struct drm_device *dev, void *data,
+ 			      struct drm_file *file_priv);
+ int vc4_perfmon_get_values_ioctl(struct drm_device *dev, void *data,
+ 				 struct drm_file *file_priv);
++
++#endif /* _VC4_DRV_H_ */
 -- 
 git-series 0.9.1
