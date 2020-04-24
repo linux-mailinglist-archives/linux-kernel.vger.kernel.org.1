@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F891B7AA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C0A1B7AAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgDXPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
+        id S1727971AbgDXPxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgDXPwg (ORCPT
+        with ESMTP id S1726301AbgDXPxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:52:36 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E0EC09B046
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:52:35 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id r26so11390553wmh.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:52:35 -0700 (PDT)
+        Fri, 24 Apr 2020 11:53:41 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9453AC09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:53:41 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a32so4021166pje.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rtV64CdoXvodJnTwhQjpfJxxVe45YkDM4hkifaxGTP4=;
-        b=bzXgut1D3RMLHq+6TOlFXEGKdoDJSQqqm0o8pV8jytLUrH58+0aLEm94VnDZ7AkrUk
-         xNDfM0s8GOdUZw/OiJd+QDrUdBKATW8a1cdNYICSDa27AkURhZBYfJkGBYD2Xt4HIIcR
-         e0V8tiumDDlPrTTe6Sz7iNk3kHEFW86jligXyvzUBSMc5/kdMKtoyCz4uA3IPASpNBBl
-         jSuh4dsVYyUcdX92swDnfzTzkZ/QCt+sfkR3dBD/tvueKKon+0jVM0vSyMN+EBLKVvxF
-         NFHcN2o45xlcYBTCwy6HyUD6CI1b8Jc6Umj/aeRzqjr3tx0ZX6qgpLI0sBHAQwMihfD4
-         QyNA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=N0+d74YhkRo0RcT3ihN7Yp1K7rYS7rIY6Vw+q5Iylco=;
+        b=MrmZBBIC8M+G4yy4+vJVJKJEGAiam2pvKgOKZkPOmzTrAD9O5lPHsuzy6uXcDvFusQ
+         cUb+Hz660fQTAuyvk52y++edasHsMYbDuWR+rDjk95oNG4zsO0/ewtwuaMkJZY4EtmEO
+         fihNtSDDVrA02Yexf2/Gho+EvfOUEIjXj0P+rXF+5F22nNBpRC6RviHJURl3g8P05fp/
+         2yWw6TyeBXyqjGiFPG6lJpaj+oPQRqsDWLvCFC4+XYp+FFa4UTABs0ciNZlzG+vMFaPw
+         ja5BzpzPaxJ0vKHncKUPfYyaEef2OR2ntqU0DB4Eu+HUTeeZpF8vfo1uDzeOSMeseFJO
+         udeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rtV64CdoXvodJnTwhQjpfJxxVe45YkDM4hkifaxGTP4=;
-        b=T2PI+bcMTVsidl4BtvxLqqvmJN+lsgJUBoQh/lXN38MA9/SdHMmKyEZ1uiGLkAlsXh
-         wGMus873dB4FB5g/LhtlBKDQ/TxywTlTwFtNTRifESJS2IVH4iGjnh3nN5OFZMO9Iy3x
-         ayrpA18Wq0hOsAtaC0gujyJSMBJMPCR/yiHlMFU01SQ02R+vyh8q4MyYqi6RG3EJm8Xi
-         N0Zpoz7+teGgkHOfakEaTdu/dSs6VwauKsnd17ifgqe2VRy4r0JNKPEJYLdJVHHbByCq
-         Q3+Z08eVQqJj4a6KD8OPBM0CDAewTS4u0PUB87Pxhs3Pw9m5feSSi9mABI7RXO37UU3I
-         luzQ==
-X-Gm-Message-State: AGi0PuYuHVXqZXjn9F5zUydeikYrN4TuDiOwZymFXfvwrLI8lNoCw0Mx
-        vARVtcOu4LaE+R619LWP+H7W5w==
-X-Google-Smtp-Source: APiQypLHoMtXgNvUu4rSXl4sbf4gXGV+tWNxmLDcuR0fz6lAjF9ERRKa1+QHe3UHlNpGkUzFVpTL3w==
-X-Received: by 2002:a1c:e408:: with SMTP id b8mr11014823wmh.68.1587743553991;
-        Fri, 24 Apr 2020 08:52:33 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id q143sm3661290wme.31.2020.04.24.08.52.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 08:52:33 -0700 (PDT)
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200424092816.62a61b1d@gandalf.local.home>
- <579fbe97-9aae-2b67-03ff-01291b9cbb7d@i-love.sakura.ne.jp>
- <20200424103131.7987f890@gandalf.local.home>
- <7ec0b0a3-39ae-0f1c-b8c2-e1e9e60f1223@i-love.sakura.ne.jp>
- <20200424114225.5a3bab7e@gandalf.local.home>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <b3129b4a-cd08-c507-4c6a-8b3e24b130d0@arista.com>
-Date:   Fri, 24 Apr 2020 16:52:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200424114225.5a3bab7e@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=N0+d74YhkRo0RcT3ihN7Yp1K7rYS7rIY6Vw+q5Iylco=;
+        b=hXudfFQG3Dax/wCWwTcwUBgeXc0XJYI08T3eBGmhFmCQNpnjOXKO4OIB57C3b1f63C
+         nkCUueRVUVLhrjosvrTiQPFmj9+g9o8BXpcNm1AvK75k+LB4BCmYAjjyQCryb0itwQA6
+         icGNs6P/V59FOjbL8CISfn54DzZEUt1GGGXWfvjZXHIq8yj11OW3hGmh7xQytsPbT0vr
+         QIqWDLNPhKTJ3ksjXVIiqboWJ3suq68FU+Tyiu4pHEMzqFBSZ0LcfEEhGLpBLo8nJWrT
+         KHZ/CPdBwYhmcPtajdFZqgfkt7kZUtha4cmY2VfrU9Dqx9V4g3dDVddxFk7cIIORBQ/V
+         4LAA==
+X-Gm-Message-State: AGi0PuZX8nhHR+4QTFzE4mkhOfsjPDyJy9ggkZQo6fqdrdjGQG1FNvfA
+        if1TvG1ransFGhEtmli0y8U=
+X-Google-Smtp-Source: APiQypI0xbBs0yDgR9WbZEHtL87BHKaLqDQYsvXWkc/t1gT1RnBvwRJizllKfYpSh24fInXYu2TGhw==
+X-Received: by 2002:a17:90a:f985:: with SMTP id cq5mr6875260pjb.193.1587743621107;
+        Fri, 24 Apr 2020 08:53:41 -0700 (PDT)
+Received: from ubuntu.localdomain ([220.116.27.194])
+        by smtp.gmail.com with ESMTPSA id z5sm6071305pfn.142.2020.04.24.08.53.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 08:53:40 -0700 (PDT)
+From:   Youngjun Park <her0gyugyu@gmail.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     gregkh@linuxfoundation.org, her0gyu@naver.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: fixup redundant indentation.
+Date:   Fri, 24 Apr 2020 08:53:34 -0700
+Message-Id: <20200424155334.17053-1-her0gyugyu@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Youngjun Park <her0gyu@naver.com>
 
+Signed-off-by: Youngjun Park <her0gyu@naver.com>
 
-On 4/24/20 4:42 PM, Steven Rostedt wrote:
-> On Sat, 25 Apr 2020 00:28:53 +0900
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
->> For those who analyze log files (instead of console output), the point of
->> printk() is to save kernel messages into log files (via userspace syslog
->> daemon).
->>
->> By the way, I think
->>
->>   printk(KERN_NO_CONSOLES "hello\n")
->>
->> is almost same with doing
->>
->>   saved_loglevel = console_loglevel;
->>   console_loglevel = CONSOLE_LOGLEVEL_SILENT;
->>   printk("hello\n");
->>   console_loglevel = saved_loglevel;
->>
->> used by vkdb_printf().
-> 
-> And both shouldn't be done within the kernel. The "CONSOLE_LOGLEVEL_SILENT"
-> if for user decided policy, not the kernel making that policy for the user.
+fixup redundant indentation on the label.
+---
+ fs/kernfs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Though, I believe the reverse KERN_UNSUPPRESSED [1] still makes sense
-for sysrq/kdb where user expects their interactive messages to appear on
-console. And unfortunately, userspace depends on the loglevel of those
-messages as it is.
-With KERN_UNSUPPRESSED I hope to remove all those console_loglevel
-tricks and make it static variable for printk.
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 34366db3620d..7fb5d1e48ef7 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -544,7 +544,7 @@ static int kernfs_get_open_node(struct kernfs_node *kn,
+ {
+ 	struct kernfs_open_node *on, *new_on = NULL;
+ 
+- retry:
++retry:
+ 	mutex_lock(&kernfs_open_file_mutex);
+ 	spin_lock_irq(&kernfs_open_node_lock);
+ 
+-- 
+2.17.1
 
-[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/
-
-Thanks,
-          Dmitry
