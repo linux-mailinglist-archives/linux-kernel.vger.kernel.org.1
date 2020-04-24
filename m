@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B231B6AE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 03:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AE41B6AEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 03:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgDXBlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 21:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35890 "EHLO
+        id S1726306AbgDXBmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 21:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725888AbgDXBlU (ORCPT
+        by vger.kernel.org with ESMTP id S1726021AbgDXBmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 21:41:20 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970B1C09B042;
-        Thu, 23 Apr 2020 18:41:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 497cMc3fmBz9sP7;
-        Fri, 24 Apr 2020 11:41:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1587692476;
-        bh=8/JeDTE0FdkiHAdnZiUnJb/qjEG0rVOWIdfq4r5Dwc0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BiMwVvkI8LBcM3w1iimHE2FKhlnWupThzD2vvj9E2H7lV/JYabr2j9zuPhDuS6Inp
-         xC5E9QJAxK1kjBN6dXSIKwjHtVsx0WdLWpfrg1BKtEsvDzkYzmykyuBrfPVXQbd2aZ
-         +F8xVBSxbmBw0VPRS6ke5+milJkThSdRwC1hDD/Io4Tf/7sb88QawFOQOtyRzccSpb
-         FOJej/0/VExFnhe0TM/KEeuVWYakG/LzyA1ElLkzv+Hqe4ZGzAmDMKNfHdDlB5H+eg
-         ghx9wZ2wWXrJmuWeQ7DGYu5OBW5i9o8Q+PJhNROTx03x/DMnRI9kAam/b1o7kCX+fk
-         ZPFlhkSUfAMBw==
-Date:   Fri, 24 Apr 2020 11:41:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Namjae Jeon <linkinjeon@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the exfat tree with Linus' tree
-Message-ID: <20200424114109.365a9ae5@canb.auug.org.au>
+        Thu, 23 Apr 2020 21:42:07 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B1AC09B042
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 18:42:07 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n188so4212031ybc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 18:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l23qZuUbbo3ViqI2ySplyyQqRUP3mFV2loomTBalDSY=;
+        b=aBYxr6F+mvuF4RXiZhZ7/TOOGek5Jbyxwkt0+kilTkf25Svp4JNtAznaaYMgJ0zZ2V
+         boCsgBrE6gAWZuSAb+yXGK13hoTcOdG0BzrLNe8eI1wJwAuHhwnJXMY4WWYxUzOiWWg2
+         59XkDBcRCM5sXCuWkJT7KifzI9p3kRz53WDtTRUB33pY2ELqKulePRiTtSHHwguyjgLU
+         quQSa7k/sAIrC/AHdoJ+sOFh/zYRJOkRDVb36tJ4A+Ayd/84eSZY00bREHMni3TLB2U0
+         YyRRhn0dqt3We39e8uXhyWsHjFamurc+3GipKEQ9KDKfAMs4GusXDoCM8IGvDwJfl1li
+         2buw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l23qZuUbbo3ViqI2ySplyyQqRUP3mFV2loomTBalDSY=;
+        b=Swh1abWX+FWk4LfY0BaJBJxloGJxWLFKsNWCflREn6fLPPq9UNHm1Bh0S+3eD7IkU0
+         phMwncElS0xiG8PTIi8S+wkxOlV73U8oN2kT52hBKjwytZZ2wA0PiiNUVPXOJEdDvYFe
+         aqXalTh0FulGvp33BEpCXaqQjaUAzuAj9xh4+mzsVTLtERu4xtJR2/SLfAbDqrcSCHAD
+         sOwMq5wOJ0nnOll5Q0SyDW/doocl+8oXWO6JsnZt2FrdQgVCuCK4YNIYg5joafvw4XSK
+         gsTGJJJyxtP8nnAdm4k6z+oFDIdbMMTIRhRhQDlh+h2DVbf6NUqouJt28JaxdQzSKahE
+         Fk0g==
+X-Gm-Message-State: AGi0Pubx26sgFr9F/F2fOYSvGiE0zTrnlllTf+FqOyWXXdj6oJcoA9tQ
+        RVCltBoU3G9qiCR57hVA/UXMB+CiidQRSvircjIghg==
+X-Google-Smtp-Source: APiQypLCqGM186vZ/gOE5YTUOSqHd/vjc482HoZb0OM4rEIGLXuSpbnF7IuR9Vjy6xOqXF4+FyAS+kD9KRjNVATW/Ho=
+X-Received: by 2002:a25:df03:: with SMTP id w3mr11870988ybg.224.1587692526417;
+ Thu, 23 Apr 2020 18:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TchrO31fZWjeSqqcfhbL+BP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200423210523.52833-1-sqazi@google.com> <83078447-831c-2921-db5e-9cab4c4c12df@kernel.dk>
+In-Reply-To: <83078447-831c-2921-db5e-9cab4c4c12df@kernel.dk>
+From:   Salman Qazi <sqazi@google.com>
+Date:   Thu, 23 Apr 2020 18:41:54 -0700
+Message-ID: <CAKUOC8Vb4AZnU_Sm=rxGk7QDK9=NvQT+G3Kp1cV8uVcebxsVWQ@mail.gmail.com>
+Subject: Re: [PATCH v2] block: Limit number of items taken from the I/O
+ scheduler in one go
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Gwendal Grignou <gwendal@google.com>,
+        Hannes Reinecke <hare@suse.com>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TchrO31fZWjeSqqcfhbL+BP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I remailed it with the changes since v1 added.  But just to answer directly:
 
-Hi all,
+Changes since v1:
 
-Today's linux-next merge of the exfat tree got conflicts in:
+* Removed max_sched_batch.
+* Extended the fix to the software queue.
+* Use a return value from blk_mq_do_dispatch_sched to indicate if
+  the dispatch should be rerun.
+* Some comments added.
 
-  fs/exfat/super.c
-  fs/exfat/misc.c
-  fs/exfat/exfat_fs.h
-
-Various patches in the exfat tree have been added to Linus' tree overnight
-as different commits (an in some cases slightly different patches.
-Please rebase the exfat tree on top of commit
-
-  81df1ad40644 ("exfat: truncate atimes to 2s granularity")
-
-from Linus' tree (or do a backmerge of that commit).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TchrO31fZWjeSqqcfhbL+BP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6iQ7UACgkQAVBC80lX
-0GzB6gf/UTuGY4aMYaWeBIyrsMnB+JjyVQwac/+Q1kmhE/UqbIcNmfVg8FxT3GQ7
-m20OJwYZpVTth1y7VMdvcT0HGrIoPFBMDAkp68Pj3LjpKayQ4+vsgazXQ35NszdI
-ft/GcmUXK4QfrCZII+3kl/qkxD6Z1/VZvWhLVNCvpJLgolPtBT4GJHRTswXutyov
-sPJSm4Z7xn1fyEvwnmibg9UuFw1rWwvNVaJKvQdH2z3oZxZDJDyLFE9lsXpEjUlh
-MPki6uMyYzO9lxyTjmhlbUUUaSX7r0hUnmzfFhCbr+dFkbQhb5jWEHXEp1BmePtO
-BPnqG8yF7d5AKqWQc6trmmxE5IraiA==
-=D+ns
------END PGP SIGNATURE-----
-
---Sig_/TchrO31fZWjeSqqcfhbL+BP--
+On Thu, Apr 23, 2020 at 2:30 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 4/23/20 3:05 PM, Salman Qazi wrote:
+> > Flushes bypass the I/O scheduler and get added to hctx->dispatch
+> > in blk_mq_sched_bypass_insert.  This can happen while a kworker is running
+> > hctx->run_work work item and is past the point in
+> > blk_mq_sched_dispatch_requests where hctx->dispatch is checked.
+> >
+> > The blk_mq_do_dispatch_sched call is not guaranteed to end in bounded time,
+> > because the I/O scheduler can feed an arbitrary number of commands.
+> >
+> > Since we have only one hctx->run_work, the commands waiting in
+> > hctx->dispatch will wait an arbitrary length of time for run_work to be
+> > rerun.
+> >
+> > A similar phenomenon exists with dispatches from the software queue.
+> >
+> > The solution is to poll hctx->dispatch in blk_mq_do_dispatch_sched and
+> > blk_mq_do_dispatch_ctx and return from the run_work handler and let it
+> > rerun.
+>
+> Any changes since v1? It's customary to put that in here too, below
+> the --- lines.
+>
+> --
+> Jens Axboe
+>
