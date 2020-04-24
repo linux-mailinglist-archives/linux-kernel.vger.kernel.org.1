@@ -2,137 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F261B6B84
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087021B6B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgDXCqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 22:46:16 -0400
-Received: from mga17.intel.com ([192.55.52.151]:10178 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgDXCqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 22:46:16 -0400
-IronPort-SDR: Ek3EacB7RPeY9CBQrY1XOJ2rlIxnvXyx0vRMokItaZDGPNW0gCMTf6SvvK8/dIPHqUiLwZvL2R
- 1bzQqYn0PJZw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 19:46:16 -0700
-IronPort-SDR: fFqGCE8bJogeRWjJevLA+X/Q55LKy24BPWiLC3aTrj7yu9DseBFagquD1OUY/YJaemiThYiTeb
- fYe3AECb8adA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,310,1583222400"; 
-   d="scan'208";a="366206939"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.151]) ([10.238.4.151])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Apr 2020 19:46:12 -0700
-Subject: Re: [PATCH v2 00/11] perf metric fixes and test
-To:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200422220430.254014-1-irogers@google.com>
- <20200423112825.GD1136647@krava>
- <1dd2e280-d711-2dda-61b1-b81609af6467@linux.intel.com>
- <20200423140249.GA1199027@krava>
- <CAP-5=fUO5sA8g2qv=Bg5LSSbG3nnhm57cBR7PsraH9+thph5qQ@mail.gmail.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <3f88ebf8-633a-83b4-cd02-aca0922e1a6b@linux.intel.com>
-Date:   Fri, 24 Apr 2020 10:46:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726469AbgDXCse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 22:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725888AbgDXCsd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 22:48:33 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E159C09B045
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 19:48:33 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t11so3935602pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 19:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=XnjBfutqpSQtz7Gqtz/wqHdQiXpCTuOajbGz3W2B49Q=;
+        b=Otu2OY9W6c7i78G0eKqOlbFsVXugWLXZkviht6Hqtp4+J4ZLE1NrvVbtM53o9GFoy4
+         utxv1Mf1ooKzUZDayNkV6rONV0FtdLVG9q+EhH08MSuwNT/OtWnE85u9gfnT0qW/5+5d
+         uJpZtDjB+UDXwiNw0wkg0zB4PAUg7mNitNgYU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=XnjBfutqpSQtz7Gqtz/wqHdQiXpCTuOajbGz3W2B49Q=;
+        b=WuCMkA+FC6LAn1vhQYkKSKPbvoMRQmCdMj/Hb+xRUuyKjgc77S4PAhPI6hCZPCvCPH
+         mlryyJbIs2XI9NF2YvuQkaHSV39ok9sB2j6q9Hpu5y/kMcDYz48tNMZ6/MaDTAu9DFUt
+         0D/UxwjzfRzKCNrP1Gn1eCFS/UT0AVVjDC2nVzVrOC8OJjz0+mPBwqZQq236UaJkWlh/
+         3pgtn/XleCIzb49kQp86GskEOjDkMW4VPoN5SAlF3sCtmxAfr1e/CLwtgEW1nHf0Zw3r
+         x2l9W4pawsIK4dqPUwYzcDJY2SUIc37judG2V8IuMjBIwKu7PZCdLIg0WQ1LZLnxxX7m
+         LNEA==
+X-Gm-Message-State: AGi0Pub2fSGyO/U8+7LOhXJpvgHUI5HM0PnAB9c3bjhSX49VtcyLZgSd
+        fYYgj6XgQWjbEKJbpuRoF/vwCg==
+X-Google-Smtp-Source: APiQypLdbNn4udPU2l9vxnDsqhWL9avqENFsnboZyGvzLLRtXwBHtGAEBzaqDknf0iNNX4/R2W6MJg==
+X-Received: by 2002:aa7:934d:: with SMTP id 13mr6946334pfn.305.1587696512682;
+        Thu, 23 Apr 2020 19:48:32 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id e135sm4046249pfh.37.2020.04.23.19.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 19:48:31 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUO5sA8g2qv=Bg5LSSbG3nnhm57cBR7PsraH9+thph5qQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200422145408.v4.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
+References: <20200422145408.v4.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid> <20200422145408.v4.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
+Subject: Re: [PATCH v4 4/5] soc: qcom: rpmh-rsc: Simplify locking by eliminating the per-TCS lock
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mka@chromium.org, mkshah@codeaurora.org, evgreen@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com
+Date:   Thu, 23 Apr 2020 19:48:30 -0700
+Message-ID: <158769651085.135303.5206480555792176636@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Douglas Anderson (2020-04-22 14:55:02)
+> The rpmh-rsc code had both a driver-level lock (sometimes referred to
+> in comments as drv->lock) and a lock per-TCS.  The idea was supposed
+> to be that there would be times where you could get by with just
+> locking a TCS lock and therefor other RPMH users wouldn't be blocked.
+>=20
+> The above didn't work out so well.
+>=20
+> Looking at tcs_write() the bigger drv->lock was held for most of the
+> function anyway.  Only the __tcs_buffer_write() and
+> __tcs_set_trigger() calls were called without it the drv->lock.  It
 
+without holding the drv->lock
 
-On 4/23/2020 10:31 PM, Ian Rogers wrote:
-> On Thu, Apr 23, 2020 at 7:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
->>
->> On Thu, Apr 23, 2020 at 09:44:24PM +0800, Jin, Yao wrote:
->>> Hi Jiri,
->>>
->>> On 4/23/2020 7:28 PM, Jiri Olsa wrote:
->>>> On Wed, Apr 22, 2020 at 03:04:19PM -0700, Ian Rogers wrote:
->>>>> Add a test that all perf metrics (for your architecture) are
->>>>> parsable. Fix bugs in the expr parser and in x86 metrics. Untested on
->>>>> architectures other than x86.
->>>>>
->>>>> v2 adds Fixes tags to commit messages for when broken metrics were
->>>>>     first added. Adds a debug warning for division by zero in expr, and
->>>>>     adds a workaround for id values in the expr test necessary for
->>>>>     powerpc. It also fixes broken power8 and power9 metrics.
->>>>
->>>> looks good to me
->>>>
->>>> Jin Yao, is there a metric that's not working for you with this patchset
->>>> applied?
->>>>
->>>> thanks,
->>>> jirka
->>>>
->>>
->>> Let me look for a CLX for testing, but maybe need some time.
->>>
->>> BTW, suppose this patchset can work well, does it mean we will change the
->>> json file format in future?
->>>
->>> For example,
->>>
->>> before:
->>> cha@event\\=0x36\\\\\\
->>>
->>> after:
->>> cha@event\\=0x36\\
->>>
->>> "\\\\" are removed.
->>>
->>> If so, we need to change our event generation script.
->>
->> ok, maybe I got the wrong idea that the extra \\\\ were just
->> superfluous, what was the actual error there? and what's the
->> reason for that many '\' in there?
-> 
-> I believe they are superfluous and break even before the flex change.
-> I commented on it here with a reproduction of a parse events error on
-> skylake:
-> https://lore.kernel.org/lkml/CAP-5=fUnWAycQehCJ9=btquV2c3DVDX+tTEc85H8py9Kfehq4w@mail.gmail.com/
-> 
-> Fixing the script that generates this would be great! With the test
-> landed it should be much harder for this to be broken in the future.
-> 
-> Thanks,
-> Ian
-> 
+> actually turns out that in tcs_write() we don't need to hold the
+> drv->lock for those function calls anyway even if the per-TCS lock
+> isn't there anymore.=20
 
-Tested on CLX and the error disappeared.
+Why?
 
-BTW, I will post the latest version of event list once the testing is 
-completed.
+> Thus, from a tcs_write() point of view, the
+> per-TCS lock was useless.
+>=20
+> Looking at rpmh_rsc_write_ctrl_data(), only the per-TCS lock was held.
+> It turns out, though, that this function already needs to be called
+> with the equivalent of the drv->lock held anyway (we either need to
+> hold drv->lock as we will in a future patch or we need to know no
+> other CPUs could be running as happens today).  Specifically
+> rpmh_rsc_write_ctrl_data() might be writing to a TCS that has been
+> borrowed for writing an active transation but it never checks this.
+>=20
+> Let's eliminate this extra overhead and avoid possible AB BA locking
+> headaches.
+>=20
+> Suggested-by: Maulik Shah <mkshah@codeaurora.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>=20
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index e540e49fd61c..71cebe7fd452 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -581,24 +575,19 @@ static int tcs_write(struct rsc_drv *drv, const str=
+uct tcs_request *msg)
+>         if (IS_ERR(tcs))
+>                 return PTR_ERR(tcs);
+> =20
+> -       spin_lock_irqsave(&tcs->lock, flags);
+> -       spin_lock(&drv->lock);
+> +       spin_lock_irqsave(&drv->lock, flags);
+>         /*
+>          * The h/w does not like if we send a request to the same address,
+>          * when one is already in-flight or being processed.
+>          */
+>         ret =3D check_for_req_inflight(drv, tcs, msg);
+> -       if (ret) {
+> -               spin_unlock(&drv->lock);
+> -               goto done_write;
+> -       }
+> +       if (ret)
+> +               goto err;
 
-Thanks
-Jin Yao
+Nitpick: Usually 'goto err' is used for error paths, not unlock paths.
+Use 'goto unlock' for that.
 
-> 
->> jirka
->>
+> =20
+> -       tcs_id =3D find_free_tcs(tcs);
+> -       if (tcs_id < 0) {
+> -               ret =3D tcs_id;
+> -               spin_unlock(&drv->lock);
+> -               goto done_write;
+> -       }
+> +       ret =3D find_free_tcs(tcs);
+> +       if (ret < 0)
+> +               goto err;
+> +       tcs_id =3D ret;
+> =20
+>         tcs->req[tcs_id - tcs->offset] =3D msg;
+>         set_bit(tcs_id, drv->tcs_in_use);
+> @@ -612,13 +601,21 @@ static int tcs_write(struct rsc_drv *drv, const str=
+uct tcs_request *msg)
+>                 write_tcs_reg_sync(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, tcs_id=
+, 0);
+>                 enable_tcs_irq(drv, tcs_id, true);
+>         }
+> -       spin_unlock(&drv->lock);
+> +       spin_unlock_irqrestore(&drv->lock, flags);
+> =20
+> +       /*
+> +        * These two can be done after the lock is released because:
+> +        * - We marked "tcs_in_use" under lock.
+> +        * - Once "tcs_in_use" has been marked nobody else could be writi=
+ng
+> +        *   to these registers until the interrupt goes off.
+> +        * - The interrupt can't go off until we trigger.
+
+trigger via some function?
+
+> +        */
+>         __tcs_buffer_write(drv, tcs_id, 0, msg);
+>         __tcs_set_trigger(drv, tcs_id, true);
+> =20
+> -done_write:
+> -       spin_unlock_irqrestore(&tcs->lock, flags);
+> +       return 0;
+> +err:
+> +       spin_unlock_irqrestore(&drv->lock, flags);
+>         return ret;
+>  }
+>
