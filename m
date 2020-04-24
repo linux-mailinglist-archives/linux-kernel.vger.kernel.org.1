@@ -2,212 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0846D1B7871
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30E61B7882
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgDXOnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 10:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726813AbgDXOnR (ORCPT
+        id S1727919AbgDXOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 10:46:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58570 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726900AbgDXOqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:43:17 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9ABC09B045;
-        Fri, 24 Apr 2020 07:43:16 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 11E072A2E13
-Subject: Re: [PATCH v4] platform: x86: Add ACPI driver for ChromeOS
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        groeck@chromium.org, bleung@chromium.org, dtor@chromium.org,
-        gwendal@chromium.org, vbendeb@chromium.org, andy@infradead.org,
-        Ayman Bagabas <ayman.bagabas@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        Mattias Jacobsson <2pi@mok.nu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rajat Jain <rajatja@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-References: <20200413134611.478441-1-enric.balletbo@collabora.com>
- <20200413141259.GA3458877@kroah.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <0f3d5b72-8ff2-ce9c-e4d5-e8e301aece9f@collabora.com>
-Date:   Fri, 24 Apr 2020 16:43:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200413141259.GA3458877@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 24 Apr 2020 10:46:00 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OEXs8s090025;
+        Fri, 24 Apr 2020 10:45:51 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30jtk3xcwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 10:45:51 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03OEjc79018177;
+        Fri, 24 Apr 2020 14:45:49 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 30fs65h4yc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 14:45:49 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03OEjl9u58589366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 14:45:47 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 012A6A4051;
+        Fri, 24 Apr 2020 14:45:47 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7903A4040;
+        Fri, 24 Apr 2020 14:45:45 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.80.204.171])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Apr 2020 14:45:45 +0000 (GMT)
+Message-ID: <1587739544.5190.14.camel@linux.ibm.com>
+Subject: Re: [PATCH 3/5] ima: Fix ima digest hash table key calculation
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Date:   Fri, 24 Apr 2020 10:45:44 -0400
+In-Reply-To: <59a280b928db4c478f660d14c33cdd87@huawei.com>
+References: <20200325161116.7082-1-roberto.sassu@huawei.com>
+         <20200325161116.7082-3-roberto.sassu@huawei.com>
+         <1587588987.5165.20.camel@linux.ibm.com>
+         <11984a05a5624f64aed1ec6b0d0b75ff@huawei.com>
+         <1587660781.5610.15.camel@linux.ibm.com>
+         <59a280b928db4c478f660d14c33cdd87@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-24_07:2020-04-24,2020-04-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1011 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, 2020-04-24 at 12:18 +0000, Roberto Sassu wrote:
 
-Thank you for your comments, some answers below.
+> > On Thu, 2020-04-23 at 10:21 +0000, Roberto Sassu wrote:
+> > > > Hi Roberto, Krsysztof,
+> > > >
+> > > > On Wed, 2020-03-25 at 17:11 +0100, Roberto Sassu wrote:
+> > > > > From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+> > > > >
+> > > > > Function hash_long() accepts unsigned long, while currently only one
+> > byte
+> > > > > is passed from ima_hash_key(), which calculates a key for ima_htable.
+> > > > Use
+> > > > > more bytes to avoid frequent collisions.
+> > > > >
+> > > > > Length of the buffer is not explicitly passed as a function parameter,
+> > > > > because this function expects a digest whose length is greater than
+> > the
+> > > > > size of unsigned long.
+> > > >
+> > > > Somehow I missed the original report of this problem https://lore.kern
+> > > > el.org/patchwork/patch/674684/.  This patch is definitely better, but
+> > > > how many unique keys are actually being used?  Is it anywhere near
+> > > > IMA_MEASURE_HTABLE_SIZE(512)?
+> > >
+> > > I did a small test (with 1043 measurements):
+> > >
+> > > slots: 250, max depth: 9 (without the patch)
+> > > slots: 448, max depth: 7 (with the patch)
+> > 
+> > 448 out of 512 slots are used.
+> > 
+> > >
+> > > Then, I increased the number of bits to 10:
+> > >
+> > > slots: 251, max depth: 9 (without the patch)
+> > > slots: 660, max depth: 4 (with the patch)
+> > 
+> > 660 out of 1024 slots are used.
+> > 
+> > I wonder if there is any benefit to hashing a digest, instead of just
+> > using the first bits.
+> 
+> Before I calculated max depth until there is a match, not the full depth.
+> 
+> #1
+> return hash_long(*((unsigned long *)digest), IMA_HASH_BITS);
+> #define IMA_HASH_BITS 9
+> 
+> Runtime measurements: 1488
+> Violations: 0
+> Slots (used/available): 484/512
+> Max depth hash table: 10
+> 
+> #2
+> return *(unsigned long *)digest % IMA_MEASURE_HTABLE_SIZE;
+> #define IMA_HASH_BITS 9
+> 
+> Runtime measurements: 1491
+> Violations: 2
+> Slots (used/available): 489/512
+> Max depth hash table: 10
+> 
+> #3
+> return hash_long(*((unsigned long *)digest), IMA_HASH_BITS);
+> #define IMA_HASH_BITS 10
+> 
+> Runtime measurements: 1489
+> Violations: 0
+> Slots (used/available): 780/1024
+> Max depth hash table: 6
+> 
+> #4
+> return *(unsigned long *)digest % IMA_MEASURE_HTABLE_SIZE;
+> #define IMA_HASH_BITS 10
+> 
+> Runtime measurements: 1489
+> Violations: 0
+> Slots (used/available): 793/1024
+> Max depth hash table: 6
 
-On 13/4/20 16:12, Greg Kroah-Hartman wrote:
-> Meta-comment to the ACPI developers, shouldn't all of this happen
-> "automatically" with the existing ACPI entries in sysfs?  If not, is
-> this driver the proper way to do this?
-> 
+At least for this measurement list sample, there doesn't seem to be
+any benefit to hashing the digest.  In terms of increasing the number
+of slots, the additional memory is minimal and shouldn't negatively
+affect small embedded devices.  Please make sure checkpatch doesn't
+flag it.
 
-This is something maintainers didn't answer yet, and I am not sure, to be hones,
-but meanwhile, I'll rework this driver fixing the Greg comments and send a new
-version.
+thanks,
 
-> Minor review comments below:
-> 
-> 
-> On Mon, Apr 13, 2020 at 03:46:11PM +0200, Enric Balletbo i Serra wrote:
->> +What:		/sys/bus/acpi/devices/GGL0001:00/BINF.{0,1,4}
->> +Date:		April 2020
->> +KernelVersion:	5.8
->> +Description:
->> +		This file is reserved and doesn't shows useful information
->> +		for now.
-> 
-> Then do not even have it present.  sysfs should never export files that
-> nothing can be done with them, userspace "knows" that if a file is not
-> present, it can not use it.  Bring it back when it is useful.
-> 
-
-Makes sense. I'll do in next version.
-
->> +What:		/sys/bus/acpi/devices/GGL0001:00/MECK
->> +Date:		April 2020
->> +KernelVersion:	5.8
->> +Description:
->> +		This binary file returns the SHA-1 or SHA-256 hash that is
->> +		read out of the Management Engine extend registers during
->> +		boot. The hash is exported vi ACPI so the OS can verify that
->> +		the Management Engine firmware has not changed. If Management
->> +		Engine is not present, or if the firmware was unable to read the
->> +		extend registers, this buffer can be zero.
-> 
-> The size is zero, or the contents are 0?
-> 
-
-The size. I'll reword in the description,
-
->> +static char *chromeos_acpi_alloc_name(char *name, int count, int index)
->> +{
->> +	char *str;
->> +
->> +	if (count == 1)
->> +		str = kstrdup(name, GFP_KERNEL);
->> +	else
->> +		str = kasprintf(GFP_KERNEL, "%s.%d", name, index);
-> 
-> That's crazy, make this more obvious that "count" affects the name so
-> much.  As it is, no one would know this unless they read the function
-> code, and not just the name.
-> 
-
-I see, let me think about this.
-
-> 
->> +/**
->> + * chromeos_acpi_add_group() - Create a sysfs group including attributes
->> + *			       representing a nested ACPI package.
->> + *
->> + * @adev: ACPI device.
->> + * @obj: Package contents as returned by ACPI.
->> + * @name: Name of the group.
->> + * @num_attrs: Number of attributes of this package.
->> + * @index: Index number of this particular group.
->> + *
->> + * The created group is called @name in case there is a single instance, or
->> + * @name.@index otherwise.
->> + *
->> + * All group and attribute storage allocations are included in the lists for
->> + * tracking of allocated memory.
->> + *
->> + * Return: 0 on success, negative errno on failure.
->> + */
-> 
-> Meta-comment, no need for kerneldoc on static functions.  It's nice to
-> see, but nothing is going to notice them...
-> 
->> +static int chromeos_acpi_add_method(struct acpi_device *adev, char *name)
->> +{
->> +	struct device *dev = &adev->dev;
->> +	struct acpi_buffer output;
->> +	union acpi_object *obj;
->> +	acpi_status status;
->> +	int ret = 0;
->> +
->> +	output.length = ACPI_ALLOCATE_BUFFER;
->> +
->> +	status = acpi_evaluate_object(adev->handle, name, NULL, &output);
->> +	if (ACPI_FAILURE(status)) {
->> +		dev_err(dev, "failed to retrieve %s (%d)\n", name, status);
->> +		return status;
->> +	}
->> +
->> +	obj = output.pointer;
->> +	if (obj->type == ACPI_TYPE_PACKAGE)
->> +		ret = chromeos_acpi_handle_package(adev, obj, name);
->> +
->> +	kfree(output.pointer);
-> 
-> Why the need for 'obj' at all in this function?  Minor nit.
-> 
-
-Ok, I'll remove obj.
-
->> +
->> +	return ret;
->> +}
->> +
->> +static int chromeos_acpi_device_add(struct acpi_device *adev)
->> +{
->> +	struct chromeos_acpi_attribute_group *aag = chromeos_acpi.root;
->> +	struct device *dev = &adev->dev;
->> +	int i, ret;
->> +
->> +	aag = kzalloc(sizeof(*aag), GFP_KERNEL);
->> +	if (!aag)
->> +		return -ENOMEM;
->> +
->> +	INIT_LIST_HEAD(&aag->attribs);
->> +	INIT_LIST_HEAD(&aag->list);
->> +	INIT_LIST_HEAD(&chromeos_acpi.groups);
->> +
->> +	chromeos_acpi.root = aag;
->> +
->> +	/*
->> +	 * Attempt to add methods by querying the device's MLST method
->> +	 * for the list of methods.
->> +	 */
->> +	if (!chromeos_acpi_process_mlst(adev))
->> +		return 0;
->> +
->> +	dev_info(dev, "falling back to default list of methods\n");
-> 
-> Is this debugging code left over?  If not, make it an error, and what
-> would a user be able to do with it?
-> 
-
-I think I can downgrade to debug level.
-
-Thanks,
- Enric
-
-> thanks,
-> 
-> greg k-h
-> 
+Mimi
