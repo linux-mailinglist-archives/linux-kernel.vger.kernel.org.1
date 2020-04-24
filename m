@@ -2,99 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9E01B7D53
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7B91B7D5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgDXRy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:54:56 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:56856 "EHLO
-        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726793AbgDXRy4 (ORCPT
+        id S1727089AbgDXR73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:59:29 -0400
+Received: from bmailout1.hostsharing.net ([83.223.95.100]:32783 "EHLO
+        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgDXR73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:54:56 -0400
-Received: from [192.168.4.242] (helo=deadeye)
-        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jS2XO-0008CD-FM; Fri, 24 Apr 2020 18:54:54 +0100
-Received: from ben by deadeye with local (Exim 4.93)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jS2XO-00FO0e-0s; Fri, 24 Apr 2020 18:54:54 +0100
-Message-ID: <4614381d6b2115dd9d19900509965fb2c419ae2c.camel@decadent.org.uk>
-Subject: Re: [PATCH 3.16 000/247] 3.16.83-rc2 review
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Fri, 24 Apr 2020 18:54:49 +0100
-In-Reply-To: <67f1b156-1e65-aef7-f0e3-a15f637dbe71@roeck-us.net>
-References: <lsq.1587743245.5555628@decadent.org.uk>
-         <67f1b156-1e65-aef7-f0e3-a15f637dbe71@roeck-us.net>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-PZuy/PW7HmAZwMjlHo6s"
-User-Agent: Evolution 3.36.1-1 
+        Fri, 24 Apr 2020 13:59:29 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 370373000481D;
+        Fri, 24 Apr 2020 19:59:24 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 0D2F6DF726; Fri, 24 Apr 2020 19:59:23 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 19:59:23 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        akpm@linux-foundation.org, arnd@arndb.de,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] bitops: Introduce the the for_each_set_clump macro
+Message-ID: <20200424175923.4f5y7xfp4w2wlm7b@wunner.de>
+References: <20200424122521.GA5552@syed>
+ <20200424141037.ersebbfe7xls37be@wunner.de>
+ <CACG_h5prcXVdk6ecn2WoT1jas3K6UF+KCrxAM9u4_ZLSyPKCEA@mail.gmail.com>
+ <20200424150058.xadjxaga3csh3br6@wunner.de>
+ <20200424150828.GA5034@icarus>
+ <20200424163410.GD185537@smile.fi.intel.com>
+ <20200424163904.GA7742@icarus>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 192.168.4.242
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424163904.GA7742@icarus>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 24, 2020 at 12:42:00PM -0400, William Breathitt Gray wrote:
+> Within this patchset the only non-8-bit users are gpio-thunderx and
+> gpio-xilinix. The gpio-xilinx has configurable port widths so in some
+> instances it can behave like the 8-bit users, but not always.
+> 
+> If you want to keep the existing for_each_set_clump8 and related
+> functions, ignore [PATCH 3/6] and [PATCH 4/6]. That should allow this
+> patchset to be just an introduction of the new generic functions without
+> affecting the existing 8-bit users.
 
---=-PZuy/PW7HmAZwMjlHo6s
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yes I don't mind the changes to gpio-thunderx and gpio-xilinx at all
+but please leave the 8-bit users as they are wherever possible.
+Actually my concern is not just performance but the existing 8-bit
+variant is simpler to understand than the generic variant,
+making it easier to follow the code in the drivers.
 
-On Fri, 2020-04-24 at 10:48 -0700, Guenter Roeck wrote:
-> On 4/24/20 8:47 AM, Ben Hutchings wrote:
-> > This is the start of the stable review cycle for the 3.16.83 release.
-> > There are 247 patches in this series, which will be posted as responses
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >=20
-> > Responses should be made by Tue Apr 28 18:00:00 UTC 2020.
-> > Anything received after that time might be too late.
-> >=20
->=20
-> For v3.16.82-247-gffbdbb4fe113:
->=20
-> Build results:
-> 	total: 135 pass: 135 fail: 0
-> Qemu test results:
-> 	total: 233 pass: 233 fail: 0
+Thanks,
 
-Great, thanks for testing again.
-
-Ben.
-
---=20
-Ben Hutchings
-Knowledge is power.  France is bacon.
-
-
-
---=-PZuy/PW7HmAZwMjlHo6s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl6jJ+kACgkQ57/I7JWG
-EQl1BQ/+MQzytDFTQq2eButY9lqNhNQiDYjyNclEQb9ibRS9XAu5U+OumgCpoLP4
-8xrrCZ+cbAH6pBy6uWJdq+P5OXENFtAXCIvtStBjD+R77D5n/OLfMMKQRMcQWais
-lNtAta5dhgoPek+9aSt9flM4ilim0d9jjrIwvK0WM6nlqjrwoCThFokfrx6v/FKG
-kBpVq49xSIg6ArfZiyUfgQKmApu/SAOU8QK3Bp6+/HmmZSJZJFDK+ltkh4nrjOqa
-ulMWthhvLBfBU+mW4U847khq0bDBUpB7IGDSvDftFK0iC7EhysTPduuH1cs+2Uuq
-19AHY0Ud2J2zgXQmV453Bkd1ubfEJaV7HgOK1jRWsPQjlp9tt99ydTOezYLTZJEM
-FBxdCD9zAXeuhJHnAZ7F6AkXm/V48+P2MdJxtF6tulcnNnXarI+a8fiCwjG8V2gS
-wYN/ICiQJqRh7pu6STCWUNBZEYsYWnsoPwWLpLOBrl6a0B4Ftcjes0+n9HbWZwkf
-A/RhDrCIkdOUTOM0/PGWthHMYvyKRmrlW6t8vMJxqTzYJVFjwAe5+cxlMgtxya4X
-Q3LW8W7ybqiStq1Fvl/QLm6kE/ugIAbZ7t3I4ehI0YuuAKfZijT4kvWSS0VnHV5m
-tjW+jMz8dh2uh7mIc2R3MVWcFg7FRoq9xADY5vAPjqzGfjb0Cnw=
-=tyso
------END PGP SIGNATURE-----
-
---=-PZuy/PW7HmAZwMjlHo6s--
+Lukas
