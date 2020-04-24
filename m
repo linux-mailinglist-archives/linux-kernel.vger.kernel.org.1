@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA771B74CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CA01B7587
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbgDXM25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728213AbgDXM2y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:28:54 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A62BC09B045;
-        Fri, 24 Apr 2020 05:28:54 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id u10so7526505lfo.8;
-        Fri, 24 Apr 2020 05:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=k60UfD2VvBeqBR1jDBzYaJ+PcNnTDpEV245LnyiomDc=;
-        b=Fvvc1CpvO2kTUW3CN4WXkCvbalXgjoKl8RN1Zg0SM0fKe39PWZs6HdM05NtgxbI0qK
-         odQmc/Fhc3vUJv1pVcMIx96Io2J7GF+mx0evj2sbJDE6BIFp676xLh3eDGaRL0Vixvp+
-         bPjw3i18QpY4WTdIqEo/EsNCQxMHA78KIPsawcAU6Asl5pqrdMVI+LRqZkmKaGSnwKM/
-         EP3wZiIZ5KfvMzyOggdeYADddHL7WbpwtFJ7qK9LooUSm1EQxLby6BWgsNC/Ui+w/a1X
-         OZSEre0HE6S637vg0ju0ZfyJxRghFxEjHgVQURiWw3zRg4zmr0glquK7UIuKsNCztjQP
-         n3cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=k60UfD2VvBeqBR1jDBzYaJ+PcNnTDpEV245LnyiomDc=;
-        b=CEjA8EURxP/UHhfqH3k6t6zm584fPQAfbkka1+7k9p9Waz4S+jB14wIeFNFca0iH/5
-         XWIJxYg8/Uah6Tbzc7Y4Bw7YGbBhvtQl3sK/2lM3X7x5QUI25uws1T4cDMDZOysm1+ns
-         2+jGRkJUvH6b93AAp2QhmB9+0YaloQSBSurNwVj5lmXwhcRbFySYDGcWcDA30l1kSO73
-         tYTY+pvrZ3Rhs97aOyOm5p1w4sH/8SCzbwop+0ugP95Ln6o8IcxJsc5kQiOIQCdXi3N/
-         CjyrtSJBl08ouQ+lBcALH7elr+saNjj9jD8Cmv8GBEp0m1gvmwySJFPDP7KH71IHObM7
-         gRUA==
-X-Gm-Message-State: AGi0PuYchwyn8lk7WfCtoI+qqZjuTNLAAr3DiKDAUn872inMFB/8dHKR
-        7gOpAftUQosTBWhogU8zO+U=
-X-Google-Smtp-Source: APiQypL+5Ph8LgmCGcZsihaI0P2D/qLm24X5ZCz7Lj4PdtcDPWF2S10Om0rJtJRItzJNqj6cDOAN+w==
-X-Received: by 2002:a19:700b:: with SMTP id h11mr6207726lfc.89.1587731332534;
-        Fri, 24 Apr 2020 05:28:52 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id f26sm4270043lfc.84.2020.04.24.05.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 05:28:51 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 24 Apr 2020 14:28:35 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC] rcu/tree: Refactor object allocation and try harder
- for array allocation
-Message-ID: <20200424122835.GA4686@pc636>
-References: <20200416131745.GA90777@google.com>
- <20200416180100.GT17661@paulmck-ThinkPad-P72>
- <20200422145752.GB362484@cmpxchg.org>
- <20200422153503.GQ17661@paulmck-ThinkPad-P72>
- <20200423174831.GB389168@cmpxchg.org>
- <20200423180249.GT17661@paulmck-ThinkPad-P72>
- <20200423182750.GA32451@pc636>
- <20200423192115.GV17661@paulmck-ThinkPad-P72>
- <20200423195955.GA476@pc636>
- <CAEXW_YSt=yLDS4Fj7atqB_OYiKAvt2472eTKcytEkzVABUMPkQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YSt=yLDS4Fj7atqB_OYiKAvt2472eTKcytEkzVABUMPkQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727010AbgDXMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:38:44 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:59524 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726489AbgDXMin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:38:43 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 875331A03CA;
+        Fri, 24 Apr 2020 14:38:41 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 067471A03BE;
+        Fri, 24 Apr 2020 14:38:37 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 24BD8402C7;
+        Fri, 24 Apr 2020 20:38:31 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_easrc: Check NULL pinter before dereference
+Date:   Fri, 24 Apr 2020 20:30:04 +0800
+Message-Id: <1587731404-29750-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> I think Johannes said that waking up kswapd is Ok. OTOH, I did not see
-> the drawback in waking up kswapd to do background reclaim since it
-> does not happen synchronously right? I think Johannes said we can do
-> better than just waking kswapd by also doing light direct reclaim
-> using __GFP_NORETRY but let me know if I missed something.
-> 
-Then i misunderstood that point. So, seems it is settled now. We just
-use GFP_NOWAIT | __GFP_RECLAIM | __GFP_NORETRY | __GFP_NOWARN for headless
-case, i.e. when we can sleep. It will do direct reclaim(slow path), but
-light one because of __GFP_NORETRY.
+The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
+drivers" from Apr 16, 2020, leads to the following Smatch complaint:
 
-Does it sound good?
+sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
+warn: variable dereferenced before check 'ctx' (see line 1527)
 
-> > For single argument we inline freeing into current context after
-> > synchronize_rcu() because it follows might_sleep() annotation.
-> 
-> Yes.
-> 
-> Also, with the additional caching being planned, we could avoid the
-> chances of hitting the synchronize_rcu inlining.
-> 
-Or minimize it.
+sound/soc/fsl/fsl_easrc.c
+  1526          struct fsl_asrc_pair *ctx = runtime->private_data;
+  1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
+                                                      ^^^^^
+Dereference
 
-There is also one question i would like to clarify. That is dynamic head
-attaching that requires small allocations. Do we drop it?
+  1528
+  1529          if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
+                    ^^^
+This check is too late, to prevent a NULL dereference.
 
-Thanks!
+  1530                  ctx_priv->ctx_streams &= ~BIT(substream->stream);
+  1531                  fsl_easrc_release_context(ctx);
 
---
-Vlad Rezki
+Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_easrc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 97658e1f4989..20326bffab64 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1524,9 +1524,14 @@ static int fsl_easrc_hw_free(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *ctx = runtime->private_data;
+-	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
++	struct fsl_easrc_ctx_priv *ctx_priv;
++
++	if (!ctx)
++		return -EINVAL;
++
++	ctx_priv = ctx->private;
+ 
+-	if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
++	if (ctx_priv->ctx_streams & BIT(substream->stream)) {
+ 		ctx_priv->ctx_streams &= ~BIT(substream->stream);
+ 		fsl_easrc_release_context(ctx);
+ 	}
+-- 
+2.21.0
+
