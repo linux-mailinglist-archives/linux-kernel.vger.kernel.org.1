@@ -2,171 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE01E1B7D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE46F1B7D7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728855AbgDXSC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726908AbgDXSCz (ORCPT
+        id S1728977AbgDXSDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:03:44 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17802 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728300AbgDXSDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:02:55 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61029C09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:02:55 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id t11so8426616lfe.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z13IEYz83XdBeUibWdG7wclkW3og2+VosmLRfwAtAdA=;
-        b=WsMshc2mIdVUt3yh9Dd3vA9NAUPuyxr+K526tt3N6H9SWCUwoLVukf7frGTwCg48QE
-         DZUzz3sWj1a8QHzrAGEPyboToxOGmPzCgGA1IDa8Ud0ufbf5qTjMtiFJwutkwG32h2SQ
-         ovIx45Wunn4iKR1DL6i7Xis6NIaAz1s2wwEGQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z13IEYz83XdBeUibWdG7wclkW3og2+VosmLRfwAtAdA=;
-        b=NDM4rN3PPsouS04AUS0Y0eBDXqElkm3KgZT9h9VKlw76XJqx8DhH8hc68+oeT0wQ6j
-         iFyMLj7aU+wT4xA9nKUTrX/MUwA25ZHX52A+8GEcYscAe/RF2Kw8mvN7n4Xjo2Z68Mw5
-         EO1IL8e2r3OzB9Cx+h1DWMJ/rLSRrOJpk4jRTQfcugliLjUNSSevYpM/JzIN1mpbwh8A
-         JZ8wm89izCKAGmLOsFTSBkuj4ialGAgO1vmJ5QtIVHQX3NPTXbQLQAThyVxya1w9y6rn
-         cNaQ80G/NKa27RAcVXSbVpFnprWGmFBpRhto7+zrvk3T7lrB1VkqVKo9vw6Oj21TJPLh
-         F2aw==
-X-Gm-Message-State: AGi0PuavMH1UDy68lWVMB4vTNG8HXAGG19PLpbYhWpkIbxaO0Sh5Ov2o
-        4PtFrev1Rer+MZ+q/Y7fira3SMmZQ0Q=
-X-Google-Smtp-Source: APiQypKWZ0iuNPf0j5A7orzHCHJRna2flN4ReDkgspbg4ILBN/qceU/WaCXzkLZq/03CIxGXeb0Tcw==
-X-Received: by 2002:ac2:57cb:: with SMTP id k11mr7094272lfo.19.1587751373239;
-        Fri, 24 Apr 2020 11:02:53 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id j22sm5157528lfg.96.2020.04.24.11.02.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 11:02:52 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id n6so10853811ljg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:02:52 -0700 (PDT)
-X-Received: by 2002:a2e:814e:: with SMTP id t14mr6506692ljg.204.1587751371830;
- Fri, 24 Apr 2020 11:02:51 -0700 (PDT)
+        Fri, 24 Apr 2020 14:03:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1587751397; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=lwSKKc8bGEb08Yw9SQhy7JOaYUDCCnpIWNEoH4WfSQ3RFpxNt2R4VdiqkdhGys3P27TbMDGl/3nK43URBUL8mMOrL34WDuz12eEKXR59OC5MVSI+rTM4AByEXRyEAVgFckWrhqkkEIk1kt0p1nZU3Bjkcga2aD5npBltHqCcOUQ=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1587751397; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=JFPPVC9jj5f6wCUGiIdI/tjl90bno75idKtqMqLKtKs=; 
+        b=LsB8yPdBkTFg5CXrr4OaIpJEK70qHZK81+3QsZeHUhFBvvhDY3MbZMXg8UlGBDbzpVmQJNVmZ7deO3Yig9C04cA/oFa6yRcUDw218hQtOdE9VG3ceHyYJudK/mwnWTVmyjJfjxakOLP2MxQICSQvWh4lv555rTr6fUpWVxqFjvU=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1587751397;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=JFPPVC9jj5f6wCUGiIdI/tjl90bno75idKtqMqLKtKs=;
+        b=PZMDSLIHrjQ5AXgEowlm2usG+vmi3H4R6zmuEZJyW/TKRLU5vq1Xrf/LI4kjJyBF
+        TthGf/iJvUQf6UGPQ+nC1ebyN4qyQCMeSs93rcg0jlKv3ZJTJsra8QkgIdAE7hXuzR1
+        Wlf4VlCwLcxePN0OuXB5DlxnBOBkEoRf0WnhUQeg=
+Received: from [127.0.0.1] (122.235.213.3 [122.235.213.3]) by mx.zoho.com.cn
+        with SMTPS id 1587751393295109.35899408288469; Sat, 25 Apr 2020 02:03:13 +0800 (CST)
+Date:   Sat, 25 Apr 2020 02:03:11 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Paul Burton <paulburton@kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH v5 1/6] PCI: OF: Don't remap iospace on unsupported platform
+User-Agent: K-9 Mail for Android
+Reply-to: jiaxun.yang@flygoat.com
+In-Reply-To: <CAL_JsqKsZrsnn92XHL4QdFkAgFKqVTBZXDz9wVv-_7oywOOsBQ@mail.gmail.com>
+References: <20200424130847.328584-1-jiaxun.yang@flygoat.com> <20200424130847.328584-2-jiaxun.yang@flygoat.com> <CAL_JsqKsZrsnn92XHL4QdFkAgFKqVTBZXDz9wVv-_7oywOOsBQ@mail.gmail.com>
+Message-ID: <D5CC0902-F84F-43F1-88E5-C03018B25050@flygoat.com>
 MIME-Version: 1.0
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
- <87ftcv1nqe.fsf@x220.int.ebiederm.org> <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
- <CAHk-=wgXEJdkgGzZQzBDGk7ijjVdAVXe=G-mkFSVng_Hpwd4tQ@mail.gmail.com> <87tv19tv65.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87tv19tv65.fsf@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Apr 2020 11:02:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
-Message-ID: <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 8:36 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+
+
+=E4=BA=8E 2020=E5=B9=B44=E6=9C=8825=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=881=
+:47:23, Rob Herring <robh+dt@kernel=2Eorg> =E5=86=99=E5=88=B0:
+>On Fri, Apr 24, 2020 at 8:09 AM Jiaxun Yang <jiaxun=2Eyang@flygoat=2Ecom>=
+ wrote:
+>>
+>> There are some platforms that don't support I/O space remapping
+>> like MIPS=2E However, our PCI code will try to remap iospace
+>> unconditionally and reject io resources on these platforms=2E
+>>
+>> So we should remove I/O space remapping check and use a range
+>> check instead on these platforms=2E
+>>
+>> Signed-off-by: Jiaxun Yang <jiaxun=2Eyang@flygoat=2Ecom>
+>> --
+>> v4: Fix a typo in commit message=2E
+>> v5: Commit message massage
+>> ---
+>>  drivers/pci/of=2Ec | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/pci/of=2Ec b/drivers/pci/of=2Ec
+>> index 81ceeaa6f1d5=2E=2E36e8761b66c6 100644
+>> --- a/drivers/pci/of=2Ec
+>> +++ b/drivers/pci/of=2Ec
+>> @@ -547,12 +547,21 @@ int pci_parse_request_of_pci_ranges(struct device=
+ *dev,
+>>
+>>                 switch (resource_type(res)) {
+>>                 case IORESOURCE_IO:
+>> +#if defined(PCI_IOBASE) && defined(CONFIG_MMU)
 >
-> At one point my brain I had forgetten that xchg can not take two memory
-> arguments and had hoped to be able to provide stronger guarnatees than I
-> can.  Which is where I think the structure of exchange_pids came from.
-
-Note that even if we were to have a "exchange two memory locations
-atomically" instruction (and we don't - even a "double cmpxchg" is
-actually just a double-_sized_ one, not a two different locations
-one), I'm not convinced it makes sense.
-
-There's no way to _walk_ two lists atomically. Any user will only ever
-walk one or the other, so it's not sensible to try to make the two
-list updates be atomic.
-
-And if a user for some reason walks both, the walking itself will
-obviously then be racy - it does one or the other first, and can see
-either the old state, or the new state - or see _neither_ (ie if you
-walk it twice, you might see neither task, or you might see both, just
-depending on order or walk).
-
-> I do agree the clearer we can write things, the easier it is for
-> someone else to come along and follow.
-
-Your alternate write of the function seems a bit more readable to me,
-even if the main effect might be just that it was split up a bit and
-added a few comments and whitespace.
-
-So I'm more happier with that one. That said:
-
-> We can not use a remove and reinser model because that does break rcu
-> accesses, and complicates everything else.  With a swap model we have
-> the struct pids pointer at either of the tasks that are swapped but
-> never at nothing.
-
-I'm not suggesting removing the pid entirely - like making task->pid
-be NULL. I'm literally suggesting just doing the RCU list operations
-as "remove and re-insert".
-
-And that shouldn't break anything, for the same reason that an atomic
-exchange doesn't make sense: you can only ever walk one of the lists
-at a time. And regardless of how you walk it, you might not see the
-new state (or the old state) reliably.
-
-Put another way:
-
->         void hlist_swap_before_rcu(struct hlist_node *left, struct hlist_node *right)
->         {
->                 struct hlist_node **lpprev = left->pprev;
->                 struct hlist_node **rpprev = right->pprev;
+>We already have the same condition in pci_remap_iospace()=2E All this
+>does is suppress a WARN=2E If a WARN is not desired, then change it=2E
+>Perhaps just a single line rather than backtrace would be okay=2E
+>Whether to WARN or not shouldn't be a decision for firmware code=2E
 >
->                 rcu_assign_pointer(*lpprev, right);
->                 rcu_assign_pointer(*rpprev, left);
+>Though really, if I/O space can never be supported, then it's an error
+>in your DT to describe it=2E
 
-These are the only two assignments that matter for anything that walks
-the list (the pprev ones are for things that change the list, and they
-have to have exclusions in place).
+In MIPS world, we do have inb/oub family of I/O functions
+to support I/O space=2E But we're not using remap_iospace as it's breaking
+some of our assumptions=2E
+We have our own inb/outb implementation=2E
 
-And those two writes cannot be atomic anyway, so you fundamentally
-will always be in the situation that a walker can miss one of the
-tasks.
+In that case, I think make a range check instead of remapping would
+be more practical=2E
 
-Which is why I think it would be ok to just do the RCU list swap as a
-"remove left, remove right, add left, add right" operation. It doesn't
-seem fundamentally different to a walker than the "switch left/right"
-operation, and it seems much simpler.
+Thanks=2E
 
-Is there something I'm missing?
-
-But I'm *not* suggesting that we change these simple parts to be
-"remove thread_pid or pid pointer, and then insert a new one":
-
->                 /* Swap thread_pid */
->                 rpid = left->thread_pid;
->                 lpid = right->thread_pid;
->                 rcu_assign_pointer(left->thread_pid, lpid);
->                 rcu_assign_pointer(right->thread_pid, rpid);
 >
->                 /* Swap the cached pid value */
->                 WRITE_ONCE(left->pid, pid_nr(lpid));
->                 WRITE_ONCE(right->pid, pid_nr(rpid));
->         }
+>>                         err =3D devm_pci_remap_iospace(dev, res, iobase=
+);
+>>                         if (err) {
+>>                                 dev_warn(dev, "error %d: failed to map =
+resource %pR\n",
+>>                                          err, res);
+>>                                 resource_list_destroy_entry(win);
+>>                         }
+>> +#else
+>> +                       /* Simply check if IO is inside the range */
+>
+>Why do you care if it's never used?
+>
+>> +                       if (res->end > IO_SPACE_LIMIT) {
+>> +                               dev_warn(dev, "resource %pR out of the =
+I/O range\n",
+>> +                                       res);
+>> +                               resource_list_destroy_entry(win);
+>> +                       }
+>> +#endif
+>>                         break;
+>>                 case IORESOURCE_MEM:
+>>                         res_valid |=3D !(res->flags & IORESOURCE_PREFET=
+CH);
+>> --
+>> 2=2E26=2E0=2Erc2
+>>
 
-because I agree that for things that don't _walk_ the list, but just
-look up "thread_pid" vs "pid" atomically but asynchronously, we
-obviously need to get one or the other, not some kind of "empty"
-state.
-
-> Does that look a little more readable?
-
-Regardless, I find your new version at least a lot more readable, so
-I'm ok with it.
-
-It looks like Oleg found an independent issue, though.
-
-                  Linus
+--=20
+Jiaxun Yang
