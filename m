@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4D51B7D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A471B7D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgDXRik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:38:40 -0400
-Received: from mother.openwall.net ([195.42.179.200]:54079 "HELO
-        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726813AbgDXRik (ORCPT
+        id S1728894AbgDXRjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728838AbgDXRjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:38:40 -0400
-Received: (qmail 12213 invoked from network); 24 Apr 2020 17:38:38 -0000
-Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
-  by localhost with SMTP; 24 Apr 2020 17:38:38 -0000
-Received: by pvt.openwall.com (Postfix, from userid 503)
-        id CF163AB5C7; Fri, 24 Apr 2020 19:38:28 +0200 (CEST)
-Date:   Fri, 24 Apr 2020 19:38:28 +0200
-From:   Solar Designer <solar@openwall.com>
-To:     Ben Hutchings <ben@decadent.org.uk>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 3.16 208/245] namei: allow restricted O_CREAT of FIFOs and regular files
-Message-ID: <20200424173828.GA27528@openwall.com>
-References: <lsq.1587683027.831233700@decadent.org.uk> <lsq.1587683028.722200761@decadent.org.uk> <20200424135205.GA27204@openwall.com> <8783c94cb802ade8a45cdf4233fe3b7341cca5c9.camel@decadent.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8783c94cb802ade8a45cdf4233fe3b7341cca5c9.camel@decadent.org.uk>
-User-Agent: Mutt/1.4.2.3i
+        Fri, 24 Apr 2020 13:39:39 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431ABC09B047
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:39:38 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id n128so2970564vke.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lVNykiux2SS49dq2HBWn7JsqkyYB+CbvxiXAjFY5utg=;
+        b=VxJM0E4h1WDU8yB5zcqRbndKTW6H2EPOMb4z3Kzl+8RsCCnjpf98olSU3A618vQhny
+         iTX3M/4OnwJYdl9bCDghHxyIHB1q+tDNhPf/9sFsROnEB2ep1LdyftyWzZ30bF4cy9nZ
+         OZ+VNTUPCf9JsY//tM6/EwcSdNYWqogiVXSuKp2LmyhdTUC++hhw01sZCikHupjdvJAn
+         F9Ln48Ahv+9/jXW+ANsRz2BKeo4CsXh5SKDzzFOvoN7PDj3YqRV0cZVMoUzwriv5biW7
+         tHjkAlf9g6plEEyqWSFL3kQ8W5kkAVr9O9QghKRRDkLYeRojzx4/ZPkDW8HILIG6l/Kb
+         h2LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lVNykiux2SS49dq2HBWn7JsqkyYB+CbvxiXAjFY5utg=;
+        b=V/3I2nHvR89nHOBg7t3jYhZ2Im08XPbSwb1ySu8aWslMnylz5PioT82CDso+xjfbEF
+         nMhmlH0UNu5u7ZPRjpHh7TB379+kTUzSWYRdW7ct+/ylJrvo9GV4oDIsvyW+7WHjup2O
+         6S2sTSixpZxyg+6IGTHhuTPkTgsjGIRSkJRmsV3W8EvFdwIUP6IV/nUX40wL6oe68oTJ
+         Z49oIiUc96p5nJ0I0iIwfUos6N6cunP6SrCu6Kw5/OK6z+8utT1IaiRwvLbLEeXMN3v5
+         rTHZDB8MYfTXMvrtt0jtCJ/ddZYpeelkBxDnKiIGibQeL7S4dD8Yc+XCuEdh5L5feJmt
+         wAUQ==
+X-Gm-Message-State: AGi0Pua8ytVpj9rWetWutAuDNPdGgis0y+HnAvSnhnVHC6Q+Z+IGHHsM
+        EDhQLYBX4T+GUrYrct5SLWwJVKaEOGM1zN71cg==
+X-Google-Smtp-Source: APiQypL4bmtRtO/YcTxs3lS+V2EvfAlKlZUC0+uB+6jVx22DifGDKNum6YkWauX3Ba7XcbY2CQwsyHIFJs7LaHLVLtE=
+X-Received: by 2002:a1f:ce83:: with SMTP id e125mr9009637vkg.10.1587749976655;
+ Fri, 24 Apr 2020 10:39:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <CALjTZvaiCzPQT6Jrx4pFW6KuZj2WLSQQpCbU-sg1jEgscQAKFQ@mail.gmail.com>
+ <1587715859.28179.17.camel@suse.cz>
+In-Reply-To: <1587715859.28179.17.camel@suse.cz>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Fri, 24 Apr 2020 18:39:25 +0100
+Message-ID: <CALjTZvb_nzOXd09VXJDECu4b7xuS3tduQ1SXJ0BrpCMBp4qcRQ@mail.gmail.com>
+Subject: Re: [BISECTED] bug/regression, x86-64: completely unbootable machine
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 04:13:22PM +0100, Ben Hutchings wrote:
-> On Fri, 2020-04-24 at 15:52 +0200, Solar Designer wrote:
-> > On Fri, Apr 24, 2020 at 12:07:15AM +0100, Ben Hutchings wrote:
-> > > 3.16.83-rc1 review patch.  If anyone has any objections, please let me know.
-> > 
-> > I do.  This patch is currently known-buggy, see this thread:
-> > 
-> > https://www.openwall.com/lists/oss-security/2020/01/28/2
-> > 
-> > It is (partially) fixed with these newer commits in 5.5 and 5.5.2:
-> > 
-> > commit d0cb50185ae942b03c4327be322055d622dc79f6
-> > Author: Al Viro <viro@zeniv.linux.org.uk>
-> > Date:   Sun Jan 26 09:29:34 2020 -0500
-> > 
-> >     do_last(): fetch directory ->i_mode and ->i_uid before it's too late
-> >     
-> >     may_create_in_sticky() call is done when we already have dropped the
-> >     reference to dir.
-> >     
-> >     Fixes: 30aba6656f61e (namei: allow restricted O_CREAT of FIFOs and regular files)
-> >     Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> > 
-> > commit d76341d93dedbcf6ed5a08dfc8bce82d3e9a772b
-> > Author: Al Viro <viro@zeniv.linux.org.uk>
-> > Date:   Sat Feb 1 16:26:45 2020 +0000
-> > 
-> >     vfs: fix do_last() regression
-> >     
-> >     commit 6404674acd596de41fd3ad5f267b4525494a891a upstream.
-> [...]
-> > At least inclusion of the above fixes is mandatory for any backports.
-> 
-> I know, and those are the next 2 patches in the series.
+Hi, again,
 
-Ah, then no objections from me.
+On Fri, 24 Apr 2020 at 09:11, Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+>
+> The problem you encountered is due to a bug where the code doesn't work on
+> machines with less than 4 physical CPU cores.
 
-> > Also, I think no one has fixed the logic of may_create_in_sticky() so
-> > that it wouldn't unintentionally apply the "protection" when the file
-> > is neither a FIFO nor a regular file (something I found and mentioned in
-> > the oss-security posting above).
-> [...]
-> > I think the implementation of may_create_in_sticky() should be rewritten
-> > such that it'd directly correspond to the textual description in the
-> > comment above.  As we've seen, trying to write the code "more optimally"
-> > resulted in its logic actually being different from the description.
-> > 
-> > Meanwhile, I think backporting known-so-buggy code is a bad idea.
-> 
-> I can see that it's not quite right, but does it matter in practice? 
-> Directories and symlinks are handled separately; sockets can't be
-> opened anyway; block and character devices wonn't normally appear in a
-> sticky directory.
+Thinking about it more thoroughly, are you sure that's the bug I'm
+hitting? I'm asking because I have an i5-6200U (Skylake, also dual
+core, dual thread, like the i3-380M) laptop which runs 5.7-rc1/rc2
+just fine.
 
-Clearly, it doesn't matter all that much in practice - I'm not aware of
-anyone having complained about it causing issues on their system.
-
-I think it primarily mattered as an attack vector on the issue fixed
-with Al's commits above.
-
-I think we should nevertheless fix the code to match its intent and the
-comment, but meanwhile this isn't a blocker for the backport.
-
-Alexander
+Thanks,
+Rui
