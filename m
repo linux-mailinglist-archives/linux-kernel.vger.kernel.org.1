@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54F71B7F8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89401B7F9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729504AbgDXUB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 16:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        id S1729571AbgDXUCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 16:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729449AbgDXUBs (ORCPT
+        with ESMTP id S1729460AbgDXUBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:01:48 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F801C09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:01:48 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v2so4123183plp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:01:48 -0700 (PDT)
+        Fri, 24 Apr 2020 16:01:49 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC523C09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:01:49 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t4so4111571plq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ACPRkKaJUyZo8C7iIU0IKcYFjC5Ccd7f4ibW90mBkI0=;
-        b=r/j9BvpKD2+h7VVgkG6ZqnvbwTKfJUON8chtw0D9EhgYbrohwaxbHnSVC6DKEdMEoe
-         oUXUi8/KX/T7uSpfkE4CekO3PnJenQRoXtAgul+AqPvsi9ow75wBY9tjEYhz6nTdaqVv
-         4rG72mUD5zmnY1U56LkaTOIe79apgYVIYuaDdelF24YVNO12eYio7lJ/BvWIwgM/Dfjc
-         oTm1k2Zqjev5iWhdRYVG1o2lZQ0HszP/yehulR/satJVmmY7IK32kv4qPzMJgc5Ip3DC
-         c0kEPOPrsCds0d6wzib3xL7J3JBfcXPJbr9I1gFyucTNRsTuVHqP+okYgh+Uapw2Eot6
-         sUGw==
+        bh=6OcPgDxlDoD3A3IbU3oJZ47tnyLvhscA3C6+vgH47qU=;
+        b=GBDPdl81YS026oKzjxXalCH6SHeaqvcvC7z4GqxoOJ9/4sSYXchN9jlXGBaM5n53v1
+         cUGXZfYryAKTHCEnzG2UwQTSiLlpewsIJ3HyIAh3mcP+c6I4C4Mp/jpBDd0ivuPgrsZE
+         SBBocN43/WUaJESo54oRwvcqCNY4j+CP++qehXbutx+HfQiQi4koJu4fyS9L+7v7roSF
+         kHtBT9bmEfPCcZkJ9QT6wr99E8IRlXAucA8pUK4Hh7hhlD/d8lpOTN67thGHvALHrAHP
+         4ASJMNACPCTnLiUoScLWds/NldfdCjpBsRdivCwDMqdiqlhCl5/fbLJ6h0XQsLAOg8cz
+         6brg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ACPRkKaJUyZo8C7iIU0IKcYFjC5Ccd7f4ibW90mBkI0=;
-        b=ILhjuM5hOXQSLBvFYuUuKX6RCVo4hjMuZmmz4O1lqQmK4cC3jPEkfiErTR1bBbs8RG
-         24D2YA69oR3TmK4RF0OOs1N01rEk7kTCo5SJulNfnt4UWuXJFFUWN2dZF2ZW4K9pMrZU
-         vzJWK5AOyH0N4SsUJhq6zLl4w5LdysCS5++mICpZ9k2sXoKWIVfevzMFIhGHZF2zXj+J
-         kHaZBcnoF0EPRZGJ6ZiqG/Rpy0PbpucKa3z3DD5XKiiAQUilAj+ATTrNVQRMqJeyi3HB
-         bOIzUQAr/QNjps2ezAQntz45A6nFDQ/Qqd18o3dG2VbUpZ6gNRS/OUQMwYGXoNj2aZIE
-         RtEg==
-X-Gm-Message-State: AGi0PuZvEk+mrA6naiFx1Jo/KtxrsR8oan/ti+e/YrIqKJpj2thpWmmj
-        +cdgwf0KNSSN4M4mIDS1L9bRyQ==
-X-Google-Smtp-Source: APiQypKfmGSdN3v0D8zcRUOZanqmk0b+MRKxMtXLO8IYCYWXEgvCIFclKnMbij53lOKaXmiqTriYqA==
-X-Received: by 2002:a17:90a:276a:: with SMTP id o97mr8248471pje.194.1587758507788;
-        Fri, 24 Apr 2020 13:01:47 -0700 (PDT)
+        bh=6OcPgDxlDoD3A3IbU3oJZ47tnyLvhscA3C6+vgH47qU=;
+        b=iVVRzzqFY5H1wdp0Bt7mbs6IWTU0H7PLQDM8fuvUTXZGidTRhwZftUB8e5/EFmE+Hh
+         baAldfh+qFCeC8nHsQiQ/9y0s45kKeSz9JacZPZvGM4dhBBhpKKh+fS76/f4DsFU11xb
+         BbC/HY7mbA15VUuh1RGuTDqGXoLEMcVbXleVhNJO9Z/Z/ZUe9i0Rtae+OHDC/KtF9HdR
+         9su/TT5jy0GtElBN6PyFWlSujMHBQEvHAia47+G3de3AvWrAV4z76Y6/gWX2ASLKe/vm
+         taoxU8plIVN5XCi6OCXLXsrDwS650lEOv0UK4YxIwXZZEq4a/epiP0n61r2bpeb4NflR
+         Wq/g==
+X-Gm-Message-State: AGi0PuZF7TSjW32gl4zkqQtITR7ULkY8GnL8hiRFRuCMsreKwPNslXeO
+        g3JKSt7ueaRD3szYl330xWdyew==
+X-Google-Smtp-Source: APiQypLxQAxSRxFaS8jwHQdEsmoKibuUvOLUt19m1OR62aHIl5MDSfr/ah8WdHpf+QpT6Z3S9r/97A==
+X-Received: by 2002:a17:90a:f995:: with SMTP id cq21mr8167228pjb.56.1587758509098;
+        Fri, 24 Apr 2020 13:01:49 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id o11sm5532224pgd.58.2020.04.24.13.01.46
+        by smtp.gmail.com with ESMTPSA id o11sm5532224pgd.58.2020.04.24.13.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:01:47 -0700 (PDT)
+        Fri, 24 Apr 2020 13:01:48 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com
 Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com, s-anna@ti.com,
         linux-remoteproc@vger.kernel.org, corbet@lwn.net,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 08/14] remoteproc: Call core functions based on synchronisation flag
-Date:   Fri, 24 Apr 2020 14:01:29 -0600
-Message-Id: <20200424200135.28825-9-mathieu.poirier@linaro.org>
+Subject: [PATCH v3 09/14] remoteproc: Deal with synchronisation when crashing
+Date:   Fri, 24 Apr 2020 14:01:30 -0600
+Message-Id: <20200424200135.28825-10-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424200135.28825-1-mathieu.poirier@linaro.org>
 References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
@@ -66,124 +66,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call the right core function based on whether we should synchronise
-with a remote processor or boot it from scratch.
+Refactor function rproc_trigger_recovery() in order to avoid
+reloading the firmware image when synchronising with a remote
+processor rather than booting it.  Also part of the process,
+properly set the synchronisation flag in order to properly
+recover the system.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/remoteproc/remoteproc_internal.h | 50 ++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ drivers/remoteproc/remoteproc_core.c     | 23 ++++++++++++++------
+ drivers/remoteproc/remoteproc_internal.h | 27 ++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index ef88d3e84bfb..3a84a38ba37b 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -1697,7 +1697,7 @@ static void rproc_coredump(struct rproc *rproc)
+  */
+ int rproc_trigger_recovery(struct rproc *rproc)
+ {
+-	const struct firmware *firmware_p;
++	const struct firmware *firmware_p = NULL;
+ 	struct device *dev = &rproc->dev;
+ 	int ret;
+ 
+@@ -1718,14 +1718,16 @@ int rproc_trigger_recovery(struct rproc *rproc)
+ 	/* generate coredump */
+ 	rproc_coredump(rproc);
+ 
+-	/* load firmware */
+-	ret = request_firmware(&firmware_p, rproc->firmware, dev);
+-	if (ret < 0) {
+-		dev_err(dev, "request_firmware failed: %d\n", ret);
+-		goto unlock_mutex;
++	/* load firmware if need be */
++	if (!rproc_needs_syncing(rproc)) {
++		ret = request_firmware(&firmware_p, rproc->firmware, dev);
++		if (ret < 0) {
++			dev_err(dev, "request_firmware failed: %d\n", ret);
++			goto unlock_mutex;
++		}
+ 	}
+ 
+-	/* boot the remote processor up again */
++	/* boot up or synchronise with the remote processor again */
+ 	ret = rproc_start(rproc, firmware_p);
+ 
+ 	release_firmware(firmware_p);
+@@ -1761,6 +1763,13 @@ static void rproc_crash_handler_work(struct work_struct *work)
+ 	dev_err(dev, "handling crash #%u in %s\n", ++rproc->crash_cnt,
+ 		rproc->name);
+ 
++	/*
++	 * The remote processor has crashed - tell the core what operation
++	 * to use from hereon, i.e whether an external entity will reboot
++	 * the MCU or it is now the remoteproc core's responsability.
++	 */
++	rproc_set_sync_flag(rproc, RPROC_SYNC_STATE_CRASHED);
++
+ 	mutex_unlock(&rproc->lock);
+ 
+ 	if (!rproc->recovery_disabled)
 diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-index dda7044c4b3e..3985c084b184 100644
+index 3985c084b184..61500981155c 100644
 --- a/drivers/remoteproc/remoteproc_internal.h
 +++ b/drivers/remoteproc/remoteproc_internal.h
-@@ -72,6 +72,12 @@ static inline bool rproc_needs_syncing(struct rproc *rproc)
- static inline
- int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->sanity_check)
-+			return rproc->sync_ops->sanity_check(rproc, fw);
-+		return 0;
-+	}
+@@ -24,6 +24,33 @@ struct rproc_debug_trace {
+ 	struct rproc_mem_entry trace_mem;
+ };
+ 
++/*
++ * enum rproc_sync_states - remote processsor sync states
++ *
++ * @RPROC_SYNC_STATE_CRASHED	state to use after the remote processor
++ *				has crashed but has not been recovered by
++ *				the remoteproc core yet.
++ *
++ * Keeping these separate from the enum rproc_state in order to avoid
++ * introducing coupling between the state of the MCU and the synchronisation
++ * operation to use.
++ */
++enum rproc_sync_states {
++	RPROC_SYNC_STATE_CRASHED,
++};
 +
- 	if (rproc->ops && rproc->ops->sanity_check)
- 		return rproc->ops->sanity_check(rproc, fw);
- 
-@@ -81,6 +87,12 @@ int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
- static inline
- u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->get_boot_addr)
-+			return rproc->sync_ops->get_boot_addr(rproc, fw);
-+		return 0;
++static inline void rproc_set_sync_flag(struct rproc *rproc,
++				       enum rproc_sync_states state)
++{
++	switch (state) {
++	case RPROC_SYNC_STATE_CRASHED:
++		rproc->sync_with_rproc = rproc->sync_flags.after_crash;
++		break;
++	default:
++		break;
 +	}
++}
 +
- 	if (rproc->ops && rproc->ops->get_boot_addr)
- 		return rproc->ops->get_boot_addr(rproc, fw);
- 
-@@ -90,6 +102,12 @@ u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
- static inline
- int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->load)
-+			return rproc->sync_ops->load(rproc, fw);
-+		return 0;
-+	}
-+
- 	if (rproc->ops && rproc->ops->load)
- 		return rproc->ops->load(rproc, fw);
- 
-@@ -98,6 +116,12 @@ int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
- 
- static inline int rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->parse_fw)
-+			return rproc->sync_ops->parse_fw(rproc, fw);
-+		return 0;
-+	}
-+
- 	if (rproc->ops && rproc->ops->parse_fw)
- 		return rproc->ops->parse_fw(rproc, fw);
- 
-@@ -108,6 +132,13 @@ static inline
- int rproc_handle_rsc(struct rproc *rproc, u32 rsc_type, void *rsc, int offset,
- 		     int avail)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->handle_rsc)
-+			return rproc->sync_ops->handle_rsc(rproc, rsc_type,
-+							   rsc, offset, avail);
-+		return 0;
-+	}
-+
- 	if (rproc->ops && rproc->ops->handle_rsc)
- 		return rproc->ops->handle_rsc(rproc, rsc_type, rsc, offset,
- 					      avail);
-@@ -119,6 +150,13 @@ static inline
- struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
- 						   const struct firmware *fw)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->find_loaded_rsc_table)
-+			return rproc->sync_ops->find_loaded_rsc_table(rproc,
-+								      fw);
-+		return NULL;
-+	}
-+
- 	if (rproc->ops && rproc->ops->find_loaded_rsc_table)
- 		return rproc->ops->find_loaded_rsc_table(rproc, fw);
- 
-@@ -127,6 +165,12 @@ struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
- 
- static inline int rproc_start_device(struct rproc *rproc)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->start)
-+			return rproc->sync_ops->start(rproc);
-+		return 0;
-+	}
-+
- 	if (rproc->ops && rproc->ops->start)
- 		return rproc->ops->start(rproc);
- 
-@@ -135,6 +179,12 @@ static inline int rproc_start_device(struct rproc *rproc)
- 
- static inline int rproc_stop_device(struct rproc *rproc)
- {
-+	if (rproc_needs_syncing(rproc)) {
-+		if (rproc->sync_ops && rproc->sync_ops->stop)
-+			return rproc->sync_ops->stop(rproc);
-+		return 0;
-+	}
-+
- 	if (rproc->ops && rproc->ops->stop)
- 		return rproc->ops->stop(rproc);
- 
+ /* from remoteproc_core.c */
+ void rproc_release(struct kref *kref);
+ irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
 -- 
 2.20.1
 
