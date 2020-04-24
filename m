@@ -2,138 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DAE1B6ECA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 09:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD971B6ECF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 09:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgDXHTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 03:19:04 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2092 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726051AbgDXHTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 03:19:03 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id DC1392CAC0741D5FB70B;
-        Fri, 24 Apr 2020 08:19:01 +0100 (IST)
-Received: from [127.0.0.1] (10.47.6.64) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 24 Apr
- 2020 08:19:00 +0100
-Subject: Re: [PATCH] blk-mq: Put driver tag in blk_mq_dispatch_rq_list() when
- no budget
-To:     Ming Lei <ming.lei@redhat.com>,
-        Doug Anderson <dianders@chromium.org>
-CC:     Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <1587035931-125028-1-git-send-email-john.garry@huawei.com>
- <e5416179-2ba0-c9a8-1b86-d52eae29e146@acm.org>
- <663d472a-5bde-4b89-3137-c7bfdf4d7b97@huawei.com>
- <CAD=FV=XBrKgng+vYzJx+qsOEZ-cZ10A0t+pRh=FcbQMop2ht4Q@mail.gmail.com>
- <20200424013519.GA355437@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <3b91a730-0923-c049-bbe4-68fc5a7ae793@huawei.com>
-Date:   Fri, 24 Apr 2020 08:18:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726654AbgDXHTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 03:19:08 -0400
+Received: from sonic312-22.consmr.mail.bf2.yahoo.com ([74.6.128.84]:33393 "EHLO
+        sonic312-22.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726626AbgDXHTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 03:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587712744; bh=SGvvhU2UWXzbg2f9vxSHyVOB5gxWkye3IYlpV46W7BM=; h=Date:From:Reply-To:Subject:References:From:Subject; b=IQXBCeVTWQHMb1dQ/bxFT+LAcs1q6SqJPNm3IphYPNEv4WJtmiEhHrutfrUsrudiSPV7XaZPuKj4J8Eaitxj+vOjlCuEQKppvcEM5dx0APIn85cmgTXpf/vhPfOfWqajfdKOYjG8wdL+kRaweJOPYfRU8uN7G1HAUrXi/Vnp+89YFut5qkMXVilmtX3gDLQrdvFylH1zEbUzQnhKu6z/SmVtTkQLQZKHW+4e7wYx89+kcHeJMzAILHFcbsILUtuI4elhjmy4PJofAQsbof4sZzTl2HYjTaULBTHSQTopYRgeBWjDwOvzLvJYn6D1NWrm7DHsxbw8g5Pq6v+TitrHRg==
+X-YMail-OSG: ZJAU9q0VM1lVfirKAQ.G_Aw8CfBvLygL0oFIkY9LGAoLmHatef4607cq6DSfcc8
+ CZxLUXYuM2xKA9Z_WTpipDo7gAsvBNDJIEvXF7vOsxMvalDQsGuwhJJBwcAEItL5XQ2hvEoK8XBw
+ 8sN3x1G0UUwMOQ8Oi0aKhPxenXyCSxM_4VsccUEYsWu4R36eu_oZK.vnJ9HPIJLUgRsEYnulkMYn
+ P06vSwaEK19AoDjg3BWHxQwxaykYB.SW_wHuZCcEfOiXcXM4PrrbYIacuSA3tKD20nE2a5SVe217
+ 8i9cR4G7JWbD47IRUJyIRzZbOlxlRqw6gOKHOxXLMYk6jeuiuMochP5_aSM28y0jtzauI8LkViSx
+ 7cmXk6PcEpMS_ahH0388vmFPz74K2GXA4Q3oViwX8AAOmAAPcK.SBhh54fxa8NpuoWFauwl.L5M5
+ NclBedusxaTEam80A2RqivW.J9w2C7msaigMnBWpfktzq54Yrni65KRSDySj_PJ3VgeStxud_M7B
+ 5IQMu9d0AUcBviCgWHgc3ALVsBPtIp3poOyItsdfOgW1cBYxrS.PIZCFi4shJWBrcct0XGE42rHd
+ ZMVBOXk44X7CQPMhJO2adj4.LFws98imQEjvqGdVAaEowjnYl3V5bsLM6D1.xSC8LhitlIBHYQ22
+ dDJiSVxr_4I_YFWnrafnhIEm4VYAGPzDNbDS6qrhLHC1la1lXsIguaM5zWAdMrleEoQNifsmi.qr
+ iXLfop7fLgBo7gw1xwA8z2VZmqg43libsjSKAL6PS4w7Z6kFy3PBmXu2S.KYUNoaFIlkQoWsIH2Q
+ akCHi0HKWS_lmitnNWC1EZzwWZgqjq9XAEp9OtWgkEfCP1U9zJHqxkVNuf02wTXQaXsLnnSd_s3j
+ FfmC90IiVjCbXLtqKnPed0GtlPcFcgMcUSpRYfLO7v_Ga2_zXoWUBRuj5pBDsp81FD98I_kBPsEk
+ dldv57j2vrUP8WmohHedZ9BUN0jqVN8NZLmxV8dThaBeynwB39vxzFL6Zf_buXD2act21MCr0UkB
+ cUFMg_2lSRIk50JOd_x22nLiP6SaEzYyzxEllIRPwpO8AirXAOnLA1j2WOSw.vxBvzJ15zHTZnK9
+ DLjhq2B4lE2AX53FClI78qfvvAiAMyn3Y2v35UrS2dIaAfAvkBALXnauC58SfDEJ3qv2AgbFrlvI
+ SJ5w5Ng7l7JLqWonPXjoiQOu3VX7MXsTmwd7pYGs1y8i.Rq2eVERGeVBVBUmac_zg81scfatAKxa
+ UKI1NKINxytcVZIxeA7iGKiAr1gNxOK2qNvqNXYeyA0ndE88BzVoaXbz__EM1OZgntaxe
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 24 Apr 2020 07:19:04 +0000
+Date:   Fri, 24 Apr 2020 07:18:58 +0000 (UTC)
+From:   Mrs Aisha Al-Qaddafi <ah6149133@gmail.com>
+Reply-To: aishaqaddafi01@gmail.com
+Message-ID: <1327483723.40306.1587712738769@mail.yahoo.com>
+Subject: Dear I Need An Investment Partner
 MIME-Version: 1.0
-In-Reply-To: <20200424013519.GA355437@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.6.64]
-X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <1327483723.40306.1587712738769.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15776 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/04/2020 02:35, Ming Lei wrote:
-> On Thu, Apr 23, 2020 at 03:42:37PM -0700, Doug Anderson wrote:
->> Hi,
->>
->> On Mon, Apr 20, 2020 at 1:23 AM John Garry <john.garry@huawei.com> wrote:
->>>
->>> On 18/04/2020 03:43, Bart Van Assche wrote:
->>>> On 2020-04-16 04:18, John Garry wrote:
->>>>> If in blk_mq_dispatch_rq_list() we find no budget, then we break of the
->>>>> dispatch loop, but the request may keep the driver tag, evaulated
->>>>> in 'nxt' in the previous loop iteration.
->>>>>
->>>>> Fix by putting the driver tag for that request.
->>>>>
->>>>> Signed-off-by: John Garry <john.garry@huawei.com>
->>>>>
->>>>> diff --git a/block/blk-mq.c b/block/blk-mq.c
->>>>> index 8e56884fd2e9..a7785df2c944 100644
->>>>> --- a/block/blk-mq.c
->>>>> +++ b/block/blk-mq.c
->>>>> @@ -1222,8 +1222,10 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
->>>>>               rq = list_first_entry(list, struct request, queuelist);
->>>>>
->>>>>               hctx = rq->mq_hctx;
->>>>> -            if (!got_budget && !blk_mq_get_dispatch_budget(hctx))
->>>>> +            if (!got_budget && !blk_mq_get_dispatch_budget(hctx)) {
->>>>> +                    blk_mq_put_driver_tag(rq);
->>>>>                       break;
->>>>> +            }
->>>>>
->>>>>               if (!blk_mq_get_driver_tag(rq)) {
->>>>>                       /*
->>>>
->>>> Is this something that can only happen if q->mq_ops->queue_rq(hctx, &bd)
->>>> returns another value than BLK_STS_OK, BLK_STS_RESOURCE and
->>>> BLK_STS_DEV_RESOURCE?
->>>
->>> Right, as that case is handled in blk_mq_handle_dev_resource()
->>>
->>> If so, please add a comment in the source code
->>>> that explains this.
->>>
->>> So important that we should now do this in an extra patch?
->>>
->>>>
->>>> Is this perhaps a bug fix for 0bca799b9280 ("blk-mq: order getting
->>>> budget and driver tag")? If so, please mention this and add Cc tags for
->>>> the people who were Cc-ed on that patch.
->>>
->>> So it looks like 0bca799b9280 had a flaw, but I am not sure if anything
->>> got broken there and worthy of stable backport.
->>>
->>> I found this issue while debugging Ming's blk-mq cpu hotplug patchset,
->>> which I feel is ready to merge.
->>>
->>> Having said that, this nasty issue did take > 1 day for me to debug...
->>> so let me know.
->>
->> As per the above conversation, presumably this should go to stable
->> then for any kernel that has commit 0bca799b9280 ("blk-mq: order
->> getting budget and driver tag")?  For instance, I think 4.19 would be
->> affected?  When I picked it there I got a conflict due to not having
->> commit ea4f995ee8b8 ("blk-mq: cache request hardware queue mapping")
->> but I think it's just a context collision and easy to resolve.
->>
->> I'm no expert in the block code, but I posted my backport to 4.19 at
->> <https://crrev.com/c/2163313>.  I'm happy to send an email as a patch
->> to the list too or double-check that someone else's conflict
->> resolution matches mine.
-> 
-> The thing is that there may not user visible effect by this issue,
-> when one tag isn't freed, this request will be re-dispatched soon.
-> That said it just makes the tag lifetime longer.
-> 
-> It could only be an issue in case of request dependency, meantime
-> the tag space is quite limited. However, not sure if there is such
-> case in reality.
-> 
 
-FWIW, this was pretty nasty to debug, and if it's not going to cause 
-harm, then I'd be more inclined to add to stable. In addition, some 
-distro may backport patches on a stable baseline where it is visible 
-separately, and miss this one.
 
-Thanks,
-John
+Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh
+
+Dear Friend,
+
+I came across your e-mail contact prior a private search while in need of your assistance. I am Aisha Al-Qaddafi, the only biological Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a single Mother and a Widow with three Children.
+
+I have investment funds worth Twenty Seven Million Five Hundred Thousand United State Dollar ($27.500.000.00 ) and i need a trusted investment Manager/Partner because of my current refugee status, however, I am interested in you for investment project assistance in your country, may be from there, we can build business relationship in the nearest future.
+
+I am willing to negotiate investment/business profit sharing ratio with you base on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply urgent to enable me provide you more information about the investment funds.
+
+Your Urgent Reply Will Be Appreciated
+
+Best Regards
+Mrs Aisha Al-Qaddafi
