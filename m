@@ -2,570 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB7D1B7877
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601901B786D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgDXOok convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Apr 2020 10:44:40 -0400
-Received: from mail1.atsec.com ([138.201.47.228]:8152 "EHLO mail1.atsec.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgDXOoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:44:39 -0400
-X-Greylist: delayed 590 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Apr 2020 10:44:34 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail1.atsec.com (Postfix) with ESMTP id 112C7112F;
-        Fri, 24 Apr 2020 16:38:35 +0200 (CEST)
-Received: from mail1.atsec.com ([127.0.0.1])
-        by localhost (mail1.atsec.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id xG5ZDMc4cY2z; Fri, 24 Apr 2020 16:38:32 +0200 (CEST)
-From:   Stephan Mueller <stephan.mueller@atsec.com>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 13/14] crypto: sun8i-ce: Add support for the PRNG
-Date:   Fri, 24 Apr 2020 16:38:31 +0200
-Message-ID: <2397344.pSczEbEFGg@tauon.chronox.de>
-Organization: atsec information security GmbH
-In-Reply-To: <1587736934-22801-14-git-send-email-clabbe@baylibre.com>
-References: <1587736934-22801-1-git-send-email-clabbe@baylibre.com> <1587736934-22801-14-git-send-email-clabbe@baylibre.com>
+        id S1727079AbgDXOj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 10:39:59 -0400
+Received: from mail-eopbgr50063.outbound.protection.outlook.com ([40.107.5.63]:45042
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726813AbgDXOj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 10:39:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iA6NgLzqijXR94cCT3k/pQ/XuWDkucxOZVrvO/NKVcBtccSeK/sfudOJDhvONd5iK5+lH0O9CfgG+vCXK1HnaoulLf9i0ataMR6PgUdBTt87j5AE7Kdud+W1iypBChKp+2JwjKMNUId6bjnXqvjGpdGfGzb2n0EwiD3jm+ThtBPOkSRFBiulZnAZwmEZjdzbEIyuv86J1N7JgihGSznfB6f2tkN+c4qRwoI1vu8MHFx55EJj/jD8znKCbkHjZTDaa2RTprl+AhvLhkTPwulZOQg5cK3qUdy66CJp670YbdhvhLJ1F10RQL2xkdsBJVIk9Z+6VKM196aPHAOX9hO6hQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=El7UDRVQpMMg9nFO5vjYJuep7JYJNDc11HnZl67GajI=;
+ b=cJMMA/ba3HRl0MBee3NqetoMvpyODInOfXJGaJwGGAxrvhEBXrfl9pBSmrLcvxeu3xGTDqLTEfxzymHgOg+s8cyWqTBPKcMfu4jh948IFaGB1HNvoKocD1zPnBrC6e7wy1xjpt8Iul668mL3pUqnJXjt9Y6dbjl4o4d8hXhiyuj26XQTd4KLgCKy9IzsespbY3bd6NE2Fihv7dMHvL3Y7mQjcNV9nNwCLY8a+FE6hNRX3a5ZhkLXTNpfgasmvKeHUahebvkxJ6L8yTaaXfNtez3LsEiGQI3G5Ma+anBR47OIEZbAhy2nzxfHxcjbBqyS/tgGrMTJxzxiQAfyAMyeeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=El7UDRVQpMMg9nFO5vjYJuep7JYJNDc11HnZl67GajI=;
+ b=PL7fH1J9TbSjxAVu0/RkE1wTfYeICuJlvyyZBNEOdK7skaKzdJFJMNklg45vdv5mIRqztPsLtC7A4rWBPzSihuEQiXFMFJmtKrSCCEptyiVY94ZyhPFYItUJJ4VBp4u+UJ/sOGpdyCoFJKf+3WtlRK1q9J+a11Acr5idloI6vfQ=
+Received: from AM0PR04MB5443.eurprd04.prod.outlook.com (2603:10a6:208:119::33)
+ by AM0PR04MB6481.eurprd04.prod.outlook.com (2603:10a6:208:171::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
+ 2020 14:39:54 +0000
+Received: from AM0PR04MB5443.eurprd04.prod.outlook.com
+ ([fe80::8cc9:252:1c77:5860]) by AM0PR04MB5443.eurprd04.prod.outlook.com
+ ([fe80::8cc9:252:1c77:5860%2]) with mapi id 15.20.2937.012; Fri, 24 Apr 2020
+ 14:39:54 +0000
+From:   Florinel Iordache <florinel.iordache@nxp.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Florinel Iordache <florinel.iordache@nxp.com>
+Subject: RE: Re: [PATCH net-next v2 6/9] net: phy: add backplane kr driver
+ support
+Thread-Topic: Re: [PATCH net-next v2 6/9] net: phy: add backplane kr driver
+ support
+Thread-Index: AdYaRAr6OuhHlsgtRe2hojICsYdYXA==
+Date:   Fri, 24 Apr 2020 14:39:54 +0000
+Message-ID: <AM0PR04MB5443BCFEC71B6903BE6EFE02FBD00@AM0PR04MB5443.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=florinel.iordache@nxp.com; 
+x-originating-ip: [89.136.167.85]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: af9b0be3-049c-4d2a-0b30-08d7e85d5a92
+x-ms-traffictypediagnostic: AM0PR04MB6481:|AM0PR04MB6481:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB6481EAEBDB4C4E54402B7627FBD00@AM0PR04MB6481.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5443.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(396003)(376002)(136003)(186003)(316002)(6506007)(66946007)(66556008)(66476007)(54906003)(7696005)(66446008)(76116006)(52536014)(71200400001)(5660300002)(64756008)(4326008)(86362001)(7416002)(2906002)(55016002)(26005)(8676002)(9686003)(81156014)(44832011)(478600001)(6916009)(8936002)(33656002);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i01M3m5uAWiFb6AwNyY/37DAKGD+HwRpdCNJTtXXccfrfTo1J4im55z6ia4gxjWiYZhHwsMOFUXUD07Qf9HaQxLISpMGpJjL4NMWKKSshF40PyBRRgAub4l8d6ZVSFHS526awUegupSwnCK2haAHzM2hJFknrJCfOAISTpDv+mMgwCcjaXJzb6MsssgyRk9RNlQDJI77BBcuYnuqWzBciiKVW9Wtu5tSbzKWHh8wxvRbbbxRbxZ5nW+OSUBYcOOzFbG9dMCtW84J0PHefJ/f70bgWitkgoRaGXm8ETNePyWj8UZsX5Oyvh3fYxin7TJpxeySlFWvhTTEPL3c24ISPgcuRM35PHpyCMucLXeP4Sxfvf84xuI/ozKwAgwvjB31C5NDEneKMKoXXdffuyGFTGQsG6HUyB0OyqU20GvCu/PHEadzmj96B531DEecnNrz
+x-ms-exchange-antispam-messagedata: XuLW//yiv7aFp4RLkhA5lzUfW/VZywSgOUUtXoDHbOAbehUCE5oZ7TUMwDWkfi1AK6/zmFb6QbA7fnla9GaJR9z4XpRZSHZ3Qi3MWA/1o07KE5z/CBQ750bLImgZC8ZJZngNn5/NvCw31WmM4hc1bQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af9b0be3-049c-4d2a-0b30-08d7e85d5a92
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 14:39:54.3738
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RhZPaZelauvgQO5zNRDKoid0fIgK9UwyRG5aZUshHDZudKMUikZK08nKi7ZpuJoX0N51JE9No/QrubWzHSZaY2O3AqKiHHfKVhdO13r23vw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6481
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 24. April 2020, 16:02:13 CEST schrieb Corentin Labbe:
+> > +/* Backplane custom logging */
+> > +#define bpdev_fn(fn)                                                 \
+> > +void bpdev_##fn(struct phy_device *phydev, char *fmt, ...)           \
+> > +{                                                                    \
+> > +     struct va_format vaf =3D {                                       =
+ \
+> > +             .fmt =3D fmt,                                            =
+ \
+> > +     };                                                              \
+> > +     va_list args;                                                   \
+> > +     va_start(args, fmt);                                            \
+> > +     vaf.va =3D &args;                                                =
+ \
+> > +     if (!phydev->attached_dev)                                      \
+> > +             dev_##fn(&phydev->mdio.dev, "%pV", &vaf);               \
+> > +     else                                                            \
+> > +             dev_##fn(&phydev->mdio.dev, "%s: %pV",                  \
+> > +                     netdev_name(phydev->attached_dev), &vaf);       \
+> > +     va_end(args);                                                   \
+> > +}
+> > +
+> > +bpdev_fn(err)
+> > +EXPORT_SYMBOL(bpdev_err);
+> > +
+> > +bpdev_fn(warn)
+> > +EXPORT_SYMBOL(bpdev_warn);
+> > +
+> > +bpdev_fn(info)
+> > +EXPORT_SYMBOL(bpdev_info);
+> > +
+> > +bpdev_fn(dbg)
+> > +EXPORT_SYMBOL(bpdev_dbg);
+>=20
+> Didn't i say something about just using phydev_{err|warn|info|dbg}?
+>=20
+>        Andrew
 
-Hi Corentin,
+Hi Andrew,
 
-> This patch had support for the PRNG present in the CE.
-> The output was tested with rngtest without any failure.
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  drivers/crypto/allwinner/Kconfig              |   8 +
->  drivers/crypto/allwinner/sun8i-ce/Makefile    |   1 +
->  .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c |  58 +++++-
->  .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 189 ++++++++++++++++++
->  drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  |  31 +++
->  5 files changed, 286 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> 
-> diff --git a/drivers/crypto/allwinner/Kconfig
-> b/drivers/crypto/allwinner/Kconfig index 93cc67adb1ed..223a5823867c 100644
-> --- a/drivers/crypto/allwinner/Kconfig
-> +++ b/drivers/crypto/allwinner/Kconfig
-> @@ -79,6 +79,14 @@ config CRYPTO_DEV_SUN8I_CE_HASH
->  	help
->  	  Say y to enable support for hash algorithms.
-> 
-> +config CRYPTO_DEV_SUN8I_CE_PRNG
-> +	bool "Support for Allwinner Crypto Engine PRNG"
-> +	depends on CRYPTO_DEV_SUN8I_CE
-> +	select CRYPTO_RNG
-> +	help
-> +	  Select this option if you want to provide kernel-side support for
-> +	  the Pseudo-Random Number Generator found in the Crypto Engine.
-> +
->  config CRYPTO_DEV_SUN8I_SS
->  	tristate "Support for Allwinner Security System cryptographic 
-offloader"
->  	select CRYPTO_SKCIPHER
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/Makefile
-> b/drivers/crypto/allwinner/sun8i-ce/Makefile index
-> d1b1f0e86c79..c0ea81da2c7d 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/Makefile
-> +++ b/drivers/crypto/allwinner/sun8i-ce/Makefile
-> @@ -1,3 +1,4 @@
->  obj-$(CONFIG_CRYPTO_DEV_SUN8I_CE) += sun8i-ce.o
->  sun8i-ce-y += sun8i-ce-core.o sun8i-ce-cipher.o
->  sun8i-ce-$(CONFIG_CRYPTO_DEV_SUN8I_CE_HASH) += sun8i-ce-hash.o
-> +sun8i-ce-$(CONFIG_CRYPTO_DEV_SUN8I_CE_PRNG) += sun8i-ce-prng.o
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c index
-> 8c94ffe1efd0..23b9fc67d7ea 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-> @@ -22,6 +22,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/reset.h>
-> +#include <crypto/internal/rng.h>
->  #include <crypto/internal/skcipher.h>
-> 
->  #include "sun8i-ce.h"
-> @@ -45,6 +46,7 @@ static const struct ce_variant ce_h3_variant = {
->  		{ "mod", 50000000, 0 },
->  		},
->  	.esr = ESR_H3,
-> +	.prng = CE_ALG_PRNG,
->  };
-> 
->  static const struct ce_variant ce_h5_variant = {
-> @@ -60,6 +62,7 @@ static const struct ce_variant ce_h5_variant = {
->  		{ "mod", 300000000, 0 },
->  		},
->  	.esr = ESR_H5,
-> +	.prng = CE_ALG_PRNG,
->  };
-> 
->  static const struct ce_variant ce_h6_variant = {
-> @@ -72,12 +75,14 @@ static const struct ce_variant ce_h6_variant = {
->  	},
->  	.cipher_t_dlen_in_bytes = true,
->  	.hash_t_dlen_in_bits = true,
-> +	.prng_t_dlen_in_bytes = true,
->  	.ce_clks = {
->  		{ "bus", 0, 200000000 },
->  		{ "mod", 300000000, 0 },
->  		{ "ram", 0, 400000000 },
->  		},
->  	.esr = ESR_H6,
-> +	.prng = CE_ALG_PRNG_V2,
->  };
-> 
->  static const struct ce_variant ce_a64_variant = {
-> @@ -93,6 +98,7 @@ static const struct ce_variant ce_a64_variant = {
->  		{ "mod", 300000000, 0 },
->  		},
->  	.esr = ESR_A64,
-> +	.prng = CE_ALG_PRNG,
->  };
-> 
->  static const struct ce_variant ce_r40_variant = {
-> @@ -108,15 +114,17 @@ static const struct ce_variant ce_r40_variant = {
->  		{ "mod", 300000000, 0 },
->  		},
->  	.esr = ESR_R40,
-> +	.prng = CE_ALG_PRNG,
->  };
-> 
->  /*
->   * sun8i_ce_get_engine_number() get the next channel slot
->   * This is a simple round-robin way of getting the next channel
-> + * The flow 3 is reserve for xRNG operations
->   */
->  int sun8i_ce_get_engine_number(struct sun8i_ce_dev *ce)
->  {
-> -	return atomic_inc_return(&ce->flow) % MAXFLOW;
-> +	return atomic_inc_return(&ce->flow) % (MAXFLOW - 1);
->  }
-> 
->  int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
-> @@ -130,6 +138,7 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow,
-> const char *name) #endif
-> 
->  	mutex_lock(&ce->mlock);
-> +	mutex_init(&ce->rnglock);
-> 
->  	v = readl(ce->base + CE_ICR);
->  	v |= 1 << flow;
-> @@ -516,6 +525,25 @@ static struct sun8i_ce_alg_template ce_algs[] = {
->  	}
->  },
->  #endif
-> +#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_PRNG
-> +{
-> +	.type = CRYPTO_ALG_TYPE_RNG,
-> +	.alg.rng = {
-> +		.base = {
-> +			.cra_name		= "stdrng",
-> +			.cra_driver_name	= "sun8i-ce-prng",
-> +			.cra_priority		= 300,
-> +			.cra_ctxsize		= sizeof(struct 
-sun8i_ce_rng_tfm_ctx),
-> +			.cra_module		= THIS_MODULE,
-> +			.cra_init		= sun8i_ce_prng_init,
-> +			.cra_exit		= sun8i_ce_prng_exit,
-> +		},
-> +		.generate               = sun8i_ce_prng_generate,
-> +		.seed                   = sun8i_ce_prng_seed,
-> +		.seedsize               = PRNG_SEED_SIZE,
-> +	}
-> +},
-> +#endif
->  };
-> 
->  #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
-> @@ -543,6 +571,12 @@ static int sun8i_ce_dbgfs_read(struct seq_file *seq,
-> void *v) ce_algs[i].alg.hash.halg.base.cra_name,
->  				   ce_algs[i].stat_req, ce_algs[i].stat_fb);
->  			break;
-> +		case CRYPTO_ALG_TYPE_RNG:
-> +			seq_printf(seq, "%s %s %lu %lu\n",
-> +				   ce_algs[i].alg.rng.base.cra_driver_name,
-> +				   ce_algs[i].alg.rng.base.cra_name,
-> +				   ce_algs[i].stat_req, 
-ce_algs[i].stat_bytes);
-> +			break;
->  		}
->  	}
->  	return 0;
-> @@ -777,6 +811,23 @@ static int sun8i_ce_register_algs(struct sun8i_ce_dev
-> *ce) return err;
->  			}
->  			break;
-> +		case CRYPTO_ALG_TYPE_RNG:
-> +			if (ce->variant->prng == CE_ID_NOTSUPP) {
-> +				dev_info(ce->dev,
-> +					 "DEBUG: Algo of %s not supported\n",
-> +					 ce_algs[i].alg.rng.base.cra_name);
-> +				ce_algs[i].ce = NULL;
-> +				break;
-> +			}
-> +			dev_info(ce->dev, "Register %s\n",
-> +				 ce_algs[i].alg.rng.base.cra_name);
-> +			err = crypto_register_rng(&ce_algs[i].alg.rng);
-> +			if (err) {
-> +				dev_err(ce->dev, "Fail to register %s\n",
-> +					ce_algs[i].alg.rng.base.cra_name);
-> +				ce_algs[i].ce = NULL;
-> +			}
-> +			break;
->  		default:
->  			ce_algs[i].ce = NULL;
->  			dev_err(ce->dev, "ERROR: tried to register an unknown 
-algo\n");
-> @@ -803,6 +854,11 @@ static void sun8i_ce_unregister_algs(struct
-> sun8i_ce_dev *ce) ce_algs[i].alg.hash.halg.base.cra_name);
->  			crypto_unregister_ahash(&ce_algs[i].alg.hash);
->  			break;
-> +		case CRYPTO_ALG_TYPE_RNG:
-> +			dev_info(ce->dev, "Unregister %d %s\n", i,
-> +				 ce_algs[i].alg.rng.base.cra_name);
-> +			crypto_unregister_rng(&ce_algs[i].alg.rng);
-> +			break;
->  		}
->  	}
->  }
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c new file mode 100644
-> index 000000000000..8f82bfc2c54c
-> --- /dev/null
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> @@ -0,0 +1,189 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * sun8i-ce-prng.c - hardware cryptographic offloader for
-> + * Allwinner H3/A64/H5/H2+/H6/R40 SoC
-> + *
-> + * Copyright (C) 2015-2020 Corentin Labbe <clabbe@baylibre.com>
-> + *
-> + * This file handle the PRNG
-> + *
-> + * You could find a link for the datasheet in
-> Documentation/arm/sunxi/README + */
-> +#include "sun8i-ce.h"
-> +#include <linux/pm_runtime.h>
-> +#include <crypto/internal/rng.h>
-> +
-> +int sun8i_ce_prng_init(struct crypto_tfm *tfm)
-> +{
-> +	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
-> +
-> +	memset(ctx, 0, sizeof(struct sun8i_ce_rng_tfm_ctx));
-> +	return 0;
-> +}
-> +
-> +void sun8i_ce_prng_exit(struct crypto_tfm *tfm)
-> +{
-> +	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
-> +
-> +	kfree(ctx->seed);
-> +	ctx->seed = NULL;
-> +	ctx->slen = 0;
-> +}
-> +
-> +int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed,
-> +		       unsigned int slen)
-> +{
-> +	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_rng_ctx(tfm);
-> +
-> +	if (ctx->seed && ctx->slen != slen) {
-> +		ctx->slen = 0;
-> +		kfree(ctx->seed);
+I used this custom logging in order to be able to add any kind of useful in=
+formation we might need to all prints (err/warn/info/dbg).
+For example all these bpdev_ functions are equivalent with phydev_ but only=
+ in the case when there is no attached device: phydev->attached_dev =3D=3D =
+NULL.
+Otherwise, if there is a device attached, then we also want to add its name=
+ to all these prints in order to know to which device the information refer=
+s to.
+For example in this case the print looks like this:
+[   50.853515] backplane_qoriq 8c13000:00: eth1: 10gbase-kr link trained, T=
+x equalization: C(-1)=3D0x0, C(0)=3D0x29, C(+1)=3D0x5
+This is very useful because we can see very easy to which interface the inf=
+ormation printed is related to: in this case the link was trained for inter=
+face: eth1
+This information (the name of attached device: eth1) is not printed by phyd=
+ev_ functions.
+I'm sorry I have not explained all this earlier, the first time when you as=
+ked about it.=20
 
-kzfree?
-
-> +		ctx->seed = NULL;
-> +	}
-> +	if (!ctx->seed)
-> +		ctx->seed = kmalloc(slen, GFP_KERNEL | GFP_DMA);
-> +	if (!ctx->seed)
-> +		return -ENOMEM;
-> +
-> +	memcpy(ctx->seed, seed, slen);
-> +	ctx->slen = slen;
-> +
-> +	return 0;
-> +}
-> +
-> +int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
-> +			   unsigned int slen, u8 *dst, unsigned int dlen)
-> +{
-> +	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_rng_ctx(tfm);
-> +	struct rng_alg *alg = crypto_rng_alg(tfm);
-> +	struct sun8i_ce_alg_template *algt;
-> +	struct sun8i_ce_dev *ce;
-> +	dma_addr_t dma_iv, dma_dst;
-> +	int err = 0;
-> +	int flow = 3;
-> +	unsigned int todo;
-> +	struct sun8i_ce_flow *chan;
-> +	struct ce_task *cet;
-> +	u32 common, sym;
-> +	dma_addr_t dma_next, dma_key;
-> +	void *next, *key;
-> +	void *d;
-> +
-> +	algt = container_of(alg, struct sun8i_ce_alg_template, alg.rng);
-> +	ce = algt->ce;
-> +
-> +	if (ctx->slen == 0) {
-> +		dev_err(ce->dev, "not seeded\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	next = kzalloc(256, GFP_KERNEL | GFP_DMA);
-> +	if (!next)
-> +		return -ENOMEM;
-> +
-> +	key = kzalloc(256, GFP_KERNEL | GFP_DMA);
-> +	if (!key)
-> +		return -ENOMEM;
-
-You leak memory here.
-
-> +
-> +	/* we want dlen + seedsize rounded up to a multiple of PRNG_DATA_SIZE 
-*/
-> +	todo = dlen + ctx->slen + PRNG_DATA_SIZE * 2;
-> +	todo -= todo % PRNG_DATA_SIZE;
-> +
-> +	d = kzalloc(todo + 20, GFP_KERNEL | GFP_DMA);
-> +	if (!d)
-> +		return -ENOMEM;
-> +
-> +	dev_dbg(ce->dev, "%s PRNG slen=%u dlen=%u todo=%u multi=%u\n", 
-__func__,
-> +		slen, dlen, todo, todo / PRNG_DATA_SIZE);
-> +
-> +	if (ctx->slen == 0) {
-> +		dev_err(ce->dev, "not seeded\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +#ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
-> +	algt->stat_req++;
-> +	algt->stat_bytes += todo;
-> +#endif
-> +
-> +	dma_iv = dma_map_single(ce->dev, ctx->seed, ctx->slen, DMA_TO_DEVICE);
-> +	if (dma_mapping_error(ce->dev, dma_iv)) {
-> +		dev_err(ce->dev, "Cannot DMA MAP IV\n");
-> +		return -EFAULT;
-> +	}
-> +
-> +	dma_dst = dma_map_single(ce->dev, d, todo, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(ce->dev, dma_dst)) {
-> +		dev_err(ce->dev, "Cannot DMA MAP DST\n");
-> +		err = -EFAULT;
-> +		goto err_iv;
-> +	}
-> +
-> +	dma_next = dma_map_single(ce->dev, next, 256, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(ce->dev, dma_next)) {
-> +		dev_err(ce->dev, "Cannot DMA MAP NEXT\n");
-> +		err = -EFAULT;
-> +		goto err_iv;
-> +	}
-> +
-> +	dma_key = dma_map_single(ce->dev, key, 256, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(ce->dev, dma_key)) {
-> +		dev_err(ce->dev, "Cannot DMA MAP NEXT\n");
-> +		err = -EFAULT;
-> +		goto err_iv;
-> +	}
-> +
-> +	err = pm_runtime_get_sync(ce->dev);
-> +	if (err < 0)
-> +		goto err_pm;
-> +
-> +	mutex_lock(&ce->rnglock);
-> +	chan = &ce->chanlist[flow];
-> +
-> +	cet = &chan->tl[0];
-> +	memset(cet, 0, sizeof(struct ce_task));
-> +
-> +	cet->t_id = cpu_to_le32(flow);
-> +	common = ce->variant->prng | CE_COMM_INT;
-> +	cet->t_common_ctl = cpu_to_le32(common);
-> +
-> +	/* recent CE (H6) need length in bytes, in word otherwise */
-> +	if (ce->variant->prng_t_dlen_in_bytes)
-> +		cet->t_dlen = cpu_to_le32(todo);
-> +	else
-> +		cet->t_dlen = cpu_to_le32(todo / 4);
-> +
-> +	sym = PRNG_LD;
-> +	cet->t_sym_ctl = cpu_to_le32(sym);
-> +	cet->t_asym_ctl = 0;
-> +
-> +	cet->t_key = cpu_to_le32(dma_key);
-> +	cet->t_key = cpu_to_le32(dma_iv);
-> +	cet->t_iv = cpu_to_le32(dma_iv);
-> +	cet->t_ctr = cpu_to_le32(dma_next);
-> +
-> +	cet->t_dst[0].addr = cpu_to_le32(dma_dst);
-> +	cet->t_dst[0].len = cpu_to_le32(todo / 4);
-> +	ce->chanlist[flow].timeout = 2000;
-> +
-> +	err = sun8i_ce_run_task(ce, 3, "PRNG");
-> +	mutex_unlock(&ce->rnglock);
-> +
-> +	pm_runtime_put(ce->dev);
-> +
-> +	dma_unmap_single(ce->dev, dma_key, 256, DMA_FROM_DEVICE);
-> +	dma_unmap_single(ce->dev, dma_next, 256, DMA_FROM_DEVICE);
-> +err_pm:
-> +	dma_unmap_single(ce->dev, dma_dst, todo, DMA_FROM_DEVICE);
-> +err_iv:
-> +	dma_unmap_single(ce->dev, dma_iv, ctx->slen, DMA_TO_DEVICE);
-> +
-> +	if (!err) {
-> +		memcpy(dst, d, dlen);
-> +		memcpy(ctx->seed, d + dlen, ctx->slen);
-> +	}
-> +	kfree(next);
-> +	kfree(key);
-> +	kfree(d);
-
-Shouldn't they all be kzfree?
-
-> +	return err;
-> +}
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h index
-> ef2f1e5aa23a..2ef0c3814367 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h
-> @@ -14,6 +14,7 @@
->  #include <linux/crypto.h>
->  #include <crypto/internal/hash.h>
->  #include <crypto/md5.h>
-> +#include <crypto/rng.h>
->  #include <crypto/sha.h>
-> 
->  /* CE Registers */
-> @@ -54,6 +55,8 @@
->  #define CE_ALG_SHA256           19
->  #define CE_ALG_SHA384           20
->  #define CE_ALG_SHA512           21
-> +#define CE_ALG_PRNG		49
-> +#define CE_ALG_PRNG_V2		0x1d
-> 
->  /* Used in ce_variant */
->  #define CE_ID_NOTSUPP		0xFF
-> @@ -88,6 +91,10 @@
->  #define ESR_H5	3
->  #define ESR_H6	4
-> 
-> +#define PRNG_DATA_SIZE (160 / 8)
-> +#define PRNG_SEED_SIZE DIV_ROUND_UP(175, 8)
-> +#define PRNG_LD BIT(17)
-> +
->  #define CE_DIE_ID_SHIFT	16
->  #define CE_DIE_ID_MASK	0x07
-> 
-> @@ -120,8 +127,11 @@ struct ce_clock {
->   *				bytes or words
->   * @hash_t_dlen_in_bytes:	Does the request size for hash is in
->   *				bits or words
-> + * @prng_t_dlen_in_bytes:	Does the request size for PRNG is in
-> + *				bytes or words
->   * @ce_clks:	list of clocks needed by this variant
->   * @esr:	The type of error register
-> + * @prng:	The CE_ALG_XXX value for the PRNG
->   */
->  struct ce_variant {
->  	char alg_cipher[CE_ID_CIPHER_MAX];
-> @@ -129,8 +139,10 @@ struct ce_variant {
->  	u32 op_mode[CE_ID_OP_MAX];
->  	bool cipher_t_dlen_in_bytes;
->  	bool hash_t_dlen_in_bits;
-> +	bool prng_t_dlen_in_bytes;
->  	struct ce_clock ce_clks[CE_MAX_CLOCKS];
->  	int esr;
-> +	char prng;
->  };
-> 
->  struct sginfo {
-> @@ -185,6 +197,7 @@ struct sun8i_ce_flow {
->   * @reset:	pointer to reset controller
->   * @dev:	the platform device
->   * @mlock:	Control access to device registers
-> + * @rnglock:	Control access to the RNG (dedicated channel 3)
->   * @chanlist:	array of all flow
->   * @flow:	flow to use in next request
->   * @variant:	pointer to variant specific data
-> @@ -197,6 +210,7 @@ struct sun8i_ce_dev {
->  	struct reset_control *reset;
->  	struct device *dev;
->  	struct mutex mlock;
-> +	struct mutex rnglock;
->  	struct sun8i_ce_flow *chanlist;
->  	atomic_t flow;
->  	const struct ce_variant *variant;
-> @@ -264,6 +278,16 @@ struct sun8i_ce_hash_reqctx {
->  	int flow;
->  };
-> 
-> +/*
-> + * struct sun8i_ce_prng_ctx - context for PRNG TFM
-> + * @seed:	The seed to use
-> + * @slen:	The size of the seed
-> + */
-> +struct sun8i_ce_rng_tfm_ctx {
-> +	void *seed;
-> +	unsigned int slen;
-> +};
-> +
->  /*
->   * struct sun8i_ce_alg_template - crypto_alg template
->   * @type:		the CRYPTO_ALG_TYPE for this template
-> @@ -284,6 +308,7 @@ struct sun8i_ce_alg_template {
->  	union {
->  		struct skcipher_alg skcipher;
->  		struct ahash_alg hash;
-> +		struct rng_alg rng;
->  	} alg;
->  #ifdef CONFIG_CRYPTO_DEV_SUN8I_CE_DEBUG
->  	unsigned long stat_req;
-> @@ -318,3 +343,9 @@ int sun8i_ce_hash_update(struct ahash_request *areq);
->  int sun8i_ce_hash_finup(struct ahash_request *areq);
->  int sun8i_ce_hash_digest(struct ahash_request *areq);
->  int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq);
-> +
-> +int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
-> +			   unsigned int slen, u8 *dst, unsigned int dlen);
-> +int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed, unsigned int
-> slen); +void sun8i_ce_prng_exit(struct crypto_tfm *tfm);
-> +int sun8i_ce_prng_init(struct crypto_tfm *tfm);
-
-
-Ciao
-Stephan
--- 
-atsec information security GmbH, Steinstraße 70, 81667 München, Germany
-Phone:     +49 89 442 49 830 - Fax:       +49 89 442 49 831
-Mobile DE: +49 172 216 55 78 - Mobile US: +1 737 346 1613
-HRB: 129439 (Amtsgericht München)
-GF: Salvatore la Pietra, Staffan Persson, Manuela Gambarotto
-atsec it security news blog - atsec-information-security.blogspot.com
-
-
-
+Florin.
