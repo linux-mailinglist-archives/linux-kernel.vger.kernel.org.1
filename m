@@ -2,150 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3143B1B70D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97141B70FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgDXJ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 05:29:36 -0400
-Received: from mx.socionext.com ([202.248.49.38]:38703 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbgDXJ3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:29:36 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 24 Apr 2020 18:29:34 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id A5B51180085;
-        Fri, 24 Apr 2020 18:29:34 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 24 Apr 2020 18:29:34 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 15DD91A12D0;
-        Fri, 24 Apr 2020 18:29:34 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v2] dt-bindings: spi: Convert UniPhier SPI controller to json-schema
-Date:   Fri, 24 Apr 2020 18:29:22 +0900
-Message-Id: <1587720562-15293-1-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726834AbgDXJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 05:34:09 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52328 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726774AbgDXJeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 05:34:08 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03O9J4d2121993;
+        Fri, 24 Apr 2020 09:32:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Z5fm0JlUDRMu7agDoEFMG3owVVjV6URZ8EE7qnBJ2eE=;
+ b=epZAmMF6V4D2FskrkwWkcfWnF2ozrCC+JlTMQQBUKMnP9jge7KZ9xT4bNKD3OE4QDvYy
+ OodamDtaASiWnrZ84mAFn8F4hQl9FLTpNRMSBQQoZIdUzg1Kkcfl0tPkW+88P8j1KkID
+ KhSTm2nob601CeS3jK+gR1q60DzznBU9jm6jL5YLHH9s53++yiQH2fstbAcbttM+gN+a
+ ExrGA5jpPrnHwI+xceh7U3UcaDP0vzYHI+FkzpWmbIwz4TND0McbIqzvsFSsEkmJW1eN
+ OOtvsaBlVXvAqq9LYZAVYNdI4woKuopiQrvOPHmopNkTcv20vI/nPntdH9moc6qJJeJa rA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30k7qe5vgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 09:32:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03O9ChBP070984;
+        Fri, 24 Apr 2020 09:30:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30gbbpncp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 09:30:40 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03O9UceG027159;
+        Fri, 24 Apr 2020 09:30:38 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Apr 2020 02:30:38 -0700
+Date:   Fri, 24 Apr 2020 12:30:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: fnic: Use kmalloc instead of vmalloc for a small
+ memory allocation
+Message-ID: <20200424093030.GO2659@kadam>
+References: <20200423204620.26395-1-christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423204620.26395-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 mlxscore=0 clxscore=1011 malwarescore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert UniPhier SPI controller binding to DT schema format.
+On Thu, Apr 23, 2020 at 10:46:20PM +0200, Christophe JAILLET wrote:
+> 'struct fc_trace_flag_type' is just a few bytes long. There is no need
+> to allocate such a structure with vmalloc. Using kmalloc instead.
+> 
+> While at it, axe a useless test when freeing the memory.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/scsi/fnic/fnic_debugfs.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/fnic/fnic_debugfs.c b/drivers/scsi/fnic/fnic_debugfs.c
+> index 13f7d88d6e57..8d6ce3470594 100644
+> --- a/drivers/scsi/fnic/fnic_debugfs.c
+> +++ b/drivers/scsi/fnic/fnic_debugfs.c
+> @@ -58,8 +58,7 @@ int fnic_debugfs_init(void)
+>  						fnic_trace_debugfs_root);
+>  
+>  	/* Allocate memory to structure */
+> -	fc_trc_flag = (struct fc_trace_flag_type *)
+> -		vmalloc(sizeof(struct fc_trace_flag_type));
+> +	fc_trc_flag = kmalloc(sizeof(*fc_trc_flag), GFP_KERNEL);
+>  
+>  	if (fc_trc_flag) {
 
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
+I hate success handling... This test should be reversed so that we do
+error handling. It should return -ENOMEM instead of 0 on allocation
+failure, otherwise it leads to a NULL dereference down the road.
+Although, of course in current kernel small size allocations like this
+never fail in real life.
 
-Changes since v1:
-- Put "#address-cells" and "#size-cells" into the required list
+The other thing I wonder is if we should just replace the vmalloc()
+implementation with kvmalloc().  IOW rename vmalloc() to __vmalloc() and
+"#define vmalloc kvmalloc" (not literally).  That was allocations of
+less than a page would always be done with kmalloc().
 
- .../bindings/spi/socionext,uniphier-spi.yaml       | 57 ++++++++++++++++++++++
- .../devicetree/bindings/spi/spi-uniphier.txt       | 28 -----------
- 2 files changed, 57 insertions(+), 28 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spi/socionext,uniphier-spi.yaml
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-uniphier.txt
-
-diff --git a/Documentation/devicetree/bindings/spi/socionext,uniphier-spi.yaml b/Documentation/devicetree/bindings/spi/socionext,uniphier-spi.yaml
-new file mode 100644
-index 0000000..c254092
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/socionext,uniphier-spi.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/socionext,uniphier-spi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Socionext UniPhier SPI controller
-+
-+description: |
-+  UniPhier SoCs have SCSSI which supports SPI single channel.
-+
-+maintainers:
-+  - Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-+  - Keiji Hayashibara <hayashibara.keiji@socionext.com>
-+
-+allOf:
-+  - $ref: spi-controller.yaml#
-+
-+properties:
-+  "#address-cells": true
-+  "#size-cells": true
-+
-+  compatible:
-+    const: socionext,uniphier-scssi
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - resets
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+examples:
-+  - |
-+    spi0: spi@54006000 {
-+        compatible = "socionext,uniphier-scssi";
-+        reg = <0x54006000 0x100>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <0 39 4>;
-+        clocks = <&peri_clk 11>;
-+        resets = <&peri_rst 11>;
-+    };
-diff --git a/Documentation/devicetree/bindings/spi/spi-uniphier.txt b/Documentation/devicetree/bindings/spi/spi-uniphier.txt
-deleted file mode 100644
-index e120157..0000000
---- a/Documentation/devicetree/bindings/spi/spi-uniphier.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--Socionext UniPhier SPI controller driver
--
--UniPhier SoCs have SCSSI which supports SPI single channel.
--
--Required properties:
-- - compatible: should be "socionext,uniphier-scssi"
-- - reg: address and length of the spi master registers
-- - #address-cells: must be <1>, see spi-bus.txt
-- - #size-cells: must be <0>, see spi-bus.txt
-- - interrupts: a single interrupt specifier
-- - pinctrl-names: should be "default"
-- - pinctrl-0: pin control state for the default mode
-- - clocks: a phandle to the clock for the device
-- - resets: a phandle to the reset control for the device
--
--Example:
--
--spi0: spi@54006000 {
--	compatible = "socionext,uniphier-scssi";
--	reg = <0x54006000 0x100>;
--	#address-cells = <1>;
--	#size-cells = <0>;
--	interrupts = <0 39 4>;
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_spi0>;
--	clocks = <&peri_clk 11>;
--	resets = <&peri_rst 11>;
--};
--- 
-2.7.4
+regards,
+dan carpenter
 
