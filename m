@@ -2,423 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5EC1B6DEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174C51B6DD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgDXGOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 02:14:20 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:35758 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgDXGOT (ORCPT
+        id S1726317AbgDXGNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 02:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725889AbgDXGNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 02:14:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03O6Dfre037510;
-        Fri, 24 Apr 2020 01:13:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587708821;
-        bh=j8PQmpQJKpFXOvIlwGEAgESygofkuW/6gQ8hJMj0h1g=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fIqaDoXOX8D2El5s4iYwlKieIGhwfVe1aZMLe/6cKEHeqs0e4rTB3oOEo3bX50rPu
-         qvAcXcaombqQqxlKq/jDUTk5cS+/8G1VMm0yNFQQZIvhwvV+EajjWj71LUBK16LQBK
-         WmI3r4s1A44HbavHJELTouDZt6LUXou8tVwu7MHQ=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03O6Dfo9056942;
-        Fri, 24 Apr 2020 01:13:41 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 24
- Apr 2020 01:13:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 24 Apr 2020 01:13:40 -0500
-Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03O6DZ6T053821;
-        Fri, 24 Apr 2020 01:13:35 -0500
-Subject: Re: [PATCH v9 5/8] PCI: endpoint: Add support to handle multiple base
- for mapping outbound memory
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>
-CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-References: <1587666159-6035-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1587666159-6035-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <99ff8fb8-101c-a548-7d6e-07c3a31ced2c@ti.com>
-Date:   Fri, 24 Apr 2020 11:43:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1587666159-6035-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 24 Apr 2020 02:13:49 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E39C09B045
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 23:13:49 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id h2so6830131pls.16
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 23:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=hEcvs1wHnncZBwVXSE4QsPgDAjpnjLGcoblNPYaX51o=;
+        b=Rf7iTk787JhMOMOlutiO0vfDV8dULFEZYUlESd+B5wl7Qpy1mig60Y7025g5aL2bgc
+         +TaV2w0KGZ7y7v2/iwkAHIcVgEonc5JHyuAjqld15XpTLIx2nXMzrHX4Sq1dx4TnY1rT
+         W1c6Y6LmsSyzzzlfWa5B3EAlGnoplCna9G+V5a9iV4Y5BxRNtYG2ZhmKYGacN1PFbaQ+
+         Gl3/ixcuG1Tn2SVtXHpvN/QFnrdzzdg+O46Wiw4U1v6DfJ3eGDDKiS+8yE4qYtmPnKql
+         wBBMaR3wVptkS9q4aPS9vVZPRWy6RiyIYwzfA7q+esvZrrzzcjZ5ZLDJjZ9L1bvvkGpC
+         4/ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=hEcvs1wHnncZBwVXSE4QsPgDAjpnjLGcoblNPYaX51o=;
+        b=OXSbCp+VqbmvEAyJ+CAkxov9T3Tkk8eg44gCcrbZ4OGi3tKDvoss4nAckhmY99C4H/
+         5Limix8gHkMwZ5lST1jMUH0NXtkv3dZtCDOnuKdFVOO70rjOLNdOW4AGJh1VW8UK4u2N
+         E1zkviSzdfKZhKQ2IIVIlE6ivDVsUuR7G4D7XzfcpZYW9K9t4AdoZP54Tr7SY4BPJdDz
+         k7DSHnPTyIu/7MQZeukf4wwfZKMu2cWP+LpVwesi28khZRDC5+IRcVEWqfjcDQYe53LX
+         5rvwE1KrRvTdQlWaXsvhHJQ1JvG2AwNyb8r0ELd8VUJA0y+AI6tpyehfXwrYmC/Qk4bn
+         8Xew==
+X-Gm-Message-State: AGi0PualytyeCFfcgUcnAzvkhuHAXsGzkit2M2tRZrJ/1If012A0S0/Q
+        jgvnWtt3ThZZF912uE/z4jnUsJDSMdvvoQ==
+X-Google-Smtp-Source: APiQypLtHeSKKyehyWahOY/xAr2mXJ3uKHkQOf+NKzs6+Wdf41rMtAn1pJHtTD/fGBxATkoIkfiKdvyxo70bVw==
+X-Received: by 2002:a17:90b:110d:: with SMTP id gi13mr4547288pjb.131.1587708828845;
+ Thu, 23 Apr 2020 23:13:48 -0700 (PDT)
+Date:   Thu, 23 Apr 2020 23:13:37 -0700
+Message-Id: <20200424061342.212535-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH v7 0/5] KUnit-KASAN Integration
+From:   David Gow <davidgow@google.com>
+To:     trishalfonso@google.com, brendanhiggins@google.com,
+        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+This patchset contains everything needed to integrate KASAN and KUnit.
 
-On 4/23/2020 11:52 PM, Lad Prabhakar wrote:
-> R-Car PCIe controller has support to map multiple memory regions for
-> mapping the outbound memory in local system also the controller limits
-> single allocation for each region (that is, once a chunk is used from the
-> region it cannot be used to allocate a new one). This features inspires to
-> add support for handling multiple memory bases in endpoint framework.
-> 
-> With this patch pci_epc_mem_init() initializes address space for endpoint
-> controller which support single window and pci_epc_multi_mem_init()
-> initializes multiple windows supported by endpoint controller.
+KUnit will be able to:
+(1) Fail tests when an unexpected KASAN error occurs
+(2) Pass tests when an expected KASAN error occurs
 
-Have a couple of clean-up comments. See below.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  .../pci/controller/dwc/pcie-designware-ep.c   |  16 +-
->  drivers/pci/endpoint/pci-epc-mem.c            | 199 ++++++++++++------
->  include/linux/pci-epc.h                       |  33 ++-
->  3 files changed, 170 insertions(+), 78 deletions(-)
-> 
-.
-.
-<snip>
-.
-.
-> diff --git a/drivers/pci/endpoint/pci-epc-mem.c b/drivers/pci/endpoint/pci-epc-mem.c
-> index cdd1d3821249..a3466da2a16f 100644
-> --- a/drivers/pci/endpoint/pci-epc-mem.c
-> +++ b/drivers/pci/endpoint/pci-epc-mem.c
-> @@ -23,7 +23,7 @@
->  static int pci_epc_mem_get_order(struct pci_epc_mem *mem, size_t size)
->  {
->  	int order;
-> -	unsigned int page_shift = ilog2(mem->page_size);
-> +	unsigned int page_shift = ilog2(mem->window.page_size);
->  
->  	size--;
->  	size >>= page_shift;
-> @@ -36,67 +36,95 @@ static int pci_epc_mem_get_order(struct pci_epc_mem *mem, size_t size)
->  }
->  
->  /**
-> - * __pci_epc_mem_init() - initialize the pci_epc_mem structure
-> + * pci_epc_multi_mem_init() - initialize the pci_epc_mem structure
->   * @epc: the EPC device that invoked pci_epc_mem_init
-> - * @phys_base: the physical address of the base
-> - * @size: the size of the address space
-> - * @page_size: size of each page
-> + * @windows: pointer to windows supported by the device
-> + * @num_windows: number of windows device supports
->   *
->   * Invoke to initialize the pci_epc_mem structure used by the
->   * endpoint functions to allocate mapped PCI address.
->   */
-> -int __pci_epc_mem_init(struct pci_epc *epc, phys_addr_t phys_base, size_t size,
-> -		       size_t page_size)
-> +int pci_epc_multi_mem_init(struct pci_epc *epc,
-> +			   struct pci_epc_mem_window *windows,
-> +			   unsigned int num_windows)
->  {
-> -	int ret;
-> -	struct pci_epc_mem *mem;
-> -	unsigned long *bitmap;
-> +	struct pci_epc_mem *mem = NULL;
-> +	unsigned long *bitmap = NULL;
->  	unsigned int page_shift;
-> -	int pages;
-> +	size_t page_size;
->  	int bitmap_size;
-> +	int pages;
-> +	int ret;
-> +	int i;
->  
-> -	if (page_size < PAGE_SIZE)
-> -		page_size = PAGE_SIZE;
-> +	epc->num_windows = 0;
->  
-> -	page_shift = ilog2(page_size);
-> -	pages = size >> page_shift;
-> -	bitmap_size = BITS_TO_LONGS(pages) * sizeof(long);
-> +	if (!windows || !num_windows)
-> +		return -EINVAL;
->  
-> -	mem = kzalloc(sizeof(*mem), GFP_KERNEL);
-> -	if (!mem) {
-> -		ret = -ENOMEM;
-> -		goto err;
-> -	}
-> +	epc->windows = kcalloc(num_windows, sizeof(*mem), GFP_KERNEL);
-> +	if (!epc->windows)
-> +		return -ENOMEM;
->  
-> -	bitmap = kzalloc(bitmap_size, GFP_KERNEL);
-> -	if (!bitmap) {
-> -		ret = -ENOMEM;
-> -		goto err_mem;
-> -	}
-> +	for (i = 0; i < num_windows; i++) {
-> +		page_size = windows[i].page_size;
-> +		if (page_size < PAGE_SIZE)
-> +			page_size = PAGE_SIZE;
-> +		page_shift = ilog2(page_size);
-> +		pages = windows[i].size >> page_shift;
-> +		bitmap_size = BITS_TO_LONGS(pages) * sizeof(long);
->  
-> -	mem->bitmap = bitmap;
-> -	mem->phys_base = phys_base;
-> -	mem->page_size = page_size;
-> -	mem->pages = pages;
-> -	mem->size = size;
-> -	mutex_init(&mem->lock);
-> +		mem = kzalloc(sizeof(*mem), GFP_KERNEL);
-> +		if (!mem) {
-> +			ret = -ENOMEM;
-> +			i--;
-> +			goto err_mem;
-> +		}
->  
-> -	epc->mem = mem;
-> +		bitmap = kzalloc(bitmap_size, GFP_KERNEL);
-> +		if (!bitmap) {
-> +			ret = -ENOMEM;
-> +			kfree(mem);
-> +			i--;
-> +			goto err_mem;
-> +		}
-> +
-> +		mem->window.phys_base = windows[i].phys_base;
-> +		mem->window.size = windows[i].size;
-> +		mem->window.page_size = page_size;
-> +		mem->bitmap = bitmap;
-> +		mem->pages = pages;
-> +		mutex_init(&mem->lock);
-> +		epc->windows[i] = mem;
-> +	}
-> +
-> +	epc->mem = epc->windows[0];
+Convert KASAN tests to KUnit with the exception of copy_user_test
+because KUnit is unable to test those.
 
-"mem" member of EPC looks unnecessary since that value is available at
-epc->windows[0].
-> +	epc->num_windows = num_windows;
->  
->  	return 0;
->  
->  err_mem:
-> -	kfree(mem);
-> +	for (; i >= 0; i--) {
-> +		mem = epc->windows[i];
-> +		kfree(mem->bitmap);
-> +		kfree(mem);
-> +	}
-> +	kfree(epc->windows);
->  
-> -err:
-> -return ret;
-> +	return ret;
->  }
-> -EXPORT_SYMBOL_GPL(__pci_epc_mem_init);
-> +EXPORT_SYMBOL_GPL(pci_epc_multi_mem_init);
->  
->  int pci_epc_mem_init(struct pci_epc *epc, phys_addr_t base,
->  		     size_t size, size_t page_size)
->  {
-> -	return __pci_epc_mem_init(epc, base, size, page_size);
-> +	struct pci_epc_mem_window mem_window;
-> +
-> +	mem_window.phys_base = base;
-> +	mem_window.size = size;
-> +	mem_window.page_size = page_size;
-> +
-> +	return pci_epc_multi_mem_init(epc, &mem_window, 1);
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_mem_init);
->  
-> @@ -109,11 +137,22 @@ EXPORT_SYMBOL_GPL(pci_epc_mem_init);
->   */
->  void pci_epc_mem_exit(struct pci_epc *epc)
->  {
-> -	struct pci_epc_mem *mem = epc->mem;
-> +	struct pci_epc_mem *mem;
-> +	int i;
->  
-> +	if (!epc->num_windows)
-> +		return;
-> +
-> +	for (i = 0; i < epc->num_windows; i++) {
-> +		mem = epc->windows[i];
-> +		kfree(mem->bitmap);
-> +		kfree(mem);
-> +	}
-> +	kfree(epc->windows);
-> +
-> +	epc->windows = NULL;
->  	epc->mem = NULL;
-> -	kfree(mem->bitmap);
-> -	kfree(mem);
-> +	epc->num_windows = 0;
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_mem_exit);
->  
-> @@ -129,31 +168,60 @@ EXPORT_SYMBOL_GPL(pci_epc_mem_exit);
->  void __iomem *pci_epc_mem_alloc_addr(struct pci_epc *epc,
->  				     phys_addr_t *phys_addr, size_t size)
->  {
-> -	int pageno;
->  	void __iomem *virt_addr = NULL;
-> -	struct pci_epc_mem *mem = epc->mem;
-> -	unsigned int page_shift = ilog2(mem->page_size);
-> +	struct pci_epc_mem *mem;
-> +	unsigned int page_shift;
-> +	size_t align_size;
-> +	int pageno;
->  	int order;
-> +	int i;
->  
-> -	size = ALIGN(size, mem->page_size);
-> -	order = pci_epc_mem_get_order(mem, size);
-> -
-> -	mutex_lock(&mem->lock);
-> -	pageno = bitmap_find_free_region(mem->bitmap, mem->pages, order);
-> -	if (pageno < 0)
-> -		goto ret;
-> +	for (i = 0; i < epc->num_windows; i++) {
-> +		mem = epc->windows[i];
-> +		mutex_lock(&mem->lock);
-> +		align_size = ALIGN(size, mem->window.page_size);
-> +		order = pci_epc_mem_get_order(mem, align_size);
->  
-> -	*phys_addr = mem->phys_base + ((phys_addr_t)pageno << page_shift);
-> -	virt_addr = ioremap(*phys_addr, size);
-> -	if (!virt_addr)
-> -		bitmap_release_region(mem->bitmap, pageno, order);
-> +		pageno = bitmap_find_free_region(mem->bitmap, mem->pages,
-> +						 order);
-> +		if (pageno >= 0) {
-> +			page_shift = ilog2(mem->window.page_size);
-> +			*phys_addr = mem->window.phys_base +
-> +				((phys_addr_t)pageno << page_shift);
-> +			virt_addr = ioremap(*phys_addr, align_size);
-> +			if (!virt_addr) {
-> +				bitmap_release_region(mem->bitmap,
-> +						      pageno, order);
-> +				mutex_unlock(&mem->lock);
-> +				continue;
-> +			}
-> +			mutex_unlock(&mem->lock);
-> +			return virt_addr;
-> +		}
-> +		mutex_unlock(&mem->lock);
-> +	}
->  
-> -ret:
-> -	mutex_unlock(&mem->lock);
->  	return virt_addr;
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_mem_alloc_addr);
->  
-> +struct pci_epc_mem *pci_epc_get_matching_window(struct pci_epc *epc,
-> +						phys_addr_t phys_addr)
-> +{
-> +	struct pci_epc_mem *mem;
-> +	int i;
-> +
-> +	for (i = 0; i < epc->num_windows; i++) {
-> +		mem = epc->windows[i];
-> +
-> +		if (phys_addr >= mem->window.phys_base &&
-> +		    phys_addr < (mem->window.phys_base + mem->window.size))
-> +			return mem;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
->  /**
->   * pci_epc_mem_free_addr() - free the allocated memory address
->   * @epc: the EPC device on which memory was allocated
-> @@ -166,14 +234,23 @@ EXPORT_SYMBOL_GPL(pci_epc_mem_alloc_addr);
->  void pci_epc_mem_free_addr(struct pci_epc *epc, phys_addr_t phys_addr,
->  			   void __iomem *virt_addr, size_t size)
->  {
-> +	struct pci_epc_mem *mem;
-> +	unsigned int page_shift;
-> +	size_t page_size;
->  	int pageno;
-> -	struct pci_epc_mem *mem = epc->mem;
-> -	unsigned int page_shift = ilog2(mem->page_size);
->  	int order;
->  
-> +	mem = pci_epc_get_matching_window(epc, phys_addr);
-> +	if (!mem) {
-> +		pr_err("failed to get matching window\n");
-> +		return;
-> +	}
-> +
-> +	page_size = mem->window.page_size;
-> +	page_shift = ilog2(page_size);
->  	iounmap(virt_addr);
-> -	pageno = (phys_addr - mem->phys_base) >> page_shift;
-> -	size = ALIGN(size, mem->page_size);
-> +	pageno = (phys_addr - mem->window.phys_base) >> page_shift;
-> +	size = ALIGN(size, page_size);
->  	order = pci_epc_mem_get_order(mem, size);
->  	mutex_lock(&mem->lock);
->  	bitmap_release_region(mem->bitmap, pageno, order);
-> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-> index 5bc1de65849e..cc66bec8be90 100644
-> --- a/include/linux/pci-epc.h
-> +++ b/include/linux/pci-epc.h
-> @@ -65,20 +65,28 @@ struct pci_epc_ops {
->  	struct module *owner;
->  };
->  
-> +/**
-> + * struct pci_epc_mem_window - address window of the endpoint controller
-> + * @phys_base: physical base address of the PCI address window
-> + * @size: the size of the PCI address window
-> + * @page_size: size of each page
-> + */
-> +struct pci_epc_mem_window {
-> +	phys_addr_t	phys_base;
-> +	size_t		size;
-> +	size_t		page_size;
-> +};
-> +
->  /**
->   * struct pci_epc_mem - address space of the endpoint controller
-> - * @phys_base: physical base address of the PCI address space
-> - * @size: the size of the PCI address space
-> + * @window: address window of the endpoint controller
->   * @bitmap: bitmap to manage the PCI address space
->   * @pages: number of bits representing the address region
-> - * @page_size: size of each page
->   * @lock: mutex to protect bitmap
->   */
->  struct pci_epc_mem {
-> -	phys_addr_t	phys_base;
-> -	size_t		size;
-> +	struct pci_epc_mem_window window;
+Add documentation on how to run the KASAN tests with KUnit and what to
+expect when running these tests.
 
-Don't see any additional value in moving phys_base, size, page_size to a new
-structure and again including it here.
+This patchset depends on:
+- "[PATCH v3 kunit-next 0/2] kunit: extend kunit resources API" [1]
+- "[PATCH v3 0/3] Fix some incompatibilites between KASAN and
+  FORTIFY_SOURCE" [2]
 
-Thanks
-Kishon
+Changes from v6:
+ - Rebased on top of kselftest/kunit
+ - Rebased on top of Daniel Axtens' fix for FORTIFY_SOURCE
+   incompatibilites [2]
+ - Removed a redundant report_enabled() check.
+ - Fixed some places with out of date Kconfig names in the
+   documentation.
+
+Changes from v5:
+ - Split out the panic_on_warn changes to a separate patch.
+ - Fix documentation to fewer to the new Kconfig names.
+ - Fix some changes which were in the wrong patch.
+ - Rebase on top of kselftest/kunit (currently identical to 5.7-rc1)
+
+Changes from v4:
+ - KASAN no longer will panic on errors if both panic_on_warn and
+   kasan_multishot are enabled.
+ - As a result, the KASAN tests will no-longer disable panic_on_warn.
+ - This also means panic_on_warn no-longer needs to be exported.
+ - The use of temporary "kasan_data" variables has been cleaned up
+   somewhat.
+ - A potential refcount/resource leak should multiple KASAN errors
+   appear during an assertion was fixed.
+ - Some wording changes to the KASAN test Kconfig entries.
+
+Changes from v3:
+ - KUNIT_SET_KASAN_DATA and KUNIT_DO_EXPECT_KASAN_FAIL have been
+ combined and included in KUNIT_DO_EXPECT_KASAN_FAIL() instead.
+ - Reordered logic in kasan_update_kunit_status() in report.c to be
+ easier to read.
+ - Added comment to not use the name "kasan_data" for any kunit tests
+ outside of KUNIT_EXPECT_KASAN_FAIL().
+
+Changes since v2:
+ - Due to Alan's changes in [1], KUnit can be built as a module.
+ - The name of the tests that could not be run with KUnit has been
+ changed to be more generic: test_kasan_module.
+ - Documentation on how to run the new KASAN tests and what to expect
+ when running them has been added.
+ - Some variables and functions are now static.
+ - Now save/restore panic_on_warn in a similar way to kasan_multi_shot
+ and renamed the init/exit functions to be more generic to accommodate.
+ - Due to [3] in kasan_strings, kasan_memchr, and
+ kasan_memcmp will fail if CONFIG_AMD_MEM_ENCRYPT is enabled so return
+ early and print message explaining this circumstance.
+ - Changed preprocessor checks to C checks where applicable.
+
+Changes since v1:
+ - Make use of Alan Maguire's suggestion to use his patch that allows
+   static resources for integration instead of adding a new attribute to
+   the kunit struct
+ - All KUNIT_EXPECT_KASAN_FAIL statements are local to each test
+ - The definition of KUNIT_EXPECT_KASAN_FAIL is local to the
+   test_kasan.c file since it seems this is the only place this will
+   be used.
+ - Integration relies on KUnit being builtin
+ - copy_user_test has been separated into its own file since KUnit
+   is unable to test these. This can be run as a module just as before,
+   using CONFIG_TEST_KASAN_USER
+ - The addition to the current task has been separated into its own
+   patch as this is a significant enough change to be on its own.
+
+
+[1] https://lore.kernel.org/linux-kselftest/1585313122-26441-1-git-send-email-alan.maguire@oracle.com/T/#t
+[2] https://lkml.org/lkml/2020/4/23/708
+[3] https://bugzilla.kernel.org/show_bug.cgi?id=206337
+
+
+
+David Gow (1):
+  mm: kasan: Do not panic if both panic_on_warn and kasan_multishot set
+
+Patricia Alfonso (4):
+  Add KUnit Struct to Current Task
+  KUnit: KASAN Integration
+  KASAN: Port KASAN Tests to KUnit
+  KASAN: Testing Documentation
+
+ Documentation/dev-tools/kasan.rst |  70 +++
+ include/kunit/test.h              |   5 +
+ include/linux/kasan.h             |   6 +
+ include/linux/sched.h             |   4 +
+ lib/Kconfig.kasan                 |  18 +-
+ lib/Makefile                      |   3 +-
+ lib/kunit/test.c                  |  13 +-
+ lib/test_kasan.c                  | 688 +++++++++++++-----------------
+ lib/test_kasan_module.c           |  76 ++++
+ mm/kasan/report.c                 |  34 +-
+ 10 files changed, 514 insertions(+), 403 deletions(-)
+ create mode 100644 lib/test_kasan_module.c
+
+-- 
+2.26.2.303.gf8c07b1a785-goog
+
