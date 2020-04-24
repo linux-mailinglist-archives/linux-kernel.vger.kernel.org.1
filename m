@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD5F1B72B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB641B72CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgDXLJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 07:09:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:59960 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbgDXLJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 07:09:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50FD41FB;
-        Fri, 24 Apr 2020 04:09:52 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 314BC3F6CF;
-        Fri, 24 Apr 2020 04:09:52 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id EC473682B6C; Fri, 24 Apr 2020 12:09:50 +0100 (BST)
-Date:   Fri, 24 Apr 2020 12:09:50 +0100
-From:   Liviu Dudau <liviu.dudau@arm.com>
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
+        id S1726967AbgDXLMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 07:12:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47502 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgDXLM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 07:12:29 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jRwFu-0004vt-Gm; Fri, 24 Apr 2020 11:12:26 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH v2] drm/arm: fixes pixel clock enabled with wrong format
-Message-ID: <20200424110950.GC1985@e110455-lin.cambridge.arm.com>
-References: <20200424063551.14336-1-bernard@vivo.com>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] amdgpu/dc: remove redundant assignment to variable 'option'
+Date:   Fri, 24 Apr 2020 12:12:26 +0100
+Message-Id: <20200424111226.11796-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200424063551.14336-1-bernard@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bernand,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Thu, Apr 23, 2020 at 11:35:51PM -0700, Bernard Zhao wrote:
-> The pixel clock is still enabled when the format is wrong.
-> no error branch handle, and also some register is not set
-> in this case, e.g: HDLCD_REG_<color>_SELECT. Maybe we
-> should disable this clock and throw an warn message when
-> this happened.
-> With this change, the code maybe a bit more readable.
-> 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> 
-> Changes since V1:
-> *add format error handle, if format is not correct, throw
-> an warning message and disable this clock.
-> 
-> Link for V1:
-> *https://lore.kernel.org/patchwork/patch/1228501/
-> ---
->  drivers/gpu/drm/arm/hdlcd_crtc.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/arm/hdlcd_crtc.c b/drivers/gpu/drm/arm/hdlcd_crtc.c
-> index af67fefed38d..f3945dee2b7d 100644
-> --- a/drivers/gpu/drm/arm/hdlcd_crtc.c
-> +++ b/drivers/gpu/drm/arm/hdlcd_crtc.c
-> @@ -96,7 +96,7 @@ static int hdlcd_set_pxl_fmt(struct drm_crtc *crtc)
->  	}
->  
->  	if (WARN_ON(!format))
-> -		return 0;
-> +		return -EINVAL;
+The variable option is being initialized with a value that is
+never read and it is being updated later with a new value.  The
+initialization is redundant and can be removed.
 
-That is the right fix!
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/display/dc/dce110/dce110_opp_csc_v.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->  
->  	/* HDLCD uses 'bytes per pixel', zero means 1 byte */
->  	btpp = (format->bits_per_pixel + 7) / 8;
-> @@ -125,7 +125,7 @@ static int hdlcd_set_pxl_fmt(struct drm_crtc *crtc)
->  	return 0;
->  }
->  
-> -static void hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
-> +static int hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
-
-But this is not. We don't need to propagate the error further, just ....
-
->  {
->  	struct hdlcd_drm_private *hdlcd = crtc_to_hdlcd_priv(crtc);
->  	struct drm_display_mode *m = &crtc->state->adjusted_mode;
-> @@ -162,9 +162,10 @@ static void hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
->  
->  	err = hdlcd_set_pxl_fmt(crtc);
->  	if (err)
-> -		return;
-
-... return here so that we don't call clk_set_rate();
-
-Best regards,
-Liviu
-
-> +		return err;
->  
->  	clk_set_rate(hdlcd->clk, m->crtc_clock * 1000);
-> +	return 0;
->  }
->  
->  static void hdlcd_crtc_atomic_enable(struct drm_crtc *crtc,
-> @@ -173,7 +174,11 @@ static void hdlcd_crtc_atomic_enable(struct drm_crtc *crtc,
->  	struct hdlcd_drm_private *hdlcd = crtc_to_hdlcd_priv(crtc);
->  
->  	clk_prepare_enable(hdlcd->clk);
-> -	hdlcd_crtc_mode_set_nofb(crtc);
-> +	if (hdlcd_crtc_mode_set_nofb(crtc)) {
-> +		DRM_DEBUG_KMS("Invalid format, pixel clock enable failed!\n");
-> +		clk_disable_unprepare(hdlcd->clk);
-> +		return;
-> +	}
->  	hdlcd_write(hdlcd, HDLCD_REG_COMMAND, 1);
->  	drm_crtc_vblank_on(crtc);
->  }
-> -- 
-> 2.26.2
-> 
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_opp_csc_v.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_opp_csc_v.c
+index 4245e1f818a3..e096d2b95ef9 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_opp_csc_v.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_opp_csc_v.c
+@@ -679,8 +679,7 @@ void dce110_opp_v_set_csc_default(
+ 	if (default_adjust->force_hw_default == false) {
+ 		const struct out_csc_color_matrix *elm;
+ 		/* currently parameter not in use */
+-		enum grph_color_adjust_option option =
+-			GRPH_COLOR_MATRIX_HW_DEFAULT;
++		enum grph_color_adjust_option option;
+ 		uint32_t i;
+ 		/*
+ 		 * HW default false we program locally defined matrix
 -- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+2.25.1
+
