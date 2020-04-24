@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A481B7C93
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5971B7C90
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgDXRWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        id S1728525AbgDXRV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbgDXRWC (ORCPT
+        with ESMTP id S1726849AbgDXRV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:22:02 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A44AC09B047;
-        Fri, 24 Apr 2020 10:22:02 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r16so7881717edw.5;
-        Fri, 24 Apr 2020 10:22:02 -0700 (PDT)
+        Fri, 24 Apr 2020 13:21:56 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7927C09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:21:55 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t4so3951239plq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0tUhiZxcOIf4jm93sekkZu5FCILE8XNUpVlz+DrsTEE=;
-        b=vb+kZWdhktmIfHd7zaPAGr1zYsH7v+0z/cYdtshN3kuk1Yf+k/12HZtYYAxt0krRtU
-         B4nX231ZNzbOwv0p4mbBtjv7NQ7cWQghUniE34JcPdQxen7Vt76xI7NO99jdgkLq8YAN
-         KNDAvTwjErBKBAugZfN4f/5tY6Kij80h3dtzk8r7RB3JUN0/eJ0vI+oCxkUakuPQjyqf
-         HrmABrZiMo7Z/udpv0IIikjooQQpXiP5O15zqB3il8ihlxg6Ojk4ZLRGtGOr3ExuleRS
-         Ppv6lVmURAO3FomhseEuYGyLu1Sy+NJNBdU4xGnCzo73q6KAOkQBp5FvlvyM3cct52ap
-         sIxA==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=9/rHi+opABqnWC7ABI/VwKKz8YnCgSS+xTfGsZR3+hI=;
+        b=A5I4cJO7vbWtjiQHG/voDoJquzAhktDCzv2uPQSWugiA7YZ3veVmJWTQyyFxVvkH+h
+         FvhxCh2f6rnnVTSTWupVspEx2HKhd4KZsDSKOhxYZ6rEz/aBxOprzXZA2eY0mAmDdgCb
+         57fUF7mxZHyR8Du18R04UyVJ6pNRyYB5vrXwE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0tUhiZxcOIf4jm93sekkZu5FCILE8XNUpVlz+DrsTEE=;
-        b=sGxmheAxYCpZ+2ouGLeVIV9NEzjIF1I7kFIlmx7J2HNjChTmyX4Ha7cVIFieHIAwRQ
-         HuRlq4LsJV79fN8/XYqCpz7RPOcKK6BqJfmbhcbCSDSwkVndl+Af+gsFDapkOyX8R4o4
-         hPtsIGXzCgL3d7QtC26sB+jydriZRBbuVdg026UXnMtBm21ajL8CuC0mztd423SCKOzP
-         Y2IKlCEu7fhQs6UxVC7Rg61Jt4uvjtiZD/S1zdkj7MrrOjp6imxOtlviR0TvOA6PlIru
-         n8kyeqC/8onyvDd9vm6zyLpeMI1uKEBwC2TPwmCf2ktFkyKbM+4IeYiDtU7rfL2O2/LT
-         tEeQ==
-X-Gm-Message-State: AGi0PuYf3FNmGi9uxCMV3iraoWXIfv2TaxdOFjBmD8SCLKn0khxnuNga
-        5a8AaGQ0kb2pvD10G1DNA70JBgt2s8C1dnRbtto=
-X-Google-Smtp-Source: APiQypIAcG1vzHOEm3gHbqdAaIY+XvY1LohhW8JBIJdepYkV2ZAmi1Q+H5phyNCH5cE15btAqnn9Vb9OzrtV2fgTAsc=
-X-Received: by 2002:aa7:cdcb:: with SMTP id h11mr7941375edw.264.1587748921092;
- Fri, 24 Apr 2020 10:22:01 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=9/rHi+opABqnWC7ABI/VwKKz8YnCgSS+xTfGsZR3+hI=;
+        b=AADGBeC0eYh/tl7HRJDu/UFTlnarwPKFUddN4TlFRr/19ZuiAowzh6/QeV0ifoQPtb
+         styPqsh+GwI614yovz5AVg47LvWBk9urhta8dQYYu02hs844IOs4ma9TkiTDY/pZ6QNC
+         t4o0ISurSZxBd9HHptVN1hyvtdYSbfiufbhwc8rdwtOFI6Jf9L4GlYUN7cEUXq2TBtYR
+         WYDpVmKny6GE+v67anD6+1O8bTN27EG/q++lfEIDifFAjgbX7omijmYVi2rCFvOSKrkR
+         alKQkzHagBofNY7cdw+yqnCXD9ZhkH7f3qKLlVwj8961/CBIZc8KDnewl2dHQz3NdcBL
+         wlaQ==
+X-Gm-Message-State: AGi0PuYgUmmGUuiZ0Lo9jwE/Zn0yQQ0uT8xqiAmrAdDfRw74NPWwvtly
+        2K1cmsPx+wdkdrd8icnARaayog==
+X-Google-Smtp-Source: APiQypK3MbrgY702ieZ2DMynzA3M5bEztwrT5ExeMwcuBzWd4TslsMOW4R0wW+GRnOwlzOqB9iaskg==
+X-Received: by 2002:a17:902:441:: with SMTP id 59mr9971066ple.339.1587748915325;
+        Fri, 24 Apr 2020 10:21:55 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id p10sm6433767pff.210.2020.04.24.10.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 10:21:54 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200424032305.GA32366@google.com> <20200424035549.GA37906@google.com>
-In-Reply-To: <20200424035549.GA37906@google.com>
-From:   =?UTF-8?B?THXDrXMgTWVuZGVz?= <luis.p.mendes@gmail.com>
-Date:   Fri, 24 Apr 2020 18:21:49 +0100
-Message-ID: <CAEzXK1o9grcd7mN2ixNnU-qcitHFrsRWHoC54jb--Mz2r+AChQ@mail.gmail.com>
-Subject: Re: [GIT PULL] PCI fixes for v5.7
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Todd Poynor <toddpoynor@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200424053626.GV20625@builder.lan>
+References: <20200424045414.133381-1-swboyd@chromium.org> <20200424045414.133381-2-swboyd@chromium.org> <20200424053626.GV20625@builder.lan>
+Subject: Re: [PATCH 1/3] soc: qcom: rpmh-rsc: Remove tcs_is_free() API
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Date:   Fri, 24 Apr 2020 10:21:53 -0700
+Message-ID: <158774891388.135303.17625994744372966487@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think a "warning" would of great value, as it would be easy to
-identify the root cause of such issues pretty quickly.
+Quoting Bjorn Andersson (2020-04-23 22:36:26)
+> On Thu 23 Apr 21:54 PDT 2020, Stephen Boyd wrote:
+> > diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> [..]
+> >  static int find_free_tcs(struct tcs_group *tcs)
+> >  {
+> > -     int i;
+> > +     const struct rsc_drv *drv =3D tcs->drv;
+> > +     unsigned long i;
+> > =20
+> > -     for (i =3D 0; i < tcs->num_tcs; i++) {
+> > -             if (tcs_is_free(tcs->drv, tcs->offset + i))
+> > -                     return tcs->offset + i;
+> > -     }
+> > +     i =3D find_next_zero_bit(drv->tcs_in_use, MAX_TCS_NR, tcs->offset=
+);
+> > +     if (i > tcs->offset + tcs->num_tcs)
+>=20
+> Afaict this should be >=3D
+>=20
 
-On Fri, Apr 24, 2020 at 4:55 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Thu, Apr 23, 2020 at 10:23:05PM -0500, Bjorn Helgaas wrote:
-> > Yeah.  I don't know the history of why we skip PCI_CLASS_NOT_DEFINED.
-> > I did consider about the fact that we're skipping it, to make it
-> > easier to debug next time.
->
-> I did consider *warning* about ...
+Thanks!
