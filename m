@@ -2,403 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB171B6D8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 07:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1E41B6D79
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 07:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgDXFwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 01:52:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37108 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgDXFwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 01:52:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E23BBAEB9;
-        Fri, 24 Apr 2020 05:52:29 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de, pbonzini@redhat.com
-Cc:     peterz@infradead.org, maz@kernel.org, bigeasy@linutronix.de,
-        rostedt@goodmis.org, torvalds@linux-foundation.org,
-        will@kernel.org, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        dave@stgolabs.net, Paul Mackerras <paulus@ozlabs.org>,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 5/5] kvm: Replace vcpu->swait with rcuwait
-Date:   Thu, 23 Apr 2020 22:48:37 -0700
-Message-Id: <20200424054837.5138-6-dave@stgolabs.net>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200424054837.5138-1-dave@stgolabs.net>
-References: <20200424054837.5138-1-dave@stgolabs.net>
+        id S1726424AbgDXFuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 01:50:02 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:57904 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgDXFuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 01:50:01 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 03O5nYpZ003914;
+        Fri, 24 Apr 2020 14:49:34 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 03O5nYpZ003914
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587707375;
+        bh=6yprhtuJH0JAt/nBxuXAxrTcgJRW5wwX4SHpcjUSzvY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T7v+11aYsKt8WJBdz+nw9DIMku91mHdJZNOTBT1ZUAf07NfvNLEbhxtNDrd3zgzy/
+         mYt2+UMTf1OTOfMvYe+W0FrMzwR65xobk8yzm1ndwHe1dPepPTgYH8uV6QhajzWE2t
+         8WjLhu5OiWjgPhzW1T/jJhj8UQM3/rVvZldg8JbF0iPxXSH7l6vScNBOTjKZU6Sf++
+         2aFPjilLdq1ZTrTDhc/KhmWKlVgNt7xqDMJF36gkqlIkxwf6idKbDpXGVKb5ZgpZBG
+         gKJly+S4K0anq4Qq/FzJQCZX0UuHTNv6WZ70nH1AQrxW7J6zh4ihysazgr2sMJaSWT
+         9p925GXeuxxnw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Ulf Magnusson <ulfalizer@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kconfig: tests: remove randconfig test for choice in choice
+Date:   Fri, 24 Apr 2020 14:49:28 +0900
+Message-Id: <20200424054929.502485-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of any sort of waitqueue (simple or regular) for
-wait/waking vcpus has always been an overkill and semantically
-wrong. Because this is per-vcpu (which is blocked) there is
-only ever a single waiting vcpu, thus no need for any sort of
-queue.
+Nesting choice statements does not make any sense.
 
-As such, make use of the rcuwait primitive, with the following
-considerations:
+Commit df8df5e4bc37 ("usb: get rid of 'choice' for legacy gadget
+drivers") got rid of the only user.
 
-  - rcuwait already provides the proper barriers that serialize
-  concurrent waiter and waker.
+I will make it a syntax error. Remove the test in advance.
 
-  - Task wakeup is done in rcu read critical region, with a
-  stable task pointer.
-
-  - Because there is no concurrency among waiters, we need
-  not worry about rcuwait_wait_event() calls corrupting
-  the wait->task. As a consequence, this saves the locking
-  done in swait when modifying the queue. This also applies
-  to per-vcore wait for powerpc kvm-hv.
-
-The x86 tscdeadline_latency test mentioned in 8577370fb0cb
-("KVM: Use simple waitqueue for vcpu->wq") shows that, on avg,
-latency is reduced by around 15-20% with this change.
-
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-mips@vger.kernel.org
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- arch/mips/kvm/mips.c                  |  6 ++----
- arch/powerpc/include/asm/kvm_book3s.h |  2 +-
- arch/powerpc/include/asm/kvm_host.h   |  2 +-
- arch/powerpc/kvm/book3s_hv.c          | 22 ++++++++--------------
- arch/powerpc/kvm/powerpc.c            |  2 +-
- arch/x86/kvm/lapic.c                  |  2 +-
- include/linux/kvm_host.h              | 10 +++++-----
- virt/kvm/arm/arch_timer.c             |  3 ++-
- virt/kvm/arm/arm.c                    |  9 +++++----
- virt/kvm/async_pf.c                   |  3 +--
- virt/kvm/kvm_main.c                   | 19 +++++++++----------
- 11 files changed, 36 insertions(+), 44 deletions(-)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 8f05dd0a0f4e..fad6acce46e4 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -284,8 +284,7 @@ static enum hrtimer_restart kvm_mips_comparecount_wakeup(struct hrtimer *timer)
- 	kvm_mips_callbacks->queue_timer_int(vcpu);
- 
- 	vcpu->arch.wait = 0;
--	if (swq_has_sleeper(&vcpu->wq))
--		swake_up_one(&vcpu->wq);
-+	rcuwait_wake_up(&vcpu->wait);
- 
- 	return kvm_mips_count_timeout(vcpu);
- }
-@@ -511,8 +510,7 @@ int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
- 
- 	dvcpu->arch.wait = 0;
- 
--	if (swq_has_sleeper(&dvcpu->wq))
--		swake_up_one(&dvcpu->wq);
-+	rcuwait_wake_up(&dvcpu->wait);
- 
- 	return 0;
- }
-diff --git a/arch/powerpc/include/asm/kvm_book3s.h b/arch/powerpc/include/asm/kvm_book3s.h
-index 506e4df2d730..6e5d85ba588d 100644
---- a/arch/powerpc/include/asm/kvm_book3s.h
-+++ b/arch/powerpc/include/asm/kvm_book3s.h
-@@ -78,7 +78,7 @@ struct kvmppc_vcore {
- 	struct kvm_vcpu *runnable_threads[MAX_SMT_THREADS];
- 	struct list_head preempt_list;
- 	spinlock_t lock;
--	struct swait_queue_head wq;
-+	struct rcuwait wait;
- 	spinlock_t stoltb_lock;	/* protects stolen_tb and preempt_tb */
- 	u64 stolen_tb;
- 	u64 preempt_tb;
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-index 1dc63101ffe1..337047ba4a56 100644
---- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -751,7 +751,7 @@ struct kvm_vcpu_arch {
- 	u8 irq_pending; /* Used by XIVE to signal pending guest irqs */
- 	u32 last_inst;
- 
--	struct swait_queue_head *wqp;
-+	struct rcuwait *waitp;
- 	struct kvmppc_vcore *vcore;
- 	int ret;
- 	int trap;
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 93493f0cbfe8..b8d42f523ca7 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -230,13 +230,11 @@ static bool kvmppc_ipi_thread(int cpu)
- static void kvmppc_fast_vcpu_kick_hv(struct kvm_vcpu *vcpu)
- {
- 	int cpu;
--	struct swait_queue_head *wqp;
-+	struct rcuwait *wait;
- 
--	wqp = kvm_arch_vcpu_wq(vcpu);
--	if (swq_has_sleeper(wqp)) {
--		swake_up_one(wqp);
-+	wait = kvm_arch_vcpu_get_wait(vcpu);
-+	if (rcuwait_wake_up(wait))
- 		++vcpu->stat.halt_wakeup;
--	}
- 
- 	cpu = READ_ONCE(vcpu->arch.thread_cpu);
- 	if (cpu >= 0 && kvmppc_ipi_thread(cpu))
-@@ -2125,7 +2123,7 @@ static struct kvmppc_vcore *kvmppc_vcore_create(struct kvm *kvm, int id)
- 
- 	spin_lock_init(&vcore->lock);
- 	spin_lock_init(&vcore->stoltb_lock);
--	init_swait_queue_head(&vcore->wq);
-+	rcuwait_init(&vcore->wait);
- 	vcore->preempt_tb = TB_NIL;
- 	vcore->lpcr = kvm->arch.lpcr;
- 	vcore->first_vcpuid = id;
-@@ -3784,7 +3782,6 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 	ktime_t cur, start_poll, start_wait;
- 	int do_sleep = 1;
- 	u64 block_ns;
--	DECLARE_SWAITQUEUE(wait);
- 
- 	/* Poll for pending exceptions and ceded state */
- 	cur = start_poll = ktime_get();
-@@ -3812,10 +3809,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 		}
- 	}
- 
--	prepare_to_swait_exclusive(&vc->wq, &wait, TASK_INTERRUPTIBLE);
+ .../kconfig/tests/rand_nested_choice/Kconfig  | 35 -------------------
+ .../tests/rand_nested_choice/__init__.py      | 17 ---------
+ .../tests/rand_nested_choice/expected_stdout0 |  2 --
+ .../tests/rand_nested_choice/expected_stdout1 |  4 ---
+ .../tests/rand_nested_choice/expected_stdout2 |  5 ---
+ 5 files changed, 63 deletions(-)
+ delete mode 100644 scripts/kconfig/tests/rand_nested_choice/Kconfig
+ delete mode 100644 scripts/kconfig/tests/rand_nested_choice/__init__.py
+ delete mode 100644 scripts/kconfig/tests/rand_nested_choice/expected_stdout0
+ delete mode 100644 scripts/kconfig/tests/rand_nested_choice/expected_stdout1
+ delete mode 100644 scripts/kconfig/tests/rand_nested_choice/expected_stdout2
+
+diff --git a/scripts/kconfig/tests/rand_nested_choice/Kconfig b/scripts/kconfig/tests/rand_nested_choice/Kconfig
+deleted file mode 100644
+index 8350de7f732b..000000000000
+--- a/scripts/kconfig/tests/rand_nested_choice/Kconfig
++++ /dev/null
+@@ -1,35 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
 -
- 	if (kvmppc_vcore_check_block(vc)) {
--		finish_swait(&vc->wq, &wait);
- 		do_sleep = 0;
- 		/* If we polled, count this as a successful poll */
- 		if (vc->halt_poll_ns)
-@@ -3828,8 +3822,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
- 	vc->vcore_state = VCORE_SLEEPING;
- 	trace_kvmppc_vcore_blocked(vc, 0);
- 	spin_unlock(&vc->lock);
--	schedule();
--	finish_swait(&vc->wq, &wait);
-+	rcuwait_wait_event(&vc->wait,
-+			   kvmppc_vcore_check_block(vc), TASK_INTERRUPTIBLE);
- 	spin_lock(&vc->lock);
- 	vc->vcore_state = VCORE_INACTIVE;
- 	trace_kvmppc_vcore_blocked(vc, 1);
-@@ -3940,7 +3934,7 @@ static int kvmppc_run_vcpu(struct kvm_run *kvm_run, struct kvm_vcpu *vcpu)
- 			kvmppc_start_thread(vcpu, vc);
- 			trace_kvm_guest_enter(vcpu);
- 		} else if (vc->vcore_state == VCORE_SLEEPING) {
--			swake_up_one(&vc->wq);
-+		        rcuwait_wake_up(&vc->wait);
- 		}
- 
- 	}
-@@ -4279,7 +4273,7 @@ static int kvmppc_vcpu_run_hv(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 	}
- 	user_vrsave = mfspr(SPRN_VRSAVE);
- 
--	vcpu->arch.wqp = &vcpu->arch.vcore->wq;
-+	vcpu->arch.waitp = &vcpu->arch.vcore->wait;
- 	vcpu->arch.pgdir = kvm->mm->pgd;
- 	vcpu->arch.state = KVMPPC_VCPU_BUSY_IN_HOST;
- 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index e15166b0a16d..4a074b587520 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -751,7 +751,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	if (err)
- 		goto out_vcpu_uninit;
- 
--	vcpu->arch.wqp = &vcpu->wq;
-+	vcpu->arch.waitp = &vcpu->wait;
- 	kvmppc_create_vcpu_debugfs(vcpu, vcpu->vcpu_id);
- 	return 0;
- 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 9af25c97612a..54345dc645ba 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1833,7 +1833,7 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcpu *vcpu)
- 	/* If the preempt notifier has already run, it also called apic_timer_expired */
- 	if (!apic->lapic_timer.hv_timer_in_use)
- 		goto out;
--	WARN_ON(swait_active(&vcpu->wq));
-+	WARN_ON(rcuwait_active(&vcpu->wait));
- 	cancel_hv_timer(apic);
- 	apic_timer_expired(apic);
- 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 6d58beb65454..fc34021546bd 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -23,7 +23,7 @@
- #include <linux/irqflags.h>
- #include <linux/context_tracking.h>
- #include <linux/irqbypass.h>
--#include <linux/swait.h>
-+#include <linux/rcuwait.h>
- #include <linux/refcount.h>
- #include <linux/nospec.h>
- #include <asm/signal.h>
-@@ -277,7 +277,7 @@ struct kvm_vcpu {
- 	struct mutex mutex;
- 	struct kvm_run *run;
- 
--	struct swait_queue_head wq;
-+	struct rcuwait wait;
- 	struct pid __rcu *pid;
- 	int sigset_active;
- 	sigset_t sigset;
-@@ -956,12 +956,12 @@ static inline bool kvm_arch_has_assigned_device(struct kvm *kvm)
- }
- #endif
- 
--static inline struct swait_queue_head *kvm_arch_vcpu_wq(struct kvm_vcpu *vcpu)
-+static inline struct rcuwait *kvm_arch_vcpu_get_wait(struct kvm_vcpu *vcpu)
- {
- #ifdef __KVM_HAVE_ARCH_WQP
--	return vcpu->arch.wqp;
-+	return vcpu->arch.waitp;
- #else
--	return &vcpu->wq;
-+	return &vcpu->wait;
- #endif
- }
- 
-diff --git a/virt/kvm/arm/arch_timer.c b/virt/kvm/arm/arch_timer.c
-index 93bd59b46848..d5024416e722 100644
---- a/virt/kvm/arm/arch_timer.c
-+++ b/virt/kvm/arm/arch_timer.c
-@@ -571,6 +571,7 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
- {
- 	struct arch_timer_cpu *timer = vcpu_timer(vcpu);
- 	struct timer_map map;
-+	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
- 
- 	if (unlikely(!timer->enabled))
- 		return;
-@@ -593,7 +594,7 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
- 	if (map.emul_ptimer)
- 		soft_timer_cancel(&map.emul_ptimer->hrtimer);
- 
--	if (swait_active(kvm_arch_vcpu_wq(vcpu)))
-+	if (rcuwait_active(wait))
- 		kvm_timer_blocking(vcpu);
- 
- 	/*
-diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
-index 48d0ec44ad77..479f36d02418 100644
---- a/virt/kvm/arm/arm.c
-+++ b/virt/kvm/arm/arm.c
-@@ -579,16 +579,17 @@ void kvm_arm_resume_guest(struct kvm *kvm)
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
- 		vcpu->arch.pause = false;
--		swake_up_one(kvm_arch_vcpu_wq(vcpu));
-+		rcuwait_wake_up(kvm_arch_vcpu_get_wait(vcpu));
- 	}
- }
- 
- static void vcpu_req_sleep(struct kvm_vcpu *vcpu)
- {
--	struct swait_queue_head *wq = kvm_arch_vcpu_wq(vcpu);
-+	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
- 
--	swait_event_interruptible_exclusive(*wq, ((!vcpu->arch.power_off) &&
--				       (!vcpu->arch.pause)));
-+	rcuwait_wait_event(wait,
-+			   (!vcpu->arch.power_off) &&(!vcpu->arch.pause),
-+			   TASK_INTERRUPTIBLE);
- 
- 	if (vcpu->arch.power_off || vcpu->arch.pause) {
- 		/* Awaken to handle a signal, request we sleep again later. */
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index 15e5b037f92d..10b533f641a6 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -80,8 +80,7 @@ static void async_pf_execute(struct work_struct *work)
- 
- 	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
- 
--	if (swq_has_sleeper(&vcpu->wq))
--		swake_up_one(&vcpu->wq);
-+	rcuwait_wake_up(&vcpu->wait);
- 
- 	mmput(mm);
- 	kvm_put_kvm(vcpu->kvm);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 74bdb7bf3295..f027ae3598e8 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -341,7 +341,7 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
- 	vcpu->kvm = kvm;
- 	vcpu->vcpu_id = id;
- 	vcpu->pid = NULL;
--	init_swait_queue_head(&vcpu->wq);
-+	rcuwait_init(&vcpu->wait);
- 	kvm_async_pf_vcpu_init(vcpu);
- 
- 	vcpu->pre_pcpu = -1;
-@@ -2671,7 +2671,6 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
- void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- {
- 	ktime_t start, cur;
--	DECLARE_SWAITQUEUE(wait);
- 	bool waited = false;
- 	u64 block_ns;
- 
-@@ -2697,8 +2696,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 		} while (single_task_running() && ktime_before(cur, stop));
- 	}
- 
-+	prepare_to_rcuwait(&vcpu->wait);
- 	for (;;) {
--		prepare_to_swait_exclusive(&vcpu->wq, &wait, TASK_INTERRUPTIBLE);
-+		set_current_state(TASK_INTERRUPTIBLE);
- 
- 		if (kvm_vcpu_check_block(vcpu) < 0)
- 			break;
-@@ -2706,8 +2706,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 		waited = true;
- 		schedule();
- 	}
+-choice
+-	prompt "choice"
 -
--	finish_swait(&vcpu->wq, &wait);
-+	finish_rcuwait(&vcpu->wait);
- 	cur = ktime_get();
- out:
- 	kvm_arch_vcpu_unblocking(vcpu);
-@@ -2738,11 +2737,10 @@ EXPORT_SYMBOL_GPL(kvm_vcpu_block);
- 
- bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu)
- {
--	struct swait_queue_head *wqp;
-+	struct rcuwait *wait;
- 
--	wqp = kvm_arch_vcpu_wq(vcpu);
--	if (swq_has_sleeper(wqp)) {
--		swake_up_one(wqp);
-+	wait = kvm_arch_vcpu_get_wait(vcpu);
-+	if (rcuwait_wake_up(wait)) {
- 		WRITE_ONCE(vcpu->ready, true);
- 		++vcpu->stat.halt_wakeup;
- 		return true;
-@@ -2884,7 +2882,8 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
- 				continue;
- 			if (vcpu == me)
- 				continue;
--			if (swait_active(&vcpu->wq) && !vcpu_dy_runnable(vcpu))
-+			if (rcuwait_active(&vcpu->wait) &&
-+			    !vcpu_dy_runnable(vcpu))
- 				continue;
- 			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
- 				!kvm_arch_vcpu_in_kernel(vcpu))
+-config A
+-	bool "A"
+-
+-config B
+-	bool "B"
+-
+-if B
+-choice
+-	prompt "sub choice"
+-
+-config C
+-	bool "C"
+-
+-config D
+-	bool "D"
+-
+-if D
+-choice
+-	prompt "subsub choice"
+-
+-config E
+-	bool "E"
+-
+-endchoice
+-endif # D
+-
+-endchoice
+-endif # B
+-
+-endchoice
+diff --git a/scripts/kconfig/tests/rand_nested_choice/__init__.py b/scripts/kconfig/tests/rand_nested_choice/__init__.py
+deleted file mode 100644
+index 9e4b2db53581..000000000000
+--- a/scripts/kconfig/tests/rand_nested_choice/__init__.py
++++ /dev/null
+@@ -1,17 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-"""
+-Set random values recursively in nested choices.
+-
+-Kconfig can create a choice-in-choice structure by using 'if' statement.
+-randconfig should correctly set random choice values.
+-
+-Related Linux commit: 3b9a19e08960e5cdad5253998637653e592a3c29
+-"""
+-
+-
+-def test(conf):
+-    for i in range(20):
+-        assert conf.randconfig() == 0
+-        assert (conf.config_contains('expected_stdout0') or
+-                conf.config_contains('expected_stdout1') or
+-                conf.config_contains('expected_stdout2'))
+diff --git a/scripts/kconfig/tests/rand_nested_choice/expected_stdout0 b/scripts/kconfig/tests/rand_nested_choice/expected_stdout0
+deleted file mode 100644
+index 05450f3d4eb5..000000000000
+--- a/scripts/kconfig/tests/rand_nested_choice/expected_stdout0
++++ /dev/null
+@@ -1,2 +0,0 @@
+-CONFIG_A=y
+-# CONFIG_B is not set
+diff --git a/scripts/kconfig/tests/rand_nested_choice/expected_stdout1 b/scripts/kconfig/tests/rand_nested_choice/expected_stdout1
+deleted file mode 100644
+index 37ab29584157..000000000000
+--- a/scripts/kconfig/tests/rand_nested_choice/expected_stdout1
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# CONFIG_A is not set
+-CONFIG_B=y
+-CONFIG_C=y
+-# CONFIG_D is not set
+diff --git a/scripts/kconfig/tests/rand_nested_choice/expected_stdout2 b/scripts/kconfig/tests/rand_nested_choice/expected_stdout2
+deleted file mode 100644
+index 849ff47e9848..000000000000
+--- a/scripts/kconfig/tests/rand_nested_choice/expected_stdout2
++++ /dev/null
+@@ -1,5 +0,0 @@
+-# CONFIG_A is not set
+-CONFIG_B=y
+-# CONFIG_C is not set
+-CONFIG_D=y
+-CONFIG_E=y
 -- 
-2.16.4
+2.25.1
 
