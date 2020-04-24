@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA381B79DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09971B7A05
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgDXPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:36:21 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40727 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728482AbgDXPgO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:36:14 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 900C0144F;
-        Fri, 24 Apr 2020 11:36:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Fri, 24 Apr 2020 11:36:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=6AAlop7+XbnlGAq8sTAvjExYq4G
-        7z0bSUfLU7dnZmCI=; b=m/rhcTuP5+5z9laJf6pkwLG7oXf/bW253s0J/touRXN
-        Tk6ZpYaTLGzwjRh2qGj4IhlCN1fDhXe9xxVNmV46gIGebWJ70paPZDF5VsoUpNsb
-        ReBE51MGUR430xuz3MOXH7wq8K2FUPp5QR7pG0kk3aBm7x9AAwIvKaCCStWeqCYS
-        QRwjFtRBQuRRhM0HSanR9SlrBjvFp6GJ5fp6xaVk4pqoEy1uoLF2Uqc57uQEoTK8
-        6nkVqiy0CBrOdOgUpXwkfVMvYWuIhgee3bdwqWvuY4mvd19FEbvsYHFKqsbIfjn3
-        5WmJ4i1jIqcOLMb37Z0l/1eNAPSW7bsTybV0d7HxCKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6AAlop
-        7+XbnlGAq8sTAvjExYq4G7z0bSUfLU7dnZmCI=; b=KDEewEuVc/v76Gb+sf9/TB
-        OavFDSPmjjJeKz1amzbbjUxRjZnCBlXFMu1WeuQrWlCxjg316e6iiAAcpl8Y3oDe
-        GjU+vloCVjHoWZCAcBmXdi6YAlVb0aYdt0fLHTM/WqB64Hs1jRErQZp3pkC9DQ9i
-        gwA9JwqFFzOD5iNe3Ua2P+QUqEGbWCoFOA5K0qG9ceX4ceF5hbjLteCu+oLIgRbZ
-        CfzmVQ/RdWIRaJimUQYN3YRQ41Fbf4YrGcdl5DZnjYx6B0+mkmG8QF9qNLqM/lkU
-        y5Qjsl3jGFXjGaZYMFpyHh62leSzO84yKoVLP36bs8maYvupvABD4fqJ7PK9/CSA
-        ==
-X-ME-Sender: <xms:bQejXrPFU5ZZAOf7iHJMB_cRQEeuaGg2QPtp0dpIncJg0H9fD_lQaA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrhedugdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehgtderredttddu
-    necuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehsth
-    iftgigrdighiiiqeenucfkphepudeiiedrudejiedruddvuddruddvfeenucevlhhushht
-    vghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehprghtrhhitghksehsth
-    iftgigrdighiii
-X-ME-Proxy: <xmx:bQejXstPEUOaDgXNOf4qczVNs8p3o7wO_ZmnGVO5Bc-TXkSXnT59Fg>
-    <xmx:bQejXsA75-dbwVl_O2OnUDfEARIzfWSkebuFYWLim7ikIlsGZsWXGA>
-    <xmx:bQejXrbFQJkzUVNmGHzz1ZFDzqQMdsOsvEZXgxsBZOPWgZ2WL_ROrQ>
-    <xmx:bQejXvLoo6-e4fcFAj7c2Caa8YMhRbsEW6mjfe2ZxcI50klP9vYjXg>
-Received: from localhost (mobile-166-176-121-123.mycingular.net [166.176.121.123])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BD2AF3065D9A;
-        Fri, 24 Apr 2020 11:36:12 -0400 (EDT)
-Date:   Fri, 24 Apr 2020 10:36:12 -0500
-From:   Patrick Williams <patrick@stwcx.xyz>
-To:     =?iso-8859-1?Q?Bj=F6rn_Ard=F6?= <bjorn.ardo@axis.com>
-Cc:     wsa@the-dreams.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [PATCHv3] i2c: slave-eeprom: Make it possible to pre-load eeprom
- data
-Message-ID: <20200424153612.GB3163924@heinlein.lan.stwcx.xyz>
-References: <20200424113036.15109-1-bjorn.ardo@axis.com>
+        id S1728217AbgDXPiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:38:14 -0400
+Received: from muru.com ([72.249.23.125]:51236 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728222AbgDXPiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 11:38:10 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 062F880E7;
+        Fri, 24 Apr 2020 15:38:56 +0000 (UTC)
+Date:   Fri, 24 Apr 2020 08:38:06 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Tero Kristo <t-kristo@ti.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benoit Cousson <bcousson@baylibre.com>,
+        Carlos Hernandez <ceh@ti.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Olof Johansson <olof@lixom.net>, tomi.valkeinen@ti.com,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: OF: ERROR: Bad of_node_put() on
+ /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
+Message-ID: <20200424153806.GJ37466@atomide.com>
+References: <CA+G9fYv5NxK+F5DX_q1c_wvnhjT_WTZBFJQXLWFeqMXsEcASZg@mail.gmail.com>
+ <CA+G9fYu-qYP2wJw4p1p_C6_ttwK0fvw+qUnsN9mDuKOv3zGEBw@mail.gmail.com>
+ <20200417152903.GO37466@atomide.com>
+ <6366d76c-b9dc-6fa5-afad-0b2f471f8ec5@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200424113036.15109-1-bjorn.ardo@axis.com>
+In-Reply-To: <6366d76c-b9dc-6fa5-afad-0b2f471f8ec5@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Tero Kristo <t-kristo@ti.com> [200424 12:41]:
+> On 17/04/2020 18:29, Tony Lindgren wrote:
+> > * Naresh Kamboju <naresh.kamboju@linaro.org> [200327 16:44]:
+> > > The reported problem still happening on arm beagle board x15 device
+> > > running Linux next kernel 20200327.
+> > ...
+> > 
+> > > [    0.000000] OF: ERROR: Bad of_node_put() on
+> > > /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
+> > > [    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W
+> > >    5.6.0-rc7-next-20200327 #1
+> > > [    0.000000] Hardware name: Generic DRA74X (Flattened Device Tree)
+> > > [    0.000000] [<c0311810>] (unwind_backtrace) from [<c030ba14>]
+> > > (show_stack+0x10/0x14)
+> > > [    0.000000] [<c030ba14>] (show_stack) from [<c0fb6604>]
+> > > (dump_stack+0xbc/0xd0)
+> > > [    0.000000] [<c0fb6604>] (dump_stack) from [<c0fbb07c>]
+> > > (kobject_put+0xc0/0x104)
+> > > [    0.000000] [<c0fbb07c>] (kobject_put) from [<c1639e4c>]
+> > > (of_clk_init+0x18c/0x228)
+> > > [    0.000000] [<c1639e4c>] (of_clk_init) from [<c1611544>]
+> > > (omap_clk_init+0x3c/0x58)
+> > > [    0.000000] [<c1611544>] (omap_clk_init) from [<c1611ea8>]
+> > > (omap4_sync32k_timer_init+0x8/0x2c)
+> > > [    0.000000] [<c1611ea8>] (omap4_sync32k_timer_init) from
+> > > [<c161213c>] (omap5_realtime_timer_init+0x8/0x234)
+> > > [    0.000000] [<c161213c>] (omap5_realtime_timer_init) from
+> > > [<c1600c88>] (start_kernel+0x330/0x4b8)
+> > 
+> > Just FYI, Tero is looking at the clock issues that seem to be
+> > causing these warnings.
+> 
+> Haven't seen this before, but easily reproducible with multi_v7_defconfig. I
+> have a simple fix for it now, will post to lists soon.
 
---cvVnyQ+4j833TQvp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK thanks for tracking it down.
 
-On Fri, Apr 24, 2020 at 01:30:36PM +0200, Bj=F6rn Ard=F6 wrote:
-> If the slave eeprom has a "firmware-name" in devicetree, then
-> pre-load the data in the eeprom with this file. Otherwise we
-> init the eeprom with 0xFF.
->=20
-> Signed-off-by: Bj=F6rn Ard=F6 <bjorn.ardo@axis.com>
-> ---
->  drivers/i2c/i2c-slave-eeprom.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-
-Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
-Reviewed-by: Patrick Williams <patrick@stwcx.xyz>
-
---=20
-Patrick Williams
-
---cvVnyQ+4j833TQvp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl6jB2sACgkQqwNHzC0A
-wRk3aA/+IkPleDbT17gsPCRIb3yMjTe8NI6LRNljsxO0S29zj8Tl30uNZ7JmnAoE
-WbxAyTlqS/2XXg6mxRaXdFbt+zghDGnElWi93VlLlUICvAx/or9f5xLP4cHRh8ey
-hgOC9VAkw9id8YOaBGoOqIJiqwzxjN1GlTXGOTuTKQQiT+KBTFzoy2Ei+7HPpyGP
-UOK/OwXwqjywkQ9stbM+hOVmm7v+YlkBshuiqYQEj9eXSQKxxyRP8yTGMLYiDLGS
-729I0btjqf0/sTseCeKRu5LJVjQrRJ/3n98QmGU+w+ri6mmiL2APY9cQ1YtkqreF
-HIXuGoBU4BAhN3way8UJFJp/mWhj/JCZ/r1LuCxw79K52BPhQMN8f796VOnfFivv
-TBAkoIZrfJTZL29nW0qxtVYS2T2GtIq2+ue3g2PB4r9FYGDMDIrQp8CY9G4kHiNU
-VjQQLiXlzGIMWgmmd56xN6LoyeAxxcNcBiAM7jp59ZHn7TOjo0Scolc95+fYGUqo
-lRiuD+6U0ku/BlxzoVBkETF2+5i0YKwVuEILyohmAOKkxtEB+nH0mknWbmomouIK
-chh7KMyKxafTIT1GcKEu3iLrJkwIDkbcdXYeev56UdCPn4Ju2QpCxI/GgJPjPvO0
-1s0iYweZcKnc+YyLAd/2lYTYAnIJjcXxSOnMUaK/l1hAW+J40as=
-=DIec
------END PGP SIGNATURE-----
-
---cvVnyQ+4j833TQvp--
+Tony
