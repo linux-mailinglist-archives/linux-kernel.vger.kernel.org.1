@@ -2,216 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0105D1B7970
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8961B7976
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgDXPWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:22:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58718 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726707AbgDXPV7 (ORCPT
+        id S1728278AbgDXPWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:22:25 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:44368 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727088AbgDXPWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:21:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587741717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wx6UqBc+7Fd78ffDznq1MJq+WQRq4yvKOdpl3Ke1Tvs=;
-        b=BAUdh6VR/QosJWAtDyB7wNTDgbVmsoK2FhVhJucXh5vOqksN0qOzZ+nVUJ+RErsn5XrXOi
-        ZDUjujFXd4oT6XFzzwo+DC9KbNPQ+9zK/QXobCFKf9+f2Fx0Vmh1rlwMWhZtJh8gN/8Pit
-        caYCTR+GmKjPf7/adXtTvetFvlFfNTA=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-rUQ1agwbMPmc1BSuybxKTg-1; Fri, 24 Apr 2020 11:21:54 -0400
-X-MC-Unique: rUQ1agwbMPmc1BSuybxKTg-1
-Received: by mail-qv1-f71.google.com with SMTP id c3so10050304qvi.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:21:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wx6UqBc+7Fd78ffDznq1MJq+WQRq4yvKOdpl3Ke1Tvs=;
-        b=SShN1aIaRjTq0JFx9lVT7Y1kspnUQYzzGhZuzRY5I/aBzq8pwnorXW7+clD4/7pb5k
-         If61u05hUcOFA5+1N+usucxBdEzLglVe8Nepq306GEZFf3prVD5I6RKpzTpdExrUX0wH
-         WPoZP6DFUnF0mzOep6LgHytKe1t1Ep6v7ZEZJtsiA8UdvfTyl4GxFp7L5pNxyHIYL1bQ
-         xfS0ADKr7A8dS0S5yQDCOW1UPqDZpZXe8s6agUbaE4P7s3GpqzzVgsbawiNcNh53ZbK+
-         9gnHp/ukDrDDs2WMXPfRicLdLUXQO/IqVQlMIrjgp7so95EPlbEjxcqQX7oNnQ/EoX6I
-         +ukg==
-X-Gm-Message-State: AGi0PuYq78W9GQ6dmsVXRvhEWekwWnBzJl66k74ac2jzfeG2Y78Xdhqy
-        UgL7O1l9v+ldubwukTHn6RcMDQwjMHwghyvL1WH8JsYO7ceiiFy4BBQB7kiaa6vHkYP/7QjoE3s
-        UUUqDTHcloKPDmCjNWWAjUbiW
-X-Received: by 2002:a05:620a:22d6:: with SMTP id o22mr9336378qki.49.1587741714163;
-        Fri, 24 Apr 2020 08:21:54 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLQIQ4cCKKttCJu6UxYlK8vabyjhMsxG7WZoaBoQk27nV3zGbwoIRKSjA+BIEmG5/Gh77Y+cg==
-X-Received: by 2002:a05:620a:22d6:: with SMTP id o22mr9336338qki.49.1587741713790;
-        Fri, 24 Apr 2020 08:21:53 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id 195sm3758661qkd.6.2020.04.24.08.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 08:21:52 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 11:21:51 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Christophe de Dinechin <dinechin@redhat.com>,
-        Yan Zhao <yan.y.zhao@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>
-Subject: Re: [PATCH v8 03/14] KVM: X86: Don't track dirty for
- KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
-Message-ID: <20200424152151.GB41816@xz-x1>
-References: <20200331190000.659614-1-peterx@redhat.com>
- <20200331190000.659614-4-peterx@redhat.com>
- <20200423203944.GS17824@linux.intel.com>
+        Fri, 24 Apr 2020 11:22:24 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OFCxLN018030;
+        Fri, 24 Apr 2020 11:22:21 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 30fxf6ej79-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 11:22:21 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 03OFMKvn008455
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 24 Apr 2020 11:22:20 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 24 Apr 2020 08:22:18 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 24 Apr 2020 08:22:18 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 24 Apr 2020 08:22:18 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03OFMG4P027806;
+        Fri, 24 Apr 2020 11:22:17 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: buffer: extend short-hand use for 'indio_dev->buffer'
+Date:   Fri, 24 Apr 2020 18:22:43 +0300
+Message-ID: <20200424152243.39410-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200423203944.GS17824@linux.intel.com>
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-24_08:2020-04-24,2020-04-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ suspectscore=2 bulkscore=0 impostorscore=0 mlxlogscore=866 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 01:39:44PM -0700, Sean Christopherson wrote:
-> On Tue, Mar 31, 2020 at 02:59:49PM -0400, Peter Xu wrote:
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 1b6d9ac9533c..faa702c4d37b 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -9791,7 +9791,32 @@ void kvm_arch_sync_events(struct kvm *kvm)
-> >  	kvm_free_pit(kvm);
-> >  }
-> >  
-> > -int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
-> > +#define  ERR_PTR_USR(e)  ((void __user *)ERR_PTR(e))
-> 
-> Heh, my first thought when reading the below code was "cool, I didn't know
-> there was ERR_PTR_USR!".  This probably should be in include/linux/err.h,
-> or maybe a new arch specific implementation if it's not universally safe.
+This change is both cosmetic and a prequel to adding support for attaching
+multiple buffers per IIO device.
 
-Yeah, I just wanted to avoid introducing things in common headers before I'm
-sure it'll be used in the rest of the world..  We can always replace them with
-a global definition when it comes.
+The IIO buffer sysfs attrs are mostly designed to support only one attached
+buffer, and in order to support more, we need to centralize [in each attr
+function] the buffer which is being accessed.
 
-> 
-> An alternative, which looks enticing given that proper user variants will
-> be a bit of an explosion, would be to do:
-> 
->   static void *____x86_set_memory_region(...)
->   {
-> 	<actual function>
->   }
-> 
->   void __user *__x86_set_memory_region(...)
->   {
-> 	return (void __user *)____x86_set_memory_region(...);
->   }
-> 
-> A second alternative would be to return an "unsigned long", i.e. force the
-> one function that actually accesses the hva to do the cast.  I think I like
-> this option the best as it would minimize the churn in
-> __x86_set_memory_region().  Callers can use IS_ERR_VALUE() to detect failure.
+This also makes it a bit more uniform, as in some functions there is a
+short-hand 'buffer' variable and at the same time the 'indio_dev->buffer'
+is still access directly.
 
-If you won't mind, I would prefer a 2nd opinion (maybe Paolo?) so we can
-consolidate the idea before I change them... (I would for sure still prefer the
-current approach for simplicity since after all I don't have strong opionion..)
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/industrialio-buffer.c | 61 +++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
-> 
-> > +/**
-> > + * __x86_set_memory_region: Setup KVM internal memory slot
-> > + *
-> > + * @kvm: the kvm pointer to the VM.
-> > + * @id: the slot ID to setup.
-> > + * @gpa: the GPA to install the slot (unused when @size == 0).
-> > + * @size: the size of the slot. Set to zero to uninstall a slot.
-> > + *
-> > + * This function helps to setup a KVM internal memory slot.  Specify
-> > + * @size > 0 to install a new slot, while @size == 0 to uninstall a
-> > + * slot.  The return code can be one of the following:
-> > + *
-> > + *   HVA:           on success (uninstall will return a bogus HVA)
-> 
-> I think it's important to call out that it returns '0' on uninstall, e.g.
-> otherwise it's not clear how a caller can detect failure.
-
-It will "return (0xdeadull << 48)" as you proposed in abbed4fa94f6? :-)
-
-Frankly speaking I always preferred zero but that's just not true any more
-after above change.  This also reminded me that maybe we should also return the
-same thing at [1] below.
-
-> 
-> > + *   -errno:        on error
-> > + *
-> > + * The caller should always use IS_ERR() to check the return value
-> > + * before use.  Note, the KVM internal memory slots are guaranteed to
-> > + * remain valid and unchanged until the VM is destroyed, i.e., the
-> > + * GPA->HVA translation will not change.  However, the HVA is a user
-> > + * address, i.e. its accessibility is not guaranteed, and must be
-> > + * accessed via __copy_{to,from}_user().
-> > + */
-> > +void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
-> > +				      u32 size)
-> >  {
-> >  	int i, r;
-> >  	unsigned long hva, uninitialized_var(old_npages);
-> > @@ -9800,12 +9825,12 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
-> >  
-> >  	/* Called with kvm->slots_lock held.  */
-> >  	if (WARN_ON(id >= KVM_MEM_SLOTS_NUM))
-> > -		return -EINVAL;
-> > +		return ERR_PTR_USR(-EINVAL);
-> >  
-> >  	slot = id_to_memslot(slots, id);
-> >  	if (size) {
-> >  		if (slot && slot->npages)
-> > -			return -EEXIST;
-> > +			return ERR_PTR_USR(-EEXIST);
-> >  
-> >  		/*
-> >  		 * MAP_SHARED to prevent internal slot pages from being moved
-> > @@ -9814,10 +9839,10 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
-> >  		hva = vm_mmap(NULL, 0, size, PROT_READ | PROT_WRITE,
-> >  			      MAP_SHARED | MAP_ANONYMOUS, 0);
-> >  		if (IS_ERR((void *)hva))
-> 
-> IS_ERR_VALUE() can be used to avoid the double cast.
-
-Agreed.  But it's a context cleanup, so I normally will keep it as is (or use a
-standalone patch).
-
-> 
-> > -			return PTR_ERR((void *)hva);
-> > +			return (void __user *)hva;
-> 
-> If we still want to go down the route of ERR_PTR_USR, then an ERR_CAST_USR
-> seems in order.
-
-Sure.  But I'll still keep it kvm-only if you won't mind...
-
-> 
-> >  	} else {
-> >  		if (!slot || !slot->npages)
-> > -			return 0;
-> > +			return ERR_PTR_USR(0);
-
-[1]
-
-> 
-> "return ERR_PTR_USR(NULL)" or "return NULL" would be more intuitive.  Moot
-> point if the return is changed to "unsigned long".
-
-ERR_PTR_USR() takes a "long".  I can use ERR_CAST_USR(NULL) if you prefer me to
-explicitly use NULL.
-
-Thanks,
-
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index 221157136af6..eae39eaf49af 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -189,10 +189,12 @@ __poll_t iio_buffer_poll(struct file *filp,
+  */
+ void iio_buffer_wakeup_poll(struct iio_dev *indio_dev)
+ {
+-	if (!indio_dev->buffer)
++	struct iio_buffer *buffer = indio_dev->buffer;
++
++	if (!buffer)
+ 		return;
+ 
+-	wake_up(&indio_dev->buffer->pollq);
++	wake_up(&buffer->pollq);
+ }
+ 
+ void iio_buffer_init(struct iio_buffer *buffer)
+@@ -262,10 +264,11 @@ static ssize_t iio_scan_el_show(struct device *dev,
+ {
+ 	int ret;
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_buffer *buffer = indio_dev->buffer;
+ 
+ 	/* Ensure ret is 0 or 1. */
+ 	ret = !!test_bit(to_iio_dev_attr(attr)->address,
+-		       indio_dev->buffer->scan_mask);
++		       buffer->scan_mask);
+ 
+ 	return sprintf(buf, "%d\n", ret);
+ }
+@@ -381,7 +384,7 @@ static ssize_t iio_scan_el_store(struct device *dev,
+ 	if (ret < 0)
+ 		return ret;
+ 	mutex_lock(&indio_dev->mlock);
+-	if (iio_buffer_is_active(indio_dev->buffer)) {
++	if (iio_buffer_is_active(buffer)) {
+ 		ret = -EBUSY;
+ 		goto error_ret;
+ 	}
+@@ -410,7 +413,9 @@ static ssize_t iio_scan_el_ts_show(struct device *dev,
+ 				   char *buf)
+ {
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	return sprintf(buf, "%d\n", indio_dev->buffer->scan_timestamp);
++	struct iio_buffer *buffer = indio_dev->buffer;
++
++	return sprintf(buf, "%d\n", buffer->scan_timestamp);
+ }
+ 
+ static ssize_t iio_scan_el_ts_store(struct device *dev,
+@@ -420,6 +425,7 @@ static ssize_t iio_scan_el_ts_store(struct device *dev,
+ {
+ 	int ret;
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_buffer *buffer = indio_dev->buffer;
+ 	bool state;
+ 
+ 	ret = strtobool(buf, &state);
+@@ -427,11 +433,11 @@ static ssize_t iio_scan_el_ts_store(struct device *dev,
+ 		return ret;
+ 
+ 	mutex_lock(&indio_dev->mlock);
+-	if (iio_buffer_is_active(indio_dev->buffer)) {
++	if (iio_buffer_is_active(buffer)) {
+ 		ret = -EBUSY;
+ 		goto error_ret;
+ 	}
+-	indio_dev->buffer->scan_timestamp = state;
++	buffer->scan_timestamp = state;
+ error_ret:
+ 	mutex_unlock(&indio_dev->mlock);
+ 
+@@ -439,10 +445,10 @@ static ssize_t iio_scan_el_ts_store(struct device *dev,
+ }
+ 
+ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
++					struct iio_buffer *buffer,
+ 					const struct iio_chan_spec *chan)
+ {
+ 	int ret, attrcount = 0;
+-	struct iio_buffer *buffer = indio_dev->buffer;
+ 
+ 	ret = __iio_add_chan_devattr("index",
+ 				     chan,
+@@ -518,7 +524,7 @@ static ssize_t iio_buffer_write_length(struct device *dev,
+ 		return len;
+ 
+ 	mutex_lock(&indio_dev->mlock);
+-	if (iio_buffer_is_active(indio_dev->buffer)) {
++	if (iio_buffer_is_active(buffer)) {
+ 		ret = -EBUSY;
+ 	} else {
+ 		buffer->access->set_length(buffer, val);
+@@ -539,7 +545,9 @@ static ssize_t iio_buffer_show_enable(struct device *dev,
+ 				      char *buf)
+ {
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	return sprintf(buf, "%d\n", iio_buffer_is_active(indio_dev->buffer));
++	struct iio_buffer *buffer = indio_dev->buffer;
++
++	return sprintf(buf, "%d\n", iio_buffer_is_active(buffer));
+ }
+ 
+ static unsigned int iio_storage_bytes_for_si(struct iio_dev *indio_dev,
+@@ -1129,6 +1137,7 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+ 	int ret;
+ 	bool requested_state;
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_buffer *buffer = indio_dev->buffer;
+ 	bool inlist;
+ 
+ 	ret = strtobool(buf, &requested_state);
+@@ -1138,17 +1147,15 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+ 	mutex_lock(&indio_dev->mlock);
+ 
+ 	/* Find out if it is in the list */
+-	inlist = iio_buffer_is_active(indio_dev->buffer);
++	inlist = iio_buffer_is_active(buffer);
+ 	/* Already in desired state */
+ 	if (inlist == requested_state)
+ 		goto done;
+ 
+ 	if (requested_state)
+-		ret = __iio_update_buffers(indio_dev,
+-					 indio_dev->buffer, NULL);
++		ret = __iio_update_buffers(indio_dev, buffer, NULL);
+ 	else
+-		ret = __iio_update_buffers(indio_dev,
+-					 NULL, indio_dev->buffer);
++		ret = __iio_update_buffers(indio_dev, NULL, buffer);
+ 
+ done:
+ 	mutex_unlock(&indio_dev->mlock);
+@@ -1190,7 +1197,7 @@ static ssize_t iio_buffer_store_watermark(struct device *dev,
+ 		goto out;
+ 	}
+ 
+-	if (iio_buffer_is_active(indio_dev->buffer)) {
++	if (iio_buffer_is_active(buffer)) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+@@ -1207,11 +1214,9 @@ static ssize_t iio_dma_show_data_available(struct device *dev,
+ 						char *buf)
+ {
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+-	size_t bytes;
+-
+-	bytes = iio_buffer_data_available(indio_dev->buffer);
++	struct iio_buffer *buffer = indio_dev->buffer;
+ 
+-	return sprintf(buf, "%zu\n", bytes);
++	return sprintf(buf, "%zu\n", iio_buffer_data_available(buffer));
+ }
+ 
+ static DEVICE_ATTR(length, S_IRUGO | S_IWUSR, iio_buffer_read_length,
+@@ -1292,7 +1297,7 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+ 			if (channels[i].scan_index < 0)
+ 				continue;
+ 
+-			ret = iio_buffer_add_channel_sysfs(indio_dev,
++			ret = iio_buffer_add_channel_sysfs(indio_dev, buffer,
+ 							 &channels[i]);
+ 			if (ret < 0)
+ 				goto error_cleanup_dynamic;
+@@ -1332,20 +1337,22 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+ 	bitmap_free(buffer->scan_mask);
+ error_cleanup_dynamic:
+ 	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+-	kfree(indio_dev->buffer->buffer_group.attrs);
++	kfree(buffer->buffer_group.attrs);
+ 
+ 	return ret;
+ }
+ 
+ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+ {
+-	if (!indio_dev->buffer)
++	struct iio_buffer *buffer = indio_dev->buffer;
++
++	if (!buffer)
+ 		return;
+ 
+-	bitmap_free(indio_dev->buffer->scan_mask);
+-	kfree(indio_dev->buffer->buffer_group.attrs);
+-	kfree(indio_dev->buffer->scan_el_group.attrs);
+-	iio_free_chan_devattr_list(&indio_dev->buffer->scan_el_dev_attr_list);
++	bitmap_free(buffer->scan_mask);
++	kfree(buffer->buffer_group.attrs);
++	kfree(buffer->scan_el_group.attrs);
++	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+ }
+ 
+ /**
 -- 
-Peter Xu
+2.17.1
 
