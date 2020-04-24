@@ -2,104 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5651B76CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63FD1B76D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgDXNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
+        id S1728101AbgDXNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgDXNU3 (ORCPT
+        with ESMTP id S1728059AbgDXNUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:20:29 -0400
-Received: from mail-ua1-x949.google.com (mail-ua1-x949.google.com [IPv6:2607:f8b0:4864:20::949])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34356C09B045
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:20:29 -0700 (PDT)
-Received: by mail-ua1-x949.google.com with SMTP id t26so4997081uar.14
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:20:29 -0700 (PDT)
+        Fri, 24 Apr 2020 09:20:40 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A6CC09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:20:40 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l11so7659287lfc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=iVEHdoFtCdFpiBaH+7lTMwaiCbL5fq6YQc2JbTG34i0=;
-        b=PdCZQPxFLh4X4g5Ge3zd7n/ltxri3640RXfDg8wJyfnyqccwK4dNf6XCxJUoDtGfHi
-         NCZXLr0l23ePq/mUzsBAqQgrJwLnifk7PHlnEWjWovbaGsSQK+rGwyCMiyvwBJDRWN0H
-         49TzMZBzZPVhBD5vBJ1BJohRFK0Z9L+dEYCyOBNPAN7eDKYKYwXXiFQUeiiRlwsis2m2
-         iaKg+XOwjGAF0atcmVy/kJh3248oEYro+CDniEPaSy46WuLqmZymFJqhrkdMb+XaWCu1
-         syFtzCej7wE791ewsv/Pgujzbyp43R1Rw9h/+xWUqIqo9pJLLB1VCbBOiDUYK79B0AEv
-         Qqbw==
+        d=cumulusnetworks.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=E4cbnT6iD9NKF/pSlrfjp2r6UpANFg0iv/kYrzOZLes=;
+        b=Sr+iKy2By/lSo0Y94e7vCAmXPlw3o+frOpginSSqvNVDZKz+8JKWDI9IEMVKNbDKin
+         sURo8CzDQuMEUkRmGLUfCdMh3p8Feax72WCiViNKCpYXaXN6nP/Q8a/3i5Z03Dn5R5kO
+         JQyEN1R+eU3eC5UtW4Hy4qrr2u7VxIL7zpjkM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=iVEHdoFtCdFpiBaH+7lTMwaiCbL5fq6YQc2JbTG34i0=;
-        b=frWFhH82+92/52WehtujkmswVP8KXcwLKwAGTKwErgbXw5vnJzyzBMr5cRsOBPg3DC
-         1YB9ruYYUPeUy8oYZIteVpyLGBYy/N9K/DylAFX9Rn+2Mbb4tnnGWteb16/lEEww0UIv
-         L9u36R1Lq5HeLcAPVzPM65/QoGWNvQ9mw0vCeXUBAN4BhSF+44+4j34P/S5M2JcdsncA
-         ZitdjqaynOGLOE9TTBFvLe0ZRpfEtJeBIPNFG9ism2kiySNiH8vWXg8oTuOfjX0OaLXV
-         ZSrhUMruaY9DCe6myzH4V5q6IJG40Gp0ZRt9kNSX4MpLBp1itoacH+o8tf1cekbTMeBv
-         pFPg==
-X-Gm-Message-State: AGi0PuYYlD/yOm/2kTdDpuiC5BnhCKUmOlDiux/NvQy7zJdVckKRc0fc
-        JW3N7+eqsYTTlOi1u7rVZiHhh7rVNB3xTMat
-X-Google-Smtp-Source: APiQypKBNnbfnbdI4IQDk1HiBGDGCEt6LytLKochQyMW8Chmj4ToVQPSf3IEhYa2CEKPn1r93OojRJbC1kl5TjKi
-X-Received: by 2002:a1f:ff11:: with SMTP id p17mr7604647vki.25.1587734428386;
- Fri, 24 Apr 2020 06:20:28 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 15:20:20 +0200
-In-Reply-To: <9c99c508da044822baf53db5e3fccd4f21b0f8d3.1587734346.git.andreyknvl@google.com>
-Message-Id: <635f48fcb4bb99c70ab9d7f0dfe84d1ec7dc540e.1587734346.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <9c99c508da044822baf53db5e3fccd4f21b0f8d3.1587734346.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH USB v2 2/2] usb: raw-gadget: fix typo in uapi headers
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E4cbnT6iD9NKF/pSlrfjp2r6UpANFg0iv/kYrzOZLes=;
+        b=JjJBsQ4EnS7ajJC7gENALvO+HybQ/3lFIeNCXvuAlE0BxmajTijpCQRzDA9iJ9MkoD
+         NIwVrXWGZVJ/RblsKOI/U2Cg6NZaZgCmRryMTBHeq+Lqg8zj7PUy7xaN2VDbQDvUlqs9
+         srbrW+pBePEHrfH6O3fKen3U3W1PKIFEDMEfJKju2kC7yU6dR99sVX1cpEXrZI9N47Jb
+         hk3uybU12IQVKz3GnSMAhouh9stSr1kdnu4F8vojTmWr1G0QOHE93xO76Z0AcEed5osl
+         sqmuX7vlU9w82oUWX1U8DObMswXM1NGgJrAk+wuYRgK383JqXchu4ZOJvTFeSoD4TBQb
+         4npA==
+X-Gm-Message-State: AGi0PuY/BSfPJGtaghDwn9LCHdkl7jIp2T2pm+VsEYqk0N/KWTMOYhzT
+        0ureu+Ag1Do3HTMOxJT7KQbONw==
+X-Google-Smtp-Source: APiQypLyLg/ZbS3zAM8LTd2glrbQ22nI6vwPlWMi53bTGZhDnFMOfArtlnmfUo3xGPQOc4KgZzVnGQ==
+X-Received: by 2002:a19:230c:: with SMTP id j12mr6327801lfj.109.1587734438545;
+        Fri, 24 Apr 2020 06:20:38 -0700 (PDT)
+Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
+        by smtp.gmail.com with ESMTPSA id j22sm4120697ljh.107.2020.04.24.06.20.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 06:20:37 -0700 (PDT)
+Subject: Re: [PATCH net-next v3 11/11] net: bridge: Add checks for enabling
+ the STP.
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
+        jiri@resnulli.us, ivecera@redhat.com, kuba@kernel.org,
+        roopa@cumulusnetworks.com, olteanv@gmail.com, andrew@lunn.ch,
+        UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bridge@lists.linux-foundation.org
+References: <20200422161833.1123-1-horatiu.vultur@microchip.com>
+ <20200422161833.1123-12-horatiu.vultur@microchip.com>
+From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Message-ID: <2d97fea6-8f24-89ba-a97b-99a12cf41b09@cumulusnetworks.com>
+Date:   Fri, 24 Apr 2020 16:20:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200422161833.1123-12-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change "trasferred" into "transferred".
+On 22/04/2020 19:18, Horatiu Vultur wrote:
+> It is not possible to have the MRP and STP running at the same time on the
+> bridge, therefore add check when enabling the STP to check if MRP is already
+> enabled. In that case return error.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  net/bridge/br_ioctl.c    |  3 +--
+>  net/bridge/br_netlink.c  |  4 +++-
+>  net/bridge/br_private.h  |  3 ++-
+>  net/bridge/br_stp.c      |  6 ++++++
+>  net/bridge/br_stp_if.c   | 11 ++++++++++-
+>  net/bridge/br_sysfs_br.c |  4 +---
+>  6 files changed, 23 insertions(+), 8 deletions(-)
+> 
+> diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
+> index ae22d784b88a..5e71fc8b826f 100644
+> --- a/net/bridge/br_ioctl.c
+> +++ b/net/bridge/br_ioctl.c
+> @@ -242,8 +242,7 @@ static int old_dev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+>  		if (!ns_capable(dev_net(dev)->user_ns, CAP_NET_ADMIN))
+>  			return -EPERM;
+>  
+> -		br_stp_set_enabled(br, args[1]);
+> -		ret = 0;
+> +		ret = br_stp_set_enabled(br, args[1], NULL);
+>  		break;
+>  
+>  	case BRCTL_SET_BRIDGE_PRIORITY:
+> diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+> index 1a5e681a626a..a774e19c41bb 100644
+> --- a/net/bridge/br_netlink.c
+> +++ b/net/bridge/br_netlink.c
+> @@ -1109,7 +1109,9 @@ static int br_changelink(struct net_device *brdev, struct nlattr *tb[],
+>  	if (data[IFLA_BR_STP_STATE]) {
+>  		u32 stp_enabled = nla_get_u32(data[IFLA_BR_STP_STATE]);
+>  
+> -		br_stp_set_enabled(br, stp_enabled);
+> +		err = br_stp_set_enabled(br, stp_enabled, extack);
+> +		if (err)
+> +			return err;
+>  	}
+>  
+>  	if (data[IFLA_BR_PRIORITY]) {
+> diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> index 5835828320b6..c35647cb138a 100644
+> --- a/net/bridge/br_private.h
+> +++ b/net/bridge/br_private.h
+> @@ -1283,7 +1283,8 @@ int br_set_ageing_time(struct net_bridge *br, clock_t ageing_time);
+>  /* br_stp_if.c */
+>  void br_stp_enable_bridge(struct net_bridge *br);
+>  void br_stp_disable_bridge(struct net_bridge *br);
+> -void br_stp_set_enabled(struct net_bridge *br, unsigned long val);
+> +int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
+> +		       struct netlink_ext_ack *extack);
+>  void br_stp_enable_port(struct net_bridge_port *p);
+>  void br_stp_disable_port(struct net_bridge_port *p);
+>  bool br_stp_recalculate_bridge_id(struct net_bridge *br);
+> diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
+> index 1f14b8455345..3e88be7aa269 100644
+> --- a/net/bridge/br_stp.c
+> +++ b/net/bridge/br_stp.c
+> @@ -36,6 +36,12 @@ void br_set_state(struct net_bridge_port *p, unsigned int state)
+>  	};
+>  	int err;
+>  
+> +	/* Don't change the state of the ports if they are driven by a different
+> +	 * protocol.
+> +	 */
+> +	if (p->flags & BR_MRP_AWARE)
+> +		return;
+> +
+>  	p->state = state;
+>  	err = switchdev_port_attr_set(p->dev, &attr);
+>  	if (err && err != -EOPNOTSUPP)
+> diff --git a/net/bridge/br_stp_if.c b/net/bridge/br_stp_if.c
+> index d174d3a566aa..a42850b7eb9a 100644
+> --- a/net/bridge/br_stp_if.c
+> +++ b/net/bridge/br_stp_if.c
+> @@ -196,10 +196,17 @@ static void br_stp_stop(struct net_bridge *br)
+>  	br->stp_enabled = BR_NO_STP;
+>  }
+>  
+> -void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
+> +int br_stp_set_enabled(struct net_bridge *br, unsigned long val,
+> +		       struct netlink_ext_ack *extack)
+>  {
+>  	ASSERT_RTNL();
+>  
+> +	if (br_mrp_enabled(br)) {
+> +		NL_SET_ERR_MSG_MOD(extack,
+> +				   "STP can't be enabled if MRP is already enabled\n");
 
-Change-Id: I2d8d1dcc9ba6aacafc03f4b76caca7409a6da1a6
----
+The operation could be disable (noop in case it's already disabled) and this will still
+return an error.
 
-Changes in v2:
-
-- Updated commit message.
-
----
- include/uapi/linux/usb/raw_gadget.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/usb/raw_gadget.h b/include/uapi/linux/usb/raw_gadget.h
-index ea375082b3ac..8544802b25bd 100644
---- a/include/uapi/linux/usb/raw_gadget.h
-+++ b/include/uapi/linux/usb/raw_gadget.h
-@@ -119,7 +119,7 @@ struct usb_raw_ep_io {
-  * received on endpoint 0, provided that was an IN (OUT for READ) request and
-  * waits until the urb is completed. Copies received data to user for READ.
-  * Accepts a pointer to the usb_raw_ep_io struct as an argument.
-- * Returns length of trasferred data on success or negative error code on
-+ * Returns length of transferred data on success or negative error code on
-  * failure.
-  */
- #define USB_RAW_IOCTL_EP0_WRITE		_IOW('U', 3, struct usb_raw_ep_io)
-@@ -145,7 +145,7 @@ struct usb_raw_ep_io {
-  * request and waits until the urb is completed. Copies received data to user
-  * for READ.
-  * Accepts a pointer to the usb_raw_ep_io struct as an argument.
-- * Returns length of trasferred data on success or negative error code on
-+ * Returns length of transferred data on success or negative error code on
-  * failure.
-  */
- #define USB_RAW_IOCTL_EP_WRITE		_IOW('U', 7, struct usb_raw_ep_io)
--- 
-2.26.2.303.gf8c07b1a785-goog
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (val) {
+>  		if (br->stp_enabled == BR_NO_STP)
+>  			br_stp_start(br);
+> @@ -207,6 +214,8 @@ void br_stp_set_enabled(struct net_bridge *br, unsigned long val)
+>  		if (br->stp_enabled != BR_NO_STP)
+>  			br_stp_stop(br);
+>  	}
+> +
+> +	return 0;
+>  }
+>  
+>  /* called under bridge lock */
+> diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
+> index 9ab0f00b1081..7db06e3f642a 100644
+> --- a/net/bridge/br_sysfs_br.c
+> +++ b/net/bridge/br_sysfs_br.c
+> @@ -126,9 +126,7 @@ static ssize_t stp_state_show(struct device *d,
+>  
+>  static int set_stp_state(struct net_bridge *br, unsigned long val)
+>  {
+> -	br_stp_set_enabled(br, val);
+> -
+> -	return 0;
+> +	return br_stp_set_enabled(br, val, NULL);
+>  }
+>  
+>  static ssize_t stp_state_store(struct device *d,
+> 
 
