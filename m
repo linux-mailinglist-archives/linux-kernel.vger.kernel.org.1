@@ -2,75 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E3A1B8201
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 00:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89B11B8202
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 00:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDXWWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 18:22:19 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:32761 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbgDXWWS (ORCPT
+        id S1726154AbgDXWWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 18:22:42 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:59062 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725874AbgDXWWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 18:22:18 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 24 Apr 2020 15:22:10 -0700
-Received: from localhost (unknown [10.129.220.242])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 2124C4049C;
-        Fri, 24 Apr 2020 15:22:15 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 15:22:14 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-CC:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] recordmcount: support >64k sections
-Message-ID: <20200424222214.GC9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422232417.72162-1-samitolvanen@google.com>
- <20200424193046.160744-1-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200424193046.160744-1-samitolvanen@google.com>
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+        Fri, 24 Apr 2020 18:22:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 52AB78EE157;
+        Fri, 24 Apr 2020 15:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1587766961;
+        bh=MUa5hmhvIZ06LZY7X1HZZ/vqw6X/xHhf88NvO1fE3f8=;
+        h=Subject:From:To:Cc:Date:From;
+        b=slvaJ6JayPB6lYhkgB+ViOlraQMB92BXOn2g/ig5z+v6682bAaN2E4VKbPiX34MN7
+         RYr6t8qbN2nqLBsM377uEetxJbiXUC0SWeS/sAwiPph/Yz3l/cKPOqaIjd/mbY0O7V
+         a9xpw7g6HCXTgjlGU/Jl2nWA+Ht0jgMIqd3EQpYQ=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n3gvE-JkSEaR; Fri, 24 Apr 2020 15:22:40 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 53DC88EE0C9;
+        Fri, 24 Apr 2020 15:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1587766959;
+        bh=MUa5hmhvIZ06LZY7X1HZZ/vqw6X/xHhf88NvO1fE3f8=;
+        h=Subject:From:To:Cc:Date:From;
+        b=lE4oJgKptWhM+ZFgpL9mRgu/DiT3MP1qGuTwaCWxpGAGqyVuY67k/vSM2gukl6arh
+         PpxpgfeZLxggEZTtQAdYgkgqOlMWZsYvNr3WWwXE5aY8Y1h5iKTRmIwD8lMwbk71XB
+         HwzBjTltuZZBYDOJTXtSaToVj9bb99x9TnJOp8Zw=
+Message-ID: <1587766958.4513.19.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.7-rc2
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 24 Apr 2020 15:22:38 -0700
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 12:30:46PM -0700, Sami Tolvanen wrote:
-> When compiling a kernel with Clang and LTO, we need to run
-> recordmcount on vmlinux.o with a large number of sections, which
-> currently fails as the program doesn't understand extended
-> section indexes. This change adds support for processing binaries
-> with >64k sections.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Two minor fixes one to update a Kconfig reference and the other to fix
+an unreleased resource on an error path in sg.
 
-Feel free to add
+The patch is available here:
 
-Reviewed-by: Matt Helsley <mhelsley@vmware.com>
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-> ---
-> Changes in v2:
->  - Switched to unsigned int for (old|new)_shnum in append_func.
->  - Added set_shnum and find_symtab helper functions and moved
->    the new logic there.
-> 
-> ---
->  scripts/recordmcount.h | 98 +++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 92 insertions(+), 6 deletions(-)
+The short changelog is:
 
-<snip>
+Diego Elio Pettenò (1):
+      scsi: Update referenced link to cdrtools
+
+Wu Bo (1):
+      scsi: sg: add sg_remove_request in sg_write
+
+And the diffstat:
+
+ drivers/scsi/Kconfig | 2 +-
+ drivers/scsi/sg.c    | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+With full diff below
+
+James
+
+---
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 17feff174f57..2017c43dac1b 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -127,7 +127,7 @@ config CHR_DEV_SG
+ 
+ 	  For scanners, look at SANE (<http://www.sane-project.org/>). For CD
+ 	  writer software look at Cdrtools
+-	  (<http://cdrecord.berlios.de/private/cdrecord.html>)
++	  (<http://cdrtools.sourceforge.net/>)
+ 	  and for burning a "disk at once": CDRDAO
+ 	  (<http://cdrdao.sourceforge.net/>). Cdparanoia is a high
+ 	  quality digital reader of audio CDs (<http://www.xiph.org/paranoia/>).
+diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+index 9c0ee192f0f9..20472aaaf630 100644
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -685,8 +685,10 @@ sg_write(struct file *filp, const char __user *buf, size_t count, loff_t * ppos)
+ 	hp->flags = input_size;	/* structure abuse ... */
+ 	hp->pack_id = old_hdr.pack_id;
+ 	hp->usr_ptr = NULL;
+-	if (copy_from_user(cmnd, buf, cmd_size))
++	if (copy_from_user(cmnd, buf, cmd_size)) {
++		sg_remove_request(sfp, srp);
+ 		return -EFAULT;
++	}
+ 	/*
+ 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
+ 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
+
