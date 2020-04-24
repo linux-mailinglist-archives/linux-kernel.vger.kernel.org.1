@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10711B74AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE111B74BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgDXM2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:28:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgDXMY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:24:27 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BBA821744;
-        Fri, 24 Apr 2020 12:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587731067;
-        bh=5qRrk/qk1QSXAwev/EVg/ssIKECEKJ1TPHFWCiMyJVM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WZc9OE9pLP93VqYKwlvX7qHLkTrRCbCxaxynxHVE90+p1wMcxf//dZi/qHad97h+I
-         BvwJ4/iZA6WrfPTGmLDpf0GjVXUFJZriJCQGrKlRgZ68MXWH/AalABHTnP3vlapQ1X
-         MyFEnr95UcuWwqfr8x2jVyiLK7aAQt0EIJD73Cq0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Li Bin <huawei.libin@huawei.com>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/21] scsi: sg: add sg_remove_request in sg_common_write
-Date:   Fri, 24 Apr 2020 08:24:04 -0400
-Message-Id: <20200424122419.10648-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200424122419.10648-1-sashal@kernel.org>
-References: <20200424122419.10648-1-sashal@kernel.org>
+        id S1728807AbgDXM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:28:29 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2895 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728295AbgDXMYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:24:15 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EED1252A3DBC5F0F9B9A;
+        Fri, 24 Apr 2020 20:24:07 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.99) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 24 Apr 2020
+ 20:24:05 +0800
+Subject: Re: [PATCH net-next] ptp: clockmatrix: remove unnecessary comparison
+To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        <richardcochran@gmail.com>, <vincent.cheng.xh@renesas.com>,
+        <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1587716058-1840-1-git-send-email-yangyingliang@huawei.com>
+ <2c85e220-3765-4424-ee22-c9acf27f9d22@cogentembedded.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <9f0ca7d9-06ff-a83e-03f0-6cfb5c2ecd47@huawei.com>
+Date:   Fri, 24 Apr 2020 20:24:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <2c85e220-3765-4424-ee22-c9acf27f9d22@cogentembedded.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.99]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Bin <huawei.libin@huawei.com>
 
-[ Upstream commit 849f8583e955dbe3a1806e03ecacd5e71cce0a08 ]
+On 2020/4/24 18:12, Sergei Shtylyov wrote:
+> Hello!
+>
+> On 24.04.2020 11:14, Yang Yingliang wrote:
+>
+>> The type of loaddr is u8 which is always '<=' 0xff, so the
+>> loaddr <= 0xff is always true, we can remove this comparison.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>   drivers/ptp/ptp_clockmatrix.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/ptp/ptp_clockmatrix.c 
+>> b/drivers/ptp/ptp_clockmatrix.c
+>> index 032e112..56aee4f 100644
+>> --- a/drivers/ptp/ptp_clockmatrix.c
+>> +++ b/drivers/ptp/ptp_clockmatrix.c
+>> @@ -780,7 +780,7 @@ static int idtcm_load_firmware(struct idtcm *idtcm,
+>>                 /* Page size 128, last 4 bytes of page skipped */
+>>               if (((loaddr > 0x7b) && (loaddr <= 0x7f))
+>> -                 || ((loaddr > 0xfb) && (loaddr <= 0xff)))
+>> +                 || loaddr <= 0xff)
+>
+>    Haven't you just said that this is always true? :-)
 
-If the dxfer_len is greater than 256M then the request is invalid and we
-need to call sg_remove_request in sg_common_write.
+My bad, I sent the patch.
 
-Link: https://lore.kernel.org/r/1586777361-17339-1-git-send-email-huawei.libin@huawei.com
-Fixes: f930c7043663 ("scsi: sg: only check for dxfer_len greater than 256M")
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Li Bin <huawei.libin@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/sg.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 3a406b40f1505..b5f589b7b43dc 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -809,8 +809,10 @@ sg_common_write(Sg_fd * sfp, Sg_request * srp,
- 			"sg_common_write:  scsi opcode=0x%02x, cmd_size=%d\n",
- 			(int) cmnd[0], (int) hp->cmd_len));
- 
--	if (hp->dxfer_len >= SZ_256M)
-+	if (hp->dxfer_len >= SZ_256M) {
-+		sg_remove_request(sfp, srp);
- 		return -EINVAL;
-+	}
- 
- 	k = sg_start_req(srp, cmnd);
- 	if (k) {
--- 
-2.20.1
+>
+> [...]
+>
+> MBR, Sergei
 
