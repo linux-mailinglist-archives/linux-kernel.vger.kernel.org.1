@@ -2,239 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ECB1B7AAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACE21B7AB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgDXPxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        id S1728184AbgDXPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727031AbgDXPxm (ORCPT
+        with ESMTP id S1727049AbgDXPyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:53:42 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF4AC09B047
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:53:40 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id j21so11416885qtq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:53:40 -0700 (PDT)
+        Fri, 24 Apr 2020 11:54:07 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0DAC09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:54:07 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 188so11051467wmc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=lMQvFTtuTw6kNlBxtxkqtbssFCtHBR2FRtmMk0xCduU=;
-        b=WuM+BZfN2f2K8PeB8zeAMu1uSBTEQQcy3jadaZaxu0hXdSM2+0ZSleQc8OoKCypGbq
-         cpYym+HQQEBWNfdSrOJBaiU0UE/RfhhsaLGKqGj0b7R2JR/YAKcZzUEbAHNimy/bV+aQ
-         o7zMZA5LBhGziX1lc93Tb/7e4F3JuQm0Q3/Ssi9rJrZ7m4BxwgeQOXaVK7/R3/pLiFTh
-         nSMifeb/reCxUKWjGrggcFOliuUypD8RXqWN3d1K2KBZhWW1l8jiYpoU2z2m9T6RVtVm
-         kuduB/9vEEMY9PiVvQXyd8FvtNg4isZqjarCBovLiTSGbsTaLiisAX4woIdWhcboxvFl
-         Q8EA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ADrifka4jhigxTALfjwTYGfnpgXgMD4+a7Agmx5rILo=;
+        b=o/w9qIEsR+jr/v3slfQCnrCxYARzCrPSp9pGgpkQYlXsYkQqTqh5Ji/+MpmCSaLS7v
+         qKHbT2sNu/Pb2EjTHUgKbzkC/1MtWLpU3ixdlfcQZKcYuF26dD3heeBoqcTVwGATqcZl
+         AcN32liN1kpIyZ+HvwHkiq3cux6jxRru7nZGyTjNy47N8qAtif6IiMo45FWa+L6zjq4m
+         XLGqPlzFurqrLGpfGX0krk2zrVOCU5MhoV+9lfTJrk3gaT90QF23dKMEi7JaMBBLi7/W
+         yaezqte/sAZIbTiDiu3SA8Iwa4hxtfQd+ZjgfOzOTvVjFliw2MSetKNqqA77YYdqNUk3
+         cdkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=lMQvFTtuTw6kNlBxtxkqtbssFCtHBR2FRtmMk0xCduU=;
-        b=WXQQbo+jI6Sc6RI3DioR28NcoPgOKww/GNEICgQlkkjsC+44PejiO8H/rmeALwf6BQ
-         Mgc6/lYGafeARKxWSCIR1qoHhrgirdtiCnTt4Ho+Amtr9okU5fat3dFYg+O8JtXWDTqU
-         jH+mnhmxodB6eKGMpIHr3hYWIxdu/xXRsGaQIN4wQQzZPCBNLh2yhkoyhts3iVLtXJKb
-         dClBoSPEjsQii2uq9BqnjMjFuEmLsrpYGoIMDGk8qKFcxId/QTow8xDacI20cswE9Oem
-         aL+vaAx7C1hxTNt6rXOxxoEOrp7jBcLATNtEU3SF1LbEwlFNM7biHiOMNx8CZehcj+my
-         qHAA==
-X-Gm-Message-State: AGi0PuZOcta3/9hB52z8RnNBYur52kw4+zOPXKv8eNVFpl5ebgq/2BxP
-        j3CcBRY+7LRieyqiSDmm0VW6+KOtdQ==
-X-Google-Smtp-Source: APiQypKtqUH8bX6hdDPwC8R0M0bM9FGGsnwRt9hoDS2kUCXaRMJJNNuQg3q+K+Z0rrHGzNocbJa2Rwq+2w==
-X-Received: by 2002:ac8:70d:: with SMTP id g13mr9835143qth.91.1587743619648;
- Fri, 24 Apr 2020 08:53:39 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 08:53:35 -0700
-Message-Id: <20200424155335.63787-1-sqazi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v4] block: Limit number of items taken from the I/O scheduler
- in one go
-From:   Salman Qazi <sqazi@google.com>
-To:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jesse Barnes <jsbarnes@google.com>,
-        Gwendal Grignou <gwendal@google.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Christoph Hellwig <hch@lst.de>, Salman Qazi <sqazi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ADrifka4jhigxTALfjwTYGfnpgXgMD4+a7Agmx5rILo=;
+        b=FIfZw1iuHYj4PYpnvR3c8iut9twNRHSKlL/vSf07+mbByRKTxUl0LMAPALxu/gb1el
+         dyJ+ybLfY8Q1PWeMftUXSLthJgshu7mVg5+lU/pHOd0KDJ4YvEi95t4edJJqMk4+Z5Ye
+         JRk3NevIhllmZXco6ZAPCo/h1taxduZLAIYZSr4e5mpD+PmmIXX7Tk1SD3suMGGJKVjE
+         jyAlFNu9jjdbq/gKNQIgHEZf24QHpio+IrFikkmSoJOZ6ikiZv302K1Ruxrjo8SQXIAx
+         +WKvHeQkSmoL4eT5OMXxhV3SZuDYQJjbotlt0K9ckKN6v97Kg+iIQMLPL0qEyP5fTYcr
+         /3Ew==
+X-Gm-Message-State: AGi0PuaG+WJPgGVSmVfsqkJAMej9KR2Tmr/KTEsl4lmOTUsPDnyhF73G
+        r+ccphx35euj0xq84eWPDKYx6A==
+X-Google-Smtp-Source: APiQypI10LpqQHNiTVHYn+3Mk1k8a0b6tul7ntLB01e7r3o7yyKMm+eFZUqWmrr9UyT6X72zGWwYhQ==
+X-Received: by 2002:a7b:ce09:: with SMTP id m9mr10474294wmc.156.1587743646215;
+        Fri, 24 Apr 2020 08:54:06 -0700 (PDT)
+Received: from localhost.localdomain ([87.120.218.65])
+        by smtp.googlemail.com with ESMTPSA id z76sm3923583wmc.9.2020.04.24.08.54.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 08:54:05 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        robh+dt@kernel.org, rjw@rjwysocki.net, saravanak@google.com,
+        sibis@codeaurora.org
+Cc:     rnayak@codeaurora.org, bjorn.andersson@linaro.org,
+        vincent.guittot@linaro.org, jcrouse@codeaurora.org,
+        evgreen@chromium.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH v7 0/7] Introduce OPP bandwidth bindings
+Date:   Fri, 24 Apr 2020 18:53:57 +0300
+Message-Id: <20200424155404.10746-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flushes bypass the I/O scheduler and get added to hctx->dispatch
-in blk_mq_sched_bypass_insert.  This can happen while a kworker is running
-hctx->run_work work item and is past the point in
-blk_mq_sched_dispatch_requests where hctx->dispatch is checked.
+Here is a proposal to extend the OPP bindings with bandwidth based on
+a few previous discussions [1] and patchsets from me [2][3] and Saravana
+[4][5][6][7][8][9].
 
-The blk_mq_do_dispatch_sched call is not guaranteed to end in bounded time,
-because the I/O scheduler can feed an arbitrary number of commands.
+Changes in v7:
+* This version is combination of both patchsets by Saravana and me, based
+on [3] and [9].
+* The latest version of DT bindings from Saravana is used here, with a
+minor change of using arrays instead of single integers for opp-peak-kBps
+and opp-avg-kBps. This is needed to support multiple interconnect paths.
+* The concept of having multiple OPP tables per device has been dropped,
+as it was nacked by Viresh.
+* Various reviews comments have been addressed and some patches are
+split, and there are also some new patches. Thanks to Viresh, Sibi and
+others for providing feedback!
 
-Since we have only one hctx->run_work, the commands waiting in
-hctx->dispatch will wait an arbitrary length of time for run_work to be
-rerun.
+With this version of the patchset, the CPU/GPU to DDR bandwidth scaling
+will look like this in DT:
 
-A similar phenomenon exists with dispatches from the software queue.
+One interconnect path (no change from Saravana's v6 patches):
 
-The solution is to poll hctx->dispatch in blk_mq_do_dispatch_sched and
-blk_mq_do_dispatch_ctx and return from the run_work handler and let it
-rerun.
+cpu@0 {
+	operating-points-v2 = <&cpu_opp_table>;
+	interconnects = <&noc1 MASTER1 &noc2 SLAVE1>,
+};
 
-Signed-off-by: Salman Qazi <sqazi@google.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
----
-Changes since v3
+cpu_opp_table: cpu_opp_table {
+	compatible = "operating-points-v2";
 
-Updated a comment to make it clear why we call __blk_mq_sched_dispatch_requests
-twice before rerunning the work item.
+	opp-800000000 {
+		opp-hz = /bits/ 64 <800000000>;
+		opp-peak-kBps = <1525000>;
+		opp-avg-kBps = <457000>;
+	};
 
- block/blk-mq-sched.c | 67 +++++++++++++++++++++++++++++++++++---------
- 1 file changed, 54 insertions(+), 13 deletions(-)
+	opp-998400000 {
+		opp-hz = /bits/ 64 <998400000>;
+		opp-peak-kBps = <7614000>;
+		opp-avg-kBps = <2284000>;
+	};
+};
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index 74cedea56034..31ce6dbec93e 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -84,12 +84,16 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
-  * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
-  * its queue by itself in its completion handler, so we don't need to
-  * restart queue if .get_budget() returns BLK_STS_NO_RESOURCE.
-+ *
-+ * Returns -EAGAIN if hctx->dispatch was found non-empty and run_work has to
-+ * be run again.  This is necessary to avoid starving flushes.
-  */
--static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
-+static int blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- {
- 	struct request_queue *q = hctx->queue;
- 	struct elevator_queue *e = q->elevator;
- 	LIST_HEAD(rq_list);
-+	int ret = 0;
- 
- 	do {
- 		struct request *rq;
-@@ -97,6 +101,11 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- 		if (e->type->ops.has_work && !e->type->ops.has_work(hctx))
- 			break;
- 
-+		if (!list_empty_careful(&hctx->dispatch)) {
-+			ret = -EAGAIN;
-+			break;
-+		}
-+
- 		if (!blk_mq_get_dispatch_budget(hctx))
- 			break;
- 
-@@ -113,6 +122,8 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- 		 */
- 		list_add(&rq->queuelist, &rq_list);
- 	} while (blk_mq_dispatch_rq_list(q, &rq_list, true));
-+
-+	return ret;
- }
- 
- static struct blk_mq_ctx *blk_mq_next_ctx(struct blk_mq_hw_ctx *hctx,
-@@ -130,16 +141,25 @@ static struct blk_mq_ctx *blk_mq_next_ctx(struct blk_mq_hw_ctx *hctx,
-  * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
-  * its queue by itself in its completion handler, so we don't need to
-  * restart queue if .get_budget() returns BLK_STS_NO_RESOURCE.
-+ *
-+ * Returns -EAGAIN if hctx->dispatch was found non-empty and run_work has to
-+ * to be run again.  This is necessary to avoid starving flushes.
-  */
--static void blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
-+static int blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
- {
- 	struct request_queue *q = hctx->queue;
- 	LIST_HEAD(rq_list);
- 	struct blk_mq_ctx *ctx = READ_ONCE(hctx->dispatch_from);
-+	int ret = 0;
- 
- 	do {
- 		struct request *rq;
- 
-+		if (!list_empty_careful(&hctx->dispatch)) {
-+			ret = -EAGAIN;
-+			break;
-+		}
-+
- 		if (!sbitmap_any_bit_set(&hctx->ctx_map))
- 			break;
- 
-@@ -165,21 +185,17 @@ static void blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
- 	} while (blk_mq_dispatch_rq_list(q, &rq_list, true));
- 
- 	WRITE_ONCE(hctx->dispatch_from, ctx);
-+	return ret;
- }
- 
--void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
-+int __blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
- {
- 	struct request_queue *q = hctx->queue;
- 	struct elevator_queue *e = q->elevator;
- 	const bool has_sched_dispatch = e && e->type->ops.dispatch_request;
-+	int ret = 0;
- 	LIST_HEAD(rq_list);
- 
--	/* RCU or SRCU read lock is needed before checking quiesced flag */
--	if (unlikely(blk_mq_hctx_stopped(hctx) || blk_queue_quiesced(q)))
--		return;
--
--	hctx->run++;
--
- 	/*
- 	 * If we have previous entries on our dispatch list, grab them first for
- 	 * more fair dispatch.
-@@ -208,19 +224,44 @@ void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
- 		blk_mq_sched_mark_restart_hctx(hctx);
- 		if (blk_mq_dispatch_rq_list(q, &rq_list, false)) {
- 			if (has_sched_dispatch)
--				blk_mq_do_dispatch_sched(hctx);
-+				ret = blk_mq_do_dispatch_sched(hctx);
- 			else
--				blk_mq_do_dispatch_ctx(hctx);
-+				ret = blk_mq_do_dispatch_ctx(hctx);
- 		}
- 	} else if (has_sched_dispatch) {
--		blk_mq_do_dispatch_sched(hctx);
-+		ret = blk_mq_do_dispatch_sched(hctx);
- 	} else if (hctx->dispatch_busy) {
- 		/* dequeue request one by one from sw queue if queue is busy */
--		blk_mq_do_dispatch_ctx(hctx);
-+		ret = blk_mq_do_dispatch_ctx(hctx);
- 	} else {
- 		blk_mq_flush_busy_ctxs(hctx, &rq_list);
- 		blk_mq_dispatch_rq_list(q, &rq_list, false);
- 	}
-+
-+	return ret;
-+}
-+
-+void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
-+{
-+	struct request_queue *q = hctx->queue;
-+
-+	/* RCU or SRCU read lock is needed before checking quiesced flag */
-+	if (unlikely(blk_mq_hctx_stopped(hctx) || blk_queue_quiesced(q)))
-+		return;
-+
-+	hctx->run++;
-+
-+	/*
-+	 * A return of -EAGAIN is an indication that hctx->dispatch is not
-+	 * empty and we must run again in order to avoid starving flushes.
-+	 * As an optimization, we run again locally once.  In the unlikely
-+	 * event that we encounter the same race again, we reschedule
-+	 * the work item.
-+	 */
-+	if (__blk_mq_sched_dispatch_requests(hctx) == -EAGAIN) {
-+		if (__blk_mq_sched_dispatch_requests(hctx) == -EAGAIN)
-+			blk_mq_run_hw_queue(hctx, true);
-+	}
- }
- 
- bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
--- 
-2.26.2.303.gf8c07b1a785-goog
+Two interconnect paths:
+
+cpu@0 {
+	operating-points-v2 = <&cpu_opp_table>;
+	interconnects = <&noc1 MASTER1 &noc2 SLAVE1>,
+			<&noc3 MASTER2 &noc4 SLAVE2>;
+};
+
+cpu_opp_table: cpu_opp_table {
+	compatible = "operating-points-v2";
+
+	opp-800000000 {
+		opp-hz = /bits/ 64 <800000000>;
+		opp-peak-kBps = <1525000 2000>;
+		opp-avg-kBps = <457000 1000>;
+	};
+
+	opp-998400000 {
+		opp-hz = /bits/ 64 <998400000>;
+		opp-peak-kBps = <7614000 4000>;
+		opp-avg-kBps = <2284000 2000>;
+	};
+};
+
+------
+
+Every functional block on a SoC can contribute to the system power
+efficiency by expressing its own bandwidth needs (to memory or other SoC
+modules). This will allow the system to save power when high throughput
+is not required (and also provide maximum throughput when needed).
+
+There are at least three ways for a device to determine its bandwidth
+needs:
+	1. The device can dynamically calculate the needed bandwidth
+based on some known variable. For example: UART (baud rate), I2C (fast
+mode, high-speed mode, etc), USB (specification version, data transfer
+type), SDHC (SD standard, clock rate, bus-width), Video Encoder/Decoder
+(video format, resolution, frame-rate)
+
+	2. There is a hardware specific value. For example: hardware
+specific constant value (e.g. for PRNG) or use-case specific value that
+is hard-coded.
+
+	3. Predefined SoC/board specific bandwidth values. For example:
+CPU or GPU bandwidth is related to the current core frequency and both
+bandwidth and frequency are scaled together.
+
+This patchset is trying to address point 3 above by extending the OPP
+bindings to support predefined SoC/board bandwidth values and adds
+support in cpufreq-dt to scale the interconnect between the CPU and the
+DDR together with frequency and voltage.
+
+[1] https://patchwork.kernel.org/patch/10577315/
+[2] https://lore.kernel.org/r/20190313090010.20534-1-georgi.djakov@linaro.org/
+[3] https://lore.kernel.org/r/20190423132823.7915-1-georgi.djakov@linaro.org/
+[4] https://lore.kernel.org/r/20190608044339.115026-1-saravanak@google.com
+[5] https://lore.kernel.org/r/20190614041733.120807-1-saravanak@google.com
+[6] https://lore.kernel.org/r/20190703011020.151615-1-saravanak@google.com
+[7] https://lore.kernel.org/r/20190726231558.175130-1-saravanak@google.com
+[8] https://lore.kernel.org/r/20190807223111.230846-1-saravanak@google.com
+[9] https://lore.kernel.org/r/20191207002424.201796-1-saravanak@google.com
+
+Georgi Djakov (5):
+  interconnect: Add of_icc_get_by_index() helper function
+  OPP: Add support for parsing interconnect bandwidth
+  OPP: Add sanity checks in _read_opp_key()
+  OPP: Update the bandwidth on OPP frequency changes
+  cpufreq: dt: Add support for interconnect bandwidth scaling
+
+Saravana Kannan (2):
+  dt-bindings: opp: Introduce opp-peak-kBps and opp-avg-kBps bindings
+  OPP: Add helpers for reading the binding properties
+
+ Documentation/devicetree/bindings/opp/opp.txt |  20 ++-
+ .../devicetree/bindings/property-units.txt    |   4 +
+ drivers/cpufreq/Kconfig                       |   1 +
+ drivers/cpufreq/cpufreq-dt.c                  |  15 ++
+ drivers/interconnect/core.c                   |  68 +++++--
+ drivers/opp/Kconfig                           |   1 +
+ drivers/opp/core.c                            |  44 ++++-
+ drivers/opp/of.c                              | 170 ++++++++++++++++--
+ drivers/opp/opp.h                             |  10 ++
+ include/linux/interconnect.h                  |   6 +
+ include/linux/pm_opp.h                        |  12 ++
+ 11 files changed, 311 insertions(+), 40 deletions(-)
 
