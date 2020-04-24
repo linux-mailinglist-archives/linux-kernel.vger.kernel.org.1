@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7648F1B7FC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FDD1B8020
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgDXUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 16:07:00 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13051 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbgDXUG5 (ORCPT
+        id S1729239AbgDXUKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 16:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDXUKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:06:57 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ea346d40000>; Fri, 24 Apr 2020 13:06:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 24 Apr 2020 13:06:56 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 24 Apr 2020 13:06:56 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 24 Apr
- 2020 20:06:56 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 24 Apr 2020 20:06:56 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.165.152]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ea346df0001>; Fri, 24 Apr 2020 13:06:56 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
-        <baolin.wang@linaro.org>, <kstewart@linuxfoundation.org>,
-        <tglx@linutronix.de>, <bradleybolen@gmail.com>,
-        <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <skomatineni@nvidia.com>
-CC:     <anrao@nvidia.com>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: [PATCH 4.19.113 3/3] sdhci: tegra: Enable MMC_CAP_WAIT_WHILE_BUSY host capability
-Date:   Fri, 24 Apr 2020 13:06:52 -0700
-Message-ID: <1587758812-3331-4-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587758812-3331-1-git-send-email-skomatineni@nvidia.com>
-References: <1587758812-3331-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Fri, 24 Apr 2020 16:10:53 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60261C09B049
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:10:53 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x23so8772329lfq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=us5X4azLjqT5LS7IyRZRPdJayxqObn6u8xzpAkfnwDc=;
+        b=A5AthDZQNsd/qaWi9a+AaUpSV7lp1t+8zpiQR1H5sACnEyGZGyTH4e/qwyOvh++pW4
+         S9TJ5QXcQSjexXy9a96AUfqiizRvDtAlGo9lHDJmjNJU1k5LKp8JrCBXulrQvfXSPm1Y
+         yh+HTwV/c1L69ePMr7sr9Q8ydvhDLtCVvfRWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=us5X4azLjqT5LS7IyRZRPdJayxqObn6u8xzpAkfnwDc=;
+        b=kugOc/Fn46Uk1E5cL56FtKpsLm0pUrc0yStkirLxZhDrd4oqC7e4dZwPltLJNNAkg3
+         xGGgXd3N7fccw0m+9VNvDmmunptSXQoWGZhLPgV4ptTFHrnZk5FsRBszGcKatEdxp1V9
+         QCa6KgD4IK987DRK0D0QQ2P7BE1Y1DmocdDyzvCvtmMNLSz1/9T9gSZfCGMDLqrcQNct
+         pArsAndGK8HuplFDoqXbwfFv2QlqxS+4L+wqQnUZxRCYTG4FUFQH4AK4mfRMy/x1OWGk
+         aQqhVH1KxNvitfKa0lgi00sfi3D0DX2djIOzQN5XSvR6Jc9YNvyqUdqxd/WZG1cDLOBa
+         vNiQ==
+X-Gm-Message-State: AGi0PuYjgTQR15i6cIdWdKiN6i5MY2JF5EeWKhI6rnsqWkePM9o0X3gp
+        FNyr0y7JkQcCciv49lTTYv24BlGSk5c=
+X-Google-Smtp-Source: APiQypJ1UZfChz+Qw4Ayv6IRwjhuKNlGsmOoOtau3qvXqAinhFvfNBZQLO7gpo/AZOd+EWvAUl9+ew==
+X-Received: by 2002:a05:6512:1c5:: with SMTP id f5mr7304731lfp.138.1587759051179;
+        Fri, 24 Apr 2020 13:10:51 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id j19sm5460530lfe.17.2020.04.24.13.10.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 13:10:49 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id u6so11263750ljl.6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:10:49 -0700 (PDT)
+X-Received: by 2002:a2e:9a54:: with SMTP id k20mr5169817ljj.265.1587759049344;
+ Fri, 24 Apr 2020 13:10:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587758804; bh=y6URX/l8Hj7E0fa2dP1yy7nEvZn2Klmb4qHShYYMUPI=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=bbV/ZW/OMsgz2vQxObdyqlszdCY32TE7lfSzFvwiC4skwvAlKbYKItHkf06SRpWfQ
-         CbEkA8mqhyOKzDeIocdYYUbYOD/5PzOjokaquiRTjWrvCY38BAtqgK9nRmo6Rs2QLW
-         QgcPpm5ju7qTcQ6zstkZ6uSEc/obeaLhSnutevWvrkYIwxI0H18Pk0pQVQA2bk6HEi
-         JN2N/GszT7vIKmQ2HYmCzfVut+H9V+lEskPa5FGmVi6H1tJt86zDDE1rys1ofcI6gn
-         /9ZkdX8WHBzP1V5eFHb/tTte5yPMSZF8V6/MayQ3eAC9Sl4pC5vOwgvN1eSp7V/Jmq
-         XrcyBAbqGh+2w==
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+ <87ftcv1nqe.fsf@x220.int.ebiederm.org> <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+ <CAHk-=wgXEJdkgGzZQzBDGk7ijjVdAVXe=G-mkFSVng_Hpwd4tQ@mail.gmail.com>
+ <87tv19tv65.fsf@x220.int.ebiederm.org> <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
+ <87mu70psqq.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87mu70psqq.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 24 Apr 2020 13:10:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgE3JpLqKdwEzce6PyfqT3DVKccuK0H7ixY28CwOUNdmg@mail.gmail.com>
+Message-ID: <CAHk-=wgE3JpLqKdwEzce6PyfqT3DVKccuK0H7ixY28CwOUNdmg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ff124c31ccd7
-("sdhci: tegra: Enable MMC_CAP_WAIT_WHILE_BUSY host capability")
+On Fri, Apr 24, 2020 at 12:54 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> The problem with
+>
+> remove
+> remove
+> add
+> add
+> is:
+>
+> A lookup that hit between the remove and the add could return nothing.
 
-Tegra sdhci host supports HW busy detection of the device busy
-signaling over data0 lane.
+Argh. Because that thing doesn't actually _search_ the list, it just
+wants to pick any (first) entry. So it doesn't actually care what it
+gets, just that it gets something.
 
-So, this patch enables host capability MMC_CAP_WAIT_WHILE_BUSY.
+Ok, I see.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/mmc/host/sdhci-tegra.c | 2 ++
- 1 file changed, 2 insertions(+)
+> For PIDTYPE_PID and PIDTYPE_TGID these practically aren't lists but
+> pointers to the appropriate task.  Only for PIDTYPE_PGID and PIDTYPE_SID
+> do these become lists in practice.
 
-diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-index 0f4de73..fde1f3b 100644
---- a/drivers/mmc/host/sdhci-tegra.c
-+++ b/drivers/mmc/host/sdhci-tegra.c
-@@ -529,6 +529,8 @@ static int sdhci_tegra_probe(struct platform_device *pdev)
- 	if (rc)
- 		goto err_parse_dt;
- 
-+	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-+
- 	if (tegra_host->soc_data->nvquirks & NVQUIRK_ENABLE_DDR50)
- 		host->mmc->caps |= MMC_CAP_1_8V_DDR;
- 
--- 
-2.7.4
+Yeah, that's what confused me. Ok, please add a comment about the
+"single-entry list" issue, and I'm happy.
 
+            Linus
