@@ -2,173 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CE21B6CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 06:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3BD1B6CEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 06:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgDXE4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 00:56:48 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:42606 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726525AbgDXE4q (ORCPT
+        id S1726453AbgDXE5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 00:57:53 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:39585 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgDXE5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 00:56:46 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03O4qto5023590;
-        Fri, 24 Apr 2020 00:56:32 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 30fxf6csgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 00:56:32 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 03O4uU7O047688
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 24 Apr 2020 00:56:31 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 23 Apr
- 2020 21:56:30 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 23 Apr 2020 21:56:30 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03O4uGpq017534;
-        Fri, 24 Apr 2020 00:56:27 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <jic23@kernel.org>, <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 7/7] iio: core: use new common ioctl() mechanism
-Date:   Fri, 24 Apr 2020 07:56:42 +0300
-Message-ID: <20200424045642.4903-8-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200424045642.4903-1-alexandru.ardelean@analog.com>
-References: <20200424045642.4903-1-alexandru.ardelean@analog.com>
+        Fri, 24 Apr 2020 00:57:53 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200424045750epoutp04230bedf9564766cd0d8c9085bd7aeef0~IqJ88tkaQ3074030740epoutp047
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:57:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200424045750epoutp04230bedf9564766cd0d8c9085bd7aeef0~IqJ88tkaQ3074030740epoutp047
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1587704270;
+        bh=AgT+mu/DbDkkraNd6kgFPOP710cAaa571GBMHlW3C9I=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=e7aSL4FW64sfdE438pT1pAjbiWb3esJRW0dITF/LGTppKxcMD2naDx68VIfUdrKVO
+         vLX3YR4j3FCGXt8eAc5lgXK46UbFeSZCJlWB6Ik1wREFXZwFf8otsnJybV4N8rMdGy
+         MPZZfSEtZoVMWLW0lC7Y+xoBsavxrRZSXiQBA+vs=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200424045749epcas1p222ea5c712e7d950fc414c1840bdbe444~IqJ8Lbj6y2408524085epcas1p27;
+        Fri, 24 Apr 2020 04:57:49 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 497hkN2dpVzMqYkb; Fri, 24 Apr
+        2020 04:57:48 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D6.4C.04744.CC172AE5; Fri, 24 Apr 2020 13:57:48 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200424045748epcas1p153c5dc5b2ab9e8da1daf7b10a51da6dc~IqJ6rkln20626706267epcas1p1q;
+        Fri, 24 Apr 2020 04:57:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200424045748epsmtrp1613e0000816a73e7d22947c2b291e0b6~IqJ6plV2E1101711017epsmtrp1g;
+        Fri, 24 Apr 2020 04:57:48 +0000 (GMT)
+X-AuditID: b6c32a38-26bff70000001288-ab-5ea271cc3b53
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0E.5D.18461.BC172AE5; Fri, 24 Apr 2020 13:57:47 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200424045747epsmtip26d4f3532ac08cabdca2d9e9a685b0a3f~IqJ6Zdh2n1363113631epsmtip2c;
+        Fri, 24 Apr 2020 04:57:47 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Stephen Rothwell'" <sfr@canb.auug.org.au>
+Cc:     "'Namjae Jeon'" <linkinjeon@kernel.org>,
+        "'Linux Next Mailing List'" <linux-next@vger.kernel.org>,
+        "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <000001d619f4$9d7fee90$d87fcbb0$@samsung.com>
+Subject: RE: linux-next: manual merge of the exfat tree with Linus' tree
+Date:   Fri, 24 Apr 2020 13:57:47 +0900
+Message-ID: <000101d619f4$e62c5cf0$b28516d0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-24_01:2020-04-23,2020-04-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004240035
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFjuEGWdDyIOjJKXJTh27xcMasqNgJJvlsfqVoq0HA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHeXa3u6s1uc1ZJ5NaF4w0plvbdFqTIgsjISvoQx+2rnpR6e6l
+        e2ekUSrFfM8kynwtJUsW4RDfsoamQhmimFnmh0rQyMLKovfXbdfIb79zzv885/k/zyEweTke
+        SmRZHQxnpVkKDxR3DkREq4aPNpnUBQsKQ+XFZsww3lOHG+42OpGhwzMh3SZOKpicxJPaXMV4
+        0se2tSnYIXZrJkOnM5ySsabZ0rOsGUZqzwHzDrM+Rq1RaeIMsZTSSlsYI5WYnKLalcV6p1HK
+        YzSb7U2l0DxPRSds5WzZDkaZaeMdRoqxp7N2jdoexdMWPtuaEZVms8Rr1OrNeq/yMJs5/ew1
+        speLjxfO35DmowtYCQoggNTBt1I3XoICCTnZjaBn9hImBB8Q9I2VIiH4jKDp1xT61/Ki6alE
+        KHgQDL0flArBHIL7Ezf9KpxUwe+fvbiPFWQ01JbOiX0ijLyOwDl9W+IrBJDxsOBy+TmYTILq
+        789FPhaT4eBpHfffUEbGwfCfK7jAK2CoekbsY4xcB13zdYsulPBt9ppEGBYPVTNnRIJGAbXF
+        Tr8hID9JoW/q92JDIoyMluACB8Pre+1SgUNhrsLpZcLLJ2Chd1FehODVF6PAWnja6pb4JBgZ
+        Aa090UJ6Pdz6UY+EsUHw9lOZRDhFBkVOuSAJh7MPB0QCr4GSwvfSc4iqWWKsZomxmiUGav4P
+        u4LELrSSsfOWDIbX2HVLf7sN+Vcx0tCN7owk9yOSQNRy2STXaJJL6GN8jqUfAYFRCpl7usEk
+        l6XTObkMZzNz2SzD9yO9990rsdCQNJt3sa0Os0a/WavVGnQxsTF6LbVKduEJa5KTGbSDOcIw
+        dob71yciAkLz0cGqjadmRaVbWhaqL+2bEP0Y3evKczakelpXVyzL26V9OOas9RTVOaqCH4/v
+        bhdtYiarjTmD8+6Gd1uM212XOwLrc8wYF7Y9L0Snu9piIsZSCvpPugs7Fadnht6yCQ0jBeTO
+        MP3jl7sT3jyzpA53fW8+H7R/w9dHeVMJD1TNZeG5lJjPpDWRGMfTfwErOAtuoAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvO7pwkVxBpfPmFtMnLaU2eLyrjls
+        FgcXtjFabN17ld2BxaPxxg02j02rOtk8Pm+SC2CO4rJJSc3JLEst0rdL4Mp4eO8VY0EvS0X7
+        29XsDYxTmbsYOTkkBEwkHiy6ydrFyMUhJLCbUaLx6k+ohLTEsRNngGwOIFtY4vDhYoia54wS
+        2w62sILUsAnoSvz7s58NxBYR0JeY3f2SBaSIWWA5o8T0l2vAEkIC3YwS63sNQWxOASuJj6tW
+        gTULC3hIzPx1nwnEZhFQldi7/jLYYl4BS4kz/xewQdiCEidnPmEBsZkFtCV6H7YyQtjyEtvf
+        zoE6VEHi59NlrBBHWElMf9LCBFEjIjG7s415AqPwLCSjZiEZNQvJqFlIWhYwsqxilEwtKM5N
+        zy02LDDMSy3XK07MLS7NS9dLzs/dxAiODi3NHYzbV33QO8TIxMF4iFGCg1lJhHfDw3lxQrwp
+        iZVVqUX58UWlOanFhxilOViUxHlvFC6MExJITyxJzU5NLUgtgskycXBKNTCtqj9cuN821UPo
+        PUvBy86Q3YseG7Kreax+c+ncllKBM7csN3ac2nifr2nhjs1m7/f/uMj3lWWt5TJGqyKHby4t
+        3XcU26d9/qLzl2tJp6LlFflKgf3VJvM8jrLm7wi2XvJW/MAdjlfFuzYtbOObuajFJ+bHg6YE
+        YzdHrnnVUhJM8w9ZawscXnBRxsvq4Nv7LSfbSuIvJIpUdlqvsjyzkC+4R+yGxm6xXpndnEx2
+        jXJtmp1rmzaxRk/ZkLvwt0v0hYcpAfyuTxmXnKkpPcfFJRNXnshp0fV1yS8tb7u5O5nrvmxr
+        vbxfxq5tayRT65X1HXt63YqST80/9WRanN3WeRsqToX+VbTqX53p6CJ9p1aJpTgj0VCLuag4
+        EQB/TEat/QIAAA==
+X-CMS-MailID: 20200424045748epcas1p153c5dc5b2ab9e8da1daf7b10a51da6dc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200424045546epcas1p29c96627082a25905c9715790b5b2ea82
+References: <CGME20200424045546epcas1p29c96627082a25905c9715790b5b2ea82@epcas1p2.samsung.com>
+        <000001d619f4$9d7fee90$d87fcbb0$@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change makes use of the new centralized ioctl() mechanism. The event
-interface registers it's ioctl() handler to IIO device.
-Both the buffer & event interface call 'iio_device_ioctl()', which should
-take care of all of indio_dev's ioctl() calls.
+> Hi all,
+Hi Stephen,
+> 
+> Today's linux-next merge of the exfat tree got conflicts in:
+> 
+>   fs/exfat/super.c
+>   fs/exfat/misc.c
+>   fs/exfat/exfat_fs.h
+> 
+> Various patches in the exfat tree have been added to Linus' tree overnight as different commits (an in
+> some cases slightly different patches.
+> Please rebase the exfat tree on top of commit
+Fixed with rebase!
+Thanks!
+> 
+>   81df1ad40644 ("exfat: truncate atimes to 2s granularity")
+> 
+> from Linus' tree (or do a backmerge of that commit).
 
-Later, we may add per-buffer ioctl() calls, and since each buffer will get
-it's own chardev, the buffer ioctl() handler will need a bit of tweaking
-for the first/legacy buffer (i.e. indio_dev->buffer).
-Also, those per-buffer ioctl() calls will not be registered with this
-mechanism.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/iio_core.h            |  3 ---
- drivers/iio/industrialio-buffer.c |  2 +-
- drivers/iio/industrialio-event.c  | 14 ++++++++------
- 3 files changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-index 34c3e19229d8..f68de4af2738 100644
---- a/drivers/iio/iio_core.h
-+++ b/drivers/iio/iio_core.h
-@@ -54,9 +54,6 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
- #ifdef CONFIG_IIO_BUFFER
- struct poll_table_struct;
- 
--long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
--			    unsigned int cmd, unsigned long arg);
--
- void iio_device_buffer_attach_chrdev(struct iio_dev *indio_dev);
- 
- int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 3daa44deee80..bd37901bc882 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -1159,7 +1159,7 @@ static long iio_buffer_ioctl(struct file *filep, unsigned int cmd,
- 	if (!buffer || !buffer->access)
- 		return -ENODEV;
- 
--	return iio_device_event_ioctl(buffer->indio_dev, filep, cmd, arg);
-+	return iio_device_ioctl(buffer->indio_dev, filep, cmd, arg);
- }
- 
- static ssize_t iio_buffer_store_enable(struct device *dev,
-diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-index 0674b2117c98..1961c1d19370 100644
---- a/drivers/iio/industrialio-event.c
-+++ b/drivers/iio/industrialio-event.c
-@@ -32,6 +32,7 @@
-  * @read_lock:		lock to protect kfifo read operations
-  * @chrdev:		associated chardev for this event
-  * @indio_dev:		IIO device to which this event interface belongs to
-+ * @ioctl_handler:	handler for event ioctl() calls
-  */
- struct iio_event_interface {
- 	wait_queue_head_t	wait;
-@@ -44,6 +45,7 @@ struct iio_event_interface {
- 
- 	struct cdev		chrdev;
- 	struct iio_dev		*indio_dev;
-+	struct iio_ioctl_handler	ioctl_handler;
- };
- 
- bool iio_event_enabled(const struct iio_event_interface *ev_int)
-@@ -261,15 +263,12 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
--long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
-+static long iio_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
- 			    unsigned int cmd, unsigned long arg)
- {
- 	int __user *ip = (int __user *)arg;
- 	int fd;
- 
--	if (!indio_dev->info)
--		return -ENODEV;
--
- 	if (cmd == IIO_GET_EVENT_FD_IOCTL) {
- 		fd = iio_event_getfd(indio_dev);
- 		if (fd < 0)
-@@ -278,7 +277,7 @@ long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
- 			return -EFAULT;
- 		return 0;
- 	}
--	return -EINVAL;
-+	return IIO_IOCTL_UNHANDLED;
- }
- 
- static long iio_event_ioctl_wrapper(struct file *filp, unsigned int cmd,
-@@ -286,7 +285,7 @@ static long iio_event_ioctl_wrapper(struct file *filp, unsigned int cmd,
- {
- 	struct iio_event_interface *ev = filp->private_data;
- 
--	return iio_device_event_ioctl(ev->indio_dev, filp, cmd, arg);
-+	return iio_device_ioctl(ev->indio_dev, filp, cmd, arg);
- }
- 
- static const struct file_operations iio_event_fileops = {
-@@ -308,7 +307,10 @@ void iio_device_event_attach_chrdev(struct iio_dev *indio_dev)
- 	cdev_init(&ev->chrdev, &iio_event_fileops);
- 
- 	ev->indio_dev = indio_dev;
-+	ev->ioctl_handler.ioctl = iio_event_ioctl;
- 	indio_dev->chrdev = &ev->chrdev;
-+
-+	iio_device_ioctl_handler_register(indio_dev, &ev->ioctl_handler);
- }
- 
- static const char * const iio_ev_type_text[] = {
--- 
-2.17.1
 
