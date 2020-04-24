@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43CC1B7584
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBE81B7589
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgDXMhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:37:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726667AbgDXMhR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:37:17 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OCWEKQ045891;
-        Fri, 24 Apr 2020 08:37:17 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30k7rd5k6y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 08:37:16 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03OCWQJh047471;
-        Fri, 24 Apr 2020 08:37:16 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30k7rd5k60-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 08:37:16 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03OCa9G1025760;
-        Fri, 24 Apr 2020 12:37:14 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 30fs65h0pp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 12:37:13 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03OCbB0h23199998
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Apr 2020 12:37:11 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E6EBA405B;
-        Fri, 24 Apr 2020 12:37:11 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBBDFA4054;
-        Fri, 24 Apr 2020 12:37:05 +0000 (GMT)
-Received: from oc3784624756.ibm.com (unknown [9.206.160.175])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 24 Apr 2020 12:37:05 +0000 (GMT)
-Subject: Re: [PATCH] perf symbol: Fix kernel symbol address display
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com
-References: <20200415070744.59919-1-tmricht@linux.ibm.com>
- <20200420204617.GA23638@kernel.org>
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-Message-ID: <475a5c86-2be3-4f12-56f3-7bd6587e8ec3@linux.ibm.com>
-Date:   Fri, 24 Apr 2020 14:37:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727038AbgDXMjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:39:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726668AbgDXMjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:39:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D46720704;
+        Fri, 24 Apr 2020 12:39:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587731965;
+        bh=L7vTCbCHK5QUVdLRP/hudQkCt/S3GNMCtxRfc2gl49E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iVPTGngs30PgIDoHePGAg82N2cv2toTq3Gfc9RDatmKX9Nt3+mq9UM+6QpEMKCxTX
+         QQdPBIcmk5xVQy/i+5/rG2NU/02LIwoGGWGnoQvi3hqqXJIAI8b7yDHNzsyscuSwpJ
+         tcxxcYuaS/7uqYQMAhp1GAFHOmASztPluptgDF2Q=
+Date:   Fri, 24 Apr 2020 13:39:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Aaron Sierra <asierra@xes-inc.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regmap-i2c: add 16 bits register width support
+Message-ID: <20200424123922.GF5850@sirena.org.uk>
+References: <20200423085857.93684-1-acelan.kao@canonical.com>
+ <20200423144529.GM4808@sirena.org.uk>
+ <CAFv23QmNLUqWKHTjK-sFE7ChUCu9j=0p6=Rn22d0E8_HeV-8aw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200420204617.GA23638@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-24_04:2020-04-23,2020-04-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 impostorscore=0
- mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004240097
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Y/WcH0a6A93yCHGr"
+Content-Disposition: inline
+In-Reply-To: <CAFv23QmNLUqWKHTjK-sFE7ChUCu9j=0p6=Rn22d0E8_HeV-8aw@mail.gmail.com>
+X-Cookie: Information is the inverse of entropy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 10:46 PM, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Apr 15, 2020 at 09:07:44AM +0200, Thomas Richter escreveu:
->> Running commands
->>
->>    ./perf record -e rb0000 -- find .
->>    ./perf report -v
-> 
-> Or when pressing 'V' in the TUI.
->  
->> reveals symbol names and its addresses. There is a mismatch between
-> 
-> Yeah, an address that at some point was put there to help with debugging
-> the symbol resolution, IIRC how it looked like when looking at
-> 
->   readelf -sW vmlinux
-> 
-> Or any other DSO, for instance, for a glibc symbol here:
-> 
-> Using 'perf report -s pid,dso,sym' then pressing 'V':
-> 
->    1.55%    20325:perf  /usr/lib64/libc-2.30.so   0x161825   B [.] __strlen_avx2
-> 
-> [acme@five perf]$ readelf -sW /usr/lib64/libc-2.30.so | grep strlen_avx2
->  24371: 0000000000161810   414 FUNC    LOCAL  DEFAULT   15 __strlen_avx2
-> [acme@five perf]$ 
-> 
-> Can you check if doing in /lib/modules/.../build/vmlinux produces what
-> appears when 'V' is in place?
-> 
-> And perhaps we can also show the DSO offset and the rip as it gets laid
-> out in memory in the end? So we have all the informations?
-> 
-> - Arnaldo
-> 
 
-Arnaldo,
+--Y/WcH0a6A93yCHGr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-having verified this also works in the TUI mode using 'V', are you going to pick
-this patch?
+On Fri, Apr 24, 2020 at 08:24:53PM +0800, AceLan Kao wrote:
 
-Thanks
+> I'm not an expert in this field, please let me know if there is any
+> better way to archive this.
 
+I think you're limited by the decisions of the hardware people here
+sadly and there are no really good options.
 
--- 
-Thomas Richter, Dept 3252, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Matthias Hartmann
-Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+--Y/WcH0a6A93yCHGr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6i3fkACgkQJNaLcl1U
+h9CksQf/QlFtbzO4d7uYaF/4YDx2vWKQIG7Z8GYvPllPFb6dTd9BZcI/Onq95xpd
+AWRYXybNuClD2NrsJ38sbK1yw33cScCNxBt0vkyUpK6143QUpjGjqzyb7igBxL6N
+zSqUcjQHeiDOXYBqddQO0ylynY7bIEumiW/y8U5TZ/WtsLnfPwcJzcIXCopL/S5t
+4iFF87LoT5KsVx6ZAH2tpYC+Jy51q+BQASar/KctOBo0TXVXckmmI3wPmt2aVxdC
+ZzpmNl6SQkd//jr+G4U/fV552298if/HtKcV5xuWf8qWcsI7nHA41z3guqdpa5f2
+Ve1iLld22XEQDdhxUli2A8ZhLuw5TA==
+=/Ldv
+-----END PGP SIGNATURE-----
+
+--Y/WcH0a6A93yCHGr--
