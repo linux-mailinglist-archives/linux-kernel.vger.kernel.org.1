@@ -2,258 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ED61B77AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D091B77B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgDXN6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:58:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:35158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728249AbgDXN6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:58:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9607D1063;
-        Fri, 24 Apr 2020 06:58:15 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 978053F68F;
-        Fri, 24 Apr 2020 06:58:14 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 2/2] firmware/psci: Make PSCI checker use play_idle()
-Date:   Fri, 24 Apr 2020 14:56:57 +0100
-Message-Id: <20200424135657.32519-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200424135657.32519-1-valentin.schneider@arm.com>
-References: <20200424135657.32519-1-valentin.schneider@arm.com>
+        id S1728336AbgDXN7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:59:54 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:55480 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgDXN7y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:59:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587736792; x=1619272792;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=V9f2UKrJFgIeyh3Jf7ZhXEIAuvO4H34kWtsE/7e8exI=;
+  b=e8YysWT9G+5nHoZr/hN205QaKKW49G5hb4CHVv1LsjcnG+sVtHbcQ69/
+   omZnVX/RdY8zAMyK95g3quzOPoa5O241N8lahnarNv9X3oA0L9AQkxUHI
+   LuqV4tpBQJSWx9T6gJHiSN6E0XlNeyY+ydZQWNB+nzuowk6gwZ5mb3l+O
+   Y=;
+IronPort-SDR: d5IK7qlppelPL/5yvB0+Rq6MPR0rt+7QgIdECISZgZh2UDbJprnGPO88jAfUZOM0s0sS8f9hOO
+ vn9cVL+XvJ5w==
+X-IronPort-AV: E=Sophos;i="5.73,311,1583193600"; 
+   d="scan'208";a="28578692"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 24 Apr 2020 13:59:38 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id CAC8BA20F5;
+        Fri, 24 Apr 2020 13:59:37 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 24 Apr 2020 13:59:37 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.217) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 24 Apr 2020 13:59:29 +0000
+Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
+ <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D89F71D@SHSMSX104.ccr.corp.intel.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <b5b14703-1c8c-0a34-f08b-9032a0d97b1d@amazon.com>
+Date:   Fri, 24 Apr 2020 16:59:19 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D89F71D@SHSMSX104.ccr.corp.intel.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.217]
+X-ClientProxiedBy: EX13D41UWB003.ant.amazon.com (10.43.161.243) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To test if we can reach all idle states, the checker implements a
-minimalist open-coded version of do_idle(). While it gets the job done,
-it's not the nicest way to go about it.
-
-What we can do instead is to nudge cpuidle to go for the idle state we want
-with cpuidle_use_deepest_state(), go idle via play_idle(), and check the
-cpuidle usage stats to see which idle state we entered.
-
-We don't directly get the state.enter() return value anymore, but if we
-never enter a given idle state throughout the entire test, then that
-should be a good indicator that something is off.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- drivers/firmware/psci/psci_checker.c | 131 +++++++--------------------
- 1 file changed, 32 insertions(+), 99 deletions(-)
-
-diff --git a/drivers/firmware/psci/psci_checker.c b/drivers/firmware/psci/psci_checker.c
-index fa7bb1e8a461..722df252af28 100644
---- a/drivers/firmware/psci/psci_checker.c
-+++ b/drivers/firmware/psci/psci_checker.c
-@@ -226,56 +226,15 @@ static int hotplug_tests(void)
- 	return err;
- }
- 
--static void dummy_callback(struct timer_list *unused) {}
--
--static int suspend_cpu(struct cpuidle_device *dev,
--		       struct cpuidle_driver *drv, int index)
--{
--	struct cpuidle_state *state = &drv->states[index];
--	bool broadcast = state->flags & CPUIDLE_FLAG_TIMER_STOP;
--	int ret;
--
--	arch_cpu_idle_enter();
--
--	if (broadcast) {
--		/*
--		 * The local timer will be shut down, we need to enter tick
--		 * broadcast.
--		 */
--		ret = tick_broadcast_enter();
--		if (ret) {
--			/*
--			 * In the absence of hardware broadcast mechanism,
--			 * this CPU might be used to broadcast wakeups, which
--			 * may be why entering tick broadcast has failed.
--			 * There is little the kernel can do to work around
--			 * that, so enter WFI instead (idle state 0).
--			 */
--			cpu_do_idle();
--			ret = 0;
--			goto out_arch_exit;
--		}
--	}
--
--	ret = state->enter(dev, drv, index);
--
--	if (broadcast)
--		tick_broadcast_exit();
--
--out_arch_exit:
--	arch_cpu_idle_exit();
--
--	return ret;
--}
--
--static int suspend_test_thread(void *arg)
-+static int suspend_test_thread(void *__unused)
- {
--	int cpu = (long)arg;
--	int i, nb_suspend = 0, nb_shallow_sleep = 0, nb_err = 0;
-+	DECLARE_BITMAP(states_reached, CPUIDLE_STATE_MAX);
- 	struct cpuidle_device *dev;
- 	struct cpuidle_driver *drv;
--	/* No need for an actual callback, we just want to wake up the CPU. */
--	struct timer_list wakeup_timer;
-+	int cpu = smp_processor_id();
-+	int i, nr_states;
-+	int nr_shallows = 0;
-+	bool pass;
- 
- 	/* Wait for the main thread to give the start signal. */
- 	wait_for_completion(&suspend_threads_started);
-@@ -286,11 +245,12 @@ static int suspend_test_thread(void *arg)
- 
- 	dev = this_cpu_read(cpuidle_devices);
- 	drv = cpuidle_get_cpu_driver(dev);
-+	nr_states = drv->state_count;
-+	bitmap_zero(states_reached, CPUIDLE_STATE_MAX);
- 
- 	pr_info("CPU %d entering suspend cycles, states 1 through %d\n",
- 		cpu, drv->state_count - 1);
- 
--	timer_setup_on_stack(&wakeup_timer, dummy_callback, 0);
- 	for (i = 0; i < NUM_SUSPEND_CYCLE; ++i) {
- 		int index;
- 		/*
-@@ -298,62 +258,45 @@ static int suspend_test_thread(void *arg)
- 		 * doesn't use PSCI).
- 		 */
- 		for (index = 1; index < drv->state_count; ++index) {
--			int ret;
- 			struct cpuidle_state *state = &drv->states[index];
-+			unsigned long long prev, next;
- 
-+			prev = READ_ONCE(dev->states_usage[index].usage);
- 			/*
--			 * Set the timer to wake this CPU up in some time (which
--			 * should be largely sufficient for entering suspend).
--			 * If the local tick is disabled when entering suspend,
--			 * suspend_cpu() takes care of switching to a broadcast
--			 * tick, so the timer will still wake us up.
-+			 * This will attempt to go into the deepest idle state
-+			 * possible. By specifying the exit latency, we prevent
-+			 * higher idle states from being picked, so we should
-+			 * end up in the one idle state we want. This may cause
-+			 * issues if there are several idle states with
-+			 * identical exit latency, but who does that?
- 			 */
--			mod_timer(&wakeup_timer, jiffies +
--				  usecs_to_jiffies(state->target_residency));
--
--			/* IRQs must be disabled during suspend operations. */
--			local_irq_disable();
-+			play_idle_precise(state->target_residency_ns,
-+					  state->exit_latency_ns);
- 
--			ret = suspend_cpu(dev, drv, index);
-+			next = READ_ONCE(dev->states_usage[index].usage);
- 
--			/*
--			 * We have woken up. Re-enable IRQs to handle any
--			 * pending interrupt, do not wait until the end of the
--			 * loop.
--			 */
--			local_irq_enable();
--
--			if (ret == index) {
--				++nb_suspend;
--			} else if (ret >= 0) {
--				/* We did not enter the expected state. */
--				++nb_shallow_sleep;
--			} else {
--				pr_err("Failed to suspend CPU %d: error %d "
--				       "(requested state %d, cycle %d)\n",
--				       cpu, ret, index, i);
--				++nb_err;
--			}
-+			if (prev != next)
-+				bitmap_set(states_reached, index, 1);
-+			else
-+				nr_shallows++;
- 		}
- 	}
- 
--	/*
--	 * Disable the timer to make sure that the timer will not trigger
--	 * later.
--	 */
--	del_timer(&wakeup_timer);
--	destroy_timer_on_stack(&wakeup_timer);
-+	/* Assert we reached each state at least once */
-+	pass = bitmap_weight(states_reached, CPUIDLE_STATE_MAX) == nr_states - 1;
- 
- 	if (atomic_dec_return_relaxed(&nb_active_threads) == 0)
- 		complete(&suspend_threads_done);
- 
-+	pr_info("CPU %d suspend results: reached %d states out of %d (%d/%d misses)\n",
-+		cpu, bitmap_weight(states_reached, CPUIDLE_STATE_MAX),
-+		nr_states - 1, nr_shallows,
-+		(nr_states - 1) * NUM_SUSPEND_CYCLE);
-+
- 	while (!kthread_should_stop())
- 		schedule_timeout_interruptible(MAX_SCHEDULE_TIMEOUT);
- 
--	pr_info("CPU %d suspend test results: success %d, shallow states %d, errors %d\n",
--		cpu, nb_suspend, nb_shallow_sleep, nb_err);
--
--	return nb_err;
-+	return !pass;
- }
- 
- static int suspend_tests(void)
-@@ -367,15 +310,6 @@ static int suspend_tests(void)
- 	if (!threads)
- 		return -ENOMEM;
- 
--	/*
--	 * Stop cpuidle to prevent the idle tasks from entering a deep sleep
--	 * mode, as it might interfere with the suspend threads on other CPUs.
--	 * This does not prevent the suspend threads from using cpuidle (only
--	 * the idle tasks check this status). Take the idle lock so that
--	 * the cpuidle driver and device look-up can be carried out safely.
--	 */
--	cpuidle_pause_and_lock();
--
- 	for_each_online_cpu(cpu) {
- 		struct task_struct *thread;
- 		/* Check that cpuidle is available on that CPU. */
-@@ -389,7 +323,7 @@ static int suspend_tests(void)
- 		}
- 
- 		thread = kthread_create_on_node(suspend_test_thread,
--						(void *)(long)cpu, cpu_to_node(cpu),
-+						NULL, cpu_to_node(cpu),
- 						"psci_suspend_test/%d", cpu);
- 		if (IS_ERR(thread)) {
- 			pr_err("Failed to create kthread on CPU %d\n", cpu);
-@@ -421,7 +355,6 @@ static int suspend_tests(void)
- 	for (i = 0; i < nb_threads; ++i)
- 		err += kthread_stop(threads[i]);
- out:
--	cpuidle_resume_and_unlock();
- 	kfree(threads);
- 	return err;
- }
--- 
-2.24.0
+CgpPbiAyNC8wNC8yMDIwIDEyOjU5LCBUaWFuLCBLZXZpbiB3cm90ZToKPgo+PiBGcm9tOiBQYXJh
+c2NoaXYsIEFuZHJhLUlyaW5hCj4+IFNlbnQ6IFRodXJzZGF5LCBBcHJpbCAyMywgMjAyMCA5OjIw
+IFBNCj4+Cj4+IE9uIDIyLzA0LzIwMjAgMDA6NDYsIFBhb2xvIEJvbnppbmkgd3JvdGU6Cj4+PiBP
+biAyMS8wNC8yMCAyMDo0MSwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+Pj4+IEFuIGVuY2xhdmUg
+Y29tbXVuaWNhdGVzIHdpdGggdGhlIHByaW1hcnkgVk0gdmlhIGEgbG9jYWwgY29tbXVuaWNhdGlv
+bgo+PiBjaGFubmVsLAo+Pj4+IHVzaW5nIHZpcnRpby12c29jayBbMl0uIEFuIGVuY2xhdmUgZG9l
+cyBub3QgaGF2ZSBhIGRpc2sgb3IgYSBuZXR3b3JrIGRldmljZQo+Pj4+IGF0dGFjaGVkLgo+Pj4g
+SXMgaXQgcG9zc2libGUgdG8gaGF2ZSBhIHNhbXBsZSBvZiB0aGlzIGluIHRoZSBzYW1wbGVzLyBk
+aXJlY3Rvcnk/Cj4+IEkgY2FuIGFkZCBpbiB2MiBhIHNhbXBsZSBmaWxlIGluY2x1ZGluZyB0aGUg
+YmFzaWMgZmxvdyBvZiBob3cgdG8gdXNlIHRoZQo+PiBpb2N0bCBpbnRlcmZhY2UgdG8gY3JlYXRl
+IC8gdGVybWluYXRlIGFuIGVuY2xhdmUuCj4+Cj4+IFRoZW4gd2UgY2FuIHVwZGF0ZSAvIGJ1aWxk
+IG9uIHRvcCBpdCBiYXNlZCBvbiB0aGUgb25nb2luZyBkaXNjdXNzaW9ucyBvbgo+PiB0aGUgcGF0
+Y2ggc2VyaWVzIGFuZCB0aGUgcmVjZWl2ZWQgZmVlZGJhY2suCj4+Cj4+PiBJIGFtIGludGVyZXN0
+ZWQgZXNwZWNpYWxseSBpbjoKPj4+Cj4+PiAtIHRoZSBpbml0aWFsIENQVSBzdGF0ZTogQ1BMMCB2
+cy4gQ1BMMywgaW5pdGlhbCBwcm9ncmFtIGNvdW50ZXIsIGV0Yy4KPj4+Cj4+PiAtIHRoZSBjb21t
+dW5pY2F0aW9uIGNoYW5uZWw7IGRvZXMgdGhlIGVuY2xhdmUgc2VlIHRoZSB1c3VhbCBsb2NhbCBB
+UElDCj4+PiBhbmQgSU9BUElDIGludGVyZmFjZXMgaW4gb3JkZXIgdG8gZ2V0IGludGVycnVwdHMg
+ZnJvbSB2aXJ0aW8tdnNvY2ssIGFuZAo+Pj4gd2hlcmUgaXMgdGhlIHZpcnRpby12c29jayBkZXZp
+Y2UgKHZpcnRpby1tbWlvIEkgc3VwcG9zZSkgcGxhY2VkIGluIG1lbW9yeT8KPj4+Cj4+PiAtIHdo
+YXQgdGhlIGVuY2xhdmUgaXMgYWxsb3dlZCB0byBkbzogY2FuIGl0IGNoYW5nZSBwcml2aWxlZ2Ug
+bGV2ZWxzLAo+Pj4gd2hhdCBoYXBwZW5zIGlmIHRoZSBlbmNsYXZlIHBlcmZvcm1zIGFuIGFjY2Vz
+cyB0byBub25leGlzdGVudCBtZW1vcnksCj4+IGV0Yy4KPj4+IC0gd2hldGhlciB0aGVyZSBhcmUg
+c3BlY2lhbCBoeXBlcmNhbGwgaW50ZXJmYWNlcyBmb3IgdGhlIGVuY2xhdmUKPj4gQW4gZW5jbGF2
+ZSBpcyBhIFZNLCBydW5uaW5nIG9uIHRoZSBzYW1lIGhvc3QgYXMgdGhlIHByaW1hcnkgVk0sIHRo
+YXQKPj4gbGF1bmNoZWQgdGhlIGVuY2xhdmUuIFRoZXkgYXJlIHNpYmxpbmdzLgo+Pgo+PiBIZXJl
+IHdlIG5lZWQgdG8gdGhpbmsgb2YgdHdvIGNvbXBvbmVudHM6Cj4+Cj4+IDEuIEFuIGVuY2xhdmUg
+YWJzdHJhY3Rpb24gcHJvY2VzcyAtIGEgcHJvY2VzcyBydW5uaW5nIGluIHRoZSBwcmltYXJ5IFZN
+Cj4+IGd1ZXN0LCB0aGF0IHVzZXMgdGhlIHByb3ZpZGVkIGlvY3RsIGludGVyZmFjZSBvZiB0aGUg
+Tml0cm8gRW5jbGF2ZXMKPj4ga2VybmVsIGRyaXZlciB0byBzcGF3biBhbiBlbmNsYXZlIFZNICh0
+aGF0J3MgMiBiZWxvdykuCj4+Cj4+IEhvdyBkb2VzIGFsbCBnZXRzIHRvIGFuIGVuY2xhdmUgVk0g
+cnVubmluZyBvbiB0aGUgaG9zdD8KPj4KPj4gVGhlcmUgaXMgYSBOaXRybyBFbmNsYXZlcyBlbXVs
+YXRlZCBQQ0kgZGV2aWNlIGV4cG9zZWQgdG8gdGhlIHByaW1hcnkgVk0uCj4+IFRoZSBkcml2ZXIg
+Zm9yIHRoaXMgbmV3IFBDSSBkZXZpY2UgaXMgaW5jbHVkZWQgaW4gdGhlIGN1cnJlbnQgcGF0Y2gg
+c2VyaWVzLgo+Pgo+PiBUaGUgaW9jdGwgbG9naWMgaXMgbWFwcGVkIHRvIFBDSSBkZXZpY2UgY29t
+bWFuZHMgZS5nLiB0aGUKPj4gTkVfRU5DTEFWRV9TVEFSVCBpb2N0bCBtYXBzIHRvIGFuIGVuY2xh
+dmUgc3RhcnQgUENJIGNvbW1hbmQgb3IgdGhlCj4+IEtWTV9TRVRfVVNFUl9NRU1PUllfUkVHSU9O
+IG1hcHMgdG8gYW4gYWRkIG1lbW9yeSBQQ0kgY29tbWFuZC4KPj4gVGhlIFBDSQo+PiBkZXZpY2Ug
+Y29tbWFuZHMgYXJlIHRoZW4gdHJhbnNsYXRlZCBpbnRvIGFjdGlvbnMgdGFrZW4gb24gdGhlIGh5
+cGVydmlzb3IKPj4gc2lkZTsgdGhhdCdzIHRoZSBOaXRybyBoeXBlcnZpc29yIHJ1bm5pbmcgb24g
+dGhlIGhvc3Qgd2hlcmUgdGhlIHByaW1hcnkKPj4gVk0gaXMgcnVubmluZy4KPj4KPj4gMi4gVGhl
+IGVuY2xhdmUgaXRzZWxmIC0gYSBWTSBydW5uaW5nIG9uIHRoZSBzYW1lIGhvc3QgYXMgdGhlIHBy
+aW1hcnkgVk0KPj4gdGhhdCBzcGF3bmVkIGl0Lgo+Pgo+PiBUaGUgZW5jbGF2ZSBWTSBoYXMgbm8g
+cGVyc2lzdGVudCBzdG9yYWdlIG9yIG5ldHdvcmsgaW50ZXJmYWNlIGF0dGFjaGVkLAo+PiBpdCB1
+c2VzIGl0cyBvd24gbWVtb3J5IGFuZCBDUFVzICsgaXRzIHZpcnRpby12c29jayBlbXVsYXRlZCBk
+ZXZpY2UgZm9yCj4+IGNvbW11bmljYXRpb24gd2l0aCB0aGUgcHJpbWFyeSBWTS4KPiBzb3VuZHMg
+bGlrZSBhIGZpcmVjcmFja2VyIFZNPwoKSXQncyBhIFZNIGNyYWZ0ZWQgZm9yIGVuY2xhdmUgbmVl
+ZHMuCgo+Cj4+IFRoZSBtZW1vcnkgYW5kIENQVXMgYXJlIGNhcnZlZCBvdXQgb2YgdGhlIHByaW1h
+cnkgVk0sIHRoZXkgYXJlIGRlZGljYXRlZAo+PiBmb3IgdGhlIGVuY2xhdmUuIFRoZSBOaXRybyBo
+eXBlcnZpc29yIHJ1bm5pbmcgb24gdGhlIGhvc3QgZW5zdXJlcyBtZW1vcnkKPj4gYW5kIENQVSBp
+c29sYXRpb24gYmV0d2VlbiB0aGUgcHJpbWFyeSBWTSBhbmQgdGhlIGVuY2xhdmUgVk0uCj4gSW4g
+bGFzdCBwYXJhZ3JhcGgsIHlvdSBzYWlkIHRoYXQgdGhlIGVuY2xhdmUgVk0gdXNlcyBpdHMgb3du
+IG1lbW9yeSBhbmQKPiBDUFVzLiBUaGVuIGhlcmUsIHlvdSBzYWlkIHRoZSBtZW1vcnkvQ1BVcyBh
+cmUgY2FydmVkIG91dCBhbmQgZGVkaWNhdGVkCj4gZnJvbSB0aGUgcHJpbWFyeSBWTS4gQ2FuIHlv
+dSBlbGFib3JhdGUgd2hpY2ggb25lIGlzIGFjY3VyYXRlPyBvciBhIG1peGVkCj4gbW9kZWw/CgpN
+ZW1vcnkgYW5kIENQVXMgYXJlIGNhcnZlZCBvdXQgb2YgdGhlIHByaW1hcnkgVk0gYW5kIGFyZSBk
+ZWRpY2F0ZWQgZm9yIAp0aGUgZW5jbGF2ZSBWTS4gSSBtZW50aW9uZWQgYWJvdmUgYXMgIml0cyBv
+d24iIGluIHRoZSBzZW5zZSB0aGF0IHRoZSAKcHJpbWFyeSBWTSBkb2Vzbid0IHVzZSB0aGVzZSBj
+YXJ2ZWQgb3V0IHJlc291cmNlcyB3aGlsZSB0aGUgZW5jbGF2ZSBpcyAKcnVubmluZywgYXMgdGhl
+eSBhcmUgZGVkaWNhdGVkIHRvIHRoZSBlbmNsYXZlLgoKSG9wZSB0aGF0IG5vdyBpdCdzIG1vcmUg
+Y2xlYXIuCgo+Cj4+Cj4+IFRoZXNlIHR3byBjb21wb25lbnRzIG5lZWQgdG8gcmVmbGVjdCB0aGUg
+c2FtZSBzdGF0ZSBlLmcuIHdoZW4gdGhlCj4+IGVuY2xhdmUgYWJzdHJhY3Rpb24gcHJvY2VzcyAo
+MSkgaXMgdGVybWluYXRlZCwgdGhlIGVuY2xhdmUgVk0gKDIpIGlzCj4+IHRlcm1pbmF0ZWQgYXMg
+d2VsbC4KPj4KPj4gV2l0aCByZWdhcmQgdG8gdGhlIGNvbW11bmljYXRpb24gY2hhbm5lbCwgdGhl
+IHByaW1hcnkgVk0gaGFzIGl0cyBvd24KPj4gZW11bGF0ZWQgdmlydGlvLXZzb2NrIFBDSSBkZXZp
+Y2UuIFRoZSBlbmNsYXZlIFZNIGhhcyBpdHMgb3duIGVtdWxhdGVkCj4+IHZpcnRpby12c29jayBk
+ZXZpY2UgYXMgd2VsbC4gVGhpcyBjaGFubmVsIGlzIHVzZWQsIGZvciBleGFtcGxlLCB0byBmZXRj
+aAo+PiBkYXRhIGluIHRoZSBlbmNsYXZlIGFuZCB0aGVuIHByb2Nlc3MgaXQuIEFuIGFwcGxpY2F0
+aW9uIHRoYXQgc2V0cyB1cCB0aGUKPj4gdnNvY2sgc29ja2V0IGFuZCBjb25uZWN0cyBvciBsaXN0
+ZW5zLCBkZXBlbmRpbmcgb24gdGhlIHVzZSBjYXNlLCBpcyB0aGVuCj4+IGRldmVsb3BlZCB0byB1
+c2UgdGhpcyBjaGFubmVsOyB0aGlzIGhhcHBlbnMgb24gYm90aCBlbmRzIC0gcHJpbWFyeSBWTQo+
+PiBhbmQgZW5jbGF2ZSBWTS4KPiBIb3cgZG9lcyB0aGUgYXBwbGljYXRpb24gaW4gdGhlIHByaW1h
+cnkgVk0gYXNzaWduIHRhc2sgdG8gYmUgZXhlY3V0ZWQKPiBpbiB0aGUgZW5jbGF2ZSBWTT8gSSBk
+aWRuJ3Qgc2VlIHN1Y2ggY29tbWFuZCBpbiB0aGlzIHNlcmllcywgc28gc3VwcG9zZQo+IGl0IGlz
+IGFsc28gY29tbXVuaWNhdGVkIHRocm91Z2ggdmlydGlvLXZzb2NrPwoKVGhlIGFwcGxpY2F0aW9u
+IHRoYXQgcnVucyBpbiB0aGUgZW5jbGF2ZSBuZWVkcyB0byBiZSBwYWNrYWdlZCBpbiBhbiAKZW5j
+bGF2ZSBpbWFnZSB0b2dldGhlciB3aXRoIHRoZSBPUyAoIGUuZy4ga2VybmVsLCByYW1kaXNrLCBp
+bml0ICkgdGhhdCAKd2lsbCBydW4gaW4gdGhlIGVuY2xhdmUgVk0uCgpUaGVuIHRoZSBlbmNsYXZl
+IGltYWdlIGlzIGxvYWRlZCBpbiBtZW1vcnkuIEFmdGVyIGJvb3RpbmcgaXMgZmluaXNoZWQsIAp0
+aGUgYXBwbGljYXRpb24gc3RhcnRzLiBOb3csIGRlcGVuZGluZyBvbiB0aGUgYXBwIGltcGxlbWVu
+dGF0aW9uIGFuZCB1c2UgCmNhc2UsIG9uZSBleGFtcGxlIGNhbiBiZSB0aGF0IHRoZSBhcHAgaW4g
+dGhlIGVuY2xhdmUgd2FpdHMgZm9yIGRhdGEgdG8gCmJlIGZldGNoZWQgaW4gdmlhIHRoZSB2c29j
+ayBjaGFubmVsLgoKVGhhbmtzLApBbmRyYQoKPgo+PiBMZXQgbWUga25vdyBpZiBmdXJ0aGVyIGNs
+YXJpZmljYXRpb25zIGFyZSBuZWVkZWQuCj4+Cj4+Pj4gVGhlIHByb3Bvc2VkIHNvbHV0aW9uIGlz
+IGZvbGxvd2luZyB0aGUgS1ZNIG1vZGVsIGFuZCB1c2VzIHRoZSBLVk0gQVBJCj4+IHRvIGJlIGFi
+bGUKPj4+PiB0byBjcmVhdGUgYW5kIHNldCByZXNvdXJjZXMgZm9yIGVuY2xhdmVzLiBBbiBhZGRp
+dGlvbmFsIGlvY3RsIGNvbW1hbmQsCj4+IGJlc2lkZXMKPj4+PiB0aGUgb25lcyBwcm92aWRlZCBi
+eSBLVk0sIGlzIHVzZWQgdG8gc3RhcnQgYW4gZW5jbGF2ZSBhbmQgc2V0dXAgdGhlCj4+IGFkZHJl
+c3NpbmcKPj4+PiBmb3IgdGhlIGNvbW11bmljYXRpb24gY2hhbm5lbCBhbmQgYW4gZW5jbGF2ZSB1
+bmlxdWUgaWQuCj4+PiBSZXVzaW5nIHNvbWUgS1ZNIGlvY3RscyBpcyBkZWZpbml0ZWx5IGEgZ29v
+ZCBpZGVhLCBidXQgSSB3b3VsZG4ndCByZWFsbHkKPj4+IHNheSBpdCdzIHRoZSBLVk0gQVBJIHNp
+bmNlIHRoZSBWQ1BVIGZpbGUgZGVzY3JpcHRvciBpcyBiYXNpY2FsbHkgbm9uCj4+PiBmdW5jdGlv
+bmFsICh3aXRob3V0IEtWTV9SVU4gYW5kIG1tYXAgaXQncyBub3QgcmVhbGx5IHRoZSBLVk0gQVBJ
+KS4KPj4gSXQgdXNlcyBwYXJ0IG9mIHRoZSBLVk0gQVBJIG9yIGEgc2V0IG9mIEtWTSBpb2N0bHMg
+dG8gbW9kZWwgdGhlIHdheSBhIFZNCj4+IGlzIGNyZWF0ZWQgLyB0ZXJtaW5hdGVkLiBUaGF0J3Mg
+dHJ1ZSwgS1ZNX1JVTiBhbmQgbW1hcC1pbmcgdGhlIHZjcHUgZmQKPj4gYXJlIG5vdCBpbmNsdWRl
+ZC4KPj4KPj4gVGhhbmtzIGZvciB0aGUgZmVlZGJhY2sgcmVnYXJkaW5nIHRoZSByZXVzZSBvZiBL
+Vk0gaW9jdGxzLgo+Pgo+PiBBbmRyYQo+Pgo+IFRoYW5rcwo+IEtldmluCgoKCgpBbWF6b24gRGV2
+ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBT
+Zi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1
+LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIy
+LzI2MjEvMjAwNS4K
 
