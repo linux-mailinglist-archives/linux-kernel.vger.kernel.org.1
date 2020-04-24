@@ -2,212 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED07A1B7669
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB521B7675
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgDXNHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S1728474AbgDXNIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgDXNHa (ORCPT
+        with ESMTP id S1728455AbgDXNII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:07:30 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFA9C09B045;
-        Fri, 24 Apr 2020 06:07:26 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id i68so7766084qtb.5;
-        Fri, 24 Apr 2020 06:07:26 -0700 (PDT)
+        Fri, 24 Apr 2020 09:08:08 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EADC09B045;
+        Fri, 24 Apr 2020 06:08:07 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id h26so7471476qtu.8;
+        Fri, 24 Apr 2020 06:08:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BACYUJ9Ax+sBOclJuw9FAWOKwxhj77NX+HwVzCYrlHM=;
-        b=coyeLHGpucDw6yi+Off2lRApXRS1LjvxqhlYhjZsq6sLUAaRN51RWLqS/FR/OhdbmE
-         1b73C8+Awp/J/uj9LneKItox7/SohZdVNhYWUOzvcp/fxyAGUkFZc72GiNvdlT9CUcaI
-         xCz2gqtnU+cyjjWj/mDN8J8gqXUao+SojW2iyvuAatrlAfz0r6O8zOIglEk9hO/sRou9
-         pWFCdPRMx5HtFyS0wt7MVW5ZndlR2tMUAK8XMi2v3D9WzGaiVvdTtw9tfbZK/F4IEY3U
-         P76gS7hi5aPfeaURB71T2Yo+l4dtomBQ80CJnIvNyLfeCh1n0y0tV0TUvQWmP/JKr8LY
-         4p9A==
+         :content-disposition:in-reply-to;
+        bh=WpO16Fh4Vkj+Jz9+k/K3SHUv6y5M8rpJ9u3d1xP87iQ=;
+        b=ojutYVoW20IR21Ii+yHxCiIVuZjLAnSpviyJqrRtB1AXDxKi34/gfbD5YZKbWYtwfa
+         VtIbsKDlnLZpAubziA/8HgiMc9Mj9XJJ6OZC+gTOA48qsoj4+mODmrDKwQjqD22vPxnl
+         GZ5YfKzG6Zzxl6SYonQzTuaGu2s1dOWmx/znCX2nxkU5YO6yW2G/dnoaHpayM79RZHkT
+         QQx6sJIxQRA2Ne4ZaddiD4YS+ELPWw/ewb4Nz87e3YwPRzXQiSkSJwELz6MFDq7nwwnd
+         9o9nlV7ojny8Br1LXa7QRnFhZPjqFxx8J0//aCa7ibVE7TqLsOE5JrJN3wO2cD8KSnjq
+         CVPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BACYUJ9Ax+sBOclJuw9FAWOKwxhj77NX+HwVzCYrlHM=;
-        b=e0L74BhqPqildaRGGZaxZpNJ0mS3Wv+UkixunThJXIpkph9UFplrVnaib7JrxjLTWA
-         7V/+x/Pcd3c1Abw69MfgW/xTVATygqysklnhrNUg0NGeCR20ZgBjrlwe/ER33Jx+eSwX
-         S9/1Jh0Lrx72Jo8ZW072MajsiRlMpwK99XhHkAGiibgJuRvF4x7u966V80b3HdvNIetH
-         0quORGWiBA6fHOmd3u+CowGDjhlGd+Noin6Bppul+ykbM9GiS3SJa0E5lLRBmLOo7Bsi
-         90kyVKGpkEg37Snn1+E5Tedbs/QJFlI15wnIve/wP+b9wv7Vy9NKREfdxj4iRSbQt/0i
-         KO7w==
-X-Gm-Message-State: AGi0PuY8wcCmbhBj5IhMQcBwKYzBAgD3y81NZX9pvHJ3Kw/PqdDfrmnV
-        7rUrVz2d/DlPfA4OB0/6dKc=
-X-Google-Smtp-Source: APiQypJ+3c5kEBO5ugffa6QVDGTNi9ZLDOCvhGzzzAOy33soM3OcWCZrZcABYpk4Rtlj+w/RtvmuxA==
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr9406411qtj.181.1587733645527;
-        Fri, 24 Apr 2020 06:07:25 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=WpO16Fh4Vkj+Jz9+k/K3SHUv6y5M8rpJ9u3d1xP87iQ=;
+        b=Dl7w7jm4pWqwSKMfTc3zIHY3Z4u6NSM98623BDTmDz1KTPJoII6GUOC7d9heCCl3cW
+         dD2m49angjQpfYlof1o4Kj9Ulutyr7Fj0UTv9SNixV5K/Zz7Kpdaqi+tODX9Q/+a7bBT
+         9mNLQaVHl9Wd8RWHmF56PPWAoX3rHmCk1caY1aPz6fPoR56TVCudqbTYrhvqA1DUQkbt
+         8ArVQPDZmoc5PD4V1ksVfyLt9GPZ0oIU9PvtyrIGfFKADurisidrQR9EConNz9mxvpWz
+         t5+iqQB0hQvkRb4Jzv3dhMzkf32IDJDXxqWXXudKQ3clpBHc15+CvzqoCp0yKFe0C/pS
+         ZVHQ==
+X-Gm-Message-State: AGi0PuY3UO8RMvSGd4uoiPn9woYIV20BfvCP+lunfyFLPCi02h5G9Oi2
+        +hL498Un09/zgWEkSJ+DMk9Yf/k01Ik=
+X-Google-Smtp-Source: APiQypJpZDwyHjgN54itxsNrMZrVIpxOA3qi8QTbRGVOxu+UucyIyPnmhEaXUQcn3pyz40IGA+ukFA==
+X-Received: by 2002:ac8:3212:: with SMTP id x18mr9064538qta.247.1587733686397;
+        Fri, 24 Apr 2020 06:08:06 -0700 (PDT)
 Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id y52sm3804398qth.38.2020.04.24.06.07.24
+        by smtp.gmail.com with ESMTPSA id g3sm3607892qkk.24.2020.04.24.06.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 06:07:24 -0700 (PDT)
+        Fri, 24 Apr 2020 06:08:05 -0700 (PDT)
 From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4AF2D409A3; Fri, 24 Apr 2020 10:07:22 -0300 (-03)
-Date:   Fri, 24 Apr 2020 10:07:22 -0300
-To:     Andreas Gerstmayr <agerstmayr@redhat.com>,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        He Zhe <zhe.he@windriver.com>, Ian Rogers <irogers@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Konstantin Kharlamov <hi-angel@yandex.ru>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        lkft-triage@lists.linaro.org
-Subject: Re: [GIT PULL] perf/core improvements and fixes
-Message-ID: <20200424130722.GK19437@kernel.org>
-References: <20200420115316.18781-1-acme@kernel.org>
- <20200422120943.GA110748@gmail.com>
- <CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com>
+        id D1852409A3; Fri, 24 Apr 2020 10:08:03 -0300 (-03)
+Date:   Fri, 24 Apr 2020 10:08:03 -0300
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf-probe: Do not show the skipped events
+Message-ID: <20200424130803.GL19437@kernel.org>
+References: <158763965400.30755.14484569071233923742.stgit@devnote2>
+ <158763968263.30755.12800484151476026340.stgit@devnote2>
+ <20200423140139.GG19437@kernel.org>
+ <20200424083305.6bff9456650308ab7a4ab750@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com>
+In-Reply-To: <20200424083305.6bff9456650308ab7a4ab750@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 23, 2020 at 04:28:46PM -0500, Daniel Díaz escreveu:
-> On Wed, 22 Apr 2020 at 07:09, Ingo Molnar <mingo@kernel.org> wrote:
-> > >  85 files changed, 1851 insertions(+), 513 deletions(-)
+Em Fri, Apr 24, 2020 at 08:33:05AM +0900, Masami Hiramatsu escreveu:
+> On Thu, 23 Apr 2020 11:01:39 -0300
+> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> 
+> > Em Thu, Apr 23, 2020 at 08:01:22PM +0900, Masami Hiramatsu escreveu:
+> > > When a probe point is expanded to several places (like inlined) and
+> > > if some of them are skipped because of blacklisted or __init function,
+> > > those trace_events has no event name. It must be skipped while showing
+> > > results.
+> > > 
+> > > Without this fix, you can see "(null):(null)" on the list,
+> > > ===========
+> > 
+> > Ok, you broke the patch in two, I think its better to combine both, ok?
+> 
+> No, if an inlined function is embedded in blacklisted areas, it also
+> shows same "(null):(null)" without [2/3].
+> 
+> Reordering the patches is OK, but this is still an independent fix.
 
-> > Pulled, thanks a lot Arnaldo!
+Ok, so I'll try reordering, so that we don't see it in the cset log for
+the other fix.
+
+Thanks for the clarification,
+
+- Arnaldo
  
-> Our OpenEmbedded builds detected an issue with 5287f9269206 ("perf
-> script: Add flamegraph.py script"):
->   ERROR: perf-1.0-r9 do_package_qa: QA Issue:
-> /usr/libexec/perf-core/scripts/python/bin/flamegraph-report contained
-> in package perf-python requires /usr/bin/sh, but no providers found in
-> RDEPENDS_perf-python? [file-rdeps]
+> Thank you,
+> 
+> > 
+> > - Arnaldo
+> > 
+> > >   # ./perf probe request_resource
+> > >   reserve_setup is out of .text, skip it.
+> > >   Added new events:
+> > >     (null):(null)        (on request_resource)
+> > >     probe:request_resource (on request_resource)
+> > > 
+> > >   You can now use it in all perf tools, such as:
+> > > 
+> > >   	perf record -e probe:request_resource -aR sleep 1
+> > > 
+> > > ===========
+> > > 
+> > > With this fix, it is ignored.
+> > > ===========
+> > >   # ./perf probe request_resource
+> > >   reserve_setup is out of .text, skip it.
+> > >   Added new events:
+> > >     probe:request_resource (on request_resource)
+> > > 
+> > >   You can now use it in all perf tools, such as:
+> > > 
+> > >   	perf record -e probe:request_resource -aR sleep 1
+> > > 
+> > > ===========
+> > > 
+> > > Fixes: 5a51fcd1f30c ("perf probe: Skip kernel symbols which is out of .text")
+> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > Cc: stable@vger.kernel.org
+> > > ---
+> > >  tools/perf/builtin-probe.c |    3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
+> > > index 70548df2abb9..6b1507566770 100644
+> > > --- a/tools/perf/builtin-probe.c
+> > > +++ b/tools/perf/builtin-probe.c
+> > > @@ -364,6 +364,9 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
+> > >  
+> > >  		for (k = 0; k < pev->ntevs; k++) {
+> > >  			struct probe_trace_event *tev = &pev->tevs[k];
+> > > +			/* Skipped events have no event name */
+> > > +			if (!tev->event)
+> > > +				continue;
+> > >  
+> > >  			/* We use tev's name for showing new events */
+> > >  			show_perf_probe_event(tev->group, tev->event, pev,
+> > > 
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
 
+-- 
 
-yeah, the flamegraph scripts are the outliers, there, everything else is
-using /bin/bash, so I'll switch to that, ok Andreas?
-
-[acme@quaco perf]$ vim tools/perf/scripts/python/bin/*
-34 files to edit
-[acme@quaco perf]$ head -1 tools/perf/scripts/python/bin/*
-==> tools/perf/scripts/python/bin/compaction-times-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/compaction-times-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/event_analyzing_sample-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/event_analyzing_sample-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/export-to-postgresql-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/export-to-postgresql-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/export-to-sqlite-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/export-to-sqlite-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/failed-syscalls-by-pid-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/failed-syscalls-by-pid-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/flamegraph-record <==
-#!/usr/bin/sh
-
-==> tools/perf/scripts/python/bin/flamegraph-report <==
-#!/usr/bin/sh
-
-==> tools/perf/scripts/python/bin/futex-contention-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/futex-contention-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/intel-pt-events-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/intel-pt-events-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/mem-phys-addr-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/mem-phys-addr-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/netdev-times-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/netdev-times-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/net_dropmonitor-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/net_dropmonitor-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/powerpc-hcalls-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/powerpc-hcalls-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/sched-migration-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/sched-migration-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/sctop-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/sctop-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/stackcollapse-record <==
-#!/bin/sh
-
-==> tools/perf/scripts/python/bin/stackcollapse-report <==
-#!/bin/sh
-
-==> tools/perf/scripts/python/bin/syscall-counts-by-pid-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/syscall-counts-by-pid-report <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/syscall-counts-record <==
-#!/bin/bash
-
-==> tools/perf/scripts/python/bin/syscall-counts-report <==
-#!/bin/bash
-[acme@quaco perf]$
+- Arnaldo
