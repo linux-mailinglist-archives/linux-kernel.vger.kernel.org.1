@@ -2,203 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9B71B78DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF691B78ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgDXPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:09:02 -0400
-Received: from mail-db8eur05on2079.outbound.protection.outlook.com ([40.107.20.79]:15013
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726717AbgDXPJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:09:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IAEZJ9hbXUZTyXYuFIA4YI+1txjrL11RKaZhf75SR2zxrm6MNMpa4sC+XxRFwI814pUHp4tUTvTac3QYJPrhjeFnZTRvtf/kVE3cBxEZMXPEtQMSo7IUuwGA98jbuqhrJffbS7fDmHNovQs9Za+zBFCLzpc0DxPuEBBjFN4FFI/JeisPKB6ujMuDShjAfwM8ShDs5jY5vdVD8mpNCgaav3tZJUfQutD79UjVOzEe9Dqxf4u9oEzYEtFJ0lizygkf7mPkUBjF/Y20J+eE8oy7IQMv1o7H3VEdwEKPK7n/gmn8+d3jDbcvS49gkd/Oqkh+1UgwV8SEJjvbGKpBIpCP/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GcmdYoItqsgDsZXuX1MUqCoZ753HnGfMuiNlb9Ku0hI=;
- b=DPRC5MeaehbkNvHE4PZWaHwiibChrL3H5DZlIK1CS4Chgg+XJ8VU0F9HpmC9rpMjYm8gZifZnb/iTQhvUgOuKJDBBFMP2gY3NVowLQ0k2r8D5yYJA6cPQxRiePFdE9SPKg/wphh90uKSGqgOFAG8sdZHckESupK3uDSZrKsx4rvsFKdPAM6cWzwb9JBst1ITvwkmSYbeirnOFDCUQAR+ksLn290hVtSUU13vB3KeLC+dH60NsMwguiqK/A2dBLhzI0P+GQ4VBm1aD2iEaZWlsNCFDeSFQ6NFMZ+D3fVK4RGPphx3BWv0ilNcfvosst/Vbojx0lN02bW0FazRblQwoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GcmdYoItqsgDsZXuX1MUqCoZ753HnGfMuiNlb9Ku0hI=;
- b=Z0u3R1T4RPqPC7BuAhA4C/nj6URv/NnEaCG4uzUBMOQrful0zfLva8lpqU/pDJKOJu19qO1p4FKcvFQV/W5D+nKn8VZlqSippyrmGdWLeo3J7whBNK5iA6yksITn4jZoV3YYJF8vixKSL0FXm+qlssFqg1Um+Vmqk5thgX+XT3s=
-Received: from AM0PR04MB5443.eurprd04.prod.outlook.com (2603:10a6:208:119::33)
- by AM0PR04MB5619.eurprd04.prod.outlook.com (2603:10a6:208:12d::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
- 2020 15:08:56 +0000
-Received: from AM0PR04MB5443.eurprd04.prod.outlook.com
- ([fe80::8cc9:252:1c77:5860]) by AM0PR04MB5443.eurprd04.prod.outlook.com
- ([fe80::8cc9:252:1c77:5860%2]) with mapi id 15.20.2937.012; Fri, 24 Apr 2020
- 15:08:55 +0000
-From:   Florinel Iordache <florinel.iordache@nxp.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florinel Iordache <florinel.iordache@nxp.com>
-Subject: RE: [EXT] Re: Re: [PATCH net-next v2 6/9] net: phy: add backplane kr
- driver support
-Thread-Topic: [EXT] Re: Re: [PATCH net-next v2 6/9] net: phy: add backplane kr
- driver support
-Thread-Index: AdYaRAr6OuhHlsgtRe2hojICsYdYXAABIF2AAAATOTA=
-Date:   Fri, 24 Apr 2020 15:08:55 +0000
-Message-ID: <AM0PR04MB54435DFD9870FA66C01E07CEFBD00@AM0PR04MB5443.eurprd04.prod.outlook.com>
-References: <AM0PR04MB5443BCFEC71B6903BE6EFE02FBD00@AM0PR04MB5443.eurprd04.prod.outlook.com>
- <20200424145635.GB1088354@lunn.ch>
-In-Reply-To: <20200424145635.GB1088354@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=florinel.iordache@nxp.com; 
-x-originating-ip: [89.136.167.85]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 03aa4ed1-59e5-41c2-311a-08d7e8616882
-x-ms-traffictypediagnostic: AM0PR04MB5619:|AM0PR04MB5619:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR04MB5619F7B241A6727436740278FBD00@AM0PR04MB5619.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 03838E948C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5443.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(71200400001)(76116006)(6916009)(54906003)(316002)(4326008)(7416002)(33656002)(66446008)(55016002)(26005)(52536014)(5660300002)(66556008)(86362001)(8676002)(2906002)(66476007)(9686003)(64756008)(6506007)(7696005)(81156014)(186003)(478600001)(66946007)(44832011)(8936002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4qiio20lWhiMq9Ae/5+0//RyBj7RJCBZMKL/pChvMJsYmdkMWGNvgp5C9/IkDlc/+w8tpgWVLV5KAssuvVoIvmgqB9ZJTvP4pvnO0nQGxNvlHPqlrNhN4A9xsxvezhJm6lhKmJZuBB8H5WdNAaP1jfkfGOIu/hSIJvhkH6yW1tLpJ/UJfgwb6aIcFw+vk2MbdDk/a5YIbhMIPj0VIxXvY/EIRHdwNHJJt8EDND1BNo5fYdc1aHn1/+h8BPw2+2sK5iUb6zwCJ8Ovab/Nddh6zcAvlaADwGxAcTKEnY/VNuOiCcjCuVi9ZllX9EMvszmoMPdDLUNs1CcyKdb04x1glG27IWLlq7jQFMaTY7dZLuXwtkoBBiKSrEo0TjzagZ0miXpX9voy1R5+H7E82DVRSw0vKO/9LaPWJOKuUKxQQA5E0bfY+x+rzLigz4KGI2CB
-x-ms-exchange-antispam-messagedata: nIqYFuRA+/9eyKGFJSsEfb//Ev+ydmwR04/G91BgES3UNyqDMlleFQKizpIHsaHnp9NlxR23GihTK3JZDzy/1ig2WqSMWt2OH/cDbmgAg8YgjdXVZ1rPnEdXP1UcJPflAn0xyA8ZS3jxNFO1ZW4K5w==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728100AbgDXPJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727063AbgDXPJ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 11:09:28 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B976C09B045;
+        Fri, 24 Apr 2020 08:09:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x2so1217745pfx.7;
+        Fri, 24 Apr 2020 08:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=SjsWKS0P6j4+0PWlGdo7sqKYmvlFOBzbcYnBUVrrUFk=;
+        b=J05kz9Ow0ARHW+Rvq5ihe3AzNaoLD7Y5he9E0NYGt7dbkG/97kXcDVNsO1lEtlXwuy
+         /fpDq/vhxxftOnPjbXORYM2a+hXS94tqRKb/408UXOpQnqGY7NuLHOiT2MiC8/7l9CTQ
+         75GDceNY1S+ZKF6XnyOzmE4VvxsCHxNwvqX7XyfHjH04OYg/lO50X0993CXQHfVonegY
+         Z02IjUwgTjMCDOmfJkLFDG+E5Y0CqTy7XhacBONwmSW4gCLQP+BnhJoRlxqjNhQ1M+ev
+         87YSAOMhhQXm9JbVYZuDRPDQvpsunk5dMDToKMOJJCiM23iR//J9LbfasIxmJ+Nxckw+
+         Ziyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=SjsWKS0P6j4+0PWlGdo7sqKYmvlFOBzbcYnBUVrrUFk=;
+        b=hAjIqTFzGJ0rX5b0uYKUGenAIiJdxA0vA/Mt0vkFiW7rxfHQkLbkHCHyWSviVmxm/t
+         XLfFE18kiaq4l52v455TKM9AIrjTbyuvnbh5rMydaMIdSstjE3c6jhhq+JgIxVkLYlZQ
+         mjkbdf0LksY3Bh/4Wzezwrk8xFCTWch9ISGEj69iKOu/y9nZ1xRZ0/jEIWNNqNKzqx8t
+         AWR3XNSjpISz+qGnCRKH14qRKNR5M64FjN3r33+ZN29Up+OwCMINY5TH05jcoYMvg0Qz
+         bBjK2KKFHUoaV7HKmXMXWd3lE/Mv05NfvK8z9JyASp+1LMRx16mdIWk5rWWGGK8cidMD
+         Qg9Q==
+X-Gm-Message-State: AGi0PubEjQsMRHfnPQo5/rM7cLc5a2cS2y33mXhsK7kTa9n2M/NriHUD
+        pTtO56N7MD/t3OunFP7jPu8=
+X-Google-Smtp-Source: APiQypLXb7pHQTP0HUk4IAA6VBZcz32kstw1TM/2+eKyCQxPQSIXJ/TedLAeKp79bT7BZjbQ0j74aA==
+X-Received: by 2002:a05:6a00:a:: with SMTP id h10mr10074220pfk.160.1587740968148;
+        Fri, 24 Apr 2020 08:09:28 -0700 (PDT)
+Received: from localhost ([176.122.158.64])
+        by smtp.gmail.com with ESMTPSA id y26sm5781189pfn.185.2020.04.24.08.09.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Apr 2020 08:09:27 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 23:09:18 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v1] gpio: fix several typos
+Message-ID: <20200424150918.GB8853@nuc8i5>
+References: <20200419163816.19856-1-zhengdejin5@gmail.com>
+ <CAMpxmJUzrWRuHV-=EOgjd-N-iwhZwVGzF26tH0ybpzZQSP6VJQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03aa4ed1-59e5-41c2-311a-08d7e8616882
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 15:08:55.7479
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OOr4ckC2fh9cu/GZe408/dMh8ZezdzFuqu91XUh14rG/arlX61WzCpqA6rvDQJzpcTCStGV1carC9uoZ6DOOWPwv5+FZDET8ZdfG83jzzsg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5619
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMpxmJUzrWRuHV-=EOgjd-N-iwhZwVGzF26tH0ybpzZQSP6VJQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > Caution: EXT Email
->=20
-> On Fri, Apr 24, 2020 at 02:39:54PM +0000, Florinel Iordache wrote:
-> > > > +/* Backplane custom logging */
-> > > > +#define bpdev_fn(fn)                                              =
-   \
-> > > > +void bpdev_##fn(struct phy_device *phydev, char *fmt, ...)        =
-   \
-> > > > +{                                                                 =
-   \
-> > > > +     struct va_format vaf =3D {                                   =
-     \
-> > > > +             .fmt =3D fmt,                                        =
-     \
-> > > > +     };                                                           =
-   \
-> > > > +     va_list args;                                                =
-   \
-> > > > +     va_start(args, fmt);                                         =
-   \
-> > > > +     vaf.va =3D &args;                                            =
-     \
-> > > > +     if (!phydev->attached_dev)                                   =
-   \
-> > > > +             dev_##fn(&phydev->mdio.dev, "%pV", &vaf);            =
-   \
-> > > > +     else                                                         =
-   \
-> > > > +             dev_##fn(&phydev->mdio.dev, "%s: %pV",               =
-   \
-> > > > +                     netdev_name(phydev->attached_dev), &vaf);    =
-   \
-> > > > +     va_end(args);                                                =
-   \
-> > > > +}
-> > > > +
-> > > > +bpdev_fn(err)
-> > > > +EXPORT_SYMBOL(bpdev_err);
-> > > > +
-> > > > +bpdev_fn(warn)
-> > > > +EXPORT_SYMBOL(bpdev_warn);
-> > > > +
-> > > > +bpdev_fn(info)
-> > > > +EXPORT_SYMBOL(bpdev_info);
-> > > > +
-> > > > +bpdev_fn(dbg)
-> > > > +EXPORT_SYMBOL(bpdev_dbg);
-> > >
-> > > Didn't i say something about just using phydev_{err|warn|info|dbg}?
-> > >
-> > >        Andrew
+On Fri, Apr 24, 2020 at 08:39:04AM +0200, Bartosz Golaszewski wrote:
+> niedz., 19 kwi 2020 o 18:38 Dejin Zheng <zhengdejin5@gmail.com> napisał(a):
 > >
-> > Hi Andrew,
+> > Use codespell to fix lots of typos over frontends.
 > >
-> > I used this custom logging in order to be able to add any kind of usefu=
-l
-> information we might need to all prints (err/warn/info/dbg).
-> > For example all these bpdev_ functions are equivalent with phydev_ but =
-only in
-> the case when there is no attached device: phydev->attached_dev =3D=3D NU=
-LL.
-> > Otherwise, if there is a device attached, then we also want to add its =
-name to
-> all these prints in order to know to which device the information refers =
-to.
-> > For example in this case the print looks like this:
-> > [   50.853515] backplane_qoriq 8c13000:00: eth1: 10gbase-kr link traine=
-d, Tx
-> equalization: C(-1)=3D0x0, C(0)=3D0x29, C(+1)=3D0x5
-> > This is very useful because we can see very easy to which interface
-> > the information printed is related to: in this case the link was traine=
-d for
-> interface: eth1 This information (the name of attached device: eth1) is n=
-ot
-> printed by phydev_ functions.
-> > I'm sorry I have not explained all this earlier, the first time when yo=
-u asked
-> about it.
->=20
-> So why not argue that the phydev_* functions should be extended to includ=
-e this
-> information? Is this extra information only valuable for link training, o=
-r for
-> anything a PHY does? If the core does not do something, fix the core, rat=
-her
-> than work around it in your driver.
->=20
->      Andrew
+> > CC: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> > ---
+> >  drivers/gpio/gpio-ftgpio010.c | 2 +-
+> >  drivers/gpio/gpio-mm-lantiq.c | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-ftgpio010.c b/drivers/gpio/gpio-ftgpio010.c
+> > index fbddb1662428..4031164780f7 100644
+> > --- a/drivers/gpio/gpio-ftgpio010.c
+> > +++ b/drivers/gpio/gpio-ftgpio010.c
+> > @@ -193,7 +193,7 @@ static int ftgpio_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
+> >         if (val == deb_div) {
+> >                 /*
+> >                  * The debounce timer happens to already be set to the
+> > -                * desireable value, what a coincidence! We can just enable
+> > +                * desirable value, what a coincidence! We can just enable
+> >                  * debounce on this GPIO line and return. This happens more
+> >                  * often than you think, for example when all GPIO keys
+> >                  * on a system are requesting the same debounce interval.
+> > diff --git a/drivers/gpio/gpio-mm-lantiq.c b/drivers/gpio/gpio-mm-lantiq.c
+> > index f460d71b0c92..538e31fe8903 100644
+> > --- a/drivers/gpio/gpio-mm-lantiq.c
+> > +++ b/drivers/gpio/gpio-mm-lantiq.c
+> > @@ -36,7 +36,7 @@ struct ltq_mm {
+> >   * @chip:     Pointer to our private data structure.
+> >   *
+> >   * Write the shadow value to the EBU to set the gpios. We need to set the
+> > - * global EBU lock to make sure that PCI/MTD dont break.
+> > + * global EBU lock to make sure that PCI/MTD don't break.
+> >   */
+> >  static void ltq_mm_apply(struct ltq_mm *chip)
+> >  {
+> > --
+> > 2.25.0
+> >
+> 
+> The subject line should be gpio: <name of the driver>: short message
+> 
+> And please split those into patches for each driver.
+>
+Hi Bart:
 
-I think this is a very good idea: I think this extension would be useful fo=
-r all PHYs not only for link training.=20
-Its purpose is only more user friendly prints and I needed this feature for=
- backplane debugging.
-But since I am not responsible for the PHY core, I made this workaround onl=
-y in backplane driver.
-If this small improvement could be done for all PHYs then I think this woul=
-d be an added value from user friendliness perspective.=20
-Thank you.
-Florin.
+Thanks for your review, I will send the patch v2 for this change. 
+
+BR,
+Dejin
+> Bart
