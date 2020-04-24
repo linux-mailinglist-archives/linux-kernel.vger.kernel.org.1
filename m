@@ -2,301 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6E11B78B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AE51B78C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgDXPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:00:51 -0400
-Received: from mga09.intel.com ([134.134.136.24]:61575 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgDXPAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:00:50 -0400
-IronPort-SDR: VdKYBKcQGjXZNQkSo/kiQotPI5pMzfi56dn/0k+Jn6NB1265+O4kuAld8HIFsJJ8dU+Z9PQ+JY
- 14BFaC/zKbTQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 08:00:47 -0700
-IronPort-SDR: muZ4nu+fNlrA6Q3uO/LHHIognqbUGMReHLHMfdfAnFRKY5IUAf1NL9DmFGXBSdlkKkySxOeLKC
- BeAouUjX/ZxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="301565383"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Apr 2020 08:00:44 -0700
-Date:   Fri, 24 Apr 2020 23:02:46 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 7/9] KVM: X86: Add userspace access interface for CET
- MSRs
-Message-ID: <20200424150246.GK24039@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-8-weijiang.yang@intel.com>
- <20200423181406.GK17824@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200423181406.GK17824@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+        id S1726900AbgDXPD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726698AbgDXPD2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 11:03:28 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63708C09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:03:27 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id x16so8055758pgi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Xkkqj+5WLu8COiZ/TfgDWy2Txx9eTlxx/bJwpEwcEjo=;
+        b=g9YIPlk5dCl7/qwmHnLf22yWze7QUqAwpoSl+oVbHvnY2+hjpeJjnrnRjKcAAEFhSP
+         aBeSs0bhg2EqhXVymdS2LzknKnlCnEMd6oEM0IONu6/hDEP3UNk65ApKCS7bGaz8K/Hj
+         LTHzeHAhYYsmU854WZitshEO7A/UeYTli83jA7Tsw+WsnLbF3p3SEYA86lHBNxmQxAeG
+         YOipft3BY574XW7iYWLsr+6/Sw9242uTZ9OYLyD6t2KUhUsqiIA3bqDAVc/StlOVAexv
+         PBrwqzjpRjqP0UALMzsPPNwtUhp/Qr98pg/VCVcFvghDKLXJtiBj3L3apf2P6p14snbO
+         mamg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Xkkqj+5WLu8COiZ/TfgDWy2Txx9eTlxx/bJwpEwcEjo=;
+        b=WhCOhUC/x+9uuEftGcwkxeY/2vbr7d+JPoEaxZNs8P30V8lVJ9azNb1W2J8tLI6xaq
+         iODFwMzD+fb4kO7779eDFR+UFigUPJ7TWGUApK/XsmJvLmFrh+z45MqT9MbA5gBrd00H
+         4pHqJSnhbcki/f7G65o02RsTgcerOjqmKlLl264SIACAA6DgfuwKDLEpne9kdvzlE/v1
+         85J7o4KGqQX6RnBvZ6swPLsKKegMAe0w9I7r2QtuL60YKqcN89gbEFi4HakxskAW5Y0h
+         ftSmAUlpMAATKSbJgY9rrPgxZCJX3A7g584d2gAEEbfESPL6ZWfV6rRI3AfPExzN2uoD
+         DQWg==
+X-Gm-Message-State: AGi0PuZQA9t7L4LgxsyWXmZ6XHDtfsikYkLh2Ksi17h2SvoMQzHiBDvQ
+        MjpCi1rdsYo7vJXTvFXYrzXWCsYU0A==
+X-Google-Smtp-Source: APiQypIeQr9l6rGMJxKwS/oF3yYj1Ak/i9u0uke+OPUcjKK3YwmwqocKr1AZrI6/LebqOsh7bpRFt+/L5w==
+X-Received: by 2002:a17:90a:1a46:: with SMTP id 6mr6502072pjl.111.1587740606455;
+ Fri, 24 Apr 2020 08:03:26 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 08:03:21 -0700
+Message-Id: <20200424150321.38617-1-sqazi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH v3] block: Limit number of items taken from the I/O scheduler
+ in one go
+From:   Salman Qazi <sqazi@google.com>
+To:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jesse Barnes <jsbarnes@google.com>,
+        Gwendal Grignou <gwendal@google.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Christoph Hellwig <hch@lst.de>, Salman Qazi <sqazi@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:14:06AM -0700, Sean Christopherson wrote:
-> On Thu, Mar 26, 2020 at 04:18:44PM +0800, Yang Weijiang wrote:
-> > +#define CET_MSR_RSVD_BITS_1  GENMASK(1, 0)
-> > +#define CET_MSR_RSVD_BITS_2  GENMASK(9, 6)
-> > +
-> > +static bool cet_check_msr_write(struct kvm_vcpu *vcpu,
-> 
-> s/cet_check_msr_write/is_cet_msr_valid
-> 
-> Otherwise the polarity of the return value isn't obvious.
-> 
-> > +				struct msr_data *msr,
-> 
-> Unnecessary newline.
-> 
-> > +				u64 mask)
-> 
-> s/mask/rsvd_bits
->
-Sure, will change them, thank you!
+Flushes bypass the I/O scheduler and get added to hctx->dispatch
+in blk_mq_sched_bypass_insert.  This can happen while a kworker is running
+hctx->run_work work item and is past the point in
+blk_mq_sched_dispatch_requests where hctx->dispatch is checked.
 
-> > +{
-> > +	u64 data = msr->data;
-> > +	u32 high_word = data >> 32;
-> > +
-> > +	if (data & mask)
-> > +		return false;
-> > +
-> > +	if (!is_64_bit_mode(vcpu) && high_word)
-> > +		return false;
-> 
-> As I called out before, this is wrong.  AFAIK, the CPU never depends on
-> WRMSR to prevent loading bits 63:32, software can simply do WRMSR and then
-> transition back to 32-bit mode.  Yes, the shadow stack itself is 32 bits,
-> but the internal value is still 64 bits.  This is backed up by the CALL
-> pseudocode:
->
-So I'll remove this invalid check, thanks for the comments!
+The blk_mq_do_dispatch_sched call is not guaranteed to end in bounded time,
+because the I/O scheduler can feed an arbitrary number of commands.
 
->   IF ShadowStackEnabled(CPL)
->     IF (EFER.LMA and DEST(CodeSegmentSelector).L) = 0
->       (* If target is legacy or compatibility mode then the SSP must be in low 4GB *)
->       IF (SSP & 0xFFFFFFFF00000000 != 0)
->         THEN #GP(0); FI;
->   FI;
-> 
-> as well as RDSSP:
-> 
->   IF CPL = 3
->     IF CR4.CET & IA32_U_CET.SH_STK_EN
->       IF (operand size is 64 bit)
->         THEN
->           Dest ← SSP;
->         ELSE
->           Dest ← SSP[31:0];
->       FI;
->     FI;
->   ELSE
-> 
-> > +
-> > +	return true;
-> > +}
-> > +
-> > +static bool cet_check_ssp_msr_access(struct kvm_vcpu *vcpu,
-> > +				     struct msr_data *msr)
-> 
-> Similar to above, the polarity of the return isn't obvious.  Maybe
-> is_cet_ssp_msr_accessible()?
-> 
-> I'd prefer to pass in @index, passing the full @msr makes it look like
-> this helper might also check msr->data.
->
-Sure, will follow it.
+Since we have only one hctx->run_work, the commands waiting in
+hctx->dispatch will wait an arbitrary length of time for run_work to be
+rerun.
 
-> > +{
-> > +	u32 index = msr->index;
-> > +
-> > +	if (!boot_cpu_has(X86_FEATURE_SHSTK))
-> > +		return false;
-> > +
-> > +	if (!msr->host_initiated &&
-> > +	    !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK))
-> > +		return false;
-> > +
-> > +	if (index == MSR_IA32_INT_SSP_TAB)
-> > +		return true;
-> > +
-> > +	if (index == MSR_IA32_PL3_SSP) {
-> > +		if (!(supported_xss & XFEATURE_MASK_CET_USER))
-> > +			return false;
-> > +	} else if (!(supported_xss & XFEATURE_MASK_CET_KERNEL)) {
-> > +		return false;
-> > +	}
-> 
-> 	if (index == MSR_IA32_PL3_SSP)
-> 		return supported_xss & XFEATURE_MASK_CET_USER;
-> 
-> 	/* MSR_IA32_PL[0-2]_SSP */
-> 	return supported_xss & XFEATURE_MASK_CET_KERNEL;
-Nice! ;-))
+A similar phenomenon exists with dispatches from the software queue.
 
-> > +
-> > +	return true;
-> > +}
-> > +
-> > +static bool cet_check_ctl_msr_access(struct kvm_vcpu *vcpu,
-> 
-> is_cet_ctl_msr_accessible?
-> 
-OK.
+The solution is to poll hctx->dispatch in blk_mq_do_dispatch_sched and
+blk_mq_do_dispatch_ctx and return from the run_work handler and let it
+rerun.
 
-> > +				     struct msr_data *msr)
-> > +{
-> > +	u32 index = msr->index;
-> > +
-> > +	if (!boot_cpu_has(X86_FEATURE_SHSTK) &&
-> > +	    !boot_cpu_has(X86_FEATURE_IBT))
-> > +		return false;
-> > +
-> > +	if (!msr->host_initiated &&
-> > +	    !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) &&
-> > +	    !guest_cpuid_has(vcpu, X86_FEATURE_IBT))
-> > +		return false;
-> > +
-> > +	if (index == MSR_IA32_U_CET) {
-> > +		if (!(supported_xss & XFEATURE_MASK_CET_USER))
-> > +			return false;
-> > +	} else if (!(supported_xss & XFEATURE_MASK_CET_KERNEL)) {
-> > +		return false;
-> > +	}
-> 
-> Same as above:
-> 
-> 	if (index == MSR_IA32_U_CET)
-> 		return supported_xss & XFEATURE_MASK_CET_USER;
-> 
-> 	return supported_xss & XFEATURE_MASK_CET_KERNEL;
-Got it!
+Signed-off-by: Salman Qazi <sqazi@google.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+---
+Changes since v2:
 
-> > +
-> > +	return true;
-> > +}
-> >  /*
-> >   * Reads an msr value (of 'msr_index') into 'pdata'.
-> >   * Returns 0 on success, non-0 otherwise.
-> > @@ -1941,6 +2026,26 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  		else
-> >  			msr_info->data = vmx->pt_desc.guest.addr_a[index / 2];
-> >  		break;
-> > +	case MSR_IA32_S_CET:
-> > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		msr_info->data = vmcs_readl(GUEST_S_CET);
-> > +		break;
-> > +	case MSR_IA32_INT_SSP_TAB:
-> > +		if (!cet_check_ssp_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		msr_info->data = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> > +		break;
-> > +	case MSR_IA32_U_CET:
-> > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		vmx_get_xsave_msr(msr_info);
-> > +		break;
-> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> > +		if (!cet_check_ssp_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		vmx_get_xsave_msr(msr_info);
-> > +		break;
-> >  	case MSR_TSC_AUX:
-> >  		if (!msr_info->host_initiated &&
-> >  		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> > @@ -2197,6 +2302,34 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  		else
-> >  			vmx->pt_desc.guest.addr_a[index / 2] = data;
-> >  		break;
-> > +	case MSR_IA32_S_CET:
-> > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		if (!cet_check_msr_write(vcpu, msr_info, CET_MSR_RSVD_BITS_2))
-> > +			return 1;
-> > +		vmcs_writel(GUEST_S_CET, data);
-> > +		break;
-> > +	case MSR_IA32_INT_SSP_TAB:
-> > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		if (!is_64_bit_mode(vcpu))
-> 
-> This is wrong, the SDM explicitly calls out the !64 case:
-> 
->   IA32_INTERRUPT_SSP_TABLE_ADDR (64 bits; 32 bits on processors that do not
->   support Intel 64 architecture).
-So the check is also unnecessary as it's natual size?
-> 
-> > +			return 1;
-> > +		vmcs_writel(GUEST_INTR_SSP_TABLE, data);
-> > +		break;
-> > +	case MSR_IA32_U_CET:
-> > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		if (!cet_check_msr_write(vcpu, msr_info, CET_MSR_RSVD_BITS_2))
-> > +			return 1;
-> > +		vmx_set_xsave_msr(msr_info);
-> > +		break;
-> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> > +		if (!cet_check_ssp_msr_access(vcpu, msr_info))
-> > +			return 1;
-> > +		if (!cet_check_msr_write(vcpu, msr_info, CET_MSR_RSVD_BITS_1))
-> > +			return 1;
-> > +		vmx_set_xsave_msr(msr_info);
-> > +		break;
-> >  	case MSR_TSC_AUX:
-> >  		if (!msr_info->host_initiated &&
-> >  		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 9654d779bdab..9e89ee6a09e1 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -1229,6 +1229,10 @@ static const u32 msrs_to_save_all[] = {
-> >  	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
-> >  	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
-> >  	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
-> > +
-> > +	MSR_IA32_XSS, MSR_IA32_U_CET, MSR_IA32_S_CET,
-> > +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP,
-> > +	MSR_IA32_PL3_SSP, MSR_IA32_INT_SSP_TAB,
-> >  };
-> >  
-> >  static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
-> > @@ -1504,6 +1508,13 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
-> >  		 * invokes 64-bit SYSENTER.
-> >  		 */
-> >  		data = get_canonical(data, vcpu_virt_addr_bits(vcpu));
-> > +		break;
-> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> > +	case MSR_IA32_U_CET:
-> > +	case MSR_IA32_S_CET:
-> > +	case MSR_IA32_INT_SSP_TAB:
-> > +		if (is_noncanonical_address(data, vcpu))
-> 
-> IMO the canonical check belongs in cet_check_msr_write().  The above checks
-> are for MSRs that are common to VMX and SVM, i.e. the common check saves
-> having to duplicate the logic.  If SVM picks up CET support, then they'll
-> presumably want to share all of the checks, not just the canonical piece.
-OK, I'll move them back.
-> 
-> > +			return 1;
-> >  	}
-> >  
-> >  	msr.data = data;
-> > -- 
-> > 2.17.2
-> > 
+* Added helper function __blk_mq_sched_dispatch_requests to remove goto
+* Replaced bool return value with int, using -EAGAIN to restart
+* Changes to comment formatting
+
+ block/blk-mq-sched.c | 64 +++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 51 insertions(+), 13 deletions(-)
+
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 74cedea56034..a86a34580772 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -84,12 +84,16 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+  * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
+  * its queue by itself in its completion handler, so we don't need to
+  * restart queue if .get_budget() returns BLK_STS_NO_RESOURCE.
++ *
++ * Returns -EAGAIN if hctx->dispatch was found non-empty and run_work has to
++ * be run again.  This is necessary to avoid starving flushes.
+  */
+-static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
++static int blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+ {
+ 	struct request_queue *q = hctx->queue;
+ 	struct elevator_queue *e = q->elevator;
+ 	LIST_HEAD(rq_list);
++	int ret = 0;
+ 
+ 	do {
+ 		struct request *rq;
+@@ -97,6 +101,11 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+ 		if (e->type->ops.has_work && !e->type->ops.has_work(hctx))
+ 			break;
+ 
++		if (!list_empty_careful(&hctx->dispatch)) {
++			ret = -EAGAIN;
++			break;
++		}
++
+ 		if (!blk_mq_get_dispatch_budget(hctx))
+ 			break;
+ 
+@@ -113,6 +122,8 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+ 		 */
+ 		list_add(&rq->queuelist, &rq_list);
+ 	} while (blk_mq_dispatch_rq_list(q, &rq_list, true));
++
++	return ret;
+ }
+ 
+ static struct blk_mq_ctx *blk_mq_next_ctx(struct blk_mq_hw_ctx *hctx,
+@@ -130,16 +141,25 @@ static struct blk_mq_ctx *blk_mq_next_ctx(struct blk_mq_hw_ctx *hctx,
+  * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
+  * its queue by itself in its completion handler, so we don't need to
+  * restart queue if .get_budget() returns BLK_STS_NO_RESOURCE.
++ *
++ * Returns -EAGAIN if hctx->dispatch was found non-empty and run_work has to
++ * to be run again.  This is necessary to avoid starving flushes.
+  */
+-static void blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
++static int blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
+ {
+ 	struct request_queue *q = hctx->queue;
+ 	LIST_HEAD(rq_list);
+ 	struct blk_mq_ctx *ctx = READ_ONCE(hctx->dispatch_from);
++	int ret = 0;
+ 
+ 	do {
+ 		struct request *rq;
+ 
++		if (!list_empty_careful(&hctx->dispatch)) {
++			ret = -EAGAIN;
++			break;
++		}
++
+ 		if (!sbitmap_any_bit_set(&hctx->ctx_map))
+ 			break;
+ 
+@@ -165,21 +185,17 @@ static void blk_mq_do_dispatch_ctx(struct blk_mq_hw_ctx *hctx)
+ 	} while (blk_mq_dispatch_rq_list(q, &rq_list, true));
+ 
+ 	WRITE_ONCE(hctx->dispatch_from, ctx);
++	return ret;
+ }
+ 
+-void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
++int __blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
+ {
+ 	struct request_queue *q = hctx->queue;
+ 	struct elevator_queue *e = q->elevator;
+ 	const bool has_sched_dispatch = e && e->type->ops.dispatch_request;
++	int ret = 0;
+ 	LIST_HEAD(rq_list);
+ 
+-	/* RCU or SRCU read lock is needed before checking quiesced flag */
+-	if (unlikely(blk_mq_hctx_stopped(hctx) || blk_queue_quiesced(q)))
+-		return;
+-
+-	hctx->run++;
+-
+ 	/*
+ 	 * If we have previous entries on our dispatch list, grab them first for
+ 	 * more fair dispatch.
+@@ -208,19 +224,41 @@ void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
+ 		blk_mq_sched_mark_restart_hctx(hctx);
+ 		if (blk_mq_dispatch_rq_list(q, &rq_list, false)) {
+ 			if (has_sched_dispatch)
+-				blk_mq_do_dispatch_sched(hctx);
++				ret = blk_mq_do_dispatch_sched(hctx);
+ 			else
+-				blk_mq_do_dispatch_ctx(hctx);
++				ret = blk_mq_do_dispatch_ctx(hctx);
+ 		}
+ 	} else if (has_sched_dispatch) {
+-		blk_mq_do_dispatch_sched(hctx);
++		ret = blk_mq_do_dispatch_sched(hctx);
+ 	} else if (hctx->dispatch_busy) {
+ 		/* dequeue request one by one from sw queue if queue is busy */
+-		blk_mq_do_dispatch_ctx(hctx);
++		ret = blk_mq_do_dispatch_ctx(hctx);
+ 	} else {
+ 		blk_mq_flush_busy_ctxs(hctx, &rq_list);
+ 		blk_mq_dispatch_rq_list(q, &rq_list, false);
+ 	}
++
++	return ret;
++}
++
++void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
++{
++	struct request_queue *q = hctx->queue;
++
++	/* RCU or SRCU read lock is needed before checking quiesced flag */
++	if (unlikely(blk_mq_hctx_stopped(hctx) || blk_queue_quiesced(q)))
++		return;
++
++	hctx->run++;
++
++	/*
++	 * A return of -EAGAIN is an indication that hctx->dispatch is not
++	 * empty and we must run again in order to avoid starving flushes.
++	 */
++	if (__blk_mq_sched_dispatch_requests(hctx) == -EAGAIN) {
++		if (__blk_mq_sched_dispatch_requests(hctx) == -EAGAIN)
++			blk_mq_run_hw_queue(hctx, true);
++	}
+ }
+ 
+ bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
+-- 
+2.26.2.303.gf8c07b1a785-goog
+
