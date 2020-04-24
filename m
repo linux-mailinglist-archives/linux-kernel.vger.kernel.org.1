@@ -2,100 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8D91B7913
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADC91B7929
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgDXPNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:13:00 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:41424 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbgDXPM7 (ORCPT
+        id S1728261AbgDXPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:13:35 -0400
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:56088 "EHLO
+        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726908AbgDXPNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:12:59 -0400
-Received: by mail-oo1-f67.google.com with SMTP id t3so2169417oou.8;
-        Fri, 24 Apr 2020 08:12:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H6TSxp621tHGXOK2SxkqJA3SlWKHV8D7dciTUE31bQE=;
-        b=CK9y/WNdfkGDvRB1llmwGsKCMY0NXAxhh2HpWIxR2ncAZr234EfS8Lt7za7giJ6tDP
-         d6XYhm7eMoGCLxyMo2mvDKBsISPN4lyjwJ58+CZiwrAdwwy/MYLdY1xSm4nJaPlGutAB
-         4THqZzZ4b12ANpPic1rnZ1qy8Yic1rgMMe5CuLADIn8+vhZVHBpy+4gxits3W5ACYDCp
-         VefQnQbKhOPrIRMSooS5s8GkVn9j3xfrKTWiA6HQrL+tyd6yNVDwb2a4CGeoD6J9OIwm
-         d5Rrp76f5JLnal1+d603DzAz2o2iJ+QJjeofrkC0RlKa/EEZsaDIlaco2Hr3O2zsUZSp
-         Zpbw==
-X-Gm-Message-State: AGi0PuZsjmGtyxlsmnd5BNkpbd6UW5cQMMwRRAmGr64vpOoAKJI33/i5
-        MZFL8uJ4EKjLjGxS2100smF4L2H19zko6nVCTEU=
-X-Google-Smtp-Source: APiQypKPD3IaEYszA2svJVlIug3NVPE1rweeKaA/eUgVNED2La+srJpgUR6y8l7Tl8ej+pkYCBAaS/MY7hnuwDi5OGU=
-X-Received: by 2002:a4a:d44a:: with SMTP id p10mr1884233oos.11.1587741178374;
- Fri, 24 Apr 2020 08:12:58 -0700 (PDT)
+        Fri, 24 Apr 2020 11:13:35 -0400
+Received: from [192.168.4.242] (helo=deadeye)
+        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1jS01F-0008Gr-Is; Fri, 24 Apr 2020 16:13:33 +0100
+Received: from ben by deadeye with local (Exim 4.93)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1jS01F-00F5UL-4p; Fri, 24 Apr 2020 16:13:33 +0100
+Message-ID: <8783c94cb802ade8a45cdf4233fe3b7341cca5c9.camel@decadent.org.uk>
+Subject: Re: [PATCH 3.16 208/245] namei: allow restricted O_CREAT of FIFOs
+ and regular files
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Solar Designer <solar@openwall.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 24 Apr 2020 16:13:22 +0100
+In-Reply-To: <20200424135205.GA27204@openwall.com>
+References: <lsq.1587683027.831233700@decadent.org.uk>
+         <lsq.1587683028.722200761@decadent.org.uk>
+         <20200424135205.GA27204@openwall.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-G7TFAlgBTbsPFt4nkwf+"
+User-Agent: Evolution 3.36.1-1 
 MIME-Version: 1.0
-References: <20200424121051.5056-1-geert@linux-m68k.org> <d2c14a2d-4e7b-d36a-be90-e987b1ea6183@gmail.com>
-In-Reply-To: <d2c14a2d-4e7b-d36a-be90-e987b1ea6183@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 24 Apr 2020 17:12:46 +0200
-Message-ID: <CAMuHMdWVmP04cXEgAkOc9Qdb2Y2xjGd1YEOcMt7ehE70ZwdqjQ@mail.gmail.com>
-Subject: Re: [PATCH] net: openvswitch: use do_div() for 64-by-32 divisions:
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        netdev <netdev@vger.kernel.org>, dev@openvswitch.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-SA-Exim-Connect-IP: 192.168.4.242
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
 
-On Fri, Apr 24, 2020 at 5:05 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> On 4/24/20 5:10 AM, Geert Uytterhoeven wrote:
-> > On 32-bit architectures (e.g. m68k):
-> >
-> >     ERROR: modpost: "__udivdi3" [net/openvswitch/openvswitch.ko] undefined!
-> >     ERROR: modpost: "__divdi3" [net/openvswitch/openvswitch.ko] undefined!
-> >
-> > Fixes: e57358873bb5d6ca ("net: openvswitch: use u64 for meter bucket")
-> > Reported-by: noreply@ellerman.id.au
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >  net/openvswitch/meter.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-> > index 915f31123f235c03..3498a5ab092ab2b8 100644
-> > --- a/net/openvswitch/meter.c
-> > +++ b/net/openvswitch/meter.c
-> > @@ -393,7 +393,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
-> >                * Start with a full bucket.
-> >                */
-> >               band->bucket = (band->burst_size + band->rate) * 1000ULL;
-> > -             band_max_delta_t = band->bucket / band->rate;
-> > +             band_max_delta_t = do_div(band->bucket, band->rate);
-> >               if (band_max_delta_t > meter->max_delta_t)
-> >                       meter->max_delta_t = band_max_delta_t;
-> >               band++;
-> >
->
-> This is fascinating... Have you tested this patch ?
+--=-G7TFAlgBTbsPFt4nkwf+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, I should have said this is compile-tested only.
+On Fri, 2020-04-24 at 15:52 +0200, Solar Designer wrote:
+> On Fri, Apr 24, 2020 at 12:07:15AM +0100, Ben Hutchings wrote:
+> > 3.16.83-rc1 review patch.  If anyone has any objections, please let me =
+know.
+>=20
+> I do.  This patch is currently known-buggy, see this thread:
+>=20
+> https://www.openwall.com/lists/oss-security/2020/01/28/2
+>=20
+> It is (partially) fixed with these newer commits in 5.5 and 5.5.2:
+>=20
+> commit d0cb50185ae942b03c4327be322055d622dc79f6
+> Author: Al Viro <viro@zeniv.linux.org.uk>
+> Date:   Sun Jan 26 09:29:34 2020 -0500
+>=20
+>     do_last(): fetch directory ->i_mode and ->i_uid before it's too late
+>    =20
+>     may_create_in_sticky() call is done when we already have dropped the
+>     reference to dir.
+>    =20
+>     Fixes: 30aba6656f61e (namei: allow restricted O_CREAT of FIFOs and re=
+gular files)
+>     Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+>=20
+> commit d76341d93dedbcf6ed5a08dfc8bce82d3e9a772b
+> Author: Al Viro <viro@zeniv.linux.org.uk>
+> Date:   Sat Feb 1 16:26:45 2020 +0000
+>=20
+>     vfs: fix do_last() regression
+>    =20
+>     commit 6404674acd596de41fd3ad5f267b4525494a891a upstream.
+[...]
+> At least inclusion of the above fixes is mandatory for any backports.
 
-> Please double check what do_div() return value is supposed to be !
+I know, and those are the next 2 patches in the series.
 
-I do not have any openvswitch setups, let alone on the poor m68k box.
+> Also, I think no one has fixed the logic of may_create_in_sticky() so
+> that it wouldn't unintentionally apply the "protection" when the file
+> is neither a FIFO nor a regular file (something I found and mentioned in
+> the oss-security posting above).
+[...]
+> I think the implementation of may_create_in_sticky() should be rewritten
+> such that it'd directly correspond to the textual description in the
+> comment above.  As we've seen, trying to write the code "more optimally"
+> resulted in its logic actually being different from the description.
+>=20
+> Meanwhile, I think backporting known-so-buggy code is a bad idea.
 
-Gr{oetje,eeting}s,
+I can see that it's not quite right, but does it matter in practice?=20
+Directories and symlinks are handled separately; sockets can't be
+opened anyway; block and character devices wonn't normally appear in a
+sticky directory.
 
-                        Geert
+Ben.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--=20
+Ben Hutchings
+Knowledge is power.  France is bacon.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+
+--=-G7TFAlgBTbsPFt4nkwf+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl6jAhIACgkQ57/I7JWG
+EQlUpA/9Er5XJcG/bsXQ/WFew/O336Cp3duv3JdZcKLGCHo+v2TVueTvCkG9mhgC
+rXDQsVOhHhByqU3jAB39MFCXvnigImZGi7IpEdLRpdJGYSsfRqPOLR6dsyGRoDYp
+wxCGA3UQHnyLfvwVoS/jY83p31vgBbGgj4t7He2e7/Mrx7CkL3qdjoGzu9Xl6O+3
+GvOm4rnkfMbTkKImdzJ6hhh5v4AuMqobfbp8P2xlsv3hwy56tNslhrdVNAH1WbDy
+tog2jQdWPg24RXTiv1EaYxw6bKCivIK07m/RgqZH/znVk9FUBsUKtfb9Kq4Z5UO7
+EyIpgwvOpLA8ctZr0RPL7mlMdiSz8QcHLMBawq0G60OVxIuBMfmGfuTVeBuZs9F2
+FxbPN44ULZMra9vbgGvexKnfWAsgpzab7G+95K9cs+vomudPO25soCO8yo9JjdZt
+llH71ClBc2/kOXJnr5O1hQQ0deo9OdlxxIODeN0S7mbwNxEAMZwe8TJ3gBU9ZMC0
+a9pizROPYj846HlEZ8OKuVsnvNiVyf4MdsaYJ7DjkW81nOWyi0fYqRBj5ol2Nqkb
+eGmgqZtatjkwlLX7L/zImm774E/UOOmcHZIpC3O+wp/zgvwiDhhnKpeBW74VdZS7
+9hAww3ZS/1p4P3NQ8l657fu5N/uOGb+ux8ulB1U1HI19oHHNS4I=
+=xc5f
+-----END PGP SIGNATURE-----
+
+--=-G7TFAlgBTbsPFt4nkwf+--
