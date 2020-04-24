@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CD51B7C01
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 18:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA7C1B7C0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 18:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgDXQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 12:45:58 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53927 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726793AbgDXQp5 (ORCPT
+        id S1728561AbgDXQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 12:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgDXQrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 12:45:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587746756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yy09tY/ZZlbYrJqIsbNBUE6nQ0igHKGYuqH3QoYuWS0=;
-        b=AQk04QLXtwB8YJuq4FO/x6/NODIkGp/nC4oyditqkaWvdB8EPTnVj7C5Hzlc/B0cGdipeZ
-        VV2Q2M+JGGkJYqk+oSyJntYsnGAP2nSX4eMfwxqIXy+e2/FsN+CfDKqEmL6WOkxgSQ9NrK
-        vYPXMB+UM905sGyNxsF6TkWyK9qrDE8=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-S5BMse8CPXiqoy_vRMHhWQ-1; Fri, 24 Apr 2020 12:45:52 -0400
-X-MC-Unique: S5BMse8CPXiqoy_vRMHhWQ-1
-Received: by mail-lj1-f197.google.com with SMTP id o21so2020281ljp.17
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 09:45:52 -0700 (PDT)
+        Fri, 24 Apr 2020 12:47:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6774AC09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 09:47:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d17so4897304pgo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 09:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8LMkNBqXB+CeQceWfD+1N1s9IOWokLMqWssX/DZezGQ=;
+        b=QsUZIst0n7NitTwTbPskwHB/A9M3npMfgM+TRceAN2YLnBjo7TiuFLgIDIAlNhloZQ
+         Hhw57EsdqXMyumDsh1p+qtH9Zn5ICKQGQ58SLXj71jnWAYQwMA/6Pufm5DvprHi4Cef4
+         rH4sHfsgJYbQ0P7x2TuhVvmMmpEyWPlY6KftQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Yy09tY/ZZlbYrJqIsbNBUE6nQ0igHKGYuqH3QoYuWS0=;
-        b=Xkg4fVBHigceYV7SH+jEBzObyou9KCWk+DpGnIeG8oZivd3cinI8ZKsJeFmND1xkNr
-         uag8AuKrrljGfg8FEAQ+9/MY4Ast1XnpO9NxeJL8IaDtAF8tWffKrBCB2tPjE1EzD8X/
-         eLG9FgFt5mTTTbzN7BeHCAogvCU3gfmuyKXanDr98hYu9JfMgcqHzbuS9EQtfvmMjq5z
-         j1vGqKlGOMpAFoZl8OXd21/us8aUsCKwdEuBlVyzu6I5ZsNVEah4E5DdLkpfd9/JDaNa
-         E6zYu1I3lJJU6u7EXqCJBxiCPK/D8Nq5w4RjLHGp6zgJRMOZFzUXcAhQ2e9jb96niP0l
-         NbLg==
-X-Gm-Message-State: AGi0PubfiDmWSVHsrSAUwI+Fd7zK18DQflFW6+87+wIvWeUCGzzcqrpn
-        sFukG+HjkBMlnMTWXGGT00KsGskW7cmew2FBPvejBNYZFIpcJZYAKlOdkmJjH6/F+eeT/fgeP8Q
-        D4Ix6XfP7auHp053y4RAwFoXI
-X-Received: by 2002:a19:d3:: with SMTP id 202mr6769754lfa.24.1587746750885;
-        Fri, 24 Apr 2020 09:45:50 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIvCEQLkcrKSAwJCFZgQzfgjqKywU4JSqlCnHWOvJ3JNUix5g6gKJnloODQXFxA2oPJy9aVUQ==
-X-Received: by 2002:a19:d3:: with SMTP id 202mr6769739lfa.24.1587746750602;
-        Fri, 24 Apr 2020 09:45:50 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id v7sm4735362lfq.55.2020.04.24.09.45.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8LMkNBqXB+CeQceWfD+1N1s9IOWokLMqWssX/DZezGQ=;
+        b=kn+S/KMJ2ILZdCOQR+MEYYhfaSOK/tjvewuecDEqk4NQLJGoWVsux2WX9e7YbdbU5U
+         a6I6v0HOrvSwS5q6alOzopxLwD8Et/jux1rZf6ZPYaGh2UMtk4u2szLOnvWPzS7UZHk2
+         sut6Hby0SwgaKTSlRFK0pKvsv4jrWYWCI5ou5X/dYQwyHT5fAA9ityeguUfg50nfop0q
+         jOkCT590hHxrIOrERHzwtroQlMnIfEGyhhsfZof1geoC/whV9PotBY3liRL4XA2zWSUi
+         2Biqx8bqXgON/4tj+p/5d2C9DQnE2zYuI7k5w0cMqHM0S/Ct/A9PF62vOdskuNg/gRbL
+         AYyw==
+X-Gm-Message-State: AGi0PuZC3DGAKeYFSKXfxdYDPHy2Je0qFK8yZqAD6lPPVOdcYCYaDVTk
+        EHNvadUjvI6Gi2V1cIjjHPEJkj0FUHrbVg==
+X-Google-Smtp-Source: APiQypJWdVuaFCmqhM/KqVMwq1a10HxnD754ZLgp0ghuRAORQk+vl0gQ1jCPIlxmNdNeTKvaSlm4aw==
+X-Received: by 2002:a63:f30a:: with SMTP id l10mr10233893pgh.372.1587746838702;
+        Fri, 24 Apr 2020 09:47:18 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id r28sm6319205pfg.186.2020.04.24.09.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 09:45:49 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 09AA61814FF; Fri, 24 Apr 2020 18:45:48 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        netdev <netdev@vger.kernel.org>, dev@openvswitch.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: openvswitch: use do_div() for 64-by-32 divisions:
-In-Reply-To: <CAMuHMdWVmP04cXEgAkOc9Qdb2Y2xjGd1YEOcMt7ehE70ZwdqjQ@mail.gmail.com>
-References: <20200424121051.5056-1-geert@linux-m68k.org> <d2c14a2d-4e7b-d36a-be90-e987b1ea6183@gmail.com> <CAMuHMdWVmP04cXEgAkOc9Qdb2Y2xjGd1YEOcMt7ehE70ZwdqjQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 24 Apr 2020 18:45:47 +0200
-Message-ID: <87ftcs3k90.fsf@toke.dk>
+        Fri, 24 Apr 2020 09:47:17 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     evgreen@chromium.org, mka@chromium.org, mkshah@codeaurora.org,
+        swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/5] soc: qcom: rpmh-rsc: Correctly ignore CPU_CLUSTER_PM notifications
+Date:   Fri, 24 Apr 2020 09:46:53 -0700
+Message-Id: <20200424094610.v5.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Our switch statement doesn't have entries for CPU_CLUSTER_PM_ENTER,
+CPU_CLUSTER_PM_ENTER_FAILED, and CPU_CLUSTER_PM_EXIT and doesn't have
+a default.  This means that we'll try to do a flush in those cases but
+we won't necessarily be the last CPU down.  That's not so ideal since
+our (lack of) locking assumes we're on the last CPU.
 
-> Hi Eric,
->
-> On Fri, Apr 24, 2020 at 5:05 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->> On 4/24/20 5:10 AM, Geert Uytterhoeven wrote:
->> > On 32-bit architectures (e.g. m68k):
->> >
->> >     ERROR: modpost: "__udivdi3" [net/openvswitch/openvswitch.ko] undefined!
->> >     ERROR: modpost: "__divdi3" [net/openvswitch/openvswitch.ko] undefined!
->> >
->> > Fixes: e57358873bb5d6ca ("net: openvswitch: use u64 for meter bucket")
->> > Reported-by: noreply@ellerman.id.au
->> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> > ---
->> >  net/openvswitch/meter.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
->> > index 915f31123f235c03..3498a5ab092ab2b8 100644
->> > --- a/net/openvswitch/meter.c
->> > +++ b/net/openvswitch/meter.c
->> > @@ -393,7 +393,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
->> >                * Start with a full bucket.
->> >                */
->> >               band->bucket = (band->burst_size + band->rate) * 1000ULL;
->> > -             band_max_delta_t = band->bucket / band->rate;
->> > +             band_max_delta_t = do_div(band->bucket, band->rate);
->> >               if (band_max_delta_t > meter->max_delta_t)
->> >                       meter->max_delta_t = band_max_delta_t;
->> >               band++;
->> >
->>
->> This is fascinating... Have you tested this patch ?
->
-> Sorry, I should have said this is compile-tested only.
->
->> Please double check what do_div() return value is supposed to be !
->
-> I do not have any openvswitch setups, let alone on the poor m68k box.
+Luckily this isn't as big a problem as you'd think since (at least on
+the SoC I tested) we don't get these notifications except on full
+system suspend.  ...and on full system suspend we get them on the last
+CPU down.  That means that the worst problem we hit is flushing twice.
+Still, it's good to make it correct.
 
-I think what Eric is referring to is this, from the documentation of
-do_div:
+Fixes: 985427f997b6 ("soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches")
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
 
- * do_div - returns 2 values: calculate remainder and update new dividend
- * @n: uint64_t dividend (will be updated)
- * @base: uint32_t divisor
- *
- * Summary:
- * ``uint32_t remainder = n % base;``
- * ``n = n / base;``
- *
- * Return: (uint32_t)remainder
+Changes in v5:
+- Corrently => Correctly
 
+Changes in v4:
+- ("...Corrently ignore CPU_CLUSTER_PM notifications") split out for v4.
 
-Specifically that last part :)
+Changes in v3: None
+Changes in v2: None
 
--Toke
+ drivers/soc/qcom/rpmh-rsc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index a9e15699f55f..3571a99fc839 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -806,6 +806,8 @@ static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
+ 	case CPU_PM_EXIT:
+ 		cpumask_clear_cpu(smp_processor_id(), &drv->cpus_entered_pm);
+ 		goto exit;
++	default:
++		return NOTIFY_DONE;
+ 	}
+ 
+ 	ret = rpmh_rsc_ctrlr_is_busy(drv);
+-- 
+2.26.2.303.gf8c07b1a785-goog
 
