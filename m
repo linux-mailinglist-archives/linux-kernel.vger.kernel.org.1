@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A281B7044
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602FE1B7058
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgDXJGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 05:06:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:57754 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgDXJGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:06:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 192191FB;
-        Fri, 24 Apr 2020 02:06:41 -0700 (PDT)
-Received: from [192.168.0.7] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 471D63F73D;
-        Fri, 24 Apr 2020 02:06:39 -0700 (PDT)
-Subject: Re: [PATCH] sched/pelt: sync util/runnable_sum with PELT window when
- propagating
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200422151401.9147-1-vincent.guittot@linaro.org>
- <20200423192930.GY2483@worktop.programming.kicks-ass.net>
- <CAKfTPtBUtK1c2WvE82k1bpS6hWECBs25rRc6t_6gyeJWRaF8uA@mail.gmail.com>
- <206b1f00-bb96-5e7f-f80a-b10cd88c8a71@arm.com>
- <CAKfTPtB4Uf7PbRdrqLm8vMy-UfYhQV_SgFSKCP2QOyvxSqLtqg@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <e0695e6f-2afc-4f1c-302c-cedc8126bc6d@arm.com>
-Date:   Fri, 24 Apr 2020 11:06:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAKfTPtB4Uf7PbRdrqLm8vMy-UfYhQV_SgFSKCP2QOyvxSqLtqg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726804AbgDXJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 05:13:21 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:37154 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgDXJNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 05:13:21 -0400
+Received: from localhost (unknown [192.168.167.209])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 630A9B1E84;
+        Fri, 24 Apr 2020 17:13:15 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P17634T139992827418368S1587719594268319_;
+        Fri, 24 Apr 2020 17:13:15 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b887aa9ef3120df775ab07e15fb52640>
+X-RL-SENDER: caizhaopeng@uniontech.com
+X-SENDER: caizhaopeng@uniontech.com
+X-LOGIN-NAME: caizhaopeng@uniontech.com
+X-FST-TO: linus.walleij@linaro.org
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   caizhaopeng@uniontech.com
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhangyueqian <zhangyueqian@uniontech.com>,
+        Zhangshuang <zhangshuang@uniontech.com>,
+        Hualet Wang <wangyaohua@uniontech.com>,
+        Zhanglei <zhanglei@uniontech.com>,
+        Caicai <caizhaopeng@uniontech.com>
+Subject: [PATCH 1/1] pinctrl: add IRQF_EARLY_RESUME flags with gpio irq for elan touchpad.
+Date:   Fri, 24 Apr 2020 17:12:01 +0800
+Message-Id: <20200424091201.568-1-caizhaopeng@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Caicai <caizhaopeng@uniontech.com>
+
+I had tested two Notebook machines, the Intel i5(or amd ryzen)
+with elan touchpad, and there's a probability that the touchpad
+won't work after going to the S3/S4 to wake up, that it would
+appear no more than 15 times. I found that there's no interrupt
+to check for /proc/interrupt. It was found that the gpio
+interrupt of i2c was also not on top. By adding the gpio
+interrupt flags with IRQF_EARLY_RESUME, now the touchpad tested
+200 + times works well.
+
+Signed-off-by: Caicai <caizhaopeng@uniontech.com>
+---
+ drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
+ drivers/pinctrl/pinctrl-amd.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 8fb6c9668c37..a350dade6aa0 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1189,7 +1189,7 @@ static int intel_gpio_probe(struct intel_pinctrl *pctrl, int irq)
+ 	 * controllers share the same interrupt line.
+ 	 */
+ 	ret = devm_request_irq(pctrl->dev, irq, intel_gpio_irq,
+-			       IRQF_SHARED | IRQF_NO_THREAD,
++			       IRQF_SHARED | IRQF_NO_THREAD | IRQF_EARLY_RESUME,
+ 			       dev_name(pctrl->dev), pctrl);
+ 	if (ret) {
+ 		dev_err(pctrl->dev, "failed to request interrupt\n");
+diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+index 977792654e01..70c37f4da2b1 100644
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -937,7 +937,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq_base, amd_gpio_irq_handler,
+-			       IRQF_SHARED, KBUILD_MODNAME, gpio_dev);
++			       IRQF_SHARED | IRQF_EARLY_RESUME | IRQF_NO_THREAD, KBUILD_MODNAME, gpio_dev);
+ 	if (ret)
+ 		goto out2;
+ 
+-- 
+2.20.1
 
 
-On 24/04/2020 10:54, Vincent Guittot wrote:
-> On Fri, 24 Apr 2020 at 10:41, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->>
->> On 24/04/2020 09:37, Vincent Guittot wrote:
->>> On Thu, 23 Apr 2020 at 21:29, Peter Zijlstra <peterz@infradead.org> wrote:
->>>>
->>>> On Wed, Apr 22, 2020 at 05:14:01PM +0200, Vincent Guittot wrote:
 
-[...]
-
->>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>>> index 02f323b85b6d..ca6aa89c88f2 100644
->>>>> --- a/kernel/sched/fair.c
->>>>> +++ b/kernel/sched/fair.c
->>>>> @@ -3441,52 +3441,38 @@ static inline void
->>>>>  update_tg_cfs_util(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
->>>>>  {
->>>>>       long delta = gcfs_rq->avg.util_avg - se->avg.util_avg;
->>>>> +     u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
->>>>>
->>>>>       /* Nothing to update */
->>>>>       if (!delta)
->>>>>               return;
->>>>>
->>>>> -     /*
->>>>> -      * The relation between sum and avg is:
->>>>> -      *
->>>>> -      *   LOAD_AVG_MAX - 1024 + sa->period_contrib
->>>>> -      *
->>>>> -      * however, the PELT windows are not aligned between grq and gse.
->>>>> -      */
->>>>
->>>> Instead of deleting this, could we perhaps extend it?
->>>
->>> In fact, this is not the only place in fair.c that uses this rule to
->>> align _avg and _sum but others don't have any special comment.
->>>
->>> I can add a more detailed description of this relation for
->>> ___update_load_avg() in pelt.c and make a ref to this in all places in
->>> fair.c that use this rule which are :
->>> - update_tg_cfs_util
->>> - update_tg_cfs_runnable
->>> - update_cfs_rq_load_avg
->>> - attach_entity_load_avg
->>> - reweight_entity
->>
->> But IMHO the
->>
->> "* however, the PELT windows are not aligned between grq and gse."
->>
->> should only apply to update_tg_cfs_util() and update_tg_cfs_runnable().
->> And attach_entity_load_avg() (for cfs_rq and se).
->>
->> They seem to be special since we derive divider from a cfs_rq PELT value
->> and use it for a se PELT value.
-> 
-> hmmm... There is nothing special here.
-> 
-> When se is attached to cfs_rq, they both have the same divider because
-> they use the same clock.
-
-That's true.
-
-But exactly this might deserve this comment. Otherwise people might
-wonder why you can do a
-
-    u32 divider = LOAD_AVG_MAX - 1024 + *cfs_rq*->avg.period_contrib;
-
-and use it for instance in:
-
-    *se*->avg.util_sum = se->avg.util_avg * divider;
-
-In update_cfs_rq_load_avg() and reweight_entity() we derive 'divider'
-from the same 'sched_avg' we use it on later.
-
-    u32 divider = LOAD_AVG_MAX - 1024 + sa->period_contrib;
-
-    sub_positive(&sa->load_sum, r * divider);
-
-[...]
