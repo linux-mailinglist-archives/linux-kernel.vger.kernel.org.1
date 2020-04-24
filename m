@@ -2,106 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD841B6FCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 10:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD751B6FD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 10:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgDXIc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 04:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgDXIc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 04:32:59 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29775C09B045
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 01:32:59 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u16so9700834wmc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 01:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HH7SBcIHpC3+oSovD7oT6/tXCz3H7a1cytYYIbkSHU4=;
-        b=p9O7zP5Y2QyMsyNfDxdcW41y61KcamnRw5j58fC5Fze3ViVEvp2UvOGVJ9GIfiINL/
-         IbOaR8d12Rnwg5fiNVfxBgORzMNCPLhthTvb3oEXsJ2frWW9aVw9xGpuA5Trv3aTL/DS
-         Q9cLiyOfuyReoUeMsEBdkDP9iKzFAUq/6iA0owbnwgVm6yue6KpnrI020pVsQRgWNUU7
-         RPBmhxN4HvdLwSGKXVbRpRlvumMMOQYKHyDonlsBON0nb3IWSwaOgihSBXkp8iBr9NjS
-         yK2HoqrzsDE+/HAdSZn8405OlfOqysrQfPjY6qlJgkJZSiQwtN6rD4SJirkFUvpz+LD6
-         I80w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HH7SBcIHpC3+oSovD7oT6/tXCz3H7a1cytYYIbkSHU4=;
-        b=HFQmNDaxWY0XaePFZCdII8/2QNkIkFOuLAYlYS+Fw7C6ulf9Z1TKjpK3EGJopetcMk
-         5zXYfOzMHyR2WKjTIT82sxerJrzV2G7qgkDnPsFaaZ1zpEYTCTJGrV1aQLDCpO0KMCOq
-         8oS+wd7ggVV06Ncbgz9cJ4mbNMuvKmR+0PGCX6Pq0hUZ9UNk9NOdKVnuZujseINDRiw7
-         liJMVHYXNV0MKtaJuik2So86KRoDZ9wZxc2CDNfTzAsxrZi6ezuA2Eyrgmhwk/ikkQ+0
-         OhaGcE17rqmQ4jm2TCic9ybyrEs75Q+ISaG3vcOThst7j55+s+hXNsUNiH3XmC4ROm17
-         cIVA==
-X-Gm-Message-State: AGi0PuadLQNKtKu5uOmI1DHxrykJpzWg1mx54T41Rftwl3sJ+sv6XvhK
-        AGMCDFudW/nzcTtGNMaUZpWNKcZQ2WU=
-X-Google-Smtp-Source: APiQypKno5VpdylTTiSqfpE25fV4uVJIjWZSYsgg6vaekGhwxp4WP+vg2Bhmx7rO7D7rpCt+fqDFSA==
-X-Received: by 2002:a1c:2042:: with SMTP id g63mr8738607wmg.70.1587717177710;
-        Fri, 24 Apr 2020 01:32:57 -0700 (PDT)
-Received: from dell ([2.31.163.63])
-        by smtp.gmail.com with ESMTPSA id k14sm7480852wrp.53.2020.04.24.01.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 01:32:57 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 09:32:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Lyra Zhang <zhang.lyra@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mfd: syscon: Support physical regmap bus
-Message-ID: <20200424083255.GQ3612@dell>
-References: <cover.1587088646.git.baolin.wang7@gmail.com>
- <96d444cd73239e0166316bd8f44082031cf72491.1587088646.git.baolin.wang7@gmail.com>
- <20200424081138.GP3612@dell>
- <CAK8P3a1e15P6xRUgYLYxT8XUx7FREbs5mMbfL1Qj+qwoDfFX+Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        id S1726698AbgDXIfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 04:35:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36120 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726317AbgDXIfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 04:35:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 92BFAAC52;
+        Fri, 24 Apr 2020 08:35:42 +0000 (UTC)
+Date:   Fri, 24 Apr 2020 10:35:42 +0200
+Message-ID: <s5hwo65s2ld.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.7-rc3
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a1e15P6xRUgYLYxT8XUx7FREbs5mMbfL1Qj+qwoDfFX+Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Apr 2020, Arnd Bergmann wrote:
+Linus,
 
-> On Fri, Apr 24, 2020 at 10:11 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > On Fri, 17 Apr 2020, Baolin Wang wrote:
-> > > @@ -106,14 +107,25 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
-> > >       syscon_config.val_bits = reg_io_width * 8;
-> > >       syscon_config.max_register = resource_size(&res) - reg_io_width;
-> > >
-> > > -     regmap = regmap_init_mmio(NULL, base, &syscon_config);
-> > > +      /*
-> > > +       * The Spreadtrum syscon need register a real physical regmap bus
-> > > +       * with new atomic bits updating operation instead of using
-> > > +       * read-modify-write.
-> > > +       */
-> > > +     if (IS_ENABLED(CONFIG_ARCH_SPRD) &&
-> > > +         of_device_is_compatible(np, "sprd,atomic-syscon") &&
-> >
-> > Please find a more generic way of supporting your use-case.  This is a
-> > generic driver, and as such I am vehemently against adding any sort of
-> > vendor specific code in here.
-> 
-> I suggested doing it this way, as all alternatives seemed worse than this.
+please pull sound fixes for v5.7-rc3 from:
 
-If we're using a registration function (could probably be swapped out
-for or accompanied by a Device Tree property) anyway, then why conduct
-the vendor platform checks?
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.7-rc3
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+The topmost commit is 8d6762af302d69f76fa788a277a56a9d9cd275d5
+
+----------------------------------------------------------------
+
+sound fixes for 5.7-rc3
+
+This became a slightly big pull request, as the accumulated ASoC
+fixes are included here.  Some highlights:
+
+- Revert of ASoC DAI startup changes that caused regression on some
+  x86 platforms
+
+- Regression fix in HD-audio power management and driver blacklist
+
+- A collection of ASoC DAPM and topology fixes
+
+- Continued USB-audio fixes and quirks
+
+- Lots of small device-specific fixes
+
+- Rockchip S/PDIF DT stuff update for validation issues
+
+----------------------------------------------------------------
+
+Akshu Agrawal (1):
+      ASoC: amd: Fix button configuration
+
+Alexander Tsoy (2):
+      ALSA: usb-audio: Filter out unsupported sample rates on Focusrite devices
+      ALSA: usb-audio: Apply async workaround for Scarlett 2i4 2nd gen
+
+Amadeusz Sławiński (8):
+      ASoC: topology: Add missing memory checks
+      ASoC: topology: Check return value of soc_tplg_create_tlv
+      ASoC: topology: Check return value of soc_tplg_*_create
+      ASoC: topology: Check soc_tplg_add_route return value
+      ASoC: topology: Check return value of pcm_new_ver
+      ASoC: topology: Check return value of soc_tplg_dai_config
+      ASoC: topology: Fix endianness issue
+      ASoC: codecs: hdac_hdmi: Fix incorrect use of list_for_each_entry
+
+Bjorn Andersson (1):
+      ASoC: qcom: common: Silence duplicate parse error messages
+
+Charles Keepax (4):
+      ASoC: dapm: Fix regression introducing multiple copies of DAI widgets
+      ASoC: dapm: Move error message to avoid some duplication
+      ASoC: dapm: Remove dapm_connect_dai_link_widgets helper
+      ASoC: madera: Remove a couple of stray blank lines
+
+Gregor Pintar (1):
+      ALSA: usb-audio: Add quirk for Focusrite Scarlett 2i2
+
+Gyeongtaek Lee (1):
+      ASoC: dapm: fixup dapm kcontrol widget
+
+Jason Yan (2):
+      ASoC: intel: soc-acpi-intel-icl-match: remove useless 'rt1308_2_adr'
+      ASoC: Intel: soc-acpi-intel-cml-match: remove useless 'rt1308_2_adr'
+
+Jerome Brunet (2):
+      ASoC: meson: axg-card: fix codec-to-codec link setup
+      ASoC: meson: gx-card: fix codec-to-codec link setup
+
+Johan Jonker (4):
+      ASoC: convert rockchip spdif bindings to yaml
+      ASoC: rockchip-spdif: add #sound-dai-cells property
+      ASoC: rockchip-spdif: add power-domains property
+      ASoC: rockchip-i2s: add power-domains property
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Add new codec supported for ALC245
+
+Krzysztof Kozlowski (1):
+      ASoC: samsung: s3c24xx-i2s: Fix build after removal of DAI suspend/resume
+
+Matthias Blankertz (4):
+      ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode
+      ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
+      ASoC: rsnd: Don't treat master SSI in multi SSI setup as parent
+      ASoC: rsnd: Fix "status check failed" spam for multi-SSI
+
+Olivier Moysan (1):
+      ASoC: stm32: sai: fix sai probe
+
+Philipp Puschmann (1):
+      ASoC: tas571x: disable regulators on failed probe
+
+Pierre-Louis Bossart (2):
+      ASoC: soc-dai: revert all changes to DAI startup/shutdown sequence
+      ASoC: SOF: Intel: add min/max channels for SSP on Baytrail/Broadwell
+
+Sebastian Fricke (1):
+      soc/stm/stm32_sub_sai: Add missing '\n' in log messages
+
+Sebastian Reichel (1):
+      ASoC: sgtl5000: Fix VAG power-on handling
+
+Shengjiu Wang (1):
+      ASoC: wm8960: Fix wrong clock after suspend & resume
+
+Srinivas Kandagatla (1):
+      ASoC: wsa881x: mark read_only_wordlength flag
+
+Stephan Gerhold (2):
+      ASoC: soc-pcm: dpcm: Only allow playback/capture if supported
+      ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
+
+Takashi Iwai (7):
+      ALSA: hda/hdmi: Add module option to disable audio component binding
+      ALSA: hda/realtek - Fix unexpected init_amp override
+      ALSA: hda: Remove ASUS ROG Zenith from the blacklist
+      ALSA: usb-audio: Add static mapping table for ALC1220-VB-based mobos
+      ALSA: usx2y: Fix potential NULL dereference
+      ALSA: usb-audio: Add connector notifier delegation
+      ALSA: hda: Always use jackpoll helper for jack update after resume
+
+Xiyu Yang (1):
+      ALSA: usb-audio: Fix usb audio refcnt leak when getting spdif
+
+YueHaibing (1):
+      ASoC: wm89xx: Add missing dependency
+
+---
+ .../devicetree/bindings/sound/rockchip-i2s.yaml    |   3 +
+ .../devicetree/bindings/sound/rockchip-spdif.txt   |  45 -------
+ .../devicetree/bindings/sound/rockchip-spdif.yaml  | 101 ++++++++++++++
+ include/sound/soc-dai.h                            |   1 -
+ include/sound/soc.h                                |   3 +
+ sound/pci/hda/hda_codec.c                          |  28 ++--
+ sound/pci/hda/hda_intel.c                          |  18 +--
+ sound/pci/hda/patch_hdmi.c                         |   9 ++
+ sound/pci/hda/patch_realtek.c                      |  11 +-
+ sound/soc/amd/acp3x-rt5682-max9836.c               |   6 +-
+ sound/soc/codecs/Kconfig                           |   3 +
+ sound/soc/codecs/hdac_hdmi.c                       |   6 +-
+ sound/soc/codecs/madera.c                          |   4 -
+ sound/soc/codecs/sgtl5000.c                        |  34 +++++
+ sound/soc/codecs/sgtl5000.h                        |   1 +
+ sound/soc/codecs/tas571x.c                         |  20 ++-
+ sound/soc/codecs/wm8960.c                          |   3 +-
+ sound/soc/codecs/wsa881x.c                         |   4 +
+ sound/soc/intel/common/soc-acpi-intel-cml-match.c  |   8 --
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c  |   8 --
+ sound/soc/meson/axg-card.c                         |   4 +-
+ sound/soc/meson/gx-card.c                          |   4 +-
+ sound/soc/qcom/apq8096.c                           |   4 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  16 +++
+ sound/soc/qcom/sdm845.c                            |   4 +-
+ sound/soc/samsung/s3c-i2s-v2.c                     |  57 --------
+ sound/soc/samsung/s3c2412-i2s.c                    |  56 ++++++++
+ sound/soc/sh/rcar/ssi.c                            |  11 +-
+ sound/soc/sh/rcar/ssiu.c                           |   2 +-
+ sound/soc/soc-dai.c                                |  11 +-
+ sound/soc/soc-dapm.c                               | 147 +++++++++++----------
+ sound/soc/soc-pcm.c                                |  13 +-
+ sound/soc/soc-topology.c                           | 115 ++++++++++++----
+ sound/soc/sof/intel/bdw.c                          |  16 +++
+ sound/soc/sof/intel/byt.c                          |  48 +++++++
+ sound/soc/stm/stm32_sai_sub.c                      |  14 +-
+ sound/usb/format.c                                 |  51 +++++++
+ sound/usb/mixer.c                                  |  37 +++++-
+ sound/usb/mixer.h                                  |  10 ++
+ sound/usb/mixer_maps.c                             |  37 +++++-
+ sound/usb/mixer_quirks.c                           |  12 +-
+ sound/usb/quirks-table.h                           |  98 ++------------
+ sound/usb/quirks.c                                 |  14 ++
+ sound/usb/usx2y/usbusx2yaudio.c                    |   2 +
+ 44 files changed, 712 insertions(+), 387 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+
