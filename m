@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F001B78B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF8E1B78B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgDXO70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 10:59:26 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:58885 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726698AbgDXO7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:59:25 -0400
-Received: from [192.168.0.5] (ip5f5af075.dynamic.kabel-deutschland.de [95.90.240.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 782FD2002EE1D;
-        Fri, 24 Apr 2020 16:59:22 +0200 (CEST)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: `calibrate_APIC_clock()` takes 100 ms on AMD systems
-Message-ID: <d6d50a65-59bc-aaa0-3f15-01d71496ef89@molgen.mpg.de>
-Date:   Fri, 24 Apr 2020 16:59:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727779AbgDXPBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:01:01 -0400
+Received: from bmailout1.hostsharing.net ([83.223.95.100]:39685 "EHLO
+        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726699AbgDXPBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 11:01:00 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 91F8030004668;
+        Fri, 24 Apr 2020 17:00:58 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 688DBE011F; Fri, 24 Apr 2020 17:00:58 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 17:00:58 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        arnd@arndb.de, Linus Walleij <linus.walleij@linaro.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] bitops: Introduce the the for_each_set_clump macro
+Message-ID: <20200424150058.xadjxaga3csh3br6@wunner.de>
+References: <20200424122521.GA5552@syed>
+ <20200424141037.ersebbfe7xls37be@wunner.de>
+ <CACG_h5prcXVdk6ecn2WoT1jas3K6UF+KCrxAM9u4_ZLSyPKCEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACG_h5prcXVdk6ecn2WoT1jas3K6UF+KCrxAM9u4_ZLSyPKCEA@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+On Fri, Apr 24, 2020 at 08:22:38PM +0530, Syed Nayyar Waris wrote:
+> On Fri, Apr 24, 2020 at 7:40 PM Lukas Wunner <lukas@wunner.de> wrote:
+> >
+> > On Fri, Apr 24, 2020 at 05:55:21PM +0530, Syed Nayyar Waris wrote:
+> > > +static inline void bitmap_set_value(unsigned long *map,
+> > > +                                 unsigned long value,
+> > > +                                 unsigned long start, unsigned long nbits)
+> > > +{
+> > > +     const size_t index = BIT_WORD(start);
+> > > +     const unsigned long offset = start % BITS_PER_LONG;
+> > > +     const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
+> > > +     const unsigned long space = ceiling - start;
+> > > +
+> > > +     value &= GENMASK(nbits - 1, 0);
+> > > +
+> > > +     if (space >= nbits) {
+> > > +             map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+> > > +             map[index] |= value << offset;
+> > > +     } else {
+> > > +             map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
+> > > +             map[index] |= value << offset;
+> > > +             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > > +             map[index + 1] |= (value >> space);
+> > > +     }
+> > > +}
+> >
+> > Sorry but what's the advantage of using this complicated function
+> > as a replacement for the much simpler bitmap_set_value8()?
+> >
+> > The drivers calling bitmap_set_value8() *know* that 8-bit accesses
+> > are possible and take advantage of that knowledge by using a small,
+> > speed-optimized function.  Replacing that with a more complicated
+> > (potentially less performant) function doesn't seem to be a step
+> > forward.
+> 
+> Actually this generic function can work with n-bits of any size (less
+> than equal to BITS_PER_LONG), while the earlier bitmap_set_value8
+> worked with n-bits having size of 8 bits only.
+> 
+> In the case when n-bits is 8-bits, this new bitmap_set_value()
+> function would behave very similar to the earlier bitmap_set_value8()
+> function. For example,  in case of n-bits being 8-bits it will always
+> execute the 'if' condition and not the 'else' condition, hence
+> offering the same performance (because of encountering similar code
+> statements) as earlier bitmap_set_value8() function, most probably.
+> 
+> There is an additional advantage (this can happen when n-bits is not 8
+> bits): during setting value of n-bit in bitmap, if a situation arise
+> that the width of next n-bit is exceeding the word boundary, then it
+> will divide itself such that some portion of it is stored in that
+> word, while the remaining portion is stored in the next higher word.
+> 
+> So, this function preserves the behaviour of earlier
+> bitmap_set_value8() function and also adds extra functionality to
+> that.
 
+Please leave drivers as is which use exclusively 8-bit accesses,
+e.g. gpio-max3191x.c and gpio-74x164.c.  I'm fearing a performance
+regression if your new generic variant is used.  They work perfectly
+fine the way they are and I don't see any benefit this series may have
+for them.
 
-Trying to decrease the boot time, I noticed on AMD systems 
-`calibrate_APIC_clock()` takes around 100 ms.
+If there are other drivers which benefit from the flexibility of your
+generic variant then I'm not opposed to changing those.
 
-     [    0.004764] Freeing SMP alternatives memory: 32K
-     [    0.107676] smpboot: CPU0: AMD Ryzen 3 2200G with Radeon Vega 
-Graphics (family: 0x17, model: 0x11, stepping: 0x0)
+Thanks,
 
-On a different system with `apic=verbose`:
-
-     [    0.209161] Freeing SMP alternatives memory: 28K
-     [    0.212830] Using local APIC timer interrupts.
-            calibrating APIC timer ...
-     [    0.320928] ... lapic delta = 625044
-     [    0.320928] ... PM-Timer delta = 357959
-     [    0.320928] ... PM-Timer result ok
-     [    0.320929] ..... delta 625044
-     [    0.320930] ..... mult: 26844619
-     [    0.320930] ..... calibration result: 400028
-     [    0.320931] ..... CPU clock speed is 4400.1228 MHz.
-     [    0.320931] ..... host bus clock speed is 100.0028 MHz.
-     [    0.320936] smpboot: CPU0: AMD A6-6400K APU with Radeon(tm) HD 
-Graphics (family: 0x15, model: 0x13, stepping: 0x1)
-
-On Intel systems TSC deadline is used, and the function returns right away.
-
-         if (boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER))
-                 return 0;
-
-     [    0.078373] Freeing SMP alternatives memory: 32K
-     [    0.080373] TSC deadline timer enabled
-     [    0.080375] smpboot: CPU0: Intel(R) Core(TM) i7-5600U CPU @ 
-2.60GHz (family: 0x6, model: 0x3d, stepping: 0x4)
-
-100 ms is almost 10 % percent of the total one second the Linux kernel 
-takes here on the AMD systems, so I wonder if there are ways to reduce that.
-
-     #define LAPIC_CAL_LOOPS         (HZ/10)
-
-is 100 on my system, so the while loop below runs 100 times.
-
-         while (lapic_cal_loops <= LAPIC_CAL_LOOPS) {
-                 /* Wait for a tick to elapse */
-                 while (1) {
-                         if (tsc_khz) {
-                                 u64 tsc_now = rdtsc();
-                                 if ((tsc_now - tsc_start) >= tsc_perj) {
-                                         tsc_start += tsc_perj;
-                                         break;
-                                 }
-                         } else {
-                                 unsigned long jif_now = READ_ONCE(jiffies);
-
-                                 if (time_after(jif_now, jif_start)) {
-                                         jif_start = jif_now;
-                                         break;
-                                 }
-                         }
-                         cpu_relax();
-                 }
-
-                 /* Invoke the calibration routine */
-                 local_irq_disable();
-                 lapic_cal_handler(NULL);
-                 local_irq_enable();
-         }
-
-Can you give more information, why HZ/10 is chosen? Is there a way to 
-break out earlier?
-
-Do AMD devices feature an alternatives like for Intel? What other 
-possibilities are there? (Please excuse my ignorance.) For example, 
-taking the calibration values from the firmware, or could they be passed 
-on the command line, if the user knows, the system has not changed?
-
-
-Kind regards,
-
-Paul
+Lukas
