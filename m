@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1178C1B7DFB
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB241B7DFC
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgDXSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
+        id S1729152AbgDXSk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728908AbgDXSkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727022AbgDXSkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Apr 2020 14:40:20 -0400
-Subject: Re: [GIT PULL] Kbuild fixes for v5.7-rc3
+Subject: Re: [GIT PULL] sound fixes for 5.7-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1587753620;
-        bh=x4/hy+zhBT08d2cmGh72F5pmpw/vyCeEQFpqQ3nE420=;
+        bh=21TRuDQSu3zgtDqTuwaueaFdFFtj0bOoy62PnWy78pE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZfsmsUxgalk+w368jN7tiv42SrqKJ3qtXNL5ua1ur/KWpVJWGyAnVwQuBuF7PlwCo
-         M3Jx0x105ghmrMSytk9+DIRYDCdYPUxOJfZ/YOxlHZcb2lRvBYOFSbn2kBwqSeuD5N
-         vxSm/NlLrV5cFRBTPhbd1xYcmpd2aHTz2bGOP1rA=
+        b=b2Ol9U8OBtVzfjsds8CRe7YhM6NyihrPwqAlT0g0gU4kkXfbSYpfbhbZZxde9jE16
+         o+p2GRQw5PT6cpeN9plKjGUHUgu3ymLXUBK13d2Fjzwr128G5uFm+7jjy+b+1q1c1S
+         nuSmJG2K98x8pb/nDgp8V0Sl/rwGXfadVMdbBlC8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAQRXn_n60K9LF=pBz0HHg55Lj-1p5gwwmT=YSOdMBXKCA@mail.gmail.com>
-References: <CAK7LNAQRXn_n60K9LF=pBz0HHg55Lj-1p5gwwmT=YSOdMBXKCA@mail.gmail.com>
+In-Reply-To: <s5hwo65s2ld.wl-tiwai@suse.de>
+References: <s5hwo65s2ld.wl-tiwai@suse.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAQRXn_n60K9LF=pBz0HHg55Lj-1p5gwwmT=YSOdMBXKCA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
- tags/kbuild-fixes-v5.7
-X-PR-Tracked-Commit-Id: d9451798998df3a72dce1bc365bc9e76401b0d3a
+X-PR-Tracked-Message-Id: <s5hwo65s2ld.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+ tags/sound-5.7-rc3
+X-PR-Tracked-Commit-Id: 8d6762af302d69f76fa788a277a56a9d9cd275d5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b9916af776013051a34ccf47bc5e13acffef16c3
-Message-Id: <158775362043.26557.16458024691321952772.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b4ecf26ea2ed744715753ae11e6928fbda9b65ad
+Message-Id: <158775362015.26557.4784338963020534501.pr-tracker-bot@kernel.org>
 Date:   Fri, 24 Apr 2020 18:40:20 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
+To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 25 Apr 2020 01:09:27 +0900:
+The pull request you sent on Fri, 24 Apr 2020 10:35:42 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.7
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.7-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b9916af776013051a34ccf47bc5e13acffef16c3
+https://git.kernel.org/torvalds/c/b4ecf26ea2ed744715753ae11e6928fbda9b65ad
 
 Thank you!
 
