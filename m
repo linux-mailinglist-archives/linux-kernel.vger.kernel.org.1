@@ -2,167 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFD01B75E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA8E1B75E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgDXMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
+        id S1727049AbgDXMto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727809AbgDXMrk (ORCPT
+        with ESMTP id S1726849AbgDXMto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:47:40 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDBEC09B045
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:47:40 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id k28so7565262lfe.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:47:40 -0700 (PDT)
+        Fri, 24 Apr 2020 08:49:44 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5393AC09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:49:43 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id c21so2874454plz.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=26dzrYlw9Yt4KOLOThPZOKw0U2oq0zvdftZeS7P3BXg=;
-        b=kQmo4UiCT4B6P4hn6/SMH8IwiW3tjCSbn+HojMSAv2mv+agfz+9+d/yNKIOUlamR1C
-         oDB5kzLtpliREy8JhjWeOkdUyx2C8cBOFDRekdsGSlk8k5dscp/Lxlf6lZpn+aN4Essv
-         b+jXsXV904YqN9dKa5Xl1kzPtb0yot90Elur9JDV9YlnX6+IcLbPhk0cxPEtwd9j9a1R
-         TMTEsva4dggxnr5D3JEAokj/ChXI27kICmIpsa294YpmHi8yoRpqNXTMOVeWaNArDKcx
-         PqtRpFXB9FTje0g3o26UxDIfwKXO9oy860k8+Urmejjwxxc++ujyOQnkBzm4Xok8FRzU
-         KLrg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uC2/p4RFgTEv6gK1u1RWyAJblPPgS8/cfRxIcvP+Zmg=;
+        b=clKYIOnj6AYWFVwxBITX0c2CMkW694tIL60wcNXbq/+dI2JbqlKLUMNfjP6VAAobbx
+         gfVm7BJ33VOLjQ/b3enC3ejGD2qszGwLKiP4MMlEndEqghjr9s/r/U2/JX8Egf57DiCM
+         9WA7Bf1qtekMoPfdHK9h0befHv23tlsJtZ86OeV/wqpXUsi3weA7xHOLIC6wdxjM6MBW
+         VeVHEm1hjAtXzp1NqJztHViymF6DZxxcpEEzTaUXihJlyHG8l/c//Kfvdd3Ikao6QSii
+         9y0awom544Yf2Hn6CTdFXL2/YkD7vpbf3gOw5qJonJzoyqhlsEEYIYLsi6/zfoPFxzlf
+         fxFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=26dzrYlw9Yt4KOLOThPZOKw0U2oq0zvdftZeS7P3BXg=;
-        b=GxUMTjVxm4Lb/K/jU7EXGlKXB22FXGVfQ4px5ULVtrrP9qPA5exrepSbpZN2QlsyJT
-         UdKSDIA4fokS869JylNaS053KcYlQKlRhtyodNni3JzsouQ6eR1/VKPQGW0W91leBK+N
-         QuG09MAFQpcV8lAwe35fdu7+dAp30+aK9MZU9Ix4fheTr6fKYZmh92R7txmBRAde0/CD
-         JXloKf1CcbW+COcaSUBPUkMoav6Uuc+SAg4xep5Ma6K+rEPPOvEE4hzowAhM9CRaAXJ1
-         vVEtQatGUBSuF7NsybLVZTqoEkNmQK1f6UoTans8XwiGJu0ChKaHhefzv80CcJJIwh5e
-         UmNg==
-X-Gm-Message-State: AGi0PuYaGt0KX3ceVIBTbS0jtVI1L88TSOmHxwNE6Xv/25nKu8Zv5zI6
-        +Ak9lfTGQip8fRK4hu1v0CLNutA1TUwXxiUS0y3Snw==
-X-Google-Smtp-Source: APiQypJctBqu0eb3YhmUg/LE+meu5E6yHAxgR0hbVxh/gpfMO8UpVk0E+o35JIkOIIK7RQBPaa9/Mhidm7bvOYLO+sQ=
-X-Received: by 2002:ac2:5e65:: with SMTP id a5mr6077147lfr.189.1587732458716;
- Fri, 24 Apr 2020 05:47:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uC2/p4RFgTEv6gK1u1RWyAJblPPgS8/cfRxIcvP+Zmg=;
+        b=jKhSrvbpvPQiDvvIGm67PrG/JAhVbAjjz+pajew6H72FhGty7Lvs+triYRZ6pkIlLU
+         oOiQEKqeM5+XjCC5A43jSc8wojRGJ4MueqHotnmZJIxICJ1OY6Dz5qmwHwnMNpHX/gVU
+         nFcZRsvhZYMU39IMaHunpOyJ9LgvqyTbLBadCSSj4esy3dq5qwim1WF+NhCF0tf3N1L2
+         4vz8uL23BbW4BThNTkd481KgN5ePptKNQBTHgkaTed4ina735GfZXk98zRZRD1vQr5DC
+         P6ir0BYkda71d3yxFGwNx9/LzApxOXCDcQ09Fed2GrmOxB5mDTAeZQ7BLYA48U2xtrb3
+         UyMQ==
+X-Gm-Message-State: AGi0PuaVDvcg05fM6ml+NtC4rVWnlsspCURvqwG6ObdSgVw9OzfUbg7Y
+        VSTGOXeRPq9G1YT5yft8Xjc=
+X-Google-Smtp-Source: APiQypJXCFnzC0T8S8VKrymEH2eJrMUjFHnHVDn/zH/MEdUUqEhsA1M/NKla1AzHQGAgogXRhiQCfw==
+X-Received: by 2002:a17:902:d70f:: with SMTP id w15mr9109688ply.138.1587732582915;
+        Fri, 24 Apr 2020 05:49:42 -0700 (PDT)
+Received: from blackclown ([171.60.179.95])
+        by smtp.gmail.com with ESMTPSA id u21sm4968911pga.21.2020.04.24.05.49.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Apr 2020 05:49:41 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 18:19:26 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     jerome.pouiller@silabs.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH] staging: wfx: cleanup long lines in data_tx.c
+Message-ID: <20200424124926.GA17373@blackclown>
+References: <20200422153900.GA6184@blackclown>
+ <2253201.upfRyW1aZW@pc-42>
 MIME-Version: 1.0
-References: <20200422151401.9147-1-vincent.guittot@linaro.org>
- <23c1cbb8-7335-80ca-cf40-8abc5c1463f4@arm.com> <CAKfTPtD_W8DRmFS6xJUo+Yt=XaJgZmKxUzcCSnoLWNJN5xPFCw@mail.gmail.com>
- <5a105c97-4762-aa80-a816-c11c1b1f23f3@arm.com>
-In-Reply-To: <5a105c97-4762-aa80-a816-c11c1b1f23f3@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 24 Apr 2020 14:47:26 +0200
-Message-ID: <CAKfTPtAPaZ+8Q+=rYHeR=7tPgEa1PKgZoWFcqt=FxkU-wrwXMg@mail.gmail.com>
-Subject: Re: [PATCH] sched/pelt: sync util/runnable_sum with PELT window when propagating
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
+Content-Disposition: inline
+In-Reply-To: <2253201.upfRyW1aZW@pc-42>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Apr 2020 at 14:07, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 23/04/2020 18:17, Vincent Guittot wrote:
-> > On Thu, 23 Apr 2020 at 16:30, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
-> >>
-> >> On 22/04/2020 17:14, Vincent Guittot wrote:
->
-> [..]
->
-> >>     gcfs --> tg --> gse
-> >>      ________________|
-> >>      |
-> >>      V
-> >>
-> >>     cfs ---> tg (root)
-> >>
-> >>      |
-> >>      V
-> >>
-> >>     rq
-> >>
-> >
-> > child cfs_rq aka gcfs_rq
-> >   |
-> > gse: group entity that represents child cfs_rq in parent cfs_rq
-> >   |
-> >   v
-> > parent cfs_rq aka cfs_rq
->
-> OK, I see. Maybe it's clearer to refer to child cfs_rq as gcfs_rq in
-> this context.
->
-> [...]
->
-> >>>       /* Set new sched_entity's utilization */
-> >>>       se->avg.util_avg = gcfs_rq->avg.util_avg;
-> >>> -     se->avg.util_sum = se->avg.util_avg * LOAD_AVG_MAX;
-> >>> +     se->avg.util_sum = se->avg.util_avg * divider;
-> >>
-> >> divider uses cfs_rq but we sync se->avg.util_avg with gcfs_rq here.
-> >
-> > we sync the util_avg of gse with the new util_avg of gcfs_rq but gse
-> > is attached to cfs_rq and as a result we have to use cfs_rq's
-> > period_contrib
->
-> I agree.
->
-> But the decay windows (avg.last_update_time, avg.period_contrib) of
-> cfs_rq and gcfs_rq are not always aligned, I guess?
->
-> I see they are not after the online_fair_sched_group() ->
-> attach_entity_cfs_rq() but later the are in sync as well.
 
-cfs_rq and gcfs_rq use 2 different clocks:
-- cfs_rq_clock_pelt(cfs_rq)
-- cfs_rq_clock_pelt(gcfs_rq)
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And they can be different in some cases like cfs bandwidth
+On Thu, Apr 23, 2020 at 09:29:28AM +0000, Jerome Pouiller wrote:
+> Hello Suraj,
+>=20
+> Thank you for your contribution.
+This would be my first patch to linux-kernel :)
 
->
-> I ran a couple of different rt-app taskgroup tests and try to
->
-> BUG_ON(se->avg.period_contrib != gcfs_rq->avg.period_contrib);
-> BUG_ON(se->avg.last_update_time != gcfs_rq->avg.last_update_time)
->
-> in update_tg_cfs_util() but they didn't trigger so far.
->
-> Both, cfs_rq and gcfs_rq are in sync in update_tg_cfs_util() before and
-> during a task runs in gcfs_rq.
->
-> Are there cases where this wouldn't necessary happen in
-> update_tg_cfs_util(), maybe a more complicated testcase?
->
-> >> But since avg.period_contrib of cfs_rq and gcfs_rq are the same this
-> >> should work.
-> >>
-> >>>       /* Update parent cfs_rq utilization */
-> >>>       add_positive(&cfs_rq->avg.util_avg, delta);
-> >>> -     cfs_rq->avg.util_sum = cfs_rq->avg.util_avg * LOAD_AVG_MAX;
-> >>> +     cfs_rq->avg.util_sum = cfs_rq->avg.util_avg * divider;
-> >>
-> >> Looks like that avg.last_update_time of se (group entity), it's gcfs_rq
-> >> and cfs_rq is always the same in update_tg_cfs_[util\|runnable].
-> >>
-> >> So that means the PELT windows are aligned for cfs_rqs and group se's?
-> >
-> > We want to align util_avg with util_sum and period_contrib otherwise
-> > we might have some unalignment. It's quite similarly to what is done
-> > in attach_entity_load_avg()
->
-> I agree.
->
-> >> And if we want to enforce this for cfs_rq and task, we have
-> >> sync_entity_load_avg().
-> >
-> > It's not a matter of syncing the last_update_time
->
-> I agree, this is not what you want to achieve here.
-> But syncing 'last_update_time' and 'period_contrib' is what I understand
-> as aligning the decay window (like in attach_entity_load_avg()).
+> On Wednesday 22 April 2020 17:39:00 CEST Suraj Upadhyay wrote:
+> >=20
+> > Break lines with length over 80 characters to conform
+> > to the linux coding style. Issue found by checkpatch.
+> >=20
+> > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+>=20
+> Is this reported by checkpatch? The strings can exceed 80 columns.
+No, it's not. Actually I am using vim with some plugins and it was
+showing red their. So, I thought why not make these strings in a new
+line.
+
+> J=E9r=F4me Pouiller
+>=20
+
+--DocE+STaALJfprDB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl6i4FYACgkQ+gRsbIfe
+744NFg/+K7LCGsRpnJr/OgCb2VgMmZ4KWXENRA5AQ++9O6rqt484dVk9dztC3rhX
+82GUJS4hyNpRWpqnREJiJSkklpo7nq9b98rGlBuTu4kEySEclq6ByU3ym4Xq6E3O
+wcZazZUI7tuSw4J1qUojOwHhApgHAuK5d8hLoogsPOxk7Ymhlm/1fqXZss6IDOKb
+potWtqhYn+ixL9e5/A5GQZGg2MZe+GVdb66/0yc2gIC6EtmSArY1JXsXBwcHaq61
+B2se5WCqMkoBK0ZvZqW7IDKBHam6/VP0uhbCaf8SSUK8doKWEc1ALugueiZL+Nxm
+oLGhY7Q0Cw2T5xwjxAZxOFU8CWbN+bwVCAens5b4ocamWhiVQ3SjRZQcv++XWsPz
+ueKyoNy6zcoC5SfoZGc6zUAGRhrmBb4hROInd3pzuxYYdykynDjkis5rgg2XU1OL
+GiKx/kNyN7zyTBHknwZBPAa3T6ZXgzK999R8Zq6BvG75ngf71jO+CcypSyDPuzmz
+idDNHLNnxHbX7P7sZ0YbTP4P0pOG3nks/48v+0s75bp7btud+bcnBuVkw3qTE30t
+hWXDwtl1qWetpnCy1/9d9RxeiPya28+nL/R9afBtiTqN73QNiPzSfbVS/oEmu3fP
+gMQw/YZy2a/6ietO4a73UT7ceSmwL0HnDrqFPghv1lWp6bZSUFs=
+=UOYc
+-----END PGP SIGNATURE-----
+
+--DocE+STaALJfprDB--
