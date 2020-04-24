@@ -2,71 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AF31B7ADD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E4E1B7AE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgDXP4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        id S1728598AbgDXP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgDXP4i (ORCPT
+        with ESMTP id S1727050AbgDXP5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:56:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC2BC09B046;
-        Fri, 24 Apr 2020 08:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ajLPeTZ2LB0Od4fQUmCVBUekxC2O/Q3IB9mDGtoNpBM=; b=VwYSGio2fYVXLWKk6BBR/yeb+K
-        Uhz5OLEmWuFsr4OeuNZvpOQFTXDq4hcrPDYAfXJPd+20xdm3B/CrKXlcMS+3fWF2gDp/e9wBDaNJQ
-        tVji0GDAUI+l/g/0j5Nimzs0SCcDAUbXKk7NMmxqSQGQOdLP3I995qtxCyWe+qS5faJSmWDMERuEd
-        m9Xu8M90m3cV/MyVDN8sQbWYm7fmr263RobJY/HjcWIYedCUxIFECQF+nqoQzmef8/Geq/RctviYT
-        mQ7EjcCRBCHlHuH6CQrLfYBf3/pB0lDc6wCQBHXDkq28fY8lewCXCNv3NlTQVwNVDmwPIZfzjMvF5
-        vOAjbtJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jS0gp-0001eu-Q2; Fri, 24 Apr 2020 15:56:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6134730257C;
-        Fri, 24 Apr 2020 17:56:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 467B229B1ED2F; Fri, 24 Apr 2020 17:56:29 +0200 (CEST)
-Date:   Fri, 24 Apr 2020 17:56:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ben Hutchings <ben@decadent.org.uk>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        Jann Horn <jannh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 3.16 246/247] futex: Fix inode life-time issue
-Message-ID: <20200424155629.GB13558@hirez.programming.kicks-ass.net>
-References: <lsq.1587743245.5555628@decadent.org.uk>
- <lsq.1587743246.9036831@decadent.org.uk>
+        Fri, 24 Apr 2020 11:57:16 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A08C09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:57:16 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g19so13180322otk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LCU0zEm2bNycf7DvAmLbUzalJnJrzqnH9qv/4oyQ1dU=;
+        b=AwIFz5K7tVTOE6Yt6l5Ln/DRSrnqW54bzJdyn2UXO31svIPwz3zUkuSMOMo8wiZoVM
+         N843Az7pA9H9a7n44qO39uXdd2nOIWd6sfAqj4q1aOBxzpk/IK+LH0bjLnA77do5nfoJ
+         jwAQNHvAPdhvPDJ1jz17Wu6fcE2MzTKtkc9IjlPqrgajewe5pVai44xNaiFRsxcAnYyo
+         I02nBkA2G3+Se9P9PTUFtIicfDRJClCRAzu07GSx+5xFWTmWRutfp0kfNjqqhLg39OXa
+         V44HRoU7ZX2gYos4Igzqu+6RTE6EUSE61D846q8a0r+Tr1Fkg4LmmZMnPADXNP5s8LMQ
+         ehSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LCU0zEm2bNycf7DvAmLbUzalJnJrzqnH9qv/4oyQ1dU=;
+        b=aIiJaYlSJ1LzfAAIzLcBXtteTJz4myzmON5v25UZUa1ExYI8tcU4lJOLAdkRHzDfZc
+         jv6hgnLlP4fuupDd7B2l6oqvDzVMqnbdY1aO4LmFAHTlrT9vwt9SRz7x3q8dEWERo/Im
+         GpXdHC/eb2ILaGcR2lF0aUMf6bMj5nirMoVJBPYtFQfb9atxOb/MG3rhjY5S45nX8cTP
+         HEkwHvKIsGLIdqeCf/wYjjons++WDT9ZjhbZypb3stoXQNiHIYaaRfTrofE2NBXZVNdm
+         plzJcarG71djpgUnpQ39eBJXYj3aBCQVW0sKSyUKRDkRp3oLLwc3sE1smUmKh6jIvEpv
+         DnaA==
+X-Gm-Message-State: AGi0Pub40NBIRJsTRWQdWbPcWSSFZsx+8XKMxq46R+AAyHfExU13d9KB
+        pKDs+/uLfAqNcYOqhyEXnCrBQlLKMP2nP2CLecN23Yms
+X-Google-Smtp-Source: APiQypK61zpjEDwti64OS0v4uLFU2zyueuwLEPuBoJ5lyqauFtaPpjSbw+ReGx1u7/BsQt0gibfzwqQn/66n74Z1mew=
+X-Received: by 2002:a9d:7589:: with SMTP id s9mr7701270otk.251.1587743835871;
+ Fri, 24 Apr 2020 08:57:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <lsq.1587743246.9036831@decadent.org.uk>
+References: <20200424154730.190041-1-elver@google.com>
+In-Reply-To: <20200424154730.190041-1-elver@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 24 Apr 2020 17:57:04 +0200
+Message-ID: <CANpmjNOaUc8-Y4MMre5mWLjywTZ+B0B9L-cQijeYEMcw9Vapsw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kcsan: Add __kcsan_{enable,disable}_current() variants
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 04:51:31PM +0100, Ben Hutchings wrote:
-> 3.16.83-rc2 review patch.  If anyone has any objections, please let me know.
-> 
-> ------------------
-> 
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> commit 8019ad13ef7f64be44d4f892af9c840179009254 upstream.
+On Fri, 24 Apr 2020 at 17:47, Marco Elver <elver@google.com> wrote:
+>
+> The __kcsan_{enable,disable}_current() variants only call into KCSAN if
+> KCSAN is enabled for the current compilation unit. Note: This is
+> typically not what we want, as we usually want to ensure that even calls
+> into other functions still have KCSAN disabled.
+>
+> These variants may safely be used in header files that are shared
+> between regular kernel code and code that does not link the KCSAN
+> runtime.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> This is to help with the new READ_ONCE()/WRITE_ONCE():
+> https://lkml.kernel.org/r/20200424134238.GE21141@willie-the-truck
+>
+> These should be using __kcsan_disable_current() and
+> __kcsan_enable_current(), instead of the non-'__' variants.
+> ---
 
-Please do not forget:
+Paul: These 2 patches may want to be in the set for 5.8, depending on
+what Will wants to do.
 
-  8d67743653dc ("futex: Unbreak futex hashing")
+An alternative would be that Will takes my 2 patches and carries them,
+avoiding some complex patch-dependency. That is assuming his set of
+patches will go in -tip on top of KCSAN.
 
-which fixes this fix.
+Thanks,
+-- Marco
+
+>  include/linux/kcsan-checks.h | 17 ++++++++++++++---
+>  kernel/kcsan/core.c          |  7 +++++++
+>  2 files changed, 21 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
+> index ef95ddc49182..7b0b9c44f5f3 100644
+> --- a/include/linux/kcsan-checks.h
+> +++ b/include/linux/kcsan-checks.h
+> @@ -49,6 +49,7 @@ void kcsan_disable_current(void);
+>   * Supports nesting.
+>   */
+>  void kcsan_enable_current(void);
+> +void kcsan_enable_current_nowarn(void); /* Safe in uaccess regions. */
+>
+>  /**
+>   * kcsan_nestable_atomic_begin - begin nestable atomic region
+> @@ -149,6 +150,7 @@ static inline void __kcsan_check_access(const volatile void *ptr, size_t size,
+>
+>  static inline void kcsan_disable_current(void)         { }
+>  static inline void kcsan_enable_current(void)          { }
+> +static inline void kcsan_enable_current_nowarn(void)   { }
+>  static inline void kcsan_nestable_atomic_begin(void)   { }
+>  static inline void kcsan_nestable_atomic_end(void)     { }
+>  static inline void kcsan_flat_atomic_begin(void)       { }
+> @@ -165,15 +167,24 @@ static inline void kcsan_end_scoped_access(struct kcsan_scoped_access *sa) { }
+>
+>  #endif /* CONFIG_KCSAN */
+>
+> +#ifdef __SANITIZE_THREAD__
+>  /*
+> - * kcsan_*: Only calls into the runtime when the particular compilation unit has
+> - * KCSAN instrumentation enabled. May be used in header files.
+> + * Only calls into the runtime when the particular compilation unit has KCSAN
+> + * instrumentation enabled. May be used in header files.
+>   */
+> -#ifdef __SANITIZE_THREAD__
+>  #define kcsan_check_access __kcsan_check_access
+> +
+> +/*
+> + * Only use these to disable KCSAN for accesses in the current compilation unit;
+> + * calls into libraries may still perform KCSAN checks.
+> + */
+> +#define __kcsan_disable_current kcsan_disable_current
+> +#define __kcsan_enable_current kcsan_enable_current_nowarn
+>  #else
+>  static inline void kcsan_check_access(const volatile void *ptr, size_t size,
+>                                       int type) { }
+> +static inline void __kcsan_enable_current(void)  { }
+> +static inline void __kcsan_disable_current(void) { }
+>  #endif
+>
+>  /**
+> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+> index 40919943617b..0a0f018cb154 100644
+> --- a/kernel/kcsan/core.c
+> +++ b/kernel/kcsan/core.c
+> @@ -625,6 +625,13 @@ void kcsan_enable_current(void)
+>  }
+>  EXPORT_SYMBOL(kcsan_enable_current);
+>
+> +void kcsan_enable_current_nowarn(void)
+> +{
+> +       if (get_ctx()->disable_count-- == 0)
+> +               kcsan_disable_current();
+> +}
+> +EXPORT_SYMBOL(kcsan_enable_current_nowarn);
+> +
+>  void kcsan_nestable_atomic_begin(void)
+>  {
+>         /*
+> --
+> 2.26.2.303.gf8c07b1a785-goog
+>
