@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2E91B775B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AFE1B7796
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgDXNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:47:14 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3288 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726895AbgDXNrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:47:14 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 368F1BF29C90C2F48167;
-        Fri, 24 Apr 2020 21:47:05 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 24 Apr 2020 21:46:57 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <tariqt@mellanox.com>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] net/mlx4_core: Add missing iounmap() in error path
-Date:   Fri, 24 Apr 2020 21:53:14 +0800
-Message-ID: <1587736394-111502-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1728088AbgDXNzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:55:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726791AbgDXNzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:55:05 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CD4E20700;
+        Fri, 24 Apr 2020 13:55:04 +0000 (UTC)
+Date:   Fri, 24 Apr 2020 09:55:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 1/4] sched: set p->prio reguardless of p->mm
+Message-ID: <20200424095502.0063e857@gandalf.local.home>
+In-Reply-To: <20200424043041.15084-1-hdanton@sina.com>
+References: <20200424041832.11364-1-hdanton@sina.com>
+        <20200424043041.15084-1-hdanton@sina.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following coccicheck warning:
+On Fri, 24 Apr 2020 12:30:41 +0800
+Hillf Danton <hdanton@sina.com> wrote:
 
-drivers/net/ethernet/mellanox/mlx4/crdump.c:200:2-8: ERROR: missing iounmap;
-ioremap on line 190 and execution via conditional on line 198
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4795,14 +4795,6 @@ recheck:
+>  	if (attr->sched_flags & ~(SCHED_FLAG_ALL | SCHED_FLAG_SUGOV))
+>  		return -EINVAL;
+>  
+> -	/*
+> -	 * Valid priorities for SCHED_FIFO and SCHED_RR are
+> -	 * 1..MAX_USER_RT_PRIO-1, valid priority for SCHED_NORMAL,
+> -	 * SCHED_BATCH and SCHED_IDLE is 0.
+> -	 */
+> -	if ((p->mm && attr->sched_priority > MAX_USER_RT_PRIO-1) ||
+> -	    (!p->mm && attr->sched_priority > MAX_RT_PRIO-1))
+> -		return -EINVAL;
 
-Fixes: 7ef19d3b1d5e ("devlink: report error once U32_MAX snapshot ids have been used")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx4/crdump.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/crdump.c b/drivers/net/ethernet/mellanox/mlx4/crdump.c
-index 73eae80e..ac5468b 100644
---- a/drivers/net/ethernet/mellanox/mlx4/crdump.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/crdump.c
-@@ -197,6 +197,7 @@ int mlx4_crdump_collect(struct mlx4_dev *dev)
- 	err = devlink_region_snapshot_id_get(devlink, &id);
- 	if (err) {
- 		mlx4_err(dev, "crdump: devlink get snapshot id err %d\n", err);
-+		iounmap(cr_space);
- 		return err;
- 	}
- 
--- 
-2.6.2
+So if someone passes in sched_priority > MAX_RT_PRIO-1, where does it get
+checked?
 
+-- Steve
+
+>  	if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
+>  	    (rt_policy(policy) != (attr->sched_priority != 0)))
+>  		return -EINVAL;
