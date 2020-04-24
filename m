@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785B21B7CDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A2A1B7CF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgDXRe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44472 "EHLO
+        id S1729060AbgDXRgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726813AbgDXRe1 (ORCPT
+        by vger.kernel.org with ESMTP id S1728855AbgDXRfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:34:27 -0400
-X-Greylist: delayed 292 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Apr 2020 10:34:27 PDT
-Received: from balrog.mythic-beasts.com (balrog.mythic-beasts.com [IPv6:2a00:1098:0:82:1000:0:2:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E22C09B047;
-        Fri, 24 Apr 2020 10:34:27 -0700 (PDT)
-Received: from [87.115.41.34] (port=58114 helo=slartibartfast.quignogs.org.uk)
-        by balrog.mythic-beasts.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <peter@bikeshed.quignogs.org.uk>)
-        id 1jS2DU-0008N6-Ag; Fri, 24 Apr 2020 18:34:24 +0100
-From:   Peter Lister <peter@bikeshed.quignogs.org.uk>
-Subject: Re: [PATCH v2 08/29] docs: filesystems: convert configfs.txt to ReST
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, linux-usb@vger.kernel.org
-References: <cover.1587487612.git.mchehab+huawei@kernel.org>
- <278a9befc98b49ea866c9b687d070c70cde20628.1587487612.git.mchehab+huawei@kernel.org>
-X-Mozilla-News-Host: news://nntp.lore.kernel.org
-Message-ID: <31da15f2-7755-3e56-d05c-1e3f388e0933@bikeshed.quignogs.org.uk>
-Date:   Fri, 24 Apr 2020 18:34:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 24 Apr 2020 13:35:47 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF93C09B04E
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:35:47 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g4so10825524ljl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=17Kg1dRas/M0sQXVRI4F1cdrQ//6hjmUk/mclI6heeY=;
+        b=d+qcaZcbU1H0AzDGp+UTOcPWUOR9HjuA25jpYxyTWS0ttqCFnGFEDZb7W8gtA+8q7Q
+         DUnPsJgjbJ8jo2hCYbfGpWCBX4F5xcNqH+cIGSxuDfBaMWgLONIW6hJ8WQHyGftwdtXB
+         H8XP2ZEiiiYTC5NDB9zm0db/DQyW0/Ezlxt8k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=17Kg1dRas/M0sQXVRI4F1cdrQ//6hjmUk/mclI6heeY=;
+        b=MNQCpOPTNalc8iKge2tzSBkdOmb5fhkhQlZ5DsXIWYpd9UQkPn5WnXYw243sUBHr7U
+         +CKQOCU3szp7wwVFwWkOlpigBO7fEp4yYmnGnwhI/ORo+/iIvCfAIsK6Wys5Dy5K1bAU
+         yGSoArju+AqKc2zGuCMNIZKt1sZ1jUri9kwDbBrTGPTJ9ERlq7OHKEk/phGa3pQNK+bH
+         bZhN9vlglavRQlFWrYCakS+tSquBXuslix+FQTY9+XWWGSTqRwVqQYQv/uxH1s0KMju5
+         yRFtrRp48NBJ6CBouXbDJ+M1eUOTYbU1VWlVNxY4ZZmbEXUwW7Ozb3U6xzB5aPhK5zmg
+         lkUA==
+X-Gm-Message-State: AGi0PuY5K54ypaVeazn7qdo3mDDqQLR6qd3cB61+K7WwV41Z/8S+1D7A
+        I/OEAXO+ARY+2XZbpqpOOB5ggYVt7pM=
+X-Google-Smtp-Source: APiQypK0hlO1y4dSmvILzt1UMv+T7O5MAhuuvfa2gMSBticxtoE86pDdPm7Ip8joY5KAO0mlWj9CNw==
+X-Received: by 2002:a2e:8199:: with SMTP id e25mr6634782ljg.87.1587749744805;
+        Fri, 24 Apr 2020 10:35:44 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id j15sm5128392lji.18.2020.04.24.10.35.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 10:35:44 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id x23so8387811lfq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:35:43 -0700 (PDT)
+X-Received: by 2002:a19:240a:: with SMTP id k10mr7152809lfk.30.1587749743463;
+ Fri, 24 Apr 2020 10:35:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <278a9befc98b49ea866c9b687d070c70cde20628.1587487612.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-BlackCat-Spam-Score: 14
-X-Spam-Status: No, score=1.4
+References: <3632016.1587744742@warthog.procyon.org.uk>
+In-Reply-To: <3632016.1587744742@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 24 Apr 2020 10:35:27 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi_0Fye2U+AXjScpgd_hh=pFu3GJvgsUqCk-4=ckcHhhw@mail.gmail.com>
+Message-ID: <CAHk-=wi_0Fye2U+AXjScpgd_hh=pFu3GJvgsUqCk-4=ckcHhhw@mail.gmail.com>
+Subject: Re: [GIT PULL] afs: Miscellaneous fixes
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 24, 2020 at 9:12 AM David Howells <dhowells@redhat.com> wrote:
+>
+>  (3) Make a couple of waits uninterruptible if they're done for an
+>      operation that isn't supposed to be interruptible.
 
-> -configfs - Userspace-driven kernel object configuration.
-> +=======================================================
-> +Configfs - Userspace-driven Kernel oOject Configuration
-> +=======================================================
+Should they not even be killable?
 
-Typo, presumably intended to be Object, not oOject?
+Anyway, pulled.
 
-Why amend capitalisation as part of converting to REST? Normal 
-Linux/Unix convention is lower case for things like filesystems.
-
-> -IMPORTANT: drop_item() is void, and as such cannot fail.  When rmdir(2)
-> -is called, configfs WILL remove the item from the filesystem tree
-> -(assuming that it has no children to keep it busy).  The subsystem is
-> -responsible for responding to this.  If the subsystem has references to
-> -the item in other threads, the memory is safe.  It may take some time
-> -for the item to actually disappear from the subsystem's usage.  But it
-> -is gone from configfs.
-> +.. Important::
-> +
-> +   drop_item() is void, and as such cannot fail.  When rmdir(2)
-> +   is called, configfs WILL remove the item from the filesystem tree
-> +   (assuming that it has no children to keep it busy).  The subsystem is
-> +   responsible for responding to this.  If the subsystem has references to
-> +   the item in other threads, the memory is safe.  It may take some time
-> +   for the item to actually disappear from the subsystem's usage.  But it
-> +   is gone from configfs.
-
-Using a  REST admonition is probably OK but, again, why change case?
-
-The original author used shouting caps for IMPORTANT. A change can be 
-argued for consistency or if there is an established preference for 
-style. But, if so, that's a style patch, not a conversion.
+             Linus
