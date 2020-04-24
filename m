@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00191B6E69
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF1C1B6E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgDXGp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 02:45:59 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:56357 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbgDXGp6 (ORCPT
+        id S1726512AbgDXGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 02:54:30 -0400
+Received: from mail-m127108.qiye.163.com ([115.236.127.108]:44794 "EHLO
+        mail-m127108.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgDXGya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 02:45:58 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 828565C06DC;
-        Fri, 24 Apr 2020 02:45:57 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 24 Apr 2020 02:45:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=fW6EuJKIjWQLgOq/xz1RhKe9sHY
-        s05skQGD45ZQNTr4=; b=pVpskSeuZ0qM21QJz7Q199X/rxMUzN97ZTsoLxYq6r7
-        HA7f5SyrqJ5C/h/34NTQIrpvMpl/9DtdFSTowf+qx44FVWzjJAmzeqRz1VvQyKZV
-        9TS1AMBiEoJO3xDJhsvdH0K0kwloC9T+dI4r0LQXXBuXT0zyncQfiouykTocvTJs
-        k1CRB1Rjy7ziVwVS2KO7jzUNTqiBh6gBUGZQbA1wgGt3oKVQOxIBejAOGcKfuIoz
-        nxMcb46wCqz5DxTRfK9wFuLb2h8aZRnprvNyP02EB5ihMRWggMb7yy9lARe0SfUn
-        WGcbfV2G1yrDtkniDWp1WQgzKVVB2KoyRMf/+qrcWUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fW6EuJ
-        KIjWQLgOq/xz1RhKe9sHYs05skQGD45ZQNTr4=; b=pK/cQ/6XBY1EATf1/X0yn9
-        k6ZMj+gQzK7yMj2vUJ6EYaf5fAojtqK8yDOoqvrt8DHaYiqe2bUrV+/OncqEkYqV
-        KqbgLAdcZ4RM+RRGviBMI1+tBu77ubNGVTl1CO+Jse2XeXbD7AkzFdakWHaJw7Yz
-        okmSRvtGT7BZ4qHbzJNAwxfvSQ5A3s8DpD3+gzLOhmsYBoTY/7wPgvTmDPlvjD5T
-        DmjCiA+nQ1vtRufgHHZhZ1DbuMmAntF71hu8EV4CZeEum83hePn/EtjZAALF437K
-        F3FTNyGkmisRBll1upwDGopu99zN64zoepgPF0aPPK7JE3aPEGf17hWRVhMRCVSQ
-        ==
-X-ME-Sender: <xms:JYuiXvg3Z_VEo-cDS2a5Ooq4qDLHVZCsysHhfdofjH7EzJtrgHsOBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrhedtgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucfkphepkeefrdekiedrkeelrddutd
-    ejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhr
-    vghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:JYuiXgSaAIPaN6Xr3UquT6F6IdHLQPB7VTqC8it9_K0YB-pp-cojIw>
-    <xmx:JYuiXqEY_IZJqLUut0l6hDKTWyBnUOWNCM-X_I3hdROc742yOpxGiA>
-    <xmx:JYuiXgks4lhlWJlBA5-8IJoZwy_OAyOPPdZ1zKEn0uEIkJgDJm7ngQ>
-    <xmx:JYuiXnxduA81WSM4aVOgicAEq2kcrsJEv6XzNNjvExNBN9Rb_dKosw>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D25963065D11;
-        Fri, 24 Apr 2020 02:45:56 -0400 (EDT)
-Date:   Fri, 24 Apr 2020 08:45:55 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Malcolm Priestley <tvboxspy@gmail.com>
-Subject: Re: linux-next: manual merge of the staging tree with the
- staging.current tree
-Message-ID: <20200424064555.GA143960@kroah.com>
-References: <20200424151546.4dea83cb@canb.auug.org.au>
+        Fri, 24 Apr 2020 02:54:30 -0400
+X-Greylist: delayed 365 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Apr 2020 02:54:08 EDT
+Received: from vivo.com (wm-13.qy.internal [127.0.0.1])
+        by mail-m127108.qiye.163.com (Hmail) with ESMTP id 6E3FB842298;
+        Fri, 24 Apr 2020 14:47:54 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <APcAywCbCKy-qoRJBcISMqo3.3.1587710874432.Hmail.wenhu.wang@vivo.com>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        oss@buserror.net, kernel@vivo.com, robh@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2Myw0LzVdIG1pc2M6IHNyYW1fZHluYW1pYyBmb3IgdXNlciBsZXZlbCBTUkFNIGFjY2Vzcw==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
+In-Reply-To: <6675dd9d-43be-6451-88a9-02d2c52c7d3a@c-s.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200424151546.4dea83cb@canb.auug.org.au>
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 24 Apr 2020 14:47:54 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Fri, 24 Apr 2020 14:47:54 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VNSktLS0tKSEhOSk9PWVdZKFlBSE
+        83V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMT0tJT0xNS0lDN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Kxg6Agw4GTgwAlYKFCkxORgyKDYKFEhVSFVKTkNMTEpLQ0xNTktDVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUhNSUg3Bg++
+X-HM-Tid: 0a71aaf1535d986ckuuu6e3fb842298
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 03:15:46PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the staging tree got a conflict in:
-> 
->   drivers/staging/vt6656/main_usb.c
-> 
-> between commit:
-> 
->   664ba5180234 ("staging: vt6656: Fix calling conditions of vnt_set_bss_mode")
-> 
-> from the staging.current tree and commit:
-> 
->   463288b98190 ("staging: vt6556: vnt_rf_setpower convert to use ieee80211_channel.")
-> 
-> from the staging tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/staging/vt6656/main_usb.c
-> index 5f78cad3b647,3c76d3cb5bbe..000000000000
-> --- a/drivers/staging/vt6656/main_usb.c
-> +++ b/drivers/staging/vt6656/main_usb.c
-> @@@ -743,13 -740,8 +736,12 @@@ static void vnt_bss_info_changed(struc
->   		vnt_update_pre_ed_threshold(priv, false);
->   	}
->   
->  +	if (changed & (BSS_CHANGED_BASIC_RATES | BSS_CHANGED_ERP_PREAMBLE |
->  +		       BSS_CHANGED_ERP_SLOT))
->  +		vnt_set_bss_mode(priv);
->  +
-> - 	if (changed & BSS_CHANGED_TXPOWER)
-> - 		vnt_rf_setpower(priv, priv->current_rate,
-> - 				conf->chandef.chan->hw_value);
-> + 	if (changed & (BSS_CHANGED_TXPOWER | BSS_CHANGED_BANDWIDTH))
-> + 		vnt_rf_setpower(priv, conf->chandef.chan);
->   
->   	if (changed & BSS_CHANGED_BEACON_ENABLED) {
->   		dev_dbg(&priv->usb->dev,
-
-
-Thanks, that looks correct, I'll handle this when the staging.linus
-branch goes to Linus in a few days.
-
-greg k-h
+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvc3JhbV9keW5hbWljLmggYi9pbmNsdWRlL2xp
+bnV4L3NyYW1fZHluYW1pYy5oCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAw
+MDAwMDAwMC4uYzc3ZTllN2IxMTUxCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvaW5jbHVkZS9s
+aW51eC9zcmFtX2R5bmFtaWMuaAo+PiBAQCAtMCwwICsxLDIzIEBACj4+ICsvKiBTUERYLUxpY2Vu
+c2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLwo+PiArI2lmbmRlZiBfX1NSQU1fRFlOQU1JQ19ICj4+
+ICsjZGVmaW5lIF9fU1JBTV9EWU5BTUlDX0gKPj4gKwo+PiArc3RydWN0IHNyYW1fYXBpIHsKPj4g
+Kwljb25zdCBjaGFyCSpuYW1lOwo+PiArCXN0cnVjdCBzcmFtX2RldmljZSAqc2RldjsKPj4gKwl2
+b2lkICooKmFsbG9jKShfX3UzMiBzaXplLCBwaHlzX2FkZHJfdCAqcGh5cywgX191MzIgYWxpZ24p
+Owo+PiArCXZvaWQgKCpmcmVlKSh2b2lkICpwdHIpOwo+PiArfTsKPj4gKwo+PiArZXh0ZXJuIGlu
+dCBfX211c3RfY2hlY2sKPj4gKwlfX3NyYW1fcmVnaXN0ZXJfZGV2aWNlKHN0cnVjdCBtb2R1bGUg
+Km93bmVyLAo+PiArCQkJICAgICAgIHN0cnVjdCBkZXZpY2UgKnBhcmVudCwKPj4gKwkJCSAgICAg
+ICBzdHJ1Y3Qgc3JhbV9hcGkgKnNhKTsKPgo+J2V4dGVybicga2V5d29yZCBpcyB1c2VsZXNzIGhl
+cmUsIHJlbW92ZSBpdCAoY2hlY2twYXRjaCAtLXN0cmljdCB3aWxsIAo+bGlrZWx5IHRlbGwgeW91
+IHRoZSBzYW1lKQo+Cj4+ICsKPj4gKy8qIFVzZSBhIGRlZmluZSB0byBhdm9pZCBpbmNsdWRlIGNo
+YWluaW5nIHRvIGdldCBUSElTX01PRFVMRSAqLwo+PiArI2RlZmluZSBzcmFtX3JlZ2lzdGVyX2Rl
+dmljZShwYXJlbnQsIHNhKSBcCj4+ICsJX19zcmFtX3JlZ2lzdGVyX2RldmljZShUSElTX01PRFVM
+RSwgcGFyZW50LCBzYSkKPj4gKwo+PiArZXh0ZXJuIHZvaWQgc3JhbV91bnJlZ2lzdGVyX2Rldmlj
+ZShzdHJ1Y3Qgc3JhbV9hcGkgKnNhKTsKPgo+U2FtZSwgbm8gJ2V4dGVybicgcGxlYXNlLgo+CgpU
+aGFua3MsIEkgd2lsbCByZW1vdmUgdGhlbSBpbiBwYXRjaCB2NC4gQW5kIGNoZWNrcGF0Y2ggd2l0
+aCAtLXN0cmljdCB3aWxsIGJlIHByZWZlcmVkLgoKV2VuaHUNCg0K
