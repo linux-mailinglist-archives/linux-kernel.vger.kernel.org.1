@@ -2,216 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5C01B7CCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0011B7CD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgDXRaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbgDXRay (ORCPT
+        id S1729110AbgDXRbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:31:11 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51850 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgDXRbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:30:54 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882EFC09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:30:54 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o185so4945188pgo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jxQ8elL9oTsA1NUkcs5HG5rFNzWtMf8feEeEKLroBpM=;
-        b=TCtJAgMQT95iFkEQPw1m6S4q/wKXR+ESPYHJlQBF4aMLDIdDPB1bFDtxQzydu2xn1E
-         8X3C1VwUl0ArjSYo4yVp4Ik6KDGjnzDIZnagt/qGFAyzE2oz2gmZYaQE5hwiwQDISuM8
-         kSsKH2sYASdgah/mc7ioQVEnr/0tctnDaKEJs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jxQ8elL9oTsA1NUkcs5HG5rFNzWtMf8feEeEKLroBpM=;
-        b=beXIgjw9GuMm0BSVAa5AT4sFFxKipwJBA4nhJ/1zoKlO4Pw0W8+cUsex5zAMHRFsQ8
-         ArUjbdoStlMQ16Hv814vhVrz+OfXoVEkYAlGhl1vk5iV5+V9doTyuwN8RuA/opkal61j
-         s7EzDW3w7E2LLrg40WKWVuEBZxnFS/T3SxhsJZQKnijJAFN1AaiLQ0edDvtYawuoBzwv
-         bfGbIvH2Wxr5W8eNXWbLQ+7TFt+vW1ZlC4Y6J/J5ZO8Ea5jpftlq+CPA7ayPGKsizlqV
-         3kKNrG2HTt1PqpqGplMiGPWXpdnbpFv0jtECmfLhV72qR4TTVekv3z59nh3+VYfJSnGs
-         3+tQ==
-X-Gm-Message-State: AGi0PuakEng3C2PC0ol0HDUEMhejg//Ilx/JXH5Wp37u/NRvU0QAp16x
-        dkgUuo+s1q4YtsVtBynClY765w==
-X-Google-Smtp-Source: APiQypKMaJvLwe6n1BNgpS64mzJBMrKpe2R9tf6Zzhojfpo6LdCmdkttps3QolrVaPtlZd5sHByWcA==
-X-Received: by 2002:a63:602:: with SMTP id 2mr10234391pgg.383.1587749453988;
-        Fri, 24 Apr 2020 10:30:53 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id w3sm6176961pfn.115.2020.04.24.10.30.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 10:30:53 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 10:30:52 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, rjw@rjwysocki.net, saravanak@google.com,
-        sibis@codeaurora.org, rnayak@codeaurora.org,
-        bjorn.andersson@linaro.org, vincent.guittot@linaro.org,
-        jcrouse@codeaurora.org, evgreen@chromium.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/7] OPP: Add helpers for reading the binding
- properties
-Message-ID: <20200424173052.GM199755@google.com>
-References: <20200424155404.10746-1-georgi.djakov@linaro.org>
- <20200424155404.10746-3-georgi.djakov@linaro.org>
+        Fri, 24 Apr 2020 13:31:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OHNJlT086233;
+        Fri, 24 Apr 2020 17:30:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=b63l/bhQnnn4+X9p4WKXJx5KlkkWuUUaaW0oUwuChlk=;
+ b=s4WXIf+Av70xx6dMeb2fMORHwquUxIrXzLMXqTOx07nOdnmxRyzbOT6r8wmfcSO8y5y/
+ UGyKvhSfU6L8EU49xnJEp9NzFt9CCBGBEf7e2G1buu+exXAPgud2CdnrQOZYvFbRz2o7
+ p9nBx/Qc3Cne1aaEE/boO0AFJxRROtzLiMn/KSskdbB1tsRw5wNwUXGwUKvCbelQR5T9
+ /ymu4+eF1OU5A0Isll9P5jdm+0ifIMDHuxSPlC6vLacAFKYDQk5l+W9EVmHVTYq7VZig
+ U1YMU/zPYvvfXXXNkjTAlYPfd/BjMIvUyyLrxFOgCmPmVpnkpyCsEzDHxq/Tb8jy+bWW tA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30ketdnmfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 17:30:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OHLm7r162378;
+        Fri, 24 Apr 2020 17:30:58 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30gb3xrsqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 17:30:58 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03OHUur9026087;
+        Fri, 24 Apr 2020 17:30:56 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Apr 2020 10:30:56 -0700
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <khalid@gonehiking.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <colin.king@canonical.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: BusLogic: remove conversion to bool in blogic_inquiry()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200421034120.28433-1-yanaijie@huawei.com>
+Date:   Fri, 24 Apr 2020 13:30:54 -0400
+In-Reply-To: <20200421034120.28433-1-yanaijie@huawei.com> (Jason Yan's message
+        of "Tue, 21 Apr 2020 11:41:20 +0800")
+Message-ID: <yq1v9lodc4x.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200424155404.10746-3-georgi.djakov@linaro.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
+ mlxlogscore=851 phishscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004240134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=925 phishscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1011 suspectscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Georgi,
 
-On Fri, Apr 24, 2020 at 06:53:59PM +0300, Georgi Djakov wrote:
-> From: Saravana Kannan <saravanak@google.com>
-> 
-> The opp-hz DT property is not mandatory and we may use another property
-> as a key in the OPP table. Add helper functions to simplify the reading
-> and comparing the keys.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> ---
-> v7:
-> * Extracted just the helpers from patch v6, as Viresh advised to split it.
-> 
-> v6: https://lore.kernel.org/r/20191207002424.201796-3-saravanak@google.com
-> 
->  drivers/opp/core.c | 15 +++++++++++++--
->  drivers/opp/of.c   | 42 ++++++++++++++++++++++++++----------------
->  drivers/opp/opp.h  |  1 +
->  3 files changed, 40 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index ba43e6a3dc0a..c9c1bbe6ae27 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1272,11 +1272,21 @@ static bool _opp_supported_by_regulators(struct dev_pm_opp *opp,
->  	return true;
->  }
->  
-> +int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2)
-> +{
-> +	if (opp1->rate != opp2->rate)
-> +		return opp1->rate < opp2->rate ? -1 : 1;
-> +	if (opp1->level != opp2->level)
-> +		return opp1->level < opp2->level ? -1 : 1;
-> +	return 0;
-> +}
-> +
->  static int _opp_is_duplicate(struct device *dev, struct dev_pm_opp *new_opp,
->  			     struct opp_table *opp_table,
->  			     struct list_head **head)
->  {
->  	struct dev_pm_opp *opp;
-> +	int opp_cmp;
->  
->  	/*
->  	 * Insert new OPP in order of increasing frequency and discard if
-> @@ -1287,12 +1297,13 @@ static int _opp_is_duplicate(struct device *dev, struct dev_pm_opp *new_opp,
->  	 * loop.
->  	 */
->  	list_for_each_entry(opp, &opp_table->opp_list, node) {
-> -		if (new_opp->rate > opp->rate) {
-> +		opp_cmp = _opp_compare_key(new_opp, opp);
-> +		if (opp_cmp > 0) {
->  			*head = &opp->node;
->  			continue;
->  		}
->  
-> -		if (new_opp->rate < opp->rate)
-> +		if (opp_cmp < 0)
->  			return 0;
->  
->  		/* Duplicate OPPs */
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index 9cd8f0adacae..e33169c7e045 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -521,6 +521,28 @@ void dev_pm_opp_of_remove_table(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_of_remove_table);
->  
-> +static int _read_opp_key(struct dev_pm_opp *new_opp, struct device_node *np,
-> +			 bool *rate_not_available)
-> +{
-> +	u64 rate;
-> +	int ret;
-> +
-> +	ret = of_property_read_u64(np, "opp-hz", &rate);
-> +	if (!ret) {
-> +		/*
-> +		 * Rate is defined as an unsigned long in clk API, and so
-> +		 * casting explicitly to its type. Must be fixed once rate is 64
-> +		 * bit guaranteed in clk API.
-> +		 */
-> +		new_opp->rate = (unsigned long)rate;
-> +	}
+Jason,
 
-nit: curly braces are not needed
+> The '!=' expression itself is bool, no need to convert it to bool again.
+> This fixes the following coccicheck warning:
+>
+> drivers/scsi/BusLogic.c:2240:46-51: WARNING: conversion to bool not
+> needed here
 
-> +	*rate_not_available = !!ret;
-> +
-> +	of_property_read_u32(np, "opp-level", &new_opp->level);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * _opp_add_static_v2() - Allocate static OPPs (As per 'v2' DT bindings)
->   * @opp_table:	OPP table
-> @@ -558,26 +580,14 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
->  	if (!new_opp)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	ret = of_property_read_u64(np, "opp-hz", &rate);
-> +	ret = _read_opp_key(new_opp, np, &rate_not_available);
->  	if (ret < 0) {
-> -		/* "opp-hz" is optional for devices like power domains. */
-> -		if (!opp_table->is_genpd) {
-> -			dev_err(dev, "%s: opp-hz not found\n", __func__);
-> -			goto free_opp;
-> -		}
-> +		if (!opp_table->is_genpd)
-> +			dev_err(dev, "%s: opp key field not found\n", __func__);
->  
-> -		rate_not_available = true;
-> -	} else {
-> -		/*
-> -		 * Rate is defined as an unsigned long in clk API, and so
-> -		 * casting explicitly to its type. Must be fixed once rate is 64
-> -		 * bit guaranteed in clk API.
-> -		 */
-> -		new_opp->rate = (unsigned long)rate;
-> +		goto free_opp;
->  	}
->  
-> -	of_property_read_u32(np, "opp-level", &new_opp->level);
-> -
->  	/* Check if the OPP supports hardware's hierarchy of versions or not */
->  	if (!_opp_is_supported(dev, opp_table, np)) {
->  		dev_dbg(dev, "OPP not supported by hardware: %llu\n", rate);
-> diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-> index d14e27102730..bcadb1e328a4 100644
-> --- a/drivers/opp/opp.h
-> +++ b/drivers/opp/opp.h
-> @@ -211,6 +211,7 @@ struct opp_device *_add_opp_dev(const struct device *dev, struct opp_table *opp_
->  void _dev_pm_opp_find_and_remove_table(struct device *dev);
->  struct dev_pm_opp *_opp_allocate(struct opp_table *opp_table);
->  void _opp_free(struct dev_pm_opp *opp);
-> +int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2);
->  int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct opp_table *opp_table, bool rate_not_available);
->  int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long freq, long u_volt, bool dynamic);
->  void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
+Applied to 5.8/scsi-queue, thanks!
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+-- 
+Martin K. Petersen	Oracle Linux Engineering
