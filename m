@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB521B7675
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0641B767F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgDXNIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S1727838AbgDXNJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgDXNII (ORCPT
+        with ESMTP id S1726301AbgDXNJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:08:08 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EADC09B045;
-        Fri, 24 Apr 2020 06:08:07 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id h26so7471476qtu.8;
-        Fri, 24 Apr 2020 06:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WpO16Fh4Vkj+Jz9+k/K3SHUv6y5M8rpJ9u3d1xP87iQ=;
-        b=ojutYVoW20IR21Ii+yHxCiIVuZjLAnSpviyJqrRtB1AXDxKi34/gfbD5YZKbWYtwfa
-         VtIbsKDlnLZpAubziA/8HgiMc9Mj9XJJ6OZC+gTOA48qsoj4+mODmrDKwQjqD22vPxnl
-         GZ5YfKzG6Zzxl6SYonQzTuaGu2s1dOWmx/znCX2nxkU5YO6yW2G/dnoaHpayM79RZHkT
-         QQx6sJIxQRA2Ne4ZaddiD4YS+ELPWw/ewb4Nz87e3YwPRzXQiSkSJwELz6MFDq7nwwnd
-         9o9nlV7ojny8Br1LXa7QRnFhZPjqFxx8J0//aCa7ibVE7TqLsOE5JrJN3wO2cD8KSnjq
-         CVPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WpO16Fh4Vkj+Jz9+k/K3SHUv6y5M8rpJ9u3d1xP87iQ=;
-        b=Dl7w7jm4pWqwSKMfTc3zIHY3Z4u6NSM98623BDTmDz1KTPJoII6GUOC7d9heCCl3cW
-         dD2m49angjQpfYlof1o4Kj9Ulutyr7Fj0UTv9SNixV5K/Zz7Kpdaqi+tODX9Q/+a7bBT
-         9mNLQaVHl9Wd8RWHmF56PPWAoX3rHmCk1caY1aPz6fPoR56TVCudqbTYrhvqA1DUQkbt
-         8ArVQPDZmoc5PD4V1ksVfyLt9GPZ0oIU9PvtyrIGfFKADurisidrQR9EConNz9mxvpWz
-         t5+iqQB0hQvkRb4Jzv3dhMzkf32IDJDXxqWXXudKQ3clpBHc15+CvzqoCp0yKFe0C/pS
-         ZVHQ==
-X-Gm-Message-State: AGi0PuY3UO8RMvSGd4uoiPn9woYIV20BfvCP+lunfyFLPCi02h5G9Oi2
-        +hL498Un09/zgWEkSJ+DMk9Yf/k01Ik=
-X-Google-Smtp-Source: APiQypJpZDwyHjgN54itxsNrMZrVIpxOA3qi8QTbRGVOxu+UucyIyPnmhEaXUQcn3pyz40IGA+ukFA==
-X-Received: by 2002:ac8:3212:: with SMTP id x18mr9064538qta.247.1587733686397;
-        Fri, 24 Apr 2020 06:08:06 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id g3sm3607892qkk.24.2020.04.24.06.08.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 06:08:05 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D1852409A3; Fri, 24 Apr 2020 10:08:03 -0300 (-03)
-Date:   Fri, 24 Apr 2020 10:08:03 -0300
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 3/3] perf-probe: Do not show the skipped events
-Message-ID: <20200424130803.GL19437@kernel.org>
-References: <158763965400.30755.14484569071233923742.stgit@devnote2>
- <158763968263.30755.12800484151476026340.stgit@devnote2>
- <20200423140139.GG19437@kernel.org>
- <20200424083305.6bff9456650308ab7a4ab750@kernel.org>
+        Fri, 24 Apr 2020 09:09:42 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224E0C09B045;
+        Fri, 24 Apr 2020 06:09:31 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 08FCA2049A;
+        Fri, 24 Apr 2020 13:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587733769; bh=nmJMIaO9S4iz7eSCHHpszDqwZBHuXACl/U+N3ZMJpSM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=trOyHbnse5dgxLHn9kABZV9a9LO81J4vxLLDtRdA89ZFfgoG8TQVphgg5ZqYJSluD
+         74ilSTzZ8au6ZtOjtpAtvjnCc76AAZqzZdNTS/Ggw7dpqSQzpqOeD624S9UYE2Ix0o
+         gU6Kse6fHaZvszqshVSONVSBN0iqRemmRCp//bQEhhlYCXJDzUMLGjcO9HjP7WL1ek
+         9+sVCllF8YouWHdDz+Y0L0nDw+Pfkrpi843/bT8WqN82KmS2t6NLklSf+9Vi2vo8TF
+         WffUA+iyHGLOqvE+uPvSuNxSxXdG6YvpmD+7bZ8ya1BYTtSFoXM4LwIHYK0WUWoCIM
+         m53qtW9X/T2AA==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-pci@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Paul Burton <paulburton@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v5 0/6] Loongson PCI Generic Driver
+Date:   Fri, 24 Apr 2020 21:08:31 +0800
+Message-Id: <20200424130847.328584-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200424083305.6bff9456650308ab7a4ab750@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Apr 24, 2020 at 08:33:05AM +0900, Masami Hiramatsu escreveu:
-> On Thu, 23 Apr 2020 11:01:39 -0300
-> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> 
-> > Em Thu, Apr 23, 2020 at 08:01:22PM +0900, Masami Hiramatsu escreveu:
-> > > When a probe point is expanded to several places (like inlined) and
-> > > if some of them are skipped because of blacklisted or __init function,
-> > > those trace_events has no event name. It must be skipped while showing
-> > > results.
-> > > 
-> > > Without this fix, you can see "(null):(null)" on the list,
-> > > ===========
-> > 
-> > Ok, you broke the patch in two, I think its better to combine both, ok?
-> 
-> No, if an inlined function is embedded in blacklisted areas, it also
-> shows same "(null):(null)" without [2/3].
-> 
-> Reordering the patches is OK, but this is still an independent fix.
+Hi,
+This series converts Loongson PCI into a generic PCI controller
+driver and adds support for LS2K SoC and LS7A PCH's PCI support.
 
-Ok, so I'll try reordering, so that we don't see it in the cset log for
-the other fix.
+Is it possible to let patch 1~4 go through PCI tree and patch
+5~6 go through MIPS tree?
 
-Thanks for the clarification,
+Thanks.
 
-- Arnaldo
- 
-> Thank you,
-> 
-> > 
-> > - Arnaldo
-> > 
-> > >   # ./perf probe request_resource
-> > >   reserve_setup is out of .text, skip it.
-> > >   Added new events:
-> > >     (null):(null)        (on request_resource)
-> > >     probe:request_resource (on request_resource)
-> > > 
-> > >   You can now use it in all perf tools, such as:
-> > > 
-> > >   	perf record -e probe:request_resource -aR sleep 1
-> > > 
-> > > ===========
-> > > 
-> > > With this fix, it is ignored.
-> > > ===========
-> > >   # ./perf probe request_resource
-> > >   reserve_setup is out of .text, skip it.
-> > >   Added new events:
-> > >     probe:request_resource (on request_resource)
-> > > 
-> > >   You can now use it in all perf tools, such as:
-> > > 
-> > >   	perf record -e probe:request_resource -aR sleep 1
-> > > 
-> > > ===========
-> > > 
-> > > Fixes: 5a51fcd1f30c ("perf probe: Skip kernel symbols which is out of .text")
-> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > > Cc: stable@vger.kernel.org
-> > > ---
-> > >  tools/perf/builtin-probe.c |    3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
-> > > index 70548df2abb9..6b1507566770 100644
-> > > --- a/tools/perf/builtin-probe.c
-> > > +++ b/tools/perf/builtin-probe.c
-> > > @@ -364,6 +364,9 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
-> > >  
-> > >  		for (k = 0; k < pev->ntevs; k++) {
-> > >  			struct probe_trace_event *tev = &pev->tevs[k];
-> > > +			/* Skipped events have no event name */
-> > > +			if (!tev->event)
-> > > +				continue;
-> > >  
-> > >  			/* We use tev's name for showing new events */
-> > >  			show_perf_probe_event(tev->group, tev->event, pev,
-> > > 
-> > 
-> > -- 
-> > 
-> > - Arnaldo
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Jiaxun Yang (6):
+  PCI: OF: Don't remap iospace on unsupported platform
+  PCI: Don't disable decoding when mmio_always_on is set
+  PCI: Add Loongson PCI Controller support
+  dt-bindings: Document Loongson PCI Host Controller
+  MIPS: DTS: Loongson64: Add PCI Controller Node
+  MIPS: Loongson64: Switch to generic PCI driver
+
+ .../devicetree/bindings/pci/loongson.yaml     |  62 +++++
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi   |  17 +-
+ arch/mips/loongson64/Makefile                 |   2 +-
+ arch/mips/loongson64/vbios_quirk.c            |  29 ++
+ arch/mips/pci/Makefile                        |   1 -
+ arch/mips/pci/fixup-loongson3.c               |  71 -----
+ arch/mips/pci/ops-loongson3.c                 | 116 --------
+ drivers/pci/controller/Kconfig                |   9 +
+ drivers/pci/controller/Makefile               |   1 +
+ drivers/pci/controller/pci-loongson.c         | 257 ++++++++++++++++++
+ drivers/pci/of.c                              |   9 +
+ drivers/pci/probe.c                           |   2 +-
+ 13 files changed, 386 insertions(+), 191 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/loongson.yaml
+ create mode 100644 arch/mips/loongson64/vbios_quirk.c
+ delete mode 100644 arch/mips/pci/fixup-loongson3.c
+ delete mode 100644 arch/mips/pci/ops-loongson3.c
+ create mode 100644 drivers/pci/controller/pci-loongson.c
 
 -- 
+2.26.0.rc2
 
-- Arnaldo
