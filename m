@@ -2,214 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95161B7738
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D990C1B773E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgDXNmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726667AbgDXNmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:42:38 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C41C09B046
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:42:37 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id t11so7709954lfe.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9XPuItu2p5q0J1stXYL3FlizDb4b2Hp0W76okzjB3Yg=;
-        b=1gBHdNVVVD55yBdxouLHVQIr2R2DG14UwgiuO1DRw+MsxOTtsLf6Qt4nCy2XNn0Wn9
-         T+Z+OHefE+86FdQvoYKGav4kR+gpWcBZY448c0Rrexhv66wYCGuMFsInXNldtDi46o04
-         rD/aRfmdPWZxY1H5gMK+k/OTThXFo7bm347H8dcPyg8MLpoIIf6WSa0BAjjnyqViV9+B
-         S5z+aa2b6k6Nz4zPQs9Khf8Dpd8chZtC40Do54ozJSUPCxO21aQm9HkqYoTfskEWiOgT
-         Ek5c9tTtMTnNqbEW4tTqdz7MbaEu3lx+zKesB59zZ6JnAYHCJZVOgPv7b3F7GuIt4WzF
-         mUTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9XPuItu2p5q0J1stXYL3FlizDb4b2Hp0W76okzjB3Yg=;
-        b=rsSPHy6G/rSajxyJmSyI3HulNIEBW7+xbA8IC1ArTMSeMisVV2+0yjlMlj4P+lEq/4
-         vJSo2yLxTjW0PLXemNEKwtzM6wdkX9koa57e1v3vHq2Ubt22yQmxVRoA7EK4eF/hIinD
-         4U1Ry6cgkTWcYibxB2WT7tYQ1VIIsPUJ+EQGwItPZDiHI6rGM/MNSk831rf8JEZkCj++
-         h0Ye8kskgoEDGK6jzZHo8qq5xiw0DPddkAO11Wqwey8YIXLIVWkBSGr8NdBWWhbEpus0
-         Q2uXbCg/y2Bsh5SfJzw+W8Ubq+kZNQ2flr9HqZlp8Fx+Q8eCONRz2v+GoUMQ/R6BB0Jx
-         OqGg==
-X-Gm-Message-State: AGi0PuYz6puUKUP4QF/CAwyAWTiGZp9HAhUDmNSgD88B7bQnJ+KpVdjj
-        os39nENH+42EONXdlESAN0YMlLTg4Z8=
-X-Google-Smtp-Source: APiQypJUCaE4jBrGyzJqhy/Wi6vjxKbAYz+/SclhtNuTdMQXmtFuj4rozg3LhSbteTaPt3IW2bzkZg==
-X-Received: by 2002:a19:5217:: with SMTP id m23mr6595764lfb.202.1587735755707;
-        Fri, 24 Apr 2020 06:42:35 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id a13sm4259474ljm.25.2020.04.24.06.42.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 06:42:35 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 15:42:34 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        hans.verkuil@cisco.com, skhan@linuxfoundation.org,
-        mchehab@kernel.org
-Subject: Re: [PATCH v3 3/4] media: staging: rkisp1: use
- v4l2_pipeline_stream_{enable,disable} helpers
-Message-ID: <20200424134234.GC4040416@oden.dyn.berto.se>
-References: <20200415013044.1778572-1-helen.koike@collabora.com>
- <20200415013044.1778572-4-helen.koike@collabora.com>
+        id S1728184AbgDXNmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:42:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60858 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbgDXNmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:42:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=K/wuW35fCeVAxwxu9PaLKs0VDsc/O/tT3lplBdlNIHk=; b=pceQaPqPZele9yUDVkCTmJaCJa
+        GaM0FxwqoKga+jO7qsdOmKuA71oqfoaW2LgmP9JmUb9jQo87Ff9BIpq05a9F2lI3gyKx6X7pdK4v7
+        RchVvTiNAc6OQcZWJK373PjpAvJ4VPRt35S24z+GAQqWpo7ezUVhRC+5T1eKIrOl+rLY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jRybE-004Yyc-G2; Fri, 24 Apr 2020 15:42:36 +0200
+Date:   Fri, 24 Apr 2020 15:42:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florinel Iordache <florinel.iordache@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, kuba@kernel.org,
+        corbet@lwn.net, shawnguo@kernel.org, leoyang.li@nxp.com,
+        madalin.bucur@oss.nxp.com, ioana.ciornei@nxp.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 3/9] net: phy: add kr phy connection type
+Message-ID: <20200424134236.GB1087366@lunn.ch>
+References: <1587732391-3374-1-git-send-email-florinel.iordache@nxp.com>
+ <1587732391-3374-4-git-send-email-florinel.iordache@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200415013044.1778572-4-helen.koike@collabora.com>
+In-Reply-To: <1587732391-3374-4-git-send-email-florinel.iordache@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Helen,
-
-Thanks for your work.
-
-On 2020-04-14 22:30:43 -0300, Helen Koike wrote:
-> Use v4l2_pipeline_stream_{enable,disable} to call .s_stream() subdevice
-> callbacks through the pipeline.
+On Fri, Apr 24, 2020 at 03:46:25PM +0300, Florinel Iordache wrote:
+> Add support for backplane kr phy connection types currently available
+> (10gbase-kr, 40gbase-kr4) and the required phylink updates (cover all
+> the cases for KR modes which are clause 45 compatible to correctly assign
+> phy_interface and phylink#supported)
 > 
-> Tested by streaming on Scarlet Chromebook.
-> 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
-> 
+> Signed-off-by: Florinel Iordache <florinel.iordache@nxp.com>
 > ---
+>  drivers/net/phy/phylink.c | 15 ++++++++++++---
+>  include/linux/phy.h       |  6 +++++-
+>  2 files changed, 17 insertions(+), 4 deletions(-)
 > 
-> Changes in v3:
-> - rebase on top of new helpers prototypes
-> 
-> Changes in v2:
-> - rebase on top of new helpers prototypes
-> 
->  drivers/staging/media/rkisp1/rkisp1-capture.c | 76 +------------------
->  1 file changed, 3 insertions(+), 73 deletions(-)
-> 
-> diff --git a/drivers/staging/media/rkisp1/rkisp1-capture.c b/drivers/staging/media/rkisp1/rkisp1-capture.c
-> index 24fe6a7888aa4..a18f1668e3563 100644
-> --- a/drivers/staging/media/rkisp1/rkisp1-capture.c
-> +++ b/drivers/staging/media/rkisp1/rkisp1-capture.c
-> @@ -838,71 +838,6 @@ static void rkisp1_return_all_buffers(struct rkisp1_capture *cap,
->  	spin_unlock_irqrestore(&cap->buf.lock, flags);
->  }
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index 34ca12a..9a31f68 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -4,6 +4,7 @@
+>   * technologies such as SFP cages where the PHY is hot-pluggable.
+>   *
+>   * Copyright (C) 2015 Russell King
+> + * Copyright 2020 NXP
+>   */
+>  #include <linux/ethtool.h>
+>  #include <linux/export.h>
+> @@ -304,7 +305,6 @@ static int phylink_parse_mode(struct phylink *pl, struct fwnode_handle *fwnode)
+>  			break;
 >  
-> -/*
-> - * rkisp1_pipeline_sink_walk - Walk through the pipeline and call cb
-> - * @from: entity at which to start pipeline walk
-> - * @until: entity at which to stop pipeline walk
-> - *
-> - * Walk the entities chain starting at the pipeline video node and stop
-> - * all subdevices in the chain.
-> - *
-> - * If the until argument isn't NULL, stop the pipeline walk when reaching the
-> - * until entity. This is used to disable a partially started pipeline due to a
-> - * subdev start error.
-> - */
-> -static int rkisp1_pipeline_sink_walk(struct media_entity *from,
-> -				     struct media_entity *until,
-> -				     int (*cb)(struct media_entity *from,
-> -					       struct media_entity *curr))
-> -{
-> -	struct media_entity *entity = from;
-> -	struct media_pad *pad;
-> -	unsigned int i;
-> -	int ret;
-> -
-> -	while (1) {
-> -		pad = NULL;
-> -		/* Find remote source pad */
-> -		for (i = 0; i < entity->num_pads; i++) {
-> -			struct media_pad *spad = &entity->pads[i];
-> -
-> -			if (!(spad->flags & MEDIA_PAD_FL_SINK))
-> -				continue;
-> -			pad = media_entity_remote_pad(spad);
-> -			if (pad && is_media_entity_v4l2_subdev(pad->entity))
-> -				break;
-> -		}
-> -		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
-> -			break;
-> -
-> -		entity = pad->entity;
-> -		if (entity == until)
-> -			break;
-> -
-> -		ret = cb(from, entity);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static int rkisp1_pipeline_disable_cb(struct media_entity *from,
-> -				      struct media_entity *curr)
-> -{
-> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
-> -
-> -	return v4l2_subdev_call(sd, video, s_stream, false);
-> -}
-> -
-> -static int rkisp1_pipeline_enable_cb(struct media_entity *from,
-> -				     struct media_entity *curr)
-> -{
-> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
-> -
-> -	return v4l2_subdev_call(sd, video, s_stream, true);
-> -}
-> -
->  static void rkisp1_stream_stop(struct rkisp1_capture *cap)
->  {
->  	int ret;
-> @@ -929,11 +864,7 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
->  
->  	rkisp1_stream_stop(cap);
->  	media_pipeline_stop(&node->vdev.entity);
-> -	ret = rkisp1_pipeline_sink_walk(&node->vdev.entity, NULL,
-> -					rkisp1_pipeline_disable_cb);
-> -	if (ret)
-> -		dev_err(rkisp1->dev,
-> -			"pipeline stream-off failed error:%d\n", ret);
-> +	v4l2_pipeline_stream_disable(&node->vdev, &cap->rkisp1->pipe);
->  
->  	rkisp1_return_all_buffers(cap, VB2_BUF_STATE_ERROR);
->  
-> @@ -1005,8 +936,7 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
->  	rkisp1_stream_start(cap);
->  
->  	/* start sub-devices */
-> -	ret = rkisp1_pipeline_sink_walk(entity, NULL,
-> -					rkisp1_pipeline_enable_cb);
-> +	ret = v4l2_pipeline_stream_enable(&cap->vnode.vdev, &cap->rkisp1->pipe);
->  	if (ret)
->  		goto err_stop_stream;
->  
-> @@ -1019,7 +949,7 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
->  	return 0;
->  
->  err_pipe_disable:
-> -	rkisp1_pipeline_sink_walk(entity, NULL, rkisp1_pipeline_disable_cb);
-> +	v4l2_pipeline_stream_disable(&cap->vnode.vdev, &cap->rkisp1->pipe);
->  err_stop_stream:
->  	rkisp1_stream_stop(cap);
->  	v4l2_pipeline_pm_put(entity);
-> -- 
-> 2.26.0
-> 
+>  		case PHY_INTERFACE_MODE_USXGMII:
+> -		case PHY_INTERFACE_MODE_10GKR:
+>  		case PHY_INTERFACE_MODE_10GBASER:
+>  			phylink_set(pl->supported, 10baseT_Half);
+>  			phylink_set(pl->supported, 10baseT_Full);
 
--- 
-Regards,
-Niklas Söderlund
+Hi Florinel
+
+What about the issues pointed out in:
+
+https://www.spinics.net/lists/netdev/msg641046.html
+
+	Andrew
