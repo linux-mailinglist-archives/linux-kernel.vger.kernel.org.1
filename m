@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D83B1B826F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 01:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA181B8258
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 01:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgDXX2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 19:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgDXX2w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 19:28:52 -0400
-X-Greylist: delayed 1333 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Apr 2020 16:28:52 PDT
-Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0DEC09B049;
-        Fri, 24 Apr 2020 16:28:52 -0700 (PDT)
-Received: by bues.ch with esmtpsa (Exim 4.92)
-        (envelope-from <m@bues.ch>)
-        id 1jS7P1-0005Hg-8R; Sat, 25 Apr 2020 01:06:35 +0200
-Date:   Sat, 25 Apr 2020 01:05:05 +0200
-From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To:     John Oldman <john.oldman@polehill.co.uk>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] :ssb sprom.c: Fixed block comments coding style issues
-Message-ID: <20200425010505.586bbad4@wiggum>
-In-Reply-To: <20200424175043.16261-1-john.oldman@polehill.co.uk>
-References: <20200424175043.16261-1-john.oldman@polehill.co.uk>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726060AbgDXXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 19:10:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgDXXKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 19:10:04 -0400
+Received: from localhost (mobile-166-175-187-210.mycingular.net [166.175.187.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 937C420736;
+        Fri, 24 Apr 2020 23:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587769803;
+        bh=PKcDmqJNikLgPVx9XOqFdwEmyrGOm/Dt0u+WQR2omNU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IuXcmnBHefd7aMWWM9O7FvD2ZAsgusvfcI55sfq2884hl8yhuAs9XW0hDSw31o51T
+         jDGfu5TdUsKODPC9hMhOKrhST3iNwvWs4wE92FUNbfSwwmzMEQDs9jEMFi+0IAvDvC
+         KtnpyA74GF4/bh3+xjKOjt1zo//ICo0b0fkR5AA8=
+Date:   Fri, 24 Apr 2020 18:10:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     sathyanarayanan.kuppuswamy@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com
+Subject: Re: [PATCH v1 1/1] PCI/EDR: Change ACPI event message log level
+Message-ID: <20200424231002.GA218107@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+Zg=N8FpeLMAEgxEZqKZX9_";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01afb4e01efbe455de0c445bef6cf3ffc59340d2.1586996350.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+Zg=N8FpeLMAEgxEZqKZX9_
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 24 Apr 2020 18:50:43 +0100
-John Oldman <john.oldman@polehill.co.uk> wrote:
-
-> Fixed coding style issues
->=20
-> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
+On Wed, Apr 15, 2020 at 05:38:32PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> Currently we have pci_info() message in the beginning of
+> edr_handle_event() function, which will be printing
+> notification details every-time firmware sends ACPI SYSTEM
+> level events. This will pollute the dmesg logs for systems
+> that has lot for ACPI system level notifications. So change
+> the log-level to pci_dbg, and add a new info log for EDR
+> events.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  drivers/ssb/sprom.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/ssb/sprom.c b/drivers/ssb/sprom.c
-> index 52d2e0f33be7..42d620cee8a9 100644
-> --- a/drivers/ssb/sprom.c
-> +++ b/drivers/ssb/sprom.c
-> @@ -78,7 +78,8 @@ ssize_t ssb_attr_sprom_show(struct ssb_bus *bus, char *=
-buf,
-> =20
->  	/* Use interruptible locking, as the SPROM write might
->  	 * be holding the lock for several seconds. So allow userspace
-> -	 * to cancel operation. */
-> +	 * to cancel operation.
-> +	 */
->  	err =3D -ERESTARTSYS;
->  	if (mutex_lock_interruptible(&bus->sprom_mutex))
->  		goto out_kfree;
-> @@ -121,7 +122,8 @@ ssize_t ssb_attr_sprom_store(struct ssb_bus *bus,
-> =20
->  	/* Use interruptible locking, as the SPROM write might
->  	 * be holding the lock for several seconds. So allow userspace
-> -	 * to cancel operation. */
-> +	 * to cancel operation.
-> +	 */
->  	err =3D -ERESTARTSYS;
->  	if (mutex_lock_interruptible(&bus->sprom_mutex))
->  		goto out_kfree;
-> @@ -188,9 +190,11 @@ int ssb_fill_sprom_with_fallback(struct ssb_bus *bus=
-, struct ssb_sprom *out)
->  bool ssb_is_sprom_available(struct ssb_bus *bus)
->  {
->  	/* status register only exists on chipcomon rev >=3D 11 and we need che=
-ck
-> -	   for >=3D 31 only */
-> +	 * for >=3D 31 only
-> +	 */
->  	/* this routine differs from specs as we do not access SPROM directly
-> -	   on PCMCIA */
-> +	 * on PCMCIA
-> +	 */
->  	if (bus->bustype =3D=3D SSB_BUSTYPE_PCI &&
->  	    bus->chipco.dev &&	/* can be unavailable! */
->  	    bus->chipco.dev->id.revision >=3D 31)
+>  drivers/pci/pcie/edr.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+> index 594622a6cb16..e346c82559fa 100644
+> --- a/drivers/pci/pcie/edr.c
+> +++ b/drivers/pci/pcie/edr.c
+> @@ -148,11 +148,13 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
+>  	pci_ers_result_t estate = PCI_ERS_RESULT_DISCONNECT;
+>  	u16 status;
+>  
+> -	pci_info(pdev, "ACPI event %#x received\n", event);
+> +	pci_dbg(pdev, "ACPI event %#x received\n", event);
 
+I agree this looks excessively verbose.  Do we even need a pci_dbg()
+message here?  Maybe a message like that would belong in ACPI?
+There is already an ACPI_DEBUG_PRINT() in
+acpi_ev_queue_notify_request() that would serve a similar purpose.
 
-Acked-by: Michael B=C3=BCsch <m@bues.ch>
-
---=20
-Michael
-
---Sig_/+Zg=N8FpeLMAEgxEZqKZX9_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAl6jcKEACgkQ9TK+HZCN
-iw4GnQ/9HBXu8gdGeHKJsOxPtAxlbFVHXaPGp3qKQb7Si1i3RvA+yxwMY10SOIPJ
-gc52OhmgTqgVYrug9z9JcZu8W0FXy0ti9HTIxUm7ufOTnoL0H/k5uvi4f+UnqV2i
-JQOcH+bKOCGRIUTEq0O/V1Z44YxiNkd8aT3pmPoRzapyR9pD8qtbTTOTXShyhFvx
-wj0SQXoiEh5Tz9KtnnaZc3fR3QzQGTeUx9lZJ3hDdIuA+IyK6oEZP4992N1cBY3Z
-LihdOriotdEAFxw+2+CZX5SKvjQneLcQJM9XhiF/jEWxPas+LmCy87tyhc5TU7xP
-217PE6BpktDXAtG/mY6D0ckAwchVpkKowxzDYjqA2g6ft/TeUBQ6oerk/8GQC+MV
-AOR8HwwxB1ZB3kwpWGD0PpqWvxz3YBFl3VxW9CmVi77xoVTjDXRA7ehylHENeZHY
-WO7Jlp53DuVUUlpnWNC/E2welHvaBkwEtJW+eWb7m5vZg0kx7SxsOBSZP6hn2bK0
-4eioFb/c6qqhzshbGyF/wU+OOGufjpnYmJ8eXje3913IpXRpem8Ek8wktwSrLbdG
-zOC6UylqqHOZB3Fe+BeX42vCTjPyViRX8xpT3r9ADLTGQi3k1ghdmPJnrX4+SB0e
-Atk0L7ybsJjdOgIvokCYCpppzYllyWwzpfMyNA/YgQeJdQSO6Cw=
-=V+Rq
------END PGP SIGNATURE-----
-
---Sig_/+Zg=N8FpeLMAEgxEZqKZX9_--
+>  	if (event != ACPI_NOTIFY_DISCONNECT_RECOVER)
+>  		return;
+>  
+> +	pci_info(pdev, "EDR event received\n");
+> +
+>  	/* Locate the port which issued EDR event */
+>  	edev = acpi_dpc_port_get(pdev);
+>  	if (!edev) {
+> -- 
+> 2.17.1
+> 
