@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB311B7D82
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9D91B7D87
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgDXSGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S1728594AbgDXSHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727022AbgDXSGJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726908AbgDXSHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:06:09 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7EBC09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:06:09 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ms17so4190540pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:06:09 -0700 (PDT)
+        Fri, 24 Apr 2020 14:07:52 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72E8C09B048;
+        Fri, 24 Apr 2020 11:07:52 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id n143so11105306qkn.8;
+        Fri, 24 Apr 2020 11:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=ZPbn+iyaDp4cEt6gq261dacrQwB2jOJPwOFzXYvpkjQ=;
-        b=H2bD3LNMVT+z8T3e/Fifq37OinFmRXBv5hrj6ZumEIAB98tTCIlVjzFeRgFLpxlZDw
-         EmbdZAmb3VC8TdJtrefmGbn5Z517ReANwkM51h05bWZ3l37S2O1NwXQJ5UxSVR51gnXE
-         3vAki1gsQzGBWbK6x5pAeDllPxZNNs7P7SrjA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ihmRwl/qrS41lvTlnNKxmyiIPWALoPPs8H/T7cn45Oo=;
+        b=GD74kfkAj+hnKAjI7UvXOmaFkH21MYMSBTiIEFv5H8StKlGvXVofbMDioO1bOfFIux
+         5oQ/nBluOyfz6hHgf7P+buBGl/D/ihmQOfpSb2JHGVzSC/CRLRfIR9YtLF7khBfKJReh
+         cX8C+HeSQ19t7NnKo7EiE5kvOZHsWix1znk5EI2whUDdNH3eatVDaymxM3cv+trernCa
+         Ax+Qk7vh/+6DQV2IbkKjSx0KMehfA1khkBWLYEmRUPmRvchmrTKKsOh/ey5DlJc4thTB
+         VGrIc+Ur1Fw+fDq5pUCY4++zBy3gp4K6FxJ3n97a1EHzLmbfrKpR7TRK00c7lAgJpJAI
+         A7LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=ZPbn+iyaDp4cEt6gq261dacrQwB2jOJPwOFzXYvpkjQ=;
-        b=L9Y7Js3C9dCaaYmfaJFR7MDklUd5ieemRRqgp51eayvCNjCblAiqi8Vjr5pzDYL9pM
-         q9ow2wrk+9SCTjD+agBO7KgWUVDv8w2Tgucw5OICOZ1W49UUCirT6F5bQ812XQp06PXU
-         +gHydrYVFybtnmHy9bZd8fD/zby9ZH8qtc0N1etBH1yeVprUCStzY8AHqlbjsr3VDF7g
-         7iBwkE/VA3yzcafG/1JMYCxZNxxQr9+Xtz5XbQQVsQ48aw28DOjlPCZ+sTH5hirzj/ep
-         T5nL4xIvJ2xKbtnBS93R8+Obs36YIk2HSDD2kYU9XP9k+Bl8NPe5TeC12jI1q9COvWDB
-         OC1A==
-X-Gm-Message-State: AGi0PuZU/L+Sw5/dUTCCeOIRKpUQl8Y7zzp0hwLJY98s62XCAeZlWOe1
-        6c3tNRbTtqFUgJofFR9obTrGzg==
-X-Google-Smtp-Source: APiQypKHhrWUqqcTi5z8uECZoDGeIh9vywF8H7Ic5EIZ1iW9HAVnD6/S66ve0Niry9IQqLcNNI9AEA==
-X-Received: by 2002:a17:90a:d3ca:: with SMTP id d10mr7914508pjw.24.1587751568502;
-        Fri, 24 Apr 2020 11:06:08 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id q201sm6519329pfq.40.2020.04.24.11.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 11:06:07 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ihmRwl/qrS41lvTlnNKxmyiIPWALoPPs8H/T7cn45Oo=;
+        b=AkFwKwQ9H5naaLlxSgipKpus3eiLZv5plGfjEuuXC+KZy8Rr6b5nPWjECXtKRYwzb8
+         EdwBRUSV6Q/bkFq1B/1Am2bIuTRqEPswO+dztI2N0f8zf51KS2O/2MbO8u/PrmIM2K1i
+         ZgBuKuriqqhviJ1bqH7RWfqZqG5S7wvUyQUsiW2KB4gevarZKdvXMy8C8kP6ZzOnRz6A
+         CHy0Tfk7x0SRGpjxGQh4XmRIo/PIe0fsLxyu0tP2IEXqQYxRtxYH+ReYPe3BIE5vgg9B
+         N7WNli33QmPssUcsLJf5GQe+ACxF5YrOJc31+E1wZTOBMXD+Ur8kADxQkDuobUCeinG+
+         M92w==
+X-Gm-Message-State: AGi0PuZ+jUE6KxnLEhnh6Li3yCGPtwYBR0PMOQBNvDp+ckSAf5PGX6qQ
+        CBswuJ1XdmTouNVLzAnq248qedKlbcLxlP5aDlI=
+X-Google-Smtp-Source: APiQypLnkwcJr9Jm0u16a6X8JqgYqTsJKqMuB508Zc9M4x6bHiVtF1kIsxCSeNfj56o+86Hja/tnzrqgWed9Uy+GgBI=
+X-Received: by 2002:ae9:e10b:: with SMTP id g11mr10875912qkm.449.1587751671716;
+ Fri, 24 Apr 2020 11:07:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200424094610.v5.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
-References: <20200424094610.v5.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid> <20200424094610.v5.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
-Subject: Re: [PATCH v5 4/5] soc: qcom: rpmh-rsc: Simplify locking by eliminating the per-TCS lock
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     evgreen@chromium.org, mka@chromium.org, mkshah@codeaurora.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael.j.wysocki@intel.com
-Date:   Fri, 24 Apr 2020 11:06:06 -0700
-Message-ID: <158775156694.135303.3535369004080151247@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <20200424174805.28b8d463@canb.auug.org.au> <f11ce3ab-9ede-6241-d648-1a2b34e1ea4b@infradead.org>
+In-Reply-To: <f11ce3ab-9ede-6241-d648-1a2b34e1ea4b@infradead.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 24 Apr 2020 11:07:40 -0700
+Message-ID: <CAEf4BzaEjNKU0rV-im2aU1j0xrdYZhC61OLnu31iWy8G4S+yew@mail.gmail.com>
+Subject: Re: linux-next: Tree for Apr 24 (kernel/bpf/cgroup.c)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-04-24 09:46:56)
-> @@ -581,24 +575,19 @@ static int tcs_write(struct rsc_drv *drv, const str=
-uct tcs_request *msg)
->         if (IS_ERR(tcs))
->                 return PTR_ERR(tcs);
-> =20
-> -       spin_lock_irqsave(&tcs->lock, flags);
-> -       spin_lock(&drv->lock);
-> +       spin_lock_irqsave(&drv->lock, flags);
->         /*
->          * The h/w does not like if we send a request to the same address,
->          * when one is already in-flight or being processed.
->          */
->         ret =3D check_for_req_inflight(drv, tcs, msg);
-> -       if (ret) {
-> -               spin_unlock(&drv->lock);
-> -               goto done_write;
-> -       }
-> +       if (ret)
-> +               goto unlock;
-> =20
-> -       tcs_id =3D find_free_tcs(tcs);
-> -       if (tcs_id < 0) {
-> -               ret =3D tcs_id;
-> -               spin_unlock(&drv->lock);
-> -               goto done_write;
-> -       }
-> +       ret =3D find_free_tcs(tcs);
-> +       if (ret < 0)
-> +               goto unlock;
-> +       tcs_id =3D ret;
+On Fri, Apr 24, 2020 at 8:30 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 4/24/20 12:48 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Changes since 20200423:
+> >
+>
+> on i386:
+>
+> ld: kernel/bpf/cgroup.o: in function `cgroup_base_func_proto.isra.11':
+> cgroup.c:(.text+0x14a1): undefined reference to `bpf_event_output_data_proto'
+> ld: cgroup.c:(.text+0x14c1): undefined reference to `bpf_base_func_proto'
+>
 
-Sorry, missed this. We should keep the tcs_id =3D find_free_tcs() thing
-and then assign ret to it on failure. Otherwise the return value of this
-function is -EBUSY or the tcs_id number instead of -EBUSY or 0.
+Stanislav, could you please take a look?
 
-> =20
->         tcs->req[tcs_id - tcs->offset] =3D msg;
->         set_bit(tcs_id, drv->tcs_in_use);
+> Full randconfig file is attached.
+>
+>
+> --
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
