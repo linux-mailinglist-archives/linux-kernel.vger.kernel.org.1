@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF1C1B6E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9F71B6E76
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgDXGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 02:54:30 -0400
-Received: from mail-m127108.qiye.163.com ([115.236.127.108]:44794 "EHLO
-        mail-m127108.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgDXGya (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 02:54:30 -0400
-X-Greylist: delayed 365 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Apr 2020 02:54:08 EDT
-Received: from vivo.com (wm-13.qy.internal [127.0.0.1])
-        by mail-m127108.qiye.163.com (Hmail) with ESMTP id 6E3FB842298;
-        Fri, 24 Apr 2020 14:47:54 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <APcAywCbCKy-qoRJBcISMqo3.3.1587710874432.Hmail.wenhu.wang@vivo.com>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        oss@buserror.net, kernel@vivo.com, robh@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2Myw0LzVdIG1pc2M6IHNyYW1fZHluYW1pYyBmb3IgdXNlciBsZXZlbCBTUkFNIGFjY2Vzcw==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <6675dd9d-43be-6451-88a9-02d2c52c7d3a@c-s.fr>
+        id S1726458AbgDXGte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 02:49:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:40409 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725898AbgDXGtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 02:49:33 -0400
+IronPort-SDR: r5ICoHa4/pH8LXMXsQwaWqU9vwC7deplj+YWv1ad9cSa/Qj8GZDHiFmNxKhgFTP5PjufAtdv2u
+ aOuQ2DI7wjfQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 23:49:32 -0700
+IronPort-SDR: Ljg+v7YIu1xTz76lcT5LXHp5XR5ykTEqFz0weRpwWkPt0WIsu3crKvxGafHvIG1NXQhrTSGxcp
+ pN05dHxsu+hA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,310,1583222400"; 
+   d="scan'208";a="259720879"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 23 Apr 2020 23:49:32 -0700
+Received: from [10.249.228.69] (abudanko-mobl.ccr.corp.intel.com [10.249.228.69])
+        by linux.intel.com (Postfix) with ESMTP id 674D5580100;
+        Thu, 23 Apr 2020 23:49:30 -0700 (PDT)
+Subject: [PATCH v3 1/3] perf docs: extend CAP_SYS_ADMIN with CAP_PERFMON where
+ needed
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+References: <d7cec72d-cc3c-381b-38cd-20e7242bfda8@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <f79344ba-e861-2710-e3d1-2bcccea85348@linux.intel.com>
+Date:   Fri, 24 Apr 2020 09:49:29 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 24 Apr 2020 14:47:54 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Fri, 24 Apr 2020 14:47:54 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VNSktLS0tKSEhOSk9PWVdZKFlBSE
-        83V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMT0tJT0xNS0lDN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Kxg6Agw4GTgwAlYKFCkxORgyKDYKFEhVSFVKTkNMTEpLQ0xNTktDVTMWGhIXVQweFRMOVQwa
-        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUhNSUg3Bg++
-X-HM-Tid: 0a71aaf1535d986ckuuu6e3fb842298
+In-Reply-To: <d7cec72d-cc3c-381b-38cd-20e7242bfda8@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvc3JhbV9keW5hbWljLmggYi9pbmNsdWRlL2xp
-bnV4L3NyYW1fZHluYW1pYy5oCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAw
-MDAwMDAwMC4uYzc3ZTllN2IxMTUxCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvaW5jbHVkZS9s
-aW51eC9zcmFtX2R5bmFtaWMuaAo+PiBAQCAtMCwwICsxLDIzIEBACj4+ICsvKiBTUERYLUxpY2Vu
-c2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLwo+PiArI2lmbmRlZiBfX1NSQU1fRFlOQU1JQ19ICj4+
-ICsjZGVmaW5lIF9fU1JBTV9EWU5BTUlDX0gKPj4gKwo+PiArc3RydWN0IHNyYW1fYXBpIHsKPj4g
-Kwljb25zdCBjaGFyCSpuYW1lOwo+PiArCXN0cnVjdCBzcmFtX2RldmljZSAqc2RldjsKPj4gKwl2
-b2lkICooKmFsbG9jKShfX3UzMiBzaXplLCBwaHlzX2FkZHJfdCAqcGh5cywgX191MzIgYWxpZ24p
-Owo+PiArCXZvaWQgKCpmcmVlKSh2b2lkICpwdHIpOwo+PiArfTsKPj4gKwo+PiArZXh0ZXJuIGlu
-dCBfX211c3RfY2hlY2sKPj4gKwlfX3NyYW1fcmVnaXN0ZXJfZGV2aWNlKHN0cnVjdCBtb2R1bGUg
-Km93bmVyLAo+PiArCQkJICAgICAgIHN0cnVjdCBkZXZpY2UgKnBhcmVudCwKPj4gKwkJCSAgICAg
-ICBzdHJ1Y3Qgc3JhbV9hcGkgKnNhKTsKPgo+J2V4dGVybicga2V5d29yZCBpcyB1c2VsZXNzIGhl
-cmUsIHJlbW92ZSBpdCAoY2hlY2twYXRjaCAtLXN0cmljdCB3aWxsIAo+bGlrZWx5IHRlbGwgeW91
-IHRoZSBzYW1lKQo+Cj4+ICsKPj4gKy8qIFVzZSBhIGRlZmluZSB0byBhdm9pZCBpbmNsdWRlIGNo
-YWluaW5nIHRvIGdldCBUSElTX01PRFVMRSAqLwo+PiArI2RlZmluZSBzcmFtX3JlZ2lzdGVyX2Rl
-dmljZShwYXJlbnQsIHNhKSBcCj4+ICsJX19zcmFtX3JlZ2lzdGVyX2RldmljZShUSElTX01PRFVM
-RSwgcGFyZW50LCBzYSkKPj4gKwo+PiArZXh0ZXJuIHZvaWQgc3JhbV91bnJlZ2lzdGVyX2Rldmlj
-ZShzdHJ1Y3Qgc3JhbV9hcGkgKnNhKTsKPgo+U2FtZSwgbm8gJ2V4dGVybicgcGxlYXNlLgo+CgpU
-aGFua3MsIEkgd2lsbCByZW1vdmUgdGhlbSBpbiBwYXRjaCB2NC4gQW5kIGNoZWNrcGF0Y2ggd2l0
-aCAtLXN0cmljdCB3aWxsIGJlIHByZWZlcmVkLgoKV2VuaHUNCg0K
+
+Extend CAP_SYS_ADMIN with CAP_PERFMON in the docs.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/Documentation/perf-intel-pt.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index 456fdcbf26ac..832408a54c1c 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -687,7 +687,7 @@ The v4.2 kernel introduced support for a context switch metadata event,
+ PERF_RECORD_SWITCH, which allows unprivileged users to see when their processes
+ are scheduled out and in, just not by whom, which is left for the
+ PERF_RECORD_SWITCH_CPU_WIDE, that is only accessible in system wide context,
+-which in turn requires CAP_SYS_ADMIN.
++which in turn requires CAP_PERFMON or CAP_SYS_ADMIN.
+ 
+ Please see the 45ac1403f564 ("perf: Add PERF_RECORD_SWITCH to indicate context
+ switches") commit, that introduces these metadata events for further info.
+-- 
+2.24.1
+
