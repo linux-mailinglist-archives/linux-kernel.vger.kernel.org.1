@@ -2,554 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AFA1B6B42
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7251B6B54
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgDXCYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 22:24:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2887 "EHLO huawei.com"
+        id S1726162AbgDXC1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 22:27:11 -0400
+Received: from mail-vi1eur05on2081.outbound.protection.outlook.com ([40.107.21.81]:6083
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726166AbgDXCYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 22:24:32 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AB83C554A8AC514D47CD;
-        Fri, 24 Apr 2020 10:24:24 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 24 Apr 2020 10:24:18 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH net-next 8/8] net: hns3: optimize the filter table entries handling when resetting
-Date:   Fri, 24 Apr 2020 10:23:13 +0800
-Message-ID: <1587694993-25183-9-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587694993-25183-1-git-send-email-tanhuazhong@huawei.com>
-References: <1587694993-25183-1-git-send-email-tanhuazhong@huawei.com>
+        id S1725922AbgDXC1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Apr 2020 22:27:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g4jaj/iCpsZ5Hqz3ZkENkQtKUC8/aDYuxOiChC5S5D0eRfBHaydUhHj6yVDNB70A6qWtnYIlJ2jnPcfJIM0yzTWk5Ah3pca2G+W+v633RQ4MpE4rc1SGvRJ+XyaqdKNFBQabAy/2GNZyw4Rb4PZADTsalW2bJK3qkGgnZZ1RWg48Y14PlUv0LAhyoylP3fLVB/1TOo9UZfTdUjPVwqdUDY0cm3FjoSs9KD0jcd58HVr9dOHB10q7alIeW3qXUxBqGpT/yA5+3RQZ5gC9KMKaYqOq1FqhZI1Dqpid7AdAYMBN2iNT2dGloMVUS1lcNmqqpgfN+tcqEZD3pJzCH4asSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EHyEBYvH+gKg6lCQ8nJ70p4EWcyd4SPmag2QP66CIjE=;
+ b=D3yyzkWIEgTmneKXtTE831SkvNlXG+97DWB3Ddnp95sg5a6+Okmf2bom0z7KxA9aH4/6mA5erJuyklTn4hs6iaZHzTZYAStttOFnOpRLl+rCovhr5XpeJGsbMxhVuuc0BEZoYFg+C8MifQedvZFys+pdAsI2NZnTyYgCnBRFZEOiCqgEAcmWYVG+qgF10Q6B5hUH63DAs66ncFQVMHYt6Z/ij8pEPBQbKE8wgTqpNQRyCNDeNk1ZO0ZchG4wIdva4YoHNS6wC+VPggOn0KeVan2k/MwR9rV8Rv247ZpKQxNCEh7LZDOSJ/PYbsxBTSxMUYH8cjhcibbjhG33tLUcuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EHyEBYvH+gKg6lCQ8nJ70p4EWcyd4SPmag2QP66CIjE=;
+ b=noDwsAoq8FYOTITglk04YQ2x6eAvWlk6yt7k6cDH3MgGb7qgVPJrXrtmtlDQ8LKVW5eLMfBZdRw4VRS8Hs2DbXjvCDhjvRNE2brouvvLnZxGovma3cukIgx3r9Yq3NgQpK7FbhaGWUMURtn0nNYJDrJuY82wqpnLbfEygy0Mq9U=
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+ by AM6PR04MB6439.eurprd04.prod.outlook.com (2603:10a6:20b:d8::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
+ 2020 02:27:05 +0000
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::d9f7:5527:e89d:1ae3]) by AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::d9f7:5527:e89d:1ae3%7]) with mapi id 15.20.2921.032; Fri, 24 Apr 2020
+ 02:27:05 +0000
+From:   Aisheng Dong <aisheng.dong@nxp.com>
+To:     Anson Huang <anson.huang@nxp.com>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH] mailbox: imx: Add context save/restore for suspend/resume
+Thread-Topic: [PATCH] mailbox: imx: Add context save/restore for
+ suspend/resume
+Thread-Index: AQHWGcRIgrxdUkc8WEWRmowVEyQEl6iHi5TQ
+Date:   Fri, 24 Apr 2020 02:27:05 +0000
+Message-ID: <AM6PR04MB49666D6A0B015FD1DF3A20B480D00@AM6PR04MB4966.eurprd04.prod.outlook.com>
+References: <1587682871-528-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1587682871-528-1-git-send-email-Anson.Huang@nxp.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=aisheng.dong@nxp.com; 
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2d33d994-4d81-41ac-246a-08d7e7f6fb26
+x-ms-traffictypediagnostic: AM6PR04MB6439:|AM6PR04MB6439:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB6439285793C3F1D26731A6AF80D00@AM6PR04MB6439.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39860400002)(7696005)(316002)(15650500001)(26005)(8676002)(8936002)(81156014)(186003)(110136005)(478600001)(44832011)(6506007)(2906002)(64756008)(66556008)(76116006)(9686003)(66446008)(66476007)(4326008)(66946007)(55016002)(33656002)(52536014)(5660300002)(86362001)(71200400001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pB+KBOBaZvfP7EzdKNemiyIsB9zly9q2egt000MKIreFCJh5Tec1LO0kJRgveu7VNxTxXYJISLQYI4D7irmSxkqRS93VikXsDUDowCExI9m6oBri1fzCwBl8TpEM+eU0lqVNaqPU5ZtorWIFfpsiEW5hNCwTIuaHAwkMwSbhKYyhkc4f3wqp8Kp+RNVczxrjDNMC1Lr7LFnUJxYLWxpLFpvyFbs+Pwu0sb6424+5sRIHUXhENWJ/mrSpy6vyqn7tw2yJcBwv5BKitusdvy4vWRMKHKdBjR23NV/jJu+jlhOL0pT6ymI/CsGuh+H3MMFZaixDTLKlouPapW9MBgAAPCkQnx/LUtWZwW+euU/P3G0waAPJAmb8A/dUBHmvffTe9gI1DUZsukdnY4X+/0YGFgBsBhN68AIFAk66TkoQh0XePt8XIkoVImwrU07eD8WG
+x-ms-exchange-antispam-messagedata: uxJxI9plfMMIaR86zwFCTlZy7NT3OtEG5FxQmnz1jmO4nxh+r5qT7dWHug1FNHN4sJK+S7gLu/8Ylh34h0bYkij0cSoFS37OrjhnzmbZgc+6w0iglkwaBWDzi6MISYUM9Bo9CQzqv1/9zPt8kXopZw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d33d994-4d81-41ac-246a-08d7e7f6fb26
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 02:27:05.6294
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NbvZbKSUv0Hgryw8EOHYFRgrEDMzDydTHys3Xh/LCSAsL3yzJ0mZ/XIZ+Ft4mYW/l2CV/nrPENPb9LBRGT9cnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6439
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
-
-Currently, the PF driver removes all (including its VFs') MAC/VLAN
-flow director table entries when resetting, and restores them after
-reset completed.
-
-In fact, the hardware will clear all table entries only in IMP
-reset and global reset. So driver only needs to restore the table
-entries in these cases, and needs do nothing when PF reset, FLR
-or other function level reset.
-
-This patch optimizes it by removing unnecessary table entries clear
-and restoring handling in the reset flow, and doing the restoring
-after reset completed.
-
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h    |  5 ++
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  5 --
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 33 --------
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  9 ---
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 89 +++++++++++-----------
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  1 +
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 28 ++++++-
- .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 29 ++++---
- 8 files changed, 94 insertions(+), 105 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-index 948e67e..21a7361 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-@@ -45,6 +45,7 @@ enum HCLGE_MBX_OPCODE {
- 	HCLGE_MBX_GET_MEDIA_TYPE,       /* (VF -> PF) get media type */
- 	HCLGE_MBX_PUSH_PROMISC_INFO,	/* (PF -> VF) push vf promisc info */
- 	HCLGE_MBX_VF_UNINIT,            /* (VF -> PF) vf is unintializing */
-+	HCLGE_MBX_HANDLE_VF_TBL,	/* (VF -> PF) store/clear hw table */
- 
- 	HCLGE_MBX_GET_VF_FLR_STATUS = 200, /* (M7 -> PF) get vf flr status */
- 	HCLGE_MBX_PUSH_LINK_STATUS,	/* (M7 -> PF) get port link status */
-@@ -70,6 +71,10 @@ enum hclge_mbx_vlan_cfg_subcode {
- 	HCLGE_MBX_GET_PORT_BASE_VLAN_STATE,	/* get port based vlan state */
- };
- 
-+enum hclge_mbx_tbl_cfg_subcode {
-+	HCLGE_MBX_VPORT_LIST_CLEAR,
-+};
-+
- #define HCLGE_MBX_MAX_MSG_SIZE	14
- #define HCLGE_MBX_MAX_RESP_DATA_SIZE	8U
- #define HCLGE_MBX_MAX_RING_CHAIN_PARAM_NUM	4
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index a56f8d6..6291aa9 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -233,7 +233,6 @@ struct hnae3_ae_dev {
- 	struct list_head node;
- 	u32 flag;
- 	unsigned long hw_err_reset_req;
--	enum hnae3_reset_type reset_type;
- 	void *priv;
- };
- 
-@@ -356,8 +355,6 @@ struct hnae3_ae_dev {
-  *   Set vlan filter config of Ports
-  * set_vf_vlan_filter()
-  *   Set vlan filter config of vf
-- * restore_vlan_table()
-- *   Restore vlan filter entries after reset
-  * enable_hw_strip_rxvtag()
-  *   Enable/disable hardware strip vlan tag of packets received
-  * set_gro_en
-@@ -528,7 +525,6 @@ struct hnae3_ae_ops {
- 				struct ethtool_rxnfc *cmd);
- 	int (*get_fd_all_rules)(struct hnae3_handle *handle,
- 				struct ethtool_rxnfc *cmd, u32 *rule_locs);
--	int (*restore_fd_rules)(struct hnae3_handle *handle);
- 	void (*enable_fd)(struct hnae3_handle *handle, bool enable);
- 	int (*add_arfs_entry)(struct hnae3_handle *handle, u16 queue_id,
- 			      u16 flow_id, struct flow_keys *fkeys);
-@@ -542,7 +538,6 @@ struct hnae3_ae_ops {
- 	void (*set_timer_task)(struct hnae3_handle *handle, bool enable);
- 	int (*mac_connect_phy)(struct hnae3_handle *handle);
- 	void (*mac_disconnect_phy)(struct hnae3_handle *handle);
--	void (*restore_vlan_table)(struct hnae3_handle *handle);
- 	int (*get_vf_config)(struct hnae3_handle *handle, int vf,
- 			     struct ifla_vf_info *ivf);
- 	int (*set_vf_link_state)(struct hnae3_handle *handle, int vf,
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 6b9535c..c79d6a3 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -2102,7 +2102,6 @@ static int hns3_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	ae_dev->pdev = pdev;
- 	ae_dev->flag = ent->driver_data;
--	ae_dev->reset_type = HNAE3_NONE_RESET;
- 	hns3_get_dev_capability(pdev, ae_dev);
- 	pci_set_drvdata(pdev, ae_dev);
- 
-@@ -3936,17 +3935,6 @@ static void hns3_uninit_phy(struct net_device *netdev)
- 		h->ae_algo->ops->mac_disconnect_phy(h);
- }
- 
--static int hns3_restore_fd_rules(struct net_device *netdev)
--{
--	struct hnae3_handle *h = hns3_get_handle(netdev);
--	int ret = 0;
--
--	if (h->ae_algo->ops->restore_fd_rules)
--		ret = h->ae_algo->ops->restore_fd_rules(h);
--
--	return ret;
--}
--
- static void hns3_del_all_fd_rules(struct net_device *netdev, bool clear_list)
- {
- 	struct hnae3_handle *h = hns3_get_handle(netdev);
-@@ -4346,7 +4334,6 @@ static void hns3_restore_coal(struct hns3_nic_priv *priv)
- 
- static int hns3_reset_notify_down_enet(struct hnae3_handle *handle)
- {
--	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(handle->pdev);
- 	struct hnae3_knic_private_info *kinfo = &handle->kinfo;
- 	struct net_device *ndev = kinfo->netdev;
- 	struct hns3_nic_priv *priv = netdev_priv(ndev);
-@@ -4354,13 +4341,6 @@ static int hns3_reset_notify_down_enet(struct hnae3_handle *handle)
- 	if (test_and_set_bit(HNS3_NIC_STATE_RESETTING, &priv->state))
- 		return 0;
- 
--	/* it is cumbersome for hardware to pick-and-choose entries for deletion
--	 * from table space. Hence, for function reset software intervention is
--	 * required to delete the entries
--	 */
--	if (hns3_dev_ongoing_func_reset(ae_dev))
--		hns3_del_all_fd_rules(ndev, false);
--
- 	if (!netif_running(ndev))
- 		return 0;
- 
-@@ -4455,16 +4435,6 @@ static int hns3_reset_notify_init_enet(struct hnae3_handle *handle)
- 	return ret;
- }
- 
--static int hns3_reset_notify_restore_enet(struct hnae3_handle *handle)
--{
--	struct net_device *netdev = handle->kinfo.netdev;
--
--	if (handle->ae_algo->ops->restore_vlan_table)
--		handle->ae_algo->ops->restore_vlan_table(handle);
--
--	return hns3_restore_fd_rules(netdev);
--}
--
- static int hns3_reset_notify_uninit_enet(struct hnae3_handle *handle)
- {
- 	struct net_device *netdev = handle->kinfo.netdev;
-@@ -4514,9 +4484,6 @@ static int hns3_reset_notify(struct hnae3_handle *handle,
- 	case HNAE3_UNINIT_CLIENT:
- 		ret = hns3_reset_notify_uninit_enet(handle);
- 		break;
--	case HNAE3_RESTORE_CLIENT:
--		ret = hns3_reset_notify_restore_enet(handle);
--		break;
- 	default:
- 		break;
- 	}
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 53bc0ed..240ba06 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -576,15 +576,6 @@ static inline void hns3_write_reg(void __iomem *base, u32 reg, u32 value)
- 	writel(value, reg_addr + reg);
- }
- 
--static inline bool hns3_dev_ongoing_func_reset(struct hnae3_ae_dev *ae_dev)
--{
--	return (ae_dev && (ae_dev->reset_type == HNAE3_FUNC_RESET ||
--			   ae_dev->reset_type == HNAE3_FLR_RESET ||
--			   ae_dev->reset_type == HNAE3_VF_FUNC_RESET ||
--			   ae_dev->reset_type == HNAE3_VF_FULL_RESET ||
--			   ae_dev->reset_type == HNAE3_VF_PF_FUNC_RESET));
--}
--
- #define hns3_read_dev(a, reg) \
- 	hns3_read_reg((a)->io_base, (reg))
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 177ef5e..c74990a 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -69,6 +69,7 @@ static enum hnae3_reset_type hclge_get_reset_level(struct hnae3_ae_dev *ae_dev,
- static int hclge_set_default_loopback(struct hclge_dev *hdev);
- 
- static void hclge_sync_mac_table(struct hclge_dev *hdev);
-+static void hclge_restore_hw_table(struct hclge_dev *hdev);
- static void hclge_sync_promisc_mode(struct hclge_dev *hdev);
- 
- static struct hnae3_ae_algo ae_algo;
-@@ -3731,22 +3732,13 @@ static int hclge_reset_stack(struct hclge_dev *hdev)
- 	if (ret)
- 		return ret;
- 
--	ret = hclge_notify_client(hdev, HNAE3_INIT_CLIENT);
--	if (ret)
--		return ret;
--
--	return hclge_notify_client(hdev, HNAE3_RESTORE_CLIENT);
-+	return hclge_notify_client(hdev, HNAE3_INIT_CLIENT);
- }
- 
- static int hclge_reset_prepare(struct hclge_dev *hdev)
- {
--	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(hdev->pdev);
- 	int ret;
- 
--	/* Initialize ae_dev reset status as well, in case enet layer wants to
--	 * know if device is undergoing reset
--	 */
--	ae_dev->reset_type = hdev->reset_type;
- 	hdev->rst_stats.reset_cnt++;
- 	/* perform reset of the stack & ae device for a client */
- 	ret = hclge_notify_roce_client(hdev, HNAE3_DOWN_CLIENT);
-@@ -3808,7 +3800,6 @@ static int hclge_reset_rebuild(struct hclge_dev *hdev)
- 	hdev->last_reset_time = jiffies;
- 	hdev->rst_stats.reset_fail_cnt = 0;
- 	hdev->rst_stats.reset_done_cnt++;
--	ae_dev->reset_type = HNAE3_NONE_RESET;
- 	clear_bit(HCLGE_STATE_RST_FAIL, &hdev->state);
- 
- 	/* if default_reset_request has a higher level reset request,
-@@ -6942,8 +6933,14 @@ int hclge_vport_start(struct hclge_vport *vport)
- 	set_bit(HCLGE_VPORT_STATE_ALIVE, &vport->state);
- 	vport->last_active_jiffies = jiffies;
- 
--	if (test_bit(vport->vport_id, hdev->vport_config_block))
--		hclge_restore_mac_table_common(vport);
-+	if (test_bit(vport->vport_id, hdev->vport_config_block)) {
-+		if (vport->vport_id) {
-+			hclge_restore_mac_table_common(vport);
-+			hclge_restore_vport_vlan_table(vport);
-+		} else {
-+			hclge_restore_hw_table(hdev);
-+		}
-+	}
- 
- 	clear_bit(vport->vport_id, hdev->vport_config_block);
- 
-@@ -8789,39 +8786,34 @@ void hclge_uninit_vport_vlan_table(struct hclge_dev *hdev)
- 	}
- }
- 
--static void hclge_restore_vlan_table(struct hnae3_handle *handle)
-+void hclge_restore_vport_vlan_table(struct hclge_vport *vport)
- {
--	struct hclge_vport *vport = hclge_get_vport(handle);
- 	struct hclge_vport_vlan_cfg *vlan, *tmp;
- 	struct hclge_dev *hdev = vport->back;
- 	u16 vlan_proto;
--	u16 state, vlan_id;
--	int i;
-+	u16 vlan_id;
-+	u16 state;
-+	int ret;
- 
--	for (i = 0; i < hdev->num_alloc_vport; i++) {
--		vport = &hdev->vport[i];
--		vlan_proto = vport->port_base_vlan_cfg.vlan_info.vlan_proto;
--		vlan_id = vport->port_base_vlan_cfg.vlan_info.vlan_tag;
--		state = vport->port_base_vlan_cfg.state;
-+	vlan_proto = vport->port_base_vlan_cfg.vlan_info.vlan_proto;
-+	vlan_id = vport->port_base_vlan_cfg.vlan_info.vlan_tag;
-+	state = vport->port_base_vlan_cfg.state;
- 
--		if (state != HNAE3_PORT_BASE_VLAN_DISABLE) {
--			hclge_set_vlan_filter_hw(hdev, htons(vlan_proto),
--						 vport->vport_id, vlan_id,
--						 false);
--			continue;
--		}
--
--		list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node) {
--			int ret;
-+	if (state != HNAE3_PORT_BASE_VLAN_DISABLE) {
-+		clear_bit(vport->vport_id, hdev->vlan_table[vlan_id]);
-+		hclge_set_vlan_filter_hw(hdev, htons(vlan_proto),
-+					 vport->vport_id, vlan_id,
-+					 false);
-+		return;
-+	}
- 
--			if (!vlan->hd_tbl_status)
--				continue;
--			ret = hclge_set_vlan_filter_hw(hdev, htons(ETH_P_8021Q),
--						       vport->vport_id,
--						       vlan->vlan_id, false);
--			if (ret)
--				break;
--		}
-+	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node) {
-+		ret = hclge_set_vlan_filter_hw(hdev, htons(ETH_P_8021Q),
-+					       vport->vport_id,
-+					       vlan->vlan_id, false);
-+		if (ret)
-+			break;
-+		vlan->hd_tbl_status = true;
- 	}
- }
- 
-@@ -8856,6 +8848,18 @@ void hclge_restore_mac_table_common(struct hclge_vport *vport)
- 	spin_unlock_bh(&vport->mac_list_lock);
- }
- 
-+static void hclge_restore_hw_table(struct hclge_dev *hdev)
-+{
-+	struct hclge_vport *vport = &hdev->vport[0];
-+	struct hnae3_handle *handle = &vport->nic;
-+
-+	hclge_restore_mac_table_common(vport);
-+	hclge_restore_vport_vlan_table(vport);
-+	set_bit(HCLGE_STATE_PROMISC_CHANGED, &hdev->state);
-+
-+	hclge_restore_fd_entries(handle);
-+}
-+
- int hclge_en_hw_strip_rxvtag(struct hnae3_handle *handle, bool enable)
- {
- 	struct hclge_vport *vport = hclge_get_vport(handle);
-@@ -10352,13 +10356,12 @@ static int hclge_reset_ae_dev(struct hnae3_ae_dev *ae_dev)
- 	 */
- 	if (hdev->reset_type == HNAE3_IMP_RESET ||
- 	    hdev->reset_type == HNAE3_GLOBAL_RESET) {
-+		memset(hdev->vlan_table, 0, sizeof(hdev->vlan_table));
-+		memset(hdev->vf_vlan_full, 0, sizeof(hdev->vf_vlan_full));
- 		bitmap_set(hdev->vport_config_block, 0, hdev->num_alloc_vport);
- 		hclge_reset_umv_space(hdev);
- 	}
- 
--	memset(hdev->vlan_table, 0, sizeof(hdev->vlan_table));
--	memset(hdev->vf_vlan_full, 0, sizeof(hdev->vf_vlan_full));
--
- 	ret = hclge_cmd_init(hdev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Cmd queue init failed\n");
-@@ -11191,7 +11194,6 @@ static const struct hnae3_ae_ops hclge_ops = {
- 	.get_fd_rule_cnt = hclge_get_fd_rule_cnt,
- 	.get_fd_rule_info = hclge_get_fd_rule_info,
- 	.get_fd_all_rules = hclge_get_all_rules,
--	.restore_fd_rules = hclge_restore_fd_entries,
- 	.enable_fd = hclge_enable_fd,
- 	.add_arfs_entry = hclge_add_fd_entry_by_arfs,
- 	.dbg_run_cmd = hclge_dbg_run_cmd,
-@@ -11204,7 +11206,6 @@ static const struct hnae3_ae_ops hclge_ops = {
- 	.set_timer_task = hclge_set_timer_task,
- 	.mac_connect_phy = hclge_mac_connect_phy,
- 	.mac_disconnect_phy = hclge_mac_disconnect_phy,
--	.restore_vlan_table = hclge_restore_vlan_table,
- 	.get_vf_config = hclge_get_vf_config,
- 	.set_vf_link_state = hclge_set_vf_link_state,
- 	.set_vf_spoofchk = hclge_set_vf_spoofchk,
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-index 8e69651..913c4f6 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-@@ -1001,6 +1001,7 @@ void hclge_rm_vport_all_mac_table(struct hclge_vport *vport, bool is_del_list,
- void hclge_rm_vport_all_vlan_table(struct hclge_vport *vport, bool is_del_list);
- void hclge_uninit_vport_vlan_table(struct hclge_dev *hdev);
- void hclge_restore_mac_table_common(struct hclge_vport *vport);
-+void hclge_restore_vport_vlan_table(struct hclge_vport *vport);
- int hclge_update_port_base_vlan_cfg(struct hclge_vport *vport, u16 state,
- 				    struct hclge_vlan_info *vlan_info);
- int hclge_push_vf_port_base_vlan_info(struct hclge_vport *vport, u8 vfid,
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index 0efc045..ac70faf 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -629,6 +629,23 @@ static void hclge_handle_ncsi_error(struct hclge_dev *hdev)
- 	ae_dev->ops->reset_event(hdev->pdev, NULL);
- }
- 
-+static void hclge_handle_vf_tbl(struct hclge_vport *vport,
-+				struct hclge_mbx_vf_to_pf_cmd *mbx_req)
-+{
-+	struct hclge_dev *hdev = vport->back;
-+	struct hclge_vf_vlan_cfg *msg_cmd;
-+
-+	msg_cmd = (struct hclge_vf_vlan_cfg *)&mbx_req->msg;
-+	if (msg_cmd->subcode == HCLGE_MBX_VPORT_LIST_CLEAR) {
-+		hclge_rm_vport_all_mac_table(vport, true, HCLGE_MAC_ADDR_UC);
-+		hclge_rm_vport_all_mac_table(vport, true, HCLGE_MAC_ADDR_MC);
-+		hclge_rm_vport_all_vlan_table(vport, true);
-+	} else {
-+		dev_warn(&hdev->pdev->dev, "Invalid cmd(%u)\n",
-+			 msg_cmd->subcode);
-+	}
-+}
-+
- void hclge_mbx_handler(struct hclge_dev *hdev)
- {
- 	struct hclge_cmq_ring *crq = &hdev->hw.cmq.crq;
-@@ -636,6 +653,7 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 	struct hclge_mbx_vf_to_pf_cmd *req;
- 	struct hclge_vport *vport;
- 	struct hclge_desc *desc;
-+	bool is_del = false;
- 	unsigned int flag;
- 	int ret = 0;
- 
-@@ -753,11 +771,12 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 			break;
- 		case HCLGE_MBX_GET_VF_FLR_STATUS:
- 		case HCLGE_MBX_VF_UNINIT:
--			hclge_rm_vport_all_mac_table(vport, true,
-+			is_del = req->msg.code == HCLGE_MBX_VF_UNINIT;
-+			hclge_rm_vport_all_mac_table(vport, is_del,
- 						     HCLGE_MAC_ADDR_UC);
--			hclge_rm_vport_all_mac_table(vport, true,
-+			hclge_rm_vport_all_mac_table(vport, is_del,
- 						     HCLGE_MAC_ADDR_MC);
--			hclge_rm_vport_all_vlan_table(vport, true);
-+			hclge_rm_vport_all_vlan_table(vport, is_del);
- 			break;
- 		case HCLGE_MBX_GET_MEDIA_TYPE:
- 			hclge_get_vf_media_type(vport, &resp_msg);
-@@ -771,6 +790,9 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 		case HCLGE_MBX_NCSI_ERROR:
- 			hclge_handle_ncsi_error(hdev);
- 			break;
-+		case HCLGE_MBX_HANDLE_VF_TBL:
-+			hclge_handle_vf_tbl(vport, req);
-+			break;
- 		default:
- 			dev_err(&hdev->pdev->dev,
- 				"un-supported mailbox message, code = %u\n",
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index fea197f..32341dc 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -1777,10 +1777,6 @@ static int hclgevf_reset_stack(struct hclgevf_dev *hdev)
- 	if (ret)
- 		return ret;
- 
--	ret = hclgevf_notify_client(hdev, HNAE3_RESTORE_CLIENT);
--	if (ret)
--		return ret;
--
- 	/* clear handshake status with IMP */
- 	hclgevf_reset_handshake(hdev, false);
- 
-@@ -1860,13 +1856,8 @@ static void hclgevf_reset_err_handle(struct hclgevf_dev *hdev)
- 
- static int hclgevf_reset_prepare(struct hclgevf_dev *hdev)
- {
--	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(hdev->pdev);
- 	int ret;
- 
--	/* Initialize ae_dev reset status as well, in case enet layer wants to
--	 * know if device is undergoing reset
--	 */
--	ae_dev->reset_type = hdev->reset_type;
- 	hdev->rst_stats.rst_cnt++;
- 
- 	rtnl_lock();
-@@ -1881,7 +1872,6 @@ static int hclgevf_reset_prepare(struct hclgevf_dev *hdev)
- 
- static int hclgevf_reset_rebuild(struct hclgevf_dev *hdev)
- {
--	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(hdev->pdev);
- 	int ret;
- 
- 	hdev->rst_stats.hw_rst_done_cnt++;
-@@ -1896,7 +1886,6 @@ static int hclgevf_reset_rebuild(struct hclgevf_dev *hdev)
- 	}
- 
- 	hdev->last_reset_time = jiffies;
--	ae_dev->reset_type = HNAE3_NONE_RESET;
- 	hdev->rst_stats.rst_done_cnt++;
- 	hdev->rst_stats.rst_fail_cnt = 0;
- 	clear_bit(HCLGEVF_STATE_RST_FAIL, &hdev->state);
-@@ -2974,6 +2963,15 @@ static int hclgevf_pci_reset(struct hclgevf_dev *hdev)
- 	return ret;
- }
- 
-+static int hclgevf_clear_vport_list(struct hclgevf_dev *hdev)
-+{
-+	struct hclge_vf_to_pf_msg send_msg;
-+
-+	hclgevf_build_send_msg(&send_msg, HCLGE_MBX_HANDLE_VF_TBL,
-+			       HCLGE_MBX_VPORT_LIST_CLEAR);
-+	return hclgevf_send_mbx_msg(hdev, &send_msg, false, NULL, 0);
-+}
-+
- static int hclgevf_reset_hdev(struct hclgevf_dev *hdev)
- {
- 	struct pci_dev *pdev = hdev->pdev;
-@@ -3083,6 +3081,15 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 		goto err_config;
- 	}
- 
-+	/* ensure vf tbl list as empty before init*/
-+	ret = hclgevf_clear_vport_list(hdev);
-+	if (ret) {
-+		dev_err(&pdev->dev,
-+			"failed to clear tbl list configuration, ret = %d.\n",
-+			ret);
-+		goto err_config;
-+	}
-+
- 	ret = hclgevf_init_vlan_config(hdev);
- 	if (ret) {
- 		dev_err(&hdev->pdev->dev,
--- 
-2.7.4
-
+PiBGcm9tOiBBbnNvbiBIdWFuZyA8QW5zb24uSHVhbmdAbnhwLmNvbT4NCj4gU2VudDogRnJpZGF5
+LCBBcHJpbCAyNCwgMjAyMCA3OjAxIEFNDQo+IA0KPiBGb3IgIm1lbSIgbW9kZSBzdXNwZW5kIG9u
+IGkuTVg4IFNvQ3MsIE1VIHNldHRpbmdzIGNvdWxkIGJlIGxvc3QgYmVjYXVzZSBpdHMNCj4gcG93
+ZXIgaXMgb2ZmLCBzbyBzYXZlL3Jlc3RvcmUgaXMgbmVlZGVkIGZvciBNVSBzZXR0aW5ncyBkdXJp
+bmcgc3VzcGVuZC9yZXN1bWUuDQo+IEhvd2V2ZXIsIHRoZSByZXN0b3JlIGNhbiBPTkxZIGJlIGRv
+bmUgd2hlbiBNVSBzZXR0aW5ncyBhcmUgYWN0dWFsbHkgbG9zdCwgZm9yDQo+IHRoZSBzY2VuYXJp
+byBvZiBzZXR0aW5ncyBOT1QgbG9zdCBpbiAiZnJlZXplIiBtb2RlIHN1c3BlbmQsIHNpbmNlIHRo
+ZXJlIGNvdWxkIGJlDQo+IHN0aWxsIElQQyBnb2luZyBvbiBtdWx0aXBsZSBDUFVzLCByZXN0b3Jp
+bmcgdGhlIE1VIHNldHRpbmdzIGNvdWxkIG92ZXJ3cml0ZSB0aGUNCj4gVElFIGJ5IG1pc3Rha2Ug
+YW5kIGNhdXNlIHN5c3RlbSBmcmVlemUsIHNvIG5lZWQgdG8gbWFrZSBzdXJlIE9OTFkgcmVzdG9y
+ZSB0aGUNCj4gTVUgc2V0dGluZ3Mgd2hlbiBpdCBpcyBwb3dlcmVkIG9mZi4NCj4gDQo+IFNpZ25l
+ZC1vZmYtYnk6IEFuc29uIEh1YW5nIDxBbnNvbi5IdWFuZ0BueHAuY29tPg0KDQpBcyBtZW50aW9u
+ZWQgYmVmb3JlLCB3ZSdkIGJldHRlciBrZWVwIHRoZSBvcmlnaW5hbCBhdXRob3IuDQoNCj4gLS0t
+DQo+ICBkcml2ZXJzL21haWxib3gvaW14LW1haWxib3guYyB8IDM1DQo+ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygr
+KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWFpbGJveC9pbXgtbWFpbGJveC5jIGIvZHJp
+dmVycy9tYWlsYm94L2lteC1tYWlsYm94LmMNCj4gaW5kZXggOTdiZjBhYy4uYjUzY2Y2MyAxMDA2
+NDQNCj4gLS0tIGEvZHJpdmVycy9tYWlsYm94L2lteC1tYWlsYm94LmMNCj4gKysrIGIvZHJpdmVy
+cy9tYWlsYm94L2lteC1tYWlsYm94LmMNCj4gQEAgLTY3LDYgKzY3LDggQEAgc3RydWN0IGlteF9t
+dV9wcml2IHsNCj4gIAlzdHJ1Y3QgY2xrCQkqY2xrOw0KPiAgCWludAkJCWlycTsNCj4gDQo+ICsJ
+dTMyIHhjcjsNCj4gKw0KPiAgCWJvb2wJCQlzaWRlX2I7DQo+ICB9Ow0KPiANCj4gQEAgLTU4Mywx
+MiArNTg1LDQ1IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIGlteF9tdV9kdF9p
+ZHNbXSA9DQo+IHsgIH07ICBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBpbXhfbXVfZHRfaWRzKTsN
+Cj4gDQo+ICtzdGF0aWMgaW50IGlteF9tdV9zdXNwZW5kX25vaXJxKHN0cnVjdCBkZXZpY2UgKmRl
+dikgew0KPiArCXN0cnVjdCBpbXhfbXVfcHJpdiAqcHJpdiA9IGRldl9nZXRfZHJ2ZGF0YShkZXYp
+Ow0KPiArDQo+ICsJcHJpdi0+eGNyID0gaW14X211X3JlYWQocHJpdiwgcHJpdi0+ZGNmZy0+eENS
+KTsNCj4gKw0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IGlteF9tdV9y
+ZXN1bWVfbm9pcnEoc3RydWN0IGRldmljZSAqZGV2KSB7DQo+ICsJc3RydWN0IGlteF9tdV9wcml2
+ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4gKwkvKg0KPiArCSAqIE9OTFkg
+cmVzdG9yZSBNVSB3aGVuIGNvbnRleHQgbG9zdCwgdGhlIFRJRSBjb3VsZA0KPiArCSAqIGJlIHNl
+dCBkdXJpbmcgbm9pcnEgcmVzdW1lIGFzIHRoZXJlIGlzIE1VIGRhdGENCj4gKwkgKiBjb21tdW5p
+Y2F0aW9uIGdvaW5nIG9uLCBhbmQgcmVzdG9yZSB0aGUgc2F2ZWQNCj4gKwkgKiB2YWx1ZSB3aWxs
+IG92ZXJ3cml0ZSB0aGUgVElFIGFuZCBjYXVzZSBNVSBkYXRhDQo+ICsJICogc2VuZCBmYWlsZWQs
+IG1heSBsZWFkIHRvIHN5c3RlbSBmcmVlemUuIFRoaXMgaXNzdWUNCj4gKwkgKiBpcyBvYnNlcnZl
+ZCBieSB0ZXN0aW5nIGZyZWV6ZSBtb2RlIHN1c3BlbmQuDQo+ICsJICovDQo+ICsJaWYgKCFpbXhf
+bXVfcmVhZChwcml2LCBwcml2LT5kY2ZnLT54Q1IpKQ0KPiArCQlpbXhfbXVfd3JpdGUocHJpdiwg
+cHJpdi0+eGNyLCBwcml2LT5kY2ZnLT54Q1IpOw0KDQpUaGlzIGNvdWxkIGJlIHNlcGFyYXRlIHBh
+dGNoIGlmIGl0IGFpbXMgdG8gZml4IGEgc3BlY2lmaWMgY29ybmVyIGNhc2UuDQoNClJlZ2FyZHMN
+CkFpc2hlbmcNCg0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBjb25z
+dCBzdHJ1Y3QgZGV2X3BtX29wcyBpbXhfbXVfcG1fb3BzID0gew0KPiArCVNFVF9OT0lSUV9TWVNU
+RU1fU0xFRVBfUE1fT1BTKGlteF9tdV9zdXNwZW5kX25vaXJxLA0KPiArCQkJCSAgICAgIGlteF9t
+dV9yZXN1bWVfbm9pcnEpDQo+ICt9Ow0KPiArDQo+ICBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2Ry
+aXZlciBpbXhfbXVfZHJpdmVyID0gew0KPiAgCS5wcm9iZQkJPSBpbXhfbXVfcHJvYmUsDQo+ICAJ
+LnJlbW92ZQkJPSBpbXhfbXVfcmVtb3ZlLA0KPiAgCS5kcml2ZXIgPSB7DQo+ICAJCS5uYW1lCT0g
+ImlteF9tdSIsDQo+ICAJCS5vZl9tYXRjaF90YWJsZSA9IGlteF9tdV9kdF9pZHMsDQo+ICsJCS5w
+bSA9ICZpbXhfbXVfcG1fb3BzLA0KPiAgCX0sDQo+ICB9Ow0KPiAgbW9kdWxlX3BsYXRmb3JtX2Ry
+aXZlcihpbXhfbXVfZHJpdmVyKTsNCj4gLS0NCj4gMi43LjQNCg0K
