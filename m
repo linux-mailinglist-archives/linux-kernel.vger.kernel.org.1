@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54F61B7CD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD341B7CD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgDXRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728896AbgDXRa6 (ORCPT
+        id S1728927AbgDXRbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727031AbgDXRbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:30:58 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFA9C09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:30:58 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x2so1398908pfx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:30:58 -0700 (PDT)
+        Fri, 24 Apr 2020 13:31:49 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045B9C09B047;
+        Fri, 24 Apr 2020 10:31:49 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id r26so11803546wmh.0;
+        Fri, 24 Apr 2020 10:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=TOBb8tCU+3Fv4RLirkHqozp62T3jFqkHmjZCX1AUHss=;
-        b=WnMKbOXATmMVX+/JnFpn46xCVeikJqcSBOdbeMX3N3DpZrhxmjsjo57fDbr3W9VWpC
-         TcE7CgbneyM/jQBr1Pi/cUJWbjwaEdtqNaHwJVizLARUcNN7T+UDDQogWoHWjrS26K6u
-         vC0pUnPBvXbBEmFfG1vvw5vF2RJtdCTiftISI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=RQGcdRJLNrYqSHSgVV8oTnHfyay5BCm0woR8WhTdc4Q=;
+        b=ja+aS0yrKmnDgS7/Yv353TzMUKf+Ohd2yz5rM1nrhcs5dukGoeteAfWBJAbt9agbOq
+         f23Nn2GAq/qOdvbIRw/3KPT4ycN+pInXMjd1BChA640icyCAStpunnza9TON5zmWMu1c
+         1ncRB2J/f7CYgBxuId+vlwxI0hwDmtqs8WM5Nx+E/1Qj82b0akdSIo8m7dwMIWIfZLmj
+         wm0MkvHkENoCf8kX1kuTXcsyiHwBE90KfYczH3u7iNcGNw3zA/yU1fPsG86QmBe706e+
+         lnVV5pozr5Qvn5kcurLq4rGmVJafcm02HGsPIMeYIq7N/IGfY8m4NS7YMgkBf/ZnvW/c
+         c7pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=TOBb8tCU+3Fv4RLirkHqozp62T3jFqkHmjZCX1AUHss=;
-        b=jIVrrz+vPjOw7R03zNuu4mkr8G2Iz0yPPQIqdmrPHAxKeQRtvwARRQevuxj37WGjFn
-         TYn+D0sWbHSkZDFVaDRnydXN4g49dBxT/EqcSQQRnIpMIQC59tUGpLrWjRcipnOotvdz
-         mBUMGauUKbAjakXQKRaJZmSY+wMW+9Q5FyXoqHl8bHW5vpFjB24Osl1YDxkWVPZOokKz
-         o6pdLNprZ5DJ/WoJkhe6smOy8uHpKIicZsSYtBXJ17hOMRR31VntTEjnPVkYxMoGA9r1
-         4MLG3b37YNrt1e8Mmjhvy1Zjol7DN+tTPlRHvZIE3CoabuC+HG+DXL+PQao9/vsk/tLy
-         ijpQ==
-X-Gm-Message-State: AGi0PubV8qc31RbG9GjxaRpouRHrzU5gCAdcl76D2P5QqS6X8Su+ABL1
-        BsDDVpPwg7u1mKHHpgwA3Rx1kw==
-X-Google-Smtp-Source: APiQypImO36tpAKh2oeXCPUmadf8WUrHRTwkQw1gC/IsCIl7DU9RdVbXTFkOkiSZi7o4fTi6gvDQ4A==
-X-Received: by 2002:a65:460f:: with SMTP id v15mr10229432pgq.24.1587749457668;
-        Fri, 24 Apr 2020 10:30:57 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id 10sm6200760pfn.204.2020.04.24.10.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 10:30:57 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200424094610.v5.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
-References: <20200424094610.v5.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid> <20200424094610.v5.4.Ib8dccfdb10bf6b1fb1d600ca1c21d9c0db1ef746@changeid>
-Subject: Re: [PATCH v5 4/5] soc: qcom: rpmh-rsc: Simplify locking by eliminating the per-TCS lock
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     evgreen@chromium.org, mka@chromium.org, mkshah@codeaurora.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael.j.wysocki@intel.com
-Date:   Fri, 24 Apr 2020 10:30:56 -0700
-Message-ID: <158774945643.135303.4651711262492851591@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RQGcdRJLNrYqSHSgVV8oTnHfyay5BCm0woR8WhTdc4Q=;
+        b=rTiLQJaBjeNFEbmfCcRUd36kwg+H4USUtzkfUbLN+606VJY0kRItZrijdMnV6eOZzU
+         I3x+HIXtDg4VTscHTL7QBYBDI5Rilrgjd7Zadi64UZeD37OT1T4YgA8QjKs/5xLghH+1
+         bbShNF9n2Fv8MwFkGlrN8C2bT43OVB1b9MxGSCCd4XgJuLIqDOQnND6PI8GoWlQFPXoJ
+         7lxm6fDpahHAeu3Egmzdbk0VyEW1y/+26hO2vMPhM4pXeN3fpGkNTeivwgOnkS6R0eDa
+         FMTYV01sCrXyYhoW66zhTuC0SSeKgnWgBDTZG5EkrEfTh+AgKnna/L039WAYd4bYieat
+         k+qg==
+X-Gm-Message-State: AGi0PuYLf7R1MHGf1xmMd41AkaUKA04zJTq0SbJYgOH1K7ykXj9lGLOA
+        sRc1nhXHfepZRCjj9LMapCA=
+X-Google-Smtp-Source: APiQypIVOrCpLaUv6phLa+L8W2tcwyIUTRMpgnidvQwqKqpiIqMqXsVGTeo/XmtxMnTfLSyKDoDk4w==
+X-Received: by 2002:a7b:c4c7:: with SMTP id g7mr10922438wmk.97.1587749507716;
+        Fri, 24 Apr 2020 10:31:47 -0700 (PDT)
+Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
+        by smtp.gmail.com with ESMTPSA id s17sm3556006wmc.48.2020.04.24.10.31.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 10:31:47 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v3] IB/rdmavt: return proper error code
+Date:   Fri, 24 Apr 2020 18:31:46 +0100
+Message-Id: <20200424173146.10970-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-04-24 09:46:56)
-> The rpmh-rsc code had both a driver-level lock (sometimes referred to
-> in comments as drv->lock) and a lock per-TCS.  The idea was supposed
-> to be that there would be times where you could get by with just
-> locking a TCS lock and therefor other RPMH users wouldn't be blocked.
->=20
-> The above didn't work out so well.
->=20
-> Looking at tcs_write() the bigger drv->lock was held for most of the
-> function anyway.  Only the __tcs_buffer_write() and
-> __tcs_set_trigger() calls were called without holding the drv->lock.
-> It actually turns out that in tcs_write() we don't need to hold the
-> drv->lock for those function calls anyway even if the per-TCS lock
-> isn't there anymore.  From the newly added comments in the code, this
-> is because:
-> - We marked "tcs_in_use" under lock.
-> - Once "tcs_in_use" has been marked nobody else could be writing
->   to these registers until the interrupt goes off.
-> - The interrupt can't go off until we trigger w/ the last line
->   of __tcs_set_trigger().
-> Thus, from a tcs_write() point of view, the per-TCS lock was useless.
->=20
-> Looking at rpmh_rsc_write_ctrl_data(), only the per-TCS lock was held.
-> It turns out, though, that this function already needs to be called
-> with the equivalent of the drv->lock held anyway (we either need to
-> hold drv->lock as we will in a future patch or we need to know no
-> other CPUs could be running as happens today).  Specifically
-> rpmh_rsc_write_ctrl_data() might be writing to a TCS that has been
-> borrowed for writing an active transation but it never checks this.
->=20
-> Let's eliminate this extra overhead and avoid possible AB BA locking
-> headaches.
->=20
-> Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+The commit 'ff23dfa13457' modified rvt_create_mmap_info() to return
+error code and also NULL but missed fixing codes which called
+rvt_create_mmap_info(). Modify rvt_create_mmap_info() to only return
+errorcode and fix error checking after rvt_create_mmap_info() was
+called.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+Cc: stable@vger.kernel.org [5.4+]
+Tested-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Acked-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/infiniband/sw/rdmavt/cq.c   | 4 ++--
+ drivers/infiniband/sw/rdmavt/mmap.c | 4 ++--
+ drivers/infiniband/sw/rdmavt/qp.c   | 4 ++--
+ drivers/infiniband/sw/rdmavt/srq.c  | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index 5724cbbe38b1..04d2e72017fe 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -248,8 +248,8 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	 */
+ 	if (udata && udata->outlen >= sizeof(__u64)) {
+ 		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
+-		if (!cq->ip) {
+-			err = -ENOMEM;
++		if (IS_ERR(cq->ip)) {
++			err = PTR_ERR(cq->ip);
+ 			goto bail_wc;
+ 		}
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/mmap.c b/drivers/infiniband/sw/rdmavt/mmap.c
+index 652f4a7efc1b..37853aa3bcf7 100644
+--- a/drivers/infiniband/sw/rdmavt/mmap.c
++++ b/drivers/infiniband/sw/rdmavt/mmap.c
+@@ -154,7 +154,7 @@ int rvt_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+  * @udata: user data (must be valid!)
+  * @obj: opaque pointer to a cq, wq etc
+  *
+- * Return: rvt_mmap struct on success
++ * Return: rvt_mmap struct on success, ERR_PTR on failure
+  */
+ struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
+ 					   struct ib_udata *udata, void *obj)
+@@ -166,7 +166,7 @@ struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
+ 
+ 	ip = kmalloc_node(sizeof(*ip), GFP_KERNEL, rdi->dparms.node);
+ 	if (!ip)
+-		return ip;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	size = PAGE_ALIGN(size);
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 0e1b291d2cec..500a7ee04c44 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1244,8 +1244,8 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 
+ 			qp->ip = rvt_create_mmap_info(rdi, s, udata,
+ 						      qp->r_rq.wq);
+-			if (!qp->ip) {
+-				ret = ERR_PTR(-ENOMEM);
++			if (IS_ERR(qp->ip)) {
++				ret = ERR_CAST(qp->ip);
+ 				goto bail_qpn;
+ 			}
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/srq.c b/drivers/infiniband/sw/rdmavt/srq.c
+index 24fef021d51d..f547c115af03 100644
+--- a/drivers/infiniband/sw/rdmavt/srq.c
++++ b/drivers/infiniband/sw/rdmavt/srq.c
+@@ -111,8 +111,8 @@ int rvt_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *srq_init_attr,
+ 		u32 s = sizeof(struct rvt_rwq) + srq->rq.size * sz;
+ 
+ 		srq->ip = rvt_create_mmap_info(dev, s, udata, srq->rq.wq);
+-		if (!srq->ip) {
+-			ret = -ENOMEM;
++		if (IS_ERR(srq->ip)) {
++			ret = PTR_ERR(srq->ip);
+ 			goto bail_wq;
+ 		}
+ 
+-- 
+2.11.0
+
