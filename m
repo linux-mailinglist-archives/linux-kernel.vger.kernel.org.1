@@ -2,150 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09541B7DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28F31B7D9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728838AbgDXSNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:13:54 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47536 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727022AbgDXSNy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:13:54 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jS2pk-0001i0-LL; Fri, 24 Apr 2020 12:13:52 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jS2pi-0008NB-5O; Fri, 24 Apr 2020 12:13:52 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
-        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
-        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
-        <20200424173927.GB26802@redhat.com>
-Date:   Fri, 24 Apr 2020 13:10:40 -0500
-In-Reply-To: <20200424173927.GB26802@redhat.com> (Oleg Nesterov's message of
-        "Fri, 24 Apr 2020 19:39:28 +0200")
-Message-ID: <87h7x8sqjj.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1728343AbgDXSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:12:14 -0400
+Received: from mail-eopbgr80040.outbound.protection.outlook.com ([40.107.8.40]:20666
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726793AbgDXSMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 14:12:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EWKezk3lSzUyA368iZ+wG79Q0Vq5ChB1L72PE2H/FeD9RGM/9JPY3dJd8v3X2kwtv0BriDXWKqdby5LSfHHQIQzF02bVXjfLz26WJQB2XlbxiXMkYOHuTF9uGIKKY+YaB/ImRL7mnx0jIlGnL6E8ncbA+eKz6UC5FYPN/TVTdIS3YywjucB8dxfFK69+0svmnmZYmUePWPAQYtiwmsXnCGygZVrsk7b3dxa6YjH7htWBfzd7g1Rsg/c8YmHCk4eg7OUAPtuR2fHUIonx2YH2/LL4RBuSSgEGGUwyAIVbzYT5w1+1i73ScNK65C6sKx3v3KrfMaUUZ1Jj7IE0knseoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xi1/v8lRPYKX8BFGb8p99HdvvkUruzlBeMG3YQNOgI=;
+ b=WVTpQHt9wZ2yZ95FN25cgnH7y3WT8CO8xf7vX9GVA4/KA7BRqpLoklesKHM2wnR5bvaU6cSG+3RLVtYSN0QPsqpVG80EJfpKsel/x9Vic/Z6mBWMr7aBdE6Hwr/RdTZ9vD5vnpTEFGqQgkJP3GC9Xq1eH6Vy2Rzj4KJfmI6YqnAAsTSau4pRe8YXqTMSiCY+OMMj+X6uAA5xcBtyjlvN2jydIiwQcrWL1Vq/mjTmbK2i1Th3qyH+nGtCHUx2kARL42NsKMrueruGJ6dAbOyjYpAzbbmI5IdyIk+oACavGncXbSla91+0fXPgYzLXcMQn+D2x4f5gePuSn+vKsuy96w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xi1/v8lRPYKX8BFGb8p99HdvvkUruzlBeMG3YQNOgI=;
+ b=SWsHWFYvZiZA5Nz3Uv1OKZkGeEfPDtPQdjnuejK/JDzQJrn6CApFlR6luzPyTJPtVzUl45Vr11C9hsZxhYuIj9rIiL34KqIqxBj1ElvkcdJmy/OsVur4Bitnu/GT2BDUSJ2yc9AKi55Kg/Z4TLuH2r5cAVTDhwFR97Cdo8i5uuE=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB3328.eurprd05.prod.outlook.com (2603:10a6:802:1d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
+ 2020 18:12:08 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2921.030; Fri, 24 Apr 2020
+ 18:12:08 +0000
+Date:   Fri, 24 Apr 2020 15:12:03 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "megha.dey@linux.intel.com" <megha.dey@linux.intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lin, Jing" <jing.lin@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
+ support for the idxd driver.
+Message-ID: <20200424181203.GU13640@mellanox.com>
+References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
+ <20200421235442.GO11945@mellanox.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D86EE26@SHSMSX104.ccr.corp.intel.com>
+ <20200422115017.GQ11945@mellanox.com>
+ <20200422211436.GA103345@otc-nc-03>
+ <20200423191217.GD13640@mellanox.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8960F9@SHSMSX104.ccr.corp.intel.com>
+ <20200424124444.GJ13640@mellanox.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D8A808B@SHSMSX104.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D8A808B@SHSMSX104.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR12CA0022.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jS2pi-0008NB-5O;;;mid=<87h7x8sqjj.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18vFbjen3QEL+8U6HAHWr3unr7JC5DnSxc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,NO_DNS_FOR_FROM,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4986]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 NO_DNS_FOR_FROM DNS: Envelope sender has no MX or A DNS records
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1699 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.6 (0.3%), b_tie_ro: 3.2 (0.2%), parse: 1.08
-        (0.1%), extract_message_metadata: 4.5 (0.3%), get_uri_detail_list: 2.2
-        (0.1%), tests_pri_-1000: 2.2 (0.1%), tests_pri_-950: 1.08 (0.1%),
-        tests_pri_-900: 0.85 (0.0%), tests_pri_-90: 61 (3.6%), check_bayes: 60
-        (3.5%), b_tokenize: 6 (0.3%), b_tok_get_all: 7 (0.4%), b_comp_prob:
-        1.76 (0.1%), b_tok_touch_all: 43 (2.5%), b_finish: 0.68 (0.0%),
-        tests_pri_0: 1606 (94.5%), check_dkim_signature: 0.38 (0.0%),
-        check_dkim_adsp: 1228 (72.3%), poll_dns_idle: 1225 (72.1%),
-        tests_pri_10: 2.6 (0.2%), tests_pri_500: 7 (0.4%), rewrite_mail: 0.00
-        (0.0%)
-Subject: Re: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR12CA0022.namprd12.prod.outlook.com (2603:10b6:208:a8::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Fri, 24 Apr 2020 18:12:07 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jS2nz-0004Bq-Su; Fri, 24 Apr 2020 15:12:03 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1b3dfe29-de26-451a-3e2d-08d7e87b004c
+X-MS-TrafficTypeDiagnostic: VI1PR05MB3328:|VI1PR05MB3328:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB3328281B78C12A0E5E46FF81CFD00@VI1PR05MB3328.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03838E948C
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(7416002)(186003)(52116002)(66556008)(66476007)(9786002)(9746002)(5660300002)(26005)(66946007)(316002)(8936002)(8676002)(81156014)(1076003)(54906003)(2906002)(4326008)(36756003)(33656002)(478600001)(2616005)(86362001)(6916009)(24400500001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cqgNLgUMTqJLGDIPfbZGTNMMxqq5SanTE1G4cHWhFg5Wd3nkcTFgGMRgxpLybfDQ/lH+8BJTiWev1e9VhocuIltgYoSh43Ag737I16psRnyV9h7AiegzmIlxY9064VKFZ5USiyRYLPhWe/AvEU8NdPgGSL1Hd+6DTSGvpQ1xCqlzr/0HNbGl+3GSR8P5Hx/E5h7Y9ofJfS8XqSJ8IiP6EsmVzHtaeBP0MY1vRn8N45LP/nk0jX8YqB2f4rJuQLbhozzlbDrlm6pldYqPj0E7zBYUmnQ6fLOq7evVDbJYX3vTe9QeGVF2xrwZx2PiQ6VxxM8qIkACzHnNAtFu5Oniww3P51WmEdrObbZhZxKBHo8rpxcK9H4MnYj2CKVN3VkA1IWnPX3lO18zyYxX4I6LR8HU7/EpY6kveovXMqLXswF6iRYem1QeicA7sFZ5KWTJ7zMtzd7t3SdU2yB28k6ZFFxfB2LHZG35jwrjBbL4LE1J04OpkdvXfvYxnPjxFbB+
+X-MS-Exchange-AntiSpam-MessageData: V3wY9CTZZQ0t00yhovdBw8hi9q+4QNFXi3o1fq1hmJOcDv/b2muMSq1AbIEqr2Z23akeicHg8s8LKVE0gH3swIazf/1IC/w9jxUVqlEH6wD0A7WOgVrpazKQ88gtfVtLLVzxfpDIve+Og6oXiXN5cQ==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b3dfe29-de26-451a-3e2d-08d7e87b004c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2020 18:12:08.3290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sINDcmSSBbNdMOfH3WUpuf+P5YOJB2x7yvqHAuela2CeUAhXdkh9eWP3HF6W6CcNj9c8/uhh9R1/ZlkVkw/Cug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3328
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oleg Nesterov <oleg@redhat.com> writes:
+On Fri, Apr 24, 2020 at 04:25:56PM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe
+> > Sent: Friday, April 24, 2020 8:45 PM
+> > 
+> > On Fri, Apr 24, 2020 at 03:27:41AM +0000, Tian, Kevin wrote:
+> > 
+> > > > > That by itself doesn't translate to what a guest typically does
+> > > > > with a VDEV. There are other control paths that need to be serviced
+> > > > > from the kernel code via VFIO. For speed path operations like
+> > > > > ringing doorbells and such they are directly managed from guest.
+> > > >
+> > > > You don't need vfio to mmap BAR pages to userspace. The unique thing
+> > > > that vfio gives is it provides a way to program the classic non-PASID
+> > > > iommu, which you are not using here.
+> > >
+> > > That unique thing is indeed used here. Please note sharing CPU virtual
+> > > address space with device (what SVA API is invented for) is not the
+> > > purpose of this series. We still rely on classic non-PASID iommu
+> > programming,
+> > > i.e. mapping/unmapping IOVA->HPA per iommu_domain. Although
+> > > we do use PASID to tag ADI, the PASID is contained within iommu_domain
+> > > and invisible to VFIO. From userspace p.o.v, this is a device passthrough
+> > > usage instead of PASID-based address space binding.
+> > 
+> > So you have PASID support but don't use it? Why? PASID is much better
+> > than classic VFIO iommu, it doesn't require page pinning...
+> 
+> PASID and I/O page fault (through ATS/PRI) are orthogonal things. Don't
+> draw the equation between them. The host driver can tag PASID to 
+> ADI so every DMA request out of that ADI has a PASID prefix, allowing VT-d
+> to do PASID-granular DMA isolation. However I/O page fault cannot be
+> taken for granted. A scalable IOV device may support PASID while without
+> ATS/PRI. Even when ATS/PRI is supported, the tolerance of I/O page fault
+> is decided by the work queue mode that is configured by the guest. For 
+> example, if the guest put the work queue in non-faultable transaction 
+> mode, the device doesn't do PRI and simply report error if no valid IOMMU 
+> mapping.
 
-> On 04/23, Eric W. Biederman wrote:
->>
->> When the thread group leader changes during exec and the old leaders
->> thread is reaped proc_flush_pid
->
-> This is off-topic, but let me mention this before I forget...
->
-> Note that proc_flush_pid() does nothing if CONFIG_PROC_FS=n, this mean
-> that in this case release_task() leaks thread_pid.
+Okay, that makes sense, I wasn't aware people were doing PASID without
+ATS at this point..
 
-Good catch.  Wow.  I seem to be introducing almost as many bugs as I am
-fixing right now.  Ouch.
+> > > idxd is just the first device that supports Scalable IOV. We have a
+> > > lot more coming later, in different types. Then putting such
+> > > emulation in user space means that Qemu needs to support all those
+> > > vendor specific interfaces for every new device which supports
+> > 
+> > It would be very sad to see an endless amount of device emulation code
+> > crammed into the kernel. Userspace is where device emulation is
+> > supposed to live. For security
+> 
+> I think providing an unified abstraction to userspace is also important,
+> which is what VFIO provides today. The merit of using one set of VFIO 
+> API to manage all kinds of mediated devices and VF devices is a major
+> gain. Instead, inventing a new vDPA-like interface for every Scalable-IOV
+> or equivalent device is just overkill and doesn't scale. Also the actual
+> emulation code in idxd driver is actually small, if putting aside the PCI
+> config space part for which I already explained most logic could be shared
+> between mdev device drivers.
 
->> +void exchange_tids(struct task_struct *ntask, struct task_struct *otask)
->> +{
->> +	/* pid_links[PIDTYPE_PID].next is always NULL */
->> +	struct pid *npid = READ_ONCE(ntask->thread_pid);
->> +	struct pid *opid = READ_ONCE(otask->thread_pid);
->> +
->> +	rcu_assign_pointer(opid->tasks[PIDTYPE_PID].first, &ntask->pid_links[PIDTYPE_PID]);
->> +	rcu_assign_pointer(npid->tasks[PIDTYPE_PID].first, &otask->pid_links[PIDTYPE_PID]);
->> +	rcu_assign_pointer(ntask->thread_pid, opid);
->> +	rcu_assign_pointer(otask->thread_pid, npid);
->> +	WRITE_ONCE(ntask->pid_links[PIDTYPE_PID].pprev, &opid->tasks[PIDTYPE_PID].first);
->> +	WRITE_ONCE(otask->pid_links[PIDTYPE_PID].pprev, &npid->tasks[PIDTYPE_PID].first);
->> +	WRITE_ONCE(ntask->pid, pid_nr(opid));
->> +	WRITE_ONCE(otask->pid, pid_nr(npid));
->> +}
->
-> Oh, at first glance this breaks posix-cpu-timers.c:lookup_task(), the last
-> user of has_group_leader_pid().
->
-> I think that we should change lookup_task() to return "struct *pid", this
-> should simplify the code... Note that none of its callers needs task_struct.
->
-> And, instead of thread_group_leader/has_group_leader_pid checks we should
-> use pid_has_task(TGID).
+If it was just config space you might have an argument, VFIO already
+does some config space mangling, but emulating BAR space is out of
+scope of VFIO, IMHO.
 
-Somehow I thought we could get away without fiddling with that right
-now, but on second glance I can see the races.
+I also think it is disingenuous to pretend this is similar to
+SR-IOV. SR-IOV is self contained and the BAR does not require
+emulation. What you have here sounds like it is just an ordinary
+multi-queue device with the ability to PASID tag queues for IOMMU
+handling. This is absolutely not SRIOV - it is much closer to VDPA,
+which isn't using mdev.
 
-I played with this earlier and I agree returning a struct pid *
-is desirable.  I will see if I can track down the patches I was
-playing with as that definitely needs to get fixed first.
+Further, I disagree with your assessment that this doesn't scale. You
+already said you plan a normal user interface for idxd, so instead of
+having a single sane user interface (ala VDPA) idxd now needs *two*. If
+this is the general pattern of things to come, it is a bad path.
 
-> After that, this patch should kill has_group_leader_pid().
->
-> What do you think?
+The only thing we get out of this is someone doesn't have to write a
+idxd emulation driver in qemu, instead they have to write it in the
+kernel. I don't see how that is a win for the ecosystem.
 
-I agree completely.  has_group_leader_pid is the same as
-thread_group_leader after this so should be removed.  Especially as it
-won't have any users.
-
-There are several other potential cleanups as well.  Such as not
-using a hlist for PIDTYPE_PID.  Which would allow us to run the hlists
-through struct signal_struct instead.  I think that would clean things
-up but that touches so many things it may just be pointless code churn.
-
-Just for mentioning I am thinking we should rename PIDTYPE_PID to
-PIDTYPE_TID just to create a distance in peoples minds between
-the kernel concepts and the user space concepts.
-
-Eric
-
+Jason
