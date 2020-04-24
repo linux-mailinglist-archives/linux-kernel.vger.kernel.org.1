@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CC81B7F6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49311B7F77
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgDXT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 15:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        id S1729368AbgDXT6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 15:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729419AbgDXT4C (ORCPT
+        with ESMTP id S1725970AbgDXT6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:56:02 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EC6C09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:56:02 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id b13so14572881oti.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:56:02 -0700 (PDT)
+        Fri, 24 Apr 2020 15:58:15 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DEEC09B048;
+        Fri, 24 Apr 2020 12:58:15 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id b1so5335981qtt.1;
+        Fri, 24 Apr 2020 12:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=mxyNAcrpAygdl0PQUuE7YWHqIPwtRko8aJ9V9gG70nQ=;
-        b=GijluJZWWp+LFBb7h6DeNgHOUecBxi1OD1hjb1vB7Iy4+Kc0JoPmtDax/Y20FupRuB
-         FC3NU4SMoI6Fdl799BRM5BErL+sM7F66CeL4m93b7RfJ2UBMuhjPFL9mWWtUECF+bn5R
-         /fBFRf9252j1gSjzpg+ifbxcmQ7dQIuXqMfjVbtCbAiO2cEVIcvkHom/B22omI84P9cj
-         C5BUksbGxK1dKwTb6fTA5k0Rty3wKtgcEsdCc6kdDQCD7oZMMNqIPtJbyCpbnOFNkYWw
-         COw8AwCgEBjo3Wj9sItt/5LNsOyhX7XQSvPJpSYwfIiI4V5aIGTtWpOTqTHKyzpOux+N
-         FFxw==
+        h=from:to:cc:subject:date:message-id;
+        bh=A3XPQz7R7FZXT20UmmKFaaeS4yksZtiocodJLBHbiYc=;
+        b=F2Ka3sr1kfzPB2y5reGyinI53PYXqPYk95Z5eu7UmYUBWb8iHjv+reSNCaKBjlPU2K
+         4Cbp0Lsmt4SH8TWsuOo0bd/2Ai/ymfU5VtoABZylrKZVcO9Rx8+Q90TPHThTGRx2RF7f
+         PpK+mRO/yeyH6WdKA992quQoHvIo+uFk/wMqD11sSvD0Nts9BVO5rvVSI9+Mh7Ruw4UH
+         UsZOtzjQeogiiPIarGe3Cbg95iW2zWL1CPdGoi8yTVflKUCJm3KFsi+JdTqWSmI46T15
+         xwX2A1XCg2DEVXqbPjm1TVTKGXMyoSP/PI3TsUErzEg1j0oqFPROOuo3AEAGHzxYSpJf
+         kaog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=mxyNAcrpAygdl0PQUuE7YWHqIPwtRko8aJ9V9gG70nQ=;
-        b=uiQ/NjNitw5Cqpc86b2TWaYl6uusyncYLH/rJfGvM2ageDihiszX3XRoEWGVEXDAJA
-         i6NuQdcJ5cL8RHozhBXwCbBYSllW2cbd2O1u0D3K6fscAuwmRM8HRtuTBHjJKRJKfngo
-         gdDTxhccz7Llz0BJ8MPI9E+bsLv0BtQbbp2EBFB7Q+mjf63/7oxnCbekST2VbOf8SYfT
-         wDK1/7xvpFNdtO6a5C1uoBUJh1oG1sAd7P2l7dxa/x4+70SWQ0dypvB2sLGN3qpsxhUp
-         8qAyG61gmkQM01TuKR3G6DeRc9pIUlFSeAfX0wknz0F+dkgmJqxr6imtAqa6kDQT27c0
-         lJ8w==
-X-Gm-Message-State: AGi0PuamS2gTPrrRWVdT//cl6ftfx6UMdNtT8x8oFwMXtMNRMf8YCf3W
-        +pS5Lnb6M5DvM41MNsjEJPo=
-X-Google-Smtp-Source: APiQypKG99R9/t7a1R4PtD4C2Aa45HoghelBN5DZhIdQpZzDWtIT9YE/s90axTBUiQUGswriUfMh9A==
-X-Received: by 2002:a05:6808:b0c:: with SMTP id s12mr8412430oij.163.1587758162094;
-        Fri, 24 Apr 2020 12:56:02 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id h24sm1767443otj.25.2020.04.24.12.56.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Apr 2020 12:56:01 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 12:56:00 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] soundwire: intel: Remove unused function
-Message-ID: <20200424195600.GA45659@ubuntu-s3-xlarge-x86>
-References: <20200422190815.5975-1-sudipm.mukherjee@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200422190815.5975-1-sudipm.mukherjee@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=A3XPQz7R7FZXT20UmmKFaaeS4yksZtiocodJLBHbiYc=;
+        b=cC+XL11KsaiXEJGLSAB6CAQ5iLwVNKoF67mQqvt6kx9eup5M9fNqQhBgFTAIkgRT3B
+         hpKphT0KYFW1x5HSI/ludY10cV1FIctvM+Aiw0Wg91F8dgUuMbwc0Fy/Y98h6r6HByCt
+         n9kQLQXiTaDN3/NIAbZC4rRZRCRmcZq/X/SiwqNcoVHrw9Wugcx233BYtmCLoSiGPExT
+         P7YU4zHFx0kiOpCFwx5OVDTy5lUR4zi69vhCc4gp18tu0qewU/Em4fYJqgTz2X3oqZb8
+         RCJjBmXtq//tDA9/I2W6hDia6bmm3kmiJDDTQLxL3TSouZb/OcWPhqI99iccrH1WZFBb
+         59gQ==
+X-Gm-Message-State: AGi0Pub6KOE5x1zo7grhN9GaCaZZMazTtQTli7sVMjBz1viXN+yPKaPQ
+        utmLJfCiDtxr6nVmMAHxbj/RxcPQpbMFVA==
+X-Google-Smtp-Source: APiQypJDJDu0Olrg+n6dE1MT/s5ZUshYnDdfbpU/SmL/bsxZZU5ZDP8HXI03DPTeHw+bLdLee2tyRQ==
+X-Received: by 2002:ac8:73d3:: with SMTP id v19mr11397487qtp.263.1587758294587;
+        Fri, 24 Apr 2020 12:58:14 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:4e4:9fd:c16a:b4f7:4f95:6154])
+        by smtp.gmail.com with ESMTPSA id f188sm4141892qkd.101.2020.04.24.12.58.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 12:58:14 -0700 (PDT)
+From:   Guilherme Ricioli <guilherme.riciolic@gmail.com>
+To:     linux-media@vger.kernel.org
+Cc:     lkcamp@lists.libreplanetbr.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl
+Subject: [PATCH] staging: media: soc_camera: Enclose macro with parentheses
+Date:   Fri, 24 Apr 2020 16:56:24 -0300
+Message-Id: <1587758184-17867-1-git-send-email-guilherme.riciolic@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 08:08:15PM +0100, Sudip Mukherjee wrote:
-> The function sdw_intel_init() is not used anywhere, remove it for now.
-> 
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> ---
->  drivers/soundwire/intel_init.c | 23 -----------------------
->  1 file changed, 23 deletions(-)
-> 
-> diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-> index ad7053463889..2f37dad06321 100644
-> --- a/drivers/soundwire/intel_init.c
-> +++ b/drivers/soundwire/intel_init.c
-> @@ -183,29 +183,6 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
->  }
->  
->  /**
-> - * sdw_intel_init() - SoundWire Intel init routine
-> - * @parent_handle: ACPI parent handle
-> - * @res: resource data
-> - *
-> - * This scans the namespace and creates SoundWire link controller devices
-> - * based on the info queried.
-> - */
-> -static void *sdw_intel_init(acpi_handle *parent_handle,
-> -			    struct sdw_intel_res *res)
-> -{
-> -	acpi_status status;
-> -
-> -	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
-> -				     parent_handle, 1,
-> -				     sdw_intel_acpi_cb,
-> -				     NULL, res, NULL);
-> -	if (ACPI_FAILURE(status))
-> -		return NULL;
-> -
-> -	return sdw_intel_add_controller(res);
-> -}
-> -
-> -/**
->   * sdw_intel_exit() - SoundWire Intel exit
->   * @arg: callback context
->   *
-> -- 
-> 2.11.0
-> 
+Fix checkpatch error "ERROR: Macros with complex values should be
+enclosed in parentheses" in soc_camera.c:241.
 
-This patch will cause two more warnings.
+Signed-off-by: Guilherme Ricioli <guilherme.riciolic@gmail.com>
+---
+ drivers/staging/media/soc_camera/soc_camera.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-$ make -j$(nproc) -s O=out allyesconfig drivers/soundwire/intel_init.o
-../drivers/soundwire/intel_init.c:152:20: warning: ‘sdw_intel_acpi_cb’
-defined but not used [-Wunused-function]
- static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
-                    ^~~~~~~~~~~~~~~~~
-../drivers/soundwire/intel_init.c:51:2: warning:
-‘sdw_intel_add_controller’ defined but not used [-Wunused-function]
- *sdw_intel_add_controller(struct sdw_intel_res *res)
-  ^~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/drivers/staging/media/soc_camera/soc_camera.c b/drivers/staging/media/soc_camera/soc_camera.c
+index 39f513f..c2f96ea 100644
+--- a/drivers/staging/media/soc_camera/soc_camera.c
++++ b/drivers/staging/media/soc_camera/soc_camera.c
+@@ -238,8 +238,8 @@ unsigned long soc_camera_apply_board_flags(struct soc_camera_subdev_desc *ssdd,
+ }
+ EXPORT_SYMBOL(soc_camera_apply_board_flags);
+ 
+-#define pixfmtstr(x) (x) & 0xff, ((x) >> 8) & 0xff, ((x) >> 16) & 0xff, \
+-	((x) >> 24) & 0xff
++#define pixfmtstr(x) ((x) & 0xff, ((x) >> 8) & 0xff, ((x) >> 16) & 0xff, \
++	((x) >> 24) & 0xff)
+ 
+ static int soc_camera_try_fmt(struct soc_camera_device *icd,
+ 			      struct v4l2_format *f)
+-- 
+2.7.4
 
-Removing these two functions seems to be enough. link_mask should also
-be removed at that point.
-
-Cheers,
-Nathan
