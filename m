@@ -2,189 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FC71B75E1
+	by mail.lfdr.de (Postfix) with ESMTP id EFFD01B75E3
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgDXMrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:47:33 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33462 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727809AbgDXMrZ (ORCPT
+        id S1728139AbgDXMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbgDXMrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:47:25 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03OClLLq013697;
-        Fri, 24 Apr 2020 07:47:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587732441;
-        bh=apdDrANLzu3j4mUkujpFmPY7KzLCkyN+fjqYmAq9cZ4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qyDyO5qLA7f7VoERwOJPG+TRakChQcQtk0NZ6smup6hnZVLdAp1m9CQapRPbz1sFG
-         Pkqkm4T73RGXrOAb3iwq614DEcgl3iQ0GjpdmC/ryNrmKYrSXjOfdl3YmowkRTHJDs
-         D3qnurW1BhQUOj+3bgbOM94CvltkoGuKK1K/VroE=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03OClKcY048204
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Apr 2020 07:47:21 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 24
- Apr 2020 07:47:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 24 Apr 2020 07:47:20 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03OClJ7e087059;
-        Fri, 24 Apr 2020 07:47:19 -0500
-Subject: Re: [PATCH v7 2/2] leds: Add control of the voltage/current regulator
- to the LED core
-To:     Pavel Machek <pavel@ucw.cz>, <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20191021174751.4421-1-jjhiblot@ti.com>
- <20191021174751.4421-3-jjhiblot@ti.com> <20191125163738.GC3816@amd>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <50691066-f40e-b690-57e5-8d41b0696f79@ti.com>
-Date:   Fri, 24 Apr 2020 15:47:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 24 Apr 2020 08:47:40 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDBEC09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:47:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id k28so7565262lfe.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=26dzrYlw9Yt4KOLOThPZOKw0U2oq0zvdftZeS7P3BXg=;
+        b=kQmo4UiCT4B6P4hn6/SMH8IwiW3tjCSbn+HojMSAv2mv+agfz+9+d/yNKIOUlamR1C
+         oDB5kzLtpliREy8JhjWeOkdUyx2C8cBOFDRekdsGSlk8k5dscp/Lxlf6lZpn+aN4Essv
+         b+jXsXV904YqN9dKa5Xl1kzPtb0yot90Elur9JDV9YlnX6+IcLbPhk0cxPEtwd9j9a1R
+         TMTEsva4dggxnr5D3JEAokj/ChXI27kICmIpsa294YpmHi8yoRpqNXTMOVeWaNArDKcx
+         PqtRpFXB9FTje0g3o26UxDIfwKXO9oy860k8+Urmejjwxxc++ujyOQnkBzm4Xok8FRzU
+         KLrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=26dzrYlw9Yt4KOLOThPZOKw0U2oq0zvdftZeS7P3BXg=;
+        b=GxUMTjVxm4Lb/K/jU7EXGlKXB22FXGVfQ4px5ULVtrrP9qPA5exrepSbpZN2QlsyJT
+         UdKSDIA4fokS869JylNaS053KcYlQKlRhtyodNni3JzsouQ6eR1/VKPQGW0W91leBK+N
+         QuG09MAFQpcV8lAwe35fdu7+dAp30+aK9MZU9Ix4fheTr6fKYZmh92R7txmBRAde0/CD
+         JXloKf1CcbW+COcaSUBPUkMoav6Uuc+SAg4xep5Ma6K+rEPPOvEE4hzowAhM9CRaAXJ1
+         vVEtQatGUBSuF7NsybLVZTqoEkNmQK1f6UoTans8XwiGJu0ChKaHhefzv80CcJJIwh5e
+         UmNg==
+X-Gm-Message-State: AGi0PuYaGt0KX3ceVIBTbS0jtVI1L88TSOmHxwNE6Xv/25nKu8Zv5zI6
+        +Ak9lfTGQip8fRK4hu1v0CLNutA1TUwXxiUS0y3Snw==
+X-Google-Smtp-Source: APiQypJctBqu0eb3YhmUg/LE+meu5E6yHAxgR0hbVxh/gpfMO8UpVk0E+o35JIkOIIK7RQBPaa9/Mhidm7bvOYLO+sQ=
+X-Received: by 2002:ac2:5e65:: with SMTP id a5mr6077147lfr.189.1587732458716;
+ Fri, 24 Apr 2020 05:47:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191125163738.GC3816@amd>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200422151401.9147-1-vincent.guittot@linaro.org>
+ <23c1cbb8-7335-80ca-cf40-8abc5c1463f4@arm.com> <CAKfTPtD_W8DRmFS6xJUo+Yt=XaJgZmKxUzcCSnoLWNJN5xPFCw@mail.gmail.com>
+ <5a105c97-4762-aa80-a816-c11c1b1f23f3@arm.com>
+In-Reply-To: <5a105c97-4762-aa80-a816-c11c1b1f23f3@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 24 Apr 2020 14:47:26 +0200
+Message-ID: <CAKfTPtAPaZ+8Q+=rYHeR=7tPgEa1PKgZoWFcqt=FxkU-wrwXMg@mail.gmail.com>
+Subject: Re: [PATCH] sched/pelt: sync util/runnable_sum with PELT window when propagating
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 24 Apr 2020 at 14:07, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 23/04/2020 18:17, Vincent Guittot wrote:
+> > On Thu, 23 Apr 2020 at 16:30, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+> >>
+> >> On 22/04/2020 17:14, Vincent Guittot wrote:
+>
+> [..]
+>
+> >>     gcfs --> tg --> gse
+> >>      ________________|
+> >>      |
+> >>      V
+> >>
+> >>     cfs ---> tg (root)
+> >>
+> >>      |
+> >>      V
+> >>
+> >>     rq
+> >>
+> >
+> > child cfs_rq aka gcfs_rq
+> >   |
+> > gse: group entity that represents child cfs_rq in parent cfs_rq
+> >   |
+> >   v
+> > parent cfs_rq aka cfs_rq
+>
+> OK, I see. Maybe it's clearer to refer to child cfs_rq as gcfs_rq in
+> this context.
+>
+> [...]
+>
+> >>>       /* Set new sched_entity's utilization */
+> >>>       se->avg.util_avg = gcfs_rq->avg.util_avg;
+> >>> -     se->avg.util_sum = se->avg.util_avg * LOAD_AVG_MAX;
+> >>> +     se->avg.util_sum = se->avg.util_avg * divider;
+> >>
+> >> divider uses cfs_rq but we sync se->avg.util_avg with gcfs_rq here.
+> >
+> > we sync the util_avg of gse with the new util_avg of gcfs_rq but gse
+> > is attached to cfs_rq and as a result we have to use cfs_rq's
+> > period_contrib
+>
+> I agree.
+>
+> But the decay windows (avg.last_update_time, avg.period_contrib) of
+> cfs_rq and gcfs_rq are not always aligned, I guess?
+>
+> I see they are not after the online_fair_sched_group() ->
+> attach_entity_cfs_rq() but later the are in sync as well.
 
-On 04/12/2019 14:37, Pavel Machek wrote:
-> Hi!
-> 
->> A LED is usually powered by a voltage/current regulator. Let the LED core
->> know about it. This allows the LED core to turn on or off the power supply
->> as needed.
->>
->> Because turning ON/OFF a regulator might block, it is not done
->> synchronously but done in a workqueue. Turning ON the regulator is
->> always
+cfs_rq and gcfs_rq use 2 different clocks:
+- cfs_rq_clock_pelt(cfs_rq)
+- cfs_rq_clock_pelt(gcfs_rq)
 
-JJ had to leave this unfinished, and now I'm trying to pick this work up.
+And they can be different in some cases like cfs bandwidth
 
-> How will this interact with LEDs that can be used from atomic context?
-
-I think the idea here is that if the LED uses a regulator, and the regulator needs to be enabled, 
-then the whole work is scheduled. If there's no regulator or if the regulator is already enabled, 
-the brightness is set directly.
-
->> +static ssize_t regulator_auto_off_store(struct device *dev,
->> +		struct device_attribute *attr, const char *buf, size_t size)
->> +{
->> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
->> +	ssize_t ret = size;
->> +	bool auto_off;
->> +
->> +	if (strncmp(buf, "enable\n", size) == 0)
->> +		auto_off = true;
->> +	else if (strncmp(buf, "disable\n", size) == 0)
->> +		auto_off = false;
->> +	else
->> +		return -EINVAL;
-> 
-> Sounds like device power management to me. Is it compatible with that?
-
-Can you elaborate what you mean?
-
->> @@ -135,6 +203,8 @@ static void set_brightness_delayed(struct work_struct *ws)
->>   	    (led_cdev->flags & LED_HW_PLUGGABLE)))
->>   		dev_err(led_cdev->dev,
->>   			"Setting an LED's brightness failed (%d)\n", ret);
->> +
->> +	 led_handle_regulator(led_cdev);
->>   }
->>
-> 
-> You only modify set_brigthness_delays, so this will not work at all
-> for non-blocking LEDs, right?
-
-I'm not that familiar with led framework yet, but if setting of the brightness always goes via 
-led_set_brightness_nopm(), then I think this would work for all LEDs, as led_set_brightness_nopm 
-will schedule the work if needed (which goes to set_brightness_delayed).
-
->>   static void led_set_software_blink(struct led_classdev *led_cdev,
->> @@ -189,6 +259,7 @@ static void led_blink_setup(struct led_classdev *led_cdev,
->>   void led_init_core(struct led_classdev *led_cdev)
->>   {
->>   	INIT_WORK(&led_cdev->set_brightness_work, set_brightness_delayed);
->> +	INIT_DELAYED_WORK(&led_cdev->reg_off_work, turn_off_regulator_delayed);
->>   
-> 
-> Could this re-use the workqueue? Many systems will not need
-> regulators, so this is overhead...
-
-You mean re-use the 'set_brightness_work' work? I'm not sure how that would be done, they're a bit 
-different things. set_brightness_work is used to change the context from atomic to non-atomic, and 
-reg_off_work is used to turn the regulator off after a specified delay.
-
->> +			/*
->> +			 * the regulator must  be turned off. This cannot be
-> 
-> Use "The", and fix double spaces between must and be.
-> 
->> +		} else if (regulator_on && old == REG_R_OFF_U_OFF) {
->> +			/*
->> +			 * the regulator must be enabled. This cannot be here
-> 
-> "The"
-> 
->> +		/*
->> +		 * small optimization. Cancel the work that had been started
-> 
-> "Small."
-> 
->> +#include <linux/regulator/consumer.h>
->> +
->> +/*
->> + * The regulator state tracks 2 boolean variables:
->> + * - the state of regulator (or more precisely the state required by
->> + *   led core layer, as many users can interact with the same regulator).
->> + *   It is tracked by bit 0.
->> + * - the state last asked-for by the LED user. It is tracked by bit 1.
->> + */
->> +#define REG_R_ON BIT(0)
->> +#define REG_U_ON BIT(1)
->> +
->> +enum {	REG_R_OFF_U_OFF = 0,
->> +	REG_R_ON_U_OFF = REG_R_ON,
->> +	REG_R_OFF_U_ON = REG_U_ON,
->> +	REG_R_ON_U_ON = REG_R_ON | REG_U_ON
->> +};
-> 
-> That's quite weird use of enum.
-
-Yes, these could as well be defines, if that's what you mean.
-
->> +++ b/include/linux/leds.h
->> @@ -149,6 +149,15 @@ struct led_classdev {
->>   
->>   	/* Ensures consistent access to the LED Flash Class device */
->>   	struct mutex		led_access;
->> +
->> +	/* regulator */
-> 
-> "Regulator".
-
-Fixed this and the other cosmetic changes, thanks!
-
-Overall, I wonder if all this is worth it as this is somewhat complex change, compared to just 
-having the regulator always enabled...
-
-  Tomi
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>
+> I ran a couple of different rt-app taskgroup tests and try to
+>
+> BUG_ON(se->avg.period_contrib != gcfs_rq->avg.period_contrib);
+> BUG_ON(se->avg.last_update_time != gcfs_rq->avg.last_update_time)
+>
+> in update_tg_cfs_util() but they didn't trigger so far.
+>
+> Both, cfs_rq and gcfs_rq are in sync in update_tg_cfs_util() before and
+> during a task runs in gcfs_rq.
+>
+> Are there cases where this wouldn't necessary happen in
+> update_tg_cfs_util(), maybe a more complicated testcase?
+>
+> >> But since avg.period_contrib of cfs_rq and gcfs_rq are the same this
+> >> should work.
+> >>
+> >>>       /* Update parent cfs_rq utilization */
+> >>>       add_positive(&cfs_rq->avg.util_avg, delta);
+> >>> -     cfs_rq->avg.util_sum = cfs_rq->avg.util_avg * LOAD_AVG_MAX;
+> >>> +     cfs_rq->avg.util_sum = cfs_rq->avg.util_avg * divider;
+> >>
+> >> Looks like that avg.last_update_time of se (group entity), it's gcfs_rq
+> >> and cfs_rq is always the same in update_tg_cfs_[util\|runnable].
+> >>
+> >> So that means the PELT windows are aligned for cfs_rqs and group se's?
+> >
+> > We want to align util_avg with util_sum and period_contrib otherwise
+> > we might have some unalignment. It's quite similarly to what is done
+> > in attach_entity_load_avg()
+>
+> I agree.
+>
+> >> And if we want to enforce this for cfs_rq and task, we have
+> >> sync_entity_load_avg().
+> >
+> > It's not a matter of syncing the last_update_time
+>
+> I agree, this is not what you want to achieve here.
+> But syncing 'last_update_time' and 'period_contrib' is what I understand
+> as aligning the decay window (like in attach_entity_load_avg()).
