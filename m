@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264701B759E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379541B75A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgDXMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgDXMnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:43:41 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AF8D2064C;
-        Fri, 24 Apr 2020 12:43:40 +0000 (UTC)
-Date:   Fri, 24 Apr 2020 08:43:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mike Galbraith <efault@gmx.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] sched: make p->prio independent of p->mm
-Message-ID: <20200424084339.189d4ee6@gandalf.local.home>
-In-Reply-To: <20200424021231.13676-1-hdanton@sina.com>
-References: <20200423040128.6120-1-hdanton@sina.com>
-        <20200423092620.GR20730@hirez.programming.kicks-ass.net>
-        <20200423141609.5224-1-hdanton@sina.com>
-        <20200424003028.14800-1-hdanton@sina.com>
-        <20200424021231.13676-1-hdanton@sina.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727118AbgDXMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726667AbgDXMoO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:44:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0AAC09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:44:12 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x25so10294756wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqrR8RcK3jQJ7N6BJUpZZzAOlag+e4M/HVsKVtYGanM=;
+        b=eK6sY+5096Up6Tuo/atZU75DoQn0eb/5SeL9gtwXHBOMdu1C77ORcvObcdRc5/s1cj
+         G3NWka3kjRFf6NbThNWmpC38Lu0XwjP8QX3yYdDcPnXdrCK4fnp0DmI9EINtqraDs0yK
+         neHsIpC4yO8+Jgzb3kGiu0u0KUcINz9NZCCozQlfSyg9qh6xwe1eU8Ogd9PbQhivuUyK
+         X1BeqLMNSEncfAv0krblxEA+pTXhZwJ9mX3cORgsF8OQf5k4FPl/sIfUUXK2DFX3Hsfp
+         IaCHrq+BYg5kEXj/XmLNbzHI5BQBMyT0RVYG1MGdpAFT4BHvCvzPXIQB+/G1l3FQyIeA
+         Juxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqrR8RcK3jQJ7N6BJUpZZzAOlag+e4M/HVsKVtYGanM=;
+        b=Ie2eKkvt2LUy2x+vTQHJJNzvTaZE7n4gVYEIL1SQlO+d4Tq+ZuOhPAwkwmaTVs09D+
+         7NBtDYsSGLpNQmKNMyOMRgbIy4otbENeF4uwBN9dI1kTJhryL+h+gZY0yDIvgVF0F9Pw
+         Lf3Khak4aAvA9i/hSujMRtNW4O6qhINcts3IBqZXha+wYuRWpUaFrFqHafZYM07ZLbj1
+         z0/rT2qSE+pOeIbpINOZuhiDfz4xUJ6LLntQyR9K1NvjKqjmBvFt5a252dmS+WdZPuS9
+         4wBUbdVypQwHTlako4JB/nkT8bBO5g/ZBKPMMHqiB2WqNpSnfWyZCkL2g0DVcoPxJ3dT
+         fqSg==
+X-Gm-Message-State: AGi0PuZ+qRb+vr4+2mThSN6539o5B5fk7Mh7ucz/MG7KjrMbQQqmJg7P
+        /+Jc2jGqjKVkkWU1tHYjQL0Mog==
+X-Google-Smtp-Source: APiQypKxnci1OIVtsyUwDnRvBaRtP0SdCtKIlKTF+ChQS3TlaLeRLU0KtKZ/IOUbIu+Q2WHUYH9qQQ==
+X-Received: by 2002:a1c:c345:: with SMTP id t66mr10514947wmf.189.1587732251350;
+        Fri, 24 Apr 2020 05:44:11 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
+        by smtp.gmail.com with ESMTPSA id q184sm2692689wma.25.2020.04.24.05.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 05:44:10 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 0/2] arm64: meson-sm1: add support for Hardkernel ODROID-C4
+Date:   Fri, 24 Apr 2020 14:44:04 +0200
+Message-Id: <20200424124406.13870-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Apr 2020 10:12:31 +0800
-Hillf Danton <hdanton@sina.com> wrote:
+This serie adds support for the Hardkernel Odroid-C4 single board computer.
 
-> Yes and if you agree, we send it home during the 5.8 cycle, or not before
-> fifo is reclaimed from modules.
-> 
-> In the spin it now looks like
-> 
-> --- a/include/linux/sched/prio.h
-> +++ b/include/linux/sched/prio.h
-> @@ -12,15 +12,12 @@
->   * tasks are in the range MAX_RT_PRIO..MAX_PRIO-1. Priority
->   * values are inverted: lower p->prio value means higher priority.
->   *
-> - * The MAX_USER_RT_PRIO value allows the actual maximum
-> - * RT priority to be separate from the value exported to
-> - * user-space.  This allows kernel threads to set their
-> - * priority to a value higher than any user task. Note:
-> - * MAX_RT_PRIO must not be smaller than MAX_USER_RT_PRIO.
-> + * Note: MAX_USER_RT_PRIO will be removed as early as 5.8,
-> + * don't use it in new code.
->   */
->  
-> -#define MAX_USER_RT_PRIO	100
-> -#define MAX_RT_PRIO		MAX_USER_RT_PRIO
-> +#define MAX_RT_PRIO		100
-> +#define MAX_USER_RT_PRIO	MAX_RT_PRIO
->  
->  #define MAX_PRIO		(MAX_RT_PRIO + NICE_WIDTH)
->  #define DEFAULT_PRIO		(MAX_RT_PRIO + NICE_WIDTH / 2)
+The Odroid-C4 is the Odroid-C2 successor with same form factor, but using
+a modern Amlogic S905X3 (SM1) SoC and 4x USB3 ports.
 
-No one has used it in years, I don't think we need this change. Just delete
-it in one go.
+Fully functionnal:
+- USB2+USB3
+- USB2 OTG
+- eMMC
+- SDCard
+- HDMI
+- DVFS
+- Gigabit Ethernet with RTL8211F PHY
+- ADC
+- Debug UART
 
-Is making p->prio independent from p->mm needed for other changes? If not,
-then we can hold off this change until we do so, otherwise, I would keep
-your original patch as is, and then remove the extra check when we remove
-MAX_USER_RT_PRIO.
+Missing:
+- HDMI audio
 
--- Steve
+Dongjin Kim (1):
+  arm64: dts: meson-sm1: add support for Hardkernel ODROID-C4
+
+Neil Armstrong (1):
+  dt-bindings: arm: amlogic: add odroid-c4 bindings
+
+ .../devicetree/bindings/arm/amlogic.yaml      |   1 +
+ arch/arm64/boot/dts/amlogic/Makefile          |   1 +
+ .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 399 ++++++++++++++++++
+ 3 files changed, 401 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts
+
+-- 
+2.22.0
+
