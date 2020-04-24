@@ -2,130 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951641B7E77
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4496C1B7E84
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgDXTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 15:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726793AbgDXTAx (ORCPT
+        id S1729233AbgDXTFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 15:05:35 -0400
+Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:53699 "EHLO
+        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728943AbgDXTFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:00:53 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5ECC09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:00:52 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id y31so12024865qta.16
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=G5gPJ9yzlWKnM8iA0E9T+TLkHEBMwugO5CBNEaixrzU=;
-        b=mjl5HAyvNO7Wn0qqjC+GtLPePoAukPVxtQ8Y0wikd5FVl0pThxlj9lQQwp+QV6c8ID
-         RYkoKV1vafanR7IC7NvcZBxYKkjJPFLETBoD2rwuI16FgRI6WOBAC/mV1xRJKg/PWCn/
-         Mb7FabohqsxgHrYQGHEVI4K9tdrOLEznJR/rCvudmDQcqD9teOxGJL/D+vj+Tv0Urcot
-         eLTtyAQq+bU2/jhEvpgzNQqPBc0J6egIfEq1Mywpk/aadY1VyHaORWO1gU92bWMlBJY1
-         Oj6DF/Fwtnj/08B6FM9tS80SiRIX8W9PPwTDhO3ywgIt18LJrj4NWbLJNrUaSE+mlTBt
-         zhEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=G5gPJ9yzlWKnM8iA0E9T+TLkHEBMwugO5CBNEaixrzU=;
-        b=trgldlQKwCESXFFEQNAztk7fXSZGiYTnxDhxYdWaOdlhxSswK9YqN9GW1bz1RMrJbn
-         VUXsWjB/SO2ZUT+WWLFANecfH/40kUi+lJgYxAZ9woAGCNGIbOQteC9Kj0kVQAzZP+E9
-         QtUS09znBA3i3sYsyXz3hq0vGwZ4Ob953Ho1nntk9EQjxZmFbLa0YzkDNfZQ22veARRM
-         M+lb/WiYh8R8v5fKcSNNHDMy4C/iHmjn5Vs1xxKXXBLl29pB8KBEx8iBT6Ci2OCQAJvJ
-         aWsoJrIfXcOYs3plRzwbhV09duwVjbO4KAtdE/uyQjOEKKAgrhmKRZ304uidQhaO3GF7
-         H2+w==
-X-Gm-Message-State: AGi0PuaN2qOAaysyDGmlz34oPnYXG3SC+9mr4dLW3wZVXaWZ7pW0wZlA
-        nRvTuRDU6w/Xsyum+zG4Ag734uynAXU=
-X-Google-Smtp-Source: APiQypISmjPPrqoXpfOTy9ohMBh/vkV4Xt0WhQbaenyLWnvBV083PTzVPMZxeqoQEa2mFbQh1g3aOoeHP9o=
-X-Received: by 2002:ad4:450d:: with SMTP id k13mr10999805qvu.138.1587754850975;
- Fri, 24 Apr 2020 12:00:50 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 12:00:39 -0700
-In-Reply-To: <20200424025057.118641-1-khazhy@google.com>
-Message-Id: <20200424190039.192373-1-khazhy@google.com>
-Mime-Version: 1.0
-References: <20200424025057.118641-1-khazhy@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH v2] eventpoll: fix missing wakeup for ovflist in ep_poll_callback
-From:   Khazhismel Kumykov <khazhy@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, Heiher <r@hev.cc>,
-        Jason Baron <jbaron@akamai.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 24 Apr 2020 15:05:35 -0400
+Received: from pro2.mail.ovh.net (unknown [10.109.138.47])
+        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 48FE14F9D0A6;
+        Fri, 24 Apr 2020 21:05:31 +0200 (CEST)
+Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Fri, 24 Apr
+ 2020 21:05:30 +0200
+Date:   Fri, 24 Apr 2020 21:04:13 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH 1/6] iio: chemical: scd30: add core driver
+Message-ID: <20200424190413.GA2731@arch>
+References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
+ <20200422141135.86419-2-tomasz.duszynski@octakon.com>
+ <CAHp75VcbaGYj76qkDJnTnuG5SM215qVmFo7FLR6YzHA37PgF_g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcbaGYj76qkDJnTnuG5SM215qVmFo7FLR6YzHA37PgF_g@mail.gmail.com>
+X-Originating-IP: [89.70.31.203]
+X-ClientProxiedBy: DAG2EX1.emp2.local (172.16.2.11) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 4069846691092716703
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrhedugdduvdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucffohhmrghinhepshgvnhhsihhrihhonhdrtghomhdpsghoohhtlhhinhdrtghomhenucfkpheptddrtddrtddrtddpkeelrdejtddrfedurddvtdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtohepjhhitgdvfeeskhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the event that we add to ovflist, before 339ddb53d373 we would be
-woken up by ep_scan_ready_list, and did no wakeup in ep_poll_callback.
-With that wakeup removed, if we add to ovflist here, we may never wake
-up. Rather than adding back the ep_scan_ready_list wakeup - which was
-resulting in unnecessary wakeups, trigger a wake-up in ep_poll_callback.
+On Wed, Apr 22, 2020 at 10:49:44PM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 22, 2020 at 5:22 PM Tomasz Duszynski
+> <tomasz.duszynski@octakon.com> wrote:
+> >
+> > Add Sensirion SCD30 carbon dioxide core driver.
+>
+> And DocLink tar of Datasheet: with a link?
+>
 
-We noticed that one of our workloads was missing wakeups starting with
-339ddb53d373 and upon manual inspection, this wakeup seemed missing to
-me. With this patch added, we no longer see missing wakeups. I haven't
-yet tried to make a small reproducer, but the existing kselftests in
-filesystem/epoll passed for me with this patch.
+I never do this. These files change their location way too often to be
+worthwhile putting here. Nobody has that much time to fallow all this
+and keep respective files up to date.
 
-Fixes: 339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested epoll")
+But that doesn't mean I can't drop a link here.
+https://developer.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/9.5_CO2/Sensirion_CO2_Sensors_SCD30_Interface_Description.pdf
 
-Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
-Reviewed-by: Roman Penyaev <rpenyaev@suse.de>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Heiher <r@hev.cc>
-Cc: Jason Baron <jbaron@akamai.com>
-Cc: <stable@vger.kernel.org>
----
-v2: use if/elif instead of goto + cleanup suggested by Roman
- fs/eventpoll.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+> ...
+>
+> > +static SIMPLE_DEV_PM_OPS(scd30_pm_ops, scd30_suspend, scd30_resume);
+>
+> Would it be used in every module? You will get a compiler warning per
+> each module that is not using it.
+>
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index 8c596641a72b..d6ba0e52439b 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1171,6 +1171,10 @@ static inline bool chain_epi_lockless(struct epitem *epi)
- {
- 	struct eventpoll *ep = epi->ep;
- 
-+	/* Fast preliminary check */
-+	if (epi->next != EP_UNACTIVE_PTR)
-+		return false;
-+
- 	/* Check that the same epi has not been just chained from another CPU */
- 	if (cmpxchg(&epi->next, EP_UNACTIVE_PTR, NULL) != EP_UNACTIVE_PTR)
- 		return false;
-@@ -1237,16 +1241,12 @@ static int ep_poll_callback(wait_queue_entry_t *wait, unsigned mode, int sync, v
- 	 * chained in ep->ovflist and requeued later on.
- 	 */
- 	if (READ_ONCE(ep->ovflist) != EP_UNACTIVE_PTR) {
--		if (epi->next == EP_UNACTIVE_PTR &&
--		    chain_epi_lockless(epi))
-+		if (chain_epi_lockless(epi))
-+			ep_pm_stay_awake_rcu(epi);
-+	} else if (!ep_is_linked(epi)) {
-+		/* In the usual case, add event to ready list. */
-+		if (list_add_tail_lockless(&epi->rdllink, &ep->rdllist))
- 			ep_pm_stay_awake_rcu(epi);
--		goto out_unlock;
--	}
--
--	/* If this file is already in the ready list we exit soon */
--	if (!ep_is_linked(epi) &&
--	    list_add_tail_lockless(&epi->rdllink, &ep->rdllist)) {
--		ep_pm_stay_awake_rcu(epi);
- 	}
- 
- 	/*
--- 
-2.26.2.303.gf8c07b1a785-goog
+Good point.
 
+> ...
+>
+> > +int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
+> > +               int (*command)(struct scd30_state *state, enum scd30_cmd cmd,
+> > +                              u16 arg, char *rsp, int size));
+>
+> My gosh.
+> Please, supply proper structure member in priv or alike.
+>
+
+Not sure it's worth the fuss. Wrapping all into structure means either
+copying respective members or more dereferences later on.
+
+> ...
+>
+> > + * Copyright (c) Tomasz Duszynski <tomasz.duszynski@octakon.com>
+>
+> Year?
+>
+
+Okay.
+
+> ...
+>
+> > +#include <asm/byteorder.h>
+>
+> asm goes after linux.
+
+Right.
+
+>
+> > +#include <linux/bits.h>
+> > +#include <linux/compiler.h>
+> > +#include <linux/completion.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/device.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/export.h>
+> > +#include <linux/iio/buffer.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/sysfs.h>
+> > +#include <linux/iio/trigger.h>
+> > +#include <linux/iio/trigger_consumer.h>
+> > +#include <linux/iio/triggered_buffer.h>
+> > +#include <linux/iio/types.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/irqreturn.h>
+> > +#include <linux/jiffies.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/regulator/consumer.h>
+> > +#include <linux/string.h>
+> > +#include <linux/sysfs.h>
+> > +#include <linux/types.h>
+>
+> Are you sure you need all of them?!
+>
+
+Generally each exports something referenced throught the code.
+
+> ...
+>
+> > +/* pressure compensation in millibars */
+> Put the unit as a suffix to each definition and drop useless comment.
+
+Okay.
+
+>
+> > +/* measurement interval in seconds */
+>
+> Ditto.
+>
+> > +/* reference CO2 concentration in ppm */
+>
+> Ditto.
+>
+> > +enum {
+> > +       CONC,
+> > +       TEMP,
+> > +       HR,
+> > +};
+>
+> Way too generic names for anonymous enum.
+
+I'd argue that they are pretty well understood abbreviations in iio generally
+and here specifically. But adding some prefix won't harm.
+
+>
+> ...
+>
+> > +static int scd30_command(struct scd30_state *state, enum scd30_cmd cmd, u16 arg,
+> > +                        char *rsp, int size)
+> > +{
+>
+> > +       /*
+> > +        * assumption holds that response buffer pointer has been already
+> > +        * properly aligned so casts are safe
+> > +        */
+> > +       while (size >= sizeof(u32)) {
+>
+> > +               *(u32 *)rsp = be32_to_cpup((__be32 *)rsp);
+>
+> Seems like rsp should be void * rather than char *.
+>
+
+Might be. That would save a few casts.
+
+> > +               rsp += sizeof(u32);
+> > +               size -= sizeof(u32);
+> > +       }
+>
+> NIH of https://elixir.bootlin.com/linux/v5.7-rc2/ident/be32_to_cpu_array ?
+
+Okay.
+
+>
+> > +       if (size)
+>
+> It can be done before even while loop with an immediate bail out.
+>
+
+Okay.
+
+> > +               *(u16 *)rsp = be16_to_cpup((__be16 *)rsp);
+> > +
+> > +       return 0;
+> > +}
+>
+> ...
+>
+> > +/* simplified float to fixed point conversion with a scaling factor of 0.01 */
+> > +static int scd30_float_to_fp(int float32)
+> > +{
+> > +       int fraction, shift,
+> > +           mantissa = float32 & GENMASK(22, 0),
+> > +           sign = float32 & BIT(31) ? -1 : 1,
+> > +           exp = (float32 & ~BIT(31)) >> 23;
+> > +
+> > +       /* special case 0 */
+> > +       if (!exp && !mantissa)
+> > +               return 0;
+> > +
+> > +       exp -= 127;
+> > +       if (exp < 0) {
+> > +               exp = -exp;
+>
+> > +               /* return values ranging from 1 to 99 */
+> > +               return sign * ((((BIT(23) + mantissa) * 100) >> 23) >> exp);
+>
+>   shift = 23 + exp;
+>   ... >> shift);
+>
+> > +       }
+> > +
+> > +       /* return values starting at 100 */
+> > +       shift = 23 - exp;
+> > +       float32 = BIT(exp) + (mantissa >> shift);
+> > +       fraction = mantissa & GENMASK(shift - 1, 0);
+> > +
+> > +       return sign * (float32 * 100 + ((fraction * 100) >> shift));
+> > +}
+>
+> Sounds like a candidate to IIO library or even lib/math/*.c.
+>
+
+I really doubt it could prove useful to any driver except maybe a few
+specific ones which tend to return results as a float (here I mean this
+sensors and sps30).
+
+But still with the above reasoning put aside that helper would need
+substantial rework to handle rounding errors, precision, etc. before
+actual inclusion.
+
+> ...
+>
+> > +static int scd30_wait_meas_irq(struct scd30_state *state)
+> > +{
+> > +       int ret, timeout = msecs_to_jiffies(state->meas_interval * 1250);
+>
+> Magic number.
+>
+
+Okay.
+
+> > +       reinit_completion(&state->meas_ready);
+> > +       enable_irq(state->irq);
+> > +       ret = wait_for_completion_interruptible_timeout(&state->meas_ready,
+> > +                                                       timeout);
+> > +       if (ret > 0)
+> > +               ret = 0;
+> > +       else if (!ret)
+> > +               ret = -ETIMEDOUT;
+> > +
+> > +       disable_irq(state->irq);
+> > +
+> > +       return ret;
+> > +}
+>
+> ...
+>
+> > +static int scd30_wait_meas_poll(struct scd30_state *state)
+> > +{
+> > +       int tries = 5;
+> > +
+> > +       while (tries--) {
+> > +               int ret;
+> > +               u16 val;
+> > +
+> > +               ret = scd30_command(state, CMD_MEAS_READY, 0, (char *)&val,
+> > +                                   sizeof(val));
+> > +               if (ret)
+> > +                       return -EIO;
+> > +
+> > +               /* new measurement available */
+> > +               if (val)
+> > +                       break;
+> > +
+> > +               msleep_interruptible(state->meas_interval * 250);
+> > +       }
+> > +
+> > +       if (tries == -1)
+> > +               return -ETIMEDOUT;
+>
+> unsigned int tries = ...;
+>
+> do {
+>  ...
+> } while (--tries);
+> if (!tries)
+>   return ...;
+>
+> looks better and I guess less code in asm.
+>
+
+You mean that one extra branch in case of while? But it comes to code
+itself it looks more compact. And I am okay with that.
+
+> > +       return 0;
+> > +}
+>
+> ...
+>
+> > +       if (kstrtou16(buf, 0, &val))
+> > +               return -EINVAL;
+>
+> Shadowed error code. Don't do like this.
+>
+
+Integer parsing either returns EINVAL or ERANGE. Passing the latter to
+the user is not worth the trouble, especially because majority of writable attrs
+have a fellow _available attr.
+
+> > +       if (kstrtou16(buf, 0, &val))
+> > +               return -EINVAL;
+>
+> Ditto.
+>
+> > +       if (kstrtou16(buf, 0, &val))
+> > +               return -EINVAL;
+>
+> Ditto.
+>
+> > +       val = !!val;
+>
+> kstrtobool()?
+>
+
+That would need casting to u16 anyway. So both approaches are more or
+less equivalent.
+
+> ...
+>
+> > +       if (kstrtou16(buf, 0, &val))
+> > +               return -EINVAL;
+>
+> No shadowed error code, please. Check entire code.
+>
+> > +static IIO_DEVICE_ATTR_RW(pressure_comp, 0);
+> > +static IIO_DEVICE_ATTR_RO(pressure_comp_available, 0);
+> > +static IIO_DEVICE_ATTR_RW(meas_interval, 0);
+> > +static IIO_DEVICE_ATTR_RO(meas_interval_available, 0);
+> > +static IIO_DEVICE_ATTR_RW(asc, 0);
+> > +static IIO_DEVICE_ATTR_RW(frc, 0);
+> > +static IIO_DEVICE_ATTR_RO(frc_available, 0);
+> > +static IIO_DEVICE_ATTR_RW(temp_offset, 0);
+> > +static IIO_CONST_ATTR(temp_offset_available, "[0 1 65535]");
+> > +static IIO_DEVICE_ATTR_WO(reset, 0);
+>
+> Do you need all of them? Doesn't  IIO core provides a tons of helpers for these?
+> Btw, where is ABI documentation? It's a show stopper.
+
+They are sensor specific and none falls into a category of iio generic
+attrs. Maybe, except the measurement interval which could be represented as
+a SAMP_FREQ. But given that measurement interval spans from 2s to 1800s
+it becomes a little bit awkward to have it in Hz. As for ABI that's in
+a separate patch.
+
+
+Thanks for review.
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
