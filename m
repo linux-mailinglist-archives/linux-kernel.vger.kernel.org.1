@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB0D1B6B7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397661B6B75
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 04:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgDXCjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Apr 2020 22:39:23 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:55401 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgDXCjW (ORCPT
+        id S1726306AbgDXCiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Apr 2020 22:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgDXCiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Apr 2020 22:39:22 -0400
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 03O2d0QZ016819
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:39:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 03O2d0QZ016819
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587695941;
-        bh=K0CCqutUEwkhzK4mn2L62I8lFdwRFAH0wGb3WIospz4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ck/myLmrRNZ+S45Ipn0CD50jejBv1AjUxvBn5zmfcEP4GNXa37pzqQOHf/MU7EUMv
-         DeDnuNHSx6OJ3F9TpTwGkfCNG1tX/hAnbzkWSgnckcU0UGEzZ1ByFbdpkNZXOThHhM
-         Ab8S+RRI10ew3f+WrQImdKP9gr48PkqtYMrFtl7LFNWbZ2pwU2QPuykmdOUq5iLpmC
-         H2JVNVulPKgbAFy5ejnSS+EAm5CcdWXRN0C91By1cBAlsHY1zsnJVYJVQp7EaOPF5q
-         WEFpPPY0+cFM8+prh+IX5UOGlTZ/fGgJsd9yWDB/v+63CHYTmm/jrfsLsN1UfOuL6F
-         CuvUvdU9CkBeQ==
-X-Nifty-SrcIP: [209.85.222.45]
-Received: by mail-ua1-f45.google.com with SMTP id g10so8024866uae.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 19:39:01 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYujIwjSRhoQHILp/Mgu5ncP1C//HewDYKmnD5HN44mPitvJApm
-        jz3Do/qy7nRVw+vFgWo2qJ9Fh7lpDA/5tbjOoJw=
-X-Google-Smtp-Source: APiQypJk0Gh5f5oZqDVtQhaq5o+g301yOxcn+U2MXZ7yT9vJGWYvQrdurQcUiyuZoWHIwai292ZEsN79Bjr42VsdtFU=
-X-Received: by 2002:a67:6542:: with SMTP id z63mr6187125vsb.179.1587695940134;
- Thu, 23 Apr 2020 19:39:00 -0700 (PDT)
+        Thu, 23 Apr 2020 22:38:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C11C09B044
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 19:38:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d184so4075917pfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Apr 2020 19:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=6++NSo7nhleVNv5D1a6ojdhyb5jaFfFZW4dq4b5kgFY=;
+        b=O31mWV5/EXtIMVB1mhcNN22IKFHhi+5jDB6Qx13ctjtqnvxud2SS6QSRQDBj12wb6Y
+         GMb41qjyVpuZcFQS9J2Bt+QA1h9Z1ehS7JGrWOvc3x0dg6PgJJTA1BjR09m3gYp+U/H+
+         DERxwZlZDUtbC18gx87qU5VzGBXCiFUl3JWQo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=6++NSo7nhleVNv5D1a6ojdhyb5jaFfFZW4dq4b5kgFY=;
+        b=nziQG2+FoST9jcDYQVPnLG+yvRijpqlTruycOKe8C1q7JbDnDqdk3y92c4Z0SZFAxu
+         niodpS0hvAC/oGBvyhApTdjSdwkRLUz8ocLVMiQxG4xGjI4ED1lF6KIs4m5ysqdQgWdn
+         VlGR74ECxub8vW1tBeTMWdbjtk2Icl+eMwnm1Oy28zKHc1OAJ7OypE11Wodb+lQdKucl
+         UMOdfD+6kSOIEfL5QyGeL5bjloVnBpJw86kBvZBqX1CBfPHtKhlp9+7uMfy1tU6wk7R8
+         rYZ5XdITm4wooKKRWZkr8QjSnQgSzt1zhbNw2LGc2CwPSPueit4OFYYzuc5HDDISJCzT
+         bnCw==
+X-Gm-Message-State: AGi0PubjX/DWPLsZPJMEczppjGC0YMx27t0qNTM0QhyPYpo7BFVovLqi
+        p9MH8zCHZcxnpxBwzsf8pVlDLA==
+X-Google-Smtp-Source: APiQypL5a3shosB0ICD9UKcXZSEjuuZRkrKUjGULwCTOR7fGOZo/bTzItraHZurz1nElZT9c5lwLfQ==
+X-Received: by 2002:a63:1d4c:: with SMTP id d12mr6991045pgm.247.1587695933525;
+        Thu, 23 Apr 2020 19:38:53 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id 198sm4184312pfa.87.2020.04.23.19.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 19:38:53 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200419132142.173861-1-sedat.dilek@gmail.com>
-In-Reply-To: <20200419132142.173861-1-sedat.dilek@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 24 Apr 2020 11:38:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATk1yfHdmGLvS2vwew1MgX2nFupgW7ZqHuk7ragBX5VQA@mail.gmail.com>
-Message-ID: <CAK7LNATk1yfHdmGLvS2vwew1MgX2nFupgW7ZqHuk7ragBX5VQA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] kbuild: Rename and use BINUTILS_VERSION where needed
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200422145408.v4.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+References: <20200422145408.v4.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+Subject: Re: [PATCH v4 1/5] soc: qcom: rpmh-rsc: Corrently ignore CPU_CLUSTER_PM notifications
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mka@chromium.org, mkshah@codeaurora.org, evgreen@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com
+Date:   Thu, 23 Apr 2020 19:38:52 -0700
+Message-ID: <158769593201.135303.16055600803132525490@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 10:21 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> In the first patch I introduced LD_IS_BINUTILS Kconfig.
->
-> To be consistent in naming convention I renamed from LD_VERSION
-> to BINUTILS_VERSION.
->
-> So, we have the double "LD_IS_BINUTILS" and "BINUTILS_VERSION"
-> like "CC_IS_GCC" and "GCC_VERSION".
->
-> For the same reason I renamed the shell script to detect the GNU ld
-> linker version.
->
-> In Documentation/process/changes.rst we use "binutils" and GNU ld
-> binary is part of it (see [3]).
->
-> The patches "init/kconfig: Add LD_VERSION Kconfig" (see [1]) and
-> "arm64: Kconfig: ptrauth: Add binutils version check to fix mismatch"
-> (see [2]) added checks for binutils >=2.23.1 whereas binutils
-> version 2.23 is minimum supported version (see [3]).
->
-> I have renamed to BINUTILS_VERSION where needed.
-
-
-
-I do not think this is the right thing to do.
-
-As the doc implies
-https://lore.kernel.org/lkml/20200224174129.2664-1-ndesaulniers@google.com/T/
-we support overriding CC, LD, ... etc. individually.
-(such a usage might be rare with LLVM=1 syntax supported, though)
-
-
-
-I'd rather want to stick to LD_VERSION
-instead of the version of the tool suite.
-
-
-
-config BINUTILS_VERSION
-       int
-       default $(shell,$(LD) --version |
-$(srctree)/scripts/binutils-version.sh) if LD_IS_BINUTILS
-
-
-This will leave BINUTILS_VERSION empty when LD=ld.lld,
-but it looks strange if binutils is still used for other tools.
-
-
-
-
->
-> [1] https://git.kernel.org/linus/9553d16fa671b9621c5e2847d08bd90d3be3349c
-> [2] https://git.kernel.org/linus/15cd0e675f3f76b4d21c313795fe0c23df0ee20f
-> [3] https://git.kernel.org/linus/Documentation/process/changes.rst#n79
->
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+Quoting Douglas Anderson (2020-04-22 14:54:59)
+> Our switch statement doesn't have entries for CPU_CLUSTER_PM_ENTER,
+> CPU_CLUSTER_PM_ENTER_FAILED, and CPU_CLUSTER_PM_EXIT and doesn't have
+> a default.  This means that we'll try to do a flush in those cases but
+> we won't necessarily be the last CPU down.  That's not so ideal since
+> our (lack of) locking assumes we're on the last CPU.
+>=20
+> Luckily this isn't as big a problem as you'd think since (at least on
+> the SoC I tested) we don't get these notifications except on full
+> system suspend.  ...and on full system suspend we get them on the last
+> CPU down.  That means that the worst problem we hit is flushing twice.
+> Still, it's good to make it correct.
+>=20
+> Fixes: 985427f997b6 ("soc: qcom: rpmh: Invoke rpmh_flush() for dirty cach=
+es")
+> Reported-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  arch/arm64/Kconfig                             | 2 +-
->  init/Kconfig                                   | 4 ++--
->  scripts/{ld-version.sh => binutils-version.sh} | 0
->  3 files changed, 3 insertions(+), 3 deletions(-)
->  rename scripts/{ld-version.sh => binutils-version.sh} (100%)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 40fb05d96c60..274ba9b3ac95 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1504,7 +1504,7 @@ config ARM64_PTR_AUTH
->         depends on (CC_HAS_SIGN_RETURN_ADDRESS || CC_HAS_BRANCH_PROT_PAC_RET) && AS_HAS_PAC
->         # GCC 9.1 and later inserts a .note.gnu.property section note for PAC
->         # which is only understood by binutils starting with version 2.33.1.
-> -       depends on !CC_IS_GCC || GCC_VERSION < 90100 || LD_VERSION >= 233010000
-> +       depends on !CC_IS_GCC || GCC_VERSION < 90100 || BINUTILS_VERSION >= 233010000
->         depends on !CC_IS_CLANG || AS_HAS_CFI_NEGATE_RA_STATE
->         depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
->         help
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 520116efea0f..946db4786951 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -19,9 +19,9 @@ config GCC_VERSION
->  config LD_IS_BINUTILS
->         def_bool $(success,$(LD) -v | head -n 1 | grep -q 'GNU ld')
->
-> -config LD_VERSION
-> +config BINUTILS_VERSION
->         int
-> -       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh) if LD_IS_BINUTILS
-> +       default $(shell,$(LD) --version | $(srctree)/scripts/binutils-version.sh) if LD_IS_BINUTILS
->
->  config CC_IS_CLANG
->         def_bool $(success,$(CC) --version | head -n 1 | grep -q clang)
-> diff --git a/scripts/ld-version.sh b/scripts/binutils-version.sh
-> similarity index 100%
-> rename from scripts/ld-version.sh
-> rename to scripts/binutils-version.sh
-> --
-> 2.26.1
->
 
-
--- 
-Best Regards
-Masahiro Yamada
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
