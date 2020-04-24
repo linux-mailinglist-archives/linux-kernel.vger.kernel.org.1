@@ -2,156 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C0C1B7C45
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 18:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725851B7C4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 18:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgDXQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 12:58:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31778 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726849AbgDXQ6y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 12:58:54 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OGWpHi076491;
-        Fri, 24 Apr 2020 12:58:53 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30jrxp0q3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 12:58:52 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03OGWpk4076487;
-        Fri, 24 Apr 2020 12:58:52 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30jrxp0q2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 12:58:51 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03OGoRcP007910;
-        Fri, 24 Apr 2020 16:58:50 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03wdc.us.ibm.com with ESMTP id 30fs67320c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Apr 2020 16:58:50 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03OGwluY55574910
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Apr 2020 16:58:47 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44FAE13604F;
-        Fri, 24 Apr 2020 16:58:47 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E411A136053;
-        Fri, 24 Apr 2020 16:58:45 +0000 (GMT)
-Received: from cpe-66-24-59-227.stny.res.rr.com (unknown [9.85.130.212])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 24 Apr 2020 16:58:45 +0000 (GMT)
-Subject: Re: [PATCH v7 04/15] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pmorel@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
-References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
- <20200407192015.19887-5-akrowiak@linux.ibm.com>
- <20200416131845.3ef6b3b5.cohuck@redhat.com>
- <5cf7d611-e30c-226d-0d3d-d37170f117f4@linux.ibm.com>
- <20200424051315.20f17133.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <6b4e59cd-8682-d0d4-7244-cf7ba7d9a2be@linux.ibm.com>
-Date:   Fri, 24 Apr 2020 12:58:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200424051315.20f17133.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1728474AbgDXQ7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 12:59:40 -0400
+Received: from mga12.intel.com ([192.55.52.136]:18709 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727059AbgDXQ7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 12:59:40 -0400
+IronPort-SDR: N1Wc5K4qCvS62ssH18gAXYW8BsGnLwMDiTzDcJmEegjaYazMl1CXUqd3Pl9XeD1Q++XsmUXqaw
+ RIoJIGFyWIXQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 09:59:39 -0700
+IronPort-SDR: tOqx2VmrqyzfsKV6KFKzu0hNks9DG75RbUMG/T5yJpIdZplkBvI78cmFGNZu7OBdmWoMu4vu/j
+ Jzp303W0lEQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
+   d="scan'208";a="292698169"
+Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
+  by orsmga008.jf.intel.com with ESMTP; 24 Apr 2020 09:59:32 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 24 Apr 2020 09:59:32 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.53) by
+ edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Fri, 24 Apr 2020 09:59:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QP6skHO+9HF1ibZBDPy7QOqTssUCIfw8lsDcsuKz22r4hEAV00kUZ2cru3R/MueFbbEivS87E2Ky5H7uh2KUhzkA0q6dvgV0EqL/uRINENZVHInfHLVWgVKWXn/wiU7RhMq1N+i4E1P10as8oBjtEtrKBu58DUlmCG4l04mJWXdeeMM6OEgpZYT6LQ70xphiSuUdIeuxDWqsoqa1WzALSUZhuRp+D3e4wgiv0TnbFoOUoEPDOHKUUFeJeyBUGqhzb2D24YprP880QolLK9Kd4yta0Cf5iX8M2fEv15N/gyalTd6o9Pe0qb4eskgTRkAOvyuU/MaS8WHhIaTxZ2kgqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1FTif9ny2lTWkbBSJY+HSDEIMyuIfrfR0YRYSbX5dW8=;
+ b=cCLGx4/Je6/F+ZPTKRKEumh0J3Ht6KlaSNjIQgqJrJ95ExDkqZjlB5AUMra1pT6+PLO5XutZWh6TrHC3dGBfx1np6mrrvU0tqjiY9v0wARXKH0uyiZ2Gmc4z9INAVPaEdy1VRtyk/BHYsoG5UfKAnyBDSAyX+/dguF2/kMKIxbpQosztkPmznnaR/kuR0LiuVKtPrNI/D3H4wiRbD5cjLCTIFWJ6DgPWZNfvDJcdLcqstzNSwWARL3k+XzxWT0aSFMpNf1jf227Kll78emf5qfE2g0x9/LI/9ZfmWkW+Bu/AM+vgvFSWCZ5hWPAYQBi8GGP/lwuOUoesaWzKBpCpMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1FTif9ny2lTWkbBSJY+HSDEIMyuIfrfR0YRYSbX5dW8=;
+ b=SWXKJVWYMgokvcjUVts3fTQeEfeacgEIOWXPTKL1BiYfMNlAeNjplZkWtHU2+wtrdPwCR9QjeOaizu/3lWZ6BqNApiYCj27aYwXprCNlkkFfi7aipBssrhXTQdnVjGoV6NLHoBf7iyzejPK7i0Fs4M+6VmhjqaDRoYPkV9ElOxs=
+Received: from BY5PR11MB3958.namprd11.prod.outlook.com (2603:10b6:a03:18e::19)
+ by BY5PR11MB4259.namprd11.prod.outlook.com (2603:10b6:a03:1be::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
+ 2020 16:59:30 +0000
+Received: from BY5PR11MB3958.namprd11.prod.outlook.com
+ ([fe80::e57f:cc7f:1fda:69c1]) by BY5PR11MB3958.namprd11.prod.outlook.com
+ ([fe80::e57f:cc7f:1fda:69c1%6]) with mapi id 15.20.2937.012; Fri, 24 Apr 2020
+ 16:59:30 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v2] IB/rdmavt: return proper error code
+Thread-Topic: [PATCH v2] IB/rdmavt: return proper error code
+Thread-Index: AQHWGlHHpQ9/5ohPoE6ZUTbdvZaHxqiIfaHg
+Date:   Fri, 24 Apr 2020 16:59:30 +0000
+Message-ID: <BY5PR11MB395888228F5FCA3861A21AE086D00@BY5PR11MB3958.namprd11.prod.outlook.com>
+References: <20200424160114.7139-1-sudipm.mukherjee@gmail.com>
+In-Reply-To: <20200424160114.7139-1-sudipm.mukherjee@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-24_08:2020-04-24,2020-04-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 clxscore=1015 suspectscore=3 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004240129
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=mike.marciniszyn@intel.com; 
+x-originating-ip: [192.55.52.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1ada518c-f7d1-49d1-40fe-08d7e870db35
+x-ms-traffictypediagnostic: BY5PR11MB4259:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB42593F4B75B0AF64EE4F44CC86D00@BY5PR11MB4259.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1148;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3958.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(396003)(346002)(39860400002)(366004)(136003)(7696005)(55016002)(2906002)(76116006)(26005)(6506007)(9686003)(33656002)(478600001)(4326008)(110136005)(66946007)(54906003)(8676002)(8936002)(66446008)(71200400001)(4744005)(316002)(52536014)(86362001)(5660300002)(81156014)(64756008)(66556008)(66476007)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: azO0JnDWsuXfe5NECeirMN7ZYmvxIsbWxdJDshHu9Fr0gnGiKHTQxsF0lqswcYjNVVPvXZrKP/VucM2BEvRBGjBVeCkdLX6WGygtRKemdzMuFoeVzfVLjzHuwtl3swlgeRczHtBzvpArmGMU9XOTah41YXOjZBZg6OE7YGDFI9kNrGrfZ851GXosfRlTkrbyy/dAuVptspXH5zA7kzcrThuTM5CK0YE1DeAbPaTuajxPZ7IDWCiZLb6S6Kj8RruK8LDCyPaQC6MNbBzv7r46QFJxU/p3GuI/FCg0TkikcolOd4FiV3ZMBrHu3RchlFnOQvvEJb2uKeVXo5ebtpSpgXB9S42RkMF5RaxldAUAnESzLi9uekmEcrwzYtBPbAbpH7vDcbQswGTEBIizzCSGXAHh1VbpACmMd9lPlIW/Hud/ZCKkaPijX+a6i5XBrUu4
+x-ms-exchange-antispam-messagedata: bKQX/y35s1/WZ1WIMebRl0O1weuYE9PVFmLFvVFvnprn/sadbzhEZrraCwwnqvBZUfQTZUMps7Sp478Sj5kc2niPPxyJW5FgqmKd3XPxeUyQ2TWPEwDxT/eQoS9yC6SKqdkTlq1kJdMo7q7uHQ+fkA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ada518c-f7d1-49d1-40fe-08d7e870db35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 16:59:30.6288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QGqvwt3oHQ7AM06trTkWUj5/yCuss4TMCnlQLKiHAInvNZ8e44PuiE0LeuwaNd4HZr7Ozm1MSB9PbZZHKd9kKFCqlu1f0NyJ+U8m8yLjWys=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4259
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Subject: [PATCH v2] IB/rdmavt: return proper error code
+>=20
+> The commit 'ff23dfa13457' modified rvt_create_mmap_info() to return
+> error code and also NULL but missed fixing codes which called
+> rvt_create_mmap_info(). Modify rvt_create_mmap_info() to only return
+> errorcode and fix error checking after rvt_create_mmap_info() was
+> called.
+>=20
+> Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+> Cc: stable@vger.kernel.org [5.4+]
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
+I just tested the exact same patch!
 
-On 4/23/20 11:13 PM, Halil Pasic wrote:
-> On Thu, 16 Apr 2020 10:45:20 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->>
->> On 4/16/20 7:18 AM, Cornelia Huck wrote:
->>> On Tue,  7 Apr 2020 15:20:04 -0400
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>
->>>> Let's implement the callback to indicate when an APQN
->>>> is in use by the vfio_ap device driver. The callback is
->>>> invoked whenever a change to the apmask or aqmask would
->>>> result in one or more queue devices being removed from the driver. The
->>>> vfio_ap device driver will indicate a resource is in use
->>>> if the APQN of any of the queue devices to be removed are assigned to
->>>> any of the matrix mdevs under the driver's control.
->>>>
->>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>>> ---
->>>>    drivers/s390/crypto/vfio_ap_drv.c     |  1 +
->>>>    drivers/s390/crypto/vfio_ap_ops.c     | 47 +++++++++++++++++----------
->>>>    drivers/s390/crypto/vfio_ap_private.h |  2 ++
->>>>    3 files changed, 33 insertions(+), 17 deletions(-)
->>>> @@ -1369,3 +1371,14 @@ void vfio_ap_mdev_remove_queue(struct ap_queue *queue)
->>>>    	kfree(q);
->>>>    	mutex_unlock(&matrix_dev->lock);
->>>>    }
->>>> +
->>>> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
->>>> +{
->>>> +	bool in_use;
->>>> +
->>>> +	mutex_lock(&matrix_dev->lock);
->>>> +	in_use = vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm) ? true : false;
->>> Maybe
->>>
->>> in_use = !!vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
->>>
->>> ?
->> To be honest, I find the !! expression very confusing. Every time I see
->> it, I have
->> to spend time thinking about what the result of !! is going to be. I think
->> the statement should be left as-is because it more clearly expresses
->> the intent.
->>
-> This is discussion is just about cosmetics, I believe. Just a piece of
-> advice: try to be sensitive about the community. In this community, and
-> I believe in C general !! is the idiomatic way to convert number to
-> boolean. Why would one want to do that is a bit longer story. The short
-> version is in logic condition context the value 0 is false and any
-> other value is true. !! keeps false value (0) false, and forces a true to
-> the most true true value. If you keep getting confused every time you
-> run across a !! that won't help with reading other peoples C.
->
-> Regards,
-> Halil
+Just a nit, adjust the comments for rvt_create_mmap_info():
 
-The point is moot. After seeing that Conny's comment generated a
-discussion, I decided to avoid wasting additional time discussing
-personal preferences and am now using the !! syntax. Unfortunately,
-I've been having some odd problems with my email client and my
-response to Pierre's comment never made it to the list, so I apologize
-that you had to waste valuable time on your tutorial.
+* Return: rvt_mmap struct on success, ERR_PTR on failure
 
->
->>>> +	mutex_unlock(&matrix_dev->lock);
->>>> +
->>>> +	return in_use;
->>>> +}
+Tested-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Acked-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
+Mike
