@@ -2,194 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8741B7F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9981B7F23
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgDXThb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 15:37:31 -0400
-Received: from mga02.intel.com ([134.134.136.20]:8203 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729308AbgDXTh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:37:27 -0400
-IronPort-SDR: xB/qbbqFxitlP/Q+m5r/JaV4ZfI8PtNFjFTxSBkmMLEoSNIBVjE3sTguHCarg86gOPJ97MR8bR
- iCNUL3UpRiaw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 12:37:26 -0700
-IronPort-SDR: hr1iMEhOsbqK9s46SwroIOjdSZpx+Ig4qwnp73VqLKABgzPaJtFQsGCw9sMEdbfKk5o8qBRNhC
- hqrN1aJCP5LA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,313,1583222400"; 
-   d="scan'208";a="403425647"
-Received: from kmp-skylake-client-platform.sc.intel.com ([172.25.112.108])
-  by orsmga004.jf.intel.com with ESMTP; 24 Apr 2020 12:37:23 -0700
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        gregkh@linuxfoundation.org, ak@linux.intel.com,
-        tony.luck@intel.com, ashok.raj@intel.com, ravi.v.shankar@intel.com,
-        fenghua.yu@intel.com, kyung.min.park@intel.com
-Subject: [PATCH v4 3/3] x86/delay: Introduce TPAUSE delay
-Date:   Fri, 24 Apr 2020 12:37:56 -0700
-Message-Id: <1587757076-30337-4-git-send-email-kyung.min.park@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587757076-30337-1-git-send-email-kyung.min.park@intel.com>
-References: <1587757076-30337-1-git-send-email-kyung.min.park@intel.com>
+        id S1729261AbgDXTlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 15:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgDXTls (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 15:41:48 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03652C09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:41:48 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u15so11210370ljd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xEmEzSJAW12x5niGKKzPXSqsRmQBFq2lP6H8xvuac/8=;
+        b=T0keOgZ72bgaeEiqotFnnG+NMkzgKYHGXH4TyFbkmZQOJe1Y5iKcFbRjOuVS3LytBL
+         W6AnOWDW2QWZo3w+XoSlX7QKg7WFduDC+turDLabtmC3eHu2R+LW2LppYuJYXdj40rg7
+         CdC1QLOEEL0R1Cimqms8CMRslN8tW7OXjqcp181VPdrvY8W8QYwXkvlGnezntNU/aIQI
+         i6YsVJ+qBo1IpmfuneESoyprPvhhXr26CeMvNdDtUxyovd7PslG1FH6YR8sVB7ohtRad
+         QOWlk/axNwWA9QPd0lqbh3Eau8RDrkadohiHGyCxCHAzXRPCkwjqYlFo45dJvWYiXb2y
+         7ahA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xEmEzSJAW12x5niGKKzPXSqsRmQBFq2lP6H8xvuac/8=;
+        b=K7AVGQowQJ6/H5nlw5L42Gq5ydaJoIZYYo6FeEPMdc7BrFzTHUN7uKbM2a3aQ1vcga
+         TTE5/a6dR425SPEFMQjuaRcgBtCrCW0c1hhzc5VWOdh+dao+vLm8cW+HY2+TER204lrN
+         B0bUa+N6H6V0iYvJnV9y/Ql4RxCdjnZe8SZt9A9d8azFRWDgsSqVq+0lN0torGBPv9RD
+         YqBeIYe3UHlcmsuheetdS5WyyBVm4GRsme8W1D88CMeTjLmYqBZrd6eDqk/0juxQb2vq
+         ep2h2+v6KuCp+qUAPrawVqFtNHEcnVil+GilDt1EQQAV5SJa4aQa27F3Deogvgm/MOpB
+         8J2A==
+X-Gm-Message-State: AGi0PuYLDf3X6rS4mxM9HQPbxM+octDPUSbZCetoG2qiMOhHDCMr7qo7
+        Oy5ER8UC3keWf5P8aZDNoUPLak3OMYuSUC2F4uN47Q==
+X-Google-Smtp-Source: APiQypI4Xi6+DbAAYIeOQPzrEcE/mxStfNg2RlTAQ/87ko7Y+RTOVwvrDrzFbofvytmtXUu0lTzmeVzRLH+KYXFDMfY=
+X-Received: by 2002:a2e:9791:: with SMTP id y17mr7027497lji.174.1587757306172;
+ Fri, 24 Apr 2020 12:41:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200328185916.98423-1-rajatja@google.com> <20200328185916.98423-3-rajatja@google.com>
+ <20200410164140.GA25924@bogus>
+In-Reply-To: <20200410164140.GA25924@bogus>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Fri, 24 Apr 2020 12:41:09 -0700
+Message-ID: <CACK8Z6G=oy9Gesazk1jJVhk22Dgm8_TGZCcpNndkv+WLqAe8hg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] dt-bindings: input/atkbd.txt: Add binding for "function-row-physmap"
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Dmitry Torokhov <dtor@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Furquan Shaikh <furquan@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Benson Leung <bleung@google.com>,
+        Zentaro Kavanagh <zentaro@google.com>,
+        Dominik Behr <dbehr@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TPAUSE instructs the processor to enter an implementation-dependent
-optimized state. The instruction execution wakes up when the time-stamp
-counter reaches or exceeds the implicit EDX:EAX 64-bit input value.
-The instruction execution also wakes up due to the expiration of
-the operating system time-limit or by an external interrupt
-or exceptions such as a debug exception or a machine check exception.
+Hi,
 
-TPAUSE offers a choice of two lower power states:
- 1. Light-weight power/performance optimized state C0.1
- 2. Improved power/performance optimized state C0.2
-This way, it can save power with low wake-up latency in comparison to
-spinloop based delay. The selection between the two is governed by the
-input register.
+On Fri, Apr 10, 2020 at 10:38 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sat, Mar 28, 2020 at 11:59:14AM -0700, Rajat Jain wrote:
+> > Create the documentation for the new introduced property, that
+> > describes the function-row keys physical positions.
+> >
+> > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > ---
+> > v4: Same as v3
+> > v3: same as v2
+> > v2: Remove the Change-Id from the commit log
+> >
+> >  .../devicetree/bindings/input/atkbd.txt       | 34 +++++++++++++++++++
+> >  1 file changed, 34 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/atkbd.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/atkbd.txt b/Documentation/devicetree/bindings/input/atkbd.txt
+> > new file mode 100644
+> > index 0000000000000..816653eb8e98d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/atkbd.txt
+> > @@ -0,0 +1,34 @@
+> > +Device tree bindings for AT / PS2 keyboard device
+> > +
+> > +Optional properties:
+> > +
+> > +     function-row-physmap:
+> > +                     An ordered array of the physical codes for the function
+> > +                     row keys. Arranged in order from left to right.
+>
+> A single optional property doesn't constitute a DT binding.
+>
+> > +
+> > +Example:
+> > +
+> > +     This is a sample ACPI _DSD node describing the property:
+>
+> Neither does this ACPI stuff.
 
-TPAUSE is available on processors with X86_FEATURE_WAITPKG.
+I assume this means a nack to the documentation patches.
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
----
- arch/x86/Kconfig.assembler   |  4 ++++
- arch/x86/include/asm/delay.h |  1 +
- arch/x86/include/asm/mwait.h | 22 ++++++++++++++++++++++
- arch/x86/kernel/time.c       |  3 +++
- arch/x86/lib/delay.c         | 27 +++++++++++++++++++++++++++
- 5 files changed, 57 insertions(+)
+Dmitry, can you apply the other patches in the series?
 
-diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
-index 13de0db..26b8c08 100644
---- a/arch/x86/Kconfig.assembler
-+++ b/arch/x86/Kconfig.assembler
-@@ -15,3 +15,7 @@ config AS_SHA256_NI
- 	def_bool $(as-instr,sha256msg1 %xmm0$(comma)%xmm1)
- 	help
- 	  Supported by binutils >= 2.24 and LLVM integrated assembler
-+config AS_TPAUSE
-+	def_bool $(as-instr,tpause %ecx)
-+	help
-+	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
-diff --git a/arch/x86/include/asm/delay.h b/arch/x86/include/asm/delay.h
-index 9aa38de..630891d 100644
---- a/arch/x86/include/asm/delay.h
-+++ b/arch/x86/include/asm/delay.h
-@@ -6,6 +6,7 @@
- #include <linux/init.h>
- 
- void __init use_tsc_delay(void);
-+void __init use_tpause_delay(void);
- void use_mwaitx_delay(void);
- 
- #endif /* _ASM_X86_DELAY_H */
-diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
-index a43b35b..73d997a 100644
---- a/arch/x86/include/asm/mwait.h
-+++ b/arch/x86/include/asm/mwait.h
-@@ -22,6 +22,8 @@
- #define MWAITX_ECX_TIMER_ENABLE		BIT(1)
- #define MWAITX_MAX_WAIT_CYCLES		UINT_MAX
- #define MWAITX_DISABLE_CSTATES		0xf0
-+#define TPAUSE_C01_STATE		1
-+#define TPAUSE_C02_STATE		0
- 
- u32 get_umwait_control_msr(void);
- 
-@@ -122,4 +124,24 @@ static inline void mwait_idle_with_hints(unsigned long eax, unsigned long ecx)
- 	current_clr_polling();
- }
- 
-+/*
-+ * Caller can specify whether to enter C0.1 (low latency, less
-+ * power saving) or C0.2 state (saves more power, but longer wakeup
-+ * latency). This may be overridden by the IA32_UMWAIT_CONTROL MSR
-+ * which can force requests for C0.2 to be downgraded to C0.1.
-+ */
-+static inline void __tpause(u32 ecx, u32 edx, u32 eax)
-+{
-+	/* "tpause %ecx, %edx, %eax;" */
-+	#ifdef CONFIG_AS_TPAUSE
-+	asm volatile("tpause %%ecx\n"
-+		     :
-+		     : "c"(ecx), "d"(edx), "a"(eax));
-+	#else
-+	asm volatile(".byte 0x66, 0x0f, 0xae, 0xf1\t\n"
-+		     :
-+		     : "c"(ecx), "d"(edx), "a"(eax));
-+	#endif
-+}
-+
- #endif /* _ASM_X86_MWAIT_H */
-diff --git a/arch/x86/kernel/time.c b/arch/x86/kernel/time.c
-index 106e7f8..371a6b3 100644
---- a/arch/x86/kernel/time.c
-+++ b/arch/x86/kernel/time.c
-@@ -103,6 +103,9 @@ static __init void x86_late_time_init(void)
- 	 */
- 	x86_init.irqs.intr_mode_init();
- 	tsc_init();
-+
-+	if (static_cpu_has(X86_FEATURE_WAITPKG))
-+		use_tpause_delay();
- }
- 
- /*
-diff --git a/arch/x86/lib/delay.c b/arch/x86/lib/delay.c
-index fe91dc1..65d15df 100644
---- a/arch/x86/lib/delay.c
-+++ b/arch/x86/lib/delay.c
-@@ -97,6 +97,27 @@ static void delay_tsc(u64 cycles)
- }
- 
- /*
-+ * On Intel the TPAUSE instruction waits until any of:
-+ * 1) the TSC counter exceeds the value provided in EDX:EAX
-+ * 2) global timeout in IA32_UMWAIT_CONTROL is exceeded
-+ * 3) an external interrupt occurs
-+ */
-+static void delay_halt_tpause(u64 start, u64 cycles)
-+{
-+	u64 until = start + cycles;
-+	u32 eax, edx;
-+
-+	eax = lower_32_bits(until);
-+	edx = upper_32_bits(until);
-+
-+	/*
-+	 * Hard code the deeper (C0.2) sleep state because exit latency is
-+	 * small compared to the "microseconds" that usleep() will delay.
-+	 */
-+	__tpause(TPAUSE_C02_STATE, edx, eax);
-+}
-+
-+/*
-  * On some AMD platforms, MWAITX has a configurable 32-bit timer, that
-  * counts with TSC frequency. The input value is the number of TSC cycles
-  * to wait. MWAITX will also exit when the timer expires.
-@@ -156,6 +177,12 @@ void __init use_tsc_delay(void)
- 		delay_fn = delay_tsc;
- }
- 
-+void __init use_tpause_delay(void)
-+{
-+	delay_halt_fn = delay_halt_tpause;
-+	delay_fn = delay_halt;
-+}
-+
- void use_mwaitx_delay(void)
- {
- 	delay_halt_fn = delay_halt_mwaitx;
--- 
-2.7.4
+Thanks,
 
+Rajat
+
+>
+> Rob
