@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5288A1B72F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEF81B72F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgDXLVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 07:21:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47682 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgDXLVp (ORCPT
+        id S1726881AbgDXLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 07:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgDXLV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 07:21:45 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jRwOs-0005mF-TW; Fri, 24 Apr 2020 11:21:43 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] integrity: remove redundant assignment to variable ret
-Date:   Fri, 24 Apr 2020 12:21:42 +0100
-Message-Id: <20200424112142.12261-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 24 Apr 2020 07:21:57 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40830C09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:21:57 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id q2so4450376qvd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Dh+cbKBXCzPP+Njq9daowk2Xw6UxcKl1Orb8G3pFTEc=;
+        b=Cn83ERzwUBx68FytvvAk+hkYmDmkdpCyNm3cOVAikbgN196PX5EZZy+RRcs/U89lXI
+         T1DKAQlvh1/f5SRUBUjnVBZi1e937a9EfGeJUbcZ1Kqc/9OGaQRX9XmWophNp6ZgtPUe
+         JGZY2huB7m172nTQ1HIkmt3WNdGIji+F3QRkqFCIbeFjnCy2odlu7bZIPygBsokROU0/
+         CSToFZ0dhPSY2JhLM2rkKxq2rckjLDKKa+LJewRWCG3uXVEqkEBZPxSuNf6eTYdITp91
+         qBD7eLtZzGF2jGLhuFw1wkPwGFmrA8M+b7beRSfZxOpyDxUy5ROUHXMHKCDnhtvxVWYj
+         aSMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Dh+cbKBXCzPP+Njq9daowk2Xw6UxcKl1Orb8G3pFTEc=;
+        b=Gg7p3kK/DGeuLP23aZlOM8TW8newaJ98KOGCacn6v/VdJ4ghDUazUk64P9yjekeqT8
+         bnW2LJjY9VJJ19AFiOIeMNbKqpPKipPcZV/0QXEtUN0o04RQRXI6oknAI1KhfjQBGmJ8
+         E6nUvWoq/dzWGe4yD381+DsR72pyW5ytDQODzzl992wcoP6uXMSW6nqpv/Idl8o/0zQX
+         1o6MXNZU091SfdrfmhaUihtYv+fxyMN75mB8/fQ/mecWtaUiTjWUHKCbBO/Dr8LbfHih
+         MZCYVUWUgD04TwbDG9MHgnO6HmwFpuLwJ7gbQ+Z+sdoR4Y9Jflat+wZzh6bx+oDlicWQ
+         ThxA==
+X-Gm-Message-State: AGi0PuYWf2+hyV6Mi2XpOiXS/VfhosaFiQHAmRkSPFSD3kJUDqkUsfSL
+        8Zu0BDE7oMGcsB8TAgyTBPpDgnkB+Lp3gbJa7/0=
+X-Google-Smtp-Source: APiQypLN9+8NY6Ba4ALjxFxWJDpgtj2M7Hf//G9pMtzqggBIJAmvAIbOOVnQJFrzgBi/yGvWMXMYnPWhnBuRHRBrLDs=
+X-Received: by 2002:a05:6214:188a:: with SMTP id cx10mr8785651qvb.119.1587727316391;
+ Fri, 24 Apr 2020 04:21:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac8:6c42:0:0:0:0:0 with HTTP; Fri, 24 Apr 2020 04:21:55
+ -0700 (PDT)
+Reply-To: ga161821@gmail.com
+From:   George Anderson <margaretcarnegie1@gmail.com>
+Date:   Fri, 24 Apr 2020 13:21:55 +0200
+Message-ID: <CABdNr8LkXTRsiDhhNkmz6X0UaqCae=25uKTzCUYqUTif=NFmcA@mail.gmail.com>
+Subject: Hello greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-The variable ret is being initialized with a value that is
-never read and it is being updated later with a new value. The
-initialization is redundant and can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- security/integrity/digsig_asymmetric.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index 4e0d6778277e..cfa4127d0518 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -79,7 +79,7 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	struct public_key_signature pks;
- 	struct signature_v2_hdr *hdr = (struct signature_v2_hdr *)sig;
- 	struct key *key;
--	int ret = -ENOMEM;
-+	int ret;
- 
- 	if (siglen <= sizeof(*hdr))
- 		return -EBADMSG;
--- 
-2.25.1
-
+Hello greetings, My name is George Andersen, A citizen of America, A
+soldier by profession serving in the USA army, I will give more
+details of me and my pictures when i hear from you, I came across your
+profile today and decided to contact you for a mutual friendship i
+wish to stand between us and am interested in getting to know you
+better for a private confidential issues i want to disclose to you for
+the mutual benefits of both of us and families. Can you please write
+to me back so that we can get to know each other better.
+Sincerely,
+George Andersen
