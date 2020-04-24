@@ -2,43 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783F11B6E80
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2284A1B6E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 09:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgDXGw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 02:52:57 -0400
-Received: from verein.lst.de ([213.95.11.211]:33420 "EHLO verein.lst.de"
+        id S1726494AbgDXHDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 03:03:31 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:33498 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgDXGw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 02:52:57 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D49B568CEC; Fri, 24 Apr 2020 08:52:53 +0200 (CEST)
-Date:   Fri, 24 Apr 2020 08:52:53 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Tim Waugh <tim@cyberelk.net>, Borislav Petkov <bp@alien8.de>,
-        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] isofs: stop using ioctl_by_bdev
-Message-ID: <20200424065253.GB23754@lst.de>
-References: <20200423071224.500849-1-hch@lst.de> <20200423071224.500849-7-hch@lst.de> <20200423110347.GE3737@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423110347.GE3737@quack2.suse.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1726056AbgDXHDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 03:03:31 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DACB1205243;
+        Fri, 24 Apr 2020 09:03:29 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 666D9204FE9;
+        Fri, 24 Apr 2020 09:03:25 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 121E74034F;
+        Fri, 24 Apr 2020 15:02:32 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_esai: Remove the tasklet
+Date:   Fri, 24 Apr 2020 14:54:06 +0800
+Message-Id: <1587711246-27226-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 01:03:47PM +0200, Jan Kara wrote:
-> There's no error handling in the caller and this function actually returns
-> unsigned int... So I believe you need to return 0 here to maintain previous
-> behavior (however suspicious it may be)?
+Remove tasklet for it may cause the reset operation
+can't be handled immediately, then there will be
+endless xrun interrupt.
 
-Indeed, and I don't think it is suspicious at all - if we have no CDROM
-info we should assume session 0, which is the same as for non-CDROM
-devices.  Fixed for the next version.
+Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_esai.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c7a49d03463a..1ad0859da5e2 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -32,7 +32,6 @@
+  * @extalclk: esai clock source to derive HCK, SCK and FS
+  * @fsysclk: system clock source to derive HCK, SCK and FS
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+- * @task: tasklet to handle the reset operation
+  * @lock: spin lock between hw_reset() and trigger()
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+@@ -56,7 +55,6 @@ struct fsl_esai {
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
+ 	struct clk *spbaclk;
+-	struct tasklet_struct task;
+ 	spinlock_t lock; /* Protect hw_reset and trigger */
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+@@ -74,6 +72,8 @@ struct fsl_esai {
+ 	char name[32];
+ };
+ 
++static void fsl_esai_hw_reset(struct fsl_esai *esai_priv);
++
+ static irqreturn_t esai_isr(int irq, void *devid)
+ {
+ 	struct fsl_esai *esai_priv = (struct fsl_esai *)devid;
+@@ -87,7 +87,7 @@ static irqreturn_t esai_isr(int irq, void *devid)
+ 	if ((saisr & (ESAI_SAISR_TUE | ESAI_SAISR_ROE)) &&
+ 	    esai_priv->reset_at_xrun) {
+ 		dev_dbg(&pdev->dev, "reset module for xrun\n");
+-		tasklet_schedule(&esai_priv->task);
++		fsl_esai_hw_reset(esai_priv);
+ 	}
+ 
+ 	if (esr & ESAI_ESR_TINIT_MASK)
+@@ -674,9 +674,8 @@ static void fsl_esai_trigger_stop(struct fsl_esai *esai_priv, bool tx)
+ 			   ESAI_xFCR_xFR, 0);
+ }
+ 
+-static void fsl_esai_hw_reset(unsigned long arg)
++static void fsl_esai_hw_reset(struct fsl_esai *esai_priv)
+ {
+-	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
+ 	bool tx = true, rx = false, enabled[2];
+ 	unsigned long lock_flags;
+ 	u32 tfcr, rfcr;
+@@ -1034,9 +1033,6 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	tasklet_init(&esai_priv->task, fsl_esai_hw_reset,
+-		     (unsigned long)esai_priv);
+-
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	regcache_cache_only(esai_priv->regmap, true);
+@@ -1050,10 +1046,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 
+ static int fsl_esai_remove(struct platform_device *pdev)
+ {
+-	struct fsl_esai *esai_priv = platform_get_drvdata(pdev);
+-
+ 	pm_runtime_disable(&pdev->dev);
+-	tasklet_kill(&esai_priv->task);
+ 
+ 	return 0;
+ }
+-- 
+2.21.0
+
