@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3161B7D7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCCF1B7D83
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgDXSDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728300AbgDXSDb (ORCPT
+        id S1728437AbgDXSGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:06:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31871 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726908AbgDXSGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:03:31 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07CEC09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:03:30 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id o127so11331407iof.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=l9DZkzCjHWvWpAFUFEboMfl5JVZotMAsYoNk7iZWJS0=;
-        b=MUKlal7f0QTMDIbBD8mwNCPDsD4bz887lRmnK33mEet2P64rMi8Vdt/2i9wnUocIyI
-         XuuV8O8JLZM4TxpdTeaM6BzaVw2V3bIbeNprvtXp0QsdlQe9z+PyTQbZ6394kJ2tlf0r
-         wMNlD88pAn1GCrzaHbDY9MiyovI+WDXb70koPCM/7N3yIwXC24BfdxKgcj5gNZaRE4xD
-         9mDNc8xTTvOj7wQ27RdvrSPMxgT+dlxPvVhIJ6oB/EAp8mIBn/y1V4k5sHBFBj4taT21
-         jlirb9cG3XjaNWCBY6u/xNiEvOAPibinQFajatGA4cpvFm/xQlRMmuuSF6p81PgiiAzB
-         vIGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=l9DZkzCjHWvWpAFUFEboMfl5JVZotMAsYoNk7iZWJS0=;
-        b=VohpdsUBBQLEri0b6k/FNBUtcYu4dKl82V3+gjNKQvyZZXL4teI1l4A1y8hiOkjjnD
-         K7ts1wHVi4l40vUbZI5ElPirjyIQe4GvTvPo+PHQt/7bDjCYNDRyYlNZbMNHknqSTnn2
-         GedSqAoQVTTiVs3NA1McOJZot85JFSlGmnROE4s32LOls2rlTaYOVZb09nuYUZ0MFxxJ
-         x3pKI2rLGTxBt861HF37e7VUydcH65sqFOxHLialyAuTzH0AiqUmySv60OBlCHWed3N2
-         4w8ra78cOjUkjsQLLvdV5g+sD7MgQsPgVOw2RNerYlET0lYoQkE2BZQIUfDQr2aPqMFw
-         epRQ==
-X-Gm-Message-State: AGi0PuZ9Kl1qkNicZ2s7lXS/E/NxUffVDIY0LWSOAe+Ewd7lCgqwabMx
-        PtYxN8CmZXjMJsF0j3TDx1CaDK/FUrDYRA==
-X-Google-Smtp-Source: APiQypLiBb6pQAayp6kyLN7BnySABnVTZSw+CHHuZ4vQXAsd/3B4Bc5CFHJtmvahPb0r6NhZxQdEiQ==
-X-Received: by 2002:a02:a90e:: with SMTP id n14mr9230294jam.97.1587751409829;
-        Fri, 24 Apr 2020 11:03:29 -0700 (PDT)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id g90sm2329941ila.19.2020.04.24.11.03.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 11:03:29 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring fix for 5.7-rc3
-Message-ID: <156f8353-5841-39ad-3bc2-af9cadac3c71@kernel.dk>
-Date:   Fri, 24 Apr 2020 12:03:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 24 Apr 2020 14:06:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587751595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rONQ14r6qvN7gJ7mKqkG2OoVzfp4fKCxczov4WFzxCA=;
+        b=VGJB6dmyV1kH5SBrhs9aBxoo0mC/v/eH6NMGcI3m87tSBrPXzF9dxd/D3MA1t3z6PP15gG
+        c2PYdQLypst12cOAQ/7CfH0m/IfsTz51Ah+62j44O0+xpyfnLAa/CE/Dn/ZWoZe7juFGTa
+        cUWWtZpAy3BZqk4jY0egky5svSd4YaY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-dsy-F9NNOKuADJgf5Wk6Wg-1; Fri, 24 Apr 2020 14:06:30 -0400
+X-MC-Unique: dsy-F9NNOKuADJgf5Wk6Wg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3C7D855875;
+        Fri, 24 Apr 2020 18:05:26 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.22])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 345DE6084A;
+        Fri, 24 Apr 2020 18:05:25 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 24 Apr 2020 20:05:26 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 20:05:24 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christof Meerwald <cmeerw@cmeerw.org>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Subject: Re: [PATCH] remove the no longer needed pid_alive() check in
+ __task_pid_nr_ns()
+Message-ID: <20200424180523.GD26802@redhat.com>
+References: <20200419201336.GI22017@edge.cmeerw.net>
+ <87sggyytnh.fsf@x220.int.ebiederm.org>
+ <20200421090426.GA6787@redhat.com>
+ <20200421101904.GA9358@redhat.com>
+ <87mu74517d.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mu74517d.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 04/21, Eric W. Biederman wrote:
+>
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+> > Starting from 2c4704756cab ("pids: Move the pgrp and session pid pointers
+> > from task_struct to signal_struct") __task_pid_nr_ns() doesn't dereference
+> > task->group_leader, we can remove the pid_alive() check.
+> >
+> > pid_nr_ns() has to check pid != NULL anyway, pid_alive() just adds the
+> > unnecessary confusion.
+> >
+> > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> Reviewed-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Single fixup for a change that went into -rc2, please pull.
+Thanks, can you take this patch?
 
-
-  git://git.kernel.dk/linux-block.git tags/io_uring-5.7-2020-04-24
-
-
-----------------------------------------------------------------
-Xiaoguang Wang (1):
-      io_uring: only restore req->work for req that needs do completion
-
- fs/io_uring.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
--- 
-Jens Axboe
+Oleg.
 
