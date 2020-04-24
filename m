@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB771B71FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB1F1B7203
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgDXKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 06:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45500 "EHLO mail.kernel.org"
+        id S1726848AbgDXKbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 06:31:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726193AbgDXKaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 06:30:08 -0400
+        id S1726193AbgDXKbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 06:31:22 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3461720736;
-        Fri, 24 Apr 2020 10:30:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE6722071E;
+        Fri, 24 Apr 2020 10:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587724207;
-        bh=+OdtIIFccCHjI9Scq9RWg/K1sKwriEJe9pYwL6WklQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tB3jgjqTSqyeMwjFp/sCwpodyEYMHWn2ebZxkdCp+vZ4OrHZzSagHHyAW/B896CQN
-         9D7jMldhUHCa0mbKxI7y4rs6XZvKJq/lKCsnFFbzSPzhFrfgd8egg8sFg2DaJfaLhB
-         t1+kC4Sk/nCYJNdcFIcedEjdPj/7XSTA8aXMjTgM=
-Date:   Fri, 24 Apr 2020 11:30:04 +0100
+        s=default; t=1587724282;
+        bh=h66Ml5FnOsOSWU6lMS3uLnKawUO+JUEIXmAgQhGYYbI=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=iPEubyNKFt0g7XIDtD7BIoymS6NCtN+DD747wgEWgF+cfYeYd1t6wh2B37G6Tlsni
+         YyFxwMKh8JP9LtstkVzcy1x0b3PE3q8c4Nm6v1MZJzmxAt4KF2mKpfijSm/rEbovdc
+         vj7YXG0cCEqssjx4gLYfN4Mc1EK8UX2OqUf+d53o=
+Date:   Fri, 24 Apr 2020 11:31:19 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] regmap: mmio: prepare/unprepare clk only when read/write
-Message-ID: <20200424103004.GB5850@sirena.org.uk>
-References: <1587620791-5279-1-git-send-email-peng.fan@nxp.com>
- <20200423104000.GD4808@sirena.org.uk>
- <DB6PR0402MB27600084E4A040609EF620A088D30@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20200423112244.GH4808@sirena.org.uk>
- <DB6PR0402MB2760FBCA05C1BADB27F0356488D00@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB2760FBCA05C1BADB27F0356488D00@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-X-Cookie: Information is the inverse of entropy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     perex@perex.cz, alsa-devel@alsa-project.org, tglx@linutronix.de,
+        allison@lohutok.net, patches@opensource.cirrus.com, tiwai@suse.com,
+        lgirdwood@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-kernel@vger.kernel.org, info@metux.net
+In-Reply-To: <6d25d5b36d4b9aeb8655b5e947dad52214e34177.1587693523.git.shengjiu.wang@nxp.com>
+References: <6d25d5b36d4b9aeb8655b5e947dad52214e34177.1587693523.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2] ASoC: wm8962: set CLOCKING2 as non-volatile register
+Message-Id: <158772427980.54572.3910251949812603149.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 24 Apr 2020 10:01:38 +0800, Shengjiu Wang wrote:
+> Previously CLOCKING2 is set as a volatile register, but cause
+> issue at suspend & resume, that some bits of CLOCKING2 is not
+> restored at resume, for example SYSCLK_SRC bits, then the output
+> clock is wrong.
+> 
+> The volatile property is caused by CLASSD_CLK_DIV bits,
+> which are controlled by the chip itself. But the datasheet
+> claims these are read only and protected by the security key,
+> and they are not read by the driver at all.
+> 
+> [...]
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Apr 24, 2020 at 01:27:29AM +0000, Peng Fan wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
 
-> If we not pass clk to regmap, accessing regmap registers will hang system=
- with
-> Debugfs enabled.
+Thanks!
 
-If you're not using a cache then that'll be a problem, however there is
-a flag runtime_pm in the regmap config which when set should cause the
-device to be runtime PM enabled when it's accessed so if you do your
-clock management in runtime PM it should still get enabled.  I *think*
-that interacts OK with being in an atomic context but I can't say I've
-verified.
+[1/1] ASoC: wm8962: set CLOCKING2 as non-volatile register
+      commit: c38b608504aa1ad8bfa00d85abd61cffad57f27f
 
-> If we pass clk to regmap, it will make the runtime pm power high, because
-> regmap mmio will call clk_prepare at the beginning.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> That's why use clk_prepare_enable and clk_disable_unprepare.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Thinking about another direction, how about add clk_prepare and clk_unpre=
-pare
-> into debugfs ops open/close?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Something still has to prepare the clocks for normal operation... =20
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6iv6sACgkQJNaLcl1U
-h9B1EQf+IpIBHjl3zQPdZQUD7pfBppcj+Dl0tgehdNFc5OK9GhSsWC8S04JOZXI/
-LRccR9Xb6DjvKvPo7szhgF4ITiCYpgmI/OjjoLiXK2zpIHW9jcay7TiurUG8RehO
-578eP3OZGzoMzCx+CDdf4t12uE2E7WMcwZge9ofgok6TAsBZG4cbCPNaqsvVwksb
-M6FoMbVJUbjcxMr/555r3whUKm6szcNnH+sZa0ZOGH/dir3B5XonCsCL1QDHRn8o
-BE067LLusQvrpN1+rYqIBfL01WZ1McLyDEmsRtpqoQPUOwYe+74CbtzFuHKpyF3D
-SFCx5uPGcEZcCudFLc9lnff/DkGkNw==
-=WuaN
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
+Thanks,
+Mark
