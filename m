@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3E61B7716
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D561B7723
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgDXNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:37:35 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27806 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgDXNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:37:35 -0400
-IronPort-SDR: smZEGsQDHNyIyfr3bTrmSbugVJZP07PpGCpQwPTrtWt0Ukvd/I8/hQXMI58h5/CddiNCs76wON
- WR1IntiUqDeQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 06:37:34 -0700
-IronPort-SDR: gvhqoOaLEf6Tu1Xn++AV+1iiWh1wz2sv79iC+M3NuVZRpn4/WCzuaYkzP49lrQF+j14AldJ7fR
- yjXGiCW0M07g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="457907574"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Apr 2020 06:37:32 -0700
-Date:   Fri, 24 Apr 2020 21:39:33 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 1/9] KVM: VMX: Introduce CET VMX fields and flags
-Message-ID: <20200424133933.GC24039@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-2-weijiang.yang@intel.com>
- <20200423160748.GF17824@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423160748.GF17824@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+        id S1726993AbgDXNk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726791AbgDXNk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:40:57 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E37BC09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:40:56 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id v8so10048773wma.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 06:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=GPoYxjPQJeip0JY6dC/Z+tdRqn3HmDM6rWV8IieyY+A=;
+        b=DclZqP1nBgwnwaWujytr+grZrUIRe1mOlxB7bxdQuubvIYL9uj6LNMftM09hxisS65
+         hFu1gsG6DL3SeFlaKDZc3be7IcXXdsADqZGV5cqkXf6BPP4H5mCKyYLQbYnCCYXdo6eh
+         qsE0zy2fkvDpLg06f+gUK6LrI7gj8rjwMS88AMucf3pUVooq9COi+f6yJvNuyr7dpIkD
+         EeN8VLV4VJzrlf0dfkosm8NIZaAElUazGC2l+T8DO6zAkocafmqQ19LXqrAPzGRrCsST
+         rSDPCiMxCf8ugITbprguwm5eo8Yp6dGPYQnpK4BJzey33Zi7RZaGaypM6w32DKdjUOut
+         tGfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GPoYxjPQJeip0JY6dC/Z+tdRqn3HmDM6rWV8IieyY+A=;
+        b=aZ/P0ZAkW1DwPlpjjuU+b8nu036pBSCHKrnpZJSbYAYSfTLOXIOrrVcmU7b1/Bd07M
+         RtTXrJ83Eq9wkKy/mycAtXWpAD2yhnGBty7enJShRG6qgeH+0EYm620m73GCcMgBtrzD
+         flE/+eg1LS5S3gaeWjWegKPm4QovXCoK79Rcz/uNdkusdwqUkt1NIlI09bPp3VqJWcYg
+         yjuLsJeJ5K673jL6AHukl3WKlqaJOM1QYa3aMx95GG5YMKG75C94zmoK/8LdmpYK6iRD
+         NJxBwo3C9eHo/QlSC5jUtgBhXbvAwCPLN9HQr5bYh5oIdGRUov6gCVnjDT0/hP5aIG1f
+         yf7g==
+X-Gm-Message-State: AGi0PuZvMXWizIg0xO2wZ4skNhCKwdi2YKv5No8GO92p0fEfcmCmwLZu
+        KvBhxjr0JXK96YnajJlnvo22nw==
+X-Google-Smtp-Source: APiQypIdm0KpOWeemwS8yb3q6Yc3Dh4OeIMPcVa87g+33lJmUYbB5UGec6DQTmNZeXFdNicMsMprLQ==
+X-Received: by 2002:a1c:7f91:: with SMTP id a139mr9765293wmd.164.1587735654829;
+        Fri, 24 Apr 2020 06:40:54 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id 185sm3408958wmc.32.2020.04.24.06.40.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 06:40:54 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v3 0/3] crypto: fix some DRBG Kconfig deps
+Date:   Fri, 24 Apr 2020 13:40:44 +0000
+Message-Id: <1587735647-17718-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 09:07:48AM -0700, Sean Christopherson wrote:
-> On Thu, Mar 26, 2020 at 04:18:38PM +0800, Yang Weijiang wrote:
-> > CET(Control-flow Enforcement Technology) is a CPU feature
-> > used to prevent Return/Jump-Oriented Programming(ROP/JOP)
-> > attacks. It provides the following sub-features to defend
-> > against ROP/JOP style control-flow subversion attacks:
-> 
-> Changelogs should wrap at 75 characters.  Wrapping slightly earlier is ok,
-> but wrapping at ~60 chars is too narrow.
->
-Got it, thank you!
+Hello
 
-> > Shadow Stack (SHSTK):
-> >   A second stack for program which is used exclusively for
-> >   control transfer operations.
-> > 
+Fix serie try to fix some DRBG depencies in Kconfig
 
-> >  /* Select x86 specific features in <linux/kvm.h> */
-> >  #define __KVM_HAVE_PIT
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 40c6768942ae..830afe5038d1 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -186,6 +186,9 @@ static struct kvm_shared_msrs __percpu *shared_msrs;
-> >  				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
-> >  				| XFEATURE_MASK_PKRU)
-> >  
-> > +#define KVM_SUPPORTED_XSS	(XFEATURE_MASK_CET_USER | \
-> > +				 XFEATURE_MASK_CET_KERNEL)
-> 
-> This belongs in a later patch, KVM obviously doesn't support XSS.
->
-OK, will change it.
+Change since v2:
+- added patch #2
 
-> > +
-> >  u64 __read_mostly host_efer;
-> >  EXPORT_SYMBOL_GPL(host_efer);
-> >  
-> > @@ -402,6 +405,7 @@ static int exception_class(int vector)
-> >  	case NP_VECTOR:
-> >  	case SS_VECTOR:
-> >  	case GP_VECTOR:
-> > +	case CP_VECTOR:
-> >  		return EXCPT_CONTRIBUTORY;
-> >  	default:
-> >  		break;
-> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> > index c1954e216b41..8f0baa6fa72f 100644
-> > --- a/arch/x86/kvm/x86.h
-> > +++ b/arch/x86/kvm/x86.h
-> > @@ -115,7 +115,7 @@ static inline bool x86_exception_has_error_code(unsigned int vector)
-> >  {
-> >  	static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
-> >  			BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
-> > -			BIT(PF_VECTOR) | BIT(AC_VECTOR);
-> > +			BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
-> >  
-> >  	return (1U << vector) & exception_has_error_code;
-> 
-> Maybe it's gratuitous, but I feel like the #CP logic should be in a patch
-> of its own, e.g. the changelog doesn't mention anything about #CP.
-> 
-My fault, will find a proper place to hold it. 
+Changes since v1:
+- Updated commit message with recursive dependency
 
-> >  }
-> > -- 
-> > 2.17.2
-> > 
+Corentin Labbe (3):
+  crypto: drbg: DRBG should select SHA512
+  crypto: CRYPTO_CTR no longer need CRYPTO_SEQIV
+  crypto: drbg: DRBG_CTR should select CTR
+
+ crypto/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+-- 
+2.26.2
+
