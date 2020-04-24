@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6DA1B7DF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A651B7DF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgDXSkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:40:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36404 "EHLO mail.kernel.org"
+        id S1729101AbgDXSkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727022AbgDXSkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:40:19 -0400
-Subject: Re: [git pull] drm fixes for 5.7-rc3
+        id S1728915AbgDXSkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 14:40:21 -0400
+Subject: Re: [GIT PULL] afs: Miscellaneous fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587753619;
-        bh=LTVMrqntJetdGTIRO58rT+vA5NdI+WDIRPTXVcp1uoE=;
+        s=default; t=1587753620;
+        bh=oGYtWO0myYIyjZeo9Jqvu/EFmmZXm1TEha+Yj0s0WQc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=FK0J9dooN0ZzQKlvTG/vLPCQSh70tTywweUgHHbNPpLrTUNxZ167kNXtJdia8lm81
-         VT+kjXbrlRUv+lCEAb5ZtpZiIKt3NWSm60I/fxmX/9MAWWC8xjfDEBmgtfdz/NqAn7
-         YxtPS1bpHUYzi+l81xdHH0pxOqEw5O25/DPDmOEQ=
+        b=hSi5bio/7iNaTmm9YrrxQ/973QH26dTS21KKIyTNdqwhccRX75aPly+ikt99Fk8tg
+         8X74fOctGBp5nq3xZ3neTi7GzmS9NUoCZrUdQ0YR+Xrb5bGFKeLw+JAkJCTgyXa4Hs
+         NGNrHSKCiELd4NLY1Hg2wSGN1xN4Mw25NtYF98uE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txZkNiAoVMyoBwDaew+WDBQu3rcTYOTs9+Vn1unoq9m1A@mail.gmail.com>
-References: <CAPM=9txZkNiAoVMyoBwDaew+WDBQu3rcTYOTs9+Vn1unoq9m1A@mail.gmail.com>
+In-Reply-To: <3632016.1587744742@warthog.procyon.org.uk>
+References: <3632016.1587744742@warthog.procyon.org.uk>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9txZkNiAoVMyoBwDaew+WDBQu3rcTYOTs9+Vn1unoq9m1A@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm
- tags/drm-fixes-2020-04-24
-X-PR-Tracked-Commit-Id: e32b2484b3e00170b6cf57d99a18972e174e10ea
+X-PR-Tracked-Message-Id: <3632016.1587744742@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+ tags/afs-fixes-20200424
+X-PR-Tracked-Commit-Id: c4bfda16d1b40d1c5941c61b5aa336bdd2d9904a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 88412a4e00f6baab2752e99ffdbdb0ee661cac30
-Message-Id: <158775361897.26557.6691641549281826414.pr-tracker-bot@kernel.org>
-Date:   Fri, 24 Apr 2020 18:40:18 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 9a195628522c08f36b3bbd0df96582a07ab272bf
+Message-Id: <158775362070.26557.15195413938093187702.pr-tracker-bot@kernel.org>
+Date:   Fri, 24 Apr 2020 18:40:20 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 24 Apr 2020 13:22:30 +1000:
+The pull request you sent on Fri, 24 Apr 2020 17:12:22 +0100:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-04-24
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-20200424
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/88412a4e00f6baab2752e99ffdbdb0ee661cac30
+https://git.kernel.org/torvalds/c/9a195628522c08f36b3bbd0df96582a07ab272bf
 
 Thank you!
 
