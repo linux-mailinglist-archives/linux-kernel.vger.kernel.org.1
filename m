@@ -2,111 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9E41B7F55
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181AA1B7F61
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729435AbgDXTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 15:48:51 -0400
-Received: from mail-eopbgr70075.outbound.protection.outlook.com ([40.107.7.75]:1413
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726793AbgDXTsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:48:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DGpc1AUgTZmZDU1MdS//WqRCn512HSEkeFfNmWKJoka8sifIp7021sx6kVmZts4g2Xny6FqX8Sl1kF3eC/RbxHsrv1IB6QaNv/NDGR38VvwpErIVSng4MbUDamLwPChD0oY1Pvyxqkcm9/Cgfv1Vjf7ivs/edoQ7KUtGHHEcp+8hDltW5TJDua4LNaghRX6hPmDLWSAqL4GyqaXwiPvs3FAIIVcVcF7GnsNzfTWltRODfXb3XENlkxr4qQ4TphAyiJCTVCioxKzEw/5GKOYVp5yTF0Kn5WevLnWxKSThnvi06brUXVHi0A59eXfIfbwuA21pnWHxEtNPUeTEef3hLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r1MJmJDPbP7rEyP1uxRiWx040ZyqN05SlFWv0N9jzBI=;
- b=SsT4jfvUIeCqlXbkh6rdha2TS8hxcyafJ+cj9GUOTvWBopMrnwAoh3C+7RacoYQUI5sGzHzPyMs5Elf57+ClF8cErGhk94RZaQHDxZlKVJgP4/N/rteOsTD4ST+pmoE8wMk0YpjScSLHONZYI4pdS+NfZ9xrx0Pv9lrYSO+me1846OvzdFX3QSWIxXDqgNgkGSUPSRa9zbLHFGqdM+aLPkGkhNtyxVbaQapSBMV9wb6UsMgH08m3kO2Kcxk25x44zyOE/LYCPE9y06H3uMWGsQkY9jPcv1gvXSJUjzYkki5QJrJ5CyYxGMYrHV1mcdJP7ePne04dwHqFPk7t290tng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r1MJmJDPbP7rEyP1uxRiWx040ZyqN05SlFWv0N9jzBI=;
- b=jreYJ2lMZwgt4ShF97/hN6+k3NJuAoCo2ZMawiEhtps7S8rQRQn7nJQJNp3EaersxvfU1v0h0MTexf4k1W3hRVJKiXLclju393a3CMOBnxGY3vw/v3ZDK4anjUoiYV9SxA2etTDjspvx0PPjwt2avJj8+ZmAOVgrWiTNM9SodhY=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB5072.eurprd05.prod.outlook.com (2603:10a6:803:61::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Fri, 24 Apr
- 2020 19:48:45 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2937.020; Fri, 24 Apr 2020
- 19:48:45 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "zou_wei@huawei.com" <zou_wei@huawei.com>,
-        Tariq Toukan <tariqt@mellanox.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] net/mlx4_core: Add missing iounmap() in error path
-Thread-Topic: [PATCH -next] net/mlx4_core: Add missing iounmap() in error path
-Thread-Index: AQHWGj7ghy4QI43+DEKPe4gxkW8riqiIrjgA
-Date:   Fri, 24 Apr 2020 19:48:45 +0000
-Message-ID: <ad1635d845bb364f02010f61ab1240860df14f9a.camel@mellanox.com>
-References: <1587736394-111502-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1587736394-111502-1-git-send-email-zou_wei@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: aab03938-361a-4e94-04b6-08d7e8887fb4
-x-ms-traffictypediagnostic: VI1PR05MB5072:|VI1PR05MB5072:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB50724140C2DAB2535F9FBEE4BED00@VI1PR05MB5072.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2331;
-x-forefront-prvs: 03838E948C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(6506007)(26005)(4744005)(2616005)(8936002)(8676002)(66446008)(316002)(71200400001)(6636002)(36756003)(91956017)(66946007)(76116006)(66556008)(81156014)(478600001)(66476007)(64756008)(6512007)(5660300002)(110136005)(4326008)(54906003)(186003)(2906002)(6486002)(86362001);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1/WzL+r4zjiAXG2DT5za2G2H/zleuqdpKTbUVTgWt88GMiv9jKTNZmp4rFW1Snt7lBfmmKSK7/pJKS2VVVxmHYBazIzG9OO316gYkfru4SXkw2FGL1omUOlVoO+j9tbpPtmnkDITUYAntaIE/qQRCZSpgz+1uzvQXbu0Q98k3V9hNhwFDdE7EUyACMvwd88vk6YyfrgussTxzrsliXsSZ44V95HpQzbiFUN+0rf1VKbdz4mYiZ3pTJ1+TL2o+eX+Kh3HKbuj/kWsjfl5DGTKb9jJh6ymTt/LSTanOnNBE6SLk+5Z2tt05vnh8xLBIwsbaTcRn3pvp41ZetEBe0+YPoJh9Gw/FTeKXXPmTu/hj2KcknBZ7nSV3c/zMFRuBO4fpMiR9DPSCoTDmlQbOYoFX/eUxfyWdZhSvt82cQpjGhgZW0nW96yYqxkvNwYNAd0A
-x-ms-exchange-antispam-messagedata: J9+tQWuisKTthmXMSWc5Ij/EVI/f9rUvyPxiyqMw1iusGyYd0xZH7CDg7EHGprpHsUMCvq1xXYrXGMjISJmYh+YOzwzdOoIBQ0YxnskcHkAxTs8wEx3Gw7+rsBU08f2qMAT6DDRD7kXkfi6HnodWzA==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <89B94B14B85D474298157E9CA5DDE8AB@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729386AbgDXTyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 15:54:39 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51924 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgDXTyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 15:54:38 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jS4PE-0002zY-Dz; Fri, 24 Apr 2020 13:54:36 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jS4PD-0007HH-Hs; Fri, 24 Apr 2020 13:54:36 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+        <CAHk-=wgXEJdkgGzZQzBDGk7ijjVdAVXe=G-mkFSVng_Hpwd4tQ@mail.gmail.com>
+        <87tv19tv65.fsf@x220.int.ebiederm.org>
+        <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
+Date:   Fri, 24 Apr 2020 14:51:25 -0500
+In-Reply-To: <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
+        (Linus Torvalds's message of "Fri, 24 Apr 2020 11:02:35 -0700")
+Message-ID: <87mu70psqq.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aab03938-361a-4e94-04b6-08d7e8887fb4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 19:48:45.0825
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U0VHWkpndXwKGGzhm4z61ivAXaJ2yzMas3Mq7DKkKunBnc5RmRxVjqiJei9wsHJqCfy2Ui8dWkX5LQCXFazxtA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5072
+Content-Type: text/plain
+X-XM-SPF: eid=1jS4PD-0007HH-Hs;;;mid=<87mu70psqq.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/r83cUDMsvQlOeMJelnJ6NFAsyWlR86Vo=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4816]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 471 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (2.1%), b_tie_ro: 9 (1.9%), parse: 0.93 (0.2%),
+         extract_message_metadata: 14 (3.1%), get_uri_detail_list: 3.0 (0.6%),
+        tests_pri_-1000: 19 (4.0%), tests_pri_-950: 1.09 (0.2%),
+        tests_pri_-900: 0.83 (0.2%), tests_pri_-90: 73 (15.5%), check_bayes:
+        72 (15.2%), b_tokenize: 11 (2.3%), b_tok_get_all: 10 (2.2%),
+        b_comp_prob: 3.0 (0.6%), b_tok_touch_all: 44 (9.4%), b_finish: 0.73
+        (0.2%), tests_pri_0: 342 (72.5%), check_dkim_signature: 0.51 (0.1%),
+        check_dkim_adsp: 1.83 (0.4%), poll_dns_idle: 0.37 (0.1%),
+        tests_pri_10: 1.71 (0.4%), tests_pri_500: 6 (1.2%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA0LTI0IGF0IDIxOjUzICswODAwLCBab3UgV2VpIHdyb3RlOg0KPiBUaGlz
-IGZpeGVzIHRoZSBmb2xsb3dpbmcgY29jY2ljaGVjayB3YXJuaW5nOg0KPiANCj4gZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9jcmR1bXAuYzoyMDA6Mi04OiBFUlJPUjogbWlzc2lu
-Zw0KPiBpb3VubWFwOw0KPiBpb3JlbWFwIG9uIGxpbmUgMTkwIGFuZCBleGVjdXRpb24gdmlhIGNv
-bmRpdGlvbmFsIG9uIGxpbmUgMTk4DQo+IA0KPiBGaXhlczogN2VmMTlkM2IxZDVlICgiZGV2bGlu
-azogcmVwb3J0IGVycm9yIG9uY2UgVTMyX01BWCBzbmFwc2hvdCBpZHMNCj4gaGF2ZSBiZWVuIHVz
-ZWQiKQ0KPiBSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+DQo+IFNp
-Z25lZC1vZmYtYnk6IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBkcml2
-ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg0L2NyZHVtcC5jIHwgMSArDQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9l
-dGhlcm5ldC9tZWxsYW5veC9tbHg0L2NyZHVtcC5jDQo+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQv
-bWVsbGFub3gvbWx4NC9jcmR1bXAuYw0KPiBpbmRleCA3M2VhZTgwZS4uYWM1NDY4YiAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9jcmR1bXAuYw0KPiAr
-KysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg0L2NyZHVtcC5jDQo+IEBAIC0x
-OTcsNiArMTk3LDcgQEAgaW50IG1seDRfY3JkdW1wX2NvbGxlY3Qoc3RydWN0IG1seDRfZGV2ICpk
-ZXYpDQo+ICAJZXJyID0gZGV2bGlua19yZWdpb25fc25hcHNob3RfaWRfZ2V0KGRldmxpbmssICZp
-ZCk7DQo+ICAJaWYgKGVycikgew0KPiAgCQltbHg0X2VycihkZXYsICJjcmR1bXA6IGRldmxpbmsg
-Z2V0IHNuYXBzaG90IGlkIGVycg0KPiAlZFxuIiwgZXJyKTsNCj4gKwkJaW91bm1hcChjcl9zcGFj
-ZSk7DQo+ICAJCXJldHVybiBlcnI7DQo+ICAJfQ0KPiAgDQoNClJldmlld2VkLWJ5OiBTYWVlZCBN
-YWhhbWVlZCA8c2FlZWRtQG1lbGxhbm94LmNvbT4NCg0K
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+
+> On Thu, Apr 23, 2020 at 8:36 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> At one point my brain I had forgetten that xchg can not take two memory
+>> arguments and had hoped to be able to provide stronger guarnatees than I
+>> can.  Which is where I think the structure of exchange_pids came from.
+>
+> Note that even if we were to have a "exchange two memory locations
+> atomically" instruction (and we don't - even a "double cmpxchg" is
+> actually just a double-_sized_ one, not a two different locations
+> one), I'm not convinced it makes sense.
+>
+> There's no way to _walk_ two lists atomically. Any user will only ever
+> walk one or the other, so it's not sensible to try to make the two
+> list updates be atomic.
+>
+> And if a user for some reason walks both, the walking itself will
+> obviously then be racy - it does one or the other first, and can see
+> either the old state, or the new state - or see _neither_ (ie if you
+> walk it twice, you might see neither task, or you might see both, just
+> depending on order or walk).
+>
+>> I do agree the clearer we can write things, the easier it is for
+>> someone else to come along and follow.
+>
+> Your alternate write of the function seems a bit more readable to me,
+> even if the main effect might be just that it was split up a bit and
+> added a few comments and whitespace.
+>
+> So I'm more happier with that one. That said:
+>
+>> We can not use a remove and reinser model because that does break rcu
+>> accesses, and complicates everything else.  With a swap model we have
+>> the struct pids pointer at either of the tasks that are swapped but
+>> never at nothing.
+>
+> I'm not suggesting removing the pid entirely - like making task->pid
+> be NULL. I'm literally suggesting just doing the RCU list operations
+> as "remove and re-insert".
+>
+> And that shouldn't break anything, for the same reason that an atomic
+> exchange doesn't make sense: you can only ever walk one of the lists
+> at a time. And regardless of how you walk it, you might not see the
+> new state (or the old state) reliably.
+>
+> Put another way:
+>
+>>         void hlist_swap_before_rcu(struct hlist_node *left, struct hlist_node *right)
+>>         {
+>>                 struct hlist_node **lpprev = left->pprev;
+>>                 struct hlist_node **rpprev = right->pprev;
+>>
+>>                 rcu_assign_pointer(*lpprev, right);
+>>                 rcu_assign_pointer(*rpprev, left);
+>
+> These are the only two assignments that matter for anything that walks
+> the list (the pprev ones are for things that change the list, and they
+> have to have exclusions in place).
+>
+> And those two writes cannot be atomic anyway, so you fundamentally
+> will always be in the situation that a walker can miss one of the
+> tasks.
+>
+> Which is why I think it would be ok to just do the RCU list swap as a
+> "remove left, remove right, add left, add right" operation. It doesn't
+> seem fundamentally different to a walker than the "switch left/right"
+> operation, and it seems much simpler.
+>
+> Is there something I'm missing?
+
+
+The problem with
+
+remove
+remove
+add
+add
+is:
+
+A lookup that hit between the remove and the add could return nothing.
+
+The function kill_pid_info does everything it can to handle this case
+today does:
+
+int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+{
+	int error = -ESRCH;
+	struct task_struct *p;
+
+	for (;;) {
+		rcu_read_lock();
+		p = pid_task(pid, PIDTYPE_PID);
+		if (p)
+			error = group_send_sig_info(sig, info, p, PIDTYPE_TGID);
+		rcu_read_unlock();
+		if (likely(!p || error != -ESRCH))
+			return error;
+
+		/*
+		 * The task was unhashed in between, try again.  If it
+		 * is dead, pid_task() will return NULL, if we race with
+		 * de_thread() it will find the new leader.
+		 */
+	}
+}
+
+Now kill_pid_info is signalling the entire task and is just using
+PIDTYPE_PID to find a thread in the task.
+
+With the remove then add model there will be a point where pid_task
+will return nothing, because ever so briefly the lists will be
+empty.
+
+However with an actually swap we will find a task and kill_pid_info
+will work.  It pathloglical cases lock_task_sighand might have to loop
+and we would need to find the new task that has the given pid.  But
+kill_pid_info is guaranteed to work with swaps and will fail with
+remove add.
+
+
+> But I'm *not* suggesting that we change these simple parts to be
+> "remove thread_pid or pid pointer, and then insert a new one":
+>
+>>                 /* Swap thread_pid */
+>>                 rpid = left->thread_pid;
+>>                 lpid = right->thread_pid;
+>>                 rcu_assign_pointer(left->thread_pid, lpid);
+>>                 rcu_assign_pointer(right->thread_pid, rpid);
+>>
+>>                 /* Swap the cached pid value */
+>>                 WRITE_ONCE(left->pid, pid_nr(lpid));
+>>                 WRITE_ONCE(right->pid, pid_nr(rpid));
+>>         }
+>
+> because I agree that for things that don't _walk_ the list, but just
+> look up "thread_pid" vs "pid" atomically but asynchronously, we
+> obviously need to get one or the other, not some kind of "empty"
+> state.
+
+For PIDTYPE_PID and PIDTYPE_TGID these practically aren't lists but
+pointers to the appropriate task.  Only for PIDTYPE_PGID and PIDTYPE_SID
+do these become lists in practice.
+
+That not-really-a-list status allows for signel delivery to indivdual
+processes to happen in rcu context.  Which is where we would get into
+trouble with add/remove.
+
+Since signals are guaranteed to be delivered to the entire session
+or the entire process group all of the list walking happens under
+the tasklist_lock currently.  Which really keeps list walking from
+being a concern.
+
+>> Does that look a little more readable?
+>
+> Regardless, I find your new version at least a lot more readable, so
+> I'm ok with it.
+
+Good. Then I will finish cleaning it up and go with that version.
+
+> It looks like Oleg found an independent issue, though.
+
+Yes, and I will definitely work through those.
+
+Eric
