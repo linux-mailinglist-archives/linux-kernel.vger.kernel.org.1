@@ -2,160 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473B61B6E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 09:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3CF1B6E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 09:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgDXHFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 03:05:19 -0400
-Received: from mail-m127108.qiye.163.com ([115.236.127.108]:3199 "EHLO
-        mail-m127108.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgDXHFT (ORCPT
+        id S1726520AbgDXHCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 03:02:05 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50064 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbgDXHCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 03:05:19 -0400
-Received: from vivo.com (wm-13.qy.internal [127.0.0.1])
-        by mail-m127108.qiye.163.com (Hmail) with ESMTP id 879F78423A3;
-        Fri, 24 Apr 2020 15:05:10 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AHIA-gAFCMi-wI-WAB9biKqO.3.1587711910539.Hmail.wenhu.wang@vivo.com>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        oss@buserror.net, kernel@vivo.com, robh@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2Myw1LzVdIHBvd2VycGM6IHN5c2Rldjogc3VwcG9ydCB1c2Vyc3BhY2UgYWNjZXNzIG9mIGZzbF84NXh4X3NyYW0=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
-In-Reply-To: <0dfd17ca-d11e-9cf3-177e-bce0b8eace5c@c-s.fr>
+        Fri, 24 Apr 2020 03:02:04 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03O6wX2N017329;
+        Fri, 24 Apr 2020 07:01:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=+sOTv9sUimAWqYhtidHP7XHEciFx1X2PhEIWEaF656g=;
+ b=Sq0gSodZHmhMH2yYrpEUgyuoaEWmD/K38DLBsnZ7SdDVGfulU2VIMokOtd5cPkMPhfoN
+ 71UujBujmlHFvlKzjc0Yqq5TZjVXKFs5tmi7JeJzsqoKJhxpavoqUsDU93CsIbXFQ2Nv
+ bsbYHCGUB9EXYAdEqGuPRDxHjgx037JBae94JZxeFTydTHKvHpWR+Xz/liwcY5/v2y+8
+ BZHUptrcspvgcoqfcA7QsjpLvInqRjH47BeFY6Yr7i7zwaLyY3gfut2+O7PqbmDpJC7J
+ 8aek4VJL3653BG9OQWd3dUwCBmXPeYTfgkfHjw+8SdK73zdsAKBnaJ8SrgHimhjXiycQ kQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30jvq4yc6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 07:01:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03O6ufhi058293;
+        Fri, 24 Apr 2020 07:01:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30gbbpbcaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 07:01:45 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03O71gKu026354;
+        Fri, 24 Apr 2020 07:01:42 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Apr 2020 00:01:41 -0700
+Subject: Re: [PATCH 3/8] objtool: Rework allocating stack_ops on decode
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     jpoimboe@redhat.com, linux-kernel@vger.kernel.org,
+        jthierry@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        mbenes@suse.cz
+References: <20200423125013.452964352@infradead.org>
+ <20200423125042.713052240@infradead.org>
+ <7df9ec97-dc14-c4b6-fb26-f163e9afb1cd@oracle.com>
+ <20200423155425.GW20730@hirez.programming.kicks-ass.net>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <cc303a83-58eb-2b61-ddf1-672f2c8644e1@oracle.com>
+Date:   Fri, 24 Apr 2020 09:06:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 24 Apr 2020 15:05:10 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Fri, 24 Apr 2020 15:05:10 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VPQ0tLS0tLSkJLTEhPQllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMT0tJTE9KSE9MN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MzI6Vhw6PTg2ElYMMlYsOjlCGRIwCjRVSFVKTkNMTEpKQkpOTU9PVTMWGhIXVQweFRMOVQwa
-        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUpKS0lKNwY+
-X-HM-Tid: 0a71ab0122a5986ckuuu879f78423a3
+In-Reply-To: <20200423155425.GW20730@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240051
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
+ clxscore=1015 bulkscore=0 spamscore=0 priorityscore=1501 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004240051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PkxlIDI0LzA0LzIwMjAgw6AgMDQ6NDUsIFdhbmcgV2VuaHUgYSDDqWNyaXTCoDoKPj4gTmV3IG1v
-ZHVsZSB3aGljaCByZWdpc3RlcnMgaXRzIG1lbW9yeSBhbGxvY2F0aW9uIGFuZCBmcmVlIEFQSXMg
-dG8gdGhlCj4+IHNyYW1fZHluYW1pYyBtb2R1bGUsIHdoaWNoIHdvdWxkIGNyZWF0ZSBhIGRldmlj
-ZSBvZiBzdHJ1Y3Qgc3JhbV9kZXZpY2UKPj4gdHlwZSB0byBhY3QgYXMgYW4gaW50ZXJmYWNlIGZv
-ciB1c2VyIGxldmVsIGFwcGxpY2F0aW9ucyB0byBhY2Nlc3MgdGhlCj4+IGJhY2tlbmQgaGFyZHdh
-cmUgZGV2aWNlLCBmc2xfODV4eF9jYWNoZV9zcmFtLCB3aGljaCBpcyBkcml2ZWQgYnkgdGhlCj4+
-IEZTTF84NVhYX0NBQ0hFX1NSQU0gbW9kdWxlLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogV2FuZyBX
-ZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4KPj4gQ2M6IENocmlzdG9waGUgTGVyb3kgPGNocmlz
-dG9waGUubGVyb3lAYy1zLmZyPgo+PiBDYzogU2NvdHQgV29vZCA8b3NzQGJ1c2Vycm9yLm5ldD4K
-Pj4gQ2M6IE1pY2hhZWwgRWxsZXJtYW4gPG1wZUBlbGxlcm1hbi5pZC5hdT4KPj4gQ2M6IEdyZWcg
-S3JvYWgtSGFydG1hbiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+Cj4+IENjOiBBcm5kIEJl
-cmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+PiBDYzogbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5v
-cmcKPj4gLS0tCj4+ICAgLi4uL3Bvd2VycGMvaW5jbHVkZS9hc20vZnNsXzg1eHhfY2FjaGVfc3Jh
-bS5oIHwgIDQgKysKPj4gICBhcmNoL3Bvd2VycGMvcGxhdGZvcm1zLzg1eHgvS2NvbmZpZyAgICAg
-ICAgICAgfCAxMCArKysrKwo+PiAgIGFyY2gvcG93ZXJwYy9zeXNkZXYvTWFrZWZpbGUgICAgICAg
-ICAgICAgICAgICB8ICAxICsKPj4gICBhcmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF84NXh4X2NhY2hl
-X2N0bHIuaCAgICAgfCAgNiArKysKPj4gICBhcmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF84NXh4X2Nh
-Y2hlX3NyYW0uYyAgICAgfCAxMiArKysrKysKPj4gICBhcmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF84
-NXh4X3NyYW1fdWFwaS5jICAgICAgfCAzOSArKysrKysrKysrKysrKysrKysrCj4+ICAgNiBmaWxl
-cyBjaGFuZ2VkLCA3MiBpbnNlcnRpb25zKCspCj4+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gv
-cG93ZXJwYy9zeXNkZXYvZnNsXzg1eHhfc3JhbV91YXBpLmMKPgo+V2Ugc2hvdWxkbid0IGFkZCBt
-b3JlIHN0dWZmIGluIGFyY2gvcG93ZXJwYy9zeXNkZXYvCj4KPkVpdGhlciBpdCBpcyBkZWRpY2F0
-ZWQgdG8gODV4eCwgYW5kIGl0IHNob3VsZCBnbyBpbnRvIAo+YXJjaC9wb3dlcnBjL3BsYXRmb3Jt
-Lzg1eHgvICwgb3IgaXQgaXMgY29tbW9uIHRvIHNldmVyYWwgCj5wbGF0Zm9ybXMvYXJjaGl0ZWN0
-dXJlcyBhbmQgc2hvdWxkIGJlIG1vdmVkIHRvIGRyaXZlcnMvc29jL2ZzbC8KPgoKU3VyZSwgYWN0
-dWFsbHkgSSB0cmllZCB0byBmaW5kIGEgYmV0dGVyIHBsYWNlLCBidXQgZGlkIG5vdCByZWNvZ25p
-emUKdGhlIGRyaXZlci9zb2MuIFRoYW5rcywgYW5kIEkgd2lsbCBwdXQgZnNsXzg1eHhfc3JhbV91
-YXBpIHRoZXJlLgoKPj4gCj4+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20v
-ZnNsXzg1eHhfY2FjaGVfc3JhbS5oIGIvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2ZzbF84NXh4
-X2NhY2hlX3NyYW0uaAo+PiBpbmRleCAwMjM1YTA0NDdiYWEuLjk5Y2I3ZTIwMmMzOCAxMDA2NDQK
-Pj4gLS0tIGEvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2ZzbF84NXh4X2NhY2hlX3NyYW0uaAo+
-PiArKysgYi9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vZnNsXzg1eHhfY2FjaGVfc3JhbS5oCj4+
-IEBAIC0yNiw2ICsyNiwxMCBAQCBzdHJ1Y3QgbXBjODV4eF9jYWNoZV9zcmFtIHsKPj4gICAJdW5z
-aWduZWQgaW50IHNpemU7Cj4+ICAgCXJoX2luZm9fdCAqcmg7Cj4+ICAgCXNwaW5sb2NrX3QgbG9j
-azsKPj4gKwo+PiArI2lmZGVmIENPTkZJR19GU0xfODVYWF9TUkFNX1VBUEkKPj4gKwlzdHJ1Y3Qg
-ZGV2aWNlICpkZXY7Cj4+ICsjZW5kaWYKPj4gICB9Owo+PiAgIAo+PiAgIGV4dGVybiB2b2lkIG1w
-Yzg1eHhfY2FjaGVfc3JhbV9mcmVlKHZvaWQgKnB0cik7Cj4+IGRpZmYgLS1naXQgYS9hcmNoL3Bv
-d2VycGMvcGxhdGZvcm1zLzg1eHgvS2NvbmZpZyBiL2FyY2gvcG93ZXJwYy9wbGF0Zm9ybXMvODV4
-eC9LY29uZmlnCj4+IGluZGV4IGZhM2QyOWRjYjU3ZS4uM2E2ZjZhZjk3M2ViIDEwMDY0NAo+PiAt
-LS0gYS9hcmNoL3Bvd2VycGMvcGxhdGZvcm1zLzg1eHgvS2NvbmZpZwo+PiArKysgYi9hcmNoL3Bv
-d2VycGMvcGxhdGZvcm1zLzg1eHgvS2NvbmZpZwo+PiBAQCAtMTYsNiArMTYsMTYgQEAgaWYgRlNM
-X1NPQ19CT09LRQo+PiAgIAo+PiAgIGlmIFBQQzMyCj4+ICAgCj4+ICtjb25maWcgRlNMXzg1WFhf
-U1JBTV9VQVBJCj4+ICsJdHJpc3RhdGUgIkZyZWVzY2FsZSBNUEM4NXh4IFNSQU0gVUFQSSBTdXBw
-b3J0Igo+PiArCWRlcGVuZHMgb24gRlNMX1NPQ19CT09LRSAmJiBTUkFNX0RZTkFNSUMKPgo+SXMg
-U1JBTV9EWU5BTUlDIHVzZWZ1bGwgb24gaXRzIG93biwgd2l0aG91dCBhIGRyaXZlciBsaWtlIHRo
-aXMgb25lID8gSXMgCj50aGF0IHdvcnRoIGFsbG93aW5nIHRpbnkgc2VsZWN0aW9uIG9mIGJvdGgg
-ZHJpdmVycyA/IFNob3VsZG4ndCBvbmUgb2YgCj50aGVtIGltcGx5IHRoZSBvdGhlciBvbmUgPwoK
-VHJ1ZWx5IHRoZSBtb2R1bGUgbGlrZSB0aGlzIGlzIHRoZSB0b3AgbGV2ZWwgc2VsZWN0aW9uLCBh
-bmQgU1JBTV9EWU5BTUlDCnNob3VsZCBiZSBzZWxlY3RlZCBieSBhbnkgY2FsbGVyIG1vZHVsZXMu
-IEFzIFNSQU1fRFlOQU1JQyBtYXkgYmUgdXNlZCBieQpvdGhlciBkcml2ZXJzKGluIHRoZSBmdXR1
-cmUsIGJ1dCBjdXJyZW50bHkgb25seSB1cyBoZXJlKSwgSSB0aGluayBtYWtlIGl0CnNlbGV0ZWQg
-YnkgdGhpcyBpcyBiZXR0ZXI/IChzaG93IGJlbG93KQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29j
-L2ZzbC9LY29uZmlnIGIvZHJpdmVycy9zb2MvZnNsL0tjb25maWcKaW5kZXggNGRmMzJiYzRjN2E2
-Li5jZWVlYmIyMmY2ZDMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc29jL2ZzbC9LY29uZmlnCisrKyBi
-L2RyaXZlcnMvc29jL2ZzbC9LY29uZmlnCkBAIC01MCw0ICs1MCwxNiBAQCBjb25maWcgRlNMX1JD
-UE0KIAkgIHRhc2tzIGFzc29jaWF0ZWQgd2l0aCBwb3dlciBtYW5hZ2VtZW50LCBzdWNoIGFzIHdh
-a2V1cCBzb3VyY2UgY29udHJvbC4KIAkgIE5vdGUgdGhhdCBjdXJyZW50bHkgdGhpcyBkcml2ZXIg
-d2lsbCBub3Qgc3VwcG9ydCBQb3dlclBDIGJhc2VkCiAJICBRb3JJUSBwcm9jZXNzb3IuCisKK2Nv
-bmZpZyBGU0xfODVYWF9TUkFNX1VBUEkKKwl0cmlzdGF0ZSAiRnJlZXNjYWxlIE1QQzg1eHggU1JB
-TSBVQVBJIFN1cHBvcnQiCisJZGVwZW5kcyBvbiBGU0xfU09DX0JPT0tFICYmIFBQQzMyCisJc2Vs
-ZWN0IEZTTF84NVhYX0NBQ0hFX1NSQU0KKwlzZWxlY3QgU1JBTV9EWU5BTUlDCisJaGVscAorCSAg
-VGhpcyByZWdpc3RlcnMgYSBkZXZpY2Ugb2Ygc3RydWN0IHNyYW1fZGV2aWNlIHR5cGUgd2hpY2gg
-d291bGQgYWN0IGFzCisJICBhbiBpbnRlcmZhY2UgZm9yIHVzZXIgbGV2ZWwgYXBwbGljYXRpb25z
-IHRvIGFjY2VzcyB0aGUgRnJlZXNjYWxlIDg1eHgKKwkgIENhY2hlLVNSQU0gbWVtb3J5IGR5bmFt
-aWNhbGx5LCBtZWFuaW5nIGFsbG9jYXRlIG9uIGRlbWFuZCBkeW5hbWljYWxseQorCSAgd2hpbGUg
-dGhleSBhcmUgcnVubmluZy4KKwogZW5kbWVudQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvZnNs
-L01ha2VmaWxlIGIvZHJpdmVycy9zb2MvZnNsL01ha2VmaWxlCmluZGV4IDkwNmYxY2Q4YWYwMS4u
-NzE2ZTM4Zjc1NzM1IDEwMDY0NAotLS0gYS9kcml2ZXJzL3NvYy9mc2wvTWFrZWZpbGUKKysrIGIv
-ZHJpdmVycy9zb2MvZnNsL01ha2VmaWxlCkBAIC0xMCwzICsxMCw0IEBAIG9iai0kKENPTkZJR19G
-U0xfUkNQTSkJCQkrPSByY3BtLm8KIG9iai0kKENPTkZJR19GU0xfR1VUUykJCQkrPSBndXRzLm8K
-IG9iai0kKENPTkZJR19GU0xfTUNfRFBJTykgCQkrPSBkcGlvLwogb2JqLSQoQ09ORklHX0RQQUEy
-X0NPTlNPTEUpCQkrPSBkcGFhMi1jb25zb2xlLm8KK29iai0kKENPTkZJR19GU0xfODVYWF9TUkFN
-X1VBUEkpCSs9IGZzbF84NXh4X3NyYW1fdWFwaS5vCgo+PiAgIAo+PiArI2lmZGVmIENPTkZJR19G
-U0xfODVYWF9TUkFNX1VBUEkKPj4gK2V4dGVybiBzdHJ1Y3QgbXBjODV4eF9jYWNoZV9zcmFtICpt
-cGM4NXh4X2dldF9jYWNoZV9zcmFtKHZvaWQpOwo+Cj4nZXh0ZXJuJyBrZXl3b3JrIGlzIG1lYW5p
-bmdsZXNzIGhlcmUsIHJlbW92ZSBpdC4KPgoKSSB3aWxsIHJlbW92ZSBpdCBpbiBwYXRjaCB2NC4K
-Cj4+ICsjZW5kaWYKPj4gKwo+PiAgIGV4dGVybiBpbnQgaW5zdGFudGlhdGVfY2FjaGVfc3JhbShz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYsCj4+ICAgCQlzdHJ1Y3Qgc3JhbV9wYXJhbWV0ZXJz
-IHNyYW1fcGFyYW1zKTsKPj4gICBleHRlcm4gdm9pZCByZW1vdmVfY2FjaGVfc3JhbShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpkZXYpOwo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL3N5c2Rl
-di9mc2xfODV4eF9jYWNoZV9zcmFtLmMgYi9hcmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF84NXh4X2Nh
-Y2hlX3NyYW0uYwo+PiBpbmRleCAzZGU1YWM4MzgyYzAuLjAxNTZlYTYzYTNhMiAxMDA2NDQKPj4g
-LS0tIGEvYXJjaC9wb3dlcnBjL3N5c2Rldi9mc2xfODV4eF9jYWNoZV9zcmFtLmMKPj4gKysrIGIv
-YXJjaC9wb3dlcnBjL3N5c2Rldi9mc2xfODV4eF9jYWNoZV9zcmFtLmMKPj4gQEAgLTIzLDYgKzIz
-LDE0IEBACj4+ICAgCj4+ICAgc3RydWN0IG1wYzg1eHhfY2FjaGVfc3JhbSAqY2FjaGVfc3JhbTsK
-Pj4gICAKPj4gKwo+PiArI2lmZGVmIENPTkZJR19GU0xfODVYWF9TUkFNX1VBUEkKPj4gK3N0cnVj
-dCBtcGM4NXh4X2NhY2hlX3NyYW0gKm1wYzg1eHhfZ2V0X2NhY2hlX3NyYW0odm9pZCkKPj4gK3sK
-Pj4gKwlyZXR1cm4gY2FjaGVfc3JhbTsKPj4gK30KPj4gKyNlbmRpZgo+Cj5UaGlzIGZ1bmN0aW9u
-IGlzIG5vdCB3b3J0aCB0aGUgbWVzcyBvZiBhbiAjaWZkZWYgaW4gYSAuYyBmaWxlLgo+Y2FjaGVf
-c3JhbSBpcyBhbHJlYWR5IGdsb2JhbHkgdmlzaWJsZSwgc28gdGhpcyBmdW5jdGlvbiBzaG91bGQg
-Z28gaW4gCj5mc2xfODV4eF9jYWNoZV9jdGxyLmggYXMgYSAnc3RhdGljIGlubGluZScKPgoKWWVz
-LCBhbmQgSSB3aWxsIGNoYW5nZSBpdCBsaWtlIHRoaXMsIHdpdGggYW4gZXh0ZXJuIG9mIGNhY2hl
-X3NyYW0uCgogI2RlZmluZSBMMkNSX1NSQU1fWkVSTwkJMHgwMDAwMDAwMAkvKiBMMlNSQU0gemVy
-byBzaXplICovCkBAIC04MSw2ICs4MywxNSBAQCBzdHJ1Y3Qgc3JhbV9wYXJhbWV0ZXJzIHsKIAlw
-aHlzX2FkZHJfdCBzcmFtX29mZnNldDsKIH07CiAKKyNpZmRlZiBDT05GSUdfRlNMXzg1WFhfU1JB
-TV9VQVBJCitleHRlcm4gc3RydWN0IG1wYzg1eHhfY2FjaGVfc3JhbSAqY2FjaGVfc3JhbTsKKwor
-c3RhdGljIGlubGluZSBzdHJ1Y3QgbXBjODV4eF9jYWNoZV9zcmFtICptcGM4NXh4X2dldF9jYWNo
-ZV9zcmFtKHZvaWQpCit7CisJcmV0dXJuIGNhY2hlX3NyYW07Cit9CisjZW5kaWYKKwogZXh0ZXJu
-IGludCBpbnN0YW50aWF0ZV9jYWNoZV9zcmFtKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKmRldiwK
-Cj4+ICsKPj4gICB2b2lkICptcGM4NXh4X2NhY2hlX3NyYW1fYWxsb2ModW5zaWduZWQgaW50IHNp
-emUsCj4+ICAgCQkJCXBoeXNfYWRkcl90ICpwaHlzLCB1bnNpZ25lZCBpbnQgYWxpZ24pCj4+ICAg
-ewo+PiBAQCAtMTE1LDYgKzEyMywxMCBAQCBpbnQgaW5zdGFudGlhdGVfY2FjaGVfc3JhbShzdHJ1
-Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYsCj4+ICAgCXJoX2F0dGFjaF9yZWdpb24oY2FjaGVfc3Jh
-bS0+cmgsIDAsIGNhY2hlX3NyYW0tPnNpemUpOwo+PiAgIAlzcGluX2xvY2tfaW5pdCgmY2FjaGVf
-c3JhbS0+bG9jayk7Cj4+ICAgCj4+ICsjaWZkZWYgQ09ORklHX0ZTTF84NVhYX1NSQU1fVUFQSQo+
-PiArCWNhY2hlX3NyYW0tPmRldiA9ICZkZXYtPmRldjsKPj4gKyNlbmRpZgo+Cj4JQ2FuIHdlIGF2
-b2lkIHRoZSAjaWZkZWYgaW4gLmMgZmlsZSA/IChzZWUgCj5odHRwczovL3d3dy5rZXJuZWwub3Jn
-L2RvYy9odG1sL2xhdGVzdC9wcm9jZXNzL2NvZGluZy1zdHlsZS5odG1sI2NvbmRpdGlvbmFsLWNv
-bXBpbGF0aW9uKQo+CgpEZWZpbml0ZWx5LCBhbmQgSSB3aWxsIGNoYW5nZSBpdCBhcyBiZWxvdyBp
-biBwYXRjaCB2NDoKCisJaWYgKElTX0VOQUJMRUQoQ09ORklHX0ZTTF84NVhYX1NSQU1fVUFQSSkp
-CisJCWNhY2hlX3NyYW0tPmRldiA9ICZkZXYtPmRldjsKKwogCWRldl9pbmZvKCZkZXYtPmRldiwg
-IltiYXNlOjB4JWxseCwgc2l6ZToweCV4XSBjb25maWd1cmVkIGFuZCBsb2FkZWRcbiIsCgpUaGFu
-a3MsIGZvciB5b3VyIHN1Z2dlc3Rpb25zLCBhcyB0aGVzZSBhcmUgbWlub3IgbW9kaWZpY2F0aW9u
-cywKSSB3aWxsIHNlbmQgYSBuZXcgcGF0Y2ggc2VyaWVzIHY0IHNvb24uCgpSZWdhcmRzLApXZW5o
-dQ0KDQo=
+
+On 4/23/20 5:54 PM, Peter Zijlstra wrote:
+> On Thu, Apr 23, 2020 at 05:40:38PM +0200, Alexandre Chartre wrote:
+> 
+>>> @@ -77,6 +77,17 @@ unsigned long arch_jump_destination(stru
+>>>    	return insn->offset + insn->len + insn->immediate;
+>>>    }
+>>> +#define PUSH_OP(op) \
+>>> +({ \
+>>> +	list_add_tail(&op->list, ops_list); \
+>>> +	NULL; \
+>>> +})
+>>> +
+>>> +#define ADD_OP(op) \
+>>> +	if (!(op = calloc(1, sizeof(*op)))) \
+>>> +		return -1; \
+>>> +	else for (; op; op = PUSH_OP(op))
+>>> +
+>>
+>> I would better have a function to alloc+add op instead of weird macros,
+>> for example:
+>>
+>> static struct stack_op *add_op(void)
+>> {
+>>          struct stack *op;
+>>
+>>          op = calloc(1, sizeof(*op));
+>>          if (!op)
+>>                  return NULL;
+>>          list_add_tail(&op->list, ops_list);
+>> }
+>>
+>> Then it requires two more lines when using it but I think the code is much
+>> cleaner and clearer, e.g.:
+>>
+>>                          op = add_op();
+>>                          if (!op)
+>>                                  return -1;
+>>                          op->src.type = OP_SRC_ADD;
+>>                          op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+>>                          op->dest.type = OP_DEST_REG;
+>>                          op->dest.reg = CFI_SP;
+> 
+> The 'problem' which this is that it doesn't NULL op again, so any later
+> use will do 'funny' things instead of crashing sensibly.
+
+Then you can use a local variable:
+
+                 {
+                         struct stack_op *op = add_op();
+                         if (!op)
+                                 return -1;
+                         op->src.type = OP_SRC_ADD;
+                         op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+                         op->dest.type = OP_DEST_REG;
+                         op->dest.reg = CFI_SP;
+                 }
+
+> Also, I'm mightly lazy, I don't like endlessly repeating the same things.
+
+Me too, I often try to use macros to avoid repeating the same thing, and usually
+spend a lot of time trying fancy macros and eventually realize that this is
+usually not worth it.
+
+So here, we are down to a two line differences:
+
+    ADD_OP(op) {
+            ...
+    }
+
+vs.
+
+    {
+             struct stack *op = add_op();
+             if (!op)
+                     return -1;
+             ...
+    }
+
+Anyway, I leave it up to you, that's just coding preferences.
+
+In any case:
+
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+
+Thanks,
+
+alex.
