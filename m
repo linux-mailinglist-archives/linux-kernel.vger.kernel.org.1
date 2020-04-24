@@ -2,142 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432931B7F20
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FC61B7F31
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 21:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbgDXTlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 15:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
+        id S1729283AbgDXTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 15:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgDXTlO (ORCPT
+        with ESMTP id S1726908AbgDXTnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:41:14 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91A5C09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:41:14 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w65so5259889pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:41:14 -0700 (PDT)
+        Fri, 24 Apr 2020 15:43:40 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13BAC09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:43:40 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id c24so10683013uap.13
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 12:43:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qbux80UTz0vA817hD4tP9hl9NHJsjLKh48SDL2L8F/o=;
-        b=OvWTBqlkP7TC/ZbPKUDwMuhgaD+AWHPGVEFsc9vkTNBX+V1qdIdW+igEYnSvFhaLK9
-         EICcoAcgtctkQZt8fWHFfCvAkpU/GgdvOGNstLWdDXD+s/lBR9H7+w5R7U9c7qLJntGH
-         1MJ0XEyyRX9XrKLk6IPcyxURkHmjOM2IKjOiM=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uYIyO0FM6OKLTtdidib4kMcRxKmjnuqRDI/kUo72TPs=;
+        b=iB1jjpAPyu5N+Ty0NvIhETMALoLw3CWs1vsmNe2SNdO3f2nhQ/G117vxfSTMqpjmp3
+         kWTI4UFRErUQddDTVOeyXh3p/aBKbAiVEbsOTjsoopA9/inmwJ0b22h9QQthrtyJhe5f
+         aEWQ9wzmaYdHFzXlIn4rMfCyLFLx0p9W+O6uPflycOwPNAXikNYhRwd23PlWaUdh5o19
+         +p56EjWuBxrskFZiFuReT57UOngHnfrUzIgPQdCRfhGL12cWrIjK3ZfkIGx7aTxvS1bK
+         bjqcOSNHvYE4Se4z0d8UOpQ7EUOw/gormYfm5EAbxC5xxNMvlTaXfdv3D2kzbzmjKtDu
+         bOmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qbux80UTz0vA817hD4tP9hl9NHJsjLKh48SDL2L8F/o=;
-        b=DGtowlaWVpNuxNgdqvlQGVmUWOxJiGGZZ3prkB0sG+Yc6/lp3xM4/3jEUYFE0q6wvR
-         mo9WDSbLK61b/I7OHOsII3+XeuVGh63YWVuDiH9pm7l3JE+fwI7dXc7C5TPHySS+gCBf
-         zQTt1SaJSVSEq3CQ2OhJHFqXDM9DrUmH9MxEmn0oujuUGdbTt1dGCu0h4MUpiQzh4Ykj
-         z+0n1NkzeMBvdTyHeW21Gky1hj0cqic1r7CNFpvy4iPkHwoozG8asaaOkafXhA6/eUUd
-         3cFJeasiKaYQpXPf0NaM6r1xzWwHY7yjRugjCabN5LOO6VYCURwLSnSVwhA4LvmK6dva
-         cZww==
-X-Gm-Message-State: AGi0PuYOzoyZeeHpbYCeuqG3PBvMgqDRvjwsXaoESCBwWE+oegw15NlY
-        eMbX5Q/lMH0Ikm1Ovu++3y76Kg==
-X-Google-Smtp-Source: APiQypKUSiQYkB+1l3STtqMgcJ9AzHkpeWfGE0J7tpvxsaxtM/vlY9mCbgbOGUURLv/PRIWyx/N0Ew==
-X-Received: by 2002:a62:ed14:: with SMTP id u20mr11580549pfh.69.1587757274146;
-        Fri, 24 Apr 2020 12:41:14 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id nm22sm5212397pjb.38.2020.04.24.12.41.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 12:41:13 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 12:41:12 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, rjw@rjwysocki.net, saravanak@google.com,
-        sibis@codeaurora.org, rnayak@codeaurora.org,
-        bjorn.andersson@linaro.org, vincent.guittot@linaro.org,
-        jcrouse@codeaurora.org, evgreen@chromium.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 7/7] cpufreq: dt: Add support for interconnect
- bandwidth scaling
-Message-ID: <20200424194112.GD4525@google.com>
-References: <20200424155404.10746-1-georgi.djakov@linaro.org>
- <20200424155404.10746-8-georgi.djakov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uYIyO0FM6OKLTtdidib4kMcRxKmjnuqRDI/kUo72TPs=;
+        b=pxmrJeYaSBGFU4O+YbC323OfGGrhEzAVk7jZ4MPPa9pB2F2eN5XyQjomJjnYXBpvdM
+         z+1oEviJoueLyRXt7V9AEPCyADdmrFN+4Nsvj3gyVlF6Uge6kUDq7iHCFbolKkJFWnOv
+         D/ELu9CcZ6ekGmyLz87hIbGn8Myy0nFByCEktUG1bVin9tie59Xid7ITmRl3l9iMsLkC
+         WdY3sH4prFX+F0cbLK+vZ6lu37IBPabi/0/YbM7T+5T5U32pre3yAdmHhzlJtXQW56HW
+         WxGcMQYkbL+RhfXcJLCLh2d1ibP8w1LjUSaKmbrWbgXW/u7MrHOJ3H/yjgOOSDHT9vrD
+         hUPw==
+X-Gm-Message-State: AGi0PubiKO8E62c0rWrUp1mSwMk6xifb1xoDdD9B8/l6zLT3zQYtvFXb
+        +G0fREY2Aemz2LoE+283ayn2vFb3JnyzR6gk+zZf+A==
+X-Google-Smtp-Source: APiQypLbCAPlZZDSVGcMwx906oxRyln6GauufX0aC9cwnkiQn/QK/qcy4q5D1KHXLNqyNSNn+GZ2PeLwEhU2CmLECH4=
+X-Received: by 2002:ab0:485:: with SMTP id 5mr8980818uaw.86.1587757419335;
+ Fri, 24 Apr 2020 12:43:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200424155404.10746-8-georgi.djakov@linaro.org>
+References: <20200424153859.GA1481119@chrisdown.name>
+In-Reply-To: <20200424153859.GA1481119@chrisdown.name>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 24 Apr 2020 12:43:28 -0700
+Message-ID: <CAJuCfpGnJBEvQTUeJ_U6+rHmPcMjw_pPL+QFj7Sec5fHZPH67w@mail.gmail.com>
+Subject: Re: PSI poll() support for unprivileged users
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 06:54:04PM +0300, Georgi Djakov wrote:
-> In addition to clocks and regulators, some devices can scale the bandwidth
-> of their on-chip interconnect - for example between CPU and DDR memory. Add
-> support for that, so that platforms which support it can make use of it.
-> 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> ---
-> v7:
-> * Drop using dev_pm_opp_set_paths(), as it has been removed.
-> * Add Kconfig dependency on INTERCONNECT, as it can be module.
-> 
-> 
-> v2: https://lore.kernel.org/r/20190423132823.7915-6-georgi.djakov@linaro.org
-> 
->  drivers/cpufreq/Kconfig      |  1 +
->  drivers/cpufreq/cpufreq-dt.c | 15 +++++++++++++++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> index c3e6bd59e920..db2ad54ee67f 100644
-> --- a/drivers/cpufreq/Kconfig
-> +++ b/drivers/cpufreq/Kconfig
-> @@ -217,6 +217,7 @@ config CPUFREQ_DT
->  
->  config CPUFREQ_DT_PLATDEV
->  	bool
-> +	depends on INTERCONNECT || !INTERCONNECT
->  	help
->  	  This adds a generic DT based cpufreq platdev driver for frequency
->  	  management.  This creates a 'cpufreq-dt' platform device, on the
-> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-> index 26fe8dfb9ce6..4ecef3257532 100644
-> --- a/drivers/cpufreq/cpufreq-dt.c
-> +++ b/drivers/cpufreq/cpufreq-dt.c
-> @@ -13,6 +13,7 @@
->  #include <linux/cpufreq.h>
->  #include <linux/cpumask.h>
->  #include <linux/err.h>
-> +#include <linux/interconnect.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/pm_opp.h>
-> @@ -95,6 +96,7 @@ static int resources_available(void)
->  	struct device *cpu_dev;
->  	struct regulator *cpu_reg;
->  	struct clk *cpu_clk;
-> +	struct icc_path *cpu_path;
->  	int ret = 0;
->  	const char *name;
->  
-> @@ -121,6 +123,19 @@ static int resources_available(void)
->  
->  	clk_put(cpu_clk);
->  
-> +	cpu_path = of_icc_get(cpu_dev, NULL);
-> +	ret = PTR_ERR_OR_ZERO(cpu_path);
-> +	if (ret) {
-> +		if (ret == -EPROBE_DEFER)
-> +			dev_dbg(cpu_dev, "defer icc path: %d\n", ret);
-> +		else
-> +			dev_err(cpu_dev, "failed to get icc path: %d\n", ret);
-> +
-> +		return ret;
-> +	}
-> +
-> +	icc_put(cpu_path);
-> +
->  	name = find_supply_name(cpu_dev);
->  	/* Platform doesn't require regulator */
->  	if (!name)
+On Fri, Apr 24, 2020 at 8:39 AM Chris Down <chris@chrisdown.name> wrote:
+>
+> Hi Suren,
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Hi Chris,
+
+>
+> I noticed that one restriction of the PSI poll() interface is that currently
+> only root can set up new triggers. Talking to Johannes, it seems the reason for
+> this was that you end up with a realtime kernel thread for every cgroup where a
+> trigger is set, and this could be used by unprivileged users to sap resources.
+>
+
+This reasoning is correct and IIRC the enforcement of this is just the
+way /proc/pressure files are created:
+
+proc_create("pressure/io", 0, NULL, &psi_io_fops);
+proc_create("pressure/memory", 0, NULL, &psi_memory_fops);
+proc_create("pressure/cpu", 0, NULL, &psi_cpu_fops);
+
+IOW there are no additional capability checks performed on the PSI
+trigger users.
+
+> I'm building a userspace daemon for desktop users which notifies based on
+> pressure events, and it's particularly janky to ask people to run such a
+> notifier as root: the notification mechanism is usually tied to the user's
+> display server auth, and the surrounding environment is generally pretty
+> important to maintain. In addition to this, just in general this doesn't feel
+> like the kind of feature that by its nature needs to be restricted to root --
+> it seems reasonable that there would be unprivileged users which want to use
+> this, and that not using RT threads would be acceptable in that scenario.
+
+For these cases you can provide a userspace privileged daemon that
+will relay pressure notifications to its unprivileged clients. This is
+what we do on Android - Android Management Server registers its PSI
+triggers and then relays low memory notifications to unprivileged
+apps.
+Another approach is taken by Android Low Memory Killer Daemon (lmkd)
+which is an unprivileged process but registers its PSI triggers. The
+trick is that the init process executes "chmod 0664
+/proc/pressure/memory" from its init script and further restrictions
+are enforced by selinux policy granting only LMKD write access to this
+file.
+
+Would any of these options work for you?
+
+> Have you considered making the per-cgroup RT threads optional? If the
+> processing isn't done in the FIFO kthread for unprivileged users, I think it
+> should be safe to allow them to write to pressure files (perhaps with some
+> additional limits or restrictions on things like the interval, as needed).
+
+I didn't consider that as I viewed memory condition tracking that
+consumes kernel resources as being potentially exploitable. RT threads
+did make that more of an issue but even without them I'm not sure we
+should allow unprivileged processes to create unlimited numbers of
+triggers each of which is not really free.
+
+>
+> Thanks!
+>
+> Chris
+
+Thanks,
+Suren.
