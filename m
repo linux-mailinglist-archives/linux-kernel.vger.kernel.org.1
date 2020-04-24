@@ -2,57 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048B51B6D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 07:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63131B6D81
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 07:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgDXFnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 01:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49384 "EHLO mail.kernel.org"
+        id S1726413AbgDXFwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 01:52:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36982 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgDXFnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 01:43:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E45E20700;
-        Fri, 24 Apr 2020 05:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587707021;
-        bh=+fWzvK78m35Nrirl6hSL9kZfLCz52AFClANj6wtO7RA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZoGeHTBJIatLuhsokYNf9Z/d41yp0TdZbrnsgKhNp3pbAe5vUCGf347RltHi6cpQh
-         CGznK9b9HY0ajyumY4GLTTJNvW3+DzRkaB1tGXhQAcU4XmbFn0xXYUiqPgo9IJnyVs
-         qrcgSPq0iwDs+IYxU8g4fAulUYlFX4s6K1ihMItA=
-Date:   Fri, 24 Apr 2020 07:43:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH USB 1/2] usb: raw-gadget: fix return value of ep read
- ioctls
-Message-ID: <20200424054339.GD103562@kroah.com>
-References: <ca6b79b47313aa7ee9d8c24c5a7f595772764171.1587690539.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca6b79b47313aa7ee9d8c24c5a7f595772764171.1587690539.git.andreyknvl@google.com>
+        id S1725554AbgDXFwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 01:52:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 801EBAD71;
+        Fri, 24 Apr 2020 05:52:16 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     tglx@linutronix.de, pbonzini@redhat.com
+Cc:     peterz@infradead.org, maz@kernel.org, bigeasy@linutronix.de,
+        rostedt@goodmis.org, torvalds@linux-foundation.org,
+        will@kernel.org, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave@stgolabs.net
+Subject: [PATCH v4 0/5] kvm: Use rcuwait for vcpu blocking
+Date:   Thu, 23 Apr 2020 22:48:32 -0700
+Message-Id: <20200424054837.5138-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 03:09:58AM +0200, Andrey Konovalov wrote:
-> They must return the number of bytes transferred during the data stage.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
+Hi,
 
-Is this a bugfix?  If so, does it need to go to older kernels?  A
-"Fixes:" tag would be nice...
+The following is an updated (and hopefully final) revision of the kvm
+vcpu to rcuwait conversion[0], following the work on completions using
+simple waitqueues.
 
-thanks,
+Patches 1-4 level up the rcuwait api with waitqueues.
+Patch 5 converts kvm to use rcuwait.
 
-greg k-h
+Changes from v3:
+  - picked up maz and peterz's acks for routing via kvm tree.
+  - added new patch 4/5 which introduces rcuwait_active. This is to avoid
+    directly calling rcu_dereference() to peek at the wait->task.
+  - fixed breakage for arm in patch 4/5.
+  - removed previous patch 5/5 which updates swait doc as peterz will
+    keep it.
+
+Changes from v2:
+  - new patch 3 which adds prepare_to_rcuwait and finish_rcuwait helpers.
+  - fixed broken sleep and tracepoint semantics in patch 4. (Marc and Paolo)
+  
+This has only been run tested on x86 but compile tested on mips, powerpc
+and arm. It passes all tests from kvm-unit-tests[1].
+
+This series applies on top of current kvm and tip trees.
+Please consider for v5.8.
+
+[0] https://lore.kernel.org/lkml/20200320085527.23861-3-dave@stgolabs.net/
+[1] git://git.kernel.org/pub/scm/virt/kvm/kvm-unit-tests.git
+
+Thanks!
+
+Davidlohr Bueso (5):
+  rcuwait: Fix stale wake call name in comment
+  rcuwait: Let rcuwait_wake_up() return whether or not a task was awoken
+  rcuwait: Introduce prepare_to and finish_rcuwait
+  rcuwait: Introduce rcuwait_active()
+  kvm: Replace vcpu->swait with rcuwait
+
+ arch/mips/kvm/mips.c                  |  6 ++----
+ arch/powerpc/include/asm/kvm_book3s.h |  2 +-
+ arch/powerpc/include/asm/kvm_host.h   |  2 +-
+ arch/powerpc/kvm/book3s_hv.c          | 22 ++++++++--------------
+ arch/powerpc/kvm/powerpc.c            |  2 +-
+ arch/x86/kvm/lapic.c                  |  2 +-
+ include/linux/kvm_host.h              | 10 +++++-----
+ include/linux/rcuwait.h               | 32 ++++++++++++++++++++++++++------
+ kernel/exit.c                         |  9 ++++++---
+ virt/kvm/arm/arch_timer.c             |  3 ++-
+ virt/kvm/arm/arm.c                    |  9 +++++----
+ virt/kvm/async_pf.c                   |  3 +--
+ virt/kvm/kvm_main.c                   | 19 +++++++++----------
+ 13 files changed, 68 insertions(+), 53 deletions(-)
+
+--
+2.16.4
+
