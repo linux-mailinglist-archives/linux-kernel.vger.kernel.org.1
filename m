@@ -2,105 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866E41B713F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC041B7147
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgDXJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 05:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S1726815AbgDXJzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 05:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726582AbgDXJyf (ORCPT
+        by vger.kernel.org with ESMTP id S1726489AbgDXJzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:54:35 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802C9C09B045;
-        Fri, 24 Apr 2020 02:54:34 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o185so4413170pgo.3;
-        Fri, 24 Apr 2020 02:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iVvYIfEqTyiL0cJpR1ziiocvVVbqCRYQEWmIpkQdSo4=;
-        b=lNQg7yUM1uHwNZH9rRi6aMycHtL1Wrb5aNMA14RGDMtHDItmAykWFl25jb742vRfhF
-         EToY+8xjZ3SGMPWKCWL/d0VBa26J8XWpkzgQ2YkpiobCnlFhsf2wFQJfRWFTEdJIxt+L
-         tOALbRk1YJkPUconj59UScO5akAZO43/Rude99MbOaxAFladi7T3HCeVxwu3QVLyjXqW
-         wuD6ASN6ByFkw5EXnKYCxq9ZKthzLmzdzmc/1QrG44xetQ7KbXWUL2MiCOgM0eeXCdQ6
-         h4gYVDa3Ae5GfEJ5C1n9XwkuAvet6QEQfXGzAbAZ1naPIg45QtWPruZmvjAgTlJestom
-         OZwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iVvYIfEqTyiL0cJpR1ziiocvVVbqCRYQEWmIpkQdSo4=;
-        b=hp/Kq9Ehb8/xMSAKg0bBwH4kJc2wYYIeSIXxpGLNd35jXzMNEMJCiybiXNNO1XuUAt
-         VQwsVdpYdLL7S9xaWeUbYoJuUNIf6oaWqYstvLLdCO021A7wDjDxQGUAOcp2VMSbVNpD
-         T8OdXWDZfhBAQwOxk0Jfnh9lehBhaInORwgew2JlSHnVA73gcXCrt9gvg3CLMCzRyZpn
-         KPutpCjXOtRjwu9l2Ba9Bd0NWIzc8Q/DOfnafO6rCLELLapGBKWOqZN1H6PjqAIGItGj
-         wL7cUL30ZsDfgSvpFM5gwnRts0n+1pnX+SCNMm4uU3excu5bOul6PL7PVJsf8OEVlU6W
-         T+yw==
-X-Gm-Message-State: AGi0PuZcoUnINnrCvmECFTyuG2QW/4RVYtX1PdBLCDbjf5m1Cnq95puD
-        L8P8kSLVObt4eEhY6G/8FrmEuDdWyltN1jpSVMs=
-X-Google-Smtp-Source: APiQypLTdtY2h3+c0DJDMGPfzEIOPk2dta0lyKEsWgoM7Y++nWond/ddP3DuM+fDmLggdLnM2ad9czHqSI0wS3/NnOw=
-X-Received: by 2002:aa7:8f26:: with SMTP id y6mr8944170pfr.36.1587722073914;
- Fri, 24 Apr 2020 02:54:33 -0700 (PDT)
+        Fri, 24 Apr 2020 05:55:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CE3C09B045;
+        Fri, 24 Apr 2020 02:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IwKwbSmGjb9mqGGwT2L7N216BXJbyhGPyRcIk5sPmzk=; b=OdZUh8sMRP0YeZhGvBlhTwqXJT
+        LDaLsZJ0FzBe9Pxo/xgaYRjnKijrVWJ93E9upc2h9f6t1c+VFb3RdTLv2H94LVOYzqa2cj9pDyvdy
+        evh6EBcpJEyYzvuB1jmlfc3pX6wFignIHZlb6RPxOc+/BVMB9+K4fJf7Ul3t5Pp33qexByVhvzjBp
+        lDP56zndTyaFOUFoHWFUW7sTe3a70DHaN3tRtBFgYf934OqN0OyohrRTLb/uuCHK2sHr7YErA7i72
+        f55XFJdja6DZaqc0nnRGQPVELeO579cjJif4Z1gaarWQryQc+HbutOtf2EMkYl1sB7nzt5i4nyvj/
+        w7rancWw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jRv3Z-0000ox-VI; Fri, 24 Apr 2020 09:55:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1F3DF3010C4;
+        Fri, 24 Apr 2020 11:55:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C949020325E18; Fri, 24 Apr 2020 11:55:33 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 11:55:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     tglx@linutronix.de, pbonzini@redhat.com, maz@kernel.org,
+        bigeasy@linutronix.de, rostedt@goodmis.org,
+        torvalds@linux-foundation.org, will@kernel.org,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 4/5] rcuwait: Introduce rcuwait_active()
+Message-ID: <20200424095533.GY20730@hirez.programming.kicks-ass.net>
+References: <20200424054837.5138-1-dave@stgolabs.net>
+ <20200424054837.5138-5-dave@stgolabs.net>
 MIME-Version: 1.0
-References: <20200424031617.24033-1-calvin.johnson@oss.nxp.com>
- <20200424031617.24033-2-calvin.johnson@oss.nxp.com> <b583f6fb-e6fe-3320-41c6-e019a4e10388@gmail.com>
- <20200424092651.GA4501@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20200424092651.GA4501@lsv03152.swis.in-blr01.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 24 Apr 2020 12:54:26 +0300
-Message-ID: <CAHp75VdxFjzs2uj7ZYNmwt9DC386gMNahi3A_MYV4wE3kbtq=g@mail.gmail.com>
-Subject: Re: [net-next PATCH v1 1/2] device property: Introduce fwnode_phy_find_device()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, linux.cj@gmail.com,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, Varun Sethi <V.Sethi@nxp.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424054837.5138-5-dave@stgolabs.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 12:27 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
-> On Thu, Apr 23, 2020 at 08:45:03PM -0700, Florian Fainelli wrote:
-> > On 4/23/2020 8:16 PM, Calvin Johnson wrote:
+On Thu, Apr 23, 2020 at 10:48:36PM -0700, Davidlohr Bueso wrote:
+> This call is lockless and thus should not be trustedblindly,
+> ie: for wakeup purposes, which is already provided correctly
+> by rcuwait_wakeup().
+> 
+> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 
-> > If you forget to update the MAINTAINERS file, or do not place this code
-> > under drivers/net/phy/* or drivers/of/of_mdio.c then this is going to
-> > completely escape the sight of the PHYLIB/PHYLINK maintainers...
->
-> Did you mean the following change?
-
-I don't think this is an appreciated option.
-Second one was to locate this code under drivers/net, which may be
-better. And perhaps other not basic (to the properties) stuff should
-be also moved to respective subsystems.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
