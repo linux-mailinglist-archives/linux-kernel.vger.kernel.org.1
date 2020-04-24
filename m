@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60A91B7991
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3992A1B7999
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgDXP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:29:35 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49209 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgDXP3f (ORCPT
+        id S1727796AbgDXPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:33:01 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37579 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726806AbgDXPdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:29:35 -0400
-Received: from fsav110.sakura.ne.jp (fsav110.sakura.ne.jp [27.133.134.237])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03OFSuHd019852;
-        Sat, 25 Apr 2020 00:28:56 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav110.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp);
- Sat, 25 Apr 2020 00:28:56 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03OFSucV019848
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sat, 25 Apr 2020 00:28:56 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200424092816.62a61b1d@gandalf.local.home>
- <579fbe97-9aae-2b67-03ff-01291b9cbb7d@i-love.sakura.ne.jp>
- <20200424103131.7987f890@gandalf.local.home>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <7ec0b0a3-39ae-0f1c-b8c2-e1e9e60f1223@i-love.sakura.ne.jp>
-Date:   Sat, 25 Apr 2020 00:28:53 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 24 Apr 2020 11:33:01 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id EED00144C;
+        Fri, 24 Apr 2020 11:32:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 24 Apr 2020 11:33:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=E3sMeHbCAsorKLNRBwtJuvMxe4s
+        X7oNFJA6uh6/V09o=; b=I81Vv1U9rffqzG+MziHsg01V2e+Ds8NzFDwTn3/cenD
+        S2WJV5ETTu67visXHThN51YGYN/Ta/m5LgtjaFHC3VIOOQcvfz7C9IKyo2Vr/7VZ
+        1PrdFpEBaX4po9f+TTGjICYwkNcjTG+o2XMCAhFLhpz77o8gH80mSkOouShoUuDi
+        Bq9F+6AW1KlMnquUi7nwrHK//v+TzRUFdC7rVrvUwKKElNS/4UNsTn3XfbTi+M2+
+        Di/A9kkLx8IZ2anydYuLcu7o7q52pSi0g0PFBlqzaMqEbRDHkgpdyhYCvkoIhvVZ
+        AiJ0xS438mYG30IQYO6LR37jWl+kYq/fiSRucXGlxFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=E3sMeH
+        bCAsorKLNRBwtJuvMxe4sX7oNFJA6uh6/V09o=; b=144WcH05O2wtvJjQu9Gukd
+        pOq9fUoluzmpIiET82PYcq6jqyOLVaDnqlpkepnBcuSSIro58kVF2lwL1gmv9pxy
+        +tcF1Fl3LaH1XKaSCD+Yy7BQMketUSUmwg1cq6PNfm/dp4cKqISgWGc0oLN8BnsY
+        aZ1VeN9yH5JF2TjV2k7kbqswtnO0GD3PEUH9jCiD0nFE5zM3NB10PZ2+egoGPioV
+        8FnHSbZQrqGP0Zf7A1TsqC0HnMVSzk4s0JGdO34fWcPdoAnx00uOMeo5gKdjCqPF
+        tEwwhlXe5wj6znxOEoApx+R1CjlgxjjUfmHaaW442rg7dGMu7y30Gnfq1Q5rTkCg
+        ==
+X-ME-Sender: <xms:qgajXic365sAgtb2Qaaqpb9EHZ1IVctpppO7Zm6VIjiy7qPIqWKvIQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrhedugdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehgtderredttddu
+    necuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehsth
+    iftgigrdighiiiqeenucfkphepudeiiedrudejiedruddvuddruddvfeenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehprghtrhhitghksehsth
+    iftgigrdighiii
+X-ME-Proxy: <xmx:qgajXvSGHJHDkQ9PVC6ziiJCVjzPUvYFVvfQpFeHcx_HXnmNH8_OGg>
+    <xmx:qgajXuKFcsfMEW1c1eZE6azbWbNp5w6XZ_40oHJQtS5_9P89lF1kPA>
+    <xmx:qgajXsKEZhE52YGGzsRVsSDnPTRCyhkAWTfsi5NXNKmCZzf23q_vQQ>
+    <xmx:qwajXgKrr-xmtJGDHvuhc5VuevbiRR7PGv_rktmhVCv-_lrERdudcA>
+Received: from localhost (mobile-166-176-121-123.mycingular.net [166.176.121.123])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 896013280060;
+        Fri, 24 Apr 2020 11:32:58 -0400 (EDT)
+Date:   Fri, 24 Apr 2020 10:32:57 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Bjorn Ardo <bjorn.ardo@axis.com>
+Cc:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@axis.com
+Subject: Re: [PATCHv2] i2c: slave-eeprom: Make it possible to pre-load eeprom
+ data
+Message-ID: <20200424153257.GA3163924@heinlein.lan.stwcx.xyz>
+References: <20200424090443.26316-1-bjorn.ardo@axis.com>
+ <20200424100307.GB1959@kunai>
+ <5180b657-33ff-c182-8a16-82a35a61f647@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <20200424103131.7987f890@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
+In-Reply-To: <5180b657-33ff-c182-8a16-82a35a61f647@axis.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/04/24 23:31, Steven Rostedt wrote:
-> On Fri, 24 Apr 2020 23:00:01 +0900
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> 
->> Since KERN_NO_CONSOLES is for -ENOMEM situations (GFP_KERNEL allocation which
->> can sleep needs to invoke the OOM killer, or GFP_ATOMIC allocation which cannot
->> sleep has failed), we can't create buffer on demand. For process context, it
->> would be possible to create buffer upon fork() time. But for atomic context,
->> it is so difficult to create buffer on demand. We could allocate shared buffer
->> like logbuf but it means that we have to replicate what printk() is doing (too
->> much code), for when atomic memory allocation happens resembles when printk()
->> is called. Borrowing printk()'s logbuf is simpler.
-> 
-> I would have a buffer allocated for this at start up.
 
-Allocating global buffer itself is simple (except that it might waste a lot of
-memory). Difficult part is how to use the buffer.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> What exactly would you be "replicating" in printk?
+On Fri, Apr 24, 2020 at 12:06:44PM +0200, Bjorn Ardo wrote:
+>=20
+> On 4/24/20 12:03 PM, Wolfram Sang wrote:
+> > On Fri, Apr 24, 2020 at 11:04:43AM +0200, Bj=F6rn Ard=F6 wrote:
+> >> If the slave eeprom has a "firmware-name" in devicetree, then
+> >> pre-load the data in the eeprom with this file. Otherwise we
+> >> init the eeprom with 0xFF.
+> >>
+> >> Signed-off-by: Bj=F6rn Ard=F6 <bjorn.ardo@axis.com>
+> > I like it a lot, thanks! Maybe we could add a SoB from Patrick for his
+> > 0xff-suggestion (but keeping you as the patch author).
+> >
+> > Is this okay for everyone?
+>=20
+>=20
+> OK for me!
+>=20
 
-Making it possible to store into global buffer from almost any context (not only
-process context but also softirq/hardirq/NMI context (well, is memory allocation
- from NMI context not permitted? I don't know... but future KERN_NO_CONSOLES
-users might want to call from NMI context)), notify userspace program of data
-readiness, and manage the buffer.
+Fine by me, also.
 
-KERN_NO_CONSOLES does not need to call call_console_drivers(). But basically
-things what printk() is doing.
+--=20
+Patrick Williams
 
->                                                    The point of printk is
-> to print to a console, not to be a generic ring buffer. This change is
-> breaking printk's most useful feature.
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For those who analyze log files (instead of console output), the point of
-printk() is to save kernel messages into log files (via userspace syslog
-daemon).
+-----BEGIN PGP SIGNATURE-----
 
-By the way, I think
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAl6jBqcACgkQqwNHzC0A
+wRkQGBAAhOJXizdAa1+dcsc7Ala89T+gaL6McSbjh9Prb51VZcO96nQN7EN1njR0
+nmzUBPLhejXf7HDjOeFqJXn/RyobhamrPxkCJWiKtH4fag+IKcoNOP2s41QblOMG
+LVFn1Hpag5AvyGrYjXcTB/4ofrzX8PFrejAhqbaL68XyNow+2LPlJQY5lGCE2Vtf
+Pbmu/HDGe2kGXIzq0pG2BNE2wHm+0rbG/BjOkDJPueDCdqV7WdKnaiOggYo85aFd
+4h73DH+s1pmdc1X23T5LMfNhsG2CuGywGwzL6Xq+NtRuR+gLRKyXTkmidCNg2bc1
+E5i7ofRZBukJWYDYz4A+0csfuVuVqso/4v3xnxJitwvG8l59Cwv4PYO2t2OP2OkM
+lpC43Vx7PQyHMAHRPNMGvlB+2lFP+dEUiADagGPSgse3F3Fz2bwkGoPflACJ3vDc
+5lVWZvWmQMEDITt3xlbYOIdayl47orbuHuAdWlOeEipGACt2AzbpSkiVkwSNWZrV
+VZG/me3pILyo+4/Nk21W98PX4uN63vbdKN0FxDzqutIEJR/4N5f/SY1D60mwlVW8
+Mw+QEcUwkwPLQ8BdgCEXup/dnc6rHJhma9yAJ/gktQ+x2XSwS+2Y9rzW6otnzLBw
+doJt464t73p7J9upoFqGpP6j2u6IpOGQMGJD2PpeXH898a0ndNs=
+=Xkmb
+-----END PGP SIGNATURE-----
 
-  printk(KERN_NO_CONSOLES "hello\n")
-
-is almost same with doing
-
-  saved_loglevel = console_loglevel;
-  console_loglevel = CONSOLE_LOGLEVEL_SILENT;
-  printk("hello\n");
-  console_loglevel = saved_loglevel;
-
-used by vkdb_printf().
-
+--mP3DRpeJDSE+ciuQ--
