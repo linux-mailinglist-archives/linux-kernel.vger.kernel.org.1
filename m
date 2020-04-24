@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5E61B7701
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298CB1B770F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgDXNcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:32:07 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29418 "EHLO mga11.intel.com"
+        id S1726987AbgDXNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 09:36:40 -0400
+Received: from sauhun.de ([88.99.104.3]:47884 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726301AbgDXNcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:32:06 -0400
-IronPort-SDR: 0n8FF7ZkZsEBnkXJX2bMjWM9zKpbJOKSv9LEEBdPyg+mP9SQbW3MvC2qVcW06rkA7Rquxq2nQ2
- I3ghT52n4hlg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 06:32:06 -0700
-IronPort-SDR: mN1k2NkBR+hDx9JISGYgp5v5QAjsvlkB1UT0ODoZDFZ6eTqlyxSp6S58RAOEOMUPqBso0uFaAn
- Nu3ku6c+tl0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="256369290"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by orsmga003.jf.intel.com with ESMTP; 24 Apr 2020 06:32:04 -0700
-Date:   Fri, 24 Apr 2020 21:34:06 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 0/9] Introduce support for guest CET feature
-Message-ID: <20200424133406.GB24039@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200423160314.GE17824@linux.intel.com>
+        id S1726489AbgDXNgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:36:39 -0400
+Received: from localhost (p5486CE62.dip0.t-ipconnect.de [84.134.206.98])
+        by pokefinder.org (Postfix) with ESMTPSA id 05ECF2C1FE8;
+        Fri, 24 Apr 2020 15:36:36 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 15:36:35 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.6 28/38] i2c: remove i2c_new_probed_device API
+Message-ID: <20200424133635.GB4070@kunai>
+References: <20200424122237.9831-1-sashal@kernel.org>
+ <20200424122237.9831-28-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
 Content-Disposition: inline
-In-Reply-To: <20200423160314.GE17824@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20200424122237.9831-28-sashal@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 09:03:14AM -0700, Sean Christopherson wrote:
-> On Thu, Mar 26, 2020 at 04:18:37PM +0800, Yang Weijiang wrote:
-> > Control-flow Enforcement Technology (CET) provides protection against
-> > Return/Jump-Oriented Programming (ROP/JOP) attack. It includes two
-> > sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
-> > 
-> > KVM needs to update to enable guest CET feature.
-> > This patchset implements CET related CPUID/XSAVES enumeration, MSRs
-> > and vmentry/vmexit configuration etc.so that guest kernel can setup CET
-> > runtime infrastructure based on them. Some CET MSRs and related feature
-> > flags used reference the definitions in kernel patchset.
-> > 
-> > CET kernel patches are here:
-> > https://lkml.org/lkml/2020/2/5/593
-> > https://lkml.org/lkml/2020/2/5/604
-> 
-> ...
-> 
-> > - This patch serial is built on top of below branch and CET kernel patches
-> >   for seeking xsaves support:
-> >   https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=cpu-caps
-> 
-> Can you provide the full code in a branch/tag somewhere?  The CET patches
-> are in turn dependent on XSAVES enabling[*], and those don't apply cleanly
-> on the cpu-caps branch.
-> 
-> It might make sense to also rebase to kvm/queue?  Though that's not a
-> requirement by any means, e.g. don't bother if the CET patches are going to
-> be respun soon.
->
-I'll rebase the patches to 5.7-rc2, so things will be clear then.
 
-> https://lkml.kernel.org/r/20200328164307.17497-1-yu-cheng.yu@intel.com
+--XOIedfhf+7KOe/yw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 24, 2020 at 08:22:26AM -0400, Sasha Levin wrote:
+> From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>=20
+> [ Upstream commit 3c1d1613be80c2e17f1ddf672df1d8a8caebfd0d ]
+>=20
+> All in-tree users have been converted to the new i2c_new_scanned_device
+> function, so remove this deprecated one.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+This should not be backported. It is only since this merge window that
+all in-tree users are converted!
+
+
+--XOIedfhf+7KOe/yw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6i62MACgkQFA3kzBSg
+KbbQNBAAtJhXZl6VUNZIu7Dk8NGhFEOvsMgmA1GVLzGWYh0Ev/ipJIN9OX2r26Yc
+9M6M1qc2FBJW9n1fTdGK+FrbO/+BCFkrMUOECIyImlSmZ1W+sNyZYhmg1ZQxo2g3
+eSobZIV8JzjDhDDV55GdwerVjq0fOmckdD/MjFVtpmcYNsL4P1J//6cVtifn6W5a
+eVhj4k9WURYjWQ8I0q6CLn4ys1BjPZ40/HOBAdZU6sG3u3Jqlvavdtoo71LNLYz9
+/KEk8fWcYRu8F9FF18PPhJg/C4T8vba2FdQz4rmKzEAdLkckwrsFtIxhFWhA1tZl
+SaR2OLNJGO9kUI+vYLOXhNC6LK+XY9SuqLF9z6oVyuICqoVH4Z4ARBi4yl5dT+rZ
+sC3pjL7NlJBOomyzt5S0rflnNFE4xDmtoQ0uxeEBLfu+4nyMpSUxdoexH4fp22xF
+G50cRTK2rfmV0iawMgnR8JmXi13QVrDX7gp8FvckorSheJ39I8g1jIjU4b8EhQyI
+yuWvxIqlp6aw8q2C7J9fIEFogHdsEOIRUvMHNPEbbeTU3v64lj5VW+wPz3la4KFP
+JMaU7QnPdoW5kkCjSMxbnosaFx9X/wXXvYMd3r2Fh3ltzmAhyoPa5h30TP2JtCCy
+2JlkanjPialjwrH4FBazHSlLImTjdCK5FFfdbBsTYDkTgXXhT8w=
+=Skfi
+-----END PGP SIGNATURE-----
+
+--XOIedfhf+7KOe/yw--
