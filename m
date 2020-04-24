@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58561B7E32
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AB71B7E3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgDXSrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 14:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727031AbgDXSrK (ORCPT
+        id S1729234AbgDXStd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 14:49:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34102 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728943AbgDXStc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 14:47:10 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834D7C09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:47:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id l11so8549468lfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4xGKLkYDrbkxXaPDoAGMclBp7ffRJ6EszDQ3T54v3nc=;
-        b=MwEjKDGJj1MODwKnNzA+vLKGg1thtRHT3e3U4LHSFK+h9wYouw58019uyy6/KEmGky
-         24VnGgQr1b7rgt9D8CYnPjqHNk/6kz2e+VairFXVurg4X02ZtnTJl3DNdjL89KBLASEH
-         jDDJT1LRGx4BfhkYMobF+P34B+Sx/MgLFiZjc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4xGKLkYDrbkxXaPDoAGMclBp7ffRJ6EszDQ3T54v3nc=;
-        b=CQ5qLZm7sOQN1aNHN87pWkfjL1rFH/Q82f9PIbxZdL1J+TKvGym00WHaB6e9sGhpGs
-         5FAC+5+rqd34cUJAB9vux4Aw4flEL4u6/KPn37jBTgDpqj+2h6QGSv2rb9LzFEoz2wVV
-         mXuc667i+JBv6jIsQPUYQ5JLAMz+YN9GavllTw2smECUmC3jxJht8gidT6rzmLWJ9sLx
-         z98NT1R6Xcg6uPwQY5a6gIBfMPITZpuLciupXC/4kvlLPeo8611KzUhDsY06UCY0YnZx
-         /feC/6F7l27mH5sRjsI1DbjSZ4pdIgSok5EU8pXQfchJz9PHoaTipq0B5DZ0n7r5x3H8
-         RR9A==
-X-Gm-Message-State: AGi0PuY/hkZ4T5j5nWqcSJKC2qKwVbEj3r26BRch7vy/gEhWrqf3Vq/l
-        BA5LI/JhmOpANvrloYEXwPyboyY5bm4=
-X-Google-Smtp-Source: APiQypIBXSMCd+4z4ZSs1qmKNqqhjJ3Sx17B/vu8OfPFqbTcLaDN95hTDjDhfzwh3kpVyzbCidKwJQ==
-X-Received: by 2002:a19:4204:: with SMTP id p4mr7189707lfa.111.1587754028421;
-        Fri, 24 Apr 2020 11:47:08 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id x24sm4925395lfc.6.2020.04.24.11.47.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 11:47:07 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id e25so11028055ljg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 11:47:07 -0700 (PDT)
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr4968653ljj.265.1587754027148;
- Fri, 24 Apr 2020 11:47:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
- <87ftcv1nqe.fsf@x220.int.ebiederm.org> <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
- <CAHk-=wgXEJdkgGzZQzBDGk7ijjVdAVXe=G-mkFSVng_Hpwd4tQ@mail.gmail.com>
- <87tv19tv65.fsf@x220.int.ebiederm.org> <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
-In-Reply-To: <CAHk-=wj-K3fqdMr-r8WgS8RKPuZOuFbPXCEUe9APrdShn99xsA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Apr 2020 11:46:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg9RQ4rc-TmiP0-rdGPGje2uAX5aWh+=pFhfVdKq=u+aA@mail.gmail.com>
-Message-ID: <CAHk-=wg9RQ4rc-TmiP0-rdGPGje2uAX5aWh+=pFhfVdKq=u+aA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] proc: Ensure we see the exit of each process tid exactly
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 24 Apr 2020 14:49:32 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jS3O9-0006cb-MJ; Fri, 24 Apr 2020 18:49:26 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     yhchuang@realtek.com, kvalo@codeaurora.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] iopoll: Introduce read_poll_timeout_atomic macro
+Date:   Sat, 25 Apr 2020 02:49:14 +0800
+Message-Id: <20200424184918.30360-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200423063811.2636-1-kai.heng.feng@canonical.com>
+References: <20200423063811.2636-1-kai.heng.feng@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 11:02 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
->  [..] even a "double cmpxchg" is
-> actually just a double-_sized_ one, not a two different locations
-> one
+Like read_poll_timeout, an atomic variant for multiple parameter read
+function can be useful.
 
-Historical accuracy side note: the 68020 actually had a CAS2 that was
-"two different locations".
+Will be used by a later patch.
 
-Maybe somebody else did too.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Cc linux-wireless.
 
-            Linus
+ include/linux/iopoll.h | 62 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 43 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/iopoll.h b/include/linux/iopoll.h
+index cb20c733b15a..bc89ac625f26 100644
+--- a/include/linux/iopoll.h
++++ b/include/linux/iopoll.h
+@@ -57,6 +57,48 @@
+ 	(cond) ? 0 : -ETIMEDOUT; \
+ })
+ 
++/**
++ * read_poll_timeout_atomic - Periodically poll an address until a condition is
++ * 				met or a timeout occurs
++ * @op: accessor function (takes @addr as its only argument)
++ * @addr: Address to poll
++ * @val: Variable to read the value into
++ * @cond: Break condition (usually involving @val)
++ * @delay_us: Time to udelay between reads in us (0 tight-loops).  Should
++ *            be less than ~10us since udelay is used (see
++ *            Documentation/timers/timers-howto.rst).
++ * @timeout_us: Timeout in us, 0 means never timeout
++ * @delay_before_read: if it is true, delay @delay_us before read.
++ *
++ * Returns 0 on success and -ETIMEDOUT upon a timeout. In either
++ * case, the last read value at @args is stored in @val.
++ *
++ * When available, you'll probably want to use one of the specialized
++ * macros defined below rather than this macro directly.
++ */
++#define read_poll_timeout_atomic(op, val, cond, delay_us, timeout_us, \
++					delay_before_read, args...) \
++({ \
++	u64 __timeout_us = (timeout_us); \
++	unsigned long __delay_us = (delay_us); \
++	ktime_t __timeout = ktime_add_us(ktime_get(), __timeout_us); \
++	if (delay_before_read && __delay_us) \
++		udelay(__delay_us); \
++	for (;;) { \
++		(val) = op(args); \
++		if (cond) \
++			break; \
++		if (__timeout_us && \
++		    ktime_compare(ktime_get(), __timeout) > 0) { \
++			(val) = op(args); \
++			break; \
++		} \
++		if (__delay_us) \
++			udelay(__delay_us); \
++	} \
++	(cond) ? 0 : -ETIMEDOUT; \
++})
++
+ /**
+  * readx_poll_timeout - Periodically poll an address until a condition is met or a timeout occurs
+  * @op: accessor function (takes @addr as its only argument)
+@@ -96,25 +138,7 @@
+  * macros defined below rather than this macro directly.
+  */
+ #define readx_poll_timeout_atomic(op, addr, val, cond, delay_us, timeout_us) \
+-({ \
+-	u64 __timeout_us = (timeout_us); \
+-	unsigned long __delay_us = (delay_us); \
+-	ktime_t __timeout = ktime_add_us(ktime_get(), __timeout_us); \
+-	for (;;) { \
+-		(val) = op(addr); \
+-		if (cond) \
+-			break; \
+-		if (__timeout_us && \
+-		    ktime_compare(ktime_get(), __timeout) > 0) { \
+-			(val) = op(addr); \
+-			break; \
+-		} \
+-		if (__delay_us) \
+-			udelay(__delay_us);	\
+-	} \
+-	(cond) ? 0 : -ETIMEDOUT; \
+-})
+-
++	read_poll_timeout_atomic(op, val, cond, delay_us, timeout_us, false, addr)
+ 
+ #define readb_poll_timeout(addr, val, cond, delay_us, timeout_us) \
+ 	readx_poll_timeout(readb, addr, val, cond, delay_us, timeout_us)
+-- 
+2.17.1
+
