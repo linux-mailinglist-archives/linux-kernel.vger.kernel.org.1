@@ -2,78 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28461B78AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295451B7897
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgDXO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 10:59:19 -0400
-Received: from out0.migadu.com ([94.23.1.103]:37052 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgDXO7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:59:19 -0400
-X-Greylist: delayed 456 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Apr 2020 10:59:18 EDT
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=default;
-        t=1587739897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tHLb5whu+vFCKke6nEUPe5E8A9CPDUQ62H1gzkmyk/w=;
-        b=e/x4Y5bFvtZyOCOGDeNPcBRraQswy/KvCGQjZfIunXsFwc+oHCzC9DGlYvhVi++llb15as
-        ccYVOSoyxETFOQKHsZcaCFIAii7rW2VJPAiN0e3KPS7VGClJf8LMN1n17BueEtZyyfdMQ7
-        z7TNr1x7S5Y/AjQBDiP0D5QAFlj28Jc=
-From:   Kenny Levinsen <kl@kl.wtf>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     daniel@ffwll.ch, airlied@linux.ie, tzimmermann@suse.de,
-        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
-        linux-kernel@vger.kernel.org, Kenny Levinsen <kl@kl.wtf>
-Subject: [PATCH] drm: make drm_file use keyed wakeups
-Date:   Fri, 24 Apr 2020 16:51:03 +0200
-Message-Id: <20200424145103.3048-1-kl@kl.wtf>
+        id S1727049AbgDXOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 10:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726753AbgDXOwu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 10:52:50 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30161C09B045;
+        Fri, 24 Apr 2020 07:52:50 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id e9so10601727iok.9;
+        Fri, 24 Apr 2020 07:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4qwtXw6ySetrqaDrExlzhw4PufVEk1dV+eO14AinrDA=;
+        b=A44ePyy72oHlX0WI69D+MZbZP1lLH77RshQHjp+7fT+KAw/6nRN+RtODdK3tLX+Gaf
+         xXIRvKAM3/mXBRdBdfQmk4TrVvn2htz5tGOlCaSpk3ymchmDH7Eib856poJSTWXoqqz7
+         mVL4uH5rFFToqlWvZ4xQedVUAp9nrDTjIGW8yG9tgkc6kBoy9MyuLulq8ttEciEujKdK
+         QfTnjV6RMxw8PKAx1OCWSpOxUbtWgu5924bKGFxR5VNTHe3f2iW3MTueiAUXepO8mTmk
+         z5DF1+G9rQlO/b9ajsdMtNAE5Fb3UsM4lt6YMzpZjWFymBLzF75FpYTIUTvTGK/Ze8VQ
+         tDsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4qwtXw6ySetrqaDrExlzhw4PufVEk1dV+eO14AinrDA=;
+        b=gzrB1Jv93ZtJupl6hy6QtnRGS9GhCDynnKgoaBXJJ3cVKFg5YaZabFzUv+qBJ95p/r
+         xWhA4XfcHOM8tGZGUMeIhIyOCw6WWtV4rrXd85JXa9NXwK9D3UqoFrsRioqx9MRG9Hoy
+         0iX2RHr2aFvsvd38h4k++sURtHdCW/fqJn+tCsYYjGoe/CAwv5FdbB39YsjvJ12aov65
+         tq9jD0m47XHSgdArse9OGpSGOmnZT64qph3qHeLzfi75/jWpWe8U5IGipPzWMHnISNZt
+         NH1IRdcpF919h7iB0/6vksSDCww5CaT06stamLv+oN8GTP0pbHITui5bHrqomLCzzFrP
+         AhqA==
+X-Gm-Message-State: AGi0PubFMiDRW/SsCCgMjf/IHv3ptJyqTaoru1LuwPw+XmmWx/XsVqoP
+        KoLQjig3BfM/zB/hhrJNWlm/lHgv/INPLUmXlcg=
+X-Google-Smtp-Source: APiQypI6Hmrqt4/++QwXB0qBw3R+G5sPxYU/OJbgd71hzaDUi0gYuVrFyxZYEJigKNPXsXxMBNa6eeSULYZZrVUQcOI=
+X-Received: by 2002:a6b:6302:: with SMTP id p2mr9028610iog.153.1587739969586;
+ Fri, 24 Apr 2020 07:52:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: 4.90
+References: <20200424122521.GA5552@syed> <20200424141037.ersebbfe7xls37be@wunner.de>
+In-Reply-To: <20200424141037.ersebbfe7xls37be@wunner.de>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 24 Apr 2020 20:22:38 +0530
+Message-ID: <CACG_h5prcXVdk6ecn2WoT1jas3K6UF+KCrxAM9u4_ZLSyPKCEA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] bitops: Introduce the the for_each_set_clump macro
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        arnd@arndb.de, Linus Walleij <linus.walleij@linaro.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some processes, such as systemd, are only polling for EPOLLERR|EPOLLHUP.
-As drm_file uses unkeyed wakeups, such a poll receives many spurious
-wakeups from uninteresting events.
+On Fri, Apr 24, 2020 at 7:40 PM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Fri, Apr 24, 2020 at 05:55:21PM +0530, Syed Nayyar Waris wrote:
+> > +static inline void bitmap_set_value(unsigned long *map,
+> > +                                 unsigned long value,
+> > +                                 unsigned long start, unsigned long nbits)
+> > +{
+> > +     const size_t index = BIT_WORD(start);
+> > +     const unsigned long offset = start % BITS_PER_LONG;
+> > +     const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
+> > +     const unsigned long space = ceiling - start;
+> > +
+> > +     value &= GENMASK(nbits - 1, 0);
+> > +
+> > +     if (space >= nbits) {
+> > +             map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+> > +             map[index] |= value << offset;
+> > +     } else {
+> > +             map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
+> > +             map[index] |= value << offset;
+> > +             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > +             map[index + 1] |= (value >> space);
+> > +     }
+> > +}
+>
+> Sorry but what's the advantage of using this complicated function
+> as a replacement for the much simpler bitmap_set_value8()?
+>
+> The drivers calling bitmap_set_value8() *know* that 8-bit accesses
+> are possible and take advantage of that knowledge by using a small,
+> speed-optimized function.  Replacing that with a more complicated
+> (potentially less performant) function doesn't seem to be a step
+> forward.
+>
+> Thanks,
+>
+> Lukas
 
-Use keyed wakeups to allow the wakeup target to more efficiently discard
-these uninteresting events.
+Actually this generic function can work with n-bits of any size (less
+than equal to BITS_PER_LONG), while the earlier bitmap_set_value8
+worked with n-bits having size of 8 bits only.
 
-Signed-off-by: Kenny Levinsen <kl@kl.wtf>
----
- drivers/gpu/drm/drm_file.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+In the case when n-bits is 8-bits, this new bitmap_set_value()
+function would behave very similar to the earlier bitmap_set_value8()
+function. For example,  in case of n-bits being 8-bits it will always
+execute the 'if' condition and not the 'else' condition, hence
+offering the same performance (because of encountering similar code
+statements) as earlier bitmap_set_value8() function, most probably.
 
-diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-index c4c704e01961..ec25b3d979d9 100644
---- a/drivers/gpu/drm/drm_file.c
-+++ b/drivers/gpu/drm/drm_file.c
-@@ -608,7 +608,8 @@ ssize_t drm_read(struct file *filp, char __user *buffer,
- 				file_priv->event_space -= length;
- 				list_add(&e->link, &file_priv->event_list);
- 				spin_unlock_irq(&dev->event_lock);
--				wake_up_interruptible(&file_priv->event_wait);
-+				wake_up_interruptible_poll(&file_priv->event_wait,
-+					EPOLLIN | EPOLLRDNORM);
- 				break;
- 			}
- 
-@@ -804,7 +805,8 @@ void drm_send_event_locked(struct drm_device *dev, struct drm_pending_event *e)
- 	list_del(&e->pending_link);
- 	list_add_tail(&e->link,
- 		      &e->file_priv->event_list);
--	wake_up_interruptible(&e->file_priv->event_wait);
-+	wake_up_interruptible_poll(&e->file_priv->event_wait,
-+		EPOLLIN | EPOLLRDNORM);
- }
- EXPORT_SYMBOL(drm_send_event_locked);
- 
--- 
-2.26.1
+There is an additional advantage (this can happen when n-bits is not 8
+bits): during setting value of n-bit in bitmap, if a situation arise
+that the width of next n-bit is exceeding the word boundary, then it
+will divide itself such that some portion of it is stored in that
+word, while the remaining portion is stored in the next higher word.
 
+So, this function preserves the behaviour of earlier
+bitmap_set_value8() function and also adds extra functionality to
+that.
+
+Thanks
+Syed Nayyar Waris
