@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEF81B72F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1481B72FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgDXLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 07:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgDXLV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 07:21:57 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40830C09B045
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:21:57 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id q2so4450376qvd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:21:57 -0700 (PDT)
+        id S1726904AbgDXLWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 07:22:17 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:25426 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbgDXLWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 07:22:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Dh+cbKBXCzPP+Njq9daowk2Xw6UxcKl1Orb8G3pFTEc=;
-        b=Cn83ERzwUBx68FytvvAk+hkYmDmkdpCyNm3cOVAikbgN196PX5EZZy+RRcs/U89lXI
-         T1DKAQlvh1/f5SRUBUjnVBZi1e937a9EfGeJUbcZ1Kqc/9OGaQRX9XmWophNp6ZgtPUe
-         JGZY2huB7m172nTQ1HIkmt3WNdGIji+F3QRkqFCIbeFjnCy2odlu7bZIPygBsokROU0/
-         CSToFZ0dhPSY2JhLM2rkKxq2rckjLDKKa+LJewRWCG3uXVEqkEBZPxSuNf6eTYdITp91
-         qBD7eLtZzGF2jGLhuFw1wkPwGFmrA8M+b7beRSfZxOpyDxUy5ROUHXMHKCDnhtvxVWYj
-         aSMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Dh+cbKBXCzPP+Njq9daowk2Xw6UxcKl1Orb8G3pFTEc=;
-        b=Gg7p3kK/DGeuLP23aZlOM8TW8newaJ98KOGCacn6v/VdJ4ghDUazUk64P9yjekeqT8
-         bnW2LJjY9VJJ19AFiOIeMNbKqpPKipPcZV/0QXEtUN0o04RQRXI6oknAI1KhfjQBGmJ8
-         E6nUvWoq/dzWGe4yD381+DsR72pyW5ytDQODzzl992wcoP6uXMSW6nqpv/Idl8o/0zQX
-         1o6MXNZU091SfdrfmhaUihtYv+fxyMN75mB8/fQ/mecWtaUiTjWUHKCbBO/Dr8LbfHih
-         MZCYVUWUgD04TwbDG9MHgnO6HmwFpuLwJ7gbQ+Z+sdoR4Y9Jflat+wZzh6bx+oDlicWQ
-         ThxA==
-X-Gm-Message-State: AGi0PuYWf2+hyV6Mi2XpOiXS/VfhosaFiQHAmRkSPFSD3kJUDqkUsfSL
-        8Zu0BDE7oMGcsB8TAgyTBPpDgnkB+Lp3gbJa7/0=
-X-Google-Smtp-Source: APiQypLN9+8NY6Ba4ALjxFxWJDpgtj2M7Hf//G9pMtzqggBIJAmvAIbOOVnQJFrzgBi/yGvWMXMYnPWhnBuRHRBrLDs=
-X-Received: by 2002:a05:6214:188a:: with SMTP id cx10mr8785651qvb.119.1587727316391;
- Fri, 24 Apr 2020 04:21:56 -0700 (PDT)
+  d=axis.com; l=534; q=dns/txt; s=axis-central1;
+  t=1587727337; x=1619263337;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=jLbwp4z2a8ywYtIlNFO6bEPpuvqBJMQUIkngUPj6OKQ=;
+  b=PhgTcim1dlGSCJLMLVJryO28X9eb9CMFEABgTbGmT8+O12yg6Y8uFP04
+   h0H134e15+vhYPBwbzk36YjiDj/6wKRb12I5SVDNXv0ddjM7Okff/3uoX
+   UaycZykOWDsKmxREz1noMa43QNQO8XpVMBJcZQyVx5Nq6Y3PPVRza2K/5
+   tsCD7QM5/jNyglUr6a2AYVIapyEoIxeARIWphEE5bjDuqlFrUZSTd6W8N
+   Y6ZxVLELxUsFgNSGSvsubTWmhrbBhQBHcZ6hmfX4jXSeGb95DvjVZkk7C
+   nzUBJA0SGNHmz2yZ3lx0KWW33Ps4NNZVe35wXtaFy012gxzUzfh9Vaf/L
+   Q==;
+IronPort-SDR: Mczf+wSEy9tXf4x1FqTOMvRi/WpV2jaYEX5zFbFC1ZTCtx6+CsBKXBbTeqEaeW0IN++enSIaV9
+ LcHDwJDfVVX4SBoh72YG+Jokyo5YpwidvKEREb6BHHUl2aRfocorIVFoDKof9lYs+5uQlpkA1D
+ dISFs6e9UX6Vv0bU1r8VPxKhe9styPW5i+3DLKx2h9A3WYPd0YXsBvq1qT+LJLAeQjTEecmZN8
+ 9kVwYnOqULEl7TzSgReQvTLuRiEaFbXDLObOGL6665P/JfiTzGn8TuLra70qekGpkTIhYMFDTL
+ mwc=
+X-IronPort-AV: E=Sophos;i="5.73,311,1583190000"; 
+   d="scan'208";a="8007496"
+Subject: Re: [PATCHv2] i2c: slave-eeprom: Make it possible to pre-load eeprom
+ data
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patrick@stwcx.xyz>, <kernel@axis.com>
+References: <20200424090443.26316-1-bjorn.ardo@axis.com>
+ <20200424111337.GC1959@kunai>
+From:   Bjorn Ardo <bjorn.ardo@axis.com>
+Message-ID: <5038e4c1-440b-0a56-978b-a8c9fac061cc@axis.com>
+Date:   Fri, 24 Apr 2020 13:22:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:ac8:6c42:0:0:0:0:0 with HTTP; Fri, 24 Apr 2020 04:21:55
- -0700 (PDT)
-Reply-To: ga161821@gmail.com
-From:   George Anderson <margaretcarnegie1@gmail.com>
-Date:   Fri, 24 Apr 2020 13:21:55 +0200
-Message-ID: <CABdNr8LkXTRsiDhhNkmz6X0UaqCae=25uKTzCUYqUTif=NFmcA@mail.gmail.com>
-Subject: Hello greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200424111337.GC1959@kunai>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX03.axis.com (10.0.5.17) To XBOX02.axis.com (10.0.5.16)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello greetings, My name is George Andersen, A citizen of America, A
-soldier by profession serving in the USA army, I will give more
-details of me and my pictures when i hear from you, I came across your
-profile today and decided to contact you for a mutual friendship i
-wish to stand between us and am interested in getting to know you
-better for a private confidential issues i want to disclose to you for
-the mutual benefits of both of us and families. Can you please write
-to me back so that we can get to know each other better.
-Sincerely,
-George Andersen
+On 4/24/20 1:13 PM, Wolfram Sang wrote:
+
+> On second look, two questions:
+>
+>> +	if (!error) {
+>> +		int ret = request_firmware_into_buf(&fw, eeprom_data, &client->dev,
+>> +						    eeprom->buffer, size);
+>> +		if (ret)
+>> +			return ret;
+> Aren't we leaking 'fw' here?
+
+
+As I can see in drivers/base/firmware_loader/main.c in function 
+_request_firmware, then the fw will be released internally if it returns 
+an error value.
+
+
+> Also, do we need 'error' and 'ret'? Can't we reuse one of them?
+
+
+Yes, I can fix that.
+
+
+/BA
+
