@@ -2,140 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7B11B77F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78931B7816
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 16:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgDXOFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 10:05:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32011 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726968AbgDXOFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:05:54 -0400
-IronPort-SDR: qL1izba6z5ZhxCOgJp/XB1tPtG2pk9SDAgdvmBi25OK7Nn//Dwg/ZLw58kClErbARcvT6nADmM
- bI5Tt/1erMHQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 07:05:52 -0700
-IronPort-SDR: 4UElGFTvdSIDCKBdl8gBliJHKUIGJSN6Kys9Yjm3CqmNII/Bb4WohMbL/jtyQ0V3yh8rxWkRsV
- B4PYdjCLbcgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="457353752"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Apr 2020 07:05:49 -0700
-Date:   Fri, 24 Apr 2020 22:07:51 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 2/9] KVM: VMX: Set guest CET MSRs per KVM and host
- configuration
-Message-ID: <20200424140751.GE24039@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-3-weijiang.yang@intel.com>
- <20200423162749.GG17824@linux.intel.com>
+        id S1727895AbgDXOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 10:10:37 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47133 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726959AbgDXOKh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 10:10:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587737436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YISBwJYsavRufK2YVlZv26rC95P8RMJPnrWfPZRnJTQ=;
+        b=YVRnZ43L5YmTaW7I41O8qp6XaI79ckeR+xYz1blNslp4wA7CrYPrGP30loWmz58otk/fI7
+        1B7u74BwJddA99HkfEZJ3i8WJmcwwvoy0rvq94nRYC0nMtOPmkSwXSR0unn+Il1+yopNWp
+        SWpVm9h4kgAlApcFPigPGHlwUSFw8ZY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-_6RJhafPPmWja1K4lUW7fA-1; Fri, 24 Apr 2020 10:10:31 -0400
+X-MC-Unique: _6RJhafPPmWja1K4lUW7fA-1
+Received: by mail-wr1-f72.google.com with SMTP id o8so4363705wrm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 07:10:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YISBwJYsavRufK2YVlZv26rC95P8RMJPnrWfPZRnJTQ=;
+        b=HdCTQY/LLzDwP8yjh3VPnBS3QvUZZ/UL5WjK+e+XgoYSHhXnYoUxjX1RzovCGf8B2O
+         uHS3J7IWyUH23CvWLGtu/8d4jaQ0y+HxYaFOWj9WN6kHFk0Jq87QzB4dQhWp/xmM7uH8
+         KzpTl5svBOSBnYyg9O1zsviK/LdABNxGDBrMvnDfbYgu4aPL8kezsQV/ZhTVHHgB2TQk
+         Sje0dR745ou67R0IA5oaGbGV9Vq7ybgFHjQRA2gLwwtSLyqAzmHq4UMr0xabC0bUoO5C
+         NsxSwxrutLDIZkOuvdSK/5SE7r/ZXCzZnqOUJL3/Ukfr5T6VgXaH2mD+rTtuMlnD8mXA
+         Dhmw==
+X-Gm-Message-State: AGi0PuZJktzgyfqhIjIGE88wUvcLyNG7M7uDENnNX9HAMPvjwfhw5D+p
+        lW9z3t+LEYebE8vmwz4C7+tsnmhZDdEmMfsacS4NJ9/K9QryZCthpIOwcBctP+/OAcV0vlelHJw
+        sBRjaqHyEhHX5dwZ6w53nQicP
+X-Received: by 2002:adf:a543:: with SMTP id j3mr11313251wrb.34.1587737430603;
+        Fri, 24 Apr 2020 07:10:30 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJQcB3BYlHB9guLOfnnI5zPnUKl7YMzf0eGsqOOceN9Y9fuvzHVFQyvSoLgNFYwYq4+FFar5w==
+X-Received: by 2002:adf:a543:: with SMTP id j3mr11313226wrb.34.1587737430434;
+        Fri, 24 Apr 2020 07:10:30 -0700 (PDT)
+Received: from ?IPv6:2a02:8388:7c1:12f0:2a0d:3df8:7645:8915? (2a02-8388-07c1-12f0-2a0d-3df8-7645-8915.cable.dynamic.v6.surfer.at. [2a02:8388:7c1:12f0:2a0d:3df8:7645:8915])
+        by smtp.gmail.com with ESMTPSA id u17sm9574479wra.63.2020.04.24.07.10.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 07:10:29 -0700 (PDT)
+Subject: Re: [GIT PULL] perf/core improvements and fixes
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        He Zhe <zhe.he@windriver.com>, Ian Rogers <irogers@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Konstantin Kharlamov <hi-angel@yandex.ru>,
+        Stephane Eranian <eranian@google.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        lkft-triage@lists.linaro.org
+References: <20200420115316.18781-1-acme@kernel.org>
+ <20200422120943.GA110748@gmail.com>
+ <CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com>
+ <20200424130722.GK19437@kernel.org>
+From:   Andreas Gerstmayr <agerstmayr@redhat.com>
+Message-ID: <0f6403ec-36cd-f43f-b3a6-b87e628f3789@redhat.com>
+Date:   Fri, 24 Apr 2020 16:10:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423162749.GG17824@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20200424130722.GK19437@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 09:27:49AM -0700, Sean Christopherson wrote:
-> On Thu, Mar 26, 2020 at 04:18:39PM +0800, Yang Weijiang wrote:
-> > @@ -3033,6 +3033,13 @@ void vmx_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
-> >  		vmcs_writel(GUEST_CR3, guest_cr3);
-> >  }
-> >  
-> > +static bool is_cet_mode_allowed(struct kvm_vcpu *vcpu, u32 mode_mask)
+On 24.04.20 15:07, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Apr 23, 2020 at 04:28:46PM -0500, Daniel Díaz escreveu:
+>> On Wed, 22 Apr 2020 at 07:09, Ingo Molnar <mingo@kernel.org> wrote:
+>>>>   85 files changed, 1851 insertions(+), 513 deletions(-)
 > 
-> CET itself isn't a mode.  And since this ends up being an inner helper for
-> is_cet_supported(), I think __is_cet_supported() would be the way to go.
+>>> Pulled, thanks a lot Arnaldo!
+>   
+>> Our OpenEmbedded builds detected an issue with 5287f9269206 ("perf
+>> script: Add flamegraph.py script"):
+>>    ERROR: perf-1.0-r9 do_package_qa: QA Issue:
+>> /usr/libexec/perf-core/scripts/python/bin/flamegraph-report contained
+>> in package perf-python requires /usr/bin/sh, but no providers found in
+>> RDEPENDS_perf-python? [file-rdeps]
 > 
-> Even @mode_mask is a bit confusing without the context of it being kernel
-> vs. user.  The callers are very readable, e.g. I'd much prefer passing the
-> mask as opposed to doing 'bool kernel'.  Maybe s/mode_mask/cet_mask?  That
-> doesn't exactly make things super clear, but at least the reader knows the
-> mask is for CET features.
-Make sense, will change it.
+> 
+> yeah, the flamegraph scripts are the outliers, there, everything else is
+> using /bin/bash, so I'll switch to that, ok Andreas?
 
-> 
-> > +{
-> > +	return ((supported_xss & mode_mask) &&
-> > +		(guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> > +		guest_cpuid_has(vcpu, X86_FEATURE_IBT)));
-> > +}
-> > +
-> >  int vmx_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
-> >  {
-> >  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> > @@ -7064,6 +7071,35 @@ static void update_intel_pt_cfg(struct kvm_vcpu *vcpu)
-> >  		vmx->pt_desc.ctl_bitmask &= ~(0xfULL << (32 + i * 4));
-> >  }
-> >  
-> > +static void vmx_update_intercept_for_cet_msr(struct kvm_vcpu *vcpu)
-> > +{
-> > +	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> > +	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
-> > +	bool flag;
-> 
-> Maybe s/flag/incpt or something to make it more obvious that the bool is
-> true if we want to intercept?  vmx_set_intercept_for_msr()s's @value isn't
-> any better :-/.
-I prefer using incpt now ;-) 
-> > +
-> > +	flag = !is_cet_mode_allowed(vcpu, XFEATURE_MASK_CET_USER);
-> > +	/*
-> > +	 * U_CET is required for USER CET, and U_CET, PL3_SPP are bound as
-> > +	 * one component and controlled by IA32_XSS[bit 11].
-> > +	 */
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_U_CET, MSR_TYPE_RW, flag);
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PL3_SSP, MSR_TYPE_RW, flag);
-> > +
-> > +	flag = !is_cet_mode_allowed(vcpu, XFEATURE_MASK_CET_KERNEL);
-> > +	/*
-> > +	 * S_CET is required for KERNEL CET, and PL0_SSP ... PL2_SSP are
-> > +	 * bound as one component and controlled by IA32_XSS[bit 12].
-> > +	 */
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_S_CET, MSR_TYPE_RW, flag);
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PL0_SSP, MSR_TYPE_RW, flag);
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PL1_SSP, MSR_TYPE_RW, flag);
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PL2_SSP, MSR_TYPE_RW, flag);
-> > +
-> > +	flag |= !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
-> > +	/* SSP_TAB is only available for KERNEL SHSTK.*/
-> > +	vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW, flag);
-> > +}
-> > +
-> >  static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
-> >  {
-> >  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> > @@ -7102,6 +7138,10 @@ static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
-> >  			vmx_set_guest_msr(vmx, msr, enabled ? 0 : TSX_CTRL_RTM_DISABLE);
-> >  		}
-> >  	}
-> > +
-> > +	if (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> > +	    guest_cpuid_has(vcpu, X86_FEATURE_IBT))
-> > +		vmx_update_intercept_for_cet_msr(vcpu);
-> 
-> This is wrong, it will miss the case where userspace double configures CPUID
-> and goes from CET=1 to CET=0.  This should instead be:
-> 
-> 	if (supported_xss & (XFEATURE_MASK_CET_KERNEL | XFEATURE_MASK_CET_USER))
-> 		vmx_update_intercept_for_cet_msr(vcpu);
-> 
-> >  }
-Here CET=1/0, did you mean the CET bit in XSS or CR4.CET? If it's the
-former, then it's OK for me.
+Sure, no problem. Thanks!
 
-> >  
-> >  static __init void vmx_set_cpu_caps(void)
-> > -- 
-> > 2.17.2
-> > 
+
+Cheers,
+Andreas
+
