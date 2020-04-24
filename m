@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09971B7A05
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BAC1B7A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgDXPiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:38:14 -0400
-Received: from muru.com ([72.249.23.125]:51236 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728222AbgDXPiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:38:10 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 062F880E7;
-        Fri, 24 Apr 2020 15:38:56 +0000 (UTC)
-Date:   Fri, 24 Apr 2020 08:38:06 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Tero Kristo <t-kristo@ti.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org, lkft-triage@lists.linaro.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benoit Cousson <bcousson@baylibre.com>,
-        Carlos Hernandez <ceh@ti.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Olof Johansson <olof@lixom.net>, tomi.valkeinen@ti.com,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: OF: ERROR: Bad of_node_put() on
- /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
-Message-ID: <20200424153806.GJ37466@atomide.com>
-References: <CA+G9fYv5NxK+F5DX_q1c_wvnhjT_WTZBFJQXLWFeqMXsEcASZg@mail.gmail.com>
- <CA+G9fYu-qYP2wJw4p1p_C6_ttwK0fvw+qUnsN9mDuKOv3zGEBw@mail.gmail.com>
- <20200417152903.GO37466@atomide.com>
- <6366d76c-b9dc-6fa5-afad-0b2f471f8ec5@ti.com>
+        id S1729059AbgDXPjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbgDXPjB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 11:39:01 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876D6C09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:39:01 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id u127so11305448wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YSBMPH2SiMvyXNhOgsqYroFNDKcMckrugusrbaG1UMY=;
+        b=qW1fjVFBbdDldpxEkq1v3UYceJOVKO4e8h+dx18ZHmwBfMeB7tDoIKXT7CJdyE6tFn
+         H2yCZ4sCMX16NUANvxE0uJHz4pKUS/QbjFbDAEZg3ZprYH0q4/IYUjEB2EQ1KXRXn28U
+         ksRB59kvydHXpIiesXIeQWF19ASwHyX5SA+7E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YSBMPH2SiMvyXNhOgsqYroFNDKcMckrugusrbaG1UMY=;
+        b=EooL9UwUbB/p22Y9nHeBi/OSwqEGlBV9XPdQ4JGv5Qk5VGSDWJBX62a+cbOobLcGGu
+         wFnoh166RmOtDWWGSVEA8d9YiQR0KPnxNWbtorbzR6vuxZweHHuDoilqKKdSt3a4VrkS
+         LC1IJpxSHs1snI0sh7jQP024/vaxl6bjWlXfIjl8LOafQZyljC3sCy1VwqmevTTvpc7b
+         4jTrmE3/j7H/fadoCSSN7fYg7nAs/rKcnvcDYNtK9vf3jJfrUe5f6eYm+DXfUMNx8/d3
+         ZCpO/N6Yjm/8SmTduOTQG6018b7PfjxAtx5Kn78BLci0fvH+MVWg3nJl9x9Qi/UOezxX
+         tSlQ==
+X-Gm-Message-State: AGi0PuYKvYtDogJNaG94uHPtdX1Iezd2IwKLo3BNrDyfJabIvFXod08y
+        s7TlMg/uXscr92gRgCgGjNPRag==
+X-Google-Smtp-Source: APiQypKKdDuBIK3RAel7TfdUZEJ9nb6qCSCu/AD3mzsQfBGssktdzJVcFdOgmONYb+33+dUh2wfrJg==
+X-Received: by 2002:a7b:c213:: with SMTP id x19mr10552650wmi.53.1587742740012;
+        Fri, 24 Apr 2020 08:39:00 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
+        by smtp.gmail.com with ESMTPSA id f7sm8614173wrt.10.2020.04.24.08.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 08:38:59 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 16:38:59 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: PSI poll() support for unprivileged users
+Message-ID: <20200424153859.GA1481119@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <6366d76c-b9dc-6fa5-afad-0b2f471f8ec5@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tero Kristo <t-kristo@ti.com> [200424 12:41]:
-> On 17/04/2020 18:29, Tony Lindgren wrote:
-> > * Naresh Kamboju <naresh.kamboju@linaro.org> [200327 16:44]:
-> > > The reported problem still happening on arm beagle board x15 device
-> > > running Linux next kernel 20200327.
-> > ...
-> > 
-> > > [    0.000000] OF: ERROR: Bad of_node_put() on
-> > > /ocp/interconnect@4a000000/segment@0/target-module@8000/cm_core@0/l4per-cm@1700/l4per-clkctrl@28
-> > > [    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W
-> > >    5.6.0-rc7-next-20200327 #1
-> > > [    0.000000] Hardware name: Generic DRA74X (Flattened Device Tree)
-> > > [    0.000000] [<c0311810>] (unwind_backtrace) from [<c030ba14>]
-> > > (show_stack+0x10/0x14)
-> > > [    0.000000] [<c030ba14>] (show_stack) from [<c0fb6604>]
-> > > (dump_stack+0xbc/0xd0)
-> > > [    0.000000] [<c0fb6604>] (dump_stack) from [<c0fbb07c>]
-> > > (kobject_put+0xc0/0x104)
-> > > [    0.000000] [<c0fbb07c>] (kobject_put) from [<c1639e4c>]
-> > > (of_clk_init+0x18c/0x228)
-> > > [    0.000000] [<c1639e4c>] (of_clk_init) from [<c1611544>]
-> > > (omap_clk_init+0x3c/0x58)
-> > > [    0.000000] [<c1611544>] (omap_clk_init) from [<c1611ea8>]
-> > > (omap4_sync32k_timer_init+0x8/0x2c)
-> > > [    0.000000] [<c1611ea8>] (omap4_sync32k_timer_init) from
-> > > [<c161213c>] (omap5_realtime_timer_init+0x8/0x234)
-> > > [    0.000000] [<c161213c>] (omap5_realtime_timer_init) from
-> > > [<c1600c88>] (start_kernel+0x330/0x4b8)
-> > 
-> > Just FYI, Tero is looking at the clock issues that seem to be
-> > causing these warnings.
-> 
-> Haven't seen this before, but easily reproducible with multi_v7_defconfig. I
-> have a simple fix for it now, will post to lists soon.
+Hi Suren,
 
-OK thanks for tracking it down.
+I noticed that one restriction of the PSI poll() interface is that currently 
+only root can set up new triggers. Talking to Johannes, it seems the reason for 
+this was that you end up with a realtime kernel thread for every cgroup where a 
+trigger is set, and this could be used by unprivileged users to sap resources.
 
-Tony
+I'm building a userspace daemon for desktop users which notifies based on 
+pressure events, and it's particularly janky to ask people to run such a 
+notifier as root: the notification mechanism is usually tied to the user's 
+display server auth, and the surrounding environment is generally pretty 
+important to maintain. In addition to this, just in general this doesn't feel 
+like the kind of feature that by its nature needs to be restricted to root -- 
+it seems reasonable that there would be unprivileged users which want to use 
+this, and that not using RT threads would be acceptable in that scenario.
+
+Have you considered making the per-cgroup RT threads optional? If the 
+processing isn't done in the FIFO kthread for unprivileged users, I think it 
+should be safe to allow them to write to pressure files (perhaps with some 
+additional limits or restrictions on things like the interval, as needed).
+
+Thanks!
+
+Chris
