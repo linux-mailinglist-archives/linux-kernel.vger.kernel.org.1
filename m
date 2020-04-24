@@ -2,130 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6111B718F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503A01B717E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgDXKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 06:07:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53054 "EHLO mga03.intel.com"
+        id S1726726AbgDXKGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 06:06:48 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:23084 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726903AbgDXKHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 06:07:42 -0400
-IronPort-SDR: 4uhbedfg+U2neNMnYENrxlZv18CX/BKsV23oVtz1tYX9cIErIQVgIwnJvpmXbWtiG3U/B5xykT
- MDyX+E8LboaA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 03:07:41 -0700
-IronPort-SDR: L1erLUzZn/MG0HE3WaragkHVLTIfJgph1L8fxLPfHNgp3Msi3lXFBQE7CaTopxDb2I+qweoUl5
- vLGSBakCd1CA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="280755940"
-Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.240.193.79])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Apr 2020 03:07:38 -0700
-From:   Zhu Lingshan <lingshan.zhu@intel.com>
-To:     mst@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        jasowang@redhat.com
-Cc:     lulu@redhat.com, dan.daly@intel.com, cunming.liang@intel.com,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH 2/2] vdpa: implement config interrupt in IFCVF
-Date:   Fri, 24 Apr 2020 18:04:19 +0800
-Message-Id: <1587722659-1300-3-git-send-email-lingshan.zhu@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1587722659-1300-1-git-send-email-lingshan.zhu@intel.com>
-References: <1587722659-1300-1-git-send-email-lingshan.zhu@intel.com>
+        id S1726193AbgDXKGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 06:06:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=510; q=dns/txt; s=axis-central1;
+  t=1587722807; x=1619258807;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=WoKs5Og0gerlj6eE3S0a39ru9NWbT0TOBZiuhm7c8HQ=;
+  b=WfFHFjpr9AEzrDLkdsOXlVGzxuk9cWVZlHPgSeVzTKUmq1bxo8FFfhee
+   fBb3Z8QP6nTHzwZyVi+i5d/m27xXZkzimpxA5uP1pJ60J96JN+U59eyZq
+   Ev2c+e/jsoVNv1Y3gIiDwOwxRCMUPt+z8IdhHScN2m6V1eb8JjlaTSIOw
+   eDeA/J4Wp/HZ8hq5LsDKrVcWUa8xPEoMabFLN3iBHGPNkcayKLZEGpPig
+   88b2WuDk8kLbfuhyDJgM1/x55bhsDE/8eNt8Sj43rybepF5BEqenyman6
+   aMvT4b+br6njW/10yVQUPRkdKvg8T0xxDyTzgI85IlPQOkufIojlufmzG
+   A==;
+IronPort-SDR: 69TvoBs7eMFR2AZgl5S6HzHxhG545ihyS+eLK5ecWyHdgrhPtHtqUC38d4FChwzjWUhCFUTI9E
+ u6oI0rp/BV0G51/28ubuuYSTuDeboMKB96KF6jHE4FcX9hHczTqGGvhF3K2ZsC3ZvE5pmcu5Qz
+ Jd8GQKf2p/hNN4KFbaF5+45UdcsZqX5dNs5ypS+MPTotLZSzt/CXEtZ9Ri+lpelUZ1Vup6vYar
+ LaITfe78aLNdC9mMMjSSENe52Rox6D7cXaWfxRUwD4HregB2ST/VsZJCx++kQwRcd9TpMv5Xfy
+ zeA=
+X-IronPort-AV: E=Sophos;i="5.73,311,1583190000"; 
+   d="scan'208";a="7783874"
+Subject: Re: [PATCHv2] i2c: slave-eeprom: Make it possible to pre-load eeprom
+ data
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patrick@stwcx.xyz>, <kernel@axis.com>
+References: <20200424090443.26316-1-bjorn.ardo@axis.com>
+ <20200424100307.GB1959@kunai>
+From:   Bjorn Ardo <bjorn.ardo@axis.com>
+Message-ID: <5180b657-33ff-c182-8a16-82a35a61f647@axis.com>
+Date:   Fri, 24 Apr 2020 12:06:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200424100307.GB1959@kunai>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: XBOX01.axis.com (10.0.5.15) To XBOX02.axis.com (10.0.5.16)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit implements config interrupt support
-in IFC VF
 
-Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
----
- drivers/vdpa/ifcvf/ifcvf_base.c |  3 +++
- drivers/vdpa/ifcvf/ifcvf_base.h |  2 ++
- drivers/vdpa/ifcvf/ifcvf_main.c | 22 +++++++++++++++++++++-
- 3 files changed, 26 insertions(+), 1 deletion(-)
+On 4/24/20 12:03 PM, Wolfram Sang wrote:
+> On Fri, Apr 24, 2020 at 11:04:43AM +0200, Björn Ardö wrote:
+>> If the slave eeprom has a "firmware-name" in devicetree, then
+>> pre-load the data in the eeprom with this file. Otherwise we
+>> init the eeprom with 0xFF.
+>>
+>> Signed-off-by: Björn Ardö <bjorn.ardo@axis.com>
+> I like it a lot, thanks! Maybe we could add a SoB from Patrick for his
+> 0xff-suggestion (but keeping you as the patch author).
+>
+> Is this okay for everyone?
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c b/drivers/vdpa/ifcvf/ifcvf_base.c
-index b61b06e..c825d99 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.c
-@@ -185,6 +185,9 @@ void ifcvf_set_status(struct ifcvf_hw *hw, u8 status)
- 
- void ifcvf_reset(struct ifcvf_hw *hw)
- {
-+	hw->config_cb.callback = NULL;
-+	hw->config_cb.private = NULL;
-+
- 	ifcvf_set_status(hw, 0);
- 	/* flush set_status, make sure VF is stopped, reset */
- 	ifcvf_get_status(hw);
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-index e803070..76928b0 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.h
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-@@ -81,6 +81,8 @@ struct ifcvf_hw {
- 	void __iomem *net_cfg;
- 	struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
- 	void __iomem * const *base;
-+	char config_msix_name[256];
-+	struct vdpa_callback config_cb;
- };
- 
- struct ifcvf_adapter {
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index 8d54dc5..f7baeca 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -18,6 +18,16 @@
- #define DRIVER_AUTHOR   "Intel Corporation"
- #define IFCVF_DRIVER_NAME       "ifcvf"
- 
-+static irqreturn_t ifcvf_config_changed(int irq, void *arg)
-+{
-+	struct ifcvf_hw *vf = arg;
-+
-+	if (vf->config_cb.callback)
-+		return vf->config_cb.callback(vf->config_cb.private);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t ifcvf_intr_handler(int irq, void *arg)
- {
- 	struct vring_info *vring = arg;
-@@ -256,7 +266,10 @@ static void ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
- static void ifcvf_vdpa_set_config_cb(struct vdpa_device *vdpa_dev,
- 				     struct vdpa_callback *cb)
- {
--	/* We don't support config interrupt */
-+	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-+
-+	vf->config_cb.callback = cb->callback;
-+	vf->config_cb.private = cb->private;
- }
- 
- /*
-@@ -292,6 +305,13 @@ static int ifcvf_request_irq(struct ifcvf_adapter *adapter)
- 	struct ifcvf_hw *vf = &adapter->vf;
- 	int vector, i, ret, irq;
- 
-+	snprintf(vf->config_msix_name, 256, "ifcvf[%s]-config\n",
-+		pci_name(pdev));
-+	vector = 0;
-+	irq = pci_irq_vector(pdev, vector);
-+	ret = devm_request_irq(&pdev->dev, irq,
-+			       ifcvf_config_changed, 0,
-+			       vf->config_msix_name, vf);
- 
- 	for (i = 0; i < IFCVF_MAX_QUEUE_PAIRS * 2; i++) {
- 		snprintf(vf->vring[i].msix_name, 256, "ifcvf[%s]-%d\n",
--- 
-1.8.3.1
+
+OK for me!
 
