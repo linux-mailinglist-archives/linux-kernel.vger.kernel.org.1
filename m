@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7281B72C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD5F1B72B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 13:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgDXLLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 07:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgDXLLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 07:11:55 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04082C09B045
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:11:55 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a31so1895908pje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 04:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mGgPpUWWcJSKxFWk1j0ZpUZcDZ7qWSk+2Ep1V3opjsY=;
-        b=RhV+Dgur2THbXVsj1cTu37mw8UPw80MKORypqDq7r/YfZFzDSHI0k79rvvs3kRsL+N
-         5X10akzNH/fucZMO2P+Hqo+FCdis++edlXsKCaoPKGeOFZHpR8rNipVNdkPBE7nc1FtL
-         JAnQMkVN/9e0A5DGLVeib1jx8kE46Ta4BFi4iS2XnJgWwfNMkyjGivbJIDXz4IO5uVih
-         iP/Ss+WpI9mJhxFgwThDtMgqbXhV0bZwV4YtOYbHxLvaiwTwi0YHM57IX3IXb2K6ZmMa
-         ZnfIe/U12bZDfeCOntbNTqUd4qRY76VDrfjXvdCam3jgPIhzv9/AA8CqliMBJ94JV9O2
-         R7JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=mGgPpUWWcJSKxFWk1j0ZpUZcDZ7qWSk+2Ep1V3opjsY=;
-        b=lNlRsvR5zeXw2tklJrWyh3ZZG80IsGEeGCuTVvYkpk57H7Y5X2h7vveBl8A5CNk1kd
-         Hiu68cU/NGx5Y0VDwd1D+bNXJq/UxurPH0Q6yC+/QCWH2CizKwPn7IYPYWaQZ0JGFPMu
-         GYllcHI00R7LQ/KYMAtynlJRzi2FoffRZMu22njkAqbcozoosVgcHkkkkrYe6DcQfsiT
-         ipPhE1UPiOJH38yO8utnlWKylmfk0/lUlJliUv+YgNN4PB6GsD6bm1eqbatA4O9EBzDD
-         tBAhQe4gUUra0Kg6u2tqA+J58xJ2++BMcl8Xq+XlnipoZkHCd46f1PNh5PxUKbhmCJqa
-         I/Iw==
-X-Gm-Message-State: AGi0PuaJj2RZcrN3mgToP8Y7+0DzfFjzf45hqfyz/KehSz9GiGXsdnmx
-        cu3CmjoWWEPdT7uXXNQ52m2J/Q==
-X-Google-Smtp-Source: APiQypL+FHEDBtk6zd1EZND+1rWOLvFjGjy05fIVV+X1HKwQAax28zUwpf9w2/xAFM9nylW0/w1XRg==
-X-Received: by 2002:a17:902:8647:: with SMTP id y7mr8684677plt.87.1587726714544;
-        Fri, 24 Apr 2020 04:11:54 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.71.186])
-        by smtp.gmail.com with ESMTPSA id o11sm4637628pgd.58.2020.04.24.04.11.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 04:11:53 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org,
-        julien.thierry.kdev@gmail.com, dianders@chromium.org,
-        daniel.thompson@linaro.org, jason.wessel@windriver.com,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [RFC Patch v1 4/4] arm64: kgdb: Round up cpus using IPI_CALL_NMI_FUNC
-Date:   Fri, 24 Apr 2020 16:39:14 +0530
-Message-Id: <1587726554-32018-5-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587726554-32018-1-git-send-email-sumit.garg@linaro.org>
-References: <1587726554-32018-1-git-send-email-sumit.garg@linaro.org>
+        id S1726839AbgDXLJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 07:09:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:59960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726582AbgDXLJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 07:09:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50FD41FB;
+        Fri, 24 Apr 2020 04:09:52 -0700 (PDT)
+Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 314BC3F6CF;
+        Fri, 24 Apr 2020 04:09:52 -0700 (PDT)
+Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
+        id EC473682B6C; Fri, 24 Apr 2020 12:09:50 +0100 (BST)
+Date:   Fri, 24 Apr 2020 12:09:50 +0100
+From:   Liviu Dudau <liviu.dudau@arm.com>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Brian Starkey <brian.starkey@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH v2] drm/arm: fixes pixel clock enabled with wrong format
+Message-ID: <20200424110950.GC1985@e110455-lin.cambridge.arm.com>
+References: <20200424063551.14336-1-bernard@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200424063551.14336-1-bernard@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arm64 platforms with GICv3 or later supports pseudo NMIs which can be
-leveraged to round up CPUs which are stuck in hard lockup state with
-interrupts disabled that wouldn't be possible with a normal IPI.
+Hi Bernand,
 
-So instead switch to round up CPUs using IPI_CALL_NMI_FUNC. And in
-case a particular arm64 platform doesn't supports pseudo NMIs,
-IPI_CALL_NMI_FUNC will act as a normal IPI which maintains existing
-kgdb functionality.
+On Thu, Apr 23, 2020 at 11:35:51PM -0700, Bernard Zhao wrote:
+> The pixel clock is still enabled when the format is wrong.
+> no error branch handle, and also some register is not set
+> in this case, e.g: HDLCD_REG_<color>_SELECT. Maybe we
+> should disable this clock and throw an warn message when
+> this happened.
+> With this change, the code maybe a bit more readable.
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> 
+> Changes since V1:
+> *add format error handle, if format is not correct, throw
+> an warning message and disable this clock.
+> 
+> Link for V1:
+> *https://lore.kernel.org/patchwork/patch/1228501/
+> ---
+>  drivers/gpu/drm/arm/hdlcd_crtc.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/arm/hdlcd_crtc.c b/drivers/gpu/drm/arm/hdlcd_crtc.c
+> index af67fefed38d..f3945dee2b7d 100644
+> --- a/drivers/gpu/drm/arm/hdlcd_crtc.c
+> +++ b/drivers/gpu/drm/arm/hdlcd_crtc.c
+> @@ -96,7 +96,7 @@ static int hdlcd_set_pxl_fmt(struct drm_crtc *crtc)
+>  	}
+>  
+>  	if (WARN_ON(!format))
+> -		return 0;
+> +		return -EINVAL;
 
-Also, one thing to note here is that with CPUs running in NMI context,
-kernel has special handling for printk() which involves CPU specific
-buffers and defering printk() until exit from NMI context. But with kgdb
-we don't want to defer printk() especially backtrace on corresponding
-CPUs. So switch to normal printk() context instead prior to entering
-kgdb context.
+That is the right fix!
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- arch/arm64/kernel/kgdb.c | 15 +++++++++++++++
- arch/arm64/kernel/smp.c  | 17 ++++++++++++++---
- 2 files changed, 29 insertions(+), 3 deletions(-)
+>  
+>  	/* HDLCD uses 'bytes per pixel', zero means 1 byte */
+>  	btpp = (format->bits_per_pixel + 7) / 8;
+> @@ -125,7 +125,7 @@ static int hdlcd_set_pxl_fmt(struct drm_crtc *crtc)
+>  	return 0;
+>  }
+>  
+> -static void hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
+> +static int hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
 
-diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
-index 4311992..0851ead 100644
---- a/arch/arm64/kernel/kgdb.c
-+++ b/arch/arm64/kernel/kgdb.c
-@@ -14,6 +14,7 @@
- #include <linux/kgdb.h>
- #include <linux/kprobes.h>
- #include <linux/sched/task_stack.h>
-+#include <linux/smp.h>
- 
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
-@@ -353,3 +354,17 @@ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
- 	return aarch64_insn_write((void *)bpt->bpt_addr,
- 			*(u32 *)bpt->saved_instr);
- }
-+
-+#ifdef CONFIG_SMP
-+void kgdb_roundup_cpus(void)
-+{
-+	struct cpumask mask;
-+
-+	cpumask_copy(&mask, cpu_online_mask);
-+	cpumask_clear_cpu(raw_smp_processor_id(), &mask);
-+	if (cpumask_empty(&mask))
-+		return;
-+
-+	arch_send_call_nmi_func_ipi_mask(&mask);
-+}
-+#endif
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 27c8ee1..c7158f6e8 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -31,6 +31,7 @@
- #include <linux/of.h>
- #include <linux/irq_work.h>
- #include <linux/kexec.h>
-+#include <linux/kgdb.h>
- #include <linux/kvm_host.h>
- 
- #include <asm/alternative.h>
-@@ -976,9 +977,19 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
- 		/* Handle it as a normal interrupt if not in NMI context */
- 		if (!in_nmi())
- 			irq_enter();
--
--		/* nop, IPI handlers for special features can be added here. */
--
-+#ifdef CONFIG_KGDB
-+		if (atomic_read(&kgdb_active) != -1) {
-+			/*
-+			 * For kgdb to work properly, we need printk to operate
-+			 * in normal context.
-+			 */
-+			if (in_nmi())
-+				printk_nmi_exit();
-+			kgdb_nmicallback(raw_smp_processor_id(), regs);
-+			if (in_nmi())
-+				printk_nmi_enter();
-+		}
-+#endif
- 		if (!in_nmi())
- 			irq_exit();
- 		break;
+But this is not. We don't need to propagate the error further, just ....
+
+>  {
+>  	struct hdlcd_drm_private *hdlcd = crtc_to_hdlcd_priv(crtc);
+>  	struct drm_display_mode *m = &crtc->state->adjusted_mode;
+> @@ -162,9 +162,10 @@ static void hdlcd_crtc_mode_set_nofb(struct drm_crtc *crtc)
+>  
+>  	err = hdlcd_set_pxl_fmt(crtc);
+>  	if (err)
+> -		return;
+
+... return here so that we don't call clk_set_rate();
+
+Best regards,
+Liviu
+
+> +		return err;
+>  
+>  	clk_set_rate(hdlcd->clk, m->crtc_clock * 1000);
+> +	return 0;
+>  }
+>  
+>  static void hdlcd_crtc_atomic_enable(struct drm_crtc *crtc,
+> @@ -173,7 +174,11 @@ static void hdlcd_crtc_atomic_enable(struct drm_crtc *crtc,
+>  	struct hdlcd_drm_private *hdlcd = crtc_to_hdlcd_priv(crtc);
+>  
+>  	clk_prepare_enable(hdlcd->clk);
+> -	hdlcd_crtc_mode_set_nofb(crtc);
+> +	if (hdlcd_crtc_mode_set_nofb(crtc)) {
+> +		DRM_DEBUG_KMS("Invalid format, pixel clock enable failed!\n");
+> +		clk_disable_unprepare(hdlcd->clk);
+> +		return;
+> +	}
+>  	hdlcd_write(hdlcd, HDLCD_REG_COMMAND, 1);
+>  	drm_crtc_vblank_on(crtc);
+>  }
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.7.4
-
+====================
+| I would like to |
+| fix the world,  |
+| but they're not |
+| giving me the   |
+ \ source code!  /
+  ---------------
+    ¯\_(ツ)_/¯
