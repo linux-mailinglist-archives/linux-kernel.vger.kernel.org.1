@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2F01B7CBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E23B1B7CC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgDXR2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgDXR2e (ORCPT
+        id S1729056AbgDXR3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:29:38 -0400
+Received: from balrog.mythic-beasts.com ([46.235.227.24]:34849 "EHLO
+        balrog.mythic-beasts.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbgDXR3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:28:34 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6F5C09B04A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:28:30 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f8so3982689plt.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=vbEqXfaL54AfhJ4npcAoZ7HbWa5wguFP+Av2lpKJi2A=;
-        b=X9O/ERZj2xJ0YL55Nob0jzqnqFCgGKnwLhHbYF3mO+mgvWJRtcdT4uaKePsCLmwGXm
-         Iz5UiY/PW+9jwH3jHHJsy9oR1cq0ynzGJAmtF800KvvyTqrkS2r8VWzooNp1+6tF4Gzr
-         Y1BsaPD+l5mEYmgcPSW6Cmz19BO4kGl07GGoE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=vbEqXfaL54AfhJ4npcAoZ7HbWa5wguFP+Av2lpKJi2A=;
-        b=MMaKE1vKV/Geq70RygX778H1vlMsXaI4IyWfIptxnL/xxaphhCAnV1b+Y3IvZBsbab
-         fuEE1egaI6NI1ByDTrjgursEKMdzUetrBs76QsNTF+WQllnfporoFEA5Smx/bE6NuRp3
-         1uDV2geQIIQLKJgH5neK0A6IGQxfzyEUkMIZlbNw4d+qvy3lxlyR6R413MiybnN8ahjS
-         nFpJHnOdDhPilwY2ha0V6ZKlqYReJCEam66Sd1oe9clH4BVAwSKtlmX6wNW8x6xuxsTn
-         PI8OSDzIqHr3w0qIVbD+CKh86c4rqmoDJy3gsdbcqQwH7sAdZWYk5QHQQLq9cFWGhE/Q
-         e0SA==
-X-Gm-Message-State: AGi0PuZqbCCaqAT5WlMDCR7VdaJkWNKu7icRj5UJPQ7z9eAcWJOaTYXb
-        r5plc82BS+7+p7V0oYncqnYiww==
-X-Google-Smtp-Source: APiQypLU3bzunfrfhJUL85QtiJqsJkujcGke3q5ieGkSoz15JrT2JAij9hhDu3DSOtgoCGO7hbW5Zg==
-X-Received: by 2002:a17:902:a40f:: with SMTP id p15mr10746662plq.154.1587749310454;
-        Fri, 24 Apr 2020 10:28:30 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id o68sm6336898pfb.206.2020.04.24.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 10:28:30 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 24 Apr 2020 13:29:37 -0400
+Received: from [87.115.41.34] (port=58078 helo=slartibartfast.quignogs.org.uk)
+        by balrog.mythic-beasts.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <peter@bikeshed.quignogs.org.uk>)
+        id 1jS28m-0006fu-JF; Fri, 24 Apr 2020 18:29:32 +0100
+From:   Peter Lister <peter@bikeshed.quignogs.org.uk>
+Subject: Re: [PATCH v2 08/29] docs: filesystems: convert configfs.txt to ReST
+To:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Becker <jlbec@evilplan.org>, linux-usb@vger.kernel.org
+References: <cover.1587487612.git.mchehab+huawei@kernel.org>
+ <278a9befc98b49ea866c9b687d070c70cde20628.1587487612.git.mchehab+huawei@kernel.org>
+ <20200421165534.GA16511@lst.de>
+ <20200421170223.GP5820@bombadil.infradead.org>
+ <20200421172337.GA18305@lst.de>
+Message-ID: <894438a6-cd91-1728-a313-4bf4f8d5074d@bikeshed.quignogs.org.uk>
+Date:   Fri, 24 Apr 2020 18:28:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=WT1rw9H34GjQSjbubR6y61=v-jR-gEvRtN4tU_NwviHA@mail.gmail.com>
-References: <20200424045414.133381-1-swboyd@chromium.org> <20200424045414.133381-2-swboyd@chromium.org> <CAD=FV=WT1rw9H34GjQSjbubR6y61=v-jR-gEvRtN4tU_NwviHA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] soc: qcom: rpmh-rsc: Remove tcs_is_free() API
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Fri, 24 Apr 2020 10:28:29 -0700
-Message-ID: <158774930920.135303.8846586262429360001@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200421172337.GA18305@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-BlackCat-Spam-Score: 14
+X-Spam-Status: No, score=1.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-04-24 10:12:04)
-> On Thu, Apr 23, 2020 at 9:54 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > +       unsigned long i;
-> >
-> > -       for (i =3D 0; i < tcs->num_tcs; i++) {
-> > -               if (tcs_is_free(tcs->drv, tcs->offset + i))
-> > -                       return tcs->offset + i;
-> > -       }
-> > +       i =3D find_next_zero_bit(drv->tcs_in_use, MAX_TCS_NR, tcs->offs=
-et);
->=20
-> Rather than passing MAX_TCS_NR would it be legit to pass "tcs->offset
-> + tcs->num_tcs"?  You are passing that as "size" above in
-> check_for_req_inflight().
+On 21/04/2020 18:23, Christoph Hellwig wrote:
+> It wasn't entirely uncommon, but that's not really the point.  The
+> Problem is all the weird ".." or "::" annotations that really kill
+> the flow, or things like "|copy|" that have no reason to exist.
 
-Yeah I think that should work. I'll roll it in.
+You aren't supposed to read REST documentation files - as opposed to 
+kerneldoc comments in the C source - any more than you read HTML.
+
+[ Exactly what should or should not be in C source kerneldoc is another 
+matter. ]
+
+Developers are used to reading plain ol' text files for quick reference. 
+But there is no make target to generate the text files.
+
+Can we create a method to build text *output* files?
