@@ -2,93 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08F01B7456
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83871B7475
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgDXMZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:25:52 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37293 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726942AbgDXMZp (ORCPT
+        id S1728768AbgDXM0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728424AbgDXM00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:25:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587731143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rAfkUZPwp0GSsvC6kXoI4ntMaM1pN62FyepDfYmHV0M=;
-        b=FXKO6M3OSforWav8yoOCR2OvfMpO04KVxLAnpDosQxrUiJXNl1MGAbJ1cUpcX3raZteVRy
-        771cAhNUGWRjyyikhPUA5f1mq5MrdRhrlrO7oJIU16xwOLGSzHMCdXTtlf4sI6qmlA8oc0
-        tHmP+ES6n5Ki1TdhGzaWop/wjeOq+2g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-suTRmxGPNZKGOB4m9NcuEg-1; Fri, 24 Apr 2020 08:25:41 -0400
-X-MC-Unique: suTRmxGPNZKGOB4m9NcuEg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A89081895A2A;
-        Fri, 24 Apr 2020 12:25:40 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2EDCF605CF;
-        Fri, 24 Apr 2020 12:25:37 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/idt: Keep spurious entries unset in system_vectors
-Date:   Fri, 24 Apr 2020 14:25:35 +0200
-Message-Id: <20200424122535.1212732-1-vkuznets@redhat.com>
+        Fri, 24 Apr 2020 08:26:26 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294F2C09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:26:26 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id e6so3830268pjt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=XzNM/kV1dZuUtHsKgoCs5qViwOgcS6UvB+zpnSAB/Jw=;
+        b=CLNaFiA5K0iSkrpFHn6116vKgzHQzUF2312BCY7gW5pDHBXjOMY2yBaJWXkvLAUIAc
+         PceHqBzrIKPKE95RDUNixa5suZi8lNy18eI3qzv+QYI1Zf3+fejVNdDufHRjqkq2pObb
+         CTv3Lay7EK/5xTZAxY1zkcaHIw20cLtV5aaFqdf3EJjes32z9WhvMgK0IYbHwBnc6UVq
+         7EasqGkuDU7+8E4qeM9wR3m+3CO7hpZsqah1RZzYc/J61eASQp0ndJlc/lRaZrpncpFd
+         a8GHBEfO9OeZnlRiWCgW2jeldLoq8j93k3d5h3XoJRQeMhwURyjiwbBhbDRO9GSvcsWg
+         cEKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=XzNM/kV1dZuUtHsKgoCs5qViwOgcS6UvB+zpnSAB/Jw=;
+        b=bZ9eH5b4bhT6TKU31eDUHgZ+FeETd2jOyc1/PP+xVdA48h/gmo1fIwVe1ALDUkcA7N
+         8F2qjRATe1xQiliEYoN7xS6zQP6J5qv7socFMkWQhbNaQ/7xjWP8dLgdOy+hIM0vK5QG
+         pbqflawuTPTo3+qGY3hDPBEEdi/cukxGKo9l7kuBl44FqO4Ppvjs/9FBjUAyCOaUQItR
+         KAEf+7mE2/7Eppe9KJUSRcN3AdN44tZsNawjBIfo9OfaKGD4b1UCwTnwE15Y9I6E8BsU
+         fI1pFUuc+xP/0Buy/tWwXGneLLkjAetzhlM94qWo82yfWG+fbcVGADJC703jKZfsDBC8
+         7CCw==
+X-Gm-Message-State: AGi0PuapmtJ47/zmvq9hF5Rao4y5W2zf/6SbYkgoLMCNqujo0PswQpt2
+        HtxFuSt8Ab3dxANXY7q4o2bsMhnw
+X-Google-Smtp-Source: APiQypIJX/5LWo2tBfq/mDSRVssqe2WZzs/Kp+YjoLV7zmwOCjU0+VxePpo8TIBejtzkHLvkoXWw2g==
+X-Received: by 2002:a17:902:9044:: with SMTP id w4mr9171692plz.83.1587731185726;
+        Fri, 24 Apr 2020 05:26:25 -0700 (PDT)
+Received: from syed ([106.223.101.26])
+        by smtp.gmail.com with ESMTPSA id mn1sm4587271pjb.24.2020.04.24.05.26.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Apr 2020 05:26:25 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 17:56:19 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/6] lib/test_bitmap.c: Add for_each_set_clump test cases
+Message-ID: <20200424122619.GA5573@syed>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dc20b2d52653 ("x86/idt: Move interrupt gate initialization to IDT
-code") had a side-effect of 'set_bit(i, used_vectors)' for unused entries
-which are being mapped to spurious entries. (user_vectors were later
-renamed to system_vectors).
+The introduction of the generic for_each_set_clump macro need test
+cases to verify the implementation. This patch adds test cases for
+scenarios in which clump sizes are 8 bits, 24 bits, 30 bits and 6 bits.
+The cases contain situations where clump is getting split at the word
+boundary and also when zeroes are present in the start and middle of
+bitmap.
 
-Previously, we used to count on system_vectors in arch_show_interrupts()
-to not print unexisting entries in /proc/interrupts. E.g. 'Hypervisor
-callback interrupts' should not be printed on bare metal. This is
-currently broken.
-
-Setting bits in system_vectors for all unused entries also makes
-alloc_intr_gate() fail in case someone decides to do it later. It seems
-this is not currently an issue because all alloc_intr_gate() users are
-calling it early, before we call idt_setup_apic_and_irq_gates() but
-this also seems wrong.
-
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 ---
- arch/x86/kernel/idt.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ lib/test_bitmap.c | 159 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 159 insertions(+)
 
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index 87ef69a72c52..b62e9d080a3e 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -318,7 +318,13 @@ void __init idt_setup_apic_and_irq_gates(void)
-=20
- #ifdef CONFIG_X86_LOCAL_APIC
- 	for_each_clear_bit_from(i, system_vectors, NR_VECTORS) {
--		set_bit(i, system_vectors);
-+		/*
-+		 * Spurious entries are left unset in system_vectors so it can
-+		 * be used to check which gates were really allocated. This also
-+		 * allows using alloc_intr_gate() and not update_intr_gate() if
-+		 * some of the currently-spurious entries are to be allocated
-+		 * later.
-+		 */
- 		entry =3D spurious_entries_start + 8 * (i - FIRST_SYSTEM_VECTOR);
- 		set_intr_gate(i, entry);
- 	}
---=20
-2.25.3
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 6b13150..5c1f98f 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -155,6 +155,38 @@ static bool __init __check_eq_clump8(const char *srcfile, unsigned int line,
+ 	return true;
+ }
+ 
++static bool __init __check_eq_clump(const char *srcfile, unsigned int line,
++				    const unsigned int offset,
++				    const unsigned int size,
++				    const unsigned long *const clump_exp,
++				    const unsigned long *const clump,
++				    const unsigned long clump_size)
++{
++	unsigned long exp;
++
++	if (offset >= size) {
++		pr_warn("[%s:%u] bit offset for clump out-of-bounds: expected less than %u, got %u\n",
++			srcfile, line, size, offset);
++		return false;
++	}
++
++	exp = clump_exp[offset / clump_size];
++	if (!exp) {
++		pr_warn("[%s:%u] bit offset for zero clump: expected nonzero clump, got bit offset %u with clump value 0",
++			srcfile, line, offset);
++		return false;
++	}
++
++	if (*clump != exp) {
++		pr_warn("[%s:%u] expected clump value of 0x%lX, got clump value of 0x%lX",
++			srcfile, line, exp, *clump);
++		return false;
++	}
++
++	return true;
++}
++
++
+ #define __expect_eq(suffix, ...)					\
+ 	({								\
+ 		int result = 0;						\
+@@ -172,6 +204,7 @@ static bool __init __check_eq_clump8(const char *srcfile, unsigned int line,
+ #define expect_eq_pbl(...)		__expect_eq(pbl, ##__VA_ARGS__)
+ #define expect_eq_u32_array(...)	__expect_eq(u32_array, ##__VA_ARGS__)
+ #define expect_eq_clump8(...)		__expect_eq(clump8, ##__VA_ARGS__)
++#define expect_eq_clump(...)		__expect_eq(clump, ##__VA_ARGS__)
+ 
+ static void __init test_zero_clear(void)
+ {
+@@ -588,6 +621,46 @@ static const unsigned char clump_exp[] __initconst = {
+ 	0x05,	/* non-adjacent 2 bits set */
+ };
+ 
++static const unsigned long clump_exp1[] __initconst = {
++	0x01,	/* 1 bit set */
++	0x02,	/* non-edge 1 bit set */
++	0x00,	/* zero bits set */
++	0x38,	/* 3 bits set across 4-bit boundary */
++	0x38,	/* Repeated clump */
++	0x0F,	/* 4 bits set */
++	0xFF,	/* all bits set */
++	0x05,	/* non-adjacent 2 bits set */
++};
++
++static const unsigned long clump_exp2[] __initconst = {
++	0xfedcba,	/* 24 bits */
++	0xabcdef,
++	0xaabbbb,	/* Clump split between 2 words */
++	0x000000,	/* zeroes in between */
++	0x0000aa,
++	0x000000,
++	0x0000ff,
++	0xaaaaaa,
++	0x000000,
++	0x0000ff,
++};
++
++static const unsigned long clump_exp3[] __initconst = {
++	0x00000000,	/* starting with 0s*/
++	0x00000000,	/* All 0s */
++	0x00000000,
++	0x00000000,
++	0x3f00000f,     /* Non zero set */
++	0x2aa80003,
++	0x00000aaa,
++	0x00003fc0,
++};
++
++static const unsigned long clump_exp4[] __initconst = {
++	0x00,
++	0x2b,
++};
++
+ static void __init test_for_each_set_clump8(void)
+ {
+ #define CLUMP_EXP_NUMBITS 64
+@@ -610,6 +683,88 @@ static void __init test_for_each_set_clump8(void)
+ 		expect_eq_clump8(start, CLUMP_EXP_NUMBITS, clump_exp, &clump);
+ }
+ 
++static void __init test_for_each_set_clump_8(void)  /* 8 bit clumps test using
++						  new for_each_set_clump */
++{
++#define CLUMP_EXP_NUMBITS 64
++	DECLARE_BITMAP(bits, CLUMP_EXP_NUMBITS);
++	unsigned long start, clump, clump_size = 8;
++
++	/* set bitmap to test case */
++	bitmap_zero(bits, CLUMP_EXP_NUMBITS);
++	bitmap_set_value(bits, 0x38000201, 0, 32);
++	bitmap_set_value(bits, 0x05ff0f38, 32, 32);
++
++	for_each_set_clump(start, clump, bits, CLUMP_EXP_NUMBITS, clump_size)
++		expect_eq_clump(start, CLUMP_EXP_NUMBITS, clump_exp1, &clump, clump_size);
++}
++
++static void __init test_for_each_set_clump_24(void)  /* 24 bit clumps */
++{
++#define CLUMP_EXP_NUMBITS_2 256
++	DECLARE_BITMAP(bits, CLUMP_EXP_NUMBITS_2);
++	unsigned long start, clump, clump_size = 24;
++	unsigned long size = clump_size * 10;
++
++	/* set bitmap to test case */
++	bitmap_zero(bits, CLUMP_EXP_NUMBITS_2);
++	bitmap_set_value(bits, 0xeffedcba, 0, 32);
++	bitmap_set_value(bits, 0xbbbbabcd, 32, 32);
++	bitmap_set_value(bits, 0x000000aa, 64, 32);
++	bitmap_set_value(bits, 0x000000aa, 96, 32);
++	bitmap_set_value(bits, 0x00ff0000, 128, 32);
++	bitmap_set_value(bits, 0xaaaaaa00, 160, 32);
++	bitmap_set_value(bits, 0xff000000, 192, 32);
++	bitmap_set_value(bits, 0x00aa0000, 224, 32);
++
++	for_each_set_clump(start, clump, bits, size, clump_size)
++		expect_eq_clump(start, size, clump_exp2, &clump, clump_size);
++}
++
++static void __init test_for_each_set_clump_30(void)   /* 30 bit clumps */
++{
++#define CLUMP_EXP_NUMBITS_2 256
++	DECLARE_BITMAP(bits, CLUMP_EXP_NUMBITS_2);
++	unsigned long start, clump, clump_size = 30;
++	unsigned long size = clump_size * 8;
++
++	/* set bitmap to test case */
++	bitmap_zero(bits, CLUMP_EXP_NUMBITS_2);
++	bitmap_set_value(bits, 0x00000000, 0, 32);
++	bitmap_set_value(bits, 0x00000000, 32, 32);
++	bitmap_set_value(bits, 0x00000000, 64, 32);
++	bitmap_set_value(bits, 0x0f000000, 96, 32);
++	bitmap_set_value(bits, 0x00ff0000, 128, 32);
++	bitmap_set_value(bits, 0xaaaaaa00, 160, 32);
++	bitmap_set_value(bits, 0xff000000, 192, 32);
++	bitmap_set_value(bits, 0x00aa0000, 224, 32);
++
++	for_each_set_clump(start, clump, bits, size, clump_size)
++		expect_eq_clump(start, size, clump_exp3, &clump, clump_size);
++}
++
++static void __init test_for_each_set_clump_6(void)   /* 6 bit clumps */
++{
++#define CLUMP_EXP_NUMBITS_2 256
++	DECLARE_BITMAP(bits, CLUMP_EXP_NUMBITS_2);
++	unsigned long start, clump, clump_size = 6;
++	unsigned long size = clump_size * 3;
++
++	/* set bitmap to test case */
++	bitmap_zero(bits, CLUMP_EXP_NUMBITS_2);
++	bitmap_set_value(bits, 0x00000ac0, 0, 32);
++	bitmap_set_value(bits, 0x00000000, 32, 32);
++	bitmap_set_value(bits, 0x00000000, 64, 32);
++	bitmap_set_value(bits, 0x0f000000, 96, 32);
++	bitmap_set_value(bits, 0x00ff0000, 128, 32);
++	bitmap_set_value(bits, 0xaaaaaa00, 160, 32);
++	bitmap_set_value(bits, 0xff000000, 192, 32);
++	bitmap_set_value(bits, 0x00aa0000, 224, 32);
++
++	for_each_set_clump(start, clump, bits, size, clump_size)
++		expect_eq_clump(start, size, clump_exp4, &clump, clump_size);
++}
++
+ static void __init selftest(void)
+ {
+ 	test_zero_clear();
+@@ -623,6 +778,10 @@ static void __init selftest(void)
+ 	test_bitmap_parselist_user();
+ 	test_mem_optimisations();
+ 	test_for_each_set_clump8();
++	test_for_each_set_clump_8();
++	test_for_each_set_clump_24();
++	test_for_each_set_clump_30();
++	test_for_each_set_clump_6();
+ }
+ 
+ KSTM_MODULE_LOADERS(test_bitmap);
+-- 
+2.7.4
 
