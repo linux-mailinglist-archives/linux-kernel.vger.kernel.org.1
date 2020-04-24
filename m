@@ -2,146 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5606D1B70CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6303D1B70D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 11:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgDXJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 05:27:10 -0400
-Received: from mail-vi1eur05on2058.outbound.protection.outlook.com ([40.107.21.58]:28365
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726347AbgDXJ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:27:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKzxG829k5GPx5BEBUowYqaxFfzwA/N1UGnyzvOwFfmw8tjbtrKetrPx3X0oJdqf8NifhAiLqDjb5qT3WYdEQVd1ueSEmuynrUbak/1xajCDvA/bFsxWyCNQFHek79DjNPLa2wy9T5otXfg6CUoXib7haBL6tYLGT/AZshijbNRh9sXFWTN2WbwD/rvddnz0J7I8ownc8KKfmz6yjkRXW+LqCU+3NA8f797vQM5G4+fc4AIcwvXKYp3eqww8VCEjYk0a0CL0ndx4CLO/vQcRid9D+SI1fQv5XsAz6+kNVo+nURsnw13w6wxE+gkWD1BZUC12Fykk+gxG+0wH5d96Ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7BJM/Wjjdm80vp5fOaTtwFDwVOJE1Ui37dfD8EIGaLM=;
- b=AjeqAnGi28XgnXwHLEWFNdsLGuliKM0JiYWkjWbad8IoEy81c0NESkWYU+6tBgOwo5tqodHRofkCQAw8WOXkfNtSzYlUeebDten6zOQTaAkcjimLPKvPCF33DjnnUKA9NBFnH3AJKm2J3LoHxZWQwICtdajrPQCcz69mHZjNI67rmpJRg2uoqBVMR3LvvXm4lcWjKLcFB8Nbhl4ziHiGz62pmtzCo98HHQa/2Av1DOilr71qX3N5IX/9VfMew+OYJINNDwYxyRDbaGFuUctg9CZhr39oPErMVcBdWZe5pEPhKeQSajAVs4DhopZWPmEJt8KoH+opJ3f8VvkF5Vr32w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7BJM/Wjjdm80vp5fOaTtwFDwVOJE1Ui37dfD8EIGaLM=;
- b=k8zpJ+8E6HAW344HUwXWcJoE895ti/fPQo/v7qyhtshfK4628Z/d7OI5PfbXzut6vK7+H7tUNg7YOtfWt5kL4cwTSJqv4q85S30g5TvbmKFl+nO6iU0J5YA5UowECavC2yL0ei0PBVjzPQju/uL7Mcp7d/P5ezsAIzHo/j8vnFI=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=calvin.johnson@oss.nxp.com; 
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB5876.eurprd04.prod.outlook.com (2603:10a6:208:130::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Fri, 24 Apr
- 2020 09:27:05 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::c4fe:d4a4:f0e1:a75b]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::c4fe:d4a4:f0e1:a75b%4]) with mapi id 15.20.2921.030; Fri, 24 Apr 2020
- 09:27:05 +0000
-Date:   Fri, 24 Apr 2020 14:56:51 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-acpi@vger.kernel.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Varun Sethi <V.Sethi@nxp.com>, Marcin Wojtas <mw@semihalf.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [net-next PATCH v1 1/2] device property: Introduce
- fwnode_phy_find_device()
-Message-ID: <20200424092651.GA4501@lsv03152.swis.in-blr01.nxp.com>
-References: <20200424031617.24033-1-calvin.johnson@oss.nxp.com>
- <20200424031617.24033-2-calvin.johnson@oss.nxp.com>
- <b583f6fb-e6fe-3320-41c6-e019a4e10388@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b583f6fb-e6fe-3320-41c6-e019a4e10388@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: SG2PR02CA0022.apcprd02.prod.outlook.com
- (2603:1096:3:17::34) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S1726848AbgDXJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 05:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726523AbgDXJaf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 05:30:35 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC42C09B045;
+        Fri, 24 Apr 2020 02:30:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id ay1so3552297plb.0;
+        Fri, 24 Apr 2020 02:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nOe4eSFf8uaQPFRnz/HB78krP+RHMm+yFvd35oui5EE=;
+        b=ejmiU1QYFN0TNxurB1zJMhR8EuFUTcFF7RduwDMofM3bvkWZj0mda+IXNsETZTme8o
+         DCMkE8Q3sK5LYgWvaGspC481L12yjveuTE74oW1D1I4s9lkLsTh5Puj8NDTC1ugCSzoP
+         xQN6LFcS2vBFkU3GhNyvMmFFV5CqJ5/80bDTq7lzPsDxHqcLyBv6udq4rFrGnsXhmTWL
+         sxKNjUJcTQxY25LCAKgpro0vVKkopOsdlBhuPwn0QUldqDqugP7a308wHsIXIe/bQNQ9
+         zdTMffVtyCnEMsQscc3lx0rlG7ifOmw5I7PyPqNQtPueBq8M0fNaUQ5qPug7doxfQbmM
+         I+Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nOe4eSFf8uaQPFRnz/HB78krP+RHMm+yFvd35oui5EE=;
+        b=dzF3cdHJB6IP6NRqqaQ8VSFL0DY3lZNklefzhfQLhng9D1wGi/xzcmMvaaKgPAQgAR
+         y0eOApJLOLRaeGomN7zg7moBtmz4RqFaL1/ACvP77OX2ctXIJBtDjtBlyOAkNDsALHH7
+         qY6hK6y6GqBWON0UQxheHpi8hOQrnU8BGSPKUBTsQ3WjMxCCl57inPUPWE/frgu7yd0R
+         30obsVsPz6JkDy4zOCXfT1UVq8mrocugDZCkgm7nvxqUOIzmnL8ZzBgpUwK+7VdiFMwj
+         uV72eT/kUzIiIAeQno4iPpTeapCm+4hq3CEAWilj4Qi8yOLt6zElqhjVZMjDOpwcHSaR
+         pPRQ==
+X-Gm-Message-State: AGi0PuZ9tkFbiEbcEl1Hsm5pUWjWIcHzYO/X2+/zsoCucVhChJSwl+/8
+        mkFf2mBOK5saWfytmv7K/4g=
+X-Google-Smtp-Source: APiQypJhrHHsRU/uH3PJZnexuFIJsytzrUPi3t+Wn5Z4iRIF0i263atdJFB9hYLExhT1Ysy5RFpCfA==
+X-Received: by 2002:a17:90a:a893:: with SMTP id h19mr5238698pjq.138.1587720634247;
+        Fri, 24 Apr 2020 02:30:34 -0700 (PDT)
+Received: from localhost.localdomain (146.85.30.125.dy.iij4u.or.jp. [125.30.85.146])
+        by smtp.gmail.com with ESMTPSA id 185sm5541315pfv.9.2020.04.24.02.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 02:30:33 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Hans Verkuil <hans.verkuil@cisco.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCHv5 00/13] Implement V4L2_BUF_FLAG_NO_CACHE_* flags
+Date:   Fri, 24 Apr 2020 18:29:07 +0900
+Message-Id: <20200424092920.4801-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0022.apcprd02.prod.outlook.com (2603:1096:3:17::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Fri, 24 Apr 2020 09:26:58 +0000
-X-Originating-IP: [14.142.151.118]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 231d6687-ca56-431a-727c-08d7e831a6d4
-X-MS-TrafficTypeDiagnostic: AM0PR04MB5876:|AM0PR04MB5876:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB58764AA80BA6B44F9D790328D2D00@AM0PR04MB5876.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-Forefront-PRVS: 03838E948C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(1006002)(1076003)(6666004)(86362001)(26005)(6916009)(55236004)(7416002)(53546011)(6506007)(316002)(2906002)(33656002)(186003)(16526019)(956004)(7696005)(66556008)(66476007)(66946007)(52116002)(44832011)(9686003)(5660300002)(478600001)(81156014)(8676002)(54906003)(4326008)(8936002)(55016002)(110426005);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: oss.nxp.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MSi2/CvGv4lgZbLLcZVAVAOvEIX9CrzBvTS15v72pvPTrViC1AgWrM3ktcWS/ceTTtWy+oYYkt3XLYl3sYCuYu6kb+SeBKrNjrwXzzmoaz1MQAeK0x68FmHHY61NPbzls4jfjI2rpac6/DUXYpzhYhoCitEJ24eneQ8tAjgWAx5MzRc61tiZW6aUy3mFo1lTdd5aGBFnKs386S7pBV48dw63LBAHtLPfK/KwmQ1HvAsVTRsEb5OR3bK6zoVDlYdfqExrs72O83RG3gtCwgkMp4ILeZd8/GSPQUlZ1fbYUnn6mEU3dyRWOj55elgpMXjYfjz8uik0ldSEV1Rib6ace2sulCKY46gk2Ng+3694ZWENxJa9MdkrAd9YI2bbzEkltuReSakg6wTuEGv6chy0JStjsj2d1IafDPFS5KLykDIQlmIHQP7bd0DM6L7I1cz/WU6JWzAGeituk4PI4gIC1aDUhNWNgms+NNgOpz8+ZlCi4dT5aexozeo3WcEBW0ET
-X-MS-Exchange-AntiSpam-MessageData: y4WzgI6rnORMM+mBl1isOtVe4dxq1Hmx1WnK9g+S9+3Yt0oMzG5Zz6sv0BMOSe5j5qODjS/Uni1SF0TIF2g9QA3a4nvwTsANxpXTlvlqsjOlhztr+5trUh2M485sAAFeloO6yObNGU46h3QaM+OepQ==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 231d6687-ca56-431a-727c-08d7e831a6d4
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2020 09:27:05.5402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3JO/kr4mDENotUQ6nwLzCHVrYQj2yFv4fIUHHeD4B3juSgBjC0UXDwK0kxTm+HREssjEdBcQNXQewOvtLY6faw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5876
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 08:45:03PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 4/23/2020 8:16 PM, Calvin Johnson wrote:
-> > Define fwnode_phy_find_device() to iterate an mdiobus and find the
-> > phy device of the provided phy fwnode.
-> > 
-> > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> 
-> If you forget to update the MAINTAINERS file, or do not place this code
-> under drivers/net/phy/* or drivers/of/of_mdio.c then this is going to
-> completely escape the sight of the PHYLIB/PHYLINK maintainers...
+Hello,
 
-Did you mean the following change?
+	v5 with fixes and improvements.
 
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6354,6 +6354,7 @@ F:
-Documentation/devicetree/bindings/net/ethernet-phy.yaml
- F:     Documentation/devicetree/bindings/net/mdio*
- F:     Documentation/devicetree/bindings/net/qca,ar803x.yaml
- F:     Documentation/networking/phy.rst
-+F:     drivers/base/property.c
- F:     drivers/net/phy/
- F:     drivers/of/of_mdio.c
+I have a simple v4l-compliance patch now (will send it separately) which
+tests cache and consistency hints. I ran compliance against the vivid
+test driver, which was additionally extended with cache_hints module param:
+Trimmed v4l-compliance output:
 
-Do I need to send v2 with this? On checking CC and MAINTAINERS, I see
-only hkallweit1@gmail.com was missed.
+- vivid with disabled cache hints support
 
-Please let me know.
+[..]
+Buffer ioctls (Input 3):
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+[..]
 
-Regards
-Calvin
+- vivid with enabled cache hints (cache_hints=1,...)
+
+[..]
+Buffer ioctls (Input 3):
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS: OK
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+[..]
+
+
+v4l-compliance revealed that we cannot reliably report
+V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS, it's a bit special.
+Let's look at fill_buf_caps()
+
+	if (q->allow_cache_hints && q->io_modes & VB2_MMAP)
+		*caps |= V4L2_BUF_CAP_SUPPORTS_CACHE_HINTS;
+
+There are several things here. First, if the queue is not setup yet
+(we didn't call driver's ->queue_setup()) then ->allow_cache_hints
+is expected to be 0. It's only in the ->queue_setup() that the driver
+sets ->allow_cache_hints for those queues that can benefit from cache
+management. What this means, is that if one does
+
+	q.init(node->g_type(), memory);
+	q.reqbufs(node);
+	q.g_capabilities();
+
+the cache hints cap will not be reported. We need to setup the queue
+
+	q.init(node->g_type(), memory);
+	q.reqbufs(node, 1);
+	q.g_capabilities();
+
+Second. Even if the queue is setup, we still can report wrong cache
+hint values. Let's look at the following code
+
+	fill_buf_caps(q, &p->capabilities);
+	if (!vb2_queue_allows_cache_hints(q))
+		p->flags &= ~V4L2_FLAG_MEMORY_NON_CONSISTENT;
+	ret = vb2_core_reqbufs(...);
+	return ret;
+
+The thing here is that vb2_core_reqbufs() and vb2_core_create_bufs()
+can re-initialize the queue and invoke ->queue_setup(), possibly
+changing its memory model, etc. so cache hints cap which we set or
+clear before vb2_core_reqbufs() and vb2_core_create_bufs() can become
+invalid after we call those functions. It's the same with
+``req->flags &= ~V4L2_FLAG_MEMORY_NON_CONSISTENT``, we cannot clear
+it before reqbufs()/create_bufs(). Therefore I added two simple
+functions which fixup cache hint cap and non_consistent flag after
+reqbufs()/create_bufs(). So the code looks like this now:
+
+	fill_buf_caps(q, &p->capabilities);
+	ret = vb2_core_reqbufs(...);
+	fixup_consistency_attr(q, &p->flags);
+	fixup_cache_hints_cap(q, &p->capabilities);
+	return ret;
+
+
+The rest is the pretty much the same.
+
+Previous series:
+v4 link: https://lore.kernel.org/lkml/20200302041213.27662-1-senozhatsky@chromium.org/
+v3 link: https://lore.kernel.org/lkml/20200226111529.180197-1-senozhatsky@chromium.org
+v2 link: https://lore.kernel.org/lkml/20200204025641.218376-1-senozhatsky@chromium.org/
+v1 link: https://lore.kernel.org/lkml/20191217032034.54897-1-senozhatsky@chromium.org/
+
+Series Intro
+========================================================================
+
+	This is a reworked version of the vb2 cache hints
+(V4L2_BUF_FLAG_NO_CACHE_INVALIDATE / V4L2_BUF_FLAG_NO_CACHE_CLEAN)
+support patch series which previsouly was developed by Sakari and
+Laurent [0].
+
+The patch set attempts to preserve the existing behvaiour - cache
+sync is performed in ->prepare() and ->finish() (unless the buffer
+is DMA exported). User space can request “default behavior” override
+with cache management hints, which are handled on a per-buffer basis
+and should be supplied with v4l2_buffer ->flags during buffer
+preparation. There are two possible hints:
+
+- V4L2_BUF_FLAG_NO_CACHE_INVALIDATE
+	No cache sync on ->finish()
+
+- V4L2_BUF_FLAG_NO_CACHE_CLEAN
+	No cache sync on ->prepare()
+
+In order to keep things on the safe side, we also require driver
+to explicitly state which of its queues (if any) support user space
+cache management hints (such queues should have ->allow_cache_hints
+bit set).
+
+The patch set also (to some extent) simplifies allocators' ->prepare()
+and ->finish() callbacks. Namely, we move cache management decision
+making to the upper - core - layer. For example, if, previously, we
+would have something like this
+
+	vb2_buffer_done()
+	  vb2_dc_finish()
+	    if (buf->db_attach)
+	      return;
+
+where each allocators' ->finish() callback would either bail
+out (DMA exported buffer, for instance) or sync, now that "bail
+out or sync" decision is made before we call into the allocator.
+
+Along with cache management hints, user space is also able to
+adjust queue's memory consistency attributes. Memory consistency
+attribute (dma_attrs) is per-queue, yet it plays its role on the
+allocator level, when we allocate buffers’ private memory (planes).
+For the time being, only one consistency attribute is supported:
+DMA_ATTR_NON_CONSISTENT.
+
+[0] https://www.mail-archive.com/linux-media@vger.kernel.org/msg112459.html
+
+Sergey Senozhatsky (13):
+  videobuf2: use explicit unsigned int in vb2_queue
+  videobuf2: add cache management members
+  videobuf2: handle V4L2 buffer cache flags
+  videobuf2: add V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+  videobuf2: add queue memory consistency parameter
+  videobuf2: handle V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+  videobuf2: factor out planes prepare/finish functions
+  videobuf2: do not sync caches when we are allowed not to
+  videobuf2: check ->synced flag in prepare() and finish()
+  videobuf2: add begin/end cpu_access callbacks to dma-contig
+  videobuf2: add begin/end cpu_access callbacks to dma-sg
+  videobuf2: don't test db_attach in dma-contig prepare and finish
+  media: vivid: add cache_hints module param
+
+ Documentation/admin-guide/media/vivid.rst     |   9 ++
+ .../userspace-api/media/v4l/buffer.rst        |  41 +++++-
+ .../media/v4l/vidioc-create-bufs.rst          |   7 +-
+ .../media/v4l/vidioc-reqbufs.rst              |  20 ++-
+ .../media/common/videobuf2/videobuf2-core.c   | 121 +++++++++++++-----
+ .../common/videobuf2/videobuf2-dma-contig.c   |  41 +++++-
+ .../media/common/videobuf2/videobuf2-dma-sg.c |  38 ++++--
+ .../media/common/videobuf2/videobuf2-v4l2.c   |  93 +++++++++++++-
+ drivers/media/dvb-core/dvb_vb2.c              |   2 +-
+ drivers/media/test-drivers/vivid/vivid-core.c |   9 ++
+ drivers/media/test-drivers/vivid/vivid-core.h |   1 +
+ .../media/test-drivers/vivid/vivid-meta-cap.c |   5 +
+ .../media/test-drivers/vivid/vivid-meta-out.c |   5 +
+ .../media/test-drivers/vivid/vivid-sdr-cap.c  |   7 +
+ .../test-drivers/vivid/vivid-touch-cap.c      |   5 +
+ .../media/test-drivers/vivid/vivid-vbi-cap.c  |   5 +
+ .../media/test-drivers/vivid/vivid-vbi-out.c  |   5 +
+ .../media/test-drivers/vivid/vivid-vid-cap.c  |   5 +
+ .../media/test-drivers/vivid/vivid-vid-out.c  |   5 +
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |   9 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   5 +-
+ include/media/videobuf2-core.h                |  47 +++++--
+ include/uapi/linux/videodev2.h                |  13 +-
+ 23 files changed, 426 insertions(+), 72 deletions(-)
+
+-- 
+2.26.2
+
