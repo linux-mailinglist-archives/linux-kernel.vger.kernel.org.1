@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CD91B724D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83981B7254
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbgDXKnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 06:43:49 -0400
-Received: from mga12.intel.com ([192.55.52.136]:57626 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgDXKnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 06:43:45 -0400
-IronPort-SDR: 2LF38Ww+7SFX2fAonbYCBKJpXoAs4TlQ1bh3oYhO6McgsDh3Hhx9rn947RzRx77FOoIJXjjaGZ
- SAHiPsUlZd8Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 03:43:44 -0700
-IronPort-SDR: hYzhB4UPsAzvlETcc5tInjsnGgPykrj0j6Bw2g80I+2+qN3x7+/EoaaGcTPKvvzvI65w56KUKP
- L/Iv0muCKI/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
-   d="scan'208";a="335307522"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 24 Apr 2020 03:43:41 -0700
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-To:     broonie@kernel.org, robh@kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, daniel.schwierzeck@gmail.com,
-        hauke@hauke-m.de, andriy.shevchenko@intel.com,
-        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
-        qi-ming.wu@intel.com, Dilip Kota <eswara.kota@linux.intel.com>
-Subject: [PATCH 4/4] spi: lantiq: Add support to Lightning Mountain SoC
-Date:   Fri, 24 Apr 2020 18:42:33 +0800
-Message-Id: <5431aaf70b59ff668b347bc84782296a5f950439.1587702428.git.eswara.kota@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <cover.1587702428.git.eswara.kota@linux.intel.com>
-References: <cover.1587702428.git.eswara.kota@linux.intel.com>
-In-Reply-To: <cover.1587702428.git.eswara.kota@linux.intel.com>
-References: <cover.1587702428.git.eswara.kota@linux.intel.com>
+        id S1726986AbgDXKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 06:44:51 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43390 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDXKou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Apr 2020 06:44:50 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OAhLnQ188027;
+        Fri, 24 Apr 2020 10:44:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=lgSP9yyrfb8QaHVkQK0ooYCi2f+LrM6wpIAQEd3T7CQ=;
+ b=KS9Cb8tHhEhD76v8cXXgn+iW/pQMkkluNk2x2Qb3L7lzbaY9JWX3VC1xEddwGrogmD9U
+ pf/uOVWPf3/x+Dtv2w4hvRsK7nRxR0ROsFpDNj3YbgcAcEt3rVxOjYg3gNF67fNnXboX
+ zYsY70KOt0yWfBonHNJ62YmK44QTHaEv3i6QMOC8haaI1eMhIm9Sgq3hWzirLKH75X4D
+ 3zslvB8aDRPJWRg0fBpv+GGypve25ILxGBQ6vlU8camFknP78T/gwx53ryJgiOaCGhKf
+ IAYLLCCzqXHuVtHEIhdQSmfB4XOVELpIPcWQh3m75NgIv43EQ/fGmp8aMp4WqmnwzAq2 IQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30ketdknqy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 10:44:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OAgfgd129915;
+        Fri, 24 Apr 2020 10:42:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30gbbptmsm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 10:42:44 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03OAgfuS018654;
+        Fri, 24 Apr 2020 10:42:42 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Apr 2020 03:42:41 -0700
+Date:   Fri, 24 Apr 2020 13:42:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] staging: wfx: check ssidlen and prevent an array overflow
+Message-ID: <20200424104235.GA416402@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9600 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240083
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to SPI controller on Intel Atom based Lightning Mountain
-SoC which reuses Lantiq SPI controller IP.
+We need to cap "ssidlen" to prevent a memcpy() overflow.
 
-Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+Fixes: 40115bbc40e2 ("staging: wfx: implement the rest of mac80211 API")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/spi/Kconfig          |  4 ++--
- drivers/spi/spi-lantiq-ssc.c | 20 ++++++++++++++++++++
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ drivers/staging/wfx/sta.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 4887be7f16de..089b0ba4afe3 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -495,11 +495,11 @@ config SPI_NPCM_PSPI
+diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+index c73dbb3a0de8c..3bff0f1e3d9ba 100644
+--- a/drivers/staging/wfx/sta.c
++++ b/drivers/staging/wfx/sta.c
+@@ -479,7 +479,9 @@ static void wfx_do_join(struct wfx_vif *wvif)
+ 		ssidie = ieee80211_bss_get_ie(bss, WLAN_EID_SSID);
+ 	if (ssidie) {
+ 		ssidlen = ssidie[1];
+-		memcpy(ssid, &ssidie[2], ssidie[1]);
++		if (ssidlen > IEEE80211_MAX_SSID_LEN)
++			ssidlen = IEEE80211_MAX_SSID_LEN;
++		memcpy(ssid, &ssidie[2], ssidlen);
+ 	}
+ 	rcu_read_unlock();
  
- config SPI_LANTIQ_SSC
- 	tristate "Lantiq SSC SPI controller"
--	depends on LANTIQ || COMPILE_TEST
-+	depends on (LANTIQ || X86) || COMPILE_TEST
- 	help
- 	  This driver supports the Lantiq SSC SPI controller in master
- 	  mode. This controller is found on Intel (former Lantiq) SoCs like
--	  the Danube, Falcon, xRX200, xRX300.
-+	  the Danube, Falcon, xRX200, xRX300, Lightning Mountain.
- 
- config SPI_OC_TINY
- 	tristate "OpenCores tiny SPI"
-diff --git a/drivers/spi/spi-lantiq-ssc.c b/drivers/spi/spi-lantiq-ssc.c
-index 74a5d36c5048..f07fa6fbadbe 100644
---- a/drivers/spi/spi-lantiq-ssc.c
-+++ b/drivers/spi/spi-lantiq-ssc.c
-@@ -789,6 +789,18 @@ static int lantiq_ssc_transfer_one(struct spi_master *master,
- 	return transfer_start(spi, spidev, t);
- }
- 
-+static int intel_cfg_irq(struct platform_device *pdev, struct lantiq_ssc_spi *spi)
-+{
-+	int irq;
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	return devm_request_threaded_irq(&pdev->dev, irq, NULL, lantiq_ssc_isr,
-+					IRQF_ONESHOT, "spi", spi);
-+}
-+
- static int lantiq_cfg_irq(struct platform_device *pdev, struct lantiq_ssc_spi *spi)
- {
- 	int irq, err;
-@@ -837,10 +849,18 @@ static const struct lantiq_ssc_hwcfg lantiq_ssc_xrx = {
- 	.irq_ack	= false,
- };
- 
-+static const struct lantiq_ssc_hwcfg intel_ssc_lgm = {
-+	.irnen_r	= LTQ_SPI_IRNEN_R_XRX,
-+	.irnen_t	= LTQ_SPI_IRNEN_T_XRX,
-+	.fifo_size_mask	= GENMASK(7, 0),
-+	.cfg_irq	= intel_cfg_irq,
-+};
-+
- static const struct of_device_id lantiq_ssc_match[] = {
- 	{ .compatible = "lantiq,ase-spi", .data = &lantiq_ssc_xway, },
- 	{ .compatible = "lantiq,falcon-spi", .data = &lantiq_ssc_xrx, },
- 	{ .compatible = "lantiq,xrx100-spi", .data = &lantiq_ssc_xrx, },
-+	{ .compatible = "intel,lgm-spi", .data = &intel_ssc_lgm, },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, lantiq_ssc_match);
 -- 
-2.11.0
+2.26.1
 
