@@ -2,99 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E501B7540
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E211B7575
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgDXMcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 08:32:10 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:37988 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728528AbgDXMcG (ORCPT
+        id S1727124AbgDXMeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgDXMeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:32:06 -0400
-Received: by mail-il1-f198.google.com with SMTP id u11so9410540ilg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:32:04 -0700 (PDT)
+        Fri, 24 Apr 2020 08:34:03 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6097C09B045
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:34:01 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z1so3046798pfn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 05:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Y+Ajhx8oaHnO6WllXnJnLAen9GDrYTuF7t48XuYDJ0=;
+        b=KIDonkH3F+3QhSX+544sJxfiFRSK7IsnLOADaPhxGUrVjnLix5UidyTs5JFWUEdpuZ
+         UKv7fW04t7z0ZzQrSaCv6cmFpksmHyghMoEVwG0+vV5abJi8sJnqQfsH85qNjqWhw/bm
+         AOnEuBLDfQ6AnnIx7SR2oYzTeEiChnlQjrffsfNndUMUoTdPO2bsJrVr9hN1nXE4Xu1b
+         yHp354nl2NdxeDIGv75nD05c68o93D/9dAwPbIXP80b3/au+CAgSIf/cSaVah8D680Ct
+         LEI6n19GSHYNVE8uCUcFz+UiCLQ+nzm28nA+a1qbVLe5Bju4+a14M+b4EbM0w2FEexXC
+         ebpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=yK0wAoGKugNS69+oM9ObjI/OyZcx0KM5Rr5d8hGyhfk=;
-        b=GueV5YiP6oECLaDbD32l1k8GvVnmt6cmH2IyWbxYT+ryl0kvvRKtKbawRtCnEw8rB2
-         OSlWLPEwwoq4QFCcPQR0RLC9SEm/GBYFrB44pzDLh0aSbs887DAOjRcTJ5+ynJ9ar5QO
-         q3ALJePn3DOaCMUTtitfVKxWwZpHuXSLyztNJZ9afVl9+D5CEMsymEb/hJ4qTt7LHT+9
-         ozQZd7o7xVDqA6Ut5fqp8yTTtR7fODJFVkE+jXjYmPTeYMA+t6C1MkLVEWb9lbLMDQKW
-         PYCE7zMKZG2LnXr+IqMWKKFLxG7WJ0wdmwM6kMNiN0Fl1t2FKMYAXxZW40O99hodtZ43
-         HUGg==
-X-Gm-Message-State: AGi0PuaB1y1tXcmW6ebWYoNZEMrSTWPwMIPPaFlLpru/h7RsLVtx1+a+
-        zKtbXDpF4B3jyU4VkCvTMbHamXt1rueaAarlTgxOR950ATLm
-X-Google-Smtp-Source: APiQypIJVlz/0E/OMhixpF63qSBEIklUpfcXcAxKIuCOhhWqte2oP4DM638Zjln5/L8qBnO46RGI81CrYem5xaQKnJ+Bx0O7wKJm
+        h=x-gm-message-state:sender:from:to:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=1Y+Ajhx8oaHnO6WllXnJnLAen9GDrYTuF7t48XuYDJ0=;
+        b=NmZq/eoTJI86V6QPYZGDDkYpiNKwiwCBPBZnnKEy7Gt5Mls31FpPwf1xYgVDsE9fZb
+         AYbjG3LEKN/eRx1fgUEtWWkvRlWkfaCKtyFHBbmDp5gYXyPbhUqZv3cawNSdrym4vvRZ
+         egD9YG0WVs0pViuw5m7xbS8oZZoVMDHDCHkX0ejcRLh1DWBm8f7AKmtzTD6IBAlRrOcP
+         jB4aPxttSC59Dn8vn9VToKry+5vf/714eAKEIu1rBvHgoQ3ilyfc5OSi0CyXy3C+ZMjL
+         gxiW0X2iGxcTCqbii5idlzX68eRmZfYPjjodqLbcYJouvcDsxtVmbMJEW/fwC9sbjVKO
+         G4Jg==
+X-Gm-Message-State: AGi0PuZaBWrNd1X+vKEJabGd8FoVbJWvkVMN30We9x+exdsK0fgk9vIq
+        3xxQAzUZRx5RBD4XKqPfekQ=
+X-Google-Smtp-Source: APiQypLOLJ35+WgLxfk2EwPnCh+DT40M0tiM9S69p9cDC76eZfmXMWAEBP6gBzP6+DY8ko5iWT7GBw==
+X-Received: by 2002:a63:f46:: with SMTP id 6mr9089714pgp.367.1587731640991;
+        Fri, 24 Apr 2020 05:34:00 -0700 (PDT)
+Received: from localhost (220-135-95-34.HINET-IP.hinet.net. [220.135.95.34])
+        by smtp.gmail.com with ESMTPSA id p16sm4614475pjz.2.2020.04.24.05.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 05:34:00 -0700 (PDT)
+From:   AceLan Kao <acelan.kao@canonical.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Aaron Sierra <asierra@xes-inc.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] regmap-i2c: add 16-bit width registers support
+Date:   Fri, 24 Apr 2020 20:33:58 +0800
+Message-Id: <20200424123358.144850-1-acelan.kao@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:247:: with SMTP id w7mr7991586jaq.128.1587731523959;
- Fri, 24 Apr 2020 05:32:03 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 05:32:03 -0700
-In-Reply-To: <Pine.LNX.4.44L0.2004240817010.26813-100000@netrider.rowland.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c083305a4088d09@google.com>
-Subject: Re: WARNING in usbhid_raw_request/usb_submit_urb (3)
-From:   syzbot <syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This allows to access data with 16-bit width of registers
+via i2c SMBus block functions.
 
-syzbot has tested the proposed patch but the reproducer still triggered crash:
-WARNING in usb_queue_reset_device
+The multi-command sequence of the reading function is not safe
+and may read the wrong data from other address if other commands
+are sent in-between the SMBus commands in the read function.
 
-------------[ cut here ]------------
-usbhid 3-1:0.0: Device reset
-WARNING: CPU: 0 PID: 12 at drivers/usb/core/hub.c:6007 usb_queue_reset_device+0x63/0x130 drivers/usb/core/hub.c:6007
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events hid_reset
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xef/0x16e lib/dump_stack.c:118
- panic+0x2aa/0x6e1 kernel/panic.c:221
- __warn.cold+0x2f/0x30 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:174 [inline]
- fixup_bug arch/x86/kernel/traps.c:169 [inline]
- do_error_trap+0x12b/0x1e0 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:usb_queue_reset_device+0x63/0x130 drivers/usb/core/hub.c:6007
-Code: 00 00 4c 8d 6d 30 4d 85 e4 74 72 e8 47 02 e0 fd 4c 89 ef e8 4f d2 19 ff 4c 89 e2 48 c7 c7 20 79 3b 86 48 89 c6 e8 f5 92 b4 fd <0f> 0b 48 8d 95 f0 04 00 00 48 c7 c0 88 2a e6 87 48 b9 00 00 00 00
-RSP: 0018:ffff8881da227ce0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8881cd5ae920 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff812974dd RDI: ffffed103b444f8e
-RBP: ffff8881ce92d000 R08: ffff8881da211880 R09: ffffed103b646248
-R10: ffffed103b646247 R11: ffff8881db23123f R12: ffff8881d4c25d80
-R13: ffff8881ce92d030 R14: ffff8881da0ef400 R15: ffff8881db233e00
- hid_reset+0x219/0x3e0 drivers/hid/usbhid/hid-core.c:138
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Read performance:
+   32768 bytes (33 kB, 32 KiB) copied, 11.4869 s, 2.9 kB/s
+Write performance(with 1-byte page):
+   32768 bytes (33 kB, 32 KiB) copied, 129.591 s, 0.3 kB/s
 
+The implementation is inspired by below commit
+https://patchwork.ozlabs.org/patch/545292/
 
-Tested on:
+v2: add more descriptions about the issue that maybe introduced
+    by this commit
 
-commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=147a58a7e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
-dashboard link: https://syzkaller.appspot.com/bug?extid=db339689b2101f6f6071
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1131acdfe00000
+Signed-off-by: AceLan Kao <acelan.kao@canonical.com>
+---
+ drivers/base/regmap/regmap-i2c.c | 61 ++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+
+diff --git a/drivers/base/regmap/regmap-i2c.c b/drivers/base/regmap/regmap-i2c.c
+index 008f8da69d97..62b95a9212ae 100644
+--- a/drivers/base/regmap/regmap-i2c.c
++++ b/drivers/base/regmap/regmap-i2c.c
+@@ -246,6 +246,63 @@ static const struct regmap_bus regmap_i2c_smbus_i2c_block = {
+ 	.max_raw_write = I2C_SMBUS_BLOCK_MAX,
+ };
+ 
++static int regmap_i2c_smbus_i2c_write_reg16(void *context, const void *data,
++				      size_t count)
++{
++	struct device *dev = context;
++	struct i2c_client *i2c = to_i2c_client(dev);
++
++	if (count < 2)
++		return -EINVAL;
++
++	count--;
++	return i2c_smbus_write_i2c_block_data(i2c, ((u8 *)data)[0], count,
++					      (u8 *)data + 1);
++}
++
++static int regmap_i2c_smbus_i2c_read_reg16(void *context, const void *reg,
++				     size_t reg_size, void *val,
++				     size_t val_size)
++{
++	struct device *dev = context;
++	struct i2c_client *i2c = to_i2c_client(dev);
++	int ret, count, len = val_size;
++
++	if (reg_size != 2)
++		return -EINVAL;
++
++	ret = i2c_smbus_write_byte_data(i2c, ((u16 *)reg)[0] & 0xff,
++					((u16 *)reg)[0] >> 8);
++	if (ret < 0)
++		return ret;
++
++	count = 0;
++	do {
++		/* Current Address Read */
++		ret = i2c_smbus_read_byte(i2c);
++		if (ret < 0)
++			break;
++
++		*((u8 *)val++) = ret;
++		count++;
++		len--;
++	} while (len > 0);
++
++	if (count == val_size)
++		return 0;
++	else if (ret < 0)
++		return ret;
++	else
++		return -EIO;
++}
++
++static const struct regmap_bus regmap_i2c_smbus_i2c_block_reg16 = {
++	.write = regmap_i2c_smbus_i2c_write_reg16,
++	.read = regmap_i2c_smbus_i2c_read_reg16,
++	.max_raw_read = I2C_SMBUS_BLOCK_MAX,
++	.max_raw_write = I2C_SMBUS_BLOCK_MAX,
++};
++
+ static const struct regmap_bus *regmap_get_i2c_bus(struct i2c_client *i2c,
+ 					const struct regmap_config *config)
+ {
+@@ -255,6 +312,10 @@ static const struct regmap_bus *regmap_get_i2c_bus(struct i2c_client *i2c,
+ 		 i2c_check_functionality(i2c->adapter,
+ 					 I2C_FUNC_SMBUS_I2C_BLOCK))
+ 		return &regmap_i2c_smbus_i2c_block;
++	else if (config->val_bits == 8 && config->reg_bits == 16 &&
++		i2c_check_functionality(i2c->adapter,
++					I2C_FUNC_SMBUS_I2C_BLOCK))
++		return &regmap_i2c_smbus_i2c_block_reg16;
+ 	else if (config->val_bits == 16 && config->reg_bits == 8 &&
+ 		 i2c_check_functionality(i2c->adapter,
+ 					 I2C_FUNC_SMBUS_WORD_DATA))
+-- 
+2.25.1
 
