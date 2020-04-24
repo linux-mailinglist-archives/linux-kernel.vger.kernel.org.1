@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1641B6E08
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6117F1B6E0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 08:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgDXGUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 02:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S1726549AbgDXGW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 02:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725554AbgDXGUb (ORCPT
+        by vger.kernel.org with ESMTP id S1726078AbgDXGW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 02:20:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9493C09B045;
-        Thu, 23 Apr 2020 23:20:29 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h12so2446406pjz.1;
-        Thu, 23 Apr 2020 23:20:29 -0700 (PDT)
+        Fri, 24 Apr 2020 02:22:56 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A760DC09B045;
+        Thu, 23 Apr 2020 23:22:56 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s18so1490320pgl.12;
+        Thu, 23 Apr 2020 23:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F1VyN8gTh8qYHhiebbZzcfoaBxGNctjua1hP2wX4UKU=;
-        b=UoUe1c1I9GY0zu5k2eoEc9v09ZNhIRf/uWXRdIMvXi4UIb9wlU0WdRrc5i396pcckW
-         0LswgqLl65pigRteofvZrlUUEFfKClJXX7Mh7qP1w7u69fjxa5dTBHYW6XHwPuJoj1+E
-         QciVP8zJS5tsDsa2vyxLj14EPKzX7aNEWK9FyrJatFEFa1nVQU1igJOZ5oEEFBT7bltD
-         3yJ9mNj39qfexYMDfECAMaRwTn2Ep0THTdvNi4JxMg5VnBxpVbgLibaRqqYmk47ZgEkR
-         bo6gB1PSRy67DLXHvRZ+BofgrJAwgXDqQy7f5Cj2L4afHorXWzA6ilh/vXC38OP+cKw5
-         NAXw==
+        h=from:to:cc:subject:date:message-id;
+        bh=b4QeW0VDRqbvEETBZ13QetaInWr2btitEZOC+VxZd+E=;
+        b=WCZQnwIuKhUUloQh2c8VR7QuGYr40YhAxbYbxnj9MafTQWfH98agLefwnFk+dwwLBF
+         9fqNuPM3rPdotc1tcGf3gXl1rGWH3Cr0/F+hNpopsTyz3JwOFombvtTce/7PW7xHxR0K
+         x9xKvc/QOQlFovYUHuamprejDWRPfZHweqsKzRPs/ADFzI2Go4c33+TXAfC6k56NvR+r
+         m7uJdzzKttWWeLZDSArEHhGRSf4XEIAP2qh9EwNKW5vZ3z4AoM0W7iO9U3ywmchGXpZ/
+         YfwC4hXtwJkAvMS3ax+Z8qgiIvo220y4wtXahG67ff/a2uL7Qpz36YCUVtIKbDdqywWz
+         4gkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F1VyN8gTh8qYHhiebbZzcfoaBxGNctjua1hP2wX4UKU=;
-        b=Hz+flNea+GcZ+DzHBuw38A/OQoBKtuS8EB+4F3SL77U+kWI6NX9Kh764DqJAwFuIuC
-         UKMTa7LmybZLWIRtAtG4r7684pybC3OcEjCHw8R8gbvnpdkZc8bvJdDF8JmPsfYqDDK3
-         3aOLJy1vqedmeiuXPn34E23kf0AL2FtYQziv/3471UPxCTc1TrpQmVrTCOo4raVzs3K6
-         Dc3ihNTajVhqT+MO4bu2Dr+3ROQOelFDYcZ4eXzzDa/trvRgeeJF03h6JquenqVxBJ6c
-         aww9pj+2BT2Bt4welXK+X6M1BQ1mnx0W40d/RXXR3VOw3Kq18FHFHeGGSPWy26237EFf
-         OjHw==
-X-Gm-Message-State: AGi0PuaVodddv1I4aSZUxxffoybUoGCLLCAMI85y1lcWGwhPjft9xtLa
-        JAFeB+6wLaFSrLsx35XQ0KY=
-X-Google-Smtp-Source: APiQypLB1Ph90wwN2E3GmhBZBPOMPf/k9TT0D4KKYTKFjTGvqj/r7cKPzBDQO7IBsLChSe7KdohkOA==
-X-Received: by 2002:a17:90a:eac5:: with SMTP id ev5mr4632377pjb.173.1587709228971;
-        Thu, 23 Apr 2020 23:20:28 -0700 (PDT)
-Received: from gli-arch.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id d17sm3963245pgk.5.2020.04.23.23.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 23:20:28 -0700 (PDT)
-From:   Ben Chuang <benchuanggli@gmail.com>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw,
-        vineethrp@gmail.com, dflogeras2@gmail.com,
-        Ben Chuang <benchuanggli@gmail.com>,
-        Renius Chen <renius.chen@genesyslogic.com.tw>
-Subject: [PATCH] mmc: sdhci-pci-gli: Fix no irq handler from suspend
-Date:   Fri, 24 Apr 2020 14:20:22 +0800
-Message-Id: <20200424062022.4659-1-benchuanggli@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=b4QeW0VDRqbvEETBZ13QetaInWr2btitEZOC+VxZd+E=;
+        b=bgGlorhAzxlJwehLCbNH9pFxM7q6GfdAYX7GpS6rNDs2wTAvheIJDCN4XOp4ehjFSk
+         5rb7vMP3g6IHwcpXo5Wff66kgZT2c0d7NpG7hd3PYHoSX4t/FOF1x9ZPdVWx/x1rS0Aj
+         0LxyeW+aDzU/JL6sa/ke1+ABE2SL7hhZVS8LXVmtK3pUjqrTIfvqVlYbY1LzTp65H3gu
+         Lx22ne9MPa5b0aF/VtD2oudMwEPrREJTuxiW1WqnMFHu+4jYWmS4DLseSdKEJt/0FmWx
+         ddZdgZ68yLSTDpBVmX5AjgZVjtrPIj5d680P8N5v6UZ/CZAjbY07BfFxvb5DK8wqlMMa
+         jCVQ==
+X-Gm-Message-State: AGi0PuaqHTssG9V/tsf/jO57rcLbkEKcF7gySZaSAx8QG1a7RyvJWphw
+        XBCZ71E6UYoQPyIG4NsEOOC9VzKo
+X-Google-Smtp-Source: APiQypLCAowU4naaUsrYWj3L8M20ZXDYtGd/6A8oMccsd8PP/tZvLc1tOnBHQsjPeJzsALADPaxi5w==
+X-Received: by 2002:a62:7c51:: with SMTP id x78mr7651501pfc.227.1587709375986;
+        Thu, 23 Apr 2020 23:22:55 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id l30sm3920674pgu.29.2020.04.23.23.22.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Apr 2020 23:22:54 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH v3 0/5] KVM: VMX: Tscdeadline timer emulation fastpath
+Date:   Fri, 24 Apr 2020 14:22:39 +0800
+Message-Id: <1587709364-19090-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+IPI and Timer cause the main vmexits in cloud environment observation, 
+after single target IPI fastpath, let's optimize tscdeadline timer 
+latency by introducing tscdeadline timer emulation fastpath, it will 
+skip various KVM related checks when possible. i.e. after vmexit due 
+to tscdeadline timer emulation, handle it and vmentry immediately 
+without checking various kvm stuff when possible. 
 
-Kernel shows "[   28.881959] do_IRQ: 5.36 No irq handler for vector"
-when GL975x resumes from suspend. Implement a resume callback to fix this.
+Testing on SKX Server.
 
-Fixes: 31e43f31890c (dhci-pci-gli: Enable MSI interrupt for GL975x)
-Co-developed-by: Renius Chen <renius.chen@genesyslogic.com.tw>
-Signed-off-by: Renius Chen <renius.chen@genesyslogic.com.tw>
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
----
- drivers/mmc/host/sdhci-pci-gli.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+cyclictest in guest(w/o mwait exposed, adaptive advance lapic timer is default -1):
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index ce15a05f23d4..7195dd33ac3d 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -334,6 +334,18 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *host, int reg)
- 	return value;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
-+{
-+	struct sdhci_pci_slot *slot = chip->slots[0];
-+
-+	pci_free_irq_vectors(slot->chip->pdev);
-+	gli_pcie_enable_msi(slot);
-+
-+	return sdhci_pci_resume_host(chip);
-+}
-+#endif
-+
- static const struct sdhci_ops sdhci_gl9755_ops = {
- 	.set_clock		= sdhci_set_clock,
- 	.enable_dma		= sdhci_pci_enable_dma,
-@@ -348,6 +360,9 @@ const struct sdhci_pci_fixes sdhci_gl9755 = {
- 	.quirks2	= SDHCI_QUIRK2_BROKEN_DDR50,
- 	.probe_slot	= gli_probe_slot_gl9755,
- 	.ops            = &sdhci_gl9755_ops,
-+#ifdef CONFIG_PM_SLEEP
-+	.resume         = sdhci_pci_gli_resume,
-+#endif
- };
- 
- static const struct sdhci_ops sdhci_gl9750_ops = {
-@@ -366,4 +381,7 @@ const struct sdhci_pci_fixes sdhci_gl9750 = {
- 	.quirks2	= SDHCI_QUIRK2_BROKEN_DDR50,
- 	.probe_slot	= gli_probe_slot_gl9750,
- 	.ops            = &sdhci_gl9750_ops,
-+#ifdef CONFIG_PM_SLEEP
-+	.resume         = sdhci_pci_gli_resume,
-+#endif
- };
+5540.5ns -> 4602ns       17%
+
+kvm-unit-test/vmexit.flat:
+
+w/o avanced timer:
+tscdeadline_immed: 2885    -> 2431.25  15.7%
+tscdeadline:       5668.75 -> 5188.5    8.4%
+
+w/ adaptive advance timer default -1:
+tscdeadline_immed: 2965.25 -> 2520     15.0%
+tscdeadline:       4663.75 -> 4537      2.7%
+
+Tested-by: Haiwei Li <lihaiwei@tencent.com>
+Cc: Haiwei Li <lihaiwei@tencent.com>
+
+v2 -> v3:
+ * skip interrupt notify and use vmx_sync_pir_to_irr before each cont_run
+ * add from_timer_fn argument to apic_timer_expired
+ * remove all kinds of duplicate codes
+
+v1 -> v2:
+ * move more stuff from vmx.c to lapic.c
+ * remove redundant checking
+ * check more conditions to bail out CONT_RUN
+ * not break AMD
+ * not handle LVTT sepecial
+ * cleanup codes
+
+Wanpeng Li (5):
+  KVM: VMX: Introduce generic fastpath handler
+  KVM: X86: Introduce need_cancel_enter_guest helper
+  KVM: VMX: Optimize posted-interrupt delivery for timer fastpath
+  KVM: X86: TSCDEADLINE MSR emulation fastpath
+  KVM: VMX: Handle preemption timer fastpath
+
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/lapic.c            | 18 +++++++++-----
+ arch/x86/kvm/vmx/vmx.c          | 52 ++++++++++++++++++++++++++++++++++-------
+ arch/x86/kvm/x86.c              | 40 ++++++++++++++++++++++++-------
+ arch/x86/kvm/x86.h              |  1 +
+ virt/kvm/kvm_main.c             |  1 +
+ 6 files changed, 91 insertions(+), 22 deletions(-)
+
 -- 
-2.26.2
+2.7.4
 
