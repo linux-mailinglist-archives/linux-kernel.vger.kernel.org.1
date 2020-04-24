@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7CD1B809C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605E71B8094
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 22:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbgDXUZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 16:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
+        id S1729604AbgDXUZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 16:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729495AbgDXUZR (ORCPT
+        with ESMTP id S1729528AbgDXUZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:25:17 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435CAC09B048
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:25:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h12so2949294pjz.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:25:17 -0700 (PDT)
+        Fri, 24 Apr 2020 16:25:19 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7880CC09B048
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:25:18 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id h12so2949323pjz.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KQbiUnUIr9QFPfrMWtrls9xYCut1DTLsNUPTpZeLJzM=;
-        b=Gp0+Zj2AsVqjmrkROdpibc9WVlvp7tcdcOdZdQHBsR3UgKeec463gD/gEO3BwUfxId
-         4qs80FR5WSpzNR1SqjnslyncQsgieuO8FYOSgr5hwqOfCi41IVUjNNC5q5Zzr6j2I3yi
-         KJjHDvIlGO48gwfAIbEwO3n5i2jge5R4cWWMaHUprhq/I4laBl8nmafuy317N+fyZmX8
-         gy/EOSGWad5Rt3pnr1KQ/DTkoocO+75wrBOQXlXeVt7zb1LIqqCqbavhbNh3j+XucUBk
-         YEIf7REW3jwi9Nf2//7v64N+cSG95iVoOExMctUIfyLuDu0h5IOb/KzEZb2XNtq0cgZZ
-         9ypg==
+        bh=exYZpvChsSlo7lAJbJWuh/pu5cSD6aiCv7Lp3iIYni8=;
+        b=iN9Rmvvnqh92eC4TVhJvXp9LrfV9PydbkGYoRVJklbytnIqLGmkGSkG1lI2zxCRgRF
+         5M53EDEEzllMIdgoLfs1/dVl8b3pTJfORPir4EQsdGV5FGTSVHYNP6wQ3KcdmPUgPpDH
+         YJvNHFBk/YBKfcyFuLNIun9KsZvifIbnoX14xisIiPXfuVfLDlPu6+PjVy9eWJ0Pun4A
+         1SmSDGzlNT2UlssN6jOGylFsnYwa8kVifpktDTIW+H/dVnq36Vp+0AuTokOk9ojoWvGi
+         cLVSm+hhmnpYe3VgiFbrN7OgP+GhT8Vp3GSAE0Q0lX+SM/8VROPHvcG/UzE1Le1Sr0m6
+         TPjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KQbiUnUIr9QFPfrMWtrls9xYCut1DTLsNUPTpZeLJzM=;
-        b=X+NPtyBUO28oQwPgwEVbQvpFkHfJ5q7eSwWgXk5JVTwBz3WJrgisNgPIvJGQkdWglw
-         dWQreV/cLNwOKs+TV9N+Q54BOD9f1mwg4f/3d2lKALl4j1eSnJhEwNYLKuQkJ48Rzv3x
-         /8IJbyj284LkRzrTC4fYaomF7A0BvF4bUkSH4SjJu8U7LBryo5JQ5wf1YsdRKSYeLeMH
-         xA+ZCEzhELy+HThJ1qPk3eVdS7z02hCR6XGasA6oVv9o/0jNNnM/lOHBzzv2Ct2czf0Y
-         2b5QFZEb835kY28y1LrfuttwZwYGZfl9B+G14bLt/Zy90iItA0rKCRoC8K9nq1EOz5Sm
-         ot3g==
-X-Gm-Message-State: AGi0PuaILTvhpLt9mhFrvgBpjgBBaNtIklFXOXcSGT/MeNSVKYpTY6iA
-        ZMhiIQMdA7XKpPB8bqaGt9Ppsg==
-X-Google-Smtp-Source: APiQypIv6YWdkGqDXxYu9zKGxgTIDNuyx5qK9TgKQ6Q3MhTchnZhEiINgsaF5cc/+xunWfpXSGwU1A==
-X-Received: by 2002:a17:90a:1a46:: with SMTP id 6mr8190985pjl.111.1587759916801;
-        Fri, 24 Apr 2020 13:25:16 -0700 (PDT)
+        bh=exYZpvChsSlo7lAJbJWuh/pu5cSD6aiCv7Lp3iIYni8=;
+        b=DwbYdacXn3ADKMWMaz76V4Qc6U3NjwbrkQKY2szGqeYYDFXYzdFLoFFo3Q7U7oIXve
+         fBURAAgZJvkH7DoUEC+P1Sl3wo7pwbj8nBRtWKkercAWQ4IJKbnURqhizdNGqIGdZ6yG
+         WDF9Jv7iLYwLANdfjME1CHH2t3JX4LRMN4yqS37bzLFjixNtn28o95vK+poiLPJjbfvn
+         lgotgtnfoTtHFmVv/4w/OOT4qEM5vMlh6cSHRQ9pZBqSLCwrIlnyxDnKdm5xki39k477
+         Fz2lhSCDrYrw0m2uhRYpUMi4kbCM/Za6pL8s5iq3yhQRgRqEnA3+a8rSBY0Au2+dMy/u
+         7SaQ==
+X-Gm-Message-State: AGi0PuZPkkbbQSOXDeJrNG+NxUhDvadB6SBAlssKGlfJ4Po8w+HOuoAO
+        JOl3/WfOXFX1HTDrAhi8CrYbvg==
+X-Google-Smtp-Source: APiQypL5AzMQXq3gOoXlH0PVqgL7PRKhGgSOEjwcpARkI3Rx98coNs2TcHAu6I+2Ek+Xn1y8hG4T1g==
+X-Received: by 2002:a17:90a:1743:: with SMTP id 3mr8488308pjm.106.1587759918032;
+        Fri, 24 Apr 2020 13:25:18 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id c1sm6553245pfc.94.2020.04.24.13.25.15
+        by smtp.gmail.com with ESMTPSA id c1sm6553245pfc.94.2020.04.24.13.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 13:25:16 -0700 (PDT)
+        Fri, 24 Apr 2020 13:25:17 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     bjorn.andersson@linaro.org, ohad@wizery.com,
         mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
@@ -55,9 +55,9 @@ Cc:     loic.pallardy@st.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/12] remoteproc: stm32: Introduce new start ops for synchronisation
-Date:   Fri, 24 Apr 2020 14:25:01 -0600
-Message-Id: <20200424202505.29562-9-mathieu.poirier@linaro.org>
+Subject: [PATCH v2 09/12] remoteproc: stm32: Update M4 state in stm32_rproc_stop()
+Date:   Fri, 24 Apr 2020 14:25:02 -0600
+Message-Id: <20200424202505.29562-10-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200424202505.29562-1-mathieu.poirier@linaro.org>
 References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
@@ -68,7 +68,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce new start functions to be used when synchonising with an MCU.
+Update the M4 co-processor state in function stm32_rproc_stop() so
+that it can be used in synchronisation scenarios.
 
 Mainly based on the work published by Arnaud Pouliquen [1].
 
@@ -76,38 +77,40 @@ Mainly based on the work published by Arnaud Pouliquen [1].
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/remoteproc/stm32_rproc.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 8ba69e903851..404f17a97095 100644
+index 404f17a97095..86d23c35d805 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -449,6 +449,13 @@ static int stm32_rproc_start(struct rproc *rproc)
- 	return stm32_rproc_set_hold_boot(rproc, true);
+@@ -493,6 +493,18 @@ static int stm32_rproc_stop(struct rproc *rproc)
+ 		}
+ 	}
+ 
++	/* update coprocessor state to OFF if available */
++	if (ddata->m4_state.map) {
++		err = regmap_update_bits(ddata->m4_state.map,
++					 ddata->m4_state.reg,
++					 ddata->m4_state.mask,
++					 M4_STATE_OFF);
++		if (err) {
++			dev_err(&rproc->dev, "failed to set copro state\n");
++			return err;
++		}
++	}
++
+ 	return 0;
  }
  
-+static int stm32_rproc_sync_start(struct rproc *rproc)
-+{
-+	stm32_rproc_add_coredump_trace(rproc);
-+
-+	return stm32_rproc_set_hold_boot(rproc, true);
-+}
-+
- static int stm32_rproc_stop(struct rproc *rproc)
- {
- 	struct stm32_rproc *ddata = rproc->priv;
-@@ -522,6 +529,10 @@ static struct rproc_ops st_rproc_ops = {
- 	.get_boot_addr	= rproc_elf_get_boot_addr,
+@@ -531,6 +543,7 @@ static struct rproc_ops st_rproc_ops = {
+ 
+ static __maybe_unused struct rproc_ops st_rproc_sync_ops = {
+ 	.start		= stm32_rproc_sync_start,
++	.stop		= stm32_rproc_stop,
  };
  
-+static __maybe_unused struct rproc_ops st_rproc_sync_ops = {
-+	.start		= stm32_rproc_sync_start,
-+};
-+
  static const struct of_device_id stm32_rproc_match[] = {
- 	{ .compatible = "st,stm32mp1-m4" },
- 	{},
 -- 
 2.20.1
 
