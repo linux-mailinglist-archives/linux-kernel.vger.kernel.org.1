@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E917F1B7C5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54171B7C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 19:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgDXRF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 13:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        id S1728398AbgDXRHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 13:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgDXRFZ (ORCPT
+        with ESMTP id S1726793AbgDXRHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:05:25 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E47AC09B046
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:05:25 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id z6so3945261plk.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 10:05:25 -0700 (PDT)
+        Fri, 24 Apr 2020 13:07:33 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B63C09B046;
+        Fri, 24 Apr 2020 10:07:32 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x25so11343356wmc.0;
+        Fri, 24 Apr 2020 10:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=3U+a3uev8d2352EB+p1AL9exeCeOG/zkKwiEaOROeNo=;
-        b=Y4iC1BYdMjXV2Tiut0aUt4eedeczo5MFseq5FrqlExx10LxxrKAssVqFZyX5yDxlZ/
-         zrvvtO3R9PX4XPcomeNHXOeOkt3Hq2Pd3wQQSiW6bUM9qxKycq+op4YZnecizAn250+e
-         pFvpHiq5VRyuf/k50JZHOPFQrwkx0bOdf3Zef1WSoa7bqkkhpERrfnaVHEKolbCn4vMN
-         f+8lJyLh1lXEBbv3+aLUleHLu3cCH4Ud31JIDX1W2fajD8oemGpDd9uF670YKqimdjnT
-         ngPr4Xtxb4hD4ktk1aFQhopF3zcf1XUccjwHdkeO7JtAjbSEazow170+lsaENyfghqOx
-         3M7Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pNg7ONatcx0tvdnMJvHWn8buU8bELK0ZoEzKLC3RkrU=;
+        b=Z4mN1LorXe2GM36jqQm7NtzdCnaRpU0Csh+HAxCuycpzXjsiwupEy003zAW9zlNzoa
+         BSUR6yFaScZlsGXZiHvScU7mokPg6cjonkYIKU+ZIiEjk2p5/jhsHI0V2wgPYFhSnO9S
+         ORcIVXU5RUAc9mhFXNFqhyoyaayDRvufCJhY2mX1mEduR66TBnM4FPwh+GladDpJGbMo
+         7qcrn9+35jo2iACZBEnpZhDY8RJIzJRrArtYlmXjZesr0y/rs9vc9Q7rBGdq02+OYvPm
+         P3R/Ki/haSJ/igYDSTxMtaj/PPz4qsBuWi2+t1qJoibNTQfrz5LhmTHeVVGUPqMACYb6
+         s0JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=3U+a3uev8d2352EB+p1AL9exeCeOG/zkKwiEaOROeNo=;
-        b=CHTumLfu+vRFioeDl26NNvcJuTVrgjn8d122CFaCzwx5qoecz5drCs4+b42nNkKHL7
-         99yr48cpEHg6z25cySkJPRd4yPTF/4VN3BenesJO22c5VdWLf75ul7dHAXmXsPXOjUo6
-         RMFcRxNUIM17d5jHUnvamuKZpNIgf7sDLY9NuP6E0O9T+5/4guYeT0VRGT+o0tmHbwuU
-         4PwXs6jViyl9DMriz7UjxkpikNGRqGDyIX54WaJjR2OurAhyZL0WatKIaznIMVpmK5RU
-         9jjtu7Uhg/hIslGlGA2K3ikIsJRy++XydljnG/b5aKUzBhU+3wD1cqWwzgzX4E3geOi7
-         gqrA==
-X-Gm-Message-State: AGi0PuY+L63bedteTzHkhyV8uGxL+mkFjJaMOrPFIVxD22RvtHfLyO30
-        m7gNbsadJsdUDmz0v8yyPHqGl0r5onK5Wg==
-X-Google-Smtp-Source: APiQypLJGHki/O4NyxEo4REtwndVeMiBhj/1YwNXViHoZyTPTQRjtcXGvs2tTAJHs7VX+1gCGzmglg==
-X-Received: by 2002:a17:90a:f418:: with SMTP id ch24mr7230962pjb.68.1587747924260;
-        Fri, 24 Apr 2020 10:05:24 -0700 (PDT)
-Received: from koo-Z370-HD3 ([143.248.230.14])
-        by smtp.gmail.com with ESMTPSA id q64sm6176821pfc.112.2020.04.24.10.05.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Apr 2020 10:05:16 -0700 (PDT)
-Date:   Sat, 25 Apr 2020 02:05:12 +0900
-From:   kyoungho koo <rnrudgh@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Staging: rtl8723bs: Fix comment typo "the the".
-Message-ID: <20200424170508.GA10761@koo-Z370-HD3>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pNg7ONatcx0tvdnMJvHWn8buU8bELK0ZoEzKLC3RkrU=;
+        b=KbwSrbXDuVxqN76cbv6aIKuHr/lk+tL6/BVufgrNV8Jz6XktMdLrd/EeK8TW+eLo67
+         O8UwPx9vtuz1MhKHtucQjXkioyRA95/SUwx3PK3Xsbwq629qSmM7p21GWu0CDJwcGqgP
+         PWq/YvBE1LRmaIfyMNCsqK4lrcOy/3QW6+wih11wGrg6M+IDgOaeKcKWx0jHnj3vYoxs
+         jaEmCnwr/1NPn1jUZpAJHZ15/cyOFfXCZgsUcL0eXyDbQxMUKY7NhHobOXypdW276c3W
+         jsjTPS7bKk+EE8SZsHADSaHyIXPsaJ4BxGM2FFKxqikuZwnk5D+nzagPggkK7k6HyxdA
+         XWow==
+X-Gm-Message-State: AGi0PuayJZoxCm6SlbpjG6sFY64cBtRbifDSZcBeGG2JtF37tCd4J9O4
+        7vC4CLB0/j9EvaE/C4AOMYNBzSzQ
+X-Google-Smtp-Source: APiQypLZO4MExFdKMNKjUrrFilmlGS8Q/GGA4PlaU3k8a0ak1a7T/J3DeClcdV59/IjrALJ7MYYFkA==
+X-Received: by 2002:a7b:c390:: with SMTP id s16mr10817388wmj.14.1587748049944;
+        Fri, 24 Apr 2020 10:07:29 -0700 (PDT)
+Received: from [10.230.188.26] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g69sm3827549wmg.17.2020.04.24.10.07.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 10:07:29 -0700 (PDT)
+Subject: Re: [PATCH v2 01/91] i2c: brcmstb: Allow to compile it on BCM2835
+To:     Wolfram Sang <wsa@the-dreams.de>, Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>, linux-i2c@vger.kernel.org
+References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
+ <c8c666eb5c82dcb73621930b3fedf5814792bf1a.1587742492.git-series.maxime@cerno.tech>
+ <20200424161353.GA4487@kunai>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <bedfe073-6ff4-69ee-fe39-d5802cc3ecfd@gmail.com>
+Date:   Fri, 24 Apr 2020 10:07:25 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200424161353.GA4487@kunai>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have found double typed comments "the the". So i modified it to
-one "the"
 
-Signed-off-by: kyoungho koo <rnrudgh@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index efb5135ad743..bd18d1803e27 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -822,7 +822,7 @@ u8 rtw_joinbss_cmd(struct adapter  *padapter, struct wlan_network *pnetwork)
- 
- 	psecnetwork->IELength = 0;
- 	/*  Added by Albert 2009/02/18 */
--	/*  If the the driver wants to use the bssid to create the connection. */
-+	/*  If the driver wants to use the bssid to create the connection. */
- 	/*  If not,  we have to copy the connecting AP's MAC address to it so that */
- 	/*  the driver just has the bssid information for PMKIDList searching. */
- 
+On 4/24/2020 9:13 AM, Wolfram Sang wrote:
+> 
+>>  config I2C_BRCMSTB
+>>  	tristate "BRCM Settop/DSL I2C controller"
+>> -	depends on ARCH_BRCMSTB || BMIPS_GENERIC || ARCH_BCM_63XX || \
+>> -		   COMPILE_TEST
+>> +	depends on ARCH_BCM2835 || ARCH_BRCMSTB || BMIPS_GENERIC || \
+>> +		   ARCH_BCM_63XX || COMPILE_TEST
+> 
+> Isn't there something like ARCH_BROADCOM which we could use here instead
+> of adding each and every SoC?
+
+If you are worried about this list growing bigger, I do not think this
+is going to happen beyond this changeset (famous last words).
+
+There is no ARCH_BROADCOM because there is typically very little
+commonality between SoC architectures within various Broadcom business
+units (left hand is not supposed to talk to the right hand) with the
+exception of a few peripherals that have been historically shared (NAND,
+SPI, XHCI, Ethernet PHYs/switches, etc. etc. This I2C controller
+historically came from the STB business unit, which given the market
+space has also engineered its own HDMI core and naturally incorporated
+the I2C core it already had into the HDMI core. Up until 2711, that HDMI
+core was not used by the 283x family at all.
 -- 
-2.17.1
-
+Florian
