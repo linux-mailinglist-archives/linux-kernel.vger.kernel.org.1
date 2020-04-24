@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164721B76D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 15:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A96B1B760A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 14:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgDXNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 09:20:39 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:21162 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727930AbgDXNUj (ORCPT
+        id S1727031AbgDXM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 08:56:31 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:57655 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgDXM4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 09:20:39 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200424132036epoutp04b30167e7a799e5a58afed6b06dc3f6e3~IxA67qtUg1454614546epoutp04l
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 13:20:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200424132036epoutp04b30167e7a799e5a58afed6b06dc3f6e3~IxA67qtUg1454614546epoutp04l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587734436;
-        bh=fQKH9QlmIlAGvKr7V5WKuFLyssTMbCuG6BNkIal6tCY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=a/nKnXk/LC+PLo856Ry0h/Rfw2NKqOCyythtOOttUIzfVwMQNiSbozq7Rl5CmY9jq
-         yNLJ72BgVrUVJD0oLIY5tXzEhs/VfoJAOO1yES9DKvOxm14BQmU98MjDie/lQAhMEg
-         MTY8hKajASBnuWfzreuCFfdI2gvCnSc+hC93EusU=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200424132035epcas5p38fd6a4b25a584cf6fb716c15e85daf00~IxA6FMSGo3204432044epcas5p33;
-        Fri, 24 Apr 2020 13:20:35 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        56.41.04782.3A7E2AE5; Fri, 24 Apr 2020 22:20:35 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200424131638epcas5p300fec614f4a2d6aedc3de337cb3fd259~Iw9dL1DW50364803648epcas5p3k;
-        Fri, 24 Apr 2020 13:16:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200424131638epsmtrp1ecba1de0bcc2ca5fab2dca0bd48e830c~Iw9dLDP5y2002120021epsmtrp1o;
-        Fri, 24 Apr 2020 13:16:38 +0000 (GMT)
-X-AuditID: b6c32a49-89bff700000012ae-6a-5ea2e7a33bb7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        87.BA.25866.5B6E2AE5; Fri, 24 Apr 2020 22:16:38 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.108.92.210]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200424131636epsmtip17a9af7606f6909c676808a3b6e6a0dc9~Iw9cHQfrq3162631626epsmtip1M;
-        Fri, 24 Apr 2020 13:16:36 +0000 (GMT)
-From:   Vishal Goel <vishal.goel@samsung.com>
-To:     casey@schaufler-ca.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vishal Goel <vishal.goel@samsung.com>,
-        Amit Sahrawat <a.sahrawat@samsung.com>
-Subject: [PATCH 1/1] Smack:- Remove mutex lock "smk_lock" from inode_smack
- structure.
-Date:   Fri, 24 Apr 2020 18:25:19 +0530
-Message-Id: <1587732920-49120-1-git-send-email-vishal.goel@samsung.com>
-X-Mailer: git-send-email 1.9.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCmhu7i54viDC6sELC4uDvV4t62X2wW
-        l3fNYbP40POIzWLd7dOMDqwefVtWMXoc3b+IzePzJrkA5igum5TUnMyy1CJ9uwSujO8XXzAW
-        vBGrOHCkl7mB8bBQFyMnh4SAicSp65dYuxi5OIQEdjNKLDq5iA0kISTwiVHi5PtwiMRnRokX
-        z34ywXQ03//FDJHYxShxf1U/C4TzhVHi86/p7CBVbALaEr3z7oJ1iAgkSnx4sgMsziwQLLHx
-        wxUWEFtYIFxiyuOpQJM4OFgEVCWmH9QFCfMKuEu8utTIDrFMTuLksclg50kI9LNLbHrcxw5S
-        LyHgIrGjLRGiRlji1fEtUPVSEi/729gh6tsZJY7O2gjlTGGU+LfvBlSVvcTr5gYmkEHMApoS
-        63fpQ4RlJaaeWscEcSefRO/vJ1Af80rsmAdjq0pMndQNNUZa4vCNMywQtofE7zUbWCBBFyvx
-        908b8wRG2VkIGxYwMq5ilEwtKM5NTy02LTDMSy3XK07MLS7NS9dLzs/dxAiOZy3PHYyzzvkc
-        YhTgYFTi4WU4tChOiDWxrLgy9xCjBAezkghvTAlQiDclsbIqtSg/vqg0J7X4EKM0B4uSOO8k
-        1qsxQgLpiSWp2ampBalFMFkmDk6pBkYX2+b9bP9Xshqof9d+e+CIv4/tw7zVXGd/97yRT7x5
-        g7tEUFGWPfhA4cUrDTorn747WrquZUlPksaTqVaJBnveLijOYdpYx+b7dGZYvBl7e8LitjVz
-        bsx8+qt6nZeOnky1akVlcaVQ/P5j8/6oeHXn/Ihny0p5pGFdGS5i/W5va8XmxvCPZ5RYijMS
-        DbWYi4oTAQ0B2bHjAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJJMWRmVeSWpSXmKPExsWy7bCSnO62Z4viDFasY7S4uDvV4t62X2wW
-        l3fNYbP40POIzWLd7dOMDqwefVtWMXoc3b+IzePzJrkA5igum5TUnMyy1CJ9uwSujO8XXzAW
-        vBGrOHCkl7mB8bBQFyMnh4SAiUTz/V/MXYxcHEICOxgl5mxdyQyRkJZY0vmGHcIWllj57zk7
-        RNEnRomW+ZvAitgEtCV6591lArFFBJIldjdPZwSxmQWCJU737GQBsYUFQiUuXnkLVMPBwSKg
-        KjH9oC5ImFfAXeLVpUao+XISJ49NZp3AyLOAkWEVo2RqQXFuem6xYYFRXmq5XnFibnFpXrpe
-        cn7uJkZwaGhp7WDcs+qD3iFGJg7GQ4wSHMxKIrwxJYvihHhTEiurUovy44tKc1KLDzFKc7Ao
-        ifN+nbUwTkggPbEkNTs1tSC1CCbLxMEp1cC0U4JB6XjYQ7ODtex5G4/2nnk8pTHxVJTIzWu3
-        tlQUPRA2WPHC6OCjA7z7FVyPzd/UsGeb3+6uTuGMz10qFQde7Zi1O6abY/2czjfmUUmVkrc+
-        bc1Wcc19+f+cvurl285bch5v2LT+XNeUlT/XGantfv/QdPK2nYssxNgNkpasvbpwl8aRgLB+
-        009zDJdGS2qs6tW+J/7WyyP3ebmm2sqtTBvdLD+XfJFZtW3vBTPNtzpalw9tlZUorpf5zede
-        c2eH/zt1pv2sjDXLX7N1ec+apbak6vJsTYdFn17MC2S5tczCgqPx1ezn+9LNp+kmXuNKUCxV
-        811U/M2vPmdm8OrJdlvPS7mLBq7Y/nXr/EU7PJRYijMSDbWYi4oTAaohdix8AgAA
-X-CMS-MailID: 20200424131638epcas5p300fec614f4a2d6aedc3de337cb3fd259
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200424131638epcas5p300fec614f4a2d6aedc3de337cb3fd259
-References: <CGME20200424131638epcas5p300fec614f4a2d6aedc3de337cb3fd259@epcas5p3.samsung.com>
+        Fri, 24 Apr 2020 08:56:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587732990; x=1619268990;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Qxs340PmWks0jEFvLJMGJ0nyjbkPlu3QiKctkXepPFw=;
+  b=OJa2sIlGxmtkThzIncp3kMDmMsAKk3H4TxNFGZgNLbAXBAW612RRwUj1
+   IB1z+HU3fpFAjtdgDFkxCNbC6JbWJlo73UAvNytj0PwFISHWcdD8DBAWO
+   WmkYxfKfRe0AGynMutmptFDB8A0SGM1j/39sNaBP8l7/QdPmDJfmCf7+g
+   o=;
+IronPort-SDR: vzkncK8W/65CGyV5dJhGf2u8FM2PJ2JCuZnuKDt5if66jXR9mAdFkmQnDdXpl1vtLWI5H+gKRv
+ IN15VSCPke0w==
+X-IronPort-AV: E=Sophos;i="5.73,311,1583193600"; 
+   d="scan'208";a="40677794"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 24 Apr 2020 12:56:29 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id EAA2FA23AA;
+        Fri, 24 Apr 2020 12:56:27 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 24 Apr 2020 12:56:27 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.162.146) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 24 Apr 2020 12:56:23 +0000
+Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Paraschiv, Andra-Irina" <andraprs@amazon.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
+ <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
+ <2a4a15c5-7adb-c574-d558-7540b95e2139@redhat.com>
+ <1ee5958d-e13e-5175-faf7-a1074bd9846d@amazon.com>
+ <f560aed3-a241-acbd-6d3b-d0c831234235@redhat.com>
+ <80489572-72a1-dbe7-5306-60799711dae0@amazon.com>
+ <0467ce02-92f3-8456-2727-c4905c98c307@redhat.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <5f8de7da-9d5c-0115-04b5-9f08be0b34b0@amazon.com>
+Date:   Fri, 24 Apr 2020 14:56:21 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <0467ce02-92f3-8456-2727-c4905c98c307@redhat.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.146]
+X-ClientProxiedBy: EX13D40UWA003.ant.amazon.com (10.43.160.29) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"smk_lock" mutex is used during inode instantiation in
-smack_d_instantiate()function. It has been used to avoid
-simultaneous access on same inode security structure.
-Since smack related initialization is done only once i.e during
-inode creation. If the inode has already been instantiated then
-smack_d_instantiate() function just returns without doing
-anything.
-
-So it means mutex lock is required only during inode creation.
-But since 2 processes can't create same inodes or files
-simultaneously. Also linking or some other file operation can't
-be done simultaneously when the file is getting created since
-file lookup will fail before dentry inode linkup which is done
-after smack initialization.
-So no mutex lock is required in inode_smack structure.
-
-It will save memory as well as improve some performance.
-If 40000 inodes are created in system, it will save 1.5 MB on
-32-bit systems & 2.8 MB on 64-bit systems.
-
-Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
-Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
----
- security/smack/smack.h     | 1 -
- security/smack/smack_lsm.c | 8 ++------
- 2 files changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/security/smack/smack.h b/security/smack/smack.h
-index 62529f3..fd09dc8 100644
---- a/security/smack/smack.h
-+++ b/security/smack/smack.h
-@@ -109,7 +109,6 @@ struct inode_smack {
- 	struct smack_known	*smk_inode;	/* label of the fso */
- 	struct smack_known	*smk_task;	/* label of the task */
- 	struct smack_known	*smk_mmap;	/* label of the mmap domain */
--	struct mutex		smk_lock;	/* initialization lock */
- 	int			smk_flags;	/* smack inode flags */
- 	struct rcu_head         smk_rcu;	/* for freeing inode_smack */
- };
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 2862fc3..10c2bdd 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -317,7 +317,6 @@ static void init_inode_smack(struct inode *inode, struct smack_known *skp)
- 
- 	isp->smk_inode = skp;
- 	isp->smk_flags = 0;
--	mutex_init(&isp->smk_lock);
- }
- 
- /**
-@@ -3274,13 +3273,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 
- 	isp = smack_inode(inode);
- 
--	mutex_lock(&isp->smk_lock);
- 	/*
- 	 * If the inode is already instantiated
- 	 * take the quick way out
- 	 */
- 	if (isp->smk_flags & SMK_INODE_INSTANT)
--		goto unlockandout;
-+		return;
- 
- 	sbp = inode->i_sb;
- 	sbsp = sbp->s_security;
-@@ -3331,7 +3329,7 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 			break;
- 		}
- 		isp->smk_flags |= SMK_INODE_INSTANT;
--		goto unlockandout;
-+		return;
- 	}
- 
- 	/*
-@@ -3466,8 +3464,6 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 
- 	isp->smk_flags |= (SMK_INODE_INSTANT | transflag);
- 
--unlockandout:
--	mutex_unlock(&isp->smk_lock);
- 	return;
- }
- 
--- 
-1.9.1
+Ck9uIDIzLjA0LjIwIDIzOjE4LCBQYW9sbyBCb256aW5pIHdyb3RlOgo+IAo+IAo+IE9uIDIzLzA0
+LzIwIDIyOjU2LCBBbGV4YW5kZXIgR3JhZiB3cm90ZToKPj4+Cj4+PiBDUEwzIGlzIGhvdyB0aGUg
+dXNlciBhcHBsaWNhdGlvbiBydW4sIGJ1dCBkb2VzIHRoZSBlbmNsYXZlJ3MgTGludXggYm9vdAo+
+Pj4gcHJvY2VzcyBzdGFydCBpbiByZWFsIG1vZGUgYXQgdGhlIHJlc2V0IHZlY3RvciAoMHhmZmZm
+ZmZmMCksIGluIDE2LWJpdAo+Pj4gcHJvdGVjdGVkIG1vZGUgYXQgdGhlIExpbnV4IGJ6SW1hZ2Ug
+ZW50cnkgcG9pbnQsIG9yIGF0IHRoZSBFTEYgZW50cnkKPj4+IHBvaW50Pwo+Pgo+PiBUaGVyZSBp
+cyBubyAiZW50cnkgcG9pbnQiIHBlciBzZS4gWW91IHByZXBvcHVsYXRlIGF0IHRhcmdldCBieklt
+YWdlIGludG8KPj4gdGhlIGVuY2xhdmUgbWVtb3J5IG9uIGJvb3Qgd2hpY2ggdGhlbiBmb2xsb3dz
+IHRoZSBzdGFuZGFyZCBib290Cj4+IHByb3RvY29sLiBFdmVyeXRoaW5nCj4gCj4gVGhlcmUncyBz
+dGlsbCBhICJ3aGVyZSIgbWlzc2luZyBpbiB0aGF0IHNlbnRlbmNlLiA6KSAgSSBhc3N1bWUgeW91
+IHB1dAo+IGl0IGF0IDB4MTAwMDAgKGFuZCBzbyB0aGUgZW50cnkgcG9pbnQgYXQgMHgxMDIwMCk/
+ICBUaGF0IHNob3VsZCBiZQo+IGRvY3VtZW50ZWQgYmVjYXVzZSB0aGF0IGlzIGFic29sdXRlbHkg
+bm90IHdoYXQgdGhlIEtWTSBBUEkgbG9va3MgbGlrZS4KClllcywgdGhhdCBwYXJ0IGlzIG5vdCBk
+b2N1bWVudGVkIGluIHRoZSBwYXRjaCBzZXQsIGNvcnJlY3QuIEkgd291bGQgCnBlcnNvbmFsbHkg
+anVzdCBtYWtlIGFuIGV4YW1wbGUgdXNlciBzcGFjZSBiaW5hcnkgdGhlIGRvY3VtZW50YXRpb24g
+Zm9yIApub3cuIExhdGVyIHdlIHdpbGwgcHVibGlzaCBhIHByb3BlciBkZXZpY2Ugc3BlY2lmaWNh
+dGlvbiBvdXRzaWRlIG9mIHRoZSAKTGludXggZWNvc3lzdGVtIHdoaWNoIHdpbGwgZGVzY3JpYmUg
+dGhlIHJlZ2lzdGVyIGxheW91dCBhbmQgaW1hZ2UgCmxvYWRpbmcgc2VtYW50aWNzIGluIHZlcmJh
+dGltLCBzbyB0aGF0IG90aGVyIE9TcyBjYW4gaW1wbGVtZW50IHRoZSAKZHJpdmVyIHRvby4KClRv
+IGFuc3dlciB0aGUgcXVlc3Rpb24gdGhvdWdoLCB0aGUgdGFyZ2V0IGZpbGUgaXMgaW4gYSBuZXds
+eSBpbnZlbnRlZCAKZmlsZSBmb3JtYXQgY2FsbGVkICJFSUYiIGFuZCBpdCBuZWVkcyB0byBiZSBs
+b2FkZWQgYXQgb2Zmc2V0IDB4ODAwMDAwIG9mIAp0aGUgYWRkcmVzcyBzcGFjZSBkb25hdGVkIHRv
+IHRoZSBlbmNsYXZlLgoKPiAKPj4gYmVmb3JlIHRoYXQgKGVuY2xhdmUgZmlybXdhcmUsIGV0Yy4p
+IGlzIHByb3ZpZGVkIGJ5Cj4+IHRoZSBlbmNsYXZlIGVudmlyb25tZW50Lgo+Pgo+PiBUaGluayBv
+ZiBpdCBsaWtlIGEgbWVjaGFuaXNtIHRvIGxhdW5jaCBhIHNlY29uZCBRRU1VIGluc3RhbmNlIG9u
+IHRoZQo+PiBob3N0LCBidXQgYWxsIHlvdSBjYW4gYWN0dWFsbHkgY29udHJvbCBhcmUgdGhlIC1z
+bXAsIC1tLCAta2VybmVsIGFuZAo+PiAtaW5pdHJkIHBhcmFtZXRlcnMuCj4gCj4gQXJlIHRoZXJl
+IHJlcXVpcmVtZW50cyBvbiBob3cgdG8gcG9wdWxhdGUgdGhlIG1lbW9yeSB0byBlbnN1cmUgdGhh
+dCB0aGUKPiBob3N0IGZpcm13YXJlIGRvZXNuJ3QgY3Jhc2ggYW5kIGJ1cm4/ICBFLmcuIHNvbWUg
+ZnJlZSBtZW1vcnkgcmlnaHQgYmVsb3cKPiA0R2lCIChmb3IgdGhlIGZpcm13YXJlLCB0aGUgTEFQ
+SUMvSU9BUElDIG9yIGFueSBvdGhlciBzcGVjaWFsIE1NSU8KPiBkZXZpY2VzIHlvdSBoYXZlLCBQ
+Q0kgQkFScywgYW5kIHRoZSBsaWtlKT8KCk5vLCB0aGUgdGFyZ2V0IG1lbW9yeSBsYXlvdXQgaXMg
+Y3VycmVudGx5IGRpc2Nvbm5lY3RlZCBmcm9tIHRoZSBtZW1vcnkgCmxheW91dCBkZWZpbmVkIHRo
+cm91Z2ggdGhlIEtWTV9TRVRfVVNFUl9NRU1PUllfUkVHSU9OIGlvY3RsLiBXaGlsZSB3ZSBkbyAK
+Y2hlY2sgdGhhdCBndWVzdF9waHlzX2FkZHIgaXMgY29udGlndW91cywgdGhlIHVuZGVybHlpbmcg
+ZGV2aWNlIEFQSSBkb2VzIApub3QgaGF2ZSBhbnkgbm90aW9uIG9mIGEgImd1ZXN0IGFkZHJlc3Mi
+IC0gYWxsIGl0IGdldHMgaXMgYSAKc2NhdHRlci1nYXRoZXIgc2xpY2VkIGJ1Y2tldCBvZiBtZW1v
+cnkuCgo+PiBUaGUgb25seSBJL08gY2hhbm5lbCB5b3UgaGF2ZSBiZXR3ZWVuIHlvdXIgVk0gYW5k
+Cj4+IHRoYXQgbmV3IFZNIGlzIGEgdnNvY2sgY2hhbm5lbCB3aGljaCBpcyBjb25maWd1cmVkIGJ5
+IHRoZSBob3N0IG9uIHlvdXIKPj4gYmVoYWxmLgo+IAo+IElzIHRoaXMgdmlydGlvLW1taW8gb3Ig
+dmlydGlvLXBjaSwgYW5kIHdoYXQgb3RoZXIgZW11bGF0ZWQgZGV2aWNlcyBhcmUKPiB0aGVyZSBh
+bmQgaG93IGRvIHlvdSBkaXNjb3ZlciB0aGVtPyAgQXJlIHRoZXJlIGFueSBJU0EgZGV2aWNlcwo+
+IChSVEMvUElDL1BJVCksIGFuZCBhcmUgdGhlcmUgU01CSU9TL1JTRFAvTVAgdGFibGVzIGluIHRo
+ZSBGIHNlZ21lbnQ/CgpJdCBpcyB2aXJ0aW8tbW1pbyBmb3IgdGhlIGVuY2xhdmUgYW5kIHZpcnRp
+by1wY2kgZm9yIHRoZSBwYXJlbnQuIFRoZSAKZW5jbGF2ZSBpcyBhIG1pY3Jvdm0uCgpGb3IgbW9y
+ZSBkZXRhaWxzIG9uIHRoZSBlbmNsYXZlIGRldmljZSB0b3BvbG9neSwgd2UnbGwgaGF2ZSB0byB3
+YWl0IGZvciAKdGhlIHB1YmxpYyBkb2N1bWVudGF0aW9uIHRoYXQgZGVzY3JpYmVzIHRoZSBlbmNs
+YXZlIHZpZXcgb2YgdGhlIHdvcmxkIAp0aG91Z2guIEkgZG9uJ3QgdGhpbmsgdGhhdCBvbmUncyBw
+dWJsaWMgcXVpdGUgeWV0LiBUaGlzIHBhdGNoIHNldCBpcyAKYWJvdXQgdGhlIHBhcmVudCdzIHZp
+ZXcuCgoKQWxleAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1
+c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2No
+bGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90
+dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIz
+NyA4NzkKCgo=
 
