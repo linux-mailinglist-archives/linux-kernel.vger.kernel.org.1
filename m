@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF521B7A97
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F891B7AA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Apr 2020 17:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbgDXPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 11:49:42 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:56256 "EHLO
-        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728110AbgDXPtj (ORCPT
+        id S1728371AbgDXPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 11:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726301AbgDXPwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 11:49:39 -0400
-Received: from [192.168.4.242] (helo=deadeye)
-        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jS0a8-0001hQ-NZ; Fri, 24 Apr 2020 16:49:36 +0100
-Received: from ben by deadeye with local (Exim 4.93)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1jS0a8-00FNGT-3o; Fri, 24 Apr 2020 16:49:36 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        Fri, 24 Apr 2020 11:52:36 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E0EC09B046
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:52:35 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id r26so11390553wmh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 08:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rtV64CdoXvodJnTwhQjpfJxxVe45YkDM4hkifaxGTP4=;
+        b=bzXgut1D3RMLHq+6TOlFXEGKdoDJSQqqm0o8pV8jytLUrH58+0aLEm94VnDZ7AkrUk
+         xNDfM0s8GOdUZw/OiJd+QDrUdBKATW8a1cdNYICSDa27AkURhZBYfJkGBYD2Xt4HIIcR
+         e0V8tiumDDlPrTTe6Sz7iNk3kHEFW86jligXyvzUBSMc5/kdMKtoyCz4uA3IPASpNBBl
+         jSuh4dsVYyUcdX92swDnfzTzkZ/QCt+sfkR3dBD/tvueKKon+0jVM0vSyMN+EBLKVvxF
+         NFHcN2o45xlcYBTCwy6HyUD6CI1b8Jc6Umj/aeRzqjr3tx0ZX6qgpLI0sBHAQwMihfD4
+         QyNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rtV64CdoXvodJnTwhQjpfJxxVe45YkDM4hkifaxGTP4=;
+        b=T2PI+bcMTVsidl4BtvxLqqvmJN+lsgJUBoQh/lXN38MA9/SdHMmKyEZ1uiGLkAlsXh
+         wGMus873dB4FB5g/LhtlBKDQ/TxywTlTwFtNTRifESJS2IVH4iGjnh3nN5OFZMO9Iy3x
+         ayrpA18Wq0hOsAtaC0gujyJSMBJMPCR/yiHlMFU01SQ02R+vyh8q4MyYqi6RG3EJm8Xi
+         N0Zpoz7+teGgkHOfakEaTdu/dSs6VwauKsnd17ifgqe2VRy4r0JNKPEJYLdJVHHbByCq
+         Q3+Z08eVQqJj4a6KD8OPBM0CDAewTS4u0PUB87Pxhs3Pw9m5feSSi9mABI7RXO37UU3I
+         luzQ==
+X-Gm-Message-State: AGi0PuYuHVXqZXjn9F5zUydeikYrN4TuDiOwZymFXfvwrLI8lNoCw0Mx
+        vARVtcOu4LaE+R619LWP+H7W5w==
+X-Google-Smtp-Source: APiQypLHoMtXgNvUu4rSXl4sbf4gXGV+tWNxmLDcuR0fz6lAjF9ERRKa1+QHe3UHlNpGkUzFVpTL3w==
+X-Received: by 2002:a1c:e408:: with SMTP id b8mr11014823wmh.68.1587743553991;
+        Fri, 24 Apr 2020 08:52:33 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id q143sm3661290wme.31.2020.04.24.08.52.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 08:52:33 -0700 (PDT)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200424092816.62a61b1d@gandalf.local.home>
+ <579fbe97-9aae-2b67-03ff-01291b9cbb7d@i-love.sakura.ne.jp>
+ <20200424103131.7987f890@gandalf.local.home>
+ <7ec0b0a3-39ae-0f1c-b8c2-e1e9e60f1223@i-love.sakura.ne.jp>
+ <20200424114225.5a3bab7e@gandalf.local.home>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <b3129b4a-cd08-c507-4c6a-8b3e24b130d0@arista.com>
+Date:   Fri, 24 Apr 2020 16:52:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-CC:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Rong Chen" <rong.a.chen@intel.com>, "Jann Horn" <jannh@google.com>
-Date:   Fri, 24 Apr 2020 16:51:32 +0100
-Message-ID: <lsq.1587743246.627531935@decadent.org.uk>
-X-Mailer: LinuxStableQueue (scripts by bwh)
-X-Patchwork-Hint: ignore
-Subject: [PATCH 3.16 247/247] futex: Unbreak futex hashing
-In-Reply-To: <lsq.1587743245.5555628@decadent.org.uk>
-X-SA-Exim-Connect-IP: 192.168.4.242
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
+In-Reply-To: <20200424114225.5a3bab7e@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3.16.83-rc2 review patch.  If anyone has any objections, please let me know.
 
-------------------
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On 4/24/20 4:42 PM, Steven Rostedt wrote:
+> On Sat, 25 Apr 2020 00:28:53 +0900
+> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
+>> For those who analyze log files (instead of console output), the point of
+>> printk() is to save kernel messages into log files (via userspace syslog
+>> daemon).
+>>
+>> By the way, I think
+>>
+>>   printk(KERN_NO_CONSOLES "hello\n")
+>>
+>> is almost same with doing
+>>
+>>   saved_loglevel = console_loglevel;
+>>   console_loglevel = CONSOLE_LOGLEVEL_SILENT;
+>>   printk("hello\n");
+>>   console_loglevel = saved_loglevel;
+>>
+>> used by vkdb_printf().
+> 
+> And both shouldn't be done within the kernel. The "CONSOLE_LOGLEVEL_SILENT"
+> if for user decided policy, not the kernel making that policy for the user.
 
-commit 8d67743653dce5a0e7aa500fcccb237cde7ad88e upstream.
+Though, I believe the reverse KERN_UNSUPPRESSED [1] still makes sense
+for sysrq/kdb where user expects their interactive messages to appear on
+console. And unfortunately, userspace depends on the loglevel of those
+messages as it is.
+With KERN_UNSUPPRESSED I hope to remove all those console_loglevel
+tricks and make it static variable for printk.
 
-The recent futex inode life time fix changed the ordering of the futex key
-union struct members, but forgot to adjust the hash function accordingly,
+[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/
 
-As a result the hashing omits the leading 64bit and even hashes beyond the
-futex key causing a bad hash distribution which led to a ~100% performance
-regression.
-
-Hand in the futex key pointer instead of a random struct member and make
-the size calculation based of the struct offset.
-
-Fixes: 8019ad13ef7f ("futex: Fix inode life-time issue")
-Reported-by: Rong Chen <rong.a.chen@intel.com>
-Decoded-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Rong Chen <rong.a.chen@intel.com>
-Link: https://lkml.kernel.org/r/87h7yy90ve.fsf@nanos.tec.linutronix.de
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Cc: Jann Horn <jannh@google.com>
----
- kernel/futex.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -309,9 +309,9 @@ static inline int hb_waiters_pending(str
-  */
- static struct futex_hash_bucket *hash_futex(union futex_key *key)
- {
--	u32 hash = jhash2((u32*)&key->both.word,
--			  (sizeof(key->both.word)+sizeof(key->both.ptr))/4,
-+	u32 hash = jhash2((u32 *)key, offsetof(typeof(*key), both.offset) / 4,
- 			  key->both.offset);
-+
- 	return &futex_queues[hash & (futex_hashsize - 1)];
- }
- 
-
+Thanks,
+          Dmitry
