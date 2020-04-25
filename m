@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC54C1B83C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 06:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978831B83CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 07:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgDYErA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 00:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S1726128AbgDYFPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 01:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725909AbgDYErA (ORCPT
+        by vger.kernel.org with ESMTP id S1725909AbgDYFPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 00:47:00 -0400
-Received: from mail-ua1-x949.google.com (mail-ua1-x949.google.com [IPv6:2607:f8b0:4864:20::949])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ED3C09B049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 21:47:00 -0700 (PDT)
-Received: by mail-ua1-x949.google.com with SMTP id 5so6367426uah.23
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 21:47:00 -0700 (PDT)
+        Sat, 25 Apr 2020 01:15:07 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B80C09B04B
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 22:15:05 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 23so7703522qkf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Apr 2020 22:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=jQasBASmzZvgAc1R1m8mPSZq7B0Wu40p8fXTKkugFFs=;
-        b=fNJ9qFOryV/cL4BhCoo/faBK8fdD2fEtF5bc+SixZfbajBIGTmLjmLvVG4h5jFs3+i
-         6ror8rgE8rm2nCrnBsxGuY71UCTQ+p1klTbivXi21TFZRHswGw0EgPwRd1CNYxvMjm8A
-         91i5PoL9QM6utU++fmfPitpNQQfqyiwlz7vOh9Hadhb5XqMVed1e3/NnVDm6ibiXQ2io
-         iBwrS2YMUYcW3KthUq12K/H6Enj6YW/bgiId0s79JRoGzpEwPxoudQeqnzyGKdXviTjt
-         d8Ujw8GPgHe1MHA2rL9I9AXA/1M77M3bjZ/joEJaW0ub2ui9pOYHz/MNjIPaObP4xRa6
-         Jl8w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1SBatyiXpIiTu8qbFEdAJrtrObabCrqo/oadnwsGtc=;
+        b=rbhLhZvQDnG6p+e0PJwLpEu/dK/fw/igKekR9oZcCnflWf7m0TDjvkmh2zlY2Jv+5j
+         w17JME6X4TKTpcDvBRLmVs49deqkl3eJyKh1L7vRMmxnfdsOYENY7JF9Whdd3EV1sXlw
+         c6glcoi7MT1uFTPCvpl9PN9cZ4LDTrB4oVbz/1sOgiOUHLE8sWHINGMxicPcLr2uMAR6
+         O2Z2F96Hglf1mJT3R+FvM3jHj0K3wNzZ+0skd/nSM8FWXhmOAOPvELMGo1vMwGBlSbz+
+         4EDDdd0s96V29n+ylk1YxweDQAJG1IJaXvpTu+NWrxKzLbWNk3R9kdM3yD7wZ2xjOvNS
+         ASeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=jQasBASmzZvgAc1R1m8mPSZq7B0Wu40p8fXTKkugFFs=;
-        b=S5juwkBcnH6CfmhG81/8V7u5xjy96+04Jq+kneJEQus6Jj7kT2m66+TM+12ZgrhkTh
-         EgJmS6vOKIqybYO0qMCR3RX9y7NHZrTqHdUzECc2VcYTq9q3h/BVrI5npExRxQj0Sw1R
-         TeSw6KyWp531siVPex6z5InRt2kwZavBT4J9t6DFMCEBiDjNJlUuXXuZVT189eeG4pGX
-         G3cjhnoIkZdZRDMP6M3NjwwASZo4NGTL1dXJNDRHkxdzjFUoUCPp5jJWnMMDq74J5Jc2
-         KXafvcEw7tyI6ZnGEEgT/qTxLjivHeUG3aGqh6gLhZUu4JJSr/Zsu+zWQDnXtuoTkaRs
-         fxnA==
-X-Gm-Message-State: AGi0PuasQc3lTtZ6YAMz4K+WpLq89zOoO0MJkb8aGTSx4dSzQRfuZC4o
-        igujuq0Sam0o4tAv59/3sladzl03xUKQgA==
-X-Google-Smtp-Source: APiQypJuJnBbTkL939ByiXiU5X6hKbgkYGOEkLIZWJvqa9f9zRDbPyZED72FPuhrne54zwgQBMFUy7jRB0Rhww==
-X-Received: by 2002:a1f:3190:: with SMTP id x138mr10868420vkx.41.1587790019124;
- Fri, 24 Apr 2020 21:46:59 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 21:46:55 -0700
-Message-Id: <20200425044655.166257-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH] gpio: of: Build fails if CONFIG_OF_DYNAMIC enabled without CONFIG_OF_GPIO
-From:   David Gow <davidgow@google.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frank Rowand <frank.rowand@sony.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Gow <davidgow@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1SBatyiXpIiTu8qbFEdAJrtrObabCrqo/oadnwsGtc=;
+        b=iDfYAcHjD+iqMQK5X0HhbUf/xKXDd2U8TEC1n6NGkAuAPg/LD53XY8NN2FWxv1lajw
+         l3I5tGxMl5QFgc1/DOWUXxAH6O6hY4uaNKxX49VvSah638CUsvgMsPleUIc9WKHrYzW5
+         Xc7/3OlSEP53oYZIiNvjabVZayX6rxxpn0h5A4AVKo7bPbhkOIZk7rPv90vP9vcpyg4T
+         +gCfh/O9cEM9ix/I3UUQ/a7fOH1vKQotj1tkrM1lb2skQzENuuolJhjdGTTEhhkmgd6w
+         CUwuLq5MLkx7ivy+DBRI5x8lKUfNPLrTBym27lMIy8t8MnMeeIVhKkFZZUV9FOCtDCQ0
+         xhMQ==
+X-Gm-Message-State: AGi0PuYkZlXBe+O5AQZH0Y0m/q/ptLhIvsRHunhZUgWol4khWkAgbDKK
+        L2G6lmy0jdoRAr19Tudl7nLm4e0xz+MwZLPdOhZqeg==
+X-Google-Smtp-Source: APiQypKWjPa+EY2ioHZfTJG/+Df1shHqevoVywrRu+bXUnHcbJQlizj6CkbA7d5bq/V5+oeDZk48ITG0Le0/PUrjfNE=
+X-Received: by 2002:a05:620a:1362:: with SMTP id d2mr12003772qkl.256.1587791704265;
+ Fri, 24 Apr 2020 22:15:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACT4Y+YTi4JCFRqOB9rgA22S+6xxTo87X41hj6Tdfro8K3ef7g@mail.gmail.com>
+ <CAHC9VhQs6eJpX4oMrhBiDap-HhEsBBgmYWEou=ZH60YiA__T7w@mail.gmail.com>
+In-Reply-To: <CAHC9VhQs6eJpX4oMrhBiDap-HhEsBBgmYWEou=ZH60YiA__T7w@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 25 Apr 2020 07:14:52 +0200
+Message-ID: <CACT4Y+b8HiV6KFuAPysZD=5hmyO4QisgxCKi4DHU3CfMPSP=yg@mail.gmail.com>
+Subject: Re: selinux_netlink_send changes program behavior
+To:     Paul Moore <paul@paul-moore.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev <netdev@vger.kernel.org>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The symbol 'gpio_of_notifier' doesn't exist without both CONFIG_OF_GPIO
-and CONFIG_OF_DYNAMIC enabled, but is referenced when only
-CONFIG_OF_DYNAMIC is enabled.
+On Fri, Apr 24, 2020 at 11:51 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Fri, Apr 24, 2020 at 4:27 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > Hi SELinux maintainers,
+> >
+> > We've hit a case where a developer wasn't able to reproduce a kernel
+> > bug, it turned out to be a difference in behavior between SELinux and
+> > non-SELinux kernels.
+> > Condensed version: a program does sendmmsg on netlink socket with 2
+> > mmsghdr's, first is completely empty/zeros, second contains some
+> > actual payload. Without SELinux the first mmsghdr is treated as no-op
+> > and the kernel processes the second one (triggers bug). However the
+> > SELinux hook does:
+> >
+> > static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
+> > {
+> >     if (skb->len < NLMSG_HDRLEN) {
+> >         err = -EINVAL;
+> >         goto out;
+> >     }
+> >
+> > and fails processing on the first empty mmsghdr (does not happen
+> > without SELinux).
+> >
+> > Is this difference in behavior intentional/acceptable/should be fixed?
+>
+> From a practical perspective, SELinux is always going to need to do a
+> length check as it needs to peek into the netlink message header for
+> the message type so it can map that to the associated SELinux
+> permissions.  So in that sense, the behavior is intentional and
+> desired; however from a bug-for-bug compatibility perspective ... not
+> so much.
+>
+> Ultimately, my it's-Friday-and-it's-been-a-long-week-ending-in-a-long-day
+> thought is that this was a buggy operation to begin with and the bug
+> was just caught in different parts of the kernel, depending on how it
+> was configured.  It may not be ideal, but I can think of worse things
+> (and arguably SELinux is doing the Right Thing).
 
-This broke building with 'make ARCH=um allyesconfig':
----------------
-/usr/bin/ld: drivers/gpio/gpiolib.o: in function `gpiolib_dev_init':
-./drivers/gpio/gpiolib.c:5293: undefined reference to `gpio_of_notifier'
-collect2: error: ld returned 1 exit status
----------------
++netlink maintainers for intended semantics of empty netlink messages
 
-Fixes: 63636d956c45 ("gpio: of: Add DT overlay support for GPIO hogs")
-Signed-off-by: David Gow <davidgow@google.com>
----
- drivers/gpio/gpiolib.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+If it's a bug, or intended behavior depends on the intended
+behavior... which I assume is not documented anywhere officially.
+However, most of the netlink families use netlink_rcv_skb, which does:
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 40f2d7f69be2..5c292fb3355c 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -5289,8 +5289,9 @@ static int __init gpiolib_dev_init(void)
- 	gpiolib_initialized = true;
- 	gpiochip_setup_devs();
- 
--	if (IS_ENABLED(CONFIG_OF_DYNAMIC))
--		WARN_ON(of_reconfig_notifier_register(&gpio_of_notifier));
-+#if IS_ENABLED(CONFIG_OF_DYNAMIC) && IS_ENABLED(CONFIG_OF_GPIO)
-+	WARN_ON(of_reconfig_notifier_register(&gpio_of_notifier));
-+#endif /* CONFIG_OF_DYNAMIC && CONFIG_OF_GPIO */
- 
- 	return ret;
- }
--- 
-2.26.2.303.gf8c07b1a785-goog
+int netlink_rcv_skb(struct sk_buff *skb, int (*cb)(struct sk_buff *,
+                           struct nlmsghdr *,
+                           struct netlink_ext_ack *))
+{
+    ...
+    while (skb->len >= nlmsg_total_size(0)) {
+    ...
+       skb_pull(skb, msglen);
+    }
+    return 0;
+}
 
+1. How intentional is this while loop logic vs sloppy error checking?
+2. netlink_rcv_skb seems to be able to handle 2+ messages in the same
+skb, while selinux_netlink_send only checks the first one... so can I
+skip SELinux checks by putting a malicious message after a permitted
+one?..
