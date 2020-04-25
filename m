@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE4E1B85B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56CE1B85BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgDYKno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 06:43:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52775 "EHLO
+        id S1726073AbgDYKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 06:43:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48732 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726050AbgDYKnl (ORCPT
+        with ESMTP id S1726087AbgDYKnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 25 Apr 2020 06:43:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587811420;
+        s=mimecast20190719; t=1587811419;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zenMpg+2v4nQ44+/jX7Ww4Nj5mK/XgsXmzCGzWANwV8=;
-        b=aefTb9R06CSZey0rgWcce0Y8X8TNDdsjWPkZA4qniRj9xB035FnpTEJejLiT861s5D/enb
-        JFPPp8LvRl6H4UScjKFJGWomYyZies49OYgjM5tMb120wnFQ3cTEi1oI4tyn/ahOzH4qhQ
-        AW2tbYIrzt8ZVxqckYzIygHio/DLmUs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-5dVvx2_jM4mVRBrX59UMDA-1; Sat, 25 Apr 2020 06:43:38 -0400
-X-MC-Unique: 5dVvx2_jM4mVRBrX59UMDA-1
-Received: by mail-wr1-f69.google.com with SMTP id v9so6488728wrt.7
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 03:43:38 -0700 (PDT)
+        bh=zX1gMKclpqnAEoBMDkK5PhMtrskM3KRZZa0iKX4TUNw=;
+        b=XIK6D6ehndPRXiFuJisdbweMTv3c5M+y7VQX4Mt4enBFRkBEp334BybcEffF6uaBLRlRev
+        kXrZTeZz0s/w9zEXTLvVl2OL892xd9YA7aedjY610iRc22GnTAt7wxtz6te9/NnRzvGJ1t
+        ISBmGgV/LXMhhk7/IF8boUBcOunXoVg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-9R2PGDBqOam5g9pmCP4w9A-1; Sat, 25 Apr 2020 06:43:37 -0400
+X-MC-Unique: 9R2PGDBqOam5g9pmCP4w9A-1
+Received: by mail-wr1-f70.google.com with SMTP id g7so6490388wrw.18
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 03:43:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zenMpg+2v4nQ44+/jX7Ww4Nj5mK/XgsXmzCGzWANwV8=;
-        b=Q20uj/Eg5nykrD5defV2/RUk/RX2XmfiZe4CGJcjp+N34jsA6BpHYAT7b7QMy4RAZ2
-         GJRdKEvOTrR2i2Ch0QwdfrQ58bpX9Dn/AYeeGHDRErfmOA8UWJCEQYC5g4n9Rm9SxloP
-         6jqjPeU5XJQJndxqebrC7VlHXOXqWLjbEeqAgEpr51M5PVpxko+nifEEOENutzDeIwum
-         ERj5I0gTwY9sDCQWVKFq09GjYsP2yVtW0ie8Olej1jPK45eRWHDWeZEOQg6yF+a912Nq
-         u83jBjsU+/Grz3JR37opN1Pdlwq0/qe/0ruaiV6QbgHIfdfRst82xN63bOga88YHJgLJ
-         AFgQ==
-X-Gm-Message-State: AGi0PuaOTtl+R0ch5hXJgZwmEgVLvCTvWL/qdxBQ1nUYxYYM0pE30sQR
-        R/E8wSnnT29rUOjVtibVqtbcytWSWuaGlH/hg/ThrwitCBVH8/iVHxa+rYpxXNYQNtDOPpVB8TN
-        eeK5F0E8ZSO3ktvp+Thk7tPss
-X-Received: by 2002:a1c:f20c:: with SMTP id s12mr16485418wmc.83.1587811417047;
-        Sat, 25 Apr 2020 03:43:37 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJXYCKrMGcQbWZ4dmNlA4I3N70iZVCaAGf8WxW73pnTLMz5y0M53agpbgh6ZESeAQahxD4ccA==
-X-Received: by 2002:a1c:f20c:: with SMTP id s12mr16485405wmc.83.1587811416907;
+        bh=zX1gMKclpqnAEoBMDkK5PhMtrskM3KRZZa0iKX4TUNw=;
+        b=F5LE+oZGmhtji8kKUn5tFkFEmpxL147pXqubQeqe4LfZjQ9kP7xaZhWDe0v18kHEzg
+         /+OhRG1nSqrOFj5qGZxj6A8iVj8V4MAup8dyfwijZVaop0dALDfTW4dgrp7jh5/RZPeo
+         RWrCf1c9T5xCFgbqzTkGyMLwtQDBWV2aV1D8zY2Nrq9sxEIKE7nfdktcG5yPdwVxL0Vs
+         amsKHf8cuiPzh08aqIUaEzwMEttB3B9fRrxBhiHEXA2nEuHtq5NwCx31FAs5pADgnS80
+         CWEPAc/XS8Z3QCwYouI9EdTQ/noRby0IftcmB5caOK2iaAdj1fboAFIwlkl9GZ5slHRI
+         j3XA==
+X-Gm-Message-State: AGi0PubzbMtSgeHMGYIDi8H/F0umA7HDOkrc7ulxxzlLwkfnIT4nZPNT
+        KKPsUKBTimqCmSE78kptOLIdPYkvtJNgnqdXBv1XIyqQfpqatfvx43WpqeUx/o0aCTC3fv7WNiX
+        cqNio5OTxIIYKVjl0U19RbcWJ
+X-Received: by 2002:adf:ee88:: with SMTP id b8mr15892431wro.93.1587811416288;
         Sat, 25 Apr 2020 03:43:36 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id x132sm7007951wmg.33.2020.04.25.03.43.35
+X-Google-Smtp-Source: APiQypKA9B9pJGKX+0LgDRDvi6v5gXYIEKKnz5THJmcU6hGlhBUcL+S8FEF2XD5VredWlxBdzhvHSQ==
+X-Received: by 2002:adf:ee88:: with SMTP id b8mr15892412wro.93.1587811415984;
+        Sat, 25 Apr 2020 03:43:35 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id k17sm6631766wmi.10.2020.04.25.03.43.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 03:43:36 -0700 (PDT)
-Subject: Re: bdi: fix use-after-free for dev_name(bdi->dev) v3
-To:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, gregkh@linuxfoundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200422073851.303714-1-hch@lst.de>
- <20200425075906.GA5250@lst.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7bac482b-7940-e6a1-6256-194bc3393063@redhat.com>
+        Sat, 25 Apr 2020 03:43:35 -0700 (PDT)
+Subject: Re: [PATCH] kvm/eventfd: remove unneeded conversion to bool
+To:     Jason Yan <yanaijie@huawei.com>, peterx@redhat.com,
+        tglx@linutronix.de, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200420123805.4494-1-yanaijie@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <109d0871-7099-b476-8354-11a628a04b3d@redhat.com>
 Date:   Sat, 25 Apr 2020 12:43:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200425075906.GA5250@lst.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20200420123805.4494-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -74,31 +72,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/25/20 9:59 AM, Christoph Hellwig wrote:
-> Any more comments?  Are we ready to merge this now?
-
-Merging this fine with me.
-
-Regards,
-
-Hans
-
-
-> On Wed, Apr 22, 2020 at 09:38:42AM +0200, Christoph Hellwig wrote:
->> Hi all,
->>
->> the first three patches are my take on the proposal from Yufen Yu
->> to fix the use after free of the device name of the bdi device.
->>
->> The rest is vaguely related cleanups.
->>
->> Changes since v2:
->>   - switch vboxsf to a shorter bdi name
->>
->> Changes since v1:
->>   - use a static dev_name buffer inside struct backing_dev_info
-> ---end quoted text---
+On 20/04/20 14:38, Jason Yan wrote:
+> The '==' expression itself is bool, no need to convert it to bool again.
+> This fixes the following coccicheck warning:
 > 
+> virt/kvm/eventfd.c:724:38-43: WARNING: conversion to bool not needed
+> here
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  virt/kvm/eventfd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
+> index 67b6fc153e9c..0c4ede45e6bd 100644
+> --- a/virt/kvm/eventfd.c
+> +++ b/virt/kvm/eventfd.c
+> @@ -721,7 +721,7 @@ ioeventfd_in_range(struct _ioeventfd *p, gpa_t addr, int len, const void *val)
+>  		return false;
+>  	}
+>  
+> -	return _val == p->datamatch ? true : false;
+> +	return _val == p->datamatch;
+>  }
+>  
+>  /* MMIO/PIO writes trigger an event if the addr/val match */
+> 
+
+Queued, thanks.
+
+Paolo
 
