@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2ED1B86C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85B61B86C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 15:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgDYN2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 09:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgDYN2F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 09:28:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2D2C09B04B;
-        Sat, 25 Apr 2020 06:28:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id e6so5070123pjt.4;
-        Sat, 25 Apr 2020 06:28:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=JFUMd+hzddJv1Y5rfJOEfNkA9WRYQpoUhmzVHfC1wng=;
-        b=nxp6OVhnza08ie6D39XDlN1ZYFPB9ELuvbSZXs0flgOaNwD8soyFKFHYT42SQIIc5Z
-         V5dVf/WUeBq37GEGlfJ+0QNEmobaflgBKY8/ZF7THhxkDH4bGlabUvsvpN1ARICVusrO
-         EFIXtz00FzYfKC2KFQ+uUhgb9mCyepZ2t4XO63RJWjM5gup8ebFjfcgYJ6G26azTWSoW
-         AXkK+KLWEVw0g3zTV7Ihp8qmaKkbeuEj0e2f8Nf0JGkM/9uQoc7fS3bK6nrg1UdIgPFj
-         ybZoWMPF8gqZWE6poTLYqgYNqGIQ4bs80wzCb83cuOmJfYXRRAg9Hq21FrztqbG+Fl4W
-         6Wmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=JFUMd+hzddJv1Y5rfJOEfNkA9WRYQpoUhmzVHfC1wng=;
-        b=EUBjB4e75iaOkGIFeV3tz7W+CxZReWRfzk6SUMWh+KEODxSNko0p0SKM5KsFVR6mkQ
-         YVgPp5NSM0FLLfLVlpyOIXJHaYU2rO8ToFv61hsM1IZaVhFTDQSl+W+fOaAsBiFiiCWd
-         TdKymuiXnWdIO2iPvsS+f+U2/tRosEQDsf3qpYf8QkNp6rYB74mHypYbHGkuF25I741Q
-         umNwseCbyOGGUnmbNlD8dwFsf6hrbQid4+mhx7kWincIdp2HnJ3zfm6C53mW13caW9od
-         C1V5LJG2kECgW6oVFwMNFAkmrXMGFjBqrFENXPWjc6LoWcdGR5iEyttuIJkOsGZdyqPk
-         HjsQ==
-X-Gm-Message-State: AGi0PubVnS8UQFdIPnX/VUDJyM9Mnrn11HNSJMfZwxJoe5ZCwtx6MRIR
-        8CRhB2092XqU2v5hwG2DePc=
-X-Google-Smtp-Source: APiQypLookv25Ls/pU34dNRvSz7a3CRLRqIsMsAJddEadGB5Au0mM/Jm96k3hFAFhdw2Jc855r4CiA==
-X-Received: by 2002:a17:902:20b:: with SMTP id 11mr13035530plc.209.1587821285085;
-        Sat, 25 Apr 2020 06:28:05 -0700 (PDT)
-Received: from nishad ([106.51.232.103])
-        by smtp.gmail.com with ESMTPSA id r28sm8300840pfg.186.2020.04.25.06.28.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Apr 2020 06:28:04 -0700 (PDT)
-Date:   Sat, 25 Apr 2020 18:57:58 +0530
-From:   Nishad Kamdar <nishadkamdar@gmail.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFS: Use the correct style for SPDX License Identifier
-Message-ID: <20200425132754.GA10083@nishad>
+        id S1726110AbgDYNeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 09:34:13 -0400
+Received: from mout.gmx.net ([212.227.17.22]:56021 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgDYNeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 09:34:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1587821640;
+        bh=IHJr0EedB5g0v4EzA2wx0bNnO9PYSjipPdPGkVa4SwU=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=f4JVweYjLw53F+uNpzUpE2HiBzszaSwE1tAPftFGZbZmSQZVo7kF/Ko7XaQnP7Fum
+         6ZQrvlhCQ+lBZyLEOGVQ+ugAqTlA9V8McyeUBywP8Qlslr84zdTnVbTSLOO80q+PMQ
+         b+DsKvTO0XAA516wrHuxdheSHidO2EmtdUEwBJnw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4QsY-1j1YhK15aY-011SPq; Sat, 25
+ Apr 2020 15:34:00 +0200
+Date:   Sat, 25 Apr 2020 15:33:45 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
+        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
+        linux-kernel@vger.kernel.org, Stefano Brivio <sbrivio@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v3 0/2] staging: vt6656: Check the return value of
+ vnt_control_out_* calls
+Message-ID: <20200425133345.GA3213@ubuntu>
+References: <20200423153836.5582-1-oscar.carter@gmx.com>
+ <20200425105626.GA2071483@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200425105626.GA2071483@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:KXBYBCq2DCQlw3hPhjG7bnN9XK+vmznMHfD1l/dURAheFhBu1dL
+ 9/+ahVPvXZISDT+0glhxM/rLKOeJBzMwoeD3qFc4vOkz834ohoMf+kMe1F1250ACaZif7OM
+ yZxZriAm7QGiyJU0aRDe03SvDdNrPeSoIObEh1xlzKR2JvtTLRDTF9Ay0aV72alS6GB16JR
+ /TpHerwHqQc6bg8bxVIuw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zNIjFPpz60s=:R2DLJ+tTejcjTD/tSOEl59
+ 6lN4YIFMLvk+eMiU9R9fCUWY8CzZkfWsfs4es8tjPxKDxZEtNRfZYFt3Z+cIM3v+bqqCwf1B+
+ auPEaCHgHKPH4DxDPlwdfYwbB7A+1B+7eJqmR17yotv1qiMpbOrw1wVHH4aCgJWgsIk970wXK
+ sC7HmLo6SnYKGSAVcF30deQkNLyRLwlPULNfclCPJANp1+1T723+01YfM9DeN7t6Q0JNeK4AA
+ ihnishmzciGf25vQTzCMXvFhcQr/ZUC4DCjIIdlX4fYFNUVxw/m3HLi62TXgzIdyPgza9CkqC
+ TlPgoDgz+lA09C62fyh6CUjORUswU5jfDdHmDgcfx+nnsy1Cszt1M6yfJ7xrS7mJkULz7o3UE
+ aNNBBErEtLjo4ucSP7ZhjISKtFflkCjw1fjaAECAlZ+gHdF7Z/PZ3EsZzT1kQSDN0+M7SR30m
+ mzite2idKAzDExIj05db8CFdg0qcC9y7JjKcKCGVOty5fpTgV2QgGkhs9b1w6wg6nOAN22SZ9
+ D6XVBQHsgbzQ4nnMltjeu/10kINKq+lzavq4emqX28oM1aU+dsJjFkDBxReJ4s8z8QnKdzWaJ
+ y7OCbR43RBX8l04w2RYgQ319Ngp2kFlz61UqD3vimpsbuWiHKkDaOhV8pIVAIIkk1niOJIr2X
+ Xw8a+inpwgtdGlO5SnA5/BNlHH7Ek2PEo0ERykb4HxwB6Py5pItdD46MR9n0DL1jEj551o3HT
+ g49NNH0STwnKC2rqvYumpL0TZaAEzEPL9KJ1m2oiaG/LuItmJBGobQK0HBBFIHeIJGj5GlkgC
+ ENKNQKj9Bz/j0sEY+8u8hZylLhcUEpaqdFck1qnF41llIA+mizGNBj28TpfniwAnSXWlwkb/P
+ 8euALhf7Vmpm6bL53qlbRGgjQb8GIvJSgEJn0yNMFqi3CKJZpLhOwsnBW5F//bc0ua6Lsl0aY
+ qlxxeuWFrZDadfdGDWI7zVwivqAQgjmau/OWJQT1Ur9mLw82rqjtcH4owv66kGrjYiAqw9fqO
+ 2E722y3BTwOQfaDVj+O1w02Z1p8T2BVQM0MlmVqSHBSObuL3hI+gTo5MeasfFi6ZgdO18rGTm
+ kJAqfGzvzIpjbO9vwLc7C6oF7Qg32vNEuORxLrs2tyZD/xaVzOfIzHO4RnC9YdZM4iIhCzQq3
+ M7kPG4wodVcyKJL5SZScSzYSGbhyrHIVbadeMVaM6lSkaS18n6imARFllzzsvLdBdvNS5Nzql
+ mLqbJsEZGawvyPRUy
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch corrects the SPDX License Identifier style in
-header file related to NFS Client support.
-For C header files Documentation/process/license-rules.rst
-mandates C-like comments (opposed to C source files where
-C++ style should be used).
+On Sat, Apr 25, 2020 at 12:56:26PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Apr 23, 2020 at 05:38:34PM +0200, Oscar Carter wrote:
+> > This patch series checks the return value of vnt_control_out_* functio=
+n
+> > calls.
+> >
+> > The first patch checks the return value and when necessary modify the
+> > function prototype to be able to return the new checked error code.
+> >
+> > The second patch removes the documentation of functions that their
+> > prototype has changed as the function names are clear enought. Also,
+> > the actual documentation is not correct in all cases.
+> >
+> > Changelog v1 -> v2
+> > - Remove the function's documentation instead of fix them as suggested
+> >   Malcolm Priestley.
+> >
+> > Changelog v2 -> v3
+> > - Rebase against the staging-next branch of Greg's staging tree.
+>
+> Are you sure?  It still doesn't apply :(
+>
+> Please try again.
+>
+Ok, I will try again.
 
-Changes made by using a script provided by Joe Perches here:
-https://lkml.org/lkml/2019/2/7/46.
+> thanks,
+>
+> greg k-h
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
----
- fs/nfs/sysfs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/fs/nfs/sysfs.h b/fs/nfs/sysfs.h
-index f1b27411dcc0..ebcbdc40483b 100644
---- a/fs/nfs/sysfs.h
-+++ b/fs/nfs/sysfs.h
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * Copyright (c) 2019 Hammerspace Inc
-  */
--- 
-2.17.1
-
+oscar carter
