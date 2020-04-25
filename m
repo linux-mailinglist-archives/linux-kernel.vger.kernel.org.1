@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99991B8575
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EF81B8577
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgDYKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 06:03:39 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26800 "EHLO
+        id S1726201AbgDYKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 06:03:41 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26736 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726112AbgDYKDb (ORCPT
+        by vger.kernel.org with ESMTP id S1726138AbgDYKDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 06:03:31 -0400
+        Sat, 25 Apr 2020 06:03:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587809010;
+        s=mimecast20190719; t=1587809014;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LlhDMWII8SsE3aQs5qJ4MI4Q8CJwVI/eRFmefyOp2VQ=;
-        b=euDoeWWI256rC5/gMuZ0gmHTQp3GoPpMiAzS4TpjYmVw/eLKuSjGG1NZqkjP+syb10ksSE
-        AwG2zcNXxzXODTHrS6P0cMNJJajlEzgdFU84nOuPcUEt9ykmvM8tWE2XkW9JC3KBpt0V+9
-        pq+ATn3K0INSmADkFWjGb094NmSNhl0=
+        bh=S6Ig2eppmsbO17FXR49uSOjWUJZ37OfJgqKcCxWCa84=;
+        b=jEx2UJrZtYF+xhtsH8uDc4xWtcrdz05JtdiSSRijTN9daasCeBUCeHC2rrHjMzKmWjWzJr
+        lwRDXp1yb0UuzKu2UWT7W9EH27P0GgUDObibbQ8yNoRXah+IiJT2f487VKgSO3WbSaCFGa
+        0kG0pMufaOyud9N06FFmptkFLTDQFTo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-goB7E3gzPW-vkGoXw0swLQ-1; Sat, 25 Apr 2020 06:03:28 -0400
-X-MC-Unique: goB7E3gzPW-vkGoXw0swLQ-1
+ us-mta-309-0URwTm21MWC7NzV9_DyFRg-1; Sat, 25 Apr 2020 06:03:29 -0400
+X-MC-Unique: 0URwTm21MWC7NzV9_DyFRg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C554B10052E4;
-        Sat, 25 Apr 2020 10:03:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ACB680B70B;
+        Sat, 25 Apr 2020 10:03:28 +0000 (UTC)
 Received: from treble.redhat.com (ovpn-114-29.rdu2.redhat.com [10.10.114.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BE0160624;
-        Sat, 25 Apr 2020 10:03:25 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EFAFF60627;
+        Sat, 25 Apr 2020 10:03:26 +0000 (UTC)
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Miroslav Benes <mbenes@suse.cz>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2 05/11] x86/entry/64: Fix unwind hints in rewind_stack_do_exit()
-Date:   Sat, 25 Apr 2020 05:03:04 -0500
-Message-Id: <68c33e17ae5963854916a46f522624f8e1d264f2.1587808742.git.jpoimboe@redhat.com>
+Subject: [PATCH v2 06/11] x86/unwind/orc: Convert global variables to static
+Date:   Sat, 25 Apr 2020 05:03:05 -0500
+Message-Id: <43ae310bf7822b9862e571f36ae3474cfde8f301.1587808742.git.jpoimboe@redhat.com>
 In-Reply-To: <cover.1587808742.git.jpoimboe@redhat.com>
 References: <cover.1587808742.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
@@ -56,33 +56,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+These variables aren't used outside of unwind_orc.c, make them static.
 
-The leaq instruction in rewind_stack_do_exit moves the stack pointer
-directly below the pt_regs at the top of the task stack before calling
-do_exit(). Tell the unwinder to expect pt_regs.
+Also annotate some of them with '__ro_after_init', as applicable.
 
-Fixes: 8c1f75587a18 ("x86/entry/64: Add unwind hint annotations")
-Signed-off-by: Jann Horn <jannh@google.com>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 ---
- arch/x86/entry/entry_64.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/unwind_orc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 34a588950fe1..9fe0d5cad8e4 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1739,7 +1739,7 @@ SYM_CODE_START(rewind_stack_do_exit)
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index e9cc182aa97e..64889da666f4 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -15,12 +15,12 @@ extern int __stop_orc_unwind_ip[];
+ extern struct orc_entry __start_orc_unwind[];
+ extern struct orc_entry __stop_orc_unwind[];
 =20
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rax
- 	leaq	-PTREGS_SIZE(%rax), %rsp
--	UNWIND_HINT_FUNC sp_offset=3DPTREGS_SIZE
-+	UNWIND_HINT_REGS
+-static DEFINE_MUTEX(sort_mutex);
+-int *cur_orc_ip_table =3D __start_orc_unwind_ip;
+-struct orc_entry *cur_orc_table =3D __start_orc_unwind;
++static bool orc_init __ro_after_init;
++static unsigned int lookup_num_blocks __ro_after_init;
 =20
- 	call	do_exit
- SYM_CODE_END(rewind_stack_do_exit)
+-unsigned int lookup_num_blocks;
+-bool orc_init;
++static DEFINE_MUTEX(sort_mutex);
++static int *cur_orc_ip_table =3D __start_orc_unwind_ip;
++static struct orc_entry *cur_orc_table =3D __start_orc_unwind;
+=20
+ static inline unsigned long orc_ip(const int *ip)
+ {
 --=20
 2.21.1
 
