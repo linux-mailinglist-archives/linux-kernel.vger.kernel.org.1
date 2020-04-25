@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1196E1B88CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589B51B88D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgDYTLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 15:11:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58618 "EHLO mail.kernel.org"
+        id S1726434AbgDYTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 15:16:36 -0400
+Received: from gate.crashing.org ([63.228.1.57]:39547 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgDYTLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 15:11:36 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB0C02072B;
-        Sat, 25 Apr 2020 19:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587841896;
-        bh=ojBi9IE4D3MdpUgV8ceZyNxN10FACI5QirH+UPmeHKU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=tJl9sJ2gZ3uA8yvAGPvyK/8mFchZ5p6UiAe2cqJMrXB8hAfzfgDd/DBDRT0DxwpB3
-         qkDEhmve4q/pfqpX+A0qfZkOgflHCJX1bAhiyW/2CwZGE51nzr5jiblhE0BR4PGYOW
-         OTGAFntaOnmSj4xf9Ys0VQJJmU4doGKi+9jskWM8=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200424044311.2155917-2-vkoul@kernel.org>
-References: <20200424044311.2155917-1-vkoul@kernel.org> <20200424044311.2155917-2-vkoul@kernel.org>
-Subject: Re: [PATCH 2/2] clk: qcom: gcc: Add missing UFS clocks for SM8150
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>
-Date:   Sat, 25 Apr 2020 12:11:35 -0700
-Message-ID: <158784189516.117437.15588556636278394035@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        id S1726412AbgDYTQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 15:16:36 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 03PJFpQN000983;
+        Sat, 25 Apr 2020 14:15:51 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 03PJFndY000981;
+        Sat, 25 Apr 2020 14:15:49 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sat, 25 Apr 2020 14:15:49 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Jakub Jelinek <jakub@redhat.com>, jgross@suse.com,
+        x86@kernel.org, Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, Michael Matz <matz@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        =?iso-8859-1?Q?Fr=E9d=E9ric_Pierret_=28fepitre=29?= 
+        <frederic.pierret@qubes-os.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH] x86: Fix early boot crash on gcc-10, next try
+Message-ID: <20200425191549.GF17645@gate.crashing.org>
+References: <20200422212605.GI26846@zn.tnic> <CAKwvOd=exxhfb8N6=1Q=wBUaYcRDEq3L1+TiHDLz+pxWg8OuwQ@mail.gmail.com> <20200423125300.GC26021@zn.tnic> <20200423161126.GD26021@zn.tnic> <20200425014657.GA2191784@rani.riverdale.lan> <20200425085759.GA24294@zn.tnic> <20200425150440.GA470719@rani.riverdale.lan> <20200425173140.GB24294@zn.tnic> <20200425183701.GE17645@gate.crashing.org> <20200425185313.GD24294@zn.tnic>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200425185313.GD24294@zn.tnic>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Vinod Koul (2020-04-23 21:43:11)
-> Add the missing ufs card and ufs phy clocks for SM8150. They were missed
-> in earlier addition of clock driver.
->=20
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  drivers/clk/qcom/gcc-sm8150.c | 84 +++++++++++++++++++++++++++++++++++
->  1 file changed, 84 insertions(+)
->=20
-> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-> index 5c3dc34c955e..4354620fa12d 100644
-> --- a/drivers/clk/qcom/gcc-sm8150.c
-> +++ b/drivers/clk/qcom/gcc-sm8150.c
-> @@ -2881,6 +2881,45 @@ static struct clk_branch gcc_ufs_card_phy_aux_hw_c=
-tl_clk =3D {
->         },
->  };
-> =20
-> +/* external clocks so add BRANCH_HALT_SKIP */
-> +static struct clk_branch gcc_ufs_card_rx_symbol_0_clk =3D {
-> +       .halt_check =3D BRANCH_HALT_SKIP,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x7501c,
-> +               .enable_mask =3D BIT(0),
-> +               .hw.init =3D &(struct clk_init_data){
-> +                       .name =3D "gcc_ufs_card_rx_symbol_0_clk",
+On Sat, Apr 25, 2020 at 08:53:13PM +0200, Borislav Petkov wrote:
+> On Sat, Apr 25, 2020 at 01:37:01PM -0500, Segher Boessenkool wrote:
+> > That is a lot more typing then
+> > 	asm("");
+> 
+> That's why a macro with a hopefully more descriptive name would be
+> telling more than a mere asm("").
 
-Any reason to not use .fw_name?
+My point is that you should explain at *every use* of this why you cannot
+have tail calls *there*.  This is very unusual, after all.
 
-> +                       .ops =3D &clk_branch2_ops,
-> +               },
-> +       },
-> +};
-> +
-> +/* external clocks so add BRANCH_HALT_SKIP */
-> +static struct clk_branch gcc_ufs_card_rx_symbol_1_clk =3D {
-> +       .halt_check =3D BRANCH_HALT_SKIP,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x750ac,
-> +               .enable_mask =3D BIT(0),
+There are *very* few places where you want to prevent tail calls, that's
+why there is no attribute for it.
+
+
+Segher
