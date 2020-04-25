@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DE11B8A07
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FA71B89EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgDYXeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 19:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgDYXeB (ORCPT
+        id S1726349AbgDYXUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 19:20:12 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3060 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726238AbgDYXUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 19:34:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63FC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:34:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x18so16091984wrq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GR6Zp93w2P9nAEpmtk3P+nTTTrGY8uPP/pZ5DAWZeKk=;
-        b=MdSKweh+JscsTN879u2NQv0JkN49sSglDkE7v9OyXfLIFFcZdXbEtdsD0cNjLClc/1
-         X/HHqsMuojP0QuiaBhnsJs0f8e5QIj7JL0PSBpmZPiH+12T2l7O95iVE3ii0ToxM5uPO
-         lqBKieSlOC3Cmx9ufSY+IBUbMlSNviJ/5FBbhPaflyQSpIfDksgDIfP2X9QAj9DiQlR/
-         kSak9HxW6BghvVRtNZ5ujuwIg/weqGaH71P7xYYTe6tRefRXnHQ4lfoKJ5LChKuYdspG
-         qzrH7qACTE2Jz8Y1bPmuCPlO0E41XrM4Lmuaw6RaFrR+3Nbg64tZ3BGp86A/uH1RyMb0
-         9vaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GR6Zp93w2P9nAEpmtk3P+nTTTrGY8uPP/pZ5DAWZeKk=;
-        b=XbjX1Iv85hndGEnR7xpsMEiu/Z1Ba0kOIaa33lglQWHZcnl34/7FfzVcYG4Ds4xXlx
-         kaKbrbZ8SXGVxcg66VoYWFuR5ohUmnhdekM/xMUXTB2+U7PWtynhlb7jSq96coWluQIj
-         NNKi/FqQKxLkoX1DNACjn5v26ALnSZDXTxAdbh9aPlhzlR7kvh3NCGVhe255YCfZjRbb
-         gVnEUYf/TL9D6xqVgFvoRzSvNyvc/ifEsb0Q0eRq6/J6Na+xkGbnz/YY1FtDvEMRv8gQ
-         jtVTZCRfeFMMBo+8ZFhdg2GJePyj1yN1W2O7+ar78Gfs/O5LVY3j7ahiwiDThDQ8blEN
-         D2bQ==
-X-Gm-Message-State: AGi0Pubtl6kKsMKJ4VVpBVIfud+dIMlsRaasJwiLyrchdF6u1eo+O9YG
-        JiIQSZMtMkp9nn66Xo7tH44=
-X-Google-Smtp-Source: APiQypIUc0sCBKsFLqPzqpWHrlBzRSIyhcwP3/mDcDrbqAyZ55yL5C6sFnXLtGyBafxCZ0XgEsJGGA==
-X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr19840423wrx.239.1587857640288;
-        Sat, 25 Apr 2020 16:34:00 -0700 (PDT)
-Received: from josarchlaptop.nilsvital.de (pD9F5358A.dip0.t-ipconnect.de. [217.245.53.138])
-        by smtp.gmail.com with ESMTPSA id l5sm8886988wmi.22.2020.04.25.16.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Apr 2020 16:33:59 -0700 (PDT)
-Received: by josarchlaptop.nilsvital.de (sSMTP sendmail emulation); Sun, 26 Apr 2020 01:33:58 +0200
-From:   Johannes Hostert <jojohostert@gmail.com>
-Cc:     Johannes Hostert <jojohostert@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vt: vt_ioctl: Add new ioctl to read vt switch lock state
-Date:   Sun, 26 Apr 2020 01:14:34 +0200
-Message-Id: <20200425231436.535671-1-jojohostert@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 25 Apr 2020 19:20:11 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea4c59e0000>; Sat, 25 Apr 2020 16:19:58 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 25 Apr 2020 16:20:11 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 25 Apr 2020 16:20:11 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 25 Apr
+ 2020 23:20:05 +0000
+Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 25 Apr
+ 2020 23:20:04 +0000
+Subject: Re: [RFC PATCH v10 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1587700513-28449-1-git-send-email-skomatineni@nvidia.com>
+ <1587700513-28449-7-git-send-email-skomatineni@nvidia.com>
+ <fd5300fd-33af-babe-95d0-9669b66a8c06@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <d6b92c10-92d6-b0e6-1475-429b63ff61d7@nvidia.com>
+Date:   Sat, 25 Apr 2020 16:19:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <fd5300fd-33af-babe-95d0-9669b66a8c06@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587856798; bh=37bwKz8PDVAT3Z+9gtG8kKeaUYEOxghtuKi7TNhemZs=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=YvCZdT56apjLL/cvdA6pL/4z1TVnhZx5x2F5nKEsmGJCHctutV68/VLbWVrwFXndt
+         q2HsQ6uveVhIWGb6spdGuY/E7LDvLaoYryKGYBOJvyxlbUZBpr7F7SltECts7WQufz
+         6VJNlMGq+RvV7GIefuIb5koVzzimbAlVOEb7JiKSxo9k3iUFuX69srdZdK9QUJsP2x
+         slqC0tv4SWWvv+Plp7a43ZYVISdBIgZzHtfZ3PP2ZeACZvqsgfTlJPe/V1JE/4B1zI
+         2q7bHGeyjWUNHnTKvlyxEcm0bkoQZnPZ7mvLlGt68/BuBMvkW+/mH4hpIPjF2U4OZG
+         fZ+8TC9AmvAVQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing ioctls VT_LOCKSWITCH and VT_UNLOCKSWITCH can be used to
-allow/disallow switching the virtual terminal. However, no mechanism
-exists that allows software to read this lock state.
 
-Userspace programs that try to switch to another virtual terminal
-like chvt have no mechanism to figure out whether they will be able
-to actually switch the terminal. When eg. chvt is run while terminal
-switching is disabled, it simply sleeps forever waiting for the target
-terminal to become active.
+On 4/25/20 4:13 PM, Dmitry Osipenko wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> 24.04.2020 06:55, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> +static int __maybe_unused vi_runtime_resume(struct device *dev)
+>> +{
+>> +     struct tegra_vi *vi =3D dev_get_drvdata(dev);
+>> +     int ret;
+>> +
+>> +     ret =3D regulator_enable(vi->vdd);
+>> +     if (ret) {
+>> +             dev_err(dev, "failed to enable VDD supply: %d\n", ret);
+>> +             return ret;
+>> +     }
+>> +
+>> +     ret =3D clk_set_rate(vi->clk, vi->soc->vi_max_clk_hz);
+>> +     if (ret) {
+>> +             dev_err(dev, "failed to set vi clock rate: %d\n", ret);
+>> +             goto disable_vdd;
+>> +     }
+> Isn't setting clock rate using assigned-clocks in a device-tree enough?
+> Could you please clarify why this vi_max_clk_hz is needed?
 
-This commit introduces a new ioctl VT_GETLOCKSWITCH that allows
-reading the current state of the switch lock flag. Userspace
-software can then use that flag and handle not being able to switch
-virtual terminals.
+Max clock rate with sensor support will be 998Mhz.
 
-Example program using this:
-
-#include <linux/vt.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <errno.h>
-#include <error.h>
-#include <unistd.h>
-const char* console_device = "/dev/tty0";
-int main(int argc, char* argv[]) {
-	int fd;
-	while ((fd = open(console_device, O_RDWR)) == -1 && errno == EINTR);
-	if (fd < 0)
-		error(1, errno, "Opening %s", console_device);
-        int ret;
-	while ((ret = ioctl(fd, VT_GETLOCKSWITCH, 1)) == -1 && errno == EINTR);
-	if (ret == -1)
-		error(1, errno, "%s: VT_GETLOCKSWITCH", console_device);
-	printf("VT switching is %s\n", ret == 1 ? "locked" : "unlocked");
-	close(fd);
-	return 0;
-}
-
-Signed-off-by: Johannes Hostert <jojohostert@gmail.com>
----
- drivers/tty/vt/vt_ioctl.c | 5 +++++
- include/uapi/linux/vt.h   | 1 +
- 2 files changed, 6 insertions(+)
-
-diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index daf61c28ba76..08b808e1fbf0 100644
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -1028,6 +1028,11 @@ int vt_ioctl(struct tty_struct *tty,
- 			return -EPERM;
- 		vt_dont_switch = false;
- 		break;
-+	case VT_GETLOCKSWITCH:
-+		if (!capable(CAP_SYS_TTY_CONFIG))
-+			return -EPERM;
-+		ret = vt_dont_switch ? 1 : 0;
-+		break;
- 	case VT_GETHIFONTMASK:
- 		ret = put_user(vc->vc_hi_font_mask,
- 					(unsigned short __user *)arg);
-diff --git a/include/uapi/linux/vt.h b/include/uapi/linux/vt.h
-index e9d39c48520a..13a1e82dfb14 100644
---- a/include/uapi/linux/vt.h
-+++ b/include/uapi/linux/vt.h
-@@ -61,6 +61,7 @@ struct vt_consize {
- #define VT_RESIZEX      0x560A  /* set kernel's idea of screensize + more */
- #define VT_LOCKSWITCH   0x560B  /* disallow vt switching */
- #define VT_UNLOCKSWITCH 0x560C  /* allow vt switching */
-+#define VT_GETLOCKSWITCH 0x5610  /* return vt switch lock state */
- #define VT_GETHIFONTMASK 0x560D  /* return hi font mask */
- 
- struct vt_event {
--- 
-2.26.2
+Later when sensor support is added, based on TPG or Sensor mode clock=20
+rate will be set here
 
