@@ -2,253 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC281B8539
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D07E1B853E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgDYJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 05:25:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57216 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgDYJZT (ORCPT
+        id S1726117AbgDYJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726059AbgDYJ2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 05:25:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03P9N63I172295;
-        Sat, 25 Apr 2020 09:24:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=E4qYxCnU4PYfmFZxSvJ3HLmvAuXno1o/zIOiRjeOkwA=;
- b=lrZti5QBahzHZKup8JYThKloqQnP953PVbwItHZDzEq8l6Dys10aCZ1JpjpOrZQwB6Ky
- m/F5VuVJ1IB1eWQcYYuhDnrYd9+N6loSlYTV/qHSlgEkzVG25lps3AJPC/AcUIIL+rq+
- ZaPHo6rbaFpJLI+o9/7Ir3gOCuqInOAkSBzQGqT7nBsylU0jTyG8SRNYWbJvfLD9oSuV
- PnkaQGg0Ypwtll+UBpWMICVF0C8aYQ+7doXFD3z3+Ie0S3fJn4oJGEwQZGJDYKsioD61
- Bf4WxOMekwVpNsS76laPFAEAO4w8N9jYq+77KIo5QWtCyVuxGLm+J1rjCcmCKOhOf7rf FA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30mdumrj0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Apr 2020 09:24:51 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03P9MRkI134537;
-        Sat, 25 Apr 2020 09:24:50 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30maarw53a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Apr 2020 09:24:50 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03P9Okj3002586;
-        Sat, 25 Apr 2020 09:24:47 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 25 Apr 2020 02:24:46 -0700
-Date:   Sat, 25 Apr 2020 12:24:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Vesa =?iso-8859-1?B?SuTkc2tlbORpbmVu?= 
-        <vesa.jaaskelainen@vaisala.com>
-Cc:     op-tee@lists.trustedfirmware.org,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] tee: add support for session's client UUID generation
-Message-ID: <20200425092439.GT2682@kadam>
-References: <20200423151701.111231-1-vesa.jaaskelainen@vaisala.com>
- <20200423151701.111231-2-vesa.jaaskelainen@vaisala.com>
- <20200423173527.GP2682@kadam>
- <29b76307-12cb-c52e-f72f-eb7c22bab012@vaisala.com>
+        Sat, 25 Apr 2020 05:28:22 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF0EC09B04B
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:28:21 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u127so14439772wmg.1
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=4Ov1WJ/PgS4EbQynFQx8PgzeBkw/xgApXHyA3MQ0+9M=;
+        b=qjLglRGNuU2bK+hrhzInqG9IEVIcOdbIGNB9SPi9R2vlbJ/aYgpt3UicGGLKVUsw18
+         Gk7KG3ML9v4AtAF3fUg8qXmIyWLV7y1iVjl8xWlI1O+SE5FNOdNKCR6GMpFf4cR7Nvsq
+         B2C9i3B8n4eLQg9TPU0RKIOO7MP/aojFwOdCj4zhMPlJbvCKok40hqv5WVKbVVxxJXh6
+         mGT4kOMI8pPyIdP3cxsd/N6ucFELKz1540AlN9eSAFd3E/yFmubmsBp1Wqut61VA7Nno
+         GV5nsPcyhe/wbfep1OLLm0lJr9zSr0ZxbmRLzWyM8k3ezG3NdGg78hWk8KMdI/DYYoDN
+         LtRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=4Ov1WJ/PgS4EbQynFQx8PgzeBkw/xgApXHyA3MQ0+9M=;
+        b=B0nnkaCK5OJMUtCVD0zDook9eEuPb765+YLNVwEOIRpRLqH7pIuLt3DzELYrZZMl8v
+         liGfi0LhRgyPr5ZtYNpxmJFmvfbZa7tJA68YfJUsVgfKYa4PfQqCofos38mBIid/3zN1
+         4x/QIGNl9c+kLjIZQk/xMgJKfbm1y3oAB9AStkMuINBHw/A68lLFNMQ/HOj5GRLVvEw0
+         2ifRk0O1bF1pMWWL6EzfrkSNWEJliXzIY12fVfsSKWpFTE5vHIK5jCDDjCHtTXqsvknD
+         VyvOOI9v0UlNfOoP0yR+zFoCZI4zIjy2ZnQiK0jGNjkx+KwO7340Vi3/ethW6TTv45hV
+         Wb8Q==
+X-Gm-Message-State: AGi0PuaXZ1X4v0L1Kf77BJDeqbvc3CetNlAse5vnybgPXk+IzmF1h2kf
+        mriudqSs1BDSX6TcJ7mKLek=
+X-Google-Smtp-Source: APiQypJUwBdJWIj3ddyLksHS5tELezEBjyOn68m5su5LlQoc5T3dj72/uG/DQMsa8by/BY1Oq33/iA==
+X-Received: by 2002:a1c:32c7:: with SMTP id y190mr15942213wmy.13.1587806900517;
+        Sat, 25 Apr 2020 02:28:20 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id 145sm6700781wma.1.2020.04.25.02.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Apr 2020 02:28:19 -0700 (PDT)
+Date:   Sat, 25 Apr 2020 11:28:18 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] scheduler fixes
+Message-ID: <20200425092818.GA58070@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <29b76307-12cb-c52e-f72f-eb7c22bab012@vaisala.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004250080
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- impostorscore=0 malwarescore=0 phishscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004250080
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 09:16:57AM +0300, Vesa Jääskeläinen wrote:
-> Hi Dan,
-> 
-> Thanks for comments!
-> 
-> On 2020-04-23 20:35, Dan Carpenter wrote:
-> > On Thu, Apr 23, 2020 at 06:16:59PM +0300, Vesa Jääskeläinen wrote:
-> > > +static int uuid_v5(uuid_t *uuid, const uuid_t *ns, const void *name,
-> > > +		   size_t size)
-> > > +{
-> > > +	unsigned char hash[SHA1_DIGEST_SIZE];
-> > > +	struct crypto_shash *shash = NULL;
-> > > +	struct shash_desc *desc = NULL;
-> > > +	int rc;
-> > > +
-> > > +	shash = crypto_alloc_shash("sha1", 0, 0);
-> > > +	if (IS_ERR(shash)) {
-> > > +		rc = PTR_ERR(shash);
-> > > +		pr_err("shash(sha1) allocation failed\n");
-> > > +		return rc;
-> > > +	}
-> > > +
-> > > +	desc = kzalloc(sizeof(*desc) + crypto_shash_descsize(shash),
-> > > +		       GFP_KERNEL);
-> > > +	if (IS_ERR(desc)) {
-> > 
-> > 
-> > kzalloc() returns NULL on error.
-> 
-> Err...Right. Will fix for V2. Thanks for noticing this.
-> 
-> I was probably confused by this:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/slab.h?h=v5.7-rc2#n553
-> 
-> As there is no error handling case documented for kmalloc and friends -- I
-> was just looking that as there are non-zero error cases in that referenced
-> line (ZERO_SIZE_PTR) so we need to check if pointer has error value as it
-> was with crypto_alloc_shash().
-> 
-> But looking at users of kzalloc then convention seems to be just check for
-> NULL.
-> 
-> Probably referenced code is then expected to cause page fault on error case
-> as ZERO_SIZE_PTR is not error value as such.
+Linus,
+
+Please pull the latest sched/urgent git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-04-25
+
+   # HEAD: eaf5a92ebde5bca3bb2565616115bd6d579486cd sched/core: Fix reset-on-fork from RT with uclamp
+
+Misc fixes:
+
+ - an uclamp accounting fix
+ - three frequency invariance fixes and a readability improvement
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Giovanni Gherdovich (3):
+      x86, sched: Bail out of frequency invariance if base frequency is unknown
+      x86, sched: Account for CPUs with less than 4 cores in freq. invariance
+      x86, sched: Move check for CPU type to caller function
+
+Peter Zijlstra (Intel) (1):
+      x86, sched: Don't enable static key when starting secondary CPUs
+
+Quentin Perret (1):
+      sched/core: Fix reset-on-fork from RT with uclamp
 
 
-Zero size buffers are not an error.  You can copy zero bytes to them or
-from them without a problem.
+ arch/x86/kernel/smpboot.c | 47 +++++++++++++++++++++++++++++++++--------------
+ kernel/sched/core.c       |  9 ++-------
+ 2 files changed, 35 insertions(+), 21 deletions(-)
 
-	size = 0;
-	p = kmalloc(size, GFP_KERNEL);
-	memcpy(p, src, 0);
-	for (i = 0; i < size; i++)
-		printk("%d\n", p[i]);
-	copy_to_user(user_ptr, p, size);
-
-All that's fine and does nothing.  You should never test for
-ZERO_SIZE_PTR.  Check for "size == 0" instead.
-
-> 
-> > 
-> > > +		rc = PTR_ERR(desc);
-> > > +		goto out;
-> > 
-> > Please choose a label name so that we can tell what the goto will do
-> > like "goto free_shash;".
-> 
-> Ok. Will update for V2.
-> 
-> > > +	}
-> > > +
-> > > +	desc->tfm = shash;
-> > > +
-> > > +	rc = crypto_shash_init(desc);
-> > > +	if (rc < 0)
-> > > +		goto out2;
-> > > +
-> > > +	rc = crypto_shash_update(desc, (const u8 *)ns, sizeof(*ns));
-> > > +	if (rc < 0)
-> > > +		goto out2;
-> > > +
-> > > +	rc = crypto_shash_update(desc, (const u8 *)name, size);
-> > > +	if (rc < 0)
-> > > +		goto out2;
-> > > +
-> > > +	rc = crypto_shash_final(desc, hash);
-> > > +	if (rc < 0)
-> > > +		goto out2;
-> > > +
-> > > +	memcpy(uuid->b, hash, UUID_SIZE);
-> > > +
-> > > +	/* Tag for version 5 */
-> > > +	uuid->b[6] = (hash[6] & 0x0F) | 0x50;
-> > > +	uuid->b[8] = (hash[8] & 0x3F) | 0x80;
-> > > +
-> > > +out2:
-> > > +	kfree(desc);
-> > > +
-> > > +out:
-> > > +	crypto_free_shash(shash);
-> > > +	return rc;
-> > > +}
-> > > +
-> > > +int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
-> > > +				 const u8 connection_data[TEE_IOCTL_UUID_LEN])
-> > > +{
-> > > +	const char *application_id = NULL;
-> > > +	gid_t ns_grp = (gid_t)-1;
-> > > +	kgid_t grp = INVALID_GID;
-> > > +	char *name = NULL;
-> > > +	int rc;
-> > > +
-> > > +	if (connection_method == TEE_IOCTL_LOGIN_PUBLIC) {
-> > > +		/* Nil UUID to be passed to TEE environment */
-> > > +		uuid_copy(uuid, &uuid_null);
-> > > +		return 0;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * In Linux environment client UUID is based on UUIDv5.
-> > > +	 *
-> > > +	 * Determine client UUID with following semantics for 'name':
-> > > +	 *
-> > > +	 * For TEEC_LOGIN_USER:
-> > > +	 * uid=<uid>
-> > > +	 *
-> > > +	 * For TEEC_LOGIN_GROUP:
-> > > +	 * gid=<gid>
-> > > +	 *
-> > > +	 */
-> > > +
-> > > +	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-> > > +	if (!name)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	switch (connection_method) {
-> > > +	case TEE_IOCTL_LOGIN_USER:
-> > > +		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
-> > > +			  current_euid().val);
-> > 
-> > It doesn't make sense to use sCnprintf() instead of snprintf() if we're
-> > not going to preserve the error code.  Probably it's better to preserve
-> > the error code actually so we can avoid the strlen(name) later on.
-> 
-> Ok. I assume you meant here using snprintf where we can capture the error
-> situation of too large output string. scnprintf does not seem to have error
-> returning capabilities.
-> 
-> I assume you meant something like this:
-> 
-> name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
-> 		    current_euid().val);
-> if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-> 	rc = -E2BIG;
-> 	goto out_free_name;
-> }
-> 
-
-None of the kernel snprintf() functions return negative error codes.
-The difference between snprintf() and scnprintf() is that snprintf()
-returns the number of bytes that would have been copied if there were
-enough space and scnprintf() returns the number of bytes which were
-*actually* copied.
-
-But if we don't care about the return code, then we should default to
-using snprintf() because it is the simpler looking function.  Always
-right the simplest code you can.
-
-regards,
-dan carpenter
-
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index fe3ab9632f3b..8c89e4d9ad28 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -147,7 +147,7 @@ static inline void smpboot_restore_warm_reset_vector(void)
+ 	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
+ }
+ 
+-static void init_freq_invariance(void);
++static void init_freq_invariance(bool secondary);
+ 
+ /*
+  * Report back to the Boot Processor during boot time or to the caller processor
+@@ -185,7 +185,7 @@ static void smp_callin(void)
+ 	 */
+ 	set_cpu_sibling_map(raw_smp_processor_id());
+ 
+-	init_freq_invariance();
++	init_freq_invariance(true);
+ 
+ 	/*
+ 	 * Get our bogomips.
+@@ -1341,7 +1341,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
+ 	set_sched_topology(x86_topology);
+ 
+ 	set_cpu_sibling_map(0);
+-	init_freq_invariance();
++	init_freq_invariance(false);
+ 	smp_sanity_check();
+ 
+ 	switch (apic_intr_mode) {
+@@ -1877,9 +1877,6 @@ static bool knl_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq,
+ 	int err, i;
+ 	u64 msr;
+ 
+-	if (!x86_match_cpu(has_knl_turbo_ratio_limits))
+-		return false;
+-
+ 	err = rdmsrl_safe(MSR_PLATFORM_INFO, base_freq);
+ 	if (err)
+ 		return false;
+@@ -1945,18 +1942,23 @@ static bool skx_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq, int size)
+ 
+ static bool core_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
+ {
++	u64 msr;
+ 	int err;
+ 
+ 	err = rdmsrl_safe(MSR_PLATFORM_INFO, base_freq);
+ 	if (err)
+ 		return false;
+ 
+-	err = rdmsrl_safe(MSR_TURBO_RATIO_LIMIT, turbo_freq);
++	err = rdmsrl_safe(MSR_TURBO_RATIO_LIMIT, &msr);
+ 	if (err)
+ 		return false;
+ 
+-	*base_freq = (*base_freq >> 8) & 0xFF;      /* max P state */
+-	*turbo_freq = (*turbo_freq >> 24) & 0xFF;   /* 4C turbo    */
++	*base_freq = (*base_freq >> 8) & 0xFF;    /* max P state */
++	*turbo_freq = (msr >> 24) & 0xFF;         /* 4C turbo    */
++
++	/* The CPU may have less than 4 cores */
++	if (!*turbo_freq)
++		*turbo_freq = msr & 0xFF;         /* 1C turbo    */
+ 
+ 	return true;
+ }
+@@ -1972,7 +1974,8 @@ static bool intel_set_max_freq_ratio(void)
+ 	    skx_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
+ 		goto out;
+ 
+-	if (knl_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
++	if (x86_match_cpu(has_knl_turbo_ratio_limits) &&
++	    knl_set_max_freq_ratio(&base_freq, &turbo_freq, 1))
+ 		goto out;
+ 
+ 	if (x86_match_cpu(has_skx_turbo_ratio_limits) &&
+@@ -1985,13 +1988,22 @@ static bool intel_set_max_freq_ratio(void)
+ 	return false;
+ 
+ out:
++	/*
++	 * Some hypervisors advertise X86_FEATURE_APERFMPERF
++	 * but then fill all MSR's with zeroes.
++	 */
++	if (!base_freq) {
++		pr_debug("Couldn't determine cpu base frequency, necessary for scale-invariant accounting.\n");
++		return false;
++	}
++
+ 	arch_turbo_freq_ratio = div_u64(turbo_freq * SCHED_CAPACITY_SCALE,
+ 					base_freq);
+ 	arch_set_max_freq_ratio(turbo_disabled());
+ 	return true;
+ }
+ 
+-static void init_counter_refs(void *arg)
++static void init_counter_refs(void)
+ {
+ 	u64 aperf, mperf;
+ 
+@@ -2002,18 +2014,25 @@ static void init_counter_refs(void *arg)
+ 	this_cpu_write(arch_prev_mperf, mperf);
+ }
+ 
+-static void init_freq_invariance(void)
++static void init_freq_invariance(bool secondary)
+ {
+ 	bool ret = false;
+ 
+-	if (smp_processor_id() != 0 || !boot_cpu_has(X86_FEATURE_APERFMPERF))
++	if (!boot_cpu_has(X86_FEATURE_APERFMPERF))
+ 		return;
+ 
++	if (secondary) {
++		if (static_branch_likely(&arch_scale_freq_key)) {
++			init_counter_refs();
++		}
++		return;
++	}
++
+ 	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+ 		ret = intel_set_max_freq_ratio();
+ 
+ 	if (ret) {
+-		on_each_cpu(init_counter_refs, NULL, 1);
++		init_counter_refs();
+ 		static_branch_enable(&arch_scale_freq_key);
+ 	} else {
+ 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3a61a3b8eaa9..9a2fbf98fd6f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1232,13 +1232,8 @@ static void uclamp_fork(struct task_struct *p)
+ 		return;
+ 
+ 	for_each_clamp_id(clamp_id) {
+-		unsigned int clamp_value = uclamp_none(clamp_id);
+-
+-		/* By default, RT tasks always get 100% boost */
+-		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+-			clamp_value = uclamp_none(UCLAMP_MAX);
+-
+-		uclamp_se_set(&p->uclamp_req[clamp_id], clamp_value, false);
++		uclamp_se_set(&p->uclamp_req[clamp_id],
++			      uclamp_none(clamp_id), false);
+ 	}
+ }
+ 
