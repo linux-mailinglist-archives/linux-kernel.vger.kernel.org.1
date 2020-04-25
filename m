@@ -2,148 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FEB1B88F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8E81B8919
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgDYTar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 15:30:47 -0400
-Received: from mout.web.de ([212.227.15.4]:46217 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgDYTar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 15:30:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1587843026;
-        bh=RwrA069HOzfiE5yqdsD0WFeIg6rPJQx0TsH4TCw5U9A=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=lLxRCdNmxzgg8nbSvTKagYC/6I2n1mkxn59jiYGeXwqYfOtc0kI1GkwuRPx/gGSW7
-         LHTZtapiw86tHDh2Koy4ZJ6bls0WyXMk766QyTEYPYhZvTexE/UH1CmWGfmJ1uMCtl
-         pL0OAqFKVZjKhwVsn8Z4ACP6pAMla2230ViMuZlU=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.160.204]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Mhljf-1jpKfi39DX-00Mwio; Sat, 25
- Apr 2020 21:30:25 +0200
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Yuan Zhang <yuanxzhang@fudan.edu.cn>
-Subject: Re: [PATCH] mmc: owl-mmc: Fix dma_chan refcnt leak in owl_mmc_probe()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <282da79a-eda7-f534-a6ed-8ac38fcc2c8b@web.de>
-Date:   Sat, 25 Apr 2020 21:30:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726332AbgDYTlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 15:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgDYTlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 15:41:36 -0400
+X-Greylist: delayed 542 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 25 Apr 2020 12:41:36 PDT
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CCFC09B04D
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 12:41:36 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 7C038E50B;
+        Sat, 25 Apr 2020 21:32:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8b-C_GMZyM0G; Sat, 25 Apr 2020 21:32:27 +0200 (CEST)
+Received: from function (lfbn-bor-1-797-11.w86-234.abo.wanadoo.fr [86.234.239.11])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 4601DE50A;
+        Sat, 25 Apr 2020 21:32:27 +0200 (CEST)
+Received: from samy by function with local (Exim 4.93)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1jSQXK-00GkbU-31; Sat, 25 Apr 2020 21:32:26 +0200
+Date:   Sat, 25 Apr 2020 21:32:26 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     gregkh@linuxfoundation.org
+Cc:     speakup@braille.uwo.ca, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/speakup: Add inflection synth parameter
+Message-ID: <20200425193226.nv3zfd4k3xavi353@function>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        gregkh@linuxfoundation.org, speakup@braille.uwo.ca,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fB+rVVZJNRD3ane1aVJusEVoiTDTL4gCWWTmlkGc5gOFMDIwb/d
- jyMA4Jg2yiogJUGSY6Ah1XiOe1gXcXABJJbTsRQL/UXOoW4xOhM+jUkZF82QvyunQPt5HIT
- BkdchXYzKXlpCj03eKwyv8+XV9Lbcndu5LZy696IjtdevXepmWc8osEtwzkB1nVFxvhUTzt
- pWGEGeLz8QyGRbWyj66hw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C24copa4gU4=:BGU01SMQm6FRl7p4kUKNMg
- 9UTb8ORH7Jvd+UHOY5zUS3RPoPNFVo8wahN6a95Lx0FT9cASiIH/zV5d/C3uRYqP2Yy3P97aL
- olYXkZllWzdobJ+GBcwoc3P4b8fRBtF68UPY6GE4lmHtefqnEiYiaN1kZTCuDyKnZMeHD7so1
- HaBix501yRO0iezCbTeoIbrGL9mfX+WLcGcFNDH2eikzTfcjkZyeWERP9Uxb+kqS/HRnecWOG
- 5GfxU3Ql313Swnnf6TGVow49gUZ5DFW6lxucp92h7c8pTcv9/yW2cgaKxrtlFjDa2rUcVw5Pi
- DTqx3duFfImkbNczuZfUdUasS/IJ++YAMCilD9ZycdP+sHStnYpsIHl+Xq3T+xSasvORlLrle
- flBIeP8oqqzWY2fXraXQwHVmn9Px35bXmo5cTjQcnvlqzplUg69Cp7UQBv8eD2BXu2iZYQ5vx
- y6bYtrixMXMRIzK8rX/vr9ADX17IeSLRZdNzfz4gVX575mAoTFQLNsfVgi78TOi5I1zFYiljH
- m4vv/jvzeanm38QYvFJ18JbketMtRzhh2eocskfQ+4801yxf4Y69hdiq3cetHjp7p4ldriRry
- V3tfdB3j7wC97BKRi+uT3BXbkSutPt2KE4jGjiesgISoOy3hcJ6Zd5mIevxx+/xn4ErVuXDQX
- H9Ae502UTVcMHglzdUUAT7yi52RhdB8dNocwdJeSIOgiUz+7aya43sYauYP1by9w+sbunsAJn
- xEYWPj4qTm9uCXDBzUs1dbOhlSplMhIqA1mVEWihD4BOxX9bFRr6WJgCbRUV7gawb4GEpuM0p
- wiSnJ8EuzPVPXcSQex9tOZ2c33Zkel8bhFSok81+doe130YmRVZBbogHm/PVYJg+joVTVZjuG
- UCOXuf7+fpqYkHzremuI0MMan7p5I1GpASEGrUpctGMQNSeen9LMpAE9Ibhf6KPiQktLLhdT3
- deeUrdzuko4VmqwywJZlxIhFg28k1UbDJeHxetc97h2Vsclwv6dJwadmb6R4JL7ADMzt1Hgw1
- jYPCZX4Pfs+/nQ00C74W8jf0m9Fi1OY5cU/DeYsmfaeDreTqh5f3AS7JYXsX/IkZLnw4Wg4/7
- dN3Al6nMWJo9MasdMYutUAauwMYNyQBmbU6Jqna5y8jBgZ0wXYQC7Qfo3z7sp42RxgO+tNzYt
- cZrGDwR7BpTiWH1VbmU8arpQUvvel6Jvt9lAB4FOUi6CZu01fy6XOE+lL5K2Y1LhcDx3Cw8q0
- wppaFrAE5PCpEEZJc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Fix this issue by jumping to "err_put_dma" label when those error
-> scenarios occur.
+The inflection parameter, i.e. the pitch range, allows to change the
+expressiveness of the synthesized voice.  This is supported by the DEC
+talk synths, and software synthesizers such as espeak/espeak-ng.
 
-I suggest to reconsider your jump target selection.
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ drivers/staging/speakup/speakup_decext.c     |    4 ++++
+ drivers/staging/speakup/speakup_decpc.c      |    4 ++++
+ drivers/staging/speakup/speakup_dectlk.c     |    5 ++++-
+ drivers/staging/speakup/speakup_dummy.c      |    4 ++++
+ drivers/staging/speakup/speakup_soft.c       |    4 ++++
+ drivers/staging/speakup/spk_types.h          |    3 ++-
+ drivers/staging/speakup/spkguide.txt         |    7 ++++---
+ drivers/staging/speakup/sysfs-driver-speakup |    6 ++++++
+ drivers/staging/speakup/varhandlers.c        |    1 +
+ 9 files changed, 33 insertions(+), 5 deletions(-)
 
-
-=E2=80=A6
-> +++ b/drivers/mmc/host/owl-mmc.c
-=E2=80=A6
-> @@ -643,19 +643,22 @@ static int owl_mmc_probe(struct platform_device *p=
-dev)
->  	return 0;
->
-> +err_put_dma:
-> +	if (owl_host->dma)
-> +		dma_release_channel(owl_host->dma);
-
-I interpret the source code in the way that you would like to call
-this function for the desired exception handling only after a call
-of the function =E2=80=9Cdma_request_chan=E2=80=9D succeeded.
-Thus I would expect that the passed pointer will usually be still valid.
-(Can the proposed null pointer check be omitted then?)
-
-How do you think about the following change possibility?
-
-+err_release_channel:
-+	dma_release_channel(owl_host->dma);
-
-
-Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the change descri=
-ption?
-
-Regards,
-Markus
+--- a/drivers/staging/speakup/speakup_decext.c
++++ b/drivers/staging/speakup/speakup_decext.c
+@@ -43,6 +43,7 @@ static struct var_t vars[] = {
+ 	{ CAPS_STOP, .u.s = {"[:dv ap 100]" } },
+ 	{ RATE, .u.n = {"[:ra %d]", 7, 0, 9, 150, 25, NULL } },
+ 	{ PITCH, .u.n = {"[:dv ap %d]", 100, 0, 100, 0, 0, NULL } },
++	{ INFLECTION, .u.n = {"[:dv pr %d] ", 100, 0, 10000, 0, 0, NULL } },
+ 	{ VOL, .u.n = {"[:dv gv %d]", 13, 0, 16, 0, 5, NULL } },
+ 	{ PUNCT, .u.n = {"[:pu %c]", 0, 0, 2, 0, 0, "nsa" } },
+ 	{ VOICE, .u.n = {"[:n%c]", 0, 0, 9, 0, 0, "phfdburwkv" } },
+@@ -59,6 +60,8 @@ static struct kobj_attribute caps_stop_a
+ 	__ATTR(caps_stop, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute pitch_attribute =
+ 	__ATTR(pitch, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute inflection_attribute =
++	__ATTR(inflection, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute punct_attribute =
+ 	__ATTR(punct, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute rate_attribute =
+@@ -87,6 +90,7 @@ static struct attribute *synth_attrs[] =
+ 	&caps_start_attribute.attr,
+ 	&caps_stop_attribute.attr,
+ 	&pitch_attribute.attr,
++	&inflection_attribute.attr,
+ 	&punct_attribute.attr,
+ 	&rate_attribute.attr,
+ 	&voice_attribute.attr,
+--- a/drivers/staging/speakup/speakup_decpc.c
++++ b/drivers/staging/speakup/speakup_decpc.c
+@@ -139,6 +139,7 @@ static struct var_t vars[] = {
+ 	{ CAPS_STOP, .u.s = {"[:dv ap 100]" } },
+ 	{ RATE, .u.n = {"[:ra %d]", 9, 0, 18, 150, 25, NULL } },
+ 	{ PITCH, .u.n = {"[:dv ap %d]", 80, 0, 100, 20, 0, NULL } },
++	{ INFLECTION, .u.n = {"[:dv pr %d] ", 100, 0, 10000, 0, 0, NULL } },
+ 	{ VOL, .u.n = {"[:vo se %d]", 5, 0, 9, 5, 10, NULL } },
+ 	{ PUNCT, .u.n = {"[:pu %c]", 0, 0, 2, 0, 0, "nsa" } },
+ 	{ VOICE, .u.n = {"[:n%c]", 0, 0, 9, 0, 0, "phfdburwkv" } },
+@@ -155,6 +156,8 @@ static struct kobj_attribute caps_stop_a
+ 	__ATTR(caps_stop, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute pitch_attribute =
+ 	__ATTR(pitch, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute inflection_attribute =
++	__ATTR(inflection, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute punct_attribute =
+ 	__ATTR(punct, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute rate_attribute =
+@@ -183,6 +186,7 @@ static struct attribute *synth_attrs[] =
+ 	&caps_start_attribute.attr,
+ 	&caps_stop_attribute.attr,
+ 	&pitch_attribute.attr,
++	&inflection_attribute.attr,
+ 	&punct_attribute.attr,
+ 	&rate_attribute.attr,
+ 	&voice_attribute.attr,
+--- a/drivers/staging/speakup/speakup_dectlk.c
++++ b/drivers/staging/speakup/speakup_dectlk.c
+@@ -44,7 +44,7 @@ static struct var_t vars[] = {
+ 	{ CAPS_START, .u.s = {"[:dv ap 160] " } },
+ 	{ CAPS_STOP, .u.s = {"[:dv ap 100 ] " } },
+ 	{ RATE, .u.n = {"[:ra %d] ", 180, 75, 650, 0, 0, NULL } },
+-	{ PITCH, .u.n = {"[:dv ap %d] ", 122, 50, 350, 0, 0, NULL } },
++	{ INFLECTION, .u.n = {"[:dv pr %d] ", 100, 0, 10000, 0, 0, NULL } },
+ 	{ VOL, .u.n = {"[:dv g5 %d] ", 86, 60, 86, 0, 0, NULL } },
+ 	{ PUNCT, .u.n = {"[:pu %c] ", 0, 0, 2, 0, 0, "nsa" } },
+ 	{ VOICE, .u.n = {"[:n%c] ", 0, 0, 9, 0, 0, "phfdburwkv" } },
+@@ -61,6 +61,8 @@ static struct kobj_attribute caps_stop_a
+ 	__ATTR(caps_stop, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute pitch_attribute =
+ 	__ATTR(pitch, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute inflection_attribute =
++	__ATTR(inflection, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute punct_attribute =
+ 	__ATTR(punct, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute rate_attribute =
+@@ -89,6 +91,7 @@ static struct attribute *synth_attrs[] =
+ 	&caps_start_attribute.attr,
+ 	&caps_stop_attribute.attr,
+ 	&pitch_attribute.attr,
++	&inflection_attribute.attr,
+ 	&punct_attribute.attr,
+ 	&rate_attribute.attr,
+ 	&voice_attribute.attr,
+--- a/drivers/staging/speakup/speakup_dummy.c
++++ b/drivers/staging/speakup/speakup_dummy.c
+@@ -24,6 +24,7 @@ static struct var_t vars[] = {
+ 	{ PAUSE, .u.s = {"PAUSE\n"} },
+ 	{ RATE, .u.n = {"RATE %d\n", 8, 1, 16, 0, 0, NULL } },
+ 	{ PITCH, .u.n = {"PITCH %d\n", 8, 0, 16, 0, 0, NULL } },
++	{ INFLECTION, .u.n = {"INFLECTION %d\n", 8, 0, 16, 0, 0, NULL } },
+ 	{ VOL, .u.n = {"VOL %d\n", 8, 0, 16, 0, 0, NULL } },
+ 	{ TONE, .u.n = {"TONE %d\n", 8, 0, 16, 0, 0, NULL } },
+ 	{ DIRECT, .u.n = {NULL, 0, 0, 1, 0, 0, NULL } },
+@@ -39,6 +40,8 @@ static struct kobj_attribute caps_stop_a
+ 	__ATTR(caps_stop, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute pitch_attribute =
+ 	__ATTR(pitch, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute inflection_attribute =
++	__ATTR(inflection, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute rate_attribute =
+ 	__ATTR(rate, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute tone_attribute =
+@@ -65,6 +68,7 @@ static struct attribute *synth_attrs[] =
+ 	&caps_start_attribute.attr,
+ 	&caps_stop_attribute.attr,
+ 	&pitch_attribute.attr,
++	&inflection_attribute.attr,
+ 	&rate_attribute.attr,
+ 	&tone_attribute.attr,
+ 	&vol_attribute.attr,
+--- a/drivers/staging/speakup/speakup_soft.c
++++ b/drivers/staging/speakup/speakup_soft.c
+@@ -38,6 +38,7 @@ static struct var_t vars[] = {
+ 	{ PAUSE, .u.n = {"\x01P" } },
+ 	{ RATE, .u.n = {"\x01%ds", 2, 0, 9, 0, 0, NULL } },
+ 	{ PITCH, .u.n = {"\x01%dp", 5, 0, 9, 0, 0, NULL } },
++	{ INFLECTION, .u.n = {"\x01%dr", 5, 0, 9, 0, 0, NULL } },
+ 	{ VOL, .u.n = {"\x01%dv", 5, 0, 9, 0, 0, NULL } },
+ 	{ TONE, .u.n = {"\x01%dx", 1, 0, 2, 0, 0, NULL } },
+ 	{ PUNCT, .u.n = {"\x01%db", 0, 0, 2, 0, 0, NULL } },
+@@ -57,6 +58,8 @@ static struct kobj_attribute freq_attrib
+ 	__ATTR(freq, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute pitch_attribute =
+ 	__ATTR(pitch, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute inflection_attribute =
++	__ATTR(inflection, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute punct_attribute =
+ 	__ATTR(punct, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute rate_attribute =
+@@ -96,6 +99,7 @@ static struct attribute *synth_attrs[] =
+ 	&freq_attribute.attr,
+ /*	&lang_attribute.attr, */
+ 	&pitch_attribute.attr,
++	&inflection_attribute.attr,
+ 	&punct_attribute.attr,
+ 	&rate_attribute.attr,
+ 	&tone_attribute.attr,
+--- a/drivers/staging/speakup/spk_types.h
++++ b/drivers/staging/speakup/spk_types.h
+@@ -42,7 +42,8 @@ enum var_id_t {
+ 	SAY_CONTROL, SAY_WORD_CTL, NO_INTERRUPT, KEY_ECHO,
+ 	SPELL_DELAY, PUNC_LEVEL, READING_PUNC,
+ 	ATTRIB_BLEEP, BLEEPS,
+-	RATE, PITCH, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG, DIRECT, PAUSE,
++	RATE, PITCH, INFLECTION, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG,
++	DIRECT, PAUSE,
+ 	CAPS_START, CAPS_STOP, CHARTAB,
+ 	MAXVARS
+ };
+--- a/drivers/staging/speakup/spkguide.txt
++++ b/drivers/staging/speakup/spkguide.txt
+@@ -406,6 +406,7 @@ freq
+ full_time
+ jiffy_delta
+ pitch
++inflection
+ punct
+ rate
+ tone
+@@ -518,9 +519,9 @@ All the entries in the Speakup sys syste
+ writable by root only, and some are writable by everyone.  Unless you
+ know what you are doing, you should probably leave the ones that are
+ writable by root only alone.  Most of the names are self explanatory.
+-Vol for controlling volume, pitch for pitch, rate for controlling speaking
+-rate, etc.  If you find one you aren't sure about, you can post a query
+-on the Speakup list.
++Vol for controlling volume, pitch for pitch, inflection for pitch range, rate
++for controlling speaking rate, etc.  If you find one you aren't sure about, you
++can post a query on the Speakup list.
+ 
+ 6.  Changing Synthesizers
+ 
+--- a/drivers/staging/speakup/varhandlers.c
++++ b/drivers/staging/speakup/varhandlers.c
+@@ -37,6 +37,7 @@ static struct st_var_header var_headers[
+ 	{ "bell_pos", BELL_POS, VAR_NUM, &spk_bell_pos, NULL },
+ 	{ "rate", RATE, VAR_NUM, NULL, NULL },
+ 	{ "pitch", PITCH, VAR_NUM, NULL, NULL },
++	{ "inflection", INFLECTION, VAR_NUM, NULL, NULL },
+ 	{ "vol", VOL, VAR_NUM, NULL, NULL },
+ 	{ "tone", TONE, VAR_NUM, NULL, NULL },
+ 	{ "punct", PUNCT, VAR_NUM, NULL, NULL   },
+--- a/drivers/staging/speakup/sysfs-driver-speakup
++++ b/drivers/staging/speakup/sysfs-driver-speakup
+@@ -325,6 +325,12 @@ KernelVersion:	2.6
+ Contact:	speakup@linux-speakup.org
+ Description:	Gets or sets the pitch of the synthesizer. The range is 0-9.
+ 
++What:		/sys/accessibility/speakup/soft/inflection
++KernelVersion:	5.8
++Contact:	speakup@linux-speakup.org
++Description:	Gets or sets the inflection of the synthesizer, i.e. the pitch
++		range. The range is 0-9.
++
+ What:		/sys/accessibility/speakup/soft/punct
+ KernelVersion:	2.6
+ Contact:	speakup@linux-speakup.org
