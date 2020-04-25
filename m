@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1206A1B89AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 23:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527D61B86E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 16:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgDYVwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 17:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgDYVwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 17:52:02 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DB8C09B04D;
-        Sat, 25 Apr 2020 14:52:02 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id y4so13645646ljn.7;
-        Sat, 25 Apr 2020 14:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WTFn6rB9HKermcvkoC+LjOH1uLnCCCkq/7Yk0Bhk1hY=;
-        b=ctifTUoW5D6cpHfjxDauyqzluTWYK6w53t0tAtbRJh/7mTvp5osgtao5DHPC2ZCsfy
-         0F7bv5j5gdNFDHjT3Uljtsok3FdmdMmVROA9Fh3bFVTvCQM9oCZCHJrh7xinj+xzJ5mf
-         2LaIJ7d+q8TCT4nIn5Yk75z0c9HdCZISgMTC9sTxoEu/tUFN6ei8hIOQEPcOqN2ZOU5c
-         PPq9FFYlXI8ygNSc62Zt5sDTjtVkX1aKDRXyHxX/54Cf2UDmDH1TSv4KWjf1aL0CMtvF
-         PZRZywh0se+wPkMcMPh7zjCzqv7Z2p3H95x9ZIn61s8p3su56DYqCSA9VM9SBo0wbzc4
-         hqMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WTFn6rB9HKermcvkoC+LjOH1uLnCCCkq/7Yk0Bhk1hY=;
-        b=YTF+Byc7sD4N/ZhacjDt21TQjaHK8z7Xq/kuaVaI7RuuzjFKV8Ly2gtSD6d0Icms12
-         70BnoSTeq6Y0GumsnAhbFiRAZublShuDEZgCF8UrBYIhEy39oFN9C1/V9ORiSL0wiDOQ
-         jRgnxX4lMxH6Nz3rTEyYhbY0SfbjuEqM9MAO1pAoiGCWfl0hHXKIM+CfoxrhzikPguCh
-         /4Ym22HJ9xu/Undof25Ic5lkw5g/J8+W7Np14SGoklsAt+STjJFldt/9G+5WdAhZfVRP
-         S23zEWDpoa8TQ1QPHJ5+LkMuU0+FzlcObDLf+JVaVZhdWIIUDKUMRSmGE8gLQOt7Ux5X
-         kblg==
-X-Gm-Message-State: AGi0PubWSRFoD4WbI6t1GA2XuQPbvSPXU5UcN7rjlrOaCOfTleb8AjsS
-        3bvPlKDU1XRZqBqFo21UP7M=
-X-Google-Smtp-Source: APiQypJYgN8HmjiAC+Az+JE+6s5LC3yyQ5KUiUc+DMuLZfUfxWBQXCbPiBkO2LCclFex5yr8qn5c0g==
-X-Received: by 2002:a2e:814e:: with SMTP id t14mr9632764ljg.204.1587851520651;
-        Sat, 25 Apr 2020 14:52:00 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id a26sm7599728lfl.66.2020.04.25.14.51.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 14:51:59 -0700 (PDT)
-Subject: Re: [PATCH v5 6/6] drm/tegra: output: rgb: Wrap directly-connected
- panel into DRM bridge
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20200418170703.1583-1-digetx@gmail.com>
- <20200418170703.1583-7-digetx@gmail.com>
- <20200425170237.GA20498@ravnborg.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f03c260b-54ae-93ed-69e8-de434e74ed82@gmail.com>
-Date:   Sun, 26 Apr 2020 00:51:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726145AbgDYOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 10:06:00 -0400
+Received: from mail-eopbgr60045.outbound.protection.outlook.com ([40.107.6.45]:32738
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726050AbgDYOGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 10:06:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NT4silFKbwZj6KlFzXi82hhXq8MjMQm5KyCOXx/Wf0drPzHRWO/GWwnonVMpJA36r/9JeQnvIr+0B36qdZBSt5I07pYYel+bFdNdpE5h9VQSC9dBBBTEP575Bs7a/Eq+xHIcJHKNarBHc11s2QEfDgocueBVlkYWPmxGkl6zuAkBBLsRphRkMbSXB+nu8l3+wSNjuv6reweXlmZicklGjTcRXKP05BcfPLNnYKrizDDwcas6y2EVvaKF98m8saqrNMZFC+vN15Kxm0FvHqzgRrhgAOc278WhaXgQJLHtHiicdtjjr9zjJwqUkJ2Sc9Ulftou8ZIA7DF5EpoXM3AWtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4+i64As6Mf4HVjW4jkhQGIZgyAwdSDQE2KEc+vzCXvk=;
+ b=WawRZ+vE1y/Gqy0XIqOSvacCT5YIp1+KrdXUav0rIHuA047IvIMUrEcEp9oCVNp13nW0bWZgC+et2YKckuRvOxETVgbfK8I/4HGoFSgmMqVpfXOukLhuWcO9Zzs1CbS1DManLaPN83RmdT2rDtcleMZvzYdVjyYe71epgBs12qkBAv/ePYzI1bkl+Uz9KRIJyZkqAr+E/I+8xYtv3LSy6gPgoz3v+fzLPv1pSwke2LS0UeZWmxt5dlWEZ4H1cjGk11QeID1ahEsSaH3MrRBAXDeL40LP/bKB3NFzah8kLSHw+axKPSZ6HoMhiBLXTPM0aGnKcpwRiyovoqqiVMB7kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4+i64As6Mf4HVjW4jkhQGIZgyAwdSDQE2KEc+vzCXvk=;
+ b=hXvwXmyrZ+QZCmoSje4FoY6Nkou6D7RtvOlUCp7DbnLMy9I8arc9m7dTIrz/k5UuNKpL1rPLCDBeZjVCg8QBO90tEtghdDSRTJAT5ya4TOyjFFugEpQQWRiQ0SsPsN2uYG0+3FA4omtqsfNqu6RGuD1bsnlJIuIl0GsLt8KDXlI=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=yibin.gong@nxp.com; 
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VE1PR04MB6653.eurprd04.prod.outlook.com (2603:10a6:803:122::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Sat, 25 Apr
+ 2020 14:05:56 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::d5f0:c948:6ab0:c2aa]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::d5f0:c948:6ab0:c2aa%4]) with mapi id 15.20.2937.020; Sat, 25 Apr 2020
+ 14:05:55 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, Anson.Huang@nxp.com
+Cc:     linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM64: dts: freescale: imx8mm: correct VDDARM@1.6GHz
+Date:   Sun, 26 Apr 2020 06:06:48 +0800
+Message-Id: <1587852408-6483-1-git-send-email-yibin.gong@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR0601CA0001.apcprd06.prod.outlook.com (2603:1096:3::11)
+ To VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
 MIME-Version: 1.0
-In-Reply-To: <20200425170237.GA20498@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR0601CA0001.apcprd06.prod.outlook.com (2603:1096:3::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2937.13 via Frontend Transport; Sat, 25 Apr 2020 14:05:52 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e2a8e3a4-3869-477e-2453-08d7e921c593
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6653:|VE1PR04MB6653:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB665307F04E95DCCBAADB6DFF89D10@VE1PR04MB6653.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:361;
+X-Forefront-PRVS: 0384275935
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(346002)(396003)(39860400002)(376002)(2616005)(956004)(66946007)(66476007)(52116002)(66556008)(8676002)(6512007)(6506007)(86362001)(26005)(8936002)(5660300002)(6666004)(2906002)(4744005)(81156014)(478600001)(6486002)(186003)(16526019)(36756003)(6636002)(4326008)(316002)(32563001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FnyjQ4bSJ2H4/3c1bv+uFfK3qa76jEg+PxOze8a7FG1KOyCS7qmeT7mkG0QosB9LqcQoMs8A16pUUG+444xsZX5GpNY8oHzbmaJBKUZUQSKEHxoyQMdamC+yIhSNSVfP2BRiAVcO+7jwlJ2Bl9q+aboBxJEze37lUl9CJkMk0Gf/l2mwweK6jtH5V3zgA2V0eWiAVbNjDkGsHetgYa/LSQ1dzEYkEieIcCVxUl4ppcASkteTuX5w66TODhLP8rYuzS54GPYYoJKU8jveVZjAPn64EDdnkoiqWAYF3O46QMSYIn8FbiUfEYdbBlt5TXm79/4PSlt9VBxS0+h+YG4JuhVU8J1Pevo0PN15sCCqH06vKLjfW3WM6/7NKWF6nJCH+xODOJm+w97msiwxp/h7x9EUMtIxxd5QYp+o/WWqH7UaM8rGogMMebGmL4dTPL0veNbZzwP6veJ3RMCuJ5wuQPxJa5vo7GsWKNZLS9cvZPFilR+8xBfzx1B4pC37wUPh
+X-MS-Exchange-AntiSpam-MessageData: URKIo9yAL8S9xJoDtQOireneU4QhvqknlPpR9LPmbINHquP8f7r9PYC9uP2gyJ2CyrKRTvFsEy531NraGpvXlzIHwQ98LkvG9Zz1IT4scMLCqGzDqLTpoqcPI15AhQswNzSySCMOA3uHoWVo92gmRx1jEK/HX+XGA4v91AesWuSHguEjYG8EblXFoFmhhoQZ7+wFZFBfa27Vbi6Twbjq/iZncHZxLgRqQkqLb/LKrduBkMV1JpO2VIma5/oRd2cp095ioyi1tkLhqh8V2/e7KH3yJTOHQqOqgKrI8G0Ex7PqCrSlmwvlVvJKPagF4tc3klPbZudgTcUQI9zdS/3neY/Z6n/FJbdEKKecBieEmZ1SOb9go3buM4l+S7B5QpymhYp+lVuWdYdxOxN3duzG7vtHs6pdvCTzmjX7+BCnfIKuaLVX+2khiSOeXaouOXlxIXEJHaincAV1B81AUgYZk/tkrwKG76CUiqmrh8SIzlQr0NDqYvwz8uvjULQCeEo8CjZqOf3YB3obDAQO6HwhB+TvbkSPP8VTjtG2JdgvovUU8wiL/CpX/2sJ598YQOhhHZNDpsMwHZtwVxpQnPx+Uu77LjBYy2RSUaJB8YKI2H5KIps6SE4ZytsGKeuelkLSrmMj9cQQTJrKRTA8xrwncmZXmDQdmmdcinQlYtTwM1u9B44auOlIbiXgr/Rv+XtDM26hHTI9gptyhcw0nPiJUgM5o0+JOHiEZdXYxFVtPMEAnJ4PXBSKdBovnhTdKIX8QOf0Ajo5JcR3JtJgJvP8gTx1SKG4zzyB9FwQ2PqWD20=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2a8e3a4-3869-477e-2453-08d7e921c593
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2020 14:05:55.8619
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bbAi7N1q01UsAVkf7bpZ4ZE5/Kmo2l/b1xGnThuoRqkQxb51pHq0IlmnhnkYOXCxWzRVRq0Mi2qzM3yjFjZvOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6653
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.04.2020 20:02, Sam Ravnborg пишет:
-> Hi Dmitry
-> 
-> On Sat, Apr 18, 2020 at 08:07:03PM +0300, Dmitry Osipenko wrote:
->> Currently Tegra DRM driver manually manages display panel, but this
->> management could be moved out into DRM core if we'll wrap panel into
->> DRM bridge. This patch wraps RGB panel into a DRM bridge and removes
->> manual handling of the panel from the RGB output code.
->>
->> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> 
-> This resulted in the expected simplifications - good.
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Correct VDDARM to 0.95V@1.6Ghz with datasheet.
 
-Hello Sam,
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you for taking a look at this patch! :)
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index cc7152e..a226030 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -129,7 +129,7 @@
+ 
+ 		opp-1600000000 {
+ 			opp-hz = /bits/ 64 <1600000000>;
+-			opp-microvolt = <900000>;
++			opp-microvolt = <950000>;
+ 			opp-supported-hw = <0xc>, <0x7>;
+ 			clock-latency-ns = <150000>;
+ 			opp-suspend;
+-- 
+2.7.4
+
