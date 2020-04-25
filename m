@@ -2,64 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18781B8301
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 03:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145131B8504
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgDYBRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 21:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726031AbgDYBRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 21:17:13 -0400
-Received: from dragon (unknown [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B82C20748;
-        Sat, 25 Apr 2020 01:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587777433;
-        bh=Idxg/CHEHUX2quDQvmQ+IGIQKvLPhn0rX68vGxJyrw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XlAu9bwuvMSQG4JuLn1X8jL6UJRZDrw9tWe/0xx0vmqnQV3ONcIAMpivkKQrLJBtB
-         BwU01mYtdMYrRpZfUvVBdSaw20rdXdqkhC6zSdlTpgQEUFqLPGTzwFCXPqRIjGQwRB
-         sDvHq3PAPq+7bgwiWKYjJOFXs3Jl0L+nJGEofrCk=
-Date:   Sat, 25 Apr 2020 09:16:53 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ashish Kumar <Ashish.kumar@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1012a: Add QSPI node properties
-Message-ID: <20200425011642.GJ8571@dragon>
-References: <1585566991-24049-1-git-send-email-kuldeep.singh@nxp.com>
+        id S1726088AbgDYJEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:04:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37490 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725837AbgDYJEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 05:04:36 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 07F3F696E72F3DBC0483;
+        Sat, 25 Apr 2020 17:04:32 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 25 Apr 2020 17:04:25 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net-next v1 0/3] hinic: add SR-IOV support
+Date:   Sat, 25 Apr 2020 01:21:08 +0000
+Message-ID: <20200425012111.4297-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585566991-24049-1-git-send-email-kuldeep.singh@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 04:46:30PM +0530, Kuldeep Singh wrote:
-> Add support for QSPI on NXP layerscape LS1012A-RDB, LS1012A-QDS,
-> LS1012A-FRDM and LS1012A-FRWY boards.
-> 
-> LS1012A-RDB has 2 Spansion "s25fs512s" flashes of size 64M each and only
-> one can be accessed at a time.
-> LS1012A-QDS/FRDM has 1 spansion "s25fs512s" flash of size 64M.
-> LS1012A-FRWY has one winbond "w25q16dw" flash of size 2M.
-> 
-> Use generic compatibles as "jedec,spi-nor" for automatic detection of
-> flash. Configure RX and TX buswidth values as 2 as only two I/O lines are
-> available for data transfer.
-> 
-> Add ls1012a(si) node alongwith flash nodes.
-> 
-> Signed-off-by: Ashish Kumar <Ashish.kumar@nxp.com>
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+patch #1 adds mailbox channel support and vf can
+communicate with pf or hw through it.
+patch #2 adds support for enabling vf and tx/rx
+capabilities based on vf.
+patch #3 adds support for vf's basic configurations.
 
-Applied both, thanks.
+Luo bin (3):
+  hinic: add mailbox function support
+  hinic: add sriov feature support
+  hinic: add net_device_ops associated with vf
+
+ drivers/net/ethernet/huawei/hinic/Makefile    |    2 +-
+ drivers/net/ethernet/huawei/hinic/hinic_dev.h |    3 +
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c |   18 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.h |    2 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_csr.h  |    2 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |  148 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |   48 +
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.c  |   98 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.h  |    7 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_if.c   |   46 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_if.h   |   18 +
+ .../net/ethernet/huawei/hinic/hinic_hw_io.c   |   49 +
+ .../net/ethernet/huawei/hinic/hinic_hw_io.h   |   23 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_mbox.c | 1213 +++++++++++++++++
+ .../net/ethernet/huawei/hinic/hinic_hw_mbox.h |  154 +++
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c |   17 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.h |   12 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_qp.c   |    7 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_qp.h   |    4 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_wq.c   |    9 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_wq.h   |    6 +-
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  120 +-
+ .../net/ethernet/huawei/hinic/hinic_port.c    |   76 +-
+ .../net/ethernet/huawei/hinic/hinic_port.h    |    4 +-
+ drivers/net/ethernet/huawei/hinic/hinic_rx.c  |   15 +-
+ .../net/ethernet/huawei/hinic/hinic_sriov.c   | 1016 ++++++++++++++
+ .../net/ethernet/huawei/hinic/hinic_sriov.h   |  102 ++
+ drivers/net/ethernet/huawei/hinic/hinic_tx.c  |   17 +-
+ 28 files changed, 3033 insertions(+), 203 deletions(-)
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.h
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+ create mode 100644 drivers/net/ethernet/huawei/hinic/hinic_sriov.h
+
+-- 
+2.17.1
+
