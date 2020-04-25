@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18851B8541
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050111B853B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgDYJag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 05:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726022AbgDYJaf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 05:30:35 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588C8C09B04A
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:30:35 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x17so13648261wrt.5
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HqIOpvjAX4aB+i0alurBPqHQCQRYmgJifFMe4+PDeSc=;
-        b=DUxj4mDQiE/jn60mXBqDyIIczs085H9kop9QRKaMAq8ft5OCBdGAJbSmf8Zb1OVuxk
-         eUzXFjyXVfccJWsBENIond1vHrjdeHxhlRpgjh509u3BzGpCWaafxxdXqWL9arnVeQ17
-         J4wngiImwieQ6kJ0K5mEkkd9IImZdSs60wnVfQNtyEuYhZYPKEC+QiEyvytoH6T+Xv/s
-         kwEcXleVw4pRzInOu9tp1O0mEomdsZgE02BsYRamRCFk/Lv3+VyjRPIYIVEekMLDTuaO
-         S7+u3dAowYaiuNkxbp0nTN9D7Y+o9CKvxMcjoSAQIa5RmgnfsmN5UjpfndvhYFElDFUW
-         NVZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HqIOpvjAX4aB+i0alurBPqHQCQRYmgJifFMe4+PDeSc=;
-        b=D6V95nvqsbqPPsbTws7YLG4aJwhfcHbRLL2P9HmxE4Mbqpe38wk4cbv2sQ8/3HiWca
-         R8lklfGPeoWiMNMet3kvM3Kmj96/GVaCTpNLvZWLXwVfxltdDFTXXirn51ZUYVCy7f0b
-         slpTiYH8BWHj+TeR9pJuTymyJbHSc59Yhn7K9Vlvpb1ZhswD/MFwnhyyTrH2Di1+TpJP
-         oC6PZFpcMmVKvfIfoR1jt7bclTRiT4A2Mmcnety76k501K8QnnDNyFo3ozgJRWuiGzQC
-         fmWz3v40yDW53ZC/1oG7z376WPkAHiXSMw/I0V5zcfIC7oR1w4ObD1s0q46Bo9sPFKgH
-         129A==
-X-Gm-Message-State: AGi0PubWCa9/LhSiY34IPKuzziND9IYIXlp2Zp3Q/YzZPnXkvnclktDv
-        1MLbmLnDXLY8m0l2n7M+Y8mUdiBn
-X-Google-Smtp-Source: APiQypI+RYtCtuxA4FvRIxtod8076du/gFx3J/mEpn4RTDVu1Wq/eruzAVbLdgUgiXC+CA+dOqTHfA==
-X-Received: by 2002:a5d:610e:: with SMTP id v14mr15831207wrt.159.1587807033996;
-        Sat, 25 Apr 2020 02:30:33 -0700 (PDT)
-Received: from localhost.localdomain (dslb-178-006-252-221.178.006.pools.vodafone-ip.de. [178.6.252.221])
-        by smtp.gmail.com with ESMTPSA id w6sm12318805wrm.86.2020.04.25.02.30.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Apr 2020 02:30:33 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: remove some superfluous comments
-Date:   Sat, 25 Apr 2020 11:28:22 +0200
-Message-Id: <20200425092822.19925-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.26.1
+        id S1726110AbgDYJ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:26:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:58013 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbgDYJ0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 05:26:49 -0400
+IronPort-SDR: apiDngCKYF3FELEZVm8E7POm7MkrXQP7XNUDpmOOfGiKv+XBlaZwMLgfdcadzm5EbJmQYKpFaS
+ l2esYUPPwmYg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 02:26:49 -0700
+IronPort-SDR: OGUwxH2c3aAWuWNGOrK46cidTHHZsGVnRUv4X5ca6oJS58nyRdi/AV9QOh5wpfr2E5/3gPoS6m
+ qLVW9aDUiDwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,315,1583222400"; 
+   d="scan'208";a="256679320"
+Received: from unknown (HELO localhost) ([10.239.159.128])
+  by orsmga003.jf.intel.com with ESMTP; 25 Apr 2020 02:26:47 -0700
+Date:   Sat, 25 Apr 2020 17:28:48 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        jmattson@google.com, yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 7/9] KVM: X86: Add userspace access interface for CET
+ MSRs
+Message-ID: <20200425092847.GC26221@local-michael-cet-test>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
+ <20200326081847.5870-8-weijiang.yang@intel.com>
+ <20200423181406.GK17824@linux.intel.com>
+ <20200424150246.GK24039@local-michael-cet-test>
+ <20200424151049.GE30013@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424151049.GE30013@linux.intel.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove some obviously superflous comments.
-
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8188eu/hal/odm.c          | 2 --
- drivers/staging/rtl8188eu/hal/odm_hwconfig.c | 2 --
- drivers/staging/rtl8188eu/hal/rtl8188e_dm.c  | 3 ---
- 3 files changed, 7 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/hal/odm.c b/drivers/staging/rtl8188eu/hal/odm.c
-index b3cc40527730..28974808839d 100644
---- a/drivers/staging/rtl8188eu/hal/odm.c
-+++ b/drivers/staging/rtl8188eu/hal/odm.c
-@@ -5,8 +5,6 @@
-  *
-  ******************************************************************************/
- 
--/*  include files */
--
- #include "odm_precomp.h"
- #include "phy.h"
- 
-diff --git a/drivers/staging/rtl8188eu/hal/odm_hwconfig.c b/drivers/staging/rtl8188eu/hal/odm_hwconfig.c
-index a6f2731b076d..65a346ae3cb0 100644
---- a/drivers/staging/rtl8188eu/hal/odm_hwconfig.c
-+++ b/drivers/staging/rtl8188eu/hal/odm_hwconfig.c
-@@ -5,8 +5,6 @@
-  *
-  ******************************************************************************/
- 
--/*  include files */
--
- #include "odm_precomp.h"
- 
- #define READ_AND_CONFIG     READ_AND_CONFIG_MP
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-index 241f55b92808..1af919ff6d93 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188e_dm.c
-@@ -29,9 +29,6 @@ static void dm_InitGPIOSetting(struct adapter *Adapter)
- 	usb_write8(Adapter, REG_GPIO_MUXCFG, tmp1byte);
- }
- 
--/*  */
--/*  functions */
--/*  */
- static void Init_ODM_ComInfo_88E(struct adapter *Adapter)
- {
- 	struct hal_data_8188e *hal_data = Adapter->HalData;
--- 
-2.26.1
-
+On Fri, Apr 24, 2020 at 08:10:49AM -0700, Sean Christopherson wrote:
+> On Fri, Apr 24, 2020 at 11:02:46PM +0800, Yang Weijiang wrote:
+> > On Thu, Apr 23, 2020 at 11:14:06AM -0700, Sean Christopherson wrote:
+> > > > +	case MSR_IA32_INT_SSP_TAB:
+> > > > +		if (!cet_check_ctl_msr_access(vcpu, msr_info))
+> > > > +			return 1;
+> > > > +		if (!is_64_bit_mode(vcpu))
+> > > 
+> > > This is wrong, the SDM explicitly calls out the !64 case:
+> > > 
+> > >   IA32_INTERRUPT_SSP_TABLE_ADDR (64 bits; 32 bits on processors that do not
+> > >   support Intel 64 architecture).
+> > So the check is also unnecessary as it's natual size?
+> 
+> It still needs a canonical check.
+> 
+> Note, KVM diverges from the SDM for canonical checks in that it performs
+> canonical checks even when the virtual CPU doesn't support 64-bit and/or
+> the host kernel is a 32-bit kernel.  This is intentional because the
+> underlying hardware will still enforce the checks, i.e. KVM needs to make
+> the physical CPU happy, and the number of people running KVM on hardware
+> without 64-bit support can probably be counted on one hand.
+Got it, thank you!
