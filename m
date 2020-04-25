@@ -2,104 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56CE1B85BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0141B85BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgDYKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 06:43:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48732 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726087AbgDYKnl (ORCPT
+        id S1726118AbgDYKrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 06:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726053AbgDYKrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 06:43:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587811419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zX1gMKclpqnAEoBMDkK5PhMtrskM3KRZZa0iKX4TUNw=;
-        b=XIK6D6ehndPRXiFuJisdbweMTv3c5M+y7VQX4Mt4enBFRkBEp334BybcEffF6uaBLRlRev
-        kXrZTeZz0s/w9zEXTLvVl2OL892xd9YA7aedjY610iRc22GnTAt7wxtz6te9/NnRzvGJ1t
-        ISBmGgV/LXMhhk7/IF8boUBcOunXoVg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-9R2PGDBqOam5g9pmCP4w9A-1; Sat, 25 Apr 2020 06:43:37 -0400
-X-MC-Unique: 9R2PGDBqOam5g9pmCP4w9A-1
-Received: by mail-wr1-f70.google.com with SMTP id g7so6490388wrw.18
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 03:43:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zX1gMKclpqnAEoBMDkK5PhMtrskM3KRZZa0iKX4TUNw=;
-        b=F5LE+oZGmhtji8kKUn5tFkFEmpxL147pXqubQeqe4LfZjQ9kP7xaZhWDe0v18kHEzg
-         /+OhRG1nSqrOFj5qGZxj6A8iVj8V4MAup8dyfwijZVaop0dALDfTW4dgrp7jh5/RZPeo
-         RWrCf1c9T5xCFgbqzTkGyMLwtQDBWV2aV1D8zY2Nrq9sxEIKE7nfdktcG5yPdwVxL0Vs
-         amsKHf8cuiPzh08aqIUaEzwMEttB3B9fRrxBhiHEXA2nEuHtq5NwCx31FAs5pADgnS80
-         CWEPAc/XS8Z3QCwYouI9EdTQ/noRby0IftcmB5caOK2iaAdj1fboAFIwlkl9GZ5slHRI
-         j3XA==
-X-Gm-Message-State: AGi0PubzbMtSgeHMGYIDi8H/F0umA7HDOkrc7ulxxzlLwkfnIT4nZPNT
-        KKPsUKBTimqCmSE78kptOLIdPYkvtJNgnqdXBv1XIyqQfpqatfvx43WpqeUx/o0aCTC3fv7WNiX
-        cqNio5OTxIIYKVjl0U19RbcWJ
-X-Received: by 2002:adf:ee88:: with SMTP id b8mr15892431wro.93.1587811416288;
-        Sat, 25 Apr 2020 03:43:36 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKA9B9pJGKX+0LgDRDvi6v5gXYIEKKnz5THJmcU6hGlhBUcL+S8FEF2XD5VredWlxBdzhvHSQ==
-X-Received: by 2002:adf:ee88:: with SMTP id b8mr15892412wro.93.1587811415984;
-        Sat, 25 Apr 2020 03:43:35 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id k17sm6631766wmi.10.2020.04.25.03.43.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 03:43:35 -0700 (PDT)
-Subject: Re: [PATCH] kvm/eventfd: remove unneeded conversion to bool
-To:     Jason Yan <yanaijie@huawei.com>, peterx@redhat.com,
-        tglx@linutronix.de, kvm@vger.kernel.org,
+        Sat, 25 Apr 2020 06:47:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3023EC09B04A;
+        Sat, 25 Apr 2020 03:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=UcPyzDSmAlpvs6USWTK+Q8/Nb28cO4vwEOAm0T/Tcak=; b=V9HxQjBM7jdzA3jGh8A32Siwg
+        wRpc0Dx9V24lqnL1AYO/AGAJznr983DYn+waOT2+IbyzigSPfs4faG8uX94IQSqdebDnL8rNALmy0
+        l8LDUlA0MfNdHI0I81ZAUzh5xPvp6/Y+PeKWwW41mMSb4cX0H93Ax5/ml9Jg//eBVzmawf4rO56DZ
+        qig/D+71rsBPh9IsrEZfMlBaSOnOPPPGvTvmRleVnwkr0jbWJKYIuqscrzGJ7UDUsAyP2OGOQe7VZ
+        lplPZRhyV3PkvWoynvykGSrlaLzJ9lO9p6c8Hun+TAFO4NXAfMCrKSv/3DguTs17JZBTWsSTDsYPK
+        NlQN61mkA==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:43516)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jSIKz-000287-OM; Sat, 25 Apr 2020 11:47:10 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jSIKx-0004Y1-SI; Sat, 25 Apr 2020 11:47:07 +0100
+Date:   Sat, 25 Apr 2020 11:47:07 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Florinel Iordache <florinel.iordache@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, andrew@lunn.ch,
+        f.fainelli@gmail.com, hkallweit1@gmail.com,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, kuba@kernel.org,
+        corbet@lwn.net, shawnguo@kernel.org, leoyang.li@nxp.com,
+        madalin.bucur@oss.nxp.com, ioana.ciornei@nxp.com,
         linux-kernel@vger.kernel.org
-References: <20200420123805.4494-1-yanaijie@huawei.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <109d0871-7099-b476-8354-11a628a04b3d@redhat.com>
-Date:   Sat, 25 Apr 2020 12:43:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+Subject: Re: [PATCH net-next v2 6/9] net: phy: add backplane kr driver support
+Message-ID: <20200425104707.GY25745@shell.armlinux.org.uk>
+References: <1587732391-3374-1-git-send-email-florinel.iordache@nxp.com>
+ <1587732391-3374-7-git-send-email-florinel.iordache@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200420123805.4494-1-yanaijie@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587732391-3374-7-git-send-email-florinel.iordache@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/20 14:38, Jason Yan wrote:
-> The '==' expression itself is bool, no need to convert it to bool again.
-> This fixes the following coccicheck warning:
-> 
-> virt/kvm/eventfd.c:724:38-43: WARNING: conversion to bool not needed
-> here
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  virt/kvm/eventfd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
-> index 67b6fc153e9c..0c4ede45e6bd 100644
-> --- a/virt/kvm/eventfd.c
-> +++ b/virt/kvm/eventfd.c
-> @@ -721,7 +721,7 @@ ioeventfd_in_range(struct _ioeventfd *p, gpa_t addr, int len, const void *val)
->  		return false;
->  	}
->  
-> -	return _val == p->datamatch ? true : false;
-> +	return _val == p->datamatch;
->  }
->  
->  /* MMIO/PIO writes trigger an event if the addr/val match */
-> 
+On Fri, Apr 24, 2020 at 03:46:28PM +0300, Florinel Iordache wrote:
+> Add support for backplane kr generic driver including link training
+> (ieee802.3ap/ba) and fixed equalization algorithm
 
-Queued, thanks.
+This looks like it's still very much modelled on being a phylib driver,
+which I thought we discussed shouldn't be the case.
 
-Paolo
+Some further comments inline, but given the size of this patch I haven't
+spent too long reviewing it.
 
+> diff --git a/drivers/net/phy/backplane/Kconfig b/drivers/net/phy/backplane/Kconfig
+> new file mode 100644
+> index 0000000..9ec54b5
+> --- /dev/null
+> +++ b/drivers/net/phy/backplane/Kconfig
+> @@ -0,0 +1,20 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +config ETH_BACKPLANE
+> +	tristate "Ethernet Backplane support"
+> +	depends on OF_MDIO
+> +	help
+> +	  This module provides driver support for Ethernet Operation over
+> +	  Electrical Backplanes. It includes Backplane generic
+> +	  driver including support for Link Training (IEEE802.3ap/ba).
+> +	  Based on the link quality, a signal equalization is required.
+> +	  The standard specifies that a start-up algorithm should be in place
+> +	  in order to get the link up.
+> +
+> +config ETH_BACKPLANE_FIXED
+> +	tristate "Fixed: No Equalization algorithm"
+> +	depends on ETH_BACKPLANE
+> +	help
+> +	  This module provides a driver to setup fixed user configurable
+> +	  coefficient values for backplanes equalization. This means
+> +	  No Equalization algorithm is used to adapt the initial coefficients
+> +	  initially set by the user.
+> \ No newline at end of file
+
+Please fix.
+
+> +static u32 le_ioread32(void __iomem *reg)
+> +{
+> +	return ioread32(reg);
+> +}
+> +
+> +static void le_iowrite32(u32 value, void __iomem *reg)
+> +{
+> +	iowrite32(value, reg);
+> +}
+> +
+> +static u32 be_ioread32(void __iomem *reg)
+> +{
+> +	return ioread32be(reg);
+> +}
+> +
+> +static void be_iowrite32(u32 value, void __iomem *reg)
+> +{
+> +	iowrite32be(value, reg);
+> +}
+
+Do these accessors really add any value - they just rename our existing
+accessors, and therefore make the learning curve to understand this
+code unnecessarily harder than it needs to be.
+
+> +/* Read AN Link Status */
+> +static int is_an_link_up(struct phy_device *phydev)
+> +{
+> +	struct backplane_device *bpdev = phydev->priv;
+> +	int ret, val = 0;
+> +
+> +	mutex_lock(&bpdev->bpphy_lock);
+> +
+> +	/* Read twice because Link_Status is LL (Latched Low) bit */
+> +	val = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_STAT1);
+> +	val = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_STAT1);
+
+What if an error occurs? while reading?
+
+Do you care if the link went down momentarily?
+
+> +/* backplane_write_mmd - Wrapper function for phy_write_mmd
+> + * for writing a register on an MMD on a given PHY.
+> + *
+> + * Same rules as for phy_write_mmd();
+> + */
+
+Exported functions ought to have proper kerneldoc documentation.
+
+> +int backplane_write_mmd(struct lane_device *lane, int devad, u32 regnum,
+> +			u16 val)
+> +{
+> +	struct backplane_device *bpdev = lane->bpdev;
+> +	struct phy_device *phydev = lane->phydev;
+> +	int mdio_addr = phydev->mdio.addr;
+> +	int err;
+> +
+> +	mutex_lock(&bpdev->bpphy_lock);
+> +
+> +	if (devad == MDIO_MMD_AN && backplane_is_multi_lane(bpdev)) {
+> +		/* Multilane AN: prepare mdio address
+> +		 * for writing phydev AN registers on respective lane
+> +		 * AN MDIO address offset for multilane is equal
+> +		 * to number of lanes
+> +		 */
+> +		phydev->mdio.addr = bpdev->num_lanes + lane->idx;
+> +	}
+> +
+> +	err = phy_write_mmd(phydev, devad, regnum, val);
+> +	if (err)
+> +		bpdev_err(phydev,
+> +			  "Writing PHY (%p) MMD = 0x%02x register = 0x%02x failed with error code: 0x%08x\n",
+> +			  phydev, devad, regnum, err);
+> +
+> +	if (devad == MDIO_MMD_AN && backplane_is_multi_lane(bpdev)) {
+> +		/* Multilane AN: restore mdio address */
+> +		phydev->mdio.addr = mdio_addr;
+> +	}
+> +
+> +	mutex_unlock(&bpdev->bpphy_lock);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL(backplane_write_mmd);
+
+Consider EXPORT_SYMBOL_GPL().
+
+> +
+> +/* backplane_read_mmd - Wrapper function for phy_read_mmd
+> + * for reading a register from an MMD on a given PHY.
+> + *
+> + * Same rules as for phy_read_mmd();
+> + */
+> +int backplane_read_mmd(struct lane_device *lane, int devad, u32 regnum)
+> +{
+> +	struct backplane_device *bpdev = lane->bpdev;
+> +	struct phy_device *phydev = lane->phydev;
+> +	int mdio_addr = phydev->mdio.addr;
+> +	int ret;
+> +
+> +	mutex_lock(&bpdev->bpphy_lock);
+> +
+> +	if (devad == MDIO_MMD_AN && backplane_is_multi_lane(bpdev)) {
+> +		/* Multilane AN: prepare mdio address
+> +		 * for reading phydev AN registers on respective lane
+> +		 * AN MDIO address offset for multilane is equal to
+> +		 * number of lanes
+> +		 */
+> +		phydev->mdio.addr = bpdev->num_lanes + lane->idx;
+> +	}
+> +
+> +	ret = phy_read_mmd(phydev, devad, regnum);
+> +
+> +	if (devad == MDIO_MMD_AN && backplane_is_multi_lane(bpdev)) {
+> +		/* Multilane AN: restore mdio address */
+> +		phydev->mdio.addr = mdio_addr;
+> +	}
+> +
+> +	mutex_unlock(&bpdev->bpphy_lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(backplane_read_mmd);
+
+I think the above two functions are coding implementation specifics into
+what is trying to be a generic layer here.  What guarantee do we have
+that all KR PHYs will live at consecutive addresses for each lane?
+
+This brings me on to another issue - I thought we discussed the point of
+reusing struct phy_device, and we strongly recommended against it ?
+I think it would make more sense for struct lane_device to contain a
+'struct mdio_device' or maybe a new 'struct pcs_mdio_device' which
+points to the specific MDIO device for this lane.  That would have the
+nice effect of avoiding the implementation specifics here.
+
+> +bool backplane_is_mode_kr(phy_interface_t interface)
+> +{
+> +	return (interface >= PHY_INTERFACE_MODE_10GKR &&
+> +		interface <= PHY_INTERFACE_MODE_40GKR4);
+
+This really should not be here - you're reliant on no one
+inappropriately adding between these enumeration values - but this code
+is divorsed from its definition.  It should be in linux/phy.h to
+complement things like phy_interface_mode_is_rgmii() et.al.
+
+> +}
+> +EXPORT_SYMBOL(backplane_is_mode_kr);
+> +
+> +bool backplane_is_valid_mode(phy_interface_t interface)
+> +{
+> +	return (interface >= PHY_INTERFACE_MODE_10GKR &&
+> +		interface <= PHY_INTERFACE_MODE_40GKR4);
+
+Same problem - it looks the same as backplane_is_mode_kr().
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
