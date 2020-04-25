@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93571B88D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3703C1B88D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgDYTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 15:16:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45726 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726192AbgDYTQW (ORCPT
+        id S1726359AbgDYTTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 15:19:40 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21981 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726005AbgDYTTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 15:16:22 -0400
+        Sat, 25 Apr 2020 15:19:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587842180;
+        s=mimecast20190719; t=1587842379;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ajW83cPmwSdOeR1VWQQEGhPP3tbajGWXOutPh+OWcCo=;
-        b=i+kFM2j3jroUZG966cGab2G+Af9Lbb1eRiGwqdV423AqZr6u7dbXC5HuZW+Vvdq7dre9wv
-        l3Z3ptdnmcotu5j3skPfbXc+sK0Q+3Fm0XWrflzTPnwRU5xuWDe6e/Zzivcy3iqYARem1e
-        ZEY/OpmyhWWuqiRavFSu2lc/NwzTYls=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-83oaVsqPPwi9icNyi1a7Ow-1; Sat, 25 Apr 2020 15:16:18 -0400
-X-MC-Unique: 83oaVsqPPwi9icNyi1a7Ow-1
-Received: by mail-wm1-f69.google.com with SMTP id f81so6389025wmf.2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 12:16:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ajW83cPmwSdOeR1VWQQEGhPP3tbajGWXOutPh+OWcCo=;
-        b=ohjdL5iNiF2Gm+Dj2aS/66LtunwV/KAAg171pfxGU95pDTJWiUrfsDRKPsr8DTa5dk
-         NzG1ycz/nA0lYrRyTM4x3e/KHPkvwHEkY3qTMfVl58AtmBJq9vJqGJTqP8Xad3sb4Mkv
-         bah3zwx3KanCrPr0Q2gL2pT5fIKllo1XjBLZTVQG41HdvIyVkBizjLlHCxZ++POQpumU
-         GhTJG9mN7ObKmBFPYjGwpdR9vKL2uXKF2PAgJ7ZizIPvyEc464DMLOms4QL92V4BQLZb
-         MwzFE0PHi0N4ZiJNjB5PyIixwCai/aeZAMqT7BVUJ4R+XKKEj9G8byOp40T7QrgMxKYl
-         fG2A==
-X-Gm-Message-State: AGi0PuZ/6cyc17uGpnKA5r0QbCO/GAS1pvHoI4tAyPRCCKNkaw1wTHyb
-        k4o+b2MEyVzzK5Az9LPRsx9rMG4zJ8xHD9Xq0JTRMUT0PV3wjA77nHBTx7cttiJw7bOFmeaQEUm
-        vrytMOmx1wo12ueiZbGeUKF4j
-X-Received: by 2002:a5d:5001:: with SMTP id e1mr18996367wrt.27.1587842177344;
-        Sat, 25 Apr 2020 12:16:17 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIslrnrTCUpVt5mn/A0rA0ebcrzDNEHzKVQ09XyEpYeCTU1+Fo5jDEho79nKUV/iuLclvvUMA==
-X-Received: by 2002:a5d:5001:: with SMTP id e1mr18996358wrt.27.1587842177133;
-        Sat, 25 Apr 2020 12:16:17 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id p6sm13751690wrt.3.2020.04.25.12.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 12:16:16 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/3] kvm: x86: Rename KVM_DEBUGREG_RELOAD to
- KVM_DEBUGREG_NEED_RELOAD
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm <kvm@vger.kernel.org>, Nadav Amit <namit@cs.technion.ac.il>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20200416101509.73526-1-xiaoyao.li@intel.com>
- <20200416101509.73526-2-xiaoyao.li@intel.com>
- <85cb5946-2109-28a0-578d-bed31d1b8298@redhat.com>
- <08C6D1FB-A4F7-49FA-AC46-5323C104840A@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8223a7e2-5d4a-b427-c44f-d76450f16748@redhat.com>
-Date:   Sat, 25 Apr 2020 21:16:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KGEYiVi/N5jjAgrixEfeFIG/QsQOzD5jtvrhC/kRyL4=;
+        b=E96U6tNO9DdCKAaE+lOcIojJq38h2BmFa/mXkKbUY35vB34zOkfdqnnShrWHDLr9q37b2N
+        bGiBqJZ6D7E63ja+iCtyVmXPaWnf7/sk3PvpAjoDYEkPGOMcJcsybiraaXBWtDNEkdXWga
+        ULCX+Hs6qv3iFz/7cy3ST3Ywx5hPc+w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-TGwRrYgbOkq0dHhlg17iPQ-1; Sat, 25 Apr 2020 15:19:37 -0400
+X-MC-Unique: TGwRrYgbOkq0dHhlg17iPQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1C28800D24;
+        Sat, 25 Apr 2020 19:19:35 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-114-29.rdu2.redhat.com [10.10.114.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C2DE60300;
+        Sat, 25 Apr 2020 19:19:34 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] objtool: Fix infinite loop in for_offset_range()
+Date:   Sat, 25 Apr 2020 14:19:01 -0500
+Message-Id: <02b719674b031800b61e33c30b2e823183627c19.1587842122.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <08C6D1FB-A4F7-49FA-AC46-5323C104840A@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/04/20 18:54, Nadav Amit wrote:
->> I wonder if KVM_DEBUGREG_RELOAD is needed at all.  It should be easy to
->> write selftests for it, using the testcase in commit message
->> 172b2386ed16 and the information in commit ae561edeb421.
-> I must be missing something, since I did not follow this thread and other
-> KVM changes very closely.
-> 
-> Yet, for the record, I added KVM_DEBUGREG_RELOAD due to real experienced
-> issues that I had while running Intel’s fuzzing tests on KVM: IIRC, the DRs
-> were not reloaded after an INIT event that clears them.
+Randy reported that objtool got stuck in an infinite loop when
+processing drivers/i2c/busses/i2c-parport.o.  It was caused by the
+following code:
 
-Indeed, but the code has changed since then and I'm not sure it is still
-needed.
+  00000000000001fd <line_set>:
+   1fd:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+   204:	00 00 00
+  			1ff: R_X86_64_64	.rodata-0x8
+   207:	41 55                	push   %r13
+   209:	41 89 f5             	mov    %esi,%r13d
+   20c:	41 54                	push   %r12
+   20e:	49 89 fc             	mov    %rdi,%r12
+   211:	55                   	push   %rbp
+   212:	48 89 d5             	mov    %rdx,%rbp
+   215:	53                   	push   %rbx
+   216:	0f b6 5a 01          	movzbl 0x1(%rdx),%ebx
+   21a:	48 8d 34 dd 00 00 00 	lea    0x0(,%rbx,8),%rsi
+   221:	00
+  			21e: R_X86_64_32S	.rodata
+   222:	48 89 f1             	mov    %rsi,%rcx
+   225:	48 29 c1             	sub    %rax,%rcx
 
-> Personally, I would prefer that a test for that, if added, would be added
-> to KVM-unit-tests, based on Liran’s INIT test. This would allow to confirm
-> bare-metal behaves as the VM.
+find_jump_table() saw the .rodata reference and tried to find a jump
+table associated with it (though there wasn't one).  The -0x8 rela
+addend is unusual.  It caused find_jump_table() to send a negative
+table_offset (unsigned 0xfffffffffffffff8) to find_rela_by_dest().
 
-Yes, that would be good as well of course.
+The negative offset should have been harmless, but it actually threw
+for_offset_range() for a loop... literally.  When the mask value got
+incremented past the end value, it also wrapped to zero, causing the
+loop exit condition to remain true forever.
 
-Paolo
+Prevent this scenario from happening by ensuring the incremented value
+is always >=3D the starting value.
+
+Fixes: 74b873e49d92 ("objtool: Optimize find_rela_by_dest_range()")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/elf.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 5e76ac38cf99..f753148f5dac 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -89,9 +89,10 @@ struct elf {
+ #define OFFSET_STRIDE		(1UL << OFFSET_STRIDE_BITS)
+ #define OFFSET_STRIDE_MASK	(~(OFFSET_STRIDE - 1))
+=20
+-#define for_offset_range(_offset, _start, _end)		\
+-	for (_offset =3D ((_start) & OFFSET_STRIDE_MASK);	\
+-	     _offset <=3D ((_end) & OFFSET_STRIDE_MASK);	\
++#define for_offset_range(_offset, _start, _end)			\
++	for (_offset =3D ((_start) & OFFSET_STRIDE_MASK);		\
++	     _offset >=3D ((_start) & OFFSET_STRIDE_MASK) &&	\
++	     _offset <=3D ((_end) & OFFSET_STRIDE_MASK);		\
+ 	     _offset +=3D OFFSET_STRIDE)
+=20
+ static inline u32 sec_offset_hash(struct section *sec, unsigned long off=
+set)
+--=20
+2.21.1
 
