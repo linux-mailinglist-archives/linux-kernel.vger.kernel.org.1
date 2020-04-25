@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2E1B8799
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 18:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFA71B87A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 18:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgDYQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 12:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgDYQAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 12:00:43 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F4EC09B04D
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 09:00:41 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id m18so18086323otq.9
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 09:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aJowGujbLx9YHoHGEkmT5nMHlO6tS2Ov2OkuY7Bp1BA=;
-        b=l3Bv7Oj5K54EczsINK6LMtMkBrM8JRDuQVy6qvWE0aLQG+12c06xYGyLwrdCDAeG+E
-         U9Qy9NYrstNZtSmyifXYYIpz8xAHeYkfQ4zi0O4HWatXLreenCK0FEV7PtkRCMnr/IDh
-         fxZFHa427ONVTI49NJqhU+YImD272y/laUDW+BoWFME1R2jIa7rwctETIj1Cm8Us0vWF
-         cPc7igzFkbi5PoBiwFL9toQ7XeBWW5BIUMe2+zsITtqG5dAOhnazX9nkF8H1UP5h/Q34
-         O9m7hpPF8Pncm/1bFwi9lHEFdxeBnhhHc5JcNCojfk7X5jsxAkbZOYYcvMb+h3xPhqz8
-         /kmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aJowGujbLx9YHoHGEkmT5nMHlO6tS2Ov2OkuY7Bp1BA=;
-        b=YI+ucElCJ00kW1YwsyjlHUSt96zuB/KMSYrKZzPE2KlKLe+0W2SLiSAMsAKoDYLB41
-         Tf0O/HKPa3jiDIjYtkZEPglajwTpBTh8x46SoLgHP7J2To6Y2dbaE0Vjm2ftHnNjC793
-         quKFaZYOb5OiPr7NKwES4AL7UX+Io3ifvOiQXI7+EBc9pdgmAiG3DY5IU9KrVA3Q7gTF
-         4DE3WgGE84SfRYXSU9eA5qNtZroS9LFvVkk7LkecpTMs/vn96kQdljrRGDZx6CmrL+v1
-         LxxlwqhBbiiNp5e2puO4mKCbVe+JjFvNzKay0REtbCPXXe4js/8CvSpcInSV21SOkN+J
-         FSQQ==
-X-Gm-Message-State: AGi0PubPkNfQ3f/iBfRWvbrCRTuUmocT6GEQO/EfoKV9tje3JAdvAl8t
-        SAtatD4bKuqsV8ZNg8P38VHMCg==
-X-Google-Smtp-Source: APiQypIwBOSv8g6UXUE+etBF+ux/xNwS0QmCD3XxU/Hx2+E6+6uBzYCaWzUexCqyaeUOTvlPOhElkQ==
-X-Received: by 2002:aca:b2d6:: with SMTP id b205mr10968150oif.137.1587830441059;
-        Sat, 25 Apr 2020 09:00:41 -0700 (PDT)
-Received: from [192.168.86.21] ([136.62.4.88])
-        by smtp.gmail.com with ESMTPSA id k205sm2545514oih.15.2020.04.25.09.00.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 09:00:40 -0700 (PDT)
-Subject: Re: [PATCHv3 31/50] sh: Add loglvl to printk_address()
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
-References: <20200418201944.482088-1-dima@arista.com>
- <20200418201944.482088-32-dima@arista.com>
- <20200420155237.1b6532c0d0c6940fccd1b762@linux-foundation.org>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <92cf0382-bdb4-6966-5a77-2ade50fdc451@landley.net>
-Date:   Sat, 25 Apr 2020 11:06:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726150AbgDYQJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 12:09:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726076AbgDYQJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 12:09:17 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0BA32071E;
+        Sat, 25 Apr 2020 16:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587830957;
+        bh=D7BBrL9B2g9quMzqYC+c4PGNXXBaDGjBMYSEbY32ULE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xeQTsz2HowrC1MlzlTj2hmjl0g1HBpL4QMQd4eQQgwiFaPnQ7oo0eo7dmBauz4T6o
+         WyGw0T6zCQL5UTFRIer4KBtK7MiIvEhSX8Ar0sDZZs8y61zG4OM9UCX1JhpKisa0au
+         X9EPrFUPlxq9/11HGewHL9ipn+z3Qbrosh3ReYCA=
+Date:   Sat, 25 Apr 2020 17:09:12 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Mathieu Othacehe <m.othacehe@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 4/4] iio: vcnl4000: Add buffer support for
+ VCNL4010/20.
+Message-ID: <20200425170912.17c3435a@archlinux>
+In-Reply-To: <87tv1cos2q.fsf@gmail.com>
+References: <20200421075532.19192-1-m.othacehe@gmail.com>
+        <20200421075532.19192-5-m.othacehe@gmail.com>
+        <CAHp75VfXBgQad1oCBe+oqcC_oRa-3q8OBYcAOV8WfCo7n1wXWw@mail.gmail.com>
+        <87tv1cos2q.fsf@gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200420155237.1b6532c0d0c6940fccd1b762@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/20 5:52 PM, Andrew Morton wrote:
-> I guess it doesn't matter much, as sh seems to be rather dead.
+On Wed, 22 Apr 2020 10:14:21 +0200
+Mathieu Othacehe <m.othacehe@gmail.com> wrote:
 
-The j-core guys are using it.
+> >> +static int vcnl4010_buffer_predisable(struct iio_dev *indio_dev)
+> >> +{
+> >> +       struct vcnl4000_data *data = iio_priv(indio_dev);
+> >> +       int ret, ret_disable;
+> >> +
+> >> +       ret = i2c_smbus_write_byte_data(data->client, VCNL4010_INT_CTRL, 0);
+> >> +       if (ret < 0)
+> >> +               goto end;
+> >> +
+> >> +       ret = i2c_smbus_write_byte_data(data->client, VCNL4000_COMMAND, 0);
+> >> +
+> >> +end:  
+> >  
+> >> +       ret_disable = iio_triggered_buffer_predisable(indio_dev);
+> >> +       if (ret == 0)
+> >> +               ret = ret_disable;  
+> >
+> > What is this?
+> >
+> > Can't you rather call IIO API first, and then try to handle the rest?  
+> 
+> Well, iio_triggered_buffer_predisable will call free_irq which requires
+> that the interruption source is disabled, hence this strange pattern.
+> 
+> However, this may be some misunderstanding from me, but I noticed
+> something strange here. In a configuration with one CPU and
+> CONFIG_PREEMPT disabled, I have kernel lockups when disabling the
+> buffer.
+> 
+> This is because free_irq calls synchronize_irq that will wait for any
+> IRQ handler to be over. If the kthread handling the interruption is
+> still running, it has no chances to terminate, and synchronize_irq waits
+> forever. So maybe I'm missing something.
 
-Rob
+That is indeed worrying.  The synchronize_irq is documented as
+sleeping if we have a threaded interrupt.  From a quick look I'd have
+expected the wait in there to result in the interrupt thread being able
+to complete whether or not we had preemption enabled.
+
+I wonder what I'm missing...
+
+Jonathan
+
+
+> 
+> Anyway, I'll send a v5 addressing your remarks.
+> 
+> Thanks,
+> 
+> Mathieu
+
