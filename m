@@ -2,50 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB1C1B8A27
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6551B8A2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgDYXvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 19:51:24 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44303 "EHLO ozlabs.org"
+        id S1726316AbgDYXwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 19:52:05 -0400
+Received: from ozlabs.org ([203.11.71.1]:50813 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbgDYXvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 19:51:19 -0400
+        id S1726092AbgDYXwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 19:52:05 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 498nqn4vzVz9sSh; Sun, 26 Apr 2020 09:51:17 +1000 (AEST)
+        id 498nrg046wz9sSJ; Sun, 26 Apr 2020 09:52:02 +1000 (AEST)
 X-powerpc-patch-notification: thanks
-X-powerpc-patch-commit: b61c38baa98056d4802ff5be5cfb979efc2d0f7a
-In-Reply-To: <485caac75f195f18c11eb077b0031fdd2bb7fb9e.1587361039.git.christophe.leroy@c-s.fr>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
+X-powerpc-patch-commit: 45591da765885f7320a111d290b3a28a23eed359
+In-Reply-To: <20200422154129.11f988fd@canb.auug.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/8xx: Fix STRICT_KERNEL_RWX startup test failure
-Message-Id: <498nqn4vzVz9sSh@ozlabs.org>
-Date:   Sun, 26 Apr 2020 09:51:17 +1000 (AEST)
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the powerpc tree
+Message-Id: <498nrg046wz9sSJ@ozlabs.org>
+Date:   Sun, 26 Apr 2020 09:52:02 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-20 at 05:37:42 UTC, Christophe Leroy wrote:
-> WRITE_RO lkdtm test works.
+On Wed, 2020-04-22 at 05:41:29 UTC, Stephen Rothwell wrote:
+> Hi all,
 > 
-> But when selecting CONFIG_DEBUG_RODATA_TEST, the kernel reports
-> 	rodata_test: test data was not read only
+> After merging the powerpc tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
 > 
-> This is because when rodata test runs, there are still old entries
-> in TLB.
+> In file included from <command-line>:32:
+> ./usr/include/asm/vas-api.h:15:2: error: unknown type name '__u32'
+>    15 |  __u32 version;
+>       |  ^~~~~
+> ./usr/include/asm/vas-api.h:16:2: error: unknown type name '__s16'
+>    16 |  __s16 vas_id; /* specific instance of vas or -1 for default */
+>       |  ^~~~~
+> ./usr/include/asm/vas-api.h:17:2: error: unknown type name '__u16'
+>    17 |  __u16 reserved1;
+>       |  ^~~~~
+> ./usr/include/asm/vas-api.h:18:2: error: unknown type name '__u64'
+>    18 |  __u64 flags; /* Future use */
+>       |  ^~~~~
+> ./usr/include/asm/vas-api.h:19:2: error: unknown type name '__u64'
+>    19 |  __u64 reserved2[6];
+>       |  ^~~~~
 > 
-> Flush TLB after setting kernel pages RO or NX.
+> Caused by commit
 > 
-> Fixes: d5f17ee96447 ("powerpc/8xx: don't disable large TLBs with CONFIG_STRICT_KERNEL_RWX")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+>   45f25a79fe50 ("powerpc/vas: Define VAS_TX_WIN_OPEN ioctl API")
+> 
+> uapi headers should be self contained.  I have added the following patch
+> for today:
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 22 Apr 2020 15:28:26 +1000
+> Subject: [PATCH] powerpc/vas: uapi headers should be self contained
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-Applied to powerpc fixes, thanks.
+Applied to powerpc next, thanks.
 
-https://git.kernel.org/powerpc/c/b61c38baa98056d4802ff5be5cfb979efc2d0f7a
+https://git.kernel.org/powerpc/c/45591da765885f7320a111d290b3a28a23eed359
 
 cheers
