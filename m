@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267E51B84FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 10:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0481B850A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgDYI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 04:59:07 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:11401 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgDYI7G (ORCPT
+        id S1726151AbgDYJEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDYJEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 04:59:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1587805145; x=1619341145;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UNkph1rsA1+NLcMRBtQmMRBFokjWmwoFkH4CQTV5yuw=;
-  b=AeotGCLAU4zs/ukvWdzB088hAWlPJWHooeWPD4sG5EB0VdLul/urAV//
-   tLZyVdAEbw8Vlr95lPcmRyDNbsLyDMjBqnebw9qfA9O7Oz24PzLhkNqgS
-   Alz42NyXilr8Ms56v7HnFsd1BQGE7T9xA4lfSn/OIWXS7MmuMngx4SF/6
-   5rH7QuYEaBUd8IOiDf6+KP3f5AGjig86idvQLbNOcQm9hCd9DHCd+37GV
-   04gXuD3J4IZAXBepHrWpINFJu4LFNV/XS/7vQmXSckRrUXyLTg99JhgrT
-   mUvInPMczFA0Vocd4ABahw77O+jsTjnzE3EKm0TcCTLdP62aOPgXNr2AE
-   Q==;
-IronPort-SDR: fgoDT1vXTwvXSIa1pRBzVj1TikGLuw4iggBWhrOAUVgBRV8q3FqbYyKcSO8IwpqSAzfOPaTUXK
- bTCJS4V4wtw4rOScAR5aaXo8UaJ6UDx6EhQDe7I0ADGz5+QS6iagA0HEWZ+SSStB12zgOY/b5V
- HKikdsSmiaDr7A5fK3yoMIMuLqYF+kgi0x9iTAcRApGKnRloNwwoH3noLbbdEMoArMEMtU9LfF
- cA2uJWMlhi+kITzGdBfxRlNRqKEMehbu4rC4UH7yzCnmJ9OHfmt7vCrajGhCYWaDlUGIT3pvM9
- 5Sw=
-X-IronPort-AV: E=Sophos;i="5.73,315,1583164800"; 
-   d="scan'208";a="137564778"
-Received: from mail-dm6nam12lp2168.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.168])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Apr 2020 16:59:03 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I3cO4WLrkvOxme1cK0x5blUIOeXyw2s+/Qoz4fIUFmVemCqGFgwk50waIRUCSxbrQzldNtdegqjU60uWf529GDZkzaB/g1XAYdPyxXhc4y2RjGW/JuaBp5HfeH6RN128LzvuPQOpxPzEmC1U3U3ZuUmgVsg8YHSoexP8GatJZnIjTHl6QV3pRUyYXaauK4ehjvmucdOFhjqMs2fV3ZSrcUxfdiLIJ3oYzlM6yBBP/KjfGlLyvQYhdlOKZ8RSOKr+6dtNaCQDEu+HjkKH2NneORyZ5M2cEC7qJkMCg03AwsLP6GkmitfkZOvlNQjk5vso0MF9ILRWMUCL7nYIBqsTkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UNkph1rsA1+NLcMRBtQmMRBFokjWmwoFkH4CQTV5yuw=;
- b=QMmoB19OP3K7401KdsJAtJsWv7ZpjQVt0wQKUXqwFuwqavUQAIppxTxNqZ0c7fvIEbohQTWv+M/JaY5187Mum/yOTX53Nsoijr4Glqkmba4yvgo0sqJwjc+xYnKo6bPYJF0UNUswpSEp008i0xWUuP07S7CvA36xxML6CMiiBHDHx9yM3O4dgy2NzxdCJ3ah0RgFTjlrvzZ0wHQ76n95cPIuuBBnh47FQrSIG2v/itD7t4xh1ULiZhtdj3bWxnsFQW5Y0SWE26YkWkjZoTbwd8Dqm8RVpz4RV7DptD6opRzGhYbJysk2YjEOmaI9YUdSuUMHoLfJ9HCP6/8+ltbkZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sat, 25 Apr 2020 05:04:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B26EC09B04A
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:04:44 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b11so14335186wrs.6
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 02:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UNkph1rsA1+NLcMRBtQmMRBFokjWmwoFkH4CQTV5yuw=;
- b=y2j2CIAwEqzf5QY7pHb6al8VucKQgCYgPIM2BmoOhbfhLH81GZGzNidy/h+RbyrfweJD7lb1FhnGQUkeTG9SmKfUe8kJwNC5BYxea0oiRnJLSDiJMvB/xCY5xXCfIwRH52xbqeApbFM0bjBtl3lkeiJRJkaaDK5iiKIylmi+Ofk=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB4685.namprd04.prod.outlook.com (2603:10b6:805:b1::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Sat, 25 Apr
- 2020 08:59:01 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::3877:5e49:6cdd:c8b]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::3877:5e49:6cdd:c8b%5]) with mapi id 15.20.2937.020; Sat, 25 Apr 2020
- 08:59:01 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 5/5] scsi: ufs: UFS Host Performance Booster(HPB)
- driver
-Thread-Topic: [PATCH v2 5/5] scsi: ufs: UFS Host Performance Booster(HPB)
- driver
-Thread-Index: AQHWFC4dSn/DnOroKESaR41iHFfp4qiF2/SAgAK+MnCAAPi+kA==
-Date:   Sat, 25 Apr 2020 08:59:00 +0000
-Message-ID: <SN6PR04MB4640ABB2BB5D2CE5AA2C3778FCD10@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200416203126.1210-1-beanhuo@micron.com>
- <20200416203126.1210-6-beanhuo@micron.com>
- <8921adc3-0c1e-eb16-4a22-1a2a583fc8b3@acm.org>
- <SN6PR04MB4640851C163648C54EB274C5FCD00@SN6PR04MB4640.namprd04.prod.outlook.com>
-In-Reply-To: <SN6PR04MB4640851C163648C54EB274C5FCD00@SN6PR04MB4640.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Avri.Altman@wdc.com; 
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f1828e2f-66d8-49c0-9c8c-08d7e8f6e5c0
-x-ms-traffictypediagnostic: SN6PR04MB4685:
-x-microsoft-antispam-prvs: <SN6PR04MB4685857373A8598D8916A737FCD10@SN6PR04MB4685.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0384275935
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(366004)(136003)(346002)(376002)(6506007)(54906003)(4326008)(26005)(71200400001)(7696005)(110136005)(9686003)(33656002)(55016002)(5660300002)(8676002)(64756008)(66476007)(76116006)(66556008)(66946007)(52536014)(81156014)(86362001)(478600001)(8936002)(66446008)(2906002)(316002)(186003)(7416002)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DwnZM3NZBpp6iiUB6qjNcXaaKTElgpE1TVZ9AoJYwYwGlmeShV/tXX/MUCSjK/BIfQ1130maoCnHJYh0GEu8Mwi7qVLUu54/1Z8i+pRTLUUvhT7cJiJA3rn6aKxppfLmtO2hVzEg0/BZQFcS/bS3vnF6TRszjnuLa3ReQc5jANdSsDwBT1F1CAauQcCZthRK2d7ISMS8wnu5ooNmdPFsOLIJUmTiRMWi1PhjsDKBTHzTI7OgU1Q97uSwccREMAdeKOhAU88DK07yTKwqeAr1EYjwKkR1el10YoBcCaghkW+4GGWsKB5kn7Hxaw+FhBr1MmS/N6wXlRONzH8xptNXm8Eoy0yWdn+ucKU/kJoOBEEfzAcLFmq7pLddD/ptgwRubg5a2l79DNp9oAoawRQ4YNz81wVxvRTVyMON6ESKjlWRt80podQYdvxQuPl3y2yMi+yXRwU+J2aKs9nMMtRM8WCBGyoQdT54jgSjH2OkcrE=
-x-ms-exchange-antispam-messagedata: a2AkbcPsy0l8Z1ioeuIkgtZ23ktXquHtn0FOGjXRTwiYH+xHcCZS9bfyQOG3dPWIrMJOinFvzClgBDDg5D//sPYPkkk/4sCwdB6BpLlV1EG5x21KKxvvuvfXa892RYeyHjZWfxlMoPuwEo8tksR/PZDu3WrhmM50NE+sjyY0WhU8bcG1xCtELHnqeid9LJBWWndQslRFGHpx42fNXdEqBGWFYh7kmJeD5a/rDSABZok8ilxObKGI/OaZ0CoRflZ+6FgNVnSK3YMIxf4AUJ6i7lL8WHzkDCufKH0Js/heXDq8MAFIcU76smZu/RDm09SRCwgPZZtjTtlK/a+fqhqOLV07WCBP1r6rt1fefpqjMf3aVSXgTF+bBeN0is3PtBZzdEReBWGzEYkHz4FTAjqKEzZYS+3lhXJ/Aj8CVlDuqvhvTOfepGLHgvAMbBS2YqM26lP/b5fOFL8eG0iYJacLknYsWXJX0vxoGyAsZaDpv4ppJzLj15DfOgWcX1qIAyp2XDmfn9IaOXsPCEDqgJy0ZV6DG7vKhgbgCWXjUOqF5p59NhD3F0YaVROCu/kjnvqme4ZuuoqtGiiSTwVrUyvC6wIpvByoMY0XPVzndYO4d+REhrRZrThm5wwIJS51OJVEvXYMwcCgR2p8yWgbL6P6hjAogKhvAU1qSNr6ENRYdmhqfiAiA5u+D+g7wo9UFCFvrviiBy/m8Hrvxu8Dz2izoBE+9uXYt6OOOMsj/zFKnldStvNoCO5g/W4DQOprGun7WL7rRaSXbOGF7eTnf7Gzsc3RMg1wmnr+N5IaDYvVrIw=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=3rg9MHa/vizuq71suUnkh0Km+AwnJhqBvLwKJWaVX2E=;
+        b=Uni9kHuhLrw2qc9a0graKB9EjGQlKECie8GA3mcy/GcXDY5d8QzdN9rkb47Lp65Kji
+         vELg7ahZJrt8lPeT8iihqZDQUeQ2ZJE66EpJd04ZCiFk3QtLyPkIJbIYgL95HMYcc9gp
+         E+dU4Gu5F6VDIuFh49ZbV4a5bVQCrQJlYYra9qWaPI6ylIy46EHfq08jw6nhxqYlcFkk
+         SMDUsiZzaPmbOkasPKi+Hz4epPkoEMry7MiyNQFaPSQo1+K9CIkxY6olSE7VeKkAwqUf
+         JeG+a/Mfeu8HEB9FoqV6wHpoNPSdJtZHB4+UiQ9lZO9XiLUsUbSywDpmY55LMW741rEm
+         aXHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=3rg9MHa/vizuq71suUnkh0Km+AwnJhqBvLwKJWaVX2E=;
+        b=oj2iPSJfhepl2lOAoVje/NnUv/jumJ8/BVXzYp8ttjIfiibEyp1BtjosPAoUxXvJ7U
+         pjgdxwVQw3VMb4RtYzC710RkG7vg4Ba74wDrarc/wP/V58l74mAq6ZCROPk6OWMAp1VT
+         xeb5dRpTXd4/KThHRwfnMu53ECo7pKC1j0RsVHdhXfuxnmJ4ukw8oo4kAia4ZQApY3wN
+         2c4AKcXseZDas1ulALi3aO1F/fZXmoz3mpLOpOCFf0bls2g38EFuPkED3LKGidlJFqlD
+         ifkFTXPzlkk1gJHDg87jmX2ykk4cSI39bfDcV3UJJ4tdwsXJQewg1KHFh1u4JzNvojo7
+         ZhDA==
+X-Gm-Message-State: AGi0PuZmwjGfMZuD/AKoBMwfiZJ01OtA7X9zjHvks4juVFmPYXPS4i4f
+        OAxZxdn5cRhOpjHBSHhcIj1pEqJV
+X-Google-Smtp-Source: APiQypLRSrPFhlSX9x25rG61/ZhiPWpFspEugSahq9ZejfayJxenk1XAM5lGDju5gLU9FeXbfWUe/A==
+X-Received: by 2002:adf:82f5:: with SMTP id 108mr15558862wrc.43.1587805483166;
+        Sat, 25 Apr 2020 02:04:43 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id o3sm11784337wru.68.2020.04.25.02.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Apr 2020 02:04:42 -0700 (PDT)
+Date:   Sat, 25 Apr 2020 11:04:40 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] objtool fixes
+Message-ID: <20200425090440.GA108057@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1828e2f-66d8-49c0-9c8c-08d7e8f6e5c0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2020 08:59:00.8939
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NOVj1IiTvn1+gLVLH7Nf+6uvtABBg8PVCxqKKk0WK53GT4F5++NMztne1mJ/EpsCs2b45FrGNiLO/AUPuZE7wg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4685
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T25lIGxhc3Qgd29yZCBmb3IgdGhlIGNvbW11bml0eSBtZW1iZXJzIHRoYXQgYXJlIG5vdCBpbnRv
-IHVmcyBkYXktdG8tZGF5Og0KDQpIUEIgaW1wbGVtZW50YXRpb24gbWFkZSBpdHMgZmlyc3QgcHVi
-bGljIGFwcGVhcmFuY2UgYXJvdW5kIDIwMTggYXMgcGFydCBvZiBHb29nbGUncyBQaXhlbDMgYW5k
-IHNvbWUgVklWTyBtb2RlbHMuDQpTaW5jZSB0aGVuLCBtb3JlIGFuZCBtb3JlIG1vYmlsZSBwbGF0
-Zm9ybXMgYXJlIHB1YmxpY2FsbHkgdXNpbmcgSFBCOiBHYWxheHkgTm90ZTEwLA0KR2FsYXh5IFMy
-MCBhbmQgVklWTyBORVgzICh0aGF0IGlzIGFscmVhZHkgdXNpbmcgSFBCMi4wKSwgc29tZSBYaWFv
-bWkgbW9kZWxzIGV0Yy4NCg0KT24gdGhlIG90aGVyIGhhbmQsIEhQQjEuMCBzcGVjIHdhcyBqdXN0
-IHJlY2VudGx5IGNsb3NlZCAtIG5vdCBldmVuIGFzIHBhcnQgb2YgVUZTMy4xLA0KYnV0IG9ubHkg
-YWZ0ZXIgLSBhYm91dCAyIG1vbnRocyBhZ28uIFRoZSBpbmR1c3RyeSBpcyBydXNoaW5nIGZvcndh
-cmQsIHdlJ3ZlIHNlZW4gdGhpcyBtYW55IHRpbWVzLg0KDQpUaGUgZmFjdCBpcyB0aGF0IEhQQiBp
-cyBoZXJlIHRvIHN0YXkgLSBlaXRoZXIgYXMgYSBob3JkZSBvZiBvdXQtb2YtdHJlZSBpbXBsZW1l
-bnRhdGlvbnMsDQpvciBhcyBhIHN0YW5kYXJkIGFjY2VwdGFibGUgbWFpbmxpbmUgZHJpdmVyLg0K
-DQpUaGFua3MsDQpBdnJpDQoNCj4gDQo+IEhpIEJhcnQsDQo+IA0KPiA+IFdoYXQgYXJlIHRoZSBz
-aW1pbGFyaXRpZXMgYW5kIGRpZmZlcmVuY2VzIGNvbXBhcmVkIHRvIHRoZSBsaWdodG52bQ0KPiA+
-IGZyYW1ld29yayB0aGF0IHdhcyBhZGRlZCBzZXZlcmFsIHllYXJzIGFnbyB0byB0aGUgTGludXgg
-a2VybmVsPyBXaGljaCBvZg0KPiA+IHRoZSBjb2RlIGluIHRoaXMgcGF0Y2ggY2FuIGJlIHNoYXJl
-ZCB3aXRoIHRoZSBsaWdodG52bSBmcmFtZXdvcms/DQo+IFNpbXBseSBwdXQsIHVubGlrZSBsaWdo
-dG52biwgSFBCIGlzIG5vdCBob3N0LW1hbmFnZWQgRlRMLCBCdXQgaW5zdGVhZCBjYW4gYmUNCj4g
-cGVyY2VpdmVkIGFzIGEgY29zdC1yZWR1Y3Rpb24gZWZmb3J0Lg0KPiBJdHMgYWltIGlzIG5vdCB0
-byBtb3ZlIHRoZSBmdyB0byB0aGUgaG9zdCwgYnV0IHRvIGNvbnRyb2wgdGhlIGlOQU5EIGNvc3Qg
-YnkNCj4gbGltaXRpbmcgdGhlIGFtb3VudCBvZiBpdHMgaW50ZXJuYWwgUkFNLg0KPiBJdCBpcyBk
-b25lIGJ5IHVzaW5nIHRoZSBob3N0IG1lbW9yeSB0byBjYWNoZSB0aGUgTDJQIHRhYmxlcywgYW5k
-IHJlcGxhY2UNCj4gUkVBRF8xMCB0aGF0IGhhdmUgb25seSB0aGUgbGJhLA0KPiBieSBhbiBhbHRl
-cm5hdGl2ZSBjb21tYW5kIC0gSFBCX1JFQUQsIHRoYXQgaGF2ZSBib3RoIHRoZSBsb2dpY2FsIGFu
-ZA0KPiBwaHlzaWNhbCBhZGRyZXNzZXMuDQo+IA0KPiBVc2luZyBMaWdodG52bSB3YXMgY29uc2lk
-ZXJlZCBpbiB0aGUgcGFzdCBhcyBwb3NzaWJsZSBmcmFtZXdvcmsgZm9yIEhQQiwNCj4gYnV0IHdh
-cyByZWplY3RlZCBieSBib3RoIENocmlzdG9waCAmIE1hdHRpYXMuDQo+IA0KPiBUaGUgSFBCIGZl
-YXR1cmUgd2FzIE5BS2VkIGJ5IENocmlzdG9waCBpbiBpdHMgZW50aXJldHksIHJlZ2FyZGxlc3Mg
-b2YgdGhlDQo+IGRyaXZlciBkZXNpZ24uDQo+IFVudGlsIHRoaXMgaXMgbm90IHJldmVyc2VkLCBr
-ZWVwIGNvbW1lbnRpbmcgdGhpcyBwYXRjaCBpcyBjb3VudGVycHJvZHVjdGl2ZQ0KPiBhbmQgY29u
-ZnVzaW5nLg0KPiANCj4gU2hvdWxkIHRoaXMgZGVjaXNpb24gaXMgcmV2ZXJzZWQsIEkgdGhpbmsg
-dGhpcyBwYXRjaCBzaG91bGQgYmUgcmUtcG9zdGVkIGFzIGENCj4gUkZDLA0KPiBBbmQgZnJhZ21l
-bnQgaXRzIDUsMDAwIGxpbmVzIG9yIHNvIGludG8gYSBzZXQgb2YgcmV2aWV3YWJsZSBwYXRjaGVz
-Lg0KPiANCj4gVGhhbmtzLA0KPiBBdnJpDQoNCg==
+Linus,
+
+Please pull the latest objtool/urgent git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2020-04-25
+
+   # HEAD: 7f9b34f36cf6b2099f19e679a9e8315c955ef2ee objtool: Fix off-by-one in symbol_by_offset()
+
+Two fixes: fix an off-by-one bug, and fix 32-bit builds on 64-bit systems.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Julien Thierry (1):
+      objtool: Fix off-by-one in symbol_by_offset()
+
+Peter Zijlstra (1):
+      objtool: Fix 32bit cross builds
+
+
+ tools/objtool/elf.c | 2 +-
+ tools/objtool/elf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 09ddc8f1def3..c4857fa3f1d1 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -105,7 +105,7 @@ static int symbol_by_offset(const void *key, const struct rb_node *node)
+ 
+ 	if (*o < s->offset)
+ 		return -1;
+-	if (*o > s->offset + s->len)
++	if (*o >= s->offset + s->len)
+ 		return 1;
+ 
+ 	return 0;
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index ebbb10c61e24..0b79c2353a21 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -99,7 +99,7 @@ static inline u32 sec_offset_hash(struct section *sec, unsigned long offset)
+ 	offset &= OFFSET_STRIDE_MASK;
+ 
+ 	ol = offset;
+-	oh = offset >> 32;
++	oh = (offset >> 16) >> 16;
+ 
+ 	__jhash_mix(ol, oh, idx);
+ 
