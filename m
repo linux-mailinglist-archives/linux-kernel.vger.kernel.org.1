@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2513F1B83DD
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5001B83DE
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 07:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgDYFtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 01:49:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46302 "EHLO mail.kernel.org"
+        id S1726169AbgDYFt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 01:49:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgDYFtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 01:49:20 -0400
+        id S1725837AbgDYFt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 01:49:29 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD34221655;
-        Sat, 25 Apr 2020 05:49:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 180662098B;
+        Sat, 25 Apr 2020 05:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587793760;
-        bh=xczF0e7z8FWiMckLdrl4XzFmaLTbH+PmPrAqeH1cxA4=;
+        s=default; t=1587793769;
+        bh=4r5CSvU+s72cUPpWeXl5tlXq2K72b9pI6RZJPtKhiJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kW1MT70/6d6ZaEUkvEi/4lYX+d/a6PK1ZeNJ1xR44zMzNWy+7A3rmMEJC2/d9nMf9
-         Z31TuAOU0CQJIzS7ey+pxR3S7PI5nZs585JLZEjcFmaRfOLTwfD0YRijycvx+BonRK
-         r08Ops6FQARlKY+KYjmvT3LppSQbFUaS4cMoRLU0=
+        b=wubMSlqOmZJ1zR4Fjf97ANO7mHgyEXb6StmI+RD9Ty2bzUUfQaoGlX0E+pEQKsnTr
+         h1XymzVnRlnNWC2mMeVprnk+VD4V079OP8Culycn4LF9erqMLMqkwH5xktPUCw20tQ
+         L/owFpRol6HoyzmgxbWAtdKzr1VMnVV+p6zuudo8=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
         Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 2/3] tracing/boottime: Fix kprobe event API usage
-Date:   Sat, 25 Apr 2020 14:49:17 +0900
-Message-Id: <158779375766.6082.201939936008972838.stgit@devnote2>
+Subject: [PATCH 3/3] tracing/kprobes: Reject new event if loc is NULL
+Date:   Sat, 25 Apr 2020 14:49:26 +0900
+Message-Id: <158779376597.6082.1411212055469099461.stgit@devnote2>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <158779373972.6082.16695832932765258919.stgit@devnote2>
 References: <158779373972.6082.16695832932765258919.stgit@devnote2>
@@ -43,65 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix boottime kprobe events to use API correctly for
-multiple events.
+Reject the new event which has NULL location for kprobes.
+For kprobes, user must specify at least the location.
 
-For example, when we set a multiprobe kprobe events in
-bootconfig like below,
-
-  ftrace.event.kprobes.myevent {
-  	probes = "vfs_read $arg1 $arg2", "vfs_write $arg1 $arg2"
-  }
-
-This cause an error;
-
-  trace_boot: Failed to add probe: p:kprobes/myevent (null)  vfs_read $arg1 $arg2  vfs_write $arg1 $arg2
-
-This shows the 1st argument becomes NULL and multiprobes
-are merged to 1 probe.
-
-Fixes: 29a154810546 ("tracing: Change trace_boot to use kprobe_event interface")
+Fixes: 2a588dd1d5d6 ("tracing: Add kprobe event command generation functions")
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- kernel/trace/trace_boot.c |   20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ kernel/trace/trace_kprobe.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 06d7feb5255f..9de29bb45a27 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -95,24 +95,20 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
- 	struct xbc_node *anode;
- 	char buf[MAX_BUF_LEN];
- 	const char *val;
--	int ret;
-+	int ret = 0;
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 0d9300c3b084..35989383ae11 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -940,6 +940,9 @@ EXPORT_SYMBOL_GPL(kprobe_event_cmd_init);
+  * complete command or only the first part of it; in the latter case,
+  * kprobe_event_add_fields() can be used to add more fields following this.
+  *
++ * Unlikely the synth_event_gen_cmd_start(), @loc must be specified. This
++ * returns -EINVAL if @loc == NULL.
++ *
+  * Return: 0 if successful, error otherwise.
+  */
+ int __kprobe_event_gen_cmd_start(struct dynevent_cmd *cmd, bool kretprobe,
+@@ -953,6 +956,9 @@ int __kprobe_event_gen_cmd_start(struct dynevent_cmd *cmd, bool kretprobe,
+ 	if (cmd->type != DYNEVENT_TYPE_KPROBE)
+ 		return -EINVAL;
  
--	kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
-+	xbc_node_for_each_array_value(node, "probes", anode, val) {
-+		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
- 
--	ret = kprobe_event_gen_cmd_start(&cmd, event, NULL);
--	if (ret)
--		return ret;
-+		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
-+		if (ret)
-+			break;
- 
--	xbc_node_for_each_array_value(node, "probes", anode, val) {
--		ret = kprobe_event_add_field(&cmd, val);
-+		ret = kprobe_event_gen_cmd_end(&cmd);
- 		if (ret)
--			return ret;
-+			pr_err("Failed to add probe: %s\n", buf);
- 	}
- 
--	ret = kprobe_event_gen_cmd_end(&cmd);
--	if (ret)
--		pr_err("Failed to add probe: %s\n", buf);
--
- 	return ret;
- }
- #else
++	if (!loc)
++		return -EINVAL;
++
+ 	if (kretprobe)
+ 		snprintf(buf, MAX_EVENT_NAME_LEN, "r:kprobes/%s", name);
+ 	else
 
