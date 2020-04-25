@@ -2,68 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7D51B88E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81101B88EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgDYT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 15:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgDYT0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 15:26:10 -0400
-X-Greylist: delayed 91603 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 25 Apr 2020 12:26:10 PDT
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18508C09B04D
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 12:26:10 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        id S1726391AbgDYT2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 15:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726216AbgDYT2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 15:28:47 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 32FD93000224F;
-        Sat, 25 Apr 2020 21:26:08 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 0363A70E960; Sat, 25 Apr 2020 21:26:07 +0200 (CEST)
-Date:   Sat, 25 Apr 2020 21:26:07 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        vilhelm.gray@gmail.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, yamada.masahiro@socionext.com,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] gpio: thermal: Utilize for_each_set_clump macro
-Message-ID: <20200425192607.qa2jr7ef2g726txr@wunner.de>
-References: <cover.1587840667.git.syednwaris@gmail.com>
- <66296904e2ffce670c14576dfc7ea56417c670ab.1587840668.git.syednwaris@gmail.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E8FC20714;
+        Sat, 25 Apr 2020 19:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587842927;
+        bh=uqZb4Ri4kMh3j89fFdv3gFVALSHGMTlVnWc6qy4vE2Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qtctqnX4EHzmCto6jcsMonOxY4SxrquUKXdxJmFtOtGUL5vzo1Y76wHQyRNfObhi8
+         npvSjdjNG8wjbnvLRJ3rUmcCvkQLaCNY967BvYHKmiKFvYYO4bbx7imX+xdJu2IVcu
+         UCOgM3x9eZpNeWBGWgOkXQ4fK7hEKGeg7mjRgqGc=
+Date:   Sat, 25 Apr 2020 20:28:42 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, xxm@rock-chips.com,
+        kever.yang@rock-chips.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: Re: [PATCH v5 1/3] iio: adc: rockchip_saradc: move all of probe to
+ devm-functions
+Message-ID: <20200425202842.41a2c7e2@archlinux>
+In-Reply-To: <20200419100207.58108-1-heiko@sntech.de>
+References: <20200419100207.58108-1-heiko@sntech.de>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66296904e2ffce670c14576dfc7ea56417c670ab.1587840668.git.syednwaris@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 12:35:02AM +0530, Syed Nayyar Waris wrote:
-> This patch replaces all the existing for_each_set_clump8 and related
-> function calls in the drivers (gpio and thermal) with the equivalent
-> new generic for_each_set_clump macro.
+On Sun, 19 Apr 2020 12:02:05 +0200
+Heiko Stuebner <heiko@sntech.de> wrote:
 
-Why are patches [3/6] and [4/6] included in v2 even though William
-said they should be ignored?
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> 
+> Parts of the saradc probe rely on devm functions and later parts do not.
+> This makes it more difficult to for example enable triggers via their
+> devm-functions and would need more undo-work in remove.
+> 
+> So to make life easier for the driver, move the rest of probe calls
+> also to their devm-equivalents.
+> 
+> This includes moving the clk- and regulator-disabling to a devm_action
+> so that they gets disabled both during remove and in the error case
+> in probe, after the action is registered.
+> 
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> ---
+> changes in v5:
+> - none
+> changes in v4:
+> - new patch as suggested by Jonathan
+> 
+>  drivers/iio/adc/rockchip_saradc.c | 37 ++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+> index 582ba047c4a6..270eb7e83823 100644
+> --- a/drivers/iio/adc/rockchip_saradc.c
+> +++ b/drivers/iio/adc/rockchip_saradc.c
+> @@ -193,6 +193,15 @@ static void rockchip_saradc_reset_controller(struct reset_control *reset)
+>  	reset_control_deassert(reset);
+>  }
+>  
+> +static void rockchip_saradc_disable(void *data)
+> +{
+> +	struct rockchip_saradc *info = data;
+> +
+> +	clk_disable_unprepare(info->clk);
+> +	clk_disable_unprepare(info->pclk);
+> +	regulator_disable(info->vref);
 
-Again, replacing for_each_set_clump8() with for_each_set_clump()
-does not provide any benefit but may impact performance and makes
-the code more difficult to follow.  So once more, please do not
-change drivers which are known to work fine with 8 bit clumps,
-specifically gpio-max3191x.c and gpio-74x164.c.
+You should do these independently.  If you use
+a separate devm_add_action_or_reset you can drop the error handling
+in probe because that will all be cleaned up automatically as well.
 
-Please in the future include a list of the changes you've made
-in the cover letter, not just in each individual patch.
+Right now you have a nasty hybrid of managed and unmanaged needing
+manual cleanup in some paths.
 
-Thanks,
+It will take a few more lines of code, but it will be a lot easier
+to review / maintain.
 
-Lukas
+Jonathan
+
+
+> +}
+> +
+>  static int rockchip_saradc_probe(struct platform_device *pdev)
+>  {
+>  	struct rockchip_saradc *info = NULL;
+> @@ -304,6 +313,14 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+>  		goto err_pclk;
+>  	}
+>  
+> +	ret = devm_add_action_or_reset(&pdev->dev,
+> +				       rockchip_saradc_disable, info);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to register devm action, %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+>  	platform_set_drvdata(pdev, indio_dev);
+>  
+>  	indio_dev->name = dev_name(&pdev->dev);
+> @@ -315,14 +332,12 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+>  	indio_dev->channels = info->data->channels;
+>  	indio_dev->num_channels = info->data->num_channels;
+>  
+> -	ret = iio_device_register(indio_dev);
+> +	ret = devm_iio_device_register(&pdev->dev, indio_dev);
+>  	if (ret)
+> -		goto err_clk;
+> +		return ret;
+>  
+>  	return 0;
+>  
+> -err_clk:
+> -	clk_disable_unprepare(info->clk);
+>  err_pclk:
+>  	clk_disable_unprepare(info->pclk);
+
+>  err_reg_voltage:
+> @@ -330,19 +345,6 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static int rockchip_saradc_remove(struct platform_device *pdev)
+> -{
+> -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+> -	struct rockchip_saradc *info = iio_priv(indio_dev);
+> -
+> -	iio_device_unregister(indio_dev);
+> -	clk_disable_unprepare(info->clk);
+> -	clk_disable_unprepare(info->pclk);
+> -	regulator_disable(info->vref);
+> -
+> -	return 0;
+> -}
+> -
+>  #ifdef CONFIG_PM_SLEEP
+>  static int rockchip_saradc_suspend(struct device *dev)
+>  {
+> @@ -383,7 +385,6 @@ static SIMPLE_DEV_PM_OPS(rockchip_saradc_pm_ops,
+>  
+>  static struct platform_driver rockchip_saradc_driver = {
+>  	.probe		= rockchip_saradc_probe,
+> -	.remove		= rockchip_saradc_remove,
+>  	.driver		= {
+>  		.name	= "rockchip-saradc",
+>  		.of_match_table = rockchip_saradc_match,
+
