@@ -2,162 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E081B837E
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 05:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A931B838A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 06:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgDYDlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 23:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726040AbgDYDlA (ORCPT
+        id S1726116AbgDYD7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 23:59:52 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:39120 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbgDYD7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 23:41:00 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A586AC09B04A;
-        Fri, 24 Apr 2020 20:41:00 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id w18so5774166qvs.3;
-        Fri, 24 Apr 2020 20:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eNiqUjT2D3DVZlIGZS8qj2BAwx22UeeEYj8LOV+TNJA=;
-        b=UwEeTU32GC5OyBAmuuA9WXaqSHhXEoU/o+CY1NmK1s7rLBgLYOdbE1cJwU3RxpE/UP
-         AR6EZEI8Tiz4sfABT5/xbnPxeIBATy23u4S34arFAY5O2xr15L2Pl14rpRgW4zOENoS8
-         GWd3lVJo7/dSg2LDTjpSIqJ5+VSa9WK5+lKfiutk3tcma7faVPcreAKDgLqRcRrysf9j
-         gW8Ud9s1I5PpcnCeCByH09g6LBxygtrop1Dbgcq+HtQ6omM+O8vKHG2+/uds8i3CsGwM
-         vAJTmDHFajqTiztmfp1LQyslsdL4d3kxhYQQU/pO2rUY7/qFtlBb+wO9KM3J4MMsG6px
-         P/SA==
+        Fri, 24 Apr 2020 23:59:52 -0400
+Received: by mail-pl1-f193.google.com with SMTP id k18so4504639pll.6;
+        Fri, 24 Apr 2020 20:59:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eNiqUjT2D3DVZlIGZS8qj2BAwx22UeeEYj8LOV+TNJA=;
-        b=ugvBSuohon/vUkOsi7WarqHVdax/xjzGTfuebRME3ZWhV0OOl+BsoRhS4fv7TExxH1
-         WMQsxtmnBDwtn58SPLzc3ecOX6Iw5rxSVXDjTo+Zi0Joo2c9KnqALIZljfWR50GGjdgv
-         7reUWvya48Tp0R6dNeF5OyhdYS6NcV9+p98raTFdwXjHocyw96RdxLJxiLIVMZquAUkc
-         PIlOoXSTlbhe7Pxfjp9KYMxAB0/7cv39JWz/HaQLD0iKX32IikEBgOU2al01hL7ATH/F
-         zE6D41FJkltVSUCqbiQTSmNrKJTvrrYT38Zjaj+1ZFKarafLKihoU2La6bSY4zKn234s
-         Gmog==
-X-Gm-Message-State: AGi0PubjNydJBkodvc3Nvx5p9FB9saz1yru9j2rWx8mHsfoinXmucEg9
-        hHLqohJRXOaunxi20a9njEAjpCGvIrQiXFwzHoY=
-X-Google-Smtp-Source: APiQypLOGggKyL2sr4TvcerJGN7FTsf2IyRG7iSIWWcw3lsm7Qyqij8ETv+TJpGm3RjrdH5q5emPMB6pIwywVo5mQO0=
-X-Received: by 2002:a0c:b651:: with SMTP id q17mr11730679qvf.135.1587786059944;
- Fri, 24 Apr 2020 20:40:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dDEQdduqyEgfM9DImQqMjrWboE5jm0ENHVrvQ2k14Ak=;
+        b=njzXqWfJCj+wc+WMmGrOn2jp2aO24qURuI7EoBL3akUHZCbu/zWm7QO+2+yoB1dVuu
+         9NuMX6jvkBmn06DqD37Bmc/wXenNZOQRnsGUwOcK5PBmjmDmLZvrX3BM6oB6MkdrQpUs
+         //PQKKLyKdu2RZYwejieLX+lF6siWZ+iWMjJORrE1ONg8ZHZu6Jvj+igg8Tz1cyaSSz2
+         3fateCoWQV5BV+erZ3dbZSFzJ6LQ0WBUqcR3ZqIttPlVxEhqlK9d60SOAQ1Ij+b8wzqR
+         Z5MZhugaXZ62qZCwb69k7xkKD+mFoXyilurh2Pza+UKj8IZNptAfbBUae8rLUYgGuc5C
+         6/wg==
+X-Gm-Message-State: AGi0Pub76yOnAurl6inqj5+EakzAmj9WN4U18i169ryBL9jPdTCSvkZZ
+        uOkmOgL3dZ2BGXUnJBJCZgw=
+X-Google-Smtp-Source: APiQypJSVI8J39Hhgtl8VpG+V/GfyNQ951YeD7kqLw3i7+qv25guwQSz5A2LEeMHm9/d3rz2heg4pQ==
+X-Received: by 2002:a17:90a:d0c3:: with SMTP id y3mr3994426pjw.25.1587787191386;
+        Fri, 24 Apr 2020 20:59:51 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id 7sm6270235pga.15.2020.04.24.20.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 20:59:50 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 20:59:49 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: How to upload fpga firmware
+Message-ID: <20200425035949.GA11710@epycbox.lan>
+References: <20200422114432.GM1694@pengutronix.de>
+ <20200423013648.GA2430@epycbox.lan>
+ <20200423062331.GR1694@pengutronix.de>
 MIME-Version: 1.0
-References: <20200424121051.5056-1-geert@linux-m68k.org> <d2c14a2d-4e7b-d36a-be90-e987b1ea6183@gmail.com>
- <CAMuHMdWVmP04cXEgAkOc9Qdb2Y2xjGd1YEOcMt7ehE70ZwdqjQ@mail.gmail.com>
- <87ftcs3k90.fsf@toke.dk> <CAMuHMdUpQ1h5gapkzoX191hgxSQ814TfwcuPAmm8hOKSwk0RHA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUpQ1h5gapkzoX191hgxSQ814TfwcuPAmm8hOKSwk0RHA@mail.gmail.com>
-From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Date:   Sat, 25 Apr 2020 11:40:23 +0800
-Message-ID: <CAMDZJNXtPdZ=5zi5MasRhR5WLMZ1BT0uYxFPwb_wosKVgc5QZA@mail.gmail.com>
-Subject: Re: [PATCH] net: openvswitch: use do_div() for 64-by-32 divisions:
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, ovs dev <dev@openvswitch.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423062331.GR1694@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 1:54 AM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
->
-> Hi Toke,
->
-> On Fri, Apr 24, 2020 at 6:45 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> > Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> > > On Fri, Apr 24, 2020 at 5:05 PM Eric Dumazet <eric.dumazet@gmail.com>=
- wrote:
-> > >> On 4/24/20 5:10 AM, Geert Uytterhoeven wrote:
-> > >> > On 32-bit architectures (e.g. m68k):
-> > >> >
-> > >> >     ERROR: modpost: "__udivdi3" [net/openvswitch/openvswitch.ko] u=
-ndefined!
-> > >> >     ERROR: modpost: "__divdi3" [net/openvswitch/openvswitch.ko] un=
-defined!
-> > >> >
-> > >> > Fixes: e57358873bb5d6ca ("net: openvswitch: use u64 for meter buck=
-et")
-> > >> > Reported-by: noreply@ellerman.id.au
-> > >> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > >> > ---
-> > >> >  net/openvswitch/meter.c | 2 +-
-> > >> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >> >
-> > >> > diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-> > >> > index 915f31123f235c03..3498a5ab092ab2b8 100644
-> > >> > --- a/net/openvswitch/meter.c
-> > >> > +++ b/net/openvswitch/meter.c
-> > >> > @@ -393,7 +393,7 @@ static struct dp_meter *dp_meter_create(struct=
- nlattr **a)
-> > >> >                * Start with a full bucket.
-> > >> >                */
-> > >> >               band->bucket =3D (band->burst_size + band->rate) * 1=
-000ULL;
-> > >> > -             band_max_delta_t =3D band->bucket / band->rate;
-> > >> > +             band_max_delta_t =3D do_div(band->bucket, band->rate=
-);
-> > >> >               if (band_max_delta_t > meter->max_delta_t)
-> > >> >                       meter->max_delta_t =3D band_max_delta_t;
-> > >> >               band++;
-> > >> >
-> > >>
-> > >> This is fascinating... Have you tested this patch ?
-> > >
-> > > Sorry, I should have said this is compile-tested only.
-> > >
-> > >> Please double check what do_div() return value is supposed to be !
-> > >
-> > > I do not have any openvswitch setups, let alone on the poor m68k box.
-> >
-> > I think what Eric is referring to is this, from the documentation of
-> > do_div:
-> >
-> >  * do_div - returns 2 values: calculate remainder and update new divide=
-nd
-> >  * @n: uint64_t dividend (will be updated)
-> >  * @base: uint32_t divisor
-> >  *
-> >  * Summary:
-> >  * ``uint32_t remainder =3D n % base;``
-> >  * ``n =3D n / base;``
-> >  *
-> >  * Return: (uint32_t)remainder
->
-> Oops, that was a serious brain fart. Sorry for that!
->
-> That should have been div_u64() instead of do_div().
-> Feel free to update my patch while applying, else I'll send a v2 later.
->
-> /me hides in a brown paper bag for the whole weekend...
-I sent the patch with updated, change the reported tag, test it, and
-add more commit msg,
-and author should be you. Thanks.
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+Hi Sascha,
 
+On Thu, Apr 23, 2020 at 08:23:31AM +0200, Sascha Hauer wrote:
+> Hi Moritz,
+> 
+> On Wed, Apr 22, 2020 at 06:36:48PM -0700, Moritz Fischer wrote:
+> > Hi Sascha,
+> > 
+> > On Wed, Apr 22, 2020 at 01:44:32PM +0200, Sascha Hauer wrote:
+> > > Hi,
+> > > 
+> > > I wonder what can be done with the mainline state of drivers/fpga/. The
+> > > entry to the framework seems to be fpga_mgr_load(). The only user of
+> > > this function is fpga_region_program_fpga(). This in turn is only called
+> > > in response of applying a device tree overlay. A device tree overlay is
+> > > applied with of_overlay_fdt_apply() which has no users in the Kernel.
+> > 
+> > Yes. It is waiting for dt_overlays one way or another. I personally
+> > don't currently have the bandwidth to work actively on this.
+> > 
+> > > My current task is to load a firmware to a FPGA. The code all seems to
+> > > be there in the Kernel, it only lacks a way to trigger it. I am not very
+> > > interested in device tree overlays since the FPGA appears as a PCI
+> > > device (although applying a dtbo could enable the PCIe controller device
+> > > tree node). Is there some mainline way to upload FPGA firmware? At the
+> > > moment we are using the attached patch to trigger loading the firmware
+> > > from userspace. Would something like this be acceptable for mainline?
+> > 
+> > We've looked into this sort of patches over the years and never came to
+> > a general interface that really works.
+> > 
+> > The OPAE folks (and other users I know of) usually use FPGA Manager with
+> > a higher layer on top of it that moves the bitstream into the kernel via
+> > an ioctl().
+> > 
+> > One concept I had toyed with mentally, but haven't really gotten around
+> > to implement is a 'discoverable' region, that would deal with the
+> > necessary re-enumeration via a callback and have a sysfs interface
+> > similar to what the patch below has.
+> > This would essentially cover use-cases where you have a discoverable
+> > device implemented in FPGA logic, such as say an FPGA hanging off of
+> > PCIe bus that can get loaded over USB, a CPLD or some other side-band
+> > mechanism. After loading the image you'd have to rescan the PCIe bus -
+> > which - imho is the kernel's job.
+> > 
+> > What I really wanna avoid is creating another /dev/fpga0 / /dev/xdevcfg
+> > that completely leaves the kernel in the dark about the fact that it
+> > reconfigures a bit of hardware hanging off the bus.
+> 
+> Yes, makes sense. While this would suffice my needs at the moment it
+> really sounds like a dead end.
+> 
+> > 
+> > In my ideal world you'd create a pci driver that binds to your device,
+> > and creates mfd style subdevices for whatever you'd want your design to
+> > do. One of these devices would be an FPGA and a FPGA region attached to
+> > that FPGA manager. Your top level driver would co-ordinate the fact that
+> > you are re-programming parts of the FPGA and create / destroy devices as
+> > needed for the hardware contained in the bitstream.
+> 
+> In my case there is no pci device visible before loading the firmware,
+> so creating a pci driver is not an option. Maybe pci host controllers
+> could register themselves as fpga-bridges. With this we could put the
+> pci host controller (or the pci device, AFAIK there is a PCI device tree
+> binding) where the fpga is connected into the fpga-bridges phandles list
+> of the fpga-region.
 
+Can you talk a bit more about the system you're working with? Is there
+some sort of sideband mechanism to load the image? What exposes the
+image loading capaibility? A CPLD, an ASIC, USB device, JTAG?
 
---=20
-Best regards, Tonghao
+What does the topology look like?
+
+Sideband  -----> FPGA
+PCIe      -----> FPGA
+
+It also depends a bit on the use-case: After you program the bitstream,
+do you need to runtime re-program it? Does it do partial
+reconfiguration? Are there subdevices inside your device, or is the
+whole thing a discoverable PCI device afterwards?
+
+Cheers,
+Moritz
